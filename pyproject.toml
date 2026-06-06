@@ -14,7 +14,9 @@ jpype = ["jpype1"]
 py4j = ["py4j"]
 grpc = ["grpcio"]
 java = ["jpype1", "py4j"]
+lint = ["ruff>=0.5"]
 test = ["pytest"]
+qa = ["pytest", "ruff>=0.5"]
 
 [tool.setuptools.packages.find]
 include = ["hla2010*"]
@@ -25,3 +27,10 @@ hla2010 = ["resources/foms/*.xml"]
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 160
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]

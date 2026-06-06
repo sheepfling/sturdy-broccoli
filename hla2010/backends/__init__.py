@@ -33,7 +33,7 @@ from .certi import (
     TransportResponse as CERTITransportResponse,
 )
 from .java_common import JavaBridge, JavaRTIBackend, JavaValueConverter, PythonFederateAmbassadorDispatcher
-from .transport import RTITransport, SubprocessLineTransport, TransportCodec, TransportError, TransportRequest, TransportResponse
+from .transport import RTITransport, SubprocessLineTransport, TransportError, TransportRequest, TransportResponse
 from ..real_rti import (
     CERTIRuntime,
     PitchRuntime,
@@ -91,7 +91,6 @@ __all__ = [
     "GrpcTransportConfig",
     "RestTransport",
     "RestTransportConfig",
-    "TransportCodec",
     "TransportRequest",
     "TransportResponse",
     "build_certi_smoke_helper",

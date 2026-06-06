@@ -15,7 +15,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 import os
 import subprocess
-from typing import Any, Mapping, Protocol, Sequence
+from typing import Any, Mapping, Sequence
 from urllib.parse import quote, unquote
 
 from .base import BackendUnavailableError
@@ -58,16 +58,6 @@ class TransportResponse:
 
     fields: tuple[Any, ...] = ()
     metadata: Mapping[str, Any] = field(default_factory=dict)
-
-
-class TransportCodec(Protocol):
-    """Bridge between typed transport envelopes and a wire-specific message type."""
-
-    def encode_request(self, request: TransportRequest) -> Any:
-        raise NotImplementedError
-
-    def decode_response(self, response: Any) -> TransportResponse:
-        raise NotImplementedError
 
 
 class RTITransport(ABC):
@@ -175,7 +165,6 @@ class SubprocessLineTransport(RTITransport):
 
 __all__ = [
     "RTITransport",
-    "TransportCodec",
     "TransportRequest",
     "TransportResponse",
     "SubprocessLineTransport",

@@ -24,7 +24,6 @@ from .backends import (
     RestTransport,
     RestTransportConfig,
     RecordingBackend,
-    TransportCodec,
     TransportRequest,
     TransportResponse,
     create_python_backend,

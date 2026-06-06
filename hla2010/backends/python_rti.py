@@ -14,7 +14,6 @@ import heapq
 import json
 import os
 import socket
-import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from dataclasses import dataclass, field
@@ -1483,7 +1482,11 @@ class PythonRTIBackend(RTIBackend):
     # MOM service-report file helpers --------------------------------------
     def _service_report_directory(self) -> Path:
         raw = self.config.service_report_directory or os.environ.get("HLA2010_SERVICE_REPORT_DIR")
-        directory = Path(raw) if raw else Path(tempfile.gettempdir()) / "hla2010_service_reports"
+        if raw:
+            directory = Path(raw)
+        else:
+            root = Path(os.environ.get("HLA2010_LOCAL_STATE_ROOT", "/private/tmp/hla-2010"))
+            directory = root / "service_reports"
         directory.mkdir(parents=True, exist_ok=True)
         return directory
 

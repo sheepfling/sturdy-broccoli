@@ -13,8 +13,8 @@ tests/                pytest tests and smoke coverage
 tools/                spec-analysis and download helper scripts
 java_shims/           Java shim source used for bridge validation; no built jar included
 CERTI/                vendored CERTI source tree for the 2010 runtime path
-CERTI-build/          local CERTI build tree created by ./scripts/rebuild_certi.sh
-CERTI-install/        local CERTI install tree created by ./scripts/rebuild_certi.sh
+CERTI-build/          symlinked local CERTI build tree created by ./scripts/rebuild_certi.sh
+CERTI-install/        symlinked local CERTI install tree created by ./scripts/rebuild_certi.sh
 specs/ieee-1516-2010/ user-supplied IEEE PDFs and source ZIPs
 docs/                 clean project notes for the repo seed
 ```
@@ -33,12 +33,17 @@ Additional repo-local material promoted from `INBOX`:
 - `scripts/bootstrap_python.sh` local Python environment bootstrap
 - `scripts/rebuild_certi.sh` local CERTI configure/build/install
 - `scripts/bootstrap_all.sh` combined Python and CERTI bootstrap
+- `scripts/setup_local_state.sh` one-shot setup for symlinked local caches and
+  build trees
+- `scripts/local_state.sh` shared helper that keeps generated state in
+  `/private/tmp/hla-2010` and replaces repo-local build/cache directories with
+  symlinks
 
 ## Quick start
 
 ```bash
 ./scripts/bootstrap_python.sh
-python -m pytest -q
+./scripts/ci/seed_suite.sh
 python examples/target_radar_simulation.py --backend python --steps 5
 ```
 
@@ -55,6 +60,35 @@ pip install -e '.[jpype]'
 pip install -e '.[py4j]'
 ```
 
+## Local quality gates
+
+The repo CI is intentionally built from thin shell wrappers so local reruns and
+GitHub Actions use the same entrypoints.
+
+```bash
+./scripts/ci/install_python.sh
+./scripts/ci/lint.sh
+./scripts/ci/test.sh
+./scripts/ci/seed_suite.sh
+./scripts/ci/vendor_runtime_smoke.sh certi
+./scripts/ci/vendor_runtime_smoke.sh pitch
+```
+
+By default `bootstrap_python.sh` installs the `qa` extras. Override that with
+`HLA2010_BOOTSTRAP_EXTRAS=...` if you want a narrower environment.
+
+## Local Git remote
+
+To attach a local bare remote for offline pushes, use:
+
+```bash
+./scripts/setup_local_git_remote.sh
+git remote -v
+```
+
+The default remote name is `local`, and the bare repository is created under
+the repo-managed local-state root in `/private/tmp/hla-2010/git-remotes/`.
+
 ## Local RTI wiring
 
 The repo now includes initial runtime wiring for two real RTI targets:
@@ -65,6 +99,18 @@ The repo now includes initial runtime wiring for two real RTI targets:
 - `CERTI`
   exposed as a native smoke backend kind `certi` plus the local launcher
   `scripts/run_certi_local.sh`
+
+The repo also includes typed `rest` and `grpc` transport surfaces. Those are
+currently exercised as transport choices under the CERTI adapter path, not as
+separate RTI backend families. The `grpc` path now also has a transport-hosted
+pure-Python RTI proving server for end-to-end exchange coverage, and the `rest`
+path now has the same style of transport-hosted pure-Python RTI proving path.
+
+The current remote callback contract is explicit as well: the `rest` and `grpc`
+paths use
+unary request/response calls plus callback polling through the normal
+`evokeCallback` / `evokeMultipleCallbacks` services. Streaming callbacks are a
+future option, not the current wire contract.
 
 Practical local commands:
 
@@ -91,6 +137,13 @@ The `CERTI` launcher currently discovers the install prefix from:
 - `CERTI-install`, if present in this repository
 - `./scripts/rebuild_certi.sh` will populate the local `CERTI-build/` and
   `CERTI-install/` trees from `CERTI/`
+
+Generated local state is symlinked out of the repository by default so it is
+kept under `/private/tmp/hla-2010` instead of the cloud-synced workspace. That
+includes `.venv`, `.pytest_cache`, `.mypy_cache`, `.ruff_cache`, `build/`,
+`analysis/`, `verification/`, `htmlcov/`, `dist/`, `downloads/`,
+`CERTI-build/`, `CERTI-install/`, the Pitch local home/cache tree, and the
+default service-report sink under `service_reports/`.
 
 ## Bootstrap and rebuild
 
@@ -131,6 +184,7 @@ The package includes:
 - backend-neutral RTI adapters;
 - a pure-Python in-memory RTI for local federations;
 - JPype and Py4J Java RTI adapters, including a real Pitch pRTI discovery path;
+- a typed transport seam for CERTI-facing subprocess, REST, and gRPC transport choices;
 - FOM/MIM loading and table-driven MOM catalog support;
 - logical-time and timestamp-order support helpers;
 - service-reporting, synchronization, save/restore, DDM, and Target/Radar scenario code.

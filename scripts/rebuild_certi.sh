@@ -3,10 +3,16 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 CERTI_SOURCE="${HLA2010_CERTI_SOURCE:-$ROOT_DIR/CERTI}"
-CERTI_BUILD="${HLA2010_CERTI_BUILD:-$ROOT_DIR/CERTI-build}"
-CERTI_INSTALL="${HLA2010_CERTI_PREFIX:-$ROOT_DIR/CERTI-install}"
 CERTI_CMAKE_ARGS="${HLA2010_CERTI_CMAKE_ARGS:-}"
 CERTI_BUILD_TARGETS="${HLA2010_CERTI_BUILD_TARGETS:-RTI1516e rtig rtia}"
+
+# shellcheck disable=SC1091
+source "$ROOT_DIR/scripts/local_state.sh"
+
+ensure_local_state_layout
+
+CERTI_BUILD="${HLA2010_CERTI_BUILD:-$(local_state_path "CERTI-build")}"
+CERTI_INSTALL="${HLA2010_CERTI_PREFIX:-$(local_state_path "CERTI-install")}"
 
 if [[ ! -d "$CERTI_SOURCE" ]]; then
   echo "error: CERTI source not found at $CERTI_SOURCE"

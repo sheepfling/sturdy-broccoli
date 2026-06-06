@@ -1,19 +1,21 @@
 # Python
 __pycache__/
 *.py[cod]
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
+.pytest_cache
+.mypy_cache
+.ruff_cache
 .coverage
 htmlcov/
+htmlcov
 *.egg-info/
-build/
-dist/
-.venv/
+build
+dist
+.venv
 
 # Generated project outputs
-analysis/
-verification/
+analysis
+verification
+downloads
 test_run_summary*.txt
 service-report*.jsonl
 *.log
@@ -30,5 +32,6 @@ service-report*.jsonl
 INBOX/*
 !INBOX/README.md
 third_party/pitch/HLA_PITCH_linux/
-CERTI-build/
-CERTI-install/
+CERTI-build
+CERTI-install
+pitch-user-home

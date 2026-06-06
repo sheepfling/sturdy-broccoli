@@ -13,6 +13,21 @@ Core workflow:
 - `run_certi_local.sh` launch `rtig` or `rtia` against the repo-local CERTI
   install
 - `run_pitch_local.sh` launch the extracted Pitch runtime if present
+- `setup_local_git_remote.sh` create or refresh a local bare Git remote under
+  the repo-managed local-state root and attach it as a named remote
 
-The remaining test and validation entrypoints should build on those helpers
-instead of re-implementing environment detection.
+Quality gates:
+
+- `ci/install_python.sh` install the local QA environment used by CI and local reruns
+- `ci/lint.sh` run the repo lint/syntax gate
+- `ci/test.sh` run pytest for the full suite or for selected paths
+- `ci/seed_suite.sh` run the default CI quality gate locally
+- `ci/vendor_runtime_smoke.sh` run the CERTI or Pitch vendor runtime profiles
+
+The helper scripts default their generated downloads, caches, and local
+runtime state to `/private/tmp/hla-2010` so the iCloud-synced workspace stays
+clean. That includes Pitch state and the default service-report sink used by
+the Python RTI backend.
+
+The GitHub workflows are intentionally thin wrappers around these scripts. If a
+quality gate changes, update the script first and let CI call through to it.
