@@ -1,0 +1,401 @@
+"""Verification asset planning for the HLA 1516.1/1516.2 Python RTI.
+
+This module deliberately separates implementation progress from conformance
+claims.  It emits versioned, machine-readable planning artifacts that link
+feature slices to specification sections, executable tests, scenarios, known
+assumptions, and remaining gaps.
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass, field, asdict
+from pathlib import Path
+import csv
+import json
+from typing import Any, Mapping
+
+
+@dataclass(frozen=True)
+class VerificationAsset:
+    """One traceable verification artifact or planned artifact."""
+
+    asset_id: str
+    asset_type: str
+    title: str
+    section_refs: tuple[str, ...]
+    status: str
+    evidence: tuple[str, ...] = ()
+    gaps: tuple[str, ...] = ()
+    notes: str = ""
+
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class VerificationPlan:
+    """Versioned verification plan for this development RTI."""
+
+    version: str
+    scope: str
+    assets: tuple[VerificationAsset, ...] = field(default_factory=tuple)
+
+    def by_status(self) -> dict[str, list[VerificationAsset]]:
+        grouped: dict[str, list[VerificationAsset]] = {}
+        for asset in self.assets:
+            grouped.setdefault(asset.status, []).append(asset)
+        return grouped
+
+    def by_section(self) -> dict[str, list[VerificationAsset]]:
+        grouped: dict[str, list[VerificationAsset]] = {}
+        for asset in self.assets:
+            for section in asset.section_refs:
+                grouped.setdefault(section, []).append(asset)
+        return grouped
+
+    def coverage_summary(self) -> dict[str, Any]:
+        grouped = self.by_status()
+        return {
+            "version": self.version,
+            "scope": self.scope,
+            "asset_count": len(self.assets),
+            "status_counts": {status: len(items) for status, items in sorted(grouped.items())},
+            "sections": sorted(self.by_section()),
+            "gap_asset_ids": [asset.asset_id for asset in self.assets if asset.status in {"gap", "planned"} or asset.gaps],
+        }
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "version": self.version,
+            "scope": self.scope,
+            "summary": self.coverage_summary(),
+            "assets": [asset.as_dict() for asset in self.assets],
+        }
+
+    def to_json(self, *, indent: int = 2) -> str:
+        return json.dumps(self.as_dict(), indent=indent, sort_keys=True)
+
+
+def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
+    """Return the current honest verification plan.
+
+    Status vocabulary:
+    ``implemented-slice`` means focused tests exist for the present subset;
+    ``implemented-smoke`` means scenario/parity smoke evidence exists;
+    ``planned`` means the asset is identified but not yet implemented;
+    ``gap`` means the behavior is known incomplete or externally blocked.
+    """
+
+    assets = (
+        VerificationAsset(
+            "REQ-MOM-TABLE-001",
+            "requirement",
+            "MOM object and interaction exposure is derived from the active MIM/FOM catalog",
+            ("1516.1-2010 §11.2", "1516.1-2010 §11.3", "1516.1-2010 Annex G"),
+            "implemented-slice",
+            (
+                "hla2010/mom_catalog.py::build_mom_exposure_model",
+                "tests/test_mom_catalog_validation_v012.py::test_mom_catalog_is_derived_from_standard_mim_and_exposes_validation_matrix",
+            ),
+            notes="The active catalog now drives MOM object attributes, interaction parameters, request/report pairs, direction, and matrix output.",
+        ),
+        VerificationAsset(
+            "REQ-MOM-NEG-001",
+            "requirement",
+            "Strict MOM decoding reports and raises through generated parameterized negative-path tests",
+            ("1516.1-2010 §11.4.1", "1516.1-2010 §11.5"),
+            "implemented-slice",
+            (
+                "hla2010/mom_negative_testing.py::build_mom_negative_test_cases",
+                "tests/test_mom_negative_matrix_executable_v013.py::test_generated_mom_negative_matrix_case_executes",
+                "tests/test_mom_negative_matrix_parametrized_v013.py::test_generated_mom_negative_matrix_case_executes",
+                "verification/mom_negative_matrix_v0_13.json",
+            ),
+            gaps=("Semantic HLAservice precondition-negative rows remain planned separately because they require service-specific federation setup.",),
+        ),
+        VerificationAsset(
+            "REQ-MOM-REPORT-001",
+            "requirement",
+            "MOM reports use the exact parameter names declared in the active MIM catalog",
+            ("1516.1-2010 §11.3", "1516.1-2010 §11.4.1", "1516.1-2010 Annex G"),
+            "implemented-slice",
+            ("tests/test_mom_catalog_validation_v012.py::test_mom_report_payload_uses_exact_mim_catalog_parameters",),
+            gaps=("Report payload values are still local-process diagnostics for several specialized report classes.",),
+        ),
+        VerificationAsset(
+            "REQ-MOM-SERVICE-001",
+            "requirement",
+            "MOM HLAservice interactions are modeled as RTI-received actions with negative-path service failure reporting",
+            ("1516.1-2010 §11.3", "1516.1-2010 §11.4.1"),
+            "implemented-slice",
+            ("hla2010/backends/python_rti.py::_run_mom_service_action", "verification/mom_negative_matrix_v0_12.json"),
+            gaps=("Not every Annex G service action has a complete semantic implementation yet.",),
+        ),
+        VerificationAsset(
+            "REQ-SERVICE-FILE-001",
+            "requirement",
+            "Service-report file output contains initial and per-service records with section anchors",
+            ("1516.1-2010 §11.5",),
+            "implemented-slice",
+            ("hla2010/service_reporting.py", "tests/test_compliance_slice_v011.py::test_mom_service_reports_to_file_and_global_report_file"),
+            gaps=("The current format is JSONL for auditability; exact vendor/report-file formatting is not claimed.",),
+        ),
+        VerificationAsset(
+            "REQ-TIME-ORDER-001",
+            "requirement",
+            "Timestamp-order queues respect local GALT/LITS-style lower-bound rules and DDM filtering before delivery",
+            ("1516.1-2010 §8.1", "1516.1-2010 §8.13", "1516.1-2010 §8.16", "1516.1-2010 §8.18", "1516.1-2010 §9"),
+            "implemented-slice",
+            ("hla2010/time_management.py", "tests/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery"),
+            gaps=("The distributed-time algorithm remains a local-process approximation, not a proven multi-process LBTS algorithm.",),
+        ),
+        VerificationAsset(
+            "REQ-SAVE-RESTORE-001",
+            "requirement",
+            "Save/restore coordinates with time-state and restores logical-time state",
+            ("1516.1-2010 §4.16-§4.25", "1516.1-2010 §8"),
+            "implemented-slice",
+            ("tests/test_compliance_slice_v011.py::test_scheduled_save_waits_for_time_and_restore_reinstates_time_state",),
+            gaps=("External persistent save-file interchange is not implemented.",),
+        ),
+        VerificationAsset(
+            "SCENARIO-TARGET-RADAR-001",
+            "scenario",
+            "Two-federate Target/Radar simulation runs over Python RTI and Java shim profiles",
+            ("1516.1-2010 §4", "1516.1-2010 §5", "1516.1-2010 §6", "1516.1-2010 §8"),
+            "implemented-smoke",
+            ("examples/target_radar_simulation.py", "tests/test_target_radar_scenario.py", "test_run_summary.txt"),
+            gaps=("Scenario is a smoke demonstration, not a conformance test.",),
+        ),
+        VerificationAsset(
+            "ASSET-CONFORMANCE-MATRIX-001",
+            "verification-artifact",
+            "Service-by-service conformance matrix covering RTIambassador services and MOM receive interactions",
+            ("1516.1-2010 §4-§11", "1516.1-2010 Annex G"),
+            "implemented-slice",
+            (
+                "hla2010/conformance.py::build_service_conformance_matrix",
+                "analysis/service_conformance_matrix_v0_13.json",
+                "analysis/service_conformance_matrix_v0_13.csv",
+                "tests/test_service_conformance_matrix_v013.py",
+            ),
+            gaps=("Rows identify handlers and current evidence; several handler-only rows still need service-specific behavior/exception tests.",),
+        ),
+        VerificationAsset(
+            "ASSET-MOM-SERVICE-SEMANTIC-NEG-001",
+            "planned-artifact",
+            "Bespoke semantic negative-path harnesses for every MOM HLAservice action",
+            ("1516.1-2010 §11.4.1", "1516.1-2010 Annex G"),
+            "planned",
+            ("analysis/service_conformance_matrix_v0_13.json", "verification/mom_negative_matrix_v0_13.json"),
+            gaps=("The generated parameter-validation rows are executable; service-action rows still need per-service precondition setup so success paths are not misreported as negative evidence.",),
+        ),
+        VerificationAsset(
+            "ASSET-CROSS-RTI-BRIDGE-001",
+            "planned-artifact",
+            "Cross-run verification against at least one real Java RTI via JPype and Py4J",
+            ("1516.1-2010 Java binding", "1516.1-2010 §4-§10"),
+            "gap",
+            ("tests/test_optional_real_java_bridges.py",),
+            gaps=("No vendor RTI, jpype1, or py4j package is available in this sandbox.",),
+        ),
+        VerificationAsset(
+            "ASSET-NEGATIVE-MOM-MATRIX-001",
+            "verification-artifact",
+            "Generated MOM negative-path matrix with executable parameter-validation rows",
+            ("1516.1-2010 §11.4.1", "1516.1-2010 Annex G"),
+            "implemented-slice",
+            (
+                "verification/mom_negative_matrix_v0_13.json",
+                "analysis/mom_negative_matrix_v0_13.json",
+                "hla2010/mom_negative_testing.py::mom_negative_case_report",
+                "tests/test_mom_negative_matrix_executable_v013.py",
+            ),
+            gaps=("Service-action semantic negative cases remain visible as planned rows until each has a bespoke precondition harness.",),
+        ),
+    )
+    return VerificationPlan(version=version, scope="Pure Python RTI plus Java adapter/shim compatibility layer", assets=assets)
+
+
+def write_verification_assets(path: str | Path, *, version: str = "0.13.0") -> Path:
+    """Write the current plan as JSON and return the output path."""
+
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(build_verification_plan(version).to_json(indent=2) + "\n", encoding="utf-8")
+    return target
+
+
+def write_traceability_csv(path: str | Path, *, version: str = "0.13.0") -> Path:
+    """Write a flat section-to-asset traceability CSV."""
+
+    plan = build_verification_plan(version)
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with target.open("w", newline="", encoding="utf-8") as fh:
+        writer = csv.writer(fh)
+        writer.writerow(["asset_id", "asset_type", "title", "section_ref", "status", "evidence", "gaps"])
+        for asset in plan.assets:
+            for section in asset.section_refs:
+                writer.writerow([
+                    asset.asset_id,
+                    asset.asset_type,
+                    asset.title,
+                    section,
+                    asset.status,
+                    "; ".join(asset.evidence),
+                    "; ".join(asset.gaps),
+                ])
+    return target
+
+
+__all__ = [
+    "VerificationAsset",
+    "VerificationPlan",
+    "build_verification_plan",
+    "write_verification_assets",
+    "write_traceability_csv",
+]
+
+# Compatibility helpers for repo-seed tests.  The canonical implementation lives
+# in hla2010.conformance; these wrappers produce the flatter dictionary/CSV/MD
+# shape used by the current pytest suite without requiring generated analysis
+# assets to be committed to the repository seed.
+
+def build_service_conformance_matrix(project_root: str | Path | None = None, *, version: str = "0.13.0") -> dict[str, Any]:
+    """Return a flat service-by-service conformance matrix dictionary.
+
+    ``project_root`` is accepted for compatibility with earlier asset-writer
+    call sites; the matrix is generated from package source, not from generated
+    verification files.
+    """
+    from .conformance import build_service_conformance_matrix as _build
+
+    canonical = _build(version=version)
+    rows: list[dict[str, Any]] = []
+    status_counts: dict[str, int] = {}
+    interface_counts: dict[str, int] = {}
+
+    for index, row in enumerate(canonical.rows, start=1):
+        has_backend = row.python_entry_point.startswith("PythonRTIBackend.")
+        has_evidence = bool(row.evidence) or row.negative_executed_count > 0
+        if row.interface == "FederateAmbassador" and row.implementation_status == "callback-helper":
+            status = "callback-helper-tested" if has_evidence else "callback-helper-untested"
+        elif has_backend and row.verification_status == "focused-executable-tests":
+            status = "reference-implemented-tested"
+        elif has_backend:
+            status = "reference-implemented-untested"
+        else:
+            status = "planned-or-adapter-gap"
+
+        status_counts[status] = status_counts.get(status, 0) + 1
+        interface_counts[row.interface] = interface_counts.get(row.interface, 0) + 1
+        rows.append(
+            {
+                "row_id": f"SCM-{index:04d}",
+                "interface": row.interface,
+                "method": row.method_name,
+                "python_name": row.python_name,
+                "section": row.section_ref.replace("IEEE ", ""),
+                "title": row.title,
+                "service_group": row.service_group,
+                "status": status,
+                "source_languages": list(row.source_languages),
+                "source_overload_count": row.source_overload_count,
+                "declared_exceptions": list(row.declared_exceptions),
+                "python_entry_point": row.python_entry_point,
+                "python_backend_entrypoint": has_backend,
+                "callback_helper": row.implementation_status == "callback-helper",
+                "evidence": list(row.evidence),
+                "negative_expectation_count": row.negative_expectation_count,
+                "negative_executed_count": row.negative_executed_count,
+                "negative_evidence": row.negative_executed_count > 0,
+                "known_gaps": list(row.known_gaps),
+            }
+        )
+
+    return {
+        "summary": {
+            "version": version,
+            "row_count": len(rows),
+            "interface_counts": dict(sorted(interface_counts.items())),
+            "status_counts": dict(sorted(status_counts.items())),
+            "source": "generated-from-package-source",
+        },
+        "rows": rows,
+    }
+
+
+def write_service_conformance_matrix_json(
+    path: str | Path,
+    project_root: str | Path | None = None,
+    *,
+    version: str = "0.13.0",
+) -> Path:
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(build_service_conformance_matrix(project_root, version=version), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return target
+
+
+def write_service_conformance_matrix_csv(
+    path: str | Path,
+    project_root: str | Path | None = None,
+    *,
+    version: str = "0.13.0",
+) -> Path:
+    matrix = build_service_conformance_matrix(project_root, version=version)
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    fieldnames = [
+        "row_id",
+        "interface",
+        "method",
+        "python_name",
+        "section",
+        "title",
+        "service_group",
+        "status",
+        "python_backend_entrypoint",
+        "callback_helper",
+        "negative_evidence",
+    ]
+    with target.open("w", newline="", encoding="utf-8") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fieldnames, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(matrix["rows"])
+    return target
+
+
+def write_service_conformance_summary_markdown(
+    path: str | Path,
+    project_root: str | Path | None = None,
+    *,
+    version: str = "0.13.0",
+) -> Path:
+    matrix = build_service_conformance_matrix(project_root, version=version)
+    summary = matrix["summary"]
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    lines = [
+        f"# Service-by-service conformance matrix v{version}",
+        "",
+        f"Rows: {summary['row_count']}",
+        "",
+        "## Interface counts",
+        "",
+    ]
+    for key, value in summary["interface_counts"].items():
+        lines.append(f"- {key}: {value}")
+    lines.extend(["", "## Status counts", ""])
+    for key, value in summary["status_counts"].items():
+        lines.append(f"- {key}: {value}")
+    target.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return target
+
+
+__all__ = tuple(dict.fromkeys(__all__ + [
+    "build_service_conformance_matrix",
+    "write_service_conformance_matrix_json",
+    "write_service_conformance_matrix_csv",
+    "write_service_conformance_summary_markdown",
+]))

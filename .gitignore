@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+dist/
+.venv/
+
+# Generated project outputs
+analysis/
+verification/
+test_run_summary*.txt
+service-report*.jsonl
+*.log
+
+# Java build outputs
+*.class
+*.jar
+
+# Local archives
+*.zip
+!specs/ieee-1516-2010/*.zip
+
+# Local intake and vendor payloads
+INBOX/*
+!INBOX/README.md
+third_party/pitch/HLA_PITCH_linux/

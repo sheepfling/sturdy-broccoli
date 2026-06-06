@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla2010-python"
+version = "0.13.0"
+description = "Unofficial Python API, RTI scaffold, and Java bridge adapters for IEEE 1516.1-2010 HLA-style federates"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+jpype = ["jpype1"]
+py4j = ["py4j"]
+java = ["jpype1", "py4j"]
+test = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["hla2010*"]
+
+[tool.setuptools.package-data]
+hla2010 = ["resources/foms/*.xml"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
