@@ -2,7 +2,7 @@
 
 This module does two things:
 
-1. Discover repo-local or sibling-workspace CERTI and Pitch runtime assets.
+1. Discover repo-local CERTI and Pitch runtime assets.
 2. Build bridge/runtime configs that fit the existing ``jpype`` and ``py4j``
    backend adapters in this repo.
 
@@ -33,10 +33,8 @@ def project_root() -> Path:
 
 def _candidate_paths(*parts: str) -> list[Path]:
     root = project_root()
-    sibling_root = root.parent / "hla-python"
     return [
         root.joinpath(*parts),
-        sibling_root.joinpath(*parts),
     ]
 
 

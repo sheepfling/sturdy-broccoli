@@ -7,9 +7,6 @@ pitch_home="${HLA2010_PITCH_HOME:-}"
 if [[ -z "$pitch_home" && -d "$ROOT_DIR/third_party/pitch/PITCH-prti1516e-manual" ]]; then
   pitch_home="$ROOT_DIR/third_party/pitch/PITCH-prti1516e-manual"
 fi
-if [[ -z "$pitch_home" && -d "$ROOT_DIR/../hla-python/INBOX/PITCH-prti1516e-manual" ]]; then
-  pitch_home="$ROOT_DIR/../hla-python/INBOX/PITCH-prti1516e-manual"
-fi
 if [[ -z "$pitch_home" ]]; then
   echo "error: Pitch runtime home not found; set HLA2010_PITCH_HOME"
   exit 1

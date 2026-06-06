@@ -26,11 +26,10 @@ Initial Steps:
 3. Create a traceability matrix template and an evidence ledger template.
 4. Add a repo-local validation command for the 2010-only scope.
 5. Record the remaining gaps explicitly instead of folding them into the main
-   `hla-python` program.
+   Python HLA workspace.
 
 Artifacts:
 - `docs/reference/`
 - `docs/specs/`
 - `scripts/`
 - `tests/`
-

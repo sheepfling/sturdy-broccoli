@@ -13,6 +13,6 @@ Contents:
 This bundle is not Portico. It contains Pitch pRTI Free v5.5.10 and Pitch
 Visual OMT Free installers and manuals.
 
-The working macOS extraction and local runtime experiments currently live in the
-sibling `hla-python` workspace under `INBOX/`, where the RTI startup work was
-performed.
+The working macOS extraction and local runtime experiments now live in the
+repo-local `third_party/pitch/PITCH-prti1516e-manual/` extraction and the
+`scripts/run_pitch_local.sh` launcher.

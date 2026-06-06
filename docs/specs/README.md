@@ -9,6 +9,6 @@ Planned 2010-family artifacts:
 - evidence ledgers
 - completion audits
 
-Keep these artifacts 2010-only. Use the sibling `hla-python` workspace as the
-implementation reference, not as the place to expand the 2010 track further.
-
+Keep these artifacts 2010-only. Use the top-level `hla2010/` package and the
+vendored `CERTI/` tree as the implementation reference, not a sibling
+workspace.

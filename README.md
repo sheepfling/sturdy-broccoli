@@ -1,6 +1,6 @@
 # hla2010-python
 
-This archive is a clean seed for the Python HLA 1516.1-2010 workstream. It contains the current Python package source, Java bridge adapter source, pure-Python RTI source, examples, tests, helper scripts, FOM/MIM XML resources, and the user-supplied IEEE reference/source documents.
+This archive is a clean seed for the Python HLA 1516.1-2010 workstream. It contains the current Python package source, Java bridge adapter source, pure-Python RTI source, vendored CERTI source, examples, tests, helper scripts, FOM/MIM XML resources, and the user-supplied IEEE reference/source documents.
 
 It intentionally does **not** include generated verification packets, generated analysis matrices, historical scaffold ZIPs, prior run summaries, pytest caches, built Java `.jar` files, or other transient assets. Those should be regenerated from source when needed.
 
@@ -12,6 +12,9 @@ examples/             runnable examples, including Target/Radar
 tests/                pytest tests and smoke coverage
 tools/                spec-analysis and download helper scripts
 java_shims/           Java shim source used for bridge validation; no built jar included
+CERTI/                vendored CERTI source tree for the 2010 runtime path
+CERTI-build/          local CERTI build tree created by ./scripts/rebuild_certi.sh
+CERTI-install/        local CERTI install tree created by ./scripts/rebuild_certi.sh
 specs/ieee-1516-2010/ user-supplied IEEE PDFs and source ZIPs
 docs/                 clean project notes for the repo seed
 ```
@@ -27,6 +30,9 @@ Additional repo-local material promoted from `INBOX`:
 - `docs/reference/hla-2010-specs.zip` original PDF-only reference drop
 - `third_party/pitch/` Pitch pRTI / Visual OMT installer bundle
 - `archives/` retained source-drop and verification ZIP archives
+- `scripts/bootstrap_python.sh` local Python environment bootstrap
+- `scripts/rebuild_certi.sh` local CERTI configure/build/install
+- `scripts/bootstrap_all.sh` combined Python and CERTI bootstrap
 
 ## Quick start
 
@@ -57,8 +63,8 @@ The repo now includes initial runtime wiring for two real RTI targets:
   exposed through the existing Java adapter layer as `pitch-jpype` and
   `pitch-py4j` backend kinds
 - `CERTI`
-  exposed as a native smoke backend kind `certi` plus the local
-  daemon launcher `scripts/run_certi_local.sh`
+  exposed as a native smoke backend kind `certi` plus the local launcher
+  `scripts/run_certi_local.sh`
 
 Practical local commands:
 
@@ -72,8 +78,7 @@ python3 -c "from hla2010.rti import create_rti_ambassador; rti=create_rti_ambass
 The `pitch-jpype` path currently discovers the extracted runtime from:
 
 - `HLA2010_PITCH_HOME`, if set
-- `third_party/pitch/PITCH-prti1516e-manual`, if present later
-- the sibling workspace `../hla-python/INBOX/PITCH-prti1516e-manual`
+- `third_party/pitch/PITCH-prti1516e-manual`, if present
 
 For Pitch specifically, the runtime layer now checks the local CRC license state
 through the bundled `LicenseActivator` class before attempting the real smoke
@@ -86,6 +91,21 @@ The `CERTI` launcher currently discovers the install prefix from:
 - `CERTI-install`, if present in this repository
 - `./scripts/rebuild_certi.sh` will populate the local `CERTI-build/` and
   `CERTI-install/` trees from `CERTI/`
+
+## Bootstrap and rebuild
+
+The recommended setup path is:
+
+```bash
+./scripts/bootstrap_python.sh
+./scripts/rebuild_certi.sh
+```
+
+or, for both in sequence:
+
+```bash
+./scripts/bootstrap_all.sh
+```
 
 ## Real runtime smoke
 

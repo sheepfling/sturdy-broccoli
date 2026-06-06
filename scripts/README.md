@@ -1,7 +1,7 @@
 # Scripts
 
 This directory holds the repo-local entrypoints for setting up and validating
-the IEEE 1516.1-2010 workspace.
+the IEEE 1516.1-2010 workspace, including the vendored CERTI tree.
 
 Core workflow:
 

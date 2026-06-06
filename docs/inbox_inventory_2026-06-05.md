@@ -44,7 +44,7 @@ SHA-256: `1295f8ec22784ad9c8c31e078814975a518c7af3326f4e58521ace13e952af86`
 Classification: third-party vendor bundle
 Promoted archive: `third_party/pitch/HLA_PITCH_linux.zip`
 Unpacked location: `third_party/pitch/HLA_PITCH_linux/`
-Dedup note: removed extracted `__MACOSX/` metadata directory; this bundle duplicates the already-extracted Pitch runtime work performed in the sibling `hla-python` workspace
+Dedup note: removed extracted `__MACOSX/` metadata directory; this bundle duplicates the already-extracted Pitch runtime work already promoted into `third_party/pitch/`
 
 ## Canonical Locations After Promotion
 
