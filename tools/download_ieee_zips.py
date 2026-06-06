@@ -8,6 +8,7 @@ not allowed to save application/zip content. Run this script locally.
 from __future__ import annotations
 
 import argparse
+import os
 from pathlib import Path
 from urllib.request import Request, urlopen
 
@@ -28,7 +29,11 @@ def download(url: str, destination: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--out", type=Path, default=Path("downloads"))
+    parser.add_argument(
+        "--out",
+        type=Path,
+        default=Path(os.environ.get("HLA2010_DOWNLOADS_DIR", "/private/tmp/hla-2010/downloads")),
+    )
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     for filename, url in URLS.items():
