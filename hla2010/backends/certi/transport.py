@@ -12,6 +12,7 @@ import os
 
 from ..transport import RTITransport as CERTITransportProtocol
 from ..transport import SubprocessLineTransport, TransportError as CERTITransportError
+from ..transport import TransportRequest, TransportResponse
 
 
 @dataclass
@@ -35,5 +36,7 @@ __all__ = [
     "CERTITransportConfig",
     "CERTITransportError",
     "CERTITransportProtocol",
+    "TransportRequest",
+    "TransportResponse",
     "create_certi_transport",
 ]

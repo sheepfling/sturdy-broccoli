@@ -1,0 +1,144 @@
+openapi: 3.1.0
+info:
+  title: HLA 2010 RTI Transport
+  version: 0.1.0
+  description: >
+    Typed transport envelope for backend adapters. This schema is intentionally
+    narrow so generated clients can map directly to the transport request and
+    response shapes used by hla2010.backends.transport and the REST transport.
+servers:
+  - url: http://localhost
+paths:
+  /rti/request:
+    post:
+      operationId: submitTransportRequest
+      summary: Submit one transport request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransportRequest'
+      responses:
+        '200':
+          description: Transport response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransportResponse'
+        '4XX':
+          description: Transport or application error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransportResponse'
+components:
+  schemas:
+    TransportRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - command
+      properties:
+        command:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransportValue'
+          default: []
+        metadata:
+          $ref: '#/components/schemas/TransportStruct'
+          default:
+            fields: {}
+    TransportResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransportValue'
+          default: []
+        metadata:
+          $ref: '#/components/schemas/TransportStruct'
+          default:
+            fields: {}
+        error:
+          $ref: '#/components/schemas/TransportError'
+    TransportError:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/TransportStruct'
+          default:
+            fields: {}
+    TransportStruct:
+      type: object
+      additionalProperties: false
+      properties:
+        fields:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/TransportValue'
+          default: {}
+      required:
+        - fields
+    TransportList:
+      type: object
+      additionalProperties: false
+      required:
+        - values
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransportValue'
+    TransportValue:
+      oneOf:
+        - type: 'null'
+        - type: boolean
+        - type: integer
+        - type: number
+        - type: string
+        - type: object
+          required: [__type__, base64]
+          properties:
+            __type__:
+              const: bytes
+            base64:
+              type: string
+        - type: object
+          required: [__type__, class, name, value]
+          properties:
+            __type__:
+              const: enum
+            class:
+              type: string
+            name:
+              type: string
+            value:
+              oneOf:
+                - type: string
+                - type: integer
+                - type: number
+                - type: boolean
+        - type: object
+          required: [__type__, class, value]
+          properties:
+            __type__:
+              const: dataclass
+            class:
+              type: string
+            value:
+              $ref: '#/components/schemas/TransportValue'
+        - $ref: '#/components/schemas/TransportList'
+        - $ref: '#/components/schemas/TransportStruct'

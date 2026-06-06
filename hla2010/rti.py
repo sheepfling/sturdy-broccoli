@@ -7,6 +7,7 @@ or an in-process Java-shaped test shim.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import importlib
 from typing import Any, Mapping
 
 from .backends.base import DelegatingRTIAmbassador, make_rti_ambassador
@@ -29,6 +30,21 @@ class RTITransportSpec:
     options: Mapping[str, Any] = field(default_factory=dict)
 
 
+_TRANSPORT_FACTORIES: dict[str, Any] = {}
+_TRANSPORT_MODULES: dict[str, str] = {
+    "grpc": "hla2010.backends.grpc_transport",
+    "http-json": "hla2010.backends.rest_transport",
+    "rest": "hla2010.backends.rest_transport",
+}
+
+
+def register_transport_factory(kind: str, factory: Any) -> None:
+    """Register a transport factory for a normalized transport kind."""
+
+    normalized = kind.strip().lower().replace("_", "-")
+    _TRANSPORT_FACTORIES[normalized] = factory
+
+
 def _coerce_transport_spec(value: Any):
     if value is None:
         return None
@@ -37,13 +53,27 @@ def _coerce_transport_spec(value: Any):
     if isinstance(value, RTITransportSpec):
         spec = value
     elif isinstance(value, Mapping):
-        spec = RTITransportSpec(**value)
+        if "kind" in value or "options" in value:
+            spec = RTITransportSpec(
+                kind=value.get("kind", "subprocess-line"),
+                options=value.get("options", {k: v for k, v in value.items() if k not in {"kind", "options"}}),
+            )
+        else:
+            raise TypeError(f"Unsupported transport specification mapping: {value!r}")
     elif isinstance(value, str):
         spec = RTITransportSpec(kind=value)
     else:
         raise TypeError(f"Unsupported transport specification: {value!r}")
 
     normalized = spec.kind.strip().lower().replace("_", "-")
+    factory = _TRANSPORT_FACTORIES.get(normalized)
+    if factory is None:
+        module_name = _TRANSPORT_MODULES.get(normalized)
+        if module_name is not None:
+            importlib.import_module(module_name)
+            factory = _TRANSPORT_FACTORIES.get(normalized)
+    if factory is not None:
+        return factory(spec)
     if normalized in {"subprocess", "subprocess-line", "stdio", "pipe"}:
         from .backends.certi.transport import CERTITransportConfig, create_certi_transport
 
@@ -175,11 +205,11 @@ def create_python_rti_pair(*, engine: InMemoryRTIEngine | None = None) -> tuple[
     engine = engine or InMemoryRTIEngine()
     return create_rti_ambassador("python", engine=engine), create_rti_ambassador("python", engine=engine)
 
-
 __all__ = [
     "RTIBackendSpec",
     "RTITransportSpec",
     "create_backend",
     "create_rti_ambassador",
     "create_python_rti_pair",
+    "register_transport_factory",
 ]

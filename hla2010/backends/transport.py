@@ -15,7 +15,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 import os
 import subprocess
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping, Protocol, Sequence
 from urllib.parse import quote, unquote
 
 from .base import BackendUnavailableError
@@ -38,6 +38,38 @@ class TransportError(RuntimeError):
         self.message = message
 
 
+@dataclass(frozen=True)
+class TransportRequest:
+    """Typed request envelope for backend transports.
+
+    The payload is intentionally generic so a transport can map the envelope to
+    generated protobuf messages, REST DTOs, or a simple line protocol without
+    changing the service adapter layer.
+    """
+
+    command: str
+    fields: tuple[Any, ...] = ()
+    metadata: Mapping[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class TransportResponse:
+    """Typed response envelope returned by backend transports."""
+
+    fields: tuple[Any, ...] = ()
+    metadata: Mapping[str, Any] = field(default_factory=dict)
+
+
+class TransportCodec(Protocol):
+    """Bridge between typed transport envelopes and a wire-specific message type."""
+
+    def encode_request(self, request: TransportRequest) -> Any:
+        raise NotImplementedError
+
+    def decode_response(self, response: Any) -> TransportResponse:
+        raise NotImplementedError
+
+
 class RTITransport(ABC):
     """Generic request/response transport used by backend adapters."""
 
@@ -47,8 +79,8 @@ class RTITransport(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def request(self, command: str, *fields: Any) -> list[str]:
-        """Send one command and return decoded response fields."""
+    def request(self, request: TransportRequest) -> TransportResponse:
+        """Send one typed transport request and return a typed response."""
         raise NotImplementedError
 
     def close(self) -> None:
@@ -89,7 +121,7 @@ class SubprocessLineTransport(RTITransport):
         )
         return self
 
-    def request(self, command: str, *fields: Any) -> list[str]:
+    def request(self, request: TransportRequest) -> TransportResponse:
         process = self.process
         if process is None or process.stdin is None or process.stdout is None:
             raise BackendUnavailableError("Subprocess transport is not running")
@@ -100,7 +132,7 @@ class SubprocessLineTransport(RTITransport):
                 f"Subprocess transport exited with code {process.returncode}: {stderr.strip()}"
             )
 
-        encoded = "\t".join([command, *(_encode_field(field) for field in fields)])
+        encoded = "\t".join([request.command, *(_encode_field(field) for field in request.fields)])
         process.stdin.write(encoded + "\n")
         process.stdin.flush()
 
@@ -118,7 +150,7 @@ class SubprocessLineTransport(RTITransport):
             if not parts:
                 continue
             if parts[0] == "OK":
-                return [_decode_field(field) for field in parts[1:]]
+                return TransportResponse(fields=tuple(_decode_field(field) for field in parts[1:]))
             if parts[0] == "ERR":
                 code = parts[1] if len(parts) >= 2 else "RTIinternalError"
                 message = _decode_field(parts[2]) if len(parts) >= 3 else code
@@ -143,6 +175,9 @@ class SubprocessLineTransport(RTITransport):
 
 __all__ = [
     "RTITransport",
+    "TransportCodec",
+    "TransportRequest",
+    "TransportResponse",
     "SubprocessLineTransport",
     "TransportError",
 ]

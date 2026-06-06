@@ -5,7 +5,8 @@ from hla2010.backends import CERTIBackend, CERTIConfig, RTITransport, make_rti_a
 from hla2010.backends.certi.service_adapter import CERTIBackend as PackageCERTIBackend
 from hla2010.backends.certi.transport import CERTITransport, CERTITransportProtocol
 from hla2010.enums import CallbackModel
-from hla2010.rti import RTITransportSpec, create_backend
+from hla2010.rti import RTITransportSpec, create_backend, register_transport_factory
+from hla2010.backends.transport import TransportRequest, TransportResponse
 
 
 class FakeTransport(RTITransport):
@@ -19,9 +20,9 @@ class FakeTransport(RTITransport):
         self.started = True
         return self
 
-    def request(self, command: str, *fields):
-        self.requests.append((command, fields))
-        return list(self.responses.get(command, []))
+    def request(self, request: TransportRequest):
+        self.requests.append((request.command, request.fields))
+        return TransportResponse(fields=tuple(self.responses.get(request.command, [])))
 
     def close(self) -> None:
         self.closed = True
@@ -57,3 +58,20 @@ def test_backend_factory_accepts_transport_specs_transparently():
 
     spec = RTITransportSpec(kind="subprocess-line", options={"command": ["/bin/echo"]})
     assert spec.kind == "subprocess-line"
+
+
+def test_transport_request_and_response_are_typed_envelopes():
+    request = TransportRequest(command="PING", fields=("alpha", 3))
+    response = TransportResponse(fields=("PONG",))
+
+    assert request.command == "PING"
+    assert request.fields == ("alpha", 3)
+    assert response.fields == ("PONG",)
+
+
+def test_transport_registry_can_route_future_wire_kinds():
+    transport = FakeTransport({"GET_HLA_VERSION": ["HLA 1516.1-2010"]})
+    register_transport_factory("test-grpc-wire", lambda spec: transport)
+
+    backend = create_backend("certi", transport={"kind": "test-grpc-wire"})
+    assert backend.config.transport is transport

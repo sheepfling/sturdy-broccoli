@@ -19,11 +19,26 @@ from .backends import (
     PythonRTIBackend,
     PythonRTIConfig,
     RTIBackend,
+    CERTITransportRequest,
+    CERTITransportResponse,
+    RestTransport,
+    RestTransportConfig,
     RecordingBackend,
+    TransportCodec,
+    TransportRequest,
+    TransportResponse,
     create_python_backend,
+    create_rest_transport,
     make_rti_ambassador,
 )
-from .rti import RTIBackendSpec, RTITransportSpec, create_backend, create_python_rti_pair, create_rti_ambassador
+from .rti import (
+    RTIBackendSpec,
+    RTITransportSpec,
+    create_backend,
+    create_python_rti_pair,
+    create_rti_ambassador,
+    register_transport_factory,
+)
 from .real_rti import (
     CERTIRuntime,
     PitchRuntime,

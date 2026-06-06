@@ -29,9 +29,11 @@ from .certi import (
     build_certi_smoke_helper,
     create_certi_backend,
     create_certi_transport,
+    TransportRequest as CERTITransportRequest,
+    TransportResponse as CERTITransportResponse,
 )
 from .java_common import JavaBridge, JavaRTIBackend, JavaValueConverter, PythonFederateAmbassadorDispatcher
-from .transport import RTITransport, SubprocessLineTransport, TransportError
+from .transport import RTITransport, SubprocessLineTransport, TransportCodec, TransportError, TransportRequest, TransportResponse
 from ..real_rti import (
     CERTIRuntime,
     PitchRuntime,
@@ -53,6 +55,7 @@ from .python_rti import (
     create_python_backend,
     rti_ambassador as python_rti_ambassador,
 )
+from .rest_transport import RestTransport, RestTransportConfig, create_rest_transport
 
 __all__ = [
     "BackendConversionError",
@@ -64,6 +67,8 @@ __all__ = [
     "CERTITransport",
     "CERTITransportError",
     "CERTITransportProtocol",
+    "CERTITransportRequest",
+    "CERTITransportResponse",
     "DelegatingRTIAmbassador",
     "InMemoryRTIEngine",
     "Invocation",
@@ -82,6 +87,13 @@ __all__ = [
     "RuntimeProcess",
     "RecordingBackend",
     "RTITransport",
+    "GrpcTransport",
+    "GrpcTransportConfig",
+    "RestTransport",
+    "RestTransportConfig",
+    "TransportCodec",
+    "TransportRequest",
+    "TransportResponse",
     "build_certi_smoke_helper",
     "create_certi_backend",
     "create_certi_transport",
@@ -97,6 +109,8 @@ __all__ = [
     "UnsupportedBackendService",
     "ValueConverter",
     "create_python_backend",
+    "create_grpc_transport",
+    "create_rest_transport",
     "lower_camel_to_snake",
     "make_rti_ambassador",
     "python_rti_ambassador",
@@ -104,3 +118,15 @@ __all__ = [
     "snake_to_lower_camel",
     "TransportError",
 ]
+
+
+def __getattr__(name: str):
+    if name in {"GrpcTransport", "GrpcTransportConfig", "create_grpc_transport"}:
+        from .grpc_transport import GrpcTransport, GrpcTransportConfig, create_grpc_transport
+
+        return {
+            "GrpcTransport": GrpcTransport,
+            "GrpcTransportConfig": GrpcTransportConfig,
+            "create_grpc_transport": create_grpc_transport,
+        }[name]
+    raise AttributeError(name)

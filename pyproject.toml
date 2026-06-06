@@ -12,6 +12,7 @@ requires-python = ">=3.10"
 [project.optional-dependencies]
 jpype = ["jpype1"]
 py4j = ["py4j"]
+grpc = ["grpcio"]
 java = ["jpype1", "py4j"]
 test = ["pytest"]
 

@@ -34,7 +34,7 @@ from ..handles import (
 from ..real_rti import CERTIRuntime, RuntimeProcess, discover_certi_runtime, launch_certi_rtig, project_root
 from ..time import HLAfloat64Time
 from ..types import MessageRetractionReturn
-from .transport import RTITransport, SubprocessLineTransport, TransportError
+from .transport import RTITransport, SubprocessLineTransport, TransportError, TransportRequest
 
 HELPER_SOURCE = project_root() / "tools" / "certi_smoke_helper.cpp"
 HELPER_OUTPUT = project_root() / "build" / "certi" / "certi_smoke_helper"
@@ -619,7 +619,8 @@ class CERTIBackend(RTIBackend):
             raise BackendUnavailableError("CERTI transport is not running")
 
         try:
-            return transport.request(command, *fields)
+            response = transport.request(TransportRequest(command=command, fields=tuple(fields)))
+            return [str(field) for field in response.fields]
         except TransportError as exc:
             exc_name = exc.code if exc.code else "RTIinternalError"
             message = exc.message or exc_name
