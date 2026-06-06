@@ -302,21 +302,21 @@ def test_certi_backend_negotiated_ownership_matrix(kind: str, udp_base: int):
         except RTIinternalError as exc:
             pytest.skip(f"CERTI negotiated ownership path is not stable in this runtime: {exc}")
 
-        assert summary["negotiated_divestiture_supported"] is False
-        assert summary["assumption"] is None
+        assert summary["negotiated_divestiture_supported"] is True
+        assert summary["assumption"] is not None
         assert summary["release"].args == (
-            summary["object_instance"],
+            summary["release_object_instance"],
             {summary["owner_attribute"]},
             b"reacquire-request",
         )
         assert summary["cancellation"].args == (
-            summary["acquirer_object_instance"],
+            summary["release_acquirer_object_instance"],
             {summary["acquirer_attribute"]},
         )
         assert summary["divested"] == {summary["owner_attribute"]}
-        assert summary["acquired"].args[0] == summary["acquirer_object_instance"]
+        assert summary["acquired"].args[0] == summary["release_acquirer_object_instance"]
         assert summary["acquired"].args[1] == {summary["acquirer_attribute"]}
-        assert summary["informed"].args[0] == summary["object_instance"]
+        assert summary["informed"].args[0] == summary["release_object_instance"]
         assert summary["informed"].args[1] == summary["owner_attribute"]
 
         acquirer.resign_federation_execution(ResignAction.NO_ACTION)
