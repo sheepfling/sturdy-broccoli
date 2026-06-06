@@ -690,6 +690,8 @@ def run_negotiated_attribute_ownership_scenario(
     assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attr)
 
     assumption = None
+    divest_notice = None
+    offered_acquired = None
     negotiated_divestiture_supported = False
     try:
         owner_rti.negotiated_attribute_ownership_divestiture(object_instance, {owner_attr}, config.assumption_tag)
@@ -702,42 +704,65 @@ def run_negotiated_attribute_ownership_scenario(
     acquirer_rti.attribute_ownership_acquisition(acquirer_object, {acquirer_attr}, config.request_tag)
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     release = owner_federate.last_callback("requestAttributeOwnershipRelease")
+    release_object_instance = object_instance
+    release_owner_attribute = owner_attr
+    release_acquirer_object = acquirer_object
+    release_acquirer_attribute = acquirer_attr
+    if release is None:
+        offered_acquired = acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification")
+        divest_notice = owner_federate.last_callback("requestDivestitureConfirmation")
+        assert offered_acquired is not None
+        assert offered_acquired.args[0] == acquirer_object
+        assert offered_acquired.args[1] == {acquirer_attr}
+        if divest_notice is not None:
+            assert divest_notice.args[0] == object_instance
+            assert divest_notice.args[1] == {owner_attr}
+
+        pending_object_name = f"{config.object_instance_name}-pending"
+        release_object_instance = owner_rti.register_object_instance(owner_class, pending_object_name)
+        pending_discover = wait_for_callback(acquirer_rti, acquirer_federate, "discoverObjectInstance")
+        assert pending_discover is not None
+        release_acquirer_object = acquirer_rti.get_object_instance_handle(pending_object_name)
+        acquirer_rti.attribute_ownership_acquisition(release_acquirer_object, {acquirer_attr}, config.request_tag)
+        drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
+        release = owner_federate.last_callback("requestAttributeOwnershipRelease")
+
     assert release is not None
-    assert release.args[0] == object_instance
-    assert release.args[1] == {owner_attr}
+    assert release.args[0] == release_object_instance
+    assert release.args[1] == {release_owner_attribute}
     assert release.args[2] == config.request_tag
 
-    acquirer_rti.cancel_attribute_ownership_acquisition(acquirer_object, {acquirer_attr})
+    acquirer_rti.cancel_attribute_ownership_acquisition(release_acquirer_object, {release_acquirer_attribute})
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     cancellation = acquirer_federate.last_callback("confirmAttributeOwnershipAcquisitionCancellation")
     assert cancellation is not None
-    assert cancellation.args[0] == acquirer_object
-    assert cancellation.args[1] == {acquirer_attr}
+    assert cancellation.args[0] == release_acquirer_object
+    assert cancellation.args[1] == {release_acquirer_attribute}
 
-    acquirer_rti.attribute_ownership_acquisition(acquirer_object, {acquirer_attr}, config.cancel_tag)
+    acquirer_rti.attribute_ownership_acquisition(release_acquirer_object, {release_acquirer_attribute}, config.cancel_tag)
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     release = owner_federate.last_callback("requestAttributeOwnershipRelease")
     assert release is not None
-    assert release.args[0] == object_instance
-    assert release.args[1] == {owner_attr}
+    assert release.args[0] == release_object_instance
+    assert release.args[1] == {release_owner_attribute}
     assert release.args[2] == config.cancel_tag
 
-    divested = owner_rti.attribute_ownership_divestiture_if_wanted(object_instance, {owner_attr})
-    assert divested == {owner_attr}
+    divested = owner_rti.attribute_ownership_divestiture_if_wanted(release_object_instance, {release_owner_attribute})
+    assert divested == {release_owner_attribute}
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
 
     acquired = acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification")
     assert acquired is not None
-    assert acquired.args[0] == acquirer_object
-    assert acquired.args[1] == {acquirer_attr}
-    assert acquirer_rti.is_attribute_owned_by_federate(acquirer_object, acquirer_attr)
+    assert acquired.args[0] == release_acquirer_object
+    assert acquired.args[1] == {release_acquirer_attribute}
+    assert acquirer_rti.is_attribute_owned_by_federate(release_acquirer_object, release_acquirer_attribute)
 
-    owner_rti.query_attribute_ownership(object_instance, owner_attr)
+    owner_rti.query_attribute_ownership(release_object_instance, release_owner_attribute)
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     informed = owner_federate.last_callback("informAttributeOwnership")
     assert informed is not None
-    assert informed.args[0] == object_instance
-    assert informed.args[1] == owner_attr
+    assert informed.args[0] == release_object_instance
+    assert informed.args[1] == release_owner_attribute
     assert isinstance(informed.args[2], FederateHandle)
 
     return {
@@ -748,7 +773,11 @@ def run_negotiated_attribute_ownership_scenario(
         "owner_attribute": owner_attr,
         "acquirer_attribute": acquirer_attr,
         "assumption": assumption,
+        "offered_acquired": offered_acquired,
+        "divestiture_confirmation": divest_notice,
         "negotiated_divestiture_supported": negotiated_divestiture_supported,
+        "release_object_instance": release_object_instance,
+        "release_acquirer_object_instance": release_acquirer_object,
         "release": release,
         "cancellation": cancellation,
         "divested": divested,

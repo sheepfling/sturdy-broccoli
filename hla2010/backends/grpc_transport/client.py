@@ -77,6 +77,28 @@ class GrpcTransportClientAdapter:
             metadata=self._encode_struct(dict(request.metadata)),
         )
 
+    def decode_request(self, request: pb2.TransportRequest) -> TransportRequest:
+        return TransportRequest(
+            command=request.command,
+            fields=tuple(self._decode_value(field) for field in request.fields),
+            metadata=self._decode_struct(request.metadata),
+        )
+
+    def encode_response(self, response: TransportResponse) -> pb2.TransportResponse:
+        return pb2.TransportResponse(
+            fields=[self._encode_value(field) for field in response.fields],
+            metadata=self._encode_struct(dict(response.metadata)),
+        )
+
+    def encode_error(self, code: str, message: str, metadata: Mapping[str, Any] | None = None) -> pb2.TransportResponse:
+        return pb2.TransportResponse(
+            error=pb2.TransportError(
+                code=code,
+                message=message,
+                metadata=self._encode_struct(dict(metadata or {})),
+            )
+        )
+
     def decode_response(self, response: pb2.TransportResponse) -> TransportResponse:
         if response.HasField("error"):
             error = response.error
