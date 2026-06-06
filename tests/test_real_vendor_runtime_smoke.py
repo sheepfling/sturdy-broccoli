@@ -21,7 +21,8 @@ def _require_real_rti_smoke() -> None:
         pytest.skip("real vendor RTI smoke disabled; set HLA2010_ENABLE_REAL_RTI_SMOKE=1")
 
 
-def test_pitch_jpype_real_lifecycle_smoke():
+@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+def test_pitch_java_real_lifecycle_smoke(kind: str):
     _require_real_rti_smoke()
     try:
         runtime = launch_pitch_runtime()
@@ -32,14 +33,14 @@ def test_pitch_jpype_real_lifecycle_smoke():
     rti = None
     try:
         fed = RecordingFederateAmbassador()
-        rti = create_rti_ambassador("pitch-jpype")
+        rti = create_rti_ambassador(kind)
         assert rti.getHLAversion() == "IEEE 1516-2010"
         result = connect_create_join(
             rti,
             fed,
             FederationStartupConfig(
                 federation_name=federation_name,
-                federate_name="PitchSmokeFederate",
+                federate_name=f"{kind}-SmokeFederate",
                 federate_type="SmokeFederate",
                 fom_modules=("hla2010:VendorSmokeFOM.xml",),
                 logical_time_implementation_name="HLAinteger64Time",
@@ -243,7 +244,8 @@ def test_certi_java_profile_real_exchange_smoke(kind: str):
         rtig.terminate()
 
 
-def test_pitch_jpype_real_exchange_smoke():
+@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+def test_pitch_java_real_exchange_smoke(kind: str):
     _require_real_rti_smoke()
     try:
         runtime = launch_pitch_runtime()
@@ -256,8 +258,8 @@ def test_pitch_jpype_real_exchange_smoke():
     publisher = None
     subscriber = None
     try:
-        publisher = create_rti_ambassador("pitch-jpype")
-        subscriber = create_rti_ambassador("pitch-jpype")
+        publisher = create_rti_ambassador(kind)
+        subscriber = create_rti_ambassador(kind)
         summary = run_two_federate_exchange_scenario(
             publisher,
             subscriber,
@@ -269,7 +271,7 @@ def test_pitch_jpype_real_exchange_smoke():
                 attribute_name="Payload",
                 interaction_class_name="HLAinteractionRoot.SmokeInteraction",
                 parameter_name="Message",
-                object_instance_name="PitchSmokeObject-1",
+                object_instance_name=f"{kind}-PitchSmokeObject-1",
                 enable_time_management=True,
                 lookahead=HLAinteger64Interval(1),
                 advance_time=HLAinteger64Time(8),

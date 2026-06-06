@@ -18,7 +18,6 @@ import re
 import shutil
 import socket
 import subprocess
-import tempfile
 import time
 from typing import Any, Sequence
 
@@ -58,7 +57,11 @@ class PitchRuntime:
 
     @property
     def default_user_home(self) -> Path:
-        return self.home / "user.home"
+        env_value = os.environ.get("HLA2010_PITCH_USER_HOME")
+        if env_value:
+            return Path(env_value).expanduser()
+        root = Path(os.environ.get("HLA2010_LOCAL_STATE_ROOT", "/private/tmp/hla-2010"))
+        return root / "pitch-user-home"
 
     def jpype_config(self, **overrides: Any) -> JPypeConfig:
         user_home = Path(os.environ.get("HLA2010_PITCH_USER_HOME", str(self.default_user_home)))
@@ -84,6 +87,23 @@ class PitchRuntime:
             "se.pitch.prti1516e.LicenseActivator",
             *args,
         ]
+
+
+@dataclass(frozen=True)
+class PorticoRuntime:
+    home: Path
+    classpath: tuple[Path, ...]
+
+    def jpype_config(self, **overrides: Any) -> JPypeConfig:
+        config = {
+            "classpath": tuple(str(item) for item in self.classpath),
+        }
+        config.update(overrides)
+        return JPypeConfig(**config)
+
+    @property
+    def prefix(self) -> Path:
+        return self.home
 
 
 @dataclass(frozen=True)
@@ -128,6 +148,29 @@ def discover_pitch_runtime(explicit_home: str | os.PathLike[str] | None = None) 
     )
 
 
+def discover_portico_runtime(explicit_home: str | os.PathLike[str] | None = None) -> PorticoRuntime:
+    explicit = Path(explicit_home).expanduser().resolve() if explicit_home is not None else None
+    env_home = os.environ.get("HLA2010_PORTICO_HOME") or os.environ.get("RTI_HOME")
+    candidates: list[Path] = []
+    if explicit is not None:
+        candidates.append(explicit)
+    if env_home:
+        candidates.append(Path(env_home).expanduser())
+    candidates.extend(_candidate_paths("third_party", "portico"))
+    candidates.extend(_candidate_paths("INBOX", "portico"))
+    home = _first_existing(candidates, "lib/portico.jar")
+    if home is None:
+        raise BackendUnavailableError(
+            "Portico RTI runtime not found; set HLA2010_PORTICO_HOME or RTI_HOME to the Portico install root"
+        )
+
+    classpath = tuple(sorted(home.joinpath("lib").glob("*.jar")))
+    if not classpath:
+        raise BackendUnavailableError(f"Portico runtime at {home} does not contain RTI jars")
+
+    return PorticoRuntime(home=home, classpath=classpath)
+
+
 def _parse_pitch_license_list(output: str) -> tuple[PitchLicenseRecord, ...]:
     records: list[PitchLicenseRecord] = []
     for raw_line in output.splitlines():
@@ -169,11 +212,36 @@ def list_pitch_licenses(
     return _parse_pitch_license_list(result.stdout)
 
 
+def prepare_pitch_user_home(
+    runtime: PitchRuntime,
+    *,
+    user_home: str | os.PathLike[str] | None = None,
+) -> Path:
+    """Materialize a local Pitch user-home and verify license state."""
+
+    source_user_home = runtime.default_user_home
+    pitch_user_home = Path(user_home).expanduser() if user_home is not None else runtime.default_user_home
+    pitch_user_home.mkdir(parents=True, exist_ok=True)
+    if source_user_home.exists() and source_user_home != pitch_user_home:
+        shutil.copytree(source_user_home, pitch_user_home, dirs_exist_ok=True)
+    licenses = list_pitch_licenses(runtime.home, user_home=pitch_user_home)
+    if not licenses:
+        raise BackendUnavailableError(
+            "Pitch CRC has no activated local license state. "
+            "LicenseActivator list returned no licenses for the current runtime."
+        )
+    return pitch_user_home
+
+
 @dataclass(frozen=True)
 class CERTIRuntime:
     prefix: Path
     extra_lib_dirs: tuple[Path, ...] = ()
     library_path_env: dict[str, str] = field(default_factory=dict)
+
+    @property
+    def home(self) -> Path:
+        return self.prefix
 
     @property
     def bin_dir(self) -> Path:
@@ -272,16 +340,43 @@ def launch_pitch_py4j_gateway(
     ensure_java_home()
     java_path = discover_java_tool("java")
     classpath = os.pathsep.join(str(item) for item in runtime.classpath)
+    user_home = prepare_pitch_user_home(runtime)
     javaopts = [
-        f"-Duser.home={runtime.home / 'user.home'}",
+        f"-Duser.home={user_home}",
         f"-Djava.library.path={os.pathsep.join(str(item) for item in runtime.java_library_path)}",
+        "-Dse.pitch.prti1516e.useSystemWideLicenseFile=true",
     ]
+    os.environ["HLA2010_PITCH_USER_HOME"] = str(user_home)
     return launch_gateway(
         port=port,
         classpath=classpath,
         java_path=java_path,
         die_on_exit=die_on_exit,
         javaopts=javaopts,
+    )
+
+
+def launch_portico_py4j_gateway(
+    *,
+    portico_home: str | os.PathLike[str] | None = None,
+    port: int = 25333,
+    die_on_exit: bool = True,
+):
+    """Launch a Py4J gateway JVM with the Portico jars on its classpath."""
+    try:
+        from py4j.java_gateway import launch_gateway
+    except Exception as exc:
+        raise BackendUnavailableError("Py4J is not installed") from exc
+
+    runtime = discover_portico_runtime(portico_home)
+    ensure_java_home()
+    java_path = discover_java_tool("java")
+    classpath = os.pathsep.join(str(item) for item in runtime.classpath)
+    return launch_gateway(
+        port=port,
+        classpath=classpath,
+        java_path=java_path,
+        die_on_exit=die_on_exit,
     )
 
 
@@ -344,17 +439,7 @@ def launch_pitch_runtime(
 ) -> RuntimeProcess:
     runtime = discover_pitch_runtime(pitch_home)
     env = dict(os.environ)
-    source_user_home = runtime.default_user_home
-    pitch_user_home = Path(tempfile.gettempdir()) / "hla2010-pitch-user-home"
-    pitch_user_home.mkdir(parents=True, exist_ok=True)
-    if source_user_home.exists():
-        shutil.copytree(source_user_home, pitch_user_home, dirs_exist_ok=True)
-    licenses = list_pitch_licenses(runtime.home, user_home=pitch_user_home)
-    if not licenses:
-        raise BackendUnavailableError(
-            "Pitch CRC has no activated local license state. "
-            "LicenseActivator list returned no licenses for the current runtime."
-        )
+    pitch_user_home = prepare_pitch_user_home(runtime)
     env["HLA2010_PITCH_HOME"] = str(runtime.home)
     env["HOME"] = str(pitch_user_home)
     env["HLA2010_PITCH_USER_HOME"] = str(pitch_user_home)
@@ -461,12 +546,16 @@ __all__ = [
     "CERTIRuntime",
     "PitchRuntime",
     "PitchLicenseRecord",
+    "PorticoRuntime",
     "discover_certi_runtime",
     "discover_certi_smoke_fom",
     "discover_pitch_runtime",
+    "discover_portico_runtime",
     "list_pitch_licenses",
+    "prepare_pitch_user_home",
     "launch_pitch_py4j_gateway",
     "launch_pitch_runtime",
+    "launch_portico_py4j_gateway",
     "launch_certi_rtig",
     "_parse_pitch_license_list",
     "project_root",

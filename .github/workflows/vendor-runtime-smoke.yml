@@ -18,13 +18,9 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e '.[test,jpype,py4j]'
-      - name: Verify vendor runtime inputs are present
-        run: |
-          test -n "${HLA2010_PITCH_HOME:-}" || { echo "HLA2010_PITCH_HOME is required"; exit 1; }
-          test -n "${HLA2010_CERTI_PREFIX:-}" || { echo "HLA2010_CERTI_PREFIX is required"; exit 1; }
+      - name: Install vendor smoke environment
+        env:
+          HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
+        run: ./scripts/ci/install_python.sh
       - name: Run explicit vendor smoke tests
-        run: python -m pytest -q tests/test_real_vendor_runtime_smoke.py
+        run: ./scripts/ci/vendor_runtime_smoke.sh all

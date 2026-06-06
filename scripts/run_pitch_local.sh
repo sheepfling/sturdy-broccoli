@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+HLA2010_LOCAL_STATE_ROOT="${HLA2010_LOCAL_STATE_ROOT:-/private/tmp/hla-2010}"
 pitch_home="${HLA2010_PITCH_HOME:-}"
 
 if [[ -z "$pitch_home" && -d "$ROOT_DIR/third_party/pitch/PITCH-prti1516e-manual" ]]; then
@@ -12,7 +13,7 @@ if [[ -z "$pitch_home" ]]; then
   exit 1
 fi
 
-pitch_user_home="$pitch_home/user.home"
+pitch_user_home="${HLA2010_PITCH_USER_HOME:-$HLA2010_LOCAL_STATE_ROOT/pitch-user-home}"
 java_bin="$pitch_home/Contents/Home/bin/java"
 java_library_path="$pitch_home/lib:$pitch_home/.i4j_external_12081/lib:$pitch_home/.i4j_external_12081/lib/clang12"
 prti_jar="$pitch_home/lib/prtifull.jar"

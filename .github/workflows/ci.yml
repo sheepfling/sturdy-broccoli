@@ -13,12 +13,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install test dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e '.[test]'
+      - name: Install Python QA environment
+        run: ./scripts/ci/install_python.sh
       - name: Run seed suite
-        run: python -m pytest -q
+        run: ./scripts/ci/seed_suite.sh
 
   optional-java-bridges:
     runs-on: ubuntu-latest
@@ -31,12 +29,12 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-      - name: Install optional bridge dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e '.[test,jpype,py4j]'
+      - name: Install optional bridge environment
+        env:
+          HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
+        run: ./scripts/ci/install_python.sh
       - name: Run optional bridge checks
-        run: python -m pytest -q tests/test_optional_real_java_bridges.py
+        run: ./scripts/ci/test.sh tests/test_optional_real_java_bridges.py
 
   certi-runtime-required:
     runs-on: macos-latest
@@ -53,14 +51,31 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-      - name: Install CERTI smoke dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e '.[test,jpype,py4j]'
-      - name: Verify CERTI runtime inputs are present
-        run: |
-          test -n "${HLA2010_CERTI_PREFIX:-}" || { echo "HLA2010_CERTI_PREFIX is required for required CERTI smoke"; exit 1; }
+      - name: Install CERTI smoke environment
+        env:
+          HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
+        run: ./scripts/ci/install_python.sh
       - name: Run required CERTI runtime profile
-        run: |
-          python -m pytest -q tests/test_real_vendor_runtime_smoke.py -k 'certi'
-          python -m pytest -q tests/test_certi_real_backend_matrix.py
+        run: ./scripts/ci/vendor_runtime_smoke.sh certi
+
+  pitch-runtime-required:
+    runs-on: macos-latest
+    env:
+      HLA2010_ENABLE_REAL_RTI_SMOKE: "1"
+      HLA2010_PITCH_HOME: ${{ vars.HLA2010_PITCH_HOME }}
+      HLA2010_PITCH_USER_HOME: ${{ vars.HLA2010_PITCH_USER_HOME }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Install Pitch smoke environment
+        env:
+          HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
+        run: ./scripts/ci/install_python.sh
+      - name: Run required Pitch runtime profile
+        run: ./scripts/ci/vendor_runtime_smoke.sh pitch

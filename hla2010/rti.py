@@ -90,6 +90,7 @@ def create_backend(kind: str | RTIBackendSpec = "python", **options: Any):
     * ``jpype`` / ``java-jpype``: Java RTI through JPype.
     * ``py4j`` / ``java-py4j``: Java RTI through Py4J.
     * ``pitch-jpype`` / ``pitch-py4j``: repo-local Pitch pRTI runtime through the Java adapters.
+    * ``portico-jpype`` / ``portico-py4j``: repo-local or externally installed Portico RTI through the Java adapters.
     * ``certi`` / ``certi-native``: real CERTI RTI through a native smoke helper backend.
     * ``certi-jpype`` / ``certi-py4j``: real CERTI RTI exposed through the Java-adapter path.
     * ``java-shim-jpype`` / ``java-shim-py4j``: in-process Java-shaped test shim.
@@ -138,10 +139,42 @@ def create_backend(kind: str | RTIBackendSpec = "python", **options: Any):
         from .backends.py4j_backend import Py4JConfig, create_py4j_backend
 
         gateway = options.pop("gateway", None)
+        options.setdefault("rti_factory_name", "Federate Protocol")
         if gateway is None:
             launch_port = int(options.pop("launch_gateway_port", 0))
             port = launch_pitch_py4j_gateway(
                 pitch_home=options.pop("pitch_home", None),
+                port=launch_port,
+                die_on_exit=bool(options.pop("die_on_exit", True)),
+            )
+            gateway = JavaGateway(
+                gateway_parameters=GatewayParameters(port=port, auto_convert=True),
+                callback_server_parameters=CallbackServerParameters(port=options.pop("callback_port", 0)),
+            )
+            gateway.start_callback_server()
+            options.setdefault("shutdown_gateway_on_close", True)
+        config = options.pop("config", None) or Py4JConfig(gateway=gateway, **options)
+        return create_py4j_backend(config)
+
+    if normalized in {"portico-jpype", "java-portico-jpype", "portico"}:
+        from .real_rti import discover_portico_runtime
+        from .backends.jpype_backend import create_jpype_backend
+
+        portico_home = options.pop("portico_home", None)
+        runtime = discover_portico_runtime(portico_home)
+        config = options.pop("config", None) or runtime.jpype_config(**options)
+        return create_jpype_backend(config)
+
+    if normalized in {"portico-py4j", "java-portico-py4j"}:
+        from py4j.java_gateway import CallbackServerParameters, GatewayParameters, JavaGateway
+        from .real_rti import launch_portico_py4j_gateway
+        from .backends.py4j_backend import Py4JConfig, create_py4j_backend
+
+        gateway = options.pop("gateway", None)
+        if gateway is None:
+            launch_port = int(options.pop("launch_gateway_port", 0))
+            port = launch_portico_py4j_gateway(
+                portico_home=options.pop("portico_home", None),
                 port=launch_port,
                 die_on_exit=bool(options.pop("die_on_exit", True)),
             )

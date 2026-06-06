@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 import subprocess
 
 from hla2010.real_rti import (
@@ -6,6 +7,7 @@ from hla2010.real_rti import (
     discover_certi_runtime,
     discover_pitch_runtime,
     list_pitch_licenses,
+    prepare_pitch_user_home,
 )
 
 
@@ -20,7 +22,8 @@ def test_discover_pitch_runtime_from_env(tmp_path, monkeypatch):
     assert runtime.home == home
     assert any(path.name == "prtifull.jar" for path in runtime.classpath)
     config = runtime.jpype_config()
-    assert any(str(home / "user.home") in arg for arg in config.jvm_args)
+    expected_user_home = Path(os.environ.get("HLA2010_LOCAL_STATE_ROOT", "/private/tmp/hla-2010")) / "pitch-user-home"
+    assert any(str(expected_user_home) in arg for arg in config.jvm_args)
     assert any("java.library.path=" in arg for arg in config.jvm_args)
 
 
@@ -101,3 +104,35 @@ def test_list_pitch_licenses_invokes_license_activator(tmp_path, monkeypatch):
     assert licenses[0].license_id == "1"
     assert licenses[0].user == "rick"
     assert captured["command"][-2:] == ["se.pitch.prti1516e.LicenseActivator", "list"]
+
+
+def test_prepare_pitch_user_home_copies_license_state_and_validates(tmp_path, monkeypatch):
+    home = tmp_path / "pitch-home"
+    java_bin = home / "Contents" / "Home" / "bin"
+    java_bin.mkdir(parents=True)
+    (java_bin / "java").write_text("")
+    lib = home / "lib"
+    lib.mkdir()
+    (lib / "prtifull.jar").write_text("")
+
+    source_user_home = tmp_path / "pitch-user-home-source"
+    source_user_home.mkdir()
+    (source_user_home / "license.dat").write_text("licensed")
+
+    monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
+    monkeypatch.setenv("HLA2010_PITCH_USER_HOME", str(source_user_home))
+
+    def fake_list_pitch_licenses(_pitch_home=None, *, user_home=None):
+        assert Path(user_home) == tmp_path / "pitch-user-home-work"
+        assert (Path(user_home) / "license.dat").read_text() == "licensed"
+        return _parse_pitch_license_list(
+            " Id  Type     Seats  Hardware id  User\n"
+            " 1   primary  2      abcd1234     rick\n"
+        )
+
+    monkeypatch.setattr("hla2010.real_rti.list_pitch_licenses", fake_list_pitch_licenses)
+    runtime = discover_pitch_runtime()
+    prepared = prepare_pitch_user_home(runtime, user_home=tmp_path / "pitch-user-home-work")
+
+    assert prepared == tmp_path / "pitch-user-home-work"
+    assert (prepared / "license.dat").read_text() == "licensed"
