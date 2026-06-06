@@ -159,6 +159,62 @@ class ServiceConformanceMatrix:
         )
 
 
+@dataclass(frozen=True)
+class RequirementLedgerRow:
+    requirement_id: str
+    interface: str
+    method_name: str
+    python_name: str
+    document: str
+    section: str
+    section_ref: str
+    title: str
+    service_group: str
+    outcome: str
+    implementation_status: str
+    verification_status: str
+    evidence: tuple[str, ...] = field(default_factory=tuple)
+    known_gaps: tuple[str, ...] = field(default_factory=tuple)
+    verification_asset_id: str = ""
+    rationale: str = ""
+
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class RequirementLedger:
+    version: str
+    rows: tuple[RequirementLedgerRow, ...]
+
+    def summary(self) -> dict[str, Any]:
+        by_outcome: dict[str, int] = {}
+        by_interface: dict[str, int] = {}
+        by_section: dict[str, dict[str, int]] = {}
+        for row in self.rows:
+            by_outcome[row.outcome] = by_outcome.get(row.outcome, 0) + 1
+            by_interface[row.interface] = by_interface.get(row.interface, 0) + 1
+            section_bucket = by_section.setdefault(row.section_ref, {})
+            section_bucket[row.outcome] = section_bucket.get(row.outcome, 0) + 1
+        return {
+            "version": self.version,
+            "row_count": len(self.rows),
+            "outcome_counts": dict(sorted(by_outcome.items())),
+            "interface_counts": dict(sorted(by_interface.items())),
+            "section_outcomes": {key: dict(sorted(value.items())) for key, value in sorted(by_section.items())},
+        }
+
+    def to_json(self, *, indent: int = 2) -> str:
+        return json.dumps(
+            {
+                "summary": self.summary(),
+                "rows": [row.as_dict() for row in self.rows],
+            },
+            indent=indent,
+            sort_keys=True,
+        )
+
+
 def _metadata_for(interface: str, method: str) -> tuple[Mapping[str, Any], ...]:
     return tuple(API_METADATA.get(interface, {}).get(method, ()))
 
@@ -193,6 +249,18 @@ def _verification_status(method: str, service_group: str, evidence: tuple[str, .
     if service_group == "Federate Ambassador Callback":
         return "callback-helper-covered"
     return "matrix-only-planned"
+
+
+def _requirement_outcome(row: ServiceConformanceRow) -> tuple[str, str]:
+    if row.implementation_status in {"adapter-or-gap", "callback-helper-gap"}:
+        return "fail", "No backend-neutral implementation surface is present for this requirement."
+    if row.verification_status == "matrix-only-planned":
+        return "not-evidenced", "The requirement is mapped, but no executable evidence is linked yet."
+    if row.known_gaps:
+        return "partial", "Executable evidence exists, but known semantic or negative-path gaps remain."
+    if row.verification_status in {"focused-executable-tests", "callback-helper-covered"}:
+        return "pass", "Executable evidence exists at the requirement level with no recorded gap for this row."
+    return "partial", "Only group-level or slice-level evidence exists for this requirement."
 
 
 def build_service_conformance_matrix(*, version: str = "0.13.0") -> ServiceConformanceMatrix:
@@ -277,6 +345,34 @@ def build_service_conformance_matrix(*, version: str = "0.13.0") -> ServiceConfo
     )
 
 
+def build_requirements_ledger(*, version: str = "0.13.0") -> RequirementLedger:
+    matrix = build_service_conformance_matrix(version=version)
+    rows: list[RequirementLedgerRow] = []
+    for index, row in enumerate(matrix.rows, start=1):
+        outcome, rationale = _requirement_outcome(row)
+        rows.append(
+            RequirementLedgerRow(
+                requirement_id=f"REQ-{index:04d}",
+                interface=row.interface,
+                method_name=row.method_name,
+                python_name=row.python_name,
+                document=row.document,
+                section=row.section,
+                section_ref=row.section_ref,
+                title=row.title,
+                service_group=row.service_group,
+                outcome=outcome,
+                implementation_status=row.implementation_status,
+                verification_status=row.verification_status,
+                evidence=row.evidence,
+                known_gaps=row.known_gaps,
+                verification_asset_id=row.verification_asset_id,
+                rationale=rationale,
+            )
+        )
+    return RequirementLedger(version=version, rows=tuple(rows))
+
+
 def write_service_conformance_json(path: str | Path, *, version: str = "0.13.0") -> Path:
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -301,10 +397,39 @@ def write_service_conformance_csv(path: str | Path, *, version: str = "0.13.0") 
     return target
 
 
+def write_requirements_ledger_json(path: str | Path, *, version: str = "0.13.0") -> Path:
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(build_requirements_ledger(version=version).to_json(indent=2) + "\n", encoding="utf-8")
+    return target
+
+
+def write_requirements_ledger_csv(path: str | Path, *, version: str = "0.13.0") -> Path:
+    ledger = build_requirements_ledger(version=version)
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    fieldnames = list(RequirementLedgerRow.__dataclass_fields__.keys())
+    with target.open("w", newline="", encoding="utf-8") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in ledger.rows:
+            record = row.as_dict()
+            for key, value in list(record.items()):
+                if isinstance(value, tuple):
+                    record[key] = "; ".join(str(item) for item in value)
+            writer.writerow(record)
+    return target
+
+
 __all__ = [
+    "RequirementLedger",
+    "RequirementLedgerRow",
     "ServiceConformanceMatrix",
     "ServiceConformanceRow",
+    "build_requirements_ledger",
     "build_service_conformance_matrix",
+    "write_requirements_ledger_csv",
+    "write_requirements_ledger_json",
     "write_service_conformance_csv",
     "write_service_conformance_json",
 ]

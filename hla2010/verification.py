@@ -181,6 +181,20 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
             gaps=("Rows identify handlers and current evidence; several handler-only rows still need service-specific behavior/exception tests.",),
         ),
         VerificationAsset(
+            "ASSET-REQUIREMENTS-LEDGER-001",
+            "verification-artifact",
+            "Strict requirements ledger classifying each mapped service row as pass, partial, fail, or not-evidenced",
+            ("1516.1-2010 §4-§11", "1516.1-2010 Annex G"),
+            "implemented-slice",
+            (
+                "hla2010/conformance.py::build_requirements_ledger",
+                "analysis/requirements_ledger_v0_13.json",
+                "analysis/requirements_ledger_v0_13.csv",
+                "tests/test_requirements_ledger_v013.py",
+            ),
+            gaps=("The ledger is only as strong as the linked executable evidence; rows marked partial and not-evidenced remain open engineering work.",),
+        ),
+        VerificationAsset(
             "ASSET-MOM-SERVICE-SEMANTIC-NEG-001",
             "planned-artifact",
             "Bespoke semantic negative-path harnesses for every MOM HLAservice action",
@@ -325,6 +339,38 @@ def build_service_conformance_matrix(project_root: str | Path | None = None, *, 
     }
 
 
+def build_requirements_ledger(project_root: str | Path | None = None, *, version: str = "0.13.0") -> dict[str, Any]:
+    """Return a flat requirements ledger dictionary compatible with artifact writers."""
+    from .conformance import build_requirements_ledger as _build
+
+    del project_root
+    canonical = _build(version=version)
+    rows: list[dict[str, Any]] = []
+    for row in canonical.rows:
+        rows.append(
+            {
+                "requirement_id": row.requirement_id,
+                "interface": row.interface,
+                "method": row.method_name,
+                "python_name": row.python_name,
+                "section": row.section_ref.replace("IEEE ", ""),
+                "title": row.title,
+                "service_group": row.service_group,
+                "outcome": row.outcome,
+                "implementation_status": row.implementation_status,
+                "verification_status": row.verification_status,
+                "verification_asset_id": row.verification_asset_id,
+                "rationale": row.rationale,
+                "evidence": list(row.evidence),
+                "known_gaps": list(row.known_gaps),
+            }
+        )
+    return {
+        "summary": canonical.summary(),
+        "rows": rows,
+    }
+
+
 def write_service_conformance_matrix_json(
     path: str | Path,
     project_root: str | Path | None = None,
@@ -393,8 +439,55 @@ def write_service_conformance_summary_markdown(
     return target
 
 
+def write_requirements_ledger_json(
+    path: str | Path,
+    project_root: str | Path | None = None,
+    *,
+    version: str = "0.13.0",
+) -> Path:
+    del project_root
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(build_requirements_ledger(version=version), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return target
+
+
+def write_requirements_ledger_csv(
+    path: str | Path,
+    project_root: str | Path | None = None,
+    *,
+    version: str = "0.13.0",
+) -> Path:
+    del project_root
+    ledger = build_requirements_ledger(version=version)
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    fieldnames = [
+        "requirement_id",
+        "interface",
+        "method",
+        "python_name",
+        "section",
+        "title",
+        "service_group",
+        "outcome",
+        "implementation_status",
+        "verification_status",
+        "verification_asset_id",
+        "rationale",
+    ]
+    with target.open("w", newline="", encoding="utf-8") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fieldnames, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(ledger["rows"])
+    return target
+
+
 __all__ = tuple(dict.fromkeys(__all__ + [
+    "build_requirements_ledger",
     "build_service_conformance_matrix",
+    "write_requirements_ledger_csv",
+    "write_requirements_ledger_json",
     "write_service_conformance_matrix_json",
     "write_service_conformance_matrix_csv",
     "write_service_conformance_summary_markdown",

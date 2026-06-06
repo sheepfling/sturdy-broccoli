@@ -56,6 +56,39 @@ def _certi_exchange_config(smoke_fom: str, federation_name: str, object_instance
     )
 
 
+def _normalized_exchange_profile(summary: dict[str, object]) -> dict[str, object]:
+    return {
+        "reflect_payload": summary["reflect"].args[1],
+        "reflect_tag": summary["reflect"].args[2],
+        "reflect_order": summary["reflect"].args[3].name,
+        "interaction_payload": summary["interaction"].args[1],
+        "interaction_tag": summary["interaction"].args[2],
+        "interaction_order": summary["interaction"].args[3].name,
+        "timed_reflect_payload": summary["timed_reflect"].args[1],
+        "timed_reflect_tag": summary["timed_reflect"].args[2],
+        "timed_reflect_order": summary["timed_reflect"].args[3].name,
+        "timed_reflect_time": float(summary["timed_reflect"].args[5].value),
+        "timed_interaction_payload": summary["timed_interaction"].args[1],
+        "timed_interaction_tag": summary["timed_interaction"].args[2],
+        "timed_interaction_order": summary["timed_interaction"].args[3].name,
+        "timed_interaction_time": float(summary["timed_interaction"].args[5].value),
+        "advance_grant_time": float(summary["advance_grant"].args[0].value),
+    }
+
+
+def _normalized_negotiated_profile(summary: dict[str, object]) -> dict[str, object]:
+    assumption = summary["assumption"]
+    return {
+        "negotiated_divestiture_supported": summary["negotiated_divestiture_supported"],
+        "assumption_tag": (assumption.args[2] if assumption is not None else None),
+        "release_tag": summary["release"].args[2],
+        "cancellation_attr_count": len(summary["cancellation"].args[1]),
+        "divested_count": len(summary["divested"]),
+        "acquired_attr_count": len(summary["acquired"].args[1]),
+        "informed_attribute_match": summary["informed"].args[1] == summary["owner_attribute"],
+    }
+
+
 @pytest.mark.parametrize("kind,udp_base", [("certi", 60601), ("certi-jpype", 60611), ("certi-py4j", 60621)])
 def test_certi_backend_exchange_matrix(kind: str, udp_base: int):
     _require_real_rti_smoke()
@@ -297,3 +330,99 @@ def test_certi_backend_negotiated_ownership_matrix(kind: str, udp_base: int):
         if owner is not None:
             owner.close()
         rtig.terminate()
+
+
+def test_certi_time_semantic_profile_matches_across_native_and_java_facades():
+    _require_real_rti_smoke()
+    try:
+        smoke_fom = discover_certi_smoke_fom()
+    except BackendUnavailableError as exc:
+        pytest.skip(str(exc))
+
+    profiles: dict[str, dict[str, object]] = {}
+    for kind, udp_base in (("certi", 61001), ("certi-jpype", 61011), ("certi-py4j", 61021)):
+        try:
+            rtig = launch_certi_rtig(verbose=0)
+        except BackendUnavailableError as exc:
+            pytest.skip(str(exc))
+        federation_name = f"{kind}-time-profile-{uuid.uuid4().hex[:8]}"
+        publisher_fed = RecordingFederateAmbassador()
+        subscriber_fed = RecordingFederateAmbassador()
+        publisher = None
+        subscriber = None
+        try:
+            publisher = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base)
+            subscriber = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base + 1)
+            summary = run_two_federate_exchange_scenario(
+                publisher,
+                subscriber,
+                config=_certi_exchange_config(smoke_fom, federation_name, f"{kind}-TimeProfile-1"),
+                publisher_federate=publisher_fed,
+                subscriber_federate=subscriber_fed,
+            )
+            profiles[kind] = _normalized_exchange_profile(summary)
+        finally:
+            if subscriber is not None:
+                subscriber.close()
+            if publisher is not None:
+                publisher.close()
+            rtig.terminate()
+
+    assert profiles["certi-jpype"] == profiles["certi"]
+    assert profiles["certi-py4j"] == profiles["certi"]
+
+
+def test_certi_negotiated_ownership_profile_matches_across_native_and_java_facades():
+    _require_real_rti_smoke()
+    try:
+        smoke_fom = discover_certi_smoke_fom()
+    except BackendUnavailableError as exc:
+        pytest.skip(str(exc))
+
+    profiles: dict[str, dict[str, object]] = {}
+    for kind, udp_base in (("certi", 61101), ("certi-jpype", 61111), ("certi-py4j", 61121)):
+        try:
+            rtig = launch_certi_rtig(verbose=0)
+        except BackendUnavailableError as exc:
+            pytest.skip(str(exc))
+        federation_name = f"{kind}-nego-profile-{uuid.uuid4().hex[:8]}"
+        owner_fed = RecordingFederateAmbassador()
+        acquirer_fed = RecordingFederateAmbassador()
+        owner = None
+        acquirer = None
+        try:
+            owner = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base)
+            acquirer = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base + 1)
+            try:
+                summary = run_negotiated_attribute_ownership_scenario(
+                    owner,
+                    acquirer,
+                    config=NegotiatedOwnershipScenarioConfig(
+                        federation_name=federation_name,
+                        fom_modules=(smoke_fom,),
+                        logical_time_implementation_name="HLAinteger64Time",
+                        owner_name="Owner",
+                        acquirer_name="Acquirer",
+                        federate_type="OwnershipFederate",
+                        object_class_name="TestObjectClassR",
+                        attribute_name="DataR",
+                        object_instance_name=f"{kind}-NegotiatedProfile-1",
+                        assumption_tag=b"assume-offer",
+                        request_tag=b"acquire-request",
+                        cancel_tag=b"reacquire-request",
+                    ),
+                    owner_federate=owner_fed,
+                    acquirer_federate=acquirer_fed,
+                )
+            except RTIinternalError as exc:
+                pytest.skip(f"CERTI negotiated ownership path is not stable in this runtime: {exc}")
+            profiles[kind] = _normalized_negotiated_profile(summary)
+        finally:
+            if acquirer is not None:
+                acquirer.close()
+            if owner is not None:
+                owner.close()
+            rtig.terminate()
+
+    assert profiles["certi-jpype"] == profiles["certi"]
+    assert profiles["certi-py4j"] == profiles["certi"]
