@@ -2,17 +2,50 @@
 
 from .java_shim import (
     InProcessJavaRTIShim,
+    SharedInProcessJavaRTIShim,
+    SharedJavaShimKernel,
     ShimJavaBridge,
     create_java_shim_backend,
     create_java_shim_rti_ambassador,
+    create_shared_java_shim_backend,
+    create_shared_java_shim_rti_ambassador,
 )
-from .scenarios import DemoFederate, run_basic_federate_scenario
+from .scenarios import (
+    assert_two_federate_exchange_callback_history,
+    DemoFederate,
+    ExchangeRoundConfig,
+    NegotiatedOwnershipScenarioConfig,
+    OwnershipScenarioConfig,
+    SynchronizationScenarioConfig,
+    TwoFederateExchangeConfig,
+    run_basic_federate_scenario,
+    run_attribute_ownership_scenario,
+    run_negotiated_attribute_ownership_scenario,
+    run_exchange_round,
+    run_synchronization_scenario,
+    run_two_federate_exchange_scenario,
+)
 
 __all__ = [
+    "assert_two_federate_exchange_callback_history",
     "DemoFederate",
+    "ExchangeRoundConfig",
+    "NegotiatedOwnershipScenarioConfig",
+    "OwnershipScenarioConfig",
+    "SynchronizationScenarioConfig",
     "InProcessJavaRTIShim",
+    "SharedInProcessJavaRTIShim",
+    "SharedJavaShimKernel",
     "ShimJavaBridge",
+    "TwoFederateExchangeConfig",
     "create_java_shim_backend",
     "create_java_shim_rti_ambassador",
+    "create_shared_java_shim_backend",
+    "create_shared_java_shim_rti_ambassador",
     "run_basic_federate_scenario",
+    "run_attribute_ownership_scenario",
+    "run_negotiated_attribute_ownership_scenario",
+    "run_exchange_round",
+    "run_synchronization_scenario",
+    "run_two_federate_exchange_scenario",
 ]

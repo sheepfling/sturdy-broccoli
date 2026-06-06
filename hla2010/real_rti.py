@@ -14,7 +14,12 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 import os
 from pathlib import Path
+import re
+import shutil
+import socket
 import subprocess
+import tempfile
+import time
 from typing import Any, Sequence
 
 from .backends.base import BackendUnavailableError
@@ -53,12 +58,43 @@ class PitchRuntime:
     def java_bin(self) -> Path:
         return self.java_home / "bin" / "java"
 
+    @property
+    def default_user_home(self) -> Path:
+        return self.home / "user.home"
+
     def jpype_config(self, **overrides: Any) -> JPypeConfig:
+        user_home = Path(os.environ.get("HLA2010_PITCH_USER_HOME", str(self.default_user_home)))
         config = {
             "classpath": tuple(str(item) for item in self.classpath),
+            "jvm_args": (
+                f"-Duser.home={user_home}",
+                f"-Djava.library.path={os.pathsep.join(str(item) for item in self.java_library_path)}",
+            ),
+            "rti_factory_name": "Federate Protocol",
         }
         config.update(overrides)
         return JPypeConfig(**config)
+
+    def license_activator_command(self, *args: str, user_home: str | os.PathLike[str] | None = None) -> list[str]:
+        return [
+            str(self.java_bin),
+            "-cp",
+            str(self.home / "lib" / "prtifull.jar"),
+            f"-Djava.library.path={self.home / 'lib'}",
+            "-Dse.pitch.prti1516e.useSystemWideLicenseFile=true",
+            f"-Duser.home={Path(user_home) if user_home is not None else self.default_user_home}",
+            "se.pitch.prti1516e.LicenseActivator",
+            *args,
+        ]
+
+
+@dataclass(frozen=True)
+class PitchLicenseRecord:
+    license_id: str
+    license_type: str
+    seats: str
+    hardware_id: str
+    user: str
 
 
 def discover_pitch_runtime(explicit_home: str | os.PathLike[str] | None = None) -> PitchRuntime:
@@ -94,9 +130,51 @@ def discover_pitch_runtime(explicit_home: str | os.PathLike[str] | None = None) 
     )
 
 
+def _parse_pitch_license_list(output: str) -> tuple[PitchLicenseRecord, ...]:
+    records: list[PitchLicenseRecord] = []
+    for raw_line in output.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("Id  Type"):
+            continue
+        parts = re.split(r"\s{2,}", line)
+        if len(parts) < 5:
+            continue
+        records.append(
+            PitchLicenseRecord(
+                license_id=parts[0],
+                license_type=parts[1],
+                seats=parts[2],
+                hardware_id=parts[3],
+                user=parts[4],
+            )
+        )
+    return tuple(records)
+
+
+def list_pitch_licenses(
+    pitch_home: str | os.PathLike[str] | None = None,
+    *,
+    user_home: str | os.PathLike[str] | None = None,
+) -> tuple[PitchLicenseRecord, ...]:
+    runtime = discover_pitch_runtime(pitch_home)
+    env = dict(os.environ)
+    if user_home is not None:
+        env["HOME"] = str(user_home)
+    result = subprocess.run(
+        runtime.license_activator_command("list", user_home=user_home),
+        check=True,
+        capture_output=True,
+        text=True,
+        env=env,
+        cwd=runtime.home,
+    )
+    return _parse_pitch_license_list(result.stdout)
+
+
 @dataclass(frozen=True)
 class CERTIRuntime:
     prefix: Path
+    extra_lib_dirs: tuple[Path, ...] = ()
     library_path_env: dict[str, str] = field(default_factory=dict)
 
     @property
@@ -107,6 +185,17 @@ class CERTIRuntime:
     def lib_dir(self) -> Path:
         return self.prefix / "lib"
 
+    @property
+    def lib_dirs(self) -> tuple[Path, ...]:
+        ordered = [*self.extra_lib_dirs, self.lib_dir]
+        existing: list[Path] = []
+        seen: set[Path] = set()
+        for path in ordered:
+            if path.exists() and path not in seen:
+                existing.append(path)
+                seen.add(path)
+        return tuple(existing)
+
     def executable(self, component: str) -> Path:
         path = self.bin_dir / component
         if not path.exists():
@@ -116,7 +205,10 @@ class CERTIRuntime:
     def runtime_env(self) -> dict[str, str]:
         env = dict(os.environ)
         dyld = env.get("DYLD_LIBRARY_PATH")
-        env["DYLD_LIBRARY_PATH"] = f"{self.lib_dir}{':' + dyld if dyld else ''}"
+        lib_path = os.pathsep.join(str(path) for path in self.lib_dirs)
+        env["DYLD_LIBRARY_PATH"] = f"{lib_path}{':' + dyld if dyld else ''}"
+        env.setdefault("CERTI_HOME", str(self.prefix))
+        env.setdefault("CERTI_FOM_PATH", str(self.prefix / "share" / "federations"))
         env.update(self.library_path_env)
         return env
 
@@ -133,12 +225,37 @@ def discover_certi_runtime(explicit_prefix: str | os.PathLike[str] | None = None
         candidates.append(explicit)
     if env_prefix:
         candidates.append(Path(env_prefix).expanduser())
-    candidates.extend(_candidate_paths("third_party", "certi", "install"))
-    candidates.extend(_candidate_paths("INBOX", "CERTI-install"))
+    candidates.extend(_candidate_paths("CERTI-install"))
     prefix = _first_existing(candidates, "bin/rtig")
     if prefix is None:
         raise BackendUnavailableError("CERTI install prefix not found; set HLA2010_CERTI_PREFIX to the install root")
-    return CERTIRuntime(prefix=prefix)
+    extra_lib_dirs: list[Path] = []
+
+    env_build_root = os.environ.get("HLA2010_CERTI_BUILD_ROOT")
+    build_candidates: list[Path] = []
+    if env_build_root:
+        build_candidates.append(Path(env_build_root).expanduser())
+    build_candidates.extend(_candidate_paths("CERTI-build"))
+
+    for build_root in build_candidates:
+        build_root = build_root.expanduser().resolve()
+        rtie_dir = build_root / "libRTI" / "ieee1516-2010"
+        certi_dir = build_root / "libCERTI"
+        if (rtie_dir / "libRTI1516ed.dylib").exists():
+            extra_lib_dirs.append(rtie_dir)
+        if (certi_dir / "libCERTId.dylib").exists():
+            extra_lib_dirs.append(certi_dir)
+        if extra_lib_dirs:
+            break
+
+    return CERTIRuntime(prefix=prefix, extra_lib_dirs=tuple(extra_lib_dirs))
+
+
+def discover_certi_smoke_fom() -> Path:
+    path = project_root() / "CERTI" / "test" / "InteractiveFederate" / "1516-2010" / "Certi-Test-02.xml"
+    if path.exists():
+        return path
+    raise BackendUnavailableError("CERTI smoke FOM sample not found in the repo-local CERTI source tree")
 
 
 def launch_pitch_py4j_gateway(
@@ -170,11 +287,191 @@ def launch_pitch_py4j_gateway(
     )
 
 
+@dataclass
+class RuntimeProcess:
+    name: str
+    process: subprocess.Popen[str]
+    env: dict[str, str] = field(default_factory=dict)
+    host: str | None = None
+    tcp_port: int | None = None
+    children: tuple[subprocess.Popen[str], ...] = ()
+
+    def poll(self) -> int | None:
+        return self.process.poll()
+
+    def terminate(self, *, timeout: float = 5.0) -> None:
+        processes = (*self.children, self.process)
+        for process in reversed(processes):
+            if process.poll() is None:
+                process.terminate()
+        for process in reversed(processes):
+            if process.poll() is None:
+                try:
+                    process.wait(timeout=timeout)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=timeout)
+
+
+def reserve_tcp_port(host: str = "127.0.0.1") -> int:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind((host, 0))
+        sock.listen(1)
+        return int(sock.getsockname()[1])
+
+
+def _wait_for_tcp_listener(host: str, port: int, *, timeout: float = 10.0) -> None:
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.settimeout(0.25)
+            if sock.connect_ex((host, port)) == 0:
+                return
+        time.sleep(0.1)
+    raise BackendUnavailableError(f"Timed out waiting for listener on {host}:{port}")
+
+
+def _wait_for_process_boot(process: subprocess.Popen[str], *, timeout: float = 5.0) -> None:
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        if process.poll() is not None:
+            raise BackendUnavailableError(f"Runtime process exited early with code {process.returncode}")
+        time.sleep(0.1)
+
+
+def launch_pitch_runtime(
+    *,
+    pitch_home: str | os.PathLike[str] | None = None,
+    args: Sequence[str] = ("-nogui", "-verbose"),
+) -> RuntimeProcess:
+    runtime = discover_pitch_runtime(pitch_home)
+    env = dict(os.environ)
+    source_user_home = runtime.default_user_home
+    pitch_user_home = Path(tempfile.gettempdir()) / "hla2010-pitch-user-home"
+    pitch_user_home.mkdir(parents=True, exist_ok=True)
+    if source_user_home.exists():
+        shutil.copytree(source_user_home, pitch_user_home, dirs_exist_ok=True)
+    licenses = list_pitch_licenses(runtime.home, user_home=pitch_user_home)
+    if not licenses:
+        raise BackendUnavailableError(
+            "Pitch CRC has no activated local license state. "
+            "LicenseActivator list returned no licenses for the current runtime."
+        )
+    env["HLA2010_PITCH_HOME"] = str(runtime.home)
+    env["HOME"] = str(pitch_user_home)
+    env["HLA2010_PITCH_USER_HOME"] = str(pitch_user_home)
+    env["INSTALL4J_JAVA_HOME"] = str(runtime.java_home)
+    os.environ["HLA2010_PITCH_USER_HOME"] = str(pitch_user_home)
+    crc_classpath = os.pathsep.join(
+        [
+            str(runtime.home / "lib" / "prtifull.jar"),
+            str(runtime.home / "lib" / "booster1516.jar"),
+            str(runtime.home / "lib" / "webgui2-protocol.jar"),
+        ]
+    )
+    crc_command = [
+        str(runtime.java_bin),
+        "-Xmx512m",
+        f"-Duser.home={pitch_user_home}",
+        f"-Djava.library.path={os.pathsep.join(str(item) for item in runtime.java_library_path)}",
+        "-classpath",
+        crc_classpath,
+        "se.pitch.prti1516e.RTIexec",
+        *args,
+        "-nocmdline",
+    ]
+    crc_process = subprocess.Popen(crc_command, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    fedpro_classpath = os.pathsep.join(str(path) for path in sorted((runtime.home / "lib").glob("*.jar")))
+    fedpro_command = [
+        str(runtime.java_bin),
+        "-Dse.pitch.prti1516e.useSystemWideLicenseFile=true",
+        f"-Duser.home={pitch_user_home}",
+        f"-Djava.library.path={os.pathsep.join(str(item) for item in runtime.java_library_path)}",
+        "-classpath",
+        fedpro_classpath,
+        "se.pitch.fedpro.server.hla.FedProServerApp",
+    ]
+    fedpro_process = subprocess.Popen(
+        fedpro_command,
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        cwd=runtime.home,
+    )
+    try:
+        _wait_for_process_boot(crc_process)
+        _wait_for_process_boot(fedpro_process)
+        _wait_for_tcp_listener("127.0.0.1", 15164, timeout=15.0)
+        try:
+            _wait_for_tcp_listener("127.0.0.1", 8989, timeout=3.0)
+        except BackendUnavailableError as exc:
+            raise BackendUnavailableError(
+                "Pitch FedPro server started, but CRC never exposed TCP port 8989. "
+                "This usually means the local CRC runtime is not fully activated or installed."
+            ) from exc
+    except Exception:
+        if fedpro_process.poll() is None:
+            fedpro_process.terminate()
+            fedpro_process.wait(timeout=5)
+        if crc_process.poll() is None:
+            crc_process.terminate()
+            crc_process.wait(timeout=5)
+        raise
+    return RuntimeProcess(
+        name="pitch",
+        process=crc_process,
+        env=env,
+        host="127.0.0.1",
+        tcp_port=15164,
+        children=(fedpro_process,),
+    )
+
+
+def launch_certi_rtig(
+    *,
+    certi_prefix: str | os.PathLike[str] | None = None,
+    host: str = "127.0.0.1",
+    tcp_port: int | None = None,
+    udp_port: int | None = None,
+    verbose: int = 0,
+) -> RuntimeProcess:
+    runtime = discover_certi_runtime(certi_prefix)
+    tcp_port = int(tcp_port or reserve_tcp_port(host))
+    udp_port = int(udp_port or (tcp_port + 100))
+    env = runtime.runtime_env()
+    env.update(
+        {
+            "CERTI_HOST": host,
+            "CERTI_TCP_PORT": str(tcp_port),
+            "CERTI_UDP_PORT": str(udp_port),
+        }
+    )
+    command = [str(project_root() / "scripts" / "run_certi_local.sh"), "rtig", "-v", str(verbose)]
+    process = subprocess.Popen(command, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    try:
+        _wait_for_tcp_listener(host, tcp_port)
+    except Exception:
+        if process.poll() is None:
+            process.terminate()
+            process.wait(timeout=5)
+        raise
+    return RuntimeProcess(name="certi-rtig", process=process, env=env, host=host, tcp_port=tcp_port)
+
+
 __all__ = [
     "CERTIRuntime",
     "PitchRuntime",
+    "PitchLicenseRecord",
     "discover_certi_runtime",
+    "discover_certi_smoke_fom",
     "discover_pitch_runtime",
+    "list_pitch_licenses",
     "launch_pitch_py4j_gateway",
+    "launch_pitch_runtime",
+    "launch_certi_rtig",
+    "_parse_pitch_license_list",
     "project_root",
+    "reserve_tcp_port",
+    "RuntimeProcess",
 ]

@@ -6,4 +6,7 @@ Project documentation for the IEEE 1516-2010-focused workspace.
 - `evidence/` unpacked verification packets and imported analysis artifacts.
 - `specs/` clause indexes, matrices, and evidence-ledger artifacts.
 - `plans/` roadmap items and implementation sequencing.
+- `backend_conformance_matrix.md` records clause-level backend parity and conformance status across Python, CERTI, and future Pitch.
+- `certi_spec_traceability.md` records clause-level real CERTI coverage for sync and ownership services.
+- `certi_negotiated_ownership_findings.md` records the source/runtime investigation for CERTI negotiated ownership failures.
 - `inbox_inventory_2026-06-05.md` records the source-drop promotion out of `INBOX`.

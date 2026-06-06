@@ -638,10 +638,30 @@ class SharedJavaObjectRecord:
     name: str
     owner: "SharedInProcessJavaRTIShim"
     attributes: dict[JavaAttributeHandle, JavaByteArray] = None  # type: ignore[assignment]
+    attribute_owners: dict[JavaAttributeHandle, JavaFederateHandle | None] = None  # type: ignore[assignment]
 
     def __post_init__(self) -> None:
         if self.attributes is None:
             self.attributes = {}
+        if self.attribute_owners is None:
+            self.attribute_owners = {}
+
+
+@dataclass
+class SharedJavaSynchronizationPoint:
+    label: str
+    tag: JavaByteArray
+    announced: set[JavaFederateHandle] = None  # type: ignore[assignment]
+    awaiting: set[JavaFederateHandle] = None  # type: ignore[assignment]
+    failed: set[JavaFederateHandle] = None  # type: ignore[assignment]
+
+    def __post_init__(self) -> None:
+        if self.announced is None:
+            self.announced = set()
+        if self.awaiting is None:
+            self.awaiting = set()
+        if self.failed is None:
+            self.failed = set()
 
 
 @dataclass
@@ -651,6 +671,7 @@ class SharedJavaFederationRecord:
     federate_names: dict[str, JavaFederateHandle] = None  # type: ignore[assignment]
     objects: dict[JavaObjectInstanceHandle, SharedJavaObjectRecord] = None  # type: ignore[assignment]
     object_names: dict[str, JavaObjectInstanceHandle] = None  # type: ignore[assignment]
+    synchronization_points: dict[str, SharedJavaSynchronizationPoint] = None  # type: ignore[assignment]
 
     def __post_init__(self) -> None:
         if self.federates_by_handle is None:
@@ -661,6 +682,8 @@ class SharedJavaFederationRecord:
             self.objects = {}
         if self.object_names is None:
             self.object_names = {}
+        if self.synchronization_points is None:
+            self.synchronization_points = {}
 
 
 class SharedJavaShimKernel:
@@ -794,12 +817,21 @@ class SharedInProcessJavaRTIShim:
         self.federate_type = str(federate_type)
         federation.federates_by_handle[handle] = self
         federation.federate_names[str(federate_name)] = handle
+        for point in federation.synchronization_points.values():
+            if handle not in point.announced:
+                point.announced.add(handle)
+                point.awaiting.add(handle)
+                self._queue_callback("announceSynchronizationPoint", point.label, point.tag)
         return handle
 
     def resignFederationExecution(self, resignAction: Any) -> None:
         federation = self._federation()
         if self.federate_handle is not None:
             federation.federates_by_handle.pop(self.federate_handle, None)
+            for point in federation.synchronization_points.values():
+                point.awaiting.discard(self.federate_handle)
+                point.failed.discard(self.federate_handle)
+                point.announced.discard(self.federate_handle)
         if self.federate_name is not None:
             federation.federate_names.pop(self.federate_name, None)
         self.federate_handle = None
@@ -831,6 +863,42 @@ class SharedInProcessJavaRTIShim:
         self._federation()
         self.subscribed_interactions.add(theClass)
 
+    # Federation synchronization -------------------------------------------
+    def registerFederationSynchronizationPoint(self, synchronizationPointLabel: str, userSuppliedTag: Any, *unused: Any) -> None:
+        federation = self._federation()
+        label = str(synchronizationPointLabel)
+        tag = self._tag(userSuppliedTag)
+        point = federation.synchronization_points.get(label)
+        if point is None:
+            point = SharedJavaSynchronizationPoint(label=label, tag=tag)
+            federation.synchronization_points[label] = point
+        point.tag = tag
+        point.announced = set(federation.federates_by_handle)
+        point.awaiting = set(federation.federates_by_handle)
+        point.failed = set()
+        self._queue_callback("synchronizationPointRegistrationSucceeded", label)
+        for handle, federate in federation.federates_by_handle.items():
+            point.announced.add(handle)
+            point.awaiting.add(handle)
+            federate._queue_callback("announceSynchronizationPoint", label, tag)
+
+    def synchronizationPointAchieved(self, synchronizationPointLabel: str, successIndicator: bool = True) -> None:
+        federation = self._federation()
+        label = str(synchronizationPointLabel)
+        point = federation.synchronization_points.get(label)
+        if point is None:
+            raise JavaLikeException("SynchronizationPointLabelNotAnnounced", label)
+        if self.federate_handle is None:
+            raise JavaLikeException("FederateNotExecutionMember", label)
+        point.awaiting.discard(self.federate_handle)
+        if not bool(successIndicator):
+            point.failed.add(self.federate_handle)
+        if not point.awaiting:
+            failed = set(point.failed)
+            for federate in federation.federates_by_handle.values():
+                federate._queue_callback("federationSynchronized", label, failed)
+            del federation.synchronization_points[label]
+
     # Object management -----------------------------------------------------
     def registerObjectInstance(self, theClass: JavaObjectClassHandle, theObjectName: str | None = None) -> JavaObjectInstanceHandle:
         federation = self._federation()
@@ -840,6 +908,9 @@ class SharedInProcessJavaRTIShim:
             raise JavaLikeException("ObjectInstanceNameInUse", str(theObjectName))
         handle = self.kernel.alloc(JavaObjectInstanceHandle)
         record = SharedJavaObjectRecord(handle=handle, class_handle=theClass, name=str(theObjectName), owner=self)
+        published_attrs = self.published_objects.get(theClass, set())
+        for attr in published_attrs:
+            record.attribute_owners[attr] = self.federate_handle
         federation.objects[handle] = record
         federation.object_names[str(theObjectName)] = handle
         for federate in federation.federates_by_handle.values():
@@ -890,6 +961,46 @@ class SharedInProcessJavaRTIShim:
                     deliver(record)
             return
         raise JavaLikeException("ObjectInstanceNotKnown", repr(target))
+
+    def unconditionalAttributeOwnershipDivestiture(self, theObject: JavaObjectInstanceHandle, theAttributes: Iterable[Any]) -> None:
+        federation = self._federation()
+        record = federation.objects.get(theObject)
+        if record is None:
+            raise JavaLikeException("ObjectInstanceNotKnown", repr(theObject))
+        for attr in set(theAttributes):
+            if record.attribute_owners.get(attr) == self.federate_handle:
+                record.attribute_owners[attr] = None
+
+    def attributeOwnershipAcquisitionIfAvailable(self, theObject: JavaObjectInstanceHandle, desiredAttributes: Iterable[Any]) -> None:
+        federation = self._federation()
+        record = federation.objects.get(theObject)
+        if record is None:
+            raise JavaLikeException("ObjectInstanceNotKnown", repr(theObject))
+        acquired = set()
+        for attr in set(desiredAttributes):
+            if record.attribute_owners.get(attr) is None:
+                record.attribute_owners[attr] = self.federate_handle
+                acquired.add(attr)
+        if acquired:
+            self._queue_callback("attributeOwnershipAcquisitionNotification", theObject, acquired, JavaByteArray(b""))
+
+    def queryAttributeOwnership(self, theObject: JavaObjectInstanceHandle, theAttribute: JavaAttributeHandle) -> None:
+        federation = self._federation()
+        record = federation.objects.get(theObject)
+        if record is None:
+            raise JavaLikeException("ObjectInstanceNotKnown", repr(theObject))
+        owner = record.attribute_owners.get(theAttribute)
+        if owner is None:
+            self._queue_callback("attributeIsNotOwned", theObject, theAttribute)
+        else:
+            self._queue_callback("informAttributeOwnership", theObject, theAttribute, owner)
+
+    def isAttributeOwnedByFederate(self, theObject: JavaObjectInstanceHandle, theAttribute: JavaAttributeHandle) -> bool:
+        federation = self._federation()
+        record = federation.objects.get(theObject)
+        if record is None:
+            raise JavaLikeException("ObjectInstanceNotKnown", repr(theObject))
+        return record.attribute_owners.get(theAttribute) == self.federate_handle
 
     def sendInteraction(self, theInteraction: JavaInteractionClassHandle, theParameters: Mapping[Any, Any], userSuppliedTag: Any, *unused: Any) -> None:
         federation = self._federation()

@@ -21,6 +21,36 @@ class RTIBackendSpec:
     options: Mapping[str, Any] = field(default_factory=dict)
 
 
+@dataclass(frozen=True)
+class RTITransportSpec:
+    """Transport selection for backends that expose a transport layer."""
+
+    kind: str = "subprocess-line"
+    options: Mapping[str, Any] = field(default_factory=dict)
+
+
+def _coerce_transport_spec(value: Any):
+    if value is None:
+        return None
+    if hasattr(value, "request") and hasattr(value, "start"):
+        return value
+    if isinstance(value, RTITransportSpec):
+        spec = value
+    elif isinstance(value, Mapping):
+        spec = RTITransportSpec(**value)
+    elif isinstance(value, str):
+        spec = RTITransportSpec(kind=value)
+    else:
+        raise TypeError(f"Unsupported transport specification: {value!r}")
+
+    normalized = spec.kind.strip().lower().replace("_", "-")
+    if normalized in {"subprocess", "subprocess-line", "stdio", "pipe"}:
+        from .backends.certi.transport import CERTITransportConfig, create_certi_transport
+
+        return create_certi_transport(CERTITransportConfig(**dict(spec.options)))
+    raise ValueError(f"Unknown transport kind: {spec.kind!r}")
+
+
 def create_backend(kind: str | RTIBackendSpec = "python", **options: Any):
     """Create a backend by name.
 
@@ -30,6 +60,8 @@ def create_backend(kind: str | RTIBackendSpec = "python", **options: Any):
     * ``jpype`` / ``java-jpype``: Java RTI through JPype.
     * ``py4j`` / ``java-py4j``: Java RTI through Py4J.
     * ``pitch-jpype`` / ``pitch-py4j``: repo-local Pitch pRTI runtime through the Java adapters.
+    * ``certi`` / ``certi-native``: real CERTI RTI through a native smoke helper backend.
+    * ``certi-jpype`` / ``certi-py4j``: real CERTI RTI exposed through the Java-adapter path.
     * ``java-shim-jpype`` / ``java-shim-py4j``: in-process Java-shaped test shim.
     """
 
@@ -66,6 +98,7 @@ def create_backend(kind: str | RTIBackendSpec = "python", **options: Any):
 
         pitch_home = options.pop("pitch_home", None)
         runtime = discover_pitch_runtime(pitch_home)
+        options.setdefault("rti_factory_name", "Federate Protocol")
         config = options.pop("config", None) or runtime.jpype_config(**options)
         return create_jpype_backend(config)
 
@@ -89,6 +122,29 @@ def create_backend(kind: str | RTIBackendSpec = "python", **options: Any):
             gateway.start_callback_server()
         config = options.pop("config", None) or Py4JConfig(gateway=gateway, **options)
         return create_py4j_backend(config)
+
+    if normalized in {"certi", "certi-native", "native-certi"}:
+        from .backends.certi_backend import CERTIConfig, create_certi_backend
+
+        transport = _coerce_transport_spec(options.pop("transport", None))
+        config = options.pop("config", None) or CERTIConfig(transport=transport, **options)
+        return create_certi_backend(config)
+
+    if normalized in {"certi-jpype", "java-certi-jpype"}:
+        from .backends.certi_backend import CERTIConfig
+        from .backends.certi_java_backend import create_certi_java_backend
+
+        transport = _coerce_transport_spec(options.pop("transport", None))
+        config = options.pop("config", None) or CERTIConfig(transport=transport, **options)
+        return create_certi_java_backend("jpype", config)
+
+    if normalized in {"certi-py4j", "java-certi-py4j"}:
+        from .backends.certi_backend import CERTIConfig
+        from .backends.certi_java_backend import create_certi_java_backend
+
+        transport = _coerce_transport_spec(options.pop("transport", None))
+        config = options.pop("config", None) or CERTIConfig(transport=transport, **options)
+        return create_certi_java_backend("py4j", config)
 
     if normalized in {"java-shim", "java-shim-jpype", "shim-jpype"}:
         from .testing.java_shim import create_java_shim_backend, create_shared_java_shim_backend
@@ -122,6 +178,7 @@ def create_python_rti_pair(*, engine: InMemoryRTIEngine | None = None) -> tuple[
 
 __all__ = [
     "RTIBackendSpec",
+    "RTITransportSpec",
     "create_backend",
     "create_rti_ambassador",
     "create_python_rti_pair",

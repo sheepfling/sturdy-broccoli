@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objectModel xmlns="http://www.sisostds.org/schemas/IEEE1516-2010"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.sisostds.org/schemas/IEEE1516-2010 http://www.sisostds.org/schemas/IEEE1516-DIF-2010.xsd">
+  <modelIdentification>
+    <name>VendorSmokeFOM.xml</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-05</modificationDate>
+    <securityClassification>Undefined</securityClassification>
+    <purpose>Minimal vendor-interoperability lifecycle smoke FOM.</purpose>
+    <applicationDomain>HLA RTI adapter verification</applicationDomain>
+    <description>Defines one object class and one interaction class so real RTIs can create and join a federation during smoke tests.</description>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>SmokeObject</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Payload</name>
+          <dataType>HLAunicodeString</dataType>
+          <updateType>Conditional</updateType>
+          <ownership>DivestAcquire</ownership>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>SmokeInteraction</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter>
+          <name>Message</name>
+          <dataType>HLAunicodeString</dataType>
+          <semantics>Smoke message.</semantics>
+        </parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <dimensions/>
+  <time>
+    <timeStamp>
+      <dataType>SmokeIntegerTime</dataType>
+    </timeStamp>
+    <lookahead>
+      <dataType>SmokeIntegerTime</dataType>
+    </lookahead>
+  </time>
+  <tags>
+    <updateReflectTag>
+      <dataType>NA</dataType>
+      <semantics>NA</semantics>
+    </updateReflectTag>
+    <sendReceiveTag>
+      <dataType>NA</dataType>
+      <semantics>NA</semantics>
+    </sendReceiveTag>
+    <deleteRemoveTag>
+      <dataType>NA</dataType>
+      <semantics>NA</semantics>
+    </deleteRemoveTag>
+    <divestitureRequestTag>
+      <dataType>NA</dataType>
+      <semantics>NA</semantics>
+    </divestitureRequestTag>
+    <divestitureCompletionTag>
+      <dataType>NA</dataType>
+      <semantics>NA</semantics>
+    </divestitureCompletionTag>
+    <acquisitionRequestTag>
+      <dataType>NA</dataType>
+      <semantics>NA</semantics>
+    </acquisitionRequestTag>
+    <requestUpdateTag>
+      <dataType>NA</dataType>
+      <semantics>NA</semantics>
+    </requestUpdateTag>
+  </tags>
+  <transportations/>
+  <switches>
+    <autoProvide isEnabled="false"/>
+    <conveyRegionDesignatorSets isEnabled="false"/>
+    <conveyProducingFederate isEnabled="false"/>
+    <attributeScopeAdvisory isEnabled="false"/>
+    <attributeRelevanceAdvisory isEnabled="false"/>
+    <objectClassRelevanceAdvisory isEnabled="false"/>
+    <interactionRelevanceAdvisory isEnabled="false"/>
+    <serviceReporting isEnabled="false"/>
+    <exceptionReporting isEnabled="false"/>
+    <delaySubscriptionEvaluation isEnabled="false"/>
+    <automaticResignAction resignAction="CancelThenDeleteThenDivest"/>
+  </switches>
+  <dataTypes>
+    <basicDataRepresentations/>
+    <simpleDataTypes>
+      <simpleData>
+        <name>SmokeIntegerTime</name>
+        <representation>HLAinteger64BE</representation>
+        <units>NA</units>
+        <resolution>1</resolution>
+        <accuracy>NA</accuracy>
+        <semantics>Smoke logical time.</semantics>
+      </simpleData>
+    </simpleDataTypes>
+    <enumeratedDataTypes/>
+    <arrayDataTypes/>
+    <fixedRecordDataTypes/>
+    <variantRecordDataTypes/>
+  </dataTypes>
+</objectModel>

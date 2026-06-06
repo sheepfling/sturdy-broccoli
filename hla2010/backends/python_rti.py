@@ -43,10 +43,15 @@ from ..service_reporting import ServiceReportRecord, ServiceReportSink
 from ..spec_refs import method_reference
 from ..exceptions import (
     AlreadyConnected,
+    AttributeAcquisitionWasNotRequested,
+    AttributeAlreadyBeingAcquired,
+    AttributeAlreadyBeingDivested,
+    AttributeDivestitureWasNotRequested,
     CouldNotCreateLogicalTimeFactory,
     CouldNotOpenFDD,
     CouldNotOpenMIM,
     AttributeNotDefined,
+    AttributeNotOwned,
     DesignatorIsHLAstandardMIM,
     FederateAlreadyExecutionMember,
     FederateHandleNotKnown,
@@ -54,6 +59,7 @@ from ..exceptions import (
     FederateServiceInvocationsAreBeingReportedViaMOM,
     FederateIsExecutionMember,
     FederateNotExecutionMember,
+    FederateOwnsAttributes,
     FederatesCurrentlyJoined,
     FederationExecutionAlreadyExists,
     FederationExecutionDoesNotExist,
@@ -78,6 +84,7 @@ from ..exceptions import (
     SaveInProgress,
     ObjectInstanceNameInUse,
     ObjectInstanceNotKnown,
+    NoAcquisitionPending,
     RTIexception,
     RTIinternalError,
     TimeConstrainedAlreadyEnabled,
@@ -193,6 +200,8 @@ class ObjectInstance:
     owner: FederateHandle | None
     attributes: dict[AttributeHandle, bytes] = field(default_factory=dict)
     attribute_owners: dict[AttributeHandle, FederateHandle | None] = field(default_factory=dict)
+    attribute_divesting: set[AttributeHandle] = field(default_factory=set)
+    attribute_candidates: dict[AttributeHandle, set[FederateHandle]] = field(default_factory=dict)
     update_regions: dict[AttributeHandle, set[RegionHandle]] = field(default_factory=dict)
 
 
@@ -3488,15 +3497,99 @@ class PythonRTIBackend(RTIBackend):
                     raise
             owner = instance.attribute_owners.get(attr, instance.owner)
             if owner != self.state.handle:
-                from ..exceptions import AttributeNotOwned
-
                 raise AttributeNotOwned(repr(attr))
         return attrs
 
+    @staticmethod
+    def _attribute_candidates(instance: ObjectInstance, attr: AttributeHandle) -> set[FederateHandle]:
+        return instance.attribute_candidates.setdefault(attr, set())
+
+    @staticmethod
+    def _attribute_has_candidates(instance: ObjectInstance, attr: AttributeHandle) -> bool:
+        return bool(instance.attribute_candidates.get(attr))
+
+    @staticmethod
+    def _attribute_is_divesting(instance: ObjectInstance, attr: AttributeHandle) -> bool:
+        return attr in instance.attribute_divesting
+
+    @staticmethod
+    def _attribute_is_available_for_immediate_acquisition(instance: ObjectInstance, attr: AttributeHandle) -> bool:
+        owner = instance.attribute_owners.get(attr, instance.owner)
+        return owner is None or attr in instance.attribute_divesting
+
+    @staticmethod
+    def _pop_first_candidate(instance: ObjectInstance, attr: AttributeHandle) -> FederateHandle:
+        candidates = instance.attribute_candidates.get(attr, set())
+        if not candidates:
+            raise NoAcquisitionPending(repr(attr))
+        candidate = min(candidates, key=lambda handle: int(handle.value))
+        candidates.remove(candidate)
+        if not candidates:
+            instance.attribute_candidates.pop(attr, None)
+        return candidate
+
+    def _deliver_to_federate_handle(
+        self,
+        federation: FederationState,
+        federate_handle: FederateHandle,
+        method_name: str,
+        *args: Any,
+    ) -> None:
+        self._deliver(federation.federates[federate_handle], method_name, *args)
+
+    def _complete_immediate_attribute_transfer(
+        self,
+        federation: FederationState,
+        instance: ObjectInstance,
+        attr: AttributeHandle,
+        new_owner: FederateHandle,
+        *,
+        old_owner: FederateHandle | None,
+        acquisition_tag: bytes,
+        notify_previous_owner: bool,
+    ) -> None:
+        instance.attribute_owners[attr] = new_owner
+        instance.attribute_divesting.discard(attr)
+        candidates = instance.attribute_candidates.get(attr)
+        if candidates is not None:
+            candidates.discard(new_owner)
+            if not candidates:
+                instance.attribute_candidates.pop(attr, None)
+        self._deliver_to_federate_handle(
+            federation,
+            new_owner,
+            "attributeOwnershipAcquisitionNotification",
+            instance.handle,
+            hla_handles.AttributeHandleSet({attr}),
+            bytes(acquisition_tag),
+        )
+        if notify_previous_owner and old_owner is not None:
+            self._deliver_to_federate_handle(
+                federation,
+                old_owner,
+                "requestDivestitureConfirmation",
+                instance.handle,
+                hla_handles.AttributeHandleSet({attr}),
+            )
+
     def _svc_unconditionalAttributeOwnershipDivestiture(self, theObject: ObjectInstanceHandle, theAttributes: Iterable[AttributeHandle]) -> None:
-        _, instance = self._find_object(theObject)
+        federation, instance = self._find_object(theObject)
         for attr in self._owned_attributes_or_raise(instance, theAttributes):
-            instance.attribute_owners[attr] = None
+            old_owner = instance.attribute_owners.get(attr, instance.owner)
+            if self._attribute_has_candidates(instance, attr):
+                new_owner = self._pop_first_candidate(instance, attr)
+                self._complete_immediate_attribute_transfer(
+                    federation,
+                    instance,
+                    attr,
+                    new_owner,
+                    old_owner=old_owner,
+                    acquisition_tag=b"",
+                    notify_previous_owner=False,
+                )
+            else:
+                instance.attribute_owners[attr] = None
+                instance.attribute_divesting.discard(attr)
 
     def _svc_negotiatedAttributeOwnershipDivestiture(
         self,
@@ -3506,58 +3599,169 @@ class PythonRTIBackend(RTIBackend):
     ) -> None:
         federation, instance = self._find_object(theObject)
         attrs = self._owned_attributes_or_raise(instance, theAttributes)
-        for federate in list(federation.federates.values()):
-            if federate is not self.state:
-                self._deliver(federate, "requestAttributeOwnershipAssumption", theObject, hla_handles.AttributeHandleSet(attrs), bytes(userSuppliedTag))
+        for attr in attrs:
+            if self._attribute_is_divesting(instance, attr):
+                raise AttributeAlreadyBeingDivested(repr(attr))
+
+        for attr in attrs:
+            old_owner = instance.attribute_owners.get(attr, instance.owner)
+            if self._attribute_has_candidates(instance, attr):
+                new_owner = self._pop_first_candidate(instance, attr)
+                self._complete_immediate_attribute_transfer(
+                    federation,
+                    instance,
+                    attr,
+                    new_owner,
+                    old_owner=old_owner,
+                    acquisition_tag=bytes(userSuppliedTag),
+                    notify_previous_owner=True,
+                )
+                continue
+
+            instance.attribute_divesting.add(attr)
+            for federate in list(federation.federates.values()):
+                if federate is not self.state:
+                    self._deliver(
+                        federate,
+                        "requestAttributeOwnershipAssumption",
+                        theObject,
+                        hla_handles.AttributeHandleSet({attr}),
+                        bytes(userSuppliedTag),
+                    )
 
     def _svc_confirmDivestiture(self, theObject: ObjectInstanceHandle, confirmedAttributes: Iterable[AttributeHandle], userSuppliedTag: bytes) -> None:
-        _, instance = self._find_object(theObject)
+        federation, instance = self._find_object(theObject)
         for attr in self._owned_attributes_or_raise(instance, confirmedAttributes):
-            instance.attribute_owners[attr] = None
+            if not self._attribute_is_divesting(instance, attr):
+                raise AttributeDivestitureWasNotRequested(repr(attr))
+            if not self._attribute_has_candidates(instance, attr):
+                raise NoAcquisitionPending(repr(attr))
+            old_owner = instance.attribute_owners.get(attr, instance.owner)
+            new_owner = self._pop_first_candidate(instance, attr)
+            self._complete_immediate_attribute_transfer(
+                federation,
+                instance,
+                attr,
+                new_owner,
+                old_owner=old_owner,
+                acquisition_tag=bytes(userSuppliedTag),
+                notify_previous_owner=False,
+            )
 
     def _svc_attributeOwnershipAcquisition(self, theObject: ObjectInstanceHandle, desiredAttributes: Iterable[AttributeHandle], userSuppliedTag: bytes) -> None:
-        _, instance = self._find_object(theObject)
+        federation, instance = self._find_object(theObject)
         attrs = set(desiredAttributes)
         assert self.state.handle is not None
         for attr in attrs:
-            instance.attribute_owners[attr] = self.state.handle
-        self._deliver(self.state, "attributeOwnershipAcquisitionNotification", theObject, hla_handles.AttributeHandleSet(attrs), bytes(userSuppliedTag))
+            owner = instance.attribute_owners.get(attr, instance.owner)
+            if owner == self.state.handle:
+                raise FederateOwnsAttributes(repr(attr))
+
+        for attr in attrs:
+            owner = instance.attribute_owners.get(attr, instance.owner)
+            if self._attribute_is_available_for_immediate_acquisition(instance, attr):
+                self._complete_immediate_attribute_transfer(
+                    federation,
+                    instance,
+                    attr,
+                    self.state.handle,
+                    old_owner=owner,
+                    acquisition_tag=bytes(userSuppliedTag),
+                    notify_previous_owner=self._attribute_is_divesting(instance, attr),
+                )
+            else:
+                candidates = self._attribute_candidates(instance, attr)
+                candidates.discard(self.state.handle)
+                candidates.add(self.state.handle)
+                if owner is not None:
+                    self._deliver_to_federate_handle(
+                        federation,
+                        owner,
+                        "requestAttributeOwnershipRelease",
+                        theObject,
+                        hla_handles.AttributeHandleSet({attr}),
+                        bytes(userSuppliedTag),
+                    )
 
     def _svc_attributeOwnershipAcquisitionIfAvailable(self, theObject: ObjectInstanceHandle, desiredAttributes: Iterable[AttributeHandle]) -> None:
-        _, instance = self._find_object(theObject)
+        federation, instance = self._find_object(theObject)
         attrs = set(desiredAttributes)
         unavailable: set[AttributeHandle] = set()
         assert self.state.handle is not None
         for attr in attrs:
-            owner = instance.attribute_owners.get(attr)
-            if owner in (None, self.state.handle):
-                instance.attribute_owners[attr] = self.state.handle
+            owner = instance.attribute_owners.get(attr, instance.owner)
+            if owner == self.state.handle:
+                raise FederateOwnsAttributes(repr(attr))
+            if self.state.handle in instance.attribute_candidates.get(attr, set()):
+                raise AttributeAlreadyBeingAcquired(repr(attr))
+
+        for attr in attrs:
+            owner = instance.attribute_owners.get(attr, instance.owner)
+            if self._attribute_is_available_for_immediate_acquisition(instance, attr):
+                self._complete_immediate_attribute_transfer(
+                    federation,
+                    instance,
+                    attr,
+                    self.state.handle,
+                    old_owner=owner,
+                    acquisition_tag=b"",
+                    notify_previous_owner=self._attribute_is_divesting(instance, attr),
+                )
             else:
+                self._attribute_candidates(instance, attr).add(self.state.handle)
                 unavailable.add(attr)
-        acquired = attrs - unavailable
-        if acquired:
-            self._deliver(self.state, "attributeOwnershipAcquisitionNotification", theObject, hla_handles.AttributeHandleSet(acquired), b"")
         if unavailable:
             self._deliver(self.state, "attributeOwnershipUnavailable", theObject, hla_handles.AttributeHandleSet(unavailable))
 
     def _svc_attributeOwnershipReleaseDenied(self, theObject: ObjectInstanceHandle, theAttributes: Iterable[AttributeHandle]) -> None:
-        # Record/accept the federate's denial.  The local RTI does not currently
-        # maintain negotiated release state.
-        self._find_object(theObject)
+        _, instance = self._find_object(theObject)
+        for attr in self._owned_attributes_or_raise(instance, theAttributes):
+            instance.attribute_candidates.pop(attr, None)
 
     def _svc_attributeOwnershipDivestitureIfWanted(self, theObject: ObjectInstanceHandle, theAttributes: Iterable[AttributeHandle]) -> hla_handles.AttributeHandleSet:
-        _, instance = self._find_object(theObject)
+        federation, instance = self._find_object(theObject)
         divested = self._owned_attributes_or_raise(instance, theAttributes)
         for attr in divested:
-            instance.attribute_owners[attr] = None
+            if not self._attribute_has_candidates(instance, attr):
+                raise NoAcquisitionPending(repr(attr))
+        for attr in divested:
+            old_owner = instance.attribute_owners.get(attr, instance.owner)
+            new_owner = self._pop_first_candidate(instance, attr)
+            self._complete_immediate_attribute_transfer(
+                federation,
+                instance,
+                attr,
+                new_owner,
+                old_owner=old_owner,
+                acquisition_tag=b"",
+                notify_previous_owner=False,
+            )
         return hla_handles.AttributeHandleSet(divested)
 
     def _svc_cancelNegotiatedAttributeOwnershipDivestiture(self, theObject: ObjectInstanceHandle, theAttributes: Iterable[AttributeHandle]) -> None:
-        self._find_object(theObject)
+        _, instance = self._find_object(theObject)
+        for attr in self._owned_attributes_or_raise(instance, theAttributes):
+            if not self._attribute_is_divesting(instance, attr):
+                raise AttributeDivestitureWasNotRequested(repr(attr))
+            instance.attribute_divesting.discard(attr)
 
     def _svc_cancelAttributeOwnershipAcquisition(self, theObject: ObjectInstanceHandle, theAttributes: Iterable[AttributeHandle]) -> None:
-        self._find_object(theObject)
-        self._deliver(self.state, "confirmAttributeOwnershipAcquisitionCancellation", theObject, hla_handles.AttributeHandleSet(theAttributes))
+        _, instance = self._find_object(theObject)
+        attrs = set(theAttributes)
+        assert self.state.handle is not None
+        for attr in attrs:
+            owner = instance.attribute_owners.get(attr, instance.owner)
+            if owner == self.state.handle:
+                raise AttributeAlreadyOwned(repr(attr))
+            if self.state.handle not in instance.attribute_candidates.get(attr, set()):
+                raise AttributeAcquisitionWasNotRequested(repr(attr))
+        for attr in attrs:
+            candidates = instance.attribute_candidates.get(attr)
+            if candidates is not None:
+                candidates.discard(self.state.handle)
+                if not candidates:
+                    instance.attribute_candidates.pop(attr, None)
+        self._deliver(self.state, "confirmAttributeOwnershipAcquisitionCancellation", theObject, hla_handles.AttributeHandleSet(attrs))
 
     def _svc_queryAttributeOwnership(self, theObject: ObjectInstanceHandle, theAttribute: AttributeHandle) -> None:
         _, instance = self._find_object(theObject)

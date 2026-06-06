@@ -30,3 +30,5 @@ service-report*.jsonl
 INBOX/*
 !INBOX/README.md
 third_party/pitch/HLA_PITCH_linux/
+CERTI-build/
+CERTI-install/

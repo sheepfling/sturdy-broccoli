@@ -19,6 +19,10 @@ docs/                 clean project notes for the repo seed
 Additional repo-local material promoted from `INBOX`:
 
 - `docs/plans/` 2010 workspace planning and foundation notes
+- `docs/backend_capability_matrix.md` backend support status across Python, Java shims, CERTI, and Pitch
+- `docs/backend_conformance_matrix.md` clause-level backend parity and conformance status across Python, CERTI, and future Pitch
+- `docs/certi_spec_traceability.md` clause-level real CERTI parity and evidence notes for sync and ownership services
+- `docs/certi_negotiated_ownership_findings.md` source-level investigation notes for CERTI negotiated ownership limitations
 - `docs/evidence/` unpacked verification evidence packets
 - `docs/reference/hla-2010-specs.zip` original PDF-only reference drop
 - `third_party/pitch/` Pitch pRTI / Visual OMT installer bundle
@@ -27,11 +31,15 @@ Additional repo-local material promoted from `INBOX`:
 ## Quick start
 
 ```bash
-python -m venv .venv
-. .venv/bin/activate
-pip install -e '.[test]'
+./scripts/bootstrap_python.sh
 python -m pytest -q
 python examples/target_radar_simulation.py --backend python --steps 5
+```
+
+To bootstrap everything needed for local CERTI work as well:
+
+```bash
+./scripts/bootstrap_all.sh
 ```
 
 Optional Java bridge packages can be installed with:
@@ -49,14 +57,16 @@ The repo now includes initial runtime wiring for two real RTI targets:
   exposed through the existing Java adapter layer as `pitch-jpype` and
   `pitch-py4j` backend kinds
 - `CERTI`
-  exposed as a native daemon/launcher target through
-  `scripts/run_certi_local.sh`
+  exposed as a native smoke backend kind `certi` plus the local
+  daemon launcher `scripts/run_certi_local.sh`
 
 Practical local commands:
 
 ```bash
+./scripts/rebuild_certi.sh
 ./scripts/run_certi_local.sh rtig --help
 python3 -c "from hla2010.rti import create_rti_ambassador; rti=create_rti_ambassador('pitch-jpype'); print(rti.getHLAversion()); rti.close()"
+python3 -c "from hla2010.rti import create_rti_ambassador; rti=create_rti_ambassador('certi'); print(rti.getHLAversion()); rti.close()"
 ```
 
 The `pitch-jpype` path currently discovers the extracted runtime from:
@@ -65,11 +75,33 @@ The `pitch-jpype` path currently discovers the extracted runtime from:
 - `third_party/pitch/PITCH-prti1516e-manual`, if present later
 - the sibling workspace `../hla-python/INBOX/PITCH-prti1516e-manual`
 
+For Pitch specifically, the runtime layer now checks the local CRC license state
+through the bundled `LicenseActivator` class before attempting the real smoke
+path. If no local licenses are present, the backend fails fast with a clear
+message instead of timing out on the CRC socket.
+
 The `CERTI` launcher currently discovers the install prefix from:
 
 - `HLA2010_CERTI_PREFIX`, if set
-- `third_party/certi/install`, if present later
-- the sibling workspace `../hla-python/INBOX/CERTI-install`
+- `CERTI-install`, if present in this repository
+- `./scripts/rebuild_certi.sh` will populate the local `CERTI-build/` and
+  `CERTI-install/` trees from `CERTI/`
+
+## Real runtime smoke
+
+The explicit vendor interoperability smoke tests are opt-in:
+
+```bash
+HLA2010_ENABLE_REAL_RTI_SMOKE=1 python -m pytest -q tests/test_real_vendor_runtime_smoke.py
+```
+
+Those tests keep the Python federate surface backend-neutral. They only use
+`create_rti_ambassador(...)`, `connect_create_join(...)`, and the normal HLA
+lifecycle calls; vendor specifics stay inside the backend adapters.
+
+`pitch-jpype` exercises a real Java RTI through JPype. `certi` exercises a real
+CERTI RTI through a small native helper linked against CERTI's IEEE 1516.1-2010
+C++ library.
 
 ## Current implementation focus
 

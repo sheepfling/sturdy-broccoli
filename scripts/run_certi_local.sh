@@ -21,11 +21,8 @@ case "$backend" in
 esac
 
 certi_prefix="${HLA2010_CERTI_PREFIX:-}"
-if [[ -z "$certi_prefix" && -d "$ROOT_DIR/third_party/certi/install" ]]; then
-  certi_prefix="$ROOT_DIR/third_party/certi/install"
-fi
-if [[ -z "$certi_prefix" && -d "$ROOT_DIR/../hla-python/INBOX/CERTI-install" ]]; then
-  certi_prefix="$ROOT_DIR/../hla-python/INBOX/CERTI-install"
+if [[ -z "$certi_prefix" && -d "$ROOT_DIR/CERTI-install" ]]; then
+  certi_prefix="$ROOT_DIR/CERTI-install"
 fi
 if [[ -z "$certi_prefix" ]]; then
   echo "error: CERTI install prefix not found; set HLA2010_CERTI_PREFIX"

@@ -23,8 +23,18 @@ from .backends import (
     create_python_backend,
     make_rti_ambassador,
 )
-from .rti import RTIBackendSpec, create_backend, create_python_rti_pair, create_rti_ambassador
-from .real_rti import CERTIRuntime, PitchRuntime, discover_certi_runtime, discover_pitch_runtime, launch_pitch_py4j_gateway
+from .rti import RTIBackendSpec, RTITransportSpec, create_backend, create_python_rti_pair, create_rti_ambassador
+from .real_rti import (
+    CERTIRuntime,
+    PitchRuntime,
+    RuntimeProcess,
+    discover_certi_smoke_fom,
+    discover_certi_runtime,
+    discover_pitch_runtime,
+    launch_certi_rtig,
+    launch_pitch_py4j_gateway,
+    launch_pitch_runtime,
+)
 from .verification import VerificationAsset, VerificationPlan, build_verification_plan, write_verification_assets
 from .startup import (
     FederateStartupConfig,

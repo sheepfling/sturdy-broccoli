@@ -20,8 +20,29 @@ from .base import (
     snake_to_lower_camel,
 )
 from .conversion import NativeHandleRegistry, NativeObjectRef, ValueConverter
+from .certi import (
+    CERTIBackend,
+    CERTIConfig,
+    CERTITransport,
+    CERTITransportError,
+    CERTITransportProtocol,
+    build_certi_smoke_helper,
+    create_certi_backend,
+    create_certi_transport,
+)
 from .java_common import JavaBridge, JavaRTIBackend, JavaValueConverter, PythonFederateAmbassadorDispatcher
-from ..real_rti import CERTIRuntime, PitchRuntime, discover_certi_runtime, discover_pitch_runtime, launch_pitch_py4j_gateway
+from .transport import RTITransport, SubprocessLineTransport, TransportError
+from ..real_rti import (
+    CERTIRuntime,
+    PitchRuntime,
+    RuntimeProcess,
+    discover_certi_smoke_fom,
+    discover_certi_runtime,
+    discover_pitch_runtime,
+    launch_certi_rtig,
+    launch_pitch_py4j_gateway,
+    launch_pitch_runtime,
+)
 from .python_rti import (
     InMemoryRTIEngine,
     PythonRTIBackend,
@@ -38,6 +59,11 @@ __all__ = [
     "BackendInfo",
     "BackendUnavailableError",
     "CALLBACK_METHOD_NAMES",
+    "CERTIBackend",
+    "CERTIConfig",
+    "CERTITransport",
+    "CERTITransportError",
+    "CERTITransportProtocol",
     "DelegatingRTIAmbassador",
     "InMemoryRTIEngine",
     "Invocation",
@@ -53,10 +79,18 @@ __all__ = [
     "PythonRTIConfig",
     "RTIBackend",
     "RTI_METHOD_NAMES",
+    "RuntimeProcess",
     "RecordingBackend",
+    "RTITransport",
+    "build_certi_smoke_helper",
+    "create_certi_backend",
+    "create_certi_transport",
+    "discover_certi_smoke_fom",
     "discover_certi_runtime",
     "discover_pitch_runtime",
+    "launch_certi_rtig",
     "launch_pitch_py4j_gateway",
+    "launch_pitch_runtime",
     "SupplementalReflectInfo",
     "SupplementalReceiveInfo",
     "SupplementalRemoveInfo",
@@ -66,5 +100,7 @@ __all__ = [
     "lower_camel_to_snake",
     "make_rti_ambassador",
     "python_rti_ambassador",
+    "SubprocessLineTransport",
     "snake_to_lower_camel",
+    "TransportError",
 ]

@@ -1,6 +1,11 @@
 from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.backends.python_rti import InMemoryRTIEngine, rti_ambassador
 from hla2010.enums import CallbackModel, OrderType, ResignAction, SaveStatus
+from hla2010.exceptions import (
+    AttributeAcquisitionWasNotRequested,
+    AttributeDivestitureWasNotRequested,
+    NoAcquisitionPending,
+)
 from hla2010.handles import AttributeHandleSet, FederateHandleSet, MessageRetractionHandle
 from hla2010.spec_refs import method_reference, method_label
 from hla2010.types import RangeBounds, TimeQueryReturn
@@ -119,3 +124,291 @@ def test_name_reservation_ddm_regions_ownership_and_time_support():
     r1.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     r2.resign_federation_execution(ResignAction.NO_ACTION)
     r1.destroy_federation_execution("ddm-ownership-fed")
+
+
+def test_python_rti_negotiated_ownership_tracks_divesting_and_candidate_flows():
+    _, owner, acquirer, owner_fed, acquirer_fed, _h1, _h2 = joined_pair("negotiated-ownership-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+
+    owner.publish_object_class_attributes(cls, {attr})
+    acquirer.publish_object_class_attributes(cls, {attr})
+    acquirer.subscribe_object_class_attributes(cls, {attr})
+
+    offered = owner.register_object_instance(cls, "Negotiated-1")
+    drain(owner, acquirer)
+    assert acquirer_fed.last_callback("discoverObjectInstance") is not None
+
+    owner.negotiated_attribute_ownership_divestiture(offered, {attr}, b"offer-tag")
+    drain(owner, acquirer)
+    assumption = acquirer_fed.last_callback("requestAttributeOwnershipAssumption")
+    assert assumption is not None
+    assert assumption.args == (offered, AttributeHandleSet({attr}), b"offer-tag")
+    assert owner.is_attribute_owned_by_federate(offered, attr) is True
+
+    acquirer.attribute_ownership_acquisition(offered, {attr}, b"acquire-tag")
+    drain(owner, acquirer)
+    acquired = acquirer_fed.last_callback("attributeOwnershipAcquisitionNotification")
+    assert acquired is not None
+    assert acquired.args == (offered, AttributeHandleSet({attr}), b"acquire-tag")
+    divest_notice = owner_fed.last_callback("requestDivestitureConfirmation")
+    assert divest_notice is not None
+    assert divest_notice.args == (offered, AttributeHandleSet({attr}))
+    assert acquirer.is_attribute_owned_by_federate(offered, attr) is True
+
+    pending = owner.register_object_instance(cls, "Pending-1")
+    drain(owner, acquirer)
+    acquirer.attribute_ownership_acquisition(pending, {attr}, b"request-tag")
+    drain(owner, acquirer)
+    release = owner_fed.last_callback("requestAttributeOwnershipRelease")
+    assert release is not None
+    assert release.args == (pending, AttributeHandleSet({attr}), b"request-tag")
+    acquirer.cancel_attribute_ownership_acquisition(pending, {attr})
+    drain(owner, acquirer)
+    cancelled = acquirer_fed.last_callback("confirmAttributeOwnershipAcquisitionCancellation")
+    assert cancelled is not None
+    assert cancelled.args == (pending, AttributeHandleSet({attr}))
+
+    acquirer.attribute_ownership_acquisition(pending, {attr}, b"retry-tag")
+    drain(owner, acquirer)
+    release = owner_fed.last_callback("requestAttributeOwnershipRelease")
+    assert release is not None
+    assert release.args == (pending, AttributeHandleSet({attr}), b"retry-tag")
+    divested = owner.attribute_ownership_divestiture_if_wanted(pending, {attr})
+    assert divested == AttributeHandleSet({attr})
+    drain(owner, acquirer)
+    acquired = acquirer_fed.last_callback("attributeOwnershipAcquisitionNotification")
+    assert acquired is not None
+    assert acquired.args == (pending, AttributeHandleSet({attr}), b"")
+    assert acquirer.is_attribute_owned_by_federate(pending, attr) is True
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("negotiated-ownership-fed")
+
+
+def test_python_rti_confirm_divestiture_requires_divesting_request_and_candidate():
+    engine, owner, acquirer, _owner_fed, acquirer_fed, _h1, h2 = joined_pair("confirm-divestiture-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+
+    owner.publish_object_class_attributes(cls, {attr})
+    acquirer.publish_object_class_attributes(cls, {attr})
+    acquirer.subscribe_object_class_attributes(cls, {attr})
+
+    offered = owner.register_object_instance(cls, "Confirm-1")
+    drain(owner, acquirer)
+
+    try:
+        owner.confirm_divestiture(offered, {attr}, b"confirm-tag")
+    except AttributeDivestitureWasNotRequested:
+        pass
+    else:
+        raise AssertionError("confirm_divestiture should require prior negotiated divestiture")
+
+    owner.negotiated_attribute_ownership_divestiture(offered, {attr}, b"offer-tag")
+    drain(owner, acquirer)
+
+    try:
+        owner.confirm_divestiture(offered, {attr}, b"confirm-tag")
+    except NoAcquisitionPending:
+        pass
+    else:
+        raise AssertionError("confirm_divestiture should require a pending acquisition candidate")
+
+    federation = engine.federations["confirm-divestiture-fed"]
+    federation.objects[offered].attribute_candidates[attr] = {h2}
+    owner.confirm_divestiture(offered, {attr}, b"confirm-tag")
+    drain(owner, acquirer)
+
+    acquired = acquirer_fed.last_callback("attributeOwnershipAcquisitionNotification")
+    assert acquired is not None
+    assert acquired.args == (offered, AttributeHandleSet({attr}), b"confirm-tag")
+    assert acquirer.is_attribute_owned_by_federate(offered, attr) is True
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("confirm-divestiture-fed")
+
+
+def test_python_rti_attribute_ownership_release_denied_clears_pending_acquisition():
+    _, owner, acquirer, owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("release-denied-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+
+    owner.publish_object_class_attributes(cls, {attr})
+    acquirer.publish_object_class_attributes(cls, {attr})
+
+    pending = owner.register_object_instance(cls, "Denied-1")
+    acquirer.attribute_ownership_acquisition(pending, {attr}, b"deny-tag")
+    drain(owner, acquirer)
+
+    release = owner_fed.last_callback("requestAttributeOwnershipRelease")
+    assert release is not None
+    assert release.args == (pending, AttributeHandleSet({attr}), b"deny-tag")
+
+    owner.attribute_ownership_release_denied(pending, {attr})
+
+    try:
+        acquirer.cancel_attribute_ownership_acquisition(pending, {attr})
+    except AttributeAcquisitionWasNotRequested:
+        pass
+    else:
+        raise AssertionError("release denial should clear the pending acquisition request")
+
+    owner.unconditional_attribute_ownership_divestiture(pending, {attr})
+    assert owner.is_attribute_owned_by_federate(pending, attr) is False
+    assert acquirer.is_attribute_owned_by_federate(pending, attr) is False
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("release-denied-fed")
+
+
+def test_python_rti_cancel_negotiated_divestiture_requires_active_request():
+    _, owner, acquirer, owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("cancel-negotiated-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+
+    owner.publish_object_class_attributes(cls, {attr})
+    acquirer.subscribe_object_class_attributes(cls, {attr})
+    offered = owner.register_object_instance(cls, "Cancel-1")
+    drain(owner, acquirer)
+
+    try:
+        owner.cancel_negotiated_attribute_ownership_divestiture(offered, {attr})
+    except AttributeDivestitureWasNotRequested:
+        pass
+    else:
+        raise AssertionError("cancel_negotiated_attribute_ownership_divestiture should require an active request")
+
+    owner.negotiated_attribute_ownership_divestiture(offered, {attr}, b"cancel-tag")
+    drain(owner, acquirer)
+    assert owner_fed.last_callback("requestDivestitureConfirmation") is None
+
+    owner.cancel_negotiated_attribute_ownership_divestiture(offered, {attr})
+    try:
+        owner.confirm_divestiture(offered, {attr}, b"confirm-tag")
+    except AttributeDivestitureWasNotRequested:
+        pass
+    else:
+        raise AssertionError("cancelled negotiated divestiture should clear the divesting state")
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("cancel-negotiated-fed")
+
+
+def test_python_rti_acquisition_if_available_reports_unavailable_without_transfer():
+    _, owner, acquirer, owner_fed, acquirer_fed, _h1, _h2 = joined_pair("acquire-if-available-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+
+    owner.publish_object_class_attributes(cls, {attr})
+    acquirer.publish_object_class_attributes(cls, {attr})
+    offered = owner.register_object_instance(cls, "Unavailable-1")
+
+    acquirer.attribute_ownership_acquisition_if_available(offered, {attr})
+    drain(owner, acquirer)
+
+    unavailable = acquirer_fed.last_callback("attributeOwnershipUnavailable")
+    assert unavailable is not None
+    assert unavailable.args == (offered, AttributeHandleSet({attr}))
+    assert owner.is_attribute_owned_by_federate(offered, attr) is True
+    assert acquirer.is_attribute_owned_by_federate(offered, attr) is False
+    assert owner_fed.last_callback("requestAttributeOwnershipRelease") is None
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("acquire-if-available-fed")
+
+
+def test_python_rti_divestiture_if_wanted_requires_pending_acquirer():
+    _, owner, acquirer, _owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("divest-if-wanted-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+
+    owner.publish_object_class_attributes(cls, {attr})
+    acquirer.publish_object_class_attributes(cls, {attr})
+    pending = owner.register_object_instance(cls, "Wanted-1")
+
+    try:
+        owner.attribute_ownership_divestiture_if_wanted(pending, {attr})
+    except NoAcquisitionPending:
+        pass
+    else:
+        raise AssertionError("attribute_ownership_divestiture_if_wanted should require a pending acquisition")
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("divest-if-wanted-fed")
+
+
+def test_python_rti_cancel_attribute_ownership_acquisition_requires_request():
+    _, owner, acquirer, _owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("cancel-acquisition-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+
+    owner.publish_object_class_attributes(cls, {attr})
+    acquirer.publish_object_class_attributes(cls, {attr})
+    pending = owner.register_object_instance(cls, "CancelAcquire-1")
+
+    try:
+        acquirer.cancel_attribute_ownership_acquisition(pending, {attr})
+    except AttributeAcquisitionWasNotRequested:
+        pass
+    else:
+        raise AssertionError("cancel_attribute_ownership_acquisition should require an outstanding request")
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("cancel-acquisition-fed")
+
+
+def test_python_rti_query_attribute_ownership_reports_not_owned_after_divestiture():
+    _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("query-unowned-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+
+    owner.publish_object_class_attributes(cls, {attr})
+    obj = owner.register_object_instance(cls, "Unowned-1")
+    owner.unconditional_attribute_ownership_divestiture(obj, {attr})
+
+    observer.query_attribute_ownership(obj, attr)
+    drain(observer)
+
+    not_owned = observer_fed.last_callback("attributeIsNotOwned")
+    assert not_owned is not None
+    assert not_owned.args == (obj, attr)
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("query-unowned-fed")
+
+
+def test_python_rti_release_denied_preserves_owner_and_no_acquisition_grant():
+    _, owner, acquirer, owner_fed, acquirer_fed, _h1, _h2 = joined_pair("release-denied-retains-owner-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+
+    owner.publish_object_class_attributes(cls, {attr})
+    acquirer.publish_object_class_attributes(cls, {attr})
+    pending = owner.register_object_instance(cls, "DeniedOwner-1")
+
+    acquirer.attribute_ownership_acquisition(pending, {attr}, b"deny-tag")
+    drain(owner, acquirer)
+
+    release = owner_fed.last_callback("requestAttributeOwnershipRelease")
+    assert release is not None
+    assert release.args == (pending, AttributeHandleSet({attr}), b"deny-tag")
+
+    owner.attribute_ownership_release_denied(pending, {attr})
+    drain(owner, acquirer)
+
+    assert owner.is_attribute_owned_by_federate(pending, attr) is True
+    assert acquirer.is_attribute_owned_by_federate(pending, attr) is False
+    assert acquirer_fed.last_callback("attributeOwnershipAcquisitionNotification") is None
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("release-denied-retains-owner-fed")
