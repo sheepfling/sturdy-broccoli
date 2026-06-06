@@ -45,6 +45,7 @@ from ..exceptions import (
     AttributeAcquisitionWasNotRequested,
     AttributeAlreadyBeingAcquired,
     AttributeAlreadyBeingDivested,
+    AttributeAlreadyOwned,
     AttributeDivestitureWasNotRequested,
     CouldNotCreateLogicalTimeFactory,
     CouldNotOpenFDD,
