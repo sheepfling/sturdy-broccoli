@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.backends.python_rti import InMemoryRTIEngine
 from hla2010.backends.grpc_transport.python_server import start_python_rti_grpc_server
@@ -19,6 +21,9 @@ from hla2010.testing import (
     run_two_federate_exchange_scenario,
 )
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time
+
+
+pytestmark = pytest.mark.requires_loopback_server
 
 
 def _start_grpc_pair():

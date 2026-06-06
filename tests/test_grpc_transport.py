@@ -3,6 +3,7 @@ from __future__ import annotations
 from concurrent import futures
 
 import grpc
+import pytest
 
 from hla2010.api import FederateAmbassador
 from hla2010.backends import GrpcTransport, GrpcTransportConfig, make_rti_ambassador
@@ -11,6 +12,9 @@ from hla2010.backends.grpc_transport import rti_transport_pb2_grpc as pb2_grpc
 from hla2010.backends.transport import TransportRequest
 from hla2010.enums import CallbackModel
 from hla2010.rti import create_backend
+
+
+pytestmark = pytest.mark.requires_loopback_server
 
 
 class _GrpcServicer(pb2_grpc.RTITransportServiceServicer):

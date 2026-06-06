@@ -5,6 +5,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from threading import Thread
 
+import pytest
+
 from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.api import FederateAmbassador
 from hla2010.backends import make_rti_ambassador
@@ -20,6 +22,9 @@ from hla2010.testing import (
     run_two_federate_exchange_scenario,
 )
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time
+
+
+pytestmark = pytest.mark.requires_loopback_server
 
 
 class _RestHandler(BaseHTTPRequestHandler):

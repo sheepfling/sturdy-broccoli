@@ -23,6 +23,9 @@ from hla2010.testing import (
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time
 
 
+pytestmark = pytest.mark.requires_loopback_server
+
+
 def _require_real_rti_smoke() -> None:
     if os.environ.get("HLA2010_ENABLE_REAL_RTI_SMOKE") != "1":
         pytest.skip("real vendor RTI smoke disabled; set HLA2010_ENABLE_REAL_RTI_SMOKE=1")
