@@ -16,3 +16,4 @@ for target in hla2010 tests tools; do
 done
 
 python -m compileall -q "${COMPILE_TARGETS[@]}"
+"$ROOT_DIR/scripts/ci/check_generated_docs.sh"

@@ -2,9 +2,24 @@
 
 Current backend support status for the `hla-2010` working scaffold.
 
+This is document `2/3` in the backend documentation set:
+
+1. [rti_options_and_test_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/rti_options_and_test_matrix.md): option inventory and recommended test matrix
+2. [backend_capability_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_capability_matrix.md): feature-capability coverage by backend
+3. [backend_conformance_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_conformance_matrix.md): clause-level conformance snapshot
+
 ## Scope
 
 This matrix tracks what the Python federate can rely on through the common HLA 1516.1-2010 surface today.
+
+Use this file to answer:
+
+- which backend families support which scenario classes
+- which transport surfaces are real and currently exercised
+- which runtime paths are practical for day-to-day testing
+
+Use the inventory doc for names and combinations, and use the conformance doc
+for clause-level status.
 
 Legend:
 

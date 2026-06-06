@@ -1,0 +1,271 @@
+# RTI Options and Test Matrix
+
+This document is the simplest current map of the `hla-2010` runtime surface.
+
+This is document `1/3` in the backend documentation set:
+
+1. [rti_options_and_test_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/rti_options_and_test_matrix.md): option inventory and recommended test matrix
+2. [backend_capability_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_capability_matrix.md): feature-capability coverage by backend
+3. [backend_conformance_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_conformance_matrix.md): clause-level conformance snapshot
+
+It separates three concerns that are easy to blur together:
+
+1. RTI runtime family
+2. Python/Java interaction model
+3. transport surface
+
+The Python federate should only need to care about the backend name passed to
+`create_rti_ambassador(...)`. Everything below that line is repo/runtime
+plumbing.
+
+## Mental Model
+
+When you choose an HLA path in this repo, you are really choosing:
+
+1. the RTI implementation
+2. how Python talks to that RTI
+3. whether there is an extra transport hop between Python and the backend
+
+Those are not the same choice.
+
+Example:
+
+- `certi-jpype`
+  - RTI runtime: `CERTI`
+  - Python/Java interaction: `JPype`
+  - transport surface: usually none explicit from the caller, but internally the
+    CERTI helper can also be hosted behind `grpc` or `rest`
+
+- `create_rti_ambassador("certi", transport={"kind": "grpc", ...})`
+  - RTI runtime: `CERTI`
+  - Python/Java interaction: none exposed to the caller
+  - transport surface: `grpc`
+
+- `create_rti_ambassador("python")`
+  - RTI runtime: in-memory Python reference RTI
+  - Python/Java interaction: none
+  - transport surface: none
+
+## RTI Runtime Families
+
+| Runtime family | What it is | Primary backend names | Current status |
+|---|---|---|---|
+| Python RTI | in-process reference RTI implemented in Python | `python` | strongest reference path for local semantics and clause work |
+| Java shim | in-process Java-shaped test shim for bridge validation | `java-shim-jpype`, `java-shim-py4j` | useful for bridge and callback parity, not a vendor RTI |
+| CERTI | real vendored 1516.1-2010 RTI in this repo | `certi`, `certi-jpype`, `certi-py4j` | strongest real-runtime path in this workspace |
+| Pitch pRTI | real vendor runtime through Java adapters | `pitch-jpype`, `pitch-py4j` | available, but local activation/state constraints still matter |
+| Portico | real vendor runtime through Java adapters | `portico-jpype`, `portico-py4j` | wiring exists; use only if a real local Portico install is present |
+
+## Python/Java Interaction Models
+
+These only matter when the chosen runtime is Java-facing.
+
+| Interaction model | Meaning | Used by |
+|---|---|---|
+| none | pure Python path | `python`, `certi` |
+| `jpype` | Python loads JVM in-process | `jpype`, `pitch-jpype`, `portico-jpype`, `certi-jpype`, `java-shim-jpype` |
+| `py4j` | Python talks to a separate JVM gateway process | `py4j`, `pitch-py4j`, `portico-py4j`, `certi-py4j`, `java-shim-py4j` |
+
+## Transport Surfaces
+
+These are transport choices under the backend layer, not separate RTI families.
+
+| Transport kind | Meaning | Typical use |
+|---|---|---|
+| implicit / none | direct in-process/backend call path | `python`, Java adapters, local `certi` default use |
+| `subprocess-line` | line-oriented helper transport | primary local CERTI helper path |
+| `grpc` | typed unary request/response remote transport | transport-hosted Python RTI and CERTI-hosted remote path |
+| `rest` / `http-json` | typed JSON-over-HTTP remote transport | transport-hosted Python RTI and CERTI-facing transport seam |
+
+Current remote callback contract for both `grpc` and `rest`:
+
+- unary request/response
+- callback polling through `evokeCallback` / `evokeMultipleCallbacks`
+- no streaming callbacks yet
+
+## Supported Backend Names
+
+These are the backend names currently recognized by
+[rti.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/hla2010/rti.py).
+
+This section is generated from `create_backend(...)` by
+[update_rti_options_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tools/update_rti_options_matrix.py).
+
+<!-- GENERATED_BACKEND_ALIASES_START -->
+
+### Pure Python
+
+- `python`
+- `inmemory`
+- `in-memory`
+- `python-inmemory`
+- `python-in-memory`
+
+### Generic Java Adapter Paths
+
+- `jpype`
+- `java-jpype`
+
+- `py4j`
+- `java-py4j`
+
+These are only useful when you provide a Java RTI configuration explicitly.
+
+### Pitch
+
+- `pitch-jpype`
+- `java-pitch-jpype`
+
+- `pitch-py4j`
+- `java-pitch-py4j`
+
+### Portico
+
+- `portico-jpype`
+- `java-portico-jpype`
+- `portico`
+
+- `portico-py4j`
+- `java-portico-py4j`
+
+### CERTI
+
+- `certi`
+- `certi-native`
+- `native-certi`
+
+- `certi-jpype`
+- `java-certi-jpype`
+
+- `certi-py4j`
+- `java-certi-py4j`
+
+### Java Shim
+
+- `java-shim`
+- `java-shim-jpype`
+- `shim-jpype`
+
+- `java-shim-py4j`
+- `shim-py4j`
+
+<!-- GENERATED_BACKEND_ALIASES_END -->
+
+## Recommended Operational View
+
+Use this simpler classification in practice:
+
+| Operational bucket | Backend names |
+|---|---|
+| Python reference RTI | `python` |
+| Java shim bridge proofs | `java-shim-jpype`, `java-shim-py4j` |
+| Real CERTI | `certi`, `certi-jpype`, `certi-py4j` |
+| Real Pitch | `pitch-jpype`, `pitch-py4j` |
+| Real Portico | `portico-jpype`, `portico-py4j` |
+
+That is the easiest level for planning and reporting.
+
+## Test Matrix View
+
+This is the practical matrix to use when deciding what to run.
+
+| Backend family | Bridge model | Transport | Exchange | Timed | Sync | Ownership | Negotiated Ownership | Real runtime |
+|---|---|---|---:|---:|---:|---:|---:|---:|
+| Python RTI | none | none | yes | yes | yes | yes | yes | no |
+| Java shim | JPype | none | yes | partial | yes | yes | partial | no |
+| Java shim | Py4J | none | yes | partial | yes | yes | partial | no |
+| CERTI | native | subprocess-line | yes | yes | yes | yes | partial | yes |
+| CERTI | JPype facade | subprocess-line | yes | yes | yes | yes | partial | yes |
+| CERTI | Py4J facade | subprocess-line | yes | yes | yes | yes | partial | yes |
+| CERTI hosted | native | `grpc` | yes | yes | yes | yes | not yet explicit | yes |
+| CERTI hosted | native | `rest` | seam present | not yet explicit | not yet explicit | not yet explicit | no | yes |
+| Python RTI hosted | none | `grpc` | yes | yes | yes | yes | yes | no |
+| Python RTI hosted | none | `rest` | yes | yes | not yet explicit | not yet explicit | not yet explicit | no |
+| Pitch | JPype | none | workspace-dependent | workspace-dependent | workspace-dependent | workspace-dependent | no | yes |
+| Pitch | Py4J | none | workspace-dependent | workspace-dependent | workspace-dependent | workspace-dependent | no | yes |
+| Portico | JPype | none | install-dependent | install-dependent | install-dependent | install-dependent | no | yes |
+| Portico | Py4J | none | install-dependent | install-dependent | install-dependent | install-dependent | no | yes |
+
+Interpretation:
+
+- `yes` means automated coverage exists in this repo now
+- `partial` means the shape exists but semantics are narrower than a full vendor RTI
+- `not yet explicit` means the surface exists but this exact matrix row is not yet proved by dedicated tests
+- `workspace-dependent` means the repo path exists, but the local vendor runtime state determines whether tests can actually run
+- `install-dependent` means a valid local Portico installation is required
+
+## Primary Test Files By Option
+
+### Python reference RTI
+
+- [test_python_rti_extended_services.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_python_rti_extended_services.py)
+
+### Java shim bridge proofs
+
+- [test_java_profile_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_java_profile_backend_matrix.py)
+- [test_java_shim_backends.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_java_shim_backends.py)
+
+### Real CERTI
+
+- [test_certi_real_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_certi_real_backend_matrix.py)
+- [test_real_vendor_runtime_smoke.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_real_vendor_runtime_smoke.py)
+
+### CERTI behind transport surfaces
+
+- [test_certi_backend_transport.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_certi_backend_transport.py)
+- [test_grpc_transport_certi_server.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_grpc_transport_certi_server.py)
+
+### Python RTI behind transport surfaces
+
+- [test_grpc_transport_python_server.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_grpc_transport_python_server.py)
+- [test_rest_transport.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rest_transport.py)
+
+### Real Pitch
+
+- [test_pitch_real_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_pitch_real_backend_matrix.py)
+- [test_real_vendor_runtime_smoke.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_real_vendor_runtime_smoke.py)
+
+### Runtime discovery and local install assumptions
+
+- [test_real_rti.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_real_rti.py)
+
+## Recommended Matrix For Day-To-Day Use
+
+If the goal is a manageable default matrix, use this:
+
+1. `python`
+2. `java-shim-jpype`
+3. `java-shim-py4j`
+4. `certi`
+5. `certi-jpype`
+6. `certi-py4j`
+7. `certi` over `grpc`
+8. `python` hosted over `grpc`
+9. `python` hosted over `rest`
+10. `pitch-jpype`
+11. `pitch-py4j`
+
+That gives one matrix that covers:
+
+- reference semantics
+- both Python/Java bridge models
+- real native RTI behavior
+- remote transport behavior
+- vendor runtime behavior
+
+## What To Avoid Confusing
+
+- `certi-jpype` is not a vendor Java RTI from CERTI; it is a Java-profile facade over the real native CERTI path in this repo.
+- `rest` and `grpc` are not separate RTI families; they are transport choices.
+- `java-shim-*` is a test backend, not a real RTI.
+- `pitch-*` and `portico-*` are runtime families, not transport kinds.
+
+## Maintenance
+
+If backend aliases change in
+[rti.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/hla2010/rti.py),
+rerun:
+
+```bash
+python3 tools/update_rti_options_matrix.py
+```

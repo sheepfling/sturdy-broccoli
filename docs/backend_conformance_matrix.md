@@ -3,6 +3,12 @@
 Clause-level conformance snapshot for the backend-neutral Python HLA 1516.1-2010
 surface.
 
+This is document `3/3` in the backend documentation set:
+
+1. [rti_options_and_test_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/rti_options_and_test_matrix.md): option inventory and recommended test matrix
+2. [backend_capability_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_capability_matrix.md): feature-capability coverage by backend
+3. [backend_conformance_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_conformance_matrix.md): clause-level conformance snapshot
+
 ## Scope
 
 - Backend columns refer to what a Python federate can rely on through
@@ -10,6 +16,12 @@ surface.
 - `certi-jpype` and `certi-py4j` inherit the same runtime status as `certi`;
   separate adapter parity is covered by the Java-profile tests.
 - Pitch remains blocked until a locally activated runtime is available.
+
+Use this file to answer:
+
+- which IEEE 1516.1-2010 clauses have working behavior now
+- where Python RTI is ahead of vendor/runtime paths
+- where CERTI or Pitch remains partial or blocked
 
 Legend:
 
