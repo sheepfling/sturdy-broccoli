@@ -44,7 +44,7 @@ python3 -m pytest -q tests/test_real_vendor_runtime_smoke.py -k pitch -rs
 ### Python RTI currently has broader executable evidence
 
 The generated Python suite report at
-[two_federate_suite_report.md](</Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/python_two_federate_suite_2026-06-07/two_federate_suite_report.md>)
+[two_federate_suite_report.md](../../../analysis/python_two_federate_suite_2026-06-07/two_federate_suite_report.md)
 shows seven exercised scenario slices:
 
 - `exchange_time`
@@ -66,9 +66,9 @@ scenario coverage, especially for:
 ### Pitch now gives external confirmation on a narrower promoted overlap
 
 The real Pitch smoke at
-[test_real_vendor_runtime_smoke.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_real_vendor_runtime_smoke.py)
+[test_real_vendor_runtime_smoke.py](tests/test_real_vendor_runtime_smoke.py)
 and the real Pitch matrix at
-[test_pitch_real_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_pitch_real_backend_matrix.py)
+[test_pitch_real_backend_matrix.py](tests/test_pitch_real_backend_matrix.py)
 now prove the Java/vendor route for:
 
 - lifecycle on `pitch-jpype`
@@ -82,11 +82,11 @@ now prove the Java/vendor route for:
 
 The normalized overlap bundle is recorded in:
 
-- [normalized_overlap.json](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/python_pitch_overlap_2026-06-07/normalized_overlap.json)
-- [normalized_overlap.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/python_pitch_overlap_2026-06-07/normalized_overlap.md)
+- [normalized_overlap.json](analysis/python_pitch_overlap_2026-06-07/normalized_overlap.json)
+- [normalized_overlap.md](analysis/python_pitch_overlap_2026-06-07/normalized_overlap.md)
 
 The real negotiated-ownership probe now also exists in
-[test_pitch_real_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_pitch_real_backend_matrix.py),
+[test_pitch_real_backend_matrix.py](tests/test_pitch_real_backend_matrix.py),
 but it currently skips as not yet promotable rather than proving `7.8`,
 `7.11`, `7.13`, `7.15`, or `7.16`.
 
@@ -95,8 +95,8 @@ ownership is currently bridge-divergent rather than uniformly absent. The
 Docker-backed runs show different partial callback sequences on `pitch-jpype`
 and `pitch-py4j`; see:
 
-- [pitch_negotiated_ownership_vendor_bug_2026-06-07.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)
-- [diagnostic_summary.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/pitch_negotiated_ownership_2026-06-07/diagnostic_summary.md)
+- [pitch_negotiated_ownership_vendor_bug_2026-06-07.md](docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)
+- [diagnostic_summary.md](analysis/pitch_negotiated_ownership_2026-06-07/diagnostic_summary.md)
 
 This is the important external evidence that the same Python-facing API can
 drive a certified HLA 1516-2010 RTI, not just the in-memory reference RTI.

@@ -3,6 +3,11 @@
 This is the easiest supported path for running the certified HLA 1516-2010
 Pitch RTI in this repo.
 
+For the full Pitch decision tree, including Docker vs JPype vs Py4J and the
+known quirks, see:
+
+- [Pitch Decision Tree](pitch_decision_tree.md)
+
 ## One-time setup
 
 Fastest path:

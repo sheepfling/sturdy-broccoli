@@ -22,11 +22,46 @@ docs/                 clean project notes for the repo seed
 For the package-level backend/API organization, see
 [`docs/package_layout.md`](docs/package_layout.md).
 
+For the canonical documentation hierarchy, start with
+[`docs/README.md`](docs/README.md) and
+[`docs/documentation_hierarchy.md`](docs/documentation_hierarchy.md).
+
+For the script hierarchy and operator entrypoints, see
+[`scripts/README.md`](scripts/README.md).
+
 The boundary is intentional:
 
 - `hla2010/` is the installable package.
 - `examples/` contains runnable entrypoints and example-only assets.
 - shared scenario code belongs in `hla2010/scenarios/`, not in `examples/`.
+
+The documentation follows the same rule:
+
+- `README.md` is the operator entry point.
+- `docs/README.md` is the document index.
+- `docs/documentation_hierarchy.md` explains the parallel story used by the
+  rest of `docs/`.
+
+If you want the shortest install path, use the new profile dispatcher:
+
+```bash
+./bootstrap python
+./bootstrap certi
+./bootstrap pitch
+./bootstrap all
+```
+
+Those profiles are intentionally lighter than the vendor-specific compare
+wrappers:
+
+- `python` installs the editable package plus lean test deps and does not
+  require Java.
+- `certi` installs Python and builds the repo-local CERTI runtime.
+- `pitch` installs Python and builds the Pitch Docker image.
+- `all` installs Python, CERTI, and Pitch.
+
+If you want the broader lint/typecheck extras instead of the lean test extras,
+set `HLA2010_BOOTSTRAP_EXTRAS=qa` before running `./bootstrap ...`.
 
 Additional repo-local material promoted from `INBOX`:
 
@@ -76,6 +111,9 @@ Lower-level CERTI scripts such as `scripts/rebuild_certi.sh`,
 `scripts/rebuild_certi_upstream.sh`, and
 `scripts/ci/vendor_runtime_smoke.sh` remain available for targeted debugging
 and matrix work, but they are secondary operator entrypoints.
+
+For the one-page CERTI operator runbook, see
+[`docs/certi_section8_runbook.md`](docs/certi_section8_runbook.md).
 
 Optional Java bridge packages can be installed with:
 
@@ -164,6 +202,23 @@ That runner writes JSON, CSV, Markdown, and SVG artifacts under
 `analysis/target_radar_backend_matrix/` and marks each backend as passed,
 skipped, or failed with an explicit reason.
 
+For a proof packet with the backend matrix plus the detailed simulation trace
+and visuals, use:
+
+```bash
+./scripts/run_target_radar_proof.py
+```
+
+That runner writes JSON, CSV, Markdown, and SVG artifacts under
+`analysis/target_radar_proof/`, including the truth-target timeline, RCS query
+events, track reports, and a trajectory plot. The CI `target-radar-proof` job
+uploads that whole directory as a downloadable GitHub Actions artifact. For
+the simplest rerun path, use:
+
+```bash
+./scripts/ci/target_radar_proof.sh
+```
+
 ## Local Git remote
 
 To attach a local bare remote for offline pushes, use:
@@ -246,6 +301,10 @@ The simplest Docker-backed Pitch flow is now:
 ```bash
 ./pitch all
 ```
+
+For the one-page guide that explains Docker vs JPype vs Py4J, see:
+
+- [`docs/pitch_decision_tree.md`](docs/pitch_decision_tree.md)
 
 If you want the explicit staged flow:
 

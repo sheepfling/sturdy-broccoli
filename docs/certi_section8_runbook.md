@@ -1,16 +1,103 @@
-# CERTI Section 8 Runbook
+# CERTI Operator Runbook
 
-This runbook is for executing the real CERTI `§8` time-management matrix on a host that can start `rtig`, bind loopback sockets, and launch the configured CERTI runtime profiles.
+This is the one-page operator guide for CERTI in this workspace.
 
-## Preconditions
+Use it when you want the shortest path from a fresh checkout to a runnable
+pristine-vs-patched comparison, and when you need to understand the main
+runtime quirks without reading the deeper parity notes first.
 
-The host must satisfy all of these:
+## The Short Version
 
-- local loopback bind/connect is allowed
-- `rtig` is launchable
-- the CERTI runtime profile is discoverable
-- the Vendor Smoke FOM is present
-- Python can start local REST/gRPC helper servers when needed
+Run these three commands first:
+
+```bash
+./certi-easy install
+./certi-easy doctor
+./certi-easy smoke compare
+```
+
+Meaning:
+
+- `install` bootstraps Python, builds the repo-local patched CERTI, and clones
+  plus builds pristine upstream CERTI.
+- `doctor` prints the active paths and tells you whether real CERTI smoke can
+  run on this host.
+- `smoke compare` runs the stable upstream-vs-patched CERTI comparison slices.
+
+If those three work, the basic CERTI path is good.
+
+## The Two Baselines
+
+There are two CERTI baselines you should keep separate:
+
+- `certi-upstream`
+  pristine/original CERTI cloned from GitHub
+- `certi-patched`
+  the repo-local vendored CERTI with the current local fixes
+
+Use `certi-upstream` when you want to answer "does original CERTI do this?"
+Use `certi-patched` when you want to answer "did our local CERTI changes alter
+the result?"
+
+The smoke compare route intentionally compares both baselines on the same
+stable slices.
+
+## What Is Easy
+
+These are the easy, junior-friendly entrypoints:
+
+```bash
+./certi-easy install
+./certi-easy doctor
+./certi-easy smoke compare
+./certi-easy smoke patched
+./certi-easy smoke upstream
+./certi-easy run patched rtig -v 0
+./certi-easy run upstream rtig -v 0
+```
+
+If you only remember one thing, remember `./certi-easy`.
+
+## What Is Secondary
+
+The lower-level scripts still exist, but they are for targeted debugging and
+matrix work:
+
+- `scripts/rebuild_certi.sh`
+- `scripts/rebuild_certi_upstream.sh`
+- `scripts/ci/vendor_runtime_smoke.sh`
+
+Use those when you are drilling into one baseline or one clause family.
+
+## Interface And Transport Shape
+
+The real CERTI surface in this repo is still the native HLA 1516.1-2010 RTI
+path.
+
+- `certi` is the native smoke backend
+- `certi-jpype` and `certi-py4j` are Java-profile adapters over the same native
+  CERTI runtime
+- `rest` and `grpc` are transport surfaces used for proving hosted Python RTI
+  behavior, not separate vendor RTIs
+
+The current remote callback contract is polling-based, not streaming-based.
+Callbacks are drained through the ordinary `evokeCallback` and
+`evokeMultipleCallbacks` style services.
+
+## Known Quirks
+
+These are the runtime facts that matter most for day-to-day use:
+
+- upstream CERTI still fails earlier than patched CERTI on the promoted time
+  and ownership compare slices
+- patched CERTI is good enough for the stable smoke contract, but negotiated
+  ownership still has a known non-smoke matrix gap
+- `confirmDivestiture` and `attributeOwnershipDivestitureIfWanted` are not the
+  same thing at the 2010 surface, but the patched branch still shares some
+  release-response machinery under the hood
+- real CERTI runs require loopback socket permission on `127.0.0.1`
+
+## If Smoke Fails
 
 Run the preflight first:
 
@@ -18,116 +105,26 @@ Run the preflight first:
 python3 scripts/check_certi_preflight.py
 ```
 
-Expected result on a runnable host:
+If the result says `real CERTI will skip`, the problem is the host/session, not
+the tests.
 
-- `CERTI install: available`
-- `CERTI smoke FOM: available`
-- `loopback bind: available`
-- final result: `real CERTI runnable`
+If the result says `real CERTI runnable` but `smoke compare` still fails:
 
-If the preflight reports `real CERTI will skip`, the matrix will not produce real-vendor evidence on that host.
+1. check whether the failure is on `certi-upstream` or `certi-patched`
+2. compare it against [docs/certi_runtime_limitations.md](docs/certi_runtime_limitations.md)
+3. use [docs/certi_spec_traceability.md](docs/certi_spec_traceability.md)
+   for the clause-level evidence trail
 
-## Environment
+## Deeper Matrix Work
 
-Enable the real-vendor suite:
-
-```bash
-export HLA2010_ENABLE_REAL_RTI_SMOKE=1
-```
-
-Optional profile-specific overrides:
-
-```bash
-export HLA2010_CERTI_BUILD_ROOT=/path/to/certi/build
-export HLA2010_CERTI_PATCHED_BUILD_ROOT=/path/to/patched/build
-export HLA2010_CERTI_UPSTREAM_BUILD_ROOT=/path/to/upstream/build
-```
-
-## Core Commands
-
-Dedicated CERTI `§8` slice:
-
-```bash
-python3 -m pytest -q tests/vendors/test_certi_real_backend_matrix.py -k 'time_query_and_fqr_matrix or time_query_and_fqr_baseline or queued_fqr_baseline or time_semantic_profile_matches_across_native_and_java_facades'
-```
-
-Full CERTI backend matrix:
-
-```bash
-python3 -m pytest -q tests/vendors/test_certi_real_backend_matrix.py
-```
-
-Hosted Python `§8` matrix, for comparison:
+When you need the full Section 8 and ownership evidence, use the deeper
+matrices instead of the easy path:
 
 ```bash
 python3 -m pytest -q tests/time/test_section8_backend_matrix.py
+python3 -m pytest -q tests/vendors/test_certi_real_backend_matrix.py
+python3 -m pytest -q tests/vendors/test_certi_real_backend_ownership_matrix.py
+./scripts/ci/section8_backend_matrix_gate.sh
 ```
 
-Regenerate compliance artifacts after the run:
-
-```bash
-python3 scripts/generate_compliance_artifacts.py
-```
-
-## Expected Outcomes
-
-On a capable host:
-
-- native CERTI rows should execute rather than skip
-- `certi-jpype` and `certi-py4j` facade rows should execute if their bridge environments are configured
-- `analysis/compliance/section8_backend_matrix.json` should continue to show CERTI rows as `env-gated-positive` unless you later promote the artifact model to session-aware pass/fail states
-
-In a restricted host or sandbox:
-
-- the real-vendor tests should skip cleanly
-- the skip should be caused by backend unavailability or loopback bind restrictions, not a failure wall
-
-## Troubleshooting
-
-### Loopback bind is blocked
-
-Symptom:
-
-- preflight says `loopback bind: blocked`
-- real CERTI tests skip immediately
-
-Cause:
-
-- the host cannot bind local TCP sockets needed by `rtig`
-
-Action:
-
-- rerun on a host/session with loopback socket permission
-
-### CERTI runtime is not discoverable
-
-Symptom:
-
-- preflight cannot find the install or runtime profile
-
-Action:
-
-- set the appropriate `HLA2010_CERTI_*_BUILD_ROOT` or runtime-path environment variables
-- verify the profile with the existing CERTI discovery tooling
-
-### Upstream and patched profiles diverge
-
-Symptom:
-
-- one profile passes and the other raises `RTIinternalError`, transport errors, or ordering differences
-
-Action:
-
-- preserve both results
-- treat the difference as vendor/profile evidence, not as a Python reference-backend regression
-
-## Evidence Capture
-
-After a successful real-vendor run, capture:
-
-1. pytest output for the CERTI `§8` slice
-2. regenerated [section8_backend_matrix.json](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/compliance/section8_backend_matrix.json)
-3. regenerated [negative_path_completeness.json](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/compliance/negative_path_completeness.json)
-4. any upstream/patched divergence notes
-
-That set is the minimum evidence package for claiming real-vendor `§8` verification on a specific host.
+Those are not the first commands a junior should start with.

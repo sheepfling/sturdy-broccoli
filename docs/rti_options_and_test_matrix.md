@@ -2,12 +2,16 @@
 
 This document is the simplest current map of the `hla-2010` runtime surface.
 
-This is document `2/4` in the backend documentation set:
+This is document `2/4` in the backend documentation set.
+For the canonical documentation hierarchy, see
+[documentation_hierarchy.md](documentation_hierarchy.md).
 
-1. [backend_route_inventory.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_route_inventory.md): exhaustive route inventory and evidence anchors
-2. [rti_options_and_test_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/rti_options_and_test_matrix.md): option inventory and recommended test matrix
-3. [backend_capability_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_capability_matrix.md): feature-capability coverage by backend
-4. [backend_conformance_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_conformance_matrix.md): clause-level conformance snapshot
+The four backend docs are intentionally parallel:
+
+1. [backend_route_inventory.md](backend_route_inventory.md): exhaustive route inventory and evidence anchors
+2. [rti_options_and_test_matrix.md](rti_options_and_test_matrix.md): option inventory and recommended test matrix
+3. [backend_capability_matrix.md](backend_capability_matrix.md): feature-capability coverage by backend
+4. [backend_conformance_matrix.md](backend_conformance_matrix.md): clause-level conformance snapshot
 
 It separates three concerns that are easy to blur together:
 
@@ -21,7 +25,7 @@ plumbing.
 
 For the exhaustive route list, including named CERTI baselines and remote
 transport-hosted variants, see
-[backend_route_inventory.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_route_inventory.md).
+[backend_route_inventory.md](docs/backend_route_inventory.md).
 
 ## Mental Model
 
@@ -100,10 +104,10 @@ Current remote callback contract for both `grpc` and `rest`:
 ## Supported Backend Names
 
 These are the backend names currently recognized by
-[rti.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/hla2010/rti.py).
+[rti.py](hla2010/rti.py).
 
 This section is generated from `create_backend(...)` by
-[update_rti_options_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tools/update_rti_options_matrix.py).
+[update_rti_options_matrix.py](tools/update_rti_options_matrix.py).
 
 <!-- GENERATED_BACKEND_ALIASES_START -->
 
@@ -218,45 +222,45 @@ Current CERTI qualifier:
 
 ### Python reference RTI
 
-- [test_python_backend_extended_services.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_python_backend_extended_services.py)
+- [test_python_backend_extended_services.py](tests/backends/test_python_backend_extended_services.py)
 
 ### Java shim bridge proofs
 
-- [test_java_profile_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/vendors/test_java_profile_backend_matrix.py)
-- [test_java_shim_backends.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_java_shim_backends.py)
+- [test_java_profile_backend_matrix.py](tests/vendors/test_java_profile_backend_matrix.py)
+- [test_java_shim_backends.py](tests/backends/test_java_shim_backends.py)
 
 ### Real CERTI
 
-- [test_certi_real_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/vendors/test_certi_real_backend_matrix.py)
-- [test_real_vendor_runtime_smoke.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/vendors/test_real_vendor_runtime_smoke.py)
-- [vendor_runtime_smoke.sh](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/scripts/ci/vendor_runtime_smoke.sh)
+- [test_certi_real_backend_matrix.py](tests/vendors/test_certi_real_backend_matrix.py)
+- [test_real_vendor_runtime_smoke.py](tests/vendors/test_real_vendor_runtime_smoke.py)
+- [vendor_runtime_smoke.sh](scripts/ci/vendor_runtime_smoke.sh)
 
 ### CERTI behind transport surfaces
 
-- [test_certi_backend_transport.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_certi_backend_transport.py)
-- [test_grpc_transport_certi_server.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_certi_server.py)
-- [backend_route_inventory.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_route_inventory.md)
+- [test_certi_backend_transport.py](tests/backends/test_certi_backend_transport.py)
+- [test_grpc_transport_certi_server.py](tests/transport/test_grpc_transport_certi_server.py)
+- [backend_route_inventory.md](docs/backend_route_inventory.md)
 
 ### Python RTI behind transport surfaces
 
-- [test_grpc_transport_python_server.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_python_server.py)
-- [test_rest_transport.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_rest_transport.py)
+- [test_grpc_transport_python_server.py](tests/transport/test_grpc_transport_python_server.py)
+- [test_rest_transport.py](tests/transport/test_rest_transport.py)
 
 ### Real Pitch
 
-- [test_pitch_real_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/vendors/test_pitch_real_backend_matrix.py)
-- [test_real_vendor_runtime_smoke.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/vendors/test_real_vendor_runtime_smoke.py)
+- [test_pitch_real_backend_matrix.py](tests/vendors/test_pitch_real_backend_matrix.py)
+- [test_real_vendor_runtime_smoke.py](tests/vendors/test_real_vendor_runtime_smoke.py)
 - Negotiated ownership is currently bridge-divergent rather than simply absent:
   - `pitch-jpype` and `pitch-py4j` do not fail in the same place
   - `pitch-py4j` gets farther on the owned-attribute release-request branch
   - `pitch-jpype` gets farther on the negotiated-offer branch and shows explicit FedPro session-drop / failed-resume lines
 - See:
-  - [pitch_negotiated_ownership_vendor_bug_2026-06-07.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)
-  - [diagnostic_summary.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/pitch_negotiated_ownership_2026-06-07/diagnostic_summary.md)
+  - [pitch_negotiated_ownership_vendor_bug_2026-06-07.md](docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)
+  - [diagnostic_summary.md](analysis/pitch_negotiated_ownership_2026-06-07/diagnostic_summary.md)
 
 ### Runtime discovery and local install assumptions
 
-- [test_real_rti.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/runtime/test_real_rti.py)
+- [test_real_rti.py](tests/runtime/test_real_rti.py)
 
 ## Recommended Matrix For Day-To-Day Use
 
@@ -292,7 +296,7 @@ That gives one matrix that covers:
 ## Maintenance
 
 If backend aliases change in
-[rti.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/hla2010/rti.py),
+[rti.py](hla2010/rti.py),
 rerun:
 
 ```bash

@@ -3,6 +3,42 @@
 Investigation notes for the local CERTI IEEE 1516.1-2010 runtime on negotiated
 ownership services.
 
+## Current repo status
+
+As of June 7, 2026, the current `hla-2010` vendor matrix result is:
+
+- plain CERTI ownership passes on:
+  - `certi`
+  - `certi-jpype`
+  - `certi-py4j`
+- negotiated CERTI ownership is still vendor-divergent on:
+  - `certi`
+  - `certi-jpype`
+  - `certi-py4j`
+
+The observable runtime failure is that the negotiated ownership scenario never
+reaches the expected release/acquisition handshake. In the current matrix this
+surfaces at
+[scenario_ownership.py](hla2010/testing/scenario_ownership.py:192)
+as a missing `attributeOwnershipAcquisitionNotification`/handoff outcome rather
+than as a Python adapter crash.
+
+That means the current matrix should describe negotiated ownership as a vendor
+divergence, not as an environment skip and not as a completed patched-CERTI
+success path.
+
+Decision for the compliance matrix:
+
+- do not patch around this in the `hla-2010` adapter/helper layer
+- record it as a real CERTI vendor limitation until the runtime itself proves
+  the negotiated release/acquisition handshake
+
+Reason:
+
+- the same failure reproduces on native CERTI, `certi-jpype`, `certi-py4j`, and
+  the patched local build profile
+- that makes this a runtime/vendor behavior gap, not a Python bridge-only bug
+
 ## Scope
 
 This note covers the negotiated ownership path behind:
@@ -19,9 +55,9 @@ in the Python adapter/helper layer or treated as a vendor/runtime limitation.
 
 ### Explicit gaps in the 2010 client implementation
 
-- [RTIambassadorImplementation.cpp](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/libRTI/ieee1516-2010/RTIambassadorImplementation.cpp)
+- [RTIambassadorImplementation.cpp](CERTI/libRTI/ieee1516-2010/RTIambassadorImplementation.cpp)
   marks `confirmDivestiture` as `Not yet implemented`.
-- [RTIambassadorImplementation.cpp](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/libRTI/ieee1516-2010/RTIambassadorImplementation.cpp)
+- [RTIambassadorImplementation.cpp](CERTI/libRTI/ieee1516-2010/RTIambassadorImplementation.cpp)
   marks `attributeOwnershipReleaseDenied` as `Not Implemented`.
 
 Those are hard evidence that the 2010 ownership surface is incomplete on the
@@ -29,12 +65,12 @@ client side.
 
 ### Server-side ownership logic does exist
 
-- [MessageProcessor.cc](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/RTIG/MessageProcessor.cc)
+- [MessageProcessor.cc](CERTI/RTIG/MessageProcessor.cc)
   routes negotiated divestiture, acquisition, release response, and cancel
   messages into federation logic.
-- [Federation.cc](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/RTIG/Federation.cc)
+- [Federation.cc](CERTI/RTIG/Federation.cc)
   forwards those requests into object-class ownership code.
-- [ObjectClass.cc](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/libCERTI/ObjectClass.cc)
+- [ObjectClass.cc](CERTI/libCERTI/ObjectClass.cc)
   contains a coherent state machine:
   - negotiated divestiture marks attributes as divesting when there are no candidates
   - acquisition on divesting attributes grants immediately and notifies the old owner
@@ -46,14 +82,14 @@ So the codebase is not simply missing the feature at every layer.
 
 ### The available CERTI tests do not give end-to-end ownership proof
 
-- [tests/RTIG/CMakeLists.txt](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/tests/RTIG/CMakeLists.txt)
+- [tests/RTIG/CMakeLists.txt](CERTI/tests/RTIG/CMakeLists.txt)
   defines a `TestRTIG` gtest target that would include
   `messageprocessor_test.cpp` and `federation_test.cpp`.
 - The current local build tree does not expose that target:
   - `cmake --build hla-2010/CERTI-build --target TestRTIG`
     fails with `No rule to make target 'TestRTIG'`.
 - The ownership-specific source tests that do exist in
-  [messageprocessor_test.cpp](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/tests/RTIG/messageprocessor_test.cpp)
+  [messageprocessor_test.cpp](CERTI/tests/RTIG/messageprocessor_test.cpp)
   are only empty-message dispatch checks. They assert that malformed ownership
   request messages throw, not that negotiated ownership completes across a
   running RTIA/RTIG pair.
@@ -104,9 +140,9 @@ in this workspace.
 ### Direct CERTI-side harness result
 
 - A dedicated CERTI-side ownership probe now exists on the patch branch:
-  - [ownershipProbe-IEEE1516_2010.cc](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/test/testFederate/ownershipProbe-IEEE1516_2010.cc)
-  - [run_ownership_probe.sh](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/test/testFederate/run_ownership_probe.sh)
-  - [rtia_verbose_wrapper.sh](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/test/testFederate/rtia_verbose_wrapper.sh)
+  - [ownershipProbe-IEEE1516_2010.cc](CERTI/test/testFederate/ownershipProbe-IEEE1516_2010.cc)
+  - [run_ownership_probe.sh](CERTI/test/testFederate/run_ownership_probe.sh)
+  - [rtia_verbose_wrapper.sh](CERTI/test/testFederate/rtia_verbose_wrapper.sh)
 - The probe runs below `hla-2010` and talks directly to the patched CERTI
   `RTI1516e` client/runtime path.
 - Current outcome for both owner and acquirer paths:
@@ -125,21 +161,21 @@ in this workspace.
 ### Updated direct 1516-2010 findings after RTIA/RTIG instrumentation
 
 - The spawned RTIA `-f` path is now instrumented in:
-  - [RTIA.cc](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/RTIA/RTIA.cc)
-  - [Communications.cc](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/RTIA/Communications.cc)
-  - [RTIA_federate.cc](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/RTIA/RTIA_federate.cc)
-  - [FederationManagement.cc](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/RTIA/FederationManagement.cc)
-  - [Federation_fom.cc](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/RTIG/Federation_fom.cc)
+  - [RTIA.cc](CERTI/RTIA/RTIA.cc)
+  - [Communications.cc](CERTI/RTIA/Communications.cc)
+  - [RTIA_federate.cc](CERTI/RTIA/RTIA_federate.cc)
+  - [FederationManagement.cc](CERTI/RTIA/FederationManagement.cc)
+  - [Federation_fom.cc](CERTI/RTIG/Federation_fom.cc)
 - That instrumentation showed the original empty `RTIinternalError` at
   create/join was actually a FOM-module rejection from RTIG, not a blind
   transport failure.
 - CERTI's FOM-module merge rule in
-  [RootObject.cc](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/libCERTI/RootObject.cc)
+  [RootObject.cc](CERTI/libCERTI/RootObject.cc)
   rejected normal 2010 modules because it required an existing class from the
   MIM, especially `HLAobjectRoot`, to repeat the full MIM-owned attribute set.
 - A local patch now treats empty repeated class definitions as scaffolding,
   which is enough for the direct 1516-2010 path to accept CERTI's own shipped
-  [RestaurantFOMmodule.xml](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/xml/ieee1516-2010/1516_2-2010/RestaurantFOMmodule.xml).
+  [RestaurantFOMmodule.xml](CERTI/xml/ieee1516-2010/1516_2-2010/RestaurantFOMmodule.xml).
 - With that patch in place, direct 1516-2010 `createFederationExecution(...)`
   and `joinFederationExecution(...)` complete successfully in the dedicated
   ownership harness.
@@ -155,9 +191,9 @@ in this workspace.
 ### RTIG ownership-path narrowing
 
 - RTIG ownership instrumentation now exists in:
-  - [MessageProcessor.cc](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/RTIG/MessageProcessor.cc)
-  - [Federation.cc](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/RTIG/Federation.cc)
-  - [ObjectClass.cc](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/libCERTI/ObjectClass.cc)
+  - [MessageProcessor.cc](CERTI/RTIG/MessageProcessor.cc)
+  - [Federation.cc](CERTI/RTIG/Federation.cc)
+  - [ObjectClass.cc](CERTI/libCERTI/ObjectClass.cc)
 - The latest direct `deny` probe with a two-phase harness barrier shows RTIG
   progresses through:
   - `MessageProcessor::process(NM_Negotiated_Attribute_Ownership_Divestiture)`
@@ -178,7 +214,7 @@ in this workspace.
 
 That specific broadcast-path crash is now fixed. The root cause was a bad
 message accessor in
-[ObjectClass.cc](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/libCERTI/ObjectClass.cc):
+[ObjectClass.cc](CERTI/libCERTI/ObjectClass.cc):
 
 - the `REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION` branch in
   `broadcastClassMessage(...)` read `getMsgRAV()->getAttributesSize()`
@@ -247,7 +283,7 @@ This also makes the current CERTI mapping explicit:
 ## Runtime Findings
 
 The real probe in
-[test_certi_real_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/vendors/test_certi_real_backend_matrix.py)
+[test_certi_real_backend_matrix.py](tests/vendors/test_certi_real_backend_matrix.py)
 shows:
 
 - exchange, time, synchronization, unconditional divestiture, acquisition-if-available, and ownership query all pass

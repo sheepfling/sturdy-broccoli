@@ -1,7 +1,24 @@
-# Source/reference documents
+# Source Documents
 
-The `specs/ieee-1516-2010/` directory contains the IEEE standards PDFs and downloaded source ZIPs that were supplied for this workstream. If you re-download the ZIPs locally, use the default external scratch area under `/private/tmp/hla-2010/downloads` rather than a repo-local `downloads/` directory.
+This page is the hub for the preserved source material and provenance notes
+used by the HLA 2010 repository.
 
-These files are included to preserve the local development context for this repo seed. Before publishing or redistributing the repository, review IEEE licensing and redistribution requirements.
+Canonical order:
 
-The Python source tracks section anchors through `hla2010.spec_refs` and related docstrings, but the repo seed excludes generated verification packets and matrices so the repository can start clean.
+1. inventory of source material
+2. licensing and redistribution note
+3. extraction and provenance notes
+
+Internal index:
+
+- [source_documents_inventory.md](source_documents_inventory.md)
+- [source_documents_policy.md](source_documents_policy.md)
+
+Primary source families:
+
+- [reference/README.md](reference/README.md)
+- [reference/source_index.md](reference/source_index.md)
+- [reference/archive_index.md](reference/archive_index.md)
+
+Use this page when you want the source-material story instead of the full
+backend or verification matrices.
