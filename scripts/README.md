@@ -3,10 +3,13 @@
 This directory holds the repo-local entrypoints for setting up and validating
 the IEEE 1516.1-2010 workspace, including the vendored CERTI tree.
 
+Primary operator path:
+
+- `../certi-easy` use this first for CERTI install, doctor, build, run, smoke,
+  and upstream-vs-patched compare
+
 Core workflow:
 
-- `../certi-easy` the simplest operator entrypoint for pristine and patched
-  CERTI: install, doctor, build, run, smoke, and compare
 - `bootstrap_python.sh` create or refresh the local Python virtualenv and
   install editable project dependencies
 - `rebuild_certi.sh` configure, build, and install the repo-local CERTI source
@@ -72,7 +75,7 @@ Recommended CERTI commands:
   print the important paths and tell you whether real CERTI smoke can run in
   the current host/session
 - `./certi-easy smoke compare`
-  run the promoted upstream-vs-patched compare slice
+  run the promoted upstream-vs-patched smoke slice
 - `./certi-easy run patched rtig -v 0`
   launch the patched local `rtig`
 - `./certi-easy run upstream rtig -v 0`
@@ -89,15 +92,23 @@ Lower-level CERTI commands:
 - `./scripts/ci/vendor_runtime_smoke.sh certi-upstream`
   runs the upstream-only baseline probe
 - `./scripts/ci/vendor_runtime_smoke.sh certi-compare`
-  runs the promoted time-management baseline, negotiated-ownership baseline,
-  and release-request `deny` / `confirm` / `ifwanted` branch probes against
-  both upstream and patched CERTI for direct attribution
+  runs the promoted time-management baseline and release-request
+  `deny` / `confirm` / `ifwanted` branch probes against both upstream and
+  patched CERTI for direct attribution, plus the upstream negotiated-ownership
+  attribution baseline
 - `python3 -m pytest -q tests/time/test_section8_backend_matrix.py`
   runs the dedicated cross-backend Section 8 suite across the Python
   reference backend and the hosted Python REST/gRPC paths
 - `./scripts/ci/section8_backend_matrix_gate.sh`
   runs that Section 8 suite and refreshes
   `analysis/compliance/section8_backend_matrix.*`
+
+Known non-smoke matrix gap:
+
+- `tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_patched_negotiated_ownership_baseline`
+  remains a targeted real-runtime matrix case, not part of the easy-path smoke
+  contract. Keep it in the deeper ownership matrix until that slice is stable
+  enough to promote honestly.
 
 The helper scripts default their generated downloads, caches, and local
 runtime state to `/private/tmp/hla-2010` so the iCloud-synced workspace stays

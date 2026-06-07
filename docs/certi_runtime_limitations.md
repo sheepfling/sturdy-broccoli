@@ -99,10 +99,31 @@ Route meaning:
 - `certi-upstream` runs the pristine upstream baseline slice only.
 - `certi-compare` runs the same promoted baseline slices against both named
   baselines so failures can be attributed to original CERTI versus repo-local
-  source changes. The current promoted slices are:
+  source changes. The current promoted smoke slices are:
   - time-query / `flushQueueRequest`
-  - negotiated ownership end-to-end
   - release-request branch separation for `deny`, `confirm`, and `ifwanted`
+  - the upstream negotiated-ownership attribution baseline
+
+## Known Non-Smoke Matrix Gap
+
+One real CERTI ownership slice remains intentionally outside the easy-path
+smoke contract:
+
+- `tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_patched_negotiated_ownership_baseline`
+
+Reason:
+
+- patched CERTI still has a narrower negotiated-ownership runtime path than the
+  smoke-stable slices
+- the test is useful as a targeted matrix/regression probe
+- it is not yet stable enough to advertise as part of
+  `./certi-easy smoke compare`
+
+Operator rule:
+
+- use `./certi-easy smoke compare` for the honest stable baseline
+- use the deeper ownership matrix tests when you are explicitly working on
+  negotiated-ownership parity
 
 Session prerequisite:
 
@@ -156,6 +177,9 @@ Current named-baseline outcome from the runnable compare route
     `requestDivestitureConfirmation` callback
   - the resulting acquisition notification now carries the owner-supplied
     confirm tag end to end
+- `certi-patched` negotiated-ownership end-to-end baseline remains a known
+  non-smoke matrix gap. Keep it as a targeted ownership probe until that
+  branch is stable enough to promote honestly.
 
 ## Current Shortfalls
 

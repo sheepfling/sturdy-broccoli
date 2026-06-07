@@ -57,25 +57,25 @@ Additional repo-local material promoted from `INBOX`:
 python examples/target_radar_simulation.py --backend python --steps 5
 ```
 
-To bootstrap everything needed for local CERTI work as well:
+To bootstrap everything needed for local CERTI work as well, use the easy path
+first:
 
 ```bash
 ./certi-easy install
 ./certi-easy doctor
-```
-
-Simplest CERTI operator path:
-
-```bash
-./certi-easy install
 ./certi-easy smoke compare
 ```
 
-That gives you:
+That is the primary CERTI operator contract in this repo:
 
 - patched local CERTI built and installed
 - pristine upstream CERTI cloned, built, and installed
-- one command to compare the two runtimes on the promoted real matrix slices
+- one command to compare the two runtimes on the promoted real smoke slices
+
+Lower-level CERTI scripts such as `scripts/rebuild_certi.sh`,
+`scripts/rebuild_certi_upstream.sh`, and
+`scripts/ci/vendor_runtime_smoke.sh` remain available for targeted debugging
+and matrix work, but they are secondary operator entrypoints.
 
 Optional Java bridge packages can be installed with:
 
@@ -154,6 +154,16 @@ The python profile exercises, end to end:
 - DDM region filtering
 - a realistic target/radar object plus track-report scenario
 
+For a target/radar-only backend diagnostic packet, use:
+
+```bash
+./scripts/run_target_radar_backend_matrix.py
+```
+
+That runner writes JSON, CSV, Markdown, and SVG artifacts under
+`analysis/target_radar_backend_matrix/` and marks each backend as passed,
+skipped, or failed with an explicit reason.
+
 ## Local Git remote
 
 To attach a local bare remote for offline pushes, use:
@@ -199,10 +209,22 @@ Practical local commands:
 ./certi-easy smoke compare
 ./certi-easy run patched rtig -v 0
 ./certi-easy run upstream rtig -v 0
-python3 -m pytest -q tests/time/test_section8_backend_matrix.py
-./scripts/ci/section8_backend_matrix_gate.sh
 python3 -c "from hla2010.rti import create_rti_ambassador; rti=create_rti_ambassador('pitch-jpype'); print(rti.getHLAversion()); rti.close()"
 python3 -c "from hla2010.rti import create_rti_ambassador; rti=create_rti_ambassador('certi'); print(rti.getHLAversion()); rti.close()"
+```
+
+Smoke-scope note:
+
+- `./certi-easy smoke compare` is intentionally limited to the currently stable
+  upstream-vs-patched CERTI slices.
+- The patched negotiated-ownership end-to-end baseline is still tracked as a
+  targeted matrix gap, not part of the smoke contract.
+
+If you need the deeper time-management and compliance gates:
+
+```bash
+python3 -m pytest -q tests/time/test_section8_backend_matrix.py
+./scripts/ci/section8_backend_matrix_gate.sh
 ```
 
 The CERTI preflight reports either `real CERTI runnable` or `real CERTI will skip`
