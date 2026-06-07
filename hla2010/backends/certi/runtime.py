@@ -63,6 +63,8 @@ def coerce_time_scalar(value: Any) -> int | float:
 
 def decode_logical_time(type_name: str, raw: Any) -> Any:
     if type_name == "HLAinteger64Time":
+        if str(raw).lower() in {"inf", "+inf", "-inf"}:
+            return HLAfloat64Time(float(raw))
         return HLAinteger64Time(int(raw))
     if type_name == "HLAfloat64Time":
         return HLAfloat64Time(float(raw))
@@ -106,6 +108,8 @@ def build_certi_smoke_helper(runtime: CERTIRuntime, *, output_path: str | os.Pat
 
     output = Path(output_path).expanduser().resolve() if output_path is not None else HELPER_OUTPUT
     output.parent.mkdir(parents=True, exist_ok=True)
+    if output.exists() and output.stat().st_mtime >= HELPER_SOURCE.stat().st_mtime:
+        return output
 
     include_dirs: list[Path] = []
     for lib_dir in runtime.extra_lib_dirs:

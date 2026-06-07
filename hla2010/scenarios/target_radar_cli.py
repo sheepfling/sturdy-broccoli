@@ -23,10 +23,12 @@ def make_target_radar_factory(
     py4j_address: str = "127.0.0.1",
     py4j_port: int = 25333,
     py4j_callback_port: int = 0,
+    backend_options: dict[str, Any] | None = None,
 ) -> Callable[[str], Any]:
     """Build a backend factory for the target/radar example runners."""
 
     normalized = backend.strip().lower()
+    backend_options = dict(backend_options or {})
     if normalized in {"python", "inmemory", "in-memory"}:
         engine = InMemoryRTIEngine(name="target-radar-engine")
 
@@ -48,8 +50,13 @@ def make_target_radar_factory(
     if normalized in {"jpype", "java-jpype"}:
         from ..backends.jpype import JPypeConfig, rti_ambassador
 
+        jpype_options = dict(backend_options)
         classpath_list = [item for item in classpath if item]
-        config = JPypeConfig(classpath=classpath_list, rti_factory_name=rti_factory_name)
+        if classpath_list and "classpath" not in jpype_options:
+            jpype_options["classpath"] = classpath_list
+        if rti_factory_name is not None and "rti_factory_name" not in jpype_options:
+            jpype_options["rti_factory_name"] = rti_factory_name
+        config = jpype_options.pop("config", None) or JPypeConfig(**jpype_options)
 
         def factory(_role: str) -> Any:
             return rti_ambassador(config)
@@ -59,18 +66,22 @@ def make_target_radar_factory(
     if normalized in {"py4j", "java-py4j"}:
         from ..backends.py4j import Py4JConfig, rti_ambassador
 
+        py4j_options = dict(backend_options)
+        py4j_options.setdefault("gateway_parameters", {"address": py4j_address, "port": py4j_port})
+        py4j_options.setdefault("callback_server_parameters", {"port": py4j_callback_port})
+        if rti_factory_name is not None and "rti_factory_name" not in py4j_options:
+            py4j_options["rti_factory_name"] = rti_factory_name
+        config = py4j_options.pop("config", None) or Py4JConfig(**py4j_options)
+
         def factory(_role: str) -> Any:
-            return rti_ambassador(
-                Py4JConfig(
-                    gateway_parameters={"address": py4j_address, "port": py4j_port},
-                    callback_server_parameters={"port": py4j_callback_port},
-                    rti_factory_name=rti_factory_name,
-                )
-            )
+            return rti_ambassador(config)
 
         return factory
 
-    raise ValueError(f"unsupported backend {backend!r}")
+    def factory(_role: str) -> Any:
+        return create_rti_ambassador(normalized, **backend_options)
+
+    return factory
 
 
 __all__ = ["make_target_radar_factory", "target_radar_fom_path"]

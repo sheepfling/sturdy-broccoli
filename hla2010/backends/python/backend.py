@@ -501,9 +501,11 @@ class PythonRTIBackend(
     def _svc_getObjectClassHandle(self, theName: str) -> ObjectClassHandle:
         federation = self._require_joined()
         name = str(theName)
+        if name not in self.engine.object_classes_by_name:
+            raise NameNotFound(name)
         if self._enforce_fom_names(federation) and name not in federation.fom_catalog.object_classes:
             raise NameNotFound(name)
-        return self.engine.get_or_create_object_class(name).handle
+        return self.engine.object_classes_by_name[name].handle
 
     def _svc_getObjectClassName(self, theHandle: ObjectClassHandle) -> str:
         self._require_joined()
@@ -513,11 +515,12 @@ class PythonRTIBackend(
         federation = self._require_joined()
         class_def = self.engine.object_class_for_handle(whichClass)
         name = str(theName)
-        if self._enforce_fom_names(federation):
-            spec = federation.fom_catalog.object_classes.get(class_def.name)
-            if spec is None or name not in spec.attributes:
-                raise NameNotFound(name)
-        return self.engine.get_or_create_attribute(whichClass, name)
+        spec = federation.fom_catalog.object_classes.get(class_def.name)
+        if spec is not None and name not in spec.attributes:
+            raise NameNotFound(name)
+        if name not in class_def.attributes_by_name:
+            raise NameNotFound(name)
+        return class_def.attributes_by_name[name]
 
     def _svc_getAttributeName(self, whichClass: ObjectClassHandle, theHandle: AttributeHandle) -> str:
         self._require_joined()
@@ -526,9 +529,11 @@ class PythonRTIBackend(
     def _svc_getInteractionClassHandle(self, theName: str) -> InteractionClassHandle:
         federation = self._require_joined()
         name = str(theName)
+        if name not in self.engine.interactions_by_name:
+            raise NameNotFound(name)
         if self._enforce_fom_names(federation) and name not in federation.fom_catalog.interaction_classes:
             raise NameNotFound(name)
-        return self.engine.get_or_create_interaction_class(name).handle
+        return self.engine.interactions_by_name[name].handle
 
     def _svc_getInteractionClassName(self, theHandle: InteractionClassHandle) -> str:
         self._require_joined()
@@ -538,11 +543,12 @@ class PythonRTIBackend(
         federation = self._require_joined()
         class_def = self.engine.interaction_for_handle(whichClass)
         name = str(theName)
-        if self._enforce_fom_names(federation):
-            spec = federation.fom_catalog.interaction_classes.get(class_def.name)
-            if spec is None or name not in spec.parameters:
-                raise NameNotFound(name)
-        return self.engine.get_or_create_parameter(whichClass, name)
+        spec = federation.fom_catalog.interaction_classes.get(class_def.name)
+        if spec is not None and name not in spec.parameters:
+            raise NameNotFound(name)
+        if name not in class_def.parameters_by_name:
+            raise NameNotFound(name)
+        return class_def.parameters_by_name[name]
 
     def _svc_getParameterName(self, whichClass: InteractionClassHandle, theHandle: ParameterHandle) -> str:
         self._require_joined()
@@ -569,9 +575,11 @@ class PythonRTIBackend(
     def _svc_getDimensionHandle(self, theName: str) -> DimensionHandle:
         federation = self._require_joined()
         name = str(theName)
+        if name not in self.engine.dimensions_by_name:
+            raise NameNotFound(name)
         if self._enforce_fom_names(federation) and federation.fom_catalog.dimensions and name not in federation.fom_catalog.dimensions:
             raise NameNotFound(name)
-        return self.engine.get_or_create_dimension(name)
+        return self.engine.dimensions_by_name[name]
 
     def _svc_getDimensionName(self, theHandle: DimensionHandle) -> str:
         self._require_joined()

@@ -30,6 +30,7 @@ from .codecs import (
 )
 from .runtime import (
     CERTIConfig,
+    HELPER_SOURCE,
     build_certi_smoke_helper,
     coerce_time_scalar,
     decode_logical_interval,
@@ -97,8 +98,9 @@ class CERTIBackend(RTIBackend):
             if self.config.helper_path is not None
             else build_certi_smoke_helper(self.runtime)
         )
-        if self.config.helper_path is not None and not helper_binary.exists():
-            helper_binary = build_certi_smoke_helper(self.runtime, output_path=helper_binary)
+        if self.config.helper_path is not None:
+            if (not helper_binary.exists()) or (helper_binary.stat().st_mtime < HELPER_SOURCE.stat().st_mtime):
+                helper_binary = build_certi_smoke_helper(self.runtime, output_path=helper_binary)
         env = self.runtime.runtime_env()
         env.update(
             {

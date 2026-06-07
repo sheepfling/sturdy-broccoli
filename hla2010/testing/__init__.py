@@ -3,10 +3,14 @@ from __future__ import annotations
 
 from . import java_shim as java_shim
 from . import scenarios as scenarios
+from . import target_radar_backend_matrix as target_radar_backend_matrix
+from . import target_radar_proof as target_radar_proof
 from . import two_federate_suite as two_federate_suite
 
 __all__ = [
     "java_shim",
+    "target_radar_backend_matrix",
+    "target_radar_proof",
     "scenarios",
     "two_federate_suite",
 ]
