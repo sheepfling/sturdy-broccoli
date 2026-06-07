@@ -44,6 +44,7 @@ from hla2010.exceptions import (
     InteractionParameterNotDefined,
     InteractionRelevanceAdvisorySwitchIsOff,
     InteractionRelevanceAdvisorySwitchIsOn,
+    InvalidDimensionHandle,
     InvalidFederateHandle,
     InvalidInteractionClassHandle,
     InvalidLogicalTime,
@@ -85,8 +86,10 @@ from hla2010.exceptions import (
     TimeConstrainedAlreadyEnabled,
 )
 from hla2010.handles import (
+    AttributeHandle,
     AttributeHandleSet,
     AttributeSetRegionSetPairList,
+    DimensionHandle,
     FederateHandleSet,
     MessageRetractionHandle,
     ObjectInstanceHandle,

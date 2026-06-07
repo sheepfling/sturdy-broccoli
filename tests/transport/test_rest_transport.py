@@ -136,10 +136,10 @@ def test_rest_transport_can_host_python_rti_exchange_end_to_end(time_factory_nam
         config = TwoFederateExchangeConfig(
             federation_name=f"RestHostedPythonFederation-{time_factory_name}",
             fom_modules=(str(Path("hla2010/resources/foms/VendorSmokeFOM.xml").resolve()),),
-            object_class_name="TestObjectClassR",
-            attribute_name="DataR",
-            interaction_class_name="MsgR",
-            parameter_name="MsgDataR",
+            object_class_name="HLAobjectRoot.SmokeObject",
+            attribute_name="Payload",
+            interaction_class_name="HLAinteractionRoot.SmokeInteraction",
+            parameter_name="Message",
             object_instance_name=f"RestHostedObject-{time_factory_name}-1",
             attribute_payload=b"payload-r",
             attribute_tag=b"reflect-tag",
@@ -200,10 +200,10 @@ def test_rest_transport_polling_contract_drains_buffered_callbacks():
         publisher.join_federation_execution("Publisher", "ProbeFederate", "RestPollingContractFederation")
         subscriber.join_federation_execution("Subscriber", "ProbeFederate", "RestPollingContractFederation")
 
-        publisher_class = publisher.get_object_class_handle("TestObjectClassR")
-        subscriber_class = subscriber.get_object_class_handle("TestObjectClassR")
-        publisher_attr = publisher.get_attribute_handle(publisher_class, "DataR")
-        subscriber_attr = subscriber.get_attribute_handle(subscriber_class, "DataR")
+        publisher_class = publisher.get_object_class_handle("HLAobjectRoot.SmokeObject")
+        subscriber_class = subscriber.get_object_class_handle("HLAobjectRoot.SmokeObject")
+        publisher_attr = publisher.get_attribute_handle(publisher_class, "Payload")
+        subscriber_attr = subscriber.get_attribute_handle(subscriber_class, "Payload")
         publisher.publish_object_class_attributes(publisher_class, {publisher_attr})
         subscriber.subscribe_object_class_attributes(subscriber_class, {subscriber_attr})
 
@@ -298,8 +298,8 @@ def test_rest_transport_can_host_python_rti_ownership_end_to_end():
             owner_name="Owner",
             acquirer_name="Acquirer",
             federate_type="OwnershipFederate",
-            object_class_name="TestObjectClassR",
-            attribute_name="DataR",
+            object_class_name="HLAobjectRoot.SmokeObject",
+            attribute_name="Payload",
             object_instance_name="RestOwnedObject-1",
         )
         summary = run_attribute_ownership_scenario(
@@ -344,8 +344,8 @@ def test_rest_transport_can_host_python_rti_negotiated_ownership_end_to_end():
             owner_name="Owner",
             acquirer_name="Acquirer",
             federate_type="NegotiatedOwnershipFederate",
-            object_class_name="TestObjectClassR",
-            attribute_name="DataR",
+            object_class_name="HLAobjectRoot.SmokeObject",
+            attribute_name="Payload",
             object_instance_name="RestNegotiatedOwnedObject-1",
         )
         summary = run_negotiated_attribute_ownership_scenario(

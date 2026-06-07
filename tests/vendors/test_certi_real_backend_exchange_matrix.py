@@ -40,7 +40,7 @@ def test_certi_backend_exchange_matrix(kind: str, udp_base: int, time_factory_na
             subscriber_federate=subscriber_fed,
         )
 
-        assert summary["discover"].args[2] == f"{kind}-Object-1"
+        assert summary["discover"].args[2] == config.object_instance_name
         assert summary["reflect"].args[1] == {summary["subscriber_attribute"]: b"payload-r"}
         assert summary["interaction"].args[1] == {summary["subscriber_parameter"]: b"hello-r"}
         assert summary["timed_reflect"].args[1] == {summary["subscriber_attribute"]: b"payload-tso"}

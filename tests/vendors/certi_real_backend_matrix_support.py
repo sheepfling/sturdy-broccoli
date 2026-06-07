@@ -7,7 +7,7 @@ import pytest
 from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.backends.base import BackendUnavailableError
 from hla2010.enums import CallbackModel, OrderType, ResignAction
-from hla2010.exceptions import AttributeDivestitureWasNotRequested, RTIinternalError
+from hla2010.exceptions import AttributeDivestitureWasNotRequested, InvalidLogicalTime, RTIinternalError
 from hla2010.real_rti import discover_certi_runtime_profile, discover_certi_smoke_fom, launch_certi_rtig, project_root
 from hla2010.rti import create_rti_ambassador
 from hla2010.testing.scenarios import (
@@ -117,12 +117,6 @@ def _assert_time_value_type(value: object, time_factory_name: str) -> None:
         return
     raise AssertionError(f"unexpected time factory {time_factory_name}")
 def _assert_certi_query_time_value(value: object, time_factory_name: str) -> None:
-    if time_factory_name == "HLAinteger64Time":
-        # The CERTI helper currently queries GALT/LITS through RTI1516fedTime on
-        # non-creator ambassadors, so integer-profile queries can surface as
-        # float64 values even though the numeric semantics are correct.
-        assert isinstance(value, (HLAinteger64Time, HLAfloat64Time))
-        return
     _assert_time_value_type(value, time_factory_name)
 def _helper_time_request(rti: object, command: str, logical_time: object, *, timeout: float = 1.0) -> None:
     backend = rti.backend
@@ -269,6 +263,43 @@ def _assert_certi_profile_time_query_and_fqr_baseline(
         assert enabled_lits.time_is_valid is True
         assert _logical_time_value(enabled_galt.time) == _logical_time_value(time_profile["lookahead"])
         assert _logical_time_value(enabled_lits.time) == _logical_time_value(time_profile["lookahead"])
+        try:
+            assert _logical_time_value(regulator.query_lookahead()) == _logical_time_value(time_profile["lookahead"])
+            regulator.modify_lookahead(time_profile["modified_lookahead"])
+            assert _logical_time_value(regulator.query_lookahead()) == _logical_time_value(time_profile["modified_lookahead"])
+        except RTIinternalError as exc:
+            if profile_name in {"certi-upstream", "certi-patched"} and "Not yet implemented" in str(exc):
+                pytest.xfail("CERTI queryLookahead/modifyLookahead are not implemented in this runtime")
+            raise
+
+        regulator_cls = regulator.get_object_class_handle("TestObjectClassR")
+        constrained_cls = constrained.get_object_class_handle("TestObjectClassR")
+        regulator_attr = regulator.get_attribute_handle(regulator_cls, "DataR")
+        constrained_attr = constrained.get_attribute_handle(constrained_cls, "DataR")
+        regulator_int = regulator.get_interaction_class_handle("MsgR")
+        regulator_param = regulator.get_parameter_handle(regulator_int, "MsgDataR")
+        regulator.publish_object_class_attributes(regulator_cls, {regulator_attr})
+        constrained.subscribe_object_class_attributes(constrained_cls, {constrained_attr})
+        regulator.publish_interaction_class(regulator_int)
+        constrained.subscribe_interaction_class(regulator_int)
+        regulator_obj = regulator.register_object_instance(regulator_cls, f"{federation_name}-Lookahead")
+        _evoke_pair(regulator, constrained)
+
+        zero_time = time_profile["initial_time"]
+        with pytest.raises(InvalidLogicalTime):
+            regulator.update_attribute_values(
+                regulator_obj,
+                {regulator_attr: b"lookahead-early"},
+                b"lookahead-early",
+                zero_time,
+            )
+        with pytest.raises(InvalidLogicalTime):
+            regulator.send_interaction(
+                regulator_int,
+                {regulator_param: b"lookahead-early"},
+                b"lookahead-early",
+                zero_time,
+            )
 
         constrained.flush_queue_request(time_profile["timestamped_interaction_time"])
         _evoke_pair(regulator, constrained)

@@ -7,8 +7,8 @@ import pytest
 
 from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.backends.base import BackendUnavailableError
-from hla2010.enums import OrderType, ResignAction
-from hla2010.exceptions import RTIexception
+from hla2010.enums import CallbackModel, OrderType, ResignAction
+from hla2010.exceptions import InvalidLogicalTime, RTIexception
 from hla2010.real_rti import launch_pitch_runtime
 from hla2010.rti import create_rti_ambassador
 from hla2010.testing.scenarios import (
@@ -159,6 +159,84 @@ def test_pitch_backend_exchange_matrix(kind: str):
         )
         assert history["receive_reflect"].args[3] is OrderType.RECEIVE
         assert history["timestamp_interaction"].args[3] is OrderType.TIMESTAMP
+
+        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
+        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+        publisher.destroy_federation_execution(federation_name)
+        subscriber.disconnect()
+        publisher.disconnect()
+    finally:
+        if subscriber is not None:
+            subscriber.close()
+        if publisher is not None:
+            publisher.close()
+        runtime.terminate()
+
+
+@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+def test_pitch_backend_lookahead_matrix(kind: str):
+    _require_real_rti_smoke()
+    try:
+        runtime = launch_pitch_runtime()
+    except BackendUnavailableError as exc:
+        pytest.skip(str(exc))
+
+    federation_name = f"{kind}-lookahead-{uuid.uuid4().hex[:8]}"
+    publisher_fed = RecordingFederateAmbassador()
+    subscriber_fed = RecordingFederateAmbassador()
+    publisher = None
+    subscriber = None
+    try:
+        publisher = create_rti_ambassador(kind)
+        subscriber = create_rti_ambassador(kind)
+        config = _pitch_exchange_config(federation_name, f"{kind}-Lookahead-1")
+
+        publisher.connect(publisher_fed, CallbackModel.HLA_EVOKED)
+        subscriber.connect(subscriber_fed, CallbackModel.HLA_EVOKED)
+        publisher.create_federation_execution(federation_name, list(config.fom_modules), config.logical_time_implementation_name)
+        publisher.join_federation_execution("Publisher", "TimeFederate", federation_name)
+        subscriber.join_federation_execution("Subscriber", "TimeFederate", federation_name)
+
+        object_class = publisher.get_object_class_handle(config.object_class_name)
+        attribute = publisher.get_attribute_handle(object_class, config.attribute_name)
+        interaction = publisher.get_interaction_class_handle(config.interaction_class_name)
+        parameter = publisher.get_parameter_handle(interaction, config.parameter_name)
+
+        publisher.publish_object_class_attributes(object_class, {attribute})
+        subscriber.subscribe_object_class_attributes(object_class, {attribute})
+        publisher.publish_interaction_class(interaction)
+        subscriber.subscribe_interaction_class(interaction)
+
+        publisher.enable_time_regulation(config.lookahead)
+        subscriber.enable_time_constrained()
+        for _ in range(16):
+            publisher.evoke_multiple_callbacks(0.0, 0.05)
+            subscriber.evoke_multiple_callbacks(0.0, 0.05)
+
+        assert publisher.query_lookahead() == config.lookahead
+        publisher.modify_lookahead(HLAinteger64Interval(2))
+        assert publisher.query_lookahead() == HLAinteger64Interval(2)
+
+        instance = publisher.register_object_instance(object_class, config.object_instance_name)
+        for _ in range(8):
+            publisher.evoke_multiple_callbacks(0.0, 0.05)
+            subscriber.evoke_multiple_callbacks(0.0, 0.05)
+
+        zero_time = HLAinteger64Time(0)
+        with pytest.raises(InvalidLogicalTime):
+            publisher.update_attribute_values(
+                instance,
+                {attribute: config.first_payload},
+                config.first_tag,
+                zero_time,
+            )
+        with pytest.raises(InvalidLogicalTime):
+            publisher.send_interaction(
+                interaction,
+                {parameter: config.second_payload},
+                config.second_tag,
+                zero_time,
+            )
 
         subscriber.resign_federation_execution(ResignAction.NO_ACTION)
         publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)

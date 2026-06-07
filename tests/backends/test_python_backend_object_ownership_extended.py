@@ -1534,6 +1534,24 @@ def test_enable_time_regulation_rejects_not_connected_not_joined_invalid_lookahe
 
 
 def test_support_service_lookup_and_factory_tail_rejects_declared_exceptions():
+    factory_getters = (
+        lambda tx: tx.get_attribute_handle_factory(),
+        lambda tx: tx.get_attribute_handle_set_factory(),
+        lambda tx: tx.get_attribute_handle_value_map_factory(),
+        lambda tx: tx.get_attribute_set_region_set_pair_list_factory(),
+        lambda tx: tx.get_dimension_handle_factory(),
+        lambda tx: tx.get_dimension_handle_set_factory(),
+        lambda tx: tx.get_federate_handle_factory(),
+        lambda tx: tx.get_federate_handle_set_factory(),
+        lambda tx: tx.get_interaction_class_handle_factory(),
+        lambda tx: tx.get_object_class_handle_factory(),
+        lambda tx: tx.get_object_instance_handle_factory(),
+        lambda tx: tx.get_parameter_handle_factory(),
+        lambda tx: tx.get_parameter_handle_value_map_factory(),
+        lambda tx: tx.get_region_handle_set_factory(),
+        lambda tx: tx.get_transportation_type_handle_factory(),
+    )
+
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
         rti.get_federate_name(None)
@@ -1548,6 +1566,12 @@ def test_support_service_lookup_and_factory_tail_rejects_declared_exceptions():
     with pytest.raises(NotConnected):
         rti.get_update_rate_value("default")
     with pytest.raises(NotConnected):
+        rti.get_update_rate_value_for_attribute(ObjectInstanceHandle(1), AttributeHandle(1))
+    with pytest.raises(NotConnected):
+        rti.get_transportation_type("HLAreliable")
+    with pytest.raises(NotConnected):
+        rti.get_transportation_name(TransportationTypeHandle(1))
+    with pytest.raises(NotConnected):
         rti.get_automatic_resign_directive()
     with pytest.raises(NotConnected):
         rti.set_automatic_resign_directive(ResignAction.NO_ACTION)
@@ -1561,10 +1585,9 @@ def test_support_service_lookup_and_factory_tail_rejects_declared_exceptions():
         rti.disable_interaction_relevance_advisory_switch()
     with pytest.raises(NotConnected):
         rti.get_time_factory()
-    with pytest.raises(NotConnected):
-        rti.get_attribute_handle_factory()
-    with pytest.raises(NotConnected):
-        rti.get_transportation_type_handle_factory()
+    for getter in factory_getters:
+        with pytest.raises(NotConnected):
+            getter(rti)
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
@@ -1580,6 +1603,12 @@ def test_support_service_lookup_and_factory_tail_rejects_declared_exceptions():
     with pytest.raises(FederateNotExecutionMember):
         rti.get_update_rate_value("default")
     with pytest.raises(FederateNotExecutionMember):
+        rti.get_update_rate_value_for_attribute(ObjectInstanceHandle(1), AttributeHandle(1))
+    with pytest.raises(FederateNotExecutionMember):
+        rti.get_transportation_type("HLAreliable")
+    with pytest.raises(FederateNotExecutionMember):
+        rti.get_transportation_name(TransportationTypeHandle(1))
+    with pytest.raises(FederateNotExecutionMember):
         rti.get_automatic_resign_directive()
     with pytest.raises(FederateNotExecutionMember):
         rti.set_automatic_resign_directive(ResignAction.NO_ACTION)
@@ -1593,10 +1622,9 @@ def test_support_service_lookup_and_factory_tail_rejects_declared_exceptions():
         rti.disable_interaction_relevance_advisory_switch()
     with pytest.raises(FederateNotExecutionMember):
         rti.get_time_factory()
-    with pytest.raises(FederateNotExecutionMember):
-        rti.get_attribute_handle_factory()
-    with pytest.raises(FederateNotExecutionMember):
-        rti.get_transportation_type_handle_factory()
+    for getter in factory_getters:
+        with pytest.raises(FederateNotExecutionMember):
+            getter(rti)
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, owner_handle, observer_handle = joined_pair("support-lookup-tail-fed")
@@ -1608,11 +1636,19 @@ def test_support_service_lookup_and_factory_tail_rejects_declared_exceptions():
     bad_class = type(cls)(cls.value + 999)
     bad_interaction = type(interaction)(interaction.value + 999)
     bad_object = ObjectInstanceHandle(object_handle.value + 999)
+    bad_dim = DimensionHandle(999999)
+    bad_attr = AttributeHandle(999999)
 
     with pytest.raises(FederateHandleNotKnown):
         owner.get_federate_name(type(owner_handle)(owner_handle.value + observer_handle.value + 1000))
     with pytest.raises(InvalidFederateHandle):
         owner.get_federate_name(object())
+    with pytest.raises(NameNotFound):
+        owner.get_federate_handle("no-such-federate")
+    with pytest.raises(NameNotFound):
+        owner.get_object_class_handle("HLAobjectRoot.NoSuchClass")
+    with pytest.raises(InvalidObjectClassHandle):
+        owner.get_object_class_name(bad_class)
     with pytest.raises(InvalidObjectClassHandle):
         owner.get_attribute_handle(bad_class, "Position")
     with pytest.raises(NameNotFound):
@@ -1620,13 +1656,31 @@ def test_support_service_lookup_and_factory_tail_rejects_declared_exceptions():
     with pytest.raises(NameNotFound):
         owner.get_interaction_class_handle("HLAinteractionRoot.NoSuchInteraction")
     with pytest.raises(InvalidInteractionClassHandle):
+        owner.get_interaction_class_name(bad_interaction)
+    with pytest.raises(InvalidInteractionClassHandle):
         owner.get_parameter_handle(bad_interaction, "TrackId")
     with pytest.raises(NameNotFound):
         owner.get_parameter_handle(interaction, "NoSuchParameter")
+    with pytest.raises(AttributeNotDefined):
+        owner.get_update_rate_value_for_attribute(object_handle, bad_attr)
+    with pytest.raises(ObjectInstanceNotKnown):
+        owner.get_update_rate_value_for_attribute(bad_object, attr)
     with pytest.raises(ObjectInstanceNotKnown):
         owner.get_object_instance_name(bad_object)
+    with pytest.raises(ObjectInstanceNotKnown):
+        owner.get_object_instance_handle("no-such-object")
+    with pytest.raises(ObjectInstanceNotKnown):
+        owner.get_known_object_class_handle(bad_object)
     with pytest.raises(InvalidUpdateRateDesignator):
         owner.get_update_rate_value("bogus-rate")
+    with pytest.raises(InvalidInteractionClassHandle):
+        owner.get_available_dimensions_for_interaction_class(bad_interaction)
+    with pytest.raises(NameNotFound):
+        owner.get_dimension_handle("NoSuchDimension")
+    with pytest.raises(InvalidDimensionHandle):
+        owner.get_dimension_name(bad_dim)
+    with pytest.raises(InvalidDimensionHandle):
+        owner.get_dimension_upper_bound(bad_dim)
     with pytest.raises(InvalidResignAction):
         owner.set_automatic_resign_directive(object())
     with pytest.raises(InvalidFederateHandle):
@@ -1639,8 +1693,12 @@ def test_support_service_lookup_and_factory_tail_rejects_declared_exceptions():
         owner.get_order_type("bogus-order")
     with pytest.raises(InvalidTransportationName):
         owner.get_transportation_type_handle("bogus-transport")
+    with pytest.raises(InvalidTransportationName):
+        owner.get_transportation_type("bogus-transport")
     with pytest.raises(InvalidTransportationType):
         owner.get_transportation_type_name(TransportationTypeHandle(999))
+    with pytest.raises(InvalidTransportationType):
+        owner.get_transportation_name(TransportationTypeHandle(999))
     with pytest.raises(InteractionRelevanceAdvisorySwitchIsOff):
         owner.disable_interaction_relevance_advisory_switch()
     owner.enable_interaction_relevance_advisory_switch()
