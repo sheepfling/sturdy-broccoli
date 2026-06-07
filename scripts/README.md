@@ -57,11 +57,11 @@ Script families:
 
 - [ci/README.md](ci/README.md): CI wrapper family index
 - `ci/install_python.sh`: local QA environment install
-- `ci/full_sequence.sh`: install-to-compliance lifecycle sequence
+- `ci/full_sequence.sh`: install-to-compliance lifecycle sequence with lint and type annotations
 - `ci/lint.sh`: required lint/syntax gate
 - `ci/lint_backlog.sh`: broader Ruff backlog report
 - `ci/lint_strict.sh`: stricter opt-in Ruff gate
-- `ci/pyright.sh`: scoped Pyright gate
+- `ci/pyright.sh`: scoped Pyright gate used by the full sequence
 - `ci/test.sh`: pytest wrapper
 - `ci/seed_suite.sh`: default CI quality gate
 - `ci/target_radar_backend_matrix.sh`: target/radar backend smoke matrix
