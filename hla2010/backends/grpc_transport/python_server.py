@@ -33,7 +33,9 @@ from ..certi.codecs import (
     handle_set_spec,
     handle_value_map_spec,
 )
-from ..python import InMemoryRTIEngine, PythonRTIConfig, rti_ambassador
+from ..python.engine import InMemoryRTIEngine
+from ..python.factory import rti_ambassador
+from ..python.state import PythonRTIConfig
 from ..transport import TransportRequest, TransportResponse
 from . import rti_transport_pb2_grpc as pb2_grpc
 from .client import GrpcTransportClientAdapter
