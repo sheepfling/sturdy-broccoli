@@ -3,8 +3,24 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
+usage() {
+  cat <<'EOF'
+usage: ./scripts/run_certi_local.sh <rtig|rtia> [args...]
+
+Launch the local CERTI runtime binaries from the configured installation
+prefix.
+EOF
+}
+
+case "${1:-}" in
+  help|-h|--help)
+    usage
+    exit 0
+    ;;
+esac
+
 if [[ $# -lt 1 ]]; then
-  echo "usage: $0 <rtig|rtia> [args...]"
+  usage
   exit 2
 fi
 

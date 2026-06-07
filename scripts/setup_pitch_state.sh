@@ -5,18 +5,26 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 HLA2010_LOCAL_STATE_ROOT="${HLA2010_LOCAL_STATE_ROOT:-/private/tmp/hla-2010}"
 pitch_home="${HLA2010_PITCH_HOME:-}"
 
+# shellcheck source=lib/shell.sh
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "$0"
+
+log_err() {
+  hla2010_shell_log "$*" >&2
+}
+
 if [[ -z "$pitch_home" && -d "$ROOT_DIR/third_party/pitch/PITCH-prti1516e-manual" ]]; then
   pitch_home="$ROOT_DIR/third_party/pitch/PITCH-prti1516e-manual"
 fi
 if [[ -z "$pitch_home" ]]; then
-  echo "error: Pitch runtime home not found; set HLA2010_PITCH_HOME" >&2
-  exit 1
+  hla2010_shell_die "Pitch runtime home not found; set HLA2010_PITCH_HOME"
 fi
 
 pitch_user_home="${HLA2010_PITCH_USER_HOME:-$HLA2010_LOCAL_STATE_ROOT/pitch-user-home}"
 source_user_home="$pitch_home/user.home"
 marker_path="$pitch_user_home/.hla2010_pitch_user_home_seeded"
 
+log_err "seeding Pitch user home at $pitch_user_home"
 mkdir -p "$pitch_user_home"
 
 if [[ ! -e "$marker_path" ]]; then
@@ -61,6 +69,7 @@ upsert_setting "$crc_settings" "CRC.requireWebViewPassPhrase" "false"
 upsert_setting "$crc_settings" "CRC.webViewPassPhrase" ""
 
 if [[ "${HLA2010_PITCH_CRC_MODE:-local}" == "docker" ]]; then
+  log_err "configuring Pitch user home for Docker mode"
   upsert_setting "$crc_settings" "CRC.skipConnectivityCheck" "true"
 
   lrc_settings="$runtime_state_dir/prti1516eLRC.settings"

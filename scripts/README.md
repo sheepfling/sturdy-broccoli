@@ -1,119 +1,92 @@
 # Scripts
 
-This directory holds the repo-local entrypoints for setting up and validating
-the IEEE 1516.1-2010 workspace, including the vendored CERTI tree.
+Repo-local entrypoints are organized the same way as the docs:
 
-Primary operator path:
+`entrypoint -> family -> command -> evidence`
 
-- `../certi-easy` use this first for CERTI install, doctor, build, run, smoke,
-  and upstream-vs-patched compare
+Start here:
 
-Core workflow:
+- [../README.md](../README.md): operator-facing install and smoke entry point
+- [../docs/README.md](../docs/README.md): documentation index
+- [../docs/documentation_hierarchy.md](../docs/documentation_hierarchy.md): canonical doc hierarchy
 
-- `bootstrap_python.sh` create or refresh the local Python virtualenv and
-  install editable project dependencies
-- `rebuild_certi.sh` configure, build, and install the repo-local CERTI source
-  tree into `CERTI-build/` and `CERTI-install/`
-- `rebuild_certi_upstream.sh` clone, build, and install a pristine upstream
-  CERTI baseline from GitHub into `CERTI-upstream-source/`,
-  `CERTI-upstream-build/`, and `CERTI-upstream-install/`
-- `bootstrap_all.sh` run both of the above in sequence
-- `check_certi_preflight.py` report whether the local host/session can actually
-  run the real CERTI matrix or whether it will skip, including loopback socket
-  permission failures
-- `run_certi_local.sh` launch `rtig` or `rtia` against the repo-local CERTI
-  install
-- `setup_pitch_state.sh` seed and then preserve a persistent Pitch `user.home`
-  under the repo-managed local-state root so the free-runtime acceptance dialog
-  is not reintroduced on every launch
-- `run_pitch_local.sh` launch the extracted Pitch runtime if present
-- `setup_local_git_remote.sh` create or refresh a local bare Git remote under
-  the repo-managed local-state root and attach it as a named remote
-- `run_two_federate_suite.py` execute the composite two-federate suite and emit
-  JSON, CSV, Markdown, and SVG artifacts under `analysis/`, including the
-  profile matrix and callback timeline packet
-- `generate_compliance_artifacts.py` emit the spec-traceability packet under
-  `analysis/compliance/`, including service/requirement ledgers, section
-  summaries, public-class mapping inventory, rows lacking exact
-  requirement-level executable evidence, and the dedicated Section 8
-  backend matrix
+Primary operator entrypoints:
 
-Quality gates:
+- `./bootstrap` profile-based setup for `python`, `certi`, `pitch`, or `all`
+- `./certi-easy` CERTI install, doctor, build, run, smoke, and compare flow
 
-- `ci/install_python.sh` install the local QA environment used by CI and local reruns
-- `ci/lint.sh` run the repo lint/syntax gate
-- `ci/check_generated_docs.sh` verify the generated backend alias inventory is in sync with `rti.py`
-- `ci/lint_backlog.sh` report the broader Ruff backlog without making it a required gate
-- `ci/lint_strict.sh` run an opt-in stricter Ruff gate, including `E501`, with temporary excludes for the largest legacy/generated files
-- `ci/test.sh` run pytest for the full suite or for selected paths
-- `ci/seed_suite.sh` run the default CI quality gate locally
-- `ci/section8_backend_matrix_gate.sh` run the dedicated cross-backend
-  Section 8 matrix and regenerate the backend-specific Section 8 compliance
-  artifacts in one step
-- `ci/vendor_runtime_smoke.sh` run the CERTI or Pitch vendor runtime profiles
-  or the combined real-profile matrix
+Operator guide links:
 
-CERTI baseline attribution:
+- [../docs/certi_section8_runbook.md](../docs/certi_section8_runbook.md): CERTI operator runbook
+- [../docs/pitch_decision_tree.md](../docs/pitch_decision_tree.md): Pitch selection and troubleshooting
 
-- Use `HLA2010_CERTI_UPSTREAM_PREFIX` for pristine/original CERTI evidence.
-- Run `rebuild_certi_upstream.sh` to fetch that baseline from
-  `https://github.com/etopzone/CERTI.git` unless you already have a pristine
-  local install.
-- Use `HLA2010_CERTI_PATCHED_PREFIX` for an explicit patched CERTI install, or
-  the repo-local `CERTI-install/` from `rebuild_certi.sh` for the normal patched
-  baseline.
-- The `certi-upstream` selector never falls back to repo-local `CERTI-build/`
-  libraries. Set `HLA2010_CERTI_UPSTREAM_BUILD_ROOT` only when the upstream
-  baseline intentionally needs its own build overlay.
+Script families:
 
-Recommended CERTI commands:
+### Bootstrap
 
-- `./certi-easy install`
-  bootstrap Python, build patched CERTI, and clone/build pristine upstream
-  CERTI in one shot
-- `./certi-easy doctor`
-  print the important paths and tell you whether real CERTI smoke can run in
-  the current host/session
-- `./certi-easy smoke compare`
-  run the promoted upstream-vs-patched smoke slice
-- `./certi-easy run patched rtig -v 0`
-  launch the patched local `rtig`
-- `./certi-easy run upstream rtig -v 0`
-  launch the pristine upstream `rtig`
+- `bootstrap_profile.sh`: profile-based setup dispatcher
+- `bootstrap_python.sh`: editable Python environment bootstrap
+- `bootstrap_all.sh`: combined Python + CERTI + Pitch bootstrap
 
-Lower-level CERTI commands:
+### CERTI Runtime
 
-- `./scripts/rebuild_certi.sh`
-  builds the repo-local vendored/patched CERTI baseline
-- `./scripts/rebuild_certi_upstream.sh`
-  clones and builds the pristine upstream CERTI baseline
-- `./scripts/ci/vendor_runtime_smoke.sh certi-patched`
-  runs the patched/runtime smoke and full patched CERTI matrix
-- `./scripts/ci/vendor_runtime_smoke.sh certi-upstream`
-  runs the upstream-only baseline probe
-- `./scripts/ci/vendor_runtime_smoke.sh certi-compare`
-  runs the promoted time-management baseline and release-request
-  `deny` / `confirm` / `ifwanted` branch probes against both upstream and
-  patched CERTI for direct attribution, plus the upstream negotiated-ownership
-  attribution baseline
-- `python3 -m pytest -q tests/time/test_section8_backend_matrix.py`
-  runs the dedicated cross-backend Section 8 suite across the Python
-  reference backend and the hosted Python REST/gRPC paths
-- `./scripts/ci/section8_backend_matrix_gate.sh`
-  runs that Section 8 suite and refreshes
-  `analysis/compliance/section8_backend_matrix.*`
+- `rebuild_certi.sh`: patched CERTI build/install
+- `rebuild_certi_upstream.sh`: pristine upstream CERTI build/install
+- `run_certi_local.sh`: launch local `rtig` / `rtia`
+- `check_certi_preflight.py`: host/session readiness probe
+- `ci/vendor_runtime_smoke.sh`: CERTI and Pitch runtime smoke matrix
 
-Known non-smoke matrix gap:
+### Pitch Runtime
 
-- `tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_patched_negotiated_ownership_baseline`
-  remains a targeted real-runtime matrix case, not part of the easy-path smoke
-  contract. Keep it in the deeper ownership matrix until that slice is stable
-  enough to promote honestly.
+- `setup_pitch_state.sh`: persistent Pitch `user.home`
+- `run_pitch_local.sh`: launch extracted Pitch runtime
+- `pitch_docker_easy.sh`: simple Pitch Docker operator flow
+- `run_pitch_docker_crc.sh`: Docker-backed Pitch CRC runner
+- `accept_pitch_dialog.sh`: acceptance dialog helper
 
-The helper scripts default their generated downloads, caches, and local
-runtime state to `/private/tmp/hla-2010` so the iCloud-synced workspace stays
-clean. That includes Pitch state and the default service-report sink used by
-the Python RTI backend.
+### Evidence and Analysis
 
-The GitHub workflows are intentionally thin wrappers around these scripts. If a
-quality gate changes, update the script first and let CI call through to it.
+- `run_two_federate_suite.py`: composite two-federate artifact packet
+- `run_target_radar_backend_matrix.py`: target/radar backend diagnostic packet
+- `run_target_radar_proof.py`: target/radar proof packet
+- `generate_compliance_artifacts.py`: compliance and requirements packet
+- `diagnose_pitch_exchange.py`: Pitch exchange diagnostics
+- `diagnose_pitch_negotiated_ownership.py`: Pitch negotiated-ownership diagnostics
+
+### CI Wrappers
+
+- [ci/README.md](ci/README.md): CI wrapper family index
+- `ci/install_python.sh`: local QA environment install
+- `ci/lint.sh`: required lint/syntax gate
+- `ci/lint_backlog.sh`: broader Ruff backlog report
+- `ci/lint_strict.sh`: stricter opt-in Ruff gate
+- `ci/pyright.sh`: scoped Pyright gate
+- `ci/test.sh`: pytest wrapper
+- `ci/seed_suite.sh`: default CI quality gate
+- `ci/target_radar_backend_matrix.sh`: target/radar backend smoke matrix
+- `ci/target_radar_proof.sh`: target/radar proof packet
+- `ci/section8_backend_matrix_gate.sh`: cross-backend Section 8 matrix
+- `ci/check_generated_docs.sh`: generated backend alias inventory sync
+
+### Local State And Repo Plumbing
+
+- `local_state.sh`: shared local-state helper
+- `setup_local_state.sh`: create repo-managed symlinked caches/build trees
+- `setup_local_git_remote.sh`: local bare Git remote
+- `scripts/lib/shell.sh`: shared shell helper library
+
+### Other Helpers
+
+- `run_certi_local.sh`: direct CERTI `rtig` / `rtia` launcher
+- `run_pitch_local.sh`: direct Pitch launcher
+- `run_pitch_docker_crc.sh`: Docker-backed Pitch CRC launcher
+- `run_two_federate_suite.py`: composite suite artifact packet
+- `generate_compliance_artifacts.py`: compliance packet generator
+
+## Operating Rules
+
+- Keep generated downloads, caches, and transient runtime state under
+  `/private/tmp/hla-2010`.
+- Update the shell scripts first, then let CI call through to them.
+- Keep the wrappers thin: the scripts should orchestrate, not reimplement the
+  backend logic or the evidence generation logic.

@@ -4,6 +4,22 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 PROFILE="${1:-all}"
 
+# shellcheck source=lib/shell.sh
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "$0"
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  cat <<'EOF'
+vendor_runtime_smoke.sh: run CERTI and Pitch runtime smoke/profile checks.
+Profiles:
+- certi, certi-patched, certi-upstream, certi-compare
+- pitch
+- matrix
+- all
+EOF
+  exit 0
+fi
+
 # shellcheck disable=SC1091
 source "$ROOT_DIR/scripts/local_state.sh"
 # shellcheck disable=SC1091
@@ -48,6 +64,7 @@ require_runtime_prefix() {
 }
 
 run_certi_patched() {
+  hla2010_shell_log "vendor runtime smoke: certi patched"
   export HLA2010_CERTI_PATCHED_PREFIX="${HLA2010_CERTI_PATCHED_PREFIX:-${HLA2010_CERTI_PREFIX:-$(default_state_path "CERTI-install")}}"
   export HLA2010_CERTI_PATCHED_BUILD_ROOT="${HLA2010_CERTI_PATCHED_BUILD_ROOT:-${HLA2010_CERTI_BUILD_ROOT:-$(default_state_path "CERTI-build")}}"
   export HLA2010_CERTI_PREFIX="$HLA2010_CERTI_PATCHED_PREFIX"
@@ -62,6 +79,7 @@ run_certi_patched() {
 }
 
 run_certi_upstream() {
+  hla2010_shell_log "vendor runtime smoke: certi upstream"
   export HLA2010_CERTI_UPSTREAM_PREFIX="${HLA2010_CERTI_UPSTREAM_PREFIX:-$(default_state_path "CERTI-upstream-install")}"
   export HLA2010_CERTI_UPSTREAM_BUILD_ROOT="${HLA2010_CERTI_UPSTREAM_BUILD_ROOT:-$(default_state_path "CERTI-upstream-build")}"
   require_runtime_prefix "upstream CERTI install prefix" "${HLA2010_CERTI_UPSTREAM_PREFIX:-}"
@@ -72,6 +90,7 @@ run_certi_upstream() {
 }
 
 run_certi_compare() {
+  hla2010_shell_log "vendor runtime smoke: certi compare"
   export HLA2010_CERTI_UPSTREAM_PREFIX="${HLA2010_CERTI_UPSTREAM_PREFIX:-$(default_state_path "CERTI-upstream-install")}"
   export HLA2010_CERTI_UPSTREAM_BUILD_ROOT="${HLA2010_CERTI_UPSTREAM_BUILD_ROOT:-$(default_state_path "CERTI-upstream-build")}"
   export HLA2010_CERTI_PATCHED_PREFIX="${HLA2010_CERTI_PATCHED_PREFIX:-${HLA2010_CERTI_PREFIX:-$(default_state_path "CERTI-install")}}"
@@ -98,6 +117,7 @@ case "$PROFILE" in
     run_certi_compare
     ;;
   pitch)
+    hla2010_shell_log "vendor runtime smoke: pitch"
     export HLA2010_PITCH_HOME="${HLA2010_PITCH_HOME:-$(default_pitch_home)}"
     test -n "${HLA2010_PITCH_HOME:-}" || { echo "Pitch runtime bundle is required"; exit 1; }
     export HLA2010_PITCH_USER_HOME="${HLA2010_PITCH_USER_HOME:-$("$ROOT_DIR/scripts/setup_pitch_state.sh")}"
@@ -107,10 +127,12 @@ case "$PROFILE" in
     python -m pytest -q tests/vendors/test_pitch_real_backend_matrix.py
     ;;
   matrix)
+    hla2010_shell_log "vendor runtime smoke: matrix"
     "$0" certi
     "$0" pitch
     ;;
   all)
+    hla2010_shell_log "vendor runtime smoke: all"
     python -m pytest -q tests/vendors/test_real_vendor_runtime_smoke.py
     ;;
   *)

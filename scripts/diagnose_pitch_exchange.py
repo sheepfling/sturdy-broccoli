@@ -2,6 +2,7 @@
 """Run one Docker-backed Pitch exchange and dump callback evidence."""
 from __future__ import annotations
 
+import argparse
 import os
 import sys
 import traceback
@@ -17,6 +18,17 @@ from hla2010.real_rti import launch_pitch_runtime
 from hla2010.rti import create_rti_ambassador
 from hla2010.testing.scenario_exchange import TwoFederateExchangeConfig, run_two_federate_exchange_scenario
 from hla2010.time import HLAinteger64Interval, HLAinteger64Time
+
+
+def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "backend",
+        nargs="?",
+        default="pitch-jpype",
+        help="Backend identifier to exercise during the diagnostic run",
+    )
+    return parser.parse_args(argv)
 
 
 def _format_arg(value: object) -> str:
@@ -41,8 +53,9 @@ def _dump_records(label: str, federate: RecordingFederateAmbassador) -> None:
             print(f"  arg{arg_idx}: {_format_arg(arg)}", flush=True)
 
 
-def main() -> int:
-    kind = sys.argv[1] if len(sys.argv) > 1 else "pitch-jpype"
+def main(argv: list[str] | None = None) -> int:
+    args = _parse_args(argv)
+    kind = args.backend
     os.environ.setdefault("HLA2010_PITCH_CRC_MODE", "docker")
     os.environ.setdefault("HLA2010_PITCH_DOCKER_BUILD", "0")
 

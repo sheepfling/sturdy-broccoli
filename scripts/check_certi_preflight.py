@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 from pathlib import Path
 import sys
 
@@ -26,6 +27,10 @@ def _check(name: str, func):
 
 
 def main() -> int:
+    argparse.ArgumentParser(
+        description="Check whether the local CERTI runtime is runnable."
+    ).parse_args()
+
     checks: list[tuple[bool, str]] = [
         _check("certi_runtime", lambda: discover_certi_runtime().prefix),
         _check("certi_smoke_fom", discover_certi_smoke_fom),

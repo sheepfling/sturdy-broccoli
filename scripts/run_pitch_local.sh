@@ -8,12 +8,31 @@ pitch_java_home="${HLA2010_PITCH_JAVA_HOME:-}"
 pitch_java_bin="${HLA2010_PITCH_JAVA_BIN:-}"
 launcher_mode="${HLA2010_PITCH_LAUNCHER_MODE:-raw}"
 
+# shellcheck source=lib/shell.sh
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "$0"
+
+usage() {
+  cat <<'EOF'
+usage: ./scripts/run_pitch_local.sh [pitch-launch-args...]
+
+Launch the local Pitch runtime using the configured Pitch installation and
+user-home state.
+EOF
+}
+
+case "${1:-}" in
+  help|-h|--help)
+    usage
+    exit 0
+    ;;
+esac
+
 if [[ -z "$pitch_home" && -d "$ROOT_DIR/third_party/pitch/PITCH-prti1516e-manual" ]]; then
   pitch_home="$ROOT_DIR/third_party/pitch/PITCH-prti1516e-manual"
 fi
 if [[ -z "$pitch_home" ]]; then
-  echo "error: Pitch runtime home not found; set HLA2010_PITCH_HOME"
-  exit 1
+  hla2010_shell_die "Pitch runtime home not found; set HLA2010_PITCH_HOME"
 fi
 
 pitch_user_home="${HLA2010_PITCH_USER_HOME:-$HLA2010_LOCAL_STATE_ROOT/pitch-user-home}"
@@ -30,8 +49,7 @@ elif [[ -x "$pitch_home/jre/bin/java" ]]; then
 elif [[ -x "$pitch_home/.install4j/jre.bundle/Contents/Home/bin/java" ]]; then
   java_bin="$pitch_home/.install4j/jre.bundle/Contents/Home/bin/java"
 else
-  echo "error: bundled Java runtime not found below $pitch_home"
-  exit 1
+  hla2010_shell_die "bundled Java runtime not found below $pitch_home"
 fi
 
 java_library_parts=("$pitch_home/lib")
@@ -59,6 +77,10 @@ pitch_user_home="$("$ROOT_DIR/scripts/setup_pitch_state.sh")"
 pidfile="$pitch_user_home/.hla2010_pitch_crc.pid"
 common_settings="$pitch_user_home/prti1516e/prti_common.settings"
 
+hla2010_shell_log "Pitch runtime: $pitch_home"
+hla2010_shell_log "Pitch user home: $pitch_user_home"
+hla2010_shell_log "Pitch launcher mode: $launcher_mode"
+
 mkdir -p "$pitch_user_home/prti1516e"
 
 if [[ -f "$common_settings" ]]; then
@@ -72,6 +94,7 @@ else
 fi
 
 if [[ "${HLA2010_PITCH_UI_AUTOMATION:-0}" != "0" ]] && [[ "$(uname -s)" == "Darwin" ]]; then
+  hla2010_shell_log "starting macOS Pitch dialog automation helper"
   bash "$ROOT_DIR/scripts/accept_pitch_dialog.sh" >/dev/null 2>&1 &
 fi
 
@@ -98,6 +121,7 @@ fi
 printf '%s\n' "$$" > "$pidfile"
 case "$launcher_mode" in
   raw)
+    hla2010_shell_log "launching Pitch via raw java jar"
     exec env HOME="$pitch_user_home" \
       "$java_bin" \
       "${jvm_args[@]}" \
@@ -108,10 +132,10 @@ case "$launcher_mode" in
       "$@"
     ;;
   install4j)
+    hla2010_shell_log "launching Pitch via install4j cmdline"
     install4j_launcher="$pitch_home/bin/pRTI cmdline"
     if [[ ! -x "$install4j_launcher" ]]; then
-      echo "error: install4j launcher not found at $install4j_launcher"
-      exit 1
+      hla2010_shell_die "install4j launcher not found at $install4j_launcher"
     fi
     install4j_args=()
     for arg in "${jvm_args[@]}"; do
@@ -124,7 +148,6 @@ case "$launcher_mode" in
       "$@"
     ;;
   *)
-    echo "error: unsupported HLA2010_PITCH_LAUNCHER_MODE '$launcher_mode'"
-    exit 1
+    hla2010_shell_die "unsupported HLA2010_PITCH_LAUNCHER_MODE '$launcher_mode'"
     ;;
 esac

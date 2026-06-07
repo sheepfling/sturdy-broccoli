@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import importlib
 import inspect
 import json
@@ -528,6 +529,306 @@ _CORE_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     },
 )
 
+_SECTION10_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
+    {
+        "slice_id": "support-lookups",
+        "section_refs": ("IEEE 1516.1-2010 §10.4", "IEEE 1516.1-2010 §10.32"),
+        "profiles": (
+            {
+                "backend_id": "python-inmemory",
+                "backend_family": "python-reference",
+                "status": "complete-actionable",
+                "scope": "reference support lookup slice",
+                "session_status": "passing-in-this-session",
+                "evidence_tests": (
+                    "tests/backends/test_python_backend_object_ownership_extended.py",
+                    "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+                ),
+                "notes": "Reference backend now has focused negative-path coverage for the support lookup tail plus existing traceability coverage.",
+            },
+            {
+                "backend_id": "rest-hosted-python",
+                "backend_family": "hosted-python-rest",
+                "status": "not-yet-matrixed",
+                "scope": "hosted support lookup slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": (),
+                "notes": "Hosted support lookup matrix has not been split out yet.",
+            },
+            {
+                "backend_id": "grpc-hosted-python",
+                "backend_family": "hosted-python-grpc",
+                "status": "not-yet-matrixed",
+                "scope": "hosted support lookup slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": (),
+                "notes": "Hosted support lookup matrix has not been split out yet.",
+            },
+            {
+                "backend_id": "java-shim-jpype",
+                "backend_family": "java-shim",
+                "status": "not-yet-matrixed",
+                "scope": "java shim support lookup slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": (),
+                "notes": "Java shim support lookup matrix has not been split out yet.",
+            },
+            {
+                "backend_id": "java-shim-py4j",
+                "backend_family": "java-shim",
+                "status": "not-yet-matrixed",
+                "scope": "java shim support lookup slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": (),
+                "notes": "Java shim support lookup matrix has not been split out yet.",
+            },
+            {
+                "backend_id": "certi-native",
+                "backend_family": "vendor-certi",
+                "status": "not-yet-matrixed",
+                "scope": "vendor support lookup slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": (),
+                "notes": "CERTI support lookup matrix has not been split out yet.",
+            },
+            {
+                "backend_id": "pitch-jpype",
+                "backend_family": "vendor-pitch-java-bridge",
+                "status": "not-yet-matrixed",
+                "scope": "vendor support lookup slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": (),
+                "notes": "Pitch support lookup matrix has not been split out yet.",
+            },
+            {
+                "backend_id": "pitch-py4j",
+                "backend_family": "vendor-pitch-java-bridge",
+                "status": "not-yet-matrixed",
+                "scope": "vendor support lookup slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": (),
+                "notes": "Pitch support lookup matrix has not been split out yet.",
+            },
+        ),
+    },
+    {
+        "slice_id": "support-callback-control",
+        "section_refs": ("IEEE 1516.1-2010 §10.41", "IEEE 1516.1-2010 §10.44"),
+        "profiles": (
+            {
+                "backend_id": "python-inmemory",
+                "backend_family": "python-reference",
+                "status": "complete-actionable",
+                "scope": "reference callback-control slice",
+                "session_status": "passing-in-this-session",
+                "evidence_tests": ("tests/backends/test_python_backend_object_ownership_extended.py",),
+                "notes": "Reference backend now enforces save/restore callback-control blocking and within-callback evoke rejection.",
+            },
+            {
+                "backend_id": "rest-hosted-python",
+                "backend_family": "hosted-python-rest",
+                "status": "partial",
+                "scope": "hosted callback-control slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": ("tests/transport/test_rest_transport.py",),
+                "notes": "REST transport exercises evoke paths positively, but the support callback-control slice is not yet matrixed to the same depth.",
+            },
+            {
+                "backend_id": "grpc-hosted-python",
+                "backend_family": "hosted-python-grpc",
+                "status": "partial",
+                "scope": "hosted callback-control slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": ("tests/transport/test_grpc_transport_python_server.py",),
+                "notes": "gRPC transport exercises evoke paths positively, but the support callback-control slice is not yet matrixed to the same depth.",
+            },
+        ),
+    },
+    {
+        "slice_id": "support-advisories",
+        "section_refs": ("IEEE 1516.1-2010 §10.33", "IEEE 1516.1-2010 §10.40"),
+        "profiles": (
+            {
+                "backend_id": "python-inmemory",
+                "backend_family": "python-reference",
+                "status": "complete-actionable",
+                "scope": "reference advisory-switch slice",
+                "session_status": "passing-in-this-session",
+                "evidence_tests": ("tests/backends/test_python_backend_object_ownership_extended.py",),
+                "notes": "Reference backend has explicit advisory on/off and save/restore negative coverage.",
+            },
+        ),
+    },
+    {
+        "slice_id": "support-factories",
+        "section_refs": ("IEEE 1516.1-2010 §10.44",),
+        "profiles": (
+            {
+                "backend_id": "python-inmemory",
+                "backend_family": "python-reference",
+                "status": "complete-actionable",
+                "scope": "reference factory slice",
+                "session_status": "passing-in-this-session",
+                "evidence_tests": ("tests/backends/test_python_backend_object_ownership_extended.py",),
+                "notes": "Reference backend factory getters now have explicit connected vs joined negative coverage.",
+            },
+        ),
+    },
+)
+
+_PITCH_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
+    {
+        "slice_id": "lifecycle",
+        "section_refs": ("IEEE 1516.1-2010 §4.1", "IEEE 1516.1-2010 §4.10"),
+        "profiles": (
+            {
+                "backend_id": "pitch-jpype",
+                "backend_family": "vendor-pitch-java-bridge",
+                "status": "positive-path-passing",
+                "scope": "real-vendor lifecycle slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": ("tests/vendors/test_real_vendor_runtime_smoke.py",),
+                "notes": "Pitch JPype lifecycle smoke exists through the Docker-backed CRC/FedPro route.",
+            },
+            {
+                "backend_id": "pitch-py4j",
+                "backend_family": "vendor-pitch-java-bridge",
+                "status": "positive-path-passing",
+                "scope": "real-vendor lifecycle slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": ("tests/vendors/test_real_vendor_runtime_smoke.py",),
+                "notes": "Pitch Py4J lifecycle smoke exists through the Docker-backed CRC/FedPro route.",
+            },
+        ),
+    },
+    {
+        "slice_id": "exchange",
+        "section_refs": ("IEEE 1516.1-2010 §6.9", "IEEE 1516.1-2010 §8.13"),
+        "profiles": (
+            {
+                "backend_id": "pitch-jpype",
+                "backend_family": "vendor-pitch-java-bridge",
+                "status": "positive-path-passing",
+                "scope": "real-vendor exchange/time slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
+                "notes": "Pitch JPype exchange matrix covers receive and timestamped flows.",
+            },
+            {
+                "backend_id": "pitch-py4j",
+                "backend_family": "vendor-pitch-java-bridge",
+                "status": "positive-path-passing",
+                "scope": "real-vendor exchange/time slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
+                "notes": "Pitch Py4J exchange matrix covers receive and timestamped flows.",
+            },
+        ),
+    },
+    {
+        "slice_id": "synchronization",
+        "section_refs": ("IEEE 1516.1-2010 §4.11", "IEEE 1516.1-2010 §4.15"),
+        "profiles": (
+            {
+                "backend_id": "pitch-jpype",
+                "backend_family": "vendor-pitch-java-bridge",
+                "status": "positive-path-passing",
+                "scope": "real-vendor synchronization slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
+                "notes": "Pitch JPype synchronization matrix exists.",
+            },
+            {
+                "backend_id": "pitch-py4j",
+                "backend_family": "vendor-pitch-java-bridge",
+                "status": "positive-path-passing",
+                "scope": "real-vendor synchronization slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
+                "notes": "Pitch Py4J synchronization matrix exists.",
+            },
+        ),
+    },
+    {
+        "slice_id": "ownership",
+        "section_refs": ("IEEE 1516.1-2010 §7.2", "IEEE 1516.1-2010 §7.19"),
+        "profiles": (
+            {
+                "backend_id": "pitch-jpype",
+                "backend_family": "vendor-pitch-java-bridge",
+                "status": "positive-path-passing",
+                "scope": "real-vendor ownership slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
+                "notes": "Pitch JPype plain ownership slice exists.",
+            },
+            {
+                "backend_id": "pitch-py4j",
+                "backend_family": "vendor-pitch-java-bridge",
+                "status": "positive-path-passing",
+                "scope": "real-vendor ownership slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
+                "notes": "Pitch Py4J plain ownership slice exists.",
+            },
+        ),
+    },
+    {
+        "slice_id": "negotiated-ownership",
+        "section_refs": ("IEEE 1516.1-2010 §7.3", "IEEE 1516.1-2010 §7.16"),
+        "profiles": (
+            {
+                "backend_id": "pitch-jpype",
+                "backend_family": "vendor-pitch-java-bridge",
+                "status": "vendor-divergent",
+                "scope": "real-vendor negotiated ownership slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": (
+                    "tests/vendors/test_pitch_real_backend_matrix.py",
+                    "docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",
+                ),
+                "notes": "Pitch JPype negotiated ownership is currently bridge-divergent.",
+            },
+            {
+                "backend_id": "pitch-py4j",
+                "backend_family": "vendor-pitch-java-bridge",
+                "status": "vendor-divergent",
+                "scope": "real-vendor negotiated ownership slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": (
+                    "tests/vendors/test_pitch_real_backend_matrix.py",
+                    "docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",
+                ),
+                "notes": "Pitch Py4J negotiated ownership is currently bridge-divergent.",
+            },
+        ),
+    },
+    {
+        "slice_id": "time-profile",
+        "section_refs": ("IEEE 1516.1-2010 §8.2", "IEEE 1516.1-2010 §8.24"),
+        "profiles": (
+            {
+                "backend_id": "pitch-jpype",
+                "backend_family": "vendor-pitch-java-bridge",
+                "status": "positive-path-passing",
+                "scope": "real-vendor time-profile slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
+                "notes": "Pitch JPype time-profile and exchange/time parity slice exists.",
+            },
+            {
+                "backend_id": "pitch-py4j",
+                "backend_family": "vendor-pitch-java-bridge",
+                "status": "positive-path-passing",
+                "scope": "real-vendor time-profile slice",
+                "session_status": "not-run-in-this-session",
+                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
+                "notes": "Pitch Py4J time-profile and exchange/time parity slice exists.",
+            },
+        ),
+    },
+)
+
 _SECTION8_BACKEND_PROFILES: tuple[dict[str, Any], ...] = (
     {
         "backend_id": "python-inmemory",
@@ -578,34 +879,34 @@ _SECTION8_BACKEND_PROFILES: tuple[dict[str, Any], ...] = (
         "backend_id": "certi-native",
         "backend_family": "vendor-certi",
         "method_set": _SECTION8_CERTI_METHODS,
-        "status": "env-gated-positive",
+        "status": "verified-in-this-session",
         "scope": "real-vendor positive-path matrix",
-        "session_status": "skipped-in-this-session",
+        "session_status": "passing-in-this-session",
         "supports_immediate_inline": False,
         "evidence_tests": _CERTI_REAL_BACKEND_MATRIX_TESTS,
-        "notes": "CERTI runtime evidence is environment-gated; current session skipped the real RTI Section 8 slice.",
+        "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
     },
     {
         "backend_id": "certi-jpype",
         "backend_family": "vendor-certi-java-bridge",
         "method_set": _SECTION8_CERTI_METHODS,
-        "status": "env-gated-positive",
+        "status": "verified-in-this-session",
         "scope": "real-vendor positive-path matrix",
-        "session_status": "skipped-in-this-session",
+        "session_status": "passing-in-this-session",
         "supports_immediate_inline": False,
         "evidence_tests": _CERTI_REAL_BACKEND_MATRIX_TESTS,
-        "notes": "CERTI JPype facade follows the same environment-gated real RTI time matrix path.",
+        "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
     },
     {
         "backend_id": "certi-py4j",
         "backend_family": "vendor-certi-java-bridge",
         "method_set": _SECTION8_CERTI_METHODS,
-        "status": "env-gated-positive",
+        "status": "verified-in-this-session",
         "scope": "real-vendor positive-path matrix",
-        "session_status": "skipped-in-this-session",
+        "session_status": "passing-in-this-session",
         "supports_immediate_inline": False,
         "evidence_tests": _CERTI_REAL_BACKEND_MATRIX_TESTS,
-        "notes": "CERTI Py4J facade follows the same environment-gated real RTI time matrix path.",
+        "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
     },
     {
         "backend_id": "pitch-jpype",
@@ -628,6 +929,96 @@ _SECTION8_BACKEND_PROFILES: tuple[dict[str, Any], ...] = (
         "supports_immediate_inline": False,
         "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
         "notes": "Pitch currently has bridge-parity time profile evidence rather than a dedicated Section 8 matrix.",
+    },
+)
+
+_LOOKAHEAD_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
+    {
+        "slice_id": "lookahead-window",
+        "section_refs": ("IEEE 1516.1-2010 §8.2", "IEEE 1516.1-2010 §8.17"),
+        "profiles": (
+            {
+                "backend_id": "python-inmemory",
+                "backend_family": "python-reference",
+                "status": "complete-actionable",
+                "scope": "reference lookahead slice",
+                "session_status": "passing-in-this-session",
+                "evidence_tests": (
+                    "tests/time/test_lookahead_backend_matrix.py",
+                    "tests/time/test_mom_mim_and_time_semantics_v010.py",
+                ),
+                "notes": "Python reference lookahead is exercised directly and through the Section 8 matrix.",
+            },
+            {
+                "backend_id": "rest-hosted-python",
+                "backend_family": "hosted-python-rest",
+                "status": "positive-path-passing",
+                "scope": "hosted lookahead slice",
+                "session_status": "passing-in-this-session",
+                "evidence_tests": (
+                    "tests/time/test_lookahead_backend_matrix.py",
+                    "tests/transport/test_rest_transport.py",
+                ),
+                "notes": "REST-hosted Python RTI has explicit lookahead query/modify and early-send coverage.",
+            },
+            {
+                "backend_id": "grpc-hosted-python",
+                "backend_family": "hosted-python-grpc",
+                "status": "positive-path-passing",
+                "scope": "hosted lookahead slice",
+                "session_status": "passing-in-this-session",
+                "evidence_tests": (
+                    "tests/time/test_lookahead_backend_matrix.py",
+                    "tests/transport/test_grpc_transport_python_server.py",
+                ),
+                "notes": "gRPC-hosted Python RTI has explicit lookahead query/modify and early-send coverage.",
+            },
+            {
+                "backend_id": "certi-native",
+                "backend_family": "vendor-certi",
+                "status": "vendor-divergent",
+                "scope": "real-vendor lookahead slice",
+                "session_status": "failing-in-this-session",
+                "evidence_tests": ("tests/vendors/test_certi_real_backend_time_matrix.py",),
+                "notes": "CERTI native lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
+            },
+            {
+                "backend_id": "certi-jpype",
+                "backend_family": "vendor-certi-java-bridge",
+                "status": "vendor-divergent",
+                "scope": "real-vendor lookahead slice",
+                "session_status": "failing-in-this-session",
+                "evidence_tests": ("tests/vendors/test_certi_real_backend_time_matrix.py",),
+                "notes": "CERTI JPype lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
+            },
+            {
+                "backend_id": "certi-py4j",
+                "backend_family": "vendor-certi-java-bridge",
+                "status": "vendor-divergent",
+                "scope": "real-vendor lookahead slice",
+                "session_status": "failing-in-this-session",
+                "evidence_tests": ("tests/vendors/test_certi_real_backend_time_matrix.py",),
+                "notes": "CERTI Py4J lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
+            },
+            {
+                "backend_id": "pitch-jpype",
+                "backend_family": "vendor-pitch-java-bridge",
+                "status": "bridge-parity-positive",
+                "scope": "real-vendor lookahead slice",
+                "session_status": "skipped-in-this-session",
+                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
+                "notes": "Pitch JPype lookahead assertions are now covered, but this session skipped before confirming runtime execution.",
+            },
+            {
+                "backend_id": "pitch-py4j",
+                "backend_family": "vendor-pitch-java-bridge",
+                "status": "bridge-parity-positive",
+                "scope": "real-vendor lookahead slice",
+                "session_status": "skipped-in-this-session",
+                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
+                "notes": "Pitch Py4J lookahead assertions are now covered, but this session skipped before confirming runtime execution.",
+            },
+        ),
     },
 )
 
@@ -714,7 +1105,7 @@ def _public_class_inventory() -> list[PublicClassInventoryRow]:
     package_dir = REPO_ROOT / "hla2010"
 
     for module_info in pkgutil.iter_modules([str(package_dir)]):
-        if module_info.ispkg or module_info.name == "backends":
+        if module_info.ispkg or module_info.name == "backends" or " " in module_info.name:
             continue
         module_name = f"hla2010.{module_info.name}"
         module = importlib.import_module(module_name)
@@ -1111,6 +1502,65 @@ def _write_core_backend_matrix_artifacts() -> list[CoreBackendMatrixRow]:
     return matrix_rows
 
 
+def _build_matrix_rows(profiles: tuple[dict[str, Any], ...]) -> list[CoreBackendMatrixRow]:
+    rows: list[CoreBackendMatrixRow] = []
+    for slice_profile in profiles:
+        for profile in slice_profile["profiles"]:
+            rows.append(
+                CoreBackendMatrixRow(
+                    backend_id=profile["backend_id"],
+                    backend_family=profile["backend_family"],
+                    slice_id=slice_profile["slice_id"],
+                    section_refs=tuple(slice_profile["section_refs"]),
+                    status=profile["status"],
+                    scope=profile["scope"],
+                    session_status=profile["session_status"],
+                    evidence_tests=tuple(profile["evidence_tests"]),
+                    notes=profile["notes"],
+                )
+            )
+    return rows
+
+
+def _write_backend_slice_matrix_artifacts(
+    *,
+    stem: str,
+    title: str,
+    intro: str,
+    profiles: tuple[dict[str, Any], ...],
+) -> list[CoreBackendMatrixRow]:
+    matrix_rows = _build_matrix_rows(profiles)
+    backend_summaries: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    for row in matrix_rows:
+        backend_summaries[row.backend_id][row.status] += 1
+    _write_json(
+        OUTPUT_DIR / f"{stem}.json",
+        {
+            "row_count": len(matrix_rows),
+            "backend_summaries": {
+                backend_id: dict(sorted(counts.items()))
+                for backend_id, counts in sorted(backend_summaries.items())
+            },
+            "rows": [asdict(row) for row in matrix_rows],
+        },
+    )
+    md_lines = [
+        f"# {title}",
+        "",
+        intro,
+        "",
+        "| Backend | Family | Slice | Section refs | Status | Scope | Session status | Evidence | Notes |",
+        "|---|---|---|---|---|---|---|---|---|",
+    ]
+    for row in matrix_rows:
+        md_lines.append(
+            f"| {row.backend_id} | {row.backend_family} | {row.slice_id} | {', '.join(row.section_refs)} | {row.status} | {row.scope} | "
+            f"{row.session_status} | {', '.join(row.evidence_tests) if row.evidence_tests else '-'} | {row.notes} |"
+        )
+    _write_markdown(OUTPUT_DIR / f"{stem}.md", md_lines)
+    return matrix_rows
+
+
 def _write_completion_checklist_artifacts(
     rows: tuple[ServiceConformanceRow, ...],
     core_backend_rows: list[CoreBackendMatrixRow],
@@ -1142,7 +1592,7 @@ def _write_completion_checklist_artifacts(
             rationale=(
                 f"Negative-path coverage is not closed: {negative_status_counts['complete']} complete, "
                 f"{negative_status_counts['partial']} partial, {negative_status_counts['mapped-not-exhaustive']} mapped-not-exhaustive, "
-                f"{negative_status_counts['not-evidenced']} not-evidenced."
+                f"{negative_status_counts['not-evidenced']} not-evidenced. Callback-only FederateInternalError rows are now excluded from actionable debt."
             ),
         ),
         CompletionChecklistRow(
@@ -1152,7 +1602,16 @@ def _write_completion_checklist_artifacts(
             evidence=("analysis/compliance/section8_backend_matrix.json",),
             rationale=(
                 "Python reference is complete-actionable and hosted Python is positive-path passing, "
-                "but vendor CERTI and Pitch rows still include env-gated and not-yet-matrixed entries."
+                "CERTI time slices are now verified in this session, but Pitch and the remaining vendor surface are still only partially matrixed."
+            ),
+        ),
+        CompletionChecklistRow(
+            checklist_id="lookahead-backend-matrix",
+            area="Lookahead backend matrix",
+            status="partial",
+            evidence=("analysis/compliance/lookahead_backend_matrix.json",),
+            rationale=(
+                "Lookahead is now explicit in the reference and hosted matrices, and CERTI/Pitch lookahead coverage is being widened into a dedicated backend matrix."
             ),
         ),
         CompletionChecklistRow(
@@ -1174,8 +1633,7 @@ def _write_completion_checklist_artifacts(
                 "tests/vendors/test_certi_real_backend_exchange_matrix.py",
             ),
             rationale=(
-                "Real CERTI time-query/FQR and cross-facade exchange slices were verified in this session, "
-                "but the full vendor matrix was not rerun end to end."
+                "Real CERTI time-query/FQR and exchange slices were rerun cleanly in this session, with logical-time type fidelity preserved across native and Java-facade paths."
             ),
         ),
         CompletionChecklistRow(
@@ -1190,16 +1648,16 @@ def _write_completion_checklist_artifacts(
         CompletionChecklistRow(
             checklist_id="pitch-matrix",
             area="Pitch backend matrix",
-            status="not-done",
-            evidence=("analysis/compliance/section8_backend_matrix.json",),
-            rationale="Pitch remains bridge-parity only and is not yet covered by dedicated backend matrices.",
+            status="partial",
+            evidence=("analysis/compliance/pitch_backend_matrix.json",),
+            rationale="Pitch now has a dedicated positive-path/backend-divergence matrix, but it remains incomplete and negotiated ownership is still vendor-divergent.",
         ),
         CompletionChecklistRow(
             checklist_id="support-services-backend-matrix",
             area="Section 10 backend matrix",
-            status="not-done",
-            evidence=("analysis/compliance/negative_path_priority_ranking.md",),
-            rationale="Support-service compliance exists at the reference ledger level, but no backend-specific matrix exists yet.",
+            status="partial",
+            evidence=("analysis/compliance/section10_backend_matrix.json",),
+            rationale="A dedicated Section 10 backend matrix now exists, but only the Python reference backend is deeply matrixed.",
         ),
     ]
 
@@ -1243,48 +1701,24 @@ def _write_unfinished_work_ranking_artifacts(core_backend_rows: list[CoreBackend
             rationale="This is now the highest-value non-Section-8 backend problem because it is a real failing vendor behavior, not a missing test.",
         ),
         UnfinishedWorkRow(
-            priority="P1",
+            priority="P2",
             claim_value_rank=3,
-            work_id="vendor-certi-full-rerun",
-            area="Full real CERTI matrix rerun",
-            current_state="Key CERTI time slices passed, but the full vendor matrix was not rerun in one clean sweep after the harness fixes.",
-            target_state="All active CERTI vendor matrix files rerun cleanly or documented with explicit divergences.",
-            evidence=(
-                "tests/vendors/test_certi_real_backend_time_matrix.py",
-                "tests/vendors/test_certi_real_backend_exchange_matrix.py",
-                "tests/vendors/test_certi_real_backend_ownership_matrix.py",
-            ),
-            rationale="This is the strongest vendor-backed proof path currently available in the repo.",
-        ),
-        UnfinishedWorkRow(
-            priority="P2",
-            claim_value_rank=4,
-            work_id="certi-query-type-fidelity",
-            area="CERTI bridge logical-time type fidelity",
-            current_state="Integer-profile queryGALT/queryLITS values can surface as HLAfloat64Time through the helper bridge.",
-            target_state="CERTI helper preserves federation logical-time type on non-creator ambassadors.",
-            evidence=("tests/vendors/certi_real_backend_matrix_support.py",),
-            rationale="Semantic correctness is already present, but bridge type fidelity remains imperfect.",
-        ),
-        UnfinishedWorkRow(
-            priority="P2",
-            claim_value_rank=5,
             work_id="section10-backend-matrix",
             area="Section 10 backend matrix",
-            current_state="Support-service compliance is only represented in the reference ledger.",
-            target_state="A backend matrix exists for support-service lookup, callback control, and factory surfaces.",
-            evidence=("analysis/compliance/negative_path_priority_ranking.md",),
+            current_state="A dedicated Section 10 matrix now exists, but most non-reference backends remain not-yet-matrixed.",
+            target_state="Hosted, Java shim, CERTI, and Pitch rows are explicitly exercised or documented as unsupported/vendor-divergent.",
+            evidence=("analysis/compliance/section10_backend_matrix.json",),
             rationale="High volume, lower claim value than core federation/object/time behavior, but still necessary for a complete matrix.",
         ),
         UnfinishedWorkRow(
             priority="P2",
-            claim_value_rank=6,
+            claim_value_rank=4,
             work_id="pitch-dedicated-matrix",
             area="Pitch dedicated backend matrices",
-            current_state="Pitch remains bridge-parity only.",
-            target_state="Pitch has explicit Section 8 and core non-Section-8 backend rows.",
-            evidence=("analysis/compliance/section8_backend_matrix.json",),
-            rationale="Pitch is the least proven major backend family right now.",
+            current_state="Pitch now has a dedicated matrix artifact, but it is still mostly positive-path and negotiated ownership remains divergent.",
+            target_state="Pitch slices are rerun cleanly and widened beyond the existing real-runtime smoke and parity tests.",
+            evidence=("analysis/compliance/pitch_backend_matrix.json",),
+            rationale="Pitch is still one of the least proven major backend families.",
         ),
     ]
 
@@ -1306,7 +1740,11 @@ def _write_unfinished_work_ranking_artifacts(core_backend_rows: list[CoreBackend
     _write_markdown(OUTPUT_DIR / "unfinished_compliance_work_ranking.md", md_lines)
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    argparse.ArgumentParser(
+        description="Generate the compliance and requirements artifact packet for the current repo state."
+    ).parse_args(argv)
+
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     matrix = build_service_conformance_matrix(version=hla2010.__version__)
@@ -1319,7 +1757,25 @@ def main() -> int:
     _write_gap_report_artifacts(matrix.rows)
     _write_negative_path_artifacts(matrix.rows)
     _write_section8_backend_matrix_artifacts(matrix.rows)
+    _write_backend_slice_matrix_artifacts(
+        stem="lookahead_backend_matrix",
+        title="Lookahead Backend Matrix",
+        intro="This matrix records backend-specific lookahead query/modify and early-send verification separately from the reference conformance ledger.",
+        profiles=_LOOKAHEAD_BACKEND_SLICE_PROFILES,
+    )
     core_backend_rows = _write_core_backend_matrix_artifacts()
+    _write_backend_slice_matrix_artifacts(
+        stem="section10_backend_matrix",
+        title="Section 10 Backend Matrix",
+        intro="This matrix records backend-specific Section 10 support-service verification separately from the reference conformance ledger.",
+        profiles=_SECTION10_BACKEND_SLICE_PROFILES,
+    )
+    _write_backend_slice_matrix_artifacts(
+        stem="pitch_backend_matrix",
+        title="Pitch Backend Matrix",
+        intro="This matrix records the dedicated Pitch backend verification slices and the current negotiated-ownership divergence.",
+        profiles=_PITCH_BACKEND_SLICE_PROFILES,
+    )
     _write_completion_checklist_artifacts(matrix.rows, core_backend_rows)
     _write_unfinished_work_ranking_artifacts(core_backend_rows)
     return 0

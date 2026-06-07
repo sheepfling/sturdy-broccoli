@@ -6,6 +6,24 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 # shellcheck disable=SC1091
 source "$ROOT_DIR/scripts/local_state.sh"
 
+usage() {
+  cat <<'EOF'
+usage: ./scripts/setup_local_git_remote.sh [remote-name] [remote-path]
+
+Create or update a local bare remote under the repo-managed state tree and
+attach it to the current repository.
+EOF
+}
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  case "${1:-}" in
+    help|-h|--help)
+      usage
+      exit 0
+      ;;
+  esac
+fi
+
 ensure_local_state_layout
 
 REMOTE_NAME="${1:-local}"

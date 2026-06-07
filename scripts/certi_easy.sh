@@ -3,6 +3,10 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
+# shellcheck source=lib/shell.sh
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "$0"
+
 # shellcheck disable=SC1091
 source "$ROOT_DIR/scripts/local_state.sh"
 
@@ -77,12 +81,14 @@ EOF
 }
 
 run_python_bootstrap() {
+  hla2010_shell_log "bootstrapping python"
   "$ROOT_DIR/scripts/bootstrap_python.sh"
 }
 
 run_build() {
   local variant
   variant="$(variant_or_default "${1:-all}")"
+  hla2010_shell_log "CERTI build variant=${variant}"
   case "$variant" in
     patched)
       "$ROOT_DIR/scripts/rebuild_certi.sh"
@@ -142,6 +148,7 @@ run_variant_binary() {
 run_smoke() {
   local profile="${1:-compare}"
   require_venv
+  hla2010_shell_log "CERTI smoke profile=${profile}"
   case "$profile" in
     patched)
       "$ROOT_DIR/scripts/ci/vendor_runtime_smoke.sh" certi-patched

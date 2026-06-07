@@ -3,6 +3,10 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
+# shellcheck source=lib/shell.sh
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "$0"
+
 # shellcheck disable=SC1091
 source "$ROOT_DIR/scripts/local_state.sh"
 
@@ -16,8 +20,7 @@ CERTI_UPSTREAM_INSTALL="${HLA2010_CERTI_UPSTREAM_PREFIX:-$(local_state_path "CER
 
 if [[ ! -d "$CERTI_UPSTREAM_SOURCE/.git" ]]; then
   if [[ -e "$CERTI_UPSTREAM_SOURCE" && -n "$(find "$CERTI_UPSTREAM_SOURCE" -mindepth 1 -maxdepth 1 -print -quit)" ]]; then
-    echo "error: $CERTI_UPSTREAM_SOURCE exists but is not an empty git checkout" >&2
-    exit 1
+    hla2010_shell_die "$CERTI_UPSTREAM_SOURCE exists but is not an empty git checkout"
   fi
   git clone "$CERTI_UPSTREAM_REPO" "$CERTI_UPSTREAM_SOURCE"
 fi
@@ -26,6 +29,10 @@ git -C "$CERTI_UPSTREAM_SOURCE" fetch --tags origin
 git -C "$CERTI_UPSTREAM_SOURCE" checkout "$CERTI_UPSTREAM_REF"
 
 build_log="$(mktemp -t hla2010-certi-upstream-build)"
+hla2010_shell_log "CERTI upstream source: $CERTI_UPSTREAM_SOURCE"
+hla2010_shell_log "CERTI upstream build: $CERTI_UPSTREAM_BUILD"
+hla2010_shell_log "CERTI upstream install: $CERTI_UPSTREAM_INSTALL"
+hla2010_shell_log "CERTI upstream build log: $build_log"
 set +e
 HLA2010_CERTI_SOURCE="$CERTI_UPSTREAM_SOURCE" \
 HLA2010_CERTI_BUILD="$CERTI_UPSTREAM_BUILD" \
