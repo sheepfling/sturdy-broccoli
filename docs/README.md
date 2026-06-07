@@ -48,6 +48,7 @@ Verification and provenance:
 - [evidence/README.md](evidence/README.md): unpacked verification packets
 - [evidence/packet_index.md](evidence/packet_index.md): unpacked packet index
 - [verification/README.md](verification/README.md): verification family index
+- [verification/run_sequence.md](verification/run_sequence.md): easy-run lifecycle sequence
 
 Planning:
 

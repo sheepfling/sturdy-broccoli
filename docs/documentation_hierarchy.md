@@ -39,6 +39,7 @@ Use these as the normal entry points:
 - [docs/evidence/README.md](evidence/README.md): unpacked evidence packets
 - [docs/evidence/packet_index.md](evidence/packet_index.md): evidence packet index
 - [docs/verification/README.md](verification/README.md): verification-family index
+- [docs/verification/run_sequence.md](verification/run_sequence.md): install-to-compliance sequence
 - [docs/plans/README.md](plans/README.md): implementation plans and sequencing
 
 ## Parallel Documentation Pattern

@@ -57,6 +57,7 @@ Script families:
 
 - [ci/README.md](ci/README.md): CI wrapper family index
 - `ci/install_python.sh`: local QA environment install
+- `ci/full_sequence.sh`: install-to-compliance lifecycle sequence
 - `ci/lint.sh`: required lint/syntax gate
 - `ci/lint_backlog.sh`: broader Ruff backlog report
 - `ci/lint_strict.sh`: stricter opt-in Ruff gate
