@@ -23,6 +23,7 @@ service-report*.jsonl
 # Java build outputs
 *.class
 *.jar
+!third_party/pitch/PITCH-prti1516e-manual/lib/*.jar
 
 # Local archives
 *.zip
