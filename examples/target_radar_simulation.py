@@ -15,42 +15,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from hla2010.backends.python import InMemoryRTIEngine
-from hla2010.rti import create_rti_ambassador
-from hla2010.scenarios.target_radar import run_target_radar_scenario
-
-
-def build_factory(args):
-    if args.backend == "python":
-        engine = InMemoryRTIEngine(name="target-radar-engine")
-        return lambda role: create_rti_ambassador("python", engine=engine)
-
-    if args.backend == "jpype":
-        from hla2010.backends.jpype import JPypeConfig, rti_ambassador
-
-        classpath = [item for item in args.classpath if item]
-        return lambda role: rti_ambassador(JPypeConfig(classpath=classpath, rti_factory_name=args.rti_factory_name))
-
-    if args.backend in {"java-shim-jpype", "java-shim-py4j"}:
-        from hla2010.testing.java_shim import SharedJavaShimKernel
-
-        kernel = SharedJavaShimKernel()
-        return lambda role: create_rti_ambassador(args.backend, kernel=kernel, shared=True)
-
-    if args.backend == "py4j":
-        from hla2010.backends.py4j import Py4JConfig, rti_ambassador
-
-        gateway_parameters = {"address": args.py4j_address, "port": args.py4j_port}
-        callback_server_parameters = {"port": args.py4j_callback_port}
-        return lambda role: rti_ambassador(
-            Py4JConfig(
-                gateway_parameters=gateway_parameters,
-                callback_server_parameters=callback_server_parameters,
-                rti_factory_name=args.rti_factory_name,
-            )
-        )
-
-    raise ValueError(f"unsupported backend {args.backend!r}")
+from hla2010.scenarios import make_target_radar_factory, run_target_radar_scenario
 
 
 def main(argv=None) -> int:
@@ -68,7 +33,14 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
 
     result = run_target_radar_scenario(
-        build_factory(args),
+        make_target_radar_factory(
+            args.backend,
+            classpath=args.classpath,
+            rti_factory_name=args.rti_factory_name,
+            py4j_address=args.py4j_address,
+            py4j_port=args.py4j_port,
+            py4j_callback_port=args.py4j_callback_port,
+        ),
         federation_name=args.federation_name,
         steps=args.steps,
         dt=args.dt,

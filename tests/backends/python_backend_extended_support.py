@@ -25,9 +25,11 @@ from hla2010.exceptions import (
     AttributeRelevanceAdvisorySwitchIsOn,
     AttributeScopeAdvisorySwitchIsOff,
     AttributeScopeAdvisorySwitchIsOn,
+    CallNotAllowedFromWithinCallback,
     DeletePrivilegeNotHeld,
     DesignatorIsHLAstandardMIM,
     FederateAlreadyExecutionMember,
+    FederateHandleNotKnown,
     FederateIsExecutionMember,
     FederateNameAlreadyInUse,
     FederateNotExecutionMember,
@@ -40,15 +42,26 @@ from hla2010.exceptions import (
     InteractionClassNotDefined,
     InteractionClassNotPublished,
     InteractionParameterNotDefined,
+    InteractionRelevanceAdvisorySwitchIsOff,
+    InteractionRelevanceAdvisorySwitchIsOn,
+    InvalidFederateHandle,
     InvalidInteractionClassHandle,
     InvalidLogicalTime,
     InvalidMessageRetractionHandle,
     InvalidObjectClassHandle,
+    InvalidOrderName,
+    InvalidOrderType,
+    InvalidParameterHandle,
     InvalidRangeBound,
     InvalidRegion,
     InvalidResignAction,
+    InvalidServiceGroup,
+    InvalidTransportationName,
+    InvalidTransportationType,
+    InvalidUpdateRateDesignator,
     LogicalTimeAlreadyPassed,
     MessageCanNoLongerBeRetracted,
+    NameNotFound,
     NoAcquisitionPending,
     NotConnected,
     ObjectClassRelevanceAdvisorySwitchIsOff,
@@ -78,6 +91,7 @@ from hla2010.handles import (
     MessageRetractionHandle,
     ObjectInstanceHandle,
     RegionHandleSet,
+    TransportationTypeHandle,
 )
 from hla2010.spec_refs import method_label, method_reference
 from hla2010.types import AttributeRegionAssociation, RangeBounds, TimeQueryReturn
@@ -184,5 +198,3 @@ class _ImmediateConstrainedPendingAmbassador(RecordingFederateAmbassador):
             RequestForTimeConstrainedPending,
             lambda: self.rti.flush_queue_request(factory.make_time(1.0)),
         )
-
-

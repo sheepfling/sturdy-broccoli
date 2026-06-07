@@ -1531,3 +1531,199 @@ def test_enable_time_regulation_rejects_not_connected_not_joined_invalid_lookahe
     owner.resign_federation_execution(ResignAction.NO_ACTION)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("enable-time-reg-negative-fed")
+
+
+def test_support_service_lookup_and_factory_tail_rejects_declared_exceptions():
+    rti = rti_ambassador(engine=InMemoryRTIEngine())
+    with pytest.raises(NotConnected):
+        rti.get_federate_name(None)
+    with pytest.raises(NotConnected):
+        rti.get_attribute_handle(object(), "Position")
+    with pytest.raises(NotConnected):
+        rti.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    with pytest.raises(NotConnected):
+        rti.get_parameter_handle(object(), "TrackId")
+    with pytest.raises(NotConnected):
+        rti.get_object_instance_name(ObjectInstanceHandle(1))
+    with pytest.raises(NotConnected):
+        rti.get_update_rate_value("default")
+    with pytest.raises(NotConnected):
+        rti.get_automatic_resign_directive()
+    with pytest.raises(NotConnected):
+        rti.set_automatic_resign_directive(ResignAction.NO_ACTION)
+    with pytest.raises(NotConnected):
+        rti.normalize_federate_handle(object())
+    with pytest.raises(NotConnected):
+        rti.normalize_service_group("OBJECT_MANAGEMENT")
+    with pytest.raises(NotConnected):
+        rti.enable_interaction_relevance_advisory_switch()
+    with pytest.raises(NotConnected):
+        rti.disable_interaction_relevance_advisory_switch()
+    with pytest.raises(NotConnected):
+        rti.get_time_factory()
+    with pytest.raises(NotConnected):
+        rti.get_attribute_handle_factory()
+    with pytest.raises(NotConnected):
+        rti.get_transportation_type_handle_factory()
+
+    rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    with pytest.raises(FederateNotExecutionMember):
+        rti.get_federate_name(None)
+    with pytest.raises(FederateNotExecutionMember):
+        rti.get_attribute_handle(object(), "Position")
+    with pytest.raises(FederateNotExecutionMember):
+        rti.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    with pytest.raises(FederateNotExecutionMember):
+        rti.get_parameter_handle(object(), "TrackId")
+    with pytest.raises(FederateNotExecutionMember):
+        rti.get_object_instance_name(ObjectInstanceHandle(1))
+    with pytest.raises(FederateNotExecutionMember):
+        rti.get_update_rate_value("default")
+    with pytest.raises(FederateNotExecutionMember):
+        rti.get_automatic_resign_directive()
+    with pytest.raises(FederateNotExecutionMember):
+        rti.set_automatic_resign_directive(ResignAction.NO_ACTION)
+    with pytest.raises(FederateNotExecutionMember):
+        rti.normalize_federate_handle(object())
+    with pytest.raises(FederateNotExecutionMember):
+        rti.normalize_service_group("OBJECT_MANAGEMENT")
+    with pytest.raises(FederateNotExecutionMember):
+        rti.enable_interaction_relevance_advisory_switch()
+    with pytest.raises(FederateNotExecutionMember):
+        rti.disable_interaction_relevance_advisory_switch()
+    with pytest.raises(FederateNotExecutionMember):
+        rti.get_time_factory()
+    with pytest.raises(FederateNotExecutionMember):
+        rti.get_attribute_handle_factory()
+    with pytest.raises(FederateNotExecutionMember):
+        rti.get_transportation_type_handle_factory()
+    rti.disconnect()
+
+    _, owner, observer, _owner_fed, _observer_fed, owner_handle, observer_handle = joined_pair("support-lookup-tail-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    object_handle = owner.register_object_instance(cls, "support-tail-object")
+
+    bad_class = type(cls)(cls.value + 999)
+    bad_interaction = type(interaction)(interaction.value + 999)
+    bad_object = ObjectInstanceHandle(object_handle.value + 999)
+
+    with pytest.raises(FederateHandleNotKnown):
+        owner.get_federate_name(type(owner_handle)(owner_handle.value + observer_handle.value + 1000))
+    with pytest.raises(InvalidFederateHandle):
+        owner.get_federate_name(object())
+    with pytest.raises(InvalidObjectClassHandle):
+        owner.get_attribute_handle(bad_class, "Position")
+    with pytest.raises(NameNotFound):
+        owner.get_attribute_handle(cls, "NoSuchAttribute")
+    with pytest.raises(NameNotFound):
+        owner.get_interaction_class_handle("HLAinteractionRoot.NoSuchInteraction")
+    with pytest.raises(InvalidInteractionClassHandle):
+        owner.get_parameter_handle(bad_interaction, "TrackId")
+    with pytest.raises(NameNotFound):
+        owner.get_parameter_handle(interaction, "NoSuchParameter")
+    with pytest.raises(ObjectInstanceNotKnown):
+        owner.get_object_instance_name(bad_object)
+    with pytest.raises(InvalidUpdateRateDesignator):
+        owner.get_update_rate_value("bogus-rate")
+    with pytest.raises(InvalidResignAction):
+        owner.set_automatic_resign_directive(object())
+    with pytest.raises(InvalidFederateHandle):
+        owner.normalize_federate_handle(object())
+    with pytest.raises(InvalidServiceGroup):
+        owner.normalize_service_group("not-a-group")
+    with pytest.raises(InvalidOrderType):
+        owner.get_order_name(object())
+    with pytest.raises(InvalidOrderName):
+        owner.get_order_type("bogus-order")
+    with pytest.raises(InvalidTransportationName):
+        owner.get_transportation_type_handle("bogus-transport")
+    with pytest.raises(InvalidTransportationType):
+        owner.get_transportation_type_name(TransportationTypeHandle(999))
+    with pytest.raises(InteractionRelevanceAdvisorySwitchIsOff):
+        owner.disable_interaction_relevance_advisory_switch()
+    owner.enable_interaction_relevance_advisory_switch()
+    with pytest.raises(InteractionRelevanceAdvisorySwitchIsOn):
+        owner.enable_interaction_relevance_advisory_switch()
+    owner.disable_interaction_relevance_advisory_switch()
+    assert owner.get_update_rate_value_for_attribute(object_handle, attr) == 0.0
+
+    owner.request_federation_save("SUPPORT-LOOKUP-SAVE")
+    drain(owner, observer)
+    with pytest.raises(SaveInProgress):
+        owner.enable_interaction_relevance_advisory_switch()
+
+    owner.federate_save_begun()
+    observer.federate_save_begun()
+    owner.federate_save_complete()
+    observer.federate_save_complete()
+    drain(owner, observer)
+
+    owner.request_federation_restore("SUPPORT-LOOKUP-SAVE")
+    drain(owner, observer)
+    with pytest.raises(RestoreInProgress):
+        owner.disable_interaction_relevance_advisory_switch()
+
+    owner.abort_federation_restore()
+    drain(owner, observer)
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("support-lookup-tail-fed")
+
+
+class _ImmediateSupportCallbackAmbassador(RecordingFederateAmbassador):
+    def __init__(self, rti):
+        super().__init__()
+        self.rti = rti
+        self.captured: list[type[BaseException]] = []
+
+    def synchronizationPointRegistrationSucceeded(self, label):
+        super().synchronizationPointRegistrationSucceeded(label)
+        for fn, args in (
+            (self.rti.evoke_callback, (0.0,)),
+            (self.rti.evoke_multiple_callbacks, (0.0, 0.0)),
+        ):
+            try:
+                fn(*args)
+            except CallNotAllowedFromWithinCallback:
+                self.captured.append(CallNotAllowedFromWithinCallback)
+
+
+def test_callback_controls_reject_save_restore_and_within_callback_evoke():
+    _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("support-callback-tail-fed")
+    owner.request_federation_save("SUPPORT-CALLBACK-SAVE")
+    drain(owner, observer)
+    with pytest.raises(SaveInProgress):
+        owner.enable_callbacks()
+    with pytest.raises(SaveInProgress):
+        owner.disable_callbacks()
+
+    owner.federate_save_begun()
+    observer.federate_save_begun()
+    owner.federate_save_complete()
+    observer.federate_save_complete()
+    drain(owner, observer)
+
+    owner.request_federation_restore("SUPPORT-CALLBACK-SAVE")
+    drain(owner, observer)
+    with pytest.raises(RestoreInProgress):
+        owner.enable_callbacks()
+    with pytest.raises(RestoreInProgress):
+        owner.disable_callbacks()
+    owner.abort_federation_restore()
+    drain(owner, observer)
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("support-callback-tail-fed")
+
+    engine = InMemoryRTIEngine()
+    rti = rti_ambassador(engine=engine)
+    fed = _ImmediateSupportCallbackAmbassador(rti)
+    rti.connect(fed, CallbackModel.HLA_IMMEDIATE)
+    rti.create_federation_execution("support-immediate-callback-fed", "TargetRadarFOMmodule.xml")
+    rti.join_federation_execution("alpha", "type-a", "support-immediate-callback-fed")
+    rti.register_federation_synchronization_point("IMMEDIATE-CALLBACK", b"x")
+    assert fed.captured == [CallNotAllowedFromWithinCallback, CallNotAllowedFromWithinCallback]
+    rti.resign_federation_execution(ResignAction.NO_ACTION)
+    rti.destroy_federation_execution("support-immediate-callback-fed")

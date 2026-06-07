@@ -200,6 +200,7 @@ class FederateState:
     federate_type: str | None = None
     federation: FederationState | None = None
     callbacks_enabled: bool = True
+    in_callback: bool = False
     queue: Deque[CallbackEvent] = field(default_factory=deque)
     published_objects: dict[ObjectClassHandle, set[AttributeHandle]] = field(default_factory=dict)
     subscribed_objects: dict[ObjectClassHandle, set[AttributeHandle]] = field(default_factory=dict)

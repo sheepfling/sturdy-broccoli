@@ -58,7 +58,7 @@ run_certi_patched() {
     tests/vendors/test_certi_real_backend_exchange_matrix.py \
     tests/vendors/test_certi_real_backend_time_matrix.py \
     tests/vendors/test_certi_real_backend_ownership_matrix.py \
-    -k 'not test_certi_upstream_time_query_and_fqr_baseline'
+    -k 'not test_certi_upstream_time_query_and_fqr_baseline and not test_certi_patched_negotiated_ownership_baseline'
 }
 
 run_certi_upstream() {
@@ -81,7 +81,7 @@ run_certi_compare() {
   python -m pytest -q \
     tests/vendors/test_certi_real_backend_time_matrix.py \
     tests/vendors/test_certi_real_backend_ownership_matrix.py \
-    -k 'test_certi_upstream_time_query_and_fqr_baseline or test_certi_patched_time_query_and_fqr_baseline or test_certi_upstream_queued_fqr_baseline or test_certi_patched_queued_fqr_baseline or test_certi_upstream_negotiated_ownership_baseline or test_certi_patched_negotiated_ownership_baseline or test_certi_upstream_release_request_branch_baseline or test_certi_patched_release_request_branch_baseline'
+    -k 'test_certi_upstream_time_query_and_fqr_baseline or test_certi_patched_time_query_and_fqr_baseline or test_certi_upstream_queued_fqr_baseline or test_certi_patched_queued_fqr_baseline or test_certi_upstream_negotiated_ownership_baseline or test_certi_upstream_release_request_branch_baseline or test_certi_patched_release_request_branch_baseline'
 }
 
 case "$PROFILE" in

@@ -12,6 +12,7 @@ from ...exceptions import (
     AttributeNotDefined,
     AttributeScopeAdvisorySwitchIsOff,
     AttributeScopeAdvisorySwitchIsOn,
+    CallNotAllowedFromWithinCallback,
     CouldNotCreateLogicalTimeFactory,
     CouldNotOpenFDD,
     FederateHandleNotKnown,
@@ -19,16 +20,26 @@ from ...exceptions import (
     FederateNotExecutionMember,
     InconsistentFDD,
     InvalidDimensionHandle,
+    InvalidFederateHandle,
     InvalidInteractionClassHandle,
     InvalidLogicalTime,
     InvalidLookahead,
     InvalidObjectClassHandle,
+    InvalidOrderName,
+    InvalidOrderType,
     InvalidRegion,
+    InvalidResignAction,
+    InvalidServiceGroup,
+    InvalidTransportationName,
+    InvalidTransportationType,
+    InvalidUpdateRateDesignator,
     NameNotFound,
     NotConnected,
     ObjectClassRelevanceAdvisorySwitchIsOff,
     ObjectClassRelevanceAdvisorySwitchIsOn,
     ObjectInstanceNotKnown,
+    InteractionRelevanceAdvisorySwitchIsOff,
+    InteractionRelevanceAdvisorySwitchIsOn,
     RTIexception,
 )
 from ...fom import FOMCatalog, FOMMergeError, FOMModule, FOMResolutionError, FOMResolver, merge_fom_modules, standard_mim_module
@@ -308,13 +319,18 @@ class PythonRTIBackend(
     def _invoke_callback(self, target: FederateState, method_name: str, args: tuple[Any, ...]) -> None:
         if target.ambassador is None:
             return
+        if target.in_callback:
+            raise CallNotAllowedFromWithinCallback("Nested callback invocation is not allowed")
         try:
+            target.in_callback = True
             getattr(target.ambassador, method_name)(*args)
             self.delivered_callback_count += 1
         except FederateInternalError:
             raise
         except BaseException as exc:
             raise FederateInternalError(f"Python FederateAmbassador.{method_name} failed: {exc}", cause=exc) from exc
+        finally:
+            target.in_callback = False
 
     def _find_object(self, handle: ObjectInstanceHandle) -> tuple[FederationState, ObjectInstance]:
         federation = self._require_joined()
@@ -395,11 +411,15 @@ class PythonRTIBackend(
         return reflected
 
     def _svc_getAutomaticResignDirective(self):
-        self._require_connected()
+        self._require_joined()
         return self.state.automatic_resign_directive
 
     def _svc_setAutomaticResignDirective(self, resignAction: Any) -> None:
-        self._require_connected()
+        from ...enums import ResignAction
+
+        self._require_joined()
+        if not isinstance(resignAction, ResignAction):
+            raise InvalidResignAction(repr(resignAction))
         self.state.automatic_resign_directive = resignAction
 
     def _svc_enableObjectClassRelevanceAdvisorySwitch(self) -> None:
@@ -445,11 +465,17 @@ class PythonRTIBackend(
         self.state.attribute_scope_advisory = False
 
     def _svc_enableInteractionRelevanceAdvisorySwitch(self) -> None:
-        self._require_joined()
+        federation = self._require_joined()
+        self._ensure_no_save_or_restore_in_progress(federation)
+        if self.state.interaction_relevance_advisory:
+            raise InteractionRelevanceAdvisorySwitchIsOn("Interaction relevance advisory switch is already enabled")
         self.state.interaction_relevance_advisory = True
 
     def _svc_disableInteractionRelevanceAdvisorySwitch(self) -> None:
-        self._require_joined()
+        federation = self._require_joined()
+        self._ensure_no_save_or_restore_in_progress(federation)
+        if not self.state.interaction_relevance_advisory:
+            raise InteractionRelevanceAdvisorySwitchIsOff("Interaction relevance advisory switch is already disabled")
         self.state.interaction_relevance_advisory = False
 
     def _svc_getFederateName(self, theHandle: FederateHandle | None = None) -> str:
@@ -458,6 +484,8 @@ class PythonRTIBackend(
             if self.state.name is None:
                 raise FederateHandleNotKnown("Current federate has no name")
             return self.state.name
+        if not isinstance(theHandle, FederateHandle):
+            raise InvalidFederateHandle(repr(theHandle))
         target = federation.federates.get(theHandle)
         if target is None or target.name is None:
             raise FederateHandleNotKnown(repr(theHandle))
@@ -551,13 +579,15 @@ class PythonRTIBackend(
 
     def _svc_getTransportationTypeHandle(self, transportationType: str | None = None) -> TransportationTypeHandle:
         self._require_joined()
+        if transportationType not in (None, "", "HLAreliable"):
+            raise InvalidTransportationName(str(transportationType))
         return self.engine.transportation_reliable
 
     def _svc_getTransportationTypeName(self, theHandle: TransportationTypeHandle) -> str:
         self._require_joined()
         if theHandle == self.engine.transportation_reliable:
             return "HLAreliable"
-        return f"TransportationType-{theHandle.value}"
+        raise InvalidTransportationType(repr(theHandle))
 
     def _svc_getHLAversion(self) -> str:
         return "HLA 1516-2010 Python in-memory RTI subset"
@@ -576,17 +606,14 @@ class PythonRTIBackend(
 
     def _svc_getOrderName(self, orderType: Any) -> str:
         from ...enums import OrderType
-
+        self._require_joined()
         if not isinstance(orderType, OrderType):
-            from ...exceptions import InvalidOrderType
-
             raise InvalidOrderType(repr(orderType))
         return orderType.name
 
     def _svc_getOrderType(self, orderName: str):
         from ...enums import OrderType
-        from ...exceptions import InvalidOrderName
-
+        self._require_joined()
         normalized = str(orderName).replace("HLA", "").replace("_", "").replace(" ", "").upper()
         if normalized in {"RECEIVE", "RECEIVEORDER"}:
             return OrderType.RECEIVE
@@ -616,26 +643,25 @@ class PythonRTIBackend(
         return self._all_known_dimensions()
 
     def _svc_getUpdateRateValue(self, updateRateDesignator: str) -> float:
-        self._require_connected()
+        self._require_joined()
+        if str(updateRateDesignator) not in {"default", "HLAdefault"}:
+            raise InvalidUpdateRateDesignator(str(updateRateDesignator))
         return 0.0
 
     def _svc_getUpdateRateValueForAttribute(self, theObject: ObjectInstanceHandle, theAttribute: AttributeHandle) -> float:
-        self._find_object(theObject)
+        _, instance = self._find_object(theObject)
+        self.engine.attribute_name(instance.class_handle, theAttribute)
         return 0.0
 
     def _svc_normalizeFederateHandle(self, theFederateHandle: FederateHandle) -> FederateHandle:
         federation = self._require_joined()
-        if theFederateHandle not in federation.federates:
-            from ...exceptions import InvalidFederateHandle
-
+        if not isinstance(theFederateHandle, FederateHandle) or theFederateHandle not in federation.federates:
             raise InvalidFederateHandle(repr(theFederateHandle))
         return theFederateHandle
 
     def _svc_normalizeServiceGroup(self, theServiceGroup: Any):
         from ...enums import ServiceGroup
-        from ...exceptions import InvalidServiceGroup
-
-        self._require_connected()
+        self._require_joined()
         if isinstance(theServiceGroup, ServiceGroup):
             return theServiceGroup
         key = str(theServiceGroup).replace(" ", "_").replace("-", "_").upper()
@@ -645,63 +671,63 @@ class PythonRTIBackend(
             raise InvalidServiceGroup(str(theServiceGroup)) from exc
 
     def _svc_getAttributeHandleFactory(self) -> hla_handles.AttributeHandleFactory:
-        self._require_connected()
+        self._require_joined()
         return hla_handles.AttributeHandleFactory()
 
     def _svc_getAttributeHandleSetFactory(self) -> hla_handles.AttributeHandleSetFactory:
-        self._require_connected()
+        self._require_joined()
         return hla_handles.AttributeHandleSetFactory()
 
     def _svc_getAttributeHandleValueMapFactory(self) -> hla_handles.AttributeHandleValueMapFactory:
-        self._require_connected()
+        self._require_joined()
         return hla_handles.AttributeHandleValueMapFactory()
 
     def _svc_getAttributeSetRegionSetPairListFactory(self) -> hla_handles.AttributeSetRegionSetPairListFactory:
-        self._require_connected()
+        self._require_joined()
         return hla_handles.AttributeSetRegionSetPairListFactory()
 
     def _svc_getDimensionHandleFactory(self) -> hla_handles.DimensionHandleFactory:
-        self._require_connected()
+        self._require_joined()
         return hla_handles.DimensionHandleFactory()
 
     def _svc_getDimensionHandleSetFactory(self) -> hla_handles.DimensionHandleSetFactory:
-        self._require_connected()
+        self._require_joined()
         return hla_handles.DimensionHandleSetFactory()
 
     def _svc_getFederateHandleFactory(self) -> hla_handles.FederateHandleFactory:
-        self._require_connected()
+        self._require_joined()
         return hla_handles.FederateHandleFactory()
 
     def _svc_getFederateHandleSetFactory(self) -> hla_handles.FederateHandleSetFactory:
-        self._require_connected()
+        self._require_joined()
         return hla_handles.FederateHandleSetFactory()
 
     def _svc_getInteractionClassHandleFactory(self) -> hla_handles.InteractionClassHandleFactory:
-        self._require_connected()
+        self._require_joined()
         return hla_handles.InteractionClassHandleFactory()
 
     def _svc_getObjectClassHandleFactory(self) -> hla_handles.ObjectClassHandleFactory:
-        self._require_connected()
+        self._require_joined()
         return hla_handles.ObjectClassHandleFactory()
 
     def _svc_getObjectInstanceHandleFactory(self) -> hla_handles.ObjectInstanceHandleFactory:
-        self._require_connected()
+        self._require_joined()
         return hla_handles.ObjectInstanceHandleFactory()
 
     def _svc_getParameterHandleFactory(self) -> hla_handles.ParameterHandleFactory:
-        self._require_connected()
+        self._require_joined()
         return hla_handles.ParameterHandleFactory()
 
     def _svc_getParameterHandleValueMapFactory(self) -> hla_handles.ParameterHandleValueMapFactory:
-        self._require_connected()
+        self._require_joined()
         return hla_handles.ParameterHandleValueMapFactory()
 
     def _svc_getRegionHandleSetFactory(self) -> hla_handles.RegionHandleSetFactory:
-        self._require_connected()
+        self._require_joined()
         return hla_handles.RegionHandleSetFactory()
 
     def _svc_getTransportationTypeHandleFactory(self) -> hla_handles.TransportationTypeHandleFactory:
-        self._require_connected()
+        self._require_joined()
         return hla_handles.TransportationTypeHandleFactory()
 
     def _svc_decodeMessageRetractionHandle(self, buffer: bytes) -> MessageRetractionHandle:

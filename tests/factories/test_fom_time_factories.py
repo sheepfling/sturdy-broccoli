@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from hla2010.api import FederateAmbassador
 from hla2010.backends.base import Invocation
 from hla2010.backends.java_common import JavaBridge, JavaValueConverter, resolve_java_invocation
@@ -7,10 +5,10 @@ from hla2010.enums import CallbackModel, ResignAction
 from hla2010.handles import AttributeHandle, AttributeHandleSet, AttributeHandleValueMap, DimensionHandleSet
 from hla2010.raw_api import API_METADATA
 from hla2010.rti import create_rti_ambassador
+from hla2010.scenarios import target_radar_fom_path
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-TARGET_RADAR_FOM = PROJECT_ROOT / "examples" / "target_radar" / "TargetRadarFOMmodule.xml"
+TARGET_RADAR_FOM = target_radar_fom_path()
 
 
 def test_python_rti_resolves_fom_path_and_uses_requested_time_factory():

@@ -6,11 +6,10 @@ Run from the project root:
 """
 from __future__ import annotations
 
-from pathlib import Path
-
 from hla2010.api import FederateAmbassador
 from hla2010.enums import CallbackModel, ResignAction
 from hla2010.rti import create_rti_ambassador
+from hla2010.scenarios import target_radar_fom_path
 
 
 class PrinterFederate(FederateAmbassador):
@@ -18,8 +17,7 @@ class PrinterFederate(FederateAmbassador):
         print(f"time advance grant: {logical_time}")
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-FOM = PROJECT_ROOT / "examples" / "target_radar" / "TargetRadarFOMmodule.xml"
+FOM = target_radar_fom_path()
 
 
 def main() -> None:

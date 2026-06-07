@@ -40,6 +40,8 @@ from .runtime import (
     resolve_certi_module_paths,
 )
 
+_FEDERATION_LOGICAL_TIME_HINTS: dict[str, str] = {}
+
 
 class CERTIBackend(RTIBackend):
     """Adapter for a real CERTI RTI while preserving the neutral Python RTI API."""
@@ -145,8 +147,10 @@ class CERTIBackend(RTIBackend):
             case "createFederationExecution":
                 if len(invocation.args) >= 3 and invocation.args[2] is not None:
                     self._logical_time_hint = str(invocation.args[2])
+                    _FEDERATION_LOGICAL_TIME_HINTS[str(invocation.args[0])] = self._logical_time_hint
                 return self._invoke_create(invocation.args)
             case "destroyFederationExecution":
+                _FEDERATION_LOGICAL_TIME_HINTS.pop(str(invocation.args[0]), None)
                 return self._request_value("DESTROY", invocation.args[0])
             case "joinFederationExecution":
                 return self._invoke_join(invocation.args)
@@ -400,6 +404,7 @@ class CERTIBackend(RTIBackend):
         else:
             federate_name, federate_type, federation_name, additional_foms_raw = args
             additional_foms = resolve_certi_module_paths(additional_foms_raw)
+        self._logical_time_hint = _FEDERATION_LOGICAL_TIME_HINTS.get(str(federation_name), self._logical_time_hint)
         value = self._request_value("JOIN", federate_name, federate_type, federation_name, *additional_foms)
         return FederateHandle(int(value))
 
