@@ -19,10 +19,10 @@ def _exchange_config() -> TwoFederateExchangeConfig:
         federation_name="TwoFederateSuiteExchange",
         fom_modules=(str(VENDOR_SMOKE_FOM),),
         logical_time_implementation_name="HLAfloat64Time",
-        object_class_name="TestObjectClassR",
-        attribute_name="DataR",
-        interaction_class_name="MsgR",
-        parameter_name="MsgDataR",
+        object_class_name="HLAobjectRoot.SmokeObject",
+        attribute_name="Payload",
+        interaction_class_name="HLAinteractionRoot.SmokeInteraction",
+        parameter_name="Message",
         object_instance_name="SuiteObject-1",
         attribute_payload=b"suite-attribute",
         attribute_tag=b"suite-receive-tag",
@@ -61,8 +61,8 @@ def _ownership_config() -> OwnershipScenarioConfig:
         owner_name="Owner",
         acquirer_name="Acquirer",
         federate_type="OwnershipFederate",
-        object_class_name="TestObjectClassR",
-        attribute_name="DataR",
+        object_class_name="HLAobjectRoot.SmokeObject",
+        attribute_name="Payload",
         object_instance_name="OwnedSuiteObject-1",
     )
 
@@ -75,8 +75,8 @@ def _negotiated_config() -> NegotiatedOwnershipScenarioConfig:
         owner_name="Owner",
         acquirer_name="Acquirer",
         federate_type="NegotiatedOwnershipFederate",
-        object_class_name="TestObjectClassR",
-        attribute_name="DataR",
+        object_class_name="HLAobjectRoot.SmokeObject",
+        attribute_name="Payload",
         object_instance_name="NegotiatedSuiteObject-1",
     )
 
@@ -111,5 +111,4 @@ def _ddm_config() -> dict[str, Any]:
         "grant_time": HLAfloat64Time(5.0),
         "next_request_time": HLAfloat64Time(6.0),
     }
-
 
