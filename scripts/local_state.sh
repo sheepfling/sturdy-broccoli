@@ -52,6 +52,9 @@ ensure_local_state_layout() {
     "dist"
     "CERTI-build"
     "CERTI-install"
+    "CERTI-upstream-source"
+    "CERTI-upstream-build"
+    "CERTI-upstream-install"
     "pitch-user-home"
   )
 

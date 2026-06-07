@@ -403,7 +403,8 @@ public:
 
     AttributeHandleSet* respondRelease(FederateHandle federate_handle,
                                        ObjectHandle object_handle,
-                                       const std::vector<AttributeHandle>& attributes);
+                                       const std::vector<AttributeHandle>& attributes,
+                                       const std::string& tag);
 
     void denyRelease(FederateHandle federate_handle,
                      ObjectHandle object_handle,

@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import ast
+import sys
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-RTI_PY = ROOT / "hla2010" / "rti.py"
 DOC = ROOT / "docs" / "rti_options_and_test_matrix.md"
 
 START = "<!-- GENERATED_BACKEND_ALIASES_START -->"
@@ -14,35 +13,17 @@ END = "<!-- GENERATED_BACKEND_ALIASES_END -->"
 
 
 def _extract_alias_sets() -> list[tuple[str, list[str]]]:
-    source = RTI_PY.read_text(encoding="utf-8")
-    tree = ast.parse(source)
-    create_backend = next(
-        node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == "create_backend"
-    )
+    sys.path.insert(0, str(ROOT))
+    from hla2010 import rti
+
+    rti._register_builtin_backend_factories()
+    by_factory: dict[int, list[str]] = {}
+    for alias, factory in rti._BACKEND_FACTORIES.items():
+        by_factory.setdefault(id(factory), []).append(alias)
+
     groups: list[tuple[str, list[str]]] = []
-    for node in create_backend.body:
-        if not isinstance(node, ast.If):
-            continue
-        test = node.test
-        if not (
-            isinstance(test, ast.Compare)
-            and isinstance(test.left, ast.Name)
-            and test.left.id == "normalized"
-            and len(test.ops) == 1
-            and isinstance(test.ops[0], ast.In)
-            and len(test.comparators) == 1
-            and isinstance(test.comparators[0], ast.Set)
-        ):
-            continue
-        alias_values: list[str] = []
-        valid = True
-        for elt in test.comparators[0].elts:
-            if not isinstance(elt, ast.Constant) or not isinstance(elt.value, str):
-                valid = False
-                break
-            alias_values.append(elt.value)
-        if not valid:
-            continue
+    for aliases in by_factory.values():
+        alias_values = sorted(aliases)
         key = _classify(alias_values)
         if key is None:
             continue

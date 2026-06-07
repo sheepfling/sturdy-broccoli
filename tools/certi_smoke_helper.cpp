@@ -5,6 +5,7 @@
 #include <RTI/VariableLengthData.h>
 
 #include <cstdlib>
+#include <cmath>
 #include <deque>
 #include <iostream>
 #include <map>
@@ -61,6 +62,17 @@ std::wstring widen_ascii(const std::string& text)
 std::string narrow_ascii(const std::wstring& text)
 {
     return std::string(text.begin(), text.end());
+}
+
+rti1516e::OrderType parse_order_type_name(const std::string& text)
+{
+    if (text == "TIMESTAMP") {
+        return rti1516e::TIMESTAMP;
+    }
+    if (text == "RECEIVE") {
+        return rti1516e::RECEIVE;
+    }
+    throw std::runtime_error("Unknown order type " + text);
 }
 
 std::vector<std::string> split_tab(const std::string& line)
@@ -206,10 +218,13 @@ struct PendingEvent {
     int order = 0;
     int received_order = 0;
     int transportation = 0;
-    double time = 0.0;
+    std::string time_type;
+    std::string time_value;
 };
 
 class SmokeSession;
+
+std::string logical_time_to_wire_string(rti1516e::LogicalTime const& logical_time, const std::string& logical_time_name);
 
 class QueueingFederateAmbassador : public rti1516e::NullFederateAmbassador {
 public:
@@ -437,6 +452,11 @@ public:
         pending_events_.push_back(event);
     }
 
+    std::string logical_time_name() const
+    {
+        return logical_time_name_.empty() ? "HLAfloat64Time" : logical_time_name_;
+    }
+
     void connect(const std::vector<std::string>& fields)
     {
         const std::string callback_model = fields.size() >= 2 ? percent_decode(fields[1]) : "HLA_EVOKED";
@@ -448,7 +468,8 @@ public:
     void create(const std::vector<std::string>& fields)
     {
         const std::wstring federation_name = widen_ascii(percent_decode(fields.at(1)));
-        const std::wstring logical_time_name = widen_ascii(fields.size() >= 3 ? percent_decode(fields.at(2)) : "");
+        logical_time_name_ = fields.size() >= 3 ? percent_decode(fields.at(2)) : "";
+        const std::wstring logical_time_name = widen_ascii(logical_time_name_);
         std::vector<std::wstring> fom_modules;
         for (std::size_t i = 3; i < fields.size(); ++i) {
             fom_modules.push_back(widen_ascii(percent_decode(fields[i])));
@@ -599,13 +620,22 @@ public:
 
     void update_attribute_values_timestamp(const std::vector<std::string>& fields)
     {
-        RTI1516fedTime timestamp(std::atof(percent_decode(fields.at(4)).c_str()));
+        RTI1516fedTime timestamp(parse_logical_time_argument(fields));
         rti1516e::MessageRetractionHandle handle = rti_->updateAttributeValues(
             resolve_object_instance_handle(std::atoi(percent_decode(fields.at(1)).c_str())),
             parse_attribute_value_map(percent_decode(fields.at(2))),
             make_variable_length_data(hex_decode_string(percent_decode(fields.at(3)))),
             timestamp);
         ok(std::to_string(intern_retraction_handle(handle)));
+    }
+
+    void change_attribute_order_type(const std::vector<std::string>& fields)
+    {
+        rti_->changeAttributeOrderType(
+            resolve_object_instance_handle(std::atoi(percent_decode(fields.at(1)).c_str())),
+            parse_attribute_handle_set(percent_decode(fields.at(2))),
+            parse_order_type_name(percent_decode(fields.at(3))));
+        ok();
     }
 
     void get_interaction_class_handle(const std::vector<std::string>& fields)
@@ -657,7 +687,7 @@ public:
 
     void send_interaction_timestamp(const std::vector<std::string>& fields)
     {
-        RTI1516fedTime timestamp(std::atof(percent_decode(fields.at(4)).c_str()));
+        RTI1516fedTime timestamp(parse_logical_time_argument(fields));
         rti1516e::MessageRetractionHandle handle = rti_->sendInteraction(
             resolve_interaction_class_handle(std::atoi(percent_decode(fields.at(1)).c_str())),
             parse_parameter_value_map(percent_decode(fields.at(2))),
@@ -666,9 +696,17 @@ public:
         ok(std::to_string(intern_retraction_handle(handle)));
     }
 
+    void change_interaction_order_type(const std::vector<std::string>& fields)
+    {
+        rti_->changeInteractionOrderType(
+            resolve_interaction_class_handle(std::atoi(percent_decode(fields.at(1)).c_str())),
+            parse_order_type_name(percent_decode(fields.at(2))));
+        ok();
+    }
+
     void enable_time_regulation(const std::vector<std::string>& fields)
     {
-        RTI1516fedTimeInterval lookahead(std::atof(percent_decode(fields.at(1)).c_str()));
+        RTI1516fedTimeInterval lookahead(parse_logical_time_argument(fields));
         rti_->enableTimeRegulation(lookahead);
         ok();
     }
@@ -804,11 +842,62 @@ public:
         ok(owned ? "1" : "0");
     }
 
+    static double parse_logical_time_argument(const std::vector<std::string>& fields)
+    {
+        return std::atof(percent_decode(fields.back()).c_str());
+    }
+
     void time_advance_request(const std::vector<std::string>& fields)
     {
-        RTI1516fedTime timestamp(std::atof(percent_decode(fields.at(1)).c_str()));
+        RTI1516fedTime timestamp(parse_logical_time_argument(fields));
         rti_->timeAdvanceRequest(timestamp);
         ok();
+    }
+
+    void time_advance_request_available(const std::vector<std::string>& fields)
+    {
+        RTI1516fedTime timestamp(parse_logical_time_argument(fields));
+        rti_->timeAdvanceRequestAvailable(timestamp);
+        ok();
+    }
+
+    void next_message_request(const std::vector<std::string>& fields)
+    {
+        RTI1516fedTime timestamp(parse_logical_time_argument(fields));
+        rti_->nextMessageRequest(timestamp);
+        ok();
+    }
+
+    void next_message_request_available(const std::vector<std::string>& fields)
+    {
+        RTI1516fedTime timestamp(parse_logical_time_argument(fields));
+        rti_->nextMessageRequestAvailable(timestamp);
+        ok();
+    }
+
+    void flush_queue_request(const std::vector<std::string>& fields)
+    {
+        RTI1516fedTime timestamp(parse_logical_time_argument(fields));
+        rti_->flushQueueRequest(timestamp);
+        ok();
+    }
+
+    void query_galt()
+    {
+        RTI1516fedTime timestamp(0.0);
+        const bool valid = rti_->queryGALT(timestamp);
+        std::ostringstream stream;
+        stream << logical_time_to_wire_string(timestamp, logical_time_name());
+        ok(std::vector<std::string>{valid ? "1" : "0", logical_time_name(), stream.str()});
+    }
+
+    void query_lits()
+    {
+        RTI1516fedTime timestamp(0.0);
+        const bool valid = rti_->queryLITS(timestamp);
+        std::ostringstream stream;
+        stream << logical_time_to_wire_string(timestamp, logical_time_name());
+        ok(std::vector<std::string>{valid ? "1" : "0", logical_time_name(), stream.str()});
     }
 
     void evoke(const std::vector<std::string>& fields)
@@ -940,20 +1029,16 @@ private:
             payload.push_back(encode_handle_list(event.handles));
             payload.push_back(event.tag_hex);
         } else if (event.kind == "TIME_REGULATION_ENABLED" || event.kind == "TIME_CONSTRAINED_ENABLED" || event.kind == "TIME_ADVANCE_GRANT") {
-            std::ostringstream stream;
-            stream << event.time;
-            payload.push_back(stream.str());
+            payload.push_back(event.time_type);
+            payload.push_back(event.time_value);
         } else if (event.kind == "REFLECT_TSO" || event.kind == "INTERACTION_TSO") {
             payload.push_back(std::to_string(event.primary_handle));
             payload.push_back(encode_value_pairs(event.values));
             payload.push_back(event.tag_hex);
             payload.push_back(std::to_string(event.order));
             payload.push_back(std::to_string(event.transportation));
-            {
-                std::ostringstream stream;
-                stream << event.time;
-                payload.push_back(stream.str());
-            }
+            payload.push_back(event.time_type);
+            payload.push_back(event.time_value);
             payload.push_back(std::to_string(event.received_order));
         } else {
             payload.push_back(std::to_string(event.primary_handle));
@@ -1000,11 +1085,17 @@ private:
     HandleRegistry<rti1516e::ObjectInstanceHandle> object_instance_handles_;
     HandleRegistry<rti1516e::MessageRetractionHandle> retraction_handles_;
     std::deque<PendingEvent> pending_events_;
+    std::string logical_time_name_;
 };
 
-double logical_time_to_double(rti1516e::LogicalTime const& logical_time)
+std::string logical_time_to_wire_string(rti1516e::LogicalTime const& logical_time, const std::string& logical_time_name)
 {
-    return std::atof(narrow_ascii(logical_time.toString()).c_str());
+    const std::string text = narrow_ascii(logical_time.toString());
+    if (logical_time_name == "HLAinteger64Time") {
+        const long long value = static_cast<long long>(std::llround(std::atof(text.c_str())));
+        return std::to_string(value);
+    }
+    return text;
 }
 
 void QueueingFederateAmbassador::discoverObjectInstance(
@@ -1063,7 +1154,8 @@ void QueueingFederateAmbassador::reflectAttributeValues(
     event.order = static_cast<int>(rti1516e::TIMESTAMP);
     event.received_order = static_cast<int>(receivedOrder);
     event.transportation = static_cast<int>(theType);
-    event.time = logical_time_to_double(theTime);
+    event.time_type = session_.logical_time_name();
+    event.time_value = logical_time_to_wire_string(theTime, event.time_type);
     session_.enqueue_event(event);
 }
 
@@ -1124,7 +1216,8 @@ void QueueingFederateAmbassador::receiveInteraction(
     event.order = static_cast<int>(rti1516e::TIMESTAMP);
     event.received_order = static_cast<int>(receivedOrder);
     event.transportation = static_cast<int>(theType);
-    event.time = logical_time_to_double(theTime);
+    event.time_type = session_.logical_time_name();
+    event.time_value = logical_time_to_wire_string(theTime, event.time_type);
     session_.enqueue_event(event);
 }
 
@@ -1148,7 +1241,8 @@ void QueueingFederateAmbassador::timeRegulationEnabled(rti1516e::LogicalTime con
 {
     PendingEvent event;
     event.kind = "TIME_REGULATION_ENABLED";
-    event.time = logical_time_to_double(theFederateTime);
+    event.time_type = session_.logical_time_name();
+    event.time_value = logical_time_to_wire_string(theFederateTime, event.time_type);
     session_.enqueue_event(event);
 }
 
@@ -1157,7 +1251,8 @@ void QueueingFederateAmbassador::timeConstrainedEnabled(rti1516e::LogicalTime co
 {
     PendingEvent event;
     event.kind = "TIME_CONSTRAINED_ENABLED";
-    event.time = logical_time_to_double(theFederateTime);
+    event.time_type = session_.logical_time_name();
+    event.time_value = logical_time_to_wire_string(theFederateTime, event.time_type);
     session_.enqueue_event(event);
 }
 
@@ -1166,7 +1261,8 @@ void QueueingFederateAmbassador::timeAdvanceGrant(rti1516e::LogicalTime const& t
 {
     PendingEvent event;
     event.kind = "TIME_ADVANCE_GRANT";
-    event.time = logical_time_to_double(theTime);
+    event.time_type = session_.logical_time_name();
+    event.time_value = logical_time_to_wire_string(theTime, event.time_type);
     session_.enqueue_event(event);
 }
 
@@ -1367,6 +1463,8 @@ int main()
                 session.update_attribute_values(fields);
             } else if (command == "UPDATE_ATTRIBUTE_VALUES_TIMESTAMP") {
                 session.update_attribute_values_timestamp(fields);
+            } else if (command == "CHANGE_ATTRIBUTE_ORDER_TYPE") {
+                session.change_attribute_order_type(fields);
             } else if (command == "GET_INTERACTION_CLASS_HANDLE") {
                 session.get_interaction_class_handle(fields);
             } else if (command == "GET_INTERACTION_CLASS_NAME") {
@@ -1383,6 +1481,8 @@ int main()
                 session.send_interaction(fields);
             } else if (command == "SEND_INTERACTION_TIMESTAMP") {
                 session.send_interaction_timestamp(fields);
+            } else if (command == "CHANGE_INTERACTION_ORDER_TYPE") {
+                session.change_interaction_order_type(fields);
             } else if (command == "ENABLE_TIME_REGULATION") {
                 session.enable_time_regulation(fields);
             } else if (command == "ENABLE_TIME_CONSTRAINED") {
@@ -1415,6 +1515,18 @@ int main()
                 session.is_attribute_owned_by_federate(fields);
             } else if (command == "TIME_ADVANCE_REQUEST") {
                 session.time_advance_request(fields);
+            } else if (command == "TIME_ADVANCE_REQUEST_AVAILABLE") {
+                session.time_advance_request_available(fields);
+            } else if (command == "NEXT_MESSAGE_REQUEST") {
+                session.next_message_request(fields);
+            } else if (command == "NEXT_MESSAGE_REQUEST_AVAILABLE") {
+                session.next_message_request_available(fields);
+            } else if (command == "FLUSH_QUEUE_REQUEST") {
+                session.flush_queue_request(fields);
+            } else if (command == "QUERY_GALT") {
+                session.query_galt();
+            } else if (command == "QUERY_LITS") {
+                session.query_lits();
             } else if (command == "EVOKE") {
                 session.evoke(fields);
             } else if (command == "EVOKE_MANY") {

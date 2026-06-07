@@ -1,6 +1,6 @@
 """Distributed logical-time helpers for the pure Python RTI.
 
-This module is deliberately independent from ``hla2010.backends.python_rti``.
+This module is deliberately independent from ``hla2010.backends.python``.
 It operates on the backend's duck-typed federation/federate/message state
 objects, so the HLA 1516.1 time-management rules can be tested without the
 object-management and MOM plumbing.
@@ -447,7 +447,11 @@ def remove_delivered_messages(federation: Any, messages: Iterable[Any]) -> None:
         try:
             for handle, message in list(federate.retraction_messages.items()):
                 if id(message) in ids:
-                    federate.retraction_messages.pop(handle, None)
+                    stored = federate.retraction_messages.pop(handle, None)
+                    if stored is not None and not getattr(stored, "retracted", False):
+                        delivered = getattr(federate, "delivered_retraction_messages", None)
+                        if isinstance(delivered, dict):
+                            delivered[handle] = stored
         except AttributeError:
             pass
 

@@ -11,10 +11,11 @@ how bytes move between processes or machines.
 """
 from __future__ import annotations
 
+import os
+import select
+import subprocess
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-import os
-import subprocess
 from typing import Any, Mapping, Sequence
 from urllib.parse import quote, unquote
 
@@ -94,6 +95,7 @@ class SubprocessLineTransport(RTITransport):
     env: Mapping[str, str] | None = None
     cwd: str | os.PathLike[str] | None = None
     text: bool = True
+    default_timeout: float | None = None
     process: subprocess.Popen[str] | None = field(default=None, init=False)
 
     def start(self) -> "SubprocessLineTransport":
@@ -126,8 +128,19 @@ class SubprocessLineTransport(RTITransport):
         process.stdin.write(encoded + "\n")
         process.stdin.flush()
 
+        timeout = request.metadata.get("timeout") if request.metadata else None
+        if timeout is None:
+            timeout = self.default_timeout
+
         noise: list[str] = []
         while True:
+            if timeout is not None:
+                ready, _, _ = select.select([process.stdout], [], [], float(timeout))
+                if not ready:
+                    self.close()
+                    raise BackendUnavailableError(
+                        f"Subprocess transport timed out waiting for response to {request.command}"
+                    )
             response = process.stdout.readline()
             if not response:
                 stderr = process.stderr.read() if process.stderr is not None else ""

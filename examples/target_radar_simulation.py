@@ -15,7 +15,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from hla2010.backends.python_rti import InMemoryRTIEngine
+from hla2010.backends.python import InMemoryRTIEngine
 from hla2010.rti import create_rti_ambassador
 from hla2010.scenarios.target_radar import run_target_radar_scenario
 
@@ -26,7 +26,7 @@ def build_factory(args):
         return lambda role: create_rti_ambassador("python", engine=engine)
 
     if args.backend == "jpype":
-        from hla2010.backends.jpype_backend import JPypeConfig, rti_ambassador
+        from hla2010.backends.jpype import JPypeConfig, rti_ambassador
 
         classpath = [item for item in args.classpath if item]
         return lambda role: rti_ambassador(JPypeConfig(classpath=classpath, rti_factory_name=args.rti_factory_name))
@@ -38,7 +38,7 @@ def build_factory(args):
         return lambda role: create_rti_ambassador(args.backend, kernel=kernel, shared=True)
 
     if args.backend == "py4j":
-        from hla2010.backends.py4j_backend import Py4JConfig, rti_ambassador
+        from hla2010.backends.py4j import Py4JConfig, rti_ambassador
 
         gateway_parameters = {"address": args.py4j_address, "port": args.py4j_port}
         callback_server_parameters = {"port": args.py4j_callback_port}

@@ -13,9 +13,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Mapping
 
-from .fom import FOMCatalog
 from . import mom as hla_mom
-
+from .fom import FOMCatalog
 
 MOM_PARAMETER_ALIASES: dict[str, tuple[str, ...]] = {
     "HLAMIMData": ("HLAMIMdata",),
@@ -324,10 +323,22 @@ class MOMExposureModel:
             "request_report_pairs": dict(sorted(self.request_to_report.items())),
             "mom_object_classes": sorted(self.object_classes),
             "mom_interaction_classes": sorted(self.interaction_classes),
-            "object_attributes": {name: list(rule.attributes) for name, rule in sorted(self.object_classes.items())},
-            "interaction_parameters": {name: list(rule.parameters) for name, rule in sorted(self.interaction_classes.items())},
-            "interaction_required_parameters": {name: list(rule.required_parameters) for name, rule in sorted(self.interaction_classes.items()) if rule.required_parameters},
-            "interaction_at_least_one_parameters": {name: list(rule.at_least_one_of) for name, rule in sorted(self.interaction_classes.items()) if rule.at_least_one_of},
+            "object_attributes": {
+                name: list(rule.attributes) for name, rule in sorted(self.object_classes.items())
+            },
+            "interaction_parameters": {
+                name: list(rule.parameters) for name, rule in sorted(self.interaction_classes.items())
+            },
+            "interaction_required_parameters": {
+                name: list(rule.required_parameters)
+                for name, rule in sorted(self.interaction_classes.items())
+                if rule.required_parameters
+            },
+            "interaction_at_least_one_parameters": {
+                name: list(rule.at_least_one_of)
+                for name, rule in sorted(self.interaction_classes.items())
+                if rule.at_least_one_of
+            },
             "leaf_interactions": sorted(name for name, rule in self.interaction_classes.items() if rule.is_leaf),
             "rti_received_interactions": sorted(name for name, rule in self.interaction_classes.items() if rule.rti_direction == "rti-receives"),
             "rti_sent_interactions": sorted(name for name, rule in self.interaction_classes.items() if rule.rti_direction == "rti-sends"),

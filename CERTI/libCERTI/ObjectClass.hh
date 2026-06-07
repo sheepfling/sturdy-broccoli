@@ -161,7 +161,8 @@ public:
 
     AttributeHandleSet* attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
                                                           Object* object,
-                                                          const std::vector<AttributeHandle>& theAttributeList);
+                                                          const std::vector<AttributeHandle>& theAttributeList,
+                                                          const std::string& theTag);
 
     void attributeOwnershipReleaseDenied(FederateHandle theFederateHandle,
                                          Object* object,

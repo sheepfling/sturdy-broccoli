@@ -237,6 +237,7 @@ AttributeHandleSet*
 OwnershipManagement::attributeOwnershipRealeaseResponse(ObjectHandle theObject,
                                                         const std::vector<AttributeHandle>& attribArray,
                                                         uint32_t attribArraySize,
+                                                        const std::string& theTag,
                                                         Exception::Type& e)
 {
     NM_Attribute_Ownership_Release_Response req;
@@ -244,6 +245,7 @@ OwnershipManagement::attributeOwnershipRealeaseResponse(ObjectHandle theObject,
     req.setFederation(fm->getFederationHandle().get());
     req.setFederate(fm->getFederateHandle());
     req.setObject(theObject);
+    req.setTag(theTag);
     req.setAttributesSize(attribArraySize);
 
     Debug(D, pdDebug) << "RELEASE_RESPONSE Object " << theObject << " handleArraySize " << req.getAttributesSize()
@@ -375,11 +377,13 @@ void OwnershipManagement::attributeOwnershipAcquisitionNotification(ObjectHandle
                                                                     const std::vector<AttributeHandle>& the_attributes,
                                                                     uint32_t the_size,
                                                                     FederateHandle,
+                                                                    const std::string& the_tag,
                                                                     Exception::Type& /*e*/)
 {
     M_Attribute_Ownership_Acquisition_Notification req;
 
     req.setObject(the_object);
+    req.setTag(the_tag);
     req.setAttributesSize(the_size);
     for (uint32_t i = 0; i < the_size; ++i) {
         req.setAttributes(the_attributes[i], i);

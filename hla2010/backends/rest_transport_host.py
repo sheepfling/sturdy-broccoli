@@ -1,17 +1,17 @@
 """REST-hosted RTI transport servers using the same polling callback contract as gRPC."""
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 import json
+from dataclasses import dataclass, field
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from threading import Thread
 from typing import Any, Mapping
 
-from .python_rti import InMemoryRTIEngine, PythonRTIConfig, rti_ambassador
-from .transport import TransportRequest
 from ..rti import create_rti_ambassador
-from .rest_transport import _dejsonify, _jsonify, _validate_struct, _wrap_struct
 from .grpc_transport.python_server import _RTITransportServicer
+from .python import InMemoryRTIEngine, PythonRTIConfig, rti_ambassador
+from .rest_transport import RestTransportClientAdapter
+from .transport import TransportRequest
 
 
 @dataclass(frozen=True)
@@ -61,6 +61,7 @@ class _BaseRestServer:
     def __init__(self, *, request_path: str, servicer: _RTITransportServicer, host: str, port: int) -> None:
         self.request_path = request_path
         self.servicer = servicer
+        self.client_adapter = RestTransportClientAdapter()
         handler = type("_BoundTransportHTTPHandler", (_TransportHTTPHandler,), {})
         handler.server_ref = self
         self.server = ThreadingHTTPServer((host, port), handler)
@@ -83,30 +84,13 @@ class _BaseRestServer:
             self._started = False
 
     def _decode_request(self, body: str) -> TransportRequest:
-        data = json.loads(body or "{}")
-        if not isinstance(data, dict):
-            raise ValueError("REST transport request must be an object")
-        fields = data.get("fields", [])
-        if not isinstance(fields, list):
-            raise ValueError("REST transport request fields must be a list")
-        metadata = _validate_struct(data.get("metadata", {"fields": {}}), name="request metadata")
-        return TransportRequest(
-            command=str(data.get("command", "")),
-            fields=tuple(_dejsonify(field) for field in fields),
-            metadata=_dejsonify(metadata["fields"]),
-        )
+        return self.client_adapter.decode_request(body)
 
     def _encode_response(self, response) -> bytes:
-        payload = {
-            "fields": [_jsonify(field) for field in response.fields],
-            "metadata": _wrap_struct(dict(response.metadata)),
-        }
-        return json.dumps(payload).encode("utf-8")
+        return self.client_adapter.encode_response(response)
 
     def _encode_error(self, exc: Exception) -> bytes:
-        code = exc.__class__.__name__ if exc.__class__.__name__.endswith("Error") is False else "RTIinternalError"
-        payload = {"error": {"code": code, "message": str(exc)}}
-        return json.dumps(payload).encode("utf-8")
+        return self.client_adapter.encode_error(exc)
 
 
 class PythonRTIRestServer(_BaseRestServer):
@@ -129,7 +113,7 @@ class CERTIRestServer(_BaseRestServer):
         )
 
 
-def start_python_rti_rest_server(
+def start_python_rest_server(
     *,
     engine: InMemoryRTIEngine | None = None,
     python_config: PythonRTIConfig | None = None,
@@ -166,5 +150,5 @@ __all__ = [
     "PythonRTIRestServer",
     "PythonRTIRestServerConfig",
     "start_certi_rest_server",
-    "start_python_rti_rest_server",
+    "start_python_rest_server",
 ]

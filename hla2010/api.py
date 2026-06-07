@@ -5,8 +5,12 @@ This layer adds snake_case aliases while retaining the source lowerCamelCase API
 Attribution: "Reprinted with permission from IEEE 1516.1(TM)-2010".
 """
 from __future__ import annotations
+
 from typing import Any
-from .raw_api import RTIambassador as RawRTIambassador, FederateAmbassador as RawFederateAmbassador
+
+from .raw_api import FederateAmbassador as RawFederateAmbassador
+from .raw_api import RTIambassador as RawRTIambassador
+
 
 class PythonicRTIAmbassadorMixin:
     """Mixin that forwards snake_case service names to lowerCamelCase services."""

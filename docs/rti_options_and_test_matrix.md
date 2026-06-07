@@ -2,11 +2,12 @@
 
 This document is the simplest current map of the `hla-2010` runtime surface.
 
-This is document `1/3` in the backend documentation set:
+This is document `2/4` in the backend documentation set:
 
-1. [rti_options_and_test_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/rti_options_and_test_matrix.md): option inventory and recommended test matrix
-2. [backend_capability_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_capability_matrix.md): feature-capability coverage by backend
-3. [backend_conformance_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_conformance_matrix.md): clause-level conformance snapshot
+1. [backend_route_inventory.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_route_inventory.md): exhaustive route inventory and evidence anchors
+2. [rti_options_and_test_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/rti_options_and_test_matrix.md): option inventory and recommended test matrix
+3. [backend_capability_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_capability_matrix.md): feature-capability coverage by backend
+4. [backend_conformance_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_conformance_matrix.md): clause-level conformance snapshot
 
 It separates three concerns that are easy to blur together:
 
@@ -17,6 +18,10 @@ It separates three concerns that are easy to blur together:
 The Python federate should only need to care about the backend name passed to
 `create_rti_ambassador(...)`. Everything below that line is repo/runtime
 plumbing.
+
+For the exhaustive route list, including named CERTI baselines and remote
+transport-hosted variants, see
+[backend_route_inventory.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_route_inventory.md).
 
 ## Mental Model
 
@@ -55,6 +60,15 @@ Example:
 | CERTI | real vendored 1516.1-2010 RTI in this repo | `certi`, `certi-jpype`, `certi-py4j` | strongest real-runtime path in this workspace |
 | Pitch pRTI | real vendor runtime through Java adapters | `pitch-jpype`, `pitch-py4j` | available, but local activation/state constraints still matter |
 | Portico | real vendor runtime through Java adapters | `portico-jpype`, `portico-py4j` | wiring exists; use only if a real local Portico install is present |
+
+For CERTI specifically, keep two runtime baselines distinct:
+
+- `certi-patched`: the repo-local vendored/modified CERTI build
+- `certi-upstream`: a pristine upstream CERTI install selected only through the
+  named upstream environment variables
+
+Use `./scripts/ci/vendor_runtime_smoke.sh certi-compare` when the goal is
+vendor-vs-local attribution rather than generic CERTI smoke.
 
 ## Python/Java Interaction Models
 
@@ -95,38 +109,38 @@ This section is generated from `create_backend(...)` by
 
 ### Pure Python
 
-- `python`
-- `inmemory`
 - `in-memory`
-- `python-inmemory`
+- `inmemory`
+- `python`
 - `python-in-memory`
+- `python-inmemory`
 
 ### Generic Java Adapter Paths
 
-- `jpype`
 - `java-jpype`
+- `jpype`
 
-- `py4j`
 - `java-py4j`
+- `py4j`
 
 These are only useful when you provide a Java RTI configuration explicitly.
 
 ### Pitch
 
-- `pitch-jpype`
 - `java-pitch-jpype`
+- `pitch-jpype`
 
-- `pitch-py4j`
 - `java-pitch-py4j`
+- `pitch-py4j`
 
 ### Portico
 
-- `portico-jpype`
 - `java-portico-jpype`
 - `portico`
+- `portico-jpype`
 
-- `portico-py4j`
 - `java-portico-py4j`
+- `portico-py4j`
 
 ### CERTI
 
@@ -174,15 +188,15 @@ This is the practical matrix to use when deciding what to run.
 | Python RTI | none | none | yes | yes | yes | yes | yes | no |
 | Java shim | JPype | none | yes | partial | yes | yes | partial | no |
 | Java shim | Py4J | none | yes | partial | yes | yes | partial | no |
-| CERTI | native | subprocess-line | yes | yes | yes | yes | partial | yes |
-| CERTI | JPype facade | subprocess-line | yes | yes | yes | yes | partial | yes |
-| CERTI | Py4J facade | subprocess-line | yes | yes | yes | yes | partial | yes |
+| CERTI | native | subprocess-line | yes | partial | yes | yes | partial | yes |
+| CERTI | JPype facade | subprocess-line | yes | partial | yes | yes | partial | yes |
+| CERTI | Py4J facade | subprocess-line | yes | partial | yes | yes | partial | yes |
 | CERTI hosted | native | `grpc` | yes | yes | yes | yes | not yet explicit | yes |
 | CERTI hosted | native | `rest` | seam present | not yet explicit | not yet explicit | not yet explicit | no | yes |
 | Python RTI hosted | none | `grpc` | yes | yes | yes | yes | yes | no |
 | Python RTI hosted | none | `rest` | yes | yes | not yet explicit | not yet explicit | not yet explicit | no |
-| Pitch | JPype | none | workspace-dependent | workspace-dependent | workspace-dependent | workspace-dependent | no | yes |
-| Pitch | Py4J | none | workspace-dependent | workspace-dependent | workspace-dependent | workspace-dependent | no | yes |
+| Pitch | JPype | none | yes | yes | yes | yes | bridge-divergent | yes |
+| Pitch | Py4J | none | yes | yes | yes | yes | bridge-divergent | yes |
 | Portico | JPype | none | install-dependent | install-dependent | install-dependent | install-dependent | no | yes |
 | Portico | Py4J | none | install-dependent | install-dependent | install-dependent | install-dependent | no | yes |
 
@@ -194,40 +208,55 @@ Interpretation:
 - `workspace-dependent` means the repo path exists, but the local vendor runtime state determines whether tests can actually run
 - `install-dependent` means a valid local Portico installation is required
 
+Current CERTI qualifier:
+
+- the local CERTI synchronization and basic ownership routes are green
+- the shared timed-exchange route is currently only `partial` because the
+  CERTI backend does not implement `changeAttributeOrderType`
+
 ## Primary Test Files By Option
 
 ### Python reference RTI
 
-- [test_python_rti_extended_services.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_python_rti_extended_services.py)
+- [test_python_backend_extended_services.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_python_backend_extended_services.py)
 
 ### Java shim bridge proofs
 
-- [test_java_profile_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_java_profile_backend_matrix.py)
-- [test_java_shim_backends.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_java_shim_backends.py)
+- [test_java_profile_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/vendors/test_java_profile_backend_matrix.py)
+- [test_java_shim_backends.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_java_shim_backends.py)
 
 ### Real CERTI
 
-- [test_certi_real_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_certi_real_backend_matrix.py)
-- [test_real_vendor_runtime_smoke.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_real_vendor_runtime_smoke.py)
+- [test_certi_real_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/vendors/test_certi_real_backend_matrix.py)
+- [test_real_vendor_runtime_smoke.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/vendors/test_real_vendor_runtime_smoke.py)
+- [vendor_runtime_smoke.sh](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/scripts/ci/vendor_runtime_smoke.sh)
 
 ### CERTI behind transport surfaces
 
-- [test_certi_backend_transport.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_certi_backend_transport.py)
-- [test_grpc_transport_certi_server.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_grpc_transport_certi_server.py)
+- [test_certi_backend_transport.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_certi_backend_transport.py)
+- [test_grpc_transport_certi_server.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_certi_server.py)
+- [backend_route_inventory.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_route_inventory.md)
 
 ### Python RTI behind transport surfaces
 
-- [test_grpc_transport_python_server.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_grpc_transport_python_server.py)
-- [test_rest_transport.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rest_transport.py)
+- [test_grpc_transport_python_server.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_python_server.py)
+- [test_rest_transport.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_rest_transport.py)
 
 ### Real Pitch
 
-- [test_pitch_real_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_pitch_real_backend_matrix.py)
-- [test_real_vendor_runtime_smoke.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_real_vendor_runtime_smoke.py)
+- [test_pitch_real_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/vendors/test_pitch_real_backend_matrix.py)
+- [test_real_vendor_runtime_smoke.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/vendors/test_real_vendor_runtime_smoke.py)
+- Negotiated ownership is currently bridge-divergent rather than simply absent:
+  - `pitch-jpype` and `pitch-py4j` do not fail in the same place
+  - `pitch-py4j` gets farther on the owned-attribute release-request branch
+  - `pitch-jpype` gets farther on the negotiated-offer branch and shows explicit FedPro session-drop / failed-resume lines
+- See:
+  - [pitch_negotiated_ownership_vendor_bug_2026-06-07.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)
+  - [diagnostic_summary.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/pitch_negotiated_ownership_2026-06-07/diagnostic_summary.md)
 
 ### Runtime discovery and local install assumptions
 
-- [test_real_rti.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_real_rti.py)
+- [test_real_rti.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/runtime/test_real_rti.py)
 
 ## Recommended Matrix For Day-To-Day Use
 

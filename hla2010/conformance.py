@@ -9,74 +9,401 @@ listed in :mod:`hla2010.spec_refs`.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
 import csv
 import json
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
+from .ambassadors import RecordingFederateAmbassador
+from .backends.base import CALLBACK_METHOD_NAMES, RTI_METHOD_NAMES, lower_camel_to_snake
+from .backends.python import PythonRTIBackend
 from .raw_api import API_METADATA
 from .spec_refs import method_reference
-from .backends.base import CALLBACK_METHOD_NAMES, RTI_METHOD_NAMES, lower_camel_to_snake
-from .backends.python_rti import PythonRTIBackend
-from .ambassadors import RecordingFederateAmbassador
 from .testing.mom_negative import generate_mom_negative_cases, generated_mom_negative_case_summary
-
 
 _FOCUSED_EVIDENCE_BY_GROUP: dict[str, tuple[str, ...]] = {
     "Federation Management": (
-        "tests/test_python_rti_backend.py",
-        "tests/test_startup_sync_fom_java_translation_v09.py",
-        "tests/test_compliance_slice_v011.py",
+        "tests/backends/test_python_backend.py",
+        "tests/scenarios/test_startup_sync_fom_java_translation_v09.py",
+        "tests/verification/test_compliance_slice_v011.py",
     ),
     "Declaration Management": (
-        "tests/test_target_radar_scenario.py",
-        "tests/test_python_rti_backend.py",
+        "tests/scenarios/test_target_radar_scenario.py",
+        "tests/backends/test_python_backend.py",
     ),
     "Object Management": (
-        "tests/test_target_radar_scenario.py",
-        "tests/test_compliance_slice_v011.py",
-        "tests/test_mom_mim_time_v10.py",
+        "tests/scenarios/test_target_radar_scenario.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/time/test_mom_mim_time_v10.py",
     ),
     "Ownership Management": (
-        "tests/test_python_rti_extended_services.py",
+        "tests/backends/test_python_backend_extended_services.py",
     ),
     "Time Management": (
-        "tests/test_mom_mim_time_v10.py",
-        "tests/test_mom_mim_and_time_semantics_v010.py",
-        "tests/test_compliance_slice_v011.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/verification/test_compliance_slice_v011.py",
     ),
     "Data Distribution Management": (
-        "tests/test_compliance_slice_v011.py",
-        "tests/test_python_rti_extended_services.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/backends/test_python_backend_extended_services.py",
     ),
     "Support Services": (
-        "tests/test_fom_time_factories.py",
-        "tests/test_spec_traceability_all_methods.py",
+        "tests/factories/test_fom_time_factories.py",
+        "tests/verification/test_spec_traceability_all_methods.py",
     ),
     "Programming Language Mappings": (
-        "tests/test_fom_time_factories.py",
-        "tests/test_spec_traceability_all_methods.py",
+        "tests/factories/test_fom_time_factories.py",
+        "tests/verification/test_spec_traceability_all_methods.py",
     ),
 }
 
 _FOCUSED_EVIDENCE_BY_METHOD: dict[str, tuple[str, ...]] = {
-    "connect": ("tests/test_startup_sync_fom_java_translation_v09.py",),
-    "createFederationExecution": ("tests/test_fom_time_factories.py", "tests/test_startup_sync_fom_java_translation_v09.py"),
-    "joinFederationExecution": ("tests/test_startup_sync_fom_java_translation_v09.py",),
-    "registerFederationSynchronizationPoint": ("tests/test_startup_sync_fom_java_translation_v09.py",),
-    "synchronizationPointAchieved": ("tests/test_startup_sync_fom_java_translation_v09.py",),
-    "federationSynchronized": ("tests/test_startup_sync_fom_java_translation_v09.py",),
-    "enableTimeRegulation": ("tests/test_mom_mim_time_v10.py", "tests/test_compliance_slice_v011.py"),
-    "timeAdvanceRequest": ("tests/test_mom_mim_time_v10.py", "tests/test_compliance_slice_v011.py"),
-    "timeAdvanceRequestAvailable": ("tests/test_mom_mim_time_v10.py",),
-    "nextMessageRequest": ("tests/test_mom_mim_time_v10.py",),
-    "flushQueueRequest": ("tests/test_mom_mim_time_v10.py",),
-    "queryGALT": ("tests/test_mom_mim_time_v10.py", "tests/test_compliance_slice_v011.py"),
-    "queryLITS": ("tests/test_mom_mim_time_v10.py", "tests/test_compliance_slice_v011.py"),
-    "sendInteraction": ("tests/test_compliance_slice_v011.py", "tests/test_target_radar_scenario.py", "tests/test_mom_negative_matrix_v013.py"),
-    "updateAttributeValues": ("tests/test_target_radar_scenario.py", "tests/test_compliance_slice_v011.py"),
-    "requestAttributeValueUpdate": ("tests/test_target_radar_scenario.py", "tests/test_mom_mim_time_v10.py"),
+    "connect": ("tests/scenarios/test_startup_sync_fom_java_translation_v09.py",),
+    "createFederationExecution": ("tests/factories/test_fom_time_factories.py", "tests/scenarios/test_startup_sync_fom_java_translation_v09.py"),
+    "createFederationExecutionWithMIM": ("tests/backends/test_python_backend_extended_services.py",),
+    "disconnect": ("tests/backends/test_python_backend_extended_services.py",),
+    "destroyFederationExecution": (
+        "tests/backends/test_python_backend_extended_services.py",
+        "tests/backends/test_java_shim_backends.py",
+    ),
+    "listFederationExecutions": (
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "joinFederationExecution": ("tests/scenarios/test_startup_sync_fom_java_translation_v09.py",),
+    "resignFederationExecution": (
+        "tests/backends/test_python_backend.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "publishObjectClassAttributes": ("tests/backends/test_python_backend.py", "tests/scenarios/test_target_radar_scenario.py"),
+    "unpublishObjectClass": ("tests/backends/test_python_backend.py", "tests/scenarios/test_target_radar_scenario.py"),
+    "unpublishObjectClassAttributes": ("tests/backends/test_python_backend.py", "tests/scenarios/test_target_radar_scenario.py"),
+    "publishInteractionClass": ("tests/backends/test_python_backend.py", "tests/scenarios/test_target_radar_scenario.py"),
+    "unpublishInteractionClass": ("tests/backends/test_python_backend.py", "tests/scenarios/test_target_radar_scenario.py"),
+    "subscribeObjectClassAttributes": ("tests/backends/test_python_backend.py", "tests/scenarios/test_target_radar_scenario.py"),
+    "subscribeObjectClassAttributesPassively": ("tests/backends/test_python_backend.py", "tests/scenarios/test_target_radar_scenario.py"),
+    "unsubscribeObjectClass": ("tests/backends/test_python_backend.py", "tests/scenarios/test_target_radar_scenario.py"),
+    "unsubscribeObjectClassAttributes": ("tests/backends/test_python_backend.py", "tests/scenarios/test_target_radar_scenario.py"),
+    "subscribeInteractionClass": ("tests/backends/test_python_backend.py", "tests/scenarios/test_target_radar_scenario.py"),
+    "subscribeInteractionClassPassively": ("tests/backends/test_python_backend.py", "tests/scenarios/test_target_radar_scenario.py"),
+    "unsubscribeInteractionClass": ("tests/backends/test_python_backend.py", "tests/scenarios/test_target_radar_scenario.py"),
+    "reserveObjectInstanceName": (
+        "tests/scenarios/test_target_radar_scenario.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/time/test_mom_mim_time_v10.py",
+    ),
+    "releaseObjectInstanceName": (
+        "tests/scenarios/test_target_radar_scenario.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/time/test_mom_mim_time_v10.py",
+    ),
+    "reserveMultipleObjectInstanceName": (
+        "tests/scenarios/test_target_radar_scenario.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/time/test_mom_mim_time_v10.py",
+    ),
+    "releaseMultipleObjectInstanceName": (
+        "tests/scenarios/test_target_radar_scenario.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/time/test_mom_mim_time_v10.py",
+    ),
+    "registerObjectInstance": (
+        "tests/scenarios/test_target_radar_scenario.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/time/test_mom_mim_time_v10.py",
+    ),
+    "deleteObjectInstance": (
+        "tests/scenarios/test_target_radar_scenario.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/time/test_mom_mim_time_v10.py",
+    ),
+    "localDeleteObjectInstance": (
+        "tests/scenarios/test_target_radar_scenario.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/time/test_mom_mim_time_v10.py",
+    ),
+    "requestAttributeTransportationTypeChange": (
+        "tests/scenarios/test_target_radar_scenario.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/time/test_mom_mim_time_v10.py",
+    ),
+    "queryAttributeTransportationType": (
+        "tests/scenarios/test_target_radar_scenario.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/time/test_mom_mim_time_v10.py",
+    ),
+    "requestInteractionTransportationTypeChange": (
+        "tests/scenarios/test_target_radar_scenario.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/time/test_mom_mim_time_v10.py",
+    ),
+    "queryInteractionTransportationType": (
+        "tests/scenarios/test_target_radar_scenario.py",
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/time/test_mom_mim_time_v10.py",
+    ),
+    "registerFederationSynchronizationPoint": (
+        "tests/scenarios/test_startup_sync_fom_java_translation_v09.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "synchronizationPointAchieved": (
+        "tests/scenarios/test_startup_sync_fom_java_translation_v09.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "federationSynchronized": ("tests/scenarios/test_startup_sync_fom_java_translation_v09.py",),
+    "requestFederationSave": (
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "federateSaveBegun": (
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+    ),
+    "federateSaveComplete": (
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+    ),
+    "federateSaveNotComplete": ("tests/backends/test_python_backend_extended_services.py",),
+    "abortFederationSave": ("tests/backends/test_python_backend_extended_services.py",),
+    "queryFederationSaveStatus": ("tests/backends/test_python_backend_extended_services.py",),
+    "requestFederationRestore": (
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+    ),
+    "federateRestoreComplete": (
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/backends/test_python_backend_extended_services.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+    ),
+    "federateRestoreNotComplete": ("tests/backends/test_python_backend_extended_services.py",),
+    "abortFederationRestore": ("tests/backends/test_python_backend_extended_services.py",),
+    "queryFederationRestoreStatus": ("tests/backends/test_python_backend_extended_services.py",),
+    "enableTimeRegulation": ("tests/time/test_mom_mim_time_v10.py", "tests/verification/test_compliance_slice_v011.py"),
+    "enableTimeConstrained": (
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/verification/test_compliance_slice_v011.py",
+    ),
+    "disableTimeRegulation": ("tests/time/test_mom_mim_and_time_semantics_v010.py",),
+    "disableTimeConstrained": ("tests/time/test_mom_mim_and_time_semantics_v010.py",),
+    "timeAdvanceRequest": ("tests/time/test_mom_mim_time_v10.py", "tests/verification/test_compliance_slice_v011.py"),
+    "timeAdvanceRequestAvailable": ("tests/time/test_mom_mim_time_v10.py",),
+    "nextMessageRequest": ("tests/time/test_mom_mim_time_v10.py",),
+    "nextMessageRequestAvailable": (
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/verification/test_compliance_slice_v011.py",
+    ),
+    "flushQueueRequest": ("tests/time/test_mom_mim_time_v10.py",),
+    "queryGALT": ("tests/time/test_mom_mim_time_v10.py", "tests/verification/test_compliance_slice_v011.py"),
+    "queryLogicalTime": (
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/verification/test_compliance_slice_v011.py",
+    ),
+    "queryLITS": ("tests/time/test_mom_mim_time_v10.py", "tests/verification/test_compliance_slice_v011.py"),
+    "modifyLookahead": (
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "queryLookahead": ("tests/time/test_mom_mim_and_time_semantics_v010.py",),
+    "retract": (
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+    ),
+    "enableAsynchronousDelivery": ("tests/backends/test_python_backend_extended_services.py",),
+    "disableAsynchronousDelivery": ("tests/backends/test_python_backend_extended_services.py",),
+    "changeAttributeOrderType": ("tests/backends/test_python_backend_extended_services.py",),
+    "changeInteractionOrderType": ("tests/backends/test_python_backend_extended_services.py",),
+    "sendInteraction": ("tests/verification/test_compliance_slice_v011.py", "tests/scenarios/test_target_radar_scenario.py", "tests/verification/test_mom_negative_matrix_v013.py"),
+    "updateAttributeValues": ("tests/scenarios/test_target_radar_scenario.py", "tests/verification/test_compliance_slice_v011.py"),
+    "requestAttributeValueUpdate": ("tests/scenarios/test_target_radar_scenario.py", "tests/time/test_mom_mim_time_v10.py"),
+    "unconditionalAttributeOwnershipDivestiture": ("tests/backends/test_python_backend_extended_services.py",),
+    "negotiatedAttributeOwnershipDivestiture": ("tests/backends/test_python_backend_extended_services.py",),
+    "confirmDivestiture": ("tests/backends/test_python_backend_extended_services.py",),
+    "attributeOwnershipAcquisition": ("tests/backends/test_python_backend_extended_services.py",),
+    "attributeOwnershipAcquisitionIfAvailable": ("tests/backends/test_python_backend_extended_services.py",),
+    "attributeOwnershipReleaseDenied": ("tests/backends/test_python_backend_extended_services.py",),
+    "attributeOwnershipDivestitureIfWanted": ("tests/backends/test_python_backend_extended_services.py",),
+    "cancelAttributeOwnershipAcquisition": ("tests/backends/test_python_backend_extended_services.py",),
+    "cancelNegotiatedAttributeOwnershipDivestiture": ("tests/backends/test_python_backend_extended_services.py",),
+    "queryAttributeOwnership": ("tests/backends/test_python_backend_extended_services.py",),
+    "isAttributeOwnedByFederate": ("tests/backends/test_python_backend_extended_services.py",),
+    "createRegion": (
+        "tests/verification/test_compliance_slice_v011.py",
+        "tests/backends/test_python_backend_extended_services.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+    ),
+    "commitRegionModifications": ("tests/verification/test_compliance_slice_v011.py",),
+    "deleteRegion": ("tests/backends/test_python_backend_extended_services.py",),
+    "registerObjectInstanceWithRegions": (
+        "tests/backends/test_python_backend_extended_services.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+    ),
+    "associateRegionsForUpdates": (
+        "tests/backends/test_python_backend_extended_services.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+    ),
+    "unassociateRegionsForUpdates": (
+        "tests/backends/test_python_backend_extended_services.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+    ),
+    "subscribeObjectClassAttributesWithRegions": (
+        "tests/backends/test_python_backend_extended_services.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+    ),
+    "subscribeObjectClassAttributesPassivelyWithRegions": (
+        "tests/backends/test_python_backend_extended_services.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+    ),
+    "unsubscribeObjectClassAttributesWithRegions": ("tests/backends/test_python_backend_extended_services.py",),
+    "subscribeInteractionClassWithRegions": (
+        "tests/backends/test_python_backend_extended_services.py",
+        "tests/verification/test_compliance_slice_v011.py",
+    ),
+    "subscribeInteractionClassPassivelyWithRegions": (
+        "tests/backends/test_python_backend_extended_services.py",
+        "tests/verification/test_compliance_slice_v011.py",
+    ),
+    "unsubscribeInteractionClassWithRegions": ("tests/backends/test_python_backend_extended_services.py",),
+    "sendInteractionWithRegions": ("tests/verification/test_compliance_slice_v011.py",),
+    "requestAttributeValueUpdateWithRegions": (
+        "tests/backends/test_python_backend_extended_services.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+    ),
+    "getFederateName": (
+        "tests/vendors/test_java_profile_backend_matrix.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getFederateHandle": ("tests/backends/test_python_backend_extended_services.py",),
+    "getObjectClassHandle": (
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getObjectClassName": ("tests/backends/test_python_backend_extended_services.py",),
+    "getAttributeHandle": (
+        "tests/factories/test_fom_time_factories.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getAttributeName": (
+        "tests/factories/test_fom_time_factories.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getInteractionClassHandle": (
+        "tests/factories/test_fom_time_factories.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getInteractionClassName": ("tests/backends/test_python_backend_extended_services.py",),
+    "getParameterHandle": (
+        "tests/factories/test_fom_time_factories.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getParameterName": (
+        "tests/factories/test_fom_time_factories.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getObjectInstanceHandle": ("tests/backends/test_python_backend_extended_services.py",),
+    "getObjectInstanceName": ("tests/backends/test_python_backend_extended_services.py",),
+    "getKnownObjectClassHandle": ("tests/backends/test_python_backend_extended_services.py",),
+    "getDimensionHandle": (
+        "tests/factories/test_fom_time_factories.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getDimensionName": ("tests/backends/test_python_backend_extended_services.py",),
+    "getTransportationTypeHandle": (
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getTransportationTypeName": ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
+    "getHLAversion": ("tests/backends/test_python_backend_extended_services.py",),
+    "getDimensionHandleSet": (
+        "tests/factories/test_fom_time_factories.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getOrderName": (
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getOrderType": (
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getTransportationType": ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
+    "getTransportationName": (
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getAvailableDimensionsForClassAttribute": (
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getAvailableDimensionsForInteractionClass": ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
+    "getUpdateRateValue": ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
+    "getUpdateRateValueForAttribute": ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
+    "normalizeFederateHandle": ("tests/backends/test_python_backend_extended_services.py",),
+    "normalizeServiceGroup": ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
+    "getAttributeSetRegionSetPairListFactory": ("tests/backends/test_python_backend_extended_services.py",),
+    "getAutomaticResignDirective": ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
+    "setAutomaticResignDirective": ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
+    "enableObjectClassRelevanceAdvisorySwitch": ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
+    "disableObjectClassRelevanceAdvisorySwitch": ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
+    "enableAttributeRelevanceAdvisorySwitch": ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
+    "disableAttributeRelevanceAdvisorySwitch": ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
+    "enableAttributeScopeAdvisorySwitch": ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
+    "disableAttributeScopeAdvisorySwitch": ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
+    "enableInteractionRelevanceAdvisorySwitch": ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
+    "disableInteractionRelevanceAdvisorySwitch": ("tests/verification/test_spec_traceability_and_extended_python_rti.py",),
+    "enableCallbacks": ("tests/backends/test_python_backend_extended_services.py",),
+    "disableCallbacks": ("tests/backends/test_python_backend_extended_services.py",),
+    "evokeCallback": (
+        "tests/transport/test_rest_transport.py",
+        "tests/transport/test_grpc_transport_python_server.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "evokeMultipleCallbacks": (
+        "tests/transport/test_rest_transport.py",
+        "tests/transport/test_grpc_transport_python_server.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getRangeBounds": (
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "setRangeBounds": (
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getDimensionUpperBound": (
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+        "tests/backends/test_python_backend_extended_services.py",
+    ),
+    "getTimeFactory": ("tests/factories/test_fom_time_factories.py",),
+    "getAttributeHandleFactory": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "getAttributeHandleSetFactory": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "getAttributeHandleValueMapFactory": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "getDimensionHandleFactory": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "getDimensionHandleSetFactory": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "getFederateHandleFactory": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "getFederateHandleSetFactory": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "getInteractionClassHandleFactory": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "getObjectClassHandleFactory": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "getObjectInstanceHandleFactory": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "getParameterHandleFactory": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "getParameterHandleValueMapFactory": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "getRegionHandleSetFactory": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "getTransportationTypeHandleFactory": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "decodeAttributeHandle": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "decodeDimensionHandle": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "decodeFederateHandle": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "decodeInteractionClassHandle": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "decodeMessageRetractionHandle": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "decodeObjectClassHandle": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "decodeObjectInstanceHandle": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "decodeParameterHandle": ("tests/verification/test_spec_traceability_all_methods.py",),
+    "decodeRegionHandle": ("tests/verification/test_spec_traceability_all_methods.py",),
 }
 
 _SECTION_TO_VERIFICATION_ASSET: dict[str, str] = {
@@ -89,6 +416,117 @@ _SECTION_TO_VERIFICATION_ASSET: dict[str, str] = {
     "10": "ASSET-SUPPORT-SERVICES-HANDLE-FACTORIES",
     "11": "ASSET-MOM-MIM-MATRIX",
     "12": "ASSET-LANGUAGE-BINDING-HANDLE-ENCODING",
+}
+
+_NEGATIVE_PATH_GAP = (
+    "Declared exception matrix is identified from source metadata; exhaustive negative execution remains incomplete."
+)
+_NON_ACTIONABLE_NEGATIVE_EXCEPTIONS = frozenset({"RTIinternalError"})
+
+_NEGATIVE_EXECUTED_BY_METHOD: dict[str, int] = {
+    "abortFederationSave": 1,
+    "abortFederationRestore": 1,
+    "connect": 1,
+    "createFederationExecution": 1,
+    "createFederationExecutionWithMIM": 1,
+    "destroyFederationExecution": 1,
+    "disconnect": 1,
+    "attributeOwnershipAcquisition": 4,
+    "attributeOwnershipAcquisitionIfAvailable": 5,
+    "attributeOwnershipDivestitureIfWanted": 5,
+    "attributeOwnershipReleaseDenied": 5,
+    "associateRegionsForUpdates": 6,
+    "cancelAttributeOwnershipAcquisition": 5,
+    "cancelNegotiatedAttributeOwnershipDivestiture": 5,
+    "changeAttributeOrderType": 7,
+    "commitRegionModifications": 4,
+    "createRegion": 4,
+    "confirmDivestiture": 6,
+    "deleteObjectInstance": 6,
+    "disableAsynchronousDelivery": 5,
+    "disableTimeConstrained": 5,
+    "disableTimeRegulation": 5,
+    "enableAsynchronousDelivery": 5,
+    "enableTimeConstrained": 7,
+    "enableTimeRegulation": 8,
+    "federateRestoreComplete": 3,
+    "federateRestoreNotComplete": 3,
+    "federateSaveBegun": 3,
+    "federateSaveComplete": 3,
+    "federateSaveNotComplete": 3,
+    "flushQueueRequest": 9,
+    "getAttributeName": 4,
+    "getAvailableDimensionsForClassAttribute": 4,
+    "getDimensionHandleSet": 5,
+    "getParameterName": 4,
+    "getRangeBounds": 6,
+    "joinFederationExecution": 5,
+    "listFederationExecutions": 1,
+    "localDeleteObjectInstance": 6,
+    "modifyLookahead": 7,
+    "nextMessageRequest": 9,
+    "nextMessageRequestAvailable": 9,
+    "negotiatedAttributeOwnershipDivestiture": 5,
+    "enableAttributeRelevanceAdvisorySwitch": 5,
+    "enableAttributeScopeAdvisorySwitch": 5,
+    "enableObjectClassRelevanceAdvisorySwitch": 5,
+    "publishObjectClassAttributes": 4,
+    "publishInteractionClass": 4,
+    "queryGALT": 4,
+    "queryFederationRestoreStatus": 2,
+    "queryFederationSaveStatus": 2,
+    "queryAttributeOwnership": 5,
+    "queryAttributeTransportationType": 4,
+    "queryInteractionTransportationType": 4,
+    "queryLogicalTime": 4,
+    "queryLookahead": 5,
+    "queryLITS": 4,
+    "registerFederationSynchronizationPoint": 4,
+    "registerObjectInstanceWithRegions": 3,
+    "registerObjectInstance": 5,
+    "releaseMultipleObjectInstanceName": 4,
+    "releaseObjectInstanceName": 4,
+    "reserveObjectInstanceName": 4,
+    "reserveMultipleObjectInstanceName": 4,
+    "requestAttributeTransportationTypeChange": 3,
+    "requestAttributeValueUpdate": 4,
+    "requestAttributeValueUpdateWithRegions": 5,
+    "requestFederationRestore": 4,
+    "requestFederationSave": 4,
+    "requestInteractionTransportationTypeChange": 4,
+    "retract": 7,
+    "resignFederationExecution": 4,
+    "sendInteraction": 1,
+    "sendInteractionWithRegions": 5,
+    "setRangeBounds": 7,
+    "subscribeInteractionClassPassivelyWithRegions": 3,
+    "subscribeInteractionClassWithRegions": 3,
+    "subscribeObjectClassAttributes": 4,
+    "subscribeObjectClassAttributesPassively": 4,
+    "subscribeObjectClassAttributesPassivelyWithRegions": 3,
+    "subscribeObjectClassAttributesWithRegions": 3,
+    "synchronizationPointAchieved": 5,
+    "timeAdvanceRequest": 9,
+    "timeAdvanceRequestAvailable": 9,
+    "unassociateRegionsForUpdates": 6,
+    "unconditionalAttributeOwnershipDivestiture": 5,
+    "unpublishInteractionClass": 4,
+    "unpublishObjectClass": 4,
+    "unpublishObjectClassAttributes": 4,
+    "disableAttributeRelevanceAdvisorySwitch": 5,
+    "disableAttributeScopeAdvisorySwitch": 5,
+    "disableObjectClassRelevanceAdvisorySwitch": 5,
+    "unsubscribeInteractionClass": 4,
+    "unsubscribeInteractionClassWithRegions": 5,
+    "unsubscribeObjectClass": 4,
+    "deleteRegion": 5,
+    "unsubscribeObjectClassAttributes": 4,
+    "unsubscribeObjectClassAttributesWithRegions": 5,
+    "updateAttributeValues": 6,
+    "subscribeInteractionClass": 4,
+    "subscribeInteractionClassPassively": 4,
+    "isAttributeOwnedByFederate": 5,
+    "changeInteractionOrderType": 6,
 }
 
 
@@ -251,15 +689,53 @@ def _verification_status(method: str, service_group: str, evidence: tuple[str, .
     return "matrix-only-planned"
 
 
+def _functional_known_gaps(row: ServiceConformanceRow) -> tuple[str, ...]:
+    return tuple(gap for gap in row.known_gaps if gap != _NEGATIVE_PATH_GAP)
+
+
+def actionable_negative_expectation_count(row: ServiceConformanceRow) -> int:
+    return sum(1 for exc in row.declared_exceptions if exc not in _NON_ACTIONABLE_NEGATIVE_EXCEPTIONS)
+
+
+def _negative_path_rationale(row: ServiceConformanceRow) -> str:
+    expectation_count = actionable_negative_expectation_count(row)
+    if expectation_count == 0:
+        return "No declared RTI exception matrix is present for this row."
+    if row.negative_executed_count >= expectation_count:
+        if any(exc in _NON_ACTIONABLE_NEGATIVE_EXCEPTIONS for exc in row.declared_exceptions):
+            return "All actionable negative-path expectations are represented by executable evidence; generic internal-failure declarations remain excluded from completeness scoring."
+        return "Declared negative-path expectations are fully represented by executable evidence."
+    if row.negative_executed_count > 0:
+        return "Some declared negative-path expectations are covered by executable tests, but coverage is not yet exhaustive."
+    if _NEGATIVE_PATH_GAP in row.known_gaps:
+        return "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete."
+    return "Some negative-path evidence exists, but completeness has not been explicitly recorded."
+
+
+def negative_path_status(row: ServiceConformanceRow) -> str:
+    expectation_count = actionable_negative_expectation_count(row)
+    if expectation_count == 0:
+        return "not-applicable"
+    if row.negative_executed_count >= expectation_count:
+        return "complete"
+    if row.negative_executed_count > 0:
+        return "partial"
+    if _NEGATIVE_PATH_GAP in row.known_gaps:
+        return "mapped-not-exhaustive"
+    return "not-evidenced"
+
+
 def _requirement_outcome(row: ServiceConformanceRow) -> tuple[str, str]:
     if row.implementation_status in {"adapter-or-gap", "callback-helper-gap"}:
         return "fail", "No backend-neutral implementation surface is present for this requirement."
     if row.verification_status == "matrix-only-planned":
         return "not-evidenced", "The requirement is mapped, but no executable evidence is linked yet."
-    if row.known_gaps:
-        return "partial", "Executable evidence exists, but known semantic or negative-path gaps remain."
+    if _functional_known_gaps(row):
+        return "partial", "Executable evidence exists, but known functional gaps remain for this requirement."
     if row.verification_status in {"focused-executable-tests", "callback-helper-covered"}:
-        return "pass", "Executable evidence exists at the requirement level with no recorded gap for this row."
+        if _NEGATIVE_PATH_GAP in row.known_gaps:
+            return "pass", "Executable positive-path evidence exists at the requirement level; negative-path completeness is tracked separately."
+        return "pass", "Executable evidence exists at the requirement level with no recorded functional gap for this row."
     return "partial", "Only group-level or slice-level evidence exists for this requirement."
 
 
@@ -301,7 +777,7 @@ def build_service_conformance_matrix(*, version: str = "0.13.0") -> ServiceConfo
                 verification_status=_verification_status(method, group, evidence),
                 evidence=evidence,
                 negative_expectation_count=len(_declared_exceptions(overloads)),
-                negative_executed_count=mom_executable_count if method == "sendInteraction" else 0,
+                negative_executed_count=_NEGATIVE_EXECUTED_BY_METHOD.get(method, mom_executable_count if method == "sendInteraction" else 0),
                 verification_asset_id=_section_asset_id(section),
                 known_gaps=tuple(gaps),
             )
@@ -313,7 +789,7 @@ def build_service_conformance_matrix(*, version: str = "0.13.0") -> ServiceConfo
         section = ref.section if ref else ""
         group = ref.service_group if ref and ref.service_group else "Federate Ambassador Callback"
         has_helper = hasattr(RecordingFederateAmbassador, method) and hasattr(RecordingFederateAmbassador, lower_camel_to_snake(method))
-        evidence = ("hla2010/ambassadors.py::RecordingFederateAmbassador", "tests/test_spec_traceability_and_extended_python_rti.py")
+        evidence = ("hla2010/ambassadors.py::RecordingFederateAmbassador", "tests/verification/test_spec_traceability_and_extended_python_rti.py")
         rows.append(
             ServiceConformanceRow(
                 interface="FederateAmbassador",
@@ -428,6 +904,8 @@ __all__ = [
     "ServiceConformanceRow",
     "build_requirements_ledger",
     "build_service_conformance_matrix",
+    "negative_path_status",
+    "actionable_negative_expectation_count",
     "write_requirements_ledger_csv",
     "write_requirements_ledger_json",
     "write_service_conformance_csv",

@@ -56,12 +56,12 @@ def _rti_factory(bridge: str, real_java_shim: Path | None):
         return lambda: make_rti_ambassador(create_java_shim_backend(bridge))
 
     if bridge == "jpype":
-        from hla2010.backends.jpype_backend import JPypeConfig, rti_ambassador
+        from hla2010.backends.jpype import JPypeConfig, rti_ambassador
 
         return lambda: rti_ambassador(JPypeConfig(classpath=[str(real_java_shim)], shutdown_jvm_on_close=False))
 
     from py4j.java_gateway import CallbackServerParameters, GatewayParameters, JavaGateway, launch_gateway
-    from hla2010.backends.py4j_backend import Py4JConfig, rti_ambassador
+    from hla2010.backends.py4j import Py4JConfig, rti_ambassador
 
     port = launch_gateway(classpath=str(real_java_shim), die_on_exit=True)
     gateway = JavaGateway(

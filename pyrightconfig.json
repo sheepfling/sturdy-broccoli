@@ -1,0 +1,18 @@
+{
+  "pythonVersion": "3.10",
+  "typeCheckingMode": "standard",
+  "include": [
+    "hla2010/backends/grpc_transport",
+    "hla2010/backends/rest_transport",
+    "hla2010/backends/python/backend.py",
+    "hla2010/backends/python/engine.py",
+    "hla2010/backends/python/factory.py",
+    "hla2010/backends/python/reporting.py",
+    "hla2010/backends/python/state.py"
+  ],
+  "exclude": [
+    "**/__pycache__",
+    "hla2010/backends/grpc_transport/rti_transport_pb2.py",
+    "hla2010/backends/grpc_transport/rti_transport_pb2_grpc.py"
+  ]
+}

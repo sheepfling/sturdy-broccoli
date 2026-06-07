@@ -8,25 +8,21 @@ Section anchors: IEEE 1516.1-2010 §11.3-§11.5 and Annex G.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from typing import Any, Iterable, Mapping
 
 from .. import mom as hla_mom
 from .. import mom_catalog
+from ..ambassadors import RecordingFederateAmbassador
+from ..backends.python import InMemoryRTIEngine, PythonRTIConfig
 from ..enums import CallbackModel
 from ..fom import FOMResolver
 from ..handles import (
     AttributeHandle,
-    FederateHandle,
-    InteractionClassHandle,
-    ObjectClassHandle,
     ObjectInstanceHandle,
     ParameterHandle,
-    TransportationTypeHandle,
 )
 from ..rti import create_rti_ambassador
-from ..ambassadors import RecordingFederateAmbassador
-from ..backends.python_rti import InMemoryRTIEngine, PythonRTIConfig
 
 
 @dataclass(frozen=True)

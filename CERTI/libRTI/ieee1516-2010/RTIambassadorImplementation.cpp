@@ -1362,7 +1362,8 @@ void RTI1516ambassador::negotiatedAttributeOwnershipDivestiture(
                                                                   rti1516e::RTIinternalError)
 {
     M_Negotiated_Attribute_Ownership_Divestiture req, rep;
-    req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
+    const ObjectHandle object_handle = rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject);
+    req.setObject(object_handle);
     if (theUserSuppliedTag.data() == NULL) {
         throw rti1516e::RTIinternalError(L"Calling negotiatedAttributeOwnershipDivestiture with Tag NULL");
     }
@@ -1372,7 +1373,9 @@ void RTI1516ambassador::negotiatedAttributeOwnershipDivestiture(
     uint32_t i = 0;
     for (rti1516e::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end();
          ++it, ++i) {
-        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it), i);
+        const AttributeHandle attribute_handle = rti1516e::AttributeHandleFriend::toCertiHandle(*it);
+        req.setAttributes(attribute_handle, i);
+        p->negotiated_divesting_attributes[object_handle].insert(attribute_handle);
     }
 
     p->executeService(&req, &rep);
@@ -1382,7 +1385,7 @@ void RTI1516ambassador::negotiatedAttributeOwnershipDivestiture(
 void RTI1516ambassador::confirmDivestiture(
     rti1516e::ObjectInstanceHandle theObject,
     rti1516e::AttributeHandleSet const& confirmedAttributes,
-    rti1516e::VariableLengthData const& /*theUserSuppliedTag*/) throw(rti1516e::ObjectInstanceNotKnown,
+    rti1516e::VariableLengthData const& theUserSuppliedTag) throw(rti1516e::ObjectInstanceNotKnown,
                                                                       rti1516e::AttributeNotDefined,
                                                                       rti1516e::AttributeNotOwned,
                                                                       rti1516e::AttributeDivestitureWasNotRequested,
@@ -1393,16 +1396,48 @@ void RTI1516ambassador::confirmDivestiture(
                                                                       rti1516e::NotConnected,
                                                                       rti1516e::RTIinternalError)
 {
+    const ObjectHandle object_handle = rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject);
+    const auto divesting_it = p->negotiated_divesting_attributes.find(object_handle);
+    const auto confirmable_it = p->confirmable_divestiture_attributes.find(object_handle);
+    for (rti1516e::AttributeHandleSet::const_iterator it = confirmedAttributes.begin(); it != confirmedAttributes.end();
+         ++it) {
+        const AttributeHandle attribute_handle = rti1516e::AttributeHandleFriend::toCertiHandle(*it);
+        if (divesting_it == p->negotiated_divesting_attributes.end()
+            || divesting_it->second.find(attribute_handle) == divesting_it->second.end()) {
+            throw rti1516e::AttributeDivestitureWasNotRequested(L"confirmDivestiture requires prior negotiated divestiture");
+        }
+        if (confirmable_it == p->confirmable_divestiture_attributes.end()
+            || confirmable_it->second.find(attribute_handle) == confirmable_it->second.end()) {
+            throw rti1516e::NoAcquisitionPending(L"confirmDivestiture requires requestDivestitureConfirmation");
+        }
+    }
+
     // CERTI already implements the release-response network path used by the
-    // legacy ownership flow. Reuse that path for the 1516e confirmDivestiture
-    // service until a dedicated 2010 protocol message exists.
+    // ownership transfer itself. Keep using that path, but only after the
+    // 1516e negotiated-divestiture preconditions are satisfied locally.
     Debug(D, pdDebug) << "1516e confirmDivestiture mapped onto release-response path for object "
-                      << rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject) << " attrs="
+                      << object_handle << " attrs="
                       << confirmedAttributes.size() << std::endl;
     M_Attribute_Ownership_Release_Response req, rep;
 
-    req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
+    req.setObject(object_handle);
+    req.setTag(varLengthDataAsString(theUserSuppliedTag));
     assignAHSAndExecuteService(confirmedAttributes, req, rep);
+
+    if (rep.getExceptionType() == Exception::Type::NO_EXCEPTION) {
+        for (rti1516e::AttributeHandleSet::const_iterator it = confirmedAttributes.begin(); it != confirmedAttributes.end();
+             ++it) {
+            const AttributeHandle attribute_handle = rti1516e::AttributeHandleFriend::toCertiHandle(*it);
+            p->confirmable_divestiture_attributes[object_handle].erase(attribute_handle);
+            p->negotiated_divesting_attributes[object_handle].erase(attribute_handle);
+        }
+        if (p->confirmable_divestiture_attributes[object_handle].empty()) {
+            p->confirmable_divestiture_attributes.erase(object_handle);
+        }
+        if (p->negotiated_divesting_attributes[object_handle].empty()) {
+            p->negotiated_divesting_attributes.erase(object_handle);
+        }
+    }
 }
 
 // 7.8
@@ -1501,16 +1536,26 @@ void RTI1516ambassador::attributeOwnershipDivestitureIfWanted(
           rti1516e::NotConnected,
           rti1516e::RTIinternalError)
 {
+    const ObjectHandle object_handle = rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject);
     M_Attribute_Ownership_Release_Response req, rep;
 
-    req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
+    req.setObject(object_handle);
 
     assignAHSAndExecuteService(theAttributes, req, rep);
 
     if (rep.getExceptionType() == Exception::Type::NO_EXCEPTION) {
         theDivestedAttributes.clear();
         for (uint32_t i = 0; i < rep.getAttributesSize(); ++i) {
-            theDivestedAttributes.insert(rti1516e::AttributeHandleFriend::createRTI1516Handle(rep.getAttributes()[i]));
+            const AttributeHandle attribute_handle = rep.getAttributes()[i];
+            theDivestedAttributes.insert(rti1516e::AttributeHandleFriend::createRTI1516Handle(attribute_handle));
+            p->confirmable_divestiture_attributes[object_handle].erase(attribute_handle);
+            p->negotiated_divesting_attributes[object_handle].erase(attribute_handle);
+        }
+        if (p->confirmable_divestiture_attributes[object_handle].empty()) {
+            p->confirmable_divestiture_attributes.erase(object_handle);
+        }
+        if (p->negotiated_divesting_attributes[object_handle].empty()) {
+            p->negotiated_divesting_attributes.erase(object_handle);
         }
     }
 }
@@ -1529,8 +1574,8 @@ void RTI1516ambassador::cancelNegotiatedAttributeOwnershipDivestiture(
                                                              rti1516e::RTIinternalError)
 {
     M_Cancel_Negotiated_Attribute_Ownership_Divestiture req, rep;
-
-    req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
+    const ObjectHandle object_handle = rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject);
+    req.setObject(object_handle);
 
     req.setAttributesSize(theAttributes.size());
     uint32_t i = 0;
@@ -1540,6 +1585,20 @@ void RTI1516ambassador::cancelNegotiatedAttributeOwnershipDivestiture(
     }
 
     p->executeService(&req, &rep);
+
+    if (rep.getExceptionType() == Exception::Type::NO_EXCEPTION) {
+        for (rti1516e::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); ++it) {
+            const AttributeHandle attribute_handle = rti1516e::AttributeHandleFriend::toCertiHandle(*it);
+            p->confirmable_divestiture_attributes[object_handle].erase(attribute_handle);
+            p->negotiated_divesting_attributes[object_handle].erase(attribute_handle);
+        }
+        if (p->confirmable_divestiture_attributes[object_handle].empty()) {
+            p->confirmable_divestiture_attributes.erase(object_handle);
+        }
+        if (p->negotiated_divesting_attributes[object_handle].empty()) {
+            p->negotiated_divesting_attributes.erase(object_handle);
+        }
+    }
 }
 
 // 7.15
@@ -1780,8 +1839,6 @@ void RTI1516ambassador::flushQueueRequest(rti1516e::LogicalTime const& theTime) 
     rti1516e::NotConnected,
     rti1516e::RTIinternalError)
 {
-    // JvY: Implementation copied from previous CERTI implementation, including immediate throw.
-    throw rti1516e::RTIinternalError(L"Unimplemented Service flushQueueRequest");
     M_Flush_Queue_Request req, rep;
 
     certi::FederationTime certiFedTime(certi_cast<RTI1516fedTime>()(theTime).getFedTime());

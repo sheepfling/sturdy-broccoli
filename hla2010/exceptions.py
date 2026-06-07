@@ -8,6 +8,7 @@ Attribution: "Reprinted with permission from IEEE 1516.1(TM)-2010".
 """
 from __future__ import annotations
 
+
 class RTIexception(Exception):
     """Base class for HLA RTI exceptions."""
 

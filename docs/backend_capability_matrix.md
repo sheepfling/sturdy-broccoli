@@ -2,11 +2,12 @@
 
 Current backend support status for the `hla-2010` working scaffold.
 
-This is document `2/3` in the backend documentation set:
+This is document `3/4` in the backend documentation set:
 
-1. [rti_options_and_test_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/rti_options_and_test_matrix.md): option inventory and recommended test matrix
-2. [backend_capability_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_capability_matrix.md): feature-capability coverage by backend
-3. [backend_conformance_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_conformance_matrix.md): clause-level conformance snapshot
+1. [backend_route_inventory.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_route_inventory.md): exhaustive route inventory and evidence anchors
+2. [rti_options_and_test_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/rti_options_and_test_matrix.md): option inventory and recommended test matrix
+3. [backend_capability_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_capability_matrix.md): feature-capability coverage by backend
+4. [backend_conformance_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_conformance_matrix.md): clause-level conformance snapshot
 
 ## Scope
 
@@ -35,10 +36,11 @@ Legend:
 | `python` | yes | yes | yes | yes | no |
 | `java-shim-jpype` | yes | partial | yes | yes | no |
 | `java-shim-py4j` | yes | partial | yes | yes | no |
-| `certi` | yes | yes | yes | yes | yes |
-| `certi-jpype` | yes | yes | yes | yes | yes |
-| `certi-py4j` | yes | yes | yes | yes | yes |
-| `pitch-jpype` | blocked | blocked | blocked | blocked | blocked |
+| `certi` | yes | partial | yes | yes | yes |
+| `certi-jpype` | yes | partial | yes | yes | yes |
+| `certi-py4j` | yes | partial | yes | yes | yes |
+| `pitch-jpype` | yes | yes | yes | yes | yes |
+| `pitch-py4j` | yes | yes | yes | yes | yes |
 
 ## Transport Surfaces
 
@@ -57,10 +59,11 @@ These transport kinds are not separate RTI backends today. They are transport ch
 - `java-shim-jpype` and `java-shim-py4j` now support end-to-end multi-federate synchronization and ownership scenarios through the shared in-process Java shim.
 - The shared Java shims do not model full vendor-style timestamped delivery semantics. They cover the common backend-neutral exchange contract, but timed-delivery assertions remain a real-RTI concern.
 - `certi-jpype` and `certi-py4j` are Java-profile facades over the real native CERTI transport in this workspace. There is no vendor-supplied CERTI Java 2010 RTI artifact here.
-- `certi`, `certi-jpype`, and `certi-py4j` are covered by real exchange, timed-exchange, synchronization, and ownership smoke tests.
+- `certi`, `certi-jpype`, and `certi-py4j` are covered by real synchronization and ownership smoke tests, but the current shared timed-exchange route is only partial because CERTI does not implement `changeAttributeOrderType`.
 - `rest` remains a transport seam, not an additional runtime family. It now has a transport-hosted pure-Python RTI proving server and uses the same polling callback contract as gRPC.
 - `grpc` now goes one step further: a transport-hosted pure-Python RTI server proves that the existing backend-neutral exchange path can run end to end over the gRPC wire without changing federate code.
 - The current remote callback contract is explicit across both `rest` and `grpc`: unary transport requests plus callback polling through `evokeCallback` / `evokeMultipleCallbacks`. Callback streaming is a future design option, not the current contract.
+- Use [backend_route_inventory.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_route_inventory.md) when the distinction between patched CERTI, upstream CERTI, local bridge facades, and remote transport-hosted routes matters.
 - The negotiated ownership services are now wired for CERTI as well, and the
   patched local runtime can now separate the direct `deny` path from the
   transfer paths. `confirm` and `ifwanted` still share the same CERTI
@@ -68,21 +71,23 @@ These transport kinds are not separate RTI backends today. They are transport ch
   [backend_conformance_matrix.md](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/docs/backend_conformance_matrix.md)
   for the per-clause status.
 - The real CERTI backend now carries the same backend-neutral synchronization and ownership scenario helpers used by the in-process shims, which improves parity between the pure Python RTI and the CERTI-backed Java-profile paths.
-- `pitch-jpype` remains fail-fast and skipped because the local Pitch CRC/runtime is not activated.
+- `pitch-jpype` and `pitch-py4j` now pass the real exchange, timed-exchange, synchronization, and ownership matrix against the Docker-backed Pitch CRC/FedPro route.
 
 ## Test Coverage
 
 - Shared Java-profile exchange matrix:
-  - [test_java_profile_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_java_profile_backend_matrix.py)
+  - [test_java_profile_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/vendors/test_java_profile_backend_matrix.py)
 - Real CERTI backend matrix:
-  - [test_certi_real_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_certi_real_backend_matrix.py)
+  - [test_certi_real_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/vendors/test_certi_real_backend_matrix.py)
 - CERTI Java-profile callback forwarding and conversion:
-  - [test_certi_java_profile_callbacks.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_certi_java_profile_callbacks.py)
+  - [test_certi_java_profile_callbacks.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/backends/test_certi_java_profile_callbacks.py)
 - Real vendor smoke:
-  - [test_real_vendor_runtime_smoke.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_real_vendor_runtime_smoke.py)
+  - [test_real_vendor_runtime_smoke.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/vendors/test_real_vendor_runtime_smoke.py)
+- Real Pitch backend matrix:
+  - [test_pitch_real_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/vendors/test_pitch_real_backend_matrix.py)
 - Transport-hosted Python RTI over gRPC:
-  - [test_grpc_transport_python_server.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_grpc_transport_python_server.py)
+  - [test_grpc_transport_python_server.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_python_server.py)
 - Transport-hosted Python RTI over REST:
-  - [test_rest_transport.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_rest_transport.py)
+  - [test_rest_transport.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_rest_transport.py)
 - CERTI hosted behind the same gRPC contract:
-  - [test_grpc_transport_certi_server.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_grpc_transport_certi_server.py)
+  - [test_grpc_transport_certi_server.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/transport/test_grpc_transport_certi_server.py)

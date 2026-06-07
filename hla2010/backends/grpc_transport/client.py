@@ -2,45 +2,47 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Mapping
+from typing import Any, Mapping, cast
 
-from . import rti_transport_pb2 as pb2
 from ..transport import TransportError, TransportRequest, TransportResponse
+from . import rti_transport_pb2 as pb2
+
+_pb2 = cast(Any, pb2)
 
 
 class GrpcTransportClientAdapter:
     """Map typed transport envelopes onto generated protobuf client objects."""
 
     @staticmethod
-    def _encode_value(value: Any) -> pb2.TransportValue:
+    def _encode_value(value: Any) -> Any:
         if value is None:
-            return pb2.TransportValue(null_value=0)
+            return _pb2.TransportValue(null_value=0)
         if isinstance(value, bool):
-            return pb2.TransportValue(bool_value=value)
+            return _pb2.TransportValue(bool_value=value)
         if isinstance(value, int) and not isinstance(value, bool):
-            return pb2.TransportValue(int64_value=int(value))
+            return _pb2.TransportValue(int64_value=int(value))
         if isinstance(value, float):
-            return pb2.TransportValue(double_value=float(value))
+            return _pb2.TransportValue(double_value=float(value))
         if isinstance(value, str):
-            return pb2.TransportValue(string_value=value)
+            return _pb2.TransportValue(string_value=value)
         if isinstance(value, (bytes, bytearray, memoryview)):
-            return pb2.TransportValue(bytes_value=bytes(value))
+            return _pb2.TransportValue(bytes_value=bytes(value))
         if isinstance(value, Enum):
-            return pb2.TransportValue(string_value=value.name)
+            return _pb2.TransportValue(string_value=value.name)
         if isinstance(value, Mapping):
-            return pb2.TransportValue(
-                struct_value=pb2.TransportStruct(
+            return _pb2.TransportValue(
+                struct_value=_pb2.TransportStruct(
                     fields={str(key): GrpcTransportClientAdapter._encode_value(item) for key, item in value.items()}
                 )
             )
         if isinstance(value, (tuple, list, set, frozenset)):
-            return pb2.TransportValue(
-                list_value=pb2.TransportList(values=[GrpcTransportClientAdapter._encode_value(item) for item in value])
+            return _pb2.TransportValue(
+                list_value=_pb2.TransportList(values=[GrpcTransportClientAdapter._encode_value(item) for item in value])
             )
-        return pb2.TransportValue(string_value=str(value))
+        return _pb2.TransportValue(string_value=str(value))
 
     @staticmethod
-    def _decode_value(value: pb2.TransportValue) -> Any:
+    def _decode_value(value: Any) -> Any:
         kind = value.WhichOneof("kind")
         if kind == "null_value":
             return None
@@ -61,45 +63,45 @@ class GrpcTransportClientAdapter:
         return None
 
     @staticmethod
-    def _encode_struct(values: Mapping[str, Any]) -> pb2.TransportStruct:
-        return pb2.TransportStruct(fields={str(key): GrpcTransportClientAdapter._encode_value(value) for key, value in values.items()})
+    def _encode_struct(values: Mapping[str, Any]) -> Any:
+        return _pb2.TransportStruct(fields={str(key): GrpcTransportClientAdapter._encode_value(value) for key, value in values.items()})
 
     @staticmethod
-    def _decode_struct(value: pb2.TransportStruct | None) -> dict[str, Any]:
+    def _decode_struct(value: Any | None) -> dict[str, Any]:
         if value is None:
             return {}
         return {key: GrpcTransportClientAdapter._decode_value(item) for key, item in value.fields.items()}
 
-    def encode_request(self, request: TransportRequest) -> pb2.TransportRequest:
-        return pb2.TransportRequest(
+    def encode_request(self, request: TransportRequest) -> Any:
+        return _pb2.TransportRequest(
             command=request.command,
             fields=[self._encode_value(field) for field in request.fields],
             metadata=self._encode_struct(dict(request.metadata)),
         )
 
-    def decode_request(self, request: pb2.TransportRequest) -> TransportRequest:
+    def decode_request(self, request: Any) -> TransportRequest:
         return TransportRequest(
             command=request.command,
             fields=tuple(self._decode_value(field) for field in request.fields),
             metadata=self._decode_struct(request.metadata),
         )
 
-    def encode_response(self, response: TransportResponse) -> pb2.TransportResponse:
-        return pb2.TransportResponse(
+    def encode_response(self, response: TransportResponse) -> Any:
+        return _pb2.TransportResponse(
             fields=[self._encode_value(field) for field in response.fields],
             metadata=self._encode_struct(dict(response.metadata)),
         )
 
-    def encode_error(self, code: str, message: str, metadata: Mapping[str, Any] | None = None) -> pb2.TransportResponse:
-        return pb2.TransportResponse(
-            error=pb2.TransportError(
+    def encode_error(self, code: str, message: str, metadata: Mapping[str, Any] | None = None) -> Any:
+        return _pb2.TransportResponse(
+            error=_pb2.TransportError(
                 code=code,
                 message=message,
                 metadata=self._encode_struct(dict(metadata or {})),
             )
         )
 
-    def decode_response(self, response: pb2.TransportResponse) -> TransportResponse:
+    def decode_response(self, response: Any) -> TransportResponse:
         if response.HasField("error"):
             error = response.error
             raise TransportError(

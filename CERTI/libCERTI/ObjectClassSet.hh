@@ -127,7 +127,7 @@ public:
                                        const std::string& theTag);
 
     AttributeHandleSet*
-    attributeOwnershipReleaseResponse(FederateHandle, Object* object, const std::vector<AttributeHandle>&);
+    attributeOwnershipReleaseResponse(FederateHandle, Object* object, const std::vector<AttributeHandle>&, const std::string&);
 
     void attributeOwnershipReleaseDenied(FederateHandle, Object* object, const std::vector<AttributeHandle>&);
 

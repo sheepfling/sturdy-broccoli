@@ -1210,7 +1210,10 @@ Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Release_
     AttributeHandleSet* attributes
         = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
               .respondRelease(
-                  request.message()->getFederate(), request.message()->getObject(), request.message()->getAttributes());
+                  request.message()->getFederate(),
+                  request.message()->getObject(),
+                  request.message()->getAttributes(),
+                  request.message()->getTag());
     std::cerr << "[rtig-ownership] release-response granted attributes=" << attributes->size() << std::endl;
 
     Debug(D, pdDebug) << "Federate " << request.message()->getFederate() << " of Federation "

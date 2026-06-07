@@ -7,8 +7,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from .handles import *
 from .enums import RestoreStatus, SaveStatus
+from .handles import (
+    AttributeHandleSet,
+    FederateHandle,
+    MessageRetractionHandle,
+    RegionHandleSet,
+)
 
 
 @dataclass(frozen=True)

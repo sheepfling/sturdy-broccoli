@@ -4,12 +4,12 @@
 from __future__ import annotations
 
 from google.protobuf import descriptor as _descriptor
+from google.protobuf import descriptor_pb2 as _descriptor_pb2
 from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import struct_pb2 as _struct_pb2  # noqa: F401 - loads dependency descriptor
 from google.protobuf import symbol_database as _symbol_database
-from google.protobuf import descriptor_pb2 as _descriptor_pb2
 
 _sym_db = _symbol_database.Default()
 

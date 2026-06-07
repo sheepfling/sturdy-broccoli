@@ -7,11 +7,11 @@ assumptions, and remaining gaps.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
-from pathlib import Path
 import csv
 import json
-from typing import Any, Mapping
+from dataclasses import asdict, dataclass, field
+from pathlib import Path
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -94,7 +94,7 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
             "implemented-slice",
             (
                 "hla2010/mom_catalog.py::build_mom_exposure_model",
-                "tests/test_mom_catalog_validation_v012.py::test_mom_catalog_is_derived_from_standard_mim_and_exposes_validation_matrix",
+                "tests/mom/test_mom_catalog_validation_v012.py::test_mom_catalog_is_derived_from_standard_mim_and_exposes_validation_matrix",
             ),
             notes="The active catalog now drives MOM object attributes, interaction parameters, request/report pairs, direction, and matrix output.",
         ),
@@ -106,7 +106,7 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
             "implemented-slice",
             (
                 "hla2010/mom_negative_testing.py::build_mom_negative_test_cases",
-                "tests/test_mom_negative_matrix_executable_v013.py::test_generated_mom_negative_matrix_case_executes",
+                "tests/verification/test_mom_negative_matrix_executable_v013.py::test_generated_mom_negative_matrix_case_executes",
                 "tests/test_mom_negative_matrix_parametrized_v013.py::test_generated_mom_negative_matrix_case_executes",
                 "verification/mom_negative_matrix_v0_13.json",
             ),
@@ -118,7 +118,7 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
             "MOM reports use the exact parameter names declared in the active MIM catalog",
             ("1516.1-2010 §11.3", "1516.1-2010 §11.4.1", "1516.1-2010 Annex G"),
             "implemented-slice",
-            ("tests/test_mom_catalog_validation_v012.py::test_mom_report_payload_uses_exact_mim_catalog_parameters",),
+            ("tests/mom/test_mom_catalog_validation_v012.py::test_mom_report_payload_uses_exact_mim_catalog_parameters",),
             gaps=("Report payload values are still local-process diagnostics for several specialized report classes.",),
         ),
         VerificationAsset(
@@ -127,7 +127,7 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
             "MOM HLAservice interactions are modeled as RTI-received actions with negative-path service failure reporting",
             ("1516.1-2010 §11.3", "1516.1-2010 §11.4.1"),
             "implemented-slice",
-            ("hla2010/backends/python_rti.py::_run_mom_service_action", "verification/mom_negative_matrix_v0_12.json"),
+            ("hla2010/backends/python/mom_actions.py::_run_mom_service_action", "verification/mom_negative_matrix_v0_12.json"),
             gaps=("Not every Annex G service action has a complete semantic implementation yet.",),
         ),
         VerificationAsset(
@@ -136,7 +136,7 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
             "Service-report file output contains initial and per-service records with section anchors",
             ("1516.1-2010 §11.5",),
             "implemented-slice",
-            ("hla2010/service_reporting.py", "tests/test_compliance_slice_v011.py::test_mom_service_reports_to_file_and_global_report_file"),
+            ("hla2010/service_reporting.py", "tests/verification/test_compliance_slice_v011.py::test_mom_service_reports_to_file_and_global_report_file"),
             gaps=("The current format is JSONL for auditability; exact vendor/report-file formatting is not claimed.",),
         ),
         VerificationAsset(
@@ -145,7 +145,7 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
             "Timestamp-order queues respect local GALT/LITS-style lower-bound rules and DDM filtering before delivery",
             ("1516.1-2010 §8.1", "1516.1-2010 §8.13", "1516.1-2010 §8.16", "1516.1-2010 §8.18", "1516.1-2010 §9"),
             "implemented-slice",
-            ("hla2010/time_management.py", "tests/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery"),
+            ("hla2010/time_management.py", "tests/verification/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery"),
             gaps=("The distributed-time algorithm remains a local-process approximation, not a proven multi-process LBTS algorithm.",),
         ),
         VerificationAsset(
@@ -154,7 +154,7 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
             "Save/restore coordinates with time-state and restores logical-time state",
             ("1516.1-2010 §4.16-§4.25", "1516.1-2010 §8"),
             "implemented-slice",
-            ("tests/test_compliance_slice_v011.py::test_scheduled_save_waits_for_time_and_restore_reinstates_time_state",),
+            ("tests/verification/test_compliance_slice_v011.py::test_scheduled_save_waits_for_time_and_restore_reinstates_time_state",),
             gaps=("External persistent save-file interchange is not implemented.",),
         ),
         VerificationAsset(
@@ -163,7 +163,7 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
             "Two-federate Target/Radar simulation runs over Python RTI and Java shim profiles",
             ("1516.1-2010 §4", "1516.1-2010 §5", "1516.1-2010 §6", "1516.1-2010 §8"),
             "implemented-smoke",
-            ("examples/target_radar_simulation.py", "tests/test_target_radar_scenario.py", "test_run_summary.txt"),
+            ("examples/target_radar_simulation.py", "tests/scenarios/test_target_radar_scenario.py", "test_run_summary.txt"),
             gaps=("Scenario is a smoke demonstration, not a conformance test.",),
         ),
         VerificationAsset(
@@ -176,7 +176,7 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
                 "hla2010/conformance.py::build_service_conformance_matrix",
                 "analysis/service_conformance_matrix_v0_13.json",
                 "analysis/service_conformance_matrix_v0_13.csv",
-                "tests/test_service_conformance_matrix_v013.py",
+                "tests/verification/test_service_conformance_matrix_v013.py",
             ),
             gaps=("Rows identify handlers and current evidence; several handler-only rows still need service-specific behavior/exception tests.",),
         ),
@@ -190,7 +190,7 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
                 "hla2010/conformance.py::build_requirements_ledger",
                 "analysis/requirements_ledger_v0_13.json",
                 "analysis/requirements_ledger_v0_13.csv",
-                "tests/test_requirements_ledger_v013.py",
+                "tests/verification/test_requirements_ledger_v013.py",
             ),
             gaps=("The ledger is only as strong as the linked executable evidence; rows marked partial and not-evidenced remain open engineering work.",),
         ),
@@ -201,7 +201,11 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
             ("1516.1-2010 §11.4.1", "1516.1-2010 Annex G"),
             "planned",
             ("analysis/service_conformance_matrix_v0_13.json", "verification/mom_negative_matrix_v0_13.json"),
-            gaps=("The generated parameter-validation rows are executable; service-action rows still need per-service precondition setup so success paths are not misreported as negative evidence.",),
+            gaps=(
+                "The generated parameter-validation rows are executable; service-action rows still "
+                "need per-service precondition setup so success paths are not misreported as "
+                "negative evidence.",
+            ),
         ),
         VerificationAsset(
             "ASSET-CROSS-RTI-BRIDGE-001",
@@ -209,7 +213,7 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
             "Cross-run verification against at least one real Java RTI via JPype and Py4J",
             ("1516.1-2010 Java binding", "1516.1-2010 §4-§10"),
             "gap",
-            ("tests/test_optional_real_java_bridges.py",),
+            ("tests/runtime/test_optional_real_java_bridges.py",),
             gaps=("No vendor RTI, jpype1, or py4j package is available in this sandbox.",),
         ),
         VerificationAsset(
@@ -222,7 +226,7 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
                 "verification/mom_negative_matrix_v0_13.json",
                 "analysis/mom_negative_matrix_v0_13.json",
                 "hla2010/mom_negative_testing.py::mom_negative_case_report",
-                "tests/test_mom_negative_matrix_executable_v013.py",
+                "tests/verification/test_mom_negative_matrix_executable_v013.py",
             ),
             gaps=("Service-action semantic negative cases remain visible as planned rows until each has a bespoke precondition harness.",),
         ),

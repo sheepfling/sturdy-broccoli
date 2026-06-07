@@ -14,14 +14,14 @@ needed by the pure Python RTI and normalizes module designators for Java RTIs.
 """
 from __future__ import annotations
 
+import os
+import re
+import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 from importlib import resources
 from pathlib import Path
-import os
-import re
 from typing import Any, Iterable, Mapping
 from urllib.parse import quote, unquote, urlparse, urlunparse
-import xml.etree.ElementTree as ET
 
 
 class FOMResolutionError(ValueError):
@@ -159,8 +159,10 @@ def default_fom_search_paths() -> tuple[Path, ...]:
     """Return bundled package FOM search paths."""
 
     try:
-        root = resources.files("hla2010").joinpath("resources", "foms")
-        return (Path(str(root)),)
+        package_root = resources.files("hla2010")
+        fom_root = package_root.joinpath("resources", "foms")
+        package_path = Path(str(package_root))
+        return (Path(str(fom_root)), package_path, package_path.parent)
     except Exception:
         return ()
 

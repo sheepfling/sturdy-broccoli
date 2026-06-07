@@ -1,61 +1,58 @@
-"""Backend adapters for the HLA 1516.1-2010 Python API scaffold.
+"""Backend abstractions and a minimal canonical import surface.
 
-The base adapter has no optional dependencies. JPype and Py4J adapters are
-imported explicitly from their modules so importing ``hla2010.backends`` does not
-require a Java bridge package.
+Import backend-family specifics from their package modules:
+
+- ``hla2010.backends.python``
+- ``hla2010.backends.certi``
+- ``hla2010.backends.grpc_transport``
+- ``hla2010.backends.jpype``
+- ``hla2010.backends.py4j``
+- ``hla2010.backends.certi_java``
 """
+from __future__ import annotations
+
 from .base import (
+    CALLBACK_METHOD_NAMES,
+    RTI_METHOD_NAMES,
     BackendConversionError,
     BackendInfo,
     BackendUnavailableError,
-    CALLBACK_METHOD_NAMES,
     DelegatingRTIAmbassador,
     Invocation,
-    RTIBackend,
-    RTI_METHOD_NAMES,
     RecordingBackend,
+    RTIBackend,
     UnsupportedBackendService,
     lower_camel_to_snake,
     make_rti_ambassador,
     snake_to_lower_camel,
 )
-from .conversion import NativeHandleRegistry, NativeObjectRef, ValueConverter
 from .certi import (
     CERTIBackend,
     CERTIConfig,
     CERTITransport,
     CERTITransportError,
     CERTITransportProtocol,
+    TransportRequest as CERTITransportRequest,
+    TransportResponse as CERTITransportResponse,
     build_certi_smoke_helper,
     create_certi_backend,
     create_certi_transport,
-    TransportRequest as CERTITransportRequest,
-    TransportResponse as CERTITransportResponse,
 )
+from .conversion import NativeHandleRegistry, NativeObjectRef, ValueConverter
 from .java_common import JavaBridge, JavaRTIBackend, JavaValueConverter, PythonFederateAmbassadorDispatcher
-from .transport import RTITransport, SubprocessLineTransport, TransportError, TransportRequest, TransportResponse
-from ..real_rti import (
-    CERTIRuntime,
-    PitchRuntime,
-    RuntimeProcess,
-    discover_certi_smoke_fom,
-    discover_certi_runtime,
-    discover_pitch_runtime,
-    launch_certi_rtig,
-    launch_pitch_py4j_gateway,
-    launch_pitch_runtime,
-)
-from .python_rti import (
+from .python import (
     InMemoryRTIEngine,
     PythonRTIBackend,
     PythonRTIConfig,
-    SupplementalReflectInfo,
     SupplementalReceiveInfo,
+    SupplementalReflectInfo,
     SupplementalRemoveInfo,
+    create_python_ambassador,
     create_python_backend,
-    rti_ambassador as python_rti_ambassador,
+    rti_ambassador as python_ambassador,
 )
 from .rest_transport import RestTransport, RestTransportConfig, create_rest_transport
+from .transport import RTITransport, SubprocessLineTransport, TransportError, TransportRequest, TransportResponse
 
 __all__ = [
     "BackendConversionError",
@@ -75,57 +72,34 @@ __all__ = [
     "JavaBridge",
     "JavaRTIBackend",
     "JavaValueConverter",
-    "CERTIRuntime",
     "NativeHandleRegistry",
     "NativeObjectRef",
-    "PitchRuntime",
     "PythonFederateAmbassadorDispatcher",
     "PythonRTIBackend",
     "PythonRTIConfig",
     "RTIBackend",
-    "RTI_METHOD_NAMES",
-    "RuntimeProcess",
-    "RecordingBackend",
     "RTITransport",
-    "GrpcTransport",
-    "GrpcTransportConfig",
+    "RTI_METHOD_NAMES",
+    "RecordingBackend",
     "RestTransport",
     "RestTransportConfig",
+    "SubprocessLineTransport",
+    "SupplementalReceiveInfo",
+    "SupplementalReflectInfo",
+    "SupplementalRemoveInfo",
+    "TransportError",
     "TransportRequest",
     "TransportResponse",
+    "UnsupportedBackendService",
+    "ValueConverter",
     "build_certi_smoke_helper",
     "create_certi_backend",
     "create_certi_transport",
-    "discover_certi_smoke_fom",
-    "discover_certi_runtime",
-    "discover_pitch_runtime",
-    "launch_certi_rtig",
-    "launch_pitch_py4j_gateway",
-    "launch_pitch_runtime",
-    "SupplementalReflectInfo",
-    "SupplementalReceiveInfo",
-    "SupplementalRemoveInfo",
-    "UnsupportedBackendService",
-    "ValueConverter",
+    "create_python_ambassador",
     "create_python_backend",
-    "create_grpc_transport",
     "create_rest_transport",
     "lower_camel_to_snake",
     "make_rti_ambassador",
-    "python_rti_ambassador",
-    "SubprocessLineTransport",
+    "python_ambassador",
     "snake_to_lower_camel",
-    "TransportError",
 ]
-
-
-def __getattr__(name: str):
-    if name in {"GrpcTransport", "GrpcTransportConfig", "create_grpc_transport"}:
-        from .grpc_transport import GrpcTransport, GrpcTransportConfig, create_grpc_transport
-
-        return {
-            "GrpcTransport": GrpcTransport,
-            "GrpcTransportConfig": GrpcTransportConfig,
-            "create_grpc_transport": create_grpc_transport,
-        }[name]
-    raise AttributeError(name)

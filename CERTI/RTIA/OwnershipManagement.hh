@@ -86,6 +86,7 @@ public:
                                                    const std::vector<AttributeHandle>& the_attributes,
                                                    uint32_t the_size,
                                                    FederateHandle,
+                                                   const std::string& the_tag,
                                                    Exception::Type& e);
 
     void attributeOwnershipUnavailable(ObjectHandle the_object,
@@ -126,6 +127,7 @@ public:
     AttributeHandleSet* attributeOwnershipRealeaseResponse(ObjectHandle theObject,
                                                            const std::vector<AttributeHandle>& attribArray,
                                                            uint32_t attribArraySize,
+                                                           const std::string& theTag,
                                                            Exception::Type& e);
 
     void attributeOwnershipReleaseDenied(ObjectHandle theObject,

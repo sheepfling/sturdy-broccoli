@@ -1,28 +1,29 @@
 """Shared Java RTI backend support.
 
-Concrete bridge modules, such as :mod:`hla2010.backends.jpype_backend` and
-:mod:`hla2010.backends.py4j_backend`, supply the mechanics for their Java bridge.
+Concrete bridge packages, such as :mod:`hla2010.backends.jpype` and
+:mod:`hla2010.backends.py4j`, supply the mechanics for their Java bridge.
 This module supplies the bridge-independent policy: overload argument ordering,
 value conversion hooks, callback dispatching, Java collection conversion, and
 Java exception translation.
 """
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
 import os
-from collections.abc import Iterable as CollectionsIterable, Mapping as CollectionsMapping
-from enum import Enum
 import re
+from abc import ABC, abstractmethod
+from collections.abc import Iterable as CollectionsIterable
+from collections.abc import Mapping as CollectionsMapping
+from dataclasses import dataclass
+from enum import Enum
 from typing import Any, Mapping, Sequence
 
-from .. import exceptions as hla_exceptions
 from .. import enums as hla_enums
+from .. import exceptions as hla_exceptions
 from .. import handles as hla_handles
 from ..api import FederateAmbassador
+from ..exceptions import FederateInternalError, RTIexception, RTIinternalError
 from ..fom import module_uri
 from ..raw_api import API_METADATA
-from ..exceptions import FederateInternalError, RTIexception, RTIinternalError
 from ..time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 from .base import (
     CALLBACK_METHOD_NAMES,
@@ -33,7 +34,6 @@ from .base import (
     lower_camel_to_snake,
 )
 from .conversion import (
-    HANDLE_TYPE_BY_JAVA_SIMPLE_NAME,
     NativeHandleRegistry,
     ValueConverter,
     clean_java_type_name,
@@ -704,14 +704,29 @@ class JavaRTIBackend(RTIBackend):
         bridge: JavaBridge,
         converter: JavaValueConverter | None = None,
         info: BackendInfo | None = None,
+        connect_local_settings_designator: str | None = None,
     ) -> None:
         self.java_rti_ambassador = java_rti_ambassador
         self.bridge = bridge
         self.converter = converter or JavaValueConverter(bridge, rti_ambassador=java_rti_ambassador)
         self.converter.rti_ambassador = java_rti_ambassador
         self.info = info or BackendInfo(name=bridge.name, kind="java")
+        self.connect_local_settings_designator = connect_local_settings_designator
+        self._connected_ambassador_proxies: list[tuple[FederateAmbassador, PythonFederateAmbassadorDispatcher, Any]] = []
 
     def invoke(self, invocation: Invocation) -> Any:
+        if (
+            invocation.method_name == "connect"
+            and self.connect_local_settings_designator
+            and len(invocation.args) == 2
+            and not invocation.kwargs
+        ):
+            invocation = Invocation(
+                method_name=invocation.method_name,
+                args=(*invocation.args, self.connect_local_settings_designator),
+                kwargs=invocation.kwargs,
+                overloads=invocation.overloads,
+            )
         resolved = resolve_java_invocation(invocation)
         backend_args = self.converter.to_backend_args(resolved.args, expected_type_names=resolved.param_types)
         result = self.bridge.call(self.java_rti_ambassador, invocation.method_name, *backend_args)
@@ -719,7 +734,11 @@ class JavaRTIBackend(RTIBackend):
 
     def adapt_federate_ambassador(self, ambassador: FederateAmbassador) -> Any:
         dispatcher = PythonFederateAmbassadorDispatcher(ambassador, self.converter)
-        return self.bridge.create_federate_proxy(dispatcher)
+        proxy = self.bridge.create_federate_proxy(dispatcher)
+        # JPype and Py4J callback objects need a live Python-side reference or
+        # vendor callbacks can disappear after connect.
+        self._connected_ambassador_proxies.append((ambassador, dispatcher, proxy))
+        return proxy
 
     def close(self) -> None:
         close = getattr(self.bridge, "close", None)

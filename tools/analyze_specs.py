@@ -1,7 +1,12 @@
 from __future__ import annotations
-import json, os, re, shutil, textwrap, zipfile
+
+import json
+import os
+import re
+import shutil
+import zipfile
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from dataclasses import dataclass, asdict
 
 ROOT = Path('/mnt/data')
 SPEC = ROOT/'hla_specs'
@@ -72,8 +77,15 @@ def parse_java_methods(file: Path, interface: str) -> list[Method]:
         ('Data Distribution Management','Data Distribution Management'),
         ('RTI Support Services','Support Services'),
     ]
-    start_re = re.compile(r'^\s*(?:void|boolean|byte|short|int|long|float|double|String|URL|Set<[^>]+>|[A-Za-z_][\w<>\[\], ?]*?)\s+([a-zA-Z_]\w*)\s*\(')
-    sig_re = re.compile(r'(?P<return>[A-Za-z_][\w<>\[\], ?]*?|void|boolean|int|long|double|float|String|URL)\s+(?P<name>[A-Za-z_]\w*)\s*\((?P<params>.*?)\)\s*(?:throws\s*(?P<throws>.*?))?;', re.S)
+    start_re = re.compile(
+        r"^\s*(?:void|boolean|byte|short|int|long|float|double|String|URL|Set<[^>]+>|"
+        r"[A-Za-z_][\w<>\[\], ?]*?)\s+([a-zA-Z_]\w*)\s*\("
+    )
+    sig_re = re.compile(
+        r"(?P<return>[A-Za-z_][\w<>\[\], ?]*?|void|boolean|int|long|double|float|String|URL)\s+"
+        r"(?P<name>[A-Za-z_]\w*)\s*\((?P<params>.*?)\)\s*(?:throws\s*(?P<throws>.*?))?;",
+        re.S,
+    )
     for i, line in enumerate(lines, start=1):
         raw = line
         for marker, gname in group_patterns:
@@ -115,7 +127,11 @@ def parse_cpp_methods(file: Path, interface: str) -> list[Method]:
     text = file.read_text(errors='replace')
     clean = strip_block_comments_keep_lines(text)
     # remove C++ line comments but preserve group? no group needed
-    sig_re = re.compile(r'virtual\s+(?P<return>[^;()]+?)\s+(?P<name>[A-Za-z_]\w*)\s*\((?P<params>.*?)\)\s*(?:throw\s*\((?P<throws>.*?)\))?\s*(?:=\s*0)?\s*;', re.S)
+    sig_re = re.compile(
+        r"virtual\s+(?P<return>[^;()]+?)\s+(?P<name>[A-Za-z_]\w*)\s*\((?P<params>.*?)\)\s*"
+        r"(?:throw\s*\((?P<throws>.*?)\))?\s*(?:=\s*0)?\s*;",
+        re.S,
+    )
     methods: list[Method] = []
     for m in sig_re.finditer(clean):
         name = m.group('name')
@@ -163,7 +179,8 @@ def parse_enums() -> dict[str, list[tuple[str,int|None]]]:
         vals=[]
         for part in m.group(2).split(','):
             part = re.sub(r'//.*', '', part).strip()
-            if not part: continue
+            if not part:
+                continue
             mm = re.match(r'([A-Z][A-Z0-9_]*)\s*(?:=\s*([0-9]+))?', part)
             if mm:
                 vals.append((mm.group(1), int(mm.group(2)) if mm.group(2) else None))
@@ -219,10 +236,9 @@ Attribution: "{ATTR}".
 from __future__ import annotations
 from enum import Enum, auto
 
-''']
+    ''']
     for name in sorted(enums):
         chunks.append(f'class {name}(Enum):\n')
-        next_auto = 1
         for const, val in enums[name]:
             if val is None:
                 chunks.append(f'    {const} = auto()\n')
@@ -402,7 +418,16 @@ class HLAfloat64TimeFactory:
     def make_time(self, value: float) -> HLAfloat64Time: return HLAfloat64Time(value)
     def make_interval(self, value: float) -> HLAfloat64Interval: return HLAfloat64Interval(value)
 
-__all__ = ['LogicalTime', 'LogicalTimeInterval', 'HLAinteger64Interval', 'HLAinteger64Time', 'HLAinteger64TimeFactory', 'HLAfloat64Interval', 'HLAfloat64Time', 'HLAfloat64TimeFactory']
+__all__ = [
+    'LogicalTime',
+    'LogicalTimeInterval',
+    'HLAinteger64Interval',
+    'HLAinteger64Time',
+    'HLAinteger64TimeFactory',
+    'HLAfloat64Interval',
+    'HLAfloat64Time',
+    'HLAfloat64TimeFactory',
+]
 '''
 
 
@@ -637,12 +662,26 @@ class RTIambassador(ABC):
 '''
     for name in rti_names:
         count = len(meta['RTIambassador'][name])
-        body += f'    @abstractmethod\n    def {name}(self, *args: Any, **kwargs: Any) -> Any:\n        """{name}; {count} source overload(s). See API_METADATA. """\n        raise NotImplementedError\n\n'
+        body += (
+            f"    @abstractmethod\n"
+            f"    def {name}(self, *args: Any, **kwargs: Any) -> Any:\n"
+            f'        """{name}; {count} source overload(s). See API_METADATA. """\n'
+            f"        raise NotImplementedError\n\n"
+        )
     body += 'class FederateAmbassador:\n    """No-op federate callback base preserving source method names."""\n\n'
     for name in fed_names:
         count = len(meta['FederateAmbassador'][name])
-        body += f'    def {name}(self, *args: Any, **kwargs: Any) -> Any:\n        """{name}; {count} source overload(s). Override in a federate."""\n        return None\n\n'
-    body += 'RTIAmbassador = RTIambassador\nNullFederateAmbassador = FederateAmbassador\n__all__ = [\'API_METADATA\', \'RTIambassador\', \'RTIAmbassador\', \'FederateAmbassador\', \'NullFederateAmbassador\']\n'
+        body += (
+            f"    def {name}(self, *args: Any, **kwargs: Any) -> Any:\n"
+            f'        """{name}; {count} source overload(s). Override in a federate."""\n'
+            f"        return None\n\n"
+        )
+    body += (
+        "RTIAmbassador = RTIambassador\n"
+        "NullFederateAmbassador = FederateAmbassador\n"
+        "__all__ = ['API_METADATA', 'RTIambassador', 'RTIAmbassador', "
+        "'FederateAmbassador', 'NullFederateAmbassador']\n"
+    )
     return body
 
 
@@ -671,9 +710,23 @@ class PythonicRTIAmbassadorMixin:
         if snake == name or snake in used:
             continue
         used.add(snake)
-        body += f'    def {snake}(self, *args: Any, **kwargs: Any) -> Any:\n        return self.{name}(*args, **kwargs)\n\n'
-    body += 'class RTIambassador(PythonicRTIAmbassadorMixin, RawRTIambassador):\n    """Subclass point for Python RTI adapters."""\n    pass\n\nRTIAmbassador = RTIambassador\n\n'
-    body += 'class FederateAmbassador(RawFederateAmbassador):\n    """Federate callback base with snake_case hooks.\n\n    Override either the source lowerCamelCase callback or the corresponding\n    snake_case hook. The lowerCamelCase default forwards to the hook.\n    """\n\n'
+        body += (
+            f"    def {snake}(self, *args: Any, **kwargs: Any) -> Any:\n"
+            f"        return self.{name}(*args, **kwargs)\n\n"
+        )
+    body += (
+        "class RTIambassador(PythonicRTIAmbassadorMixin, RawRTIambassador):\n"
+        '    """Subclass point for Python RTI adapters."""\n'
+        "    pass\n\n"
+        "RTIAmbassador = RTIambassador\n\n"
+    )
+    body += (
+        "class FederateAmbassador(RawFederateAmbassador):\n"
+        '    """Federate callback base with snake_case hooks.\n\n'
+        "    Override either the source lowerCamelCase callback or the corresponding\n"
+        "    snake_case hook. The lowerCamelCase default forwards to the hook.\n"
+        '    """\n\n'
+    )
     used = set()
     for name in fed_names:
         snake = camel_to_snake(name)
@@ -681,9 +734,19 @@ class PythonicRTIAmbassadorMixin:
             continue
         used.add(snake)
         # source method forwards to hook, hook no-op. However this overrides all callbacks and loses raw docstrings.
-        body += f'    def {name}(self, *args: Any, **kwargs: Any) -> Any:\n        return self.{snake}(*args, **kwargs)\n\n'
-        body += f'    def {snake}(self, *args: Any, **kwargs: Any) -> Any:\n        return None\n\n'
-    body += 'NullFederateAmbassador = FederateAmbassador\n__all__ = [\'RTIambassador\', \'RTIAmbassador\', \'FederateAmbassador\', \'NullFederateAmbassador\', \'PythonicRTIAmbassadorMixin\']\n'
+        body += (
+            f"    def {name}(self, *args: Any, **kwargs: Any) -> Any:\n"
+            f"        return self.{snake}(*args, **kwargs)\n\n"
+        )
+        body += (
+            f"    def {snake}(self, *args: Any, **kwargs: Any) -> Any:\n"
+            f"        return None\n\n"
+        )
+    body += (
+        "NullFederateAmbassador = FederateAmbassador\n"
+        "__all__ = ['RTIambassador', 'RTIAmbassador', 'FederateAmbassador', "
+        "'NullFederateAmbassador', 'PythonicRTIAmbassadorMixin']\n"
+    )
     return body
 
 
@@ -735,7 +798,9 @@ Attribution: "{ATTR}".
 
 1. Preserve the raw lowerCamelCase API in `hla2010.raw_api` so Java/C++ method names remain searchable.
 2. Add snake_case aliases in `hla2010.api` for Python code.
-3. Collapse Java/C++ overloads into `*args`/`**kwargs` at the raw scaffold level; a later typed facade can turn the common overload families into explicit keyword signatures.
+3. Collapse Java/C++ overloads into `*args`/`**kwargs` at the raw scaffold level;
+   a later typed facade can turn the common overload families into explicit
+   keyword signatures.
 4. Represent Java `byte[]` and C++ `VariableLengthData` as `bytes`.
 5. Represent C++ output parameters as Python return values.
 6. Preserve named exceptions, but do not emulate Java checked-exception declarations.
@@ -773,10 +838,16 @@ Attribution: "{ATTR}".
 
 def build():
     ensure_specs_unpacked()
-    if OUT.exists(): shutil.rmtree(OUT)
-    if ZIP.exists(): ZIP.unlink()
-    java_methods = parse_java_methods(JAVA_ROOT/'RTIambassador.java', 'RTIambassador') + parse_java_methods(JAVA_ROOT/'FederateAmbassador.java', 'FederateAmbassador')
-    cpp_methods = parse_cpp_methods(CPP_ROOT/'RTIambassador.h', 'RTIambassador') + parse_cpp_methods(CPP_ROOT/'FederateAmbassador.h', 'FederateAmbassador')
+    if OUT.exists():
+        shutil.rmtree(OUT)
+    if ZIP.exists():
+        ZIP.unlink()
+    java_methods = parse_java_methods(JAVA_ROOT / 'RTIambassador.java', 'RTIambassador') + parse_java_methods(
+        JAVA_ROOT / 'FederateAmbassador.java', 'FederateAmbassador'
+    )
+    cpp_methods = parse_cpp_methods(CPP_ROOT / 'RTIambassador.h', 'RTIambassador') + parse_cpp_methods(
+        CPP_ROOT / 'FederateAmbassador.h', 'FederateAmbassador'
+    )
     enums = parse_enums()
     exceptions = parse_exception_names()
     handles = parse_handles()
@@ -798,17 +869,25 @@ def build():
         'exceptions_count': len(exceptions),
         'enum_count': len(enums),
         'handle_count': len(handles),
-        'schemas_and_examples': sorted([str(p.relative_to(SPEC)) for p in (SPEC/'1516.1-2010_downloads').glob('*') if p.suffix.lower() in {'.xsd','.xml','.wsdl'}] + [str(p.relative_to(SPEC)) for p in (SPEC/'1516.2-2010_downloads').glob('*') if p.suffix.lower() in {'.xsd','.xml','.wsdl'}]),
+        'schemas_and_examples': sorted(
+            [str(p.relative_to(SPEC)) for p in (SPEC / '1516.1-2010_downloads').glob('*') if p.suffix.lower() in {'.xsd', '.xml', '.wsdl'}]
+            + [str(p.relative_to(SPEC)) for p in (SPEC / '1516.2-2010_downloads').glob('*') if p.suffix.lower() in {'.xsd', '.xml', '.wsdl'}]
+        ),
     }
     comparison, manifest, inventory_json = make_analysis(api_inventory, java_methods, cpp_methods, enums, exceptions, handles)
     # package files
-    write(OUT/'NOTICE', f'''This package is an unofficial Python scaffold generated from the public IEEE 1516.1-2010 Java/C++ API materials and IEEE 1516.2-2010 schema/example materials provided in the downloaded ZIP bundles.
+    write(
+        OUT / 'NOTICE',
+        f'''This package is an unofficial Python scaffold generated from the public
+IEEE 1516.1-2010 Java/C++ API materials and IEEE 1516.2-2010 schema/example
+materials provided in the downloaded ZIP bundles.
 
 Required attribution for API-derived material:
 "{ATTR}"
 
 This package is not an IEEE publication and is not a complete RTI implementation.
-''')
+''',
+    )
     write(OUT/'pyproject.toml', '''[project]
 name = "hla2010-python-scaffold"
 version = "0.3.0"
@@ -893,8 +972,18 @@ class MinimalFederate(FederateAmbassador):
     # validation
     os.system(f'PYTHONPATH={OUT} python -m compileall -q {OUT}/hla2010')
     # import smoke test
-    import subprocess, sys
-    subprocess.run([sys.executable, '-c', 'import hla2010; from hla2010 import SaveFailureReason, RTIexception, AttributeHandle; import hla2010.raw_api as r; print(hla2010.__version__, len(r.API_METADATA["RTIambassador"]))'], env={**os.environ, 'PYTHONPATH': str(OUT)}, check=True)
+    import subprocess
+    import sys
+    subprocess.run(
+        [
+            sys.executable,
+            '-c',
+            'import hla2010; from hla2010 import SaveFailureReason, RTIexception, AttributeHandle; '
+            'import hla2010.raw_api as r; print(hla2010.__version__, len(r.API_METADATA["RTIambassador"]))',
+        ],
+        env={**os.environ, 'PYTHONPATH': str(OUT)},
+        check=True,
+    )
     # zip
     shutil.make_archive(str(ZIP.with_suffix('')), 'zip', OUT)
     print(json.dumps({'out': str(OUT), 'zip': str(ZIP), **api_inventory}, indent=2))

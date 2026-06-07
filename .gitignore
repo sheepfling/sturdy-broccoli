@@ -34,5 +34,8 @@ INBOX/*
 third_party/pitch/HLA_PITCH_linux/
 CERTI-build
 CERTI-install
+CERTI-upstream-source
+CERTI-upstream-build
+CERTI-upstream-install
 pitch-user-home
 archives

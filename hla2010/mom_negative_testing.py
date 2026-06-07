@@ -26,8 +26,6 @@ from .handles import (
 from .mom_catalog import (
     MOM_BOOL_PARAMETERS,
     MOM_FLOAT_PARAMETERS,
-    MOM_HANDLE_PARAMETERS,
-    MOM_HANDLE_SET_PARAMETERS,
     MOM_INTERVAL_PARAMETERS,
     MOM_TIME_PARAMETERS,
     MOMExposureModel,
@@ -141,7 +139,14 @@ def build_mom_negative_test_cases(
             parameter = str(spec.get("parameter", ""))
             parameters = tuple(str(p) for p in spec.get("parameters", ()) if p)
             executable = case_kind in EXECUTABLE_PARAMETER_CASES
-            reason = "executable strict MOM parameter validation" if executable else "semantic service-action precondition case; retained in matrix, not part of the generated parameter-validation test set"
+            reason = (
+                "executable strict MOM parameter validation"
+                if executable
+                else (
+                    "semantic service-action precondition case; retained in matrix, "
+                    "not part of the generated parameter-validation test set"
+                )
+            )
             case_id = f"MOM-NEG-1516-1-2010-{ordinal:04d}-{_slug(rule.leaf_name)}-{_slug(case_kind)}"
             if parameter:
                 case_id = f"{case_id}-{_slug(parameter)}"

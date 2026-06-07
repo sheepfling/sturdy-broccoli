@@ -7,12 +7,12 @@ explicit seam for future socket, gRPC, or REST transports.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
 import os
+from dataclasses import dataclass
 
 from ..transport import RTITransport as CERTITransportProtocol
-from ..transport import SubprocessLineTransport, TransportError as CERTITransportError
-from ..transport import TransportRequest, TransportResponse
+from ..transport import SubprocessLineTransport, TransportRequest, TransportResponse
+from ..transport import TransportError as CERTITransportError
 
 
 @dataclass

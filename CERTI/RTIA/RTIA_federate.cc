@@ -682,7 +682,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
                           << std::endl;
 
         AttributeHandleSet* theAttributes = owm.attributeOwnershipRealeaseResponse(
-            AORRq->getObject(), AORRq->getAttributes(), AORRq->getAttributesSize(), e);
+            AORRq->getObject(), AORRq->getAttributes(), AORRq->getAttributesSize(), AORRq->getTag(), e);
         if (e == Exception::Type::NO_EXCEPTION) {
             AORRr->setAttributesSize(theAttributes->size());
 
@@ -862,7 +862,8 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         break;
 
     case Message::FLUSH_QUEUE_REQUEST:
-        e = Exception::Type::UnimplementedService;
+        Debug(D, pdTrace) << "Receiving Message from Federate, type FlushQueueRequest." << std::endl;
+        tm.flushQueueRequest(request->getDate(), e);
         break;
 
     // May throw NameNotFound

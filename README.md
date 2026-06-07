@@ -19,12 +19,16 @@ specs/ieee-1516-2010/ user-supplied IEEE PDFs and source ZIPs
 docs/                 clean project notes for the repo seed
 ```
 
+For the package-level backend/API organization, see
+[`docs/package_layout.md`](docs/package_layout.md).
+
 Additional repo-local material promoted from `INBOX`:
 
 - `docs/plans/` 2010 workspace planning and foundation notes
 - `docs/backend_capability_matrix.md` backend support status across Python, Java shims, CERTI, and Pitch
 - `docs/backend_conformance_matrix.md` clause-level backend parity and conformance status across Python, CERTI, and future Pitch
 - `docs/certi_spec_traceability.md` clause-level real CERTI parity and evidence notes for sync and ownership services
+- `docs/certi_runtime_limitations.md` known CERTI runtime shortfalls and patched-vs-upstream baseline policy
 - `docs/certi_negotiated_ownership_findings.md` source-level investigation notes for CERTI negotiated ownership limitations
 - `docs/evidence/` unpacked verification evidence packets
 - `docs/reference/hla-2010-specs.zip` original PDF-only reference drop
@@ -50,8 +54,22 @@ python examples/target_radar_simulation.py --backend python --steps 5
 To bootstrap everything needed for local CERTI work as well:
 
 ```bash
-./scripts/bootstrap_all.sh
+./certi-easy install
+./certi-easy doctor
 ```
+
+Simplest CERTI operator path:
+
+```bash
+./certi-easy install
+./certi-easy smoke compare
+```
+
+That gives you:
+
+- patched local CERTI built and installed
+- pristine upstream CERTI cloned, built, and installed
+- one command to compare the two runtimes on the promoted real matrix slices
 
 Optional Java bridge packages can be installed with:
 
@@ -68,14 +86,67 @@ GitHub Actions use the same entrypoints.
 ```bash
 ./scripts/ci/install_python.sh
 ./scripts/ci/lint.sh
+./scripts/ci/lint_backlog.sh
+./scripts/ci/lint_strict.sh
 ./scripts/ci/test.sh
 ./scripts/ci/seed_suite.sh
 ./scripts/ci/vendor_runtime_smoke.sh certi
 ./scripts/ci/vendor_runtime_smoke.sh pitch
+./scripts/run_two_federate_suite.py
+./scripts/generate_compliance_artifacts.py
 ```
 
 By default `bootstrap_python.sh` installs the `qa` extras. Override that with
 `HLA2010_BOOTSTRAP_EXTRAS=...` if you want a narrower environment.
+
+`lint.sh` is the required gate. `lint_backlog.sh` reports the broader Ruff
+cleanup backlog so it can be burned down incrementally without blocking every
+change. `lint_strict.sh` is the opt-in next-step gate; it adds `E501` while
+temporarily excluding the largest legacy/generated files that still need a
+separate cleanup pass.
+
+`generate_compliance_artifacts.py` emits the current conformance packet under
+`analysis/compliance/`, including:
+
+- service conformance JSON/CSV
+- requirements ledger JSON/CSV
+- section-by-section compliance summary
+- public class `1:1` vs adapted inventory
+- rows that still lack exact requirement-level executable evidence
+
+## Two-federate evidence
+
+The repo now includes one streamlined composite two-federate suite that emits
+structured artifacts and a visual summary:
+
+```bash
+./scripts/run_two_federate_suite.py
+```
+
+Default outputs land under `analysis/two_federate_suite/`:
+
+- `two_federate_suite_summary.json`
+- `two_federate_track_reports.csv`
+- `two_federate_callbacks.csv`
+- `two_federate_suite_report.md`
+- `two_federate_suite_summary.svg`
+- `two_federate_suite_timeline.svg`
+
+That suite now emits a python primary profile plus optional CERTI and Pitch
+profiles when those runtimes are available. The packet includes a profile
+matrix and a callback-order timeline for the python profile.
+
+The python profile exercises, end to end:
+
+- object discovery and attribute reflection
+- interaction delivery
+- timestamped/time-managed exchange
+- federation synchronization
+- unconditional ownership transfer
+- negotiated ownership cancellation and reacquisition
+- save/restore
+- DDM region filtering
+- a realistic target/radar object plus track-report scenario
 
 ## Local Git remote
 
@@ -115,21 +186,103 @@ future option, not the current wire contract.
 Practical local commands:
 
 ```bash
-./scripts/rebuild_certi.sh
-./scripts/run_certi_local.sh rtig --help
+./certi-easy install
+./certi-easy doctor
+./certi-easy smoke patched
+./certi-easy smoke upstream
+./certi-easy smoke compare
+./certi-easy run patched rtig -v 0
+./certi-easy run upstream rtig -v 0
+python3 -m pytest -q tests/time/test_section8_backend_matrix.py
+./scripts/ci/section8_backend_matrix_gate.sh
 python3 -c "from hla2010.rti import create_rti_ambassador; rti=create_rti_ambassador('pitch-jpype'); print(rti.getHLAversion()); rti.close()"
 python3 -c "from hla2010.rti import create_rti_ambassador; rti=create_rti_ambassador('certi'); print(rti.getHLAversion()); rti.close()"
 ```
+
+The CERTI preflight reports either `real CERTI runnable` or `real CERTI will skip`
+and surfaces the exact blocked prerequisite, including loopback socket-bind
+restrictions that prevent `rtig` smoke tests from starting in some sandboxed
+sessions.
+
+For the dedicated cross-backend Section 8 time-management suite and the real
+CERTI execution procedure, see
+[`docs/certi_section8_runbook.md`](docs/certi_section8_runbook.md).
 
 The `pitch-jpype` path currently discovers the extracted runtime from:
 
 - `HLA2010_PITCH_HOME`, if set
 - `third_party/pitch/PITCH-prti1516e-manual`, if present
 
+The simplest Docker-backed Pitch flow is now:
+
+```bash
+./pitch all
+```
+
+If you want the explicit staged flow:
+
+```bash
+./pitch install
+./pitch start
+./pitch smoke
+```
+
+For the full real Pitch matrix:
+
+```bash
+./pitch verify
+```
+
+Useful operator commands:
+
+```bash
+./pitch status
+./pitch logs
+./pitch stop
+./pitch doctor
+```
+
+That wrapper handles:
+
+- runtime discovery from `third_party/pitch/PITCH-prti1516e-manual`
+- one-time seeding of persistent Pitch `user.home`
+- Docker image build
+- container lifecycle
+- waiting for CRC `8989` and FedPro `15164`
+- the real Pitch smoke and matrix commands
+- one-command install + smoke + verify through `./pitch all`
+
+The repo-root `./pitch` alias is just a thin wrapper over
+`./scripts/pitch_docker_easy.sh`.
+
+If you want the lower-level pieces directly, to avoid re-accepting the
+free-runtime dialog on every restart, seed and reuse a persistent Pitch
+`user.home`:
+
+```bash
+./scripts/setup_pitch_state.sh
+./scripts/run_pitch_local.sh
+```
+
+That state is kept under `/private/tmp/hla-2010/pitch-user-home` by default, or
+under `HLA2010_PITCH_USER_HOME` if you set it explicitly. The runtime helper
+now seeds that home once from the vendor bundle and then preserves the accepted
+state instead of re-merging the default bundle state on each launch.
+
 For Pitch specifically, the runtime layer now checks the local CRC license state
 through the bundled `LicenseActivator` class before attempting the real smoke
 path. If no local licenses are present, the backend fails fast with a clear
 message instead of timing out on the CRC socket.
+
+The Docker-backed vendor smoke path is now also simpler:
+
+```bash
+./scripts/ci/vendor_runtime_smoke.sh pitch
+```
+
+If the repo-local Pitch bundle is present, that wrapper now fills in the obvious
+Pitch defaults automatically instead of requiring manual `HLA2010_PITCH_HOME`
+and `HLA2010_PITCH_USER_HOME` exports first.
 
 The `CERTI` launcher currently discovers the install prefix from:
 
@@ -137,6 +290,37 @@ The `CERTI` launcher currently discovers the install prefix from:
 - `CERTI-install`, if present in this repository
 - `./scripts/rebuild_certi.sh` will populate the local `CERTI-build/` and
   `CERTI-install/` trees from `CERTI/`
+
+For conformance attribution, use named CERTI baselines:
+
+- `certi-upstream` is a pristine/original CERTI install selected by
+  `HLA2010_CERTI_UPSTREAM_PREFIX` or `HLA2010_CERTI_ORIGINAL_PREFIX`
+- `certi-patched` is the repo-local vendored/patched CERTI build, or an
+  explicit patched install selected by `HLA2010_CERTI_PATCHED_PREFIX`
+
+The upstream selector intentionally does not fall back to the repo-local
+`CERTI-build/` overlay. That keeps original-vendor evidence separate from our
+modified CERTI evidence.
+
+Runnable CERTI routes:
+
+```bash
+./scripts/rebuild_certi.sh
+./scripts/rebuild_certi_upstream.sh
+./scripts/ci/vendor_runtime_smoke.sh certi-patched
+./scripts/ci/vendor_runtime_smoke.sh certi-upstream
+./scripts/ci/vendor_runtime_smoke.sh certi-compare
+```
+
+Operational meaning:
+
+- `certi-patched` runs the repo-local vendored CERTI build as the active vendor
+  path
+- `certi-upstream` runs the pristine upstream baseline only
+- `certi-compare` runs both the promoted time-query / `flushQueueRequest`
+  baseline slice, the negotiated-ownership baseline slice, and the
+  release-request `deny` / `confirm` / `ifwanted` branch slice against both
+  baselines so upstream CERTI failures and local CERTI changes stay attributable
 
 Generated local state is symlinked out of the repository by default so it is
 kept under `/private/tmp/hla-2010` instead of the cloud-synced workspace. That
@@ -165,7 +349,7 @@ or, for both in sequence:
 The explicit vendor interoperability smoke tests are opt-in:
 
 ```bash
-HLA2010_ENABLE_REAL_RTI_SMOKE=1 python -m pytest -q tests/test_real_vendor_runtime_smoke.py
+HLA2010_ENABLE_REAL_RTI_SMOKE=1 python -m pytest -q tests/vendors/test_real_vendor_runtime_smoke.py
 ```
 
 Those tests keep the Python federate surface backend-neutral. They only use

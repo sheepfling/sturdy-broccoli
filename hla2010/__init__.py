@@ -3,64 +3,177 @@
 This package is an API surface and utility scaffold, not a complete RTI.
 Attribution: "Reprinted with permission from IEEE 1516.1(TM)-2010".
 """
-from .enums import *
-from .exceptions import *
-from .handles import *
-from .time import *
-from .types import *
-from .fom import *
-from .spec_refs import *
-from .ambassadors import CallbackRecord, FederateAmbassadorMultiplexer, RecordingFederateAmbassador, NullFederateAmbassador
-from .api import RTIambassador, RTIAmbassador, FederateAmbassador
-from .backends import (
-    BackendInfo,
-    DelegatingRTIAmbassador,
-    InMemoryRTIEngine,
-    PythonRTIBackend,
-    PythonRTIConfig,
-    RTIBackend,
-    CERTITransportRequest,
-    CERTITransportResponse,
-    RestTransport,
-    RestTransportConfig,
-    RecordingBackend,
-    TransportRequest,
-    TransportResponse,
-    create_python_backend,
-    create_rest_transport,
-    make_rti_ambassador,
+from . import enums as _enums
+from . import exceptions as _exceptions
+from . import fom as _fom
+from . import handles as _handles
+from . import spec_refs as _spec_refs
+from . import time as _time
+from . import types as _types
+from .ambassadors import (
+    CallbackRecord as CallbackRecord,
 )
-from .rti import (
-    RTIBackendSpec,
-    RTITransportSpec,
-    create_backend,
-    create_python_rti_pair,
-    create_rti_ambassador,
-    register_transport_factory,
+from .ambassadors import (
+    FederateAmbassadorMultiplexer as FederateAmbassadorMultiplexer,
+)
+from .ambassadors import (
+    NullFederateAmbassador as NullFederateAmbassador,
+)
+from .ambassadors import (
+    RecordingFederateAmbassador as RecordingFederateAmbassador,
+)
+from .api import (
+    FederateAmbassador as FederateAmbassador,
+)
+from .api import (
+    RTIAmbassador as RTIAmbassador,
+)
+from .api import (
+    RTIambassador as RTIambassador,
+)
+from .backends import (
+    BackendInfo as BackendInfo,
+)
+from .backends import (
+    CERTITransportRequest as CERTITransportRequest,
+)
+from .backends import (
+    CERTITransportResponse as CERTITransportResponse,
+)
+from .backends import (
+    DelegatingRTIAmbassador as DelegatingRTIAmbassador,
+)
+from .backends import (
+    InMemoryRTIEngine as InMemoryRTIEngine,
+)
+from .backends import (
+    PythonRTIBackend as PythonRTIBackend,
+)
+from .backends import (
+    PythonRTIConfig as PythonRTIConfig,
+)
+from .backends import (
+    RecordingBackend as RecordingBackend,
+)
+from .backends import (
+    RestTransport as RestTransport,
+)
+from .backends import (
+    RestTransportConfig as RestTransportConfig,
+)
+from .backends import (
+    RTIBackend as RTIBackend,
+)
+from .backends import (
+    TransportRequest as TransportRequest,
+)
+from .backends import (
+    TransportResponse as TransportResponse,
+)
+from .backends import (
+    create_python_ambassador as create_python_ambassador,
+)
+from .backends import (
+    create_python_backend as create_python_backend,
+)
+from .backends import (
+    create_rest_transport as create_rest_transport,
+)
+from .backends import (
+    make_rti_ambassador as make_rti_ambassador,
 )
 from .real_rti import (
-    CERTIRuntime,
-    PitchRuntime,
-    RuntimeProcess,
-    discover_certi_smoke_fom,
-    discover_certi_runtime,
-    discover_pitch_runtime,
-    launch_certi_rtig,
-    launch_pitch_py4j_gateway,
-    launch_pitch_runtime,
+    CERTIRuntime as CERTIRuntime,
 )
-from .verification import VerificationAsset, VerificationPlan, build_verification_plan, write_verification_assets
+from .real_rti import (
+    PitchRuntime as PitchRuntime,
+)
+from .real_rti import (
+    PorticoRuntime as PorticoRuntime,
+)
+from .real_rti import (
+    RuntimeProcess as RuntimeProcess,
+)
+from .real_rti import (
+    discover_certi_runtime as discover_certi_runtime,
+)
+from .real_rti import (
+    discover_certi_smoke_fom as discover_certi_smoke_fom,
+)
+from .real_rti import (
+    discover_pitch_runtime as discover_pitch_runtime,
+)
+from .real_rti import (
+    launch_certi_rtig as launch_certi_rtig,
+)
+from .real_rti import (
+    launch_pitch_py4j_gateway as launch_pitch_py4j_gateway,
+)
+from .real_rti import (
+    launch_pitch_runtime as launch_pitch_runtime,
+)
+from .rti import (
+    RTIBackendSpec as RTIBackendSpec,
+)
+from .rti import (
+    RTITransportSpec as RTITransportSpec,
+)
+from .rti import (
+    create_backend as create_backend,
+)
+from .rti import (
+    create_python_pair as create_python_pair,
+)
+from .rti import (
+    create_rti_ambassador as create_rti_ambassador,
+)
+from .rti import (
+    register_transport_factory as register_transport_factory,
+)
 from .startup import (
-    FederateStartupConfig,
-    FederateStartupResult,
-    FederationStartupConfig,
-    StartupResult,
-    achieve_startup_sync_point,
-    connect_create_join,
-    drain_callbacks,
-    evoke_all_callbacks,
-    register_startup_sync_point,
-    synchronize_ready_to_run,
+    FederateStartupConfig as FederateStartupConfig,
 )
+from .startup import (
+    FederateStartupResult as FederateStartupResult,
+)
+from .startup import (
+    FederationStartupConfig as FederationStartupConfig,
+)
+from .startup import (
+    StartupResult as StartupResult,
+)
+from .startup import (
+    achieve_startup_sync_point as achieve_startup_sync_point,
+)
+from .startup import (
+    connect_create_join as connect_create_join,
+)
+from .startup import (
+    drain_callbacks as drain_callbacks,
+)
+from .startup import (
+    evoke_all_callbacks as evoke_all_callbacks,
+)
+from .startup import (
+    register_startup_sync_point as register_startup_sync_point,
+)
+from .startup import (
+    synchronize_ready_to_run as synchronize_ready_to_run,
+)
+from .verification import (
+    VerificationAsset as VerificationAsset,
+)
+from .verification import (
+    VerificationPlan as VerificationPlan,
+)
+from .verification import (
+    build_verification_plan as build_verification_plan,
+)
+from .verification import (
+    write_verification_assets as write_verification_assets,
+)
+
+for _module in (_enums, _exceptions, _fom, _handles, _spec_refs, _time, _types):
+    globals().update({name: getattr(_module, name) for name in _module.__all__})
 
 __version__ = '0.12.0'

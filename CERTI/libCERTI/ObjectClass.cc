@@ -232,6 +232,7 @@ void ObjectClass::sendToOwners(CDiffusion& diffusionList,
             answer.setFederate(theFederate);
             answer.setObject(object->getHandle());
             answer.setLabel(theTag);
+            answer.setTag(theTag);
             answer.setAttributesSize(nbAttributes);
 
             int index = 0;
@@ -1036,6 +1037,7 @@ ObjectClass::negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateH
             answerAssumption->setException(Exception::Type::NO_EXCEPTION);
             answerAssumption->setObject(object->getHandle());
             answerAssumption->setLabel(theTag);
+            answerAssumption->setTag(theTag);
             answerAssumption->setAttributesSize(assumption_count);
 
             List = new ObjectClassBroadcastList(std::move(answerAssumption), _handleClassAttributeMap.size());
@@ -1332,12 +1334,8 @@ void ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle
             std::cerr << "[objectclass-ownership] acquisition attr=" << oa->getHandle() << " owner=" << oldOwner
                       << " divesting=" << (oa->beingDivested() ? 1 : 0)
                       << " candidateAlready=" << (oa->isCandidate(theFederateHandle) ? 1 : 0) << std::endl;
-            if ((oldOwner == 0) || (oa->beingDivested())) {
-                // This attribute is devested or is offered by its owner
-                if (oa->beingDivested()) {
-                    diffusionDivestiture.push_back(DiffusionPair(oldOwner, oa->getHandle()));
-                }
-                //Qu'il soit offert ou libre
+            if (oldOwner == 0) {
+                // Unowned attributes can still be acquired immediately.
                 if (oa->isCandidate(theFederateHandle))
                     oa->removeCandidate(theFederateHandle);
                 AnswerNotification->setAttributes(theAttributeList[i], notification_counter);
@@ -1351,6 +1349,15 @@ void ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle
                 // le privilegeToDelete
                 if (oca->isNamed("privilegeToDelete"))
                     object->setOwner(theFederateHandle);
+            }
+            else if (oa->beingDivested()) {
+                // Negotiated divestiture keeps the current owner until that
+                // owner explicitly confirms the transfer.
+                diffusionDivestiture.push_back(DiffusionPair(oldOwner, oa->getHandle()));
+                oa->removeCandidate(theFederateHandle);
+                oa->addCandidate(theFederateHandle);
+                std::cerr << "[objectclass-ownership] acquisition pending-confirm attr=" << oa->getHandle()
+                          << " owner=" << oldOwner << " candidate=" << theFederateHandle << std::endl;
             }
             else {
                 diffusionRelease.push_back(DiffusionPair(oldOwner, oa->getHandle()));
@@ -1394,7 +1401,8 @@ void ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle
 //! attributeOwnershipReleaseResponse.
 AttributeHandleSet* ObjectClass::attributeOwnershipReleaseResponse(FederateHandle the_federate,
                                                                    Object* object,
-                                                                   const std::vector<AttributeHandle>& the_attributes)
+                                                                   const std::vector<AttributeHandle>& the_attributes,
+                                                                   const std::string& theTag)
 {
     std::cerr << "[objectclass-ownership] releaseResponse start federate=" << the_federate
               << " object=" << object->getHandle() << " attributes=" << the_attributes.size() << std::endl;
@@ -1460,7 +1468,7 @@ AttributeHandleSet* ObjectClass::attributeOwnershipReleaseResponse(FederateHandl
             NM_Attribute_Ownership_Acquisition_Notification AOAN;
             std::cerr << "[objectclass-ownership] releaseResponse send acquisition notifications count="
                       << diffusionAcquisition.size() << std::endl;
-            sendToOwners(diffusionAcquisition, object, the_federate, "\0", AOAN);
+            sendToOwners(diffusionAcquisition, object, the_federate, theTag, AOAN);
         }
     }
     else {

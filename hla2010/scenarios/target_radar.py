@@ -11,18 +11,18 @@ or an in-process Java-shaped shim.  It models two federates:
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 import math
 import struct
+from dataclasses import dataclass, field
 from typing import Any, Callable, Iterable, Mapping, Protocol
 
 from ..api import FederateAmbassador
+from ..backends.python import InMemoryRTIEngine
 from ..enums import CallbackModel, ResignAction
-from ..exceptions import FederationExecutionAlreadyExists, FederationExecutionDoesNotExist, FederatesCurrentlyJoined, RTIexception
+from ..exceptions import FederatesCurrentlyJoined, FederationExecutionAlreadyExists, FederationExecutionDoesNotExist, RTIexception
 from ..handles import AttributeHandle, InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle, ParameterHandle
 from ..rti import create_rti_ambassador
 from ..time import HLAinteger64Time
-from ..backends.python_rti import InMemoryRTIEngine
 
 TARGET_CLASS = "HLAobjectRoot.Target"
 TRACK_CLASS = "HLAobjectRoot.Track"
@@ -235,7 +235,13 @@ class TargetFederate(FederateAmbassador):
             tag,
         )
 
-    def provide_attribute_value_update(self, the_object: ObjectInstanceHandle, the_attributes: Iterable[AttributeHandle], user_supplied_tag: bytes, *extra: Any) -> None:
+    def provide_attribute_value_update(
+        self,
+        the_object: ObjectInstanceHandle,
+        the_attributes: Iterable[AttributeHandle],
+        user_supplied_tag: bytes,
+        *extra: Any,
+    ) -> None:
         self.events.append(("provide_attribute_value_update", (the_object, set(the_attributes), user_supplied_tag)))
         if self.object_handle is None or the_object != self.object_handle:
             return

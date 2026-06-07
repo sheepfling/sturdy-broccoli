@@ -4,11 +4,10 @@ from __future__ import annotations
 from collections import deque
 from concurrent import futures
 from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Iterable, Mapping, Sequence, cast
 
 from ...ambassadors import RecordingFederateAmbassador
-from ...enums import CallbackModel, ResignAction
+from ...enums import CallbackModel, OrderType, ResignAction
 from ...exceptions import RTIexception
 from ...handles import (
     AttributeHandle,
@@ -17,16 +16,25 @@ from ...handles import (
     FederateHandle,
     FederateHandleSet,
     InteractionClassHandle,
+    MessageRetractionHandle,
     ObjectClassHandle,
     ObjectInstanceHandle,
     ParameterHandle,
     ParameterHandleValueMap,
 )
-from ...time import HLAfloat64Interval, HLAfloat64Time
-from ..python_rti import InMemoryRTIEngine, PythonRTIConfig, rti_ambassador
-from ..transport import TransportRequest, TransportResponse
-from ..certi_backend import _decode_bytes, _decode_handle_value_map, _decode_handle_set, _encode_bytes, _handle_set_spec, _handle_value_map_spec
 from ...rti import create_rti_ambassador
+from ...time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
+from ..certi.codecs import (
+    decode_bytes,
+    decode_handle_set,
+    decode_handle_value_map,
+    encode_bytes,
+    federate_handle_set_spec,
+    handle_set_spec,
+    handle_value_map_spec,
+)
+from ..python import InMemoryRTIEngine, PythonRTIConfig, rti_ambassador
+from ..transport import TransportRequest, TransportResponse
 from . import rti_transport_pb2_grpc as pb2_grpc
 from .client import GrpcTransportClientAdapter
 
@@ -38,9 +46,43 @@ except Exception as exc:  # pragma: no cover - optional dependency
 else:
     _GRPC_IMPORT_ERROR = None
 
+def _logical_time_name(value: Any) -> str:
+    if isinstance(value, HLAinteger64Time):
+        return "HLAinteger64Time"
+    if isinstance(value, HLAfloat64Time):
+        return "HLAfloat64Time"
+    return type(value).__name__
 
-def _federate_handle_set_spec(values: Iterable[FederateHandle]) -> str:
-    return ",".join(str(int(value.value)) for value in values)
+
+def _logical_interval_name(value: Any) -> str:
+    if isinstance(value, HLAinteger64Interval):
+        return "HLAinteger64Interval"
+    if isinstance(value, HLAfloat64Interval):
+        return "HLAfloat64Interval"
+    return type(value).__name__
+
+
+def _logical_scalar(value: Any) -> str:
+    raw = getattr(value, "value", value)
+    if isinstance(value, (HLAinteger64Time, HLAinteger64Interval)):
+        return str(int(raw))
+    return str(float(raw))
+
+
+def _decode_logical_time(type_name: str, raw: Any) -> Any:
+    if type_name == "HLAinteger64Time":
+        return HLAinteger64Time(int(raw))
+    if type_name == "HLAfloat64Time":
+        return HLAfloat64Time(float(raw))
+    raise ValueError(f"Unsupported logical time type: {type_name}")
+
+
+def _decode_logical_interval(type_name: str, raw: Any) -> Any:
+    if type_name == "HLAinteger64Interval":
+        return HLAinteger64Interval(int(raw))
+    if type_name == "HLAfloat64Interval":
+        return HLAfloat64Interval(float(raw))
+    raise ValueError(f"Unsupported logical interval type: {type_name}")
 
 
 class _CallbackQueueAmbassador(RecordingFederateAmbassador):
@@ -62,59 +104,61 @@ def _encode_callback_payload(method_name: str, args: tuple[Any, ...]) -> tuple[s
     if method_name == "reflectAttributeValues":
         payload = (
             str(int(args[0].value)),
-            _handle_value_map_spec(args[1]),
-            _encode_bytes(args[2]),
+            handle_value_map_spec(args[1]),
+            encode_bytes(args[2]),
             str(int(args[3].value)),
             str(int(args[4].value)),
         )
         if len(args) >= 7:
-            return ("REFLECT_TSO", *payload, str(float(args[5].value)), str(int(args[6].value)))
+            return ("REFLECT_TSO", *payload, _logical_time_name(args[5]), _logical_scalar(args[5]), str(int(args[6].value)))
         return ("REFLECT", *payload)
     if method_name == "receiveInteraction":
         payload = (
             str(int(args[0].value)),
-            _handle_value_map_spec(args[1]),
-            _encode_bytes(args[2]),
+            handle_value_map_spec(args[1]),
+            encode_bytes(args[2]),
             str(int(args[3].value)),
             str(int(args[4].value)),
         )
         if len(args) >= 7:
-            return ("INTERACTION_TSO", *payload, str(float(args[5].value)), str(int(args[6].value)))
+            return ("INTERACTION_TSO", *payload, _logical_time_name(args[5]), _logical_scalar(args[5]), str(int(args[6].value)))
         return ("INTERACTION", *payload)
     if method_name == "timeRegulationEnabled":
-        return ("TIME_REGULATION_ENABLED", str(float(args[0].value)))
+        return ("TIME_REGULATION_ENABLED", _logical_time_name(args[0]), _logical_scalar(args[0]))
     if method_name == "timeConstrainedEnabled":
-        return ("TIME_CONSTRAINED_ENABLED", str(float(args[0].value)))
+        return ("TIME_CONSTRAINED_ENABLED", _logical_time_name(args[0]), _logical_scalar(args[0]))
     if method_name == "timeAdvanceGrant":
-        return ("TIME_ADVANCE_GRANT", str(float(args[0].value)))
+        return ("TIME_ADVANCE_GRANT", _logical_time_name(args[0]), _logical_scalar(args[0]))
+    if method_name == "requestRetraction":
+        return ("REQUEST_RETRACTION", str(int(args[0].value)))
     if method_name == "announceSynchronizationPoint":
-        return ("ANNOUNCE_SYNC_POINT", str(args[0]), _encode_bytes(args[1]))
+        return ("ANNOUNCE_SYNC_POINT", str(args[0]), encode_bytes(args[1]))
     if method_name == "federationSynchronized":
-        return ("FEDERATION_SYNCHRONIZED", str(args[0]), _federate_handle_set_spec(args[1]))
+        return ("FEDERATION_SYNCHRONIZED", str(args[0]), federate_handle_set_spec(args[1]))
     if method_name == "attributeOwnershipAcquisitionNotification":
-        return ("OWNERSHIP_ACQUIRED", str(int(args[0].value)), _handle_set_spec(args[1]), _encode_bytes(args[2]))
+        return ("OWNERSHIP_ACQUIRED", str(int(args[0].value)), handle_set_spec(args[1]), encode_bytes(args[2]))
     if method_name == "requestAttributeOwnershipAssumption":
         return (
             "REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION",
             str(int(args[0].value)),
-            _handle_set_spec(args[1]),
-            _encode_bytes(args[2]),
+            handle_set_spec(args[1]),
+            encode_bytes(args[2]),
         )
     if method_name == "informAttributeOwnership":
         return ("INFORM_ATTRIBUTE_OWNERSHIP", str(int(args[0].value)), str(int(args[1].value)), str(int(args[2].value)))
     if method_name == "attributeIsNotOwned":
         return ("ATTRIBUTE_IS_NOT_OWNED", str(int(args[0].value)), str(int(args[1].value)))
     if method_name == "attributeOwnershipUnavailable":
-        return ("ATTRIBUTE_OWNERSHIP_UNAVAILABLE", str(int(args[0].value)), _handle_set_spec(args[1]))
+        return ("ATTRIBUTE_OWNERSHIP_UNAVAILABLE", str(int(args[0].value)), handle_set_spec(args[1]))
     if method_name == "requestAttributeOwnershipRelease":
-        return ("REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE", str(int(args[0].value)), _handle_set_spec(args[1]), _encode_bytes(args[2]))
+        return ("REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE", str(int(args[0].value)), handle_set_spec(args[1]), encode_bytes(args[2]))
     if method_name == "requestDivestitureConfirmation":
-        return ("REQUEST_DIVESTITURE_CONFIRMATION", str(int(args[0].value)), _handle_set_spec(args[1]))
+        return ("REQUEST_DIVESTITURE_CONFIRMATION", str(int(args[0].value)), handle_set_spec(args[1]))
     if method_name == "confirmAttributeOwnershipAcquisitionCancellation":
         return (
             "CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION",
             str(int(args[0].value)),
-            _handle_set_spec(args[1]),
+            handle_set_spec(args[1]),
         )
     return None
 
@@ -160,7 +204,7 @@ class _RTITransportServicer(pb2_grpc.RTITransportServiceServicer):
 
     def _handle_request(self, request: TransportRequest) -> TransportResponse:
         command = request.command
-        fields = request.fields
+        fields = cast(Sequence[Any], request.fields)
 
         if command == "GET_HLA_VERSION":
             return TransportResponse(fields=(self.rti.get_hla_version(),))
@@ -204,16 +248,18 @@ class _RTITransportServicer(pb2_grpc.RTITransportServiceServicer):
         if command == "PUBLISH_OBJECT_CLASS_ATTRIBUTES":
             self.rti.publish_object_class_attributes(
                 ObjectClassHandle(int(fields[0])),
-                _decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
         if command == "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES":
             self.rti.subscribe_object_class_attributes(
                 ObjectClassHandle(int(fields[0])),
-                _decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
         if command == "REGISTER_OBJECT_INSTANCE":
+            if not fields:
+                raise ValueError("REGISTER_OBJECT_INSTANCE requires an object class handle")
             if len(fields) >= 2 and fields[1]:
                 handle = self.rti.register_object_instance(ObjectClassHandle(int(fields[0])), str(fields[1]))
             else:
@@ -230,17 +276,19 @@ class _RTITransportServicer(pb2_grpc.RTITransportServiceServicer):
         if command == "UPDATE_ATTRIBUTE_VALUES":
             self.rti.update_attribute_values(
                 ObjectInstanceHandle(int(fields[0])),
-                _decode_handle_value_map(str(fields[1]), AttributeHandle, AttributeHandleValueMap),
-                _decode_bytes(str(fields[2])),
+                decode_handle_value_map(str(fields[1]), AttributeHandle, AttributeHandleValueMap),
+                decode_bytes(str(fields[2])),
             )
             return TransportResponse()
         if command == "UPDATE_ATTRIBUTE_VALUES_TIMESTAMP":
             handle = self.rti.update_attribute_values(
                 ObjectInstanceHandle(int(fields[0])),
-                _decode_handle_value_map(str(fields[1]), AttributeHandle, AttributeHandleValueMap),
-                _decode_bytes(str(fields[2])),
-                HLAfloat64Time(float(fields[3])),
+                decode_handle_value_map(str(fields[1]), AttributeHandle, AttributeHandleValueMap),
+                decode_bytes(str(fields[2])),
+                _decode_logical_time(str(fields[3]), fields[4]),
             )
+            if handle is None:
+                return TransportResponse()
             return TransportResponse(fields=(str(int(handle.handle.value)),))
         if command == "GET_INTERACTION_CLASS_HANDLE":
             handle = self.rti.get_interaction_class_handle(str(fields[0]))
@@ -257,29 +305,52 @@ class _RTITransportServicer(pb2_grpc.RTITransportServiceServicer):
         if command == "SEND_INTERACTION":
             self.rti.send_interaction(
                 InteractionClassHandle(int(fields[0])),
-                _decode_handle_value_map(str(fields[1]), ParameterHandle, ParameterHandleValueMap),
-                _decode_bytes(str(fields[2])),
+                decode_handle_value_map(str(fields[1]), ParameterHandle, ParameterHandleValueMap),
+                decode_bytes(str(fields[2])),
             )
             return TransportResponse()
         if command == "SEND_INTERACTION_TIMESTAMP":
             handle = self.rti.send_interaction(
                 InteractionClassHandle(int(fields[0])),
-                _decode_handle_value_map(str(fields[1]), ParameterHandle, ParameterHandleValueMap),
-                _decode_bytes(str(fields[2])),
-                HLAfloat64Time(float(fields[3])),
+                decode_handle_value_map(str(fields[1]), ParameterHandle, ParameterHandleValueMap),
+                decode_bytes(str(fields[2])),
+                _decode_logical_time(str(fields[3]), fields[4]),
             )
+            if handle is None:
+                return TransportResponse()
             return TransportResponse(fields=(str(int(handle.handle.value)),))
         if command == "ENABLE_TIME_REGULATION":
-            self.rti.enable_time_regulation(HLAfloat64Interval(float(fields[0])))
+            self.rti.enable_time_regulation(_decode_logical_interval(str(fields[0]), fields[1]))
             return TransportResponse()
         if command == "ENABLE_TIME_CONSTRAINED":
             self.rti.enable_time_constrained()
             return TransportResponse()
+        if command == "DISABLE_TIME_REGULATION":
+            self.rti.disable_time_regulation()
+            return TransportResponse()
+        if command == "DISABLE_TIME_CONSTRAINED":
+            self.rti.disable_time_constrained()
+            return TransportResponse()
+        if command == "QUERY_LOGICAL_TIME":
+            logical_time = self.rti.query_logical_time()
+            return TransportResponse(fields=(_logical_time_name(logical_time), _logical_scalar(logical_time)))
+        if command == "QUERY_LOOKAHEAD":
+            lookahead = self.rti.query_lookahead()
+            return TransportResponse(fields=(_logical_interval_name(lookahead), _logical_scalar(lookahead)))
+        if command == "MODIFY_LOOKAHEAD":
+            self.rti.modify_lookahead(_decode_logical_interval(str(fields[0]), fields[1]))
+            return TransportResponse()
+        if command == "ENABLE_ASYNCHRONOUS_DELIVERY":
+            self.rti.enable_asynchronous_delivery()
+            return TransportResponse()
+        if command == "DISABLE_ASYNCHRONOUS_DELIVERY":
+            self.rti.disable_asynchronous_delivery()
+            return TransportResponse()
         if command == "REGISTER_FEDERATION_SYNCHRONIZATION_POINT":
             label = str(fields[0])
-            tag = _decode_bytes(str(fields[1]))
+            tag = decode_bytes(str(fields[1]))
             synchronization_set = (
-                _decode_handle_set(str(fields[2]), FederateHandle, FederateHandleSet)
+                decode_handle_set(str(fields[2]), FederateHandle, FederateHandleSet)
                 if len(fields) >= 3 and fields[2]
                 else None
             )
@@ -296,58 +367,58 @@ class _RTITransportServicer(pb2_grpc.RTITransportServiceServicer):
         if command == "UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE":
             self.rti.unconditional_attribute_ownership_divestiture(
                 ObjectInstanceHandle(int(fields[0])),
-                _decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
         if command == "NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE":
             self.rti.negotiated_attribute_ownership_divestiture(
                 ObjectInstanceHandle(int(fields[0])),
-                _decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
-                _decode_bytes(str(fields[2])),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+                decode_bytes(str(fields[2])),
             )
             return TransportResponse()
         if command == "CONFIRM_DIVESTITURE":
             self.rti.confirm_divestiture(
                 ObjectInstanceHandle(int(fields[0])),
-                _decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
-                _decode_bytes(str(fields[2])),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+                decode_bytes(str(fields[2])),
             )
             return TransportResponse()
         if command == "ATTRIBUTE_OWNERSHIP_ACQUISITION":
             self.rti.attribute_ownership_acquisition(
                 ObjectInstanceHandle(int(fields[0])),
-                _decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
-                _decode_bytes(str(fields[2])),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+                decode_bytes(str(fields[2])),
             )
             return TransportResponse()
         if command == "ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE":
             self.rti.attribute_ownership_acquisition_if_available(
                 ObjectInstanceHandle(int(fields[0])),
-                _decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
         if command == "ATTRIBUTE_OWNERSHIP_RELEASE_DENIED":
             self.rti.attribute_ownership_release_denied(
                 ObjectInstanceHandle(int(fields[0])),
-                _decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
         if command == "ATTRIBUTE_OWNERSHIP_DIVESTITURE_IF_WANTED":
             result = self.rti.attribute_ownership_divestiture_if_wanted(
                 ObjectInstanceHandle(int(fields[0])),
-                _decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
-            return TransportResponse(fields=(_handle_set_spec(result),))
+            return TransportResponse(fields=(handle_set_spec(result),))
         if command == "CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE":
             self.rti.cancel_negotiated_attribute_ownership_divestiture(
                 ObjectInstanceHandle(int(fields[0])),
-                _decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
         if command == "CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION":
             self.rti.cancel_attribute_ownership_acquisition(
                 ObjectInstanceHandle(int(fields[0])),
-                _decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
         if command == "QUERY_ATTRIBUTE_OWNERSHIP":
@@ -359,8 +430,46 @@ class _RTITransportServicer(pb2_grpc.RTITransportServiceServicer):
                 AttributeHandle(int(fields[1])),
             )
             return TransportResponse(fields=("1" if owned else "0",))
+        if command == "CHANGE_ATTRIBUTE_ORDER_TYPE":
+            self.rti.change_attribute_order_type(
+                ObjectInstanceHandle(int(fields[0])),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+                OrderType[str(fields[2])],
+            )
+            return TransportResponse()
+        if command == "CHANGE_INTERACTION_ORDER_TYPE":
+            self.rti.change_interaction_order_type(
+                InteractionClassHandle(int(fields[0])),
+                OrderType[str(fields[1])],
+            )
+            return TransportResponse()
         if command == "TIME_ADVANCE_REQUEST":
-            self.rti.time_advance_request(HLAfloat64Time(float(fields[0])))
+            self.rti.time_advance_request(_decode_logical_time(str(fields[0]), fields[1]))
+            return TransportResponse()
+        if command == "TIME_ADVANCE_REQUEST_AVAILABLE":
+            self.rti.time_advance_request_available(_decode_logical_time(str(fields[0]), fields[1]))
+            return TransportResponse()
+        if command == "NEXT_MESSAGE_REQUEST":
+            self.rti.next_message_request(_decode_logical_time(str(fields[0]), fields[1]))
+            return TransportResponse()
+        if command == "NEXT_MESSAGE_REQUEST_AVAILABLE":
+            self.rti.next_message_request_available(_decode_logical_time(str(fields[0]), fields[1]))
+            return TransportResponse()
+        if command == "FLUSH_QUEUE_REQUEST":
+            self.rti.flush_queue_request(_decode_logical_time(str(fields[0]), fields[1]))
+            return TransportResponse()
+        if command == "QUERY_GALT":
+            query = self.rti.query_galt()
+            if not query.time_is_valid:
+                return TransportResponse(fields=("0",))
+            return TransportResponse(fields=("1", _logical_time_name(query.time), _logical_scalar(query.time)))
+        if command == "QUERY_LITS":
+            query = self.rti.query_lits()
+            if not query.time_is_valid:
+                return TransportResponse(fields=("0",))
+            return TransportResponse(fields=("1", _logical_time_name(query.time), _logical_scalar(query.time)))
+        if command == "RETRACT":
+            self.rti.retract(MessageRetractionHandle(int(fields[0])))
             return TransportResponse()
         if command == "EVOKE":
             return TransportResponse(fields=self._evoke(single=True, minimum=float(fields[0])))
@@ -435,7 +544,7 @@ class CERTIRTIGrpcServer:
             self._started = False
 
 
-def start_python_rti_grpc_server(
+def start_python_grpc_server(
     *,
     engine: InMemoryRTIEngine | None = None,
     python_config: PythonRTIConfig | None = None,
@@ -464,5 +573,5 @@ __all__ = [
     "PythonRTIGrpcServer",
     "PythonRTIGrpcServerConfig",
     "start_certi_grpc_server",
-    "start_python_rti_grpc_server",
+    "start_python_grpc_server",
 ]

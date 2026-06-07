@@ -10,7 +10,7 @@ Attribution: "Reprinted with permission from IEEE 1516.1(TM)-2010".
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Iterable, Mapping, TypeVar, Generic
+from typing import Any, Generic, Iterable, Mapping, TypeVar
 
 
 @dataclass(frozen=True, order=True)

@@ -1,0 +1,377 @@
+from __future__ import annotations
+
+import json
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from threading import Thread
+
+import pytest
+
+from hla2010.ambassadors import RecordingFederateAmbassador
+from hla2010.api import FederateAmbassador
+from hla2010.backends.base import make_rti_ambassador
+from hla2010.backends.python import InMemoryRTIEngine
+from hla2010.backends.rest_transport import RestTransport, RestTransportConfig
+from hla2010.backends.rest_transport_host import start_python_rest_server
+from hla2010.backends.transport import TransportRequest
+from hla2010.enums import CallbackModel, OrderType, ResignAction
+from hla2010.rti import create_backend, create_rti_ambassador
+from hla2010.testing.scenarios import (
+    NegotiatedOwnershipScenarioConfig,
+    OwnershipScenarioConfig,
+    SynchronizationScenarioConfig,
+    TwoFederateExchangeConfig,
+    assert_two_federate_exchange_callback_history,
+    run_attribute_ownership_scenario,
+    run_negotiated_attribute_ownership_scenario,
+    run_synchronization_scenario,
+    run_two_federate_exchange_scenario,
+)
+from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
+
+pytestmark = pytest.mark.requires_loopback_server
+
+
+class _RestHandler(BaseHTTPRequestHandler):
+    requests: list[dict[str, object]] = []
+
+    def do_POST(self):  # noqa: N802 - HTTP handler naming
+        content_length = int(self.headers.get("Content-Length", "0"))
+        payload = self.rfile.read(content_length).decode("utf-8")
+        data = json.loads(payload)
+        self.requests.append(data)
+
+        command = data.get("command")
+        if command == "GET_HLA_VERSION":
+            response = {"fields": ["HLA 1516.1-2010"], "metadata": {"fields": {"kind": "rest"}}}
+        elif command == "CONNECT":
+            response = {"fields": []}
+        else:
+            response = {"error": {"code": "RTIinternalError", "message": f"Unknown command: {command}"}}
+
+        body = json.dumps(response).encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, *_args, **_kwargs):  # pragma: no cover - keep test output quiet
+        return None
+
+
+def _start_stub_server() -> tuple[ThreadingHTTPServer, str]:
+    _RestHandler.requests = []
+    server = ThreadingHTTPServer(("127.0.0.1", 0), _RestHandler)
+    thread = Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    return server, f"http://127.0.0.1:{server.server_port}"
+
+
+def _exchange_time_profile(time_factory_name: str) -> dict[str, object]:
+    if time_factory_name == "HLAinteger64Time":
+        return {
+            "logical_time_implementation_name": "HLAinteger64Time",
+            "lookahead": HLAinteger64Interval(1),
+            "advance_time": HLAinteger64Time(8),
+            "timestamped_attribute_time": HLAinteger64Time(5),
+            "timestamped_interaction_time": HLAinteger64Time(6),
+        }
+    if time_factory_name == "HLAfloat64Time":
+        return {
+            "logical_time_implementation_name": "HLAfloat64Time",
+            "lookahead": HLAfloat64Interval(1.0),
+            "advance_time": HLAfloat64Time(8.0),
+            "timestamped_attribute_time": HLAfloat64Time(5.0),
+            "timestamped_interaction_time": HLAfloat64Time(6.0),
+        }
+    raise AssertionError(f"unexpected time factory {time_factory_name}")
+
+
+def test_rest_transport_round_trips_typed_envelopes():
+    server, base_url = _start_stub_server()
+    try:
+        transport = RestTransport(RestTransportConfig(base_url=base_url)).start()
+        response = transport.request(TransportRequest(command="GET_HLA_VERSION", fields=("ignored",)))
+
+        assert response.fields == ("HLA 1516.1-2010",)
+        assert response.metadata == {"kind": "rest"}
+        assert _RestHandler.requests[0]["command"] == "GET_HLA_VERSION"
+        assert _RestHandler.requests[0]["metadata"] == {"fields": {}}
+
+        direct = transport.request(TransportRequest(command="CONNECT", fields=(CallbackModel.HLA_EVOKED.name, "")))
+        assert direct.fields == ()
+    finally:
+        server.shutdown()
+        server.server_close()
+
+
+def test_rest_transport_registers_with_backend_factory():
+    server, base_url = _start_stub_server()
+    try:
+        backend = create_backend("certi", transport={"kind": "rest", "base_url": base_url})
+        rti = make_rti_ambassador(backend)
+
+        assert rti.getHLAversion() == "HLA 1516.1-2010"
+        rti.connect(FederateAmbassador(), CallbackModel.HLA_EVOKED)
+        assert _RestHandler.requests[0]["command"] == "GET_HLA_VERSION"
+        assert _RestHandler.requests[1]["command"] == "CONNECT"
+        assert _RestHandler.requests[1]["metadata"] == {"fields": {}}
+    finally:
+        server.shutdown()
+        server.server_close()
+
+
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_rest_transport_can_host_python_rti_exchange_end_to_end(time_factory_name: str):
+    engine = InMemoryRTIEngine()
+    publisher_server = start_python_rest_server(engine=engine)
+    subscriber_server = start_python_rest_server(engine=engine)
+    publisher = subscriber = None
+    try:
+        publisher = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": publisher_server.base_url})
+        subscriber = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": subscriber_server.base_url})
+        publisher_federate = RecordingFederateAmbassador()
+        subscriber_federate = RecordingFederateAmbassador()
+        config = TwoFederateExchangeConfig(
+            federation_name=f"RestHostedPythonFederation-{time_factory_name}",
+            fom_modules=(str(Path("hla2010/resources/foms/VendorSmokeFOM.xml").resolve()),),
+            object_class_name="TestObjectClassR",
+            attribute_name="DataR",
+            interaction_class_name="MsgR",
+            parameter_name="MsgDataR",
+            object_instance_name=f"RestHostedObject-{time_factory_name}-1",
+            attribute_payload=b"payload-r",
+            attribute_tag=b"reflect-tag",
+            interaction_payload=b"hello-r",
+            interaction_tag=b"interaction-tag",
+            enable_time_management=True,
+            timestamped_attribute_payload=b"payload-tso",
+            timestamped_attribute_tag=b"reflect-tso",
+            timestamped_interaction_payload=b"hello-tso",
+            timestamped_interaction_tag=b"interaction-tso",
+            **_exchange_time_profile(time_factory_name),
+        )
+        summary = run_two_federate_exchange_scenario(
+            publisher,
+            subscriber,
+            config=config,
+            publisher_federate=publisher_federate,
+            subscriber_federate=subscriber_federate,
+        )
+        history = assert_two_federate_exchange_callback_history(
+            summary,
+            publisher_federate=publisher_federate,
+            subscriber_federate=subscriber_federate,
+            config=config,
+        )
+        assert history["receive_reflect"].args[3] is OrderType.RECEIVE
+        assert history["timestamp_interaction"].args[3] is OrderType.TIMESTAMP
+
+        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
+        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+        publisher.destroy_federation_execution(config.federation_name)
+        subscriber.disconnect()
+        publisher.disconnect()
+    finally:
+        if subscriber is not None:
+            subscriber.close()
+        if publisher is not None:
+            publisher.close()
+        subscriber_server.close()
+        publisher_server.close()
+
+
+def test_rest_transport_polling_contract_drains_buffered_callbacks():
+    engine = InMemoryRTIEngine()
+    publisher_server = start_python_rest_server(engine=engine)
+    subscriber_server = start_python_rest_server(engine=engine)
+    publisher = subscriber = None
+    try:
+        publisher = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": publisher_server.base_url})
+        subscriber = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": subscriber_server.base_url})
+        publisher_federate = RecordingFederateAmbassador()
+        subscriber_federate = RecordingFederateAmbassador()
+        publisher.connect(publisher_federate, CallbackModel.HLA_EVOKED)
+        subscriber.connect(subscriber_federate, CallbackModel.HLA_EVOKED)
+
+        fom = str(Path("hla2010/resources/foms/VendorSmokeFOM.xml").resolve())
+        publisher.create_federation_execution("RestPollingContractFederation", [fom], "HLAfloat64Time")
+        publisher.join_federation_execution("Publisher", "ProbeFederate", "RestPollingContractFederation")
+        subscriber.join_federation_execution("Subscriber", "ProbeFederate", "RestPollingContractFederation")
+
+        publisher_class = publisher.get_object_class_handle("TestObjectClassR")
+        subscriber_class = subscriber.get_object_class_handle("TestObjectClassR")
+        publisher_attr = publisher.get_attribute_handle(publisher_class, "DataR")
+        subscriber_attr = subscriber.get_attribute_handle(subscriber_class, "DataR")
+        publisher.publish_object_class_attributes(publisher_class, {publisher_attr})
+        subscriber.subscribe_object_class_attributes(subscriber_class, {subscriber_attr})
+
+        obj = publisher.register_object_instance(publisher_class, "BufferedRestObject-1")
+        publisher.update_attribute_values(obj, {publisher_attr: b"buffered"}, b"tag")
+
+        assert subscriber.evoke_multiple_callbacks(0.0, 0.05) is True
+        first = subscriber_federate.last_callback()
+        assert first is not None
+        assert first.method_name == "discoverObjectInstance"
+
+        assert subscriber.evoke_callback(0.0) is True
+        second = subscriber_federate.last_callback()
+        assert second is not None
+        assert second.method_name == "reflectAttributeValues"
+        assert second.args[1] == {subscriber_attr: b"buffered"}
+
+        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
+        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+        publisher.destroy_federation_execution("RestPollingContractFederation")
+        subscriber.disconnect()
+        publisher.disconnect()
+    finally:
+        if subscriber is not None:
+            subscriber.close()
+        if publisher is not None:
+            publisher.close()
+        subscriber_server.close()
+        publisher_server.close()
+
+
+def test_rest_transport_can_host_python_rti_synchronization_end_to_end():
+    engine = InMemoryRTIEngine()
+    leader_server = start_python_rest_server(engine=engine)
+    wing_server = start_python_rest_server(engine=engine)
+    leader = wing = None
+    try:
+        leader = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": leader_server.base_url})
+        wing = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": wing_server.base_url})
+        leader_federate = RecordingFederateAmbassador()
+        wing_federate = RecordingFederateAmbassador()
+        config = SynchronizationScenarioConfig(
+            federation_name="RestHostedSyncFederation",
+            fom_modules=(str(Path("hla2010/resources/foms/VendorSmokeFOM.xml").resolve()),),
+            logical_time_implementation_name="HLAfloat64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SyncFederate",
+            label="ReadyToRun",
+            tag=b"startup",
+        )
+        summary = run_synchronization_scenario(
+            leader,
+            wing,
+            config=config,
+            leader_federate=leader_federate,
+            wing_federate=wing_federate,
+        )
+        assert summary["leader_announce"].args[:2] == ("ReadyToRun", b"startup")
+        assert summary["wing_announce"].args[:2] == ("ReadyToRun", b"startup")
+        assert summary["leader_sync"].args[0] == "ReadyToRun"
+        assert summary["wing_sync"].args[0] == "ReadyToRun"
+
+        wing.resign_federation_execution(ResignAction.NO_ACTION)
+        leader.resign_federation_execution(ResignAction.NO_ACTION)
+        leader.destroy_federation_execution(config.federation_name)
+        wing.disconnect()
+        leader.disconnect()
+    finally:
+        if wing is not None:
+            wing.close()
+        if leader is not None:
+            leader.close()
+        wing_server.close()
+        leader_server.close()
+
+
+def test_rest_transport_can_host_python_rti_ownership_end_to_end():
+    engine = InMemoryRTIEngine()
+    owner_server = start_python_rest_server(engine=engine)
+    acquirer_server = start_python_rest_server(engine=engine)
+    owner = acquirer = None
+    try:
+        owner = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": owner_server.base_url})
+        acquirer = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": acquirer_server.base_url})
+        owner_federate = RecordingFederateAmbassador()
+        acquirer_federate = RecordingFederateAmbassador()
+        config = OwnershipScenarioConfig(
+            federation_name="RestHostedOwnershipFederation",
+            fom_modules=(str(Path("hla2010/resources/foms/VendorSmokeFOM.xml").resolve()),),
+            logical_time_implementation_name="HLAfloat64Time",
+            owner_name="Owner",
+            acquirer_name="Acquirer",
+            federate_type="OwnershipFederate",
+            object_class_name="TestObjectClassR",
+            attribute_name="DataR",
+            object_instance_name="RestOwnedObject-1",
+        )
+        summary = run_attribute_ownership_scenario(
+            owner,
+            acquirer,
+            config=config,
+            owner_federate=owner_federate,
+            acquirer_federate=acquirer_federate,
+        )
+        assert summary["not_owned"].args == (summary["object_instance"], summary["owner_attribute"])
+        assert summary["acquired"].args[0] == summary["acquirer_object_instance"]
+        assert summary["informed"].args[0] == summary["object_instance"]
+
+        acquirer.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
+        owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+        owner.destroy_federation_execution(config.federation_name)
+        acquirer.disconnect()
+        owner.disconnect()
+    finally:
+        if acquirer is not None:
+            acquirer.close()
+        if owner is not None:
+            owner.close()
+        acquirer_server.close()
+        owner_server.close()
+
+
+def test_rest_transport_can_host_python_rti_negotiated_ownership_end_to_end():
+    engine = InMemoryRTIEngine()
+    owner_server = start_python_rest_server(engine=engine)
+    acquirer_server = start_python_rest_server(engine=engine)
+    owner = acquirer = None
+    try:
+        owner = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": owner_server.base_url})
+        acquirer = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": acquirer_server.base_url})
+        owner_federate = RecordingFederateAmbassador()
+        acquirer_federate = RecordingFederateAmbassador()
+        config = NegotiatedOwnershipScenarioConfig(
+            federation_name="RestHostedNegotiatedOwnershipFederation",
+            fom_modules=(str(Path("hla2010/resources/foms/VendorSmokeFOM.xml").resolve()),),
+            logical_time_implementation_name="HLAfloat64Time",
+            owner_name="Owner",
+            acquirer_name="Acquirer",
+            federate_type="NegotiatedOwnershipFederate",
+            object_class_name="TestObjectClassR",
+            attribute_name="DataR",
+            object_instance_name="RestNegotiatedOwnedObject-1",
+        )
+        summary = run_negotiated_attribute_ownership_scenario(
+            owner,
+            acquirer,
+            config=config,
+            owner_federate=owner_federate,
+            acquirer_federate=acquirer_federate,
+        )
+        assert summary["release"].args[0] == summary["release_object_instance"]
+        assert summary["cancellation"].args[0] == summary["release_acquirer_object_instance"]
+        assert summary["divested"] == {summary["owner_attribute"]}
+        assert summary["acquired"].args[0] == summary["release_acquirer_object_instance"]
+        if summary["assumption"] is not None:
+            assert summary["offered_acquired"] is not None
+            assert summary["divestiture_confirmation"] is not None
+
+        acquirer.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
+        owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+        owner.destroy_federation_execution(config.federation_name)
+        acquirer.disconnect()
+        owner.disconnect()
+    finally:
+        if acquirer is not None:
+            acquirer.close()
+        if owner is not None:
+            owner.close()
+        acquirer_server.close()
+        owner_server.close()

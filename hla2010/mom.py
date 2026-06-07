@@ -11,11 +11,10 @@ Section anchors:
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Iterable, Mapping, Any
+from typing import Any, Iterable
 
-from .encoding import HLAboolean, HLAinteger32BE, HLAunicodeString, HLAopaqueData
-from .fom import FOMModule, ObjectClassSpec, InteractionClassSpec
+from .encoding import HLAboolean, HLAinteger32BE, HLAopaqueData, HLAunicodeString
+from .fom import FOMModule, InteractionClassSpec, ObjectClassSpec
 
 MOM_OBJECT_ROOT = "HLAobjectRoot.HLAmanager"
 MOM_INTERACTION_ROOT = "HLAinteractionRoot.HLAmanager"
@@ -104,8 +103,20 @@ MOM_INTERACTION_PARAMETERS: dict[str, tuple[str, ...]] = {
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLArequest.HLArequestInteractionsReceived": ("HLAfederate",),
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLArequest.HLArequestObjectInstanceInformation": ("HLAfederate", "HLAobjectInstance"),
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLArequest.HLArequestFOMmoduleData": ("HLAfederate", "HLAFOMmoduleIndicator"),
-    f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportObjectClassPublication": ("HLAfederate", "HLAnumberOfClasses", "HLAobjectClass", "HLAattributeList"),
-    f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportObjectClassSubscription": ("HLAfederate", "HLAnumberOfClasses", "HLAobjectClass", "HLAactive", "HLAmaxUpdateRate", "HLAattributeList"),
+    f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportObjectClassPublication": (
+        "HLAfederate",
+        "HLAnumberOfClasses",
+        "HLAobjectClass",
+        "HLAattributeList",
+    ),
+    f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportObjectClassSubscription": (
+        "HLAfederate",
+        "HLAnumberOfClasses",
+        "HLAobjectClass",
+        "HLAactive",
+        "HLAmaxUpdateRate",
+        "HLAattributeList",
+    ),
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportInteractionPublication": ("HLAfederate", "HLAinteractionClassList"),
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportInteractionSubscription": ("HLAfederate", "HLAinteractionClassList"),
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportObjectInstancesThatCanBeDeleted": ("HLAfederate", "HLAobjectInstanceCounts"),
@@ -115,9 +126,22 @@ MOM_INTERACTION_PARAMETERS: dict[str, tuple[str, ...]] = {
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportReflectionsReceived": ("HLAfederate", "HLAreflectionsReceived"),
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportInteractionsSent": ("HLAfederate", "HLAinteractionsSent"),
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportInteractionsReceived": ("HLAfederate", "HLAinteractionsReceived"),
-    f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportObjectInstanceInformation": ("HLAfederate", "HLAobjectInstance", "HLAobjectClass", "HLAobjectInstanceName", "HLAattributeList"),
+    f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportObjectInstanceInformation": (
+        "HLAfederate",
+        "HLAobjectInstance",
+        "HLAobjectClass",
+        "HLAobjectInstanceName",
+        "HLAattributeList",
+    ),
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportException": ("HLAfederate", "HLAservice", "HLAexception", "HLAparameterError"),
-    f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportServiceInvocation": ("HLAfederate", "HLAservice", "HLAinitiator", "HLAsuccessIndicator", "HLAexception", "HLAserialNumber"),
+    f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportServiceInvocation": (
+        "HLAfederate",
+        "HLAservice",
+        "HLAinitiator",
+        "HLAsuccessIndicator",
+        "HLAexception",
+        "HLAserialNumber",
+    ),
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportMOMexception": ("HLAfederate", "HLAservice", "HLAexception", "HLAparameterError"),
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportFederateLost": ("HLAfederate",),
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportFOMmoduleData": ("HLAfederate", "HLAFOMmoduleIndicator", "HLAFOMmoduleData"),
@@ -136,8 +160,17 @@ MOM_INTERACTION_PARAMETERS: dict[str, tuple[str, ...]] = {
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAservice.HLAunsubscribeInteractionClass": ("HLAfederate", "HLAinteractionClass"),
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAservice.HLAdeleteObjectInstance": ("HLAfederate", "HLAobjectInstance", "HLAtag", "HLAtimeStamp"),
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAservice.HLAlocalDeleteObjectInstance": ("HLAfederate", "HLAobjectInstance"),
-    f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAservice.HLArequestAttributeTransportationypeChange": ("HLAfederate", "HLAobjectInstance", "HLAattributeList", "HLAtransportationType"),
-    f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAservice.HLArequestInteractionTransportationypeChange": ("HLAfederate", "HLAinteractionClass", "HLAtransportationType"),
+    f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAservice.HLArequestAttributeTransportationypeChange": (
+        "HLAfederate",
+        "HLAobjectInstance",
+        "HLAattributeList",
+        "HLAtransportationType",
+    ),
+    f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAservice.HLArequestInteractionTransportationypeChange": (
+        "HLAfederate",
+        "HLAinteractionClass",
+        "HLAtransportationType",
+    ),
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAservice.HLAunconditionalAttributeOwnershipDivestiture": ("HLAfederate", "HLAobjectInstance", "HLAattributeList"),
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAservice.HLAenableTimeRegulation": ("HLAfederate", "HLAlookahead"),
     f"{MOM_FEDERATE_INTERACTION_ROOT}.HLAservice.HLAdisableTimeRegulation": ("HLAfederate",),
@@ -235,7 +268,8 @@ def create_standard_mim_module() -> FOMModule:
     try:
         from importlib import resources
         from pathlib import Path
-        from .fom import parse_fom_xml, _path_to_file_uri
+
+        from .fom import _path_to_file_uri, parse_fom_xml
 
         resource = resources.files("hla2010").joinpath("resources", "foms", "HLAstandardMIM.xml")
         path = Path(str(resource))

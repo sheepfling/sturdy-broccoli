@@ -8,9 +8,9 @@ Attribution: "Reprinted with permission from IEEE 1516.1(TM)-2010".
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
 import math
 import struct
+from dataclasses import dataclass
 from typing import Any, Generic, Protocol, TypeVar
 
 

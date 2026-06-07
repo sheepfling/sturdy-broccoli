@@ -11,11 +11,11 @@ and forwards calls to that backend.
 """
 from __future__ import annotations
 
+import re
 from abc import ABC, abstractmethod, update_abstractmethods
 from dataclasses import dataclass, field
-import re
 from types import TracebackType
-from typing import Any, Callable, Iterable, Mapping, MutableMapping, Sequence
+from typing import Any, Callable, Mapping, MutableMapping
 
 from ..api import FederateAmbassador, RTIambassador
 from ..exceptions import RTIexception, RTIinternalError

@@ -30,6 +30,8 @@
 #include "MessageBuffer.hh"
 #include "RootObject.hh"
 #include <RTI/certiRTI1516.h>
+#include <map>
+#include <set>
 
 namespace certi {
 
@@ -61,5 +63,8 @@ struct RTI1516ambassador::Private {
 
     std::unique_ptr<SocketUN> socket_un{nullptr};
     MessageBuffer msgBufSend, msgBufReceive;
+
+    std::map<ObjectHandle, std::set<AttributeHandle>> negotiated_divesting_attributes;
+    std::map<ObjectHandle, std::set<AttributeHandle>> confirmable_divestiture_attributes;
 };
 }

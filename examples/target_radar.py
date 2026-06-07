@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from hla2010.backends.python_rti import InMemoryRTIEngine
+from hla2010.backends.python import InMemoryRTIEngine
 from hla2010.rti import create_rti_ambassador
 from hla2010.scenarios.target_radar import run_target_radar_scenario
 

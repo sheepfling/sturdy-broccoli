@@ -484,13 +484,16 @@ void ObjectClassSet::attributeOwnershipAcquisition(FederateHandle theFederateHan
 }
 
 AttributeHandleSet* ObjectClassSet::attributeOwnershipReleaseResponse(
-    FederateHandle theFederateHandle, Object* object, const std::vector<AttributeHandle>& theAttributeList)
+    FederateHandle theFederateHandle,
+    Object* object,
+    const std::vector<AttributeHandle>& theAttributeList,
+    const std::string& theTag)
 {
     // It may throw ObjectNotKnown
     ObjectClass* objectClass = getInstanceClass(object->getHandle());
 
     // It may throw a bunch of exceptions.
-    return objectClass->attributeOwnershipReleaseResponse(theFederateHandle, object, theAttributeList);
+    return objectClass->attributeOwnershipReleaseResponse(theFederateHandle, object, theAttributeList, theTag);
 }
 
 void ObjectClassSet::attributeOwnershipReleaseDenied(

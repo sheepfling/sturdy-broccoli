@@ -1915,7 +1915,8 @@ void Federation::cancelDivestiture(FederateHandle federate_handle,
 
 AttributeHandleSet* Federation::respondRelease(FederateHandle federate_handle,
                                                ObjectHandle object_handle,
-                                               const vector<AttributeHandle>& attributes)
+                                               const vector<AttributeHandle>& attributes,
+                                               const string& tag)
 {
     check(federate_handle);
 
@@ -1927,7 +1928,8 @@ AttributeHandleSet* Federation::respondRelease(FederateHandle federate_handle,
     Object* object = my_root_object->objects->getObject(object_handle);
 
     // It may throw *NotDefined
-    auto* granted = my_root_object->ObjectClasses->attributeOwnershipReleaseResponse(federate_handle, object, attributes);
+    auto* granted
+        = my_root_object->ObjectClasses->attributeOwnershipReleaseResponse(federate_handle, object, attributes, tag);
     std::cerr << "[rtig-federation] respondRelease granted=" << granted->size() << std::endl;
     return granted;
 }

@@ -39,6 +39,11 @@ static PrettyDebug DNULL("RTIA_NULLMSG", "[RTIA NULL MSG] ");
 static PrettyDebug DTUS("RTIA_TIME_UP", "[RTIA NULL MSG] ");
 
 static constexpr double epsilon2 = 1.0e-4;
+
+FederationTime minTime(const FederationTime& left, const FederationTime& right)
+{
+    return (left < right) ? left : right;
+}
 }
 
 TimeManagement::TimeManagement(Communications* GC,
@@ -209,7 +214,7 @@ void TimeManagement::nextEventRequestAvailable(FederationTime heure_logique, Exc
     //    if (heure_logique < _heure_courante + _lookahead_courant)
     //       e = Exception::Type::InvalidFederationTime ;
 
-    if (e == Exception::Type::NO_EXCEPTION) {
+    if (e != Exception::Type::NO_EXCEPTION) {
         Debug(D, pdExcept) << "NextEventRequestAvailable refused, exception = " << static_cast<int>(e) << std::endl;
         return;
     }
@@ -519,6 +524,10 @@ void TimeManagement::advance(bool& msg_restant, Exception::Type& e)
         Debug(D, pdTrace) << "Call to NextEventAdvance." << std::endl;
         nextEventAdvance(msg_restant, e);
         break;
+    case FQR:
+        Debug(D, pdTrace) << "Call to FlushQueueAdvance." << std::endl;
+        flushQueueAdvance(msg_restant, e);
+        break;
     default:
         Debug(D, pdTrace) << "Unexpected case in advance: " << _avancee_en_cours << std::endl;
         // No exception is raised, ca peut etre un cas ou on a rien a faire,
@@ -728,6 +737,51 @@ void TimeManagement::timeAdvanceGrant(FederationTime logical_time, Exception::Ty
     sendTimeStateUpdate();
 }
 
+void TimeManagement::flushQueueAdvance(bool& msg_restant, Exception::Type& e)
+{
+    Debug(G, pdGendoc) << " enter TimeManagement::flushQueueAdvance" << std::endl;
+    msg_restant = false;
+
+    FederationTime grant_time = date_avancee;
+    bool tso_present = false;
+    FederationTime earliest_tso = 0.0;
+
+    queues->nextTsoDate(tso_present, earliest_tso);
+    if (tso_present) {
+        grant_time = minTime(grant_time, earliest_tso);
+    }
+
+    if (_is_constrained && !_LBTS.isPositiveInfinity()) {
+        grant_time = minTime(grant_time, _LBTS);
+    }
+
+    if (tso_present) {
+        FederationTime flush_limit = 0.0;
+        flush_limit.setPositiveInfinity();
+        while (true) {
+            bool msg_donne = false;
+            bool has_remaining = false;
+            NetworkMessage* msg = queues->giveTsoMessage(flush_limit, msg_donne, has_remaining);
+            if (!msg_donne) {
+                delete msg;
+                break;
+            }
+
+            executeFederateService(*msg);
+            delete msg;
+            msg_restant = has_remaining;
+        }
+    }
+
+    timeAdvanceGrant(grant_time, e);
+    if (e == Exception::Type::NO_EXCEPTION) {
+        _avancee_en_cours = PAS_D_AVANCEE;
+    }
+
+    sendTimeStateUpdate();
+    Debug(G, pdGendoc) << " exit  TimeManagement::flushQueueAdvance" << std::endl;
+}
+
 void TimeManagement::flushQueueRequest(FederationTime heure_logique, Exception::Type& e)
 {
     e = Exception::Type::NO_EXCEPTION;
@@ -741,11 +795,22 @@ void TimeManagement::flushQueueRequest(FederationTime heure_logique, Exception::
         e = Exception::Type::FederationTimeAlreadyPassed;
     }
 
-    if (e == Exception::Type::NO_EXCEPTION) {
-        // BUG: Not implemented.
-        Debug(D, pdExcept) << "flushQueueRequest not implemented." << std::endl;
-        throw RTIinternalError("flushQueueRequest not implemented.");
+    if (e != Exception::Type::NO_EXCEPTION) {
+        Debug(D, pdExcept) << "flushQueueRequest refused, exception = " << static_cast<int>(e) << std::endl;
+        return;
     }
+
+    _type_granted_state = AFTER_TARA_OR_NERA;
+
+    if (_is_regulating) {
+        sendNullMessage(heure_logique);
+    }
+
+    _avancee_en_cours = FQR;
+    date_avancee = heure_logique;
+
+    sendTimeStateUpdate();
+    Debug(D, pdTrace) << "flushQueueRequest accepted, asked time=" << date_avancee.getTime() << std::endl;
 }
 
 bool TimeManagement::executeFederateService(NetworkMessage& msg)
@@ -893,7 +958,7 @@ bool TimeManagement::executeFederateService(NetworkMessage& msg)
                                                  RAOA.getAttributes(),
                                                  RAOA.getAttributesSize(),
                                                  msg.getFederate(),
-                                                 msg.getLabel(),
+                                                 msg.getTag(),
                                                  msg.getRefException());
         break;
     }
@@ -909,7 +974,12 @@ bool TimeManagement::executeFederateService(NetworkMessage& msg)
         NM_Attribute_Ownership_Acquisition_Notification& AOAN
             = static_cast<NM_Attribute_Ownership_Acquisition_Notification&>(msg);
         owm->attributeOwnershipAcquisitionNotification(
-            AOAN.getObject(), AOAN.getAttributes(), AOAN.getAttributesSize(), msg.getFederate(), msg.getRefException());
+            AOAN.getObject(),
+            AOAN.getAttributes(),
+            AOAN.getAttributesSize(),
+            msg.getFederate(),
+            msg.getTag(),
+            msg.getRefException());
         break;
     }
 
@@ -924,7 +994,7 @@ bool TimeManagement::executeFederateService(NetworkMessage& msg)
     case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE: {
         NM_Request_Attribute_Ownership_Release& RAOR = static_cast<NM_Request_Attribute_Ownership_Release&>(msg);
         owm->requestAttributeOwnershipRelease(
-            RAOR.getObject(), RAOR.getAttributes(), RAOR.getAttributesSize(), msg.getLabel(), msg.getRefException());
+            RAOR.getObject(), RAOR.getAttributes(), RAOR.getAttributesSize(), msg.getTag(), msg.getRefException());
         break;
     }
 

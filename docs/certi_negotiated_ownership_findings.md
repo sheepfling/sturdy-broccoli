@@ -231,16 +231,23 @@ With that corrected scenario, all three direct CERTI 1516-2010 runs complete:
 
 This also makes the current CERTI mapping explicit:
 
-- `confirmDivestiture` is wired onto the same release-response path as
-  `attributeOwnershipDivestitureIfWanted`
-- so `confirm` and `ifwanted` are currently equivalent in the local CERTI 2010
-  branch
-- `deny` is distinct because it clears candidates instead of granting transfer
+- `confirmDivestiture` and `attributeOwnershipDivestitureIfWanted` still reuse
+  the same underlying release-response transfer machinery
+- but they are no longer equivalent at the 2010 surface in the patched local
+  branch:
+  - release-request `confirm` is rejected as
+    `AttributeDivestitureWasNotRequested`
+  - negotiated `confirm` now succeeds only after a real
+    `requestDivestitureConfirmation` callback
+  - negotiated `confirm` now propagates the owner-supplied confirm tag through
+    the resulting acquisition notification
+- `deny` remains distinct because it clears candidates instead of granting
+  transfer
 
 ## Runtime Findings
 
 The real probe in
-[test_certi_real_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/test_certi_real_backend_matrix.py)
+[test_certi_real_backend_matrix.py](/Users/rick/Library/Mobile%20Documents/com~apple~CloudDocs/GIT/hla-2010/tests/vendors/test_certi_real_backend_matrix.py)
 shows:
 
 - exchange, time, synchronization, unconditional divestiture, acquisition-if-available, and ownership query all pass

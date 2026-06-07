@@ -50,7 +50,8 @@ typedef enum {
     TAR, /*!< TimeAdvanceRequest pending        */
     NER, /*!< NextEventRequest                  */
     TARA, /*!< TimeAdvanceRequestAvailable       */
-    NERA /*!< NextEventRequestAvailable         */
+    NERA, /*!< NextEventRequestAvailable         */
+    FQR /*!< FlushQueueRequest                 */
 } TypeAvancee;
 
 typedef enum { AFTER_TAR_OR_NER = 1, AFTER_TAR_OR_NER_WITH_ZERO_LK, AFTER_TARA_OR_NERA } TypeGrantedState;
@@ -79,6 +80,7 @@ public:
     // Advance Time Methods
     void nextEventRequest(FederationTime logical_time, Exception::Type& e);
     void nextEventRequestAvailable(FederationTime logical_time, Exception::Type& e);
+    void flushQueueRequest(FederationTime logical_time, Exception::Type& e);
 
     /**
      * Try to deliver some message to the federate (command or FIFO)
@@ -184,15 +186,17 @@ private:
     void nextEventAdvance(bool& msg_restant, Exception::Type& e);
 
     /**
+     * This method is called by @ref advance for flushQueueRequest. It drains
+     * queued TSO traffic and then grants at the earliest queued timestamp, or
+     * the current LBTS/requested-time bound when no TSO is queued.
+     */
+    void flushQueueAdvance(bool& msg_restant, Exception::Type& e);
+
+    /**
      * Once every messages has been delivered to federate, logical time can be
      * advanced and send a timeAdvanceGrant to federate.
      */
     void timeAdvanceGrant(FederationTime, Exception::Type& e);
-
-    /**
-     * Not implemented.
-     */
-    void flushQueueRequest(FederationTime, Exception::Type& e);
 
     /**
      * Deliver TSO messages to federate (UAV, ReceiveInteraction, etc...).

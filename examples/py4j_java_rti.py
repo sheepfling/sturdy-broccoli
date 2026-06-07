@@ -5,7 +5,7 @@ process isolation between Python and Java.  The Java side must start a Py4J
 GatewayServer with the RTI jars on its classpath.
 """
 from hla2010.api import FederateAmbassador
-from hla2010.backends.py4j_backend import Py4JConfig, rti_ambassador
+from hla2010.backends.py4j import Py4JConfig, rti_ambassador
 from hla2010.enums import CallbackModel
 
 

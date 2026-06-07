@@ -134,54 +134,19 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
     } break;
 
     case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES: {
-        NM_Reflect_Attribute_Values* RAV = static_cast<NM_Reflect_Attribute_Values*>(request);
-        OrderType updateOrder;
-
-        //RAV->show(std::cerr);
         Debug(D, pdTrace) << "Receiving Message from RTIG, "
                              "type NetworkMessage::REFLECT_ATTRIBUTE_VALUES."
                           << std::endl;
 
-        // It is important to note that several attributes may be updated at
-        // the same time. Each attribute has its own order type, region, etc.
-        // So attributes which are meeting similar criteria should be sent
-        // together. It means that case REFLECT_ATTRIBUTE_VALUES can generate
-        // several messages in queues.
-        //
-        // At this point of development, we cannot assume this facility and
-        // decided to store message as TSO only if all attributes meets TSO
-        // criteria. Otherwise, a single message will be enqueue in FIFO.
-
-        // Here we have to consider RAV without time
-        if (!request->isDated()) {
-            // without time
-            updateOrder = RECEIVE;
-        }
-        else {
-            // Retrieve order type
-            updateOrder = TIMESTAMP;
-            // FIXME we may inspect rootObject for an unknown object which has
-            // (not yet) been discovered...because DiscoverObject is a RO message
-            ObjectClassHandle och = my_root_object.objects->getObjectClass(RAV->getObject());
-            //std::cerr << "FOUND och = " <<och << "  for object " << RAV->getObject() <<std::endl;
-            for (uint32_t i = 0; i < RAV->getAttributesSize(); ++i) {
-                // FIXME we need an object **CLASS** handle and not an **OBJECT* handle
-                //if (rootObject->ObjectClasses->getObjectFromHandle(RAV->getObject())
-                if (my_root_object.ObjectClasses->getObjectFromHandle(och)->getAttribute(RAV->getAttributes(i))->order
-                    != TIMESTAMP) {
-                    updateOrder = RECEIVE;
-                    break;
-                }
-            }
-        }
-
         // Decide which queue will be used
-        if (updateOrder == TIMESTAMP && tm.requestContraintState()) {
-            // Update is TSO
+        if (request->isDated() && tm.requestContraintState()) {
+            // CERTI's per-federate changeAttributeOrderType state is not
+            // reflected in the static FOM metadata consulted here. When a
+            // dated update reaches RTIA, preserve its timestamp ordering for
+            // constrained delivery instead of silently downgrading to FIFO.
             queues.insertTsoMessage(request);
         }
         else {
-            // Update is RO
             queues.insertFifoMessage(request);
         }
 

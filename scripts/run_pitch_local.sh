@@ -4,6 +4,9 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 HLA2010_LOCAL_STATE_ROOT="${HLA2010_LOCAL_STATE_ROOT:-/private/tmp/hla-2010}"
 pitch_home="${HLA2010_PITCH_HOME:-}"
+pitch_java_home="${HLA2010_PITCH_JAVA_HOME:-}"
+pitch_java_bin="${HLA2010_PITCH_JAVA_BIN:-}"
+launcher_mode="${HLA2010_PITCH_LAUNCHER_MODE:-raw}"
 
 if [[ -z "$pitch_home" && -d "$ROOT_DIR/third_party/pitch/PITCH-prti1516e-manual" ]]; then
   pitch_home="$ROOT_DIR/third_party/pitch/PITCH-prti1516e-manual"
@@ -14,21 +17,114 @@ if [[ -z "$pitch_home" ]]; then
 fi
 
 pitch_user_home="${HLA2010_PITCH_USER_HOME:-$HLA2010_LOCAL_STATE_ROOT/pitch-user-home}"
-java_bin="$pitch_home/Contents/Home/bin/java"
-java_library_path="$pitch_home/lib:$pitch_home/.i4j_external_12081/lib:$pitch_home/.i4j_external_12081/lib/clang12"
 prti_jar="$pitch_home/lib/prtifull.jar"
 
-mkdir -p "$pitch_user_home/.cache"
+if [[ -n "$pitch_java_bin" && -x "$pitch_java_bin" ]]; then
+  java_bin="$pitch_java_bin"
+elif [[ -n "$pitch_java_home" && -x "$pitch_java_home/bin/java" ]]; then
+  java_bin="$pitch_java_home/bin/java"
+elif [[ -x "$pitch_home/Contents/Home/bin/java" ]]; then
+  java_bin="$pitch_home/Contents/Home/bin/java"
+elif [[ -x "$pitch_home/jre/bin/java" ]]; then
+  java_bin="$pitch_home/jre/bin/java"
+elif [[ -x "$pitch_home/.install4j/jre.bundle/Contents/Home/bin/java" ]]; then
+  java_bin="$pitch_home/.install4j/jre.bundle/Contents/Home/bin/java"
+else
+  echo "error: bundled Java runtime not found below $pitch_home"
+  exit 1
+fi
+
+java_library_parts=("$pitch_home/lib")
+if [[ -d "$pitch_home/.i4j_external_12081/lib" ]]; then
+  java_library_parts+=("$pitch_home/.i4j_external_12081/lib")
+fi
+if [[ -d "$pitch_home/.i4j_external_12081/lib/clang12" ]]; then
+  java_library_parts+=("$pitch_home/.i4j_external_12081/lib/clang12")
+fi
+if [[ -d "$pitch_home/lib/clang12" ]]; then
+  java_library_parts+=("$pitch_home/lib/clang12")
+fi
+java_library_path="$(IFS=:; echo "${java_library_parts[*]}")"
+jvm_args=(-Xmx512m)
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  # Pitch's bundled JVM can abort during AppKit registration unless macOS starts it on the first thread.
+  jvm_args=(-XstartOnFirstThread "${jvm_args[@]}")
+fi
+if [[ -n "${HLA2010_PITCH_JVM_ARGS:-}" ]]; then
+  read -r -a extra_jvm_args <<< "${HLA2010_PITCH_JVM_ARGS}"
+  jvm_args+=("${extra_jvm_args[@]}")
+fi
+
+pitch_user_home="$("$ROOT_DIR/scripts/setup_pitch_state.sh")"
+pidfile="$pitch_user_home/.hla2010_pitch_crc.pid"
+common_settings="$pitch_user_home/prti1516e/prti_common.settings"
+
+mkdir -p "$pitch_user_home/prti1516e"
+
+if [[ -f "$common_settings" ]]; then
+  if grep -Eq '^[[:space:]]*accepted[[:space:]]*=' "$common_settings"; then
+    perl -0pi -e 's/^[ \t]*accepted[ \t]*=.*/accepted = true/m' "$common_settings"
+  else
+    printf '\naccepted = true\n' >> "$common_settings"
+  fi
+else
+  printf 'accepted = true\n' > "$common_settings"
+fi
+
+if [[ "${HLA2010_PITCH_UI_AUTOMATION:-0}" != "0" ]] && [[ "$(uname -s)" == "Darwin" ]]; then
+  bash "$ROOT_DIR/scripts/accept_pitch_dialog.sh" >/dev/null 2>&1 &
+fi
+
+if [[ -f "$pidfile" ]]; then
+  old_pid="$(cat "$pidfile" 2>/dev/null || true)"
+  if [[ -n "${old_pid:-}" ]] && ps -p "$old_pid" > /dev/null 2>&1; then
+    old_command="$(ps -p "$old_pid" -o command= || true)"
+    if [[ "$old_command" == *"prtifull.jar"* || "$old_command" == *"install4j.se.pitch.prti1516e.RTIexec"* ]]; then
+      kill "$old_pid" 2>/dev/null || true
+      for _ in {1..50}; do
+        if ! ps -p "$old_pid" > /dev/null 2>&1; then
+          break
+        fi
+        sleep 0.1
+      done
+    fi
+  fi
+fi
 
 if [[ $# -eq 0 ]]; then
   set -- -nogui -verbose
 fi
 
-exec env HOME="$pitch_user_home" \
-  "$java_bin" \
-  -Xmx512m \
-  -Duser.home="$pitch_user_home" \
-  -Djava.library.path="$java_library_path" \
-  -jar "$prti_jar" \
-  -nocmdline \
-  "$@"
+printf '%s\n' "$$" > "$pidfile"
+case "$launcher_mode" in
+  raw)
+    exec env HOME="$pitch_user_home" \
+      "$java_bin" \
+      "${jvm_args[@]}" \
+      -Duser.home="$pitch_user_home" \
+      -Djava.library.path="$java_library_path" \
+      -jar "$prti_jar" \
+      -nocmdline \
+      "$@"
+    ;;
+  install4j)
+    install4j_launcher="$pitch_home/bin/pRTI cmdline"
+    if [[ ! -x "$install4j_launcher" ]]; then
+      echo "error: install4j launcher not found at $install4j_launcher"
+      exit 1
+    fi
+    install4j_args=()
+    for arg in "${jvm_args[@]}"; do
+      install4j_args+=("-J$arg")
+    done
+    exec env HOME="$pitch_user_home" \
+      INSTALL4J_JAVA_HOME_OVERRIDE="${pitch_java_home:-$(cd "$(dirname "$java_bin")/.." && pwd)}" \
+      "$install4j_launcher" \
+      "${install4j_args[@]}" \
+      "$@"
+    ;;
+  *)
+    echo "error: unsupported HLA2010_PITCH_LAUNCHER_MODE '$launcher_mode'"
+    exit 1
+    ;;
+esac

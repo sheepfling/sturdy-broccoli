@@ -1,51 +1,12 @@
-"""Testing helpers and demo shims for the HLA 2010 Python scaffold."""
+"""Minimal testing package surface."""
+from __future__ import annotations
 
-from .java_shim import (
-    InProcessJavaRTIShim,
-    SharedInProcessJavaRTIShim,
-    SharedJavaShimKernel,
-    ShimJavaBridge,
-    create_java_shim_backend,
-    create_java_shim_rti_ambassador,
-    create_shared_java_shim_backend,
-    create_shared_java_shim_rti_ambassador,
-)
-from .scenarios import (
-    assert_two_federate_exchange_callback_history,
-    DemoFederate,
-    ExchangeRoundConfig,
-    NegotiatedOwnershipScenarioConfig,
-    OwnershipScenarioConfig,
-    SynchronizationScenarioConfig,
-    TwoFederateExchangeConfig,
-    run_basic_federate_scenario,
-    run_attribute_ownership_scenario,
-    run_negotiated_attribute_ownership_scenario,
-    run_exchange_round,
-    run_synchronization_scenario,
-    run_two_federate_exchange_scenario,
-)
+from . import java_shim as java_shim
+from . import scenarios as scenarios
+from . import two_federate_suite as two_federate_suite
 
 __all__ = [
-    "assert_two_federate_exchange_callback_history",
-    "DemoFederate",
-    "ExchangeRoundConfig",
-    "NegotiatedOwnershipScenarioConfig",
-    "OwnershipScenarioConfig",
-    "SynchronizationScenarioConfig",
-    "InProcessJavaRTIShim",
-    "SharedInProcessJavaRTIShim",
-    "SharedJavaShimKernel",
-    "ShimJavaBridge",
-    "TwoFederateExchangeConfig",
-    "create_java_shim_backend",
-    "create_java_shim_rti_ambassador",
-    "create_shared_java_shim_backend",
-    "create_shared_java_shim_rti_ambassador",
-    "run_basic_federate_scenario",
-    "run_attribute_ownership_scenario",
-    "run_negotiated_attribute_ownership_scenario",
-    "run_exchange_round",
-    "run_synchronization_scenario",
-    "run_two_federate_exchange_scenario",
+    "java_shim",
+    "scenarios",
+    "two_federate_suite",
 ]

@@ -1,4 +1,5 @@
 """gRPC transport package for RTI backend adapters."""
+from __future__ import annotations
 
 from .python_server import (
     CERTIRTIGrpcServer,
@@ -6,7 +7,7 @@ from .python_server import (
     PythonRTIGrpcServer,
     PythonRTIGrpcServerConfig,
     start_certi_grpc_server,
-    start_python_rti_grpc_server,
+    start_python_grpc_server,
 )
 from .transport import GrpcTransport, GrpcTransportConfig, create_grpc_transport
 
@@ -19,5 +20,5 @@ __all__ = [
     "PythonRTIGrpcServerConfig",
     "create_grpc_transport",
     "start_certi_grpc_server",
-    "start_python_rti_grpc_server",
+    "start_python_grpc_server",
 ]

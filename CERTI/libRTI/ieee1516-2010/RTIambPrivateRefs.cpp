@@ -1063,6 +1063,11 @@ void RTI1516ambassador::Private::callFederateAmbassador(Message* msg)
                 = static_cast<M_Attribute_Ownership_Divestiture_Notification*>(msg);
 
             rti1516e::AttributeHandleSet* attributeSet = getAHSFromRequest(AODN);
+            const ObjectHandle object_handle = AODN->getObject();
+            for (const auto& attribute_handle : *attributeSet) {
+                confirmable_divestiture_attributes[object_handle].insert(
+                    rti1516e::AttributeHandleFriend::toCertiHandle(attribute_handle));
+            }
 
             rti1516e::ObjectInstanceHandle instance
                 = rti1516e::ObjectInstanceHandleFriend::createRTI1516Handle(AODN->getObject());

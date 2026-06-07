@@ -2,13 +2,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping, Sequence, cast
 
-from . import rti_transport_pb2_grpc as pb2_grpc
-from .client import GrpcTransportClientAdapter
+from ...rti import register_transport_factory
 from ..base import BackendUnavailableError
 from ..transport import RTITransport, TransportError, TransportRequest, TransportResponse
-from ...rti import register_transport_factory
+from . import rti_transport_pb2_grpc as pb2_grpc
+from .client import GrpcTransportClientAdapter
 
 try:  # pragma: no cover - import guarded for optional dependency
     import grpc
@@ -17,6 +17,8 @@ except Exception as exc:  # pragma: no cover - optional dependency
     _GRPC_IMPORT_ERROR = exc
 else:
     _GRPC_IMPORT_ERROR = None
+
+
 @dataclass(frozen=True)
 class GrpcTransportConfig:
     """Configuration for :class:`GrpcTransport`."""
@@ -43,8 +45,9 @@ class GrpcTransport(RTITransport):
         if self._channel is None:
             if self.config.secure:
                 raise BackendUnavailableError("Secure gRPC transport is not configured in this workspace")
-            self._channel = grpc.insecure_channel(self.config.target, options=list(self.config.channel_options))
-            grpc.channel_ready_future(self._channel).result(timeout=self.config.timeout)
+            grpc_runtime = cast(Any, grpc)
+            self._channel = grpc_runtime.insecure_channel(self.config.target, options=list(self.config.channel_options))
+            grpc_runtime.channel_ready_future(self._channel).result(timeout=self.config.timeout)
             self._stub = pb2_grpc.RTITransportServiceStub(self._channel)
         return self
 
