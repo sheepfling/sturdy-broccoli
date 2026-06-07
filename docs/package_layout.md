@@ -58,8 +58,21 @@ Java transport stubs generated from the RTI REST or gRPC transport contracts are
 - `hla2010/testing/two_federate_suite_runner.py`: suite coordinator.
 - `hla2010/testing/two_federate_suite_scenarios.py`: embedded suite scenario bodies such as save/restore and DDM.
 - `hla2010/testing/two_federate_suite_pairs.py`, `two_federate_suite_configs.py`, `two_federate_suite_profiles.py`, `two_federate_suite_summary.py`, `two_federate_suite_timeline.py`, `two_federate_suite_writers.py`: pair construction, profile selection, summary/timeline shaping, and artifact writing.
-- `hla2010/scenarios/`: domain examples.
+- `hla2010/scenarios/`: reusable domain scenarios that are safe to import from both tests and example entrypoints.
+- `examples/`: runnable scripts and example-only assets. Nothing under `examples/` is part of the installable `hla2010` package.
+- `examples/<scenario>/`: example-specific static assets such as FOM XML or notes for that scenario.
 - `hla2010/verification.py` and `hla2010/conformance.py`: evidence and requirements-ledger support.
 
 Legacy flat backend shim modules have been removed. New code should import from
 the canonical package implementations instead.
+
+## Example Boundary Rules
+
+Keep example entrypoints thin:
+
+- parse CLI arguments
+- construct a backend or scenario factory
+- call into `hla2010.scenarios.*` or another reusable package module
+
+Keep reusable scenario logic out of `examples/` so tests can import the same
+code without depending on a script layout.

@@ -22,6 +22,12 @@ docs/                 clean project notes for the repo seed
 For the package-level backend/API organization, see
 [`docs/package_layout.md`](docs/package_layout.md).
 
+The boundary is intentional:
+
+- `hla2010/` is the installable package.
+- `examples/` contains runnable entrypoints and example-only assets.
+- shared scenario code belongs in `hla2010/scenarios/`, not in `examples/`.
+
 Additional repo-local material promoted from `INBOX`:
 
 - `docs/plans/` 2010 workspace planning and foundation notes
