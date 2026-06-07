@@ -225,6 +225,7 @@ struct PendingEvent {
 class SmokeSession;
 
 std::string logical_time_to_wire_string(rti1516e::LogicalTime const& logical_time, const std::string& logical_time_name);
+std::string logical_interval_to_wire_string(rti1516e::LogicalTimeInterval const& logical_interval, const std::string& logical_time_name);
 
 class QueueingFederateAmbassador : public rti1516e::NullFederateAmbassador {
 public:
@@ -882,6 +883,22 @@ public:
         ok();
     }
 
+    void query_lookahead()
+    {
+        RTI1516fedTimeInterval interval(0.0);
+        rti_->queryLookahead(interval);
+        std::ostringstream stream;
+        stream << logical_interval_to_wire_string(interval, logical_time_name());
+        ok(std::vector<std::string>{logical_time_name(), stream.str()});
+    }
+
+    void modify_lookahead(const std::vector<std::string>& fields)
+    {
+        RTI1516fedTimeInterval interval(parse_logical_time_argument(fields));
+        rti_->modifyLookahead(interval);
+        ok();
+    }
+
     void query_galt()
     {
         RTI1516fedTime timestamp(0.0);
@@ -1091,6 +1108,16 @@ private:
 std::string logical_time_to_wire_string(rti1516e::LogicalTime const& logical_time, const std::string& logical_time_name)
 {
     const std::string text = narrow_ascii(logical_time.toString());
+    if (logical_time_name == "HLAinteger64Time") {
+        const long long value = static_cast<long long>(std::llround(std::atof(text.c_str())));
+        return std::to_string(value);
+    }
+    return text;
+}
+
+std::string logical_interval_to_wire_string(rti1516e::LogicalTimeInterval const& logical_interval, const std::string& logical_time_name)
+{
+    const std::string text = narrow_ascii(logical_interval.toString());
     if (logical_time_name == "HLAinteger64Time") {
         const long long value = static_cast<long long>(std::llround(std::atof(text.c_str())));
         return std::to_string(value);
@@ -1523,6 +1550,10 @@ int main()
                 session.next_message_request_available(fields);
             } else if (command == "FLUSH_QUEUE_REQUEST") {
                 session.flush_queue_request(fields);
+            } else if (command == "QUERY_LOOKAHEAD") {
+                session.query_lookahead();
+            } else if (command == "MODIFY_LOOKAHEAD") {
+                session.modify_lookahead(fields);
             } else if (command == "QUERY_GALT") {
                 session.query_galt();
             } else if (command == "QUERY_LITS") {

@@ -8,6 +8,8 @@ on:
 jobs:
   seed-suite:
     runs-on: ubuntu-latest
+    env:
+      HLA2010_SKIP_TARGET_RADAR_BACKEND_MATRIX: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -35,6 +37,58 @@ jobs:
         run: ./scripts/ci/install_python.sh
       - name: Run optional bridge checks
         run: ./scripts/ci/test.sh tests/test_optional_real_java_bridges.py
+
+  target-radar-backend-matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Install backend matrix environment
+        env:
+          HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
+        run: ./scripts/ci/install_python.sh
+      - name: Run target/radar backend matrix
+        run: ./scripts/ci/target_radar_backend_matrix.sh
+      - name: Upload target/radar backend matrix artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: target-radar-backend-matrix
+          path: analysis/target_radar_backend_matrix/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  target-radar-proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Install proof environment
+        env:
+          HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
+        run: ./scripts/ci/install_python.sh
+      - name: Run target/radar proof packet
+        run: ./scripts/ci/target_radar_proof.sh
+      - name: Upload target/radar proof artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: target-radar-proof
+          path: analysis/target_radar_proof/
+          if-no-files-found: ignore
+          retention-days: 14
 
   certi-runtime-required:
     runs-on: macos-latest
