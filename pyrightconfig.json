@@ -3,7 +3,9 @@
   "typeCheckingMode": "standard",
   "include": [
     "hla2010/backends/grpc_transport",
+    "hla2010/backends/python/__init__.py",
     "hla2010/backends/rest_transport",
+    "hla2010/backends/rest_transport_host.py",
     "hla2010/backends/python/backend.py",
     "hla2010/backends/python/engine.py",
     "hla2010/backends/python/factory.py",
