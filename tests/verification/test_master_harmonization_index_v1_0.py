@@ -40,7 +40,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
 
     statuses = Counter(row["harmonization_status"] for row in rows)
     assert statuses == Counter(
-        {"mapped": 2638, "partial": 1365}
+        {"mapped": 2639, "partial": 1364}
     )
 
     by_id = {row["master_requirement_id"]: row for row in rows}
@@ -51,6 +51,11 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
         by_id["HLA1516.1-SUP-10_2-GETAUTOMATICRESIGNDIRECTIVE-TEST-001"][
             "harmonization_source_file"
         ]
+        == "hla1516_1_sup_detailed_reconciliation.csv"
+    )
+    assert by_id["HLA1516.1-SUP-OVERVIEW-013"]["harmonization_status"] == "mapped"
+    assert (
+        by_id["HLA1516.1-SUP-OVERVIEW-013"]["harmonization_source_file"]
         == "hla1516_1_sup_detailed_reconciliation.csv"
     )
     assert by_id["HLA1516-FW-FW_SCOPE-001"]["harmonization_status"] == "partial"
@@ -236,8 +241,3 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
     )
     assert by_id["HLA1516.1-MIM-PARAM-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-FM-4_3-RTIAPI-001-MOM"]["harmonization_status"] == "mapped"
-    assert by_id["HLA1516.1-SUP-OVERVIEW-013"]["harmonization_status"] == "partial"
-    assert (
-        by_id["HLA1516.1-SUP-OVERVIEW-013"]["harmonization_source_file"]
-        == "hla1516_1_sup_detailed_reconciliation.csv"
-    )
