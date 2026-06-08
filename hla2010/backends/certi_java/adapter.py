@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from ...api import FederateAmbassador
+from ...runtime_api import FederateAmbassador
 from ..base import CALLBACK_METHOD_NAMES, lower_camel_to_snake, make_rti_ambassador
 from ..certi import CERTIConfig, create_certi_backend
 from .runtime import from_java_like, to_java_like

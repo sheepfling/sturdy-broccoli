@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from hla2010.api import FederateAmbassador
+from hla2010.runtime_api import FederateAmbassador
 from hla2010.backends.base import make_rti_ambassador
 from hla2010.backends.certi import CERTIBackend, CERTIConfig
 from hla2010.backends.certi.service_adapter import CERTIBackend as PackageCERTIBackend

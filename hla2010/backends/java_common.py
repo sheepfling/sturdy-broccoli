@@ -20,7 +20,7 @@ from typing import Any, Mapping, Sequence
 from .. import enums as hla_enums
 from .. import exceptions as hla_exceptions
 from .. import handles as hla_handles
-from ..api import FederateAmbassador
+from ..runtime_api import FederateAmbassador
 from ..exceptions import FederateInternalError, RTIexception, RTIinternalError
 from ..fom import module_uri
 from ..raw_api import API_METADATA

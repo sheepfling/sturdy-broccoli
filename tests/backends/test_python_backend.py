@@ -1,6 +1,6 @@
 import pytest
 
-from hla2010.api import FederateAmbassador
+from hla2010.runtime_api import FederateAmbassador
 from hla2010.backends.python import InMemoryRTIEngine, rti_ambassador
 from hla2010.encoding import HLAunicodeString
 from hla2010.enums import CallbackModel, OrderType, ResignAction

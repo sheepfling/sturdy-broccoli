@@ -21,6 +21,7 @@ qa = ["pytest", "ruff>=0.5", "pyright>=1.1.408"]
 
 [tool.setuptools.packages.find]
 include = ["hla2010*"]
+exclude = ["hla2010.testing*"]
 
 [tool.setuptools.package-data]
 hla2010 = ["resources/foms/*.xml"]

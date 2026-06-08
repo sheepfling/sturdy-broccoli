@@ -70,6 +70,7 @@ Script families:
 - `run_target_radar_proof.py`: target/radar proof packet
 - `generate_fom_overview.py`: merged FOM/MIM tree and matrix overview packet, with optional interactive HTML output via `--html`
 - `generate_compliance_artifacts.py`: compliance and requirements packet
+- `update_rti_options_matrix.py`: generated backend-alias section for `docs/rti_options_and_test_matrix.md`
 - `generate_imported_packet_requirements_docs.py`: packet-style markdown views from the imported canonical v1.0 requirements catalog
 - `generate_imported_packet_backlog.py`: repo-native implementation backlog views derived from the harmonized requirements ledgers and imported packet
 - `discover_backend_compliance.py`: one-command backend/spec compliance discovery over the generated packet

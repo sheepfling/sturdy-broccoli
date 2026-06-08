@@ -3,7 +3,7 @@ from hla2010.backends.base import DelegatingRTIAmbassador, lower_camel_to_snake,
 from hla2010.backends.java_common import java_parameter_names, resolve_java_arguments
 from hla2010.raw_api import API_METADATA
 from hla2010.enums import CallbackModel
-from hla2010.api import FederateAmbassador
+from hla2010.runtime_api import FederateAmbassador
 
 
 def test_delegating_ambassador_is_concrete():

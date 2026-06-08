@@ -5,7 +5,7 @@ from concurrent import futures
 import grpc
 import pytest
 
-from hla2010.api import FederateAmbassador
+from hla2010.runtime_api import FederateAmbassador
 from hla2010.backends.base import make_rti_ambassador
 from hla2010.backends.grpc_transport import GrpcTransport, GrpcTransportConfig
 from hla2010.backends.grpc_transport import rti_transport_pb2 as pb2

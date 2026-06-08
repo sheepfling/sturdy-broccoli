@@ -3,18 +3,14 @@
 This module intentionally implements a small, practical subset first. It uses
 big/little-endian names that match the public API names and can be extended to
 full encoder-factory coverage.
-
-Attribution: "Reprinted with permission from IEEE 1516.1(TM)-2010".
 """
 from __future__ import annotations
 
 import struct
 from dataclasses import dataclass, field
 
-
 class EncoderException(Exception):
     pass
-
 
 class DecoderException(Exception):
     pass

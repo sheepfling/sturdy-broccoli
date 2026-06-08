@@ -1,4 +1,4 @@
-from hla2010.api import FederateAmbassador
+from hla2010.runtime_api import FederateAmbassador
 from hla2010.backends.python_rti import InMemoryRTIEngine, rti_ambassador
 from hla2010.enums import CallbackModel, OrderType, ResignAction
 from hla2010.handles import ObjectInstanceHandle

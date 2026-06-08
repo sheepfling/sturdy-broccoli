@@ -5,7 +5,7 @@ Run with:
 """
 from hla2010.backends import RecordingBackend, make_rti_ambassador
 from hla2010.enums import CallbackModel
-from hla2010.api import FederateAmbassador
+from hla2010.runtime_api import FederateAmbassador
 
 
 class MyFederate(FederateAmbassador):

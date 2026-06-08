@@ -5,7 +5,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Any
 
-from ..api import FederateAmbassador
+from ..runtime_api import FederateAmbassador
 from ..exceptions import CallNotAllowedFromWithinCallback, ObjectInstanceNameNotReserved, RTIexception
 from ..time import HLAinteger64Time
 

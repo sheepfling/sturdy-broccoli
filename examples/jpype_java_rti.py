@@ -4,7 +4,7 @@ Replace the classpath with the jars/classes for your RTI vendor.  JPype runs the
 JVM in-process, so this path is often best for low-latency callbacks and when
 only one JVM is needed in the Python process.
 """
-from hla2010.api import FederateAmbassador
+from hla2010.runtime_api import FederateAmbassador
 from hla2010.backends.jpype import JPypeConfig, rti_ambassador
 from hla2010.enums import CallbackModel
 

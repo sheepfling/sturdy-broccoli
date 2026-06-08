@@ -14,7 +14,6 @@ JAVA_ROOT = SPEC/'apis/java/java/src/hla/rti1516e'
 CPP_ROOT = SPEC/'apis/cpp/cpp/src/RTI'
 OUT = ROOT/'hla2010_python_v0_3'
 ZIP = ROOT/'hla2010_python_v0_3.zip'
-ATTR = 'Reprinted with permission from IEEE 1516.1(TM)-2010'
 
 @dataclass
 class Method:
@@ -28,7 +27,6 @@ class Method:
     group: str|None = None
     source_file: str|None = None
     source_line: int|None = None
-
 
 def ensure_specs_unpacked() -> None:
     # Unpack top-level zips if hla_specs was not already present.
@@ -50,13 +48,11 @@ def ensure_specs_unpacked() -> None:
         with zipfile.ZipFile(czip) as zf:
             zf.extractall(apis/'cpp')
 
-
 def strip_block_comments_keep_lines(s: str) -> str:
     # preserve line count for source_line estimates
     def repl(m):
         return '\n' * m.group(0).count('\n')
     return re.sub(r'/\*.*?\*/', repl, s, flags=re.S)
-
 
 def parse_java_methods(file: Path, interface: str) -> list[Method]:
     text = file.read_text(errors='replace')
@@ -122,7 +118,6 @@ def parse_java_methods(file: Path, interface: str) -> list[Method]:
             start_line = None
     return methods
 
-
 def parse_cpp_methods(file: Path, interface: str) -> list[Method]:
     text = file.read_text(errors='replace')
     clean = strip_block_comments_keep_lines(text)
@@ -147,7 +142,6 @@ def parse_cpp_methods(file: Path, interface: str) -> list[Method]:
             throws = [re.sub(r'\bRTI_EXPORT\b|\s', '', t) for t in throws_blob.split(',') if t.strip()]
         methods.append(Method('cpp', interface, name, ret, params, throws, source_file=str(file.relative_to(SPEC)), source_line=line))
     return methods
-
 
 def parse_enums() -> dict[str, list[tuple[str,int|None]]]:
     enums: dict[str, list[tuple[str,int|None]]] = {}
@@ -188,7 +182,6 @@ def parse_enums() -> dict[str, list[tuple[str,int|None]]]:
             enums[name] = vals
     return enums
 
-
 def parse_exception_names() -> list[str]:
     names = []
     for f in sorted((JAVA_ROOT/'exceptions').glob('*.java')):
@@ -198,24 +191,20 @@ def parse_exception_names() -> list[str]:
             names.append(m.group(1))
     return names
 
-
 def parse_handles() -> list[str]:
     handles = []
     for f in JAVA_ROOT.glob('*Handle.java'):
         handles.append(f.stem)
     return sorted(set(handles))
 
-
 def camel_to_snake(name: str) -> str:
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
     s2 = re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1)
     return s2.replace('HLA', 'hla').lower()
 
-
 def write(path: Path, data: str):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(data, encoding='utf-8')
-
 
 def method_metadata(methods: list[Method]) -> dict[str, dict[str, list[dict]]]:
     meta: dict[str, dict[str, list[dict]]] = {}
@@ -223,15 +212,12 @@ def method_metadata(methods: list[Method]) -> dict[str, dict[str, list[dict]]]:
         meta.setdefault(m.interface, {}).setdefault(m.name, []).append(asdict(m))
     return meta
 
-
 def py_str(obj) -> str:
     return repr(obj)
-
 
 def make_enums_py(enums: dict[str, list[tuple[str,int|None]]]) -> str:
     chunks = [f'''"""Enumerations derived from the public IEEE 1516.1-2010 Java/C++ API files.
 
-Attribution: "{ATTR}".
 """
 from __future__ import annotations
 from enum import Enum, auto
@@ -248,7 +234,6 @@ from enum import Enum, auto
     chunks.append('__all__ = [name for name, value in globals().items() if isinstance(value, type) and issubclass(value, Enum)]\n')
     return ''.join(chunks)
 
-
 def make_exceptions_py(names: list[str]) -> str:
     body = f'''"""Exception hierarchy derived from the public IEEE 1516.1-2010 Java API files.
 
@@ -256,7 +241,6 @@ The Java binding declares checked exceptions on API methods. Python keeps the
 standard names for adapter compatibility, but does not use checked exception
 declarations.
 
-Attribution: "{ATTR}".
 """
 from __future__ import annotations
 
@@ -278,11 +262,9 @@ RTIException = RTIexception
     body += "__all__ = ['RTIexception', 'RTIException', " + ', '.join(repr(n) for n in names if n != 'RTIexception') + "]\n"
     return body
 
-
 def make_handles_py(handles: list[str]) -> str:
     body = f'''"""Opaque handle value objects for the HLA 1516.1-2010 Python API.
 
-Attribution: "{ATTR}".
 """
 from __future__ import annotations
 from dataclasses import dataclass
@@ -332,11 +314,9 @@ class HandleFactory(Generic[T]):
     body += '__all__ = ' + repr(exports) + '\n'
     return body
 
-
 def make_time_py() -> str:
     return f'''"""Logical time support for the starter HLA 1516.1-2010 Python binding.
 
-Attribution: "{ATTR}".
 """
 from __future__ import annotations
 from dataclasses import dataclass
@@ -430,11 +410,9 @@ __all__ = [
 ]
 '''
 
-
 def make_types_py() -> str:
     return f'''"""Small value objects and collection aliases for the HLA Python API scaffold.
 
-Attribution: "{ATTR}".
 """
 from __future__ import annotations
 from dataclasses import dataclass
@@ -486,7 +464,6 @@ FederationExecutionInformationSet = set[FederationExecutionInformation]
 __all__ = [name for name in globals() if not name.startswith('_')]
 '''
 
-
 def make_encoding_py() -> str:
     return f'''"""Minimal HLA encoding elements for early tests and FOM adapters.
 
@@ -494,7 +471,6 @@ This module intentionally implements a small, practical subset first. It uses
 big/little-endian names that match the public API names and can be extended to
 full encoder-factory coverage.
 
-Attribution: "{ATTR}".
 """
 from __future__ import annotations
 from dataclasses import dataclass, field
@@ -627,7 +603,6 @@ class HLAvariableArray(DataElement):
 __all__ = [name for name in globals() if name.startswith('HLA') or name in {'DataElement','EncoderException','DecoderException'}]
 '''
 
-
 def make_raw_api_py(java_methods: list[Method], cpp_methods: list[Method]) -> str:
     methods = java_methods + cpp_methods
     meta = method_metadata(methods)
@@ -648,7 +623,6 @@ Method names intentionally preserve the Java/C++ lowerCamelCase spelling.  The
 methods accept ``*args``/``**kwargs`` because Java and C++ overloads do not map
 1:1 onto a single Python signature.  See ``API_METADATA`` for overload records.
 
-Attribution: "{ATTR}".
 """
 from __future__ import annotations
 from abc import ABC, abstractmethod
@@ -684,7 +658,6 @@ class RTIambassador(ABC):
     )
     return body
 
-
 def make_api_py(java_methods: list[Method], cpp_methods: list[Method]) -> str:
     methods = java_methods + cpp_methods
     meta = method_metadata(methods)
@@ -694,7 +667,6 @@ def make_api_py(java_methods: list[Method], cpp_methods: list[Method]) -> str:
 
 This layer adds snake_case aliases while retaining the source lowerCamelCase API.
 
-Attribution: "{ATTR}".
 """
 from __future__ import annotations
 from typing import Any
@@ -749,23 +721,21 @@ class PythonicRTIAmbassadorMixin:
     )
     return body
 
-
 def make_init_py(enums, handles, exceptions) -> str:
     return f'''"""Unofficial Python scaffold for IEEE 1516.1-2010 HLA APIs.
 
 This package is an API surface and utility scaffold, not a complete RTI.
-Attribution: "{ATTR}".
 """
 from .enums import *
 from .exceptions import *
 from .handles import *
 from .time import *
 from .types import *
-from .api import RTIambassador, RTIAmbassador, FederateAmbassador, NullFederateAmbassador
+from .spec_api import RTIambassadorSpec, FederateAmbassadorSpec
+from .runtime_api import RTIambassador, RTIAmbassador, FederateAmbassador, NullFederateAmbassador
 
 __version__ = '0.3.0'
 '''
-
 
 def make_analysis(api_inventory: dict, java_methods, cpp_methods, enums, exceptions, handles) -> tuple[str,str,str]:
     j_rti = [m for m in java_methods if m.interface=='RTIambassador']
@@ -778,7 +748,6 @@ def make_analysis(api_inventory: dict, java_methods, cpp_methods, enums, excepti
 
 Source material: official public API ZIPs from `1516.1-2010_downloads.zip` and schema/examples from `1516.2-2010_downloads.zip`.
 
-Attribution: "{ATTR}".
 
 ## Inventory
 
@@ -835,7 +804,6 @@ Attribution: "{ATTR}".
         manifest += f'- {key}: {val}\n'
     return comparison, manifest, json.dumps(api_inventory, indent=2, sort_keys=True)
 
-
 def build():
     ensure_specs_unpacked()
     if OUT.exists():
@@ -882,9 +850,6 @@ def build():
 IEEE 1516.1-2010 Java/C++ API materials and IEEE 1516.2-2010 schema/example
 materials provided in the downloaded ZIP bundles.
 
-Required attribution for API-derived material:
-"{ATTR}"
-
 This package is not an IEEE publication and is not a complete RTI implementation.
 ''',
     )
@@ -915,10 +880,6 @@ include = ["hla2010*"]
     write(OUT/'README.md', f'''# hla2010-python-scaffold
 
 Unofficial Python API scaffold for HLA Evolved / IEEE 1516.1-2010-style interfaces.
-
-Attribution required by the API-derived material:
-
-> {ATTR}
 
 ## What this contains
 

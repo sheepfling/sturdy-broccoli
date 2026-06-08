@@ -17,7 +17,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Iterable, Sequence
 
-from .api import FederateAmbassador
+from .runtime_api import FederateAmbassador
 from .enums import CallbackModel
 from .exceptions import FederationExecutionAlreadyExists, RTIexception
 from .handles import FederateHandle

@@ -9,7 +9,10 @@ This tree uses one simple parallel pattern:
 Start here:
 
 - [documentation_hierarchy.md](documentation_hierarchy.md): canonical doc flow and hierarchy
+- [workspace_layout.md](workspace_layout.md): top-level workspace areas and ownership split
 - [../README.md](../README.md): install, bootstrap, smoke, and operator commands
+- [python_api_spec.md](python_api_spec.md): clean Pythonic abstract/prototype HLA contract
+- [callback_model_guide.md](callback_model_guide.md): evoked vs immediate callback behavior, tests, and implementation entry points
 - [verification/run_sequence.md](verification/run_sequence.md): full verification sequence and run order
 - [two_federate_quickstart.md](two_federate_quickstart.md): first stop for the composite two-federate example
 

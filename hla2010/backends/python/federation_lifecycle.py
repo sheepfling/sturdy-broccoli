@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Any, Iterable
 
 from ... import mom_catalog as mom_table
-from ...api import FederateAmbassador
+from ...runtime_api import FederateAmbassador
 from ...enums import CallbackModel, ResignAction
 from ...exceptions import (
     AlreadyConnected,

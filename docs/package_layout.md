@@ -8,7 +8,11 @@ There is no active `src/` package root in this repo.
 
 ## Core API
 
-- `hla2010/api.py`: public RTI and Federate Ambassador protocols.
+- `hla2010/spec_api.py`: clean Pythonic abstract/prototype HLA contract sourced from the spec metadata.
+- `hla2010/spec_inventory.py`: plain-text method-name inventory used by the clean spec layer.
+- `hla2010/spec_sources.py`: readable Java/C++ source references used in the clean spec docstrings.
+- `hla2010/runtime_api.py`: explicit runtime-facing Pythonic convenience layer over the spec contract.
+- `hla2010/api.py`: compatibility shim that re-exports the runtime layer.
 - `hla2010/handles.py`, `hla2010/types.py`, `hla2010/enums.py`, `hla2010/time.py`: shared HLA value types.
 - `hla2010/raw_api.py`: source-derived API scaffold.
 
@@ -65,6 +69,10 @@ Java transport stubs generated from the RTI REST or gRPC transport contracts are
 - `examples/`: runnable scripts and example-only assets. Nothing under `examples/` is part of the installable `hla2010` package.
 - `examples/<scenario>/`: scenario-local scratch or notes only. Canonical reusable assets such as FOM XML live under `hla2010/resources/`.
 - `hla2010/verification.py` and `hla2010/conformance.py`: evidence and requirements-ledger support.
+
+`hla2010/testing/` is repo-internal support code, not public runtime API. The
+wheel excludes it so the installable package stays focused on the runtime
+surface rather than on packet generation and test helpers.
 
 Legacy flat backend shim modules have been removed. New code should import from
 the canonical package implementations instead.

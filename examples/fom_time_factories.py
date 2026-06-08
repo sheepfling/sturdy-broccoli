@@ -6,7 +6,7 @@ Run from the project root:
 """
 from __future__ import annotations
 
-from hla2010.api import FederateAmbassador
+from hla2010.runtime_api import FederateAmbassador
 from hla2010.enums import CallbackModel, ResignAction
 from hla2010.rti import create_rti_ambassador
 from hla2010.scenarios import target_radar_fom_path

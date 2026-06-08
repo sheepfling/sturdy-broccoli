@@ -5,13 +5,11 @@ handle-value maps.  This module mirrors that shape while staying Pythonic:
 handles are frozen dataclasses, sets behave like ``set``, and value maps behave
 like ``dict``.
 
-Attribution: "Reprinted with permission from IEEE 1516.1(TM)-2010".
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Generic, Iterable, Mapping, TypeVar
-
 
 @dataclass(frozen=True, order=True)
 class Handle:
@@ -44,9 +42,7 @@ class Handle:
             raise ValueError(f"Need 8 bytes to decode {cls.__name__}; got {len(raw)}")
         return cls(int.from_bytes(raw, byteorder="big", signed=False))
 
-
 T = TypeVar("T", bound=Handle)
-
 
 class HandleFactory(Generic[T]):
     """Factory for decoding a specific handle type."""
@@ -60,56 +56,45 @@ class HandleFactory(Generic[T]):
     def make(self, value: int) -> T:
         return self.handle_type(value)
 
-
 @dataclass(frozen=True, order=True)
 class AttributeHandle(Handle):
     pass
-
 
 @dataclass(frozen=True, order=True)
 class DimensionHandle(Handle):
     pass
 
-
 @dataclass(frozen=True, order=True)
 class FederateHandle(Handle):
     pass
-
 
 @dataclass(frozen=True, order=True)
 class InteractionClassHandle(Handle):
     pass
 
-
 @dataclass(frozen=True, order=True)
 class MessageRetractionHandle(Handle):
     pass
-
 
 @dataclass(frozen=True, order=True)
 class ObjectClassHandle(Handle):
     pass
 
-
 @dataclass(frozen=True, order=True)
 class ObjectInstanceHandle(Handle):
     pass
-
 
 @dataclass(frozen=True, order=True)
 class ParameterHandle(Handle):
     pass
 
-
 @dataclass(frozen=True, order=True)
 class RegionHandle(Handle):
     pass
 
-
 @dataclass(frozen=True, order=True)
 class TransportationTypeHandle(Handle):
     pass
-
 
 class TypedHandleSet(set):
     """A ``set`` that enforces the handle type used by an HLA set interface."""
@@ -136,26 +121,20 @@ class TypedHandleSet(set):
     def clone(self):
         return type(self)(self)
 
-
 class AttributeHandleSet(TypedHandleSet):
     handle_type = AttributeHandle
-
 
 class DimensionHandleSet(TypedHandleSet):
     handle_type = DimensionHandle
 
-
 class FederateHandleSet(TypedHandleSet):
     handle_type = FederateHandle
-
 
 class InteractionClassHandleSet(TypedHandleSet):
     handle_type = InteractionClassHandle
 
-
 class RegionHandleSet(TypedHandleSet):
     handle_type = RegionHandle
-
 
 class HandleValueMap(dict):
     """A dict-like handle-to-bytes map with Java-style helper names."""
@@ -203,21 +182,17 @@ class HandleValueMap(dict):
     def getValueReference(self, key: Handle, byteWrapper: Any | None = None) -> bytes | None:  # noqa: N802 - Java API name
         return self.get_value_reference(key, byteWrapper)
 
-
 class AttributeHandleValueMap(HandleValueMap):
     key_type = AttributeHandle
 
-
 class ParameterHandleValueMap(HandleValueMap):
     key_type = ParameterHandle
-
 
 class AttributeSetRegionSetPairList(list):
     """List used by DDM services for attribute/region associations."""
 
     def clone(self):
         return type(self)(self)
-
 
 class CollectionFactory(Generic[T]):
     """Small Java-style factory with a ``create`` method."""
@@ -230,91 +205,73 @@ class CollectionFactory(Generic[T]):
     def create(self, capacity: int | None = None):
         return self.collection_type()
 
-
 class AttributeHandleFactory(HandleFactory[AttributeHandle]):
     def __init__(self):
         super().__init__(AttributeHandle)
-
 
 class DimensionHandleFactory(HandleFactory[DimensionHandle]):
     def __init__(self):
         super().__init__(DimensionHandle)
 
-
 class FederateHandleFactory(HandleFactory[FederateHandle]):
     def __init__(self):
         super().__init__(FederateHandle)
-
 
 class InteractionClassHandleFactory(HandleFactory[InteractionClassHandle]):
     def __init__(self):
         super().__init__(InteractionClassHandle)
 
-
 class MessageRetractionHandleFactory(HandleFactory[MessageRetractionHandle]):
     def __init__(self):
         super().__init__(MessageRetractionHandle)
-
 
 class ObjectClassHandleFactory(HandleFactory[ObjectClassHandle]):
     def __init__(self):
         super().__init__(ObjectClassHandle)
 
-
 class ObjectInstanceHandleFactory(HandleFactory[ObjectInstanceHandle]):
     def __init__(self):
         super().__init__(ObjectInstanceHandle)
-
 
 class ParameterHandleFactory(HandleFactory[ParameterHandle]):
     def __init__(self):
         super().__init__(ParameterHandle)
 
-
 class RegionHandleFactory(HandleFactory[RegionHandle]):
     def __init__(self):
         super().__init__(RegionHandle)
-
 
 class TransportationTypeHandleFactory(HandleFactory[TransportationTypeHandle]):
     def __init__(self):
         super().__init__(TransportationTypeHandle)
 
-
 class AttributeHandleSetFactory(CollectionFactory[AttributeHandleSet]):
     def __init__(self):
         super().__init__(AttributeHandleSet)
-
 
 class DimensionHandleSetFactory(CollectionFactory[DimensionHandleSet]):
     def __init__(self):
         super().__init__(DimensionHandleSet)
 
-
 class FederateHandleSetFactory(CollectionFactory[FederateHandleSet]):
     def __init__(self):
         super().__init__(FederateHandleSet)
-
 
 class RegionHandleSetFactory(CollectionFactory[RegionHandleSet]):
     def __init__(self):
         super().__init__(RegionHandleSet)
 
-
 class AttributeHandleValueMapFactory(CollectionFactory[AttributeHandleValueMap]):
     def __init__(self):
         super().__init__(AttributeHandleValueMap)
-
 
 class ParameterHandleValueMapFactory(CollectionFactory[ParameterHandleValueMap]):
     def __init__(self):
         super().__init__(ParameterHandleValueMap)
 
-
 class AttributeSetRegionSetPairListFactory(CollectionFactory[AttributeSetRegionSetPairList]):
     def __init__(self):
         super().__init__(AttributeSetRegionSetPairList)
-
 
 __all__ = [
     "Handle",

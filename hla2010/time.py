@@ -4,7 +4,6 @@ The 1516.1 Java API exposes a ``LogicalTimeFactory`` via the RTI ambassador.
 This module mirrors that pattern for the pure Python RTI and gives the Java
 adapters a single Python value model to convert from.
 
-Attribution: "Reprinted with permission from IEEE 1516.1(TM)-2010".
 """
 from __future__ import annotations
 
@@ -12,7 +11,6 @@ import math
 import struct
 from dataclasses import dataclass
 from typing import Any, Generic, Protocol, TypeVar
-
 
 class LogicalTimeInterval(Protocol):
     def is_zero(self) -> bool: ...
@@ -22,9 +20,7 @@ class LogicalTimeInterval(Protocol):
     def encoded_length(self) -> int: ...
     def encode(self, buffer: bytearray | None = None, offset: int = 0): ...
 
-
 TInterval = TypeVar("TInterval", bound=LogicalTimeInterval)
-
 
 class LogicalTime(Protocol[TInterval]):
     def is_initial(self) -> bool: ...
@@ -34,7 +30,6 @@ class LogicalTime(Protocol[TInterval]):
     def distance(self, val: Any): ...
     def encoded_length(self) -> int: ...
     def encode(self, buffer: bytearray | None = None, offset: int = 0): ...
-
 
 @dataclass(frozen=True, order=True)
 class HLAinteger64Interval:
@@ -65,7 +60,6 @@ class HLAinteger64Interval:
     @classmethod
     def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> "HLAinteger64Interval":
         return cls(struct.unpack(">q", bytes(data[offset : offset + 8]))[0])
-
 
 @dataclass(frozen=True, order=True)
 class HLAinteger64Time:
@@ -103,7 +97,6 @@ class HLAinteger64Time:
     def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> "HLAinteger64Time":
         return cls(struct.unpack(">q", bytes(data[offset : offset + 8]))[0])
 
-
 @dataclass(frozen=True, order=True)
 class HLAfloat64Interval:
     value: float = 0.0
@@ -133,7 +126,6 @@ class HLAfloat64Interval:
     @classmethod
     def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> "HLAfloat64Interval":
         return cls(struct.unpack(">d", bytes(data[offset : offset + 8]))[0])
-
 
 @dataclass(frozen=True, order=True)
 class HLAfloat64Time:
@@ -168,10 +160,8 @@ class HLAfloat64Time:
     def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> "HLAfloat64Time":
         return cls(struct.unpack(">d", bytes(data[offset : offset + 8]))[0])
 
-
 TTime = TypeVar("TTime")
 TIntervalConcrete = TypeVar("TIntervalConcrete")
-
 
 class LogicalTimeFactory(Generic[TTime, TIntervalConcrete]):
     """Base class for Python logical-time factories."""
@@ -248,7 +238,6 @@ class LogicalTimeFactory(Generic[TTime, TIntervalConcrete]):
             value = value.value
         return self.make_interval(value)
 
-
 class HLAinteger64TimeFactory(LogicalTimeFactory[HLAinteger64Time, HLAinteger64Interval]):
     NAME = "HLAinteger64Time"
     name = NAME
@@ -273,7 +262,6 @@ class HLAinteger64TimeFactory(LogicalTimeFactory[HLAinteger64Time, HLAinteger64I
     def make_interval(self, value: Any) -> HLAinteger64Interval:
         return HLAinteger64Interval(int(value))
 
-
 class HLAfloat64TimeFactory(LogicalTimeFactory[HLAfloat64Time, HLAfloat64Interval]):
     NAME = "HLAfloat64Time"
     name = NAME
@@ -297,7 +285,6 @@ class HLAfloat64TimeFactory(LogicalTimeFactory[HLAfloat64Time, HLAfloat64Interva
 
     def make_interval(self, value: Any) -> HLAfloat64Interval:
         return HLAfloat64Interval(float(value))
-
 
 class TimeFactoryRegistry:
     """Lookup table for logical-time implementations."""
@@ -325,15 +312,12 @@ class TimeFactoryRegistry:
     def __contains__(self, name: object) -> bool:
         return str(name) in self._factories
 
-
 DEFAULT_TIME_FACTORY_REGISTRY = TimeFactoryRegistry(
     (HLAinteger64TimeFactory(), HLAfloat64TimeFactory())
 )
 
-
 def get_logical_time_factory(name: str | None = None) -> LogicalTimeFactory[Any, Any]:
     return DEFAULT_TIME_FACTORY_REGISTRY.get(name)
-
 
 __all__ = [
     "LogicalTime",

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- The IEEE hereby grants a general, royalty-free license to copy, distribute, display and make derivative works from this material, for all purposes, provided that any use of the material contains the following attribution: “Reprinted with permission from IEEE 1516.2(TM)-2010”. Should you require additional information, contact the Manager, Standards Intellectual Property, IEEE Standards Association (stdsipr@ieee.org).-->
+<!-- IEEE source material license notice omitted. -->
 <!-- IEEE 1516 DIF XML Schema defines the Data Interchange Format for exchanging possibly incomplete OMT files between tools. -->
 <!-- Updated 2010-08-16 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://standards.ieee.org/IEEE1516-2010" xmlns:ns="http://standards.ieee.org/IEEE1516-2010" targetNamespace="http://standards.ieee.org/IEEE1516-2010" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2010">

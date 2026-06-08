@@ -16,7 +16,7 @@ import struct
 from dataclasses import dataclass, field
 from typing import Any, Callable, Iterable, Mapping, Protocol
 
-from ..api import FederateAmbassador
+from ..runtime_api import FederateAmbassador
 from ..backends.python import InMemoryRTIEngine
 from ..enums import CallbackModel, ResignAction
 from ..exceptions import FederatesCurrentlyJoined, FederationExecutionAlreadyExists, FederationExecutionDoesNotExist, RTIexception

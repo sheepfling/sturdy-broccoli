@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from types import TracebackType
 from typing import Any, Callable, Mapping, MutableMapping
 
-from ..api import FederateAmbassador, RTIambassador
+from ..runtime_api import FederateAmbassador, RTIambassador
 from ..exceptions import CallNotAllowedFromWithinCallback, RTIexception, RTIinternalError
 from ..raw_api import API_METADATA
 from ..spec_refs import method_reference
@@ -207,6 +207,9 @@ def _make_forwarder(method_name: str) -> Callable[..., Any]:
 
 for _method_name in RTI_METHOD_NAMES:
     setattr(DelegatingRTIAmbassador, _method_name, _make_forwarder(_method_name))
+    _snake_name = lower_camel_to_snake(_method_name)
+    if not hasattr(DelegatingRTIAmbassador, _snake_name):
+        setattr(DelegatingRTIAmbassador, _snake_name, getattr(RTIambassador, _snake_name))
 update_abstractmethods(DelegatingRTIAmbassador)
 
 

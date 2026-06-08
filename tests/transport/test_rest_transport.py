@@ -8,7 +8,7 @@ from threading import Thread
 import pytest
 
 from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.api import FederateAmbassador
+from hla2010.runtime_api import FederateAmbassador
 from hla2010.backends.base import make_rti_ambassador
 from hla2010.backends.python import InMemoryRTIEngine
 from hla2010.backends.rest_transport import RestTransport, RestTransportConfig

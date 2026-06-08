@@ -1,11 +1,9 @@
 """Enumerations derived from the public IEEE 1516.1-2010 Java/C++ API files.
 
-Attribution: "Reprinted with permission from IEEE 1516.1(TM)-2010".
 """
 from __future__ import annotations
 
 from enum import Enum, auto
-
 
 class CallbackModel(Enum):
     HLA_IMMEDIATE = auto()

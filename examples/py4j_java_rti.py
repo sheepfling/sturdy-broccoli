@@ -4,7 +4,7 @@ Use this when a vendor RTI is already running in a separate JVM, or when you wan
 process isolation between Python and Java.  The Java side must start a Py4J
 GatewayServer with the RTI jars on its classpath.
 """
-from hla2010.api import FederateAmbassador
+from hla2010.runtime_api import FederateAmbassador
 from hla2010.backends.py4j import Py4JConfig, rti_ambassador
 from hla2010.enums import CallbackModel
 

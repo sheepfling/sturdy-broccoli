@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Callable, Iterable
 
-from .api import FederateAmbassador
+from .runtime_api import FederateAmbassador
 from .backends.base import CALLBACK_METHOD_NAMES, lower_camel_to_snake
 from .spec_refs import SpecReference, method_reference
 

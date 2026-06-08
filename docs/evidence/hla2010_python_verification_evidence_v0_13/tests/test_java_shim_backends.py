@@ -35,7 +35,7 @@ def test_java_like_exceptions_translate_to_python_rti_exceptions():
     # Destroying a federation before connect should first show NotConnected.  We
     # then connect and ask for a missing federation to prove Java simple class
     # names map into the Python exception hierarchy.
-    from hla2010.api import FederateAmbassador
+    from hla2010.runtime_api import FederateAmbassador
     from hla2010.enums import CallbackModel
 
     rti.connect(FederateAmbassador(), CallbackModel.HLA_EVOKED)

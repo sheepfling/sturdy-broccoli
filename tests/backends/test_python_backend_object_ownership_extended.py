@@ -4,7 +4,7 @@ import pytest
 
 from hla2010 import mom as hla_mom
 from tests.backends.python_backend_extended_support import *
-from hla2010.api import RTIambassador, FederateAmbassador
+from hla2010.runtime_api import RTIambassador, FederateAmbassador
 from hla2010.exceptions import *
 from hla2010.handles import *
 from hla2010.raw_api import API_METADATA

@@ -107,7 +107,7 @@ These are the backend names currently recognized by
 [rti.py](hla2010/rti.py).
 
 This section is generated from `create_backend(...)` by
-[update_rti_options_matrix.py](tools/update_rti_options_matrix.py).
+[update_rti_options_matrix.py](scripts/update_rti_options_matrix.py).
 
 <!-- GENERATED_BACKEND_ALIASES_START -->
 
@@ -300,5 +300,5 @@ If backend aliases change in
 rerun:
 
 ```bash
-python3 tools/update_rti_options_matrix.py
+    python3 scripts/update_rti_options_matrix.py
 ```

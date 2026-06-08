@@ -4,7 +4,6 @@ Method names intentionally preserve the Java/C++ lowerCamelCase spelling.  The
 methods accept ``*args``/``**kwargs`` because Java and C++ overloads do not map
 1:1 onto a single Python signature.  See ``API_METADATA`` for overload records.
 
-Attribution: "Reprinted with permission from IEEE 1516.1(TM)-2010".
 """
 from __future__ import annotations
 from abc import ABC, abstractmethod
