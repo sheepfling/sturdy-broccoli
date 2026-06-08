@@ -18,6 +18,7 @@ Use it to track the three standards as three requirement sources:
 - `hla1516_1_clause_9_ddm_detailed_reconciliation.csv`: packet-derived detailed Clause 9 data-distribution-management reconciliation keyed to current repo tests and statuses
 - `hla1516_1_clause_10_sup_detailed_reconciliation.csv`: packet-derived detailed Clause 10 support-services reconciliation keyed to current repo tests and statuses
 - `hla1516_1_clause_11_mom_detailed_reconciliation.csv`: packet-derived detailed Clause 11 MOM/MIM reconciliation keyed to current repo tests and statuses
+- `hla1516_2_omt_xml_detailed_reconciliation.csv`: packet-derived detailed IEEE 1516.2 OMT/XML reconciliation keyed to current repo parser, merge, MIM, and schema-validation tests
 - `hla_1516_packet_hookup_status_v1_0.csv`: repo-native status ledger for the imported work-packet hookup tasks, marking which packet integration tasks are mapped, partial, or still planned in this codebase
 - `hla1516_1_priority_clauses_7_9_10.csv`: second clause-level extraction tranche for ownership DDM and support services
 - `hla1516_2_omt.csv`: IEEE 1516.2-2010 OMT/FOM/MIM families
@@ -74,6 +75,7 @@ The first concrete clause-level extraction tranches are:
 - `hla1516_clause_12_save_restore.csv`
 - `hla1516_1_priority_clauses_7_9_10.csv`
 - `hla1516_2_priority_omt.csv`
+- `hla1516_2_omt_xml_detailed_reconciliation.csv`
 
 `hla1516_1_clause_4_fm_service_decomposition.csv` is the bridge from coarse service rows to implementation-driving requirements:
 
@@ -100,6 +102,8 @@ This decomposition file is still an engineering seed. It is deliberately narrowe
 `hla1516_1_clause_10_sup_detailed_reconciliation.csv` applies that same packet-to-curated bridge pattern to Clause 10 Support Services, starting from the imported packet's service `SVC/SIG/ARG/PRE/EFF/EXC/MOM/TEST` slices and mapping them onto the repo's current lookup, metadata, normalization, advisory-switch, and callback-control tests while explicitly marking the still-unreconciled MOM observer slice.
 
 `hla1516_1_clause_11_mom_detailed_reconciliation.csv` applies the packet-to-curated bridge pattern to Clause 11 Management Object Model requirements, using the packet's `OVW/OBJ/INT/RTI/SRV/TABLE` row kinds rather than service slices and mapping them onto the repo's current MOM catalog, observer, reporting, action, and runtime evidence while keeping the remaining design-rule-only nonrevision row distinct.
+
+`hla1516_2_omt_xml_detailed_reconciliation.csv` applies that same bridge pattern to the imported IEEE 1516.2 OMT/XML detailed packet. It maps the clause-level `omt_clause_detail` rows directly onto the current curated 1516.2 parser, merge, MIM, and schema-conformance requirements where the repo already has clause-specific evidence, while keeping the imported per-element and per-type `xsd_element_detail` and `xsd_type_detail` rows `partial` to reflect that the repo currently validates Annex D/E behavior at the schema-family and round-trip level rather than as one repo-native requirement per XSD atom.
 
 `hla_1516_packet_hookup_status_v1_0.csv` is the companion bridge for the imported work packet itself. It does not restate clause requirements; it records which codebase-hookup tasks from the packet are already satisfied by the current repo shape, which are only partially satisfied by the current curated workflow, and which remain explicitly open.
 
