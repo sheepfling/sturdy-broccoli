@@ -1082,6 +1082,39 @@ def test_clause_10_services_are_observable_through_mom_service_invocation_report
     owner.destroy_federation_execution("sup-mom-service-report-fed")
 
 
+def test_clause_8_enable_and_grant_callbacks_arrive_in_expected_order():
+    _, owner, observer, owner_fed, observer_fed, _h1, _h2 = joined_pair("tm-callback-order-fed")
+    factory = owner.get_time_factory()
+
+    owner.enable_time_regulation(factory.make_interval(1.0))
+    observer.enable_time_constrained()
+    drain(owner, observer)
+
+    assert owner_fed.records
+    assert observer_fed.records
+    assert owner_fed.records[0].method_name == "timeRegulationEnabled"
+    assert observer_fed.records[0].method_name == "timeConstrainedEnabled"
+    assert owner_fed.callbacks_named("timeAdvanceGrant") == []
+    assert observer_fed.callbacks_named("timeAdvanceGrant") == []
+
+    owner_fed.clear()
+    observer_fed.clear()
+    owner.time_advance_request(factory.make_time(4.0))
+    observer.time_advance_request_available(factory.make_time(4.0))
+    drain(owner, observer)
+
+    assert owner_fed.records
+    assert observer_fed.records
+    assert owner_fed.records[-1].method_name == "timeAdvanceGrant"
+    assert observer_fed.records[-1].method_name == "timeAdvanceGrant"
+    assert owner_fed.records[-1].args[0] == factory.make_time(4.0)
+    assert observer_fed.records[-1].args[0] == factory.make_time(4.0)
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("tm-callback-order-fed")
+
+
 def test_python_rti_query_attribute_ownership_reports_owner_for_owned_attribute():
     _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("query-owned-fed")
     cls = owner.get_object_class_handle("HLAobjectRoot.Target")
