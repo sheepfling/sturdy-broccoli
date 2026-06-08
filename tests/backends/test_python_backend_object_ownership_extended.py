@@ -646,7 +646,12 @@ def test_clause_6_callback_activity_is_visible_in_mom_summary():
     observer.subscribe_interaction_class(interaction)
     owner.publish_object_class_attributes(cls, {attr})
     owner.publish_interaction_class(interaction)
+    owner.enable_attribute_relevance_advisory_switch()
     obj = owner.register_object_instance(cls, "OM-MOM-Callback-Object")
+    drain(owner, observer)
+    observer.unsubscribe_object_class_attributes(cls, {attr})
+    drain(owner, observer)
+    observer.subscribe_object_class_attributes(cls, {attr}, "HLAdefault")
     drain(owner, observer)
 
     owner.update_attribute_values(obj, {attr: b"mom-callback-position"}, b"mom-callback-update")
@@ -664,6 +669,8 @@ def test_clause_6_callback_activity_is_visible_in_mom_summary():
 
     assert owner_summary["callback_counts"]["objectInstanceNameReservationSucceeded"] >= 1
     assert owner_summary["callback_counts"]["multipleObjectInstanceNameReservationSucceeded"] >= 1
+    assert owner_summary["callback_counts"]["turnUpdatesOnForObjectInstance"] >= 2
+    assert owner_summary["callback_counts"]["turnUpdatesOffForObjectInstance"] >= 1
     assert owner_summary["callback_counts"]["provideAttributeValueUpdate"] >= 1
     assert owner_summary["callback_counts"]["confirmAttributeTransportationTypeChange"] >= 1
     assert owner_summary["callback_counts"]["reportAttributeTransportationType"] >= 1
@@ -675,6 +682,8 @@ def test_clause_6_callback_activity_is_visible_in_mom_summary():
     assert observer_summary["callback_counts"]["receiveInteraction"] >= 1
     assert observer_summary["callback_counts"]["removeObjectInstance"] >= 1
 
+    assert "turnUpdatesOnForObjectInstance" in owner_summary["recent_callbacks"]
+    assert "turnUpdatesOffForObjectInstance" in owner_summary["recent_callbacks"]
     assert "provideAttributeValueUpdate" in owner_summary["recent_callbacks"]
     assert "discoverObjectInstance" in observer_summary["recent_callbacks"]
 
@@ -898,6 +907,125 @@ def test_turn_interactions_on_and_off_callbacks_are_delivered():
     owner.resign_federation_execution(ResignAction.NO_ACTION)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("decl-interaction-callback-fed")
+
+
+def test_turn_updates_on_and_off_callbacks_follow_object_instance_relevance():
+    _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("om-turn-updates-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+
+    owner.publish_object_class_attributes(cls, {attr})
+    owner.enable_attribute_relevance_advisory_switch()
+    obj = owner.register_object_instance(cls, "Turn-Updates-Object")
+    drain(owner, observer)
+    owner_fed.clear()
+
+    observer.subscribe_object_class_attributes(cls, {attr})
+    drain(owner, observer)
+    on = owner_fed.last_callback("turnUpdatesOnForObjectInstance")
+    assert on is not None
+    assert on.args == (obj, {attr})
+
+    owner_fed.clear()
+    observer.unsubscribe_object_class_attributes(cls, {attr})
+    drain(owner, observer)
+    off = owner_fed.last_callback("turnUpdatesOffForObjectInstance")
+    assert off is not None
+    assert off.args == (obj, {attr})
+
+    owner_fed.clear()
+    observer.subscribe_object_class_attributes(cls, {attr}, "HLAdefault")
+    drain(owner, observer)
+    on_with_designator = owner_fed.last_callback("turnUpdatesOnForObjectInstance")
+    assert on_with_designator is not None
+    assert on_with_designator.args == (obj, {attr}, "HLAdefault")
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("om-turn-updates-fed")
+
+
+def test_turn_updates_object_instance_callbacks_validate_state_arguments_and_wrap_callback_failures():
+    rti = rti_ambassador(engine=InMemoryRTIEngine())
+    with pytest.raises(NotConnected):
+        rti.backend._svc_turnUpdatesOnForObjectInstance(ObjectInstanceHandle(999), {AttributeHandle(1)})
+    with pytest.raises(NotConnected):
+        rti.backend._svc_turnUpdatesOffForObjectInstance(ObjectInstanceHandle(999), {AttributeHandle(1)})
+
+    rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    with pytest.raises(FederateNotExecutionMember):
+        rti.backend._svc_turnUpdatesOnForObjectInstance(ObjectInstanceHandle(999), {AttributeHandle(1)})
+    with pytest.raises(FederateNotExecutionMember):
+        rti.backend._svc_turnUpdatesOffForObjectInstance(ObjectInstanceHandle(999), {AttributeHandle(1)})
+    rti.disconnect()
+
+    _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("om-turn-updates-negative-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    bad_attr = type(attr)(attr.value + 1000)
+
+    owner.publish_object_class_attributes(cls, {attr})
+    obj = owner.register_object_instance(cls, "Turn-Updates-Negative")
+
+    with pytest.raises(ObjectInstanceNotKnown):
+        owner.backend._svc_turnUpdatesOnForObjectInstance(ObjectInstanceHandle(999), {attr})
+    with pytest.raises(ObjectInstanceNotKnown):
+        owner.backend._svc_turnUpdatesOffForObjectInstance(ObjectInstanceHandle(999), {attr})
+    with pytest.raises(AttributeNotDefined):
+        owner.backend._svc_turnUpdatesOnForObjectInstance(obj, {bad_attr})
+    with pytest.raises(AttributeNotDefined):
+        owner.backend._svc_turnUpdatesOffForObjectInstance(obj, {bad_attr})
+    with pytest.raises(InvalidUpdateRateDesignator):
+        owner.backend._svc_turnUpdatesOnForObjectInstance(obj, {attr}, "MissingRate")
+
+    owner.request_federation_save("TURN-UPDATES-SAVE")
+    drain(owner, observer)
+    with pytest.raises(SaveInProgress):
+        owner.backend._svc_turnUpdatesOnForObjectInstance(obj, {attr})
+    with pytest.raises(SaveInProgress):
+        owner.backend._svc_turnUpdatesOffForObjectInstance(obj, {attr})
+
+    owner.federate_save_begun()
+    observer.federate_save_begun()
+    owner.federate_save_complete()
+    observer.federate_save_complete()
+    drain(owner, observer)
+
+    owner.request_federation_restore("TURN-UPDATES-SAVE")
+    drain(owner, observer)
+    with pytest.raises(RestoreInProgress):
+        owner.backend._svc_turnUpdatesOnForObjectInstance(obj, {attr})
+    with pytest.raises(RestoreInProgress):
+        owner.backend._svc_turnUpdatesOffForObjectInstance(obj, {attr})
+    owner.abort_federation_restore()
+    drain(owner, observer)
+
+    class _FailingTurnUpdatesAmbassador(RecordingFederateAmbassador):
+        def on_turn_updates_on_for_object_instance(self, *args, **kwargs):
+            raise RuntimeError("turn-updates-on-failed")
+
+        def on_turn_updates_off_for_object_instance(self, *args, **kwargs):
+            raise RuntimeError("turn-updates-off-failed")
+
+    failing = rti_ambassador(engine=InMemoryRTIEngine())
+    failing.connect(_FailingTurnUpdatesAmbassador(), CallbackModel.HLA_IMMEDIATE)
+    failing.create_federation_execution("om-turn-updates-failing-fed", "TargetRadarFOMmodule.xml")
+    failing.join_federation_execution("alpha", "type-a", "om-turn-updates-failing-fed")
+    fail_cls = failing.get_object_class_handle("HLAobjectRoot.Target")
+    fail_attr = failing.get_attribute_handle(fail_cls, "Position")
+    failing.publish_object_class_attributes(fail_cls, {fail_attr})
+    fail_obj = failing.register_object_instance(fail_cls, "Turn-Updates-Failing")
+
+    with pytest.raises(FederateInternalError):
+        failing.backend._svc_turnUpdatesOnForObjectInstance(fail_obj, {fail_attr})
+    with pytest.raises(FederateInternalError):
+        failing.backend._svc_turnUpdatesOffForObjectInstance(fail_obj, {fail_attr})
+
+    failing.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    failing.destroy_federation_execution("om-turn-updates-failing-fed")
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("om-turn-updates-negative-fed")
 
 
 def test_clause_5_service_and_callback_signature_metadata_matches_source_bindings():

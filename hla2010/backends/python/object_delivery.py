@@ -12,6 +12,7 @@ from ...exceptions import (
     DeletePrivilegeNotHeld,
     InteractionClassNotPublished,
     InvalidTransportationType,
+    InvalidUpdateRateDesignator,
     ObjectInstanceNotKnown,
 )
 from ...fom import validate_encoded_datatype_value
@@ -563,6 +564,48 @@ class PythonRTIObjectDeliveryMixin:
         stale_keys = [key for key in self.state.last_reflect_logical_times if key[0] == theObject]
         for key in stale_keys:
             self.state.last_reflect_logical_times.pop(key, None)
+        self._reconcile_owner_update_interest(instance)
+
+    def _validate_turn_updates_object_attributes(
+        self,
+        theObject: ObjectInstanceHandle,
+        theAttributes: Iterable[AttributeHandle],
+    ) -> tuple[Any, ObjectInstance, set[AttributeHandle]]:
+        federation, instance = self._find_object(theObject)
+        self._ensure_no_save_or_restore_in_progress(federation)
+        attrs = set(theAttributes)
+        for attr in attrs:
+            self.engine.attribute_name(instance.class_handle, attr)
+        return federation, instance, attrs
+
+    def _validate_turn_updates_designator(self, federation: Any, updateRateDesignator: str | None) -> str | None:
+        if updateRateDesignator in (None, ""):
+            return None
+        designator = "HLAdefault" if updateRateDesignator == "default" else str(updateRateDesignator)
+        if designator != "HLAdefault" and designator not in federation.fom_catalog.update_rates:
+            raise InvalidUpdateRateDesignator(designator)
+        return designator
+
+    def _svc_turnUpdatesOnForObjectInstance(
+        self,
+        theObject: ObjectInstanceHandle,
+        theAttributes: Iterable[AttributeHandle],
+        updateRateDesignator: str | None = None,
+    ) -> None:
+        federation, instance, attrs = self._validate_turn_updates_object_attributes(theObject, theAttributes)
+        designator = self._validate_turn_updates_designator(federation, updateRateDesignator)
+        if designator is None:
+            self._deliver(self.state, "turnUpdatesOnForObjectInstance", instance.handle, attrs)
+        else:
+            self._deliver(self.state, "turnUpdatesOnForObjectInstance", instance.handle, attrs, designator)
+
+    def _svc_turnUpdatesOffForObjectInstance(
+        self,
+        theObject: ObjectInstanceHandle,
+        theAttributes: Iterable[AttributeHandle],
+    ) -> None:
+        _federation, instance, attrs = self._validate_turn_updates_object_attributes(theObject, theAttributes)
+        self._deliver(self.state, "turnUpdatesOffForObjectInstance", instance.handle, attrs)
 
     def _svc_requestAttributeTransportationTypeChange(
         self,

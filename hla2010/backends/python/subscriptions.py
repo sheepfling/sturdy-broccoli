@@ -86,9 +86,127 @@ class PythonRTISubscriptionMixin:
     def _clear_object_scope_tracking(self, subscriber: FederateState, object_handle: Any) -> None:
         subscriber.in_scope_object_attributes.pop(object_handle, None)
 
+    def _published_attributes_for(self, publisher: FederateState, object_class: ObjectClassHandle) -> set[AttributeHandle]:
+        result: set[AttributeHandle] = set()
+        object_def = self.engine.object_class_for_handle(object_class)
+        for published_class, attrs in publisher.published_objects.items():
+            if not self._object_matches_subscription(object_class, published_class):
+                continue
+            for attr in attrs:
+                attr_name = self.engine.attribute_name(published_class, attr)
+                mapped = object_def.attributes_by_name.get(attr_name)
+                if mapped is not None:
+                    result.add(mapped)
+        return result
+
+    def _preferred_update_rate_designator_for_subscriber(
+        self,
+        subscriber: FederateState,
+        instance: ObjectInstance,
+        attribute: AttributeHandle,
+    ) -> str | None:
+        attribute_name = self.engine.attribute_name(instance.class_handle, attribute)
+        matches: list[tuple[int, str | None]] = []
+        for subscribed_class, attrs in subscriber.subscribed_objects.items():
+            if not self._object_matches_subscription(instance.class_handle, subscribed_class):
+                continue
+            subscribed_attr = self.engine.object_class_for_handle(subscribed_class).attributes_by_name.get(attribute_name)
+            if subscribed_attr is None or subscribed_attr not in attrs:
+                continue
+            designator = subscriber.subscribed_object_update_rate_designators.get(subscribed_class, {}).get(subscribed_attr)
+            specificity = len(self.engine.object_class_for_handle(subscribed_class).name)
+            matches.append((specificity, designator))
+        if not matches:
+            return None
+        return max(matches, key=lambda item: (item[0], item[1] is not None))[1]
+
+    def _current_relevant_update_designators(
+        self,
+        publisher: FederateState,
+        instance: ObjectInstance,
+    ) -> dict[AttributeHandle, str | None]:
+        federation = publisher.federation
+        if federation is None or publisher.handle is None or instance.owner != publisher.handle:
+            return {}
+        published = self._published_attributes_for(publisher, instance.class_handle)
+        if not published:
+            return {}
+        result: dict[AttributeHandle, str | None] = {}
+        for subscriber in federation.federates.values():
+            if subscriber is publisher:
+                continue
+            for attr in subscriber.in_scope_object_attributes.get(instance.handle, set()):
+                if attr not in published:
+                    continue
+                designator = self._preferred_update_rate_designator_for_subscriber(subscriber, instance, attr)
+                if attr not in result or (result[attr] is None and designator is not None):
+                    result[attr] = designator
+        return result
+
+    def _deliver_turn_updates_on_callbacks(
+        self,
+        publisher: FederateState,
+        object_handle: Any,
+        attributes_by_designator: dict[AttributeHandle, str | None],
+    ) -> None:
+        grouped: dict[str | None, set[AttributeHandle]] = {}
+        for attr, designator in attributes_by_designator.items():
+            grouped.setdefault(designator, set()).add(attr)
+        for designator, attrs in grouped.items():
+            if designator is None:
+                self._deliver(publisher, "turnUpdatesOnForObjectInstance", object_handle, set(attrs))
+            else:
+                self._deliver(publisher, "turnUpdatesOnForObjectInstance", object_handle, set(attrs), designator)
+
+    def _reconcile_owner_update_interest(self, instance: ObjectInstance) -> None:
+        federation = self.state.federation
+        if federation is None or instance.owner is None:
+            return
+        owner = federation.federates.get(instance.owner)
+        if owner is None:
+            return
+        previous = dict(owner.relevant_object_update_designators.get(instance.handle, {}))
+        current = self._current_relevant_update_designators(owner, instance)
+        lost = {
+            attr
+            for attr, prior_designator in previous.items()
+            if attr not in current or current[attr] != prior_designator
+        }
+        gained = {
+            attr: designator
+            for attr, designator in current.items()
+            if attr not in previous or previous[attr] != designator
+        }
+        if current:
+            owner.relevant_object_update_designators[instance.handle] = current
+        else:
+            owner.relevant_object_update_designators.pop(instance.handle, None)
+        if not owner.attribute_relevance_advisory:
+            return
+        if lost:
+            self._deliver(owner, "turnUpdatesOffForObjectInstance", instance.handle, set(lost))
+        if gained:
+            self._deliver_turn_updates_on_callbacks(owner, instance.handle, gained)
+
+    def _reconcile_update_interest_for_owned_objects(
+        self,
+        publisher: FederateState,
+        object_class: ObjectClassHandle | None = None,
+    ) -> None:
+        federation = publisher.federation
+        if federation is None or publisher.handle is None:
+            return
+        for instance in federation.objects.values():
+            if instance.owner != publisher.handle:
+                continue
+            if object_class is not None and not self._object_matches_subscription(instance.class_handle, object_class):
+                continue
+            self._reconcile_owner_update_interest(instance)
+
     def _reconcile_object_attribute_scope(self, subscriber: FederateState, instance: ObjectInstance) -> None:
         if instance.handle not in subscriber.known_object_classes:
             self._clear_object_scope_tracking(subscriber, instance.handle)
+            self._reconcile_owner_update_interest(instance)
             return
         current = self._current_in_scope_attributes(subscriber, instance)
         previous = set(subscriber.in_scope_object_attributes.get(instance.handle, set()))
@@ -98,6 +216,7 @@ class PythonRTISubscriptionMixin:
             subscriber.in_scope_object_attributes[instance.handle] = current
         else:
             self._clear_object_scope_tracking(subscriber, instance.handle)
+        self._reconcile_owner_update_interest(instance)
         if not subscriber.attribute_scope_advisory:
             return
         if gained:

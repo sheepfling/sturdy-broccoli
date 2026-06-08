@@ -22,13 +22,13 @@ class PythonRTIDeclarationMixin:
             self.engine.attribute_name(theClass, attr)
         return attrs
 
-    def _resolve_update_rate_designator(self, federation, *unused: Any) -> float | None:
+    def _resolve_update_rate_designator(self, federation, *unused: Any) -> tuple[float | None, str | None]:
         designator = next((str(arg) for arg in reversed(unused) if isinstance(arg, str)), None)
         if designator in (None, "", "default", "HLAdefault"):
-            return 0.0 if designator is not None else None
+            return (0.0, "HLAdefault") if designator is not None else (None, None)
         if designator not in federation.fom_catalog.update_rates:
             raise InvalidUpdateRateDesignator(designator)
-        return float(federation.fom_catalog.update_rates[designator])
+        return float(federation.fom_catalog.update_rates[designator]), designator
 
     def _default_update_rate_for_attribute(
         self,
@@ -51,17 +51,38 @@ class PythonRTIDeclarationMixin:
             return 0.0
         raise InvalidUpdateRateDesignator(str(designator))
 
+    def _default_update_rate_designator_for_attribute(
+        self,
+        federation: Any,
+        object_class: ObjectClassHandle,
+        attribute: AttributeHandle,
+    ) -> str | None:
+        class_name = self.engine.object_class_for_handle(object_class).name
+        spec = federation.fom_catalog.object_classes.get(class_name)
+        if spec is None:
+            return None
+        attribute_name = self.engine.attribute_name(object_class, attribute)
+        designator = dict(spec.attribute_update_rates).get(attribute_name)
+        if not designator:
+            return None
+        normalized = "HLAdefault" if designator == "default" else str(designator)
+        if normalized == "HLAdefault" or normalized in federation.fom_catalog.update_rates:
+            return normalized
+        raise InvalidUpdateRateDesignator(str(designator))
+
     def _svc_publishObjectClassAttributes(self, theClass: ObjectClassHandle, attributeList: Iterable[AttributeHandle]) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
         attrs = self._validate_object_class_attributes(theClass, attributeList)
         self.state.published_objects.setdefault(theClass, set()).update(attrs)
+        self._reconcile_update_interest_for_owned_objects(self.state, theClass)
 
     def _svc_unpublishObjectClass(self, theClass: ObjectClassHandle) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
         self.engine.object_class_for_handle(theClass)
         self.state.published_objects.pop(theClass, None)
+        self._reconcile_update_interest_for_owned_objects(self.state, theClass)
 
     def _svc_unpublishObjectClassAttributes(self, theClass: ObjectClassHandle, attributeList: Iterable[AttributeHandle]) -> None:
         federation = self._require_joined()
@@ -72,24 +93,35 @@ class PythonRTIDeclarationMixin:
             attrs.difference_update(attrs_to_remove)
             if not attrs:
                 self.state.published_objects.pop(theClass, None)
+        self._reconcile_update_interest_for_owned_objects(self.state, theClass)
 
     def _svc_subscribeObjectClassAttributes(self, theClass: ObjectClassHandle, attributeList: Iterable[AttributeHandle], *unused: Any) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
         attrs = self._validate_object_class_attributes(theClass, attributeList)
-        explicit_update_rate = self._resolve_update_rate_designator(federation, *unused)
+        explicit_update_rate, explicit_designator = self._resolve_update_rate_designator(federation, *unused)
         self.state.subscribed_objects.setdefault(theClass, set()).update(attrs)
         rate_map = self.state.subscribed_object_update_rates.setdefault(theClass, {})
+        designator_map = self.state.subscribed_object_update_rate_designators.setdefault(theClass, {})
         for attr in attrs:
             resolved_rate = explicit_update_rate
+            resolved_designator = explicit_designator
             if resolved_rate is None:
                 resolved_rate = self._default_update_rate_for_attribute(federation, theClass, attr)
+                resolved_designator = self._default_update_rate_designator_for_attribute(federation, theClass, attr)
             if resolved_rate is None:
                 rate_map.pop(attr, None)
+                designator_map.pop(attr, None)
             else:
                 rate_map[attr] = resolved_rate
+                if resolved_designator is None:
+                    designator_map.pop(attr, None)
+                else:
+                    designator_map[attr] = resolved_designator
         if not rate_map:
             self.state.subscribed_object_update_rates.pop(theClass, None)
+        if not designator_map:
+            self.state.subscribed_object_update_rate_designators.pop(theClass, None)
         self._discover_existing_objects(self.state, theClass)
         self._reconcile_scope_for_all_known_objects(self.state)
 
@@ -102,6 +134,7 @@ class PythonRTIDeclarationMixin:
         self.engine.object_class_for_handle(theClass)
         self.state.subscribed_objects.pop(theClass, None)
         self.state.subscribed_object_update_rates.pop(theClass, None)
+        self.state.subscribed_object_update_rate_designators.pop(theClass, None)
         self._reconcile_scope_for_all_known_objects(self.state)
 
     def _svc_unsubscribeObjectClassAttributes(self, theClass: ObjectClassHandle, attributeList: Iterable[AttributeHandle]) -> None:
@@ -119,6 +152,12 @@ class PythonRTIDeclarationMixin:
                 rate_map.pop(attr, None)
             if not rate_map:
                 self.state.subscribed_object_update_rates.pop(theClass, None)
+        designator_map = self.state.subscribed_object_update_rate_designators.get(theClass)
+        if designator_map is not None:
+            for attr in attrs_to_remove:
+                designator_map.pop(attr, None)
+            if not designator_map:
+                self.state.subscribed_object_update_rate_designators.pop(theClass, None)
         self._reconcile_scope_for_all_known_objects(self.state)
 
     def _svc_publishInteractionClass(self, theInteraction: InteractionClassHandle) -> None:
