@@ -2779,6 +2779,74 @@ def test_python_rti_negotiated_ownership_tracks_divesting_and_candidate_flows():
     owner.destroy_federation_execution("negotiated-ownership-fed")
 
 
+def test_ownership_callback_sequences_and_payloads_are_exact_for_negotiated_and_cancellation_flows():
+    _, owner, acquirer, owner_fed, acquirer_fed, _h1, _h2 = joined_pair("ownership-callback-sequence-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+
+    owner.publish_object_class_attributes(cls, {attr})
+    acquirer.publish_object_class_attributes(cls, {attr})
+    acquirer.subscribe_object_class_attributes(cls, {attr})
+
+    offered = owner.register_object_instance(cls, "Callback-Offered-1")
+    drain(owner, acquirer)
+    owner_fed.clear()
+    acquirer_fed.clear()
+
+    owner.negotiated_attribute_ownership_divestiture(offered, {attr}, b"offer-tag")
+    drain(owner, acquirer)
+    assumption_callbacks = [
+        rec for rec in acquirer_fed.records if rec.method_name == "requestAttributeOwnershipAssumption"
+    ]
+    assert [rec.method_name for rec in assumption_callbacks] == ["requestAttributeOwnershipAssumption"]
+    assert assumption_callbacks[0].args == (offered, AttributeHandleSet({attr}), b"offer-tag")
+
+    owner_fed.clear()
+    acquirer_fed.clear()
+    acquirer.attribute_ownership_acquisition(offered, {attr}, b"acquire-tag")
+    drain(owner, acquirer)
+
+    divest_callbacks = [
+        rec for rec in owner_fed.records if rec.method_name == "requestDivestitureConfirmation"
+    ]
+    acquisition_callbacks = [
+        rec for rec in acquirer_fed.records if rec.method_name == "attributeOwnershipAcquisitionNotification"
+    ]
+    assert [rec.method_name for rec in divest_callbacks] == ["requestDivestitureConfirmation"]
+    assert [rec.method_name for rec in acquisition_callbacks] == ["attributeOwnershipAcquisitionNotification"]
+    assert divest_callbacks[0].args == (offered, AttributeHandleSet({attr}))
+    assert acquisition_callbacks[0].args == (offered, AttributeHandleSet({attr}), b"acquire-tag")
+
+    pending = owner.register_object_instance(cls, "Callback-Pending-1")
+    drain(owner, acquirer)
+    owner_fed.clear()
+    acquirer_fed.clear()
+
+    acquirer.attribute_ownership_acquisition(pending, {attr}, b"request-tag")
+    drain(owner, acquirer)
+    release_callbacks = [
+        rec for rec in owner_fed.records if rec.method_name == "requestAttributeOwnershipRelease"
+    ]
+    assert [rec.method_name for rec in release_callbacks] == ["requestAttributeOwnershipRelease"]
+    assert release_callbacks[0].args == (pending, AttributeHandleSet({attr}), b"request-tag")
+
+    owner_fed.clear()
+    acquirer_fed.clear()
+    acquirer.cancel_attribute_ownership_acquisition(pending, {attr})
+    drain(owner, acquirer)
+    cancellation_callbacks = [
+        rec for rec in acquirer_fed.records if rec.method_name == "confirmAttributeOwnershipAcquisitionCancellation"
+    ]
+    assert [rec.method_name for rec in cancellation_callbacks] == [
+        "confirmAttributeOwnershipAcquisitionCancellation"
+    ]
+    assert cancellation_callbacks[0].args == (pending, AttributeHandleSet({attr}))
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("ownership-callback-sequence-fed")
+
+
 def test_negotiated_attribute_ownership_divestiture_rejects_not_connected_not_joined_unknown_object_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
@@ -3376,6 +3444,68 @@ def test_python_rti_query_attribute_ownership_reports_not_owned_after_divestitur
     owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("query-unowned-fed")
+
+
+def test_ownership_unavailable_and_query_callbacks_are_isolated_and_exact():
+    _, owner, acquirer, owner_fed, acquirer_fed, _h1, _h2 = joined_pair("ownership-callback-query-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+
+    owner.publish_object_class_attributes(cls, {attr})
+    acquirer.publish_object_class_attributes(cls, {attr})
+    offered = owner.register_object_instance(cls, "Unavailable-Callback-1")
+    drain(owner, acquirer)
+    owner_fed.clear()
+    acquirer_fed.clear()
+
+    acquirer.attribute_ownership_acquisition_if_available(offered, {attr})
+    drain(owner, acquirer)
+    unavailable_callbacks = [
+        rec for rec in acquirer_fed.records if rec.method_name == "attributeOwnershipUnavailable"
+    ]
+    assert [rec.method_name for rec in unavailable_callbacks] == ["attributeOwnershipUnavailable"]
+    assert unavailable_callbacks[0].args == (offered, AttributeHandleSet({attr}))
+    assert owner_fed.last_callback("requestAttributeOwnershipRelease") is None
+
+    query_target = owner.register_object_instance(cls, "Query-Callback-1")
+    owner_fed.clear()
+    acquirer_fed.clear()
+    acquirer.query_attribute_ownership(query_target, attr)
+    drain(owner, acquirer)
+    owned_callbacks = [
+        rec for rec in acquirer_fed.records if rec.method_name == "informAttributeOwnership"
+    ]
+    assert [rec.method_name for rec in owned_callbacks] == ["informAttributeOwnership"]
+    assert owned_callbacks[0].args == (query_target, attr, owner.backend.state.handle)
+
+    owner.unconditional_attribute_ownership_divestiture(query_target, {attr})
+    owner_fed.clear()
+    acquirer_fed.clear()
+    acquirer.query_attribute_ownership(query_target, attr)
+    drain(owner, acquirer)
+    not_owned_callbacks = [
+        rec for rec in acquirer_fed.records if rec.method_name == "attributeIsNotOwned"
+    ]
+    assert [rec.method_name for rec in not_owned_callbacks] == ["attributeIsNotOwned"]
+    assert not_owned_callbacks[0].args == (query_target, attr)
+
+    mom_class = owner.get_object_class_handle(hla_mom.MOM_FEDERATION_OBJECT_CLASS)
+    mom_attr = owner.get_attribute_handle(mom_class, "HLAfederationName")
+    mom_object = owner.backend.state.federation.mom_federation_object
+    assert mom_object is not None
+    owner_fed.clear()
+    acquirer_fed.clear()
+    acquirer.query_attribute_ownership(mom_object, mom_attr)
+    drain(owner, acquirer)
+    rti_owned_callbacks = [
+        rec for rec in acquirer_fed.records if rec.method_name == "attributeIsOwnedByRTI"
+    ]
+    assert [rec.method_name for rec in rti_owned_callbacks] == ["attributeIsOwnedByRTI"]
+    assert rti_owned_callbacks[0].args == (mom_object, mom_attr)
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("ownership-callback-query-fed")
 
 
 def test_python_rti_release_denied_preserves_owner_and_no_acquisition_grant():
