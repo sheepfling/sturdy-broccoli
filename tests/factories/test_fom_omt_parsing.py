@@ -7,6 +7,7 @@ import pytest
 from hla2010.encoding import HLAboolean, HLAfixedArray, HLAfixedRecord, HLAinteger32BE
 from hla2010.exceptions import CouldNotDecode
 from hla2010.fom import (
+    OMTConformanceAssessment,
     BasicDatatypeSpec,
     FOMMergeError,
     FOMModule,
@@ -14,6 +15,7 @@ from hla2010.fom import (
     InteractionClassSpec,
     ObjectClassSpec,
     SimpleDatatypeSpec,
+    assess_omt_conformance,
     merge_fom_modules,
     parse_fom_xml,
     serialize_fom_module,
@@ -1837,6 +1839,286 @@ def test_parse_fom_xml_preserves_dimension_normalization_metadata(tmp_path: Path
     assert spec.normalization == "Linear"
 
 
+def test_assess_omt_conformance_classifies_conforming_partial_and_nonconforming_documents(
+    tmp_path: Path,
+):
+    valid = tmp_path / "conforming-omt.xml"
+    valid.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification>
+    <name>Valid OMT</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-08</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Schema-valid supported OMT document.</description>
+    <poc><pocType>Sponsor</pocType><pocName>Codex</pocName></poc>
+  </modelIdentification>
+  <objects><objectClass><name>HLAobjectRoot</name><sharing>Neither</sharing></objectClass></objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <sharing>Neither</sharing>
+      <transportation>HLAreliable</transportation>
+      <order>Receive</order>
+    </interactionClass>
+  </interactions>
+  <dimensions>
+    <dimension>
+      <name>RouteDim</name>
+      <dataType>DimValue</dataType>
+      <upperBound>100</upperBound>
+      <normalization>None</normalization>
+    </dimension>
+  </dimensions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+    <transportation><name>HLAbestEffort</name><reliable>No</reliable></transportation>
+  </transportations>
+  <switches>
+    <autoProvide isEnabled="false"/>
+    <conveyRegionDesignatorSets isEnabled="false"/>
+    <conveyProducingFederate isEnabled="false"/>
+    <attributeScopeAdvisory isEnabled="false"/>
+    <attributeRelevanceAdvisory isEnabled="false"/>
+    <objectClassRelevanceAdvisory isEnabled="false"/>
+    <interactionRelevanceAdvisory isEnabled="false"/>
+    <serviceReporting isEnabled="false"/>
+    <exceptionReporting isEnabled="false"/>
+    <delaySubscriptionEvaluation isEnabled="false"/>
+    <automaticResignAction resignAction="NoAction"/>
+  </switches>
+  <dataTypes>
+    <basicDataRepresentations>
+      <basicData>
+        <name>HLAinteger32BE</name>
+        <size>32</size>
+        <interpretation>Integer</interpretation>
+        <endian>Big</endian>
+        <encoding>32-bit signed</encoding>
+      </basicData>
+    </basicDataRepresentations>
+    <simpleDataTypes>
+      <simpleData>
+        <name>DimValue</name>
+        <representation>HLAinteger32BE</representation>
+        <units>NA</units>
+        <resolution>1</resolution>
+        <accuracy>Perfect</accuracy>
+      </simpleData>
+    </simpleDataTypes>
+    <enumeratedDataTypes/>
+    <arrayDataTypes/>
+    <fixedRecordDataTypes/>
+    <variantRecordDataTypes/>
+  </dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    conforming = assess_omt_conformance(
+        valid, validate_schema=True, profile="omt"
+    )
+    assert isinstance(conforming, OMTConformanceAssessment)
+    assert conforming.label == "conforming"
+    assert conforming.schema_valid is True
+    assert conforming.parsed is True
+    assert conforming.unsupported_features == ()
+
+    normalization = tmp_path / "normalization-omt.xml"
+    normalization.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification>
+    <name>Normalization OMT</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-08</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Preserves dimension normalization metadata.</description>
+    <poc><pocType>Sponsor</pocType><pocName>Codex</pocName></poc>
+  </modelIdentification>
+  <objects><objectClass><name>HLAobjectRoot</name><sharing>Neither</sharing></objectClass></objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <sharing>Neither</sharing>
+      <transportation>HLAreliable</transportation>
+      <order>Receive</order>
+    </interactionClass>
+  </interactions>
+  <dimensions>
+    <dimension>
+      <name>RouteDim</name>
+      <dataType>DimValue</dataType>
+      <upperBound>100</upperBound>
+      <normalization>Linear</normalization>
+    </dimension>
+  </dimensions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+    <transportation><name>HLAbestEffort</name><reliable>No</reliable></transportation>
+  </transportations>
+  <switches>
+    <autoProvide isEnabled="false"/>
+    <conveyRegionDesignatorSets isEnabled="false"/>
+    <conveyProducingFederate isEnabled="false"/>
+    <attributeScopeAdvisory isEnabled="false"/>
+    <attributeRelevanceAdvisory isEnabled="false"/>
+    <objectClassRelevanceAdvisory isEnabled="false"/>
+    <interactionRelevanceAdvisory isEnabled="false"/>
+    <serviceReporting isEnabled="false"/>
+    <exceptionReporting isEnabled="false"/>
+    <delaySubscriptionEvaluation isEnabled="false"/>
+    <automaticResignAction resignAction="NoAction"/>
+  </switches>
+  <dataTypes>
+    <basicDataRepresentations>
+      <basicData>
+        <name>HLAinteger32BE</name>
+        <size>32</size>
+        <interpretation>Integer</interpretation>
+        <endian>Big</endian>
+        <encoding>32-bit signed</encoding>
+      </basicData>
+    </basicDataRepresentations>
+    <simpleDataTypes>
+      <simpleData>
+        <name>DimValue</name>
+        <representation>HLAinteger32BE</representation>
+        <units>NA</units>
+        <resolution>1</resolution>
+        <accuracy>Perfect</accuracy>
+      </simpleData>
+    </simpleDataTypes>
+    <enumeratedDataTypes/>
+    <arrayDataTypes/>
+    <fixedRecordDataTypes/>
+    <variantRecordDataTypes/>
+  </dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    partial = assess_omt_conformance(
+        normalization, validate_schema=True, profile="omt"
+    )
+    assert partial.label == "partially conforming"
+    assert partial.schema_valid is True
+    assert partial.parsed is True
+    assert any("normalization" in item.lower() for item in partial.unsupported_features)
+
+    semantically_invalid = tmp_path / "semantically-invalid-omt.xml"
+    semantically_invalid.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification>
+        <name>Duplicate Enumerators</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-08</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Schema-valid but semantically invalid OMT document.</description>
+    <poc><pocType>Sponsor</pocType><pocName>Codex</pocName></poc>
+  </modelIdentification>
+  <objects><objectClass><name>HLAobjectRoot</name><sharing>Neither</sharing></objectClass></objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <sharing>Neither</sharing>
+      <transportation>HLAreliable</transportation>
+      <order>Receive</order>
+    </interactionClass>
+  </interactions>
+  <dimensions>
+    <dimension><name>RouteDim</name><dataType>DimValue</dataType><upperBound>100</upperBound><normalization>None</normalization></dimension>
+  </dimensions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+    <transportation><name>HLAbestEffort</name><reliable>No</reliable></transportation>
+  </transportations>
+  <switches>
+    <autoProvide isEnabled="false"/>
+    <conveyRegionDesignatorSets isEnabled="false"/>
+    <conveyProducingFederate isEnabled="false"/>
+    <attributeScopeAdvisory isEnabled="false"/>
+    <attributeRelevanceAdvisory isEnabled="false"/>
+    <objectClassRelevanceAdvisory isEnabled="false"/>
+    <interactionRelevanceAdvisory isEnabled="false"/>
+    <serviceReporting isEnabled="false"/>
+    <exceptionReporting isEnabled="false"/>
+    <delaySubscriptionEvaluation isEnabled="false"/>
+    <automaticResignAction resignAction="NoAction"/>
+  </switches>
+  <dataTypes>
+    <basicDataRepresentations>
+      <basicData>
+        <name>HLAinteger32BE</name>
+        <size>32</size>
+        <interpretation>Integer</interpretation>
+        <endian>Big</endian>
+        <encoding>32-bit signed</encoding>
+      </basicData>
+    </basicDataRepresentations>
+    <simpleDataTypes>
+      <simpleData>
+        <name>DimValue</name>
+        <representation>HLAinteger32BE</representation>
+        <units>NA</units>
+        <resolution>1</resolution>
+        <accuracy>Perfect</accuracy>
+      </simpleData>
+    </simpleDataTypes>
+    <enumeratedDataTypes>
+      <enumeratedData>
+        <name>Mode</name>
+        <representation>HLAinteger32BE</representation>
+        <enumerator><name>Alpha</name><value>1</value></enumerator>
+        <enumerator><name>Alpha</name><value>2</value></enumerator>
+      </enumeratedData>
+    </enumeratedDataTypes>
+    <arrayDataTypes/>
+    <fixedRecordDataTypes/>
+    <variantRecordDataTypes/>
+  </dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    semantic_nonconforming = assess_omt_conformance(
+        semantically_invalid, validate_schema=True, profile="omt"
+    )
+    assert semantic_nonconforming.label == "nonconforming"
+    assert semantic_nonconforming.schema_valid is True
+    assert semantic_nonconforming.parsed is False
+
+    invalid = tmp_path / "schema-invalid-omt.xml"
+    invalid.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification><name>Bad OMT</name><type>FOM</type></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Child</name>
+        <attribute><dataType>HLAunicodeString</dataType></attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    schema_nonconforming = assess_omt_conformance(
+        invalid, validate_schema=True, profile="omt"
+    )
+    assert schema_nonconforming.label == "nonconforming"
+    assert schema_nonconforming.schema_valid is False
+    assert schema_nonconforming.parsed is False
+
+
 def test_1516_2_hierarchy_doc_declares_omt_lexicon_and_conformance_boundary():
     text = (
         Path(__file__).resolve().parents[2] / "docs" / "verification" / "requirements_hierarchy.md"
@@ -1863,7 +2145,12 @@ def test_1516_2_hierarchy_doc_declares_omt_lexicon_and_conformance_boundary():
     assert "Parameter definitions carry the documentation, validation, and traceability meaning" in text
     assert "## Conformance Claim Boundary" in text
     assert "does not claim full IEEE 1516.2-2010 conformance" in text
-    assert "The current conformance labels used in this repo are:" in text
+    assert "The current OMT document conformance labels used in this repo are:" in text
+    assert "`conforming`: schema-valid, semantically valid, and fully within the currently supported repo-native OMT subset." in text
+    assert "`partially conforming`: schema-valid and semantically valid, but uses features that the repo currently preserves or reports without executing full runtime semantics." in text
+    assert "`nonconforming`: schema-invalid or semantically invalid on the current parser and validator path." in text
+    assert "These OMT document labels are separate from the requirements-harmonization labels used elsewhere in the catalog:" in text
+    assert "The current requirements-harmonization labels used in this repo are:" in text
     assert "`mapped`: directly implemented and backed by executable or generated proof." in text
     assert "`partial`: intentionally narrower than the full standard statement" in text
     assert "`mapped` requirement rows identify the implemented and executable OMT subset only" in text

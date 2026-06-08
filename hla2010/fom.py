@@ -48,6 +48,18 @@ class FOMMergeError(ValueError):
 
 
 @dataclass(frozen=True)
+class OMTConformanceAssessment:
+    """Current repo-native OMT conformance assessment for one object-model document."""
+
+    label: str
+    schema_valid: bool
+    parsed: bool
+    module_name: str | None = None
+    unsupported_features: tuple[str, ...] = ()
+    rationale: str = ""
+
+
+@dataclass(frozen=True)
 class ObjectClassSpec:
     """Object class extracted from an OMT module.
 
@@ -1269,6 +1281,71 @@ def validate_fom_xml_schema(path: str | os.PathLike[str], *, profile: str = "dif
         raise FOMResolutionError(f"Schema-invalid {profile.upper()} XML {path}: {detail}", kind="read")
 
 
+def _uses_runtime_normalization_subset(normalization: str | None) -> bool:
+    if normalization is None:
+        return False
+    normalized = normalization.strip().lower()
+    return normalized not in {"", "none", "identity"}
+
+
+def assess_omt_conformance(
+    source: str | os.PathLike[str],
+    *,
+    validate_schema: bool = True,
+    profile: str = "omt",
+) -> OMTConformanceAssessment:
+    """Classify one OMT/FDD/DIF document using the current repo-native validator criteria."""
+
+    try:
+        module = parse_fom_xml(source, validate_schema=validate_schema)
+    except FOMResolutionError as exc:
+        schema_valid = False
+        if validate_schema:
+            try:
+                validate_fom_xml_schema(source, profile=profile)
+            except FOMResolutionError:
+                schema_valid = False
+            else:
+                schema_valid = True
+        return OMTConformanceAssessment(
+            label="nonconforming",
+            schema_valid=schema_valid,
+            parsed=False,
+            unsupported_features=(str(exc),),
+            rationale="The document fails current schema or semantic validation and is therefore nonconforming on the repo-native OMT validator path.",
+        )
+
+    unsupported_features: list[str] = []
+    if any(
+        _uses_runtime_normalization_subset(spec.normalization)
+        for spec in dict(module.dimension_specs).values()
+    ):
+        unsupported_features.append(
+            "Dimension normalization metadata is parsed and preserved, but runtime DDM normalization semantics are not yet executed."
+        )
+
+    if validate_schema:
+        validate_fom_xml_schema(source, profile=profile)
+
+    if unsupported_features:
+        return OMTConformanceAssessment(
+            label="partially conforming",
+            schema_valid=True,
+            parsed=True,
+            module_name=module.name,
+            unsupported_features=tuple(unsupported_features),
+            rationale="The document satisfies current schema and parser validation, but it uses features that the repo still treats as a narrower supported subset.",
+        )
+
+    return OMTConformanceAssessment(
+        label="conforming",
+        schema_valid=True,
+        parsed=True,
+        module_name=module.name,
+        rationale="The document satisfies current repo-native schema and parser validation with no known unsupported OMT subset feature detected.",
+    )
+
+
 def _datatype_spec_lookup(name: str, catalog: FOMCatalog | Mapping[str, Any] | None) -> Any | None:
     if not name:
         return None
@@ -2207,12 +2284,14 @@ class FOMResolver:
 
 __all__ = [
     "FOMCatalog",
+    "OMTConformanceAssessment",
     "FOMMergeError",
     "FOMResolutionError",
     "ObjectClassSpec",
     "InteractionClassSpec",
     "FOMModule",
     "FOMResolver",
+    "assess_omt_conformance",
     "default_fom_search_paths",
     "merge_fom_modules",
     "normalize_module_uri",
