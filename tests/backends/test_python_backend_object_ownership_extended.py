@@ -391,6 +391,66 @@ def test_publish_unpublish_and_unsubscribe_interaction_tail_reject_not_connected
     owner.destroy_federation_execution("decl-admin-tail-negative-fed")
 
 
+def test_declaration_services_validate_declared_handles_attributes_and_update_rate_designators():
+    _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("decl-arg-validation-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+
+    bad_class = type(cls)(cls.value + 1000)
+    bad_attr = type(attr)(attr.value + 1000)
+    bad_interaction = type(interaction)(interaction.value + 1000)
+
+    with pytest.raises(InvalidObjectClassHandle):
+        owner.publish_object_class_attributes(bad_class, {attr})
+    with pytest.raises(AttributeNotDefined):
+        owner.publish_object_class_attributes(cls, {bad_attr})
+
+    with pytest.raises(InvalidObjectClassHandle):
+        owner.unpublish_object_class(bad_class)
+    with pytest.raises(InvalidObjectClassHandle):
+        owner.unpublish_object_class_attributes(bad_class, {attr})
+    with pytest.raises(AttributeNotDefined):
+        owner.unpublish_object_class_attributes(cls, {bad_attr})
+
+    with pytest.raises(InvalidInteractionClassHandle):
+        owner.publish_interaction_class(bad_interaction)
+    with pytest.raises(InvalidInteractionClassHandle):
+        owner.unpublish_interaction_class(bad_interaction)
+
+    with pytest.raises(InvalidObjectClassHandle):
+        observer.subscribe_object_class_attributes(bad_class, {attr})
+    with pytest.raises(AttributeNotDefined):
+        observer.subscribe_object_class_attributes(cls, {bad_attr})
+    with pytest.raises(InvalidUpdateRateDesignator):
+        observer.subscribe_object_class_attributes(cls, {attr}, "not-a-rate")
+
+    with pytest.raises(InvalidObjectClassHandle):
+        observer.subscribe_object_class_attributes_passively(bad_class, {attr})
+    with pytest.raises(AttributeNotDefined):
+        observer.subscribe_object_class_attributes_passively(cls, {bad_attr})
+    with pytest.raises(InvalidUpdateRateDesignator):
+        observer.subscribe_object_class_attributes_passively(cls, {attr}, "not-a-rate")
+
+    with pytest.raises(InvalidObjectClassHandle):
+        observer.unsubscribe_object_class(bad_class)
+    with pytest.raises(InvalidObjectClassHandle):
+        observer.unsubscribe_object_class_attributes(bad_class, {attr})
+    with pytest.raises(AttributeNotDefined):
+        observer.unsubscribe_object_class_attributes(cls, {bad_attr})
+
+    with pytest.raises(InvalidInteractionClassHandle):
+        observer.subscribe_interaction_class(bad_interaction)
+    with pytest.raises(InvalidInteractionClassHandle):
+        observer.subscribe_interaction_class_passively(bad_interaction)
+    with pytest.raises(InvalidInteractionClassHandle):
+        observer.unsubscribe_interaction_class(bad_interaction)
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("decl-arg-validation-fed")
+
+
 def test_declaration_management_effects_apply_while_time_managed():
     _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("decl-time-managed-fed")
     factory = owner.get_time_factory()

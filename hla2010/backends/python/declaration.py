@@ -11,6 +11,17 @@ from .state import FederateState
 class PythonRTIDeclarationMixin:
     """HLA publication, subscription, and advisory declaration services."""
 
+    def _validate_object_class_attributes(
+        self,
+        theClass: ObjectClassHandle,
+        attributeList: Iterable[AttributeHandle],
+    ) -> set[AttributeHandle]:
+        self.engine.object_class_for_handle(theClass)
+        attrs = set(attributeList)
+        for attr in attrs:
+            self.engine.attribute_name(theClass, attr)
+        return attrs
+
     def _resolve_update_rate_designator(self, federation, *unused: Any) -> float | None:
         designator = next((str(arg) for arg in reversed(unused) if isinstance(arg, str)), None)
         if designator in (None, "", "default", "HLAdefault"):
@@ -43,8 +54,7 @@ class PythonRTIDeclarationMixin:
     def _svc_publishObjectClassAttributes(self, theClass: ObjectClassHandle, attributeList: Iterable[AttributeHandle]) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
-        self.engine.object_class_for_handle(theClass)
-        attrs = set(attributeList)
+        attrs = self._validate_object_class_attributes(theClass, attributeList)
         self.state.published_objects.setdefault(theClass, set()).update(attrs)
 
     def _svc_unpublishObjectClass(self, theClass: ObjectClassHandle) -> None:
@@ -56,18 +66,17 @@ class PythonRTIDeclarationMixin:
     def _svc_unpublishObjectClassAttributes(self, theClass: ObjectClassHandle, attributeList: Iterable[AttributeHandle]) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
-        self.engine.object_class_for_handle(theClass)
+        attrs_to_remove = self._validate_object_class_attributes(theClass, attributeList)
         attrs = self.state.published_objects.get(theClass)
         if attrs is not None:
-            attrs.difference_update(set(attributeList))
+            attrs.difference_update(attrs_to_remove)
             if not attrs:
                 self.state.published_objects.pop(theClass, None)
 
     def _svc_subscribeObjectClassAttributes(self, theClass: ObjectClassHandle, attributeList: Iterable[AttributeHandle], *unused: Any) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
-        self.engine.object_class_for_handle(theClass)
-        attrs = set(attributeList)
+        attrs = self._validate_object_class_attributes(theClass, attributeList)
         explicit_update_rate = self._resolve_update_rate_designator(federation, *unused)
         self.state.subscribed_objects.setdefault(theClass, set()).update(attrs)
         rate_map = self.state.subscribed_object_update_rates.setdefault(theClass, {})
@@ -90,6 +99,7 @@ class PythonRTIDeclarationMixin:
     def _svc_unsubscribeObjectClass(self, theClass: ObjectClassHandle) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
+        self.engine.object_class_for_handle(theClass)
         self.state.subscribed_objects.pop(theClass, None)
         self.state.subscribed_object_update_rates.pop(theClass, None)
         self._reconcile_scope_for_all_known_objects(self.state)
@@ -97,17 +107,15 @@ class PythonRTIDeclarationMixin:
     def _svc_unsubscribeObjectClassAttributes(self, theClass: ObjectClassHandle, attributeList: Iterable[AttributeHandle]) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
-        self.engine.object_class_for_handle(theClass)
-        for attr in attributeList:
-            self.engine.attribute_name(theClass, attr)
+        attrs_to_remove = self._validate_object_class_attributes(theClass, attributeList)
         attrs = self.state.subscribed_objects.get(theClass)
         if attrs is not None:
-            attrs.difference_update(set(attributeList))
+            attrs.difference_update(attrs_to_remove)
             if not attrs:
                 self.state.subscribed_objects.pop(theClass, None)
         rate_map = self.state.subscribed_object_update_rates.get(theClass)
         if rate_map is not None:
-            for attr in attributeList:
+            for attr in attrs_to_remove:
                 rate_map.pop(attr, None)
             if not rate_map:
                 self.state.subscribed_object_update_rates.pop(theClass, None)
