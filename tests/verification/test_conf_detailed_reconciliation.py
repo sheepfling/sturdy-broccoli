@@ -22,7 +22,7 @@ def test_conf_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 2
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"partial": 2}
+        {"mapped": 2}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -32,11 +32,11 @@ def test_conf_detailed_reconciliation_has_expected_shape():
 def test_conf_detailed_reconciliation_spot_checks():
     rows = {row["packet_requirement_id"]: row for row in _read_rows()}
 
-    assert rows["HLA1516.1-CONF_FEDERATE-014"]["current_status"] == "partial"
-    assert "test_master_harmonization_index_covers_every_imported_master_requirement" in rows[
+    assert rows["HLA1516.1-CONF_FEDERATE-014"]["current_status"] == "mapped"
+    assert "test_clause13_conformance_packet_backs_federate_and_rti_claims" in rows[
         "HLA1516.1-CONF_FEDERATE-014"
     ]["current_test_id"]
-    assert rows["HLA1516.1-CONF_RTI-015"]["current_status"] == "partial"
-    assert "test_imported_packet_schema_and_reference_integrity" in rows[
+    assert rows["HLA1516.1-CONF_RTI-015"]["current_status"] == "mapped"
+    assert "test_service_by_service_conformance_matrix_covers_generated_api_surface" in rows[
         "HLA1516.1-CONF_RTI-015"
     ]["current_test_id"]

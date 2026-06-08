@@ -1,0 +1,686 @@
+{
+  "aggregate_counts": {
+    "callback_tested_row_count": 55,
+    "explicit_requirement_marker_count": 143,
+    "requirements_ledger_pass_rows": 217,
+    "rti_rows_with_negative_refs": 152,
+    "rti_tested_row_count": 162
+  },
+  "federate_conformance": {
+    "categories": [
+      {
+        "evidence_present": true,
+        "evidence_refs": [
+          "scripts/report_test_requirement_markers.py",
+          "tests/verification/test_clause4_clause5_requirement_markers.py"
+        ],
+        "name": "standard_service_usage",
+        "requirement_marker_count": 143,
+        "requirement_marker_families": {
+          "DDM": 12,
+          "DM": 12,
+          "FM": 5,
+          "OM": 29,
+          "OWN": 18,
+          "SUP": 43,
+          "TM": 24
+        }
+      },
+      {
+        "callback_row_count": 55,
+        "callback_tested_row_count": 55,
+        "evidence_present": true,
+        "evidence_refs": [
+          "tests/verification/test_spec_traceability_all_methods.py",
+          "tests/backends/test_python_backend_object_ownership_extended.py"
+        ],
+        "name": "callbacks"
+      },
+      {
+        "capability_counts": {
+          "CAP-MOM": {
+            "mapped": 320
+          },
+          "CAP-OMT": {
+            "mapped": 55,
+            "partial": 5
+          },
+          "CAP-XML": {
+            "mapped": 3,
+            "partial": 364
+          }
+        },
+        "evidence_present": true,
+        "evidence_refs": [
+          "tests/factories/test_fom_omt_parsing.py",
+          "tests/mom/test_mom_catalog_validation_v012.py",
+          "requirements/hla_1516_master_harmonization_index_v1_0.csv"
+        ],
+        "name": "object_models"
+      },
+      {
+        "capability_counts": {
+          "CAP-API": {
+            "mapped": 217,
+            "partial": 397
+          }
+        },
+        "evidence_present": true,
+        "evidence_refs": [
+          "tests/verification/test_spec_traceability_all_methods.py",
+          "tests/verification/test_requirements_ledger_v013.py",
+          "analysis/compliance/service_conformance.json",
+          "analysis/compliance/requirements_ledger.json"
+        ],
+        "name": "language_binding"
+      }
+    ],
+    "claim_backed": true
+  },
+  "notes": [
+    "This packet does not claim certification.",
+    "It packages current repo evidence so that federate and RTI conformance claims are explicitly backed by reviewable artifacts."
+  ],
+  "requirements_ledger_summary": {
+    "interface_counts": {
+      "FederateAmbassador": 55,
+      "RTIambassador": 162
+    },
+    "outcome_counts": {
+      "pass": 217
+    },
+    "row_count": 217,
+    "section_outcomes": {
+      "IEEE 1516.1-2010 \u00a710.10": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.11": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.12": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.13": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.14": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.15": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.16": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.17": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.18": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.19": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.2": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.20": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.21": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a710.22": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a710.23": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.24": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.25": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.26": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.27": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.28": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.29": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.3": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.30": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.31": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.32": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.33": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.34": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.35": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.36": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.37": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.38": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.39": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.4": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.40": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.41": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.42": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.43": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.44": {
+        "pass": 18
+      },
+      "IEEE 1516.1-2010 \u00a710.5": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.6": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.7": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.8": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a710.9": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a712.2": {
+        "pass": 9
+      },
+      "IEEE 1516.1-2010 \u00a74.10": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.11": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.12": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a74.13": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.14": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.15": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.16": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.17": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.18": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.19": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a74.2": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.20": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a74.21": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.22": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.23": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.24": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.25": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a74.26": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.27": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.28": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a74.29": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a74.3": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.30": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.31": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.32": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.4": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.5": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a74.6": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.7": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.8": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a74.9": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a75.10": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a75.11": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a75.12": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a75.13": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a75.2": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a75.3": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a75.4": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a75.5": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a75.6": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a75.7": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a75.8": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a75.9": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.10": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.11": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.12": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.13": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.14": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.15": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.16": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.17": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.18": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.19": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.2": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.20": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.21": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.22": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.23": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.24": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.25": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.26": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.27": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.28": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.29": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.3": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a76.30": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.4": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.5": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.6": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a76.7": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.8": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a76.9": {
+        "pass": 5
+      },
+      "IEEE 1516.1-2010 \u00a77.10": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a77.11": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a77.12": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a77.13": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a77.14": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a77.15": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a77.16": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a77.17": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a77.18": {
+        "pass": 3
+      },
+      "IEEE 1516.1-2010 \u00a77.19": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a77.2": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a77.3": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a77.4": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a77.5": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a77.6": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a77.7": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a77.8": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a77.9": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.10": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.11": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.12": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.13": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.14": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.15": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.16": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.17": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.18": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.19": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.2": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.20": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.21": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.22": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.23": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.24": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.3": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.4": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.5": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.6": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.7": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.8": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a78.9": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a79.10": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a79.11": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a79.12": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a79.13": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a79.2": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a79.3": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a79.4": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a79.5": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a79.6": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a79.7": {
+        "pass": 1
+      },
+      "IEEE 1516.1-2010 \u00a79.8": {
+        "pass": 2
+      },
+      "IEEE 1516.1-2010 \u00a79.9": {
+        "pass": 1
+      }
+    },
+    "version": "0.12.0"
+  },
+  "rti_conformance": {
+    "categories": [
+      {
+        "callback_tested_row_count": 55,
+        "evidence_present": true,
+        "evidence_refs": [
+          "analysis/compliance/service_conformance.json",
+          "analysis/compliance/requirements_ledger.json",
+          "tests/verification/test_service_conformance_matrix_v013.py"
+        ],
+        "name": "services_exceptions_callbacks",
+        "rti_row_count": 162,
+        "rti_rows_with_negative_refs": 152,
+        "rti_tested_row_count": 162
+      },
+      {
+        "capability_counts": {
+          "CAP-MOM": {
+            "mapped": 320
+          }
+        },
+        "evidence_present": true,
+        "evidence_refs": [
+          "tests/factories/test_fom_omt_parsing.py",
+          "tests/mom/test_mom_catalog_validation_v012.py",
+          "requirements/hla_1516_master_harmonization_index_v1_0.csv"
+        ],
+        "name": "mom_mim_behavior"
+      },
+      {
+        "capability_counts": {
+          "CAP-API": {
+            "mapped": 217,
+            "partial": 397
+          }
+        },
+        "evidence_present": true,
+        "evidence_refs": [
+          "tests/verification/test_spec_traceability_all_methods.py",
+          "tests/verification/test_requirements_ledger_v013.py",
+          "analysis/compliance/service_conformance.json",
+          "analysis/compliance/requirements_ledger.json"
+        ],
+        "name": "language_bindings"
+      },
+      {
+        "capability_counts": {
+          "CAP-OMT": {
+            "mapped": 55,
+            "partial": 5
+          },
+          "CAP-XML": {
+            "mapped": 3,
+            "partial": 364
+          }
+        },
+        "evidence_present": true,
+        "evidence_refs": [
+          "tests/factories/test_fom_omt_parsing.py",
+          "tests/mom/test_mom_catalog_validation_v012.py",
+          "requirements/hla_1516_master_harmonization_index_v1_0.csv"
+        ],
+        "name": "omt_fdd_handling"
+      }
+    ],
+    "claim_backed": true
+  },
+  "scope": "IEEE 1516.1-2010 Clause 13 conformance claim support packet",
+  "service_conformance_summary": {
+    "interface_counts": {
+      "FederateAmbassador": 55,
+      "RTIambassador": 162
+    },
+    "row_count": 217,
+    "source": "generated-from-package-source",
+    "status_counts": {
+      "callback-helper-tested": 55,
+      "reference-implemented-tested": 162
+    },
+    "version": "0.12.0"
+  },
+  "version": "0.12.0"
+}
