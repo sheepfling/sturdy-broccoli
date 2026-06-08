@@ -112,6 +112,18 @@ def test_connect_establishes_callback_delivery_model_for_follow_on_reports():
     immediate.disconnect()
 
 
+def test_connect_joined_federate_is_visible_in_mom_summary():
+    _, r1, r2, _f1, _f2, h1, h2 = joined_pair("connect-mom-fed")
+
+    summary = r1.backend.current_mom_summary()
+    assert summary["federate_objects"][h1] == r1.backend.state.mom_federate_object
+    assert summary["federate_objects"][h2] == r2.backend.state.mom_federate_object
+
+    r1.resign_federation_execution(ResignAction.NO_ACTION)
+    r2.resign_federation_execution(ResignAction.NO_ACTION)
+    r1.destroy_federation_execution("connect-mom-fed")
+
+
 def test_register_federation_synchronization_point_rejects_not_connected_and_not_joined():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
