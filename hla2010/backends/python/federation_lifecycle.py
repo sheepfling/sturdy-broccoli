@@ -233,6 +233,9 @@ class PythonRTIFederationLifecycleMixin:
             self.state.name = str(federate_name)
             self.state.federate_type = str(federate_type)
             self.state.federation = federation
+            self.state.last_reporting_handle = handle
+            self.state.last_reporting_name = str(federate_name)
+            self.state.last_reporting_federation = federation
             self.state.current_time = federation.time_factory.make_initial()
             self.state.lookahead = federation.time_factory.make_zero()
             self.state.service_reports_to_file = bool(
@@ -298,6 +301,9 @@ class PythonRTIFederationLifecycleMixin:
         federation.federates.pop(handle, None)
         self._process_time_advances(federation)
         self._refresh_all_mom_objects(federation, notify=True)
+        self.state.last_reporting_handle = handle
+        self.state.last_reporting_name = self.state.name
+        self.state.last_reporting_federation = federation
         self.state.handle = None
         self.state.name = None
         self.state.federate_type = None

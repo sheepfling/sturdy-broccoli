@@ -162,6 +162,15 @@ class VariantRecordDatatypeSpec:
 
 
 @dataclass(frozen=True)
+class DimensionSpec:
+    name: str
+    data_type: str | None = None
+    upper_bound: str | None = None
+    normalization: str | None = None
+    semantics: str | None = None
+
+
+@dataclass(frozen=True)
 class FOMModule:
     """Resolved FOM/MIM module.
 
@@ -180,6 +189,7 @@ class FOMModule:
     object_classes: tuple[ObjectClassSpec, ...] = ()
     interaction_classes: tuple[InteractionClassSpec, ...] = ()
     dimensions: tuple[str, ...] = ()
+    dimension_specs: Mapping[str, DimensionSpec] = field(default_factory=dict)
     datatype_names: tuple[str, ...] = ()
     basic_datatypes: Mapping[str, BasicDatatypeSpec] = field(default_factory=dict)
     simple_datatypes: Mapping[str, SimpleDatatypeSpec] = field(default_factory=dict)
@@ -206,6 +216,7 @@ class FOMModule:
             or self.model_identification
             or self.service_utilization
             or self.dimensions
+            or self.dimension_specs
             or self.datatype_names
             or self.basic_datatypes
             or self.simple_datatypes
@@ -1555,6 +1566,7 @@ def parse_fom_xml(
             interaction_classes.extend(_walk_interaction_class(interaction_class, path=path))
 
     dimension_names: set[str] = set()
+    dimension_specs: dict[str, DimensionSpec] = {}
     declared_dimension_names: dict[str, bool] = {}
     dimensions_section = next((child for child in list(root) if _local_name(child.tag) == "dimensions"), None)
     if dimensions_section is not None:
@@ -1564,6 +1576,13 @@ def parse_fom_xml(
                 _require_unique_name(declared_dimension_names, name, "dimension", path=path)
                 declared_dimension_names[name] = True
                 dimension_names.add(name)
+                dimension_specs[name] = DimensionSpec(
+                    name=name,
+                    data_type=_child_text(dimension, "dataType"),
+                    upper_bound=_child_text(dimension, "upperBound"),
+                    normalization=_child_text(dimension, "normalization"),
+                    semantics=_child_text(dimension, "semantics"),
+                )
 
     for element in root.iter():
         if _local_name(element.tag) == "dimension" and element.text and not _direct_children(element, "name"):
@@ -1617,6 +1636,7 @@ def parse_fom_xml(
         object_classes=tuple(object_classes),
         interaction_classes=tuple(interaction_classes),
         dimensions=tuple(sorted(dimension_names)),
+        dimension_specs=dimension_specs,
         datatype_names=datatype_names,
         basic_datatypes=basic_datatypes,
         simple_datatypes=simple_datatypes,

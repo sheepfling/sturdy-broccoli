@@ -245,6 +245,9 @@ class FederateState:
     convey_producing_federate: bool = True
     service_reporting: bool = False
     exception_reporting: bool = True
+    last_reporting_handle: FederateHandle | None = None
+    last_reporting_name: str | None = None
+    last_reporting_federation: FederationState | None = None
     service_reports_to_file: bool = False
     service_report_file: str | None = None
     service_report_initial_record_written: bool = False

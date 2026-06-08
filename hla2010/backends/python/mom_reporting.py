@@ -17,6 +17,12 @@ from .state import CallbackEvent, FederateState, FederationState, SupplementalRe
 class PythonRTIMomReportingMixin:
     """Service-report file and MOM report emission helpers."""
 
+    def _reporting_context(self) -> tuple[FederationState | None, Any, str | None]:
+        federation = self.state.federation or self.state.last_reporting_federation
+        handle = self.state.handle or self.state.last_reporting_handle
+        name = self.state.name or self.state.last_reporting_name
+        return federation, handle, name
+
     def _service_report_directory(self) -> Path:
         return self.service_report_files.report_directory()
 
@@ -45,8 +51,8 @@ class PythonRTIMomReportingMixin:
         result: Any = None,
         section: str | None = None,
     ) -> None:
-        federation = self.state.federation
-        if federation is None or self.state.handle is None:
+        federation, handle, name = self._reporting_context()
+        if federation is None or handle is None:
             return
         if not (self.state.service_reporting and self.state.service_reports_to_file):
             return
@@ -57,8 +63,8 @@ class PythonRTIMomReportingMixin:
             "specSection": f"1516.1-2010 §{section}" if section else "1516.1-2010 §11.5.2",
             "timestampUTC": datetime.now(timezone.utc).isoformat(),
             "serialNumber": self.state.service_report_serial_number,
-            "federate": getattr(self.state.handle, "value", self.state.handle),
-            "federateName": self.state.name or "",
+            "federate": getattr(handle, "value", handle),
+            "federateName": name or "",
             "service": service_name,
             "success": bool(success),
             "exception": exception_name or "",
@@ -94,7 +100,6 @@ class PythonRTIMomReportingMixin:
                 params[param] = hla_mom.encode_count(value)
             else:
                 params[param] = hla_mom.encode_text(value)
-        assert self.state.handle is not None
         for federate in list(federation.federates.values()):
             if report_handle in federate.subscribed_interactions or report_name.endswith("HLAreportMOMexception"):
                 self._queue_or_deliver_message(
@@ -142,13 +147,14 @@ class PythonRTIMomReportingMixin:
         try:
             serial = self._service_report_serial()
             ref = method_reference(service_name)
+            federation, handle, name = self._reporting_context()
             if self.service_report_sink is not None:
                 self.service_report_sink.write(
                     ServiceReportRecord(
                         serial_number=serial,
                         service_name=service_name,
-                        federate_handle=repr(self.state.handle) if self.state.handle is not None else None,
-                        federate_name=self.state.name,
+                        federate_handle=repr(handle) if handle is not None else None,
+                        federate_name=name,
                         success=success,
                         exception_name=exception_name or None,
                         section=ref.section if ref is not None else None,
@@ -166,17 +172,16 @@ class PythonRTIMomReportingMixin:
                 section=ref.section if ref is not None else None,
             )
 
-            federation = self.state.federation
-            if not self.config.enable_mom or federation is None or self.state.handle is None or not self.state.service_reporting:
+            if not self.config.enable_mom or federation is None or handle is None or not self.state.service_reporting:
                 return
             report_name = f"{hla_mom.MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportServiceInvocation"
             self._send_mom_report(
                 federation,
                 report_name,
                 {
-                    "HLAfederate": self.state.handle,
+                    "HLAfederate": handle,
                     "HLAservice": service_name,
-                    "HLAinitiator": self.state.handle,
+                    "HLAinitiator": handle,
                     "HLAsuccessIndicator": success,
                     "HLAsuppliedArguments": json.dumps({str(i): self._safe_report_arg(arg) for i, arg in enumerate(args or ())}, sort_keys=True),
                     "HLAreturnedArguments": json.dumps({"value": self._safe_report_arg(result)} if result is not None else {}, sort_keys=True),
@@ -190,7 +195,7 @@ class PythonRTIMomReportingMixin:
                     federation,
                     exception_report,
                     {
-                        "HLAfederate": self.state.handle,
+                        "HLAfederate": handle,
                         "HLAservice": service_name,
                         "HLAexception": exception_name,
                         "HLAserialNumber": serial,

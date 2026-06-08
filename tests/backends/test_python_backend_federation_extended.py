@@ -2,6 +2,7 @@
 
 import pytest
 
+from hla2010 import mom as hla_mom
 from tests.backends.python_backend_extended_support import *
 from hla2010.fom import FOMModule
 from hla2010.backends.python import PythonRTIConfig
@@ -89,6 +90,55 @@ def test_disconnect_clears_buffered_report_callbacks():
 
     assert not rti.backend.state.queue
     assert fed.last_callback("reportFederationExecutions") is None
+
+
+@pytest.mark.requirements("HLA1516.1-FM-4.3-001")
+def test_disconnect_is_observable_through_mom_service_invocation_reporting():
+    engine, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("fm-disconnect-mom-report-fed")
+    witness = rti_ambassador(engine=engine)
+    witness_fed = RecordingFederateAmbassador()
+    witness.connect(witness_fed, CallbackModel.HLA_EVOKED)
+    witness.join_federation_execution("charlie", "type-c", "fm-disconnect-mom-report-fed")
+
+    set_reporting = owner.get_interaction_class_handle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
+    )
+    service_report = owner.get_interaction_class_handle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
+    )
+    sr_fed = owner.get_parameter_handle(set_reporting, "HLAfederate")
+    sr_state = owner.get_parameter_handle(set_reporting, "HLAreportingState")
+    report_service = witness.get_parameter_handle(service_report, "HLAservice")
+    report_success = witness.get_parameter_handle(service_report, "HLAsuccessIndicator")
+
+    witness.subscribe_interaction_class(service_report)
+    owner.send_interaction(
+        set_reporting,
+        {
+            sr_fed: owner.backend.state.handle.encode(),
+            sr_state: hla_mom.encode_bool(True),
+        },
+        b"enable-fm-disconnect-reporting",
+    )
+    drain(owner, observer, witness)
+    assert owner.backend.state.service_reporting is True
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.disconnect()
+    drain(observer, witness)
+
+    reports = [rec for rec in witness_fed.callbacks_named("receiveInteraction") if rec.args[0] == service_report]
+    assert reports
+    assert any(
+        hla_mom.decode_text(rec.args[1][report_service]) == "disconnect"
+        and hla_mom.decode_bool(rec.args[1][report_success])
+        for rec in reports
+    )
+    assert owner.backend.state.connected is False
+
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    witness.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.destroy_federation_execution("fm-disconnect-mom-report-fed")
 
 
 @pytest.mark.requirements("HLA1516.1-FM-4.2-001")

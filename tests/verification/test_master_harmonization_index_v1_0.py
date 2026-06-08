@@ -40,7 +40,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
 
     statuses = Counter(row["harmonization_status"] for row in rows)
     assert statuses == Counter(
-        {"mapped": 2541, "partial": 1459, "planned": 3}
+        {"mapped": 2542, "partial": 1461}
     )
 
     by_id = {row["master_requirement_id"]: row for row in rows}
@@ -134,14 +134,14 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
         by_id["HLA1516.2-OMT-OMT_SCOPE-001"]["harmonization_source_file"]
         == "hla1516_2_omt_detailed_reconciliation.csv"
     )
-    assert by_id["HLA1516.2-NORMALIZATION-030"]["harmonization_status"] == "planned"
+    assert by_id["HLA1516.2-NORMALIZATION-030"]["harmonization_status"] == "partial"
     assert (
         by_id["HLA1516.2-NORMALIZATION-030"]["harmonization_source_file"]
         == "hla1516_2_omt_detailed_reconciliation.csv"
     )
     assert (
         by_id["HLA1516.2-OMT-OMT_NORM_NORMALIZATION-027"]["harmonization_status"]
-        == "planned"
+        == "partial"
     )
     assert by_id["HLA1516.1-CONF_FEDERATE-014"]["harmonization_status"] == "partial"
     assert (
@@ -161,7 +161,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
         == "hla1516_1_mom_detailed_reconciliation.csv"
     )
     assert by_id["HLA1516.1-MIM-PARAM-001"]["harmonization_status"] == "mapped"
-    assert by_id["HLA1516.1-FM-4_3-RTIAPI-001-MOM"]["harmonization_status"] == "planned"
+    assert by_id["HLA1516.1-FM-4_3-RTIAPI-001-MOM"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-SUP-OVERVIEW-013"]["harmonization_status"] == "partial"
     assert (
         by_id["HLA1516.1-SUP-OVERVIEW-013"]["harmonization_source_file"]

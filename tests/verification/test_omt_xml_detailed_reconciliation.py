@@ -58,12 +58,12 @@ def test_omt_xml_detailed_reconciliation_status_distribution_is_intentional():
     rows = _read_rows()
     statuses = Counter(row["current_status"] for row in rows)
 
-    assert statuses == Counter({"partial": 1270, "mapped": 21, "planned": 1})
+    assert statuses == Counter({"partial": 1271, "mapped": 21})
 
     by_id = {row["packet_requirement_id"]: row for row in rows}
     assert by_id["HLA1516.2-OMT-4_1-SEM-001"]["current_status"] == "mapped"
     assert by_id["HLA1516.2-OMT-Annex_C-SEM-019"]["current_status"] == "partial"
-    assert by_id["HLA1516.2-OMT-Annex_B-SEM-018"]["current_status"] == "planned"
+    assert by_id["HLA1516.2-OMT-Annex_B-SEM-018"]["current_status"] == "partial"
     assert by_id["HLA1516.2-OMT-Annex_F-SEM-022"]["current_status"] == "mapped"
     assert by_id["HLA1516.2-OMT-Annex_G-SEM-023"]["current_status"] == "mapped"
     assert by_id["HLA1516.2-XML-SCHEMA-ELEM-0001"]["current_status"] == "partial"

@@ -1654,6 +1654,93 @@ def test_parse_fom_xml_with_omt_schema_validation_accepts_restaurant_reference_m
         parse_fom_xml(invalid, validate_schema="omt")
 
 
+def test_parse_fom_xml_preserves_dimension_normalization_metadata(tmp_path: Path):
+    valid = tmp_path / "normalization-omt.xml"
+    valid.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification>
+    <name>Normalization OMT</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-08</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Preserves dimension normalization metadata.</description>
+    <poc><pocType>Sponsor</pocType><pocName>Codex</pocName></poc>
+  </modelIdentification>
+  <objects><objectClass><name>HLAobjectRoot</name><sharing>Neither</sharing></objectClass></objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <sharing>Neither</sharing>
+      <transportation>HLAreliable</transportation>
+      <order>Receive</order>
+    </interactionClass>
+  </interactions>
+  <dimensions>
+    <dimension>
+      <name>RouteDim</name>
+      <dataType>DimValue</dataType>
+      <upperBound>100</upperBound>
+      <normalization>Linear</normalization>
+    </dimension>
+  </dimensions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+    <transportation><name>HLAbestEffort</name><reliable>No</reliable></transportation>
+  </transportations>
+  <switches>
+    <autoProvide isEnabled="false"/>
+    <conveyRegionDesignatorSets isEnabled="false"/>
+    <conveyProducingFederate isEnabled="false"/>
+    <attributeScopeAdvisory isEnabled="false"/>
+    <attributeRelevanceAdvisory isEnabled="false"/>
+    <objectClassRelevanceAdvisory isEnabled="false"/>
+    <interactionRelevanceAdvisory isEnabled="false"/>
+    <serviceReporting isEnabled="false"/>
+    <exceptionReporting isEnabled="false"/>
+    <delaySubscriptionEvaluation isEnabled="false"/>
+    <automaticResignAction resignAction="NoAction"/>
+  </switches>
+  <dataTypes>
+    <basicDataRepresentations>
+      <basicData>
+        <name>HLAinteger32BE</name>
+        <size>32</size>
+        <interpretation>Integer</interpretation>
+        <endian>Big</endian>
+        <encoding>32-bit signed</encoding>
+      </basicData>
+    </basicDataRepresentations>
+    <simpleDataTypes>
+      <simpleData>
+        <name>DimValue</name>
+        <representation>HLAinteger32BE</representation>
+        <units>NA</units>
+        <resolution>1</resolution>
+        <accuracy>Perfect</accuracy>
+      </simpleData>
+    </simpleDataTypes>
+    <enumeratedDataTypes/>
+    <arrayDataTypes/>
+    <fixedRecordDataTypes/>
+    <variantRecordDataTypes/>
+  </dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    module = parse_fom_xml(valid, validate_schema="omt")
+    spec = module.dimension_specs["RouteDim"]
+
+    assert module.dimensions == ("RouteDim",)
+    assert spec.name == "RouteDim"
+    assert spec.data_type == "DimValue"
+    assert spec.upper_bound == "100"
+    assert spec.normalization == "Linear"
+
+
 def test_1516_2_hierarchy_doc_declares_omt_lexicon_and_conformance_boundary():
     text = (
         Path(__file__).resolve().parents[2] / "docs" / "verification" / "requirements_hierarchy.md"
