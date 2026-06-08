@@ -1,0 +1,10 @@
+metric,value,notes
+Total requirement rows,4003,v0.3 base plus v1.0 full-document completion delta
+New v1.0 rows,1445,Generated since v0.3
+Detailed Clause 5-11 rows added,1257,Service/callback/MOM behavior decompositions
+Verification rows,9345,Generated static/native/gRPC/REST placeholders
+Clause tracker rows,45,All major clauses/annexes accounted for
+C++ API catalog rows,290,Parsed from official C++ API headers
+MIM catalog rows carried forward,288,From v0.3 standard MIM XML extraction
+XSD catalog rows carried forward,1269,From v0.3 OMT/DIF/FDD XSD extraction
+WSDL operation rows carried forward,308,From v0.3 WSDL extraction

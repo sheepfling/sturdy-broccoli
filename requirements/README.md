@@ -19,6 +19,18 @@ Use it to track the three standards as three requirement sources:
 
 This directory is intentionally upstream of the generated packet in `analysis/compliance/`.
 
+The repo also carries a versioned raw packet intake at
+`requirements/imports/hla_1516_requirements_codebase_packet_v1_0/`.
+Use that import tree when you need the external v1.0 dump, its manifest,
+history files, or the integration workpacket.
+
+That import is deliberately not flattened onto the curated top-level
+`requirements/*.csv` files. The top-level files remain the harmonized
+working set for repo-native requirement engineering.
+
+Restricted IEEE source inputs from the packet were intentionally not copied
+into the committed import tree; see the import README for the policy note.
+
 Use the files together like this:
 
 `requirements/*.csv -> analysis/compliance/requirements_matrix_2010.* -> tests/verification/*`

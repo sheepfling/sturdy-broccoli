@@ -1,0 +1,304 @@
+{
+  "canonical_asset_summary": {
+    "clause_tracker_rows": 45,
+    "cpp_api_catalog_rows": 290,
+    "master_requirements_rows": 4003,
+    "verification_rows": 9345
+  },
+  "created_utc": "2026-06-08T06:08:38.256926+00:00",
+  "included_files": [
+    {
+      "bytes": 1474489,
+      "path": "requirements/latest/hla_1516_requirements_master_v1_0.xlsx",
+      "sha256": "49893707566cec77c181cb2df277ed6aa3a5fdd34f8142127ed216e78c199e04",
+      "source_path": "/mnt/data/hla_1516_requirements_master_v1_0.xlsx"
+    },
+    {
+      "bytes": 2889463,
+      "path": "requirements/latest/hla_1516_requirements_master_v1_0.csv",
+      "sha256": "e3c543c30e2ea56d017f68884051466bc148096e53c598d26adf977ac7ed6df3",
+      "source_path": "/mnt/data/hla_1516_requirements_master_v1_0.csv"
+    },
+    {
+      "bytes": 1132178,
+      "path": "requirements/latest/hla_1516_requirements_delta_v1_0.csv",
+      "sha256": "93e118d53df39c63c21aecaa81f2612247c585a980e70bec0e89f5978c6ba0a8",
+      "source_path": "/mnt/data/hla_1516_requirements_delta_v1_0.csv"
+    },
+    {
+      "bytes": 1018765,
+      "path": "requirements/latest/hla_1516_clauses5_11_detailed_requirements_v1_0.csv",
+      "sha256": "bbb2f37729f99bb584aed9bad877840a7be469f926be504c1ccaef023a69c22a",
+      "source_path": "/mnt/data/hla_1516_clauses5_11_detailed_requirements_v1_0.csv"
+    },
+    {
+      "bytes": 1099574,
+      "path": "requirements/latest/hla_1516_clause6_11_detailed_requirements_v1_0.csv",
+      "sha256": "72cb169f05215e276c2e9aaf77845ac604b1031ad75143a51e159c1706fd3526",
+      "source_path": "/mnt/data/hla_1516_clause6_11_detailed_requirements_v1_0.csv"
+    },
+    {
+      "bytes": 877372,
+      "path": "requirements/latest/hla_1516_omt_xml_detailed_requirements_v1_0.csv",
+      "sha256": "d55f6d2d08b17a36724d467a54867d33e08f3b650e372e9760d3586fe3a1e269",
+      "source_path": "/mnt/data/hla_1516_omt_xml_detailed_requirements_v1_0.csv"
+    },
+    {
+      "bytes": 3797517,
+      "path": "requirements/latest/hla_1516_verification_matrix_v1_0.csv",
+      "sha256": "0eb409797370b39b06a76fed1d68660776942fe724ffaac1cdac9948d2875066",
+      "source_path": "/mnt/data/hla_1516_verification_matrix_v1_0.csv"
+    },
+    {
+      "bytes": 11883,
+      "path": "requirements/latest/hla_1516_clause_tracker_v1_0.csv",
+      "sha256": "83e10e6057db0760a48a093e2fa762860e039fc88fe036dcf0a93e29f46b6827",
+      "source_path": "/mnt/data/hla_1516_clause_tracker_v1_0.csv"
+    },
+    {
+      "bytes": 97854,
+      "path": "requirements/latest/hla_1516_cpp_api_catalog_v1_0.csv",
+      "sha256": "aa1f7c7897522d75addaca1d45df8f3fa1e78492b1a98781c4fac9600be48aa7",
+      "source_path": "/mnt/data/hla_1516_cpp_api_catalog_v1_0.csv"
+    },
+    {
+      "bytes": 641,
+      "path": "requirements/latest/hla_1516_requirements_summary_v1_0.csv",
+      "sha256": "fe182f3644cc529337165e4dbfc59142465b6fa5ef20ab58bdaf8db3ae36809f",
+      "source_path": "/mnt/data/hla_1516_requirements_summary_v1_0.csv"
+    },
+    {
+      "bytes": 427727,
+      "path": "requirements/latest/hla_1516_requirements_dashboard_v1_0_preview.png",
+      "sha256": "6fce4da235fd4ccb256d0ae98bf095c31fbd08e280ce1796fcd6737287d3365b",
+      "source_path": "/mnt/data/hla_1516_requirements_dashboard_v1_0_preview.png"
+    },
+    {
+      "bytes": 47930,
+      "path": "requirements/latest/hla_1516_requirements_index_v1_0.xlsx",
+      "sha256": "ba640494e6ecd25a0cbf31b9a1ca309eed97ddadd7a4514b8b1b515fc42a5469",
+      "source_path": "/mnt/data/hla_1516_requirements_index_v1_0.xlsx"
+    },
+    {
+      "bytes": 102251,
+      "path": "requirements/catalogs/hla_1516_api_service_catalog_v0_3.csv",
+      "sha256": "e329154f93bf8502f8caf147bd28ba4a69375ed2a25c413983e91bc873a64267",
+      "source_path": "/mnt/data/hla_1516_api_service_catalog_v0_3.csv"
+    },
+    {
+      "bytes": 95987,
+      "path": "requirements/catalogs/hla_1516_mim_catalog_v0_3.csv",
+      "sha256": "2a45cf93a069f28abe2d07c0b4b62a53db3cd40586e56434389065065efe0c01",
+      "source_path": "/mnt/data/hla_1516_mim_catalog_v0_3.csv"
+    },
+    {
+      "bytes": 53760,
+      "path": "requirements/catalogs/hla_1516_xsd_catalog_v0_3.csv",
+      "sha256": "226e1aa80f3f082b28ebc7f26f474a6e0171d433e1dfea273765c4a8a54ff9af",
+      "source_path": "/mnt/data/hla_1516_xsd_catalog_v0_3.csv"
+    },
+    {
+      "bytes": 21322,
+      "path": "requirements/catalogs/hla_1516_wsdl_catalog_v0_3.csv",
+      "sha256": "6f66c7ce606ca4c95d93ce05aa235a097323b47e042b2f184b834eff348303da",
+      "source_path": "/mnt/data/hla_1516_wsdl_catalog_v0_3.csv"
+    },
+    {
+      "bytes": 61134,
+      "path": "requirements/history/hla_1516_requirements_master_v0_1.xlsx",
+      "sha256": "7f8394ea425a29de905501fad6dd0234fa63a559bf24737d037fba14a657bea8",
+      "source_path": "/mnt/data/hla_1516_requirements_master_v0_1.xlsx"
+    },
+    {
+      "bytes": 95315,
+      "path": "requirements/history/hla_1516_requirements_master_v0_1.csv",
+      "sha256": "29043edc4f41a2c28cc5fd104e772586753f3a6b8c5f0dcb382ee13e8fb63c7b",
+      "source_path": "/mnt/data/hla_1516_requirements_master_v0_1.csv"
+    },
+    {
+      "bytes": 258449,
+      "path": "requirements/history/hla_1516_requirements_master_v0_2.xlsx",
+      "sha256": "f10a506d8f53e06b8b350c3b8519bbebbd1ec3af48a8d1a4b46172717adec1b1",
+      "source_path": "/mnt/data/hla_1516_requirements_master_v0_2.xlsx"
+    },
+    {
+      "bytes": 430861,
+      "path": "requirements/history/hla_1516_requirements_master_v0_2.csv",
+      "sha256": "0cd72dd1c080b0330be8266ea83df5946594a5de97fabca1eddb1ac00eeb5eee",
+      "source_path": "/mnt/data/hla_1516_requirements_master_v0_2.csv"
+    },
+    {
+      "bytes": 313021,
+      "path": "requirements/history/hla_1516_clause4_detailed_requirements_v0_2.csv",
+      "sha256": "acdd5b85a7666a0e0e805458f23a4ece208ebc39a66045dba8aeb13a513f4eea",
+      "source_path": "/mnt/data/hla_1516_clause4_detailed_requirements_v0_2.csv"
+    },
+    {
+      "bytes": 415355,
+      "path": "requirements/history/hla_1516_verification_matrix_v0_2.csv",
+      "sha256": "097d8db787d1da5587b3a8c1f28af551d61210facbcd1739cacc2f049e0eb96c",
+      "source_path": "/mnt/data/hla_1516_verification_matrix_v0_2.csv"
+    },
+    {
+      "bytes": 902835,
+      "path": "requirements/history/hla_1516_requirements_master_v0_3.xlsx",
+      "sha256": "49f2c248491832b640a898c68548491a5a73c54dfae4f0a2c9b15b85218bc671",
+      "source_path": "/mnt/data/hla_1516_requirements_master_v0_3.xlsx"
+    },
+    {
+      "bytes": 1757594,
+      "path": "requirements/history/hla_1516_requirements_master_v0_3.csv",
+      "sha256": "3853c0b66273439bfbb7f12c18183faa1c0a5d4c8a7c93bc6d6f76e104a898fe",
+      "source_path": "/mnt/data/hla_1516_requirements_master_v0_3.csv"
+    },
+    {
+      "bytes": 1327042,
+      "path": "requirements/history/hla_1516_requirements_delta_v0_3.csv",
+      "sha256": "95602852af88ad818aa3483f16b58522d34be649891fc72799f957b69acc4c55",
+      "source_path": "/mnt/data/hla_1516_requirements_delta_v0_3.csv"
+    },
+    {
+      "bytes": 2351445,
+      "path": "requirements/history/hla_1516_verification_matrix_v0_3.csv",
+      "sha256": "e22a8a99ef60c5e23bbf304f377e3d4a532f130c0806a62033fd28c5e97216bc",
+      "source_path": "/mnt/data/hla_1516_verification_matrix_v0_3.csv"
+    },
+    {
+      "bytes": 146849,
+      "path": "requirements/history/hla_1516_requirements_dashboard_v0_3_preview.png",
+      "sha256": "cdd97e2e26c9adfb970e567b4c7499a69bd05d6e19cd16baae00a0bc45b18e6b",
+      "source_path": "/mnt/data/hla_1516_requirements_dashboard_v0_3_preview.png"
+    },
+    {
+      "bytes": 1645651,
+      "path": "requirements/history/hla_1516_requirements_master_v0_4.xlsx",
+      "sha256": "9ae86eb00762ef17fe890783b79e8be242373166adf2a109b5cf02e5a9271406",
+      "source_path": "/mnt/data/hla_1516_requirements_master_v0_4.xlsx"
+    },
+    {
+      "bytes": 1950812,
+      "path": "requirements/history/hla_1516_requirements_master_v0_4.csv",
+      "sha256": "7c7feeff90b8554b7fca59248f3bec1d976c231569eb1df480f6a7b709ff8d51",
+      "source_path": "/mnt/data/hla_1516_requirements_master_v0_4.csv"
+    },
+    {
+      "bytes": 193527,
+      "path": "requirements/history/hla_1516_clause5_detailed_requirements_v0_4.csv",
+      "sha256": "9debb161ce9664cd7152f16b1bb110fdf72790e659858714561854845fb8e0b1",
+      "source_path": "/mnt/data/hla_1516_clause5_detailed_requirements_v0_4.csv"
+    },
+    {
+      "bytes": 2687780,
+      "path": "requirements/history/hla_1516_verification_matrix_v0_4.csv",
+      "sha256": "dc8eb7bd4cc518c9f4833fe91badbb69fb76f2192962dda11c0e10ebfb74c21f",
+      "source_path": "/mnt/data/hla_1516_verification_matrix_v0_4.csv"
+    },
+    {
+      "bytes": 4991,
+      "path": "requirements/history/hla_1516_clause_tracker_v0_4.csv",
+      "sha256": "9b94b2d587f0d59374683c28e1fab226859f2353bf597bf4d7d265a900f9e568",
+      "source_path": "/mnt/data/hla_1516_clause_tracker_v0_4.csv"
+    },
+    {
+      "bytes": 153257,
+      "path": "requirements/history/hla_1516_requirements_dashboard_v0_4_preview.png",
+      "sha256": "df8253af2f9d7abc294cf9ebba4817274bfdb5afb929ca2a074767bb3d35d746",
+      "source_path": "/mnt/data/hla_1516_requirements_dashboard_v0_4_preview.png"
+    },
+    {
+      "bytes": 11813,
+      "path": "requirements/scripts/build_hla_v1_workbook.py",
+      "sha256": "b26d92a97239c8f920539069aebb9719de43ab05925203ca66ffbf8a54a9fe2e",
+      "source_path": "/mnt/data/build_hla_v1_workbook.py"
+    },
+    {
+      "bytes": 10208,
+      "path": "requirements/scripts/build_hla_v1_index_workbook.py",
+      "sha256": "fac161d8a5ec1a55e838335fa51cfe7fb0ab039d0948e3c355d2b3bc5c25dce7",
+      "source_path": "/mnt/data/build_hla_v1_index_workbook.py"
+    },
+    {
+      "bytes": 452913,
+      "path": "requirements/restricted_reference_inputs/IEEE-1516-2010-framework-and-rules-reference.pdf",
+      "sha256": "b66786d0efd3880aa01258b7f3b4303fec19eb7880a0091fa947125aa144cb54",
+      "source_path": "/mnt/data/IEEE-1516-2010-framework-and-rules-reference.pdf"
+    },
+    {
+      "bytes": 1875929,
+      "path": "requirements/restricted_reference_inputs/IEEE-1516.1-2010-federate-interface.pdf",
+      "sha256": "0d4642a750e47118f191bc1c15132cb5a4f1b0b5e4b6be461db0de0e1adfa007",
+      "source_path": "/mnt/data/IEEE-1516.1-2010-federate-interface.pdf"
+    },
+    {
+      "bytes": 749439,
+      "path": "requirements/restricted_reference_inputs/IEEE-1516.2-2010-omt.pdf",
+      "sha256": "74c77e8666bf2387b5541bb174b01b5424f467bee2a960b6635ae7344d4bc7b9",
+      "source_path": "/mnt/data/IEEE-1516.2-2010-omt.pdf"
+    },
+    {
+      "bytes": 211966,
+      "path": "requirements/restricted_reference_inputs/1516.1-2010_downloads.zip",
+      "sha256": "e6343f40b066d51b7f435c9aae6788be24f5d585e370d972c032ab0b503e27c1",
+      "source_path": "/mnt/data/1516.1-2010_downloads.zip"
+    },
+    {
+      "bytes": 33220,
+      "path": "requirements/restricted_reference_inputs/1516.2-2010_downloads.zip",
+      "sha256": "1fb3d77318d87f55938ec74e4bc2a1a90f3bf62aa56937850f1073c9d446bb2b",
+      "source_path": "/mnt/data/1516.2-2010_downloads.zip"
+    },
+    {
+      "bytes": 1016,
+      "path": "WORK_PACKET/ACCEPTANCE_CHECKLIST.md",
+      "sha256": "5023c1c72f7bbf3277b46b57b9b8a345a89639e7e4adbee10132bd5e2011b005",
+      "source_path": "/mnt/data/hla_1516_requirements_codebase_packet_v1_0/WORK_PACKET/ACCEPTANCE_CHECKLIST.md"
+    },
+    {
+      "bytes": 3868,
+      "path": "WORK_PACKET/AGENT_WORK_PACKET.md",
+      "sha256": "d45a170627fc53256ecda08e312d110f6d5240e9753983f88ced395b8667b70c",
+      "source_path": "/mnt/data/hla_1516_requirements_codebase_packet_v1_0/WORK_PACKET/AGENT_WORK_PACKET.md"
+    },
+    {
+      "bytes": 4777,
+      "path": "WORK_PACKET/CODEBASE_HOOKUP_TASKS.csv",
+      "sha256": "a130e7c1c0124cb4a9e1c565de13925fc75778c47cb001637e42a784767e3e24",
+      "source_path": "/mnt/data/hla_1516_requirements_codebase_packet_v1_0/WORK_PACKET/CODEBASE_HOOKUP_TASKS.csv"
+    },
+    {
+      "bytes": 1454,
+      "path": "WORK_PACKET/REPO_PLACEMENT_PLAN.yaml",
+      "sha256": "40eefe279bbd89b36dc6fdbab8d3a4f6448676c549d6c1c09909d38e3382e7a7",
+      "source_path": "/mnt/data/hla_1516_requirements_codebase_packet_v1_0/WORK_PACKET/REPO_PLACEMENT_PLAN.yaml"
+    },
+    {
+      "bytes": 1874,
+      "path": "WORK_PACKET/REQUIREMENTS_SCHEMA.md",
+      "sha256": "b438a12baef8d644e3b9079a74b84d6e140a34d1630d6737bf49dff58c4b8509",
+      "source_path": "/mnt/data/hla_1516_requirements_codebase_packet_v1_0/WORK_PACKET/REQUIREMENTS_SCHEMA.md"
+    },
+    {
+      "bytes": 13222,
+      "path": "MANIFEST.json",
+      "sha256": "7f6e7b2cb2d94df1e602e58a03b88e91ff26a5c5857cccd0213963d1b36a6bcd",
+      "source_path": "/mnt/data/hla_1516_requirements_codebase_packet_v1_0/MANIFEST.json"
+    },
+    {
+      "bytes": 1078,
+      "path": "README.md",
+      "sha256": "29f983ddb3827829aaebf0259179e536cf5e6b57eaead1de02a53ee31954a8ae",
+      "source_path": "/mnt/data/hla_1516_requirements_codebase_packet_v1_0/README.md"
+    }
+  ],
+  "missing_requested_files": [],
+  "notes": [
+    "requirements/latest contains the canonical v1.0 artifacts.",
+    "requirements/history contains earlier tranche outputs for audit trail.",
+    "requirements/catalogs contains carried-forward generated API/MIM/XSD/WSDL catalogs.",
+    "requirements/restricted_reference_inputs contains user-provided standards inputs; do not commit these to a public repository unless license terms permit.",
+    "WORK_PACKET contains instructions for organizing and hooking the assets into a codebase."
+  ],
+  "packet_name": "hla_1516_requirements_codebase_packet_v1_0",
+  "packet_version": "v1.0",
+  "purpose": "Package HLA 1516 requirements artifacts and provide a codebase integration work packet for an implementation agent."
+}

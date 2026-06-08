@@ -1,0 +1,27 @@
+packet_version: v1.0
+recommended_repo_paths:
+  canonical_latest: docs/standards/hla-1516-2010/requirements/latest
+  carried_forward_catalogs: docs/standards/hla-1516-2010/requirements/catalogs
+  historical_versions: docs/standards/hla-1516-2010/requirements/history
+  dashboards: docs/standards/hla-1516-2010/requirements/dashboards
+  manifests: docs/standards/hla-1516-2010/requirements/manifests
+  generated_docs: docs/standards/hla-1516-2010/generated
+  tooling: tools/requirements
+  validation_tests: tests/requirements
+canonical_files:
+  master_requirements: hla_1516_requirements_master_v1_0.csv
+  master_workbook: hla_1516_requirements_master_v1_0.xlsx
+  verification_matrix: hla_1516_verification_matrix_v1_0.csv
+  clause_tracker: hla_1516_clause_tracker_v1_0.csv
+  detailed_clauses_5_11: hla_1516_clauses5_11_detailed_requirements_v1_0.csv
+  cpp_api_catalog: hla_1516_cpp_api_catalog_v1_0.csv
+  summary: hla_1516_requirements_summary_v1_0.csv
+restricted_reference_inputs_policy:
+  recommendation: do_not_commit_to_public_repository_without_license_review
+  reason: source IEEE standards/download artifacts may be copyrighted even though generated catalogs can be used as engineering traceability artifacts
+first_backlog_focus:
+  - Clause 4 Federation Management traceability tests
+  - Clause 5 Declaration Management traceability tests
+  - Clause 6 Object Management tests
+  - Clause 8 Time Management tests
+  - Clause 11 MOM/MIM observer tests
