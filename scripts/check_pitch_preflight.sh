@@ -166,11 +166,11 @@ else
     bundle_detail="blocked: extracted archive exists at $PITCH_LOCAL_ARCHIVE_DIR but $PITCH_BUNDLE_DIR is missing"
   else
     bundle_status="missing"
-    bundle_detail="missing: set HLA2010_PITCH_HOME or place PITCH-prti1516e-manual under third_party/pitch/"
+    bundle_detail="missing: set HLA2010_PITCH_HOME or place HLA_PITCH_linux.zip, HLA_PITCH_linux/, or PITCH-prti1516e-manual/ under third_party/pitch/"
   fi
   if [[ "$OUTPUT_JSON" -eq 0 ]]; then
     show_hint "pitch bundle" "$bundle_detail"
-    show_hint "next step" "if you have the vendor bundle, point HLA2010_PITCH_HOME at it; otherwise place it in third_party/pitch/"
+    show_hint "next step" "set HLA2010_PITCH_HOME, or place HLA_PITCH_linux.zip, HLA_PITCH_linux/, or PITCH-prti1516e-manual/ under third_party/pitch/"
   fi
 fi
 

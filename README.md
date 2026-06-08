@@ -79,7 +79,8 @@ Additional repo-local material promoted from `INBOX`:
 - `docs/certi_negotiated_ownership_findings.md` source-level investigation notes for CERTI negotiated ownership limitations
 - `docs/evidence/` unpacked verification evidence packets
 - `docs/reference/hla-2010-specs.zip` original PDF-only reference drop
-- `third_party/pitch/` Pitch pRTI / Visual OMT installer bundle
+- `third_party/pitch/` local Pitch pRTI / Visual OMT vendor drop, ignored by
+  Git except for its README
 - `archives/` retained source-drop and verification ZIP archives
 - `scripts/bootstrap_python.sh` local Python environment bootstrap
 - `scripts/rebuild_certi.sh` local CERTI configure/build/install
@@ -382,6 +383,17 @@ The `pitch-jpype` path currently discovers the extracted runtime from:
 
 - `HLA2010_PITCH_HOME`, if set
 - `third_party/pitch/PITCH-prti1516e-manual`, if present
+
+The repo does not track the vendor runtime payload itself. The supported local
+re-supply inputs are:
+
+- `HLA2010_PITCH_HOME=/absolute/path/to/PITCH-prti1516e-manual`
+- `third_party/pitch/HLA_PITCH_linux.zip`
+- `third_party/pitch/HLA_PITCH_linux/`
+- `third_party/pitch/PITCH-prti1516e-manual/`
+
+See [`third_party/pitch/README.md`](third_party/pitch/README.md) for the local
+vendor-drop contract.
 
 The simplest Docker-backed Pitch flow is now:
 
