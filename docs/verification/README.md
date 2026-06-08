@@ -29,7 +29,7 @@ Keep verification docs in this order:
 - [../source_documents.md](../source_documents.md): source provenance and reference map
 - [../evidence/README.md](../evidence/README.md): promoted evidence packets
 - [../specs/README.md](../specs/README.md): planned spec/evidence artifact family
-- [run_sequence.md](run_sequence.md): documented install-to-compliance sequence
+- [run_sequence.md](run_sequence.md): documented full verification sequence
 
 ## What Belongs Here
 

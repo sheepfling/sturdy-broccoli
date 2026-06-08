@@ -10,6 +10,7 @@ Start here:
 
 - [documentation_hierarchy.md](documentation_hierarchy.md): canonical doc flow and hierarchy
 - [../README.md](../README.md): install, bootstrap, smoke, and operator commands
+- [verification/run_sequence.md](verification/run_sequence.md): full verification sequence and run order
 
 Doc families:
 
@@ -48,7 +49,7 @@ Verification and provenance:
 - [evidence/README.md](evidence/README.md): unpacked verification packets
 - [evidence/packet_index.md](evidence/packet_index.md): unpacked packet index
 - [verification/README.md](verification/README.md): verification family index
-- [verification/run_sequence.md](verification/run_sequence.md): easy-run lifecycle sequence
+- [verification/run_sequence.md](verification/run_sequence.md): full verification sequence and run order
 
 Planning:
 

@@ -23,7 +23,7 @@ The rule is simple:
 ### Test / Smoke
 
 - `test.sh`: pytest wrapper for the selected test set
-- `full_sequence.sh`: install-to-compliance lifecycle sequence, including type annotations
+- `full_sequence.sh`: full verification sequence, including type annotations
 - `seed_suite.sh`: default local seed suite
 - `vendor_runtime_smoke.sh`: CERTI and Pitch smoke/profile runner
 - `section8_backend_matrix_gate.sh`: Section 8 cross-backend matrix gate
