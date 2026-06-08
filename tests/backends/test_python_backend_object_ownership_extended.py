@@ -9,6 +9,7 @@ from hla2010.exceptions import *
 from hla2010.handles import *
 from hla2010.raw_api import API_METADATA
 from hla2010.enums import OrderType, ResignAction, ServiceGroup
+from hla2010.testing.section8_matrix import run_section8_request_retraction_case, section8_matrix_config
 from hla2010.types import RangeBounds
 from hla2010.exceptions import AttributeAlreadyBeingDivested, AttributeAlreadyOwned, AttributeNotPublished, InteractionClassNotPublished
 
@@ -1113,6 +1114,32 @@ def test_clause_8_enable_and_grant_callbacks_arrive_in_expected_order():
     owner.resign_federation_execution(ResignAction.NO_ACTION)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("tm-callback-order-fed")
+
+
+def test_clause_8_request_retraction_callback_arrives_after_delivered_interaction():
+    publisher = rti_ambassador(engine=InMemoryRTIEngine())
+    subscriber = rti_ambassador(engine=publisher.backend.engine)
+    config = section8_matrix_config("tm-request-retraction-order-fed", "HLAfloat64Time")
+    summary = run_section8_request_retraction_case(publisher, subscriber, config=config)
+
+    subscriber_records = summary["subscriber_federate"].records
+    receive_index = next(
+        i for i, record in enumerate(subscriber_records)
+        if record.method_name == "receiveInteraction" and record.args[1] == {summary["parameter"]: config.first_payload}
+    )
+    retract_index = next(
+        i for i, record in enumerate(subscriber_records)
+        if record.method_name == "requestRetraction" and record.args[0] == summary["sent"].handle
+    )
+
+    assert receive_index < retract_index
+    assert subscriber_records[retract_index] == summary["request_retraction"]
+    assert summary["received"] == subscriber_records[receive_index]
+    assert not any(
+        record.method_name == "receiveInteraction"
+        and record.args[1] == {summary["parameter"]: config.first_payload}
+        for record in subscriber_records[retract_index + 1 :]
+    )
 
 
 def test_python_rti_query_attribute_ownership_reports_owner_for_owned_attribute():
