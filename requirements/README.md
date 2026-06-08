@@ -5,6 +5,7 @@ This directory is the source side of the verification package.
 Use it to track the three standards as three requirement sources:
 
 - `hla1516_framework_rules.csv`: IEEE 1516-2010 framework and architecture rules
+- `hla1516_framework_detailed_reconciliation.csv`: packet-derived detailed IEEE 1516-2010 framework reconciliation keyed to current repo rules, docs, and cross-standard evidence
 - `hla1516_clause_12_save_restore.csv`: clause-level IEEE 1516-2010 save/restore architecture tranche
 - `hla1516_1_federate_interface.csv`: IEEE 1516.1-2010 federate interface families
 - `hla1516_1_priority_clauses_4_8_11.csv`: first clause-level extraction tranche for lifecycle time and MOM
@@ -74,6 +75,7 @@ The first concrete clause-level extraction tranches are:
 - `hla1516_1_clause_10_sup_detailed_reconciliation.csv`
 - `hla1516_1_clause_11_mom_detailed_reconciliation.csv`
 - `hla1516_clause_12_save_restore.csv`
+- `hla1516_framework_detailed_reconciliation.csv`
 - `hla1516_1_priority_clauses_7_9_10.csv`
 - `hla1516_2_priority_omt.csv`
 - `hla1516_2_omt_xml_detailed_reconciliation.csv`
@@ -106,6 +108,8 @@ This decomposition file is still an engineering seed. It is deliberately narrowe
 `hla1516_1_clause_11_mom_detailed_reconciliation.csv` applies the packet-to-curated bridge pattern to Clause 11 Management Object Model requirements, using the packet's `OVW/OBJ/INT/RTI/SRV/TABLE` row kinds rather than service slices and mapping them onto the repo's current MOM catalog, observer, reporting, action, and runtime evidence while keeping the remaining design-rule-only nonrevision row distinct.
 
 `hla1516_2_omt_xml_detailed_reconciliation.csv` applies that same bridge pattern to the imported IEEE 1516.2 OMT/XML detailed packet. It maps the clause-level `omt_clause_detail` rows directly onto the current curated 1516.2 parser, merge, MIM, and schema-conformance requirements where the repo already has clause-specific evidence, while keeping the imported per-element and per-type `xsd_element_detail` and `xsd_type_detail` rows `partial` to reflect that the repo currently validates Annex D/E behavior at the schema-family and round-trip level rather than as one repo-native requirement per XSD atom.
+
+`hla1516_framework_detailed_reconciliation.csv` is the framework-standard companion bridge for the imported IEEE 1516-2010 master rows outside Clause 12. It reconciles the packet's framework concepts, federation rules, rationale, and bibliography rows against the repo's seeded framework rules, cross-standard clause bridges, and source-policy documents, using `mapped` where the current evidence directly closes the imported rule and `partial` where the repo only proves a narrower executable subset of a broader architectural statement.
 
 `hla_1516_master_harmonization_index_v1_0.csv` is the whole-catalog companion to the detailed bridge files. It starts from the imported `hla_1516_requirements_master_v1_0.csv` canonical packet and records, for every master requirement row, whether the current repo has a packet-to-curated detailed reconciliation for it yet. Rows already represented in a detailed bridge inherit that bridge's `mapped` or `partial` status; all remaining master rows are explicitly marked `unreconciled` with a source-file hint pointing at the current repo-native family ledger that would need the next harmonization pass.
 

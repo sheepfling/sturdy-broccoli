@@ -13,6 +13,8 @@ Policy notes:
   `build/generated/` so source-derived files can be regenerated instead of
   committed
 - avoid duplicating the same archive in multiple repo-local locations
+- treat bibliographic and archive-reference material as non-normative source
+  context unless another tracked artifact cites it as normative evidence
 - review IEEE licensing and redistribution requirements before publishing or
   redistributing the repository
 
