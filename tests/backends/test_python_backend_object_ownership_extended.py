@@ -1021,6 +1021,75 @@ def test_clause_6_service_and_callback_signature_metadata_matches_source_binding
         assert [record["params"] for record in java_records] == expected_params
 
 
+def test_clause_6_federate_initiated_services_validate_core_argument_shapes():
+    _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("om-arg-validation-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    track_id = owner.get_parameter_handle(interaction, "TrackId")
+
+    bad_class = type(cls)(cls.value + 1000)
+    bad_attr = type(attr)(attr.value + 1000)
+    bad_interaction = type(interaction)(interaction.value + 1000)
+    bad_param = type(track_id)(track_id.value + 1000)
+
+    owner.publish_object_class_attributes(cls, {attr})
+    owner.publish_interaction_class(interaction)
+    obj = owner.register_object_instance(cls, "OM-Arg-Validation")
+
+    with pytest.raises(InvalidObjectClassHandle):
+        owner.register_object_instance(bad_class, "bad-class")
+
+    with pytest.raises(ObjectInstanceNotKnown):
+        owner.update_attribute_values(ObjectInstanceHandle(999), {attr: b"x"}, b"tag")
+    with pytest.raises(AttributeNotDefined):
+        owner.update_attribute_values(obj, {bad_attr: b"x"}, b"tag")
+
+    with pytest.raises(InvalidInteractionClassHandle):
+        owner.send_interaction(bad_interaction, {track_id: b"x"}, b"tag")
+    with pytest.raises(InteractionParameterNotDefined):
+        owner.send_interaction(interaction, {bad_param: b"x"}, b"tag")
+
+    with pytest.raises(ObjectInstanceNotKnown):
+        owner.delete_object_instance(ObjectInstanceHandle(999), b"tag")
+    with pytest.raises(ObjectInstanceNotKnown):
+        owner.local_delete_object_instance(ObjectInstanceHandle(999))
+
+    with pytest.raises(ObjectInstanceNotKnown):
+        owner.request_attribute_value_update(ObjectInstanceHandle(999), {attr}, b"tag")
+    with pytest.raises(AttributeNotDefined):
+        owner.request_attribute_value_update(obj, {bad_attr}, b"tag")
+    with pytest.raises(InvalidObjectClassHandle):
+        owner.request_attribute_value_update(bad_class, {attr}, b"tag")
+
+    with pytest.raises(ObjectInstanceNotKnown):
+        owner.request_attribute_transportation_type_change(
+            ObjectInstanceHandle(999),
+            {attr},
+            owner.backend.engine.transportation_reliable,
+        )
+    with pytest.raises(AttributeNotDefined):
+        owner.request_attribute_transportation_type_change(
+            obj,
+            {bad_attr},
+            owner.backend.engine.transportation_reliable,
+        )
+    with pytest.raises(ObjectInstanceNotKnown):
+        owner.query_attribute_transportation_type(ObjectInstanceHandle(999), attr)
+    with pytest.raises(AttributeNotDefined):
+        owner.query_attribute_transportation_type(obj, bad_attr)
+
+    with pytest.raises(InvalidInteractionClassHandle):
+        owner.request_interaction_transportation_type_change(
+            bad_interaction,
+            owner.backend.engine.transportation_reliable,
+        )
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("om-arg-validation-fed")
+
+
 def test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):

@@ -208,6 +208,8 @@ class PythonRTIObjectDeliveryMixin:
     ) -> MessageRetractionReturn | None:
         federation, instance = self._find_object(theObject)
         self._ensure_no_save_or_restore_in_progress(federation)
+        for handle in theAttributes:
+            self.engine.attribute_name(instance.class_handle, handle)
         if self.config.strict_object_publication:
             published = self.state.published_objects.get(instance.class_handle, set())
             if not set(theAttributes).issubset(published):
