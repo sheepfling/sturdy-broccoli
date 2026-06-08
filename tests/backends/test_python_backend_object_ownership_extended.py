@@ -692,6 +692,141 @@ def test_clause_6_callback_activity_is_visible_in_mom_summary():
     owner.destroy_federation_execution("om-mom-callback-summary-fed")
 
 
+def test_clause_7_services_are_observable_through_mom_service_invocation_reporting():
+    engine, owner, observer, _owner_fed, _observer_fed, _h1, h2 = joined_pair("own-mom-service-report-fed")
+    witness = rti_ambassador(engine=engine)
+    witness_fed = RecordingFederateAmbassador()
+    witness.connect(witness_fed, CallbackModel.HLA_EVOKED)
+    witness.join_federation_execution("charlie", "type-c", "own-mom-service-report-fed")
+
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    set_reporting = owner.get_interaction_class_handle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
+    )
+    service_report = owner.get_interaction_class_handle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
+    )
+    sr_fed = owner.get_parameter_handle(set_reporting, "HLAfederate")
+    sr_state = owner.get_parameter_handle(set_reporting, "HLAreportingState")
+    report_service = witness.get_parameter_handle(service_report, "HLAservice")
+    report_success = witness.get_parameter_handle(service_report, "HLAsuccessIndicator")
+
+    witness.subscribe_interaction_class(service_report)
+    owner.send_interaction(
+        set_reporting,
+        {
+            sr_fed: owner.backend.state.handle.encode(),
+            sr_state: hla_mom.encode_bool(True),
+        },
+        b"enable-own-owner-service-reporting",
+    )
+    observer.send_interaction(
+        set_reporting,
+        {
+            sr_fed: observer.backend.state.handle.encode(),
+            sr_state: hla_mom.encode_bool(True),
+        },
+        b"enable-own-observer-service-reporting",
+    )
+    drain(owner, observer, witness)
+    assert owner.backend.state.service_reporting is True
+    assert observer.backend.state.service_reporting is True
+
+    owner.publish_object_class_attributes(cls, {attr})
+    observer.publish_object_class_attributes(cls, {attr})
+
+    obj_uncond = owner.register_object_instance(cls, "OWN-MOM-Uncond")
+    obj_neg = owner.register_object_instance(cls, "OWN-MOM-Neg")
+    obj_confirm = owner.register_object_instance(cls, "OWN-MOM-Confirm")
+    obj_acquire = owner.register_object_instance(cls, "OWN-MOM-Acquire")
+    obj_available = owner.register_object_instance(cls, "OWN-MOM-Available")
+    obj_deny = owner.register_object_instance(cls, "OWN-MOM-Deny")
+    obj_wanted = owner.register_object_instance(cls, "OWN-MOM-Wanted")
+    obj_cancel_neg = owner.register_object_instance(cls, "OWN-MOM-CancelNeg")
+    obj_cancel_acq = owner.register_object_instance(cls, "OWN-MOM-CancelAcq")
+    obj_query = owner.register_object_instance(cls, "OWN-MOM-Query")
+    drain(owner, observer, witness)
+
+    owner.unconditional_attribute_ownership_divestiture(obj_uncond, {attr})
+
+    owner.negotiated_attribute_ownership_divestiture(obj_neg, {attr}, b"neg-offer")
+
+    owner.negotiated_attribute_ownership_divestiture(obj_confirm, {attr}, b"confirm-offer")
+    drain(owner, observer, witness)
+    federation = engine.federations["own-mom-service-report-fed"]
+    federation.objects[obj_confirm].attribute_candidates[attr] = {h2}
+    owner.confirm_divestiture(obj_confirm, {attr}, b"confirm-tag")
+
+    observer.attribute_ownership_acquisition(obj_acquire, {attr}, b"acquire-tag")
+    observer.attribute_ownership_acquisition_if_available(obj_available, {attr})
+
+    observer.attribute_ownership_acquisition(obj_deny, {attr}, b"deny-tag")
+    drain(owner, observer, witness)
+    owner.attribute_ownership_release_denied(obj_deny, {attr})
+
+    observer.attribute_ownership_acquisition(obj_wanted, {attr}, b"wanted-tag")
+    drain(owner, observer, witness)
+    owner.attribute_ownership_divestiture_if_wanted(obj_wanted, {attr})
+
+    owner.negotiated_attribute_ownership_divestiture(obj_cancel_neg, {attr}, b"cancel-neg-tag")
+    drain(owner, observer, witness)
+    owner.cancel_negotiated_attribute_ownership_divestiture(obj_cancel_neg, {attr})
+
+    observer.attribute_ownership_acquisition(obj_cancel_acq, {attr}, b"cancel-acq-tag")
+    drain(owner, observer, witness)
+    observer.cancel_attribute_ownership_acquisition(obj_cancel_acq, {attr})
+
+    observer.query_attribute_ownership(obj_query, attr)
+    assert owner.is_attribute_owned_by_federate(obj_query, attr) is True
+    drain(owner, observer, witness)
+
+    reports = [rec for rec in witness_fed.callbacks_named("receiveInteraction") if rec.args[0] == service_report]
+    assert reports
+    service_names = [hla_mom.decode_text(rec.args[1][report_service]) for rec in reports]
+    success_values = [hla_mom.decode_bool(rec.args[1][report_success]) for rec in reports]
+
+    assert success_values and all(success_values)
+    assert set(service_names) >= {
+        "unconditionalAttributeOwnershipDivestiture",
+        "negotiatedAttributeOwnershipDivestiture",
+        "confirmDivestiture",
+        "attributeOwnershipAcquisition",
+        "attributeOwnershipAcquisitionIfAvailable",
+        "attributeOwnershipReleaseDenied",
+        "attributeOwnershipDivestitureIfWanted",
+        "cancelNegotiatedAttributeOwnershipDivestiture",
+        "cancelAttributeOwnershipAcquisition",
+        "queryAttributeOwnership",
+        "isAttributeOwnedByFederate",
+    }
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    witness.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("own-mom-service-report-fed")
+
+
+def test_python_rti_query_attribute_ownership_reports_owner_for_owned_attribute():
+    _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("query-owned-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+
+    owner.publish_object_class_attributes(cls, {attr})
+    obj = owner.register_object_instance(cls, "Owned-1")
+
+    observer.query_attribute_ownership(obj, attr)
+    drain(owner, observer)
+
+    owned = observer_fed.last_callback("informAttributeOwnership")
+    assert owned is not None
+    assert owned.args == (obj, attr, owner.backend.state.handle)
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("query-owned-fed")
+
+
 def test_declaration_management_effects_apply_while_time_managed():
     _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("decl-time-managed-fed")
     factory = owner.get_time_factory()
