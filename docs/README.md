@@ -11,6 +11,7 @@ Start here:
 - [documentation_hierarchy.md](documentation_hierarchy.md): canonical doc flow and hierarchy
 - [../README.md](../README.md): install, bootstrap, smoke, and operator commands
 - [verification/run_sequence.md](verification/run_sequence.md): full verification sequence and run order
+- [two_federate_quickstart.md](two_federate_quickstart.md): first stop for the composite two-federate example
 
 Doc families:
 

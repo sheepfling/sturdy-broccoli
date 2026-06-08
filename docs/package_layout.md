@@ -3,6 +3,9 @@
 The repository separates public API definitions, backend abstractions, concrete
 RTI implementations, transport adapters, and verification assets.
 
+The installable Python package uses a flat layout rooted at `hla2010/`.
+There is no active `src/` package root in this repo.
+
 ## Core API
 
 - `hla2010/api.py`: public RTI and Federate Ambassador protocols.
@@ -60,7 +63,7 @@ Java transport stubs generated from the RTI REST or gRPC transport contracts are
 - `hla2010/testing/two_federate_suite_pairs.py`, `two_federate_suite_configs.py`, `two_federate_suite_profiles.py`, `two_federate_suite_summary.py`, `two_federate_suite_timeline.py`, `two_federate_suite_writers.py`: pair construction, profile selection, summary/timeline shaping, and artifact writing.
 - `hla2010/scenarios/`: reusable domain scenarios that are safe to import from both tests and example entrypoints.
 - `examples/`: runnable scripts and example-only assets. Nothing under `examples/` is part of the installable `hla2010` package.
-- `examples/<scenario>/`: example-specific static assets such as FOM XML or notes for that scenario.
+- `examples/<scenario>/`: scenario-local scratch or notes only. Canonical reusable assets such as FOM XML live under `hla2010/resources/`.
 - `hla2010/verification.py` and `hla2010/conformance.py`: evidence and requirements-ledger support.
 
 Legacy flat backend shim modules have been removed. New code should import from
@@ -73,6 +76,8 @@ Keep example entrypoints thin:
 - parse CLI arguments
 - construct a backend or scenario factory
 - call into `hla2010.scenarios.*` or another reusable package module
+- load reusable data or FOM assets from `hla2010/resources/`, not from a
+  duplicate copy under `examples/`
 
 Keep reusable scenario logic out of `examples/` so tests can import the same
 code without depending on a script layout.
