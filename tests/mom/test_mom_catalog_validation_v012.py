@@ -348,3 +348,55 @@ def test_mom_classes_reject_ddm_region_services():
         )
     with pytest.raises(InvalidRegionContext):
         rti.subscribe_interaction_class_with_regions(report, {region})
+
+
+def test_mom_runtime_applies_standard_rti_characteristics_as_one_coherent_contract():
+    _engine, rti, fed = _joined("mom-rti-characteristics-v012")
+    federation = rti.backend.state.federation
+    assert federation is not None
+
+    assert RTI_FEDERATE_HANDLE not in federation.federates
+    assert len(federation.federates) == 1
+    joined = next(iter(federation.federates.values()))
+    assert joined is rti.backend.state
+    assert joined.subscribed_objects == {}
+    assert joined.subscribed_interactions == set()
+
+    federate_class = rti.get_object_class_handle(MOM_FEDERATE_CLASS)
+    federate_attr = rti.get_attribute_handle(federate_class, "HLAfederateName")
+    request_name = "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMdata"
+    report_name = "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata"
+    request = rti.get_interaction_class_handle(request_name)
+    report = rti.get_interaction_class_handle(report_name)
+    dim = rti.get_dimension_handle("HLAdefaultRoutingSpace")
+    region = rti.create_region({dim})
+
+    rti.subscribe_object_class_attributes(federate_class, {federate_attr})
+    rti.subscribe_interaction_class(report)
+    _drain(rti)
+    fed.clear()
+
+    rti.request_attribute_value_update(federate_class, {federate_attr}, b"mom-rti-refresh")
+    rti.send_interaction(request, {}, b"mom-rti-request")
+    _drain(rti)
+
+    reflection = fed.last_callback("reflectAttributeValues")
+    assert reflection is not None
+    assert reflection.args[3] is OrderType.RECEIVE
+    assert reflection.args[4] == rti.backend.engine.transportation_reliable
+    assert len(reflection.args) == 6
+
+    reports = [rec for rec in fed.callbacks_named("receiveInteraction") if rec.args[0] == report]
+    assert reports
+    received = reports[-1]
+    assert received.args[3] is OrderType.RECEIVE
+    assert received.args[4] == rti.backend.engine.transportation_reliable
+    assert len(received.args) == 6
+
+    with pytest.raises(InvalidRegionContext):
+        rti.subscribe_object_class_attributes_with_regions(
+            federate_class,
+            [{"attributes": {federate_attr}, "regions": {region}}],
+        )
+    with pytest.raises(InvalidRegionContext):
+        rti.subscribe_interaction_class_with_regions(report, {region})

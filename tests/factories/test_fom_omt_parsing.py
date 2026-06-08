@@ -175,6 +175,47 @@ def test_merge_with_standard_mim_preserves_mom_table_definitions_without_alterat
     assert set(mim_module.datatype_names) <= set(catalog.datatype_names)
 
 
+def test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata():
+    mim_module = parse_fom_xml("hla2010/resources/foms/HLAstandardMIM.xml")
+    target_module = parse_fom_xml("hla2010/resources/foms/TargetRadarFOMmodule.xml")
+    catalog = merge_fom_modules((target_module,), mim_module=mim_module)
+
+    assert catalog.mim_module is mim_module
+    assert catalog.mim_module.model_identification == mim_module.model_identification
+    assert catalog.mim_module.notes == mim_module.notes
+    assert catalog.mim_module.service_utilization == mim_module.service_utilization
+    assert catalog.mim_module.switch_settings == mim_module.switch_settings
+    assert catalog.time_stamp_datatype == mim_module.time_stamp_datatype
+    assert catalog.lookahead_datatype == mim_module.lookahead_datatype
+
+    for spec in mim_module.object_classes:
+        merged = catalog.object_classes[spec.full_name]
+        assert merged == spec
+
+    for spec in mim_module.interaction_classes:
+        merged = catalog.interaction_classes[spec.full_name]
+        assert merged == spec
+
+    for name, spec in mim_module.basic_datatypes.items():
+        assert catalog.basic_datatypes[name] == spec
+    for name, spec in mim_module.simple_datatypes.items():
+        assert catalog.simple_datatypes[name] == spec
+    for name, spec in mim_module.enumerated_datatypes.items():
+        assert catalog.enumerated_datatypes[name] == spec
+    for name, spec in mim_module.array_datatypes.items():
+        assert catalog.array_datatypes[name] == spec
+    for name, spec in mim_module.fixed_record_datatypes.items():
+        assert catalog.fixed_record_datatypes[name] == spec
+    for name, spec in mim_module.variant_record_datatypes.items():
+        assert catalog.variant_record_datatypes[name] == spec
+    for name, spec in mim_module.tag_representations.items():
+        assert catalog.tag_representations[name] == spec
+    for name, spec in mim_module.update_rates.items():
+        assert catalog.update_rates[name] == spec
+    for name, spec in mim_module.synchronization_points.items():
+        assert catalog.synchronization_points[name] == spec
+
+
 def test_merge_allows_extending_standard_mom_classes_with_subclasses_and_attributes(tmp_path: Path):
     extension_path = tmp_path / "mom-extension.xml"
     extension_path.write_text(
