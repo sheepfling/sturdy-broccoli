@@ -166,7 +166,7 @@ def test_support_surface_negative_paths_cover_handle_validation_region_bounds_an
 
     owner.abort_federation_restore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("support-negative-fed")
 
@@ -275,7 +275,7 @@ def test_declaration_services_reject_not_connected_not_joined_and_save_restore()
 
     owner.abort_federation_restore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("declaration-negative-fed")
 
@@ -345,7 +345,7 @@ def test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_
 
     owner.abort_federation_restore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("decl-tail-negative-fed")
 
@@ -624,7 +624,7 @@ def test_clause_6_federate_initiated_services_are_observable_through_mom_service
         "deleteObjectInstance",
     }
 
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     witness.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("om-mom-service-report-fed")
@@ -805,6 +805,129 @@ def test_clause_7_services_are_observable_through_mom_service_invocation_reporti
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     witness.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("own-mom-service-report-fed")
+
+
+def test_clause_8_services_are_observable_through_mom_service_invocation_reporting():
+    engine, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("tm-mom-service-report-fed")
+    witness = rti_ambassador(engine=engine)
+    witness_fed = RecordingFederateAmbassador()
+    witness.connect(witness_fed, CallbackModel.HLA_EVOKED)
+    witness.join_federation_execution("charlie", "type-c", "tm-mom-service-report-fed")
+
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    track_id = owner.get_parameter_handle(interaction, "TrackId")
+    factory = owner.get_time_factory()
+
+    set_reporting = owner.get_interaction_class_handle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
+    )
+    service_report = owner.get_interaction_class_handle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
+    )
+    sr_fed = owner.get_parameter_handle(set_reporting, "HLAfederate")
+    sr_state = owner.get_parameter_handle(set_reporting, "HLAreportingState")
+    report_service = witness.get_parameter_handle(service_report, "HLAservice")
+    report_success = witness.get_parameter_handle(service_report, "HLAsuccessIndicator")
+
+    witness.subscribe_interaction_class(service_report)
+    owner.send_interaction(
+        set_reporting,
+        {
+            sr_fed: owner.backend.state.handle.encode(),
+            sr_state: hla_mom.encode_bool(True),
+        },
+        b"enable-tm-owner-service-reporting",
+    )
+    observer.send_interaction(
+        set_reporting,
+        {
+            sr_fed: observer.backend.state.handle.encode(),
+            sr_state: hla_mom.encode_bool(True),
+        },
+        b"enable-tm-observer-service-reporting",
+    )
+    drain(owner, observer, witness)
+    assert owner.backend.state.service_reporting is True
+    assert observer.backend.state.service_reporting is True
+
+    owner.publish_object_class_attributes(cls, {attr})
+    observer.subscribe_object_class_attributes(cls, {attr})
+    owner.publish_interaction_class(interaction)
+    observer.subscribe_interaction_class(interaction)
+
+    owner.enable_asynchronous_delivery()
+    owner.disable_asynchronous_delivery()
+    owner.enable_time_regulation(factory.make_interval(1.0))
+    drain(owner, observer, witness)
+    observer.enable_time_constrained()
+    drain(owner, observer, witness)
+
+    owner.query_galt()
+    owner.query_logical_time()
+    owner.query_lits()
+    owner.modify_lookahead(factory.make_interval(2.0))
+    owner.query_lookahead()
+
+    owner.time_advance_request(factory.make_time(4.0))
+    observer.time_advance_request_available(factory.make_time(4.0))
+    drain(owner, observer, witness)
+
+    owner.next_message_request(factory.make_time(5.0))
+    observer.next_message_request_available(factory.make_time(5.0))
+    drain(owner, observer, witness)
+
+    owner.flush_queue_request(factory.make_time(6.0))
+    drain(owner, observer, witness)
+
+    obj = owner.register_object_instance(cls, "TM-MOM-Object")
+    drain(owner, observer, witness)
+    retraction = owner.send_interaction(
+        interaction,
+        {track_id: b"tm-mom-track"},
+        b"tm-mom-send",
+        factory.make_time(8.0),
+    )
+    owner.retract(retraction.handle)
+    owner.change_attribute_order_type(obj, {attr}, OrderType.TIMESTAMP)
+    owner.change_interaction_order_type(interaction, OrderType.TIMESTAMP)
+    owner.disable_time_regulation()
+    observer.disable_time_constrained()
+    drain(owner, observer, witness)
+
+    reports = [rec for rec in witness_fed.callbacks_named("receiveInteraction") if rec.args[0] == service_report]
+    assert reports
+    service_names = [hla_mom.decode_text(rec.args[1][report_service]) for rec in reports]
+    success_values = [hla_mom.decode_bool(rec.args[1][report_success]) for rec in reports]
+
+    assert success_values and all(success_values)
+    assert set(service_names) >= {
+        "enableAsynchronousDelivery",
+        "disableAsynchronousDelivery",
+        "enableTimeRegulation",
+        "enableTimeConstrained",
+        "queryGALT",
+        "queryLogicalTime",
+        "queryLITS",
+        "modifyLookahead",
+        "queryLookahead",
+        "timeAdvanceRequest",
+        "timeAdvanceRequestAvailable",
+        "nextMessageRequest",
+        "nextMessageRequestAvailable",
+        "flushQueueRequest",
+        "retract",
+        "changeAttributeOrderType",
+        "changeInteractionOrderType",
+        "disableTimeRegulation",
+        "disableTimeConstrained",
+    }
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    witness.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("tm-mom-service-report-fed")
 
 
 def test_python_rti_query_attribute_ownership_reports_owner_for_owned_attribute():
@@ -1561,6 +1684,64 @@ def test_clause_7_service_and_callback_signature_metadata_matches_source_binding
             "7.18",
             ["ObjectInstanceHandle theObject, AttributeHandle theAttribute, FederateHandle theOwner"],
         ),
+    }
+
+    for method_name, (service, expected_returns, expected_params) in rti_checks.items():
+        assert hasattr(RTIambassador, method_name)
+        java_records = [
+            record for record in API_METADATA["RTIambassador"][method_name]
+            if record["language"] == "java"
+        ]
+        assert [record["service"] for record in java_records] == [service] * len(expected_params)
+        assert [record["return_type"] for record in java_records] == expected_returns
+        assert [record["params"] for record in java_records] == expected_params
+
+    for method_name, (service, expected_params) in federate_checks.items():
+        assert hasattr(FederateAmbassador, method_name)
+        java_records = [
+            record for record in API_METADATA["FederateAmbassador"][method_name]
+            if record["language"] == "java"
+        ]
+        assert [record["service"] for record in java_records] == [service] * len(expected_params)
+        assert [record["return_type"] for record in java_records] == ["void"] * len(expected_params)
+        assert [record["params"] for record in java_records] == expected_params
+
+
+def test_clause_8_service_and_callback_signature_metadata_matches_source_bindings():
+    rti_checks = {
+        "enableTimeRegulation": ("8.2", ["void"], ["LogicalTimeInterval theLookahead"]),
+        "disableTimeRegulation": ("8.4", ["void"], [""]),
+        "enableTimeConstrained": ("8.5", ["void"], [""]),
+        "disableTimeConstrained": ("8.7", ["void"], [""]),
+        "timeAdvanceRequest": ("8.8", ["void"], ["LogicalTime theTime"]),
+        "timeAdvanceRequestAvailable": ("8.9", ["void"], ["LogicalTime theTime"]),
+        "nextMessageRequest": ("8.10", ["void"], ["LogicalTime theTime"]),
+        "nextMessageRequestAvailable": ("8.11", ["void"], ["LogicalTime theTime"]),
+        "flushQueueRequest": ("8.12", ["void"], ["LogicalTime theTime"]),
+        "enableAsynchronousDelivery": ("8.14", ["void"], [""]),
+        "disableAsynchronousDelivery": ("8.15", ["void"], [""]),
+        "queryGALT": ("8.16", ["TimeQueryReturn"], [""]),
+        "queryLogicalTime": ("8.17", ["LogicalTime"], [""]),
+        "queryLITS": ("8.18", ["TimeQueryReturn"], [""]),
+        "modifyLookahead": ("8.19", ["void"], ["LogicalTimeInterval theLookahead"]),
+        "queryLookahead": ("8.20", ["LogicalTimeInterval"], [""]),
+        "retract": ("8.21", ["void"], ["MessageRetractionHandle theHandle"]),
+        "changeAttributeOrderType": (
+            "8.23",
+            ["void"],
+            ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes, OrderType theType"],
+        ),
+        "changeInteractionOrderType": (
+            "8.24",
+            ["void"],
+            ["InteractionClassHandle theClass, OrderType theType"],
+        ),
+    }
+    federate_checks = {
+        "timeRegulationEnabled": ("8.3", ["LogicalTime time"]),
+        "timeConstrainedEnabled": ("8.6", ["LogicalTime time"]),
+        "timeAdvanceGrant": ("8.13", ["LogicalTime theTime"]),
+        "requestRetraction": ("8.22", ["MessageRetractionHandle theHandle"]),
     }
 
     for method_name, (service, expected_returns, expected_params) in rti_checks.items():
