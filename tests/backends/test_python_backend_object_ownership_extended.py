@@ -228,6 +228,12 @@ def test_request_attribute_transportation_type_change_rejects_not_connected_not_
     owner.destroy_federation_execution("transport-negative-fed")
 
 
+@pytest.mark.requirements(
+    "HLA1516.1-DM-5.2-001",
+    "HLA1516.1-DM-5.3-001",
+    "HLA1516.1-DM-5.6-001",
+    "HLA1516.1-DM-5.7-001",
+)
 def test_declaration_services_reject_not_connected_not_joined_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
@@ -351,6 +357,12 @@ def test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_
     owner.destroy_federation_execution("decl-tail-negative-fed")
 
 
+@pytest.mark.requirements(
+    "HLA1516.1-DM-5.4-001",
+    "HLA1516.1-DM-5.5-001",
+    "HLA1516.1-DM-5.8-001",
+    "HLA1516.1-DM-5.9-001",
+)
 def test_publish_unpublish_and_unsubscribe_interaction_tail_reject_not_connected_not_joined_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
@@ -1338,6 +1350,7 @@ def test_best_effort_transport_changes_callback_transport_and_splits_mixed_attri
     owner.destroy_federation_execution("transport-runtime-behavior-fed")
 
 
+@pytest.mark.requirements("HLA1516.1-DM-5.10-001", "HLA1516.1-DM-5.11-001")
 def test_start_and_stop_registration_callbacks_are_delivered():
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("decl-registration-callback-fed")
     cls = owner.get_object_class_handle("HLAobjectRoot.Target")
@@ -1379,6 +1392,7 @@ def test_start_and_stop_registration_callbacks_are_delivered():
     owner.destroy_federation_execution("decl-registration-callback-fed")
 
 
+@pytest.mark.requirements("HLA1516.1-DM-5.12-001", "HLA1516.1-DM-5.13-001")
 def test_turn_interactions_on_and_off_callbacks_are_delivered():
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("decl-interaction-callback-fed")
     interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")

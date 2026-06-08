@@ -71,6 +71,7 @@ Script families:
 - `generate_fom_overview.py`: merged FOM/MIM tree and matrix overview packet, with optional interactive HTML output via `--html`
 - `generate_compliance_artifacts.py`: compliance and requirements packet
 - `discover_backend_compliance.py`: one-command backend/spec compliance discovery over the generated packet
+- `report_test_requirement_markers.py`: CSV report of explicit pytest requirement markers, defaulting to the Clause 4 and Clause 5 backend modules
 - `diagnose_pitch_exchange.py`: Pitch exchange diagnostics
 - `diagnose_pitch_negotiated_ownership.py`: Pitch negotiated-ownership diagnostics
 

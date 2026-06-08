@@ -23,6 +23,10 @@ def pytest_configure(config: pytest.Config) -> None:
         "markers",
         "requires_loopback_server: requires permission to bind a local loopback TCP port",
     )
+    config.addinivalue_line(
+        "markers",
+        "requirements(*requirement_ids): explicit requirement IDs covered by the test",
+    )
 
 
 def pytest_runtest_setup(item: pytest.Item) -> None:

@@ -1,9 +1,12 @@
 # ruff: noqa: F401,F403
 
+import pytest
+
 from tests.backends.python_backend_extended_support import *
 from hla2010.fom import FOMModule
 from hla2010.backends.python import PythonRTIConfig
 from hla2010.enums import ResignAction, RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
+from hla2010.exceptions import *
 from hla2010.exceptions import (
     CouldNotCreateLogicalTimeFactory,
     CouldNotOpenFDD,
@@ -88,6 +91,7 @@ def test_disconnect_clears_buffered_report_callbacks():
     assert fed.last_callback("reportFederationExecutions") is None
 
 
+@pytest.mark.requirements("HLA1516.1-FM-4.2-001")
 def test_connect_establishes_callback_delivery_model_for_follow_on_reports():
     engine = InMemoryRTIEngine()
 
@@ -837,6 +841,7 @@ def test_connect_rejects_second_connection_attempt():
     rti.disconnect()
 
 
+@pytest.mark.requirements("HLA1516.1-FM-4.5-001")
 def test_create_federation_execution_rejects_duplicate_name():
     engine = InMemoryRTIEngine()
     rti = rti_ambassador(engine=engine)
@@ -1083,6 +1088,7 @@ def test_create_federation_execution_with_standard_mim_designator_is_rejected():
     rti.disconnect()
 
 
+@pytest.mark.requirements("HLA1516.1-FM-4.6-001")
 def test_destroy_federation_execution_requires_no_joined_federates():
     engine, r1, r2, _f1, _f2, _h1, _h2 = joined_pair("destroy-fed")
 
@@ -1103,6 +1109,7 @@ def test_destroy_federation_execution_rejects_missing_federation():
     rti.disconnect()
 
 
+@pytest.mark.requirements("HLA1516.1-FM-4.10-001")
 def test_resign_federation_execution_rejects_not_connected_and_not_joined():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
