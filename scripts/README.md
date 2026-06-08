@@ -73,7 +73,7 @@ Script families:
 - `generate_imported_packet_requirements_docs.py`: packet-style markdown views from the imported canonical v1.0 requirements catalog
 - `generate_imported_packet_backlog.py`: repo-native implementation backlog views derived from the harmonized requirements ledgers and imported packet
 - `discover_backend_compliance.py`: one-command backend/spec compliance discovery over the generated packet
-- `report_test_requirement_markers.py`: CSV report of explicit pytest requirement markers, defaulting to the Clause 4 and Clause 5 backend modules
+- `report_test_requirement_markers.py`: CSV report of explicit pytest requirement markers, defaulting to the backend modules currently carrying Clause 4 through Clause 10 markers
 - `diagnose_pitch_exchange.py`: Pitch exchange diagnostics
 - `diagnose_pitch_negotiated_ownership.py`: Pitch negotiated-ownership diagnostics
 

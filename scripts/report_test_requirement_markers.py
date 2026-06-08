@@ -54,7 +54,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "paths",
         nargs="*",
-        help="Optional test file paths to scan. Defaults to the Clause 4 and Clause 5 backend modules.",
+        help="Optional test file paths to scan. Defaults to the backend modules currently carrying Clause 4 through Clause 10 requirement markers.",
     )
     args = parser.parse_args(argv)
 
