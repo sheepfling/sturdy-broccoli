@@ -15,6 +15,7 @@ Use it to track the three standards as three requirement sources:
 - `hla1516_1_clause_5_dm_detailed_reconciliation.csv`: packet-derived detailed Clause 5 service reconciliation keyed to current repo tests and statuses
 - `hla1516_1_clause_6_object_management.csv`: clause-level object-management extraction tranche including scoped transport supported-subset rows
 - `hla1516_1_clause_6_om_detailed_reconciliation.csv`: packet-derived detailed Clause 6 service reconciliation keyed to current repo tests and statuses
+- `hla1516_1_om_detailed_reconciliation.csv`: packet-derived detailed IEEE 1516.1 object-management family reconciliation keyed to the Clause 6 bridge and callback/runtime tests
 - `hla1516_1_clause_7_own_detailed_reconciliation.csv`: packet-derived detailed Clause 7 ownership-management reconciliation keyed to current repo tests and statuses
 - `hla1516_1_clause_8_tm_detailed_reconciliation.csv`: packet-derived detailed Clause 8 time-management reconciliation keyed to current repo tests and statuses
 - `hla1516_1_clause_9_ddm_detailed_reconciliation.csv`: packet-derived detailed Clause 9 data-distribution-management reconciliation keyed to current repo tests and statuses
@@ -73,6 +74,7 @@ The first concrete clause-level extraction tranches are:
 - `hla1516_1_clause_5_dm_detailed_reconciliation.csv`
 - `hla1516_1_clause_6_object_management.csv`
 - `hla1516_1_clause_6_om_detailed_reconciliation.csv`
+- `hla1516_1_om_detailed_reconciliation.csv`
 - `hla1516_1_clause_7_own_detailed_reconciliation.csv`
 - `hla1516_1_clause_8_tm_detailed_reconciliation.csv`
 - `hla1516_1_clause_9_ddm_detailed_reconciliation.csv`
@@ -104,6 +106,8 @@ This decomposition file is still an engineering seed. It is deliberately narrowe
 `hla1516_1_clause_5_dm_detailed_reconciliation.csv` plays a similar bridge role for Declaration Management, but starts from the imported packet's finer-grained `SVC/SIG/ARG/PRE/EFF/EXC/MOM/TEST` service slices and maps them onto the repo's current tests and `mapped/partial/planned` status vocabulary.
 
 `hla1516_1_clause_6_om_detailed_reconciliation.csv` applies that same packet-to-curated bridge pattern to Clause 6 Object Management, starting from the imported packet's `SEM/SVC/SIG/ARG/PRE/EFF/EXC/MOM` slices and explicitly marking where the current repo only covers a supported transport subset or still lacks direct MOM and callback-family evidence.
+
+`hla1516_1_om_detailed_reconciliation.csv` is the whole-family companion bridge for imported IEEE 1516.1 Object Management master rows. It lifts the existing Clause 6 service reconciliation onto the imported family row kinds such as `seed`, `RTI_API`, `SIG`, `RET`, `EXC_API`, and `MOM_TRACE`, and it also maps the callback-side `FED_CB`, `CB`, `CB_SIG`, `CB_ORDER`, `CB_ORD`, and `CB_PAYLOAD` rows onto the repo's current discovery, reflect, interaction, deletion, transport-confirmation, and update-advisory tests. That lets the full object-management family count directly in the whole-catalog harmonization index instead of remaining outside it.
 
 `hla1516_1_clause_7_own_detailed_reconciliation.csv` extends that packet-to-curated bridge pattern to Clause 7 Ownership Management, starting from the imported packet's `SVC/SIG/ARG/PRE/EFF/EXC/MOM/TEST` service slices plus callback `CB/CB_SIG/CB_PAYLOAD/CB_ORDER` rows and marking where current ownership coverage is direct, broader-than-current, or still missing static-signature and MOM observer evidence.
 
