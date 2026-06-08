@@ -1312,6 +1312,124 @@ def test_clause_6_service_and_callback_signature_metadata_matches_source_binding
         assert [record["params"] for record in java_records] == expected_params
 
 
+def test_clause_7_service_and_callback_signature_metadata_matches_source_bindings():
+    rti_checks = {
+        "unconditionalAttributeOwnershipDivestiture": (
+            "7.2",
+            ["void"],
+            ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes"],
+        ),
+        "negotiatedAttributeOwnershipDivestiture": (
+            "7.3",
+            ["void"],
+            ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes, byte[] userSuppliedTag"],
+        ),
+        "confirmDivestiture": (
+            "7.6",
+            ["void"],
+            ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes, byte[] userSuppliedTag"],
+        ),
+        "attributeOwnershipAcquisition": (
+            "7.8",
+            ["void"],
+            ["ObjectInstanceHandle theObject, AttributeHandleSet desiredAttributes, byte[] userSuppliedTag"],
+        ),
+        "attributeOwnershipAcquisitionIfAvailable": (
+            "7.9",
+            ["void"],
+            ["ObjectInstanceHandle theObject, AttributeHandleSet desiredAttributes"],
+        ),
+        "attributeOwnershipReleaseDenied": (
+            "7.12",
+            ["void"],
+            ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes"],
+        ),
+        "attributeOwnershipDivestitureIfWanted": (
+            "7.13",
+            ["AttributeHandleSet"],
+            ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes"],
+        ),
+        "cancelNegotiatedAttributeOwnershipDivestiture": (
+            "7.14",
+            ["void"],
+            ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes"],
+        ),
+        "cancelAttributeOwnershipAcquisition": (
+            "7.15",
+            ["void"],
+            ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes"],
+        ),
+        "queryAttributeOwnership": (
+            "7.17",
+            ["void"],
+            ["ObjectInstanceHandle theObject, AttributeHandle theAttribute"],
+        ),
+        "isAttributeOwnedByFederate": (
+            "7.19",
+            ["boolean"],
+            ["ObjectInstanceHandle theObject, AttributeHandle theAttribute"],
+        ),
+    }
+    federate_checks = {
+        "requestAttributeOwnershipAssumption": (
+            "7.4",
+            ["ObjectInstanceHandle theObject, AttributeHandleSet offeredAttributes, byte[] userSuppliedTag"],
+        ),
+        "requestDivestitureConfirmation": (
+            "7.5",
+            ["ObjectInstanceHandle theObject, AttributeHandleSet offeredAttributes"],
+        ),
+        "attributeOwnershipAcquisitionNotification": (
+            "7.7",
+            ["ObjectInstanceHandle theObject, AttributeHandleSet securedAttributes, byte[] userSuppliedTag"],
+        ),
+        "attributeOwnershipUnavailable": (
+            "7.10",
+            ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes"],
+        ),
+        "requestAttributeOwnershipRelease": (
+            "7.11",
+            ["ObjectInstanceHandle theObject, AttributeHandleSet candidateAttributes, byte[] userSuppliedTag"],
+        ),
+        "confirmAttributeOwnershipAcquisitionCancellation": (
+            "7.16",
+            ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes"],
+        ),
+        "attributeIsNotOwned": (
+            "7.18",
+            ["ObjectInstanceHandle theObject, AttributeHandle theAttribute"],
+        ),
+        "attributeIsOwnedByRTI": (
+            "7.18",
+            ["ObjectInstanceHandle theObject, AttributeHandle theAttribute"],
+        ),
+        "informAttributeOwnership": (
+            "7.18",
+            ["ObjectInstanceHandle theObject, AttributeHandle theAttribute, FederateHandle theOwner"],
+        ),
+    }
+
+    for method_name, (service, expected_returns, expected_params) in rti_checks.items():
+        assert hasattr(RTIambassador, method_name)
+        java_records = [
+            record for record in API_METADATA["RTIambassador"][method_name]
+            if record["language"] == "java"
+        ]
+        assert [record["service"] for record in java_records] == [service] * len(expected_params)
+        assert [record["return_type"] for record in java_records] == expected_returns
+        assert [record["params"] for record in java_records] == expected_params
+
+    for method_name, (service, expected_params) in federate_checks.items():
+        assert hasattr(FederateAmbassador, method_name)
+        java_records = [
+            record for record in API_METADATA["FederateAmbassador"][method_name]
+            if record["language"] == "java"
+        ]
+        assert [record["service"] for record in java_records] == [service] * len(expected_params)
+        assert [record["return_type"] for record in java_records] == ["void"] * len(expected_params)
+        assert [record["params"] for record in java_records] == expected_params
+
+
 def test_clause_6_federate_initiated_services_validate_core_argument_shapes():
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("om-arg-validation-fed")
     cls = owner.get_object_class_handle("HLAobjectRoot.Target")
