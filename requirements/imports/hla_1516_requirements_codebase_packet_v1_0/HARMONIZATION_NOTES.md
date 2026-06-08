@@ -11,6 +11,29 @@ curated requirements working set.
   set built incrementally from earlier tranches and direct implementation
   evidence.
 
+## Current pin
+
+As of the latest committed harmonization tranche, the repo-wide imported master
+index in `requirements/hla_1516_master_harmonization_index_v1_0.csv` stands at:
+
+- `2675 mapped`
+- `1328 partial`
+- `0 planned`
+- `0 unreconciled`
+
+The latest small tranche tightened Federation Management lifecycle evidence in
+`requirements/hla1516_1_fm_detailed_reconciliation.csv` by promoting direct
+positive rows for:
+
+- Connect successful postconditions
+- Create Federation Execution successful existence/joinability
+- Join Federation Execution membership and handle return
+- Resign Federation Execution delete-capable directive effects
+
+That tranche is backed by direct runtime witnesses in
+`tests/backends/test_python_backend_federation_extended.py` and reflected in
+the FM family verifier plus the master harmonization index.
+
 ## Rough correspondence
 
 - Packet `latest/hla_1516_requirements_master_v1_0.csv`
@@ -33,15 +56,16 @@ curated requirements working set.
 
 ## Immediate next steps
 
-1. Compare packet `latest/hla_1516_clause_tracker_v1_0.csv` against the repo's
-   current curated clause coverage and identify clause deltas.
-2. Reconcile packet `latest/hla_1516_clauses5_11_detailed_requirements_v1_0.csv`
-   with repo Clause 5 and Clause 6 harmonized files.
-3. Decide whether packet `latest/hla_1516_requirements_master_v1_0.csv` should
-   become a committed upstream source for future tooling and linting, or remain
-   an intake artifact only.
-4. Add schema and manifest validation around the imported packet before wiring
-   its files into CI or generated docs.
+1. Keep burning down `partial` rows inside the family bridges instead of adding
+   new bridge structure. The largest remaining honest debt is still in
+   `CAP-API`, `CAP-XML`, `CAP-FM`, `CAP-SUP`, and `CAP-OM`.
+2. Prefer small tranches that replace stale or indirect evidence anchors with
+   direct node-level runtime or verifier-backed witnesses.
+3. Regenerate `requirements/hla_1516_master_harmonization_index_v1_0.csv` after
+   every family-bridge promotion so the packet-facing pin stays truthful.
+4. Keep broad rows `partial` when current tests only prove a narrower subset;
+   do not collapse supported-subset evidence into overstated full-standard
+   claims.
 
 ## Policy reminder
 

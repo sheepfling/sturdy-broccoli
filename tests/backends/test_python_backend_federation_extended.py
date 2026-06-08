@@ -6,7 +6,15 @@ from hla2010 import mom as hla_mom
 from tests.backends.python_backend_extended_support import *
 from hla2010.fom import FOMModule
 from hla2010.backends.python import PythonRTIConfig
-from hla2010.enums import ResignAction, RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
+from hla2010.enums import (
+    CallbackModel,
+    ResignAction,
+    RestoreFailureReason,
+    RestoreStatus,
+    SaveFailureReason,
+    SaveStatus,
+    SynchronizationPointFailureReason,
+)
 from hla2010.exceptions import *
 from hla2010.exceptions import (
     CouldNotCreateLogicalTimeFactory,
@@ -17,6 +25,7 @@ from hla2010.exceptions import (
     InconsistentFDD,
 )
 from hla2010.handles import FederateHandleSet
+from hla2010.spec_refs import method_label, method_reference
 
 def test_spec_references_link_services_to_clause_numbers():
     assert method_reference("connect").section == "4.2"
@@ -164,6 +173,37 @@ def test_connect_establishes_callback_delivery_model_for_follow_on_reports():
     assert immediate_fed.last_callback("reportFederationExecutions") is not None
     immediate.destroy_federation_execution("connect-callback-fed-immediate")
     immediate.disconnect()
+
+
+def test_connect_create_and_join_apply_positive_lifecycle_effects():
+    engine = InMemoryRTIEngine()
+
+    creator = rti_ambassador(engine=engine)
+    creator_fed = RecordingFederateAmbassador()
+    creator.connect(creator_fed, CallbackModel.HLA_EVOKED)
+
+    assert creator.backend.state.connected is True
+    assert creator.backend.state.callback_model is CallbackModel.HLA_EVOKED
+    assert creator.backend.state.handle is None
+
+    creator.create_federation_execution("fm-positive-lifecycle-fed", "TargetRadarFOMmodule.xml")
+    federation = engine.federations["fm-positive-lifecycle-fed"]
+    assert federation.name == "fm-positive-lifecycle-fed"
+
+    joiner = rti_ambassador(engine=engine)
+    joiner.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    handle = joiner.join_federation_execution("alpha", "type-a", "fm-positive-lifecycle-fed")
+
+    assert handle == joiner.backend.state.handle
+    assert joiner.backend.state.federation is federation
+    assert handle in federation.federates
+    assert federation.federates[handle].name == "alpha"
+    assert federation.federates[handle].federate_type == "type-a"
+
+    joiner.resign_federation_execution(ResignAction.NO_ACTION)
+    creator.destroy_federation_execution("fm-positive-lifecycle-fed")
+    creator.disconnect()
+    joiner.disconnect()
 
 
 def test_connect_joined_federate_is_visible_in_mom_summary():
@@ -845,7 +885,10 @@ def test_join_federation_execution_distinguishes_open_read_time_and_inconsistent
   <modelIdentification><name>JoinIntTimeFDD</name><type>FDD</type></modelIdentification>
   <objects>
     <objectClass>
-      <name>DummyJoinInt</name>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>DummyJoinInt</name>
+      </objectClass>
     </objectClass>
   </objects>
   <time>
@@ -861,7 +904,10 @@ def test_join_federation_execution_distinguishes_open_read_time_and_inconsistent
   <modelIdentification><name>JoinFloatTimeFDD</name><type>FDD</type></modelIdentification>
   <objects>
     <objectClass>
-      <name>DummyJoinFloat</name>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>DummyJoinFloat</name>
+      </objectClass>
     </objectClass>
   </objects>
   <time>
@@ -962,7 +1008,10 @@ def test_create_federation_execution_distinguishes_open_read_time_and_inconsiste
   <modelIdentification><name>IntTimeFDD</name><type>FDD</type></modelIdentification>
   <objects>
     <objectClass>
-      <name>DummyInt</name>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>DummyInt</name>
+      </objectClass>
     </objectClass>
   </objects>
   <time>
@@ -978,7 +1027,10 @@ def test_create_federation_execution_distinguishes_open_read_time_and_inconsiste
   <modelIdentification><name>FloatTimeFDD</name><type>FDD</type></modelIdentification>
   <objects>
     <objectClass>
-      <name>DummyFloat</name>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>DummyFloat</name>
+      </objectClass>
     </objectClass>
   </objects>
   <time>
@@ -1089,7 +1141,10 @@ def test_create_federation_execution_with_mim_distinguishes_open_read_duplicate_
   <modelIdentification><name>MimIntTimeFDD</name><type>FDD</type></modelIdentification>
   <objects>
     <objectClass>
-      <name>DummyMimInt</name>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>DummyMimInt</name>
+      </objectClass>
     </objectClass>
   </objects>
   <time>
@@ -1105,7 +1160,10 @@ def test_create_federation_execution_with_mim_distinguishes_open_read_duplicate_
   <modelIdentification><name>MimFloatTimeFDD</name><type>FDD</type></modelIdentification>
   <objects>
     <objectClass>
-      <name>DummyMimFloat</name>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>DummyMimFloat</name>
+      </objectClass>
     </objectClass>
   </objects>
   <time>
@@ -1187,6 +1245,57 @@ def test_resign_federation_execution_rejects_invalid_action_and_owned_attributes
     owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     observer.destroy_federation_execution("resign-negative-fed")
+
+
+@pytest.mark.parametrize(
+    "resign_action",
+    [
+        ResignAction.DELETE_OBJECTS,
+        ResignAction.DELETE_OBJECTS_THEN_DIVEST,
+        ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST,
+    ],
+    ids=[
+        "delete_objects",
+        "delete_objects_then_divest",
+        "cancel_then_delete_then_divest",
+    ],
+)
+def test_resign_delete_object_directives_clear_membership_and_owned_objects(resign_action):
+    _, owner, observer, _owner_fed, observer_fed, owner_handle, _observer_handle = joined_pair(
+        f"resign-positive-{resign_action.name.lower()}-fed"
+    )
+    federation = owner.backend.state.federation
+    assert federation is not None
+
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    owner.publish_object_class_attributes(cls, {attr})
+    observer.subscribe_object_class_attributes(cls, {attr})
+    obj = owner.register_object_instance(cls, f"Owned-{resign_action.name}")
+    owner.update_attribute_values(obj, {attr: b"10,20"}, b"init")
+    drain(owner, observer)
+
+    assert obj in federation.objects
+    assert federation.objects[obj].owner == owner_handle
+
+    owner.resign_federation_execution(resign_action)
+    drain(observer)
+
+    assert owner.backend.state.handle is None
+    assert owner.backend.state.federation is None
+    assert owner_handle not in federation.federates
+    assert obj not in federation.objects
+    assert all(
+        instance.owner != owner_handle
+        and owner_handle not in instance.attribute_owners.values()
+        for instance in federation.objects.values()
+    )
+    removed = observer_fed.last_callback("removeObjectInstance")
+    assert removed is not None
+    assert removed.args[0] == obj
+
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.destroy_federation_execution(f"resign-positive-{resign_action.name.lower()}-fed")
 
 
 def test_resign_federation_execution_rejects_pending_acquisition():

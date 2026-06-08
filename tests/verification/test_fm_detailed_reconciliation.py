@@ -22,7 +22,7 @@ def test_fm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 632
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 510, "partial": 122}
+        {"mapped": 523, "partial": 109}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -89,4 +89,53 @@ def test_fm_save_restore_effect_rows_use_direct_positive_state_witnesses():
             test_id.startswith("tests/backends/test_python_backend_federation_extended.py::")
             for test_id in test_ids
         )
+        assert row["notes"].startswith("Direct ")
+
+
+def test_fm_core_lifecycle_effect_and_return_rows_use_direct_runtime_witnesses():
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+
+    connect_create_join_rows = {
+        "HLA1516.1-FM-4_2-EFF-001",
+        "HLA1516.1-FM-4_2-RTIAPI-001-EFF",
+        "HLA1516.1-FM-4_2-RTIAPI-002-EFF",
+        "HLA1516.1-FM-4_5-EFF-001",
+        "HLA1516.1-FM-4_9-EFF-001",
+        "HLA1516.1-FM-4_9-RET-001",
+        "HLA1516.1-FM-4_9-RTIAPI-001-RET",
+        "HLA1516.1-FM-4_9-RTIAPI-002-RET",
+        "HLA1516.1-FM-4_9-RTIAPI-003-RET",
+        "HLA1516.1-FM-4_9-RTIAPI-004-RET",
+    }
+    connect_create_join_test = (
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_connect_create_and_join_apply_positive_lifecycle_effects"
+    )
+
+    for packet_id in connect_create_join_rows:
+        row = rows[packet_id]
+        assert row["current_status"] == "mapped"
+        assert row["current_test_id"] == connect_create_join_test
+        assert row["notes"].startswith("Direct ")
+
+    resign_rows = {
+        "HLA1516.1-FM-4_10-EFF-001",
+        "HLA1516.1-FM-4_10-EFF-002",
+        "HLA1516.1-FM-4_10-EFF-003",
+    }
+    expected_resign_tests = {
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_resign_delete_object_directives_clear_membership_and_owned_objects[delete_objects]",
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_resign_delete_object_directives_clear_membership_and_owned_objects[delete_objects_then_divest]",
+        "tests/backends/test_python_backend_federation_extended.py::"
+        "test_resign_delete_object_directives_clear_membership_and_owned_objects[cancel_then_delete_then_divest]",
+    }
+
+    for packet_id in resign_rows:
+        row = rows[packet_id]
+        assert row["current_status"] == "mapped"
+        assert {
+            item.strip() for item in row["current_test_id"].split(";") if item.strip()
+        } == expected_resign_tests
         assert row["notes"].startswith("Direct ")
