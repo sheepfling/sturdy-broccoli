@@ -102,6 +102,7 @@ class PythonRTIBackend(
             else self.engine.fom_resolver
         )
         self.state = federate_state or self.engine.new_federate_state()
+        setattr(self.state, "backend", self)
         self.delivered_callback_count = 0
         self.service_report_sink = (
             ServiceReportSink(self.config.service_report_file, truncate=self.config.service_report_file_truncate)

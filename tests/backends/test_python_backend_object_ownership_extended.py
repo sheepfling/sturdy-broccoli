@@ -1028,6 +1028,77 @@ def test_turn_updates_object_instance_callbacks_validate_state_arguments_and_wra
     owner.destroy_federation_execution("om-turn-updates-negative-fed")
 
 
+def test_provide_attribute_value_update_callback_validates_state_arguments_and_wraps_callback_failures():
+    rti = rti_ambassador(engine=InMemoryRTIEngine())
+    with pytest.raises(NotConnected):
+        rti.backend._svc_provideAttributeValueUpdate(ObjectInstanceHandle(999), {AttributeHandle(1)}, b"tag")
+
+    rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    with pytest.raises(FederateNotExecutionMember):
+        rti.backend._svc_provideAttributeValueUpdate(ObjectInstanceHandle(999), {AttributeHandle(1)}, b"tag")
+    rti.disconnect()
+
+    _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("om-provide-avu-negative-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    bad_attr = type(attr)(attr.value + 1000)
+
+    owner.publish_object_class_attributes(cls, {attr})
+    obj = owner.register_object_instance(cls, "Provide-AVU-Negative")
+
+    with pytest.raises(ObjectInstanceNotKnown):
+        owner.backend._svc_provideAttributeValueUpdate(ObjectInstanceHandle(999), {attr}, b"tag")
+    with pytest.raises(AttributeNotDefined):
+        owner.backend._svc_provideAttributeValueUpdate(obj, {bad_attr}, b"tag")
+
+    owner.request_federation_save("PROVIDE-AVU-SAVE")
+    drain(owner, observer)
+    with pytest.raises(SaveInProgress):
+        owner.backend._svc_provideAttributeValueUpdate(obj, {attr}, b"tag")
+
+    owner.federate_save_begun()
+    observer.federate_save_begun()
+    owner.federate_save_complete()
+    observer.federate_save_complete()
+    drain(owner, observer)
+
+    owner.request_federation_restore("PROVIDE-AVU-SAVE")
+    drain(owner, observer)
+    with pytest.raises(RestoreInProgress):
+        owner.backend._svc_provideAttributeValueUpdate(obj, {attr}, b"tag")
+    owner.abort_federation_restore()
+    drain(owner, observer)
+
+    owner_fed.clear()
+    owner.backend._svc_provideAttributeValueUpdate(obj, {attr}, b"tag")
+    drain(owner, observer)
+    provide = owner_fed.last_callback("provideAttributeValueUpdate")
+    assert provide is not None
+    assert provide.args == (obj, {attr}, b"tag")
+
+    class _FailingProvideAmbassador(RecordingFederateAmbassador):
+        def on_provide_attribute_value_update(self, *args, **kwargs):
+            raise RuntimeError("provide-avu-failed")
+
+    failing = rti_ambassador(engine=InMemoryRTIEngine())
+    failing.connect(_FailingProvideAmbassador(), CallbackModel.HLA_IMMEDIATE)
+    failing.create_federation_execution("om-provide-avu-failing-fed", "TargetRadarFOMmodule.xml")
+    failing.join_federation_execution("alpha", "type-a", "om-provide-avu-failing-fed")
+    fail_cls = failing.get_object_class_handle("HLAobjectRoot.Target")
+    fail_attr = failing.get_attribute_handle(fail_cls, "Position")
+    failing.publish_object_class_attributes(fail_cls, {fail_attr})
+    fail_obj = failing.register_object_instance(fail_cls, "Provide-AVU-Failing")
+
+    with pytest.raises(FederateInternalError):
+        failing.backend._svc_provideAttributeValueUpdate(fail_obj, {fail_attr}, b"tag")
+
+    failing.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    failing.destroy_federation_execution("om-provide-avu-failing-fed")
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("om-provide-avu-negative-fed")
+
+
 def test_clause_5_service_and_callback_signature_metadata_matches_source_bindings():
     rti_checks = {
         "publishObjectClassAttributes": ("5.2", ["ObjectClassHandle theClass, AttributeHandleSet attributeList"]),

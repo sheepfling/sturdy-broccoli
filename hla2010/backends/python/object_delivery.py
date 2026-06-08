@@ -345,7 +345,9 @@ class PythonRTIObjectDeliveryMixin:
                 return
             owner = federation.federates.get(instance.owner)
             if owner is not None:
-                self._deliver(owner, "provideAttributeValueUpdate", instance.handle, attrs, tag)
+                owner_backend = getattr(owner, "backend", None)
+                if owner_backend is not None:
+                    owner_backend._svc_provideAttributeValueUpdate(instance.handle, attrs, tag)
 
         if isinstance(target, ObjectInstanceHandle):
             try:
@@ -367,6 +369,20 @@ class PythonRTIObjectDeliveryMixin:
             return
 
         raise ObjectInstanceNotKnown(repr(target))
+
+    def _svc_provideAttributeValueUpdate(
+        self,
+        theObject: ObjectInstanceHandle,
+        theAttributes: Iterable[AttributeHandle],
+        userSuppliedTag: bytes = b"",
+    ) -> None:
+        federation, instance = self._find_object(theObject)
+        self._ensure_no_save_or_restore_in_progress(federation)
+        attrs = set(theAttributes)
+        tag = bytes(userSuppliedTag)
+        for attribute in attrs:
+            self.engine.attribute_name(instance.class_handle, attribute)
+        self._deliver(self.state, "provideAttributeValueUpdate", instance.handle, attrs, tag)
 
     def _svc_sendInteraction(
         self,
