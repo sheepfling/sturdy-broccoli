@@ -538,7 +538,11 @@ def test_declaration_services_are_observable_through_mom_service_invocation_repo
 
 
 def test_clause_6_federate_initiated_services_are_observable_through_mom_service_invocation_reporting():
-    _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("om-mom-service-report-fed")
+    engine, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("om-mom-service-report-fed")
+    witness = rti_ambassador(engine=engine)
+    witness_fed = RecordingFederateAmbassador()
+    witness.connect(witness_fed, CallbackModel.HLA_EVOKED)
+    witness.join_federation_execution("charlie", "type-c", "om-mom-service-report-fed")
     cls = owner.get_object_class_handle("HLAobjectRoot.Target")
     attr = owner.get_attribute_handle(cls, "Position")
     interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
@@ -553,10 +557,10 @@ def test_clause_6_federate_initiated_services_are_observable_through_mom_service
     )
     sr_fed = owner.get_parameter_handle(set_reporting, "HLAfederate")
     sr_state = owner.get_parameter_handle(set_reporting, "HLAreportingState")
-    report_service = observer.get_parameter_handle(service_report, "HLAservice")
-    report_success = observer.get_parameter_handle(service_report, "HLAsuccessIndicator")
+    report_service = witness.get_parameter_handle(service_report, "HLAservice")
+    report_success = witness.get_parameter_handle(service_report, "HLAsuccessIndicator")
 
-    observer.subscribe_interaction_class(service_report)
+    witness.subscribe_interaction_class(service_report)
     owner.send_interaction(
         set_reporting,
         {
@@ -565,16 +569,28 @@ def test_clause_6_federate_initiated_services_are_observable_through_mom_service
         },
         b"enable-om-service-reporting",
     )
+    observer.send_interaction(
+        set_reporting,
+        {
+            sr_fed: observer.backend.state.handle.encode(),
+            sr_state: hla_mom.encode_bool(True),
+        },
+        b"enable-om-observer-service-reporting",
+    )
     drain(owner, observer)
     assert owner.backend.state.service_reporting is True
+    assert observer.backend.state.service_reporting is True
 
     owner.publish_object_class_attributes(cls, {attr})
+    observer.subscribe_object_class_attributes(cls, {attr})
     owner.publish_interaction_class(interaction)
     owner.reserve_object_instance_name("OM-MOM-Reserved")
     owner.release_object_instance_name("OM-MOM-Reserved")
     owner.reserve_multiple_object_instance_name({"OM-MOM-A", "OM-MOM-B"})
     owner.release_multiple_object_instance_name({"OM-MOM-A", "OM-MOM-B"})
     obj = owner.register_object_instance(cls, "OM-MOM-Object")
+    drain(owner, observer)
+    observer.local_delete_object_instance(obj)
     owner.update_attribute_values(obj, {attr: b"mom-position"}, b"mom-update")
     owner.send_interaction(interaction, {track_id: b"mom-track"}, b"mom-send")
     owner.request_attribute_value_update(obj, {attr}, b"mom-refresh")
@@ -583,9 +599,9 @@ def test_clause_6_federate_initiated_services_are_observable_through_mom_service
     owner.request_interaction_transportation_type_change(interaction, best_effort)
     owner.query_interaction_transportation_type(interaction)
     owner.delete_object_instance(obj, b"mom-delete")
-    drain(owner, observer)
+    drain(owner, observer, witness)
 
-    reports = [rec for rec in observer_fed.callbacks_named("receiveInteraction") if rec.args[0] == service_report]
+    reports = [rec for rec in witness_fed.callbacks_named("receiveInteraction") if rec.args[0] == service_report]
     assert reports
     service_names = [hla_mom.decode_text(rec.args[1][report_service]) for rec in reports]
     success_values = [hla_mom.decode_bool(rec.args[1][report_success]) for rec in reports]
@@ -597,6 +613,7 @@ def test_clause_6_federate_initiated_services_are_observable_through_mom_service
         "reserveMultipleObjectInstanceName",
         "releaseMultipleObjectInstanceName",
         "registerObjectInstance",
+        "localDeleteObjectInstance",
         "updateAttributeValues",
         "sendInteraction",
         "requestAttributeValueUpdate",
@@ -609,6 +626,7 @@ def test_clause_6_federate_initiated_services_are_observable_through_mom_service
 
     owner.resign_federation_execution(ResignAction.NO_ACTION)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
+    witness.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("om-mom-service-report-fed")
 
 
