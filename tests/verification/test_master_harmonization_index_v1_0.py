@@ -40,7 +40,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
 
     statuses = Counter(row["harmonization_status"] for row in rows)
     assert statuses == Counter(
-        {"mapped": 2590, "partial": 1413}
+        {"mapped": 2601, "partial": 1402}
     )
 
     by_id = {row["master_requirement_id"]: row for row in rows}
@@ -116,6 +116,12 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
     assert (
         by_id["HLA1516.1-OWN-7_2-RTIAPI-001"]["harmonization_source_file"]
         == "hla1516_1_own_detailed_reconciliation.csv"
+    )
+    assert (
+        by_id["HLA1516.1-OWN-7_2-UNCONDITIONALATTRIBUTEOWNERSHIPDIVESTITURE-TEST-001"][
+            "harmonization_status"
+        ]
+        == "mapped"
     )
     assert (
         by_id["HLA1516.1-OWN-7_2-RTIAPI-001-EXC"]["harmonization_status"]
