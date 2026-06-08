@@ -1,4 +1,5 @@
 # Python
+.DS_Store
 __pycache__/
 *.py[cod]
 .pytest_cache
@@ -25,7 +26,6 @@ service-report*.jsonl
 # Java build outputs
 *.class
 *.jar
-!third_party/pitch/PITCH-prti1516e-manual/lib/*.jar
 
 # Local archives
 *.zip
@@ -34,7 +34,8 @@ service-report*.jsonl
 # Local intake and vendor payloads
 INBOX/*
 !INBOX/README.md
-third_party/pitch/HLA_PITCH_linux/
+third_party/pitch/*
+!third_party/pitch/README.md
 CERTI-build
 CERTI-install
 CERTI-upstream-source

@@ -1,18 +1,16 @@
-# Pitch Bundle
+# Pitch Local Vendor Drop
 
-This directory contains the vendor-supplied Pitch installer bundle promoted out
-of `INBOX`.
-
-Contents:
+`third_party/pitch/` is reserved for local Pitch vendor payloads such as:
 
 - `HLA_PITCH_linux.zip`
-  original archive
 - `HLA_PITCH_linux/`
-  unpacked installer payloads and accompanying PDFs
+- `PITCH-prti1516e-manual/`
 
-This bundle is not Portico. It contains Pitch pRTI Free v5.5.10 and Pitch
-Visual OMT Free installers and manuals.
+Those files are intentionally ignored by Git and must not be committed. The
+repo may discover and use a local extraction at
+`third_party/pitch/PITCH-prti1516e-manual/`, but that path is local operator
+state rather than tracked source.
 
-The working macOS extraction and local runtime experiments now live in the
-repo-local `third_party/pitch/PITCH-prti1516e-manual/` extraction and the
-`scripts/run_pitch_local.sh` launcher.
+Use `HLA2010_PITCH_HOME` to point at an external Pitch installation, or place a
+local extraction in this directory when running the Pitch launchers and vendor
+tests.
