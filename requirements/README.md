@@ -15,6 +15,7 @@ Use it to track the three standards as three requirement sources:
 - `hla1516_1_clause_6_om_detailed_reconciliation.csv`: packet-derived detailed Clause 6 service reconciliation keyed to current repo tests and statuses
 - `hla1516_1_clause_7_own_detailed_reconciliation.csv`: packet-derived detailed Clause 7 ownership-management reconciliation keyed to current repo tests and statuses
 - `hla1516_1_clause_8_tm_detailed_reconciliation.csv`: packet-derived detailed Clause 8 time-management reconciliation keyed to current repo tests and statuses
+- `hla1516_1_clause_9_ddm_detailed_reconciliation.csv`: packet-derived detailed Clause 9 data-distribution-management reconciliation keyed to current repo tests and statuses
 - `hla1516_1_priority_clauses_7_9_10.csv`: second clause-level extraction tranche for ownership DDM and support services
 - `hla1516_2_omt.csv`: IEEE 1516.2-2010 OMT/FOM/MIM families
 - `hla1516_2_priority_omt.csv`: clause-level extraction tranche for OMT structure synchronization transportation update-rate switch datatype notes merge and XML rows
@@ -51,6 +52,7 @@ The first concrete clause-level extraction tranches are:
 - `hla1516_1_clause_6_om_detailed_reconciliation.csv`
 - `hla1516_1_clause_7_own_detailed_reconciliation.csv`
 - `hla1516_1_clause_8_tm_detailed_reconciliation.csv`
+- `hla1516_1_clause_9_ddm_detailed_reconciliation.csv`
 - `hla1516_clause_12_save_restore.csv`
 - `hla1516_1_priority_clauses_7_9_10.csv`
 - `hla1516_2_priority_omt.csv`
@@ -74,6 +76,8 @@ This decomposition file is still an engineering seed. It is deliberately narrowe
 `hla1516_1_clause_7_own_detailed_reconciliation.csv` extends that packet-to-curated bridge pattern to Clause 7 Ownership Management, starting from the imported packet's `SVC/SIG/ARG/PRE/EFF/EXC/MOM/TEST` service slices plus callback `CB/CB_SIG/CB_PAYLOAD/CB_ORDER` rows and marking where current ownership coverage is direct, broader-than-current, or still missing static-signature and MOM observer evidence.
 
 `hla1516_1_clause_8_tm_detailed_reconciliation.csv` applies that same packet-to-curated bridge pattern to Clause 8 Time Management, starting from the imported packet's service `SVC/SIG/ARG/PRE/EFF/EXC/MOM/TEST` slices plus callback `CB/CB_SIG/CB_PAYLOAD/CB_ORDER` rows and marking where current time-management coverage is direct, broader-than-current, or still missing dedicated MOM observer evidence.
+
+`hla1516_1_clause_9_ddm_detailed_reconciliation.csv` applies that same packet-to-curated bridge pattern to Clause 9 Data Distribution Management, starting from the imported packet's service `SVC/SIG/ARG/PRE/EFF/EXC/MOM/TEST` slices and marking where current region-lifecycle, region-subscription, and region-filtering coverage is direct, broader-than-current, or still missing dedicated MOM observer evidence.
 
 The canonical hierarchy view for these sources lives in
 [`docs/verification/requirements_hierarchy.md`](../docs/verification/requirements_hierarchy.md).
