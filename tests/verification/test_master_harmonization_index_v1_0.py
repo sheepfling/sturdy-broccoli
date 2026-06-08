@@ -40,7 +40,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
 
     statuses = Counter(row["harmonization_status"] for row in rows)
     assert statuses == Counter(
-        {"mapped": 2557, "partial": 1446}
+        {"mapped": 2590, "partial": 1413}
     )
 
     by_id = {row["master_requirement_id"]: row for row in rows}
@@ -84,10 +84,18 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
         by_id["HLA1516.1-TM-8_2-RTIAPI-001"]["harmonization_source_file"]
         == "hla1516_1_tm_detailed_reconciliation.csv"
     )
+    assert (
+        by_id["HLA1516.1-TM-8_2-ENABLETIMEREGULATION-TEST-001"]["harmonization_status"]
+        == "mapped"
+    )
     assert by_id["HLA1516.1-DDM-OVERVIEW-012"]["harmonization_status"] == "mapped"
     assert (
         by_id["HLA1516.1-DDM-OVERVIEW-012"]["harmonization_source_file"]
         == "hla1516_1_ddm_detailed_reconciliation.csv"
+    )
+    assert (
+        by_id["HLA1516.1-DDM-9_2-CREATEREGION-TEST-001"]["harmonization_status"]
+        == "mapped"
     )
     assert by_id["HLA1516.1-DDM-9_2-RTIAPI-001"]["harmonization_status"] == "mapped"
     assert (

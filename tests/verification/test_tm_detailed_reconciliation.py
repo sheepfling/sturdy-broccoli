@@ -22,7 +22,7 @@ def test_tm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 301
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 224, "partial": 77}
+        {"mapped": 243, "partial": 58}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -44,6 +44,8 @@ def test_tm_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-TM-8_3-FEDCB-001"]["reconciliation_kind"] == "FED_CB"
     assert rows["HLA1516.1-TM-8_3-FEDCB-001-ORD"]["current_status"] == "mapped"
     assert rows["HLA1516.1-TM-8_3-FEDCB-001-ORD"]["reconciliation_kind"] == "CB_ORD"
+    assert rows["HLA1516.1-TM-8_2-ENABLETIMEREGULATION-TEST-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-TM-8_2-ENABLETIMEREGULATION-TEST-001"]["reconciliation_kind"] == "TEST"
     assert (
         rows["HLA1516.1-TM-8_22-REQUESTRETRACTION-CB_PAYLOAD-001"]["current_status"]
         == "mapped"

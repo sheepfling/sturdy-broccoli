@@ -22,7 +22,7 @@ def test_ddm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 223
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 163, "partial": 60}
+        {"mapped": 177, "partial": 46}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -46,5 +46,7 @@ def test_ddm_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-DDM-9_2-RTIAPI-001-SIG"]["reconciliation_kind"] == "SIG"
     assert rows["HLA1516.1-DDM-9_5-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-DDM-9_5-001"]["reconciliation_kind"] == "seed"
+    assert rows["HLA1516.1-DDM-9_2-CREATEREGION-TEST-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-DDM-9_2-CREATEREGION-TEST-001"]["reconciliation_kind"] == "TEST"
     assert rows["HLA1516.1-DDM-9_12-RTIAPI-002-RET"]["current_status"] == "mapped"
     assert rows["HLA1516.1-DDM-9_12-RTIAPI-002-RET"]["reconciliation_kind"] == "RET"
