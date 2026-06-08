@@ -39,7 +39,9 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
     }
 
     statuses = Counter(row["harmonization_status"] for row in rows)
-    assert statuses == Counter({"unreconciled": 2437, "mapped": 870, "partial": 696})
+    assert statuses == Counter(
+        {"unreconciled": 1805, "mapped": 1367, "partial": 830, "planned": 1}
+    )
 
     by_id = {row["master_requirement_id"]: row for row in rows}
     assert by_id["HLA1516.1-SUP-10_2-GETAUTOMATICRESIGNDIRECTIVE-TEST-001"][
@@ -55,6 +57,12 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
         by_id["HLA1516.1-API_MAPPING_OVERVIEW-001"]["harmonization_source_file"]
         == "hla1516_1_api_detailed_reconciliation.csv"
     )
+    assert by_id["HLA1516.1-FM-4_2-SVC-001"]["harmonization_status"] == "mapped"
+    assert (
+        by_id["HLA1516.1-FM-4_2-SVC-001"]["harmonization_source_file"]
+        == "hla1516_1_fm_detailed_reconciliation.csv"
+    )
+    assert by_id["HLA1516.1-FM-4_3-RTIAPI-001-MOM"]["harmonization_status"] == "planned"
     assert by_id["HLA1516.1-SUP-10_2-GETAUTOMATICRESIGNDIRECTIVE-TEST-001"][
         "harmonization_source_file"
     ] == "hla1516_1_clause_10_sup_detailed_reconciliation.csv"

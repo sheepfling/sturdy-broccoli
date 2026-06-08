@@ -10,6 +10,7 @@ Use it to track the three standards as three requirement sources:
 - `hla1516_1_federate_interface.csv`: IEEE 1516.1-2010 federate interface families
 - `hla1516_1_priority_clauses_4_8_11.csv`: first clause-level extraction tranche for lifecycle time and MOM
 - `hla1516_1_clause_4_fm_service_decomposition.csv`: harmonized Federation Management service decomposition for core lifecycle services using `SIG/PRE/EFF/CB/EXC/MOM/TEST` row kinds
+- `hla1516_1_fm_detailed_reconciliation.csv`: packet-derived detailed Federation Management reconciliation keyed to the Clause 4 decomposition, lifecycle tests, callback evidence, and save/restore observer slices
 - `hla1516_1_clause_5_declaration_management.csv`: clause-level declaration-management extraction tranche
 - `hla1516_1_clause_5_dm_detailed_reconciliation.csv`: packet-derived detailed Clause 5 service reconciliation keyed to current repo tests and statuses
 - `hla1516_1_clause_6_object_management.csv`: clause-level object-management extraction tranche including scoped transport supported-subset rows
@@ -66,6 +67,7 @@ The first concrete clause-level extraction tranches are:
 
 - `hla1516_1_priority_clauses_4_8_11.csv`
 - `hla1516_1_clause_4_fm_service_decomposition.csv`
+- `hla1516_1_fm_detailed_reconciliation.csv`
 - `hla1516_1_clause_5_declaration_management.csv`
 - `hla1516_1_clause_5_dm_detailed_reconciliation.csv`
 - `hla1516_1_clause_6_object_management.csv`
@@ -94,6 +96,8 @@ The first concrete clause-level extraction tranches are:
 - `TEST`: executable verification and transport-equivalence expectations
 
 This decomposition file is still an engineering seed. It is deliberately narrower than a certified paragraph-by-paragraph extraction and should be expanded clause-by-clause as the spec text is normalized.
+
+`hla1516_1_fm_detailed_reconciliation.csv` is the imported-master companion to that Clause 4 decomposition. It maps the packet's finer-grained Federation Management rows such as `SVC`, `ARG`, `PRE`, `EFF`, `EXC`, `MOM`, `RTI_API`, `SIG`, `EXC_API`, `MOM_TRACE`, `FED_CB`, `CB_SIG`, and `CB_ORD` onto the current repo-native Clause 4 decomposition and lifecycle/callback tests. Rows already directly closed by the decomposition inherit `mapped` or `partial` from the decomposition status, while the still-open disconnect MOM observer slice remains explicitly `planned`.
 
 `hla1516_1_clause_5_dm_detailed_reconciliation.csv` plays a similar bridge role for Declaration Management, but starts from the imported packet's finer-grained `SVC/SIG/ARG/PRE/EFF/EXC/MOM/TEST` service slices and maps them onto the repo's current tests and `mapped/partial/planned` status vocabulary.
 
