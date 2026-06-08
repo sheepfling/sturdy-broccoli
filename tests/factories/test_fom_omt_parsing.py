@@ -324,6 +324,30 @@ def test_parse_fom_xml_recognizes_standard_omt_component_tables_across_fom_som_a
     assert mim_module.is_mim is True
 
 
+def test_standard_annex_f_and_g_example_modules_are_maintained_as_parser_regression_fixtures():
+    som_module = parse_fom_xml(
+        "CERTI/xml/ieee1516-2010/1516_2-2010/RestaurantSOMmodule.xml",
+        validate_schema=True,
+    )
+    fom_module = parse_fom_xml(
+        "CERTI/xml/ieee1516-2010/1516_2-2010/RestaurantFOMmodule.xml",
+        validate_schema=True,
+    )
+
+    assert som_module.model_type == "SOM"
+    assert fom_module.model_type == "FOM"
+    assert "HLAobjectRoot.Customer" in {spec.full_name for spec in som_module.object_classes}
+    assert "HLAinteractionRoot.CustomerTransactions.OrderTaken" in {
+        spec.full_name for spec in som_module.interaction_classes
+    }
+    assert "HLAobjectRoot.Food.Appetizers.Soup.ClamChowder.NewEngland" in {
+        spec.full_name for spec in fom_module.object_classes
+    }
+    assert "HLAinteractionRoot.CustomerTransactions.OrderTaken.FromKidsMenu" in {
+        spec.full_name for spec in fom_module.interaction_classes
+    }
+
+
 def test_parse_fom_xml_distinguishes_required_optional_and_conditionally_required_omt_entries(tmp_path: Path):
     valid_minimal = tmp_path / "valid-minimal.xml"
     valid_minimal.write_text(
