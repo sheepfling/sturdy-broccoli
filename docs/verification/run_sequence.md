@@ -28,7 +28,7 @@ Canonical order of the underlying steps:
 4. `scripts/ci/test.sh`
 5. `scripts/ci/vendor_runtime_smoke.sh matrix`
 6. `scripts/run_two_federate_suite.py`
-7. `scripts/ci/target_radar_backend_matrix.sh`
+7. `scripts/ci/target_radar_backend_matrix.sh --backend python --backend java-shim-jpype --backend java-shim-py4j`
 8. `scripts/ci/target_radar_proof.sh`
 9. `scripts/ci/section8_backend_matrix_gate.sh`
 10. `scripts/ci/vendor_runtime_smoke.sh all`
@@ -43,7 +43,7 @@ What each stage means:
 - integration tests: composite two-federate artifact generation
 - compliance matrices: Section 8 compliance artifact generation
 - full backend matrixed compliance: the broad vendor/runtime smoke matrix
-- other evidence-producing checks: target/radar matrices and proof packet
+- other evidence-producing checks: the target/radar matrix over the core trio and the proof packet
 
 Use this page when you want the sequence without chasing individual wrapper
 names.
