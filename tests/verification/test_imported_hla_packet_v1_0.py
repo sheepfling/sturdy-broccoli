@@ -60,6 +60,65 @@ CLAUSE_TRACKER_COLUMNS = [
     "notes",
 ]
 
+SUMMARY_COLUMNS = [
+    "metric",
+    "value",
+    "notes",
+]
+
+CPP_API_COLUMNS = [
+    "header",
+    "class_or_scope",
+    "clause",
+    "method_name",
+    "signature",
+    "exceptions",
+]
+
+API_SERVICE_COLUMNS = [
+    "interface",
+    "direction",
+    "clause",
+    "service_title",
+    "method_name",
+    "overload_index",
+    "return_type",
+    "arguments",
+    "exceptions",
+    "signature",
+]
+
+MIM_CATALOG_COLUMNS = [
+    "category",
+    "path_or_owner",
+    "name",
+    "parent_path",
+    "data_type",
+    "update_type",
+    "ownership",
+    "sharing",
+    "transportation",
+    "order",
+    "dimensions",
+    "semantics",
+]
+
+XSD_CATALOG_COLUMNS = [
+    "category",
+    "schema",
+    "name",
+    "type_or_kind",
+    "minOccurs",
+    "maxOccurs",
+    "ref_or_mixed",
+]
+
+WSDL_CATALOG_COLUMNS = [
+    "operation",
+    "input",
+    "output",
+]
+
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -209,3 +268,50 @@ def test_imported_hla_packet_clause_tracker_covers_major_standard_areas():
         ("IEEE 1516.2-2010", "6"),
         ("IEEE 1516.2-2010", "7"),
     } <= tracker_pairs
+
+
+def test_imported_hla_packet_loader_covers_remaining_canonical_csv_families():
+    packet = load_imported_hla_packet()
+
+    assert packet.summary_rows
+    assert list(packet.summary_rows[0].__dataclass_fields__.keys()) == SUMMARY_COLUMNS
+    assert len(packet.summary_rows) == 9
+    assert packet.summary_by_metric["Total requirement rows"].value == "4003"
+    assert packet.summary_by_metric["C++ API catalog rows"].value == "290"
+
+    assert packet.delta_rows
+    assert packet.clauses5_11_detailed_rows
+    assert packet.clause6_11_detailed_rows
+    assert packet.omt_xml_detailed_rows
+    assert len(packet.delta_rows) == 1445
+    assert len(packet.clauses5_11_detailed_rows) == 1257
+    assert len(packet.clause6_11_detailed_rows) == 1223
+    assert len(packet.omt_xml_detailed_rows) == 1292
+    assert packet.delta_rows[0].requirement_id.startswith("HLA")
+    assert packet.clauses5_11_detailed_rows[0].standard == "IEEE 1516.1-2010"
+    assert packet.omt_xml_detailed_rows[-1].standard == "IEEE 1516.2-2010"
+
+    assert packet.cpp_api_rows
+    assert list(packet.cpp_api_rows[0].__dataclass_fields__.keys()) == CPP_API_COLUMNS
+    assert len(packet.cpp_api_rows) == 290
+    assert packet.cpp_api_by_clause["4.2"][0].method_name == "connect"
+
+    assert packet.api_service_catalog_rows
+    assert list(packet.api_service_catalog_rows[0].__dataclass_fields__.keys()) == API_SERVICE_COLUMNS
+    assert len(packet.api_service_catalog_rows) == 215
+    assert packet.api_service_catalog_by_clause["4.2"][0].method_name == "connect"
+
+    assert packet.mim_catalog_rows
+    assert list(packet.mim_catalog_rows[0].__dataclass_fields__.keys()) == MIM_CATALOG_COLUMNS
+    assert len(packet.mim_catalog_rows) == 288
+    assert any(row.name == "HLAfederate" for row in packet.mim_catalog_rows)
+
+    assert packet.xsd_catalog_rows
+    assert list(packet.xsd_catalog_rows[0].__dataclass_fields__.keys()) == XSD_CATALOG_COLUMNS
+    assert len(packet.xsd_catalog_rows) == 1269
+    assert any(row.name == "objectClass" for row in packet.xsd_catalog_rows)
+
+    assert packet.wsdl_catalog_rows
+    assert list(packet.wsdl_catalog_rows[0].__dataclass_fields__.keys()) == WSDL_CATALOG_COLUMNS
+    assert len(packet.wsdl_catalog_rows) == 308
+    assert any(row.operation == "createFederationExecution" for row in packet.wsdl_catalog_rows)

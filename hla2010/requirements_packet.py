@@ -98,12 +98,87 @@ class ClauseTrackerRow:
 
 
 @dataclass(frozen=True, slots=True)
+class RequirementsSummaryRow:
+    metric: str
+    value: str
+    notes: str
+
+
+@dataclass(frozen=True, slots=True)
+class CppApiCatalogRow:
+    header: str
+    class_or_scope: str
+    clause: str
+    method_name: str
+    signature: str
+    exceptions: str
+
+
+@dataclass(frozen=True, slots=True)
+class ApiServiceCatalogRow:
+    interface: str
+    direction: str
+    clause: str
+    service_title: str
+    method_name: str
+    overload_index: str
+    return_type: str
+    arguments: str
+    exceptions: str
+    signature: str
+
+
+@dataclass(frozen=True, slots=True)
+class MimCatalogRow:
+    category: str
+    path_or_owner: str
+    name: str
+    parent_path: str
+    data_type: str
+    update_type: str
+    ownership: str
+    sharing: str
+    transportation: str
+    order: str
+    dimensions: str
+    semantics: str
+
+
+@dataclass(frozen=True, slots=True)
+class XsdCatalogRow:
+    category: str
+    schema: str
+    name: str
+    type_or_kind: str
+    minOccurs: str
+    maxOccurs: str
+    ref_or_mixed: str
+
+
+@dataclass(frozen=True, slots=True)
+class WsdlCatalogRow:
+    operation: str
+    input: str
+    output: str
+
+
+@dataclass(frozen=True, slots=True)
 class ImportedHLAPacket:
     root: Path
     manifest: PacketManifest
     master_rows: tuple[MasterRequirementRow, ...]
     verification_rows: tuple[VerificationMatrixRow, ...]
     clause_tracker_rows: tuple[ClauseTrackerRow, ...]
+    summary_rows: tuple[RequirementsSummaryRow, ...]
+    delta_rows: tuple[MasterRequirementRow, ...]
+    clauses5_11_detailed_rows: tuple[MasterRequirementRow, ...]
+    clause6_11_detailed_rows: tuple[MasterRequirementRow, ...]
+    omt_xml_detailed_rows: tuple[MasterRequirementRow, ...]
+    cpp_api_rows: tuple[CppApiCatalogRow, ...]
+    api_service_catalog_rows: tuple[ApiServiceCatalogRow, ...]
+    mim_catalog_rows: tuple[MimCatalogRow, ...]
+    xsd_catalog_rows: tuple[XsdCatalogRow, ...]
+    wsdl_catalog_rows: tuple[WsdlCatalogRow, ...]
 
     def resolve_manifest_path(self, path: str) -> Path:
         if path.startswith("requirements/"):
@@ -164,6 +239,24 @@ class ImportedHLAPacket:
     def clause_tracker_pairs(self) -> set[tuple[str, str]]:
         return {(row.standard, row.clause) for row in self.clause_tracker_rows}
 
+    @property
+    def summary_by_metric(self) -> dict[str, RequirementsSummaryRow]:
+        return {row.metric: row for row in self.summary_rows}
+
+    @property
+    def cpp_api_by_clause(self) -> dict[str, tuple[CppApiCatalogRow, ...]]:
+        grouped: dict[str, list[CppApiCatalogRow]] = {}
+        for row in self.cpp_api_rows:
+            grouped.setdefault(row.clause, []).append(row)
+        return {key: tuple(value) for key, value in grouped.items()}
+
+    @property
+    def api_service_catalog_by_clause(self) -> dict[str, tuple[ApiServiceCatalogRow, ...]]:
+        grouped: dict[str, list[ApiServiceCatalogRow]] = {}
+        for row in self.api_service_catalog_rows:
+            grouped.setdefault(row.clause, []).append(row)
+        return {key: tuple(value) for key, value in grouped.items()}
+
 
 def imported_hla_packet_root(project_root: Path | None = None) -> Path:
     base = project_root or Path(__file__).resolve().parents[1]
@@ -205,12 +298,23 @@ def _load_manifest(root: Path) -> PacketManifest:
 def load_imported_hla_packet(project_root: Path | None = None) -> ImportedHLAPacket:
     root = imported_hla_packet_root(project_root)
     latest = root / "latest"
+    catalogs = root / "catalogs"
     return ImportedHLAPacket(
         root=root,
         manifest=_load_manifest(root),
         master_rows=tuple(MasterRequirementRow(**row) for row in _read_csv_dicts(latest / "hla_1516_requirements_master_v1_0.csv")),
         verification_rows=tuple(VerificationMatrixRow(**row) for row in _read_csv_dicts(latest / "hla_1516_verification_matrix_v1_0.csv")),
         clause_tracker_rows=tuple(ClauseTrackerRow(**row) for row in _read_csv_dicts(latest / "hla_1516_clause_tracker_v1_0.csv")),
+        summary_rows=tuple(RequirementsSummaryRow(**row) for row in _read_csv_dicts(latest / "hla_1516_requirements_summary_v1_0.csv")),
+        delta_rows=tuple(MasterRequirementRow(**row) for row in _read_csv_dicts(latest / "hla_1516_requirements_delta_v1_0.csv")),
+        clauses5_11_detailed_rows=tuple(MasterRequirementRow(**row) for row in _read_csv_dicts(latest / "hla_1516_clauses5_11_detailed_requirements_v1_0.csv")),
+        clause6_11_detailed_rows=tuple(MasterRequirementRow(**row) for row in _read_csv_dicts(latest / "hla_1516_clause6_11_detailed_requirements_v1_0.csv")),
+        omt_xml_detailed_rows=tuple(MasterRequirementRow(**row) for row in _read_csv_dicts(latest / "hla_1516_omt_xml_detailed_requirements_v1_0.csv")),
+        cpp_api_rows=tuple(CppApiCatalogRow(**row) for row in _read_csv_dicts(latest / "hla_1516_cpp_api_catalog_v1_0.csv")),
+        api_service_catalog_rows=tuple(ApiServiceCatalogRow(**row) for row in _read_csv_dicts(catalogs / "hla_1516_api_service_catalog_v0_3.csv")),
+        mim_catalog_rows=tuple(MimCatalogRow(**row) for row in _read_csv_dicts(catalogs / "hla_1516_mim_catalog_v0_3.csv")),
+        xsd_catalog_rows=tuple(XsdCatalogRow(**row) for row in _read_csv_dicts(catalogs / "hla_1516_xsd_catalog_v0_3.csv")),
+        wsdl_catalog_rows=tuple(WsdlCatalogRow(**row) for row in _read_csv_dicts(catalogs / "hla_1516_wsdl_catalog_v0_3.csv")),
     )
 
 
