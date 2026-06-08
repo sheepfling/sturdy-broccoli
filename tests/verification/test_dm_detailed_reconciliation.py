@@ -22,7 +22,7 @@ def test_declaration_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 212
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 162, "partial": 50}
+        {"mapped": 174, "partial": 38}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -47,3 +47,5 @@ def test_declaration_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-DM-5_10-FEDCB-001-ORD"]["reconciliation_kind"] == "CB_ORD"
     assert rows["HLA1516.1-DM-5_12-FEDCB-001-SIG"]["current_status"] == "mapped"
     assert rows["HLA1516.1-DM-5_12-FEDCB-001-SIG"]["reconciliation_kind"] == "CB_SIG"
+    assert rows["HLA1516.1-DM-5_2-PUBLISHOBJECTCLASSATTRIBUTES-TEST-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-DM-5_2-PUBLISHOBJECTCLASSATTRIBUTES-TEST-001"]["reconciliation_kind"] == "TEST"
