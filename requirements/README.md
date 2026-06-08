@@ -13,6 +13,7 @@ Use it to track the three standards as three requirement sources:
 - `hla1516_1_fm_detailed_reconciliation.csv`: packet-derived detailed Federation Management reconciliation keyed to the Clause 4 decomposition, lifecycle tests, callback evidence, and save/restore observer slices
 - `hla1516_1_clause_5_declaration_management.csv`: clause-level declaration-management extraction tranche
 - `hla1516_1_clause_5_dm_detailed_reconciliation.csv`: packet-derived detailed Clause 5 service reconciliation keyed to current repo tests and statuses
+- `hla1516_1_dm_detailed_reconciliation.csv`: packet-derived detailed IEEE 1516.1 declaration-management family reconciliation keyed to the Clause 5 bridge and current declaration callback and runtime tests
 - `hla1516_1_clause_6_object_management.csv`: clause-level object-management extraction tranche including scoped transport supported-subset rows
 - `hla1516_1_clause_6_om_detailed_reconciliation.csv`: packet-derived detailed Clause 6 service reconciliation keyed to current repo tests and statuses
 - `hla1516_1_om_detailed_reconciliation.csv`: packet-derived detailed IEEE 1516.1 object-management family reconciliation keyed to the Clause 6 bridge and callback/runtime tests
@@ -77,6 +78,7 @@ The first concrete clause-level extraction tranches are:
 - `hla1516_1_fm_detailed_reconciliation.csv`
 - `hla1516_1_clause_5_declaration_management.csv`
 - `hla1516_1_clause_5_dm_detailed_reconciliation.csv`
+- `hla1516_1_dm_detailed_reconciliation.csv`
 - `hla1516_1_clause_6_object_management.csv`
 - `hla1516_1_clause_6_om_detailed_reconciliation.csv`
 - `hla1516_1_om_detailed_reconciliation.csv`
@@ -114,6 +116,8 @@ This decomposition file is still an engineering seed. It is deliberately narrowe
 `hla1516_1_fm_detailed_reconciliation.csv` is the imported-master companion to that Clause 4 decomposition. It maps the packet's finer-grained Federation Management rows such as `SVC`, `ARG`, `PRE`, `EFF`, `EXC`, `MOM`, `RTI_API`, `SIG`, `EXC_API`, `MOM_TRACE`, `FED_CB`, `CB_SIG`, and `CB_ORD` onto the current repo-native Clause 4 decomposition and lifecycle/callback tests. Rows already directly closed by the decomposition inherit `mapped` or `partial` from the decomposition status, while the still-open disconnect MOM observer slice remains explicitly `planned`.
 
 `hla1516_1_clause_5_dm_detailed_reconciliation.csv` plays a similar bridge role for Declaration Management, but starts from the imported packet's finer-grained `SVC/SIG/ARG/PRE/EFF/EXC/MOM/TEST` service slices and maps them onto the repo's current tests and `mapped/partial/planned` status vocabulary.
+
+`hla1516_1_dm_detailed_reconciliation.csv` is the whole-family companion bridge for imported IEEE 1516.1 Declaration Management master rows. It lifts the existing Clause 5 service reconciliation onto the imported family row kinds such as `seed`, `RTI_API`, `SIG`, `EFF`, `EXC_API`, and `MOM_TRACE`, and it also maps the callback-side `FED_CB`, `CB`, `CB_SIG`, `CB_ORDER`, `CB_ORD`, and `CB_PAYLOAD` rows onto the repo's current declaration callback and observer tests. That lets the full declaration-management family count directly in the whole-catalog harmonization index instead of remaining outside it.
 
 `hla1516_1_clause_6_om_detailed_reconciliation.csv` applies that same packet-to-curated bridge pattern to Clause 6 Object Management, starting from the imported packet's `SEM/SVC/SIG/ARG/PRE/EFF/EXC/MOM` slices and explicitly marking where the current repo only covers a supported transport subset or still lacks direct MOM and callback-family evidence.
 
