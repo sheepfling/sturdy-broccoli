@@ -21,6 +21,7 @@ Use it to track the three standards as three requirement sources:
 - `hla1516_1_clause_9_ddm_detailed_reconciliation.csv`: packet-derived detailed Clause 9 data-distribution-management reconciliation keyed to current repo tests and statuses
 - `hla1516_1_clause_10_sup_detailed_reconciliation.csv`: packet-derived detailed Clause 10 support-services reconciliation keyed to current repo tests and statuses
 - `hla1516_1_clause_11_mom_detailed_reconciliation.csv`: packet-derived detailed Clause 11 MOM/MIM reconciliation keyed to current repo tests and statuses
+- `hla1516_1_mom_detailed_reconciliation.csv`: packet-derived detailed IEEE 1516.1 MOM/MIM family reconciliation keyed to Clause 11, standard MIM catalog invariants, and MOM runtime tests
 - `hla1516_1_sup_detailed_reconciliation.csv`: packet-derived detailed IEEE 1516.1 support-family reconciliation keyed to the Clause 10 bridge and support-service tests
 - `hla1516_1_api_detailed_reconciliation.csv`: packet-derived detailed IEEE 1516.1 API-binding reconciliation keyed to current repo source-derived metadata, requirements-ledger, and imported binding catalogs
 - `hla1516_xml_detailed_reconciliation.csv`: packet-derived detailed XML-family reconciliation keyed to current Annex D/E parser and schema-validation evidence
@@ -81,6 +82,7 @@ The first concrete clause-level extraction tranches are:
 - `hla1516_1_clause_9_ddm_detailed_reconciliation.csv`
 - `hla1516_1_clause_10_sup_detailed_reconciliation.csv`
 - `hla1516_1_clause_11_mom_detailed_reconciliation.csv`
+- `hla1516_1_mom_detailed_reconciliation.csv`
 - `hla1516_1_sup_detailed_reconciliation.csv`
 - `hla1516_1_api_detailed_reconciliation.csv`
 - `hla1516_xml_detailed_reconciliation.csv`
@@ -120,6 +122,8 @@ This decomposition file is still an engineering seed. It is deliberately narrowe
 `hla1516_1_clause_10_sup_detailed_reconciliation.csv` applies that same packet-to-curated bridge pattern to Clause 10 Support Services, starting from the imported packet's service `SVC/SIG/ARG/PRE/EFF/EXC/MOM/TEST` slices and mapping them onto the repo's current lookup, metadata, normalization, advisory-switch, and callback-control tests while explicitly marking the still-unreconciled MOM observer slice.
 
 `hla1516_1_clause_11_mom_detailed_reconciliation.csv` applies the packet-to-curated bridge pattern to Clause 11 Management Object Model requirements, using the packet's `OVW/OBJ/INT/RTI/SRV/TABLE` row kinds rather than service slices and mapping them onto the repo's current MOM catalog, observer, reporting, action, and runtime evidence while keeping the remaining design-rule-only nonrevision row distinct.
+
+`hla1516_1_mom_detailed_reconciliation.csv` is the whole-family companion bridge for imported IEEE 1516.1 MOM/MIM master rows. It lifts the existing Clause 11 MOM reconciliation onto the whole master family, including the standard-MIM object, interaction, attribute, parameter, and datatype rows. Where the repo already compares the carried standard MIM against the active catalog exactly, those per-atom MIM rows are marked `mapped` rather than left as a family placeholder.
 
 `hla1516_1_sup_detailed_reconciliation.csv` is the whole-family companion bridge for imported IEEE 1516.1 Support Services master rows. It lifts the existing Clause 10 support reconciliation onto the imported master row kinds such as `seed`, `RTI_API`, `SIG`, `RET`, `EXC_API`, and `MOM_TRACE`, so the support-family API surface, observer traces, and service-level verification rows count directly in the whole-catalog harmonization index instead of remaining outside it.
 
