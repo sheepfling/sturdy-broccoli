@@ -2,12 +2,11 @@ from __future__ import annotations
 
 import csv
 import hashlib
-import json
 from pathlib import Path
 
+from hla2010.requirements_packet import KNOWN_PACKET_PARENT_GAPS, load_imported_hla_packet
 
 IMPORT_ROOT = Path(__file__).resolve().parents[2] / "requirements" / "imports" / "hla_1516_requirements_codebase_packet_v1_0"
-MANIFEST_PATH = IMPORT_ROOT / "MANIFEST.json"
 LATEST_ROOT = IMPORT_ROOT / "latest"
 
 MASTER_COLUMNS = [
@@ -61,22 +60,6 @@ CLAUSE_TRACKER_COLUMNS = [
     "notes",
 ]
 
-KNOWN_PACKET_PARENT_GAPS = {
-    "HLA1516.1-FM-4_11-001",
-    "HLA1516.1-MOM-11.6-001",
-}
-
-
-def _manifest_repo_relative_to_import_root(path: str) -> Path:
-    if path.startswith("requirements/"):
-        return IMPORT_ROOT / path.removeprefix("requirements/")
-    if path.startswith("WORK_PACKET/"):
-        return IMPORT_ROOT / "work_packet" / path.removeprefix("WORK_PACKET/")
-    if path in {"MANIFEST.json", "README.md"}:
-        return IMPORT_ROOT / path
-    raise AssertionError(f"unexpected manifest path: {path}")
-
-
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -89,123 +72,127 @@ def _csv_row_count(path: Path) -> int:
     with path.open(newline="", encoding="utf-8") as handle:
         return sum(1 for _ in csv.DictReader(handle))
 
-
-def _csv_rows(path: Path) -> list[dict[str, str]]:
-    with path.open(newline="", encoding="utf-8") as handle:
-        return list(csv.DictReader(handle))
-
-
 def test_imported_hla_packet_manifest_matches_committed_assets():
-    manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-    included_files = manifest["included_files"]
+    packet = load_imported_hla_packet()
+    manifest = packet.manifest
+    included_files = manifest.included_files
     restricted_prefix = "requirements/restricted_reference_inputs/"
-    restricted_entries = [item for item in included_files if item["path"].startswith(restricted_prefix)]
-    committed_entries = [item for item in included_files if not item["path"].startswith(restricted_prefix)]
+    restricted_entries = [item for item in included_files if item.path.startswith(restricted_prefix)]
+    committed_entries = [item for item in included_files if not item.path.startswith(restricted_prefix)]
 
-    assert manifest["packet_name"] == "hla_1516_requirements_codebase_packet_v1_0"
-    assert manifest["packet_version"] == "v1.0"
+    assert manifest.packet_name == "hla_1516_requirements_codebase_packet_v1_0"
+    assert manifest.packet_version == "v1.0"
     assert len(included_files) == 47
     assert len(restricted_entries) == 5
 
     for item in restricted_entries:
-        path = _manifest_repo_relative_to_import_root(item["path"])
+        path = packet.resolve_manifest_path(item.path)
         assert not path.exists(), f"restricted packet asset should stay uncommitted: {path}"
 
     for item in committed_entries:
-        path = _manifest_repo_relative_to_import_root(item["path"])
+        path = packet.resolve_manifest_path(item.path)
         assert path.exists(), f"missing imported packet asset: {path}"
-        if item["path"] in {"MANIFEST.json", "README.md"}:
+        if item.path in {"MANIFEST.json", "README.md"}:
             continue
-        assert path.stat().st_size == item["bytes"], f"size drift for {path}"
-        assert _sha256(path) == item["sha256"], f"checksum drift for {path}"
+        assert path.stat().st_size == item.bytes, f"size drift for {path}"
+        assert _sha256(path) == item.sha256, f"checksum drift for {path}"
 
 
 def test_imported_hla_packet_canonical_summary_matches_current_csv_rows():
-    manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-    summary = manifest["canonical_asset_summary"]
+    summary = load_imported_hla_packet().manifest.canonical_asset_summary
 
-    assert _csv_row_count(LATEST_ROOT / "hla_1516_requirements_master_v1_0.csv") == summary["master_requirements_rows"]
-    assert _csv_row_count(LATEST_ROOT / "hla_1516_verification_matrix_v1_0.csv") == summary["verification_rows"]
-    assert _csv_row_count(LATEST_ROOT / "hla_1516_clause_tracker_v1_0.csv") == summary["clause_tracker_rows"]
-    assert _csv_row_count(LATEST_ROOT / "hla_1516_cpp_api_catalog_v1_0.csv") == summary["cpp_api_catalog_rows"]
+    assert _csv_row_count(LATEST_ROOT / "hla_1516_requirements_master_v1_0.csv") == summary.master_requirements_rows
+    assert _csv_row_count(LATEST_ROOT / "hla_1516_verification_matrix_v1_0.csv") == summary.verification_rows
+    assert _csv_row_count(LATEST_ROOT / "hla_1516_clause_tracker_v1_0.csv") == summary.clause_tracker_rows
+    assert _csv_row_count(LATEST_ROOT / "hla_1516_cpp_api_catalog_v1_0.csv") == summary.cpp_api_catalog_rows
 
 
 def test_imported_hla_packet_master_csv_matches_schema_contract_and_known_source_gaps():
-    rows = _csv_rows(LATEST_ROOT / "hla_1516_requirements_master_v1_0.csv")
+    packet = load_imported_hla_packet()
+    rows = packet.master_rows
 
     assert rows
-    assert list(rows[0].keys()) == MASTER_COLUMNS
+    assert list(rows[0].__dataclass_fields__.keys()) == MASTER_COLUMNS
 
-    requirement_ids = [row["requirement_id"].strip() for row in rows]
+    requirement_ids = [row.requirement_id.strip() for row in rows]
     assert all(requirement_ids)
     assert len(requirement_ids) == len(set(requirement_ids))
 
-    assert {row["standard"].strip() for row in rows} == {
+    assert {row.standard.strip() for row in rows} == {
         "IEEE 1516-2010",
         "IEEE 1516.1-2010",
         "IEEE 1516.2-2010",
     }
-    assert {row["priority"].strip() for row in rows} <= {"P0", "P1", "P2", "P3"}
-    assert {row["status"].strip() for row in rows} == {"Draft"}
-    assert {row["normative_keyword"].strip() for row in rows} == {"shall"}
+    assert {row.priority.strip() for row in rows} <= {"P0", "P1", "P2", "P3"}
+    assert {row.status.strip() for row in rows} == {"Draft"}
+    assert {row.normative_keyword.strip() for row in rows} == {"shall"}
 
     parent_ids = {
-        row["parent_requirement_id"].strip()
+        row.parent_requirement_id.strip()
         for row in rows
-        if row["parent_requirement_id"].strip()
+        if row.parent_requirement_id.strip()
     }
     missing_parent_ids = parent_ids - set(requirement_ids)
     assert missing_parent_ids == KNOWN_PACKET_PARENT_GAPS
 
     assert all(
-        row["verification_method"].strip()
+        row.verification_method.strip()
         for row in rows
-        if row["priority"].strip() in {"P0", "P1"}
+        if row.priority.strip() in {"P0", "P1"}
     )
+    assert packet.requirements_by_id["HLA1516-FW-FW_SCOPE-001"].feature == "FW-SCOPE"
+    assert packet.requirements_by_standard["IEEE 1516.1-2010"]
+    assert packet.requirements_by_clause["1.1"]
+    assert packet.requirements_by_capability["CAP-FW"]
+    assert packet.requirements_by_feature["FW-SCOPE"]
 
 
 def test_imported_hla_packet_verification_matrix_has_required_columns_and_live_requirement_refs():
-    master_rows = _csv_rows(LATEST_ROOT / "hla_1516_requirements_master_v1_0.csv")
-    verification_rows = _csv_rows(LATEST_ROOT / "hla_1516_verification_matrix_v1_0.csv")
-    requirement_ids = {row["requirement_id"].strip() for row in master_rows}
+    packet = load_imported_hla_packet()
+    master_rows = packet.master_rows
+    verification_rows = packet.verification_rows
+    requirement_ids = {row.requirement_id.strip() for row in master_rows}
 
     assert verification_rows
-    assert list(verification_rows[0].keys()) == VERIFICATION_COLUMNS
+    assert list(verification_rows[0].__dataclass_fields__.keys()) == VERIFICATION_COLUMNS
 
-    test_ids = [row["test_id"].strip() for row in verification_rows]
+    test_ids = [row.test_id.strip() for row in verification_rows]
     assert all(test_ids)
-    assert {row["transport"].strip() for row in verification_rows} <= {"static", "native", "grpc", "rest"}
-    assert {row["status"].strip() for row in verification_rows} == {"planned"}
-    assert all(row["requirement_id"].strip() in requirement_ids for row in verification_rows)
+    assert {row.transport.strip() for row in verification_rows} <= {"static", "native", "grpc", "rest"}
+    assert {row.status.strip() for row in verification_rows} == {"planned"}
+    assert all(row.requirement_id.strip() in requirement_ids for row in verification_rows)
 
-    covered_requirement_ids = {row["requirement_id"].strip() for row in verification_rows}
+    covered_requirement_ids = {row.requirement_id.strip() for row in verification_rows}
     missing_p0_p1 = sorted(
-        row["requirement_id"].strip()
+        row.requirement_id.strip()
         for row in master_rows
-        if row["priority"].strip() in {"P0", "P1"} and row["requirement_id"].strip() not in covered_requirement_ids
+        if row.priority.strip() in {"P0", "P1"} and row.requirement_id.strip() not in covered_requirement_ids
     )
     assert missing_p0_p1 == []
+    assert packet.verification_by_requirement_id["HLA1516-FW-FW_SCOPE-001"]
+    sample_test_id = verification_rows[0].test_id.strip()
+    assert packet.verification_by_test_id[sample_test_id]
 
 
 def test_imported_hla_packet_clause_tracker_covers_major_standard_areas():
-    rows = _csv_rows(LATEST_ROOT / "hla_1516_clause_tracker_v1_0.csv")
+    rows = load_imported_hla_packet().clause_tracker_rows
 
     assert rows
-    assert list(rows[0].keys()) == CLAUSE_TRACKER_COLUMNS
+    assert list(rows[0].__dataclass_fields__.keys()) == CLAUSE_TRACKER_COLUMNS
 
-    assert {row["standard"].strip() for row in rows} == {
+    assert {row.standard.strip() for row in rows} == {
         "IEEE 1516-2010",
         "IEEE 1516.1-2010",
         "IEEE 1516.2-2010",
     }
-    assert {row["priority"].strip() for row in rows} <= {"P0", "P1", "P2", "P3"}
-    assert {row["normative_status"].strip() for row in rows} <= {"normative", "informative"}
-    assert {row["decomposition_level"].strip() for row in rows} <= {
+    assert {row.priority.strip() for row in rows} <= {"P0", "P1", "P2", "P3"}
+    assert {row.normative_status.strip() for row in rows} <= {"normative", "informative"}
+    assert {row.decomposition_level.strip() for row in rows} <= {
         "clause + service + artifact",
         "tracked/no direct rows",
     }
 
-    tracker_pairs = {(row["standard"].strip(), row["clause"].strip()) for row in rows}
+    tracker_pairs = {(row.standard.strip(), row.clause.strip()) for row in rows}
     assert {
         ("IEEE 1516-2010", "5"),
         ("IEEE 1516-2010", "6"),
