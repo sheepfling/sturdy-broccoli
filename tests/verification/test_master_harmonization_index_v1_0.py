@@ -40,7 +40,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
 
     statuses = Counter(row["harmonization_status"] for row in rows)
     assert statuses == Counter(
-        {"mapped": 2613, "partial": 1390}
+        {"mapped": 2616, "partial": 1387}
     )
 
     by_id = {row["master_requirement_id"]: row for row in rows}
@@ -144,6 +144,9 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
         ]
         == "mapped"
     )
+    assert by_id["HLA1516.1-API_REFLECT_METHODS-008"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-API_RECEIVE_METHODS-009"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-API_REMOVE_METHODS-010"]["harmonization_status"] == "mapped"
     assert (
         by_id["HLA1516.1-DM-5_2-RTIAPI-001-EXC"]["harmonization_status"]
         == "partial"

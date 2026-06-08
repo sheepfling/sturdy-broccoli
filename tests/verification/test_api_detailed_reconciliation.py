@@ -22,15 +22,15 @@ def test_api_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 614
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"partial": 397, "mapped": 217}
+        {"partial": 394, "mapped": 220}
     )
     assert Counter((row["reconciliation_kind"], row["current_status"]) for row in rows) == Counter(
         {
             ("WSDL_OP", "partial"): 308,
             ("CPP_METHOD", "mapped"): 211,
             ("CPP_CLASS", "partial"): 79,
-            ("CLAUSE12_13_DETAIL", "partial"): 10,
-            ("CLAUSE12_13_DETAIL", "mapped"): 6,
+            ("CLAUSE12_13_DETAIL", "partial"): 7,
+            ("CLAUSE12_13_DETAIL", "mapped"): 9,
         }
     )
     assert {row["source_packet_file"] for row in rows} == {
@@ -48,6 +48,9 @@ def test_api_detailed_reconciliation_spot_checks_key_rows():
         == "tests/verification/test_spec_traceability_all_methods.py::test_all_generated_ambassador_methods_are_section_mapped;tests/verification/test_requirements_ledger_v013.py::test_requirements_ledger_covers_generated_api_surface"
     )
     assert rows["HLA1516.1-API_MAPPING_OVERVIEW-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-API_REFLECT_METHODS-008"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-API_RECEIVE_METHODS-009"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-API_REMOVE_METHODS-010"]["current_status"] == "mapped"
     assert rows["HLA1516.1-API_CPP-012"]["current_status"] == "partial"
     assert rows["HLA1516.1-CPP-12_12-RTIAMBASSADOR-234"]["current_status"] == "partial"
     assert rows["HLA1516.1-API_WSDL-013"]["current_status"] == "partial"
