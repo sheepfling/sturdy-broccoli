@@ -3,8 +3,10 @@
 import pytest
 
 from tests.backends.python_backend_extended_support import *
+from hla2010.api import RTIambassador, FederateAmbassador
 from hla2010.exceptions import *
 from hla2010.handles import *
+from hla2010.raw_api import API_METADATA
 from hla2010.enums import OrderType, ResignAction
 from hla2010.types import RangeBounds
 from hla2010.exceptions import AttributeAlreadyBeingDivested, AttributeAlreadyOwned, AttributeNotPublished, InteractionClassNotPublished
@@ -604,6 +606,61 @@ def test_turn_interactions_on_and_off_callbacks_are_delivered():
     owner.resign_federation_execution(ResignAction.NO_ACTION)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("decl-interaction-callback-fed")
+
+
+def test_clause_5_service_and_callback_signature_metadata_matches_source_bindings():
+    rti_checks = {
+        "publishObjectClassAttributes": ("5.2", ["ObjectClassHandle theClass, AttributeHandleSet attributeList"]),
+        "unpublishObjectClass": ("5.3", ["ObjectClassHandle theClass"]),
+        "unpublishObjectClassAttributes": ("5.3", ["ObjectClassHandle theClass, AttributeHandleSet attributeList"]),
+        "publishInteractionClass": ("5.4", ["InteractionClassHandle theInteraction"]),
+        "unpublishInteractionClass": ("5.5", ["InteractionClassHandle theInteraction"]),
+        "subscribeObjectClassAttributes": (
+            "5.6",
+            [
+                "ObjectClassHandle theClass, AttributeHandleSet attributeList",
+                "ObjectClassHandle theClass, AttributeHandleSet attributeList, String updateRateDesignator",
+            ],
+        ),
+        "subscribeObjectClassAttributesPassively": (
+            "5.6",
+            [
+                "ObjectClassHandle theClass, AttributeHandleSet attributeList",
+                "ObjectClassHandle theClass, AttributeHandleSet attributeList, String updateRateDesignator",
+            ],
+        ),
+        "unsubscribeObjectClass": ("5.7", ["ObjectClassHandle theClass"]),
+        "unsubscribeObjectClassAttributes": ("5.7", ["ObjectClassHandle theClass, AttributeHandleSet attributeList"]),
+        "subscribeInteractionClass": ("5.8", ["InteractionClassHandle theClass"]),
+        "subscribeInteractionClassPassively": ("5.8", ["InteractionClassHandle theClass"]),
+        "unsubscribeInteractionClass": ("5.9", ["InteractionClassHandle theClass"]),
+    }
+    federate_checks = {
+        "startRegistrationForObjectClass": ("5.10", ["ObjectClassHandle theClass"]),
+        "stopRegistrationForObjectClass": ("5.11", ["ObjectClassHandle theClass"]),
+        "turnInteractionsOn": ("5.12", ["InteractionClassHandle theHandle"]),
+        "turnInteractionsOff": ("5.13", ["InteractionClassHandle theHandle"]),
+    }
+
+    for method_name, (service, expected_params) in rti_checks.items():
+        assert hasattr(RTIambassador, method_name)
+        java_records = [
+            record for record in API_METADATA["RTIambassador"][method_name]
+            if record["language"] == "java"
+        ]
+        assert [record["service"] for record in java_records] == [service] * len(expected_params)
+        assert [record["return_type"] for record in java_records] == ["void"] * len(expected_params)
+        assert [record["params"] for record in java_records] == expected_params
+
+    for method_name, (service, expected_params) in federate_checks.items():
+        assert hasattr(FederateAmbassador, method_name)
+        java_records = [
+            record for record in API_METADATA["FederateAmbassador"][method_name]
+            if record["language"] == "java"
+        ]
+        assert [record["service"] for record in java_records] == [service] * len(expected_params)
+        assert [record["return_type"] for record in java_records] == ["void"] * len(expected_params)
+        assert [record["params"] for record in java_records] == expected_params
 
 
 def test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore():
