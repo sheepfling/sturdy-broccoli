@@ -10,7 +10,7 @@ from hla2010.handles import *
 from hla2010.raw_api import API_METADATA
 from hla2010.enums import OrderType, ResignAction, ServiceGroup
 from hla2010.testing.section8_matrix import run_section8_request_retraction_case, section8_matrix_config
-from hla2010.types import RangeBounds
+from hla2010.types import AttributeRegionAssociation, RangeBounds
 from hla2010.exceptions import AttributeAlreadyBeingDivested, AttributeAlreadyOwned, AttributeNotPublished, InteractionClassNotPublished
 
 def test_support_surface_negative_paths_cover_handle_validation_region_bounds_and_advisory_switches():
@@ -1975,6 +1975,178 @@ def test_clause_8_service_and_callback_signature_metadata_matches_source_binding
         assert [record["service"] for record in java_records] == [service] * len(expected_params)
         assert [record["return_type"] for record in java_records] == ["void"] * len(expected_params)
         assert [record["params"] for record in java_records] == expected_params
+
+
+def test_clause_9_service_signature_metadata_matches_source_bindings():
+    rti_checks = {
+        "createRegion": ("9.2", ["RegionHandle"], ["DimensionHandleSet dimensions"]),
+        "commitRegionModifications": ("9.3", ["void"], ["RegionHandleSet regions"]),
+        "deleteRegion": ("9.4", ["void"], ["RegionHandle theRegion"]),
+        "registerObjectInstanceWithRegions": (
+            "9.5",
+            ["ObjectInstanceHandle", "ObjectInstanceHandle"],
+            [
+                "ObjectClassHandle theClass, AttributeSetRegionSetPairList attributesAndRegions",
+                "ObjectClassHandle theClass, AttributeSetRegionSetPairList attributesAndRegions, String theObject",
+            ],
+        ),
+        "associateRegionsForUpdates": (
+            "9.6",
+            ["void"],
+            ["ObjectInstanceHandle theObject, AttributeSetRegionSetPairList attributesAndRegions"],
+        ),
+        "unassociateRegionsForUpdates": (
+            "9.7",
+            ["void"],
+            ["ObjectInstanceHandle theObject, AttributeSetRegionSetPairList attributesAndRegions"],
+        ),
+        "subscribeObjectClassAttributesPassivelyWithRegions": (
+            "9.8",
+            ["void", "void"],
+            [
+                "ObjectClassHandle theClass, AttributeSetRegionSetPairList attributesAndRegions",
+                "ObjectClassHandle theClass, AttributeSetRegionSetPairList attributesAndRegions, String updateRateDesignator",
+            ],
+        ),
+        "subscribeObjectClassAttributesWithRegions": (
+            "9.8",
+            ["void", "void"],
+            [
+                "ObjectClassHandle theClass, AttributeSetRegionSetPairList attributesAndRegions",
+                "ObjectClassHandle theClass, AttributeSetRegionSetPairList attributesAndRegions, String updateRateDesignator",
+            ],
+        ),
+        "unsubscribeObjectClassAttributesWithRegions": (
+            "9.9",
+            ["void"],
+            ["ObjectClassHandle theClass, AttributeSetRegionSetPairList attributesAndRegions"],
+        ),
+        "subscribeInteractionClassPassivelyWithRegions": (
+            "9.10",
+            ["void"],
+            ["InteractionClassHandle theClass, RegionHandleSet regions"],
+        ),
+        "subscribeInteractionClassWithRegions": (
+            "9.10",
+            ["void"],
+            ["InteractionClassHandle theClass, RegionHandleSet regions"],
+        ),
+        "unsubscribeInteractionClassWithRegions": (
+            "9.11",
+            ["void"],
+            ["InteractionClassHandle theClass, RegionHandleSet regions"],
+        ),
+        "sendInteractionWithRegions": (
+            "9.12",
+            ["void", "MessageRetractionReturn"],
+            [
+                "InteractionClassHandle theInteraction, ParameterHandleValueMap theParameters, RegionHandleSet regions, byte[] userSuppliedTag",
+                "InteractionClassHandle theInteraction, ParameterHandleValueMap theParameters, RegionHandleSet regions, byte[] userSuppliedTag, LogicalTime theTime",
+            ],
+        ),
+        "requestAttributeValueUpdateWithRegions": (
+            "9.13",
+            ["void"],
+            ["ObjectClassHandle theClass, AttributeSetRegionSetPairList attributesAndRegions, byte[] userSuppliedTag"],
+        ),
+    }
+
+    for method_name, (service, expected_returns, expected_params) in rti_checks.items():
+        assert hasattr(RTIambassador, method_name)
+        java_records = [
+            record for record in API_METADATA["RTIambassador"][method_name]
+            if record["language"] == "java"
+        ]
+        assert [record["service"] for record in java_records] == [service] * len(expected_params)
+        assert [record["return_type"] for record in java_records] == expected_returns
+        assert [record["params"] for record in java_records] == expected_params
+
+
+def test_clause_9_services_are_observable_through_mom_service_invocation_reporting():
+    engine, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("ddm-mom-service-report-fed")
+    witness = rti_ambassador(engine=engine)
+    witness_fed = RecordingFederateAmbassador()
+    witness.connect(witness_fed, CallbackModel.HLA_EVOKED)
+    witness.join_federation_execution("charlie", "type-c", "ddm-mom-service-report-fed")
+
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    dim = owner.get_dimension_handle("HLAdefaultRoutingSpace")
+    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    track_id = owner.get_parameter_handle(interaction, "TrackId")
+
+    set_reporting = owner.get_interaction_class_handle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
+    )
+    service_report = owner.get_interaction_class_handle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
+    )
+    sr_fed = owner.get_parameter_handle(set_reporting, "HLAfederate")
+    sr_state = owner.get_parameter_handle(set_reporting, "HLAreportingState")
+    report_service = witness.get_parameter_handle(service_report, "HLAservice")
+    report_success = witness.get_parameter_handle(service_report, "HLAsuccessIndicator")
+
+    witness.subscribe_interaction_class(service_report)
+    owner.send_interaction(
+        set_reporting,
+        {
+            sr_fed: owner.backend.state.handle.encode(),
+            sr_state: hla_mom.encode_bool(True),
+        },
+        b"enable-ddm-owner-service-reporting",
+    )
+    drain(owner, observer, witness)
+    assert owner.backend.state.service_reporting is True
+
+    owner.publish_object_class_attributes(cls, {attr})
+    owner.publish_interaction_class(interaction)
+
+    region = owner.create_region({dim})
+    owner.set_range_bounds(region, dim, RangeBounds(10, 20))
+    owner.commit_region_modifications({region})
+    pairs = [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({region}))]
+
+    obj = owner.register_object_instance_with_regions(cls, pairs, "DDM-MOM-Object")
+    owner.unassociate_regions_for_updates(obj, pairs)
+    owner.associate_regions_for_updates(obj, pairs)
+    owner.subscribe_object_class_attributes_passively_with_regions(cls, pairs)
+    owner.subscribe_object_class_attributes_with_regions(cls, pairs)
+    owner.unsubscribe_object_class_attributes_with_regions(cls, pairs)
+    owner.subscribe_interaction_class_passively_with_regions(interaction, {region})
+    owner.subscribe_interaction_class_with_regions(interaction, {region})
+    owner.unsubscribe_interaction_class_with_regions(interaction, {region})
+    owner.send_interaction_with_regions(interaction, {track_id: b"ddm-mom-track"}, {region}, b"ddm-mom-send")
+    owner.request_attribute_value_update_with_regions(cls, pairs, b"ddm-mom-refresh")
+    owner.delete_region(region)
+    drain(owner, observer, witness)
+
+    reports = [rec for rec in witness_fed.callbacks_named("receiveInteraction") if rec.args[0] == service_report]
+    assert reports
+    service_names = [hla_mom.decode_text(rec.args[1][report_service]) for rec in reports]
+    success_values = [hla_mom.decode_bool(rec.args[1][report_success]) for rec in reports]
+
+    assert success_values and all(success_values)
+    assert set(service_names) >= {
+        "createRegion",
+        "commitRegionModifications",
+        "deleteRegion",
+        "registerObjectInstanceWithRegions",
+        "associateRegionsForUpdates",
+        "unassociateRegionsForUpdates",
+        "subscribeObjectClassAttributesPassivelyWithRegions",
+        "subscribeObjectClassAttributesWithRegions",
+        "unsubscribeObjectClassAttributesWithRegions",
+        "subscribeInteractionClassPassivelyWithRegions",
+        "subscribeInteractionClassWithRegions",
+        "unsubscribeInteractionClassWithRegions",
+        "sendInteractionWithRegions",
+        "requestAttributeValueUpdateWithRegions",
+    }
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    witness.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("ddm-mom-service-report-fed")
 
 
 def test_clause_10_service_signature_metadata_matches_source_bindings():
