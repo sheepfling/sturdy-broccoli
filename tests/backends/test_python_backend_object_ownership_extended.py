@@ -581,6 +581,7 @@ def test_clause_6_federate_initiated_services_are_observable_through_mom_service
     owner.request_attribute_transportation_type_change(obj, {attr}, best_effort)
     owner.query_attribute_transportation_type(obj, attr)
     owner.request_interaction_transportation_type_change(interaction, best_effort)
+    owner.query_interaction_transportation_type(interaction)
     owner.delete_object_instance(obj, b"mom-delete")
     drain(owner, observer)
 
@@ -602,6 +603,7 @@ def test_clause_6_federate_initiated_services_are_observable_through_mom_service
         "requestAttributeTransportationTypeChange",
         "queryAttributeTransportationType",
         "requestInteractionTransportationTypeChange",
+        "queryInteractionTransportationType",
         "deleteObjectInstance",
     }
 
