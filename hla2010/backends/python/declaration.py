@@ -11,6 +11,85 @@ from .state import FederateState
 class PythonRTIDeclarationMixin:
     """HLA publication, subscription, and advisory declaration services."""
 
+    def _current_registration_interest_classes(self, publisher: FederateState) -> set[ObjectClassHandle]:
+        federation = publisher.federation
+        if federation is None:
+            return set()
+        result: set[ObjectClassHandle] = set()
+        for published_class, published_attrs in publisher.published_objects.items():
+            if not published_attrs:
+                continue
+            published_def = self.engine.object_class_for_handle(published_class)
+            published_names = {self.engine.attribute_name(published_class, attr) for attr in published_attrs}
+            if not published_names:
+                continue
+            for subscriber in federation.federates.values():
+                if subscriber is publisher:
+                    continue
+                for subscribed_class, subscribed_attrs in subscriber.subscribed_objects.items():
+                    if not self._object_matches_subscription(published_class, subscribed_class):
+                        continue
+                    subscribed_names = {
+                        self.engine.attribute_name(subscribed_class, attr)
+                        for attr in subscribed_attrs
+                        if self.engine.attribute_name(subscribed_class, attr) in published_def.attributes_by_name
+                    }
+                    if published_names & subscribed_names:
+                        result.add(published_class)
+                        break
+                if published_class in result:
+                    break
+        return result
+
+    def _reconcile_registration_interest_for_publisher(self, publisher: FederateState) -> None:
+        previous = set(publisher.registration_interest_classes)
+        current = self._current_registration_interest_classes(publisher)
+        publisher.registration_interest_classes = current
+        for the_class in sorted(previous - current, key=lambda handle: handle.value):
+            self._deliver(publisher, "stopRegistrationForObjectClass", the_class)
+        for the_class in sorted(current - previous, key=lambda handle: handle.value):
+            self._deliver(publisher, "startRegistrationForObjectClass", the_class)
+
+    def _reconcile_registration_interest_for_all_publishers(self) -> None:
+        federation = self.state.federation
+        if federation is None:
+            return
+        for federate in list(federation.federates.values()):
+            self._reconcile_registration_interest_for_publisher(federate)
+
+    def _current_interaction_interest_classes(self, publisher: FederateState) -> set[InteractionClassHandle]:
+        federation = publisher.federation
+        if federation is None:
+            return set()
+        result: set[InteractionClassHandle] = set()
+        for published_class in publisher.published_interactions:
+            for subscriber in federation.federates.values():
+                if subscriber is publisher:
+                    continue
+                if any(
+                    self._interaction_matches_subscription(published_class, subscribed_class)
+                    for subscribed_class in subscriber.subscribed_interactions
+                ):
+                    result.add(published_class)
+                    break
+        return result
+
+    def _reconcile_interaction_interest_for_publisher(self, publisher: FederateState) -> None:
+        previous = set(publisher.interaction_interest_classes)
+        current = self._current_interaction_interest_classes(publisher)
+        publisher.interaction_interest_classes = current
+        for the_class in sorted(previous - current, key=lambda handle: handle.value):
+            self._deliver(publisher, "turnInteractionsOff", the_class)
+        for the_class in sorted(current - previous, key=lambda handle: handle.value):
+            self._deliver(publisher, "turnInteractionsOn", the_class)
+
+    def _reconcile_interaction_interest_for_all_publishers(self) -> None:
+        federation = self.state.federation
+        if federation is None:
+            return
+        for federate in list(federation.federates.values()):
+            self._reconcile_interaction_interest_for_publisher(federate)
+
     def _validate_object_class_attributes(
         self,
         theClass: ObjectClassHandle,
@@ -75,6 +154,7 @@ class PythonRTIDeclarationMixin:
         self._ensure_no_save_or_restore_in_progress(federation)
         attrs = self._validate_object_class_attributes(theClass, attributeList)
         self.state.published_objects.setdefault(theClass, set()).update(attrs)
+        self._reconcile_registration_interest_for_publisher(self.state)
         self._reconcile_update_interest_for_owned_objects(self.state, theClass)
 
     def _svc_unpublishObjectClass(self, theClass: ObjectClassHandle) -> None:
@@ -82,6 +162,7 @@ class PythonRTIDeclarationMixin:
         self._ensure_no_save_or_restore_in_progress(federation)
         self.engine.object_class_for_handle(theClass)
         self.state.published_objects.pop(theClass, None)
+        self._reconcile_registration_interest_for_publisher(self.state)
         self._reconcile_update_interest_for_owned_objects(self.state, theClass)
 
     def _svc_unpublishObjectClassAttributes(self, theClass: ObjectClassHandle, attributeList: Iterable[AttributeHandle]) -> None:
@@ -93,6 +174,7 @@ class PythonRTIDeclarationMixin:
             attrs.difference_update(attrs_to_remove)
             if not attrs:
                 self.state.published_objects.pop(theClass, None)
+        self._reconcile_registration_interest_for_publisher(self.state)
         self._reconcile_update_interest_for_owned_objects(self.state, theClass)
 
     def _svc_subscribeObjectClassAttributes(self, theClass: ObjectClassHandle, attributeList: Iterable[AttributeHandle], *unused: Any) -> None:
@@ -124,6 +206,7 @@ class PythonRTIDeclarationMixin:
             self.state.subscribed_object_update_rate_designators.pop(theClass, None)
         self._discover_existing_objects(self.state, theClass)
         self._reconcile_scope_for_all_known_objects(self.state)
+        self._reconcile_registration_interest_for_all_publishers()
 
     def _svc_subscribeObjectClassAttributesPassively(self, theClass: ObjectClassHandle, attributeList: Iterable[AttributeHandle], *unused: Any) -> None:
         self._svc_subscribeObjectClassAttributes(theClass, attributeList, *unused)
@@ -159,18 +242,21 @@ class PythonRTIDeclarationMixin:
             if not designator_map:
                 self.state.subscribed_object_update_rate_designators.pop(theClass, None)
         self._reconcile_scope_for_all_known_objects(self.state)
+        self._reconcile_registration_interest_for_all_publishers()
 
     def _svc_publishInteractionClass(self, theInteraction: InteractionClassHandle) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
         self.engine.interaction_for_handle(theInteraction)
         self.state.published_interactions.add(theInteraction)
+        self._reconcile_interaction_interest_for_publisher(self.state)
 
     def _svc_unpublishInteractionClass(self, theInteraction: InteractionClassHandle) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
         self.engine.interaction_for_handle(theInteraction)
         self.state.published_interactions.discard(theInteraction)
+        self._reconcile_interaction_interest_for_publisher(self.state)
 
     def _is_service_invocation_report_handle(self, handle: InteractionClassHandle) -> bool:
         try:
@@ -191,6 +277,7 @@ class PythonRTIDeclarationMixin:
                 "Disable MOM service reporting before subscribing to HLAreportServiceInvocation"
             )
         self.state.subscribed_interactions.add(theClass)
+        self._reconcile_interaction_interest_for_all_publishers()
 
     def _svc_subscribeInteractionClassPassively(self, theClass: InteractionClassHandle, *unused: Any) -> None:
         self._svc_subscribeInteractionClass(theClass, *unused)
@@ -200,6 +287,7 @@ class PythonRTIDeclarationMixin:
         self._ensure_no_save_or_restore_in_progress(federation)
         self.engine.interaction_for_handle(theClass)
         self.state.subscribed_interactions.discard(theClass)
+        self._reconcile_interaction_interest_for_all_publishers()
 
     def _svc_startRegistrationForObjectClass(self, theClass: ObjectClassHandle) -> None:
         self._require_joined()

@@ -304,5 +304,7 @@ class PythonRTIFederationLifecycleMixin:
         self.state.federation = None
         self.state.published_objects.clear()
         self.state.subscribed_objects.clear()
+        self.state.registration_interest_classes.clear()
         self.state.published_interactions.clear()
         self.state.subscribed_interactions.clear()
+        self.state.interaction_interest_classes.clear()

@@ -1341,10 +1341,17 @@ def test_best_effort_transport_changes_callback_transport_and_splits_mixed_attri
 def test_start_and_stop_registration_callbacks_are_delivered():
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("decl-registration-callback-fed")
     cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
 
     owner_fed.clear()
-    owner.backend._svc_startRegistrationForObjectClass(cls)
-    owner.backend._svc_stopRegistrationForObjectClass(cls)
+    observer.subscribe_object_class_attributes(cls, {attr})
+    drain(owner, observer)
+    assert owner_fed.callbacks_named("startRegistrationForObjectClass") == []
+
+    owner.publish_object_class_attributes(cls, {attr})
+    owner.unpublish_object_class_attributes(cls, {attr})
+    owner.publish_object_class_attributes(cls, {attr})
+    observer.unsubscribe_object_class_attributes(cls, {attr})
     drain(owner, observer)
 
     registration_callbacks = [
@@ -1354,14 +1361,18 @@ def test_start_and_stop_registration_callbacks_are_delivered():
     assert [record.method_name for record in registration_callbacks] == [
         "startRegistrationForObjectClass",
         "stopRegistrationForObjectClass",
+        "startRegistrationForObjectClass",
+        "stopRegistrationForObjectClass",
     ]
 
     started = registration_callbacks[0]
-    stopped = registration_callbacks[1]
-    assert started is not None
+    first_stopped = registration_callbacks[1]
+    second_started = registration_callbacks[2]
+    second_stopped = registration_callbacks[3]
     assert started.args == (cls,)
-    assert stopped is not None
-    assert stopped.args == (cls,)
+    assert first_stopped.args == (cls,)
+    assert second_started.args == (cls,)
+    assert second_stopped.args == (cls,)
 
     owner.resign_federation_execution(ResignAction.NO_ACTION)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
@@ -1373,8 +1384,14 @@ def test_turn_interactions_on_and_off_callbacks_are_delivered():
     interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
 
     owner_fed.clear()
-    owner.backend._svc_turnInteractionsOn(interaction)
-    owner.backend._svc_turnInteractionsOff(interaction)
+    observer.subscribe_interaction_class(interaction)
+    drain(owner, observer)
+    assert owner_fed.callbacks_named("turnInteractionsOn") == []
+
+    owner.publish_interaction_class(interaction)
+    owner.unpublish_interaction_class(interaction)
+    owner.publish_interaction_class(interaction)
+    observer.unsubscribe_interaction_class(interaction)
     drain(owner, observer)
 
     interaction_callbacks = [
@@ -1384,14 +1401,18 @@ def test_turn_interactions_on_and_off_callbacks_are_delivered():
     assert [record.method_name for record in interaction_callbacks] == [
         "turnInteractionsOn",
         "turnInteractionsOff",
+        "turnInteractionsOn",
+        "turnInteractionsOff",
     ]
 
     on = interaction_callbacks[0]
-    off = interaction_callbacks[1]
-    assert on is not None
+    first_off = interaction_callbacks[1]
+    second_on = interaction_callbacks[2]
+    second_off = interaction_callbacks[3]
     assert on.args == (interaction,)
-    assert off is not None
-    assert off.args == (interaction,)
+    assert first_off.args == (interaction,)
+    assert second_on.args == (interaction,)
+    assert second_off.args == (interaction,)
 
     owner.resign_federation_execution(ResignAction.NO_ACTION)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
