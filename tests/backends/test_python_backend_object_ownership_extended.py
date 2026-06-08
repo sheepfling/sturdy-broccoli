@@ -790,6 +790,117 @@ def test_clause_5_service_and_callback_signature_metadata_matches_source_binding
         assert [record["params"] for record in java_records] == expected_params
 
 
+def test_clause_6_service_and_callback_signature_metadata_matches_source_bindings():
+    rti_checks = {
+        "reserveObjectInstanceName": ("6.2", ["void"], ["String theObjectName"]),
+        "releaseObjectInstanceName": ("6.4", ["void"], ["String theObjectInstanceName"]),
+        "reserveMultipleObjectInstanceName": ("6.5", ["void"], ["Set<String> theObjectNames"]),
+        "releaseMultipleObjectInstanceName": ("6.7", ["void"], ["Set<String> theObjectNames"]),
+        "registerObjectInstance": (
+            "6.8",
+            ["ObjectInstanceHandle", "ObjectInstanceHandle"],
+            [
+                "ObjectClassHandle theClass",
+                "ObjectClassHandle theClass, String theObjectName",
+            ],
+        ),
+        "updateAttributeValues": (
+            "6.10",
+            ["void", "MessageRetractionReturn"],
+            [
+                "ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes, byte[] userSuppliedTag",
+                "ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes, byte[] userSuppliedTag, LogicalTime theTime",
+            ],
+        ),
+        "sendInteraction": (
+            "6.12",
+            ["void", "MessageRetractionReturn"],
+            [
+                "InteractionClassHandle theInteraction, ParameterHandleValueMap theParameters, byte[] userSuppliedTag",
+                "InteractionClassHandle theInteraction, ParameterHandleValueMap theParameters, byte[] userSuppliedTag, LogicalTime theTime",
+            ],
+        ),
+        "deleteObjectInstance": (
+            "6.14",
+            ["void", "MessageRetractionReturn"],
+            [
+                "ObjectInstanceHandle objectHandle, byte[] userSuppliedTag",
+                "ObjectInstanceHandle objectHandle, byte[] userSuppliedTag, LogicalTime theTime",
+            ],
+        ),
+        "localDeleteObjectInstance": ("6.16", ["void"], ["ObjectInstanceHandle objectHandle"]),
+        "requestAttributeValueUpdate": (
+            "6.19",
+            ["void", "void"],
+            [
+                "ObjectInstanceHandle theObject, AttributeHandleSet theAttributes, byte[] userSuppliedTag",
+                "ObjectClassHandle theClass, AttributeHandleSet theAttributes, byte[] userSuppliedTag",
+            ],
+        ),
+    }
+    federate_checks = {
+        "objectInstanceNameReservationSucceeded": ("6.3", ["String objectName"]),
+        "multipleObjectInstanceNameReservationSucceeded": ("6.6", ["Set<String> objectNames"]),
+        "discoverObjectInstance": (
+            "6.9",
+            [
+                "ObjectInstanceHandle theObject, ObjectClassHandle theObjectClass, String objectName",
+                "ObjectInstanceHandle theObject, ObjectClassHandle theObjectClass, String objectName, FederateHandle producingFederate",
+            ],
+        ),
+        "reflectAttributeValues": (
+            "6.11",
+            [
+                "ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes, byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport, SupplementalReflectInfo reflectInfo",
+                "ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes, byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport, LogicalTime theTime, OrderType receivedOrdering, SupplementalReflectInfo reflectInfo",
+                "ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes, byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport, LogicalTime theTime, OrderType receivedOrdering, MessageRetractionHandle retractionHandle, SupplementalReflectInfo reflectInfo",
+            ],
+        ),
+        "receiveInteraction": (
+            "6.13",
+            [
+                "InteractionClassHandle interactionClass, ParameterHandleValueMap theParameters, byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport, SupplementalReceiveInfo receiveInfo",
+                "InteractionClassHandle interactionClass, ParameterHandleValueMap theParameters, byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport, LogicalTime theTime, OrderType receivedOrdering, SupplementalReceiveInfo receiveInfo",
+                "InteractionClassHandle interactionClass, ParameterHandleValueMap theParameters, byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport, LogicalTime theTime, OrderType receivedOrdering, MessageRetractionHandle retractionHandle, SupplementalReceiveInfo receiveInfo",
+            ],
+        ),
+        "removeObjectInstance": (
+            "6.15",
+            [
+                "ObjectInstanceHandle theObject, byte[] userSuppliedTag, OrderType sentOrdering, SupplementalRemoveInfo removeInfo",
+                "ObjectInstanceHandle theObject, byte[] userSuppliedTag, OrderType sentOrdering, LogicalTime theTime, OrderType receivedOrdering, SupplementalRemoveInfo removeInfo",
+                "ObjectInstanceHandle theObject, byte[] userSuppliedTag, OrderType sentOrdering, LogicalTime theTime, OrderType receivedOrdering, MessageRetractionHandle retractionHandle, SupplementalRemoveInfo removeInfo",
+            ],
+        ),
+        "attributesInScope": ("6.17", ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes"]),
+        "attributesOutOfScope": ("6.18", ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes"]),
+        "provideAttributeValueUpdate": (
+            "6.20",
+            ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes, byte[] userSuppliedTag"],
+        ),
+    }
+
+    for method_name, (service, expected_returns, expected_params) in rti_checks.items():
+        assert hasattr(RTIambassador, method_name)
+        java_records = [
+            record for record in API_METADATA["RTIambassador"][method_name]
+            if record["language"] == "java"
+        ]
+        assert [record["service"] for record in java_records] == [service] * len(expected_params)
+        assert [record["return_type"] for record in java_records] == expected_returns
+        assert [record["params"] for record in java_records] == expected_params
+
+    for method_name, (service, expected_params) in federate_checks.items():
+        assert hasattr(FederateAmbassador, method_name)
+        java_records = [
+            record for record in API_METADATA["FederateAmbassador"][method_name]
+            if record["language"] == "java"
+        ]
+        assert [record["service"] for record in java_records] == [service] * len(expected_params)
+        assert [record["return_type"] for record in java_records] == ["void"] * len(expected_params)
+        assert [record["params"] for record in java_records] == expected_params
+
+
 def test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
