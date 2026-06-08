@@ -61,5 +61,6 @@ Verification and provenance:
 Planning:
 
 - [plans/README.md](plans/README.md): plan index
+- [plans/imported_requirements_backlog_v1_0.md](plans/imported_requirements_backlog_v1_0.md): generated requirement-driven implementation queues
 - [development_next_steps.md](development_next_steps.md): current next-step backlog
 - [inbox_inventory_2026-06-05.md](inbox_inventory_2026-06-05.md): source-drop promotion out of `INBOX`
