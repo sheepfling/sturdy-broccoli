@@ -227,6 +227,7 @@ class PythonRTIFederationLifecycleMixin:
                 federation.fom_modules = tuple((*federation.fom_modules, *additional_modules))
                 federation.fom_catalog = new_catalog
                 federation.mom_model = mom_table.build_mom_exposure_model(new_catalog)
+            self._choose_time_factory(None, additional_modules)
             handle = self.engine._alloc(FederateHandle)
             self.state.handle = handle
             self.state.name = str(federate_name)

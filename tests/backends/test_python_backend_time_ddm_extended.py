@@ -1,10 +1,61 @@
 # ruff: noqa: F401,F403
 
+import pytest
+
+from hla2010.enums import CallbackModel, OrderType, ResignAction
+from hla2010.exceptions import (
+    AttributeNotDefined,
+    AttributeNotPublished,
+    FederateNotExecutionMember,
+    InTimeAdvancingState,
+    InteractionClassNotPublished,
+    InteractionParameterNotDefined,
+    InvalidInteractionClassHandle,
+    InvalidLogicalTime,
+    InvalidObjectClassHandle,
+    InvalidRegion,
+    InvalidUpdateRateDesignator,
+    LogicalTimeAlreadyPassed,
+    NotConnected,
+    ObjectInstanceNameInUse,
+    ObjectInstanceNotKnown,
+    RestoreInProgress,
+    SaveInProgress,
+)
+from hla2010.handles import (
+    AttributeSetRegionSetPairList,
+    MessageRetractionHandle,
+    ObjectInstanceHandle,
+    TransportationTypeHandle,
+)
+from hla2010.types import (
+    AttributeHandleSet,
+    AttributeRegionAssociation,
+    RangeBounds,
+    RegionHandleSet,
+    TimeQueryReturn,
+)
+
 from tests.backends.python_backend_extended_support import *
 from tests.backends.python_backend_extended_support import (
     _ImmediateConstrainedPendingAmbassador,
     _ImmediateRegulationPendingAmbassador,
 )
+
+
+def _joined_group(name: str, count: int):
+    engine = InMemoryRTIEngine()
+    rtis = [rti_ambassador(engine=engine) for _ in range(count)]
+    feds = [RecordingFederateAmbassador() for _ in range(count)]
+    for rti, fed in zip(rtis, feds):
+        rti.connect(fed, CallbackModel.HLA_EVOKED)
+    rtis[0].create_federation_execution(name, "TargetRadarFOMmodule.xml")
+    handles = [
+        rti.join_federation_execution(f"fed-{index}", f"type-{index}", name)
+        for index, rti in enumerate(rtis)
+    ]
+    return engine, rtis, feds, handles
+
 
 def test_flush_queue_request_delivers_all_queued_tso_messages_and_grants_earliest_tso():
     _, sender, receiver, _sender_fed, receiver_fed, _h1, _h2 = joined_pair("flush-queue-fed")
@@ -264,6 +315,270 @@ def test_ddm_region_subscription_update_and_unsubscribe_lifecycle():
     tx.destroy_federation_execution("ddm-lifecycle-fed")
 
 
+def test_dm_publication_and_ddm_subscriptions_route_object_updates_and_interactions():
+    _, tx, rx, _tx_fed, rx_fed, _h1, _h2 = joined_pair("dm-ddm-interplay-fed")
+    cls = tx.get_object_class_handle("HLAobjectRoot.Target")
+    attr = tx.get_attribute_handle(cls, "Position")
+    dim = tx.get_dimension_handle("HLAdefaultRoutingSpace")
+    interaction = tx.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    track_id = tx.get_parameter_handle(interaction, "TrackId")
+
+    tx_region = tx.create_region({dim})
+    rx_region = rx.create_region({dim})
+    tx.set_range_bounds(tx_region, dim, RangeBounds(10, 20))
+    rx.set_range_bounds(rx_region, dim, RangeBounds(15, 25))
+    tx.commit_region_modifications({tx_region})
+    rx.commit_region_modifications({rx_region})
+
+    update_pairs = [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({tx_region}))]
+    subscription_pairs = [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({rx_region}))]
+
+    tx.publish_object_class_attributes(cls, {attr})
+    rx.subscribe_object_class_attributes_with_regions(cls, subscription_pairs)
+    obj = tx.register_object_instance_with_regions(cls, update_pairs, "DM-DDM-Object")
+    drain(tx, rx)
+
+    discovery = rx_fed.last_callback("discoverObjectInstance")
+    assert discovery is not None
+    assert discovery.args[0] == obj
+    rx_fed.clear()
+
+    tx.update_attribute_values(obj, {attr: b"region-update"}, b"dm-ddm-update")
+    drain(tx, rx)
+    reflection = rx_fed.last_callback("reflectAttributeValues")
+    assert reflection is not None
+    assert reflection.args[0] == obj
+    assert reflection.args[1] == {attr: b"region-update"}
+
+    tx.publish_interaction_class(interaction)
+    rx.subscribe_interaction_class_with_regions(interaction, {rx_region})
+    rx_fed.clear()
+    tx.send_interaction_with_regions(interaction, {track_id: b"region-track"}, {tx_region}, b"dm-ddm-track")
+    drain(tx, rx)
+
+    received = rx_fed.last_callback("receiveInteraction")
+    assert received is not None
+    assert received.args[0] == interaction
+    assert received.args[1][track_id] == b"region-track"
+
+    tx.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    rx.resign_federation_execution(ResignAction.NO_ACTION)
+    tx.destroy_federation_execution("dm-ddm-interplay-fed")
+
+
+def test_dm_ddm_subscriptions_gate_discovery_reflect_and_receive_until_declared():
+    _, tx, rx, _tx_fed, rx_fed, _h1, _h2 = joined_pair("dm-ddm-gating-fed")
+    cls = tx.get_object_class_handle("HLAobjectRoot.Target")
+    attr = tx.get_attribute_handle(cls, "Position")
+    dim = tx.get_dimension_handle("HLAdefaultRoutingSpace")
+    interaction = tx.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    track_id = tx.get_parameter_handle(interaction, "TrackId")
+
+    tx_region = tx.create_region({dim})
+    rx_region = rx.create_region({dim})
+    tx.set_range_bounds(tx_region, dim, RangeBounds(10, 20))
+    rx.set_range_bounds(rx_region, dim, RangeBounds(10, 20))
+    tx.commit_region_modifications({tx_region})
+    rx.commit_region_modifications({rx_region})
+
+    update_pairs = [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({tx_region}))]
+    subscription_pairs = [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({rx_region}))]
+
+    tx.publish_object_class_attributes(cls, {attr})
+    tx.publish_interaction_class(interaction)
+    obj = tx.register_object_instance_with_regions(cls, update_pairs, "DM-DDM-Gating-Object")
+    drain(tx, rx)
+    assert rx_fed.last_callback("discoverObjectInstance") is None
+
+    tx.update_attribute_values(obj, {attr: b"before-subscription"}, b"dm-ddm-before")
+    tx.send_interaction_with_regions(interaction, {track_id: b"before-subscription"}, {tx_region}, b"dm-ddm-before")
+    drain(tx, rx)
+    assert rx_fed.last_callback("reflectAttributeValues") is None
+    assert rx_fed.last_callback("receiveInteraction") is None
+
+    rx.subscribe_object_class_attributes_with_regions(cls, subscription_pairs)
+    rx.subscribe_interaction_class_with_regions(interaction, {rx_region})
+    drain(tx, rx)
+
+    discovery = rx_fed.last_callback("discoverObjectInstance")
+    assert discovery is not None
+    assert discovery.args[0] == obj
+    rx_fed.clear()
+
+    tx.update_attribute_values(obj, {attr: b"after-subscription"}, b"dm-ddm-after")
+    tx.send_interaction_with_regions(interaction, {track_id: b"after-subscription"}, {tx_region}, b"dm-ddm-after")
+    drain(tx, rx)
+
+    reflection = rx_fed.last_callback("reflectAttributeValues")
+    received = rx_fed.last_callback("receiveInteraction")
+    assert reflection is not None
+    assert reflection.args[0] == obj
+    assert reflection.args[1] == {attr: b"after-subscription"}
+    assert received is not None
+    assert received.args[0] == interaction
+    assert received.args[1][track_id] == b"after-subscription"
+
+    tx.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    rx.resign_federation_execution(ResignAction.NO_ACTION)
+    tx.destroy_federation_execution("dm-ddm-gating-fed")
+
+
+def test_unsubscribe_object_class_attributes_removes_interest_in_future_reflections():
+    _, tx, rx, _tx_fed, rx_fed, _h1, _h2 = joined_pair("dm-unsubscribe-interest-fed")
+    cls = tx.get_object_class_handle("HLAobjectRoot.Target")
+    attr = tx.get_attribute_handle(cls, "Position")
+
+    tx.publish_object_class_attributes(cls, {attr})
+    rx.subscribe_object_class_attributes(cls, {attr})
+    obj = tx.register_object_instance(cls, "DM-Unsubscribe-Object")
+    drain(tx, rx)
+    assert rx_fed.last_callback("discoverObjectInstance") is not None
+
+    rx.unsubscribe_object_class_attributes(cls, {attr})
+    assert cls not in rx.backend.state.subscribed_objects
+    rx_fed.clear()
+
+    tx.update_attribute_values(obj, {attr: b"after-unsubscribe"}, b"dm-after-unsubscribe")
+    drain(tx, rx)
+    assert not rx_fed.callbacks_named("reflectAttributeValues")
+
+    tx.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    rx.resign_federation_execution(ResignAction.NO_ACTION)
+    tx.destroy_federation_execution("dm-unsubscribe-interest-fed")
+
+
+def test_ddm_object_scope_filter_blocks_out_of_scope_reflects_until_regions_overlap():
+    _, tx, rx, _tx_fed, rx_fed, _h1, _h2 = joined_pair("ddm-object-scope-fed")
+    cls = tx.get_object_class_handle("HLAobjectRoot.Target")
+    attr = tx.get_attribute_handle(cls, "Position")
+    dim = tx.get_dimension_handle("HLAdefaultRoutingSpace")
+
+    tx_region = tx.create_region({dim})
+    rx_region = rx.create_region({dim})
+    tx.set_range_bounds(tx_region, dim, RangeBounds(0, 10))
+    rx.set_range_bounds(rx_region, dim, RangeBounds(90, 100))
+    tx.commit_region_modifications({tx_region})
+    rx.commit_region_modifications({rx_region})
+
+    tx.publish_object_class_attributes(cls, {attr})
+    rx.subscribe_object_class_attributes_with_regions(
+        cls,
+        [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({rx_region}))],
+    )
+    obj = tx.register_object_instance_with_regions(
+        cls,
+        [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({tx_region}))],
+        "DDM-Scope-Object",
+    )
+    drain(tx, rx)
+    rx_fed.clear()
+
+    tx.update_attribute_values(obj, {attr: b"out-of-scope"}, b"ddm-out")
+    drain(tx, rx)
+    assert not rx_fed.callbacks_named("reflectAttributeValues")
+
+    rx.set_range_bounds(rx_region, dim, RangeBounds(5, 15))
+    rx.commit_region_modifications({rx_region})
+    tx.update_attribute_values(obj, {attr: b"in-scope"}, b"ddm-in")
+    drain(tx, rx)
+
+    reflection = rx_fed.last_callback("reflectAttributeValues")
+    assert reflection is not None
+    assert reflection.args[1] == {attr: b"in-scope"}
+
+    tx.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    rx.resign_federation_execution(ResignAction.NO_ACTION)
+    tx.destroy_federation_execution("ddm-object-scope-fed")
+
+
+def test_attributes_in_scope_and_out_of_scope_callbacks_track_region_scope_transitions():
+    _, tx, rx, _tx_fed, rx_fed, _h1, _h2 = joined_pair("ddm-scope-callbacks-fed")
+    cls = tx.get_object_class_handle("HLAobjectRoot.Target")
+    attr = tx.get_attribute_handle(cls, "Position")
+    dim = tx.get_dimension_handle("HLAdefaultRoutingSpace")
+
+    tx_region = tx.create_region({dim})
+    rx_region = rx.create_region({dim})
+    tx.set_range_bounds(tx_region, dim, RangeBounds(0, 10))
+    rx.set_range_bounds(rx_region, dim, RangeBounds(90, 100))
+    tx.commit_region_modifications({tx_region})
+    rx.commit_region_modifications({rx_region})
+
+    tx.publish_object_class_attributes(cls, {attr})
+    rx.enable_attribute_scope_advisory_switch()
+    rx.subscribe_object_class_attributes_with_regions(
+        cls,
+        [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({rx_region}))],
+    )
+    obj = tx.register_object_instance_with_regions(
+        cls,
+        [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({tx_region}))],
+        "DDM-Scope-Callbacks-Object",
+    )
+    drain(tx, rx)
+    assert rx_fed.last_callback("discoverObjectInstance") is not None
+    assert not rx_fed.callbacks_named("attributesInScope")
+    assert not rx_fed.callbacks_named("attributesOutOfScope")
+
+    rx.set_range_bounds(rx_region, dim, RangeBounds(5, 15))
+    rx.commit_region_modifications({rx_region})
+    drain(tx, rx)
+
+    gained = rx_fed.last_callback("attributesInScope")
+    assert gained is not None
+    assert gained.args == (obj, {attr})
+
+    rx.set_range_bounds(rx_region, dim, RangeBounds(50, 60))
+    rx.commit_region_modifications({rx_region})
+    drain(tx, rx)
+
+    lost = rx_fed.last_callback("attributesOutOfScope")
+    assert lost is not None
+    assert lost.args == (obj, {attr})
+
+    tx.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    rx.resign_federation_execution(ResignAction.NO_ACTION)
+    tx.destroy_federation_execution("ddm-scope-callbacks-fed")
+
+
+def test_request_attribute_value_update_routes_only_to_relevant_object_owners():
+    _, rtis, feds, _handles = _joined_group("request-avu-routing-fed", 3)
+    owner_a, owner_b, requester = rtis
+    owner_a_fed, owner_b_fed, requester_fed = feds
+    cls = owner_a.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner_a.get_attribute_handle(cls, "Position")
+
+    owner_a.publish_object_class_attributes(cls, {attr})
+    owner_b.publish_object_class_attributes(cls, {attr})
+    requester.subscribe_object_class_attributes(cls, {attr})
+
+    obj_a = owner_a.register_object_instance(cls, "Requester-Object-A")
+    obj_b = owner_b.register_object_instance(cls, "Requester-Object-B")
+    drain(owner_a, owner_b, requester)
+    requester_fed.clear()
+    owner_a_fed.clear()
+    owner_b_fed.clear()
+
+    requester.request_attribute_value_update(obj_a, {attr}, b"object-only")
+    drain(owner_a, owner_b, requester)
+    provide_a = owner_a_fed.last_callback("provideAttributeValueUpdate")
+    assert provide_a is not None
+    assert provide_a.args == (obj_a, {attr}, b"object-only")
+    assert owner_b_fed.last_callback("provideAttributeValueUpdate") is None
+
+    owner_a_fed.clear()
+    owner_b_fed.clear()
+    requester.request_attribute_value_update(cls, {attr}, b"class-wide")
+    drain(owner_a, owner_b, requester)
+    assert owner_a_fed.last_callback("provideAttributeValueUpdate").args == (obj_a, {attr}, b"class-wide")
+    assert owner_b_fed.last_callback("provideAttributeValueUpdate").args == (obj_b, {attr}, b"class-wide")
+
+    owner_a.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    owner_b.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    requester.resign_federation_execution(ResignAction.NO_ACTION)
+    owner_a.destroy_federation_execution("request-avu-routing-fed")
+
+
 def test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
@@ -277,9 +592,14 @@ def test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_inva
     _, tx, rx, _tx_fed, _rx_fed, _h1, _h2 = joined_pair("ddm-send-negative-fed")
     interaction = tx.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
     track_id = tx.get_parameter_handle(interaction, "TrackId")
-    invalid_region = type(tx.create_region({tx.get_dimension_handle('HLAdefaultRoutingSpace')}))(999999)
+    region = tx.create_region({tx.get_dimension_handle("HLAdefaultRoutingSpace")})
+    invalid_region = type(tx.create_region({tx.get_dimension_handle("HLAdefaultRoutingSpace")}))(999999)
     with pytest.raises(InvalidRegion):
         tx.send_interaction_with_regions(interaction, {track_id: b"x"}, {invalid_region}, b"tag")
+    with pytest.raises(InvalidInteractionClassHandle):
+        tx.send_interaction_with_regions(type(interaction)(interaction.value + 1000), {track_id: b"x"}, {region}, b"tag")
+    with pytest.raises(InteractionParameterNotDefined):
+        tx.send_interaction_with_regions(interaction, {type(track_id)(track_id.value + 1000): b"x"}, {region}, b"tag")
 
     tx.request_federation_save("DDM-SEND-SAVE")
     drain(tx, rx)
@@ -304,6 +624,85 @@ def test_ddm_send_interaction_with_regions_rejects_not_connected_not_joined_inva
     tx.destroy_federation_execution("ddm-send-negative-fed")
 
 
+def test_strict_publication_gates_registration_update_and_interaction_sends():
+    _, tx, rx, _tx_fed, _rx_fed, _h1, _h2 = joined_pair("strict-publication-fed")
+    cls = tx.get_object_class_handle("HLAobjectRoot.Target")
+    attr = tx.get_attribute_handle(cls, "Position")
+    rcs = tx.get_attribute_handle(cls, "RCS")
+    interaction = tx.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    track_id = tx.get_parameter_handle(interaction, "TrackId")
+    dim = tx.get_dimension_handle("HLAdefaultRoutingSpace")
+    region = tx.create_region({dim})
+    pair = [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({region}))]
+    unpublished_pair = [AttributeRegionAssociation(AttributeHandleSet({rcs}), RegionHandleSet({region}))]
+
+    with pytest.raises(InvalidObjectClassHandle):
+        tx.register_object_instance(type(cls)(cls.value + 1000), "Bad-Class")
+    with pytest.raises(InvalidObjectClassHandle):
+        tx.register_object_instance_with_regions(type(cls)(cls.value + 1000), pair, "Bad-Class-Regions")
+
+    obj = tx.register_object_instance(cls, "Strict-Update-Object")
+    with pytest.raises(ObjectInstanceNameInUse):
+        tx.register_object_instance_with_regions(cls, pair, "Strict-Update-Object")
+    tx.backend.config.strict_object_publication = True
+    with pytest.raises(AttributeNotPublished):
+        tx.update_attribute_values(obj, {attr: b"strict"}, b"tag")
+    with pytest.raises(AttributeNotPublished):
+        tx.register_object_instance_with_regions(cls, unpublished_pair, "Strict-Unpublished-Object")
+
+    tx.backend.config.strict_object_publication = False
+    tx.backend.config.strict_interaction_publication = True
+    with pytest.raises(InteractionClassNotPublished):
+        tx.send_interaction(interaction, {track_id: b"no-pub"}, b"tag")
+    with pytest.raises(InteractionClassNotPublished):
+        tx.send_interaction_with_regions(interaction, {track_id: b"no-pub"}, {region}, b"tag")
+    with pytest.raises(InvalidInteractionClassHandle):
+        tx.send_interaction(type(interaction)(interaction.value + 1000), {track_id: b"no-pub"}, b"tag")
+
+    tx.backend.config.strict_interaction_publication = False
+    tx.request_federation_save("STRICT-PUBLICATION-SAVE")
+    drain(tx, rx)
+    with pytest.raises(SaveInProgress):
+        tx.register_object_instance(cls, "Strict-Save-Object")
+    with pytest.raises(SaveInProgress):
+        tx.register_object_instance_with_regions(cls, pair, "Strict-Save-Region-Object")
+
+    tx.federate_save_begun()
+    rx.federate_save_begun()
+    tx.federate_save_complete()
+    rx.federate_save_complete()
+    drain(tx, rx)
+
+    tx.request_federation_restore("STRICT-PUBLICATION-SAVE")
+    drain(tx, rx)
+    with pytest.raises(RestoreInProgress):
+        tx.register_object_instance(cls, "Strict-Restore-Object")
+    with pytest.raises(RestoreInProgress):
+        tx.register_object_instance_with_regions(cls, pair, "Strict-Restore-Region-Object")
+
+    tx.abort_federation_restore()
+    drain(tx, rx)
+
+    factory = tx.get_time_factory()
+    tx.enable_time_regulation(factory.make_interval(1.0))
+    rx.enable_time_constrained()
+    drain(tx, rx)
+
+    tx.time_advance_request(factory.make_time(2.0))
+    drain(tx, rx)
+    with pytest.raises(InvalidLogicalTime):
+        tx.update_attribute_values(obj, {attr: b"timed"}, b"tag", factory.make_time(1.0))
+    with pytest.raises(InvalidLogicalTime):
+        tx.send_interaction(interaction, {track_id: b"timed"}, b"tag", factory.make_time(1.0))
+    with pytest.raises(InvalidLogicalTime):
+        tx.send_interaction_with_regions(interaction, {track_id: b"timed"}, {region}, b"tag", factory.make_time(1.0))
+
+    tx.backend.config.strict_interaction_publication = False
+    tx.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    rx.resign_federation_execution(ResignAction.NO_ACTION)
+    tx.destroy_federation_execution("strict-publication-fed")
+
+
 def test_request_attribute_value_update_with_regions_rejects_not_connected_not_joined_invalid_region_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
@@ -317,10 +716,28 @@ def test_request_attribute_value_update_with_regions_rejects_not_connected_not_j
     _, tx, rx, _tx_fed, _rx_fed, _h1, _h2 = joined_pair("ddm-ravu-negative-fed")
     cls = tx.get_object_class_handle("HLAobjectRoot.Target")
     attr = tx.get_attribute_handle(cls, "Position")
-    invalid_region = type(tx.create_region({tx.get_dimension_handle('HLAdefaultRoutingSpace')}))(999999)
+    invalid_region = type(tx.create_region({tx.get_dimension_handle("HLAdefaultRoutingSpace")}))(999999)
     pairs = [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({invalid_region}))]
     with pytest.raises(InvalidRegion):
         rx.request_attribute_value_update_with_regions(cls, pairs, b"tag")
+    bad_class = type(cls)(cls.value + 1000)
+    with pytest.raises(InvalidObjectClassHandle):
+        rx.request_attribute_value_update_with_regions(
+            bad_class,
+            [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({rx.create_region({rx.get_dimension_handle("HLAdefaultRoutingSpace")})}))],
+            b"tag",
+        )
+    bad_attr = type(attr)(attr.value + 1000)
+    with pytest.raises(AttributeNotDefined):
+        rx.request_attribute_value_update_with_regions(
+            cls,
+            [
+                AttributeRegionAssociation(
+                    AttributeHandleSet({bad_attr}), RegionHandleSet({rx.create_region({rx.get_dimension_handle("HLAdefaultRoutingSpace")})})
+                )
+            ],
+            b"tag",
+        )
 
     tx.request_federation_save("DDM-RAVU-SAVE")
     drain(tx, rx)
@@ -361,7 +778,7 @@ def test_associate_regions_for_updates_rejects_not_connected_not_joined_unknown_
     with pytest.raises(ObjectInstanceNotKnown):
         tx.associate_regions_for_updates(ObjectInstanceHandle(999), [])
 
-    invalid_region = type(tx.create_region({tx.get_dimension_handle('HLAdefaultRoutingSpace')}))(999999)
+    invalid_region = type(tx.create_region({tx.get_dimension_handle("HLAdefaultRoutingSpace")}))(999999)
     pairs = [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({invalid_region}))]
     obj = tx.register_object_instance(cls, "Associate-Negative")
     with pytest.raises(InvalidRegion):
@@ -470,14 +887,51 @@ def test_ddm_region_subscriptions_reject_not_connected_not_joined_and_invalid_re
     cls = tx.get_object_class_handle("HLAobjectRoot.Target")
     attr = tx.get_attribute_handle(cls, "Position")
     interaction = tx.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    invalid_region = type(tx.create_region({tx.get_dimension_handle('HLAdefaultRoutingSpace')}))(999999)
+    dim = tx.get_dimension_handle("HLAdefaultRoutingSpace")
+    region = rx.create_region({dim})
+    invalid_region = type(tx.create_region({tx.get_dimension_handle("HLAdefaultRoutingSpace")}))(999999)
     if kind == "object":
         pairs = [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({invalid_region}))]
         with pytest.raises(InvalidRegion):
             getattr(rx, method_name)(cls, pairs)
+        bad_class = type(cls)(cls.value + 1000)
+        with pytest.raises(InvalidObjectClassHandle):
+            getattr(rx, method_name)(bad_class, [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({region}))])
+        bad_attr = type(attr)(attr.value + 1000)
+        with pytest.raises(AttributeNotDefined):
+            getattr(rx, method_name)(cls, [AttributeRegionAssociation(AttributeHandleSet({bad_attr}), RegionHandleSet({region}))])
+        with pytest.raises(InvalidUpdateRateDesignator):
+            getattr(rx, method_name)(cls, [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({region}))], "bad-rate")
     else:
         with pytest.raises(InvalidRegion):
             getattr(rx, method_name)(interaction, {invalid_region})
+        bad_interaction = type(interaction)(interaction.value + 1000)
+        with pytest.raises(InvalidInteractionClassHandle):
+            getattr(rx, method_name)(bad_interaction, {region})
+
+    tx.request_federation_save(f"{method_name}-save")
+    drain(tx, rx)
+    if kind == "object":
+        with pytest.raises(SaveInProgress):
+            getattr(rx, method_name)(cls, [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({region}))])
+    else:
+        with pytest.raises(SaveInProgress):
+            getattr(rx, method_name)(interaction, {region})
+
+    tx.federate_save_begun()
+    rx.federate_save_begun()
+    tx.federate_save_complete()
+    rx.federate_save_complete()
+    drain(tx, rx)
+
+    tx.request_federation_restore(f"{method_name}-save")
+    drain(tx, rx)
+    if kind == "object":
+        with pytest.raises(RestoreInProgress):
+            getattr(rx, method_name)(cls, [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({region}))])
+    else:
+        with pytest.raises(RestoreInProgress):
+            getattr(rx, method_name)(interaction, {region})
 
     tx.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     rx.resign_federation_execution(ResignAction.NO_ACTION)
@@ -497,11 +951,31 @@ def test_register_object_instance_with_regions_rejects_not_connected_not_joined_
     _, tx, rx, _tx_fed, _rx_fed, _h1, _h2 = joined_pair("register-with-regions-negative-fed")
     cls = tx.get_object_class_handle("HLAobjectRoot.Target")
     attr = tx.get_attribute_handle(cls, "Position")
+    rcs = tx.get_attribute_handle(cls, "RCS")
     tx.publish_object_class_attributes(cls, {attr})
-    invalid_region = type(tx.create_region({tx.get_dimension_handle('HLAdefaultRoutingSpace')}))(999999)
+    invalid_region = type(tx.create_region({tx.get_dimension_handle("HLAdefaultRoutingSpace")}))(999999)
     pairs = [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({invalid_region}))]
     with pytest.raises(InvalidRegion):
         tx.register_object_instance_with_regions(cls, pairs, "bad-region-object")
+    with pytest.raises(AttributeNotDefined):
+        tx.register_object_instance_with_regions(
+            cls,
+            [
+                AttributeRegionAssociation(
+                    AttributeHandleSet({type(attr)(attr.value + 1000)}),
+                    RegionHandleSet({tx.create_region({tx.get_dimension_handle("HLAdefaultRoutingSpace")})}),
+                )
+            ],
+            "bad-attr-object",
+        )
+
+    tx.backend.config.strict_object_publication = True
+    with pytest.raises(AttributeNotPublished):
+        tx.register_object_instance_with_regions(
+            cls,
+            [AttributeRegionAssociation(AttributeHandleSet({rcs}), RegionHandleSet({tx.create_region({tx.get_dimension_handle("HLAdefaultRoutingSpace")})}))],
+            "strict-unpublished-object",
+        )
 
     tx.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     rx.resign_federation_execution(ResignAction.NO_ACTION)
@@ -521,10 +995,20 @@ def test_unsubscribe_object_class_attributes_with_regions_rejects_not_connected_
     _, tx, rx, _tx_fed, _rx_fed, _h1, _h2 = joined_pair("unsubscribe-ocar-negative-fed")
     cls = tx.get_object_class_handle("HLAobjectRoot.Target")
     attr = tx.get_attribute_handle(cls, "Position")
-    invalid_region = type(tx.create_region({tx.get_dimension_handle('HLAdefaultRoutingSpace')}))(999999)
+    bad_attr = type(attr)(attr.value + 1000)
+    invalid_region = type(tx.create_region({tx.get_dimension_handle("HLAdefaultRoutingSpace")}))(999999)
     bad_pairs = [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({invalid_region}))]
     with pytest.raises(InvalidRegion):
         rx.unsubscribe_object_class_attributes_with_regions(cls, bad_pairs)
+    with pytest.raises(AttributeNotDefined):
+        rx.unsubscribe_object_class_attributes_with_regions(
+            cls,
+            [
+                AttributeRegionAssociation(
+                    AttributeHandleSet({bad_attr}), RegionHandleSet({rx.create_region({rx.get_dimension_handle("HLAdefaultRoutingSpace")})})
+                )
+            ],
+        )
 
     rx.request_federation_save("UNSUB-OCAR-SAVE")
     drain(tx, rx)
@@ -705,6 +1189,7 @@ def test_name_reservation_ddm_regions_ownership_and_time_support():
     assert f2.last_callback("objectInstanceNameReservationFailed").args == ("ReservedTarget",)
 
     r1.publish_object_class_attributes(cls, {attr})
+    r2.publish_object_class_attributes(cls, {attr})
     obj = r1.register_object_instance(cls, "ReservedTarget")
     assert r1.is_attribute_owned_by_federate(obj, attr)
     r1.unconditional_attribute_ownership_divestiture(obj, {attr})
@@ -888,23 +1373,22 @@ def test_hla_immediate_time_enable_callbacks_expose_pending_request_exceptions()
     assert regulator_fed.last_callback("timeRegulationEnabled") is not None
     assert constrained_fed.last_callback("timeConstrainedEnabled") is not None
     assert regulator_fed.captured == [
-        RequestForTimeRegulationPending,
-        RequestForTimeRegulationPending,
-        RequestForTimeRegulationPending,
-        RequestForTimeRegulationPending,
-        RequestForTimeRegulationPending,
-        RequestForTimeRegulationPending,
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
     ]
     assert constrained_fed.captured == [
-        RequestForTimeConstrainedPending,
-        RequestForTimeConstrainedPending,
-        RequestForTimeConstrainedPending,
-        RequestForTimeConstrainedPending,
-        RequestForTimeConstrainedPending,
-        RequestForTimeConstrainedPending,
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
+        CallNotAllowedFromWithinCallback,
     ]
 
     constrained.resign_federation_execution(ResignAction.NO_ACTION)
     regulator.resign_federation_execution(ResignAction.NO_ACTION)
     regulator.destroy_federation_execution("immediate-time-fed")
-

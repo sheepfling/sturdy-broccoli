@@ -19,6 +19,23 @@ Operator guide links:
 
 - [../docs/certi_section8_runbook.md](../docs/certi_section8_runbook.md): CERTI operator runbook
 - [../docs/pitch_decision_tree.md](../docs/pitch_decision_tree.md): Pitch selection and troubleshooting
+- [../docs/preflight_artifacts.md](../docs/preflight_artifacts.md): JSON preflight artifacts and inspection examples
+- `./certi-easy preflight [--json] [--json-file FILE]`: CERTI readiness check before install or smoke
+- `./pitch preflight [--json] [--json-file FILE]`: Pitch Docker readiness check before install or run
+
+Copy-paste preflight artifact flow:
+
+```bash
+mkdir -p analysis/preflight_artifacts
+
+./certi-easy preflight --json-file analysis/preflight_artifacts/certi-preflight.json
+python3 -m json.tool analysis/preflight_artifacts/certi-preflight.json
+
+./pitch preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
+python3 -m json.tool analysis/preflight_artifacts/pitch-preflight.json
+```
+
+Both preflight entrypoints also accept `--json` for machine-readable output.
 
 Script families:
 
@@ -30,6 +47,7 @@ Script families:
 
 ### CERTI Runtime
 
+- `check_certi_preflight.sh`: loopback, venv, and CERTI readiness probe
 - `rebuild_certi.sh`: patched CERTI build/install
 - `rebuild_certi_upstream.sh`: pristine upstream CERTI build/install
 - `run_certi_local.sh`: launch local `rtig` / `rtia`
@@ -38,6 +56,7 @@ Script families:
 
 ### Pitch Runtime
 
+- `check_pitch_preflight.sh`: Docker and bundled Pitch readiness probe
 - `setup_pitch_state.sh`: persistent Pitch `user.home`
 - `run_pitch_local.sh`: launch extracted Pitch runtime
 - `pitch_docker_easy.sh`: simple Pitch Docker operator flow
@@ -49,9 +68,21 @@ Script families:
 - `run_two_federate_suite.py`: composite two-federate artifact packet
 - `run_target_radar_backend_matrix.py`: target/radar backend diagnostic packet
 - `run_target_radar_proof.py`: target/radar proof packet
+- `generate_fom_overview.py`: merged FOM/MIM tree and matrix overview packet, with optional interactive HTML output via `--html`
 - `generate_compliance_artifacts.py`: compliance and requirements packet
 - `diagnose_pitch_exchange.py`: Pitch exchange diagnostics
 - `diagnose_pitch_negotiated_ownership.py`: Pitch negotiated-ownership diagnostics
+
+When `generate_compliance_artifacts.py` finishes, the best operator entrypoints are:
+
+- `analysis/compliance/verification_assets.json`: named verification slices and their evidence
+- `analysis/compliance/verification_traceability.csv`: flat clause-to-asset traceability
+- `analysis/compliance/requirements_ledger.csv`: requirement-level pass/partial/fail ledger
+- `analysis/compliance/requirements_matrix_2010.csv`: whole-spec matrix spanning section areas, service rows, and verification slices
+- `analysis/compliance/extracted_requirements_clause5_6.md`: Clause 5/6 packet split into broad-spec and supported-subset rows
+- `analysis/compliance/extracted_requirements_clause7_9.md`: Clause 7/9 packet split into broad-spec and supported-subset rows
+- `analysis/compliance/supported_subset_policy.md`: explicit supported-subset policy statements for defended partial rows
+- `analysis/compliance/defended_partials_index.md`: review-facing index of broad partial rows and the narrower passing subset rows that defend them
 
 ### CI Wrappers
 
@@ -67,6 +98,7 @@ Script families:
 - `ci/target_radar_backend_matrix.sh`: target/radar backend smoke matrix
 - `ci/target_radar_proof.sh`: target/radar proof packet
 - `ci/section8_backend_matrix_gate.sh`: cross-backend Section 8 matrix
+- `ci/vendor_edge_matrix.sh`: vendor edge slice with `time-query` and `negotiated-ownership` subprofiles
 - `ci/check_generated_docs.sh`: generated backend alias inventory sync
 
 ### Local State And Repo Plumbing

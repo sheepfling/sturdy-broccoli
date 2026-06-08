@@ -62,6 +62,7 @@ class InMemoryRTIEngine:
         self.dimensions_by_name: dict[str, DimensionHandle] = {}
         self.dimension_names: dict[DimensionHandle, str] = {}
         self.transportation_reliable = self._alloc(TransportationTypeHandle)
+        self.transportation_best_effort = self._alloc(TransportationTypeHandle)
         self.fom_resolver = fom_resolver or FOMResolver()
         self.time_factories = time_factories or DEFAULT_TIME_FACTORY_REGISTRY
         self._bootstrap_standard_names()

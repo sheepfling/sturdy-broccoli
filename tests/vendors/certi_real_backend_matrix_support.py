@@ -3,7 +3,9 @@ from __future__ import annotations
 import os
 import uuid
 from math import isinf
+
 import pytest
+
 from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.backends.base import BackendUnavailableError
 from hla2010.enums import CallbackModel, OrderType, ResignAction
@@ -12,24 +14,21 @@ from hla2010.real_rti import discover_certi_runtime_profile, discover_certi_smok
 from hla2010.rti import create_rti_ambassador
 from hla2010.testing.scenarios import (
     NegotiatedOwnershipScenarioConfig,
-    OwnershipScenarioConfig,
     ReleaseRequestOwnershipScenarioConfig,
-    SynchronizationScenarioConfig,
     TwoFederateExchangeConfig,
-    assert_two_federate_exchange_callback_history,
-    run_attribute_ownership_scenario,
     run_confirm_divestiture_negotiated_scenario,
     run_negotiated_attribute_ownership_scenario,
     run_release_request_ownership_scenario,
-    run_synchronization_scenario,
-    run_two_federate_exchange_scenario,
 )
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 from hla2010.types import TimeQueryReturn
 
+
 def _require_real_rti_smoke() -> None:
     if os.environ.get("HLA2010_ENABLE_REAL_RTI_SMOKE") != "1":
         pytest.skip("real vendor RTI smoke disabled; set HLA2010_ENABLE_REAL_RTI_SMOKE=1")
+
+
 def _exchange_time_profile(time_factory_name: str) -> dict[str, object]:
     if time_factory_name == "HLAinteger64Time":
         return {
@@ -50,6 +49,8 @@ def _exchange_time_profile(time_factory_name: str) -> dict[str, object]:
             "timestamped_interaction_time": HLAfloat64Time(6.0),
         }
     raise AssertionError(f"unexpected time factory {time_factory_name}")
+
+
 def _certi_exchange_config(
     smoke_fom: str,
     federation_name: str,
@@ -78,6 +79,8 @@ def _certi_exchange_config(
         timestamped_interaction_tag=b"interaction-tso",
         **time_profile,
     )
+
+
 def _normalized_exchange_profile(summary: dict[str, object]) -> dict[str, object]:
     return {
         "reflect_payload": summary["reflect"].args[1],
@@ -96,18 +99,26 @@ def _normalized_exchange_profile(summary: dict[str, object]) -> dict[str, object
         "timed_interaction_time": float(summary["timed_interaction"].args[5].value),
         "advance_grant_time": float(summary["advance_grant"].args[0].value),
     }
+
+
 def _logical_time_value(value: object) -> float:
     return float(getattr(value, "value", value))
+
+
 def _logical_time_wire_type(value: object) -> str:
     if isinstance(value, HLAinteger64Time):
         return "HLAinteger64Time"
     if isinstance(value, HLAfloat64Time):
         return "HLAfloat64Time"
     raise AssertionError(f"unexpected logical time value {value!r}")
+
+
 def _evoke_pair(left, right, *, iterations: int = 16) -> None:
     for _ in range(iterations):
         left.evoke_multiple_callbacks(0.0, 0.05)
         right.evoke_multiple_callbacks(0.0, 0.05)
+
+
 def _assert_time_value_type(value: object, time_factory_name: str) -> None:
     if time_factory_name == "HLAinteger64Time":
         assert isinstance(value, HLAinteger64Time)
@@ -116,8 +127,12 @@ def _assert_time_value_type(value: object, time_factory_name: str) -> None:
         assert isinstance(value, HLAfloat64Time)
         return
     raise AssertionError(f"unexpected time factory {time_factory_name}")
+
+
 def _assert_certi_query_time_value(value: object, time_factory_name: str) -> None:
     _assert_time_value_type(value, time_factory_name)
+
+
 def _helper_time_request(rti: object, command: str, logical_time: object, *, timeout: float = 1.0) -> None:
     backend = rti.backend
     response = backend.helper_request(
@@ -127,6 +142,8 @@ def _helper_time_request(rti: object, command: str, logical_time: object, *, tim
         timeout=timeout,
     )
     assert response == []
+
+
 def _certi_profile_backend_options(profile_name: str) -> dict[str, object]:
     profile = discover_certi_runtime_profile(profile_name)
     helper_path = project_root() / "build" / "certi" / f"certi_smoke_helper_{profile.name}"
@@ -144,6 +161,8 @@ def _certi_profile_backend_options(profile_name: str) -> dict[str, object]:
     if build_root:
         options["certi_build_root"] = build_root
     return options
+
+
 def _normalized_negotiated_profile(summary: dict[str, object]) -> dict[str, object]:
     assumption = summary["assumption"]
     return {
@@ -155,6 +174,8 @@ def _normalized_negotiated_profile(summary: dict[str, object]) -> dict[str, obje
         "acquired_attr_count": len(summary["acquired"].args[1]),
         "informed_attribute_match": summary["informed"].args[1] == summary["owner_attribute"],
     }
+
+
 def _certi_negotiated_config(smoke_fom: str, federation_name: str, object_instance_name: str) -> NegotiatedOwnershipScenarioConfig:
     return NegotiatedOwnershipScenarioConfig(
         federation_name=federation_name,
@@ -170,6 +191,8 @@ def _certi_negotiated_config(smoke_fom: str, federation_name: str, object_instan
         request_tag=b"acquire-request",
         cancel_tag=b"reacquire-request",
     )
+
+
 def _certi_release_request_config(
     smoke_fom: str,
     federation_name: str,
@@ -191,6 +214,8 @@ def _certi_release_request_config(
         confirm_tag=b"confirm-tag",
         owner_action=owner_action,
     )
+
+
 def _assert_certi_profile_time_query_and_fqr_baseline(
     profile_name: str,
     udp_base: int,
@@ -320,6 +345,8 @@ def _assert_certi_profile_time_query_and_fqr_baseline(
         if regulator is not None:
             regulator.close()
         rtig.terminate()
+
+
 def _assert_certi_profile_queued_fqr_baseline(
     profile_name: str,
     udp_base: int,
@@ -431,6 +458,8 @@ def _assert_certi_profile_queued_fqr_baseline(
         if regulator is not None:
             regulator.close()
         rtig.terminate()
+
+
 def _assert_certi_patched_fail_fast_time_request_matrix(
     udp_base: int,
     time_factory_name: str,
@@ -559,6 +588,8 @@ def _assert_certi_patched_fail_fast_time_request_matrix(
         if regulator is not None:
             regulator.close()
         rtig.terminate()
+
+
 def _assert_certi_profile_negotiated_ownership_baseline(profile_name: str, udp_base: int) -> None:
     _require_real_rti_smoke()
     try:
@@ -596,7 +627,10 @@ def _assert_certi_profile_negotiated_ownership_baseline(profile_name: str, udp_b
 
         config = _certi_negotiated_config(smoke_fom, federation_name, f"{profile_name}-NegotiatedBaseline-1")
         if profile_name == "certi-upstream":
-            with pytest.raises(RTIinternalError, match="Network Read Error|Connection closed by client|LAST message type"):
+            with pytest.raises(
+                RTIinternalError,
+                match="Network Read Error|Connection closed by client|LAST message type",
+            ):
                 run_negotiated_attribute_ownership_scenario(
                     owner,
                     acquirer,
@@ -641,6 +675,8 @@ def _assert_certi_profile_negotiated_ownership_baseline(profile_name: str, udp_b
         if owner is not None:
             owner.close()
         rtig.terminate()
+
+
 def _normalized_release_request_profile(summary: dict[str, object]) -> dict[str, object]:
     acquired = summary.get("acquired")
     informed = summary.get("informed")
@@ -665,6 +701,8 @@ def _normalized_confirm_divestiture_profile(summary: dict[str, object]) -> dict[
         "informed_present": informed is not None,
         "informed_attribute_match": informed.args[1] == summary["owner_attribute"] if informed is not None else False,
     }
+
+
 def _run_certi_profile_release_request_branch_baseline(
     profile_name: str,
     udp_base: int,
@@ -712,7 +750,13 @@ def _run_certi_profile_release_request_branch_baseline(
         )
 
         if profile_name == "certi-upstream":
-            with pytest.raises((RTIinternalError, BackendUnavailableError), match="Not yet implemented|Not Implemented|Network Read Error|Connection closed by client|LAST message type|Subprocess transport produced no response"):
+            with pytest.raises(
+                (RTIinternalError, BackendUnavailableError),
+                match=(
+                    "Not yet implemented|Not Implemented|Network Read Error|Connection closed by client|"
+                    "LAST message type|Subprocess transport produced no response"
+                ),
+            ):
                 run_release_request_ownership_scenario(
                     owner,
                     acquirer,
@@ -767,6 +811,7 @@ def _run_certi_profile_release_request_branch_baseline(
             owner.close()
         rtig.terminate()
 
+
 def _assert_certi_profile_release_request_branch_baseline(profile_name: str, udp_base: int, owner_action: str) -> None:
     summary = _run_certi_profile_release_request_branch_baseline(profile_name, udp_base, owner_action)
     if profile_name == "certi-upstream":
@@ -813,7 +858,13 @@ def _run_certi_profile_confirm_divestiture_negotiated_baseline(profile_name: str
 
         config = _certi_negotiated_config(smoke_fom, federation_name, f"{profile_name}-ConfirmNegotiated-1")
         if profile_name == "certi-upstream":
-            with pytest.raises((RTIinternalError, BackendUnavailableError), match="Not yet implemented|Not Implemented|Network Read Error|Connection closed by client|LAST message type|Subprocess transport produced no response"):
+            with pytest.raises(
+                (RTIinternalError, BackendUnavailableError),
+                match=(
+                    "Not yet implemented|Not Implemented|Network Read Error|Connection closed by client|"
+                    "LAST message type|Subprocess transport produced no response"
+                ),
+            ):
                 run_confirm_divestiture_negotiated_scenario(
                     owner,
                     acquirer,

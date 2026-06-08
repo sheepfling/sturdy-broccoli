@@ -35,6 +35,7 @@ Backend and runtime docs:
 - [certi_negotiated_ownership_findings.md](certi_negotiated_ownership_findings.md): CERTI negotiated ownership investigation
 - [pitch_decision_tree.md](pitch_decision_tree.md): Pitch runtime selection and troubleshooting
 - [pitch_docker_quickstart.md](pitch_docker_quickstart.md): shortest Pitch operator path
+- [vendor_parity_artifacts.md](vendor_parity_artifacts.md): harmonized vendor artifact packet
 - [certi_section8_runbook.md](certi_section8_runbook.md): CERTI operator runbook
 
 Verification and provenance:
@@ -49,7 +50,12 @@ Verification and provenance:
 - [evidence/README.md](evidence/README.md): unpacked verification packets
 - [evidence/packet_index.md](evidence/packet_index.md): unpacked packet index
 - [verification/README.md](verification/README.md): verification family index
+- [verification/requirements_hierarchy.md](verification/requirements_hierarchy.md): requirements capability-feature-requirement hierarchy
+- [verification/verification_validation_split.md](verification/verification_validation_split.md): verification vs validation split
+- [verification/verification_plan.md](verification/verification_plan.md): layered verification plan
+- [verification/validation_plan.md](verification/validation_plan.md): layered validation plan
 - [verification/run_sequence.md](verification/run_sequence.md): full verification sequence and run order
+- [supported_subset_policy.md](supported_subset_policy.md): explicit broad-spec versus supported-subset policy statements for defended partial compliance rows
 
 Planning:
 

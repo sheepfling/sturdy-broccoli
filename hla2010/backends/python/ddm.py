@@ -1,14 +1,18 @@
 """Data distribution management services for the in-memory Python RTI backend."""
+
 from __future__ import annotations
 
 from typing import Any, Iterable, Mapping
 
+from ... import mom as hla_mom
 from ...enums import OrderType
 from ...exceptions import (
+    AttributeNotPublished,
     InteractionClassNotPublished,
     InvalidRangeBound,
     InvalidRegion,
     InvalidRegionContext,
+    InvalidUpdateRateDesignator,
     RegionDoesNotContainSpecifiedDimension,
 )
 from ...handles import AttributeHandle, DimensionHandle, InteractionClassHandle, ObjectInstanceHandle, ParameterHandle, RegionHandle
@@ -18,6 +22,14 @@ from .state import CallbackEvent, FederateState, ObjectInstance, SupplementalRec
 
 class PythonRTIDdmMixin:
     """HLA DDM region lifecycle, overlap filtering, and region-aware services."""
+
+    def _reject_mom_object_class_for_ddm(self, theClass: Any) -> None:
+        if hla_mom.is_mom_object_class_name(self.engine.object_class_for_handle(theClass).name):
+            raise InvalidRegionContext("DDM services shall not be used with MOM object classes")
+
+    def _reject_mom_interaction_class_for_ddm(self, theClass: InteractionClassHandle) -> None:
+        if hla_mom.is_mom_interaction_class_name(self.engine.interaction_for_handle(theClass).name):
+            raise InvalidRegionContext("DDM services shall not be used with MOM interaction classes")
 
     def _svc_createRegion(self, dimensions: Iterable[DimensionHandle]) -> RegionHandle:
         federation = self._require_joined()
@@ -33,9 +45,16 @@ class PythonRTIDdmMixin:
     def _svc_commitRegionModifications(self, regions: Iterable[RegionHandle]) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
-        for region in regions:
+        changed_regions = set(regions)
+        for region in changed_regions:
             if region not in self.state.regions:
                 raise InvalidRegion(repr(region))
+        if any(region in regions_for_attr for attr_regions in self.state.object_region_subscriptions.values() for regions_for_attr in attr_regions.values() for region in changed_regions):
+            self._reconcile_scope_for_all_known_objects(self.state)
+        for instance in list(federation.objects.values()):
+            source_region_map = instance.update_regions or {}
+            if any(region in regions_for_attr for regions_for_attr in source_region_map.values() for region in changed_regions):
+                self._reconcile_all_scopes_for_known_object(instance)
 
     def _svc_deleteRegion(self, theRegion: RegionHandle) -> None:
         federation = self._require_joined()
@@ -148,14 +167,22 @@ class PythonRTIDdmMixin:
         return attrs
 
     def _svc_subscribeObjectClassAttributesWithRegions(self, theClass: Any, attributesAndRegions: Iterable[Any], *unused: Any) -> None:
+        federation = self._require_joined()
+        self._ensure_no_save_or_restore_in_progress(federation)
+        self._reject_mom_object_class_for_ddm(theClass)
+        update_rate_designator = next((str(arg) for arg in reversed(unused) if isinstance(arg, str)), None)
+        if update_rate_designator not in (None, "", "default", "HLAdefault"):
+            raise InvalidUpdateRateDesignator(update_rate_designator)
         pairs = self._attribute_region_pairs(attributesAndRegions)
         attrs = set()
         region_map = self.state.object_region_subscriptions.setdefault(theClass, {})
         for attr_set, region_set in pairs:
             attrs.update(attr_set)
             for attr in attr_set:
+                self.engine.attribute_name(theClass, attr)
                 region_map.setdefault(attr, set()).update(region_set)
         self._svc_subscribeObjectClassAttributes(theClass, attrs, *unused)
+        self._reconcile_scope_for_all_known_objects(self.state)
 
     def _svc_subscribeObjectClassAttributesPassivelyWithRegions(self, theClass: Any, attributesAndRegions: Iterable[Any], *unused: Any) -> None:
         self._svc_subscribeObjectClassAttributesWithRegions(theClass, attributesAndRegions, *unused)
@@ -163,6 +190,7 @@ class PythonRTIDdmMixin:
     def _svc_unsubscribeObjectClassAttributesWithRegions(self, theClass: Any, attributesAndRegions: Iterable[Any]) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
+        self._reject_mom_object_class_for_ddm(theClass)
         pairs = self._attribute_region_pairs(attributesAndRegions)
         class_regions = self.state.object_region_subscriptions.get(theClass, {})
         attrs: set[AttributeHandle] = set()
@@ -179,9 +207,11 @@ class PythonRTIDdmMixin:
             self._svc_unsubscribeObjectClassAttributes(theClass, attrs)
         else:
             self._svc_unsubscribeObjectClass(theClass)
+        self._reconcile_scope_for_all_known_objects(self.state)
 
     def _svc_subscribeInteractionClassWithRegions(self, theClass: InteractionClassHandle, regions: Iterable[RegionHandle], *unused: Any) -> None:
         self._require_joined()
+        self._reject_mom_interaction_class_for_ddm(theClass)
         region_set = set(regions)
         for region in region_set:
             if region not in self.state.regions:
@@ -195,6 +225,7 @@ class PythonRTIDdmMixin:
     def _svc_unsubscribeInteractionClassWithRegions(self, theClass: InteractionClassHandle, regions: Iterable[RegionHandle]) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
+        self._reject_mom_interaction_class_for_ddm(theClass)
         region_set = set(regions)
         for region in region_set:
             if region not in self.state.regions:
@@ -205,12 +236,22 @@ class PythonRTIDdmMixin:
                 self.state.interaction_region_subscriptions.pop(theClass, None)
         self._svc_unsubscribeInteractionClass(theClass)
 
-    def _svc_registerObjectInstanceWithRegions(self, theClass: Any, attributesAndRegions: Iterable[Any], theObjectName: str | None = None) -> ObjectInstanceHandle:
+    def _svc_registerObjectInstanceWithRegions(
+        self, theClass: Any, attributesAndRegions: Iterable[Any], theObjectName: str | None = None
+    ) -> ObjectInstanceHandle:
+        federation = self._require_joined()
+        self._ensure_no_save_or_restore_in_progress(federation)
+        self._reject_mom_object_class_for_ddm(theClass)
         handle = self._svc_registerObjectInstance(theClass, theObjectName)
         _fed, instance = self._find_object(handle)
         region_map = self.state.update_regions.setdefault(handle, {})
         for attrs, regions in self._attribute_region_pairs(attributesAndRegions):
             for attr in attrs:
+                self.engine.attribute_name(instance.class_handle, attr)
+                if self.config.strict_object_publication:
+                    published = self.state.published_objects.get(instance.class_handle, set())
+                    if attr not in published:
+                        raise AttributeNotPublished(repr(attr))
                 region_map.setdefault(attr, set()).update(regions)
                 instance.update_regions.setdefault(attr, set()).update(regions)
         return handle
@@ -221,8 +262,10 @@ class PythonRTIDdmMixin:
         region_map = self.state.update_regions.setdefault(theObject, {})
         for attrs, regions in self._attribute_region_pairs(attributesAndRegions):
             for attr in attrs:
+                self.engine.attribute_name(instance.class_handle, attr)
                 region_map.setdefault(attr, set()).update(regions)
                 instance.update_regions.setdefault(attr, set()).update(regions)
+        self._reconcile_all_scopes_for_known_object(instance)
 
     def _svc_unassociateRegionsForUpdates(self, theObject: ObjectInstanceHandle, attributesAndRegions: Iterable[Any]) -> None:
         federation, instance = self._find_object(theObject)
@@ -230,6 +273,7 @@ class PythonRTIDdmMixin:
         region_map = self.state.update_regions.setdefault(theObject, {})
         for attrs, regions in self._attribute_region_pairs(attributesAndRegions):
             for attr in attrs:
+                self.engine.attribute_name(instance.class_handle, attr)
                 if attr in region_map:
                     region_map[attr].difference_update(regions)
                     if not region_map[attr]:
@@ -238,6 +282,7 @@ class PythonRTIDdmMixin:
                     instance.update_regions[attr].difference_update(regions)
                     if not instance.update_regions[attr]:
                         del instance.update_regions[attr]
+        self._reconcile_all_scopes_for_known_object(instance)
 
     def _svc_sendInteractionWithRegions(
         self,
@@ -249,6 +294,8 @@ class PythonRTIDdmMixin:
     ) -> MessageRetractionReturn | None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
+        self._validate_user_supplied_tag(federation, "sendReceiveTag", bytes(userSuppliedTag))
+        self._reject_mom_interaction_class_for_ddm(theInteraction)
         interaction_def = self.engine.interaction_for_handle(theInteraction)
         source_regions = set(regions)
         for region in source_regions:
@@ -259,11 +306,14 @@ class PythonRTIDdmMixin:
             return None
         if self.config.strict_interaction_publication and theInteraction not in self.state.published_interactions:
             raise InteractionClassNotPublished(repr(theInteraction))
+        for parameter in params:
+            self.engine.parameter_name(theInteraction, parameter)
         timestamp = self._extract_timestamp(tuple(unused))
         preferred = self.state.interaction_order_overrides.get(
             theInteraction,
             OrderType.TIMESTAMP if timestamp is not None else self.config.default_preferred_order_type,
         )
+        transport = self._transportation_type_for_interaction(theInteraction)
         sent_tso = bool(timestamp is not None and self.state.time_regulation_enabled and preferred is OrderType.TIMESTAMP)
         if sent_tso:
             self._validate_tso_send_time(timestamp)
@@ -288,7 +338,7 @@ class PythonRTIDdmMixin:
                         params,
                         bytes(userSuppliedTag),
                         OrderType.TIMESTAMP,
-                        self.engine.transportation_reliable,
+                        transport,
                         timestamp,
                         OrderType.TIMESTAMP,
                         retraction.handle,
@@ -306,7 +356,7 @@ class PythonRTIDdmMixin:
             else:
                 event = CallbackEvent(
                     "receiveInteraction",
-                    (theInteraction, params, bytes(userSuppliedTag), OrderType.RECEIVE, self.engine.transportation_reliable, info),
+                    (theInteraction, params, bytes(userSuppliedTag), OrderType.RECEIVE, transport, info),
                 )
                 self._deliver(federate, event.method_name, *event.args)
         self._refresh_mom_federate_object(federation, self.state, notify=True)
@@ -316,6 +366,12 @@ class PythonRTIDdmMixin:
     def _svc_requestAttributeValueUpdateWithRegions(self, target: Any, attributesAndRegions: Iterable[Any], userSuppliedTag: bytes = b"") -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
+        if isinstance(target, ObjectInstanceHandle):
+            _owner, instance = self._find_object(target)
+            if hla_mom.is_mom_object_class_name(self.engine.object_class_for_handle(instance.class_handle).name):
+                raise InvalidRegionContext("DDM services shall not be used with MOM object classes")
+        else:
+            self._reject_mom_object_class_for_ddm(target)
         self._svc_requestAttributeValueUpdate(target, self._attributes_from_region_pairs(attributesAndRegions), userSuppliedTag)
 
     def _svc_getRangeBounds(self, theRegion: RegionHandle, theDimension: DimensionHandle) -> RangeBounds:

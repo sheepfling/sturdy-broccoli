@@ -73,6 +73,7 @@ class PythonRTIFederationSyncMixin:
     ) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
+        self._validate_user_supplied_tag(federation, "federationSynchronizationTag", bytes(userSuppliedTag))
         label = str(synchronizationPointLabel)
         if label in federation.synchronization_points:
             self._deliver(

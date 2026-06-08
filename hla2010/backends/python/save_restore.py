@@ -1,4 +1,5 @@
 """Save and restore coordination for the Python RTI backend."""
+
 from __future__ import annotations
 
 import copy
@@ -6,7 +7,6 @@ from typing import Any
 
 from ...enums import RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
 from ...exceptions import LogicalTimeAlreadyPassed, RestoreInProgress, SaveInProgress
-from ...time import LogicalTimeFactory
 from ...types import FederateHandleSaveStatusPair, FederateRestoreStatus
 from ..python.state import FederateState, FederationState
 
@@ -27,6 +27,21 @@ class PythonRTISaveRestoreMixin:
                 "time_constrained_enabled": federate.time_constrained_enabled,
                 "asynchronous_delivery_enabled": federate.asynchronous_delivery_enabled,
                 "zero_lookahead_tarnmr_restriction": federate.zero_lookahead_tarnmr_restriction,
+                "automatic_resign_directive": federate.automatic_resign_directive,
+                "object_class_relevance_advisory": federate.object_class_relevance_advisory,
+                "attribute_relevance_advisory": federate.attribute_relevance_advisory,
+                "attribute_scope_advisory": federate.attribute_scope_advisory,
+                "interaction_relevance_advisory": federate.interaction_relevance_advisory,
+                "convey_region_designator_sets": federate.convey_region_designator_sets,
+                "convey_producing_federate": federate.convey_producing_federate,
+                "service_reporting": federate.service_reporting,
+                "exception_reporting": federate.exception_reporting,
+                "service_reports_to_file": federate.service_reports_to_file,
+                "service_report_file": federate.service_report_file,
+                "attribute_order_overrides": copy.deepcopy(federate.attribute_order_overrides),
+                "interaction_order_overrides": copy.deepcopy(federate.interaction_order_overrides),
+                "attribute_transportation_overrides": copy.deepcopy(federate.attribute_transportation_overrides),
+                "interaction_transportation_overrides": copy.deepcopy(federate.interaction_transportation_overrides),
             }
             for handle, federate in federation.federates.items()
         }
@@ -43,19 +58,56 @@ class PythonRTISaveRestoreMixin:
             federate.time_constrained_enabled = bool(values.get("time_constrained_enabled", federate.time_constrained_enabled))
             federate.asynchronous_delivery_enabled = bool(values.get("asynchronous_delivery_enabled", federate.asynchronous_delivery_enabled))
             federate.zero_lookahead_tarnmr_restriction = bool(values.get("zero_lookahead_tarnmr_restriction", False))
+            federate.automatic_resign_directive = values.get("automatic_resign_directive", federate.automatic_resign_directive)
+            federate.object_class_relevance_advisory = bool(
+                values.get("object_class_relevance_advisory", federate.object_class_relevance_advisory)
+            )
+            federate.attribute_relevance_advisory = bool(
+                values.get("attribute_relevance_advisory", federate.attribute_relevance_advisory)
+            )
+            federate.attribute_scope_advisory = bool(
+                values.get("attribute_scope_advisory", federate.attribute_scope_advisory)
+            )
+            federate.interaction_relevance_advisory = bool(
+                values.get("interaction_relevance_advisory", federate.interaction_relevance_advisory)
+            )
+            federate.convey_region_designator_sets = bool(
+                values.get("convey_region_designator_sets", federate.convey_region_designator_sets)
+            )
+            federate.convey_producing_federate = bool(
+                values.get("convey_producing_federate", federate.convey_producing_federate)
+            )
+            federate.service_reporting = bool(values.get("service_reporting", federate.service_reporting))
+            federate.exception_reporting = bool(values.get("exception_reporting", federate.exception_reporting))
+            federate.service_reports_to_file = bool(values.get("service_reports_to_file", federate.service_reports_to_file))
+            federate.service_report_file = values.get("service_report_file", federate.service_report_file)
+            federate.attribute_order_overrides = copy.deepcopy(
+                values.get("attribute_order_overrides", federate.attribute_order_overrides)
+            )
+            federate.interaction_order_overrides = copy.deepcopy(
+                values.get("interaction_order_overrides", federate.interaction_order_overrides)
+            )
+            federate.attribute_transportation_overrides = copy.deepcopy(
+                values.get("attribute_transportation_overrides", federate.attribute_transportation_overrides)
+            )
+            federate.interaction_transportation_overrides = copy.deepcopy(
+                values.get("interaction_transportation_overrides", federate.interaction_transportation_overrides)
+            )
             federate.time_advancing = False
             federate.pending_time_advance = None
             federate.requested_time = None
             federate.time_advance_kind = None
+            federate.queue.clear()
             federate.ro_message_queue.clear()
             federate.tso_message_heap.clear()
+            federate.retraction_messages.clear()
+            federate.delivered_retraction_messages.clear()
+            federate.retractable_messages.clear()
         federation.tso_messages.clear()
 
     def _start_federation_save(self, federation: FederationState, label: str, theTime: Any | None = None) -> None:
         federation.save_label = str(label)
-        federation.save_status = {
-            handle: SaveStatus.FEDERATE_INSTRUCTED_TO_SAVE for handle in federation.federates
-        }
+        federation.save_status = {handle: SaveStatus.FEDERATE_INSTRUCTED_TO_SAVE for handle in federation.federates}
         federation.next_save_name = None
         federation.next_save_time = None
         federation.scheduled_save_requested_by = None
@@ -171,10 +223,7 @@ class PythonRTISaveRestoreMixin:
 
     def _svc_queryFederationSaveStatus(self) -> None:
         federation = self._require_joined()
-        response = [
-            FederateHandleSaveStatusPair(handle, federation.save_status.get(handle, SaveStatus.NO_SAVE_IN_PROGRESS))
-            for handle in federation.federates
-        ]
+        response = [FederateHandleSaveStatusPair(handle, federation.save_status.get(handle, SaveStatus.NO_SAVE_IN_PROGRESS)) for handle in federation.federates]
         self._deliver(self.state, "federationSaveStatusResponse", response)
 
     def _svc_requestFederationRestore(self, label: str) -> None:
@@ -185,9 +234,7 @@ class PythonRTISaveRestoreMixin:
             self._deliver(self.state, "requestFederationRestoreFailed", restore_label)
             return
         federation.restore_label = restore_label
-        federation.restore_status = {
-            handle: RestoreStatus.FEDERATE_RESTORE_REQUEST_PENDING for handle in federation.federates
-        }
+        federation.restore_status = {handle: RestoreStatus.FEDERATE_RESTORE_REQUEST_PENDING for handle in federation.federates}
         self._deliver(self.state, "requestFederationRestoreSucceeded", restore_label)
         for federate in list(federation.federates.values()):
             federate.time_advancing = False
@@ -219,7 +266,9 @@ class PythonRTISaveRestoreMixin:
             federation.restore_status.clear()
             self._refresh_all_mom_objects(federation, notify=True)
             return
-        if federation.restore_status and all(status is RestoreStatus.FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE for status in federation.restore_status.values()):
+        if federation.restore_status and all(
+            status is RestoreStatus.FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE for status in federation.restore_status.values()
+        ):
             label = federation.restore_label
             assert label is not None
             if label in federation.saved_time_states:
@@ -228,6 +277,25 @@ class PythonRTISaveRestoreMixin:
                 if snapshot is not None:
                     federation.objects = copy.deepcopy(snapshot)
                     federation.object_names = {obj.name: handle for handle, obj in federation.objects.items()}
+                    for federate in list(federation.federates.values()):
+                        federate.known_object_classes = {
+                            handle: known_class
+                            for handle, known_class in federate.known_object_classes.items()
+                            if handle in federation.objects
+                        }
+                        federate.known_object_names = {
+                            federation.objects[handle].name: handle
+                            for handle in federate.known_object_classes
+                            if handle in federation.objects
+                        }
+                        federate.in_scope_object_attributes.clear()
+                        for handle in list(federate.known_object_classes):
+                            instance = federation.objects.get(handle)
+                            if instance is not None:
+                                federate.in_scope_object_attributes[handle] = self._current_in_scope_attributes(federate, instance)
+                        stale_keys = [key for key in federate.last_reflect_logical_times if key[0] not in federation.objects]
+                        for key in stale_keys:
+                            federate.last_reflect_logical_times.pop(key, None)
             for federate in list(federation.federates.values()):
                 self._deliver(federate, "federationRestored")
             federation.restore_label = None

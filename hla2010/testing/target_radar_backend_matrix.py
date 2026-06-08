@@ -1,4 +1,5 @@
 """Target/radar backend matrix runner and artifact writer."""
+
 from __future__ import annotations
 
 import csv
@@ -70,6 +71,10 @@ def run_target_radar_backend_matrix(
     backend_options_by_kind: Mapping[str, Mapping[str, Any]] | None = None,
     federation_name_prefix: str = "target-radar-backend",
 ) -> dict[str, Any]:
+    skip_reason_hint = (
+        "If a backend is skipped or failed, the reason above should point to the missing runtime, "
+        "jar, classpath, or loopback/socket configuration that needs to be fixed."
+    )
     results: list[TargetRadarBackendResult] = []
     for backend in backends:
         options = _target_radar_backend_options(backend_options_by_kind, backend)
@@ -197,6 +202,10 @@ def _write_results_csv(path: Path, summary: Mapping[str, Any]) -> Path:
 
 
 def _write_markdown(path: Path, summary: Mapping[str, Any], results_csv: Path) -> Path:
+    skip_reason_hint = (
+        "If a backend is skipped or failed, the reason above should point to the missing runtime, "
+        "jar, classpath, or loopback/socket configuration that needs to be fixed."
+    )
     lines = [
         "# Target/Radar Backend Matrix",
         "",
@@ -225,7 +234,7 @@ def _write_markdown(path: Path, summary: Mapping[str, Any], results_csv: Path) -
             "",
             f"`python scripts/run_target_radar_backend_matrix.py --output-dir {results_csv.parent}`",
             "",
-            "If a backend is skipped or failed, the reason above should point to the missing runtime, jar, classpath, or loopback/socket configuration that needs to be fixed.",
+            skip_reason_hint,
         ]
     )
     path.write_text("\n".join(lines) + "\n")
@@ -240,6 +249,7 @@ def _write_summary_svg(path: Path, summary: Mapping[str, Any]) -> Path:
     height = top + row_height * len(results) + 60
     max_tracks = max((int(item["track_reports"]) for item in results), default=1)
     status_colors = {"passed": "#2b9348", "skipped": "#8d99ae", "failed": "#d00000"}
+    status_caption = "Status and track-report counts for each requested backend profile."
     rows: list[str] = []
     for index, item in enumerate(results):
         y = top + index * row_height
@@ -256,11 +266,11 @@ def _write_summary_svg(path: Path, summary: Mapping[str, Any]) -> Path:
     svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
   <rect width="{width}" height="{height}" fill="#f6f8fb" />
   <text x="40" y="42" font-size="28" font-family="Helvetica, Arial, sans-serif" fill="#132238">Target/Radar Backend Matrix</text>
-  <text x="40" y="70" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#48607a">Status and track-report counts for each requested backend profile.</text>
+  <text x="40" y="70" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#48607a">{status_caption}</text>
   <text x="40" y="96" font-size="13" font-family="Helvetica, Arial, sans-serif" fill="#48607a">Backend</text>
   <text x="240" y="96" font-size="13" font-family="Helvetica, Arial, sans-serif" fill="#48607a">Status</text>
   <text x="390" y="96" font-size="13" font-family="Helvetica, Arial, sans-serif" fill="#48607a">Scenario output</text>
-  {''.join(rows)}
+  {"".join(rows)}
 </svg>
 """
     path.write_text(svg)

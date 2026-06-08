@@ -248,6 +248,7 @@ def _fallback_standard_mim_module() -> FOMModule:
         object_classes=object_classes,
         interaction_classes=tuple(interaction_classes),
         dimensions=("HLAdefaultRoutingSpace", "HLAfederate", "HLAserviceGroup"),
+        transportation_names=("HLAreliable", "HLAbestEffort"),
         inferred_time_implementation="HLAfloat64Time",
         notes=(
             "MOM/MIM development catalog derived from IEEE 1516.1-2010 Clause 11 names; "
@@ -283,8 +284,13 @@ def create_standard_mim_module() -> FOMModule:
             object_classes=parsed.object_classes,
             interaction_classes=parsed.interaction_classes,
             dimensions=parsed.dimensions,
+            datatype_names=parsed.datatype_names,
+            transportation_names=parsed.transportation_names,
+            update_rates=parsed.update_rates,
+            switch_settings=parsed.switch_settings,
             inferred_time_implementation=parsed.inferred_time_implementation,
-            notes=("Parsed bundled HLAstandardMIM.xml from IEEE 1516.1-2010 downloads; section anchors: §11 and Annex G.",),
+            notes=parsed.notes
+            or ("Parsed bundled HLAstandardMIM.xml from IEEE 1516.1-2010 downloads; section anchors: §11 and Annex G.",),
             is_mim=True,
         )
     except Exception:

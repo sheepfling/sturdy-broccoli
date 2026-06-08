@@ -123,6 +123,10 @@ Use this for most work:
 ./pitch stop
 ```
 
+`./pitch doctor` follows the same shape as `./pitch preflight`, but adds the
+resolved runtime paths and container state so the operator can see what the
+next step is before doing anything else.
+
 ### Java bridge interface
 
 Use this only for bridge debugging:
@@ -193,6 +197,12 @@ Pitch is currently not promoted for:
 ./pitch logs
 ```
 
+For scripts or CI, `./pitch preflight --json` emits machine-readable status
+with `environment`, `result`, and per-check records.
+
+For file output and inspection examples, see
+[Preflight Artifacts](preflight_artifacts.md).
+
 ### Common failure causes
 
 - Docker Desktop is not running
@@ -222,4 +232,3 @@ If you are a junior or just want Pitch working, use:
 ```
 
 If you are debugging Java bridge behavior, use `pitch-jpype` and `pitch-py4j`.
-

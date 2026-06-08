@@ -1,10 +1,20 @@
 """Single-ambassador backend-neutral smoke scenario."""
+
 from __future__ import annotations
 
 from typing import Any, Callable
 
 from ..enums import CallbackModel, OrderType, ResignAction
-from ..handles import AttributeHandle, DimensionHandle, FederateHandle, InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle, ParameterHandle, RegionHandle
+from ..handles import (
+    AttributeHandle,
+    DimensionHandle,
+    FederateHandle,
+    InteractionClassHandle,
+    ObjectClassHandle,
+    ObjectInstanceHandle,
+    ParameterHandle,
+    RegionHandle,
+)
 from ..time import HLAinteger64Interval, HLAinteger64Time
 from .scenario_support import DemoFederate, drain_callbacks
 

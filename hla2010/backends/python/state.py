@@ -186,6 +186,7 @@ class QueuedTimeMessage:
     sender: FederateHandle | None = field(default=None, compare=False)
     service_name: str = field(default="", compare=False)
     retracted: bool = field(default=False, compare=False)
+    post_deliver_cleanup: Any | None = field(default=None, compare=False)
 
 
 @dataclass
@@ -204,6 +205,7 @@ class FederateState:
     queue: Deque[CallbackEvent] = field(default_factory=deque)
     published_objects: dict[ObjectClassHandle, set[AttributeHandle]] = field(default_factory=dict)
     subscribed_objects: dict[ObjectClassHandle, set[AttributeHandle]] = field(default_factory=dict)
+    subscribed_object_update_rates: dict[ObjectClassHandle, dict[AttributeHandle, float]] = field(default_factory=dict)
     published_interactions: set[InteractionClassHandle] = field(default_factory=set)
     subscribed_interactions: set[InteractionClassHandle] = field(default_factory=set)
     regions: dict[RegionHandle, set[DimensionHandle]] = field(default_factory=dict)
@@ -247,6 +249,8 @@ class FederateState:
     service_report_records: list[dict[str, Any]] = field(default_factory=list)
     attribute_order_overrides: dict[tuple[ObjectInstanceHandle, AttributeHandle], OrderType] = field(default_factory=dict)
     interaction_order_overrides: dict[InteractionClassHandle, OrderType] = field(default_factory=dict)
+    attribute_transportation_overrides: dict[tuple[ObjectInstanceHandle, AttributeHandle], TransportationTypeHandle] = field(default_factory=dict)
+    interaction_transportation_overrides: dict[InteractionClassHandle, TransportationTypeHandle] = field(default_factory=dict)
     updates_sent: int = 0
     reflections_received: int = 0
     interactions_sent: int = 0
@@ -259,6 +263,11 @@ class FederateState:
     object_instances_removed: int = 0
     last_optimistic_logical_time: Any | None = None
     mom_report_period: float = 0.0
+    known_object_classes: dict[ObjectInstanceHandle, ObjectClassHandle] = field(default_factory=dict)
+    known_object_names: dict[str, ObjectInstanceHandle] = field(default_factory=dict)
+    in_scope_object_attributes: dict[ObjectInstanceHandle, set[AttributeHandle]] = field(default_factory=dict)
+    locally_deleted_objects: set[ObjectInstanceHandle] = field(default_factory=set)
+    last_reflect_logical_times: dict[tuple[ObjectInstanceHandle, AttributeHandle], float] = field(default_factory=dict)
     mom_attribute_reporting: dict[tuple[ObjectInstanceHandle, AttributeHandle], bool] = field(default_factory=dict)
     mom_attribute_reporting_states: dict[tuple[str, str], str] = field(default_factory=dict)
 

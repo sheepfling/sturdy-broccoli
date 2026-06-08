@@ -1,7 +1,7 @@
 """MOM parameter decoding and service-action helpers for the Python RTI backend."""
+
 from __future__ import annotations
 
-import socket
 from typing import Any, Mapping
 
 from ... import mom as hla_mom
@@ -90,7 +90,11 @@ class PythonRTIMomActionsMixin:
     def _mom_parameter_payload_issue(self, federation, rule: mom_table.MOMInteractionRule, name: str, value: bytes) -> str | None:
         data_type = (rule.parameter_datatypes.get(name, "") or "").lower()
         lower_name = name.lower()
-        if data_type in {"hlaswitch", "hlaboolean"} or lower_name in {"hlareportingstate", "hlasuccessindicator", "hlaactive", "hlaautoprovide"} or lower_name.startswith("hlaconvey"):
+        if (
+            data_type in {"hlaswitch", "hlaboolean"}
+            or lower_name in {"hlareportingstate", "hlasuccessindicator", "hlaactive", "hlaautoprovide"}
+            or lower_name.startswith("hlaconvey")
+        ):
             return None if self._mom_bool_payload_is_valid(value) else "InvalidMOMParameterEncoding"
         if name in mom_table.MOM_FLOAT_PARAMETERS or data_type in {"hlafloat64be", "hlafloat64le", "hlafloat32be", "hlafloat32le"}:
             try:
@@ -136,7 +140,11 @@ class PythonRTIMomActionsMixin:
             return None if self._decode_mom_time(value) is not None else "InvalidMOMParameterEncoding"
         if lower_name == "hlalookahead":
             return None if self._decode_mom_interval(value) is not None else "InvalidMOMParameterEncoding"
-        if data_type in {"hlacount", "hlainteger32be", "hlainteger32le"} or lower_name.endswith("count") or lower_name in {"hlanumberofclasses", "hlaserialnumber"}:
+        if (
+            data_type in {"hlacount", "hlainteger32be", "hlainteger32le"}
+            or lower_name.endswith("count")
+            or lower_name in {"hlanumberofclasses", "hlaserialnumber"}
+        ):
             try:
                 hla_mom.decode_count(value)
                 return None
@@ -408,22 +416,38 @@ class PythonRTIMomActionsMixin:
             elif leaf == "HLAfederateSaveComplete":
                 self._svc_federateSaveComplete() if self._decode_mom_bool(params.get("HLAsuccessIndicator"), True) else self._svc_federateSaveNotComplete()
             elif leaf == "HLAfederateRestoreComplete":
-                self._svc_federateRestoreComplete() if self._decode_mom_bool(params.get("HLAsuccessIndicator"), True) else self._svc_federateRestoreNotComplete()
+                self._svc_federateRestoreComplete() if self._decode_mom_bool(
+                    params.get("HLAsuccessIndicator"), True
+                ) else self._svc_federateRestoreNotComplete()
             elif leaf == "HLApublishObjectClassAttributes":
-                self._svc_publishObjectClassAttributes(self._decode_mom_object_class_handle(params.get("HLAobjectClass")), self._decode_mom_attribute_set(params.get("HLAattributeList")))
+                self._svc_publishObjectClassAttributes(
+                    self._decode_mom_object_class_handle(params.get("HLAobjectClass")), self._decode_mom_attribute_set(params.get("HLAattributeList"))
+                )
             elif leaf == "HLAunpublishObjectClassAttributes":
-                self._svc_unpublishObjectClassAttributes(self._decode_mom_object_class_handle(params.get("HLAobjectClass")), self._decode_mom_attribute_set(params.get("HLAattributeList")))
+                self._svc_unpublishObjectClassAttributes(
+                    self._decode_mom_object_class_handle(params.get("HLAobjectClass")), self._decode_mom_attribute_set(params.get("HLAattributeList"))
+                )
             elif leaf == "HLApublishInteractionClass":
                 self._svc_publishInteractionClass(self._decode_mom_interaction_class_handle(params.get("HLAinteractionClass")))
             elif leaf == "HLAunpublishInteractionClass":
                 self._svc_unpublishInteractionClass(self._decode_mom_interaction_class_handle(params.get("HLAinteractionClass")))
             elif leaf == "HLAsubscribeObjectClassAttributes":
-                service = self._svc_subscribeObjectClassAttributes if self._decode_mom_bool(params.get("HLAactive"), True) else self._svc_subscribeObjectClassAttributesPassively
+                service = (
+                    self._svc_subscribeObjectClassAttributes
+                    if self._decode_mom_bool(params.get("HLAactive"), True)
+                    else self._svc_subscribeObjectClassAttributesPassively
+                )
                 service(self._decode_mom_object_class_handle(params.get("HLAobjectClass")), self._decode_mom_attribute_set(params.get("HLAattributeList")))
             elif leaf == "HLAunsubscribeObjectClassAttributes":
-                self._svc_unsubscribeObjectClassAttributes(self._decode_mom_object_class_handle(params.get("HLAobjectClass")), self._decode_mom_attribute_set(params.get("HLAattributeList")))
+                self._svc_unsubscribeObjectClassAttributes(
+                    self._decode_mom_object_class_handle(params.get("HLAobjectClass")), self._decode_mom_attribute_set(params.get("HLAattributeList"))
+                )
             elif leaf == "HLAsubscribeInteractionClass":
-                service = self._svc_subscribeInteractionClass if self._decode_mom_bool(params.get("HLAactive"), True) else self._svc_subscribeInteractionClassPassively
+                service = (
+                    self._svc_subscribeInteractionClass
+                    if self._decode_mom_bool(params.get("HLAactive"), True)
+                    else self._svc_subscribeInteractionClassPassively
+                )
                 service(self._decode_mom_interaction_class_handle(params.get("HLAinteractionClass")))
             elif leaf == "HLAunsubscribeInteractionClass":
                 self._svc_unsubscribeInteractionClass(self._decode_mom_interaction_class_handle(params.get("HLAinteractionClass")))
@@ -435,11 +459,20 @@ class PythonRTIMomActionsMixin:
             elif leaf == "HLAlocalDeleteObjectInstance":
                 self._svc_localDeleteObjectInstance(self._decode_mom_object_instance_handle(params.get("HLAobjectInstance")))
             elif leaf == "HLArequestAttributeTransportationTypeChange":
-                self._svc_requestAttributeTransportationTypeChange(self._decode_mom_object_instance_handle(params.get("HLAobjectInstance")), self._decode_mom_attribute_set(params.get("HLAattributeList")), self._decode_mom_transportation_handle(params.get("HLAtransportation")))
+                self._svc_requestAttributeTransportationTypeChange(
+                    self._decode_mom_object_instance_handle(params.get("HLAobjectInstance")),
+                    self._decode_mom_attribute_set(params.get("HLAattributeList")),
+                    self._decode_mom_transportation_handle(params.get("HLAtransportation")),
+                )
             elif leaf == "HLArequestInteractionTransportationTypeChange":
-                self._svc_requestInteractionTransportationTypeChange(self._decode_mom_interaction_class_handle(params.get("HLAinteractionClass")), self._decode_mom_transportation_handle(params.get("HLAtransportation")))
+                self._svc_requestInteractionTransportationTypeChange(
+                    self._decode_mom_interaction_class_handle(params.get("HLAinteractionClass")),
+                    self._decode_mom_transportation_handle(params.get("HLAtransportation")),
+                )
             elif leaf == "HLAunconditionalAttributeOwnershipDivestiture":
-                self._svc_unconditionalAttributeOwnershipDivestiture(self._decode_mom_object_instance_handle(params.get("HLAobjectInstance")), self._decode_mom_attribute_set(params.get("HLAattributeList")))
+                self._svc_unconditionalAttributeOwnershipDivestiture(
+                    self._decode_mom_object_instance_handle(params.get("HLAobjectInstance")), self._decode_mom_attribute_set(params.get("HLAattributeList"))
+                )
             elif leaf == "HLAenableTimeRegulation":
                 lookahead = self._decode_mom_interval(params.get("HLAlookahead")) or federation.time_factory.make_zero()
                 self._svc_enableTimeRegulation(lookahead)
@@ -467,9 +500,15 @@ class PythonRTIMomActionsMixin:
                 lookahead = self._decode_mom_interval(params.get("HLAlookahead")) or target.lookahead
                 self._svc_modifyLookahead(lookahead)
             elif leaf == "HLAchangeAttributeOrderType":
-                self._svc_changeAttributeOrderType(self._decode_mom_object_instance_handle(params.get("HLAobjectInstance")), self._decode_mom_attribute_set(params.get("HLAattributeList")), self._decode_mom_order_type(params.get("HLAsendOrder")))
+                self._svc_changeAttributeOrderType(
+                    self._decode_mom_object_instance_handle(params.get("HLAobjectInstance")),
+                    self._decode_mom_attribute_set(params.get("HLAattributeList")),
+                    self._decode_mom_order_type(params.get("HLAsendOrder")),
+                )
             elif leaf == "HLAchangeInteractionOrderType":
-                self._svc_changeInteractionOrderType(self._decode_mom_interaction_class_handle(params.get("HLAinteractionClass")), self._decode_mom_order_type(params.get("HLAsendOrder")))
+                self._svc_changeInteractionOrderType(
+                    self._decode_mom_interaction_class_handle(params.get("HLAinteractionClass")), self._decode_mom_order_type(params.get("HLAsendOrder"))
+                )
             else:
                 raise UnsupportedBackendService(f"Unsupported MOM service action {leaf}")
         finally:
@@ -519,9 +558,13 @@ class PythonRTIMomActionsMixin:
                 if "HLAconveyProducingFederate" in params:
                     target.convey_producing_federate = self._decode_mom_bool(params.get("HLAconveyProducingFederate"), target.convey_producing_federate)
                 if "HLAconveyRegionDesignatorSets" in params:
-                    target.convey_region_designator_sets = self._decode_mom_bool(params.get("HLAconveyRegionDesignatorSets"), target.convey_region_designator_sets)
+                    target.convey_region_designator_sets = self._decode_mom_bool(
+                        params.get("HLAconveyRegionDesignatorSets"), target.convey_region_designator_sets
+                    )
                 if "HLAserviceReporting" in params:
-                    self._apply_mom_set_service_reporting(federation, target, self._decode_mom_bool(params.get("HLAserviceReporting"), target.service_reporting), rule.name, "HLAserviceReporting")
+                    self._apply_mom_set_service_reporting(
+                        federation, target, self._decode_mom_bool(params.get("HLAserviceReporting"), target.service_reporting), rule.name, "HLAserviceReporting"
+                    )
                 if "HLAexceptionReporting" in params:
                     target.exception_reporting = self._decode_mom_bool(params.get("HLAexceptionReporting"), target.exception_reporting)
                 if "HLAsendServiceReportsToFile" in params:

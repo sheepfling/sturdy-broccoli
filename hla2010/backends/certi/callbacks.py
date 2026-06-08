@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from ...enums import RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
 from ...exceptions import RTIinternalError
 from ...handles import (
     AttributeHandle,
@@ -25,6 +26,7 @@ from .codecs import (
     decode_order,
 )
 from .runtime import decode_logical_time
+from ...types import FederateHandleSaveStatusPair, FederateRestoreStatus
 
 
 def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_hint: str | None = None) -> None:
@@ -97,6 +99,59 @@ def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_
         return
     if kind == "FEDERATION_SYNCHRONIZED":
         getattr(ambassador, "federationSynchronized")(parts[1], decode_handle_set(parts[2], FederateHandle, FederateHandleSet))
+        return
+    if kind == "INITIATE_FEDERATE_SAVE":
+        getattr(ambassador, "initiateFederateSave")(parts[1])
+        return
+    if kind == "INITIATE_FEDERATE_SAVE_AT":
+        time_type = logical_time_hint or parts[2]
+        getattr(ambassador, "initiateFederateSave")(parts[1], decode_logical_time(time_type, parts[3]))
+        return
+    if kind == "FEDERATION_SAVED":
+        getattr(ambassador, "federationSaved")()
+        return
+    if kind == "FEDERATION_NOT_SAVED":
+        getattr(ambassador, "federationNotSaved")(SaveFailureReason[parts[1]])
+        return
+    if kind == "FEDERATION_SAVE_STATUS_RESPONSE":
+        payload = []
+        if len(parts) >= 2 and parts[1]:
+            for item in parts[1].split(";"):
+                handle_raw, status_raw = item.split(":", 1)
+                payload.append(FederateHandleSaveStatusPair(FederateHandle(int(handle_raw)), SaveStatus[status_raw]))
+        getattr(ambassador, "federationSaveStatusResponse")(payload)
+        return
+    if kind == "REQUEST_FEDERATION_RESTORE_SUCCEEDED":
+        getattr(ambassador, "requestFederationRestoreSucceeded")(parts[1])
+        return
+    if kind == "REQUEST_FEDERATION_RESTORE_FAILED":
+        getattr(ambassador, "requestFederationRestoreFailed")(parts[1])
+        return
+    if kind == "FEDERATION_RESTORE_BEGUN":
+        getattr(ambassador, "federationRestoreBegun")()
+        return
+    if kind == "INITIATE_FEDERATE_RESTORE":
+        getattr(ambassador, "initiateFederateRestore")(parts[1], parts[2], FederateHandle(int(parts[3])))
+        return
+    if kind == "FEDERATION_RESTORED":
+        getattr(ambassador, "federationRestored")()
+        return
+    if kind == "FEDERATION_NOT_RESTORED":
+        getattr(ambassador, "federationNotRestored")(RestoreFailureReason[parts[1]])
+        return
+    if kind == "FEDERATION_RESTORE_STATUS_RESPONSE":
+        payload = []
+        if len(parts) >= 2 and parts[1]:
+            for item in parts[1].split(";"):
+                pre_raw, post_raw, status_raw = item.split(":", 2)
+                payload.append(
+                    FederateRestoreStatus(
+                        FederateHandle(int(pre_raw)),
+                        FederateHandle(int(post_raw)),
+                        RestoreStatus[status_raw],
+                    )
+                )
+        getattr(ambassador, "federationRestoreStatusResponse")(payload)
         return
     if kind == "OWNERSHIP_ACQUIRED":
         getattr(ambassador, "attributeOwnershipAcquisitionNotification")(

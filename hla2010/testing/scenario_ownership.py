@@ -1,4 +1,5 @@
 """Ownership and negotiated-ownership scenarios."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -112,7 +113,9 @@ def probe_negotiated_attribute_ownership_offer(
     }
 
 
-def run_attribute_ownership_scenario(owner_rti: Any, acquirer_rti: Any, *, config: OwnershipScenarioConfig, owner_federate: Any, acquirer_federate: Any) -> dict[str, Any]:
+def run_attribute_ownership_scenario(
+    owner_rti: Any, acquirer_rti: Any, *, config: OwnershipScenarioConfig, owner_federate: Any, acquirer_federate: Any
+) -> dict[str, Any]:
     owner_rti.connect(owner_federate, CallbackModel.HLA_EVOKED)
     acquirer_rti.connect(acquirer_federate, CallbackModel.HLA_EVOKED)
     owner_rti.create_federation_execution(config.federation_name, list(config.fom_modules), config.logical_time_implementation_name)
@@ -165,7 +168,9 @@ def run_attribute_ownership_scenario(owner_rti: Any, acquirer_rti: Any, *, confi
     }
 
 
-def run_negotiated_attribute_ownership_scenario(owner_rti: Any, acquirer_rti: Any, *, config: NegotiatedOwnershipScenarioConfig, owner_federate: Any, acquirer_federate: Any) -> dict[str, Any]:
+def run_negotiated_attribute_ownership_scenario(
+    owner_rti: Any, acquirer_rti: Any, *, config: NegotiatedOwnershipScenarioConfig, owner_federate: Any, acquirer_federate: Any
+) -> dict[str, Any]:
     probe_summary = probe_negotiated_attribute_ownership_offer(
         owner_rti,
         acquirer_rti,

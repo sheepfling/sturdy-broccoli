@@ -1,7 +1,6 @@
 """REST-hosted RTI transport servers using the same polling callback contract as gRPC."""
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass, field
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from threading import Thread

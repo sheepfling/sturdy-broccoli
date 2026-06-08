@@ -63,6 +63,7 @@ class PythonRTITimeQueueMixin:
         *,
         retraction_handle: MessageRetractionHandle | None,
         producing_federate: FederateHandle | None,
+        post_deliver_cleanup: Any | None = None,
     ) -> None:
         sent_order = OrderType.TIMESTAMP if timestamp is not None else OrderType.RECEIVE
         self._queue_or_deliver_message(
@@ -73,6 +74,7 @@ class PythonRTITimeQueueMixin:
             sender=producing_federate,
             service_name=event.method_name,
             retraction_handle=retraction_handle,
+            post_deliver_cleanup=post_deliver_cleanup,
         )
 
     def _eligible_tso_messages(
@@ -204,6 +206,7 @@ class PythonRTITimeQueueMixin:
         sender: FederateHandle | None,
         service_name: str,
         retraction_handle: MessageRetractionHandle | None = None,
+        post_deliver_cleanup: Any | None = None,
     ) -> None:
         federation = target.federation
         if federation is None:
@@ -223,6 +226,7 @@ class PythonRTITimeQueueMixin:
                 retraction_handle=retraction_handle,
                 sender=sender,
                 service_name=service_name,
+                post_deliver_cleanup=post_deliver_cleanup,
             )
             heapq.heappush(target.tso_message_heap, msg)
             if retraction_handle is not None:
@@ -238,6 +242,7 @@ class PythonRTITimeQueueMixin:
             retraction_handle=retraction_handle,
             sender=sender,
             service_name=service_name,
+            post_deliver_cleanup=post_deliver_cleanup,
         )
         if (
             target.time_constrained_enabled
@@ -262,6 +267,8 @@ class PythonRTITimeQueueMixin:
         elif name == "discoverObjectInstance":
             target.object_instances_discovered += 1
         self._deliver(target, name, *msg.callback.args)
+        if msg.post_deliver_cleanup is not None:
+            msg.post_deliver_cleanup()
 
     def _drain_ro_messages(self, federate: FederateState) -> None:
         while federate.ro_message_queue:

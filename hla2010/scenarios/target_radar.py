@@ -192,6 +192,7 @@ class TargetFederate(FederateAmbassador):
         self.rcs_attr: AttributeHandle | None = None
         self.object_handle: ObjectInstanceHandle | None = None
         self.events: list[tuple[str, Any]] = []
+        self._pending_rcs_requests: list[tuple[ObjectInstanceHandle, bytes]] = []
 
     def setup(self, rti: Any) -> None:
         self.rti = rti
@@ -246,7 +247,14 @@ class TargetFederate(FederateAmbassador):
         if self.object_handle is None or the_object != self.object_handle:
             return
         if self.rcs_attr in set(the_attributes):
-            self.update_rcs(tag=b"rcs-response:" + bytes(user_supplied_tag))
+            self._pending_rcs_requests.append((the_object, b"rcs-response:" + bytes(user_supplied_tag)))
+
+    def flush_pending_rcs_requests(self) -> int:
+        pending = self._pending_rcs_requests
+        self._pending_rcs_requests = []
+        for _object_handle, tag in pending:
+            self.update_rcs(tag=tag)
+        return len(pending)
 
 
 @dataclass
@@ -281,6 +289,7 @@ class RadarFederate(FederateAmbassador):
         self.contacts: dict[ObjectInstanceHandle, RadarContact] = {}
         self.track_reports: list[TrackReport] = []
         self.events: list[tuple[str, Any]] = []
+        self._pending_track_contacts: list[ObjectInstanceHandle] = []
 
     def setup(self, rti: Any) -> None:
         self.rti = rti
@@ -337,7 +346,7 @@ class RadarFederate(FederateAmbassador):
             rcs_updated = True
         self.events.append(("reflect", (the_object, dict(the_attributes), user_supplied_tag)))
         if rcs_updated and contact.position is not None and contact.rcs_square_meters is not None:
-            self.produce_track(contact, time_seconds=float(len(self.track_reports) + 1))
+            self._pending_track_contacts.append(the_object)
 
     def query_rcs_for_all_contacts(self) -> None:
         assert self.rti is not None
@@ -345,6 +354,18 @@ class RadarFederate(FederateAmbassador):
         for object_handle in list(self.contacts):
             self.events.append(("query_rcs", object_handle))
             self.rti.request_attribute_value_update(object_handle, {self.rcs_attr}, b"radar-rcs-query")
+
+    def flush_pending_track_reports(self) -> int:
+        pending_handles = self._pending_track_contacts
+        self._pending_track_contacts = []
+        produced = 0
+        for object_handle in pending_handles:
+            contact = self.contacts.get(object_handle)
+            if contact is None or contact.position is None or contact.rcs_square_meters is None:
+                continue
+            self.produce_track(contact, time_seconds=float(len(self.track_reports) + 1))
+            produced += 1
+        return produced
 
     def produce_track(self, contact: RadarContact, *, time_seconds: float) -> TrackReport:
         assert self.rti is not None
@@ -475,6 +496,16 @@ def run_target_radar_scenario(
         _drain_callbacks(target_rti, radar_rti)
         radar.query_rcs_for_all_contacts()
         _drain_callbacks(target_rti, radar_rti)
+        while True:
+            progress = False
+            progress = bool(target.flush_pending_rcs_requests()) or progress
+            if progress:
+                _drain_callbacks(target_rti, radar_rti)
+            progress = bool(radar.flush_pending_track_reports()) or progress
+            if progress:
+                _drain_callbacks(target_rti, radar_rti)
+            if not progress:
+                break
         target_rti.time_advance_request(HLAinteger64Time(step_index))
         radar_rti.time_advance_request(HLAinteger64Time(step_index))
         _drain_callbacks(target_rti, radar_rti)

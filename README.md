@@ -2,7 +2,7 @@
 
 This archive is a clean seed for the Python HLA 1516.1-2010 workstream. It contains the current Python package source, Java bridge adapter source, pure-Python RTI source, vendored CERTI source, examples, tests, helper scripts, FOM/MIM XML resources, and the user-supplied IEEE reference/source documents.
 
-It intentionally does **not** include generated verification packets, generated analysis matrices, historical scaffold ZIPs, prior run summaries, pytest caches, built Java `.jar` files, or other transient assets. Those should be regenerated from source when needed.
+It intentionally does **not** include generated verification packets, generated analysis matrices, generated source-code artifacts, historical scaffold ZIPs, prior run summaries, pytest caches, built Java `.jar` files, or other transient assets. Those should be regenerated from source when needed.
 
 ## Layout
 
@@ -21,6 +21,9 @@ docs/                 clean project notes for the repo seed
 
 For the package-level backend/API organization, see
 [`docs/package_layout.md`](docs/package_layout.md).
+
+For the seeded requirement sources and ID registry, start with
+[`requirements/README.md`](requirements/README.md).
 
 For the canonical documentation hierarchy, start with
 [`docs/README.md`](docs/README.md) and
@@ -99,6 +102,7 @@ To bootstrap everything needed for local CERTI work as well, use the easy path
 first:
 
 ```bash
+./certi-easy preflight
 ./certi-easy install
 ./certi-easy doctor
 ./certi-easy smoke compare
@@ -117,6 +121,20 @@ and matrix work, but they are secondary operator entrypoints.
 
 For the one-page CERTI operator runbook, see
 [`docs/certi_section8_runbook.md`](docs/certi_section8_runbook.md).
+
+For the preflight JSON options-file workflow and inspection examples, see
+[`docs/preflight_artifacts.md`](docs/preflight_artifacts.md). The shortest
+copy-paste path is:
+
+```bash
+mkdir -p analysis/preflight_artifacts
+
+./certi-easy preflight --json-file analysis/preflight_artifacts/certi-preflight.json
+python3 -m json.tool analysis/preflight_artifacts/certi-preflight.json
+
+./pitch preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
+python3 -m json.tool analysis/preflight_artifacts/pitch-preflight.json
+```
 
 Optional Java bridge packages can be installed with:
 
@@ -139,6 +157,7 @@ GitHub Actions use the same entrypoints.
 ./scripts/ci/seed_suite.sh
 ./scripts/ci/vendor_runtime_smoke.sh certi
 ./scripts/ci/vendor_runtime_smoke.sh pitch
+./scripts/ci/vendor_edge_matrix.sh
 ./scripts/run_two_federate_suite.py
 ./scripts/generate_compliance_artifacts.py
 ```
@@ -157,9 +176,37 @@ separate cleanup pass.
 
 - service conformance JSON/CSV
 - requirements ledger JSON/CSV
+- whole-spec requirements matrix JSON/CSV
+- verification assets JSON
+- verification traceability CSV
 - section-by-section compliance summary
 - public class `1:1` vs adapted inventory
 - rows that still lack exact requirement-level executable evidence
+
+For a junior operator, start with these two files after regeneration:
+
+- `analysis/compliance/verification_assets.json`: named verification slices and their evidence
+- `analysis/compliance/verification_traceability.csv`: flat section-to-asset map for clause review
+- `analysis/compliance/supported_subset_policy.md`: broad-spec versus supported-subset policy split for defended partials
+- `analysis/compliance/defended_partials_index.md`: review-facing index of broad partial rows and the narrower supported-subset passes that defend them
+
+Then use:
+
+- `analysis/compliance/requirements_matrix_2010.csv`: one flat matrix spanning section areas, service requirements, and cross-cutting verification slices
+- `analysis/compliance/extracted_requirements_clause5_6.md`: Clause 5/6 packet split into broad-spec and supported-subset rows
+- `analysis/compliance/extracted_requirements_clause7_9.md`: Clause 7/9 packet split the same way, ready as those extracted rows are promoted
+
+For the human-readable policy on why some broad rows intentionally remain
+partial while narrower subset rows pass, see
+[`docs/supported_subset_policy.md`](docs/supported_subset_policy.md).
+
+If you want a readable FOM/MIM visualization instead of raw XML, use:
+
+```bash
+python3 scripts/generate_fom_overview.py TargetRadarFOMmodule.xml --html
+```
+
+That emits a merged tree-and-matrix overview under `analysis/fom_overview/`.
 
 ## Full Verification Sequence
 
@@ -234,12 +281,28 @@ and visuals, use:
 
 That runner writes JSON, CSV, Markdown, and SVG artifacts under
 `analysis/target_radar_proof/`, including the truth-target timeline, RCS query
-events, track reports, and a trajectory plot. The CI `target-radar-proof` job
-uploads that whole directory as a downloadable GitHub Actions artifact. For
-the simplest rerun path, use:
+events, track reports, and a trajectory plot. It also writes PNG plots for the
+backend matrix, event timeline, truth-vs-track trajectory, and the RCS exchange
+between the radar and target. The CI
+`target-radar-proof` job uploads that whole directory as a downloadable GitHub
+Actions artifact. For the simplest rerun path, use:
 
 ```bash
 ./scripts/ci/target_radar_proof.sh
+```
+
+For the highest-value vendor edge slice, which reruns CERTI compare plus the
+Pitch matrix and refreshes the compliance packet, use:
+
+```bash
+./scripts/ci/vendor_edge_matrix.sh
+```
+
+You can also run the focused subprofiles directly:
+
+```bash
+./scripts/ci/vendor_edge_matrix.sh time-query
+./scripts/ci/vendor_edge_matrix.sh negotiated-ownership
 ```
 
 ## Local Git remote
@@ -280,6 +343,7 @@ future option, not the current wire contract.
 Practical local commands:
 
 ```bash
+./certi-easy preflight
 ./certi-easy install
 ./certi-easy doctor
 ./certi-easy smoke patched
@@ -322,6 +386,7 @@ The `pitch-jpype` path currently discovers the extracted runtime from:
 The simplest Docker-backed Pitch flow is now:
 
 ```bash
+./pitch preflight
 ./pitch all
 ```
 
@@ -329,9 +394,14 @@ For the one-page guide that explains Docker vs JPype vs Py4J, see:
 
 - [`docs/pitch_decision_tree.md`](docs/pitch_decision_tree.md)
 
+For JSON preflight artifacts and how to inspect them, see:
+
+- [`docs/preflight_artifacts.md`](docs/preflight_artifacts.md)
+
 If you want the explicit staged flow:
 
 ```bash
+./pitch preflight
 ./pitch install
 ./pitch start
 ./pitch smoke

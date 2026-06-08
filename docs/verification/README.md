@@ -21,6 +21,11 @@ Keep verification docs in this order:
 
 ## Primary Entry Points
 
+- [../../requirements/README.md](../../requirements/README.md): seeded requirement sources and ID registry
+- [requirements_hierarchy.md](requirements_hierarchy.md): L1/L2/L3 capability-feature-requirement hierarchy with test anchors
+- [verification_validation_split.md](verification_validation_split.md): canonical split between standards verification and operational validation
+- [verification_plan.md](verification_plan.md): layered conformance plan
+- [validation_plan.md](validation_plan.md): layered operational validation plan
 - [../backend_route_inventory.md](../backend_route_inventory.md): runtime and transport route inventory
 - [../backend_capability_matrix.md](../backend_capability_matrix.md): feature coverage by backend
 - [../backend_conformance_matrix.md](../backend_conformance_matrix.md): clause-level conformance matrix
@@ -34,8 +39,11 @@ Keep verification docs in this order:
 ## What Belongs Here
 
 - requirements ledgers
+- requirement source registries
 - service matrices
 - spec traceability tables
+- verification planning
+- validation planning
 - compliance packets
 - generated analysis artifacts
 - scenario comparison reports

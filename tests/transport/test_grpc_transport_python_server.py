@@ -7,7 +7,7 @@ import pytest
 from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.backends.grpc_transport.python_server import start_python_grpc_server
 from hla2010.backends.python import InMemoryRTIEngine
-from hla2010.enums import CallbackModel, OrderType, ResignAction
+from hla2010.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveFailureReason, SaveStatus
 from hla2010.rti import create_rti_ambassador
 from hla2010.testing.scenarios import (
     NegotiatedOwnershipScenarioConfig,
@@ -148,6 +148,135 @@ def test_grpc_transport_can_host_python_rti_synchronization_end_to_end():
         wing.resign_federation_execution(ResignAction.NO_ACTION)
         leader.resign_federation_execution(ResignAction.NO_ACTION)
         leader.destroy_federation_execution(config.federation_name)
+        wing.disconnect()
+        leader.disconnect()
+    finally:
+        if wing is not None:
+            wing.close()
+        if leader is not None:
+            leader.close()
+        if wing_server is not None:
+            wing_server.close()
+        if leader_server is not None:
+            leader_server.close()
+
+
+def test_grpc_transport_can_host_python_rti_fm_lifecycle_end_to_end():
+    leader_server = wing_server = None
+    leader = wing = None
+    try:
+        leader_server, wing_server, leader, wing = _start_grpc_pair()
+        leader_federate = RecordingFederateAmbassador()
+        wing_federate = RecordingFederateAmbassador()
+        federation_name = "GrpcHostedLifecycleFederation"
+        fom = str(Path("hla2010/resources/foms/VendorSmokeFOM.xml").resolve())
+
+        leader.connect(leader_federate, CallbackModel.HLA_EVOKED)
+        wing.connect(wing_federate, CallbackModel.HLA_EVOKED)
+        leader.create_federation_execution(federation_name, [fom], "HLAfloat64Time")
+        leader_handle = leader.join_federation_execution("Leader", "LifecycleFederate", federation_name)
+        wing_handle = wing.join_federation_execution("Wing", "LifecycleFederate", federation_name)
+        assert leader_handle is not None
+        assert wing_handle is not None
+        wing.resign_federation_execution(ResignAction.NO_ACTION)
+        leader.resign_federation_execution(ResignAction.NO_ACTION)
+        leader.destroy_federation_execution(federation_name)
+
+        wing.disconnect()
+        leader.disconnect()
+    finally:
+        if wing is not None:
+            wing.close()
+        if leader is not None:
+            leader.close()
+        if wing_server is not None:
+            wing_server.close()
+        if leader_server is not None:
+            leader_server.close()
+
+
+def test_grpc_transport_can_host_python_rti_save_restore_end_to_end():
+    leader_server = wing_server = None
+    leader = wing = None
+    try:
+        leader_server, wing_server, leader, wing = _start_grpc_pair()
+        leader_federate = RecordingFederateAmbassador()
+        wing_federate = RecordingFederateAmbassador()
+        federation_name = "GrpcHostedSaveRestoreFederation"
+        save_name = "GRPC-SAVE-1"
+        abort_save_name = "GRPC-SAVE-ABORT"
+        fom = str(Path("hla2010/resources/foms/VendorSmokeFOM.xml").resolve())
+
+        leader.connect(leader_federate, CallbackModel.HLA_EVOKED)
+        wing.connect(wing_federate, CallbackModel.HLA_EVOKED)
+        leader.create_federation_execution(federation_name, [fom], "HLAfloat64Time")
+        leader.join_federation_execution("Leader", "SaveRestoreFederate", federation_name)
+        wing.join_federation_execution("Wing", "SaveRestoreFederate", federation_name)
+
+        leader.request_federation_save(save_name)
+        for _ in range(12):
+            leader.evoke_multiple_callbacks(0.0, 0.0)
+            wing.evoke_multiple_callbacks(0.0, 0.0)
+        assert leader_federate.last_callback("initiateFederateSave").args == (save_name,)
+        assert wing_federate.last_callback("initiateFederateSave").args == (save_name,)
+
+        leader.federate_save_begun()
+        wing.federate_save_begun()
+        leader.federate_save_complete()
+        wing.federate_save_complete()
+        for _ in range(12):
+            leader.evoke_multiple_callbacks(0.0, 0.0)
+            wing.evoke_multiple_callbacks(0.0, 0.0)
+        assert leader_federate.last_callback("federationSaved") is not None
+
+        leader.query_federation_save_status()
+        for _ in range(6):
+            leader.evoke_multiple_callbacks(0.0, 0.0)
+        save_status = leader_federate.last_callback("federationSaveStatusResponse").args[0]
+        assert all(pair.save_status is SaveStatus.NO_SAVE_IN_PROGRESS for pair in save_status)
+
+        leader.request_federation_restore(save_name)
+        for _ in range(12):
+            leader.evoke_multiple_callbacks(0.0, 0.0)
+            wing.evoke_multiple_callbacks(0.0, 0.0)
+        assert leader_federate.last_callback("requestFederationRestoreSucceeded").args == (save_name,)
+        assert wing_federate.last_callback("initiateFederateRestore") is not None
+        assert leader_federate.last_callback("federationRestoreBegun") is not None
+
+        leader.federate_restore_complete()
+        wing.federate_restore_complete()
+        for _ in range(12):
+            leader.evoke_multiple_callbacks(0.0, 0.0)
+            wing.evoke_multiple_callbacks(0.0, 0.0)
+        assert leader_federate.last_callback("federationRestored") is not None
+
+        leader.query_federation_restore_status()
+        for _ in range(6):
+            leader.evoke_multiple_callbacks(0.0, 0.0)
+        restore_status = leader_federate.last_callback("federationRestoreStatusResponse").args[0]
+        assert all(pair.restore_status is RestoreStatus.NO_RESTORE_IN_PROGRESS for pair in restore_status)
+
+        leader.request_federation_save(abort_save_name)
+        for _ in range(12):
+            leader.evoke_multiple_callbacks(0.0, 0.0)
+            wing.evoke_multiple_callbacks(0.0, 0.0)
+        leader.federate_save_begun()
+        wing.federate_save_begun()
+        leader.abort_federation_save()
+        for _ in range(12):
+            leader.evoke_multiple_callbacks(0.0, 0.0)
+            wing.evoke_multiple_callbacks(0.0, 0.0)
+        assert leader_federate.last_callback("federationNotSaved").args == (SaveFailureReason.SAVE_ABORTED,)
+
+        leader.request_federation_restore(abort_save_name)
+        for _ in range(12):
+            leader.evoke_multiple_callbacks(0.0, 0.0)
+            wing.evoke_multiple_callbacks(0.0, 0.0)
+        assert leader_federate.last_callback("requestFederationRestoreFailed").args == (abort_save_name,)
+
+        wing.resign_federation_execution(ResignAction.NO_ACTION)
+        leader.resign_federation_execution(ResignAction.NO_ACTION)
+        leader.destroy_federation_execution(federation_name)
         wing.disconnect()
         leader.disconnect()
     finally:

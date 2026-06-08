@@ -62,7 +62,7 @@ def _build_file_descriptor() -> _descriptor.FileDescriptor:
         entry.name = name
         entry.number = number
         entry.label = _descriptor.FieldDescriptor.LABEL_OPTIONAL
-        entry.type = field_type
+        setattr(entry, "type", field_type)
         entry.oneof_index = 0
         if type_name is not None:
             entry.type_name = type_name
@@ -93,7 +93,7 @@ def _build_file_descriptor() -> _descriptor.FileDescriptor:
     field.name = "metadata"
     field.number = 3
     field.label = _descriptor.FieldDescriptor.LABEL_OPTIONAL
-    field.type = _descriptor.FieldDescriptor.TYPE_MESSAGE
+    setattr(field, "type", _descriptor.FieldDescriptor.TYPE_MESSAGE)
     field.type_name = ".hla2010.backends.grpc_transport.TransportStruct"
 
     transport_error = file_proto.message_type.add()
@@ -149,6 +149,10 @@ def _build_file_descriptor() -> _descriptor.FileDescriptor:
 DESCRIPTOR = _build_file_descriptor()
 
 
+def _register_message(message: object) -> None:
+    _sym_db.RegisterMessage(message)  # type: ignore[reportArgumentType]
+
+
 TransportList = _reflection.GeneratedProtocolMessageType(
     "TransportList",
     (_message.Message,),
@@ -157,7 +161,7 @@ TransportList = _reflection.GeneratedProtocolMessageType(
         "__module__": __name__,
     },
 )
-_sym_db.RegisterMessage(TransportList)
+_register_message(TransportList())
 
 TransportStruct = _reflection.GeneratedProtocolMessageType(
     "TransportStruct",
@@ -167,7 +171,7 @@ TransportStruct = _reflection.GeneratedProtocolMessageType(
         "__module__": __name__,
     },
 )
-_sym_db.RegisterMessage(TransportStruct)
+_register_message(TransportStruct())
 
 TransportValue = _reflection.GeneratedProtocolMessageType(
     "TransportValue",
@@ -177,7 +181,7 @@ TransportValue = _reflection.GeneratedProtocolMessageType(
         "__module__": __name__,
     },
 )
-_sym_db.RegisterMessage(TransportValue)
+_register_message(TransportValue())
 
 TransportRequest = _reflection.GeneratedProtocolMessageType(
     "TransportRequest",
@@ -187,7 +191,7 @@ TransportRequest = _reflection.GeneratedProtocolMessageType(
         "__module__": __name__,
     },
 )
-_sym_db.RegisterMessage(TransportRequest)
+_register_message(TransportRequest())
 
 TransportError = _reflection.GeneratedProtocolMessageType(
     "TransportError",
@@ -197,7 +201,7 @@ TransportError = _reflection.GeneratedProtocolMessageType(
         "__module__": __name__,
     },
 )
-_sym_db.RegisterMessage(TransportError)
+_register_message(TransportError())
 
 TransportResponse = _reflection.GeneratedProtocolMessageType(
     "TransportResponse",
@@ -207,7 +211,7 @@ TransportResponse = _reflection.GeneratedProtocolMessageType(
         "__module__": __name__,
     },
 )
-_sym_db.RegisterMessage(TransportResponse)
+_register_message(TransportResponse())
 
 
 __all__ = [

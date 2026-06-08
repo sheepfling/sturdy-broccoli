@@ -5,7 +5,6 @@ import socket
 import subprocess
 import time
 from dataclasses import dataclass, field
-from typing import Any
 
 from .backends.base import BackendUnavailableError
 
@@ -13,7 +12,7 @@ from .backends.base import BackendUnavailableError
 def _loopback_remediation(host: str, port: int | None = None) -> str:
     target = f"{host}:{port}" if port is not None else host
     return (
-        f"Run `python3 scripts/check_certi_preflight.py` to verify local CERTI prerequisites. "
+        f"Run `./certi-easy preflight` to verify local CERTI prerequisites. "
         f"Real RTI smoke needs loopback TCP bind/connect permission for {target}."
     )
 

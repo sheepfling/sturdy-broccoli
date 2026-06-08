@@ -22,6 +22,7 @@ Use this file to answer:
 - which backend families support which scenario classes
 - which transport surfaces are real and currently exercised
 - which runtime paths are practical for day-to-day testing
+- which harmonized artifact packet records vendor/runtime parity evidence
 
 Use the inventory doc for names and combinations, and use the conformance doc
 for clause-level status.
@@ -57,6 +58,18 @@ This repo also has a narrower transport seam under the backend layer. That seam 
 | `grpc` | typed remote transport exercised through the CERTI adapter path and through a transport-hosted pure-Python RTI server | yes |
 
 These transport kinds are not separate RTI backends today. They are transport choices used under the backend-neutral Python HLA surface, with current coverage centered on the CERTI-facing path.
+
+## Verification Features
+
+| Feature | Current role | Automated coverage |
+|---|---|---:|
+| `vendor-parity-packet` | harmonized packet over vendor smoke commands, matrix tests, findings notes, and optional preflight JSON | yes |
+
+Primary anchors:
+
+- [vendor_parity_artifacts.md](vendor_parity_artifacts.md)
+- [test_vendor_parity_artifacts.py](../tests/scenarios/test_vendor_parity_artifacts.py)
+- [run_vendor_parity_artifacts.py](../scripts/run_vendor_parity_artifacts.py)
 
 ## Notes
 

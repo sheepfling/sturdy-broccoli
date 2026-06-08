@@ -1,15 +1,43 @@
 """Callback control and asynchronous-delivery services for the Python RTI backend."""
 from __future__ import annotations
 
+from typing import Any
+
+from ...enums import CallbackModel
 from ...exceptions import (
     AsynchronousDeliveryAlreadyDisabled,
     AsynchronousDeliveryAlreadyEnabled,
     CallNotAllowedFromWithinCallback,
+    FederateInternalError,
 )
-from ..python.state import FederationState
+from .state import CallbackEvent, FederateState, FederationState
 
 
 class PythonRTICallbacksMixin:
+    def _deliver(self, target: FederateState, method_name: str, *args: Any) -> None:
+        if target.ambassador is None:
+            return
+        if target.callback_model is CallbackModel.HLA_IMMEDIATE and self.config.immediate_callbacks_inline:
+            self._invoke_callback(target, method_name, args)
+        else:
+            target.queue.append(CallbackEvent(method_name, tuple(args)))
+
+    def _invoke_callback(self, target: FederateState, method_name: str, args: tuple[Any, ...]) -> None:
+        if target.ambassador is None:
+            return
+        if target.in_callback:
+            raise CallNotAllowedFromWithinCallback("Nested callback invocation is not allowed")
+        try:
+            target.in_callback = True
+            getattr(target.ambassador, method_name)(*args)
+            self.delivered_callback_count += 1
+        except FederateInternalError:
+            raise
+        except BaseException as exc:
+            raise FederateInternalError(f"Python FederateAmbassador.{method_name} failed: {exc}", cause=exc) from exc
+        finally:
+            target.in_callback = False
+
     def _svc_enableCallbacks(self) -> None:
         self._require_connected()
         federation = self.state.federation

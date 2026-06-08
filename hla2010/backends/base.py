@@ -18,7 +18,7 @@ from types import TracebackType
 from typing import Any, Callable, Mapping, MutableMapping
 
 from ..api import FederateAmbassador, RTIambassador
-from ..exceptions import RTIexception, RTIinternalError
+from ..exceptions import CallNotAllowedFromWithinCallback, RTIexception, RTIinternalError
 from ..raw_api import API_METADATA
 from ..spec_refs import method_reference
 
@@ -145,6 +145,9 @@ class DelegatingRTIAmbassador(RTIambassador):
     def _invoke(self, method_name: str, *args: Any, **kwargs: Any) -> Any:
         if method_name not in API_METADATA["RTIambassador"]:
             raise UnsupportedBackendService(f"Unknown RTIambassador service: {method_name}")
+        state = getattr(self.backend, "state", None)
+        if state is not None and getattr(state, "in_callback", False):
+            raise CallNotAllowedFromWithinCallback("Cannot invoke RTI services from within a callback")
 
         adapted_args = tuple(args)
         if method_name == "connect" and adapted_args:

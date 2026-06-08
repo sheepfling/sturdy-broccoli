@@ -1,4 +1,5 @@
 """CERTI-backed adapter for backend-neutral real RTI smoke and exchange tests."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -9,15 +10,12 @@ from ...exceptions import RTIexception, RTIinternalError
 from ...handles import (
     AttributeHandle,
     AttributeHandleSet,
-    AttributeHandleValueMap,
     FederateHandle,
     InteractionClassHandle,
     MessageRetractionHandle,
     ObjectClassHandle,
     ObjectInstanceHandle,
     ParameterHandle,
-    ParameterHandleValueMap,
-    TransportationTypeHandle,
 )
 from ...real_rti import CERTIRuntime, RuntimeProcess, discover_certi_runtime, launch_certi_rtig
 from ...types import MessageRetractionReturn, TimeQueryReturn
@@ -26,11 +24,14 @@ from ..transport import RTITransport, SubprocessLineTransport, TransportError, T
 from .callbacks import dispatch_helper_callback
 from .codecs import (
     decode_handle_set,
-    encode_bytes, federate_handle_set_spec, handle_set_spec, handle_value_map_spec,
+    encode_bytes,
+    federate_handle_set_spec,
+    handle_set_spec,
+    handle_value_map_spec,
 )
 from .runtime import (
-    CERTIConfig,
     HELPER_SOURCE,
+    CERTIConfig,
     build_certi_smoke_helper,
     coerce_time_scalar,
     decode_logical_interval,
@@ -93,11 +94,7 @@ class CERTIBackend(RTIBackend):
                 version=None,
                 details={"host": self.config.host, "tcp_port": self.rtig_process.tcp_port},
             )
-        helper_binary = (
-            Path(self.config.helper_path).expanduser().resolve()
-            if self.config.helper_path is not None
-            else build_certi_smoke_helper(self.runtime)
-        )
+        helper_binary = Path(self.config.helper_path).expanduser().resolve() if self.config.helper_path is not None else build_certi_smoke_helper(self.runtime)
         if self.config.helper_path is not None:
             if (not helper_binary.exists()) or (helper_binary.stat().st_mtime < HELPER_SOURCE.stat().st_mtime):
                 helper_binary = build_certi_smoke_helper(self.runtime, output_path=helper_binary)
@@ -107,8 +104,7 @@ class CERTIBackend(RTIBackend):
                 "CERTI_HOST": self.config.host,
                 "CERTI_TCP_PORT": str(self.rtig_process.tcp_port if self.rtig_process else self.config.tcp_port or 60400),
                 "CERTI_UDP_PORT": str(
-                    self.config.udp_port
-                    or ((self.rtig_process.tcp_port + 100) if self.rtig_process and self.rtig_process.tcp_port else 60500)
+                    self.config.udp_port or ((self.rtig_process.tcp_port + 100) if self.rtig_process and self.rtig_process.tcp_port else 60500)
                 ),
             }
         )
@@ -159,6 +155,35 @@ class CERTIBackend(RTIBackend):
             case "resignFederationExecution":
                 action = invocation.args[0] if invocation.args else ResignAction.NO_ACTION
                 return self._request_value("RESIGN", action.name if isinstance(action, ResignAction) else action)
+            case "requestFederationSave":
+                if len(invocation.args) >= 2 and invocation.args[1] is not None:
+                    return self._request_value(
+                        "REQUEST_FEDERATION_SAVE",
+                        invocation.args[0],
+                        logical_time_name(invocation.args[1]),
+                        coerce_time_scalar(invocation.args[1]),
+                    )
+                return self._request_value("REQUEST_FEDERATION_SAVE", invocation.args[0])
+            case "federateSaveBegun":
+                return self._request_value("FEDERATE_SAVE_BEGUN")
+            case "federateSaveComplete":
+                return self._request_value("FEDERATE_SAVE_COMPLETE")
+            case "federateSaveNotComplete":
+                return self._request_value("FEDERATE_SAVE_NOT_COMPLETE")
+            case "abortFederationSave":
+                return self._request_value("ABORT_FEDERATION_SAVE")
+            case "queryFederationSaveStatus":
+                return self._request_value("QUERY_FEDERATION_SAVE_STATUS")
+            case "requestFederationRestore":
+                return self._request_value("REQUEST_FEDERATION_RESTORE", invocation.args[0])
+            case "federateRestoreComplete":
+                return self._request_value("FEDERATE_RESTORE_COMPLETE")
+            case "federateRestoreNotComplete":
+                return self._request_value("FEDERATE_RESTORE_NOT_COMPLETE")
+            case "abortFederationRestore":
+                return self._request_value("ABORT_FEDERATION_RESTORE")
+            case "queryFederationRestoreStatus":
+                return self._request_value("QUERY_FEDERATION_RESTORE_STATUS")
             case "getHLAversion":
                 return self._request_value("GET_HLA_VERSION")
             case "getFederateHandle":
@@ -180,13 +205,17 @@ class CERTIBackend(RTIBackend):
                 return self._request_value("GET_ATTRIBUTE_NAME", invocation.args[0].value, invocation.args[1].value)
             case "publishObjectClassAttributes":
                 object_class = invocation.args[0] if invocation.args else get_keyword(invocation.kwargs, "whichClass", "theClass", "which_class", "the_class")
-                attributes = invocation.args[1] if len(invocation.args) >= 2 else get_keyword(invocation.kwargs, "attributeList", "attribute_list", "attributes")
+                attributes = (
+                    invocation.args[1] if len(invocation.args) >= 2 else get_keyword(invocation.kwargs, "attributeList", "attribute_list", "attributes")
+                )
                 if object_class is None or attributes is None:
                     raise UnsupportedBackendService("publishObjectClassAttributes requires object class and attribute set")
                 return self._request_value("PUBLISH_OBJECT_CLASS_ATTRIBUTES", object_class.value, handle_set_spec(attributes))
             case "subscribeObjectClassAttributes":
                 object_class = invocation.args[0] if invocation.args else get_keyword(invocation.kwargs, "whichClass", "theClass", "which_class", "the_class")
-                attributes = invocation.args[1] if len(invocation.args) >= 2 else get_keyword(invocation.kwargs, "attributeList", "attribute_list", "attributes")
+                attributes = (
+                    invocation.args[1] if len(invocation.args) >= 2 else get_keyword(invocation.kwargs, "attributeList", "attribute_list", "attributes")
+                )
                 if object_class is None or attributes is None:
                     raise UnsupportedBackendService("subscribeObjectClassAttributes requires object class and attribute set")
                 return self._request_value("SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES", object_class.value, handle_set_spec(attributes))
@@ -330,8 +359,16 @@ class CERTIBackend(RTIBackend):
         match invocation.method_name:
             case "registerFederationSynchronizationPoint":
                 label = invocation.args[0] if invocation.args else get_keyword(invocation.kwargs, "synchronizationPointLabel", "label")
-                tag = invocation.args[1] if len(invocation.args) >= 2 else get_keyword(invocation.kwargs, "userSuppliedTag", "theUserSuppliedTag", "tag", default=b"")
-                synchronization_set = invocation.args[2] if len(invocation.args) >= 3 else get_keyword(invocation.kwargs, "synchronizationSet", "synchronization_set", default=None)
+                tag = (
+                    invocation.args[1]
+                    if len(invocation.args) >= 2
+                    else get_keyword(invocation.kwargs, "userSuppliedTag", "theUserSuppliedTag", "tag", default=b"")
+                )
+                synchronization_set = (
+                    invocation.args[2]
+                    if len(invocation.args) >= 3
+                    else get_keyword(invocation.kwargs, "synchronizationSet", "synchronization_set", default=None)
+                )
                 return self._request_value(
                     "REGISTER_FEDERATION_SYNCHRONIZATION_POINT",
                     label,
@@ -340,16 +377,29 @@ class CERTIBackend(RTIBackend):
                 )
             case "synchronizationPointAchieved":
                 label = invocation.args[0] if invocation.args else get_keyword(invocation.kwargs, "synchronizationPointLabel", "label")
-                successful = invocation.args[1] if len(invocation.args) >= 2 else get_keyword(invocation.kwargs, "successIndicator", "successful", "success", default=True)
+                successful = (
+                    invocation.args[1]
+                    if len(invocation.args) >= 2
+                    else get_keyword(invocation.kwargs, "successIndicator", "successful", "success", default=True)
+                )
                 return self._request_value("SYNCHRONIZATION_POINT_ACHIEVED", label, "1" if successful else "0")
             case "unconditionalAttributeOwnershipDivestiture":
                 return self._request_value("UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE", invocation.args[0].value, handle_set_spec(invocation.args[1]))
             case "negotiatedAttributeOwnershipDivestiture":
-                return self._request_value("NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE", invocation.args[0].value, handle_set_spec(invocation.args[1]), encode_bytes(invocation.args[2]))
+                return self._request_value(
+                    "NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE",
+                    invocation.args[0].value,
+                    handle_set_spec(invocation.args[1]),
+                    encode_bytes(invocation.args[2]),
+                )
             case "confirmDivestiture":
-                return self._request_value("CONFIRM_DIVESTITURE", invocation.args[0].value, handle_set_spec(invocation.args[1]), encode_bytes(invocation.args[2]))
+                return self._request_value(
+                    "CONFIRM_DIVESTITURE", invocation.args[0].value, handle_set_spec(invocation.args[1]), encode_bytes(invocation.args[2])
+                )
             case "attributeOwnershipAcquisition":
-                return self._request_value("ATTRIBUTE_OWNERSHIP_ACQUISITION", invocation.args[0].value, handle_set_spec(invocation.args[1]), encode_bytes(invocation.args[2]))
+                return self._request_value(
+                    "ATTRIBUTE_OWNERSHIP_ACQUISITION", invocation.args[0].value, handle_set_spec(invocation.args[1]), encode_bytes(invocation.args[2])
+                )
             case "attributeOwnershipAcquisitionIfAvailable":
                 return self._request_value("ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE", invocation.args[0].value, handle_set_spec(invocation.args[1]))
             case "attributeOwnershipReleaseDenied":
@@ -453,7 +503,8 @@ class CERTIBackend(RTIBackend):
 
     def helper_request(self, command: str, *fields: Any, timeout: float | None = None) -> list[str]:
         if (
-            command in {
+            command
+            in {
                 "TIME_ADVANCE_REQUEST",
                 "TIME_ADVANCE_REQUEST_AVAILABLE",
                 "NEXT_MESSAGE_REQUEST",

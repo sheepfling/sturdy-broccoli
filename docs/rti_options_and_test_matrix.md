@@ -222,7 +222,7 @@ Current CERTI qualifier:
 
 ### Python reference RTI
 
-- [test_python_backend_extended_services.py](tests/backends/test_python_backend_extended_services.py)
+- [test_python_backend_support_services.py](tests/backends/test_python_backend_support_services.py), [test_python_backend_federation_extended.py](tests/backends/test_python_backend_federation_extended.py), [test_python_backend_object_ownership_extended.py](tests/backends/test_python_backend_object_ownership_extended.py), [test_python_backend_time_ddm_extended.py](tests/backends/test_python_backend_time_ddm_extended.py)
 
 ### Java shim bridge proofs
 

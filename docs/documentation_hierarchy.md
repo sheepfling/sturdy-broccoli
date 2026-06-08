@@ -39,6 +39,10 @@ Use these as the normal entry points:
 - [docs/evidence/README.md](evidence/README.md): unpacked evidence packets
 - [docs/evidence/packet_index.md](evidence/packet_index.md): evidence packet index
 - [docs/verification/README.md](verification/README.md): verification-family index
+- [docs/verification/requirements_hierarchy.md](verification/requirements_hierarchy.md): L1/L2/L3 requirements hierarchy
+- [docs/verification/verification_validation_split.md](verification/verification_validation_split.md): verification vs validation boundary
+- [docs/verification/verification_plan.md](verification/verification_plan.md): layered conformance plan
+- [docs/verification/validation_plan.md](verification/validation_plan.md): layered scenario-validation plan
 - [docs/verification/run_sequence.md](verification/run_sequence.md): full verification sequence with lint and type annotations
 - [docs/plans/README.md](plans/README.md): implementation plans and sequencing
 
@@ -83,6 +87,7 @@ Verification docs should use the same shape:
 - requirements ledger
 - service/clause matrices
 - spec traceability
+- verification/validation planning
 - executable tests
 - generated artifacts
 

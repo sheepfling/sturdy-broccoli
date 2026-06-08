@@ -1,8 +1,10 @@
 """Target/radar proof packet generator."""
+
 from __future__ import annotations
 
 import csv
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -21,6 +23,10 @@ class TargetRadarProofPaths:
     radar_events_csv: Path
     track_reports_csv: Path
     report_markdown: Path
+    overview_png: Path
+    timeline_png: Path
+    trajectory_png: Path
+    rcs_exchange_png: Path
     overview_svg: Path
     timeline_svg: Path
     trajectory_svg: Path
@@ -93,6 +99,10 @@ def _radar_event_rows(result: Any) -> list[dict[str, Any]]:
             row["object_handle"] = repr(object_handle)
             row["attribute_count"] = len(attributes)
             row["tag_hex"] = user_supplied_tag.hex()
+            try:
+                row["tag_text"] = user_supplied_tag.decode("utf-8")
+            except Exception:
+                row["tag_text"] = ""
         rows.append(row)
     return rows
 
@@ -142,9 +152,7 @@ def _write_markdown(path: Path, summary: Mapping[str, Any], paths: TargetRadarPr
         "| --- | --- | ---: | --- |",
     ]
     for result in matrix["results"]:
-        lines.append(
-            f"| {result['backend']} | {result['status']} | {result['track_reports']} | {result.get('reason') or ''} |"
-        )
+        lines.append(f"| {result['backend']} | {result['status']} | {result['track_reports']} | {result.get('reason') or ''} |")
     lines.extend(
         [
             "",
@@ -155,9 +163,7 @@ def _write_markdown(path: Path, summary: Mapping[str, Any], paths: TargetRadarPr
         ]
     )
     for row in proof["target_truth_rows"]:
-        lines.append(
-            f"| {row['step_number']} | {row['time_seconds']} | ({row['position_x']}, {row['position_y']}, {row['position_z']}) |"
-        )
+        lines.append(f"| {row['step_number']} | {row['time_seconds']} | ({row['position_x']}, {row['position_y']}, {row['position_z']}) |")
     lines.extend(
         [
             "",
@@ -168,14 +174,16 @@ def _write_markdown(path: Path, summary: Mapping[str, Any], paths: TargetRadarPr
         ]
     )
     for report in proof["track_reports"]:
-        lines.append(
-            f"| {report['track_id']} | {report['target_name']} | {report['range_m']} | {report['bearing_rad']} | {report['time_seconds']} |"
-        )
+        lines.append(f"| {report['track_id']} | {report['target_name']} | {report['range_m']} | {report['bearing_rad']} | {report['time_seconds']} |")
     lines.extend(
         [
             "",
             "## Visuals",
             "",
+            f"- Backend overview PNG: `{paths.overview_png.name}`",
+            f"- Event timeline PNG: `{paths.timeline_png.name}`",
+            f"- Truth trajectory PNG: `{paths.trajectory_png.name}`",
+            f"- RCS exchange PNG: `{paths.rcs_exchange_png.name}`",
             f"- Backend overview: `{paths.overview_svg.name}`",
             f"- Event timeline: `{paths.timeline_svg.name}`",
             f"- Truth trajectory: `{paths.trajectory_svg.name}`",
@@ -213,16 +221,194 @@ def _write_overview_svg(path: Path, summary: Mapping[str, Any]) -> Path:
   <text x="40" y="42" font-size="28" font-family="Helvetica, Arial, sans-serif" fill="#132238">Target/Radar Simulation Proof</text>
   <text x="40" y="70" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#48607a">Backend status plus a detailed Python proof trace.</text>
   <text x="40" y="100" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#132238">Python proof backend</text>
-  <text x="260" y="100" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#132238">{proof['backend_kinds'][0]}</text>
+  <text x="260" y="100" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#132238">{proof["backend_kinds"][0]}</text>
   <text x="40" y="120" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#132238">Truth samples</text>
-  <text x="260" y="120" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#132238">{len(proof['target_truth_rows'])}</text>
+  <text x="260" y="120" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#132238">{len(proof["target_truth_rows"])}</text>
   <text x="40" y="140" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#132238">Track reports</text>
-  <text x="260" y="140" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#132238">{len(proof['track_reports'])}</text>
-  {' '.join(rows)}
+  <text x="260" y="140" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#132238">{len(proof["track_reports"])}</text>
+  {" ".join(rows)}
 </svg>
 """
     path.write_text(svg)
     return path
+
+
+def _render_png_plots(paths: TargetRadarProofPaths, summary: Mapping[str, Any]) -> None:
+    output_dir = paths.output_dir
+    os.environ.setdefault("MPLCONFIGDIR", str(output_dir / ".mplconfig"))
+    os.environ.setdefault("XDG_CACHE_HOME", str(output_dir / ".cache"))
+    (output_dir / ".mplconfig").mkdir(parents=True, exist_ok=True)
+    (output_dir / ".cache").mkdir(parents=True, exist_ok=True)
+
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    matrix = summary["backend_matrix"]
+    proof = summary["proof"]
+    results = list(matrix["results"])
+    statuses = [result["status"] for result in results]
+    colors = []
+    color_map = {"passed": "#2b9348", "skipped": "#8d99ae", "failed": "#d00000"}
+    for result in results:
+        colors.append(color_map.get(result["status"], "#495057"))
+
+    fig, (ax_counts, ax_ranges) = plt.subplots(2, 1, figsize=(12, 8), constrained_layout=True)
+    backends = [result["backend"] for result in results]
+    track_counts = [result["track_reports"] for result in results]
+    final_ranges = [result.get("last_range_m") or 0.0 for result in results]
+    x_positions = list(range(len(backends)))
+    bars = ax_counts.bar(x_positions, track_counts, color=colors, edgecolor="#243447", linewidth=0.8)
+    ax_counts.set_title("Target/Radar Backend Matrix")
+    ax_counts.set_ylabel("Track reports")
+    ax_counts.grid(axis="y", alpha=0.2)
+    ax_counts.set_ylim(0, max(track_counts) + 1)
+    for bar, status in zip(bars, statuses):
+        ax_counts.text(
+            bar.get_x() + bar.get_width() / 2.0,
+            bar.get_height() + 0.08,
+            status,
+            ha="center",
+            va="bottom",
+            fontsize=9,
+            rotation=0,
+        )
+    ax_counts.set_xticks(x_positions, labels=backends)
+    ax_counts.tick_params(axis="x", rotation=20)
+
+    ax_ranges.plot(x_positions, final_ranges, marker="o", color="#2f6fed", linewidth=2.5)
+    ax_ranges.set_ylabel("Final range (m)")
+    ax_ranges.set_title("Final Track Range by Backend")
+    ax_ranges.grid(axis="y", alpha=0.2)
+    ax_ranges.set_xticks(x_positions, labels=backends)
+    ax_ranges.tick_params(axis="x", rotation=20)
+    for x, y in zip(x_positions, final_ranges):
+        ax_ranges.text(x, y, f" {y:.1f}", ha="center", va="bottom", fontsize=9)
+    fig.suptitle("Target/Radar Simulation Proof - Backend Matrix", fontsize=15, y=1.02)
+    fig.savefig(paths.overview_png, dpi=160, bbox_inches="tight")
+    plt.close(fig)
+
+    target_rows = proof["target_truth_rows"]
+    radar_rows = proof["radar_event_rows"]
+    track_reports = proof["track_reports"]
+
+    fig, ax = plt.subplots(figsize=(12, 6), constrained_layout=True)
+    target_times = [row["time_seconds"] for row in target_rows]
+    target_steps = [row["step_number"] for row in target_rows]
+    query_indices = [row["index"] for row in radar_rows if row["event_name"] == "query_rcs"]
+    query_times = [idx for idx in query_indices]
+    track_times = [row["time_seconds"] for row in radar_rows if row["event_name"] == "track"]
+
+    ax.scatter(target_times, [1] * len(target_times), s=110, color="#2f6fed", label="Target truth step", zorder=3)
+    for time, step in zip(target_times, target_steps):
+        ax.text(time, 1.08, f"S{step}", ha="center", va="bottom", fontsize=9, color="#2f6fed")
+    if query_times:
+        ax.scatter(query_times, [2] * len(query_times), s=110, color="#e85d04", label="Radar RCS query", zorder=3)
+        for idx in query_times:
+            ax.text(idx, 2.08, f"Q{idx}", ha="center", va="bottom", fontsize=9, color="#e85d04")
+    if track_times:
+        ax.scatter(track_times, [3] * len(track_times), s=110, marker="s", color="#2b9348", label="Track emission", zorder=3)
+        for report in track_reports:
+            ax.text(report["time_seconds"], 3.08, report["track_id"], ha="center", va="bottom", fontsize=9, color="#2b9348")
+    ax.set_yticks([1, 2, 3], labels=["Target truth", "RCS query", "Track output"])
+    ax.set_xlabel("Simulation time / event order")
+    ax.set_title("Target/Radar Simulation Timeline")
+    ax.grid(axis="x", alpha=0.2)
+    ax.grid(axis="y", alpha=0.12)
+    ax.set_xlim(0.5, max(max(target_times, default=1.0), max(track_times, default=1.0), max(query_times, default=1.0)) + 0.5)
+    ax.legend(loc="upper left")
+    fig.savefig(paths.timeline_png, dpi=160, bbox_inches="tight")
+    plt.close(fig)
+
+    exchange_steps: list[dict[str, Any]] = []
+    current: dict[str, Any] | None = None
+    for row in radar_rows:
+        if row["event_name"] == "query_rcs":
+            current = {"query": row}
+            continue
+        if current is None:
+            continue
+        if row["event_name"] == "reflect" and "response" not in current:
+            tag_text = row.get("tag_text", "")
+            if "rcs-response:" in tag_text:
+                current["response"] = row
+            continue
+        if row["event_name"] == "track" and "track" not in current:
+            current["track"] = row
+            exchange_steps.append(current)
+            current = None
+
+    fig, ax = plt.subplots(figsize=(12, 7), constrained_layout=True)
+    y_levels = {"query": 3, "response": 2, "track": 1}
+    y_labels = {3: "Radar query", 2: "Target RCS response", 1: "Track emission"}
+    colors = {"query": "#e85d04", "response": "#2f6fed", "track": "#2b9348"}
+    for step_index, step in enumerate(exchange_steps, start=1):
+        query_row = step.get("query")
+        response_row = step.get("response")
+        track_row = step.get("track")
+        if query_row is not None:
+            ax.scatter(step_index, y_levels["query"], s=140, color=colors["query"], zorder=3)
+            ax.text(step_index, y_levels["query"] + 0.12, f"Q{step_index}", ha="center", va="bottom", fontsize=9, color=colors["query"])
+        if response_row is not None:
+            ax.scatter(step_index, y_levels["response"], s=140, color=colors["response"], zorder=3)
+            ax.text(
+                step_index,
+                y_levels["response"] + 0.12,
+                "RCS",
+                ha="center",
+                va="bottom",
+                fontsize=9,
+                color=colors["response"],
+            )
+        if track_row is not None:
+            ax.scatter(step_index, y_levels["track"], s=140, marker="s", color=colors["track"], zorder=3)
+            ax.text(step_index, y_levels["track"] - 0.14, track_row["track_id"], ha="center", va="top", fontsize=9, color=colors["track"])
+        if query_row is not None and response_row is not None:
+            ax.annotate(
+                "",
+                xy=(step_index, y_levels["response"] + 0.05),
+                xytext=(step_index, y_levels["query"] - 0.05),
+                arrowprops={"arrowstyle": "->", "color": colors["query"], "lw": 2},
+            )
+        if response_row is not None and track_row is not None:
+            ax.annotate(
+                "",
+                xy=(step_index, y_levels["track"] + 0.05),
+                xytext=(step_index, y_levels["response"] - 0.05),
+                arrowprops={"arrowstyle": "->", "color": colors["track"], "lw": 2},
+            )
+    ax.set_xlim(0.5, max(len(exchange_steps), 1) + 0.5)
+    ax.set_ylim(0.5, 3.5)
+    ax.set_xticks(list(range(1, len(exchange_steps) + 1)))
+    ax.set_yticks([1, 2, 3], labels=[y_labels[1], y_labels[2], y_labels[3]])
+    ax.set_xlabel("Step")
+    ax.set_title("RCS Query, Response, and Track Exchange")
+    ax.grid(axis="y", alpha=0.15)
+    ax.grid(axis="x", alpha=0.08)
+    fig.savefig(paths.rcs_exchange_png, dpi=160, bbox_inches="tight")
+    plt.close(fig)
+
+    fig, ax = plt.subplots(figsize=(10, 8), constrained_layout=True)
+    truth_x = [row["position_x"] for row in target_rows]
+    truth_y = [row["position_y"] for row in target_rows]
+    track_x = [report["position_x"] for report in track_reports]
+    track_y = [report["position_y"] for report in track_reports]
+    ax.plot(truth_x, truth_y, color="#2f6fed", linewidth=2.5, marker="o", label="Target truth")
+    ax.scatter(track_x, track_y, color="#e85d04", s=90, marker="s", label="Radar track")
+    for row in target_rows:
+        ax.annotate(
+            f"S{int(row['step_number'])}", (row["position_x"], row["position_y"]), textcoords="offset points", xytext=(6, 6), fontsize=9, color="#2f6fed"
+        )
+    for report in track_reports:
+        ax.annotate(report["track_id"], (report["position_x"], report["position_y"]), textcoords="offset points", xytext=(6, -10), fontsize=9, color="#e85d04")
+    ax.set_title("Truth Trajectory vs Track Reports")
+    ax.set_xlabel("Position X (m)")
+    ax.set_ylabel("Position Y (m)")
+    ax.grid(alpha=0.2)
+    ax.legend(loc="upper left")
+    fig.savefig(paths.trajectory_png, dpi=160, bbox_inches="tight")
+    plt.close(fig)
 
 
 def _write_timeline_svg(path: Path, summary: Mapping[str, Any]) -> Path:
@@ -260,6 +446,7 @@ def _write_timeline_svg(path: Path, summary: Mapping[str, Any]) -> Path:
             )
     lane_nodes = []
     labels = {"target_truth": "Target truth steps", "radar_query": "RCS queries", "radar_track": "Track outputs"}
+    timeline_caption = "Target truth updates, radar RCS queries, and track emissions."
     for index, lane in enumerate(lanes):
         y = top + index * lane_height
         lane_nodes.append(
@@ -269,13 +456,13 @@ def _write_timeline_svg(path: Path, summary: Mapping[str, Any]) -> Path:
     svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
   <rect width="{width}" height="{height}" fill="#f6f8fb" />
   <text x="40" y="42" font-size="28" font-family="Helvetica, Arial, sans-serif" fill="#132238">Simulation Timeline</text>
-  <text x="40" y="68" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#48607a">Target truth updates, radar RCS queries, and track emissions.</text>
-  {' '.join(lane_nodes)}
+  <text x="40" y="68" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#48607a">{timeline_caption}</text>
+  {" ".join(lane_nodes)}
   <line x1="140" y1="{top - 18}" x2="140" y2="{top + lane_height * len(lanes) - 8}" stroke="#9fb2c6" stroke-width="2" />
   <line x1="1140" y1="{top - 18}" x2="1140" y2="{top + lane_height * len(lanes) - 8}" stroke="#9fb2c6" stroke-width="2" />
   <text x="140" y="{top - 26}" font-size="12" fill="#48607a">start</text>
   <text x="1128" y="{top - 26}" font-size="12" fill="#48607a">end</text>
-  {' '.join(event_nodes)}
+  {" ".join(event_nodes)}
 </svg>
 """
     path.write_text(svg)
@@ -286,6 +473,7 @@ def _write_trajectory_svg(path: Path, summary: Mapping[str, Any]) -> Path:
     proof = summary["proof"]
     target_rows = proof["target_truth_rows"]
     track_reports = proof["track_reports"]
+    trajectory_caption = "Blue line: target truth positions. Orange squares: radar track outputs."
     width = 1240
     height = 580
     chart_left = 90
@@ -324,13 +512,13 @@ def _write_trajectory_svg(path: Path, summary: Mapping[str, Any]) -> Path:
     svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
   <rect width="{width}" height="{height}" fill="#f6f8fb" />
   <text x="40" y="42" font-size="28" font-family="Helvetica, Arial, sans-serif" fill="#132238">Truth Trajectory vs Track Reports</text>
-  <text x="40" y="68" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#48607a">Blue line: target truth positions. Orange squares: radar track outputs.</text>
+  <text x="40" y="68" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#48607a">{trajectory_caption}</text>
   <line x1="{chart_left}" y1="{chart_top}" x2="{chart_left}" y2="{chart_top + chart_height}" stroke="#5b6b7a" stroke-width="2" />
   <line x1="{chart_left}" y1="{chart_top + chart_height}" x2="{chart_left + chart_width}" y2="{chart_top + chart_height}" stroke="#5b6b7a" stroke-width="2" />
   <polyline fill="none" stroke="#2f6fed" stroke-width="3" points="{truth_points}" />
   <polyline fill="none" stroke="#e85d04" stroke-width="2" stroke-dasharray="6 4" points="{track_points}" />
-  {' '.join(truth_nodes)}
-  {' '.join(track_nodes)}
+  {" ".join(truth_nodes)}
+  {" ".join(track_nodes)}
   <text x="{chart_left}" y="{chart_top + chart_height + 28}" font-size="12" fill="#48607a">X axis: target position x; Y axis: target position y.</text>
 </svg>
 """
@@ -405,6 +593,10 @@ def write_target_radar_proof_artifacts(
         radar_events_csv=output_dir / "target_radar_radar_events.csv",
         track_reports_csv=output_dir / "target_radar_track_reports.csv",
         report_markdown=output_dir / "target_radar_proof_report.md",
+        overview_png=output_dir / "target_radar_proof_overview.png",
+        timeline_png=output_dir / "target_radar_proof_timeline.png",
+        trajectory_png=output_dir / "target_radar_proof_trajectory.png",
+        rcs_exchange_png=output_dir / "target_radar_proof_rcs_exchange.png",
         overview_svg=output_dir / "target_radar_proof_overview.svg",
         timeline_svg=output_dir / "target_radar_proof_timeline.svg",
         trajectory_svg=output_dir / "target_radar_proof_trajectory.svg",
@@ -413,14 +605,39 @@ def write_target_radar_proof_artifacts(
     _write_csv(
         paths.backend_results_csv,
         summary["backend_matrix"]["results"],
-        fieldnames=["backend", "status", "reason", "track_reports", "first_range_m", "last_range_m", "range_delta_m", "final_time_seconds", "backend_kinds", "track_ids"],
+        fieldnames=[
+            "backend",
+            "status",
+            "reason",
+            "track_reports",
+            "first_range_m",
+            "last_range_m",
+            "range_delta_m",
+            "final_time_seconds",
+            "backend_kinds",
+            "track_ids",
+        ],
     )
     _write_csv(
         paths.target_truth_csv,
         summary["proof"]["target_truth_rows"],
         fieldnames=["index", "step_number", "event_name", "time_seconds", "position_x", "position_y", "position_z"],
     )
-    radar_fieldnames = ["index", "event_name", "object_name", "object_handle", "attribute_count", "tag_hex", "track_id", "target_name", "time_seconds", "range_m", "bearing_rad", "rcs_square_meters"]
+    radar_fieldnames = [
+        "index",
+        "event_name",
+        "object_name",
+        "object_handle",
+        "attribute_count",
+        "tag_hex",
+        "tag_text",
+        "track_id",
+        "target_name",
+        "time_seconds",
+        "range_m",
+        "bearing_rad",
+        "rcs_square_meters",
+    ]
     _write_csv(paths.radar_events_csv, summary["proof"]["radar_event_rows"], fieldnames=radar_fieldnames)
     _write_csv(
         paths.track_reports_csv,
@@ -428,6 +645,7 @@ def write_target_radar_proof_artifacts(
         fieldnames=["track_id", "target_name", "position_x", "position_y", "position_z", "range_m", "bearing_rad", "rcs_square_meters", "time_seconds"],
     )
     _write_markdown(paths.report_markdown, summary, paths)
+    _render_png_plots(paths, summary)
     _write_overview_svg(paths.overview_svg, summary)
     _write_timeline_svg(paths.timeline_svg, summary)
     _write_trajectory_svg(paths.trajectory_svg, summary)

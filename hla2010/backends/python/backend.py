@@ -1,87 +1,42 @@
 """Concrete in-memory Python RTI backend implementation."""
 from __future__ import annotations
 
-from dataclasses import replace
-from typing import Any, Iterable, Mapping
+from typing import Any
 
-from ... import handles as hla_handles
 from ... import time_management as tm
 from ...exceptions import (
-    AttributeRelevanceAdvisorySwitchIsOff,
-    AttributeRelevanceAdvisorySwitchIsOn,
-    AttributeNotDefined,
-    AttributeScopeAdvisorySwitchIsOff,
-    AttributeScopeAdvisorySwitchIsOn,
-    CallNotAllowedFromWithinCallback,
-    CouldNotCreateLogicalTimeFactory,
-    CouldNotOpenFDD,
-    FederateHandleNotKnown,
-    FederateInternalError,
     FederateNotExecutionMember,
-    InconsistentFDD,
-    InvalidDimensionHandle,
-    InvalidFederateHandle,
-    InvalidInteractionClassHandle,
-    InvalidLogicalTime,
-    InvalidLookahead,
-    InvalidObjectClassHandle,
-    InvalidOrderName,
-    InvalidOrderType,
-    InvalidRegion,
-    InvalidResignAction,
-    InvalidServiceGroup,
-    InvalidTransportationName,
-    InvalidTransportationType,
-    InvalidUpdateRateDesignator,
-    NameNotFound,
     NotConnected,
-    ObjectClassRelevanceAdvisorySwitchIsOff,
-    ObjectClassRelevanceAdvisorySwitchIsOn,
-    ObjectInstanceNotKnown,
-    InteractionRelevanceAdvisorySwitchIsOff,
-    InteractionRelevanceAdvisorySwitchIsOn,
     RTIexception,
 )
-from ...fom import FOMCatalog, FOMMergeError, FOMModule, FOMResolutionError, FOMResolver, merge_fom_modules, standard_mim_module
-from ...handles import (
-    AttributeHandle,
-    DimensionHandle,
-    FederateHandle,
-    InteractionClassHandle,
-    MessageRetractionHandle,
-    ObjectClassHandle,
-    ObjectInstanceHandle,
-    ParameterHandle,
-    RegionHandle,
-    TransportationTypeHandle,
-)
+from ...fom import FOMCatalog, FOMResolver
 from ...service_reporting import ServiceReportSink
 from ...time import LogicalTimeFactory
+from ..base import BackendInfo, Invocation, RTIBackend, UnsupportedBackendService
+from ..java_common import resolve_java_arguments
 from .callbacks import PythonRTICallbacksMixin
-from .declaration import PythonRTIDeclarationMixin
 from .ddm import PythonRTIDdmMixin
+from .declaration import PythonRTIDeclarationMixin
 from .engine import InMemoryRTIEngine
 from .federation import PythonRTIFederationMixin
+from .fom_helpers import PythonRTIFomMixin
 from .mom import PythonRTIMomMixin
 from .object import PythonRTIObjectMixin
 from .ownership import PythonRTIOwnershipMixin
 from .reporting import PythonRTIServiceReportFiles
 from .save_restore import PythonRTISaveRestoreMixin
 from .state import (
-    CallbackEvent,
+    MOM_TEXT_ENCODING,
     FederateState,
     FederationState,
-    MOM_TEXT_ENCODING,
-    ObjectInstance,
     PythonRTIConfig,
-    RTI_FEDERATE_HANDLE,
     SupplementalReceiveInfo,
     SupplementalReflectInfo,
     SupplementalRemoveInfo,
 )
+from .subscriptions import PythonRTISubscriptionMixin
+from .support import PythonRTISupportMixin
 from .time import PythonRTITimeMixin
-from ..base import BackendInfo, Invocation, RTIBackend, UnsupportedBackendService
-from ..java_common import resolve_java_arguments
 
 
 def _enum_name(value: Any) -> str:
@@ -113,15 +68,18 @@ def _handle_value(value: Any) -> str:
 
 
 class PythonRTIBackend(
+    PythonRTIFomMixin,
     PythonRTIFederationMixin,
     PythonRTISaveRestoreMixin,
     PythonRTICallbacksMixin,
+    PythonRTISubscriptionMixin,
     PythonRTIDeclarationMixin,
     PythonRTIObjectMixin,
     PythonRTIMomMixin,
     PythonRTIOwnershipMixin,
     PythonRTITimeMixin,
     PythonRTIDdmMixin,
+    PythonRTISupportMixin,
     RTIBackend,
 ):
     """A dependency-free RTIBackend implemented entirely in Python."""
@@ -182,7 +140,7 @@ class PythonRTIBackend(
         return federation.fom_catalog
 
     def current_fom_summary(self) -> dict[str, Any]:
-        return self.current_fom_catalog().as_summary()
+        return self._current_fom_summary()
 
     def close(self) -> None:
         try:
@@ -222,18 +180,6 @@ class PythonRTIBackend(
             return federation.time_factory
         return self.engine.time_factories.get(self.config.default_logical_time_implementation_name)
 
-    def _coerce_time(self, value: Any) -> Any:
-        try:
-            return self._time_factory().coerce_time(value)
-        except Exception as exc:
-            raise InvalidLogicalTime(repr(value)) from exc
-
-    def _coerce_interval(self, value: Any) -> Any:
-        try:
-            return self._time_factory().coerce_interval(value)
-        except Exception as exc:
-            raise InvalidLookahead(repr(value)) from exc
-
     def _time_lt(self, a: Any, b: Any) -> bool:
         return tm.time_lt(a, b)
 
@@ -248,523 +194,6 @@ class PythonRTIBackend(
 
     def _scheduled_save_time_reached(self, fed: FederateState, save_time: Any, *, next_grant_time: Any | None = None) -> bool:
         return tm.scheduled_save_time_reached(fed, save_time, next_grant_time=next_grant_time)
-
-    def _resolve_fom_modules(
-        self,
-        sources: Iterable[Any] | Any | None,
-        *,
-        require_non_empty: bool = False,
-        mim: bool = False,
-    ) -> tuple[FOMModule, ...]:
-        try:
-            modules = self.fom_resolver.resolve_many(sources)
-            if mim:
-                modules = tuple(replace(module, is_mim=True) for module in modules)
-            if require_non_empty and not modules:
-                raise FOMResolutionError("At least one FOM module designator is required")
-            if self.config.require_fom_parse or self.config.strict_fom_loading:
-                for module in modules:
-                    if module.uri.startswith("builtin:"):
-                        continue
-                    if not module.parsed:
-                        raise FOMResolutionError(f"FOM module could not be parsed locally by the Python RTI: {module.uri}")
-            return modules
-        except FOMResolutionError as exc:
-            if mim:
-                from ...exceptions import CouldNotOpenMIM
-
-                raise CouldNotOpenMIM(str(exc)) from exc
-            raise CouldNotOpenFDD(str(exc)) from exc
-
-    def _combine_fom_catalog(
-        self,
-        modules: Iterable[FOMModule],
-        *,
-        mim_module: FOMModule | None = None,
-        base_catalog: FOMCatalog | None = None,
-    ) -> FOMCatalog:
-        try:
-            base_modules = tuple(base_catalog.modules) if base_catalog is not None else ()
-            effective_mim = mim_module if mim_module is not None else (base_catalog.mim_module if base_catalog is not None else standard_mim_module())
-            return merge_fom_modules((*base_modules, *tuple(modules)), mim_module=effective_mim)
-        except FOMMergeError as exc:
-            raise InconsistentFDD(str(exc)) from exc
-
-    def _current_fom_summary(self, federation: FederationState | None = None) -> dict[str, Any]:
-        federation = federation or self._require_joined()
-        return federation.fom_catalog.as_summary()
-
-    def _choose_time_factory(self, requested_name: str | None, modules: Iterable[FOMModule]) -> LogicalTimeFactory[Any, Any]:
-        name = requested_name or self.config.default_logical_time_implementation_name
-        if self.config.infer_time_factory_from_fom and not requested_name:
-            for module in modules:
-                if module.inferred_time_implementation:
-                    name = module.inferred_time_implementation
-                    break
-        try:
-            return self.engine.time_factories.get(name)
-        except KeyError as exc:
-            raise CouldNotCreateLogicalTimeFactory(str(exc)) from exc
-
-    def _deliver(self, target: FederateState, method_name: str, *args: Any) -> None:
-        from ...enums import CallbackModel
-
-        if target.ambassador is None:
-            return
-        if target.callback_model is CallbackModel.HLA_IMMEDIATE and self.config.immediate_callbacks_inline:
-            self._invoke_callback(target, method_name, args)
-        else:
-            target.queue.append(CallbackEvent(method_name, tuple(args)))
-
-    def _invoke_callback(self, target: FederateState, method_name: str, args: tuple[Any, ...]) -> None:
-        if target.ambassador is None:
-            return
-        if target.in_callback:
-            raise CallNotAllowedFromWithinCallback("Nested callback invocation is not allowed")
-        try:
-            target.in_callback = True
-            getattr(target.ambassador, method_name)(*args)
-            self.delivered_callback_count += 1
-        except FederateInternalError:
-            raise
-        except BaseException as exc:
-            raise FederateInternalError(f"Python FederateAmbassador.{method_name} failed: {exc}", cause=exc) from exc
-        finally:
-            target.in_callback = False
-
-    def _find_object(self, handle: ObjectInstanceHandle) -> tuple[FederationState, ObjectInstance]:
-        federation = self._require_joined()
-        try:
-            return federation, federation.objects[handle]
-        except KeyError as exc:
-            raise ObjectInstanceNotKnown(repr(handle)) from exc
-
-    def _object_matches_subscription(self, instance_class: ObjectClassHandle, subscribed_class: ObjectClassHandle) -> bool:
-        try:
-            return self.engine.object_class_is_a(instance_class, subscribed_class)
-        except InvalidObjectClassHandle:
-            return instance_class == subscribed_class
-
-    def _interaction_matches_subscription(self, interaction_class: InteractionClassHandle, subscribed_class: InteractionClassHandle) -> bool:
-        try:
-            return self.engine.interaction_class_is_a(interaction_class, subscribed_class)
-        except InvalidInteractionClassHandle:
-            return interaction_class == subscribed_class
-
-    def _discover_existing_objects(self, subscriber: FederateState, object_class: ObjectClassHandle) -> None:
-        federation = subscriber.federation
-        if federation is None:
-            return
-        for instance in federation.objects.values():
-            if self._object_matches_subscription(instance.class_handle, object_class):
-                self._deliver(subscriber, "discoverObjectInstance", instance.handle, instance.class_handle, instance.name, instance.owner or RTI_FEDERATE_HANDLE)
-
-    def _subscribed_attributes_for(self, subscriber: FederateState, object_class: ObjectClassHandle) -> set[AttributeHandle]:
-        result: set[AttributeHandle] = set()
-        for subscribed_class, attrs in subscriber.subscribed_objects.items():
-            if self._object_matches_subscription(object_class, subscribed_class):
-                result.update(attrs)
-        return result
-
-    def _attribute_region_allows(self, subscriber: FederateState, instance: ObjectInstance, attribute: AttributeHandle, sent_regions: set[RegionHandle] | None) -> bool:
-        federation = subscriber.federation
-        if federation is None:
-            return True
-        subscription_regions: set[RegionHandle] = set()
-        for subscribed_class, attr_regions in subscriber.object_region_subscriptions.items():
-            if self._object_matches_subscription(instance.class_handle, subscribed_class):
-                subscription_regions.update(attr_regions.get(attribute, set()))
-        if not subscription_regions:
-            return True
-        return self._region_sets_overlap(self.state, set(sent_regions or set()), subscriber, subscription_regions)
-
-    def _interaction_region_allows(self, subscriber: FederateState, interaction_class: InteractionClassHandle, sent_regions: set[RegionHandle] | None) -> bool:
-        federation = subscriber.federation
-        if federation is None:
-            return True
-        subscription_regions: set[RegionHandle] = set()
-        for subscribed_class, regions in subscriber.interaction_region_subscriptions.items():
-            if self._interaction_matches_subscription(interaction_class, subscribed_class):
-                subscription_regions.update(regions)
-        if not subscription_regions:
-            return True
-        return self._region_sets_overlap(self.state, set(sent_regions or set()), subscriber, subscription_regions)
-
-    def _attribute_subscription_intersection(
-        self,
-        subscriber: FederateState,
-        object_class: ObjectClassHandle,
-        attributes: Mapping[AttributeHandle, bytes],
-        instance: ObjectInstance | None = None,
-        sent_regions_by_attribute: Mapping[AttributeHandle, set[RegionHandle]] | None = None,
-    ) -> dict[AttributeHandle, bytes]:
-        subscribed = self._subscribed_attributes_for(subscriber, object_class)
-        if not subscribed:
-            return {}
-        reflected: dict[AttributeHandle, bytes] = {}
-        for handle, value in attributes.items():
-            if handle not in subscribed:
-                continue
-            if instance is not None and not self._attribute_region_allows(subscriber, instance, handle, set((sent_regions_by_attribute or {}).get(handle, set()))):
-                continue
-            reflected[handle] = value
-        return reflected
-
-    def _svc_getAutomaticResignDirective(self):
-        self._require_joined()
-        return self.state.automatic_resign_directive
-
-    def _svc_setAutomaticResignDirective(self, resignAction: Any) -> None:
-        from ...enums import ResignAction
-
-        self._require_joined()
-        if not isinstance(resignAction, ResignAction):
-            raise InvalidResignAction(repr(resignAction))
-        self.state.automatic_resign_directive = resignAction
-
-    def _svc_enableObjectClassRelevanceAdvisorySwitch(self) -> None:
-        federation = self._require_joined()
-        self._ensure_no_save_or_restore_in_progress(federation)
-        if self.state.object_class_relevance_advisory:
-            raise ObjectClassRelevanceAdvisorySwitchIsOn("Object class relevance advisory switch is already enabled")
-        self.state.object_class_relevance_advisory = True
-
-    def _svc_disableObjectClassRelevanceAdvisorySwitch(self) -> None:
-        federation = self._require_joined()
-        self._ensure_no_save_or_restore_in_progress(federation)
-        if not self.state.object_class_relevance_advisory:
-            raise ObjectClassRelevanceAdvisorySwitchIsOff("Object class relevance advisory switch is already disabled")
-        self.state.object_class_relevance_advisory = False
-
-    def _svc_enableAttributeRelevanceAdvisorySwitch(self) -> None:
-        federation = self._require_joined()
-        self._ensure_no_save_or_restore_in_progress(federation)
-        if self.state.attribute_relevance_advisory:
-            raise AttributeRelevanceAdvisorySwitchIsOn("Attribute relevance advisory switch is already enabled")
-        self.state.attribute_relevance_advisory = True
-
-    def _svc_disableAttributeRelevanceAdvisorySwitch(self) -> None:
-        federation = self._require_joined()
-        self._ensure_no_save_or_restore_in_progress(federation)
-        if not self.state.attribute_relevance_advisory:
-            raise AttributeRelevanceAdvisorySwitchIsOff("Attribute relevance advisory switch is already disabled")
-        self.state.attribute_relevance_advisory = False
-
-    def _svc_enableAttributeScopeAdvisorySwitch(self) -> None:
-        federation = self._require_joined()
-        self._ensure_no_save_or_restore_in_progress(federation)
-        if self.state.attribute_scope_advisory:
-            raise AttributeScopeAdvisorySwitchIsOn("Attribute scope advisory switch is already enabled")
-        self.state.attribute_scope_advisory = True
-
-    def _svc_disableAttributeScopeAdvisorySwitch(self) -> None:
-        federation = self._require_joined()
-        self._ensure_no_save_or_restore_in_progress(federation)
-        if not self.state.attribute_scope_advisory:
-            raise AttributeScopeAdvisorySwitchIsOff("Attribute scope advisory switch is already disabled")
-        self.state.attribute_scope_advisory = False
-
-    def _svc_enableInteractionRelevanceAdvisorySwitch(self) -> None:
-        federation = self._require_joined()
-        self._ensure_no_save_or_restore_in_progress(federation)
-        if self.state.interaction_relevance_advisory:
-            raise InteractionRelevanceAdvisorySwitchIsOn("Interaction relevance advisory switch is already enabled")
-        self.state.interaction_relevance_advisory = True
-
-    def _svc_disableInteractionRelevanceAdvisorySwitch(self) -> None:
-        federation = self._require_joined()
-        self._ensure_no_save_or_restore_in_progress(federation)
-        if not self.state.interaction_relevance_advisory:
-            raise InteractionRelevanceAdvisorySwitchIsOff("Interaction relevance advisory switch is already disabled")
-        self.state.interaction_relevance_advisory = False
-
-    def _svc_getFederateName(self, theHandle: FederateHandle | None = None) -> str:
-        federation = self._require_joined()
-        if theHandle is None:
-            if self.state.name is None:
-                raise FederateHandleNotKnown("Current federate has no name")
-            return self.state.name
-        if not isinstance(theHandle, FederateHandle):
-            raise InvalidFederateHandle(repr(theHandle))
-        target = federation.federates.get(theHandle)
-        if target is None or target.name is None:
-            raise FederateHandleNotKnown(repr(theHandle))
-        return target.name
-
-    def _svc_getFederateHandle(self, theName: str) -> FederateHandle:
-        federation = self._require_joined()
-        for handle, federate in federation.federates.items():
-            if federate.name == theName:
-                return handle
-        raise NameNotFound(str(theName))
-
-    def _svc_getObjectClassHandle(self, theName: str) -> ObjectClassHandle:
-        federation = self._require_joined()
-        name = str(theName)
-        if name not in self.engine.object_classes_by_name:
-            raise NameNotFound(name)
-        if self._enforce_fom_names(federation) and name not in federation.fom_catalog.object_classes:
-            raise NameNotFound(name)
-        return self.engine.object_classes_by_name[name].handle
-
-    def _svc_getObjectClassName(self, theHandle: ObjectClassHandle) -> str:
-        self._require_joined()
-        return self.engine.object_class_for_handle(theHandle).name
-
-    def _svc_getAttributeHandle(self, whichClass: ObjectClassHandle, theName: str) -> AttributeHandle:
-        federation = self._require_joined()
-        class_def = self.engine.object_class_for_handle(whichClass)
-        name = str(theName)
-        spec = federation.fom_catalog.object_classes.get(class_def.name)
-        if spec is not None and name not in spec.attributes:
-            raise NameNotFound(name)
-        if name not in class_def.attributes_by_name:
-            raise NameNotFound(name)
-        return class_def.attributes_by_name[name]
-
-    def _svc_getAttributeName(self, whichClass: ObjectClassHandle, theHandle: AttributeHandle) -> str:
-        self._require_joined()
-        return self.engine.attribute_name(whichClass, theHandle)
-
-    def _svc_getInteractionClassHandle(self, theName: str) -> InteractionClassHandle:
-        federation = self._require_joined()
-        name = str(theName)
-        if name not in self.engine.interactions_by_name:
-            raise NameNotFound(name)
-        if self._enforce_fom_names(federation) and name not in federation.fom_catalog.interaction_classes:
-            raise NameNotFound(name)
-        return self.engine.interactions_by_name[name].handle
-
-    def _svc_getInteractionClassName(self, theHandle: InteractionClassHandle) -> str:
-        self._require_joined()
-        return self.engine.interaction_for_handle(theHandle).name
-
-    def _svc_getParameterHandle(self, whichClass: InteractionClassHandle, theName: str) -> ParameterHandle:
-        federation = self._require_joined()
-        class_def = self.engine.interaction_for_handle(whichClass)
-        name = str(theName)
-        spec = federation.fom_catalog.interaction_classes.get(class_def.name)
-        if spec is not None and name not in spec.parameters:
-            raise NameNotFound(name)
-        if name not in class_def.parameters_by_name:
-            raise NameNotFound(name)
-        return class_def.parameters_by_name[name]
-
-    def _svc_getParameterName(self, whichClass: InteractionClassHandle, theHandle: ParameterHandle) -> str:
-        self._require_joined()
-        return self.engine.parameter_name(whichClass, theHandle)
-
-    def _svc_getObjectInstanceHandle(self, theName: str) -> ObjectInstanceHandle:
-        federation = self._require_joined()
-        try:
-            return federation.object_names[str(theName)]
-        except KeyError as exc:
-            raise ObjectInstanceNotKnown(str(theName)) from exc
-
-    def _svc_getObjectInstanceName(self, theHandle: ObjectInstanceHandle) -> str:
-        federation = self._require_joined()
-        try:
-            return federation.objects[theHandle].name
-        except KeyError as exc:
-            raise ObjectInstanceNotKnown(repr(theHandle)) from exc
-
-    def _svc_getKnownObjectClassHandle(self, theObject: ObjectInstanceHandle) -> ObjectClassHandle:
-        _, instance = self._find_object(theObject)
-        return instance.class_handle
-
-    def _svc_getDimensionHandle(self, theName: str) -> DimensionHandle:
-        federation = self._require_joined()
-        name = str(theName)
-        if name not in self.engine.dimensions_by_name:
-            raise NameNotFound(name)
-        if self._enforce_fom_names(federation) and federation.fom_catalog.dimensions and name not in federation.fom_catalog.dimensions:
-            raise NameNotFound(name)
-        return self.engine.dimensions_by_name[name]
-
-    def _svc_getDimensionName(self, theHandle: DimensionHandle) -> str:
-        self._require_joined()
-        return self.engine.dimension_name(theHandle)
-
-    def _svc_getTransportationTypeHandle(self, transportationType: str | None = None) -> TransportationTypeHandle:
-        self._require_joined()
-        if transportationType not in (None, "", "HLAreliable"):
-            raise InvalidTransportationName(str(transportationType))
-        return self.engine.transportation_reliable
-
-    def _svc_getTransportationTypeName(self, theHandle: TransportationTypeHandle) -> str:
-        self._require_joined()
-        if theHandle == self.engine.transportation_reliable:
-            return "HLAreliable"
-        raise InvalidTransportationType(repr(theHandle))
-
-    def _svc_getHLAversion(self) -> str:
-        return "HLA 1516-2010 Python in-memory RTI subset"
-
-    def _svc_getTimeFactory(self) -> LogicalTimeFactory[Any, Any]:
-        self._require_joined()
-        return self._time_factory()
-
-    def _svc_getDimensionHandleSet(self, region: RegionHandle) -> hla_handles.DimensionHandleSet:
-        federation = self._require_joined()
-        self._ensure_no_save_or_restore_in_progress(federation)
-        try:
-            return hla_handles.DimensionHandleSet(self.state.regions[region])
-        except KeyError as exc:
-            raise InvalidRegion(repr(region)) from exc
-
-    def _svc_getOrderName(self, orderType: Any) -> str:
-        from ...enums import OrderType
-        self._require_joined()
-        if not isinstance(orderType, OrderType):
-            raise InvalidOrderType(repr(orderType))
-        return orderType.name
-
-    def _svc_getOrderType(self, orderName: str):
-        from ...enums import OrderType
-        self._require_joined()
-        normalized = str(orderName).replace("HLA", "").replace("_", "").replace(" ", "").upper()
-        if normalized in {"RECEIVE", "RECEIVEORDER"}:
-            return OrderType.RECEIVE
-        if normalized in {"TIMESTAMP", "TIMESTAMPORDER", "TSO"}:
-            return OrderType.TIMESTAMP
-        raise InvalidOrderName(str(orderName))
-
-    def _svc_getTransportationType(self, transportationName: str | None = None) -> TransportationTypeHandle:
-        return self._svc_getTransportationTypeHandle(transportationName)
-
-    def _svc_getTransportationName(self, transportationType: TransportationTypeHandle) -> str:
-        return self._svc_getTransportationTypeName(transportationType)
-
-    def _all_known_dimensions(self) -> hla_handles.DimensionHandleSet:
-        if not self.engine.dimensions_by_name:
-            return hla_handles.DimensionHandleSet([self.engine.get_or_create_dimension("HLAdefaultRoutingSpace")])
-        return hla_handles.DimensionHandleSet(self.engine.dimensions_by_name.values())
-
-    def _svc_getAvailableDimensionsForClassAttribute(self, theClass: ObjectClassHandle, theAttribute: AttributeHandle) -> hla_handles.DimensionHandleSet:
-        self._require_joined()
-        self.engine.attribute_name(theClass, theAttribute)
-        return self._all_known_dimensions()
-
-    def _svc_getAvailableDimensionsForInteractionClass(self, theClass: InteractionClassHandle) -> hla_handles.DimensionHandleSet:
-        self._require_joined()
-        self.engine.interaction_for_handle(theClass)
-        return self._all_known_dimensions()
-
-    def _svc_getUpdateRateValue(self, updateRateDesignator: str) -> float:
-        self._require_joined()
-        if str(updateRateDesignator) not in {"default", "HLAdefault"}:
-            raise InvalidUpdateRateDesignator(str(updateRateDesignator))
-        return 0.0
-
-    def _svc_getUpdateRateValueForAttribute(self, theObject: ObjectInstanceHandle, theAttribute: AttributeHandle) -> float:
-        _, instance = self._find_object(theObject)
-        self.engine.attribute_name(instance.class_handle, theAttribute)
-        return 0.0
-
-    def _svc_normalizeFederateHandle(self, theFederateHandle: FederateHandle) -> FederateHandle:
-        federation = self._require_joined()
-        if not isinstance(theFederateHandle, FederateHandle) or theFederateHandle not in federation.federates:
-            raise InvalidFederateHandle(repr(theFederateHandle))
-        return theFederateHandle
-
-    def _svc_normalizeServiceGroup(self, theServiceGroup: Any):
-        from ...enums import ServiceGroup
-        self._require_joined()
-        if isinstance(theServiceGroup, ServiceGroup):
-            return theServiceGroup
-        key = str(theServiceGroup).replace(" ", "_").replace("-", "_").upper()
-        try:
-            return ServiceGroup[key]
-        except KeyError as exc:
-            raise InvalidServiceGroup(str(theServiceGroup)) from exc
-
-    def _svc_getAttributeHandleFactory(self) -> hla_handles.AttributeHandleFactory:
-        self._require_joined()
-        return hla_handles.AttributeHandleFactory()
-
-    def _svc_getAttributeHandleSetFactory(self) -> hla_handles.AttributeHandleSetFactory:
-        self._require_joined()
-        return hla_handles.AttributeHandleSetFactory()
-
-    def _svc_getAttributeHandleValueMapFactory(self) -> hla_handles.AttributeHandleValueMapFactory:
-        self._require_joined()
-        return hla_handles.AttributeHandleValueMapFactory()
-
-    def _svc_getAttributeSetRegionSetPairListFactory(self) -> hla_handles.AttributeSetRegionSetPairListFactory:
-        self._require_joined()
-        return hla_handles.AttributeSetRegionSetPairListFactory()
-
-    def _svc_getDimensionHandleFactory(self) -> hla_handles.DimensionHandleFactory:
-        self._require_joined()
-        return hla_handles.DimensionHandleFactory()
-
-    def _svc_getDimensionHandleSetFactory(self) -> hla_handles.DimensionHandleSetFactory:
-        self._require_joined()
-        return hla_handles.DimensionHandleSetFactory()
-
-    def _svc_getFederateHandleFactory(self) -> hla_handles.FederateHandleFactory:
-        self._require_joined()
-        return hla_handles.FederateHandleFactory()
-
-    def _svc_getFederateHandleSetFactory(self) -> hla_handles.FederateHandleSetFactory:
-        self._require_joined()
-        return hla_handles.FederateHandleSetFactory()
-
-    def _svc_getInteractionClassHandleFactory(self) -> hla_handles.InteractionClassHandleFactory:
-        self._require_joined()
-        return hla_handles.InteractionClassHandleFactory()
-
-    def _svc_getObjectClassHandleFactory(self) -> hla_handles.ObjectClassHandleFactory:
-        self._require_joined()
-        return hla_handles.ObjectClassHandleFactory()
-
-    def _svc_getObjectInstanceHandleFactory(self) -> hla_handles.ObjectInstanceHandleFactory:
-        self._require_joined()
-        return hla_handles.ObjectInstanceHandleFactory()
-
-    def _svc_getParameterHandleFactory(self) -> hla_handles.ParameterHandleFactory:
-        self._require_joined()
-        return hla_handles.ParameterHandleFactory()
-
-    def _svc_getParameterHandleValueMapFactory(self) -> hla_handles.ParameterHandleValueMapFactory:
-        self._require_joined()
-        return hla_handles.ParameterHandleValueMapFactory()
-
-    def _svc_getRegionHandleSetFactory(self) -> hla_handles.RegionHandleSetFactory:
-        self._require_joined()
-        return hla_handles.RegionHandleSetFactory()
-
-    def _svc_getTransportationTypeHandleFactory(self) -> hla_handles.TransportationTypeHandleFactory:
-        self._require_joined()
-        return hla_handles.TransportationTypeHandleFactory()
-
-    def _svc_decodeMessageRetractionHandle(self, buffer: bytes) -> MessageRetractionHandle:
-        return MessageRetractionHandle.decode(buffer)  # type: ignore[return-value]
-
-    def _svc_decodeFederateHandle(self, buffer: bytes) -> FederateHandle:
-        return FederateHandle.decode(buffer)  # type: ignore[return-value]
-
-    def _svc_decodeObjectClassHandle(self, buffer: bytes) -> ObjectClassHandle:
-        return ObjectClassHandle.decode(buffer)  # type: ignore[return-value]
-
-    def _svc_decodeAttributeHandle(self, buffer: bytes) -> AttributeHandle:
-        return AttributeHandle.decode(buffer)  # type: ignore[return-value]
-
-    def _svc_decodeObjectInstanceHandle(self, buffer: bytes) -> ObjectInstanceHandle:
-        return ObjectInstanceHandle.decode(buffer)  # type: ignore[return-value]
-
-    def _svc_decodeInteractionClassHandle(self, buffer: bytes) -> InteractionClassHandle:
-        return InteractionClassHandle.decode(buffer)  # type: ignore[return-value]
-
-    def _svc_decodeParameterHandle(self, buffer: bytes) -> ParameterHandle:
-        return ParameterHandle.decode(buffer)  # type: ignore[return-value]
-
-    def _svc_decodeDimensionHandle(self, buffer: bytes) -> DimensionHandle:
-        return DimensionHandle.decode(buffer)  # type: ignore[return-value]
-
-    def _svc_decodeRegionHandle(self, buffer: bytes) -> RegionHandle:
-        return RegionHandle.decode(buffer)  # type: ignore[return-value]
-
 
 __all__ = [
     "PythonRTIBackend",

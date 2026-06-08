@@ -125,7 +125,10 @@ Validation before packaging: `577 passed, 2 skipped` via `python -m pytest -q`.
 - `tests/verification/test_mom_negative_matrix_v013.py`
 - `tests/runtime/test_optional_real_java_bridges.py`
 - `tests/backends/test_python_backend.py`
-- `tests/backends/test_python_backend_extended_services.py`
+- `tests/backends/test_python_backend_support_services.py`
+- `tests/backends/test_python_backend_federation_extended.py`
+- `tests/backends/test_python_backend_object_ownership_extended.py`
+- `tests/backends/test_python_backend_time_ddm_extended.py`
 - `tests/verification/test_service_conformance_matrix_v013.py`
 - `tests/verification/test_spec_traceability_all_methods.py`
 - `tests/verification/test_spec_traceability_and_extended_python_rti.py`

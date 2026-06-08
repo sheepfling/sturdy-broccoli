@@ -39,9 +39,17 @@ def test_target_radar_proof_artifacts_are_generated(tmp_path):
 
     report_text = paths.report_markdown.read_text()
     assert "Target/Radar Simulation Proof" in report_text
-    assert "Truth Trajectory vs Track Reports" not in report_text
+    assert "Backend overview PNG" in report_text
+    assert "Event timeline PNG" in report_text
+    assert "Truth trajectory PNG" in report_text
+    assert "RCS exchange PNG" in report_text
     assert "## Track Reports" in report_text
     assert "./scripts/ci/target_radar_proof.sh" in report_text
+
+    assert paths.overview_png.exists() and paths.overview_png.stat().st_size > 0
+    assert paths.timeline_png.exists() and paths.timeline_png.stat().st_size > 0
+    assert paths.trajectory_png.exists() and paths.trajectory_png.stat().st_size > 0
+    assert paths.rcs_exchange_png.exists() and paths.rcs_exchange_png.stat().st_size > 0
 
     overview_svg = paths.overview_svg.read_text()
     assert "<svg" in overview_svg

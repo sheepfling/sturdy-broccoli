@@ -8,9 +8,10 @@ runtime quirks without reading the deeper parity notes first.
 
 ## The Short Version
 
-Run these three commands first:
+Run these commands first:
 
 ```bash
+./certi-easy preflight
 ./certi-easy install
 ./certi-easy doctor
 ./certi-easy smoke compare
@@ -24,7 +25,7 @@ Meaning:
   run on this host.
 - `smoke compare` runs the stable upstream-vs-patched CERTI comparison slices.
 
-If those three work, the basic CERTI path is good.
+If those commands work, the basic CERTI path is good.
 
 ## The Two Baselines
 
@@ -47,6 +48,7 @@ stable slices.
 These are the easy, junior-friendly entrypoints:
 
 ```bash
+./certi-easy preflight
 ./certi-easy install
 ./certi-easy doctor
 ./certi-easy smoke compare
@@ -57,6 +59,9 @@ These are the easy, junior-friendly entrypoints:
 ```
 
 If you only remember one thing, remember `./certi-easy`.
+
+`./certi-easy doctor` is the same path shape as `preflight`, but with the
+installed paths printed first so you can see what it is about to use.
 
 ## What Is Secondary
 
@@ -102,11 +107,22 @@ These are the runtime facts that matter most for day-to-day use:
 Run the preflight first:
 
 ```bash
-python3 scripts/check_certi_preflight.py
+./certi-easy preflight
 ```
 
 If the result says `real CERTI will skip`, the problem is the host/session, not
 the tests.
+
+If `./certi-easy preflight` reports `environment: loopback-blocked`, this is a
+Codex/session restriction rather than a repo bug. Use an unrestricted local
+terminal or an approved unsandboxed command to retest.
+
+For scripts or CI, `./certi-easy preflight --json` emits machine-readable
+status with `environment`, `result`, and per-check records. To write a file
+you can inspect or archive, use `./certi-easy preflight --json-file ...`.
+
+For file output and inspection examples, see
+[Preflight Artifacts](preflight_artifacts.md).
 
 If the result says `real CERTI runnable` but `smoke compare` still fails:
 

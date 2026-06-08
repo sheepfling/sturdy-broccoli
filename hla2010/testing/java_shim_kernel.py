@@ -10,7 +10,6 @@ from .java_shim_runtime import SharedInProcessJavaRTIShim
 from .java_shim_types import (
     JavaAttributeHandle,
     JavaDimensionHandle,
-    JavaFederateHandle,
     JavaInteractionClassHandle,
     JavaObjectClassHandle,
     JavaParameterHandle,

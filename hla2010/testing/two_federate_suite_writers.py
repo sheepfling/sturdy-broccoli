@@ -1,4 +1,5 @@
 """Artifact writers for the two-federate verification suite."""
+
 from __future__ import annotations
 
 import csv
@@ -64,6 +65,15 @@ def _write_markdown(path: Path, summary: Mapping[str, Any], paths: SuitePaths) -
     scenario_rows = summary["scenario_rows"]
     target_radar = summary["target_radar"]
     profiles = summary["profiles"]
+    suite_description = (
+        "A two-federate verification suite exercising exchange, timestamped delivery, "
+        "synchronization, ownership transfer, negotiated ownership, save/restore, DDM "
+        "region filtering, and a realistic target/radar flow."
+    )
+    profile_note = (
+        "The default profile runs the Python reference RTI; CERTI and Pitch profiles will "
+        "record skipped or failed status when their runtimes are unavailable or incomplete."
+    )
     lines = [
         "# Two-Federate Suite",
         "",
@@ -78,9 +88,7 @@ def _write_markdown(path: Path, summary: Mapping[str, Any], paths: SuitePaths) -
         "| --- | --- | --- | ---: |",
     ]
     for profile in profiles:
-        lines.append(
-            f"| {profile['profile']} | {profile['status']} | {profile.get('reason') or ''} | {len(profile.get('scenario_rows', []))} |"
-        )
+        lines.append(f"| {profile['profile']} | {profile['status']} | {profile.get('reason') or ''} | {len(profile.get('scenario_rows', []))} |")
     lines.extend(
         [
             "",
@@ -91,9 +99,7 @@ def _write_markdown(path: Path, summary: Mapping[str, Any], paths: SuitePaths) -
         ]
     )
     for row in scenario_rows:
-        lines.append(
-            f"| {row['scenario']} | {row['backend']} | {row['callbacks']} | {row['key_outcome']} |"
-        )
+        lines.append(f"| {row['scenario']} | {row['backend']} | {row['callbacks']} | {row['key_outcome']} |")
     lines.extend(
         [
             "",
@@ -107,8 +113,8 @@ def _write_markdown(path: Path, summary: Mapping[str, Any], paths: SuitePaths) -
             "",
             "## Assessment",
             "",
-            "- Strong end-to-end evidence exists for object discovery, attribute reflection, interaction delivery, time-stamped delivery, synchronization, ownership transfer, negotiated ownership, save/restore, DDM region filtering, and a realistic target/radar flow.",
-            "- The python profile is deterministic and artifact-friendly; the CERTI and Pitch profiles are optional and will record skipped or failed status when their runtimes are unavailable or incomplete.",
+            f"- {suite_description}",
+            f"- {profile_note}",
             "- The same scenario structure is reused across the python, CERTI, and Pitch runtime profiles.",
         ]
     )
@@ -119,6 +125,10 @@ def _write_markdown(path: Path, summary: Mapping[str, Any], paths: SuitePaths) -
 def _write_svg(path: Path, summary: Mapping[str, Any]) -> Path:
     scenario_rows = summary["scenario_rows"]
     reports = summary["target_radar"]["track_reports"]
+    suite_caption = (
+        "Composite Python in-memory run covering exchange/time, sync, ownership, negotiated "
+        "ownership, and target/radar."
+    )
     width = max(960, 170 * len(scenario_rows) + 80)
     height = 560
     chart_left = 80
@@ -154,16 +164,16 @@ def _write_svg(path: Path, summary: Mapping[str, Any]) -> Path:
     svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
   <rect width="{width}" height="{height}" fill="#f6f8fb" />
   <text x="40" y="44" font-size="28" font-family="Helvetica, Arial, sans-serif" fill="#132238">Two-Federate Verification Suite</text>
-  <text x="40" y="72" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#48607a">Composite Python in-memory run covering exchange/time, sync, ownership, negotiated ownership, and target/radar.</text>
+  <text x="40" y="72" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#48607a">{suite_caption}</text>
   <text x="40" y="112" font-size="18" font-family="Helvetica, Arial, sans-serif" fill="#132238">Scenario callback volume</text>
-  {''.join(bars)}
+  {"".join(bars)}
   <text x="40" y="268" font-size="18" font-family="Helvetica, Arial, sans-serif" fill="#132238">Target/radar range growth</text>
   <line x1="{chart_left}" y1="{chart_top}" x2="{chart_left}" y2="{chart_top + chart_height}" stroke="#5b6b7a" stroke-width="2" />
   <line x1="{chart_left}" y1="{chart_top + chart_height}" x2="{chart_left + chart_width}" y2="{chart_top + chart_height}" stroke="#5b6b7a" stroke-width="2" />
   <text x="{chart_left - 20}" y="{chart_top + 8}" text-anchor="end" font-size="12" fill="#48607a">{max_range:.0f} m</text>
   <text x="{chart_left - 20}" y="{chart_top + chart_height}" text-anchor="end" font-size="12" fill="#48607a">0</text>
   <polyline fill="none" stroke="#e85d04" stroke-width="3" points="{polyline}" />
-  {''.join(dots)}
+  {"".join(dots)}
 </svg>
 """
     path.write_text(svg)
@@ -186,6 +196,7 @@ def _write_timeline_svg(path: Path, summary: Mapping[str, Any]) -> Path:
     width = 1240
     height = top + lane_height * len(scenarios) + 120
     max_sequence = max((int(row["sequence"]) for row in timeline_rows), default=1)
+    timeline_caption = "Python profile callback order across both federates and the suite scenarios."
     role_colors = {
         "publisher": "#2f6fed",
         "subscriber": "#e85d04",
@@ -239,21 +250,18 @@ def _write_timeline_svg(path: Path, summary: Mapping[str, Any]) -> Path:
     for index, (label, color) in enumerate(legend):
         x = 140 + (index % 5) * 180
         y = height - 48 + (index // 5) * 20
-        legend_nodes.append(
-            f'<circle cx="{x}" cy="{y}" r="5" fill="{color}" />'
-            f'<text x="{x + 12}" y="{y + 4}" font-size="11" fill="#48607a">{label}</text>'
-        )
+        legend_nodes.append(f'<circle cx="{x}" cy="{y}" r="5" fill="{color}" /><text x="{x + 12}" y="{y + 4}" font-size="11" fill="#48607a">{label}</text>')
     svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
   <rect width="{width}" height="{height}" fill="#f6f8fb" />
   <text x="40" y="42" font-size="28" font-family="Helvetica, Arial, sans-serif" fill="#132238">Callback Timeline</text>
-  <text x="40" y="68" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#48607a">Python profile callback order across both federates and the suite scenarios.</text>
-  {' '.join(lane_nodes)}
+  <text x="40" y="68" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#48607a">{timeline_caption}</text>
+  {" ".join(lane_nodes)}
   <line x1="140" y1="{top - 18}" x2="140" y2="{top + lane_height * len(scenarios) - 8}" stroke="#9fb2c6" stroke-width="2" />
   <line x1="1140" y1="{top - 18}" x2="1140" y2="{top + lane_height * len(scenarios) - 8}" stroke="#9fb2c6" stroke-width="2" />
   <text x="140" y="{top - 26}" font-size="12" fill="#48607a">1</text>
   <text x="1128" y="{top - 26}" font-size="12" fill="#48607a">{max_sequence}</text>
-  {' '.join(event_nodes)}
-  {' '.join(legend_nodes)}
+  {" ".join(event_nodes)}
+  {" ".join(legend_nodes)}
 </svg>
 """
     path.write_text(svg)

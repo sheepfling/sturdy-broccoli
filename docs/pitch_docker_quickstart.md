@@ -13,6 +13,7 @@ known quirks, see:
 Fastest path:
 
 ```bash
+./pitch preflight
 ./pitch all
 ```
 
@@ -83,6 +84,7 @@ repo-local Pitch defaults:
 Use:
 
 ```bash
+./pitch preflight
 ./pitch doctor
 ./pitch logs
 ```

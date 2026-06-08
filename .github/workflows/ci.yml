@@ -157,3 +157,39 @@ jobs:
         run: ./scripts/ci/install_python.sh
       - name: Run real profile matrix
         run: ./scripts/ci/vendor_runtime_smoke.sh matrix
+
+  vendor-edge-matrix-required:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [time-query, negotiated-ownership]
+    env:
+      HLA2010_ENABLE_REAL_RTI_SMOKE: "1"
+      HLA2010_CERTI_PREFIX: ${{ vars.HLA2010_CERTI_PREFIX }}
+      HLA2010_CERTI_BUILD_ROOT: ${{ vars.HLA2010_CERTI_BUILD_ROOT }}
+      HLA2010_PITCH_HOME: ${{ vars.HLA2010_PITCH_HOME }}
+      HLA2010_PITCH_USER_HOME: ${{ vars.HLA2010_PITCH_USER_HOME }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Install vendor edge environment
+        env:
+          HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
+        run: ./scripts/ci/install_python.sh
+      - name: Run vendor edge matrix profile
+        run: ./scripts/ci/vendor_edge_matrix.sh ${{ matrix.profile }}
+      - name: Upload vendor edge matrix artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vendor-edge-${{ matrix.profile }}
+          path: analysis/compliance/
+          if-no-files-found: ignore
+          retention-days: 14

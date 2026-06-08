@@ -11,8 +11,10 @@ from ...exceptions import (
     AttributeAlreadyOwned,
     AttributeDivestitureWasNotRequested,
     AttributeNotDefined,
+    AttributeNotPublished,
     AttributeNotOwned,
     FederateOwnsAttributes,
+    ObjectClassNotPublished,
     NoAcquisitionPending,
 )
 from ...handles import AttributeHandle, FederateHandle, ObjectInstanceHandle
@@ -177,6 +179,7 @@ class PythonRTIOwnershipMixin:
         userSuppliedTag: bytes,
     ) -> None:
         federation, instance = self._find_object(theObject)
+        self._ensure_no_save_or_restore_in_progress(federation)
         for attr in self._owned_attributes_or_raise(instance, confirmedAttributes):
             if not self._attribute_is_divesting(instance, attr):
                 raise AttributeDivestitureWasNotRequested(repr(attr))
@@ -201,12 +204,22 @@ class PythonRTIOwnershipMixin:
         userSuppliedTag: bytes,
     ) -> None:
         federation, instance = self._find_object(theObject)
+        self._ensure_no_save_or_restore_in_progress(federation)
         attrs = set(desiredAttributes)
         assert self.state.handle is not None
+        if instance.class_handle not in self.state.published_objects:
+            raise ObjectClassNotPublished(repr(instance.class_handle))
         for attr in attrs:
+            self.engine.attribute_name(instance.class_handle, attr)
             owner = instance.attribute_owners.get(attr, instance.owner)
             if owner == self.state.handle:
                 raise FederateOwnsAttributes(repr(attr))
+            if self.state.handle in instance.attribute_candidates.get(attr, set()):
+                raise AttributeAlreadyBeingAcquired(repr(attr))
+            if self.config.strict_object_publication:
+                published = self.state.published_objects.get(instance.class_handle, set())
+                if attr not in published:
+                    raise AttributeNotPublished(repr(attr))
 
         for attr in attrs:
             owner = instance.attribute_owners.get(attr, instance.owner)
@@ -240,15 +253,23 @@ class PythonRTIOwnershipMixin:
         desiredAttributes: Iterable[AttributeHandle],
     ) -> None:
         federation, instance = self._find_object(theObject)
+        self._ensure_no_save_or_restore_in_progress(federation)
         attrs = set(desiredAttributes)
         unavailable: set[AttributeHandle] = set()
         assert self.state.handle is not None
+        if instance.class_handle not in self.state.published_objects:
+            raise ObjectClassNotPublished(repr(instance.class_handle))
         for attr in attrs:
+            self.engine.attribute_name(instance.class_handle, attr)
             owner = instance.attribute_owners.get(attr, instance.owner)
             if owner == self.state.handle:
                 raise FederateOwnsAttributes(repr(attr))
             if self.state.handle in instance.attribute_candidates.get(attr, set()):
                 raise AttributeAlreadyBeingAcquired(repr(attr))
+            if self.config.strict_object_publication:
+                published = self.state.published_objects.get(instance.class_handle, set())
+                if attr not in published:
+                    raise AttributeNotPublished(repr(attr))
 
         for attr in attrs:
             owner = instance.attribute_owners.get(attr, instance.owner)
@@ -325,6 +346,7 @@ class PythonRTIOwnershipMixin:
         attrs = set(theAttributes)
         assert self.state.handle is not None
         for attr in attrs:
+            self.engine.attribute_name(instance.class_handle, attr)
             owner = instance.attribute_owners.get(attr, instance.owner)
             if owner == self.state.handle:
                 raise AttributeAlreadyOwned(repr(attr))
@@ -346,6 +368,7 @@ class PythonRTIOwnershipMixin:
     def _svc_queryAttributeOwnership(self, theObject: ObjectInstanceHandle, theAttribute: AttributeHandle) -> None:
         federation, instance = self._find_object(theObject)
         self._ensure_no_save_or_restore_in_progress(federation)
+        self.engine.attribute_name(instance.class_handle, theAttribute)
         owner = instance.attribute_owners.get(theAttribute, instance.owner)
         if owner is None:
             self._deliver(self.state, "attributeIsNotOwned", theObject, theAttribute)
@@ -355,6 +378,7 @@ class PythonRTIOwnershipMixin:
     def _svc_isAttributeOwnedByFederate(self, theObject: ObjectInstanceHandle, theAttribute: AttributeHandle) -> bool:
         federation, instance = self._find_object(theObject)
         self._ensure_no_save_or_restore_in_progress(federation)
+        self.engine.attribute_name(instance.class_handle, theAttribute)
         return instance.attribute_owners.get(theAttribute, instance.owner) == self.state.handle
 
 

@@ -24,6 +24,7 @@ usage() {
   cat <<'EOF'
 Usage:
   ./certi-easy install
+  ./certi-easy preflight [--json] [--json-file FILE]
   ./certi-easy doctor
   ./certi-easy paths
   ./certi-easy build [patched|upstream|all]
@@ -41,6 +42,7 @@ What these mean:
 
 Simple path:
   ./certi-easy install
+  ./certi-easy preflight [--json] [--json-file FILE]
   ./certi-easy doctor
   ./certi-easy smoke compare
 EOF
@@ -53,6 +55,10 @@ die() {
 
 require_venv() {
   [[ -x "$VENV_PYTHON" ]] || die "missing .venv. Run ./certi-easy install first."
+}
+
+preflight_certi() {
+  "$ROOT_DIR/scripts/check_certi_preflight.sh" "$@"
 }
 
 variant_or_default() {
@@ -78,6 +84,15 @@ CERTI paths
   upstream install: $UPSTREAM_PREFIX
   python venv    : $ROOT_DIR/.venv
 EOF
+}
+
+show_preflight_summary() {
+  local environment="$1"
+  local result="$2"
+  local next_step="$3"
+  echo "environment: $environment"
+  echo "result: $result"
+  echo "next step: $next_step"
 }
 
 run_python_bootstrap() {
@@ -109,7 +124,6 @@ run_install() {
 }
 
 show_doctor() {
-  require_venv
   show_paths
   echo
   echo "Patched CERTI install:"
@@ -125,13 +139,48 @@ show_doctor() {
     echo "  missing: upstream rtig not built yet"
   fi
   echo
-  "$VENV_PYTHON" "$ROOT_DIR/scripts/check_certi_preflight.py"
+  local summary_json
+  local python_bin
+  local preflight_status=0
+  python_bin="$(hla2010_shell_python_bin)"
+  summary_json="$("$python_bin" "$ROOT_DIR/scripts/check_certi_preflight.py" --json || true)"
+  if preflight_certi >/dev/null; then
+    preflight_status=0
+  else
+    preflight_status=$?
+  fi
+  if [[ -n "$summary_json" ]]; then
+    "$python_bin" - "$summary_json" <<'PY'
+import json
+import sys
+
+payload = json.loads(sys.argv[1])
+environment = payload.get("environment", "unknown")
+result = payload.get("result", "unknown")
+next_steps = payload.get("next_steps") or []
+if "will skip" in result and len(next_steps) > 1:
+    next_step = next_steps[1]
+elif next_steps:
+    next_step = next_steps[0]
+else:
+    next_step = "./certi-easy preflight"
+print(f"environment: {environment}")
+print(f"result: {result}")
+print(f"next step: {next_step}")
+PY
+  fi
+  return "$preflight_status"
 }
 
 run_variant_binary() {
   local variant="$1"
   local binary="$2"
   shift 2
+  if preflight_certi; then
+    :
+  else
+    return $?
+  fi
   case "$variant" in
     patched)
       HLA2010_CERTI_PREFIX="$PATCHED_PREFIX" "$ROOT_DIR/scripts/run_certi_local.sh" "$binary" "$@"
@@ -148,6 +197,11 @@ run_variant_binary() {
 run_smoke() {
   local profile="${1:-compare}"
   require_venv
+  if preflight_certi; then
+    :
+  else
+    return $?
+  fi
   hla2010_shell_log "CERTI smoke profile=${profile}"
   case "$profile" in
     patched)
@@ -170,11 +224,26 @@ case "$COMMAND" in
   help|-h|--help)
     usage
     ;;
+  preflight)
+    preflight_status=0
+    if preflight_certi "${@:2}"; then
+      preflight_status=0
+    else
+      preflight_status=$?
+    fi
+    exit "$preflight_status"
+    ;;
   install)
     run_install
     ;;
   doctor)
-    show_doctor
+    doctor_status=0
+    if show_doctor; then
+      doctor_status=0
+    else
+      doctor_status=$?
+    fi
+    exit "$doctor_status"
     ;;
   paths)
     show_paths
@@ -184,10 +253,22 @@ case "$COMMAND" in
     ;;
   run)
     [[ $# -ge 3 ]] || die "usage: ./certi-easy run [patched|upstream] [rtig|rtia] [args...]"
-    run_variant_binary "$2" "$3" "${@:4}"
+    run_status=0
+    if run_variant_binary "$2" "$3" "${@:4}"; then
+      run_status=0
+    else
+      run_status=$?
+    fi
+    exit "$run_status"
     ;;
   smoke|test)
-    run_smoke "${2:-compare}"
+    smoke_status=0
+    if run_smoke "${2:-compare}"; then
+      smoke_status=0
+    else
+      smoke_status=$?
+    fi
+    exit "$smoke_status"
     ;;
   *)
     usage

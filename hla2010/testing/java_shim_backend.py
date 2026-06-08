@@ -1,19 +1,17 @@
 """Single-ambassador Java-shaped shim backend and bridge."""
+
 from __future__ import annotations
 
 from collections import deque
 from typing import Any, Callable, Deque, Iterable, Mapping
 
 from ..backends.java_common import JavaBridge
-from ..time import HLAfloat64Time, HLAinteger64Time
 from .java_shim_types import (
     JavaAttributeHandle,
     JavaByteArray,
     JavaDimensionHandle,
     JavaEnumConstant,
     JavaFederateHandle,
-    JavaHLAfloat64Time,
-    JavaHLAinteger64Time,
     JavaInteractionClassHandle,
     JavaLikeException,
     JavaLikeObject,
@@ -22,7 +20,6 @@ from .java_shim_types import (
     JavaParameterHandle,
     JavaRegionHandle,
     JavaTransportationTypeHandle,
-    logical_time_name,
     make_java_time,
     python_bytes,
     time_value,
@@ -70,6 +67,7 @@ class InProcessJavaRTIShim:
     def _queue_callback(self, method_name: str, *args: Any) -> None:
         def callback() -> None:
             getattr(self.federate, method_name)(*args)
+
         self._queue.append(callback)
 
     def _tag(self, value: Any) -> JavaByteArray:
@@ -159,11 +157,27 @@ class InProcessJavaRTIShim:
 
     def updateAttributeValues(self, theObject: JavaObjectInstanceHandle, theAttributes: Mapping[Any, Any], userSuppliedTag: Any, *unused: Any) -> None:
         reflected = {key: JavaByteArray(python_bytes(value)) for key, value in dict(theAttributes).items()}
-        self._queue_callback("reflectAttributeValues", theObject, reflected, self._tag(userSuppliedTag), JavaEnumConstant("OrderType", "RECEIVE"), self.transportation_reliable, JavaLikeObject("SupplementalReflectInfo", None))
+        self._queue_callback(
+            "reflectAttributeValues",
+            theObject,
+            reflected,
+            self._tag(userSuppliedTag),
+            JavaEnumConstant("OrderType", "RECEIVE"),
+            self.transportation_reliable,
+            JavaLikeObject("SupplementalReflectInfo", None),
+        )
 
     def sendInteraction(self, theInteraction: JavaInteractionClassHandle, theParameters: Mapping[Any, Any], userSuppliedTag: Any, *unused: Any) -> None:
         params = {key: JavaByteArray(python_bytes(value)) for key, value in dict(theParameters).items()}
-        self._queue_callback("receiveInteraction", theInteraction, params, self._tag(userSuppliedTag), JavaEnumConstant("OrderType", "RECEIVE"), self.transportation_reliable, JavaLikeObject("SupplementalReceiveInfo", None))
+        self._queue_callback(
+            "receiveInteraction",
+            theInteraction,
+            params,
+            self._tag(userSuppliedTag),
+            JavaEnumConstant("OrderType", "RECEIVE"),
+            self.transportation_reliable,
+            JavaLikeObject("SupplementalReceiveInfo", None),
+        )
 
     def enableTimeRegulation(self, theLookahead: Any) -> None:
         self.time_regulation_enabled = True

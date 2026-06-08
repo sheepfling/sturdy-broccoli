@@ -86,17 +86,13 @@ class PythonRTIObjectMixin(PythonRTIObjectDeliveryMixin):
             federation.objects[handle] = instance
             federation.object_names[str(theObjectName)] = handle
             federation.reserved_object_names.pop(str(theObjectName), None)
+            self.state.known_object_classes[handle] = theClass
+            self.state.known_object_names[str(theObjectName)] = handle
+            self.state.locally_deleted_objects.discard(handle)
             for federate in list(federation.federates.values()):
-                if any(
-                    self._object_matches_subscription(theClass, subscribed)
-                    for subscribed in federate.subscribed_objects
-                ):
-                    self._deliver(
-                        federate,
-                        "discoverObjectInstance",
-                        handle,
-                        theClass,
-                        str(theObjectName),
-                        self.state.handle,
-                    )
+                if federate is self.state:
+                    continue
+                if self._ensure_known_object(federate, instance) is not None:
+                    if not self._subscriber_has_region_scoped_object_interest(federate, instance):
+                        self._reconcile_object_attribute_scope(federate, instance)
             return handle

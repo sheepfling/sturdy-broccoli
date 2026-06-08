@@ -7,7 +7,7 @@ from typing import Any
 
 from ..ambassadors import RecordingFederateAmbassador
 from ..enums import CallbackModel, OrderType, ResignAction
-from ..types import MessageRetractionReturn, TimeQueryReturn
+from ..types import MessageRetractionReturn
 
 
 def vendor_smoke_fom_path() -> str:

@@ -6,6 +6,7 @@ from . import scenarios as scenarios
 from . import target_radar_backend_matrix as target_radar_backend_matrix
 from . import target_radar_proof as target_radar_proof
 from . import two_federate_suite as two_federate_suite
+from . import vendor_parity_artifacts as vendor_parity_artifacts
 
 __all__ = [
     "java_shim",
@@ -13,4 +14,5 @@ __all__ = [
     "target_radar_proof",
     "scenarios",
     "two_federate_suite",
+    "vendor_parity_artifacts",
 ]

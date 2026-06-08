@@ -1,103 +1,13 @@
-import pytest
 
 from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.backends.python import InMemoryRTIEngine, rti_ambassador
 from hla2010.enums import (
     CallbackModel,
-    OrderType,
-    ResignAction,
-    RestoreFailureReason,
-    RestoreStatus,
-    SaveFailureReason,
-    SaveStatus,
-    SynchronizationPointFailureReason,
 )
 from hla2010.exceptions import (
-    AlreadyConnected,
-    AsynchronousDeliveryAlreadyDisabled,
-    AsynchronousDeliveryAlreadyEnabled,
-    AttributeAcquisitionWasNotRequested,
-    AttributeAlreadyBeingAcquired,
-    AttributeNotDefined,
-    AttributeDivestitureWasNotRequested,
-    AttributeNotOwned,
-    AttributeRelevanceAdvisorySwitchIsOff,
-    AttributeRelevanceAdvisorySwitchIsOn,
-    AttributeScopeAdvisorySwitchIsOff,
-    AttributeScopeAdvisorySwitchIsOn,
     CallNotAllowedFromWithinCallback,
-    DeletePrivilegeNotHeld,
-    DesignatorIsHLAstandardMIM,
-    FederateAlreadyExecutionMember,
-    FederateHandleNotKnown,
-    FederateIsExecutionMember,
-    FederateNameAlreadyInUse,
-    FederateNotExecutionMember,
-    FederateOwnsAttributes,
-    FederatesCurrentlyJoined,
-    FederationExecutionAlreadyExists,
-    FederationExecutionDoesNotExist,
-    InvalidLookahead,
-    InTimeAdvancingState,
-    InteractionClassNotDefined,
-    InteractionClassNotPublished,
-    InteractionParameterNotDefined,
-    InteractionRelevanceAdvisorySwitchIsOff,
-    InteractionRelevanceAdvisorySwitchIsOn,
-    InvalidDimensionHandle,
-    InvalidFederateHandle,
-    InvalidInteractionClassHandle,
-    InvalidLogicalTime,
-    InvalidMessageRetractionHandle,
-    InvalidObjectClassHandle,
-    InvalidOrderName,
-    InvalidOrderType,
-    InvalidParameterHandle,
-    InvalidRangeBound,
-    InvalidRegion,
-    InvalidResignAction,
-    InvalidServiceGroup,
-    InvalidTransportationName,
-    InvalidTransportationType,
-    InvalidUpdateRateDesignator,
-    LogicalTimeAlreadyPassed,
-    MessageCanNoLongerBeRetracted,
-    NameNotFound,
-    NoAcquisitionPending,
-    NotConnected,
-    ObjectClassRelevanceAdvisorySwitchIsOff,
-    ObjectClassRelevanceAdvisorySwitchIsOn,
-    ObjectInstanceNotKnown,
-    ObjectInstanceNameInUse,
-    OwnershipAcquisitionPending,
-    RegionDoesNotContainSpecifiedDimension,
-    RestoreInProgress,
-    RestoreNotInProgress,
-    RestoreNotRequested,
-    RequestForTimeConstrainedPending,
-    RequestForTimeRegulationPending,
-    SaveInProgress,
-    SaveNotInProgress,
-    SaveNotInitiated,
-    SynchronizationPointLabelNotAnnounced,
-    TimeConstrainedIsNotEnabled,
-    TimeRegulationAlreadyEnabled,
-    TimeRegulationIsNotEnabled,
-    TimeConstrainedAlreadyEnabled,
 )
-from hla2010.handles import (
-    AttributeHandle,
-    AttributeHandleSet,
-    AttributeSetRegionSetPairList,
-    DimensionHandle,
-    FederateHandleSet,
-    MessageRetractionHandle,
-    ObjectInstanceHandle,
-    RegionHandleSet,
-    TransportationTypeHandle,
-)
-from hla2010.spec_refs import method_label, method_reference
-from hla2010.types import AttributeRegionAssociation, RangeBounds, TimeQueryReturn
+from hla2010.time import HLAfloat64TimeFactory
 
 
 def drain(*rtis):
@@ -136,29 +46,29 @@ class _ImmediateRegulationPendingAmbassador(RecordingFederateAmbassador):
 
     def timeRegulationEnabled(self, time):
         super().timeRegulationEnabled(time)
-        factory = self.rti.get_time_factory()
+        factory = HLAfloat64TimeFactory()
         self._capture(
-            RequestForTimeRegulationPending,
+            CallNotAllowedFromWithinCallback,
             lambda: self.rti.enable_time_regulation(factory.make_interval(1.0)),
         )
         self._capture(
-            RequestForTimeRegulationPending,
+            CallNotAllowedFromWithinCallback,
             lambda: self.rti.time_advance_request(factory.make_time(1.0)),
         )
         self._capture(
-            RequestForTimeRegulationPending,
+            CallNotAllowedFromWithinCallback,
             lambda: self.rti.time_advance_request_available(factory.make_time(1.0)),
         )
         self._capture(
-            RequestForTimeRegulationPending,
+            CallNotAllowedFromWithinCallback,
             lambda: self.rti.next_message_request(factory.make_time(1.0)),
         )
         self._capture(
-            RequestForTimeRegulationPending,
+            CallNotAllowedFromWithinCallback,
             lambda: self.rti.next_message_request_available(factory.make_time(1.0)),
         )
         self._capture(
-            RequestForTimeRegulationPending,
+            CallNotAllowedFromWithinCallback,
             lambda: self.rti.flush_queue_request(factory.make_time(1.0)),
         )
 
@@ -179,25 +89,25 @@ class _ImmediateConstrainedPendingAmbassador(RecordingFederateAmbassador):
 
     def timeConstrainedEnabled(self, time):
         super().timeConstrainedEnabled(time)
-        factory = self.rti.get_time_factory()
-        self._capture(RequestForTimeConstrainedPending, self.rti.enable_time_constrained)
+        factory = HLAfloat64TimeFactory()
+        self._capture(CallNotAllowedFromWithinCallback, self.rti.enable_time_constrained)
         self._capture(
-            RequestForTimeConstrainedPending,
+            CallNotAllowedFromWithinCallback,
             lambda: self.rti.time_advance_request(factory.make_time(1.0)),
         )
         self._capture(
-            RequestForTimeConstrainedPending,
+            CallNotAllowedFromWithinCallback,
             lambda: self.rti.time_advance_request_available(factory.make_time(1.0)),
         )
         self._capture(
-            RequestForTimeConstrainedPending,
+            CallNotAllowedFromWithinCallback,
             lambda: self.rti.next_message_request(factory.make_time(1.0)),
         )
         self._capture(
-            RequestForTimeConstrainedPending,
+            CallNotAllowedFromWithinCallback,
             lambda: self.rti.next_message_request_available(factory.make_time(1.0)),
         )
         self._capture(
-            RequestForTimeConstrainedPending,
+            CallNotAllowedFromWithinCallback,
             lambda: self.rti.flush_queue_request(factory.make_time(1.0)),
         )

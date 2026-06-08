@@ -15,6 +15,16 @@ python_cmd() {
   hla2010_shell_python_bin
 }
 
+preflight_pitch_docker() {
+  "$ROOT_DIR/scripts/check_pitch_preflight.sh" "$@"
+}
+
+require_pitch_preflight() {
+  if ! preflight_pitch_docker; then
+    return 1
+  fi
+}
+
 resolve_pitch_home() {
   local python_bin
   python_bin="$(hla2010_shell_python_bin)"
@@ -86,6 +96,7 @@ ensure_docker_daemon() {
 }
 
 install_pitch_docker() {
+  require_pitch_preflight
   local pitch_home
   local pitch_user_home
   pitch_home="$(resolve_pitch_home)"
@@ -102,6 +113,7 @@ install_pitch_docker() {
 }
 
 start_pitch_docker() {
+  require_pitch_preflight
   local pitch_home
   local pitch_user_home
   pitch_home="$(resolve_pitch_home)"
@@ -169,6 +181,7 @@ logs_pitch_docker() {
 }
 
 smoke_pitch_docker() {
+  require_pitch_preflight
   local pitch_home
   local pitch_user_home
   local python_bin
@@ -191,6 +204,7 @@ smoke_pitch_docker() {
 }
 
 verify_pitch_docker() {
+  require_pitch_preflight
   local pitch_home
   local pitch_user_home
   local python_bin
@@ -213,9 +227,12 @@ verify_pitch_docker() {
 }
 
 doctor_pitch_docker() {
+  local preflight_json
+  local python_bin
   local pitch_home
   local pitch_user_home
   local docker_ready=0
+  preflight_json="$("$ROOT_DIR/scripts/check_pitch_preflight.sh" --json || true)"
   pitch_home="$(resolve_pitch_home)"
   pitch_user_home="$(resolve_pitch_user_home)"
   hla2010_shell_log "Pitch runtime: $pitch_home"
@@ -230,6 +247,21 @@ doctor_pitch_docker() {
     fi
   else
     hla2010_shell_warn "Docker CLI: missing"
+  fi
+  if [[ -n "$preflight_json" ]]; then
+    python_bin="$(hla2010_shell_python_bin)"
+    "$python_bin" - "$preflight_json" <<'PY'
+import json
+import sys
+
+payload = json.loads(sys.argv[1])
+environment = payload.get("environment", "unknown")
+result = payload.get("result", "unknown")
+next_step = payload.get("next_step", "./pitch preflight")
+print(f"environment: {environment}")
+print(f"result: {result}")
+print(f"next step: {next_step}")
+PY
   fi
   if [[ "$docker_ready" -eq 1 ]]; then
     if docker image inspect "$IMAGE_NAME" >/dev/null 2>&1; then
@@ -252,9 +284,10 @@ doctor_pitch_docker() {
 usage() {
   local script_name="${HLA2010_SCRIPT_NAME:-$(basename "$0")}"
   cat <<EOF
-usage: $script_name [install|start|stop|restart|status|logs|smoke|verify|all|doctor]
+usage: $script_name [preflight|install|start|stop|restart|status|logs|smoke|verify|all|doctor]
 
 Simple Pitch Docker workflow:
+  $script_name preflight [--json] # check Docker and Pitch runtime prerequisites
   $script_name install   # discover runtime, seed user.home, build the image
   $script_name start     # start CRC + FedPro in Docker and wait for ports
   $script_name smoke     # run the real Pitch smoke test
@@ -268,6 +301,15 @@ EOF
 case "${1:-start}" in
   help|-h|--help)
     usage
+    ;;
+  preflight)
+    preflight_status=0
+    if preflight_pitch_docker "${@:2}"; then
+      preflight_status=0
+    else
+      preflight_status=$?
+    fi
+    exit "$preflight_status"
     ;;
   install)
     install_pitch_docker

@@ -4,10 +4,11 @@ from __future__ import annotations
 from collections import deque
 from concurrent import futures
 from dataclasses import dataclass, field
-from typing import Any, Iterable, Mapping, Sequence, cast
+from typing import Any, Mapping, Sequence, cast
 
 from ...ambassadors import RecordingFederateAmbassador
 from ...enums import CallbackModel, OrderType, ResignAction
+from ...enums import RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
 from ...exceptions import RTIexception
 from ...handles import (
     AttributeHandle,
@@ -24,6 +25,7 @@ from ...handles import (
 )
 from ...rti import create_rti_ambassador
 from ...time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
+from ...types import FederateHandleSaveStatusPair, FederateRestoreStatus
 from ..certi.codecs import (
     decode_bytes,
     decode_handle_set,
@@ -137,6 +139,36 @@ def _encode_callback_payload(method_name: str, args: tuple[Any, ...]) -> tuple[s
         return ("ANNOUNCE_SYNC_POINT", str(args[0]), encode_bytes(args[1]))
     if method_name == "federationSynchronized":
         return ("FEDERATION_SYNCHRONIZED", str(args[0]), federate_handle_set_spec(args[1]))
+    if method_name == "initiateFederateSave":
+        if len(args) >= 2:
+            return ("INITIATE_FEDERATE_SAVE_AT", str(args[0]), _logical_time_name(args[1]), _logical_scalar(args[1]))
+        return ("INITIATE_FEDERATE_SAVE", str(args[0]))
+    if method_name == "federationSaved":
+        return ("FEDERATION_SAVED",)
+    if method_name == "federationNotSaved":
+        reason = args[0].name if isinstance(args[0], SaveFailureReason) else str(args[0])
+        return ("FEDERATION_NOT_SAVED", reason)
+    if method_name == "federationSaveStatusResponse":
+        encoded_pairs = ";".join(f"{int(pair.federate_handle.value)}:{pair.save_status.name}" for pair in args[0])
+        return ("FEDERATION_SAVE_STATUS_RESPONSE", encoded_pairs)
+    if method_name == "requestFederationRestoreSucceeded":
+        return ("REQUEST_FEDERATION_RESTORE_SUCCEEDED", str(args[0]))
+    if method_name == "requestFederationRestoreFailed":
+        return ("REQUEST_FEDERATION_RESTORE_FAILED", str(args[0]))
+    if method_name == "federationRestoreBegun":
+        return ("FEDERATION_RESTORE_BEGUN",)
+    if method_name == "initiateFederateRestore":
+        return ("INITIATE_FEDERATE_RESTORE", str(args[0]), str(args[1]), str(int(args[2].value)))
+    if method_name == "federationRestored":
+        return ("FEDERATION_RESTORED",)
+    if method_name == "federationNotRestored":
+        reason = args[0].name if isinstance(args[0], RestoreFailureReason) else str(args[0])
+        return ("FEDERATION_NOT_RESTORED", reason)
+    if method_name == "federationRestoreStatusResponse":
+        encoded_pairs = ";".join(
+            f"{int(pair.pre_restore_handle.value)}:{int(pair.post_restore_handle.value)}:{pair.restore_status.name}" for pair in args[0]
+        )
+        return ("FEDERATION_RESTORE_STATUS_RESPONSE", encoded_pairs)
     if method_name == "attributeOwnershipAcquisitionNotification":
         return ("OWNERSHIP_ACQUIRED", str(int(args[0].value)), handle_set_spec(args[1]), encode_bytes(args[2]))
     if method_name == "requestAttributeOwnershipAssumption":
@@ -241,6 +273,43 @@ class _RTITransportServicer(pb2_grpc.RTITransportServiceServicer):
             return TransportResponse(fields=(str(int(handle.value)),))
         if command == "RESIGN":
             self.rti.resign_federation_execution(ResignAction[str(fields[0])])
+            return TransportResponse()
+        if command == "REQUEST_FEDERATION_SAVE":
+            label = str(fields[0])
+            if len(fields) >= 3:
+                self.rti.request_federation_save(label, _decode_logical_time(str(fields[1]), fields[2]))
+            else:
+                self.rti.request_federation_save(label)
+            return TransportResponse()
+        if command == "FEDERATE_SAVE_BEGUN":
+            self.rti.federate_save_begun()
+            return TransportResponse()
+        if command == "FEDERATE_SAVE_COMPLETE":
+            self.rti.federate_save_complete()
+            return TransportResponse()
+        if command == "FEDERATE_SAVE_NOT_COMPLETE":
+            self.rti.federate_save_not_complete()
+            return TransportResponse()
+        if command == "ABORT_FEDERATION_SAVE":
+            self.rti.abort_federation_save()
+            return TransportResponse()
+        if command == "QUERY_FEDERATION_SAVE_STATUS":
+            self.rti.query_federation_save_status()
+            return TransportResponse()
+        if command == "REQUEST_FEDERATION_RESTORE":
+            self.rti.request_federation_restore(str(fields[0]))
+            return TransportResponse()
+        if command == "FEDERATE_RESTORE_COMPLETE":
+            self.rti.federate_restore_complete()
+            return TransportResponse()
+        if command == "FEDERATE_RESTORE_NOT_COMPLETE":
+            self.rti.federate_restore_not_complete()
+            return TransportResponse()
+        if command == "ABORT_FEDERATION_RESTORE":
+            self.rti.abort_federation_restore()
+            return TransportResponse()
+        if command == "QUERY_FEDERATION_RESTORE_STATUS":
+            self.rti.query_federation_restore_status()
             return TransportResponse()
         if command == "GET_OBJECT_CLASS_HANDLE":
             return TransportResponse(fields=(str(int(self.rti.get_object_class_handle(str(fields[0])).value)),))

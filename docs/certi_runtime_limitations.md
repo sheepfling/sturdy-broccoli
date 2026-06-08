@@ -8,6 +8,7 @@ used by this repository.
 If you want the simplest operator flow:
 
 ```bash
+./certi-easy preflight
 ./certi-easy install
 ./certi-easy doctor
 ./certi-easy smoke compare
@@ -130,8 +131,10 @@ Session prerequisite:
 - These commands only produce real runtime evidence when local loopback TCP
   bind/connect is permitted for `127.0.0.1`.
 - In sessions where that preflight fails, the compare route skips with:
-  `Local socket bind is not permitted for 127.0.0.1. Run python3 scripts/check_certi_preflight.py to verify local CERTI prerequisites.`
+  `Local socket bind is not permitted for 127.0.0.1. Run ./certi-easy preflight to verify local CERTI prerequisites.`
 - That skip is an execution-environment limitation, not a CERTI baseline result.
+- If the preflight reports `environment: loopback-blocked`, use an unrestricted
+  local terminal or an approved unsandboxed command to retest.
 
 Current named-baseline outcome from the runnable compare route
 `./scripts/ci/vendor_runtime_smoke.sh certi-compare`:

@@ -1,4 +1,5 @@
 """Service-report and MOM-report emission helpers for the Python RTI backend."""
+
 from __future__ import annotations
 
 import json
@@ -166,12 +167,7 @@ class PythonRTIMomReportingMixin:
             )
 
             federation = self.state.federation
-            if (
-                not self.config.enable_mom
-                or federation is None
-                or self.state.handle is None
-                or not self.state.service_reporting
-            ):
+            if not self.config.enable_mom or federation is None or self.state.handle is None or not self.state.service_reporting:
                 return
             report_name = f"{hla_mom.MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportServiceInvocation"
             self._send_mom_report(
@@ -272,13 +268,34 @@ class PythonRTIMomReportingMixin:
             base.update({"HLAtransportation": "", "HLAtransportationType": "", "HLAupdateCounts": target.updates_sent, "HLAupdatesSent": target.updates_sent})
             return base
         if report_name.endswith("HLAreportReflectionsReceived"):
-            base.update({"HLAtransportation": "", "HLAtransportationType": "", "HLAreflectCounts": target.reflections_received, "HLAreflectionsReceived": target.reflections_received})
+            base.update(
+                {
+                    "HLAtransportation": "",
+                    "HLAtransportationType": "",
+                    "HLAreflectCounts": target.reflections_received,
+                    "HLAreflectionsReceived": target.reflections_received,
+                }
+            )
             return base
         if report_name.endswith("HLAreportInteractionsSent"):
-            base.update({"HLAtransportation": "", "HLAtransportationType": "", "HLAinteractionCounts": target.interactions_sent, "HLAinteractionsSent": target.interactions_sent})
+            base.update(
+                {
+                    "HLAtransportation": "",
+                    "HLAtransportationType": "",
+                    "HLAinteractionCounts": target.interactions_sent,
+                    "HLAinteractionsSent": target.interactions_sent,
+                }
+            )
             return base
         if report_name.endswith("HLAreportInteractionsReceived"):
-            base.update({"HLAtransportation": "", "HLAtransportationType": "", "HLAinteractionCounts": target.interactions_received, "HLAinteractionsReceived": target.interactions_received})
+            base.update(
+                {
+                    "HLAtransportation": "",
+                    "HLAtransportationType": "",
+                    "HLAinteractionCounts": target.interactions_received,
+                    "HLAinteractionsReceived": target.interactions_received,
+                }
+            )
             return base
         if report_name.endswith("HLAreportObjectInstancesUpdated"):
             base.update({"HLAobjectInstanceCounts": target.object_instances_updated})

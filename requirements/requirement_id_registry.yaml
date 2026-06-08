@@ -1,0 +1,95 @@
+version: 0.13.0
+description: >
+  Stable requirement namespace registry for the Python HLA 1516-2010 workstream.
+  The three standards are treated as independent requirement sources.
+
+sources:
+  - source_id: HLA1516
+    title: IEEE 1516-2010
+    purpose: HLA framework and architectural rules
+    prefixes:
+      - prefix: FW
+        meaning: Framework concepts
+      - prefix: RULE
+        meaning: Federation and federate rules
+      - prefix: OBJ
+        meaning: Object model concepts
+      - prefix: TIME
+        meaning: Time concept rules
+  - source_id: HLA1516.1
+    title: IEEE 1516.1-2010
+    purpose: Federate interface and RTI behavior
+    prefixes:
+      - prefix: FM
+        meaning: Federation Management
+      - prefix: DM
+        meaning: Declaration Management
+      - prefix: OM
+        meaning: Object Management
+      - prefix: OWN
+        meaning: Ownership Management
+      - prefix: TM
+        meaning: Time Management
+      - prefix: DDM
+        meaning: Data Distribution Management
+      - prefix: SUP
+        meaning: Support Services
+      - prefix: MOM
+        meaning: Management Object Model behavior
+      - prefix: MIM
+        meaning: Management Information Model definitions
+  - source_id: HLA1516.2
+    title: IEEE 1516.2-2010
+    purpose: Object Model Template and XML/model rules
+    prefixes:
+      - prefix: ID
+        meaning: Object model identification
+      - prefix: OMID
+        meaning: Object model identification
+      - prefix: OC
+        meaning: Object class structure
+      - prefix: OCS
+        meaning: Object class structure
+      - prefix: IC
+        meaning: Interaction class structure
+      - prefix: ICS
+        meaning: Interaction class structure
+      - prefix: ATTR
+        meaning: Attribute tables
+      - prefix: PARAM
+        meaning: Parameter tables
+      - prefix: DIM
+        meaning: Dimension tables
+      - prefix: TIME
+        meaning: Time representation tables
+      - prefix: TAG
+        meaning: User-supplied tag tables
+      - prefix: SYNC
+        meaning: Synchronization point tables
+      - prefix: TRANS
+        meaning: Transportation type tables
+      - prefix: URATE
+        meaning: Update rate tables
+      - prefix: SWITCH
+        meaning: Switches tables
+      - prefix: DT
+        meaning: Datatype and time representation tables
+      - prefix: NOTE
+        meaning: Notes tables
+      - prefix: MERGE
+        meaning: FOM/SOM module merging rules
+      - prefix: XML
+        meaning: XML interchange and schema rules
+      - prefix: MIM
+        meaning: Standard MIM representation
+      - prefix: OMT
+        meaning: Cross-cutting OMT parsing and merge behavior
+
+id_format:
+  pattern: "[standard]-[prefix]-[number]"
+  examples:
+    - HLA1516-RULE-001
+    - HLA1516.1-FM-001
+    - HLA1516.1-TM-001
+    - HLA1516.2-OC-001
+    - HLA1516.2-OMT-001

@@ -22,7 +22,6 @@ import hla2010
 from hla2010.conformance import (
     ServiceConformanceRow,
     actionable_negative_expectation_count,
-    build_requirements_ledger,
     build_service_conformance_matrix,
     negative_path_status,
     write_requirements_ledger_csv,
@@ -30,6 +29,8 @@ from hla2010.conformance import (
     write_service_conformance_csv,
     write_service_conformance_json,
 )
+from hla2010.verification import build_requirements_matrix_2010, write_traceability_csv, write_verification_assets
+from hla2010.verification import write_requirements_matrix_2010_csv, write_requirements_matrix_2010_json
 
 
 OUTPUT_DIR = REPO_ROOT / "analysis" / "compliance"
@@ -125,6 +126,41 @@ class UnfinishedWorkRow:
     target_state: str
     evidence: tuple[str, ...]
     rationale: str
+
+
+_SUPPORTED_SUBSET_POLICY_DEFS: dict[str, dict[str, str]] = {
+    "logical-time-update-rate-only": {
+        "title": "Logical-time update-rate subset",
+        "supported_behavior": (
+            "Update-rate reduction is implemented as logical-time-based throttling. "
+            "Explicit and FOM-declared update-rate designators apply across direct, inherited, "
+            "and regioned subscriptions when there is a logical-time basis."
+        ),
+        "broad_gap": (
+            "The backend does not invent a wall-clock or unmanaged receive-order throttling policy, "
+            "so broader vendor-style update-rate semantics remain out of scope."
+        ),
+    },
+    "reliable-best-effort-transport-only": {
+        "title": "Reliable and best-effort transport subset",
+        "supported_behavior": (
+            "Transportation semantics are implemented for the standard HLAreliable and HLAbestEffort pair, "
+            "including FOM-defined defaults, explicit overrides, callback/query reporting, and restore persistence."
+        ),
+        "broad_gap": (
+            "The backend does not model arbitrary custom transportation-type behavior beyond the reliable/best-effort subset."
+        ),
+    },
+    "unbatched-callback-delivery-only": {
+        "title": "Unbatched callback delivery subset",
+        "supported_behavior": (
+            "The backend preserves externally visible delivery semantics with direct unbatched callbacks."
+        ),
+        "broad_gap": (
+            "Message combination, packaging, and passelization are not explicitly modeled, so the permissive broad row stays partial by policy."
+        ),
+    },
+}
 
 
 def _negative_priority(row: ServiceConformanceRow) -> tuple[str, str, tuple[int, int, str, str]]:
@@ -505,7 +541,10 @@ _CORE_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
                 "scope": "real-vendor core scenario slice",
                 "session_status": "failing-in-this-session",
                 "evidence_tests": ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
-                "notes": "CERTI native negotiated ownership failed in this session because the runtime never produced the expected release/acquisition handshake.",
+                "notes": (
+                    "CERTI native negotiated ownership failed in this session because the "
+                    "runtime never produced the expected release/acquisition handshake."
+                ),
             },
             {
                 "backend_id": "certi-jpype",
@@ -514,7 +553,10 @@ _CORE_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
                 "scope": "real-vendor core scenario slice",
                 "session_status": "failing-in-this-session",
                 "evidence_tests": ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
-                "notes": "CERTI JPype negotiated ownership failed in this session because the runtime never produced the expected release/acquisition handshake.",
+                "notes": (
+                    "CERTI JPype negotiated ownership failed in this session because the "
+                    "runtime never produced the expected release/acquisition handshake."
+                ),
             },
             {
                 "backend_id": "certi-py4j",
@@ -523,7 +565,10 @@ _CORE_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
                 "scope": "real-vendor core scenario slice",
                 "session_status": "failing-in-this-session",
                 "evidence_tests": ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
-                "notes": "CERTI Py4J negotiated ownership failed in this session because the runtime never produced the expected release/acquisition handshake.",
+                "notes": (
+                    "CERTI Py4J negotiated ownership failed in this session because the "
+                    "runtime never produced the expected release/acquisition handshake."
+                ),
             },
         ),
     },
@@ -1171,6 +1216,275 @@ def _write_markdown(path: Path, lines: list[str]) -> None:
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def _extracted_requirement_rows_by_prefixes(prefixes: tuple[str, ...]) -> list[dict[str, Any]]:
+    matrix = build_requirements_matrix_2010(version=hla2010.__version__)
+    return [
+        row
+        for row in matrix["rows"]
+        if row["kind"] == "extracted-requirement"
+        and any(str(row["requirement_id"]).startswith(prefix) for prefix in prefixes)
+    ]
+
+
+def _write_extracted_requirements_split_artifacts(
+    *,
+    stem: str,
+    title: str,
+    intro: str,
+    prefixes: tuple[str, ...],
+) -> None:
+    rows = _extracted_requirement_rows_by_prefixes(prefixes)
+    status_counts: dict[str, int] = defaultdict(int)
+    clause_counts: dict[str, int] = defaultdict(int)
+    claim_scope_counts: dict[str, int] = defaultdict(int)
+    for row in rows:
+        status_counts[str(row["status"])] += 1
+        clause = str(row["section_ref"]).split("§", 1)[1].split(".", 1)[0].strip()
+        clause_counts[clause] += 1
+        claim_scope_counts[str(row.get("claim_scope") or "broad-spec")] += 1
+    broad_rows = [row for row in rows if str(row.get("claim_scope") or "broad-spec") == "broad-spec"]
+    supported_subset_rows = [row for row in rows if str(row.get("claim_scope") or "") == "supported-subset"]
+    _write_json(
+        OUTPUT_DIR / f"{stem}.json",
+        {
+            "row_count": len(rows),
+            "status_counts": dict(sorted(status_counts.items())),
+            "clause_counts": dict(sorted(clause_counts.items())),
+            "claim_scope_counts": dict(sorted(claim_scope_counts.items())),
+            "supported_subset_rows_needed": bool(supported_subset_rows),
+            "rows": rows,
+        },
+    )
+    md_lines = [
+        f"# {title}",
+        "",
+        intro,
+        "",
+        "## Summary",
+        "",
+        f"- Rows: {len(rows)}",
+        f"- Broad-spec rows: {len(broad_rows)}",
+        f"- Supported-subset rows: {len(supported_subset_rows)}",
+        f"- Status counts: {', '.join(f'{key}={value}' for key, value in sorted(status_counts.items()))}",
+        "",
+        "## Broad-spec rows",
+        "",
+        "| Requirement ID | Section | Status | Policy basis | Title | Linked methods | Linked assets | Notes |",
+        "|---|---|---|---|---|---|---|---|",
+    ]
+    for row in broad_rows:
+        md_lines.append(
+            f"| {row['requirement_id']} | {row['section_ref']} | {row['status']} | {row.get('policy_basis', '') or '-'} | {row['title']} | "
+            f"{', '.join(row.get('linked_methods', [])) or '-'} | {', '.join(row.get('linked_assets', [])) or '-'} | {row.get('notes', '') or '-'} |"
+        )
+    md_lines.extend(["", "## Supported-subset rows", ""])
+    if supported_subset_rows:
+        md_lines.extend(
+            [
+                "| Requirement ID | Section | Status | Supported subset for | Policy basis | Title | Linked methods | Linked assets | Notes |",
+                "|---|---|---|---|---|---|---|---|---|",
+            ]
+        )
+        for row in supported_subset_rows:
+            md_lines.append(
+                f"| {row['requirement_id']} | {row['section_ref']} | {row['status']} | {row.get('supported_subset_for', '') or '-'} | {row.get('policy_basis', '') or '-'} | {row['title']} | "
+                f"{', '.join(row.get('linked_methods', [])) or '-'} | {', '.join(row.get('linked_assets', [])) or '-'} | {row.get('notes', '') or '-'} |"
+            )
+    else:
+        md_lines.append("No supported-subset rows are currently needed for this tranche. These requirements remain plain broad-spec rows because the current evidence is already narrow enough to support the original claim wording.")
+    md_lines.extend(
+        [
+            "",
+            "## All rows",
+            "",
+            "| Requirement ID | Section | Status | Claim scope | Policy basis | Title | Linked methods | Linked assets | Notes |",
+            "|---|---|---|---|---|---|---|---|---|",
+        ]
+    )
+    for row in rows:
+        md_lines.append(
+            f"| {row['requirement_id']} | {row['section_ref']} | {row['status']} | {row.get('claim_scope', 'broad-spec')} | {row.get('policy_basis', '') or '-'} | {row['title']} | "
+            f"{', '.join(row.get('linked_methods', [])) or '-'} | {', '.join(row.get('linked_assets', [])) or '-'} | {row.get('notes', '') or '-'} |"
+        )
+    _write_markdown(OUTPUT_DIR / f"{stem}.md", md_lines)
+
+
+def _write_clause56_extracted_requirements_artifacts() -> None:
+    _write_extracted_requirements_split_artifacts(
+        stem="extracted_requirements_clause5_6",
+        title="Extracted Requirements: Clauses 5 And 6",
+        intro="Curated Clause 5 Declaration Management and Clause 6 Object Management requirements, linked back to the existing service ledger and verification assets.",
+        prefixes=("HLA1516.1-DM-", "HLA1516.1-OM-"),
+    )
+
+
+def _write_clause79_extracted_requirements_artifacts() -> None:
+    _write_extracted_requirements_split_artifacts(
+        stem="extracted_requirements_clause7_9",
+        title="Extracted Requirements: Clauses 7 And 9",
+        intro="Curated Clause 7 Ownership Management and Clause 9 Data Distribution Management requirements, linked back to the existing service ledger and verification assets.",
+        prefixes=("HLA1516.1-OWN-", "HLA1516.1-DDM-"),
+    )
+
+
+def _write_supported_subset_policy_artifacts() -> None:
+    matrix = build_requirements_matrix_2010(version=hla2010.__version__)
+    rows = [
+        row
+        for row in matrix["rows"]
+        if row["kind"] == "extracted-requirement"
+        and (
+            str(row.get("policy_basis", "")).strip()
+            or str(row.get("claim_scope", "")).strip() == "supported-subset"
+            or str(row.get("supported_subset_for", "")).strip()
+        )
+    ]
+    grouped_rows: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        grouped_rows[str(row.get("policy_basis") or "unclassified")].append(row)
+
+    policy_rows: list[dict[str, Any]] = []
+    for policy_id, definition in sorted(_SUPPORTED_SUBSET_POLICY_DEFS.items()):
+        policy_group = grouped_rows.get(policy_id, [])
+        broad_rows = [row for row in policy_group if str(row.get("claim_scope") or "broad-spec") == "broad-spec"]
+        subset_rows = [row for row in policy_group if str(row.get("claim_scope") or "") == "supported-subset"]
+        policy_rows.append(
+            {
+                "policy_id": policy_id,
+                "title": definition["title"],
+                "supported_behavior": definition["supported_behavior"],
+                "broad_gap": definition["broad_gap"],
+                "broad_spec_rows": broad_rows,
+                "supported_subset_rows": subset_rows,
+                "broad_status_counts": dict(sorted({status: sum(1 for row in broad_rows if row["status"] == status) for status in {row["status"] for row in broad_rows}}.items())),
+                "supported_subset_status_counts": dict(sorted({status: sum(1 for row in subset_rows if row["status"] == status) for status in {row["status"] for row in subset_rows}}.items())),
+            }
+        )
+
+    _write_json(
+        OUTPUT_DIR / "supported_subset_policy.json",
+        {
+            "policy_count": len(policy_rows),
+            "policies": policy_rows,
+        },
+    )
+
+    md_lines = [
+        "# Supported-Subset Policy",
+        "",
+        "This packet separates broad specification claims from narrower supported-subset claims for the current Python reference backend.",
+        "",
+        "Interpretation:",
+        "",
+        "- `broad-spec`: the full standard wording. These rows stay `partial` when the backend intentionally implements only a defensible subset.",
+        "- `supported-subset`: a narrowed claim that is explicitly implemented and evidenced in the current backend.",
+        "",
+    ]
+    for policy in policy_rows:
+        md_lines.extend(
+            [
+                f"## {policy['title']}",
+                "",
+                f"- Policy ID: `{policy['policy_id']}`",
+                f"- Supported behavior: {policy['supported_behavior']}",
+                f"- Broad-gap rationale: {policy['broad_gap']}",
+                f"- Broad-spec status counts: {', '.join(f'{k}={v}' for k, v in policy['broad_status_counts'].items()) or 'none'}",
+                f"- Supported-subset status counts: {', '.join(f'{k}={v}' for k, v in policy['supported_subset_status_counts'].items()) or 'none'}",
+                "",
+                "Broad-spec rows:",
+                "",
+                "| Requirement ID | Section | Status | Title | Notes |",
+                "|---|---|---|---|---|",
+            ]
+        )
+        for row in policy["broad_spec_rows"]:
+            md_lines.append(
+                f"| {row['requirement_id']} | {row['section_ref']} | {row['status']} | {row['title']} | {row.get('notes', '') or '-'} |"
+            )
+        if not policy["broad_spec_rows"]:
+            md_lines.append("| - | - | - | - | - |")
+        md_lines.extend(
+            [
+                "",
+                "Supported-subset rows:",
+                "",
+                "| Requirement ID | Section | Status | Broad row | Title | Notes |",
+                "|---|---|---|---|---|---|",
+            ]
+        )
+        for row in policy["supported_subset_rows"]:
+            md_lines.append(
+                f"| {row['requirement_id']} | {row['section_ref']} | {row['status']} | {row.get('supported_subset_for', '') or '-'} | {row['title']} | {row.get('notes', '') or '-'} |"
+            )
+        if not policy["supported_subset_rows"]:
+            md_lines.append("| - | - | - | - | - | - |")
+        md_lines.append("")
+
+    _write_markdown(OUTPUT_DIR / "supported_subset_policy.md", md_lines)
+
+
+def _write_defended_partials_index_artifacts() -> None:
+    matrix = build_requirements_matrix_2010(version=hla2010.__version__)
+    rows = [row for row in matrix["rows"] if row["kind"] == "extracted-requirement"]
+    rows_by_id = {str(row["requirement_id"]): row for row in rows if row.get("requirement_id")}
+    broad_partials = [
+        row
+        for row in rows
+        if str(row.get("claim_scope") or "broad-spec") == "broad-spec" and str(row.get("status")) == "partial"
+        and (
+            str(row.get("policy_basis", "")).strip()
+            or any(
+                str(candidate.get("supported_subset_for") or "") == str(row["requirement_id"])
+                and str(candidate.get("claim_scope") or "") == "supported-subset"
+                and str(candidate.get("status")) == "pass"
+                for candidate in rows
+            )
+        )
+    ]
+    defended_rows: list[dict[str, Any]] = []
+    for broad_row in broad_partials:
+        supported_rows = [
+            row
+            for row in rows
+            if str(row.get("supported_subset_for") or "") == str(broad_row["requirement_id"])
+            and str(row.get("status")) == "pass"
+        ]
+        defended_rows.append(
+            {
+                "requirement_id": broad_row["requirement_id"],
+                "section_ref": broad_row["section_ref"],
+                "title": broad_row["title"],
+                "policy_basis": broad_row.get("policy_basis", ""),
+                "notes": broad_row.get("notes", ""),
+                "supported_subset_rows": supported_rows,
+            }
+        )
+
+    _write_json(
+        OUTPUT_DIR / "defended_partials_index.json",
+        {
+            "row_count": len(defended_rows),
+            "rows": defended_rows,
+        },
+    )
+    md_lines = [
+        "# Defended Partials Index",
+        "",
+        "This index lists only broad-spec rows that intentionally remain partial, along with any passing supported-subset rows that defend the narrower implemented claim.",
+        "",
+        "| Broad requirement ID | Section | Policy basis | Supported-subset passes | Broad row notes |",
+        "|---|---|---|---|---|",
+    ]
+    for row in defended_rows:
+        subset_refs = ", ".join(
+            f"{item['requirement_id']} ({item['section_ref']})" for item in row["supported_subset_rows"]
+        ) or "-"
+        md_lines.append(
+            f"| {row['requirement_id']} | {row['section_ref']} | {row.get('policy_basis', '') or '-'} | {subset_refs} | {row.get('notes', '') or '-'} |"
+        )
+    _write_markdown(OUTPUT_DIR / "defended_partials_index.md", md_lines)
+
+
 def _write_section_summary_artifacts(rows: tuple[ServiceConformanceRow, ...]) -> None:
     summaries = _section_summary(rows)
     _write_json(
@@ -1242,17 +1556,12 @@ def _write_public_class_inventory_artifacts() -> None:
         "|---|---|---:|---|---|",
     ]
     for item in all_public_rows:
-        md_lines.append(
-            f"| {item.module} | {item.class_name} | {'yes' if item.exported_via_package else 'no'} | {item.mapping_status} | {item.rationale} |"
-        )
+        md_lines.append(f"| {item.module} | {item.class_name} | {'yes' if item.exported_via_package else 'no'} | {item.mapping_status} | {item.rationale} |")
     _write_markdown(OUTPUT_DIR / "public_class_inventory.md", md_lines)
 
 
 def _write_gap_report_artifacts(rows: tuple[ServiceConformanceRow, ...]) -> None:
-    gap_rows = [
-        row for row in rows
-        if row.verification_status not in {"focused-executable-tests", "callback-helper-covered"}
-    ]
+    gap_rows = [row for row in rows if row.verification_status not in {"focused-executable-tests", "callback-helper-covered"}]
     _write_json(
         OUTPUT_DIR / "no_requirement_evidence_rows.json",
         {
@@ -1280,9 +1589,7 @@ def _write_gap_report_artifacts(rows: tuple[ServiceConformanceRow, ...]) -> None
     for row in gap_rows:
         gaps = "; ".join(row.known_gaps) if row.known_gaps else ""
         priority, _rationale = _gap_priority(row)
-        md_lines.append(
-            f"| {priority} | {row.section_ref} | {row.interface} | {row.method_name} | {row.implementation_status} | {gaps} |"
-        )
+        md_lines.append(f"| {priority} | {row.section_ref} | {row.interface} | {row.method_name} | {row.implementation_status} | {gaps} |")
     _write_markdown(OUTPUT_DIR / "no_requirement_evidence_rows.md", md_lines)
 
     summaries = _gap_section_summaries(rows)
@@ -1303,9 +1610,7 @@ def _write_gap_report_artifacts(rows: tuple[ServiceConformanceRow, ...]) -> None
         "|---|---|---:|---|",
     ]
     for index, item in enumerate(summaries, start=1):
-        summary_lines.append(
-            f"| {index} | {item.section_label} | {item.row_count} | {', '.join(item.representative_methods)} |"
-        )
+        summary_lines.append(f"| {index} | {item.section_label} | {item.row_count} | {', '.join(item.representative_methods)} |")
     _write_markdown(OUTPUT_DIR / "gap_executive_summary.md", summary_lines)
 
 
@@ -1353,10 +1658,7 @@ def _write_negative_path_artifacts(rows: tuple[ServiceConformanceRow, ...]) -> N
         )
     _write_markdown(OUTPUT_DIR / "negative_path_completeness.md", md_lines)
 
-    ranked_rows = [
-        row for row in rows
-        if negative_path_status(row) == "mapped-not-exhaustive"
-    ]
+    ranked_rows = [row for row in rows if negative_path_status(row) == "mapped-not-exhaustive"]
     ranked_rows = sorted(ranked_rows, key=lambda row: _negative_priority(row)[2])
     _write_json(
         OUTPUT_DIR / "negative_path_priority_ranking.json",
@@ -1423,10 +1725,7 @@ def _write_section8_backend_matrix_artifacts(rows: tuple[ServiceConformanceRow, 
         OUTPUT_DIR / "section8_backend_matrix.json",
         {
             "row_count": len(matrix_rows),
-            "backend_summaries": {
-                backend_id: dict(sorted(counts.items()))
-                for backend_id, counts in sorted(grouped.items())
-            },
+            "backend_summaries": {backend_id: dict(sorted(counts.items())) for backend_id, counts in sorted(grouped.items())},
             "rows": [asdict(item) for item in matrix_rows],
         },
     )
@@ -1477,10 +1776,7 @@ def _write_core_backend_matrix_artifacts() -> list[CoreBackendMatrixRow]:
         OUTPUT_DIR / "core_backend_matrix.json",
         {
             "row_count": len(matrix_rows),
-            "backend_summaries": {
-                backend_id: dict(sorted(counts.items()))
-                for backend_id, counts in sorted(backend_summaries.items())
-            },
+            "backend_summaries": {backend_id: dict(sorted(counts.items())) for backend_id, counts in sorted(backend_summaries.items())},
             "rows": [asdict(row) for row in matrix_rows],
         },
     )
@@ -1537,10 +1833,7 @@ def _write_backend_slice_matrix_artifacts(
         OUTPUT_DIR / f"{stem}.json",
         {
             "row_count": len(matrix_rows),
-            "backend_summaries": {
-                backend_id: dict(sorted(counts.items()))
-                for backend_id, counts in sorted(backend_summaries.items())
-            },
+            "backend_summaries": {backend_id: dict(sorted(counts.items())) for backend_id, counts in sorted(backend_summaries.items())},
             "rows": [asdict(row) for row in matrix_rows],
         },
     )
@@ -1611,7 +1904,8 @@ def _write_completion_checklist_artifacts(
             status="partial",
             evidence=("analysis/compliance/lookahead_backend_matrix.json",),
             rationale=(
-                "Lookahead is now explicit in the reference and hosted matrices, and CERTI/Pitch lookahead coverage is being widened into a dedicated backend matrix."
+                "Lookahead is now explicit in the reference and hosted matrices, and "
+                "CERTI/Pitch lookahead coverage is being widened into a dedicated backend matrix."
             ),
         ),
         CompletionChecklistRow(
@@ -1633,7 +1927,8 @@ def _write_completion_checklist_artifacts(
                 "tests/vendors/test_certi_real_backend_exchange_matrix.py",
             ),
             rationale=(
-                "Real CERTI time-query/FQR and exchange slices were rerun cleanly in this session, with logical-time type fidelity preserved across native and Java-facade paths."
+                "Real CERTI time-query/FQR and exchange slices were rerun cleanly in this session, "
+                "with logical-time type fidelity preserved across native and Java-facade paths."
             ),
         ),
         CompletionChecklistRow(
@@ -1642,7 +1937,8 @@ def _write_completion_checklist_artifacts(
             status="partial",
             evidence=("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
             rationale=(
-                "Plain ownership passed in this session, but negotiated ownership failed across native and Java-facade CERTI paths."
+                "Plain ownership passed in this session, but negotiated ownership failed across "
+                "native and Java-facade CERTI paths."
             ),
         ),
         CompletionChecklistRow(
@@ -1650,7 +1946,10 @@ def _write_completion_checklist_artifacts(
             area="Pitch backend matrix",
             status="partial",
             evidence=("analysis/compliance/pitch_backend_matrix.json",),
-            rationale="Pitch now has a dedicated positive-path/backend-divergence matrix, but it remains incomplete and negotiated ownership is still vendor-divergent.",
+            rationale=(
+                "Pitch now has a dedicated positive-path/backend-divergence matrix, but it remains "
+                "incomplete and negotiated ownership is still vendor-divergent."
+            ),
         ),
         CompletionChecklistRow(
             checklist_id="support-services-backend-matrix",
@@ -1672,9 +1971,7 @@ def _write_completion_checklist_artifacts(
         "|---|---|---|---|---|",
     ]
     for row in checklist_rows:
-        md_lines.append(
-            f"| {row.checklist_id} | {row.area} | {row.status} | {', '.join(row.evidence)} | {row.rationale} |"
-        )
+        md_lines.append(f"| {row.checklist_id} | {row.area} | {row.status} | {', '.join(row.evidence)} | {row.rationale} |")
     _write_markdown(OUTPUT_DIR / "compliance_completion_checklist.md", md_lines)
 
 
@@ -1741,9 +2038,7 @@ def _write_unfinished_work_ranking_artifacts(core_backend_rows: list[CoreBackend
 
 
 def main(argv: list[str] | None = None) -> int:
-    argparse.ArgumentParser(
-        description="Generate the compliance and requirements artifact packet for the current repo state."
-    ).parse_args(argv)
+    argparse.ArgumentParser(description="Generate the compliance and requirements artifact packet for the current repo state.").parse_args(argv)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -1752,6 +2047,14 @@ def main(argv: list[str] | None = None) -> int:
     write_service_conformance_csv(OUTPUT_DIR / "service_conformance.csv", version=hla2010.__version__)
     write_requirements_ledger_json(OUTPUT_DIR / "requirements_ledger.json", version=hla2010.__version__)
     write_requirements_ledger_csv(OUTPUT_DIR / "requirements_ledger.csv", version=hla2010.__version__)
+    write_requirements_matrix_2010_json(OUTPUT_DIR / "requirements_matrix_2010.json", version=hla2010.__version__)
+    write_requirements_matrix_2010_csv(OUTPUT_DIR / "requirements_matrix_2010.csv", version=hla2010.__version__)
+    _write_clause56_extracted_requirements_artifacts()
+    _write_clause79_extracted_requirements_artifacts()
+    _write_supported_subset_policy_artifacts()
+    _write_defended_partials_index_artifacts()
+    write_verification_assets(OUTPUT_DIR / "verification_assets.json", version=hla2010.__version__)
+    write_traceability_csv(OUTPUT_DIR / "verification_traceability.csv", version=hla2010.__version__)
     _write_section_summary_artifacts(matrix.rows)
     _write_public_class_inventory_artifacts()
     _write_gap_report_artifacts(matrix.rows)

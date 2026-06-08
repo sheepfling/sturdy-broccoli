@@ -16,6 +16,8 @@ dist
 analysis
 verification
 downloads
+build/generated/
+hla2010/generated/
 test_run_summary*.txt
 service-report*.jsonl
 *.log

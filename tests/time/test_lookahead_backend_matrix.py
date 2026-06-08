@@ -8,10 +8,8 @@ import pytest
 from hla2010.backends.grpc_transport.python_server import start_python_grpc_server
 from hla2010.backends.python import InMemoryRTIEngine
 from hla2010.backends.rest_transport_host import start_python_rest_server
-from hla2010.enums import CallbackModel
 from hla2010.exceptions import InvalidLogicalTime
 from hla2010.rti import create_rti_ambassador
-from hla2010.time import HLAfloat64Time, HLAinteger64Time
 from hla2010.testing.section8_matrix import (
     cleanup_section8_pair,
     connect_section8_pair,
@@ -19,6 +17,7 @@ from hla2010.testing.section8_matrix import (
     run_section8_state_services_case,
     section8_matrix_config,
 )
+from hla2010.time import HLAfloat64Time, HLAinteger64Time
 
 
 @dataclass(frozen=True)
