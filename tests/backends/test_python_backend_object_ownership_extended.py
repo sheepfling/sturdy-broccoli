@@ -612,6 +612,59 @@ def test_clause_6_federate_initiated_services_are_observable_through_mom_service
     owner.destroy_federation_execution("om-mom-service-report-fed")
 
 
+def test_clause_6_callback_activity_is_visible_in_mom_summary():
+    _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("om-mom-callback-summary-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    track_id = owner.get_parameter_handle(interaction, "TrackId")
+    best_effort = owner.backend.engine.transportation_best_effort
+
+    owner.reserve_object_instance_name("OM-MOM-Callback-Reserved")
+    owner.reserve_multiple_object_instance_name({"OM-MOM-CB-A", "OM-MOM-CB-B"})
+    drain(owner, observer)
+
+    observer.subscribe_object_class_attributes(cls, {attr})
+    observer.subscribe_interaction_class(interaction)
+    owner.publish_object_class_attributes(cls, {attr})
+    owner.publish_interaction_class(interaction)
+    obj = owner.register_object_instance(cls, "OM-MOM-Callback-Object")
+    drain(owner, observer)
+
+    owner.update_attribute_values(obj, {attr: b"mom-callback-position"}, b"mom-callback-update")
+    owner.send_interaction(interaction, {track_id: b"mom-callback-track"}, b"mom-callback-send")
+    observer.request_attribute_value_update(obj, {attr}, b"mom-callback-refresh")
+    owner.request_attribute_transportation_type_change(obj, {attr}, best_effort)
+    owner.query_attribute_transportation_type(obj, attr)
+    owner.request_interaction_transportation_type_change(interaction, best_effort)
+    owner.query_interaction_transportation_type(interaction)
+    owner.delete_object_instance(obj, b"mom-callback-delete")
+    drain(owner, observer)
+
+    owner_summary = owner.backend.current_mom_summary()
+    observer_summary = observer.backend.current_mom_summary()
+
+    assert owner_summary["callback_counts"]["objectInstanceNameReservationSucceeded"] >= 1
+    assert owner_summary["callback_counts"]["multipleObjectInstanceNameReservationSucceeded"] >= 1
+    assert owner_summary["callback_counts"]["provideAttributeValueUpdate"] >= 1
+    assert owner_summary["callback_counts"]["confirmAttributeTransportationTypeChange"] >= 1
+    assert owner_summary["callback_counts"]["reportAttributeTransportationType"] >= 1
+    assert owner_summary["callback_counts"]["confirmInteractionTransportationTypeChange"] >= 1
+    assert owner_summary["callback_counts"]["reportInteractionTransportationType"] >= 1
+
+    assert observer_summary["callback_counts"]["discoverObjectInstance"] >= 1
+    assert observer_summary["callback_counts"]["reflectAttributeValues"] >= 1
+    assert observer_summary["callback_counts"]["receiveInteraction"] >= 1
+    assert observer_summary["callback_counts"]["removeObjectInstance"] >= 1
+
+    assert "provideAttributeValueUpdate" in owner_summary["recent_callbacks"]
+    assert "discoverObjectInstance" in observer_summary["recent_callbacks"]
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("om-mom-callback-summary-fed")
+
+
 def test_declaration_management_effects_apply_while_time_managed():
     _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("decl-time-managed-fed")
     factory = owner.get_time_factory()
