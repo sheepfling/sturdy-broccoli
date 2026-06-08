@@ -111,6 +111,9 @@ drive a certified HLA 1516-2010 RTI, not just the in-memory reference RTI.
   validates the core Java/vendor route for exchange/time, synchronization, and
   basic ownership semantics over both Java bridge paths.
 
+That is parity on the promoted overlap, not blanket parity for the full
+1516.1 surface. Negotiated ownership still remains bridge-divergent.
+
 ## Open Path
 
 The next comparison step should still avoid overclaiming.

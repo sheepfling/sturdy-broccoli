@@ -9,6 +9,18 @@ This repo now distinguishes between two kinds of compliance claim:
 That split is intentional. It prevents us from claiming full compliance for
 behavior we have not actually modeled.
 
+## Evidence rule
+
+Every promoted row needs a testable proof shape:
+
+- a positive test for the exact supported subset, or
+- a negative test that fixes the boundary of what is not claimed
+
+If the repo only proves a narrower implementation than the broad spec text,
+keep the broad row partial and record the narrower supported-subset row
+separately. Do not use vendor parity language unless the row has a matching
+vendor-backed proof anchor.
+
 ## Update-rate policy
 
 Policy ID: `logical-time-update-rate-only`

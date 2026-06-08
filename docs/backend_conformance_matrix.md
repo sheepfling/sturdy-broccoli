@@ -186,6 +186,8 @@ reproduced through `./scripts/ci/vendor_runtime_smoke.sh certi-compare`:
   [pitch_negotiated_ownership_vendor_bug_2026-06-07.md](docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)
   and
   [diagnostic_summary.md](analysis/pitch_negotiated_ownership_2026-06-07/diagnostic_summary.md).
+- Use "Pitch parity" only for the promoted overlap rows we currently defend;
+  do not read it as blanket parity across the full 1516.1 surface.
 
 ## Current Python RTI Gaps
 

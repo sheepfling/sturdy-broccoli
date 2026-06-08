@@ -99,6 +99,48 @@ Additional repo-local material promoted from `INBOX`:
 python examples/target_radar_simulation.py --backend python --steps 5
 ```
 
+## New federate quick start
+
+If you are writing a new federate, start from the backend-neutral Python API:
+
+1. subclass `hla2010.api.FederateAmbassador` for your callbacks
+2. create an RTI ambassador with `create_rti_ambassador(...)`
+3. connect, create, and join with `hla2010.startup.connect_create_join(...)`
+4. publish/subscribe, then exchange updates and interactions
+5. synchronize with `hla2010.startup.synchronize_ready_to_run(...)`
+
+Minimal shape:
+
+```python
+from hla2010.api import FederateAmbassador
+from hla2010.rti import create_rti_ambassador
+from hla2010.startup import FederationStartupConfig, connect_create_join, synchronize_ready_to_run
+
+
+class MyFederate(FederateAmbassador):
+    pass
+
+
+rti = create_rti_ambassador("python")
+fed = MyFederate()
+config = FederationStartupConfig.target_radar(federate_name="federate-a")
+connect_create_join(rti, fed, config)
+```
+
+If that works on `python`, the same federate code can usually be exercised
+against `certi`, `pitch-jpype`, or `pitch-py4j` by changing only the backend
+name and the backend-specific launch/configuration details.
+
+For the shortest end-to-end examples, use:
+
+- `examples/target_radar_simulation.py`
+- `./scripts/run_two_federate_suite.py`
+- `./scripts/ci/vendor_runtime_smoke.sh certi`
+- `./scripts/ci/vendor_runtime_smoke.sh pitch`
+
+The honest rule is the same as the requirements catalog: claim only the
+backend paths you can prove with tests.
+
 To bootstrap everything needed for local CERTI work as well, use the easy path
 first:
 

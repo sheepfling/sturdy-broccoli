@@ -9,7 +9,7 @@ this repo:
 
 Use the hierarchy in this order:
 
-`L1 capability -> L2 feature -> L3 requirement -> test or planned proof`
+`L1 capability -> L2 feature -> L3 requirement -> positive test, negative test, or planned proof`
 
 The source-of-truth rows still live in `requirements/*.csv`. This page is the
 reader-facing index that groups them into capability trees.
@@ -82,8 +82,10 @@ reader-facing index that groups them into capability trees.
 
 ## Implementation Notes
 
-- `mapped` rows are intentionally narrow. They only claim the current `hla2010/fom.py`
-  subset and the executable tests that actually exist.
+- `mapped` rows are intentionally narrow. They only claim the current
+  `hla2010/fom.py` subset and the executable tests that actually exist.
+- If a requirement is only defensible through a boundary test, keep that
+  boundary explicit rather than collapsing it into a broader parity claim.
 - Verification assets such as `ASSET-VENDOR-PARITY-PACKET-001` are repo-level proof capabilities.
   They complement the standards rows, but they are not themselves standards-derived requirement IDs.
 - `planned` rows are still useful: they tell you which package should own the work

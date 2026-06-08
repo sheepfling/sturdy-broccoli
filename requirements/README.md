@@ -71,6 +71,25 @@ Use the files together like this:
 
 `requirements/*.csv -> analysis/compliance/requirements_matrix_2010.* -> tests/verification/*`
 
+## Honest Test Rule
+
+When you turn a requirement row into `mapped` or `partial`, attach a concrete
+evidence anchor that proves the claimed behavior. Use one of these shapes:
+
+- a positive test that exercises the exact supported scope
+- an explicit negative test that shows the unsupported boundary
+- a generated artifact that is itself checked by a regression test
+
+Do not promote a row just because the surrounding implementation looks close.
+If the proof only covers a narrower supported subset, keep the broad row
+`partial` and make the narrower row explicit. If the claim is vendor-facing,
+name the vendor divergence or supported subset in the traceability row rather
+than flattening it into an implied parity statement.
+
+If you need to resume this work later, start from
+[`docs/plans/requirements_finish_line.md`](../docs/plans/requirements_finish_line.md).
+That note is the pinned handoff for the remaining rows and the stop condition.
+
 The family seed rows are placeholders for requirement extraction.
 
 The first concrete clause-level extraction tranches are:

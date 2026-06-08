@@ -188,6 +188,10 @@ Pitch is currently not promoted for:
 - DDM
 - target/radar
 
+Use "Pitch parity" only for the promoted overlap rows we currently defend.
+Negotiated ownership remains bridge-divergent and should not be described as
+blanket parity.
+
 ## What To Use When Things Break
 
 ### First-line checks
