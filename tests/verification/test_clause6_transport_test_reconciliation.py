@@ -52,6 +52,31 @@ def test_clause_6_transport_service_and_test_rows_have_direct_supported_subset_e
             assert feature_rows[companion_kind]["current_status"] == "mapped"
 
 
+def test_clause_6_transport_seed_rows_follow_mapped_service_or_callback_surface():
+    rows = _load_rows()
+    by_id = {row["packet_requirement_id"]: row for row in rows}
+
+    targets = {
+        "HLA1516.1-OM-6_23-001": ("HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-SVC-001",),
+        "HLA1516.1-OM-6_24-001": ("HLA1516.1-OM-6_24-CONFIRMATTRIBUTETRANSPORTATIONTYPECHANGE-CB-001",),
+        "HLA1516.1-OM-6_25-001": ("HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-SVC-001",),
+        "HLA1516.1-OM-6_26-001": ("HLA1516.1-OM-6_26-REPORTATTRIBUTETRANSPORTATIONTYPE-CB-001",),
+        "HLA1516.1-OM-6_27-001": ("HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-SVC-001",),
+        "HLA1516.1-OM-6_28-001": ("HLA1516.1-OM-6_28-CONFIRMINTERACTIONTRANSPORTATIONTYPECHANGE-CB-001",),
+        "HLA1516.1-OM-6_29-001": ("HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-SVC-001",),
+        "HLA1516.1-OM-6_30-001": ("HLA1516.1-OM-6_30-REPORTINTERACTIONTRANSPORTATIONTYPE-CB-001",),
+    }
+
+    for seed_id, companion_ids in targets.items():
+        seed = by_id[seed_id]
+        assert seed["current_status"] == "mapped"
+        test_ids = [item.strip() for item in seed["current_test_id"].split(";") if item.strip()]
+        assert test_ids
+        assert all(_node_exists(test_id) for test_id in test_ids)
+        for companion_id in companion_ids:
+            assert by_id[companion_id]["current_status"] == "mapped"
+
+
 def test_clause_6_send_and_delete_test_rows_have_direct_node_level_evidence():
     rows = _load_rows()
     targets = {

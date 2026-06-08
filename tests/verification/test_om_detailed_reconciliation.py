@@ -22,7 +22,7 @@ def test_om_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 391
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 258, "partial": 133}
+        {"mapped": 266, "partial": 125}
     )
     assert Counter((row["reconciliation_kind"], row["current_status"]) for row in rows) == Counter(
         {
@@ -30,7 +30,7 @@ def test_om_detailed_reconciliation_has_expected_shape():
             ("SIG", "mapped"): 38,
             ("EFF", "partial"): 25,
             ("CB_ORD", "partial"): 25,
-            ("seed", "mapped"): 22,
+            ("seed", "mapped"): 30,
             ("RTI_API", "mapped"): 19,
             ("EXC_API", "partial"): 19,
             ("MOM_TRACE", "mapped"): 19,
@@ -43,7 +43,7 @@ def test_om_detailed_reconciliation_has_expected_shape():
             ("MOM", "mapped"): 14,
             ("PRE", "partial"): 10,
             ("SVC", "mapped"): 14,
-            ("seed", "partial"): 9,
+            ("seed", "partial"): 1,
             ("TEST", "mapped"): 14,
             ("FED_CB", "partial"): 6,
             ("RET", "mapped"): 5,
