@@ -1,7 +1,6 @@
 """MOM/MIM object-state helpers for the in-memory Python RTI backend."""
 from __future__ import annotations
 
-import socket
 from typing import Any, Mapping
 
 from ... import mom as hla_mom
@@ -12,12 +11,12 @@ from ...handles import AttributeHandle, InteractionClassHandle, ObjectClassHandl
 from .mom_actions import PythonRTIMomActionsMixin
 from .mom_reporting import PythonRTIMomReportingMixin
 from .state import (
-    FederationState,
     MOM_FEDERATE_CLASS,
     MOM_FEDERATION_CLASS,
     MOM_TEXT_ENCODING,
-    ObjectInstance,
     RTI_FEDERATE_HANDLE,
+    FederationState,
+    ObjectInstance,
     SupplementalReflectInfo,
 )
 
@@ -313,6 +312,26 @@ class PythonRTIMomMixin(PythonRTIMomActionsMixin, PythonRTIMomReportingMixin):
         return {
             "federation_object": federation.mom_federation_object,
             "federate_objects": dict(federation.mom_federate_objects),
+            "synchronization_labels": sorted(federation.synchronization_points),
+            "synchronization_points": {
+                label: {
+                    "targets": sorted(point.targets, key=lambda handle: handle.value),
+                    "announced": sorted(point.announced, key=lambda handle: handle.value),
+                    "achieved": sorted(point.achieved, key=lambda handle: handle.value),
+                    "failed": sorted(point.failed, key=lambda handle: handle.value),
+                    "reported": sorted(point.reported(), key=lambda handle: handle.value),
+                    "open_to_late_joiners": point.open_to_late_joiners,
+                }
+                for label, point in sorted(federation.synchronization_points.items())
+            },
+            "save_label": federation.save_label,
+            "save_status": {handle: status.name for handle, status in sorted(federation.save_status.items(), key=lambda item: item[0].value)},
+            "restore_label": federation.restore_label,
+            "restore_status": {
+                handle: status.name for handle, status in sorted(federation.restore_status.items(), key=lambda item: item[0].value)
+            },
+            "last_save_name": federation.last_save_name,
+            "next_save_name": federation.next_save_name,
             "mim_uri": federation.mim_module.uri if federation.mim_module else None,
             "mom_object_classes": sorted(
                 name for name in federation.fom_catalog.object_classes if ".HLAmanager" in name

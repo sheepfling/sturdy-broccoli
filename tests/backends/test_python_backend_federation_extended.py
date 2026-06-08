@@ -1,6 +1,18 @@
 # ruff: noqa: F401,F403
 
 from tests.backends.python_backend_extended_support import *
+from hla2010.fom import FOMModule
+from hla2010.backends.python import PythonRTIConfig
+from hla2010.enums import ResignAction, RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
+from hla2010.exceptions import (
+    CouldNotCreateLogicalTimeFactory,
+    CouldNotOpenFDD,
+    CouldNotOpenMIM,
+    ErrorReadingFDD,
+    ErrorReadingMIM,
+    InconsistentFDD,
+)
+from hla2010.handles import FederateHandleSet
 
 def test_spec_references_link_services_to_clause_numbers():
     assert method_reference("connect").section == "4.2"
@@ -37,6 +49,67 @@ def test_list_federation_executions_requires_connection_and_reports_known_federa
 
     rti.destroy_federation_execution("listed-fed")
     rti.disconnect()
+
+
+def test_destroy_federation_execution_removes_destroyed_federation_from_report_callback():
+    rti = rti_ambassador(engine=InMemoryRTIEngine())
+    fed = RecordingFederateAmbassador()
+    rti.connect(fed, CallbackModel.HLA_EVOKED)
+
+    rti.create_federation_execution("destroy-listed-fed", "TargetRadarFOMmodule.xml")
+    rti.list_federation_executions()
+    drain(rti)
+    infos = fed.last_callback("reportFederationExecutions").args[0]
+    assert any(info.federation_execution_name == "destroy-listed-fed" for info in infos)
+
+    rti.destroy_federation_execution("destroy-listed-fed")
+    rti.list_federation_executions()
+    drain(rti)
+    infos = fed.last_callback("reportFederationExecutions").args[0]
+    assert all(info.federation_execution_name != "destroy-listed-fed" for info in infos)
+
+    rti.disconnect()
+
+
+def test_disconnect_clears_buffered_report_callbacks():
+    rti = rti_ambassador(engine=InMemoryRTIEngine())
+    fed = RecordingFederateAmbassador()
+    rti.connect(fed, CallbackModel.HLA_EVOKED)
+
+    rti.create_federation_execution("disconnect-buffered-fed", "TargetRadarFOMmodule.xml")
+    rti.list_federation_executions()
+    assert fed.last_callback("reportFederationExecutions") is None
+    assert rti.backend.state.queue
+
+    rti.destroy_federation_execution("disconnect-buffered-fed")
+    rti.disconnect()
+
+    assert not rti.backend.state.queue
+    assert fed.last_callback("reportFederationExecutions") is None
+
+
+def test_connect_establishes_callback_delivery_model_for_follow_on_reports():
+    engine = InMemoryRTIEngine()
+
+    evoked = rti_ambassador(engine=engine)
+    evoked_fed = RecordingFederateAmbassador()
+    evoked.connect(evoked_fed, CallbackModel.HLA_EVOKED)
+    evoked.create_federation_execution("connect-callback-fed", "TargetRadarFOMmodule.xml")
+    evoked.list_federation_executions()
+    assert evoked_fed.last_callback("reportFederationExecutions") is None
+    drain(evoked)
+    assert evoked_fed.last_callback("reportFederationExecutions") is not None
+    evoked.destroy_federation_execution("connect-callback-fed")
+    evoked.disconnect()
+
+    immediate = rti_ambassador(engine=engine)
+    immediate_fed = RecordingFederateAmbassador()
+    immediate.connect(immediate_fed, CallbackModel.HLA_IMMEDIATE)
+    immediate.create_federation_execution("connect-callback-fed-immediate", "TargetRadarFOMmodule.xml")
+    immediate.list_federation_executions()
+    assert immediate_fed.last_callback("reportFederationExecutions") is not None
+    immediate.destroy_federation_execution("connect-callback-fed-immediate")
+    immediate.disconnect()
 
 
 def test_register_federation_synchronization_point_rejects_not_connected_and_not_joined():
@@ -186,6 +259,44 @@ def test_synchronization_points_and_save_status_callbacks():
     r1.resign_federation_execution(ResignAction.NO_ACTION)
     r2.resign_federation_execution(ResignAction.NO_ACTION)
     r1.destroy_federation_execution("sync-save-fed")
+
+
+def test_synchronization_lifecycle_states_are_visible_in_mom_summary():
+    _, r1, r2, f1, f2, h1, h2 = joined_pair("sync-mom-fed")
+
+    r1.register_federation_synchronization_point("READY", b"sync")
+    drain(r1, r2)
+    summary = r1.backend.current_mom_summary()
+    assert summary["synchronization_labels"] == ["READY"]
+    point = summary["synchronization_points"]["READY"]
+    assert point["targets"] == [h1, h2]
+    assert point["announced"] == [h1, h2]
+    assert point["achieved"] == []
+    assert point["failed"] == []
+    assert point["reported"] == []
+    assert point["open_to_late_joiners"] is True
+    assert f1.last_callback("synchronizationPointRegistrationSucceeded").args == ("READY",)
+    assert f2.last_callback("announceSynchronizationPoint").args[:2] == ("READY", b"sync")
+
+    r1.synchronization_point_achieved("READY")
+    summary = r1.backend.current_mom_summary()
+    point = summary["synchronization_points"]["READY"]
+    assert point["achieved"] == [h1]
+    assert point["reported"] == [h1]
+    assert point["failed"] == []
+
+    r2.synchronization_point_achieved("READY", False)
+    drain(r1, r2)
+    assert f1.last_callback("federationSynchronized").args[0] == "READY"
+    failed = f1.last_callback("federationSynchronized").args[1]
+    assert h2 in failed
+    summary = r1.backend.current_mom_summary()
+    assert summary["synchronization_labels"] == []
+    assert summary["synchronization_points"] == {}
+
+    r1.resign_federation_execution(ResignAction.NO_ACTION)
+    r2.resign_federation_execution(ResignAction.NO_ACTION)
+    r1.destroy_federation_execution("sync-mom-fed")
 
 
 def test_save_failure_reports_federation_not_saved_and_clears_status():
@@ -629,6 +740,83 @@ def test_join_federation_execution_rejects_save_and_restore_in_progress():
     r1.destroy_federation_execution("join-save-restore-fed")
 
 
+def test_join_federation_execution_distinguishes_open_read_time_and_inconsistent_additional_fom_errors(tmp_path):
+    engine = InMemoryRTIEngine()
+    rti = rti_ambassador(
+        engine=engine,
+        config=PythonRTIConfig(name="join-fom-negative-fed", strict_fom_loading=True),
+    )
+    rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    rti.create_federation_execution("join-fom-negative-fed", "TargetRadarFOMmodule.xml")
+
+    missing_fdd = tmp_path / "missing-join-fed.xml"
+    with pytest.raises(CouldNotOpenFDD):
+        rti.join_federation_execution("alpha", "type-a", "join-fom-negative-fed", [missing_fdd])
+
+    bad_fdd = tmp_path / "bad-join-fed.xml"
+    bad_fdd.write_text("<not-an-object-model/>", encoding="utf-8")
+    with pytest.raises(ErrorReadingFDD):
+        rti.join_federation_execution("alpha", "type-a", "join-fom-negative-fed", [bad_fdd])
+
+    rti_bad_time = rti_ambassador(
+        engine=engine,
+        config=PythonRTIConfig(
+            name="join-fom-bad-time-fed",
+            infer_time_factory_from_fom=False,
+            default_logical_time_implementation_name="BogusLogicalTime",
+        ),
+    )
+    rti_bad_time.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    with pytest.raises(CouldNotCreateLogicalTimeFactory):
+        rti_bad_time.join_federation_execution("time-alpha", "type-a", "join-fom-negative-fed")
+    rti_bad_time.disconnect()
+
+    good_time_int = tmp_path / "join-int-time.xml"
+    good_time_float = tmp_path / "join-float-time.xml"
+    good_time_int.write_text(
+        """<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<objectModel>
+  <modelIdentification><name>JoinIntTimeFDD</name><type>FDD</type></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>DummyJoinInt</name>
+    </objectClass>
+  </objects>
+  <time>
+    <timeStamp><dataType>HLAinteger64BE</dataType></timeStamp>
+  </time>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    good_time_float.write_text(
+        """<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<objectModel>
+  <modelIdentification><name>JoinFloatTimeFDD</name><type>FDD</type></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>DummyJoinFloat</name>
+    </objectClass>
+  </objects>
+  <time>
+    <timeStamp><dataType>HLAfloat64BE</dataType></timeStamp>
+  </time>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    with pytest.raises(InconsistentFDD):
+        rti.join_federation_execution(
+            "beta",
+            "type-b",
+            "join-fom-negative-fed",
+            [good_time_int, good_time_float],
+        )
+
+    rti.destroy_federation_execution("join-fom-negative-fed")
+    rti.disconnect()
+
+
 def test_connect_rejects_second_connection_attempt():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
@@ -650,6 +838,95 @@ def test_create_federation_execution_rejects_duplicate_name():
     rti.disconnect()
 
 
+def test_create_federation_execution_distinguishes_open_read_time_and_inconsistent_fom_errors(tmp_path):
+    rti = rti_ambassador(
+        engine=InMemoryRTIEngine(),
+        config=PythonRTIConfig(name="create-fom-negative-fed", strict_fom_loading=True),
+    )
+    with pytest.raises(NotConnected):
+        rti.create_federation_execution("missing-fed", tmp_path / "missing-fed.xml")
+
+    rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+
+    missing_fdd = tmp_path / "missing-fed.xml"
+    with pytest.raises(CouldNotOpenFDD):
+        rti.create_federation_execution("missing-fed", missing_fdd)
+
+    bad_fdd = tmp_path / "bad-fed.xml"
+    bad_fdd.write_text("<not-an-object-model/>", encoding="utf-8")
+    with pytest.raises(ErrorReadingFDD):
+        rti.create_federation_execution("bad-fed", bad_fdd)
+
+    missing_mim = tmp_path / "missing-mim.xml"
+    with pytest.raises(CouldNotOpenMIM):
+        rti.create_federation_execution_with_mim(
+            "missing-mim-fed",
+            "TargetRadarFOMmodule.xml",
+            missing_mim,
+        )
+
+    bad_mim = tmp_path / "bad-mim.xml"
+    bad_mim.write_text("<not-an-object-model/>", encoding="utf-8")
+    with pytest.raises(ErrorReadingMIM):
+        rti.create_federation_execution_with_mim(
+            "bad-mim-fed",
+            "TargetRadarFOMmodule.xml",
+            bad_mim,
+        )
+
+    rti_bad_time = rti_ambassador(
+        engine=InMemoryRTIEngine(),
+        config=PythonRTIConfig(
+            name="create-fom-bad-time-fed",
+            infer_time_factory_from_fom=False,
+            default_logical_time_implementation_name="BogusLogicalTime",
+        ),
+    )
+    rti_bad_time.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+    with pytest.raises(CouldNotCreateLogicalTimeFactory):
+        rti_bad_time.create_federation_execution("bogus-time-fed", "TargetRadarFOMmodule.xml")
+    rti_bad_time.disconnect()
+
+    int_time = tmp_path / "int-time.xml"
+    float_time = tmp_path / "float-time.xml"
+    int_time.write_text(
+        """<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<objectModel>
+  <modelIdentification><name>IntTimeFDD</name><type>FDD</type></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>DummyInt</name>
+    </objectClass>
+  </objects>
+  <time>
+    <timeStamp><dataType>HLAinteger64BE</dataType></timeStamp>
+  </time>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    float_time.write_text(
+        """<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<objectModel>
+  <modelIdentification><name>FloatTimeFDD</name><type>FDD</type></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>DummyFloat</name>
+    </objectClass>
+  </objects>
+  <time>
+    <timeStamp><dataType>HLAfloat64BE</dataType></timeStamp>
+  </time>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    with pytest.raises(InconsistentFDD):
+        rti.create_federation_execution("conflicting-time-fed", [int_time, float_time])
+
+    rti.disconnect()
+
+
 def test_create_federation_execution_with_explicit_mim_uses_requested_module():
     engine = InMemoryRTIEngine()
     rti = rti_ambassador(engine=engine)
@@ -668,6 +945,116 @@ def test_create_federation_execution_with_explicit_mim_uses_requested_module():
     assert federation.mim_module.path.name == "HLAstandardMIM.xml"
 
     rti.destroy_federation_execution("explicit-mim-fed")
+    rti.disconnect()
+
+
+def test_create_federation_execution_with_mim_rejects_invalid_logical_time_factory():
+    rti = rti_ambassador(
+        engine=InMemoryRTIEngine(),
+        config=PythonRTIConfig(
+            name="create-mim-bad-time-fed",
+            infer_time_factory_from_fom=False,
+            default_logical_time_implementation_name="BogusLogicalTime",
+        ),
+    )
+    rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+
+    with pytest.raises(CouldNotCreateLogicalTimeFactory):
+        rti.create_federation_execution_with_mim(
+            "bad-time-fed",
+            "TargetRadarFOMmodule.xml",
+            "hla2010/resources/foms/HLAstandardMIM.xml",
+        )
+
+    rti.disconnect()
+
+
+def test_create_federation_execution_with_mim_distinguishes_open_read_duplicate_and_inconsistent_fom_errors(tmp_path):
+    rti = rti_ambassador(
+        engine=InMemoryRTIEngine(),
+        config=PythonRTIConfig(name="create-mim-fom-negative-fed", strict_fom_loading=True),
+    )
+
+    with pytest.raises(NotConnected):
+        rti.create_federation_execution_with_mim(
+            "not-connected-fed",
+            "TargetRadarFOMmodule.xml",
+            "hla2010/resources/foms/HLAstandardMIM.xml",
+        )
+
+    rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
+
+    missing_fdd = tmp_path / "missing-mim-fdd.xml"
+    with pytest.raises(CouldNotOpenFDD):
+        rti.create_federation_execution_with_mim(
+            "missing-mim-fdd-fed",
+            missing_fdd,
+            "hla2010/resources/foms/HLAstandardMIM.xml",
+        )
+
+    bad_fdd = tmp_path / "bad-mim-fdd.xml"
+    bad_fdd.write_text("<not-an-object-model/>", encoding="utf-8")
+    with pytest.raises(ErrorReadingFDD):
+        rti.create_federation_execution_with_mim(
+            "bad-mim-fdd-fed",
+            bad_fdd,
+            "hla2010/resources/foms/HLAstandardMIM.xml",
+        )
+
+    rti.create_federation_execution_with_mim(
+        "duplicate-mim-fed",
+        "TargetRadarFOMmodule.xml",
+        "hla2010/resources/foms/HLAstandardMIM.xml",
+    )
+    with pytest.raises(FederationExecutionAlreadyExists):
+        rti.create_federation_execution_with_mim(
+            "duplicate-mim-fed",
+            "TargetRadarFOMmodule.xml",
+            "hla2010/resources/foms/HLAstandardMIM.xml",
+        )
+    rti.destroy_federation_execution("duplicate-mim-fed")
+
+    int_time = tmp_path / "mim-int-time.xml"
+    float_time = tmp_path / "mim-float-time.xml"
+    int_time.write_text(
+        """<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<objectModel>
+  <modelIdentification><name>MimIntTimeFDD</name><type>FDD</type></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>DummyMimInt</name>
+    </objectClass>
+  </objects>
+  <time>
+    <timeStamp><dataType>HLAinteger64BE</dataType></timeStamp>
+  </time>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    float_time.write_text(
+        """<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<objectModel>
+  <modelIdentification><name>MimFloatTimeFDD</name><type>FDD</type></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>DummyMimFloat</name>
+    </objectClass>
+  </objects>
+  <time>
+    <timeStamp><dataType>HLAfloat64BE</dataType></timeStamp>
+  </time>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    with pytest.raises(InconsistentFDD):
+        rti.create_federation_execution_with_mim(
+            "conflicting-mim-fed",
+            [int_time, float_time],
+            "hla2010/resources/foms/HLAstandardMIM.xml",
+        )
+
     rti.disconnect()
 
 
@@ -753,3 +1140,215 @@ def test_resign_federation_execution_rejects_pending_acquisition():
     owner.destroy_federation_execution("resign-pending-acquisition-fed")
 
 
+def test_resign_federation_execution_removes_mom_federate_object_and_refreshes_summary():
+    _, r1, r2, _f1, _f2, h1, _h2 = joined_pair("resign-mom-cleanup-fed")
+    federation = r1.backend.state.federation
+    assert federation is not None
+
+    mom_handle = federation.mom_federate_objects[h1]
+    assert mom_handle in federation.objects
+
+    r1.resign_federation_execution(ResignAction.NO_ACTION)
+
+    assert h1 not in federation.mom_federate_objects
+    assert mom_handle not in federation.objects
+    summary = r2.backend.current_mom_summary()
+    assert h1 not in summary["federate_objects"]
+
+    r2.resign_federation_execution(ResignAction.NO_ACTION)
+    r2.destroy_federation_execution("resign-mom-cleanup-fed")
+
+
+def test_save_restore_keeps_mom_summary_coherent_for_joined_federates():
+    _, r1, r2, f1, _f2, h1, h2 = joined_pair("save-restore-mom-fed")
+    summary = r1.backend.current_mom_summary()
+    assert summary["federate_objects"][h1] == r1.backend.state.mom_federate_object
+    assert summary["federate_objects"][h2] == r2.backend.state.mom_federate_object
+
+    r1.request_federation_save("SAVE-MOM")
+    drain(r1, r2)
+    assert f1.last_callback("initiateFederateSave").args == ("SAVE-MOM",)
+    summary = r1.backend.current_mom_summary()
+    assert set(summary["federate_objects"]) == {h1, h2}
+
+    r1.federate_save_begun()
+    r2.federate_save_begun()
+    r1.federate_save_complete()
+    r2.federate_save_complete()
+    drain(r1, r2)
+    assert f1.last_callback("federationSaved") is not None
+    summary = r1.backend.current_mom_summary()
+    assert set(summary["federate_objects"]) == {h1, h2}
+
+    r1.request_federation_restore("SAVE-MOM")
+    drain(r1, r2)
+    assert f1.last_callback("requestFederationRestoreSucceeded").args == ("SAVE-MOM",)
+    summary = r1.backend.current_mom_summary()
+    assert set(summary["federate_objects"]) == {h1, h2}
+
+    r1.federate_restore_complete()
+    r2.federate_restore_complete()
+    drain(r1, r2)
+    assert f1.last_callback("federationRestored") is not None
+    summary = r1.backend.current_mom_summary()
+    assert set(summary["federate_objects"]) == {h1, h2}
+
+    r1.resign_federation_execution(ResignAction.NO_ACTION)
+    r2.resign_federation_execution(ResignAction.NO_ACTION)
+    r1.destroy_federation_execution("save-restore-mom-fed")
+
+
+def test_save_restore_lifecycle_states_are_visible_in_mom_summary():
+    _, r1, r2, f1, f2, h1, h2 = joined_pair("save-restore-state-mom-fed")
+
+    r1.request_federation_save("SAVE-STATE")
+    drain(r1, r2)
+    summary = r1.backend.current_mom_summary()
+    assert summary["save_label"] == "SAVE-STATE"
+    assert summary["save_status"] == {
+        h1: SaveStatus.FEDERATE_INSTRUCTED_TO_SAVE.name,
+        h2: SaveStatus.FEDERATE_INSTRUCTED_TO_SAVE.name,
+    }
+    assert f1.last_callback("initiateFederateSave").args == ("SAVE-STATE",)
+    assert f2.last_callback("initiateFederateSave").args == ("SAVE-STATE",)
+
+    r1.federate_save_begun()
+    summary = r1.backend.current_mom_summary()
+    assert summary["save_status"][h1] == SaveStatus.FEDERATE_SAVING.name
+    assert summary["save_status"][h2] == SaveStatus.FEDERATE_INSTRUCTED_TO_SAVE.name
+
+    r2.federate_save_begun()
+    r1.federate_save_complete()
+    summary = r1.backend.current_mom_summary()
+    assert summary["save_status"][h1] == SaveStatus.FEDERATE_WAITING_FOR_FEDERATION_TO_SAVE.name
+    r2.federate_save_complete()
+    drain(r1, r2)
+    summary = r1.backend.current_mom_summary()
+    assert summary["save_label"] is None
+    assert summary["save_status"] == {}
+    assert summary["last_save_name"] == "SAVE-STATE"
+    assert f1.last_callback("federationSaved") is not None
+
+    r1.request_federation_save("SAVE-ABORT-MOM")
+    drain(r1, r2)
+    summary = r1.backend.current_mom_summary()
+    assert summary["save_label"] == "SAVE-ABORT-MOM"
+    r1.federate_save_begun()
+    r2.federate_save_begun()
+    r1.abort_federation_save()
+    drain(r1, r2)
+    summary = r1.backend.current_mom_summary()
+    assert summary["save_label"] is None
+    assert summary["save_status"] == {}
+    assert f1.last_callback("federationNotSaved").args == (SaveFailureReason.SAVE_ABORTED,)
+
+    r1.request_federation_restore("MISSING-SAVE")
+    drain(r1, r2)
+    summary = r1.backend.current_mom_summary()
+    assert summary["restore_label"] is None
+    assert summary["restore_status"] == {}
+    assert f1.last_callback("requestFederationRestoreFailed").args == ("MISSING-SAVE",)
+
+    r1.request_federation_restore("SAVE-STATE")
+    drain(r1, r2)
+    summary = r1.backend.current_mom_summary()
+    assert summary["restore_label"] == "SAVE-STATE"
+    assert summary["restore_status"] == {
+        h1: RestoreStatus.FEDERATE_RESTORE_REQUEST_PENDING.name,
+        h2: RestoreStatus.FEDERATE_RESTORE_REQUEST_PENDING.name,
+    }
+    assert f1.last_callback("requestFederationRestoreSucceeded").args == ("SAVE-STATE",)
+    assert f1.last_callback("federationRestoreBegun") is not None
+    assert f2.last_callback("initiateFederateRestore").args == ("SAVE-STATE", "bravo", h2)
+
+    r1.federate_restore_complete()
+    summary = r1.backend.current_mom_summary()
+    assert summary["restore_status"][h1] == RestoreStatus.FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE.name
+    assert summary["restore_status"][h2] == RestoreStatus.FEDERATE_RESTORE_REQUEST_PENDING.name
+    r2.abort_federation_restore()
+    drain(r1, r2)
+    summary = r1.backend.current_mom_summary()
+    assert summary["restore_label"] is None
+    assert summary["restore_status"] == {}
+    assert f1.last_callback("federationNotRestored").args == (RestoreFailureReason.RESTORE_ABORTED,)
+
+    r1.request_federation_restore("SAVE-STATE")
+    drain(r1, r2)
+    summary = r1.backend.current_mom_summary()
+    assert summary["restore_status"] == {
+        h1: RestoreStatus.FEDERATE_RESTORE_REQUEST_PENDING.name,
+        h2: RestoreStatus.FEDERATE_RESTORE_REQUEST_PENDING.name,
+    }
+    r1.federate_restore_complete()
+    r2.federate_restore_not_complete()
+    drain(r1, r2)
+    summary = r1.backend.current_mom_summary()
+    assert summary["restore_label"] is None
+    assert summary["restore_status"] == {}
+    assert f1.last_callback("federationNotRestored").args == (
+        RestoreFailureReason.FEDERATE_REPORTED_FAILURE_DURING_RESTORE,
+    )
+
+    r1.resign_federation_execution(ResignAction.NO_ACTION)
+    r2.resign_federation_execution(ResignAction.NO_ACTION)
+    r1.destroy_federation_execution("save-restore-state-mom-fed")
+
+
+def test_resign_federation_execution_stops_joined_member_callbacks():
+    _, leader, wing, leader_fed, wing_fed, _h1, _h2 = joined_pair("resign-callback-fed")
+
+    wing.resign_federation_execution(ResignAction.NO_ACTION)
+    pre_records = len(wing_fed.records)
+
+    leader.request_federation_save("POST-RESIGN-SAVE")
+    drain(leader, wing)
+    leader.federate_save_begun()
+    leader.federate_save_complete()
+    drain(leader, wing)
+
+    assert leader_fed.last_callback("federationSaved") is not None
+    assert len(wing_fed.records) == pre_records
+    assert wing_fed.last_callback("initiateFederateSave") is None
+    assert wing_fed.last_callback("federationSaved") is None
+
+    leader.resign_federation_execution(ResignAction.NO_ACTION)
+    leader.destroy_federation_execution("resign-callback-fed")
+
+
+class _JoinFromCallbackAmbassador(RecordingFederateAmbassador):
+    def __init__(self, rti):
+        super().__init__()
+        self.rti = rti
+
+    def reportFederationExecutions(self, infos):
+        super().reportFederationExecutions(infos)
+        with pytest.raises(CallNotAllowedFromWithinCallback):
+            self.rti.join_federation_execution("late", "type", "callback-join-fed")
+
+
+class _ResignFromCallbackAmbassador(RecordingFederateAmbassador):
+    def __init__(self, rti):
+        super().__init__()
+        self.rti = rti
+
+    def timeRegulationEnabled(self, time):
+        super().timeRegulationEnabled(time)
+        with pytest.raises(CallNotAllowedFromWithinCallback):
+            self.rti.resign_federation_execution(ResignAction.NO_ACTION)
+
+
+def test_join_and_resign_reject_calls_from_within_callback():
+    engine = InMemoryRTIEngine()
+    rti = rti_ambassador(engine=engine)
+    rti.connect(_JoinFromCallbackAmbassador(rti), CallbackModel.HLA_IMMEDIATE)
+    rti.create_federation_execution("callback-join-fed", "TargetRadarFOMmodule.xml")
+    rti.list_federation_executions()
+    rti.disconnect()
+
+    rti2 = rti_ambassador(engine=engine)
+    rti2.connect(_ResignFromCallbackAmbassador(rti2), CallbackModel.HLA_IMMEDIATE)
+    rti2.join_federation_execution("alpha", "type-a", "callback-join-fed")
+    factory = rti2.get_time_factory()
+    rti2.enable_time_regulation(factory.make_interval(1.0))
+    rti2.resign_federation_execution(ResignAction.NO_ACTION)
+    rti2.destroy_federation_execution("callback-join-fed")
