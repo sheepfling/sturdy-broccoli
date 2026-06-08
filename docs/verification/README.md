@@ -23,6 +23,7 @@ Keep verification docs in this order:
 
 - [../../requirements/README.md](../../requirements/README.md): seeded requirement sources and ID registry
 - [requirements_hierarchy.md](requirements_hierarchy.md): L1/L2/L3 capability-feature-requirement hierarchy with test anchors
+- [imported_packet_requirements_v1_0/README.md](imported_packet_requirements_v1_0/README.md): generated packet-style markdown views from the imported canonical v1.0 requirements catalog
 - [verification_validation_split.md](verification_validation_split.md): canonical split between standards verification and operational validation
 - [verification_plan.md](verification_plan.md): layered conformance plan
 - [validation_plan.md](validation_plan.md): layered operational validation plan

@@ -4,6 +4,8 @@ import csv
 import json
 from dataclasses import dataclass
 from pathlib import Path
+from collections import defaultdict
+from typing import Iterable
 
 
 KNOWN_PACKET_PARENT_GAPS = frozenset(
@@ -210,3 +212,196 @@ def load_imported_hla_packet(project_root: Path | None = None) -> ImportedHLAPac
         verification_rows=tuple(VerificationMatrixRow(**row) for row in _read_csv_dicts(latest / "hla_1516_verification_matrix_v1_0.csv")),
         clause_tracker_rows=tuple(ClauseTrackerRow(**row) for row in _read_csv_dicts(latest / "hla_1516_clause_tracker_v1_0.csv")),
     )
+
+
+def _markdown_table(headers: list[str], rows: Iterable[list[str]]) -> list[str]:
+    lines = [
+        f"| {' | '.join(headers)} |",
+        f"|{'|'.join(['---'] * len(headers))}|",
+    ]
+    for row in rows:
+        lines.append(f"| {' | '.join(row)} |")
+    return lines
+
+
+def build_imported_hla_packet_markdown_views(project_root: Path | None = None) -> dict[str, list[str]]:
+    packet = load_imported_hla_packet(project_root)
+    rows = packet.master_rows
+
+    by_standard: dict[str, list[MasterRequirementRow]] = defaultdict(list)
+    by_clause: dict[tuple[str, str], list[MasterRequirementRow]] = defaultdict(list)
+    by_capability: dict[str, list[MasterRequirementRow]] = defaultdict(list)
+    by_service_group: dict[tuple[str, str, str], list[MasterRequirementRow]] = defaultdict(list)
+    for row in rows:
+        by_standard[row.standard].append(row)
+        by_clause[(row.standard, row.clause)].append(row)
+        by_capability[row.capability].append(row)
+        if row.service_name.strip():
+            by_service_group[(row.standard, row.clause, row.service_name)].append(row)
+
+    baseline_note = (
+        "The imported v1.0 packet is an engineering baseline, not a certified paragraph-by-paragraph compliance extraction. "
+        "Use these generated views for harmonization and review, not as a substitute for source-PDF peer review."
+    )
+
+    views: dict[str, list[str]] = {}
+    views["README.md"] = [
+        "# Imported HLA Packet Requirements v1.0",
+        "",
+        baseline_note,
+        "",
+        "Generated views:",
+        "",
+        "- [by_standard.md](by_standard.md): grouped by source standard",
+        "- [by_clause.md](by_clause.md): grouped by standard and clause",
+        "- [by_capability.md](by_capability.md): grouped by packet capability code",
+        "- [by_service_group.md](by_service_group.md): grouped by standard, clause, and service name",
+        "",
+        "Summary:",
+        "",
+        f"- Master requirement rows: {len(rows)}",
+        f"- Standards: {len(by_standard)}",
+        f"- Clauses: {len(by_clause)}",
+        f"- Capabilities: {len(by_capability)}",
+        f"- Service groups: {len(by_service_group)}",
+    ]
+
+    standard_lines = ["# Imported Packet Requirements By Standard", "", baseline_note, ""]
+    for standard, group in sorted(by_standard.items()):
+        standard_lines.extend(
+            [
+                f"## {standard}",
+                "",
+                f"- Requirement rows: {len(group)}",
+                f"- Clauses represented: {len({row.clause for row in group})}",
+                f"- Capabilities represented: {len({row.capability for row in group})}",
+                "",
+            ]
+        )
+        standard_lines.extend(
+            _markdown_table(
+                ["Clause", "Rows", "Capabilities"],
+                [
+                    [
+                        clause,
+                        str(len(clause_group)),
+                        ", ".join(sorted({row.capability for row in clause_group})[:4]),
+                    ]
+                    for clause, clause_group in sorted(
+                        ((clause, [row for row in group if row.clause == clause]) for clause in {row.clause for row in group}),
+                        key=lambda item: item[0],
+                    )
+                ],
+            )
+        )
+        standard_lines.append("")
+    views["by_standard.md"] = standard_lines
+
+    clause_lines = ["# Imported Packet Requirements By Clause", "", baseline_note, ""]
+    for (standard, clause), group in sorted(by_clause.items()):
+        titles = sorted({row.source_title for row in group if row.source_title.strip()})
+        clause_lines.extend(
+            [
+                f"## {standard} Clause {clause}",
+                "",
+                f"- Requirement rows: {len(group)}",
+                f"- Source titles: {', '.join(titles[:3]) or '-'}",
+                f"- Features: {len({row.feature for row in group})}",
+                "",
+            ]
+        )
+        clause_lines.extend(
+            _markdown_table(
+                ["Requirement ID", "Type", "Feature", "Service", "Priority"],
+                [
+                    [
+                        row.requirement_id,
+                        row.requirement_type,
+                        row.feature,
+                        row.service_name or "-",
+                        row.priority,
+                    ]
+                    for row in group[:20]
+                ],
+            )
+        )
+        if len(group) > 20:
+            clause_lines.extend(["", f"_Truncated to first 20 rows; full clause row count is {len(group)}._", ""])
+        else:
+            clause_lines.append("")
+    views["by_clause.md"] = clause_lines
+
+    capability_lines = ["# Imported Packet Requirements By Capability", "", baseline_note, ""]
+    for capability, group in sorted(by_capability.items()):
+        capability_lines.extend(
+            [
+                f"## {capability}",
+                "",
+                f"- Requirement rows: {len(group)}",
+                f"- Standards represented: {len({row.standard for row in group})}",
+                f"- Clauses represented: {len({(row.standard, row.clause) for row in group})}",
+                "",
+            ]
+        )
+        capability_lines.extend(
+            _markdown_table(
+                ["Standard", "Clause", "Rows", "Example feature"],
+                [
+                    [
+                        standard,
+                        clause,
+                        str(len(clause_group)),
+                        clause_group[0].feature,
+                    ]
+                    for (standard, clause), clause_group in sorted(
+                        (
+                            (key, [row for row in group if (row.standard, row.clause) == key])
+                            for key in {(row.standard, row.clause) for row in group}
+                        ),
+                        key=lambda item: (item[0][0], item[0][1]),
+                    )
+                ],
+            )
+        )
+        capability_lines.append("")
+    views["by_capability.md"] = capability_lines
+
+    service_lines = ["# Imported Packet Requirements By Service Group", "", baseline_note, ""]
+    for (standard, clause, service_name), group in sorted(by_service_group.items()):
+        service_lines.extend(
+            [
+                f"## {standard} Clause {clause} {service_name}",
+                "",
+                f"- Requirement rows: {len(group)}",
+                f"- Requirement types: {', '.join(sorted({row.requirement_type for row in group}))}",
+                "",
+            ]
+        )
+        service_lines.extend(
+            _markdown_table(
+                ["Requirement ID", "Type", "Feature", "Verification method"],
+                [
+                    [
+                        row.requirement_id,
+                        row.requirement_type,
+                        row.feature,
+                        row.verification_method,
+                    ]
+                    for row in group
+                ],
+            )
+        )
+        service_lines.append("")
+    views["by_service_group.md"] = service_lines
+
+    return views
+
+
+def write_imported_hla_packet_markdown_views(output_dir: Path, project_root: Path | None = None) -> dict[str, Path]:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    written: dict[str, Path] = {}
+    for name, lines in build_imported_hla_packet_markdown_views(project_root).items():
+        path = output_dir / name
+        path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        written[name] = path
+    return written
