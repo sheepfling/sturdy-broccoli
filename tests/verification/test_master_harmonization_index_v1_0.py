@@ -40,7 +40,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
 
     statuses = Counter(row["harmonization_status"] for row in rows)
     assert statuses == Counter(
-        {"mapped": 2554, "partial": 1449}
+        {"mapped": 2556, "partial": 1447}
     )
 
     by_id = {row["master_requirement_id"]: row for row in rows}
@@ -160,6 +160,11 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
     assert (
         by_id["HLA1516.2-OMT-OMT_NORM_NORMALIZATION-027"]["harmonization_status"]
         == "partial"
+    )
+    assert by_id["HLA1516.2-MERGE-PRINCIPLES-031"]["harmonization_status"] == "mapped"
+    assert (
+        by_id["HLA1516.2-OMT-OMT_NORM_MERGING_PRINCIPLES-028"]["harmonization_status"]
+        == "mapped"
     )
     assert by_id["HLA1516.1-CONF_FEDERATE-014"]["harmonization_status"] == "mapped"
     assert (

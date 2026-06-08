@@ -1136,6 +1136,102 @@ def test_merge_fom_modules_rejects_conflicting_duplicate_datatype_definitions(tm
         merge_fom_modules((parse_fom_xml(first), parse_fom_xml(second)))
 
 
+def test_merge_fom_modules_applies_normative_merging_principles_for_compatible_and_incompatible_inputs(
+    tmp_path: Path,
+):
+    compatible_a = tmp_path / "compatible-a.xml"
+    compatible_b = tmp_path / "compatible-b.xml"
+    conflict_datatype_a = tmp_path / "conflict-datatype-a.xml"
+    conflict_datatype_b = tmp_path / "conflict-datatype-b.xml"
+    conflict_time_a = tmp_path / "conflict-time-a.xml"
+    conflict_time_b = tmp_path / "conflict-time-b.xml"
+
+    compatible_a.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification><name>Compatible A</name><type>FOM</type></modelIdentification>
+  <time>
+    <timeStamp><dataType>HLAfloat64BE</dataType></timeStamp>
+    <lookahead><dataType>HLAfloat64BE</dataType></lookahead>
+  </time>
+  <dimensions><dimension><name>DimA</name></dimension></dimensions>
+  <objects><objectClass><name>HLAobjectRoot</name><objectClass><name>Entity</name></objectClass></objectClass></objects>
+  <dataTypes><simpleDataTypes><simpleData><name>SharedType</name><representation>HLAinteger32BE</representation></simpleData></simpleDataTypes></dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    compatible_b.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification><name>Compatible B</name><type>FOM</type></modelIdentification>
+  <time>
+    <timeStamp><dataType>HLAfloat64BE</dataType></timeStamp>
+    <lookahead><dataType>HLAfloat64BE</dataType></lookahead>
+  </time>
+  <dimensions><dimension><name>DimB</name></dimension></dimensions>
+  <objects><objectClass><name>HLAobjectRoot</name><objectClass><name>Entity</name><objectClass><name>Child</name></objectClass></objectClass></objectClass></objects>
+  <dataTypes><simpleDataTypes><simpleData><name>SharedType</name><representation>HLAinteger32BE</representation></simpleData></simpleDataTypes></dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    catalog = merge_fom_modules((parse_fom_xml(compatible_a), parse_fom_xml(compatible_b)))
+    assert catalog.dimensions == frozenset({"DimA", "DimB"})
+    assert "HLAobjectRoot.Entity" in catalog.object_classes
+    assert "HLAobjectRoot.Entity.Child" in catalog.object_classes
+    assert catalog.simple_datatypes["SharedType"].representation == "HLAinteger32BE"
+
+    conflict_datatype_a.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification><name>Datatype A</name><type>FOM</type></modelIdentification>
+  <dataTypes><simpleDataTypes><simpleData><name>SharedType</name><representation>HLAinteger32BE</representation></simpleData></simpleDataTypes></dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    conflict_datatype_b.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification><name>Datatype B</name><type>FOM</type></modelIdentification>
+  <dataTypes><simpleDataTypes><simpleData><name>SharedType</name><representation>HLAinteger64BE</representation></simpleData></simpleDataTypes></dataTypes>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    with pytest.raises(FOMMergeError, match="Conflicting simple datatype definition"):
+        merge_fom_modules((parse_fom_xml(conflict_datatype_a), parse_fom_xml(conflict_datatype_b)))
+
+    conflict_time_a.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification><name>Time A</name><type>FOM</type></modelIdentification>
+  <time>
+    <timeStamp><dataType>HLAfloat64BE</dataType></timeStamp>
+    <lookahead><dataType>HLAfloat64BE</dataType></lookahead>
+  </time>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    conflict_time_b.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification><name>Time B</name><type>FOM</type></modelIdentification>
+  <time>
+    <timeStamp><dataType>HLAinteger64BE</dataType></timeStamp>
+    <lookahead><dataType>HLAinteger64BE</dataType></lookahead>
+  </time>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    with pytest.raises(FOMMergeError, match="Conflicting logical time implementations"):
+        merge_fom_modules((parse_fom_xml(conflict_time_a), parse_fom_xml(conflict_time_b)))
+
+
 def test_serialize_fom_module_preserves_metadata_subset_across_round_trip(tmp_path: Path):
     module = FOMModule(
         source="synthetic",
