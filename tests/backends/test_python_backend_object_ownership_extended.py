@@ -550,12 +550,22 @@ def test_start_and_stop_registration_callbacks_are_delivered():
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("decl-registration-callback-fed")
     cls = owner.get_object_class_handle("HLAobjectRoot.Target")
 
+    owner_fed.clear()
     owner.backend._svc_startRegistrationForObjectClass(cls)
     owner.backend._svc_stopRegistrationForObjectClass(cls)
     drain(owner, observer)
 
-    started = owner_fed.last_callback("startRegistrationForObjectClass")
-    stopped = owner_fed.last_callback("stopRegistrationForObjectClass")
+    registration_callbacks = [
+        record for record in owner_fed.records
+        if record.method_name in {"startRegistrationForObjectClass", "stopRegistrationForObjectClass"}
+    ]
+    assert [record.method_name for record in registration_callbacks] == [
+        "startRegistrationForObjectClass",
+        "stopRegistrationForObjectClass",
+    ]
+
+    started = registration_callbacks[0]
+    stopped = registration_callbacks[1]
     assert started is not None
     assert started.args == (cls,)
     assert stopped is not None
@@ -570,12 +580,22 @@ def test_turn_interactions_on_and_off_callbacks_are_delivered():
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("decl-interaction-callback-fed")
     interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
 
+    owner_fed.clear()
     owner.backend._svc_turnInteractionsOn(interaction)
     owner.backend._svc_turnInteractionsOff(interaction)
     drain(owner, observer)
 
-    on = owner_fed.last_callback("turnInteractionsOn")
-    off = owner_fed.last_callback("turnInteractionsOff")
+    interaction_callbacks = [
+        record for record in owner_fed.records
+        if record.method_name in {"turnInteractionsOn", "turnInteractionsOff"}
+    ]
+    assert [record.method_name for record in interaction_callbacks] == [
+        "turnInteractionsOn",
+        "turnInteractionsOff",
+    ]
+
+    on = interaction_callbacks[0]
+    off = interaction_callbacks[1]
     assert on is not None
     assert on.args == (interaction,)
     assert off is not None
