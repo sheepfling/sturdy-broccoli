@@ -27,6 +27,7 @@ Backend and runtime docs:
 - [backend_route_inventory_baselines.md](backend_route_inventory_baselines.md): CERTI baseline attribution
 - [backend_route_inventory_remote.md](backend_route_inventory_remote.md): remote transport routes
 - [backend_route_inventory_commands.md](backend_route_inventory_commands.md): backend route commands
+- [backend_compliance_discovery.md](backend_compliance_discovery.md): shortest path to enumerating backend/spec compliance from generated artifacts
 - [rti_options_and_test_matrix.md](rti_options_and_test_matrix.md): operator-facing runtime and test matrix
 - [backend_capability_matrix.md](backend_capability_matrix.md): backend feature coverage
 - [backend_conformance_matrix.md](backend_conformance_matrix.md): clause-level conformance and parity status

@@ -247,6 +247,8 @@ class FederateState:
     service_report_initial_record_written: bool = False
     service_report_serial_number: int = 0
     service_report_records: list[dict[str, Any]] = field(default_factory=list)
+    callback_counts: dict[str, int] = field(default_factory=dict)
+    recent_callbacks: list[str] = field(default_factory=list)
     attribute_order_overrides: dict[tuple[ObjectInstanceHandle, AttributeHandle], OrderType] = field(default_factory=dict)
     interaction_order_overrides: dict[InteractionClassHandle, OrderType] = field(default_factory=dict)
     attribute_transportation_overrides: dict[tuple[ObjectInstanceHandle, AttributeHandle], TransportationTypeHandle] = field(default_factory=dict)

@@ -29,6 +29,7 @@ from hla2010.conformance import (
     write_service_conformance_csv,
     write_service_conformance_json,
 )
+from hla2010.testing.backend_compliance_discovery import write_vendor_discovery_backlog_artifacts
 from hla2010.verification import build_requirements_matrix_2010, write_traceability_csv, write_verification_assets
 from hla2010.verification import write_requirements_matrix_2010_csv, write_requirements_matrix_2010_json
 
@@ -2079,6 +2080,7 @@ def main(argv: list[str] | None = None) -> int:
         intro="This matrix records the dedicated Pitch backend verification slices and the current negotiated-ownership divergence.",
         profiles=_PITCH_BACKEND_SLICE_PROFILES,
     )
+    write_vendor_discovery_backlog_artifacts(REPO_ROOT)
     _write_completion_checklist_artifacts(matrix.rows, core_backend_rows)
     _write_unfinished_work_ranking_artifacts(core_backend_rows)
     return 0

@@ -70,6 +70,7 @@ Script families:
 - `run_target_radar_proof.py`: target/radar proof packet
 - `generate_fom_overview.py`: merged FOM/MIM tree and matrix overview packet, with optional interactive HTML output via `--html`
 - `generate_compliance_artifacts.py`: compliance and requirements packet
+- `discover_backend_compliance.py`: one-command backend/spec compliance discovery over the generated packet
 - `diagnose_pitch_exchange.py`: Pitch exchange diagnostics
 - `diagnose_pitch_negotiated_ownership.py`: Pitch negotiated-ownership diagnostics
 
@@ -83,6 +84,20 @@ When `generate_compliance_artifacts.py` finishes, the best operator entrypoints 
 - `analysis/compliance/extracted_requirements_clause7_9.md`: Clause 7/9 packet split into broad-spec and supported-subset rows
 - `analysis/compliance/supported_subset_policy.md`: explicit supported-subset policy statements for defended partial rows
 - `analysis/compliance/defended_partials_index.md`: review-facing index of broad partial rows and the narrower passing subset rows that defend them
+
+For the shortest “what do we know about backend compliance right now?” path:
+
+```bash
+python3 scripts/generate_compliance_artifacts.py
+python3 scripts/discover_backend_compliance.py --show-backlog
+```
+
+Use `--backend BACKEND_ID_OR_FAMILY`, `--section SECTION`, or `--priority PRIORITY` to narrow the backlog view, and `--format json` for machine-readable output.
+
+New generated backlog artifacts:
+
+- `analysis/compliance/vendor_discovery_backlog.json`
+- `analysis/compliance/vendor_discovery_backlog.md`
 
 ### CI Wrappers
 

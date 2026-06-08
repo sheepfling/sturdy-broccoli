@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
@@ -46,6 +47,11 @@ def _looks_like_artifact_ref(value: str) -> bool:
 
 def _path_like_refs(value: Any) -> list[str]:
     return [item for item in _split_semicolon_list(value) if _looks_like_artifact_ref(item)]
+
+
+def _extract_markdown_link_targets(value: Any) -> list[str]:
+    text = str(value or "")
+    return [match.strip() for match in re.findall(r"\[[^\]]+\]\(([^)]+)\)", text) if match.strip()]
 
 
 _CURATED_REQUIREMENT_DIRECT_REFS: dict[str, dict[str, tuple[str, ...]]] = {
@@ -478,6 +484,149 @@ def _load_curated_requirement_rows() -> list[dict[str, Any]]:
                 "source": "requirements/traceability_matrix.csv",
             }
     return [curated_rows_by_id[key] for key in sorted(curated_rows_by_id)]
+
+
+def _load_backend_conformance_vendor_rows() -> dict[str, dict[str, Any]]:
+    matrix_path = _repo_root() / "docs" / "backend_conformance_matrix.md"
+    if not matrix_path.exists():
+        return {}
+
+    rows_by_clause: dict[str, dict[str, Any]] = {}
+    for raw_line in matrix_path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line.startswith("|"):
+            continue
+        parts = [part.strip() for part in line.strip("|").split("|")]
+        if len(parts) < 7:
+            continue
+        if parts[0] in {"Clause", "---"}:
+            continue
+        clause = parts[0]
+        if not re.fullmatch(r"\d+(?:\.\d+)?", clause):
+            continue
+        rows_by_clause[clause] = {
+            "python_runtime_status": parts[2],
+            "certi_runtime_status": parts[3],
+            "pitch_runtime_status": parts[4],
+            "vendor_evidence_refs": _extract_markdown_link_targets(parts[5]),
+            "vendor_notes": "|".join(parts[6:]).strip(),
+            "vendor_source": "docs/backend_conformance_matrix.md",
+        }
+    return rows_by_clause
+
+
+def _load_operational_vendor_profiles() -> dict[str, list[dict[str, Any]]]:
+    matrix_path = _repo_root() / "docs" / "rti_options_and_test_matrix.md"
+    if not matrix_path.exists():
+        return {}
+
+    rows: list[dict[str, Any]] = []
+    in_table = False
+    for raw_line in matrix_path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if line.startswith("| Backend family | Bridge model | Transport | Exchange | Timed | Sync | Ownership | Negotiated Ownership | Real runtime |"):
+            in_table = True
+            continue
+        if not in_table:
+            continue
+        if not line.startswith("|"):
+            break
+        parts = [part.strip() for part in line.strip("|").split("|")]
+        if len(parts) != 9:
+            continue
+        if parts[0] == "---":
+            continue
+        rows.append(
+            {
+                "backend_family": parts[0],
+                "bridge_model": parts[1],
+                "transport": parts[2],
+                "exchange": parts[3],
+                "timed": parts[4],
+                "sync": parts[5],
+                "ownership": parts[6],
+                "negotiated ownership": parts[7],
+                "real runtime": parts[8],
+            }
+        )
+    return {"rows": rows, "source": "docs/rti_options_and_test_matrix.md"}
+
+
+def _extract_numeric_clause(section_ref: Any) -> str:
+    match = re.search(r"§\s*(\d+(?:\.\d+)?)", str(section_ref or ""))
+    return match.group(1) if match else ""
+
+
+def _section_root(section_ref: Any) -> str:
+    clause = _extract_numeric_clause(section_ref)
+    return clause.split(".", 1)[0] if clause else ""
+
+
+def _operational_capability_bucket(row: dict[str, Any]) -> str:
+    if str(row.get("document")) != "IEEE 1516.1-2010":
+        return ""
+    clause = _extract_numeric_clause(row.get("section_ref"))
+    root = clause.split(".", 1)[0] if clause else ""
+    title = str(row.get("title", "")).lower()
+    if root == "8":
+        return "Timed"
+    if root == "6":
+        return "Exchange"
+    if root == "7":
+        negotiated_tokens = ("negotiated", "acquisition", "divestiture", "release", "cancel", "assumption")
+        if any(token in title for token in negotiated_tokens):
+            return "Negotiated Ownership"
+        return "Ownership"
+    if root == "4" and clause in {"4.11", "4.12", "4.13", "4.14", "4.15"}:
+        return "Sync"
+    return ""
+
+
+def _operational_vendor_note(
+    row: dict[str, Any],
+    *,
+    profile_rows: dict[str, Any],
+) -> dict[str, Any]:
+    augmented = dict(row)
+    bucket = _operational_capability_bucket(augmented)
+    augmented.setdefault("vendor_profile_bucket", bucket)
+    if not bucket or not profile_rows:
+        augmented.setdefault("vendor_profile_refs", [])
+        augmented.setdefault("vendor_profile_notes", "")
+        augmented.setdefault("vendor_profile_source", "")
+        return augmented
+
+    matching: list[str] = []
+    for profile in profile_rows.get("rows", []):
+        value = profile.get(bucket.lower(), "")
+        matching.append(
+            f"{profile['backend_family']} ({profile['bridge_model']}, {profile['transport']}): {value}"
+        )
+    augmented.setdefault("vendor_profile_refs", [profile_rows.get("source", "")] if profile_rows.get("source") else [])
+    augmented.setdefault("vendor_profile_notes", "; ".join(matching))
+    augmented.setdefault("vendor_profile_source", profile_rows.get("source", ""))
+    return augmented
+
+
+def _with_vendor_parity(
+    row: dict[str, Any],
+    *,
+    vendor_rows_by_clause: dict[str, dict[str, Any]],
+    operational_vendor_profiles: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    augmented = dict(row)
+    clause = _extract_numeric_clause(augmented.get("section_ref"))
+    vendor = vendor_rows_by_clause.get(clause, {}) if str(augmented.get("document")) == "IEEE 1516.1-2010" else {}
+    augmented.setdefault("python_runtime_status", vendor.get("python_runtime_status", ""))
+    augmented.setdefault("certi_runtime_status", vendor.get("certi_runtime_status", ""))
+    augmented.setdefault("pitch_runtime_status", vendor.get("pitch_runtime_status", ""))
+    augmented.setdefault("vendor_evidence_refs", list(vendor.get("vendor_evidence_refs", ())))
+    augmented.setdefault("vendor_notes", vendor.get("vendor_notes", ""))
+    augmented.setdefault("vendor_source", vendor.get("vendor_source", ""))
+    return _operational_vendor_note(
+        augmented,
+        profile_rows=operational_vendor_profiles or {},
+    )
 
 
 @dataclass(frozen=True)
@@ -1273,6 +1422,8 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
     del project_root
     ledger = build_requirements_ledger(version=version)
     plan = build_verification_plan(version)
+    vendor_rows_by_clause = _load_backend_conformance_vendor_rows()
+    operational_vendor_profiles = _load_operational_vendor_profiles()
 
     rows: list[dict[str, Any]] = []
     verification_slice_rows: list[dict[str, Any]] = []
@@ -1321,21 +1472,25 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
     for key, ref in SERVICE_AREAS.items():
         section_status = _aggregate_status(section_area_inputs.get(ref.section, []))
         rows.append(
-            {
-                "matrix_id": f"AREA-1516.1-{ref.section}",
-                "kind": "section-area",
-                "document": ref.document,
-                "section_ref": f"{ref.document} §{ref.section}",
-                "title": ref.title,
-                "requirement_id": "",
-                "service_group": ref.title,
-                "status": section_status,
-                "implementation_refs": [],
-                "positive_test_refs": [],
-                "negative_test_refs": [],
-                "artifact_refs": [],
-                "source": key,
-            }
+            _with_vendor_parity(
+                {
+                    "matrix_id": f"AREA-1516.1-{ref.section}",
+                    "kind": "section-area",
+                    "document": ref.document,
+                    "section_ref": f"{ref.document} §{ref.section}",
+                    "title": ref.title,
+                    "requirement_id": "",
+                    "service_group": ref.title,
+                    "status": section_status,
+                    "implementation_refs": [],
+                    "positive_test_refs": [],
+                    "negative_test_refs": [],
+                    "artifact_refs": [],
+                    "source": key,
+                },
+                vendor_rows_by_clause=vendor_rows_by_clause,
+                operational_vendor_profiles=operational_vendor_profiles,
+            )
         )
 
     def _omt_requirement_id(section: str, source_key: str) -> str:
@@ -1345,21 +1500,25 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
     for key, ref in FOM_REFERENCES.items():
         requirement_id = _omt_requirement_id(ref.section, key)
         rows.append(
-            {
-                "matrix_id": requirement_id,
-                "kind": "omt-area",
-                "document": ref.document,
-                "section_ref": f"{ref.document} §{ref.section}",
-                "title": ref.title,
-                "requirement_id": requirement_id,
-                "service_group": "OMT/FOM",
-                "status": "planned",
-                "implementation_refs": [],
-                "positive_test_refs": [],
-                "negative_test_refs": [],
-                "artifact_refs": [],
-                "source": key,
-            }
+            _with_vendor_parity(
+                {
+                    "matrix_id": requirement_id,
+                    "kind": "omt-area",
+                    "document": ref.document,
+                    "section_ref": f"{ref.document} §{ref.section}",
+                    "title": ref.title,
+                    "requirement_id": requirement_id,
+                    "service_group": "OMT/FOM",
+                    "status": "planned",
+                    "implementation_refs": [],
+                    "positive_test_refs": [],
+                    "negative_test_refs": [],
+                    "artifact_refs": [],
+                    "source": key,
+                },
+                vendor_rows_by_clause=vendor_rows_by_clause,
+                operational_vendor_profiles=operational_vendor_profiles,
+            )
         )
 
     curated_requirement_ids: set[str] = set()
@@ -1372,26 +1531,36 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
             if not normalized.get("linked_assets"):
                 normalized["linked_assets"] = list(extracted_spec.get("linked_assets", ()))
         normalized["status"] = _normalize_requirement_status(str(row["status"]))
-        rows.append(normalized)
+        rows.append(
+            _with_vendor_parity(
+                normalized,
+                vendor_rows_by_clause=vendor_rows_by_clause,
+                operational_vendor_profiles=operational_vendor_profiles,
+            )
+        )
         curated_requirement_ids.add(str(normalized["requirement_id"]))
         section_ref = str(normalized["section_ref"])
     for row in ledger["rows"]:
         rows.append(
-            {
-                "matrix_id": row["requirement_id"],
-                "kind": "service-requirement",
-                "document": "IEEE 1516.1-2010",
-                "section_ref": row["section"],
-                "title": row["title"],
-                "requirement_id": row["requirement_id"],
-                "service_group": row["service_group"],
-                "status": row["outcome"],
-                "implementation_refs": row["implementation_refs"],
-                "positive_test_refs": row["positive_test_refs"],
-                "negative_test_refs": row["negative_test_refs"],
-                "artifact_refs": row["artifact_refs"],
-                "source": row["method"],
-            }
+            _with_vendor_parity(
+                {
+                    "matrix_id": row["requirement_id"],
+                    "kind": "service-requirement",
+                    "document": "IEEE 1516.1-2010",
+                    "section_ref": row["section"],
+                    "title": row["title"],
+                    "requirement_id": row["requirement_id"],
+                    "service_group": row["service_group"],
+                    "status": row["outcome"],
+                    "implementation_refs": row["implementation_refs"],
+                    "positive_test_refs": row["positive_test_refs"],
+                    "negative_test_refs": row["negative_test_refs"],
+                    "artifact_refs": row["artifact_refs"],
+                    "source": row["method"],
+                },
+                vendor_rows_by_clause=vendor_rows_by_clause,
+                operational_vendor_profiles=operational_vendor_profiles,
+            )
         )
 
     for spec in _EXTRACTED_REQUIREMENTS_1516_1_CLAUSES_5_6:
@@ -1470,27 +1639,31 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
         )
         )
         rows.append(
-            {
-                "matrix_id": spec["requirement_id"],
-                "kind": "extracted-requirement",
-                "document": "IEEE 1516.1-2010",
-                "section_ref": spec["section_ref"],
-                "title": spec["title"],
-                "requirement_id": spec["requirement_id"],
-                "service_group": spec["service_group"],
-                "status": status,
-                "implementation_refs": implementation_refs,
-                "positive_test_refs": positive_test_refs,
-                "negative_test_refs": negative_test_refs,
-                "artifact_refs": artifact_refs,
-                "linked_methods": list(spec.get("linked_methods", ())),
-                "linked_assets": list(spec.get("linked_assets", ())),
-                "claim_scope": spec.get("claim_scope", "broad-spec"),
-                "supported_subset_for": spec.get("supported_subset_for", ""),
-                "policy_basis": spec.get("policy_basis", ""),
-                "notes": spec.get("notes", ""),
-                "source": "curated-clause5-6",
-            }
+            _with_vendor_parity(
+                {
+                    "matrix_id": spec["requirement_id"],
+                    "kind": "extracted-requirement",
+                    "document": "IEEE 1516.1-2010",
+                    "section_ref": spec["section_ref"],
+                    "title": spec["title"],
+                    "requirement_id": spec["requirement_id"],
+                    "service_group": spec["service_group"],
+                    "status": status,
+                    "implementation_refs": implementation_refs,
+                    "positive_test_refs": positive_test_refs,
+                    "negative_test_refs": negative_test_refs,
+                    "artifact_refs": artifact_refs,
+                    "linked_methods": list(spec.get("linked_methods", ())),
+                    "linked_assets": list(spec.get("linked_assets", ())),
+                    "claim_scope": spec.get("claim_scope", "broad-spec"),
+                    "supported_subset_for": spec.get("supported_subset_for", ""),
+                    "policy_basis": spec.get("policy_basis", ""),
+                    "notes": spec.get("notes", ""),
+                    "source": "curated-clause5-6",
+                },
+                vendor_rows_by_clause=vendor_rows_by_clause,
+                operational_vendor_profiles=operational_vendor_profiles,
+            )
         )
         if spec["section_ref"].startswith("IEEE 1516.1-2010 §"):
             section = spec["section_ref"].split("§", 1)[1].split(".", 1)[0].strip()
@@ -1515,6 +1688,11 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
                 "artifact_refs": [item for item in asset.evidence if item.startswith("analysis/") or item.startswith("verification/")],
                 "source": asset.asset_id,
             }
+        )
+        asset_row = _with_vendor_parity(
+            asset_row,
+            vendor_rows_by_clause=vendor_rows_by_clause,
+            operational_vendor_profiles=operational_vendor_profiles,
         )
         verification_slice_rows.append(asset_row)
         rows.append(asset_row)
@@ -1603,6 +1781,16 @@ def write_requirements_matrix_2010_csv(
         "claim_scope",
         "supported_subset_for",
         "policy_basis",
+        "python_runtime_status",
+        "certi_runtime_status",
+        "pitch_runtime_status",
+        "vendor_evidence_refs",
+        "vendor_notes",
+        "vendor_source",
+        "vendor_profile_bucket",
+        "vendor_profile_refs",
+        "vendor_profile_notes",
+        "vendor_profile_source",
         "notes",
         "source",
     ]

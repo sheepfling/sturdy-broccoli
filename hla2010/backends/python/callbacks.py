@@ -31,6 +31,10 @@ class PythonRTICallbacksMixin:
             target.in_callback = True
             getattr(target.ambassador, method_name)(*args)
             self.delivered_callback_count += 1
+            target.callback_counts[method_name] = target.callback_counts.get(method_name, 0) + 1
+            target.recent_callbacks.append(method_name)
+            if len(target.recent_callbacks) > 16:
+                del target.recent_callbacks[:-16]
         except FederateInternalError:
             raise
         except BaseException as exc:

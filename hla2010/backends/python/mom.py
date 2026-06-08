@@ -332,6 +332,8 @@ class PythonRTIMomMixin(PythonRTIMomActionsMixin, PythonRTIMomReportingMixin):
             },
             "last_save_name": federation.last_save_name,
             "next_save_name": federation.next_save_name,
+            "callback_counts": dict(sorted(self.state.callback_counts.items())),
+            "recent_callbacks": list(self.state.recent_callbacks),
             "mim_uri": federation.mim_module.uri if federation.mim_module else None,
             "mom_object_classes": sorted(
                 name for name in federation.fom_catalog.object_classes if ".HLAmanager" in name

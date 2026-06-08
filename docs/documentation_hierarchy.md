@@ -26,6 +26,7 @@ Use these as the normal entry points:
 - [docs/backend_route_inventory_baselines.md](backend_route_inventory_baselines.md): CERTI baseline attribution
 - [docs/backend_route_inventory_remote.md](backend_route_inventory_remote.md): remote transport routes
 - [docs/backend_route_inventory_commands.md](backend_route_inventory_commands.md): route test commands
+- [docs/backend_compliance_discovery.md](backend_compliance_discovery.md): one-command backend/spec compliance discovery path
 - [docs/rti_options_and_test_matrix.md](rti_options_and_test_matrix.md): operator-facing runtime and test matrix
 - [docs/backend_capability_matrix.md](backend_capability_matrix.md): backend feature coverage
 - [docs/backend_conformance_matrix.md](backend_conformance_matrix.md): clause-level conformance and parity status
