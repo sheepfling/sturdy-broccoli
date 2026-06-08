@@ -40,7 +40,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
 
     statuses = Counter(row["harmonization_status"] for row in rows)
     assert statuses == Counter(
-        {"mapped": 2646, "partial": 1357}
+        {"mapped": 2650, "partial": 1353}
     )
 
     by_id = {row["master_requirement_id"]: row for row in rows}
@@ -78,6 +78,10 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
         by_id["HLA1516.1-OM-6_2-RTIAPI-001"]["harmonization_source_file"]
         == "hla1516_1_om_detailed_reconciliation.csv"
     )
+    assert by_id["HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-ARG-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-ARG-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_5-RESERVEMULTIPLEOBJECTINSTANCENAME-ARG-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_7-RELEASEMULTIPLEOBJECTINSTANCENAME-ARG-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_23-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_24-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_25-001"]["harmonization_status"] == "mapped"

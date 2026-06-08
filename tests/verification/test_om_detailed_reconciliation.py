@@ -22,7 +22,7 @@ def test_om_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 391
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 270, "partial": 121}
+        {"mapped": 274, "partial": 117}
     )
     assert Counter((row["reconciliation_kind"], row["current_status"]) for row in rows) == Counter(
         {
@@ -38,7 +38,7 @@ def test_om_detailed_reconciliation_has_expected_shape():
             ("CB_ORDER", "partial"): 17,
             ("CB", "mapped"): 17,
             ("CB_PAYLOAD", "mapped"): 17,
-            ("ARG", "mapped"): 15,
+            ("ARG", "mapped"): 19,
             ("EXC", "partial"): 14,
             ("MOM", "mapped"): 14,
             ("PRE", "partial"): 10,
@@ -47,7 +47,6 @@ def test_om_detailed_reconciliation_has_expected_shape():
             ("TEST", "mapped"): 14,
             ("FED_CB", "partial"): 6,
             ("RET", "mapped"): 5,
-            ("ARG", "partial"): 4,
             ("PRE", "mapped"): 4,
             ("EFF", "mapped"): 3,
         }
@@ -66,6 +65,10 @@ def test_om_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-OM-6_2-RTIAPI-001-MOM"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_3-FEDCB-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_3-FEDCB-001-ORD"]["current_status"] == "partial"
+    assert rows["HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-ARG-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-ARG-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_5-RESERVEMULTIPLEOBJECTINSTANCENAME-ARG-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_7-RELEASEMULTIPLEOBJECTINSTANCENAME-ARG-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB_PAYLOAD-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB-001"]["current_status"] == "mapped"
@@ -82,3 +85,20 @@ def test_om_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-SVC-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-TEST-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_29-RTIAPI-001"]["current_status"] == "mapped"
+
+
+def test_clause_6_object_name_argument_rows_use_direct_name_service_evidence():
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+
+    expected = {
+        "HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-ARG-001": "tests/backends/test_python_backend_time_ddm_extended.py::test_name_reservation_ddm_regions_ownership_and_time_support",
+        "HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-ARG-001": "tests/backends/test_python_backend_object_ownership_extended.py::test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_5-RESERVEMULTIPLEOBJECTINSTANCENAME-ARG-001": "tests/backends/test_python_backend_object_ownership_extended.py::test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore",
+        "HLA1516.1-OM-6_7-RELEASEMULTIPLEOBJECTINSTANCENAME-ARG-001": "tests/backends/test_python_backend_object_ownership_extended.py::test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore",
+    }
+
+    for packet_id, test_id in expected.items():
+        row = rows[packet_id]
+        assert row["current_status"] == "mapped"
+        assert row["current_test_id"] == test_id
+        assert "node-level" in row["notes"]
