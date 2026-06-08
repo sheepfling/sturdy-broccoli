@@ -17,6 +17,7 @@ from ...exceptions import (
 from ...fom import validate_encoded_datatype_value
 from ...handles import (
     AttributeHandle,
+    FederateHandle,
     InteractionClassHandle,
     MessageRetractionHandle,
     ObjectClassHandle,
@@ -631,9 +632,18 @@ class PythonRTIObjectDeliveryMixin:
             theType,
         )
 
-    def _svc_queryInteractionTransportationType(self, theClass: InteractionClassHandle) -> None:
+    def _svc_queryInteractionTransportationType(
+        self,
+        *args: FederateHandle | InteractionClassHandle,
+    ) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
+        if len(args) == 1:
+            theClass = args[0]
+        elif len(args) == 2:
+            _theFederate, theClass = args
+        else:
+            raise TypeError("queryInteractionTransportationType expects one or two arguments")
         self.engine.interaction_for_handle(theClass)
         assert self.state.handle is not None
         transport = self._transportation_type_for_interaction(theClass)

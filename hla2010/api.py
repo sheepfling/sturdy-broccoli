@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from .handles import FederateHandle
 from .raw_api import FederateAmbassador as RawFederateAmbassador
 from .raw_api import RTIambassador as RawRTIambassador
 
@@ -371,6 +372,14 @@ class PythonicRTIAmbassadorMixin:
 
     def query_lookahead(self, *args: Any, **kwargs: Any) -> Any:
         return self.queryLookahead(*args, **kwargs)
+
+    def query_interaction_transportation_type(self, *args: Any, **kwargs: Any) -> Any:
+        if len(args) == 1 and not kwargs:
+            backend = getattr(self, "backend", None)
+            state = getattr(backend, "state", None)
+            handle = getattr(state, "handle", None) or FederateHandle(0)
+            return self.queryInteractionTransportationType(handle, args[0])
+        return self.queryInteractionTransportationType(*args, **kwargs)
 
     def register_federation_synchronization_point(self, *args: Any, **kwargs: Any) -> Any:
         return self.registerFederationSynchronizationPoint(*args, **kwargs)

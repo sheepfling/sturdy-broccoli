@@ -677,7 +677,7 @@ def test_transportation_type_services_emit_confirm_and_report_callbacks():
     owner.request_attribute_transportation_type_change(obj, {attr}, best_effort)
     owner.query_attribute_transportation_type(obj, attr)
     owner.request_interaction_transportation_type_change(interaction, best_effort)
-    owner.backend._svc_queryInteractionTransportationType(interaction)
+    owner.query_interaction_transportation_type(interaction)
     drain(owner, observer)
 
     assert owner.backend.state.attribute_transportation_overrides[(obj, attr)] == best_effort
@@ -1331,11 +1331,11 @@ def test_query_attribute_transportation_type_and_reserve_multiple_names_reject_n
 def test_query_interaction_transportation_type_rejects_not_connected_not_joined_invalid_handle_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.backend._svc_queryInteractionTransportationType(object())
+        rti.query_interaction_transportation_type(object())
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.backend._svc_queryInteractionTransportationType(object())
+        rti.query_interaction_transportation_type(object())
     rti.disconnect()
 
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("query-interaction-transport-negative-fed")
@@ -1343,13 +1343,20 @@ def test_query_interaction_transportation_type_rejects_not_connected_not_joined_
     owner_fed.clear()
 
     with pytest.raises(InvalidInteractionClassHandle):
-        owner.backend._svc_queryInteractionTransportationType(type(interaction)(interaction.value + 1000))
+        owner.query_interaction_transportation_type(type(interaction)(interaction.value + 1000))
     assert owner_fed.callbacks_named("reportInteractionTransportationType") == []
+
+    owner.query_interaction_transportation_type(interaction)
+    drain(owner, observer)
+    report = owner_fed.last_callback("reportInteractionTransportationType")
+    assert report is not None
+    assert report.args == (owner.backend.state.handle, interaction, owner.backend.engine.transportation_reliable)
+    owner_fed.clear()
 
     owner.request_federation_save("QUERY-INTERACTION-TRANSPORT-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.backend._svc_queryInteractionTransportationType(interaction)
+        owner.query_interaction_transportation_type(interaction)
 
     owner.federate_save_begun()
     observer.federate_save_begun()
@@ -1360,7 +1367,7 @@ def test_query_interaction_transportation_type_rejects_not_connected_not_joined_
     owner.request_federation_restore("QUERY-INTERACTION-TRANSPORT-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.backend._svc_queryInteractionTransportationType(interaction)
+        owner.query_interaction_transportation_type(interaction)
 
     owner.abort_federation_restore()
     drain(owner, observer)
@@ -1393,7 +1400,7 @@ def test_name_release_and_query_interaction_transport_tail_reject_not_connected_
     with pytest.raises(SaveInProgress):
         owner.release_multiple_object_instance_name({"a", "b"})
     with pytest.raises(SaveInProgress):
-        owner.backend._svc_queryInteractionTransportationType(interaction)
+        owner.query_interaction_transportation_type(interaction)
 
     owner.federate_save_begun()
     observer.federate_save_begun()
@@ -1408,7 +1415,7 @@ def test_name_release_and_query_interaction_transport_tail_reject_not_connected_
     with pytest.raises(RestoreInProgress):
         owner.release_multiple_object_instance_name({"a", "b"})
     with pytest.raises(RestoreInProgress):
-        owner.backend._svc_queryInteractionTransportationType(interaction)
+        owner.query_interaction_transportation_type(interaction)
 
     owner.abort_federation_restore()
     drain(owner, observer)

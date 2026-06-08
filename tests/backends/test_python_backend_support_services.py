@@ -716,7 +716,7 @@ def test_fom_declared_transport_defaults_apply_to_attributes_and_interactions(tm
     assert receive.args[4] == best_effort
 
     subscriber.query_attribute_transportation_type(obj, subscriber.get_attribute_handle(child, "Payload"))
-    subscriber.backend._svc_queryInteractionTransportationType(interaction)
+    subscriber.query_interaction_transportation_type(interaction)
     drain(publisher, subscriber)
     report_attr = sub_fed.last_callback("reportAttributeTransportationType")
     report_interaction = sub_fed.last_callback("reportInteractionTransportationType")
