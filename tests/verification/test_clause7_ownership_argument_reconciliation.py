@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import csv
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 
@@ -51,10 +51,32 @@ def test_clause7_ownership_argument_rows_use_direct_negative_path_nodes():
 def test_clause7_ownership_argument_status_counts_reflect_promoted_rows():
     rows = _load_rows()
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 94, "partial": 30}
+        {"mapped": 105, "partial": 19}
     )
 
     arg_rows = [row for row in rows if row["reconciliation_kind"] == "ARG"]
     assert Counter(row["current_status"] for row in arg_rows) == Counter(
         {"mapped": 11}
     )
+
+
+def test_clause7_ownership_test_rows_have_direct_evidence_and_mapped_companion_slices():
+    rows = _load_rows()
+    by_feature: dict[str, dict[str, dict[str, str]]] = defaultdict(dict)
+    for row in rows:
+        by_feature[row["feature"]][row["reconciliation_kind"]] = row
+
+    test_rows = [row for row in rows if row["reconciliation_kind"] == "TEST"]
+    assert len(test_rows) == 11
+
+    for row in test_rows:
+        assert row["current_status"] == "mapped"
+        assert "broader ARG, PRE, and EXC envelope rows remain partial" in row["notes"]
+
+        feature_rows = by_feature[row["feature"]]
+        for companion_kind in ("SIG", "MOM", "EFF"):
+            assert feature_rows[companion_kind]["current_status"] == "mapped"
+
+        test_ids = [item.strip() for item in row["current_test_id"].split(";") if item.strip()]
+        assert test_ids
+        assert all(_node_exists(test_id) for test_id in test_ids)
