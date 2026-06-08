@@ -9,6 +9,7 @@ lint.sh: run the required lint/syntax gate.
 Evidence:
 - ruff E9/F63/F7/F82 on hla2010, tests, scripts, tools
 - python compileall on repo Python sources
+- canonical imported requirements packet validation
 - generated-doc sync check
 EOF
   exit 0
@@ -27,4 +28,5 @@ for target in hla2010 tests tools; do
 done
 
 python -m compileall -q "${COMPILE_TARGETS[@]}"
+"$ROOT_DIR/scripts/ci/requirements_lint.sh"
 "$ROOT_DIR/scripts/ci/check_generated_docs.sh"

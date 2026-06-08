@@ -105,6 +105,7 @@ New generated backlog artifacts:
 - `ci/install_python.sh`: local QA environment install
 - `ci/full_sequence.sh`: full verification sequence with lint and type annotations
 - `ci/lint.sh`: required lint/syntax gate
+- `ci/requirements_lint.sh`: canonical imported requirements packet gate
 - `ci/lint_backlog.sh`: broader Ruff backlog report
 - `ci/lint_strict.sh`: stricter opt-in Ruff gate
 - `ci/pyright.sh`: scoped Pyright gate used by the full verification sequence
