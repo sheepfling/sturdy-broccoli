@@ -447,6 +447,33 @@ def test_unsubscribe_object_class_attributes_removes_interest_in_future_reflecti
     tx.destroy_federation_execution("dm-unsubscribe-interest-fed")
 
 
+def test_unsubscribe_interaction_class_removes_interest_in_future_interactions():
+    _, tx, rx, _tx_fed, rx_fed, _h1, _h2 = joined_pair("dm-unsubscribe-interaction-fed")
+    interaction = tx.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    track_id = tx.get_parameter_handle(interaction, "TrackId")
+
+    tx.publish_interaction_class(interaction)
+    rx.subscribe_interaction_class(interaction)
+    tx.send_interaction(interaction, {track_id: b"before-unsubscribe"}, b"dm-before-unsubscribe")
+    drain(tx, rx)
+    received = rx_fed.last_callback("receiveInteraction")
+    assert received is not None
+    assert received.args[0] == interaction
+    assert received.args[1][track_id] == b"before-unsubscribe"
+
+    rx.unsubscribe_interaction_class(interaction)
+    assert interaction not in rx.backend.state.subscribed_interactions
+    rx_fed.clear()
+
+    tx.send_interaction(interaction, {track_id: b"after-unsubscribe"}, b"dm-after-unsubscribe")
+    drain(tx, rx)
+    assert not rx_fed.callbacks_named("receiveInteraction")
+
+    tx.resign_federation_execution(ResignAction.NO_ACTION)
+    rx.resign_federation_execution(ResignAction.NO_ACTION)
+    tx.destroy_federation_execution("dm-unsubscribe-interaction-fed")
+
+
 def test_ddm_object_scope_filter_blocks_out_of_scope_reflects_until_regions_overlap():
     _, tx, rx, _tx_fed, rx_fed, _h1, _h2 = joined_pair("ddm-object-scope-fed")
     cls = tx.get_object_class_handle("HLAobjectRoot.Target")
