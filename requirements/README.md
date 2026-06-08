@@ -10,6 +10,7 @@ Use it to track the three standards as three requirement sources:
 - `hla1516_1_priority_clauses_4_8_11.csv`: first clause-level extraction tranche for lifecycle time and MOM
 - `hla1516_1_clause_4_fm_service_decomposition.csv`: harmonized Federation Management service decomposition for core lifecycle services using `SIG/PRE/EFF/CB/EXC/MOM/TEST` row kinds
 - `hla1516_1_clause_5_declaration_management.csv`: clause-level declaration-management extraction tranche
+- `hla1516_1_clause_5_dm_detailed_reconciliation.csv`: packet-derived detailed Clause 5 service reconciliation keyed to current repo tests and statuses
 - `hla1516_1_clause_6_object_management.csv`: clause-level object-management extraction tranche including scoped transport supported-subset rows
 - `hla1516_1_priority_clauses_7_9_10.csv`: second clause-level extraction tranche for ownership DDM and support services
 - `hla1516_2_omt.csv`: IEEE 1516.2-2010 OMT/FOM/MIM families
@@ -42,6 +43,7 @@ The first concrete clause-level extraction tranches are:
 - `hla1516_1_priority_clauses_4_8_11.csv`
 - `hla1516_1_clause_4_fm_service_decomposition.csv`
 - `hla1516_1_clause_5_declaration_management.csv`
+- `hla1516_1_clause_5_dm_detailed_reconciliation.csv`
 - `hla1516_1_clause_6_object_management.csv`
 - `hla1516_clause_12_save_restore.csv`
 - `hla1516_1_priority_clauses_7_9_10.csv`
@@ -58,6 +60,8 @@ The first concrete clause-level extraction tranches are:
 - `TEST`: executable verification and transport-equivalence expectations
 
 This decomposition file is still an engineering seed. It is deliberately narrower than a certified paragraph-by-paragraph extraction and should be expanded clause-by-clause as the spec text is normalized.
+
+`hla1516_1_clause_5_dm_detailed_reconciliation.csv` plays a similar bridge role for Declaration Management, but starts from the imported packet's finer-grained `SVC/SIG/ARG/PRE/EFF/EXC/MOM/TEST` service slices and maps them onto the repo's current tests and `mapped/partial/planned` status vocabulary.
 
 The canonical hierarchy view for these sources lives in
 [`docs/verification/requirements_hierarchy.md`](../docs/verification/requirements_hierarchy.md).
