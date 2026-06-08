@@ -40,7 +40,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
 
     statuses = Counter(row["harmonization_status"] for row in rows)
     assert statuses == Counter(
-        {"mapped": 2616, "partial": 1387}
+        {"mapped": 2626, "partial": 1377}
     )
 
     by_id = {row["master_requirement_id"]: row for row in rows}
@@ -73,6 +73,16 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
         by_id["HLA1516.1-OM-6_2-RTIAPI-001"]["harmonization_source_file"]
         == "hla1516_1_om_detailed_reconciliation.csv"
     )
+    assert by_id["HLA1516.1-OM-6_12-SENDINTERACTION-TEST-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-TEST-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-SVC-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-TEST-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-SVC-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-TEST-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-SVC-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-TEST-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-SVC-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-TEST-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-OVERVIEW-007"]["harmonization_status"] == "partial"
     assert by_id["HLA1516.1-TM-OVERVIEW-009"]["harmonization_status"] == "partial"
     assert (

@@ -22,7 +22,7 @@ def test_om_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 391
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 248, "partial": 143}
+        {"mapped": 258, "partial": 133}
     )
     assert Counter((row["reconciliation_kind"], row["current_status"]) for row in rows) == Counter(
         {
@@ -42,15 +42,13 @@ def test_om_detailed_reconciliation_has_expected_shape():
             ("EXC", "partial"): 14,
             ("MOM", "mapped"): 14,
             ("PRE", "partial"): 10,
-            ("SVC", "mapped"): 10,
+            ("SVC", "mapped"): 14,
             ("seed", "partial"): 9,
-            ("TEST", "mapped"): 8,
+            ("TEST", "mapped"): 14,
             ("FED_CB", "partial"): 6,
-            ("TEST", "partial"): 6,
             ("RET", "mapped"): 5,
             ("ARG", "partial"): 4,
             ("PRE", "mapped"): 4,
-            ("SVC", "partial"): 4,
             ("EFF", "mapped"): 3,
             ("CB", "partial"): 2,
             ("CB_PAYLOAD", "partial"): 2,
@@ -72,5 +70,14 @@ def test_om_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-OM-6_3-FEDCB-001-ORD"]["current_status"] == "partial"
     assert rows["HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB_PAYLOAD-001"]["current_status"] == "partial"
     assert rows["HLA1516.1-OM-6_20-PROVIDEATTRIBUTEVALUEUPDATE-CB_PAYLOAD-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-TEST-001"]["current_status"] == "partial"
+    assert rows["HLA1516.1-OM-6_12-SENDINTERACTION-TEST-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-TEST-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-SVC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-TEST-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-SVC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-TEST-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-SVC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-TEST-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-SVC-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-TEST-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_29-RTIAPI-001"]["current_status"] == "mapped"
