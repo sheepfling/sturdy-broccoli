@@ -40,7 +40,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
 
     statuses = Counter(row["harmonization_status"] for row in rows)
     assert statuses == Counter(
-        {"unreconciled": 1155, "mapped": 1830, "partial": 1017, "planned": 1}
+        {"unreconciled": 788, "mapped": 1833, "partial": 1381, "planned": 1}
     )
 
     by_id = {row["master_requirement_id"]: row for row in rows}
@@ -74,6 +74,12 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
         == "hla1516_1_om_detailed_reconciliation.csv"
     )
     assert by_id["HLA1516.1-OM-OVERVIEW-007"]["harmonization_status"] == "partial"
+    assert by_id["HLA1516.2-XML-DIF-032"]["harmonization_status"] == "mapped"
+    assert (
+        by_id["HLA1516.2-XML-DIF-032"]["harmonization_source_file"]
+        == "hla1516_xml_detailed_reconciliation.csv"
+    )
+    assert by_id["HLA1516.2-XML-ELEM-001"]["harmonization_status"] == "partial"
     assert by_id["HLA1516.1-FM-4_3-RTIAPI-001-MOM"]["harmonization_status"] == "planned"
     assert by_id["HLA1516.1-SUP-OVERVIEW-013"]["harmonization_status"] == "partial"
     assert (
