@@ -32,6 +32,19 @@ The repo also carries a versioned raw packet intake at
 Use that import tree when you need the external v1.0 dump, its manifest,
 history files, or the integration workpacket.
 
+For packet-facing canonical access inside this repo, use:
+
+- `requirements/latest`: canonical packet latest bundle
+- `requirements/catalogs`: carried-forward packet catalogs
+- `requirements/history`: packet history bundle
+- `requirements/dashboards`: packet dashboard previews
+- `requirements/manifests`: committed packet manifest entrypoints
+
+Those packet-facing paths are stable repo-native entrypoints layered on top of
+the versioned import tree. The import tree remains the source of truth for the
+raw packet version, while these canonical paths are the place to point repo
+tooling, docs, and reviewers when they need the packet asset families.
+
 That import is deliberately not flattened onto the curated top-level
 `requirements/*.csv` files. The top-level files remain the harmonized
 working set for repo-native requirement engineering.
