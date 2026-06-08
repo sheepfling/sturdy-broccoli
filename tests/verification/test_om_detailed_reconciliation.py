@@ -22,7 +22,7 @@ def test_om_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 391
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 266, "partial": 125}
+        {"mapped": 270, "partial": 121}
     )
     assert Counter((row["reconciliation_kind"], row["current_status"]) for row in rows) == Counter(
         {
@@ -36,8 +36,8 @@ def test_om_detailed_reconciliation_has_expected_shape():
             ("MOM_TRACE", "mapped"): 19,
             ("FED_CB", "mapped"): 19,
             ("CB_ORDER", "partial"): 17,
-            ("CB", "mapped"): 15,
-            ("CB_PAYLOAD", "mapped"): 15,
+            ("CB", "mapped"): 17,
+            ("CB_PAYLOAD", "mapped"): 17,
             ("ARG", "mapped"): 15,
             ("EXC", "partial"): 14,
             ("MOM", "mapped"): 14,
@@ -50,8 +50,6 @@ def test_om_detailed_reconciliation_has_expected_shape():
             ("ARG", "partial"): 4,
             ("PRE", "mapped"): 4,
             ("EFF", "mapped"): 3,
-            ("CB", "partial"): 2,
-            ("CB_PAYLOAD", "partial"): 2,
         }
     )
     assert {row["source_packet_file"] for row in rows} == {
@@ -68,7 +66,10 @@ def test_om_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-OM-6_2-RTIAPI-001-MOM"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_3-FEDCB-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_3-FEDCB-001-ORD"]["current_status"] == "partial"
-    assert rows["HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB_PAYLOAD-001"]["current_status"] == "partial"
+    assert rows["HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB_PAYLOAD-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB_PAYLOAD-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_20-PROVIDEATTRIBUTEVALUEUPDATE-CB_PAYLOAD-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_12-SENDINTERACTION-TEST-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-TEST-001"]["current_status"] == "mapped"

@@ -92,3 +92,22 @@ def test_clause_6_send_and_delete_test_rows_have_direct_node_level_evidence():
         test_ids = [item.strip() for item in row["current_test_id"].split(";") if item.strip()]
         assert test_ids
         assert all(_node_exists(test_id) for test_id in test_ids)
+
+
+def test_clause_6_reflect_and_receive_callback_rows_have_direct_payload_evidence():
+    rows = _load_rows()
+    targets = {
+        "HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB-001": "reflectAttributeValues",
+        "HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB_PAYLOAD-001": "reflectAttributeValues",
+        "HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB-001": "receiveInteraction",
+        "HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB_PAYLOAD-001": "receiveInteraction",
+    }
+    selected = [row for row in rows if row["packet_requirement_id"] in targets]
+    assert len(selected) == len(targets)
+
+    for row in selected:
+        assert row["current_status"] == "mapped"
+        assert "node-level" in row["notes"]
+        test_ids = [item.strip() for item in row["current_test_id"].split(";") if item.strip()]
+        assert test_ids
+        assert all(_node_exists(test_id) for test_id in test_ids)

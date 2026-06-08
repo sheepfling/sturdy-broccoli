@@ -40,7 +40,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
 
     statuses = Counter(row["harmonization_status"] for row in rows)
     assert statuses == Counter(
-        {"mapped": 2634, "partial": 1369}
+        {"mapped": 2638, "partial": 1365}
     )
 
     by_id = {row["master_requirement_id"]: row for row in rows}
@@ -81,6 +81,16 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
     assert by_id["HLA1516.1-OM-6_28-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_29-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_30-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB-001"]["harmonization_status"] == "mapped"
+    assert (
+        by_id["HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB-001"][
+            "harmonization_source_file"
+        ]
+        == "hla1516_1_om_detailed_reconciliation.csv"
+    )
+    assert by_id["HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB_PAYLOAD-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB-001"]["harmonization_status"] == "mapped"
+    assert by_id["HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB_PAYLOAD-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_12-SENDINTERACTION-TEST-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-TEST-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-SVC-001"]["harmonization_status"] == "mapped"
