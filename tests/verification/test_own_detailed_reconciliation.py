@@ -1,0 +1,50 @@
+from __future__ import annotations
+
+import csv
+from collections import Counter
+from pathlib import Path
+
+
+RECONCILIATION_PATH = (
+    Path(__file__).resolve().parents[2]
+    / "requirements"
+    / "hla1516_1_own_detailed_reconciliation.csv"
+)
+
+
+def _read_rows() -> list[dict[str, str]]:
+    with RECONCILIATION_PATH.open(newline="", encoding="utf-8") as handle:
+        return list(csv.DictReader(handle))
+
+
+def test_ownership_detailed_reconciliation_has_expected_shape():
+    rows = _read_rows()
+
+    assert len(rows) == 225
+    assert Counter(row["current_status"] for row in rows) == Counter(
+        {"mapped": 177, "partial": 48}
+    )
+    assert {row["source_packet_file"] for row in rows} == {
+        "hla_1516_requirements_master_v1_0.csv"
+    }
+
+
+def test_ownership_detailed_reconciliation_spot_checks_key_rows():
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+
+    assert rows["HLA1516.1-OWN-OVERVIEW-008"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OWN-OVERVIEW-008"]["reconciliation_kind"] == "seed"
+    assert rows["HLA1516.1-OWN-7_2-RTIAPI-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OWN-7_2-RTIAPI-001"]["reconciliation_kind"] == "RTI_API"
+    assert rows["HLA1516.1-OWN-7_2-RTIAPI-001-EXC"]["current_status"] == "partial"
+    assert rows["HLA1516.1-OWN-7_2-RTIAPI-001-EXC"]["reconciliation_kind"] == "EXC_API"
+    assert rows["HLA1516.1-OWN-7_2-RTIAPI-001-MOM"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OWN-7_2-RTIAPI-001-MOM"]["reconciliation_kind"] == "MOM_TRACE"
+    assert rows["HLA1516.1-OWN-7_4-FEDCB-001"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OWN-7_4-FEDCB-001"]["reconciliation_kind"] == "FED_CB"
+    assert rows["HLA1516.1-OWN-7_4-FEDCB-001-ORD"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OWN-7_4-FEDCB-001-ORD"]["reconciliation_kind"] == "CB_ORD"
+    assert rows["HLA1516.1-OWN-7_13-RTIAPI-001-RET"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OWN-7_13-RTIAPI-001-RET"]["reconciliation_kind"] == "RET"
+    assert rows["HLA1516.1-OWN-7_19-RTIAPI-001-RET"]["current_status"] == "mapped"
+    assert rows["HLA1516.1-OWN-7_19-RTIAPI-001-RET"]["reconciliation_kind"] == "RET"
