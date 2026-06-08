@@ -29,6 +29,9 @@ For the canonical documentation hierarchy, start with
 For the script hierarchy and operator entrypoints, see
 [`scripts/README.md`](scripts/README.md).
 
+For the full documented lifecycle sequence, see
+[`docs/verification/run_sequence.md`](docs/verification/run_sequence.md).
+
 The boundary is intentional:
 
 - `hla2010/` is the installable package.
@@ -157,6 +160,26 @@ separate cleanup pass.
 - section-by-section compliance summary
 - public class `1:1` vs adapted inventory
 - rows that still lack exact requirement-level executable evidence
+
+## Full Verification Sequence
+
+When you want the single easy-run path that exercises install, compilation,
+lint/type annotations, unit tests, integration smoke, integration tests,
+compliance matrices, and the documented backend evidence checks, use:
+
+```bash
+./scripts/ci/full_sequence.sh
+```
+
+The runbook at [`docs/verification/run_sequence.md`](docs/verification/run_sequence.md)
+describes the exact order and what each stage means.
+
+The sequence is designed to be practical for local reruns:
+
+- the Python, CERTI, and Pitch smoke gates are included where available
+- known partial vendor areas are treated as skips rather than hidden failures
+- the target/radar matrix uses the core three-backend subset in the default
+  sequence so the documented path stays reasonably quick and reproducible
 
 ## Two-federate evidence
 
