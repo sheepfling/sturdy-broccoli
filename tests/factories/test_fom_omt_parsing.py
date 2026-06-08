@@ -1746,12 +1746,35 @@ def test_1516_2_hierarchy_doc_declares_omt_lexicon_and_conformance_boundary():
         Path(__file__).resolve().parents[2] / "docs" / "verification" / "requirements_hierarchy.md"
     ).read_text(encoding="utf-8")
 
+    assert "## OMT Scope" in text
+    assert "covers FOM modules, SOM modules, the standard MIM" in text
+    assert "supported interchange scope is the IEEE `1516.2-2010` XML object-model format" in text
+    assert "## OMT Purpose" in text
+    assert "preserve enough interoperable object-model structure" in text
+    assert "shared object classes, interaction classes, attributes, parameters, datatypes, dimensions" in text
+    assert "## OMT Background" in text
+    assert "wider HLA product set tracked in this repo" in text
+    assert "runtime capabilities, requirements ledgers, and verification evidence" in text
     assert "## OMT Lexicon" in text
+    assert "definitional bridge between OMT tables and executable object-model semantics" in text
     assert "`FOM module`" in text
     assert "`SOM module`" in text
     assert "`MIM`" in text
     assert "`FDD`" in text
+    assert "Object-class definitions carry the documentation, validation, and traceability meaning" in text
+    assert "Interaction-class definitions carry the documentation, validation, and traceability meaning" in text
+    assert "Attribute definitions carry the documentation, validation, and traceability meaning" in text
+    assert "Parameter definitions carry the documentation, validation, and traceability meaning" in text
     assert "## Conformance Claim Boundary" in text
     assert "does not claim full IEEE 1516.2-2010 conformance" in text
+    assert "The current conformance labels used in this repo are:" in text
+    assert "`mapped`: directly implemented and backed by executable or generated proof." in text
+    assert "`partial`: intentionally narrower than the full standard statement" in text
     assert "`mapped` requirement rows identify the implemented and executable OMT subset only" in text
     assert "`planned` requirement rows identify unimplemented" in text
+    assert "schema validation" in text
+    assert "semantic validation" in text
+    assert "reference validation" in text
+    assert "merge validation" in text
+    assert "parse/serialize round-trip validation" in text
+    assert "serviceUtilization" in text

@@ -40,7 +40,7 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
 
     statuses = Counter(row["harmonization_status"] for row in rows)
     assert statuses == Counter(
-        {"mapped": 2542, "partial": 1461}
+        {"mapped": 2552, "partial": 1451}
     )
 
     by_id = {row["master_requirement_id"]: row for row in rows}
@@ -129,10 +129,28 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
         == "partial"
     )
     assert by_id["HLA1516.1-DM-5_10-FEDCB-001"]["harmonization_status"] == "mapped"
-    assert by_id["HLA1516.2-OMT-OMT_SCOPE-001"]["harmonization_status"] == "partial"
+    assert by_id["HLA1516.2-OMT-OMT_SCOPE-001"]["harmonization_status"] == "mapped"
     assert (
         by_id["HLA1516.2-OMT-OMT_SCOPE-001"]["harmonization_source_file"]
         == "hla1516_2_omt_detailed_reconciliation.csv"
+    )
+    assert (
+        by_id["HLA1516.2-OMT-OMT_CONFORMANCE_VERIFICATION-024"][
+            "harmonization_status"
+        ]
+        == "mapped"
+    )
+    assert (
+        by_id["HLA1516.2-OMT-OMT_SERVICE_UTILIZATION-025"][
+            "harmonization_status"
+        ]
+        == "mapped"
+    )
+    assert (
+        by_id["HLA1516.2-OMT-OMT_CONFORMANCE_LABELS-023"][
+            "harmonization_status"
+        ]
+        == "partial"
     )
     assert by_id["HLA1516.2-NORMALIZATION-030"]["harmonization_status"] == "partial"
     assert (

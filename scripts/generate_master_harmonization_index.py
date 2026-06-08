@@ -28,6 +28,11 @@ FIELDNAMES = [
     "notes",
 ]
 
+RECONCILIATION_PRECEDENCE = {
+    "hla1516_2_omt_xml_detailed_reconciliation.csv": 0,
+    "hla1516_2_omt_detailed_reconciliation.csv": 1,
+}
+
 
 def _unreconciled_source_hint(row: object) -> str:
     standard = row.standard.strip()
@@ -46,11 +51,16 @@ def _unreconciled_source_hint(row: object) -> str:
 def build_index_rows() -> list[dict[str, str]]:
     packet = load_imported_hla_packet()
     bridge_lookup: dict[str, dict[str, str]] = {}
+    bridge_precedence: dict[str, int] = {}
     for path in sorted(REQUIREMENTS_ROOT.glob("*detailed_reconciliation.csv")):
+        precedence = RECONCILIATION_PRECEDENCE.get(path.name, 0)
         with path.open(newline="", encoding="utf-8") as handle:
             for row in csv.DictReader(handle):
                 packet_requirement_id = row.get("packet_requirement_id", "").strip()
                 if not packet_requirement_id:
+                    continue
+                existing_precedence = bridge_precedence.get(packet_requirement_id, -1)
+                if precedence < existing_precedence:
                     continue
                 bridge_lookup[packet_requirement_id] = {
                     "harmonization_status": row["current_status"].strip(),
@@ -59,6 +69,7 @@ def build_index_rows() -> list[dict[str, str]]:
                     "current_test_id": row.get("current_test_id", "").strip(),
                     "notes": row.get("notes", "").strip(),
                 }
+                bridge_precedence[packet_requirement_id] = precedence
 
     rows: list[dict[str, str]] = []
     for row in packet.master_rows:
