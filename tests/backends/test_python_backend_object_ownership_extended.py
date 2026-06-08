@@ -837,6 +837,26 @@ def test_clause_6_service_and_callback_signature_metadata_matches_source_binding
                 "ObjectClassHandle theClass, AttributeHandleSet theAttributes, byte[] userSuppliedTag",
             ],
         ),
+        "requestAttributeTransportationTypeChange": (
+            "6.23",
+            ["void"],
+            ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes, TransportationTypeHandle theType"],
+        ),
+        "queryAttributeTransportationType": (
+            "6.25",
+            ["void"],
+            ["ObjectInstanceHandle theObject, AttributeHandle theAttribute"],
+        ),
+        "requestInteractionTransportationTypeChange": (
+            "6.27",
+            ["void"],
+            ["InteractionClassHandle theClass, TransportationTypeHandle theType"],
+        ),
+        "queryInteractionTransportationType": (
+            "6.29",
+            ["void"],
+            ["FederateHandle theFederate, InteractionClassHandle theInteraction"],
+        ),
     }
     federate_checks = {
         "objectInstanceNameReservationSucceeded": ("6.3", ["String objectName"]),
@@ -877,6 +897,33 @@ def test_clause_6_service_and_callback_signature_metadata_matches_source_binding
         "provideAttributeValueUpdate": (
             "6.20",
             ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes, byte[] userSuppliedTag"],
+        ),
+        "turnUpdatesOnForObjectInstance": (
+            "6.21",
+            [
+                "ObjectInstanceHandle theObject, AttributeHandleSet theAttributes",
+                "ObjectInstanceHandle theObject, AttributeHandleSet theAttributes, String updateRateDesignator",
+            ],
+        ),
+        "turnUpdatesOffForObjectInstance": (
+            "6.22",
+            ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes"],
+        ),
+        "confirmAttributeTransportationTypeChange": (
+            "6.24",
+            ["ObjectInstanceHandle theObject, AttributeHandleSet theAttributes, TransportationTypeHandle theTransportation"],
+        ),
+        "reportAttributeTransportationType": (
+            "6.26",
+            ["ObjectInstanceHandle theObject, AttributeHandle theAttribute, TransportationTypeHandle theTransportation"],
+        ),
+        "confirmInteractionTransportationTypeChange": (
+            "6.28",
+            ["InteractionClassHandle theInteraction, TransportationTypeHandle theTransportation"],
+        ),
+        "reportInteractionTransportationType": (
+            "6.30",
+            ["FederateHandle theFederate, InteractionClassHandle theInteraction, TransportationTypeHandle theTransportation"],
         ),
     }
 
