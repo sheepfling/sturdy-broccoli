@@ -8,7 +8,7 @@ from hla2010.api import RTIambassador, FederateAmbassador
 from hla2010.exceptions import *
 from hla2010.handles import *
 from hla2010.raw_api import API_METADATA
-from hla2010.enums import OrderType, ResignAction
+from hla2010.enums import OrderType, ResignAction, ServiceGroup
 from hla2010.types import RangeBounds
 from hla2010.exceptions import AttributeAlreadyBeingDivested, AttributeAlreadyOwned, AttributeNotPublished, InteractionClassNotPublished
 
@@ -930,6 +930,158 @@ def test_clause_8_services_are_observable_through_mom_service_invocation_reporti
     owner.destroy_federation_execution("tm-mom-service-report-fed")
 
 
+def test_clause_10_services_are_observable_through_mom_service_invocation_reporting():
+    engine, owner, observer, _owner_fed, _observer_fed, h1, _h2 = joined_pair("sup-mom-service-report-fed")
+    witness = rti_ambassador(engine=engine)
+    witness_fed = RecordingFederateAmbassador()
+    witness.connect(witness_fed, CallbackModel.HLA_EVOKED)
+    witness.join_federation_execution("charlie", "type-c", "sup-mom-service-report-fed")
+
+    obj_cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(obj_cls, "Position")
+    inter_cls = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    param = owner.get_parameter_handle(inter_cls, "TrackId")
+    dim = owner.get_dimension_handle("HLAdefaultRoutingSpace")
+    region = owner.create_region({dim})
+    owner.set_range_bounds(region, dim, RangeBounds(10, 20))
+    obj = owner.register_object_instance(obj_cls, "Support-MOM-1")
+    drain(owner, observer, witness)
+
+    set_reporting = owner.get_interaction_class_handle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
+    )
+    service_report = owner.get_interaction_class_handle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
+    )
+    sr_fed = owner.get_parameter_handle(set_reporting, "HLAfederate")
+    sr_state = owner.get_parameter_handle(set_reporting, "HLAreportingState")
+    report_service = witness.get_parameter_handle(service_report, "HLAservice")
+    report_success = witness.get_parameter_handle(service_report, "HLAsuccessIndicator")
+
+    witness.subscribe_interaction_class(service_report)
+    owner.send_interaction(
+        set_reporting,
+        {
+            sr_fed: owner.backend.state.handle.encode(),
+            sr_state: hla_mom.encode_bool(True),
+        },
+        b"enable-sup-owner-service-reporting",
+    )
+    observer.send_interaction(
+        set_reporting,
+        {
+            sr_fed: observer.backend.state.handle.encode(),
+            sr_state: hla_mom.encode_bool(True),
+        },
+        b"enable-sup-observer-service-reporting",
+    )
+    drain(owner, observer, witness)
+    assert owner.backend.state.service_reporting is True
+    assert observer.backend.state.service_reporting is True
+
+    owner.get_automatic_resign_directive()
+    owner.set_automatic_resign_directive(ResignAction.DELETE_OBJECTS)
+    owner.get_federate_handle("alpha")
+    owner.get_federate_name(h1)
+    owner.get_object_class_handle("HLAobjectRoot.Target")
+    owner.get_object_class_name(obj_cls)
+    owner.get_known_object_class_handle(obj)
+    owner.get_object_instance_handle("Support-MOM-1")
+    owner.get_object_instance_name(obj)
+    owner.get_attribute_handle(obj_cls, "Position")
+    owner.get_attribute_name(obj_cls, attr)
+    owner.get_update_rate_value("default")
+    owner.get_update_rate_value_for_attribute(obj, attr)
+    owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    owner.get_interaction_class_name(inter_cls)
+    owner.get_parameter_handle(inter_cls, "TrackId")
+    owner.get_parameter_name(inter_cls, param)
+    owner.get_order_type("HLAreceive")
+    owner.get_order_name(OrderType.RECEIVE)
+    owner.get_transportation_type_handle("HLAreliable")
+    owner.get_transportation_type_name(owner.get_transportation_type_handle("HLAreliable"))
+    owner.get_available_dimensions_for_class_attribute(obj_cls, attr)
+    owner.get_available_dimensions_for_interaction_class(inter_cls)
+    owner.get_dimension_handle("HLAdefaultRoutingSpace")
+    owner.get_dimension_name(dim)
+    owner.get_dimension_upper_bound(dim)
+    owner.get_dimension_handle_set(region)
+    owner.get_range_bounds(region, dim)
+    owner.set_range_bounds(region, dim, RangeBounds(15, 25))
+    owner.normalize_federate_handle(h1)
+    owner.normalize_service_group(ServiceGroup.OBJECT_MANAGEMENT)
+    owner.enable_object_class_relevance_advisory_switch()
+    owner.disable_object_class_relevance_advisory_switch()
+    owner.enable_attribute_relevance_advisory_switch()
+    owner.disable_attribute_relevance_advisory_switch()
+    owner.enable_attribute_scope_advisory_switch()
+    owner.disable_attribute_scope_advisory_switch()
+    owner.enable_interaction_relevance_advisory_switch()
+    owner.disable_interaction_relevance_advisory_switch()
+    owner.evoke_callback(0.0)
+    owner.evoke_multiple_callbacks(0.0, 0.0)
+    owner.disable_callbacks()
+    owner.enable_callbacks()
+    drain(owner, observer, witness)
+
+    reports = [rec for rec in witness_fed.callbacks_named("receiveInteraction") if rec.args[0] == service_report]
+    assert reports
+    service_names = [hla_mom.decode_text(rec.args[1][report_service]) for rec in reports]
+    success_values = [hla_mom.decode_bool(rec.args[1][report_success]) for rec in reports]
+
+    assert success_values and all(success_values)
+    assert set(service_names) >= {
+        "getAutomaticResignDirective",
+        "setAutomaticResignDirective",
+        "getFederateHandle",
+        "getFederateName",
+        "getObjectClassHandle",
+        "getObjectClassName",
+        "getKnownObjectClassHandle",
+        "getObjectInstanceHandle",
+        "getObjectInstanceName",
+        "getAttributeHandle",
+        "getAttributeName",
+        "getUpdateRateValue",
+        "getUpdateRateValueForAttribute",
+        "getInteractionClassHandle",
+        "getInteractionClassName",
+        "getParameterHandle",
+        "getParameterName",
+        "getOrderType",
+        "getOrderName",
+        "getTransportationTypeHandle",
+        "getTransportationTypeName",
+        "getAvailableDimensionsForClassAttribute",
+        "getAvailableDimensionsForInteractionClass",
+        "getDimensionHandle",
+        "getDimensionName",
+        "getDimensionUpperBound",
+        "getDimensionHandleSet",
+        "getRangeBounds",
+        "setRangeBounds",
+        "normalizeFederateHandle",
+        "normalizeServiceGroup",
+        "enableObjectClassRelevanceAdvisorySwitch",
+        "disableObjectClassRelevanceAdvisorySwitch",
+        "enableAttributeRelevanceAdvisorySwitch",
+        "disableAttributeRelevanceAdvisorySwitch",
+        "enableAttributeScopeAdvisorySwitch",
+        "disableAttributeScopeAdvisorySwitch",
+        "enableInteractionRelevanceAdvisorySwitch",
+        "disableInteractionRelevanceAdvisorySwitch",
+        "evokeCallback",
+        "evokeMultipleCallbacks",
+        "enableCallbacks",
+        "disableCallbacks",
+    }
+
+    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    witness.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("sup-mom-service-report-fed")
+
+
 def test_python_rti_query_attribute_ownership_reports_owner_for_owned_attribute():
     _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("query-owned-fed")
     cls = owner.get_object_class_handle("HLAobjectRoot.Target")
@@ -1762,6 +1914,112 @@ def test_clause_8_service_and_callback_signature_metadata_matches_source_binding
         ]
         assert [record["service"] for record in java_records] == [service] * len(expected_params)
         assert [record["return_type"] for record in java_records] == ["void"] * len(expected_params)
+        assert [record["params"] for record in java_records] == expected_params
+
+
+def test_clause_10_service_signature_metadata_matches_source_bindings():
+    rti_checks = {
+        "getAutomaticResignDirective": ("10.2", ["ResignAction"], [""]),
+        "setAutomaticResignDirective": ("10.3", ["void"], ["ResignAction resignAction"]),
+        "getFederateHandle": ("10.4", ["FederateHandle"], ["String theName"]),
+        "getFederateName": ("10.5", ["String"], ["FederateHandle theHandle"]),
+        "getObjectClassHandle": ("10.6", ["ObjectClassHandle"], ["String theName"]),
+        "getObjectClassName": ("10.7", ["String"], ["ObjectClassHandle theHandle"]),
+        "getKnownObjectClassHandle": ("10.8", ["ObjectClassHandle"], ["ObjectInstanceHandle theObject"]),
+        "getObjectInstanceHandle": ("10.9", ["ObjectInstanceHandle"], ["String theName"]),
+        "getObjectInstanceName": ("10.10", ["String"], ["ObjectInstanceHandle theHandle"]),
+        "getAttributeHandle": (
+            "10.11",
+            ["AttributeHandle"],
+            ["ObjectClassHandle whichClass, String theName"],
+        ),
+        "getAttributeName": (
+            "10.12",
+            ["String"],
+            ["ObjectClassHandle whichClass, AttributeHandle theHandle"],
+        ),
+        "getUpdateRateValue": ("10.13", ["double"], ["String updateRateDesignator"]),
+        "getUpdateRateValueForAttribute": (
+            "10.14",
+            ["double"],
+            ["ObjectInstanceHandle theObject, AttributeHandle theAttribute"],
+        ),
+        "getInteractionClassHandle": ("10.15", ["InteractionClassHandle"], ["String theName"]),
+        "getInteractionClassName": ("10.16", ["String"], ["InteractionClassHandle theHandle"]),
+        "getParameterHandle": (
+            "10.17",
+            ["ParameterHandle"],
+            ["InteractionClassHandle whichClass, String theName"],
+        ),
+        "getParameterName": (
+            "10.18",
+            ["String"],
+            ["InteractionClassHandle whichClass, ParameterHandle theHandle"],
+        ),
+        "getOrderType": ("10.19", ["OrderType"], ["String theName"]),
+        "getOrderName": ("10.20", ["String"], ["OrderType theType"]),
+        "getTransportationTypeHandle": (
+            "10.21",
+            ["TransportationTypeHandle"],
+            ["String theName"],
+        ),
+        "getTransportationTypeName": (
+            "10.22",
+            ["String"],
+            ["TransportationTypeHandle theHandle"],
+        ),
+        "getAvailableDimensionsForClassAttribute": (
+            "10.23",
+            ["DimensionHandleSet"],
+            ["ObjectClassHandle whichClass, AttributeHandle theHandle"],
+        ),
+        "getAvailableDimensionsForInteractionClass": (
+            "10.24",
+            ["DimensionHandleSet"],
+            ["InteractionClassHandle theHandle"],
+        ),
+        "getDimensionHandle": ("10.25", ["DimensionHandle"], ["String theName"]),
+        "getDimensionName": ("10.26", ["String"], ["DimensionHandle theHandle"]),
+        "getDimensionUpperBound": ("10.27", ["long"], ["DimensionHandle theHandle"]),
+        "getDimensionHandleSet": ("10.28", ["DimensionHandleSet"], ["RegionHandle region"]),
+        "getRangeBounds": (
+            "10.29",
+            ["RangeBounds"],
+            ["RegionHandle region, DimensionHandle dimension"],
+        ),
+        "setRangeBounds": (
+            "10.30",
+            ["void"],
+            ["RegionHandle region, DimensionHandle dimension, RangeBounds bounds"],
+        ),
+        "normalizeFederateHandle": ("10.31", ["long"], ["FederateHandle federateHandle"]),
+        "normalizeServiceGroup": ("10.32", ["long"], ["ServiceGroup group"]),
+        "enableObjectClassRelevanceAdvisorySwitch": ("10.33", ["void"], [""]),
+        "disableObjectClassRelevanceAdvisorySwitch": ("10.34", ["void"], [""]),
+        "enableAttributeRelevanceAdvisorySwitch": ("10.35", ["void"], [""]),
+        "disableAttributeRelevanceAdvisorySwitch": ("10.36", ["void"], [""]),
+        "enableAttributeScopeAdvisorySwitch": ("10.37", ["void"], [""]),
+        "disableAttributeScopeAdvisorySwitch": ("10.38", ["void"], [""]),
+        "enableInteractionRelevanceAdvisorySwitch": ("10.39", ["void"], [""]),
+        "disableInteractionRelevanceAdvisorySwitch": ("10.40", ["void"], [""]),
+        "evokeCallback": ("10.41", ["boolean"], ["double approximateMinimumTimeInSeconds"]),
+        "evokeMultipleCallbacks": (
+            "10.42",
+            ["boolean"],
+            ["double approximateMinimumTimeInSeconds, double approximateMaximumTimeInSeconds"],
+        ),
+        "enableCallbacks": ("10.43", ["void"], [""]),
+        "disableCallbacks": ("10.44", ["void"], [""]),
+    }
+
+    for method_name, (service, expected_returns, expected_params) in rti_checks.items():
+        assert hasattr(RTIambassador, method_name)
+        java_records = [
+            record for record in API_METADATA["RTIambassador"][method_name]
+            if record["language"] == "java"
+        ]
+        assert [record["service"] for record in java_records] == [service] * len(expected_params)
+        assert [record["return_type"] for record in java_records] == expected_returns
         assert [record["params"] for record in java_records] == expected_params
 
 
