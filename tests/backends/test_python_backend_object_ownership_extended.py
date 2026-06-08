@@ -203,6 +203,25 @@ def test_request_attribute_transportation_type_change_rejects_not_connected_not_
     owner.backend.config.strict_object_publication = False
     assert owner_fed.callbacks_named("confirmAttributeTransportationTypeChange") == []
 
+    owner.request_federation_save("ATTRIBUTE-TRANSPORT-SAVE")
+    drain(owner, observer)
+    with pytest.raises(SaveInProgress):
+        owner.request_attribute_transportation_type_change(obj, {attr}, owner.backend.engine.transportation_reliable)
+
+    owner.federate_save_begun()
+    observer.federate_save_begun()
+    owner.federate_save_complete()
+    observer.federate_save_complete()
+    drain(owner, observer)
+
+    owner.request_federation_restore("ATTRIBUTE-TRANSPORT-SAVE")
+    drain(owner, observer)
+    with pytest.raises(RestoreInProgress):
+        owner.request_attribute_transportation_type_change(obj, {attr}, owner.backend.engine.transportation_reliable)
+
+    owner.abort_federation_restore()
+    drain(owner, observer)
+
     owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("transport-negative-fed")
