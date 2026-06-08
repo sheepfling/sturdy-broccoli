@@ -2,6 +2,7 @@
 
 import pytest
 
+from hla2010 import mom as hla_mom
 from tests.backends.python_backend_extended_support import *
 from hla2010.api import RTIambassador, FederateAmbassador
 from hla2010.exceptions import *
@@ -449,6 +450,72 @@ def test_declaration_services_validate_declared_handles_attributes_and_update_ra
     owner.resign_federation_execution(ResignAction.NO_ACTION)
     observer.resign_federation_execution(ResignAction.NO_ACTION)
     owner.destroy_federation_execution("decl-arg-validation-fed")
+
+
+def test_declaration_services_are_observable_through_mom_service_invocation_reporting():
+    _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("decl-mom-service-report-fed")
+    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
+    attr = owner.get_attribute_handle(cls, "Position")
+    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+
+    set_reporting = owner.get_interaction_class_handle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
+    )
+    service_report = owner.get_interaction_class_handle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
+    )
+    sr_fed = owner.get_parameter_handle(set_reporting, "HLAfederate")
+    sr_state = owner.get_parameter_handle(set_reporting, "HLAreportingState")
+    report_service = observer.get_parameter_handle(service_report, "HLAservice")
+    report_success = observer.get_parameter_handle(service_report, "HLAsuccessIndicator")
+
+    observer.subscribe_interaction_class(service_report)
+    owner.send_interaction(
+        set_reporting,
+        {
+            sr_fed: owner.backend.state.handle.encode(),
+            sr_state: hla_mom.encode_bool(True),
+        },
+        b"enable-decl-service-reporting",
+    )
+    drain(owner, observer)
+    assert owner.backend.state.service_reporting is True
+
+    observer_fed.clear()
+    owner.publish_object_class_attributes(cls, {attr})
+    owner.unpublish_object_class(cls)
+    owner.publish_interaction_class(interaction)
+    owner.unpublish_interaction_class(interaction)
+    owner.subscribe_object_class_attributes(cls, {attr})
+    owner.subscribe_object_class_attributes_passively(cls, {attr}, "HLAdefault")
+    owner.unsubscribe_object_class(cls)
+    owner.subscribe_interaction_class(interaction)
+    owner.subscribe_interaction_class_passively(interaction)
+    owner.unsubscribe_interaction_class(interaction)
+    drain(owner, observer)
+
+    reports = [rec for rec in observer_fed.callbacks_named("receiveInteraction") if rec.args[0] == service_report]
+    assert reports
+    service_names = [hla_mom.decode_text(rec.args[1][report_service]) for rec in reports]
+    success_values = [hla_mom.decode_bool(rec.args[1][report_success]) for rec in reports]
+
+    assert success_values and all(success_values)
+    assert set(service_names) >= {
+        "publishObjectClassAttributes",
+        "unpublishObjectClass",
+        "publishInteractionClass",
+        "unpublishInteractionClass",
+        "subscribeObjectClassAttributes",
+        "subscribeObjectClassAttributesPassively",
+        "unsubscribeObjectClass",
+        "subscribeInteractionClass",
+        "subscribeInteractionClassPassively",
+        "unsubscribeInteractionClass",
+    }
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("decl-mom-service-report-fed")
 
 
 def test_declaration_management_effects_apply_while_time_managed():
