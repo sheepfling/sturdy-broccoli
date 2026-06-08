@@ -18,7 +18,7 @@ from ...exceptions import (
     NoAcquisitionPending,
 )
 from ...handles import AttributeHandle, FederateHandle, ObjectInstanceHandle
-from .state import FederationState, ObjectInstance
+from .state import FederationState, ObjectInstance, RTI_FEDERATE_HANDLE
 
 
 class PythonRTIOwnershipMixin:
@@ -372,6 +372,8 @@ class PythonRTIOwnershipMixin:
         owner = instance.attribute_owners.get(theAttribute, instance.owner)
         if owner is None:
             self._deliver(self.state, "attributeIsNotOwned", theObject, theAttribute)
+        elif owner == RTI_FEDERATE_HANDLE:
+            self._deliver(self.state, "attributeIsOwnedByRTI", theObject, theAttribute)
         else:
             self._deliver(self.state, "informAttributeOwnership", theObject, theAttribute, owner)
 

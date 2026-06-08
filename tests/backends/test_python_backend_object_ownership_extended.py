@@ -827,6 +827,25 @@ def test_python_rti_query_attribute_ownership_reports_owner_for_owned_attribute(
     owner.destroy_federation_execution("query-owned-fed")
 
 
+def test_python_rti_query_attribute_ownership_reports_rti_for_mom_owned_attribute():
+    _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("query-rti-owned-fed")
+    federation_class = observer.get_object_class_handle("HLAobjectRoot.HLAmanager.HLAfederation")
+    federation_name = observer.get_attribute_handle(federation_class, "HLAfederationName")
+    mom_object = observer.backend.current_mom_summary()["federation_object"]
+
+    assert isinstance(mom_object, ObjectInstanceHandle)
+    observer.query_attribute_ownership(mom_object, federation_name)
+    drain(owner, observer)
+
+    owned = observer_fed.last_callback("attributeIsOwnedByRTI")
+    assert owned is not None
+    assert owned.args == (mom_object, federation_name)
+
+    owner.resign_federation_execution(ResignAction.NO_ACTION)
+    observer.resign_federation_execution(ResignAction.NO_ACTION)
+    owner.destroy_federation_execution("query-rti-owned-fed")
+
+
 def test_declaration_management_effects_apply_while_time_managed():
     _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("decl-time-managed-fed")
     factory = owner.get_time_factory()
