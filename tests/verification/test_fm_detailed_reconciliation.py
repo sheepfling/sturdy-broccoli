@@ -22,7 +22,7 @@ def test_fm_detailed_reconciliation_has_expected_shape():
 
     assert len(rows) == 632
     assert Counter(row["current_status"] for row in rows) == Counter(
-        {"mapped": 498, "partial": 134}
+        {"mapped": 499, "partial": 133}
     )
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_requirements_master_v1_0.csv"
@@ -34,9 +34,23 @@ def test_fm_detailed_reconciliation_spot_checks_key_rows():
 
     assert rows["HLA1516.1-FM-4_2-SVC-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_2-ARG-001"]["current_status"] == "partial"
+    assert rows["HLA1516.1-FM-4_8-ARG-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_3-RTIAPI-001-SIG"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_3-RTIAPI-001-MOM"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_4-FEDCB-001-SIG"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_7-RTIAPI-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-4_8-FEDCB-001-ORD"]["current_status"] == "mapped"
     assert rows["HLA1516.1-FM-OVERVIEW-001"]["current_status"] == "partial"
+
+
+def test_fm_report_federation_executions_argument_row_has_direct_payload_evidence():
+    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    row = rows["HLA1516.1-FM-4_8-ARG-001"]
+
+    assert row["current_status"] == "mapped"
+    assert (
+        row["current_test_id"]
+        == "tests/backends/test_python_backend_federation_extended.py::test_list_federation_executions_requires_connection_and_reports_known_federations"
+    )
+    assert "node-level" in row["notes"]
+    assert "federation-execution information records" in row["notes"]
