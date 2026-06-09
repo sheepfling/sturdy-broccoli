@@ -5,7 +5,7 @@ import pytest
 from hla2010 import mom as hla_mom
 from tests.backends.python_backend_extended_support import *
 from hla2010.fom import FOMModule
-from hla2010.backends.python import PythonRTIConfig
+from hla2010_rti_python import PythonRTIConfig
 from hla2010.enums import (
     CallbackModel,
     ResignAction,
