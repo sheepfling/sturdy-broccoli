@@ -1,4 +1,5 @@
-from hla2010 import FederateAmbassador, CallbackModel
+from hla2010.spec import FederateAmbassadorSpec as FederateAmbassador
+
 
 class MinimalFederate(FederateAmbassador):
     def connection_lost(self, fault_description: str):

@@ -10,7 +10,8 @@ from hla2010.handles import AttributeHandle, AttributeHandleValueMap, FederateHa
 from hla2010.rti import create_rti_ambassador
 from hla2010.startup import FederationStartupConfig, connect_create_join, drain_callbacks, synchronize_ready_to_run
 from hla2010.backends.java_common import JavaValueConverter
-from hla2010.testing.java_shim import JavaByteArray, JavaLikeObject, ShimJavaBridge
+from hla2010.testing.java_shim_backend import ShimJavaBridge
+from hla2010.testing.java_shim_types import JavaByteArray, JavaLikeObject
 
 
 def _python_rti(engine: InMemoryRTIEngine, *, config: PythonRTIConfig | None = None):

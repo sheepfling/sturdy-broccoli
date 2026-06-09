@@ -19,20 +19,92 @@ typecheck = ["pyright>=1.1.408"]
 test = ["pytest"]
 qa = ["pytest", "ruff>=0.5", "pyright>=1.1.408"]
 
+[project.entry-points."hla2010.rti_backends"]
+python = "hla2010_rti_python.plugin:plugin"
+jpype = "hla2010_rti_java_jpype.plugin:plugin"
+py4j = "hla2010_rti_java_py4j.plugin:plugin"
+pitch-jpype = "hla2010_rti_pitch_jpype.plugin:plugin"
+pitch-py4j = "hla2010_rti_pitch_py4j.plugin:plugin"
+portico-jpype = "hla2010_rti_portico.plugin:portico_jpype_plugin"
+portico-py4j = "hla2010_rti_portico.plugin:portico_py4j_plugin"
+certi = "hla2010_rti_certi.certi.plugin:plugin"
+certi-jpype = "hla2010_rti_certi.certi.plugin:certi_jpype_plugin"
+certi-py4j = "hla2010_rti_certi.certi.plugin:certi_py4j_plugin"
+
+# Transitional workspace build:
+# - `src/hla2010/` owns the stable API layer and compatibility imports.
+# - `packages/*/src` roots own split backend/support implementations.
 [tool.setuptools.packages.find]
-include = ["hla2010*"]
+where = [
+  "src",
+  "packages/hla2010-rti-python/src",
+  "packages/hla2010-rti-certi/src",
+  "packages/hla2010-rti-backend-common/src",
+  "packages/hla2010-rti-java-common/src",
+  "packages/hla2010-rti-runtime-common/src",
+  "packages/hla2010-rti-java-jpype/src",
+  "packages/hla2010-rti-java-py4j/src",
+  "packages/hla2010-rti-pitch-common/src",
+  "packages/hla2010-rti-pitch-jpype/src",
+  "packages/hla2010-rti-pitch-py4j/src",
+  "packages/hla2010-rti-portico/src",
+  "packages/hla2010-fom-target-radar/src",
+  "packages/hla2010-verification-harness/src",
+]
+include = [
+  "hla2010*",
+  "hla2010_rti_python*",
+  "hla2010_rti_certi*",
+  "hla2010_rti_backend_common*",
+  "hla2010_rti_java_common*",
+  "hla2010_rti_runtime_common*",
+  "hla2010_rti_java_jpype*",
+  "hla2010_rti_java_py4j*",
+  "hla2010_rti_pitch_common*",
+  "hla2010_rti_pitch_jpype*",
+  "hla2010_rti_pitch_py4j*",
+  "hla2010_rti_portico*",
+  "hla2010_fom_target_radar*",
+  "hla2010_verification_harness*",
+]
 exclude = ["hla2010.testing*"]
 
 [tool.setuptools.package-data]
 hla2010 = ["resources/foms/*.xml"]
 
 [tool.pytest.ini_options]
-pythonpath = ["."]
+# Pytest mirrors the workspace package roots so source-checkout runs resolve the
+# same split packages that editable installs expose.
+pythonpath = [
+  "src",
+  "packages/hla2010-rti-python/src",
+  "packages/hla2010-rti-certi/src",
+  "packages/hla2010-rti-backend-common/src",
+  "packages/hla2010-rti-java-common/src",
+  "packages/hla2010-rti-runtime-common/src",
+  "packages/hla2010-rti-java-jpype/src",
+  "packages/hla2010-rti-java-py4j/src",
+  "packages/hla2010-rti-pitch-common/src",
+  "packages/hla2010-rti-pitch-jpype/src",
+  "packages/hla2010-rti-pitch-py4j/src",
+  "packages/hla2010-rti-portico/src",
+  "packages/hla2010-fom-target-radar/src",
+  "packages/hla2010-verification-harness/src",
+]
 testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 160
 target-version = "py310"
+extend-exclude = [
+  "CERTI",
+  "archives",
+  "INBOX",
+  "docs/evidence",
+  "third_party/pitch",
+  "tools",
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
+per-file-ignores = { "tests/vendors/*.py" = ["F401", "F403", "F405", "I001"] }

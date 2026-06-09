@@ -11,15 +11,13 @@ from hla2010.backends.grpc_transport import start_certi_grpc_server
 from hla2010.enums import OrderType, ResignAction
 from hla2010.real_rti import discover_certi_smoke_fom, launch_certi_rtig
 from hla2010.rti import create_rti_ambassador
-from hla2010.testing.scenarios import (
-    OwnershipScenarioConfig,
-    SynchronizationScenarioConfig,
+from hla2010.testing.scenario_exchange import (
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
-    run_attribute_ownership_scenario,
-    run_synchronization_scenario,
     run_two_federate_exchange_scenario,
 )
+from hla2010.testing.scenario_ownership import OwnershipScenarioConfig, run_attribute_ownership_scenario
+from hla2010.testing.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time
 
 pytestmark = pytest.mark.requires_loopback_server

@@ -3,14 +3,15 @@ from __future__ import annotations
 import pytest
 
 from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.backends.java_common import JavaValueConverter
-from hla2010.backends.python import InMemoryRTIEngine, PythonRTIConfig
+from hla2010_rti_java_common import JavaValueConverter
+from hla2010_rti_python import InMemoryRTIEngine, PythonRTIConfig
 from hla2010.enums import CallbackModel
 from hla2010.exceptions import NameNotFound
 from hla2010.handles import AttributeHandle, AttributeHandleValueMap, FederateHandleSet, ObjectInstanceHandle
 from hla2010.rti import create_rti_ambassador
 from hla2010.startup import FederationStartupConfig, connect_create_join, drain_callbacks, synchronize_ready_to_run
-from hla2010.testing.java_shim import JavaByteArray, JavaLikeObject, ShimJavaBridge
+from hla2010.testing.java_shim_backend import ShimJavaBridge
+from hla2010.testing.java_shim_types import JavaByteArray, JavaLikeObject
 
 
 def _python_rti(engine: InMemoryRTIEngine, *, config: PythonRTIConfig | None = None):
@@ -200,7 +201,7 @@ def test_join_fom_time_conflict_is_transactional(tmp_path):
 
 
 def test_java_callback_dispatcher_uses_callback_metadata_for_typed_failed_set():
-    from hla2010.backends.java_common import PythonFederateAmbassadorDispatcher
+    from hla2010_rti_java_common import PythonFederateAmbassadorDispatcher
 
     fed = RecordingFederateAmbassador()
     converter = JavaValueConverter(ShimJavaBridge("py4j"))

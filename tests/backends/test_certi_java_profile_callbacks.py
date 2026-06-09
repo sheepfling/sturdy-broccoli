@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from hla2010.backends.certi_java.adapter import _CERTIJavaFederateAdapter
-from hla2010.backends.certi_java.runtime import CERTIJavaValueConverter
+from hla2010_rti_certi.certi_java.adapter import _CERTIJavaFederateAdapter
+from hla2010_rti_certi.certi_java.runtime import CERTIJavaValueConverter
 from hla2010.enums import OrderType
 from hla2010.handles import (
     AttributeHandle,
@@ -14,7 +14,8 @@ from hla2010.handles import (
     ParameterHandle,
     TransportationTypeHandle,
 )
-from hla2010.testing.java_shim import (
+from hla2010.testing.java_shim_backend import ShimJavaBridge
+from hla2010.testing.java_shim_types import (
     JavaAttributeHandle,
     JavaByteArray,
     JavaInteractionClassHandle,
@@ -22,7 +23,6 @@ from hla2010.testing.java_shim import (
     JavaObjectInstanceHandle,
     JavaParameterHandle,
     JavaTransportationTypeHandle,
-    ShimJavaBridge,
 )
 from hla2010.time import HLAfloat64Time
 

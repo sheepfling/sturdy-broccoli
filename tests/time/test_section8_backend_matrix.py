@@ -7,7 +7,7 @@ import uuid
 import pytest
 
 from hla2010.backends.grpc_transport.python_server import start_python_grpc_server
-from hla2010.backends.python import InMemoryRTIEngine
+from hla2010_rti_python import InMemoryRTIEngine
 from hla2010.backends.rest_transport_host import start_python_rest_server
 from hla2010.enums import OrderType
 from hla2010.rti import create_rti_ambassador

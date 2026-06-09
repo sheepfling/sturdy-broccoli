@@ -2,7 +2,7 @@
 
 If you want the cleanest Python surface for this workspace, start here:
 
-- [`hla2010/spec_api.py`](../hla2010/spec_api.py): Pythonic abstract/prototype HLA contract
+- [`hla2010/spec/`](../hla2010/spec/): standalone clean Python spec package
 - [`hla2010/spec_inventory.py`](../hla2010/spec_inventory.py): plain-text method inventory used by the clean spec layer
 - [`hla2010/spec_sources.py`](../hla2010/spec_sources.py): readable Java/C++ source locations surfaced in the spec docstrings
 - [`hla2010/runtime_api.py`](../hla2010/runtime_api.py): explicit runtime-facing convenience layer
@@ -14,7 +14,7 @@ If you want the cleanest Python surface for this workspace, start here:
 For new Python code, prefer the spec module:
 
 ```python
-from hla2010.spec_api import RTIambassadorSpec, FederateAmbassadorSpec
+from hla2010.spec import RTIambassadorSpec, FederateAmbassadorSpec
 ```
 
 Use `RTIambassadorSpec` as the abstract contract for RTI implementations.
@@ -29,8 +29,8 @@ from hla2010.runtime_api import RTIambassador, FederateAmbassador
 ## Why This Split Exists
 
 - `spec_inventory.py` keeps the method names in a small plain-text module.
-- `spec_sources.py` keeps the Java and C++ source locations readable and lets `spec_api.py` surface them in docstrings.
-- `spec_api.py` gives you a Pythonic API that is easier to read and subclass.
+- `spec_sources.py` keeps the Java and C++ source locations readable and lets the spec package surface them in docstrings.
+- `_spec_impl.py` is the implementation module behind `hla2010.spec`.
 - `runtime_api.py` keeps the current runtime adapters working without forcing consumers to read the raw scaffold.
 - `api.py` remains as a compatibility shim for older imports.
 
@@ -39,7 +39,7 @@ That keeps the spec-like surface clean while still preserving the source mapping
 ## Minimal Pattern
 
 ```python
-from hla2010.spec_api import FederateAmbassadorSpec
+from hla2010.spec import FederateAmbassadorSpec
 
 
 class MyFederate(FederateAmbassadorSpec):

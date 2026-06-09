@@ -11,20 +11,21 @@ from hla2010.enums import CallbackModel, OrderType, ResignAction
 from hla2010.exceptions import InvalidLogicalTime, RTIexception
 from hla2010.real_rti import launch_pitch_runtime
 from hla2010.rti import create_rti_ambassador
-from hla2010.testing.scenarios import (
+from hla2010.testing.scenario_exchange import (
+    TwoFederateExchangeConfig,
+    assert_two_federate_exchange_callback_history,
+    run_two_federate_exchange_scenario,
+)
+from hla2010.testing.scenario_ownership import (
     NegotiatedOwnershipScenarioConfig,
     OwnershipScenarioConfig,
     ReleaseRequestOwnershipScenarioConfig,
-    SynchronizationScenarioConfig,
-    TwoFederateExchangeConfig,
-    assert_two_federate_exchange_callback_history,
     probe_negotiated_attribute_ownership_offer,
     run_attribute_ownership_scenario,
     run_negotiated_attribute_ownership_scenario,
     run_release_request_ownership_scenario,
-    run_synchronization_scenario,
-    run_two_federate_exchange_scenario,
 )
+from hla2010.testing.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
 from hla2010.time import HLAinteger64Interval, HLAinteger64Time
 
 

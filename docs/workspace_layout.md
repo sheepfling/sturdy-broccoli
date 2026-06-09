@@ -7,7 +7,9 @@ The top level is intentionally split by ownership:
 
 ## Top-Level Areas
 
-- `hla2010/`: installable Python package and runtime surface.
+- `src/hla2010/`: core API layer and compatibility facades.
+- `hla2010/`: narrow plugin-facing shim area.
+- `packages/*/src/`: package-owned backend and support implementation roots.
 - `examples/`: runnable example entrypoints and thin scenario scripts.
 - `scripts/`: operator commands, CI wrappers, and generated-artifact entrypoints.
 - `tests/`: executable verification for the package and the workspace helpers.
@@ -23,12 +25,24 @@ The top level is intentionally split by ownership:
 
 ## Practical Guidance
 
-- Keep public runtime code in `hla2010/`.
+- Keep core API code, shared abstractions, and compatibility facades in `src/hla2010/`.
+- Keep concrete backend and support implementations in their owning `packages/<name>/src/` trees.
 - Keep runnable examples thin and repo-local under `examples/`.
 - Keep operator entrypoints and CI wrappers in `scripts/`.
 - Keep generated outputs out of the installable package.
 - Keep provenance-only analysis helpers in `tools/` unless they are promoted into `scripts/` or `docs/evidence/`.
 - The backend-alias matrix generator has already been promoted into `scripts/update_rti_options_matrix.py` because CI and operator flows treat it as a supported entrypoint.
+
+## Setup First
+
+Before you touch vendor runtimes or bridge profiles, set up Python first:
+
+1. run `./bootstrap python`
+2. activate `.venv`
+3. run a pure-Python smoke command
+4. only then add JPype, Py4J, CERTI, or Pitch paths
+
+The canonical setup guide is [`python_environment.md`](python_environment.md).
 
 ## What Not To Move
 

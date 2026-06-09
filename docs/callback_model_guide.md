@@ -42,8 +42,8 @@ split in this workspace.
 
 ## Related Docs
 
+- [`verification/callback_model_compliance.md`](verification/callback_model_compliance.md): compliance boundary and proof anchors
 - [`architecture.md`](architecture.md): backend structure and callback-contract notes
 - [`package_layout.md`](package_layout.md): where the backend and test code lives
 - [`two_federate_quickstart.md`](two_federate_quickstart.md): first runnable example
 - [`backend_conformance_matrix.md`](backend_conformance_matrix.md): clause-level behavior mapping
-

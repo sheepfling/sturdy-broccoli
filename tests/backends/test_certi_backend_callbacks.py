@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.backends.certi import CERTIBackend
+from hla2010_rti_certi import CERTIBackend
 from hla2010.handles import AttributeHandle, AttributeHandleSet, FederateHandle, ObjectInstanceHandle
 
 

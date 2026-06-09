@@ -10,23 +10,24 @@ import pytest
 from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.runtime_api import FederateAmbassador
 from hla2010.backends.base import make_rti_ambassador
-from hla2010.backends.python import InMemoryRTIEngine
+from hla2010_rti_python import InMemoryRTIEngine
 from hla2010.backends.rest_transport import RestTransport, RestTransportConfig
 from hla2010.backends.rest_transport_host import start_python_rest_server
 from hla2010.backends.transport import TransportRequest
 from hla2010.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveFailureReason, SaveStatus
 from hla2010.rti import create_backend, create_rti_ambassador
-from hla2010.testing.scenarios import (
-    NegotiatedOwnershipScenarioConfig,
-    OwnershipScenarioConfig,
-    SynchronizationScenarioConfig,
+from hla2010.testing.scenario_exchange import (
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
-    run_attribute_ownership_scenario,
-    run_negotiated_attribute_ownership_scenario,
-    run_synchronization_scenario,
     run_two_federate_exchange_scenario,
 )
+from hla2010.testing.scenario_ownership import (
+    NegotiatedOwnershipScenarioConfig,
+    OwnershipScenarioConfig,
+    run_attribute_ownership_scenario,
+    run_negotiated_attribute_ownership_scenario,
+)
+from hla2010.testing.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 
 pytestmark = pytest.mark.requires_loopback_server

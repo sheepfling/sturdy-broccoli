@@ -2,5 +2,5 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
-export HLA2010_SCRIPT_NAME="pitch"
+export HLA2010_SCRIPT_NAME="./pitch"
 exec "$ROOT_DIR/scripts/pitch_docker_easy.sh" "$@"

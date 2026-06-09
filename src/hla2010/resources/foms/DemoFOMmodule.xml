@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelIdentification>
+    <name>Demo FOM Module</name>
+    <type>FOM</type>
+    <version>0.1</version>
+    <modificationDate>2026-06-05</modificationDate>
+    <purpose>Small bundled FOM for backend smoke tests.</purpose>
+    <description>Defines HLAobjectRoot.DemoObject and HLAinteractionRoot.Ping used by the repo's backend-neutral smoke scenario modules.</description>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>DemoObject</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute><name>Payload</name><dataType>HLAopaqueData</dataType><updateType>Conditional</updateType><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Smoke-test payload.</semantics></attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>Ping</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>RequestId</name><dataType>HLAunicodeString</dataType><semantics>Smoke-test request id.</semantics></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <dimensions>
+    <dimension><name>HLAdefaultRoutingSpace</name><semantics>Default routing dimension.</semantics></dimension>
+  </dimensions>
+  <time>
+    <timeStamp><dataType>HLAfloat64BE</dataType><semantics>Demo scenario time.</semantics></timeStamp>
+    <lookahead><dataType>HLAfloat64BE</dataType><semantics>Demo lookahead.</semantics></lookahead>
+  </time>
+</objectModel>

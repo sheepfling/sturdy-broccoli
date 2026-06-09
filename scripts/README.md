@@ -8,17 +8,26 @@ Start here:
 
 - [../README.md](../README.md): operator-facing install and smoke entry point
 - [../docs/README.md](../docs/README.md): documentation index
+- [../docs/python_environment.md](../docs/python_environment.md): Python bootstrap, `.venv`, extras, and install order
 - [../docs/documentation_hierarchy.md](../docs/documentation_hierarchy.md): canonical doc hierarchy
 
 Primary operator entrypoints:
 
 - `./bootstrap` profile-based setup for `python`, `certi`, `pitch`, or `all`
+- `./bootstrap doctor` workspace setup and prerequisite check
 - `./certi-easy` CERTI install, doctor, build, run, smoke, and compare flow
+
+Normal setup order:
+
+1. `./bootstrap python`
+2. `source .venv/bin/activate`
+3. run a pure-Python smoke path
+4. only then move on to CERTI, Pitch, JPype, or Py4J work
 
 Operator guide links:
 
-- [../docs/certi_section8_runbook.md](../docs/certi_section8_runbook.md): CERTI operator runbook
-- [../docs/pitch_decision_tree.md](../docs/pitch_decision_tree.md): Pitch selection and troubleshooting
+- [../packages/hla2010-rti-certi/docs/certi_section8_runbook.md](../packages/hla2010-rti-certi/docs/certi_section8_runbook.md): CERTI operator runbook
+- [../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md](../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md): Pitch selection and troubleshooting
 - [../docs/preflight_artifacts.md](../docs/preflight_artifacts.md): JSON preflight artifacts and inspection examples
 - `./certi-easy preflight [--json] [--json-file FILE]`: CERTI readiness check before install or smoke
 - `./pitch preflight [--json] [--json-file FILE]`: Pitch Docker readiness check before install or run

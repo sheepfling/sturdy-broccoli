@@ -1,6 +1,6 @@
 
 from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.backends.python import InMemoryRTIEngine, rti_ambassador
+from hla2010_rti_python import InMemoryRTIEngine, rti_ambassador
 from hla2010.enums import (
     CallbackModel,
 )

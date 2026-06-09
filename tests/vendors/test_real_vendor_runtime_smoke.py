@@ -12,7 +12,7 @@ from hla2010.handles import FederateHandle
 from hla2010.real_rti import discover_certi_smoke_fom, launch_certi_rtig, launch_pitch_runtime
 from hla2010.rti import create_rti_ambassador
 from hla2010.startup import FederationStartupConfig, connect_create_join
-from hla2010.testing.scenarios import TwoFederateExchangeConfig, run_two_federate_exchange_scenario
+from hla2010.testing.scenario_exchange import TwoFederateExchangeConfig, run_two_federate_exchange_scenario
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 
 

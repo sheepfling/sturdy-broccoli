@@ -2,7 +2,7 @@
 
 Included:
 
-- Python package code under `hla2010/`;
+- Python package code under `src/hla2010/` plus the top-level `hla2010/plugin_api.py` shim;
 - examples and FOM XML examples;
 - pytest source tests;
 - Java shim source and build script, excluding built jars;

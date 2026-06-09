@@ -10,18 +10,20 @@ from hla2010.backends.base import BackendUnavailableError, make_rti_ambassador
 from hla2010.enums import ResignAction
 from hla2010.real_rti import discover_certi_smoke_fom, launch_certi_rtig
 from hla2010.rti import create_rti_ambassador
-from hla2010.testing.java_shim import SharedJavaShimKernel, create_shared_java_shim_backend
-from hla2010.testing.scenarios import (
-    NegotiatedOwnershipScenarioConfig,
-    OwnershipScenarioConfig,
-    SynchronizationScenarioConfig,
+from hla2010.testing.java_shim_factory import create_shared_java_shim_backend
+from hla2010.testing.java_shim_kernel import SharedJavaShimKernel
+from hla2010.testing.scenario_exchange import (
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
-    run_attribute_ownership_scenario,
-    run_negotiated_attribute_ownership_scenario,
-    run_synchronization_scenario,
     run_two_federate_exchange_scenario,
 )
+from hla2010.testing.scenario_ownership import (
+    NegotiatedOwnershipScenarioConfig,
+    OwnershipScenarioConfig,
+    run_attribute_ownership_scenario,
+    run_negotiated_attribute_ownership_scenario,
+)
+from hla2010.testing.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 
 

@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla2010-rti-pitch-jpype"
+version = "0.13.0"
+description = "Pitch Java RTI JPype backend plugin for hla2010-spec"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["hla2010-spec==0.13.0", "hla2010-rti-java-jpype==0.13.0", "hla2010-rti-pitch-common==0.13.0"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.entry-points."hla2010.rti_backends"]
+pitch-jpype = "hla2010_rti_pitch_jpype.plugin:plugin"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["hla2010_rti_pitch_jpype*"]
+
+[tool.hla2010.package-split]
+status = "implementation-moved"
+role = "rti-backend"
+backend_names = ["pitch-jpype"]
+backend_aliases = ["java-pitch-jpype"]
+source_roots = [
+  "packages/hla2010-rti-pitch-jpype/src/hla2010_rti_pitch_jpype",
+]

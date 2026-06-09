@@ -18,6 +18,10 @@ It also makes it easier to answer the same question at different levels:
 Use these as the normal entry points:
 
 - [README.md](../README.md): install, bootstrap, smoke, and operator commands
+- [docs/first_run.md](first_run.md): shortest path from fresh checkout to a working pure-Python example
+- [docs/python_environment.md](python_environment.md): Python environment setup and install order
+- [docs/install_matrix.md](install_matrix.md): extras, bridge deps, and vendor-runtime install order
+- [docs/agent_runbook.md](agent_runbook.md): startup sequence for agents and automation
 - [docs/README.md](README.md): documentation map and doc-family index
 - [docs/architecture.md](architecture.md): package and module structure
 - [docs/package_layout.md](package_layout.md): source-tree layout and import discipline
@@ -100,9 +104,10 @@ document structure for each backend or test family.
 Keep operator-facing docs in this order:
 
 1. install or bootstrap
-2. run a smoke command
-3. run the focused test set
-4. generate the evidence packet
-5. compare or attribute failures
+2. activate `.venv`
+3. run a smoke command
+4. run the focused test set
+5. generate the evidence packet
+6. compare or attribute failures
 
 The root [README.md](../README.md) should stay the shortest path to that flow.

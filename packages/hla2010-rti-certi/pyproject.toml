@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla2010-rti-certi"
+version = "0.13.0"
+description = "CERTI RTI backend plugins for hla2010-spec"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["hla2010-spec==0.13.0", "hla2010-rti-java-common==0.13.0", "hla2010-rti-runtime-common==0.13.0"]
+
+[project.optional-dependencies]
+jpype = ["jpype1"]
+py4j = ["py4j"]
+java = ["jpype1", "py4j"]
+test = ["pytest"]
+
+[project.entry-points."hla2010.rti_backends"]
+certi = "hla2010_rti_certi.certi.plugin:plugin"
+certi-jpype = "hla2010_rti_certi.certi.plugin:certi_jpype_plugin"
+certi-py4j = "hla2010_rti_certi.certi.plugin:certi_py4j_plugin"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["hla2010_rti_certi*"]
+
+[tool.hla2010.package-split]
+status = "implementation-moved"
+role = "rti-backend"
+backend_names = ["certi", "certi-jpype", "certi-py4j"]
+backend_aliases = ["certi-native", "native-certi", "java-certi-jpype", "java-certi-py4j"]
+source_roots = [
+  "packages/hla2010-rti-certi/src/hla2010_rti_certi",
+  "hla2010/backends/certi",
+  "hla2010/backends/certi_java",
+  "hla2010/real_rti_certi.py",
+]

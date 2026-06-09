@@ -1,6 +1,7 @@
 # hla2010-python
 
-This repository is an unofficial IEEE 1516.1-2010 HLA workspace centered on a Python RTI surface.
+This repository is an unofficial IEEE 1516.1-2010 HLA workspace centered on a
+clean Python spec surface plus pluggable RTI backends.
 It gives you:
 
 - a dependency-free in-memory Python RTI for fast local development
@@ -9,14 +10,46 @@ It gives you:
 - transport-hosted gRPC and REST routes
 - example federates, scenario runners, tests, and verification artifacts
 
-If you want the shortest path to "something runs", start with the Python backend and the Target/Radar example.
+If you want the shortest path to "something runs", start with the pure Python
+backend and the Target/Radar example.
+
+The repo is organized as a monorepo workspace:
+
+- `src/hla2010/` is the root Python package and compatibility layer
+- `hla2010/` is a narrow top-level shim area for plugin-facing glue
+- `packages/*/src/` holds package-owned backend, FOM, and support implementations
+- `examples/`, `scripts/`, `tests/`, and `docs/` stay repo-local
 
 ## Quick Start
 
 1. Bootstrap the Python environment:
 
 ```bash
+./bootstrap python
+source .venv/bin/activate
+```
+
+That creates or refreshes the repo-local virtual environment and installs the
+workspace in editable mode.
+
+If you want the broader local QA environment instead of the lean operator
+bootstrap, use:
+
+```bash
 ./scripts/bootstrap_python.sh
+source .venv/bin/activate
+```
+
+For the full environment and install order, read
+[`docs/python_environment.md`](docs/python_environment.md).
+
+If you want the shortest single walkthrough, use
+[`docs/first_run.md`](docs/first_run.md).
+
+If you want an executable setup check first, run:
+
+```bash
+./bootstrap doctor
 ```
 
 2. Run the simplest scenario:
@@ -28,7 +61,7 @@ python examples/target_radar_simulation.py --backend python --steps 5
 3. Run the backend smoke example:
 
 ```bash
-PYTHONPATH=. python examples/backend_recording.py
+python examples/backend_recording.py
 ```
 
 4. Run the default test wrapper:
@@ -52,15 +85,26 @@ If you need the vendor flows, the repo also includes:
 
 ## What This Repo Is For
 
-The package under `hla2010/` is the code you build against. It includes:
+The main import surface is `hla2010`, with the clean contract at
+`hla2010.spec`. The `src/hla2010/` tree is the stable API layer plus
+compatibility facades while backend ownership moves into separate installable
+distributions. In practice:
 
 - the backend-neutral RTI surface
-- Python backend implementation details
-- Java bridge adapters and vendor-facing runtime helpers
+- compatibility exports for split backend families
+- shared abstractions used across backend packages
 - scenario support for Target/Radar, synchronization, ownership, time, and MOM/MIM work
 - compliance, traceability, and verification helpers
 
-The installable package intentionally excludes `hla2010.testing`; those modules
+Concrete backend implementations now live in package-owned source trees such as:
+
+- `packages/hla2010-rti-python/src/hla2010_rti_python/`
+- `packages/hla2010-rti-certi/src/hla2010_rti_certi/`
+- `packages/hla2010-rti-java-jpype/src/hla2010_rti_java_jpype/`
+- `packages/hla2010-rti-java-py4j/src/hla2010_rti_java_py4j/`
+- `packages/hla2010-rti-portico/src/hla2010_rti_portico/`
+
+The installable package intentionally excludes `hla2010/testing`; those modules
 are repo-internal support code for tests, scenario runners, and artifact
 generation.
 
@@ -88,11 +132,12 @@ Good starting points:
 
 For the Target/Radar example, the bundled FOM lives at:
 
-- `hla2010/resources/foms/TargetRadarFOMmodule.xml`
+- `packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/resources/foms/TargetRadarFOMmodule.xml`
 
 The `examples/` tree is for runnable entrypoints and thin example-only assets.
-Reusable runtime assets belong under `hla2010/resources/` so they ship with the
-installable package and stay canonical in one place.
+Reusable runtime assets belong under their owning package roots. For
+Target/Radar that canonical owner is `hla2010-fom-target-radar`; the
+`src/hla2010/resources/` path is kept only for compatibility during migration.
 
 ## Two-Federate Starter
 
@@ -138,11 +183,14 @@ python3 scripts/discover_backend_compliance.py --show-backlog
 ## Repository Layout
 
 ```text
-hla2010/              Python package source
+src/hla2010/          core API layer and compatibility facades
+hla2010/              narrow plugin-facing shim area
+packages/*/src/       package-owned backend and support implementation roots
 examples/             runnable example federates and scenario entrypoints
 tests/                pytest coverage and smoke tests
 scripts/              operator entrypoints and CI wrappers
 docs/                 route inventories, runbooks, and verification docs
+packages/             installable workspace packages and migration metadata
 specs/ieee-1516-2010/  retained IEEE reference PDFs and source ZIPs
 CERTI/                vendored CERTI source tree
 java_shims/           Java shim source for bridge validation
@@ -152,12 +200,16 @@ analysis/             generated compliance and verification artifacts
 ## More Detail
 
 - [`docs/README.md`](docs/README.md) for the documentation index
+- [`docs/first_run.md`](docs/first_run.md) for the shortest new-machine-to-first-example path
+- [`docs/python_environment.md`](docs/python_environment.md) for environment setup and install order
+- [`docs/install_matrix.md`](docs/install_matrix.md) for extras, bridge deps, and vendor-runtime ordering
+- [`docs/agent_runbook.md`](docs/agent_runbook.md) for the agent/automation startup sequence
 - [`docs/workspace_layout.md`](docs/workspace_layout.md) for the top-level workspace area split
-- [`docs/python_api_spec.md`](docs/python_api_spec.md) for the clean Pythonic abstract/prototype contract
+- [`docs/python_api_spec.md`](docs/python_api_spec.md) for the clean Python spec package
 - [`scripts/README.md`](scripts/README.md) for operator commands and wrappers
 - [`docs/documentation_hierarchy.md`](docs/documentation_hierarchy.md) for the doc structure
 - [`requirements/README.md`](requirements/README.md) for the seeded requirements catalog
-- [`docs/certi_section8_runbook.md`](docs/certi_section8_runbook.md) for the CERTI operator runbook
-- [`docs/pitch_decision_tree.md`](docs/pitch_decision_tree.md) for Pitch selection and troubleshooting
+- [`packages/hla2010-rti-certi/docs/certi_section8_runbook.md`](packages/hla2010-rti-certi/docs/certi_section8_runbook.md) for the CERTI operator runbook
+- [`packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md`](packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md) for Pitch selection and troubleshooting
 
 The repository intentionally keeps generated artifacts out of version control when they can be reproduced from source.

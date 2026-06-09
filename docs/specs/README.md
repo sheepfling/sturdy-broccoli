@@ -30,7 +30,7 @@ Primary entry points:
 - [../rti_options_and_test_matrix.md](../rti_options_and_test_matrix.md)
 - [../backend_capability_matrix.md](../backend_capability_matrix.md)
 - [../backend_conformance_matrix.md](../backend_conformance_matrix.md)
-- [../certi_spec_traceability.md](../certi_spec_traceability.md)
+- [../../packages/hla2010-rti-certi/docs/certi_spec_traceability.md](../../packages/hla2010-rti-certi/docs/certi_spec_traceability.md)
 
 Do not put raw source drops or unpacked packet archives here. Those belong in
 `reference/` or `evidence/`.

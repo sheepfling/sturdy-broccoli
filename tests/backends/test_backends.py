@@ -1,7 +1,7 @@
 from hla2010.runtime_api import FederateAmbassador
 from hla2010.backends import RecordingBackend, make_rti_ambassador
 from hla2010.backends.base import DelegatingRTIAmbassador, lower_camel_to_snake, snake_to_lower_camel
-from hla2010.backends.java_common import java_parameter_names, resolve_java_arguments
+from hla2010_rti_java_common import java_parameter_names, resolve_java_arguments
 from hla2010.enums import CallbackModel
 from hla2010.raw_api import API_METADATA
 
@@ -67,7 +67,7 @@ def test_case_conversion_helpers():
 
 
 def test_native_handle_registry_uses_java_hash_semantics():
-    from hla2010.backends.conversion import NativeHandleRegistry
+    from hla2010_rti_backend_common import NativeHandleRegistry
     from hla2010.handles import ObjectClassHandle
 
     class JavaLikeHandle:

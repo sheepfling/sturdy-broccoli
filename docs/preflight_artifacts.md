@@ -114,5 +114,5 @@ Pitch JSON includes:
 
 If you want to understand the operator flow first, read:
 
-- [Pitch Decision Tree](pitch_decision_tree.md)
-- [CERTI Operator Runbook](certi_section8_runbook.md)
+- [Pitch Decision Tree](../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md)
+- [CERTI Operator Runbook](../packages/hla2010-rti-certi/docs/certi_section8_runbook.md)

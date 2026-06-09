@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from hla2010.runtime_api import FederateAmbassador
 from hla2010.backends.base import make_rti_ambassador
-from hla2010.backends.certi import CERTIBackend, CERTIConfig
-from hla2010.backends.certi.service_adapter import CERTIBackend as PackageCERTIBackend
-from hla2010.backends.certi.transport import CERTITransport, CERTITransportProtocol
+from hla2010_rti_certi import CERTIBackend, CERTIConfig
+from hla2010_rti_certi.certi.service_adapter import CERTIBackend as PackageCERTIBackend
+from hla2010_rti_certi.certi.transport import CERTITransport, CERTITransportProtocol
 from hla2010.backends.transport import RTITransport
 from hla2010.backends.transport import TransportRequest, TransportResponse
 from hla2010.enums import CallbackModel

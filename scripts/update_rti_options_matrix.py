@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
+import _bootstrap  # noqa: F401
 
 ROOT = Path(__file__).resolve().parents[1]
 DOC = ROOT / "docs" / "rti_options_and_test_matrix.md"
@@ -13,7 +13,6 @@ END = "<!-- GENERATED_BACKEND_ALIASES_END -->"
 
 
 def _extract_alias_sets() -> list[tuple[str, list[str]]]:
-    sys.path.insert(0, str(ROOT))
     from hla2010 import rti
 
     rti._register_builtin_backend_factories()

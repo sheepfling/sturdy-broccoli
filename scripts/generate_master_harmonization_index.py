@@ -1,17 +1,15 @@
 from __future__ import annotations
 
 import csv
-import sys
 from pathlib import Path
+
+import _bootstrap  # noqa: F401
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 REQUIREMENTS_ROOT = REPO_ROOT / "requirements"
 OUTPUT_PATH = REQUIREMENTS_ROOT / "hla_1516_master_harmonization_index_v1_0.csv"
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
 
 from hla2010.requirements_packet import load_imported_hla_packet
-
 
 FIELDNAMES = [
     "master_requirement_id",

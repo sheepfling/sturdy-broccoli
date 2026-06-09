@@ -26,7 +26,6 @@ python3 scripts/run_two_federate_suite.py --target-radar-steps 6
 If you are helping someone understand the example, start here:
 
 - [`scripts/run_two_federate_suite.py`](../scripts/run_two_federate_suite.py)
-- [`hla2010/testing/two_federate_suite.py`](../hla2010/testing/two_federate_suite.py)
 - [`hla2010/testing/two_federate_suite_runner.py`](../hla2010/testing/two_federate_suite_runner.py)
 
 If you want the broader verification context, use:
@@ -41,4 +40,3 @@ This is the best entry point when you want to:
 - explain how the repo exercises two federates together
 - point someone at the first runnable artifact-producing example
 - show where the generated report and CSV/SVG artifacts land
-

@@ -2,13 +2,9 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
-import sys
 
 # Allow running directly from the source checkout.
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+import _bootstrap  # noqa: F401
 
 from hla2010.scenarios import make_target_radar_factory, run_target_radar_scenario
 

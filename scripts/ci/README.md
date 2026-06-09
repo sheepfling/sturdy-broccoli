@@ -23,6 +23,7 @@ The rule is simple:
 ### Test / Smoke
 
 - `test.sh`: pytest wrapper for the selected test set
+- `time.sh`: dedicated HLA 1516.1-2010 time-management suite gate
 - `full_sequence.sh`: full verification sequence, including type annotations
 - `seed_suite.sh`: default local seed suite
 - `vendor_runtime_smoke.sh`: CERTI and Pitch smoke/profile runner

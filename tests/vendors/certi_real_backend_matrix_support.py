@@ -12,10 +12,10 @@ from hla2010.enums import CallbackModel, OrderType, ResignAction
 from hla2010.exceptions import AttributeDivestitureWasNotRequested, InvalidLogicalTime, RTIinternalError
 from hla2010.real_rti import discover_certi_runtime_profile, discover_certi_smoke_fom, launch_certi_rtig, project_root
 from hla2010.rti import create_rti_ambassador
-from hla2010.testing.scenarios import (
+from hla2010.testing.scenario_exchange import TwoFederateExchangeConfig
+from hla2010.testing.scenario_ownership import (
     NegotiatedOwnershipScenarioConfig,
     ReleaseRequestOwnershipScenarioConfig,
-    TwoFederateExchangeConfig,
     run_confirm_divestiture_negotiated_scenario,
     run_negotiated_attribute_ownership_scenario,
     run_release_request_ownership_scenario,

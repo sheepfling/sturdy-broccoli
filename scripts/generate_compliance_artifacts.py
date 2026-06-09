@@ -11,12 +11,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-
-REPO_ROOT = Path(__file__).resolve().parents[1]
-import sys
-
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
+import _bootstrap  # noqa: F401
 
 import hla2010
 from hla2010.conformance import (
@@ -30,10 +25,15 @@ from hla2010.conformance import (
     write_service_conformance_json,
 )
 from hla2010.testing.backend_compliance_discovery import write_vendor_discovery_backlog_artifacts
-from hla2010.verification import build_requirements_matrix_2010, write_traceability_csv, write_verification_assets
-from hla2010.verification import write_requirements_matrix_2010_csv, write_requirements_matrix_2010_json
+from hla2010.verification import (
+    build_requirements_matrix_2010,
+    write_requirements_matrix_2010_csv,
+    write_requirements_matrix_2010_json,
+    write_traceability_csv,
+    write_verification_assets,
+)
 
-
+REPO_ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_DIR = REPO_ROOT / "analysis" / "compliance"
 
 
@@ -1148,7 +1148,7 @@ def _mapping_status(module_name: str, cls: type[Any]) -> tuple[str, str]:
 def _public_class_inventory() -> list[PublicClassInventoryRow]:
     exported_names = set(getattr(hla2010, "__dict__", {}).keys())
     rows: list[PublicClassInventoryRow] = []
-    package_dir = REPO_ROOT / "hla2010"
+    package_dir = Path(next(iter(hla2010.__path__)))
 
     for module_info in pkgutil.iter_modules([str(package_dir)]):
         if module_info.ispkg or module_info.name == "backends" or " " in module_info.name:

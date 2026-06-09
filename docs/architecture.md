@@ -9,26 +9,29 @@ That pattern exists to keep HLA service behavior reviewable by domain while stil
 ## Facades
 
 - `hla2010/rti.py`: top-level backend and transport selection facade.
-- `hla2010/backends/python/backend.py`: package facade for the pure-Python backend.
-- `hla2010/backends/python/`: canonical Python backend implementation package.
+- `hla2010/backends/python/`: compatibility facades for the split pure-Python backend.
+- `hla2010/backends/conversion.py`: compatibility facade for split backend conversion support.
+- `hla2010/backends/java_common.py`: compatibility facade for split shared Java RTI support.
+- `hla2010/real_rti_process.py`: compatibility facade for split runtime process helpers.
 - `hla2010/real_rti.py`: runtime discovery compatibility facade.
+- `hla2010/real_rti_certi.py`, `hla2010/real_rti_pitch.py`, `hla2010/real_rti_portico.py`: compatibility facades for split vendor runtime packages.
 
 ## Domain Modules And Mixins
 
-- `hla2010/backends/python/declaration.py`
-- `hla2010/backends/python/object.py`
-- `hla2010/backends/python/object_delivery.py`
-- `hla2010/backends/python/mom.py`
-- `hla2010/backends/python/mom_actions.py`
-- `hla2010/backends/python/mom_reporting.py`
-- `hla2010/backends/python/ownership.py`
-- `hla2010/backends/python/time.py`
-- `hla2010/backends/python/time_queue.py`
-- `hla2010/backends/python/time_services.py`
-- `hla2010/backends/python/ddm.py`
-- `hla2010/backends/python/federation.py`
-- `hla2010/backends/python/federation_lifecycle.py`
-- `hla2010/backends/python/federation_sync.py`
+- `packages/hla2010-rti-python/src/hla2010_rti_python/declaration.py`
+- `packages/hla2010-rti-python/src/hla2010_rti_python/object.py`
+- `packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py`
+- `packages/hla2010-rti-python/src/hla2010_rti_python/mom.py`
+- `packages/hla2010-rti-python/src/hla2010_rti_python/mom_actions.py`
+- `packages/hla2010-rti-python/src/hla2010_rti_python/mom_reporting.py`
+- `packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py`
+- `packages/hla2010-rti-python/src/hla2010_rti_python/time.py`
+- `packages/hla2010-rti-python/src/hla2010_rti_python/time_queue.py`
+- `packages/hla2010-rti-python/src/hla2010_rti_python/time_services.py`
+- `packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py`
+- `packages/hla2010-rti-python/src/hla2010_rti_python/federation.py`
+- `packages/hla2010-rti-python/src/hla2010_rti_python/federation_lifecycle.py`
+- `packages/hla2010-rti-python/src/hla2010_rti_python/federation_sync.py`
 
 These modules isolate standard HLA service families so review can happen at the service-domain level instead of inside a single backend god module.
 
@@ -47,9 +50,9 @@ Examples:
 
 ## Shared State And Engine
 
-- `hla2010/backends/python/state.py`: backend data model, queue state, MOM/reporting flags, save/restore snapshots, and typed support values.
-- `hla2010/backends/python/engine.py`: shared in-memory handle registry, FOM bootstrap, class/interaction lookup, and federation object model support.
-- `hla2010/backends/python/reporting.py`: service-report file support.
+- `packages/hla2010-rti-python/src/hla2010_rti_python/state.py`: backend data model, queue state, MOM/reporting flags, save/restore snapshots, and typed support values.
+- `packages/hla2010-rti-python/src/hla2010_rti_python/engine.py`: shared in-memory handle registry, FOM bootstrap, class/interaction lookup, and federation object model support.
+- `packages/hla2010-rti-python/src/hla2010_rti_python/reporting.py`: service-report file support.
 
 This layer contains reusable backend mechanics that should not be duplicated across individual service-domain modules.
 
@@ -57,34 +60,39 @@ This layer contains reusable backend mechanics that should not be duplicated acr
 
 The testing package mirrors the same structure where feasible:
 
-- compatibility facade: `scenarios.py`, `java_shim.py`, `two_federate_suite.py`
+- compatibility facade: `scenarios.py`, `java_shim.py`
 - domain/scenario roots: `scenario_exchange.py`, `scenario_sync.py`, `scenario_ownership.py`
 - focused support modules: `scenario_support.py`, `java_shim_types.py`, `java_shim_backend.py`, `java_shim_factory.py`
-- suite coordinator plus helpers: `two_federate_suite_runner.py`, `two_federate_suite_scenarios.py`, `two_federate_suite_pairs.py`, `two_federate_suite_writers.py`
+- suite coordinator at root `two_federate_suite_runner.py`, plus split generic harness helpers in `packages/hla2010-verification-harness`
 
 The goal is the same as production code: keep scenario orchestration separate from dense helper mechanics and artifact writing.
 
 ## Factories And Registries
 
-- `hla2010/backends/python/factory.py`: pure-Python backend constructors.
+- `packages/hla2010-rti-python/src/hla2010_rti_python/factory.py`: pure-Python backend constructors.
 - `hla2010/rti.py`: `register_backend_factory(...)` and `register_transport_factory(...)`.
-- `hla2010/backends/certi/__init__.py`: CERTI backend and transport factory surface.
+- `packages/hla2010-rti-certi/src/hla2010_rti_certi/certi/plugin.py`: CERTI backend plugin descriptors.
 
 The rule is that new backend kinds or transport kinds should register themselves instead of extending a central switchboard.
 
 ## Optional Transport And Runtime Adapters
 
 - `hla2010/backends/transport.py`: typed transport request/response boundary.
-- `hla2010/backends/rest_transport`: JSON-over-HTTP transport package with a checked-in client adapter around the OpenAPI envelope.
-- `hla2010/backends/grpc_transport`: gRPC transport package with checked-in protobuf schema and Python stubs.
+- `packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/conversion.py`: shared backend conversion and native-handle policy.
+- `packages/hla2010-rti-java-common/src/hla2010_rti_java_common/java_common.py`: shared Java bridge-independent adapter policy.
+- `packages/hla2010-rti-runtime-common/src/hla2010_rti_runtime_common/real_rti_process.py`: shared vendor runtime-process lifecycle and loopback TCP policy.
+- `hla2010/backends/rest_transport`: root-owned shared JSON-over-HTTP transport infrastructure with a checked-in client adapter around the OpenAPI envelope.
+- `hla2010/backends/grpc_transport`: root-owned shared gRPC transport infrastructure with checked-in protobuf schema and Python stubs.
 - `docs/openapi/rti_transport.yaml`: formal REST transport schema for generated clients.
-- `hla2010/backends/certi/transport.py` and `hla2010/backends/certi/service_adapter.py`: explicit CERTI transport/service split.
-- `hla2010/backends/jpype/runtime.py`, `adapter.py`, and `factory.py`: JPype-backed Java RTI family.
-- `hla2010/backends/py4j/runtime.py`, `adapter.py`, and `factory.py`: Py4J-backed Java RTI family.
-- `hla2010/backends/certi_java/runtime.py`, `adapter.py`, and `factory.py`: Java-profile CERTI family over the real native CERTI path.
-- `hla2010/real_rti_certi.py`, `hla2010/real_rti_pitch.py`, `hla2010/real_rti_portico.py`, `hla2010/real_rti_process.py`: runtime discovery and process-launch helpers.
+- `packages/hla2010-rti-certi/src/hla2010_rti_certi/certi/transport.py` and `service_adapter.py`: explicit CERTI transport/service split.
+- `packages/hla2010-rti-java-jpype/src/hla2010_rti_java_jpype/runtime.py`, `adapter.py`, and `factory.py`: JPype-backed Java RTI family.
+- `packages/hla2010-rti-java-py4j/src/hla2010_rti_java_py4j/runtime.py`, `adapter.py`, and `factory.py`: Py4J-backed Java RTI family.
+- `packages/hla2010-rti-certi/src/hla2010_rti_certi/certi_java/runtime.py`, `adapter.py`, and `factory.py`: Java-profile CERTI family over the real native CERTI path.
+- `packages/hla2010-rti-pitch-common/src/hla2010_rti_pitch_common/real_rti_pitch.py`, `packages/hla2010-rti-portico/src/hla2010_rti_portico/real_rti_portico.py`, and `packages/hla2010-rti-runtime-common/src/hla2010_rti_runtime_common/real_rti_process.py`: runtime discovery and process-launch helpers.
 
 The development goal is that a federate written against `hla2010` runs against the same ambassador API whether the backend is pure Python, CERTI-backed, JPype-backed, or Py4J-backed. REST and gRPC are transport options underneath that backend-neutral surface, not separate application APIs.
+
+Until they are promoted into dedicated installable packages, `rest_transport` and `grpc_transport` stay in the root tree as shared infrastructure rather than as vendor/backend families.
 
 ### Transport Artifact Policy
 
@@ -113,25 +121,25 @@ That split is intended to keep PRs reviewable:
 
 ### JPype Family
 
-- `hla2010/backends/jpype/runtime.py`: owns `JPypeConfig` and `JPypeBridge`.
-- `hla2010/backends/jpype/adapter.py`: owns `JPypeRTIBackend`.
-- `hla2010/backends/jpype/factory.py`: owns `create_jpype_backend(...)` and `rti_ambassador(...)`.
+- `packages/hla2010-rti-java-jpype/src/hla2010_rti_java_jpype/runtime.py`: owns `JPypeConfig` and `JPypeBridge`.
+- `packages/hla2010-rti-java-jpype/src/hla2010_rti_java_jpype/adapter.py`: owns `JPypeRTIBackend`.
+- `packages/hla2010-rti-java-jpype/src/hla2010_rti_java_jpype/factory.py`: owns `create_jpype_backend(...)` and `rti_ambassador(...)`.
 
 Use this family for in-process JVM access where Python talks directly to vendor Java RTI objects through JPype.
 
 ### Py4J Family
 
-- `hla2010/backends/py4j/runtime.py`: owns `Py4JConfig`, `Py4JBridge`, and the callback proxy type.
-- `hla2010/backends/py4j/adapter.py`: owns `Py4JRTIBackend`.
-- `hla2010/backends/py4j/factory.py`: owns `create_py4j_backend(...)` and `rti_ambassador(...)`.
+- `packages/hla2010-rti-java-py4j/src/hla2010_rti_java_py4j/runtime.py`: owns `Py4JConfig`, `Py4JBridge`, and the callback proxy type.
+- `packages/hla2010-rti-java-py4j/src/hla2010_rti_java_py4j/adapter.py`: owns `Py4JRTIBackend`.
+- `packages/hla2010-rti-java-py4j/src/hla2010_rti_java_py4j/factory.py`: owns `create_py4j_backend(...)` and `rti_ambassador(...)`.
 
 Use this family when the Java RTI lives in another JVM process or when vendor deployment prefers gateway isolation.
 
 ### CERTI Java-Profile Family
 
-- `hla2010/backends/certi_java/runtime.py`: owns Java-shaped CERTI value conversion helpers.
-- `hla2010/backends/certi_java/adapter.py`: owns the CERTI Java callback adapter and Java-shaped RTI shim.
-- `hla2010/backends/certi_java/factory.py`: owns `create_certi_java_backend(...)`.
+- `packages/hla2010-rti-certi/src/hla2010_rti_certi/certi_java/runtime.py`: owns Java-shaped CERTI value conversion helpers.
+- `packages/hla2010-rti-certi/src/hla2010_rti_certi/certi_java/adapter.py`: owns the CERTI Java callback adapter and Java-shaped RTI shim.
+- `packages/hla2010-rti-certi/src/hla2010_rti_certi/certi_java/factory.py`: owns `create_certi_java_backend(...)`.
 
 Use this family when the transport side is real native CERTI, but the ambassador path needs to exercise the same Java-bridge profile used by JPype or Py4J backends.
 

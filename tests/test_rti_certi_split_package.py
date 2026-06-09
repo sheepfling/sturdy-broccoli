@@ -1,0 +1,53 @@
+from __future__ import annotations
+
+from hla2010.rti import RTIBackendPlugin
+
+
+class _TransportStub:
+    def start(self):
+        return self
+
+    def request(self, request):
+        raise AssertionError("not used")
+
+
+def test_split_certi_package_exports_backend_surface():
+    from hla2010_rti_certi import CERTIBackend, CERTIConfig, CERTITransport
+    from hla2010_rti_certi.certi import CERTIBackend as PackageBackend
+    from hla2010_rti_certi.certi.transport import CERTITransport as PackageTransport
+
+    assert CERTIBackend is PackageBackend
+    assert CERTITransport is PackageTransport
+    assert CERTIBackend(CERTIConfig()).info.name == "CERTI"
+
+
+def test_legacy_certi_modules_are_compatibility_facades():
+    from hla2010.backends.certi import CERTIBackend as OldBackend
+    from hla2010.backends.certi.service_adapter import CERTIBackend as OldServiceBackend
+    from hla2010.backends.certi.transport import CERTITransport as OldTransport
+    from hla2010.backends.certi_java.factory import create_certi_java_backend as old_create_java_backend
+    from hla2010.real_rti_certi import CERTIRuntime as OldRuntime
+    from hla2010_rti_certi import CERTIBackend, CERTITransport
+    from hla2010_rti_certi.certi_java.factory import create_certi_java_backend
+    from hla2010_rti_certi.real_rti_certi import CERTIRuntime
+
+    assert OldBackend is CERTIBackend
+    assert OldServiceBackend is CERTIBackend
+    assert OldTransport is CERTITransport
+    assert old_create_java_backend is create_certi_java_backend
+    assert OldRuntime is CERTIRuntime
+
+
+def test_split_certi_plugin_descriptors_create_transport_backends():
+    from hla2010_rti_certi.certi.plugin import backend_plugins, certi_jpype_plugin, certi_py4j_plugin, plugin
+
+    descriptor = plugin()
+    assert isinstance(descriptor, RTIBackendPlugin)
+    assert descriptor.name == "certi"
+    assert "certi-native" in descriptor.aliases
+    assert descriptor.create_backend({"transport": _TransportStub()}).info.name == "CERTI"
+
+    names = {item.name for item in backend_plugins()}
+    assert names == {"certi", "certi-jpype", "certi-py4j"}
+    assert certi_jpype_plugin().name == "certi-jpype"
+    assert certi_py4j_plugin().name == "certi-py4j"

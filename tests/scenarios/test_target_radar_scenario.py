@@ -2,10 +2,10 @@ import math
 
 import pytest
 
-from hla2010.backends.python import InMemoryRTIEngine
+from hla2010_rti_python import InMemoryRTIEngine
 from hla2010.rti import create_rti_ambassador
 from hla2010.scenarios.target_radar import run_target_radar_scenario
-from hla2010.testing.java_shim import SharedJavaShimKernel
+from hla2010.testing.java_shim_kernel import SharedJavaShimKernel
 
 
 def test_target_radar_runs_on_python_rti():

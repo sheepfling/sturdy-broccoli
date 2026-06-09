@@ -23,7 +23,10 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         rows = list(csv.DictReader(handle))
     assert rows
     assert any(row["path"] == "tests/vendors/test_pitch_real_backend_matrix.py" for row in rows)
-    assert any(row["path"] == "docs/certi_negotiated_ownership_findings.md" for row in rows)
+    assert any(
+        row["path"] == "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md"
+        for row in rows
+    )
     assert any(row["artifact_kind"] == "preflight" for row in rows)
 
     report_text = paths.report_markdown.read_text()

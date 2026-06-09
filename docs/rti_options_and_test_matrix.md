@@ -255,7 +255,7 @@ Current CERTI qualifier:
   - `pitch-py4j` gets farther on the owned-attribute release-request branch
   - `pitch-jpype` gets farther on the negotiated-offer branch and shows explicit FedPro session-drop / failed-resume lines
 - See:
-  - [pitch_negotiated_ownership_vendor_bug_2026-06-07.md](docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)
+  - [pitch_negotiated_ownership_vendor_bug_2026-06-07.md](../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)
   - [diagnostic_summary.md](analysis/pitch_negotiated_ownership_2026-06-07/diagnostic_summary.md)
 
 ### Runtime discovery and local install assumptions

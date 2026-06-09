@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla2010-fom-target-radar"
+version = "0.13.0"
+description = "Target/Radar FOM resources and examples for hla2010-spec"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["hla2010-spec==0.13.0"]
+
+[project.optional-dependencies]
+python-rti = ["hla2010-rti-python==0.13.0"]
+certi = ["hla2010-rti-certi==0.13.0"]
+pitch = ["hla2010-rti-pitch-jpype==0.13.0", "hla2010-rti-pitch-py4j==0.13.0"]
+test = ["pytest"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["hla2010_fom_target_radar*"]
+
+[tool.setuptools.package-data]
+hla2010_fom_target_radar = ["resources/foms/*.xml"]
+
+[tool.hla2010.package-split]
+status = "implementation-moved"
+role = "fom-example"
+source_roots = [
+  "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/resources/foms/TargetRadarFOMmodule.xml",
+  "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/scenarios/target_radar.py",
+  "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/scenarios/target_radar_cli.py",
+  "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/testing/target_radar_backend_matrix.py",
+  "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/testing/target_radar_proof.py",
+  "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/testing/two_federate_target_radar.py",
+  "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/testing/two_federate_target_radar_artifacts.py",
+  "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/testing/two_federate_suite_profiles.py",
+  "src/hla2010/scenarios/target_radar.py",
+  "src/hla2010/scenarios/target_radar_cli.py",
+  "src/hla2010/testing/target_radar_backend_matrix.py",
+  "src/hla2010/testing/target_radar_proof.py",
+]

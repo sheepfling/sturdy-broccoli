@@ -1,6 +1,6 @@
 from hla2010.runtime_api import FederateAmbassador
 from hla2010.backends.base import Invocation
-from hla2010.backends.java_common import JavaBridge, JavaValueConverter, resolve_java_invocation
+from hla2010_rti_java_common import JavaBridge, JavaValueConverter, resolve_java_invocation
 from hla2010.enums import CallbackModel, ResignAction
 from hla2010.handles import AttributeHandle, AttributeHandleSet, AttributeHandleValueMap, DimensionHandleSet
 from hla2010.raw_api import API_METADATA

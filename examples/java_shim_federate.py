@@ -20,17 +20,14 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
 from pathlib import Path
 from typing import Any
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
+import _bootstrap  # noqa: F401
 
 from hla2010.backends.base import make_rti_ambassador
-from hla2010.testing.java_shim import create_java_shim_backend
-from hla2010.testing.scenarios import run_basic_federate_scenario
+from hla2010.testing.java_shim_factory import create_java_shim_backend
+from hla2010.testing.scenario_basic import run_basic_federate_scenario
 
 
 def _jsonable(value: Any) -> Any:
@@ -61,6 +58,7 @@ def _rti_factory(bridge: str, real_java_shim: Path | None):
         return lambda: rti_ambassador(JPypeConfig(classpath=[str(real_java_shim)], shutdown_jvm_on_close=False))
 
     from py4j.java_gateway import CallbackServerParameters, GatewayParameters, JavaGateway, launch_gateway
+
     from hla2010.backends.py4j import Py4JConfig, rti_ambassador
 
     port = launch_gateway(classpath=str(real_java_shim), die_on_exit=True)

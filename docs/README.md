@@ -11,7 +11,11 @@ Start here:
 - [documentation_hierarchy.md](documentation_hierarchy.md): canonical doc flow and hierarchy
 - [workspace_layout.md](workspace_layout.md): top-level workspace areas and ownership split
 - [../README.md](../README.md): install, bootstrap, smoke, and operator commands
-- [python_api_spec.md](python_api_spec.md): clean Pythonic abstract/prototype HLA contract
+- [first_run.md](first_run.md): shortest path from fresh checkout to a working pure-Python example
+- [python_environment.md](python_environment.md): Python bootstrap, `.venv`, extras, and install order
+- [install_matrix.md](install_matrix.md): extras, backend families, and dependency order
+- [agent_runbook.md](agent_runbook.md): start-here sequence for agents and automation
+- [python_api_spec.md](python_api_spec.md): clean Python spec package
 - [callback_model_guide.md](callback_model_guide.md): evoked vs immediate callback behavior, tests, and implementation entry points
 - [verification/run_sequence.md](verification/run_sequence.md): full verification sequence and run order
 - [two_federate_quickstart.md](two_federate_quickstart.md): first stop for the composite two-federate example
@@ -35,13 +39,13 @@ Backend and runtime docs:
 - [rti_options_and_test_matrix.md](rti_options_and_test_matrix.md): operator-facing runtime and test matrix
 - [backend_capability_matrix.md](backend_capability_matrix.md): backend feature coverage
 - [backend_conformance_matrix.md](backend_conformance_matrix.md): clause-level conformance and parity status
-- [certi_spec_traceability.md](certi_spec_traceability.md): real CERTI sync/ownership coverage
-- [certi_runtime_limitations.md](certi_runtime_limitations.md): patched-vs-upstream CERTI baseline policy and runtime shortfalls
-- [certi_negotiated_ownership_findings.md](certi_negotiated_ownership_findings.md): CERTI negotiated ownership investigation
-- [pitch_decision_tree.md](pitch_decision_tree.md): Pitch runtime selection and troubleshooting
-- [pitch_docker_quickstart.md](pitch_docker_quickstart.md): shortest Pitch operator path
+- [../packages/hla2010-rti-certi/docs/certi_spec_traceability.md](../packages/hla2010-rti-certi/docs/certi_spec_traceability.md): real CERTI sync/ownership coverage
+- [../packages/hla2010-rti-certi/docs/certi_runtime_limitations.md](../packages/hla2010-rti-certi/docs/certi_runtime_limitations.md): patched-vs-upstream CERTI baseline policy and runtime shortfalls
+- [../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md](../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md): CERTI negotiated ownership investigation
+- [../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md](../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md): Pitch runtime selection and troubleshooting
+- [../packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md](../packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md): shortest Pitch operator path
 - [vendor_parity_artifacts.md](vendor_parity_artifacts.md): harmonized vendor artifact packet
-- [certi_section8_runbook.md](certi_section8_runbook.md): CERTI operator runbook
+- [../packages/hla2010-rti-certi/docs/certi_section8_runbook.md](../packages/hla2010-rti-certi/docs/certi_section8_runbook.md): CERTI operator runbook
 
 Verification and provenance:
 
@@ -56,6 +60,8 @@ Verification and provenance:
 - [evidence/packet_index.md](evidence/packet_index.md): unpacked packet index
 - [verification/README.md](verification/README.md): verification family index
 - [verification/requirements_hierarchy.md](verification/requirements_hierarchy.md): requirements capability-feature-requirement hierarchy
+- [verification/callback_model_compliance.md](verification/callback_model_compliance.md): callback delivery behavior, compliance boundary, and proof anchors
+- [verification/time_model_compliance.md](verification/time_model_compliance.md): GALT, LITS, lookahead, and time-advance compliance proof
 - [verification/verification_validation_split.md](verification/verification_validation_split.md): verification vs validation split
 - [verification/verification_plan.md](verification/verification_plan.md): layered verification plan
 - [verification/validation_plan.md](verification/validation_plan.md): layered validation plan

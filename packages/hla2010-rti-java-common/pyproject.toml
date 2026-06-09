@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla2010-rti-java-common"
+version = "0.13.0"
+description = "Shared Java RTI support package for hla2010-spec"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["hla2010-spec==0.13.0", "hla2010-rti-backend-common==0.13.0"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["hla2010_rti_java_common*"]
+
+[tool.hla2010.package-split]
+status = "implementation-moved"
+role = "java-support"
+source_roots = [
+  "packages/hla2010-rti-java-common/src/hla2010_rti_java_common",
+  "hla2010/backends/java_common.py",
+]

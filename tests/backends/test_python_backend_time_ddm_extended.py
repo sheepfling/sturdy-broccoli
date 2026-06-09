@@ -57,7 +57,7 @@ def _joined_group(name: str, count: int):
     return engine, rtis, feds, handles
 
 
-def test_flush_queue_request_delivers_all_queued_tso_messages_and_grants_earliest_tso():
+def test_flush_queue_request_delivers_only_grant_bound_tso_messages_and_grants_earliest_tso():
     _, sender, receiver, _sender_fed, receiver_fed, _h1, _h2 = joined_pair("flush-queue-fed")
     cls = sender.get_object_class_handle("HLAobjectRoot.Target")
     attr = sender.get_attribute_handle(cls, "Position")
@@ -84,7 +84,7 @@ def test_flush_queue_request_delivers_all_queued_tso_messages_and_grants_earlies
     drain(sender, receiver)
 
     reflections = receiver_fed.callbacks_named("reflectAttributeValues")
-    assert [rec.args[1][attr] for rec in reflections] == [b"three", b"five"]
+    assert [rec.args[1][attr] for rec in reflections] == [b"three"]
     grant = receiver_fed.last_callback("timeAdvanceGrant")
     assert grant is not None
     assert getattr(grant.args[0], "value") == 3.0

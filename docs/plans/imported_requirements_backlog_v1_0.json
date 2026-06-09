@@ -2103,7 +2103,7 @@
         },
         {
           "acceptance_tests": [
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_flush_queue_request_delivers_all_queued_tso_messages_and_grants_earliest_tso",
+            "tests/backends/test_python_backend_time_ddm_extended.py::test_flush_queue_request_delivers_only_grant_bound_tso_messages_and_grants_earliest_tso",
             "tests/backends/test_python_backend_time_ddm_extended.py::test_time_advance_services_reject_not_connected_not_joined_invalid_and_past_time",
             "tests/backends/test_python_backend_time_ddm_extended.py::test_time_advance_services_reject_save_restore_and_outstanding_advance"
           ],
@@ -6283,7 +6283,7 @@
         },
         {
           "acceptance_tests": [
-            "tests/backends/test_python_backend_time_ddm_extended.py::test_flush_queue_request_delivers_all_queued_tso_messages_and_grants_earliest_tso",
+            "tests/backends/test_python_backend_time_ddm_extended.py::test_flush_queue_request_delivers_only_grant_bound_tso_messages_and_grants_earliest_tso",
             "tests/backends/test_python_backend_time_ddm_extended.py::test_time_advance_services_reject_not_connected_not_joined_invalid_and_past_time",
             "tests/backends/test_python_backend_time_ddm_extended.py::test_time_advance_services_reject_save_restore_and_outstanding_advance"
           ],

@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from hla2010.testing.scenarios import run_basic_federate_scenario
+from hla2010.testing.scenario_basic import run_basic_federate_scenario
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 BUILD_SCRIPT = PROJECT_ROOT / "java_shims" / "hla-rti1516e-shim" / "tools" / "build_java_shim.py"
