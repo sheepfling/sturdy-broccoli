@@ -36,6 +36,8 @@ PACKAGE_IMPORT_ALLOWLISTS: dict[str, set[str]] = {
         "hla2010_rti_java_jpype",
         "hla2010_rti_java_py4j",
     },
+    "hla2010_rti_transport_grpc": {"hla2010", "hla2010_rti_certi", "hla2010_rti_python"},
+    "hla2010_rti_transport_rest": {"hla2010", "hla2010_rti_certi", "hla2010_rti_python", "hla2010_rti_transport_grpc"},
     "hla2010_fom_target_radar": {"hla2010", "hla2010_rti_certi", "hla2010_rti_pitch_common"},
     "hla2010_verification_harness": {"hla2010"},
 }

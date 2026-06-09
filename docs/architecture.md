@@ -81,8 +81,8 @@ The rule is that new backend kinds or transport kinds should register themselves
 - `packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/conversion.py`: shared backend conversion and native-handle policy.
 - `packages/hla2010-rti-java-common/src/hla2010_rti_java_common/java_common.py`: shared Java bridge-independent adapter policy.
 - `packages/hla2010-rti-runtime-common/src/hla2010_rti_runtime_common/real_rti_process.py`: shared vendor runtime-process lifecycle and loopback TCP policy.
-- `hla2010/backends/rest_transport`: root-owned shared JSON-over-HTTP transport infrastructure with a checked-in client adapter around the OpenAPI envelope.
-- `hla2010/backends/grpc_transport`: root-owned shared gRPC transport infrastructure with checked-in protobuf schema and Python stubs.
+- `packages/hla2010-rti-transport-rest/src/hla2010_rti_transport_rest`: package-owned JSON-over-HTTP transport infrastructure with a checked-in client adapter around the OpenAPI envelope.
+- `packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc`: package-owned gRPC transport infrastructure with checked-in protobuf schema and Python stubs.
 - `docs/openapi/rti_transport.yaml`: formal REST transport schema for generated clients.
 - `packages/hla2010-rti-certi/src/hla2010_rti_certi/certi/transport.py` and `service_adapter.py`: explicit CERTI transport/service split.
 - `packages/hla2010-rti-java-jpype/src/hla2010_rti_java_jpype/runtime.py`, `adapter.py`, and `factory.py`: JPype-backed Java RTI family.
@@ -92,7 +92,7 @@ The rule is that new backend kinds or transport kinds should register themselves
 
 The development goal is that a federate written against `hla2010` runs against the same ambassador API whether the backend is pure Python, CERTI-backed, JPype-backed, or Py4J-backed. REST and gRPC are transport options underneath that backend-neutral surface, not separate application APIs.
 
-Until they are promoted into dedicated installable packages, `rest_transport` and `grpc_transport` stay in the root tree as shared infrastructure rather than as vendor/backend families.
+The legacy root transport modules now remain only as compatibility facades over the dedicated transport packages.
 
 ### Transport Artifact Policy
 

@@ -61,6 +61,8 @@ EXPECTED_PACKAGES = {
         "entry_points": {"portico-jpype", "portico-py4j"},
         "status": "implementation-moved",
     },
+    "hla2010-rti-transport-grpc": {"role": "transport", "entry_points": set(), "status": "implementation-moved"},
+    "hla2010-rti-transport-rest": {"role": "transport", "entry_points": set(), "status": "implementation-moved"},
     "hla2010-fom-target-radar": {"role": "fom-example", "entry_points": set(), "status": "implementation-moved"},
     "hla2010-verification-harness": {"role": "verification-harness", "entry_points": set(), "status": "implementation-moved"},
 }
@@ -194,6 +196,8 @@ def test_root_pyproject_declares_workspace_package_roots():
     assert "packages/hla2010-rti-java-jpype/src" in package_roots
     assert "packages/hla2010-rti-java-py4j/src" in package_roots
     assert "packages/hla2010-rti-portico/src" in package_roots
+    assert "packages/hla2010-rti-transport-grpc/src" in package_roots
+    assert "packages/hla2010-rti-transport-rest/src" in package_roots
     assert "packages/hla2010-fom-target-radar/src" in package_roots
     assert "packages/hla2010-verification-harness/src" in package_roots
     assert package_roots == pytest_roots

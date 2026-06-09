@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla2010-rti-transport-rest"
+version = "0.13.0"
+description = "REST transport package for hla2010 RTI backend adapters"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "hla2010-spec==0.13.0",
+  "hla2010-rti-python==0.13.0",
+  "hla2010-rti-certi==0.13.0",
+  "hla2010-rti-transport-grpc==0.13.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["hla2010_rti_transport_rest*"]
+
+[tool.hla2010.package-split]
+status = "implementation-moved"
+role = "transport"
+transport_names = ["rest", "http-json"]
+source_roots = [
+  "packages/hla2010-rti-transport-rest/src/hla2010_rti_transport_rest",
+  "src/hla2010/backends/rest_transport",
+  "src/hla2010/backends/rest_transport_host.py",
+]

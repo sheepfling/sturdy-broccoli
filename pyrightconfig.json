@@ -5,13 +5,12 @@
     "src/hla2010/ambassadors.py",
     "src/hla2010/backends/base.py",
     "src/hla2010/backends/conversion.py",
-    "src/hla2010/backends/grpc_transport",
+    "packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc",
     "src/hla2010/backends/certi/service_adapter.py",
     "src/hla2010/backends/java_common.py",
     "src/hla2010/runtime_api.py",
     "src/hla2010/backends/python/__init__.py",
-    "src/hla2010/backends/rest_transport",
-    "src/hla2010/backends/rest_transport_host.py",
+    "packages/hla2010-rti-transport-rest/src/hla2010_rti_transport_rest",
     "src/hla2010/backends/python/backend.py",
     "src/hla2010/backends/python/engine.py",
     "src/hla2010/backends/python/factory.py",
@@ -29,8 +28,8 @@
   ],
   "exclude": [
     "**/__pycache__",
-    "hla2010/backends/grpc_transport/rti_transport_pb2.py",
-    "hla2010/backends/grpc_transport/rti_transport_pb2_grpc.py"
+    "packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc/rti_transport_pb2.py",
+    "packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc/rti_transport_pb2_grpc.py"
   ],
   "extraPaths": [
     "src",
@@ -44,6 +43,8 @@
     "packages/hla2010-rti-pitch-common/src",
     "packages/hla2010-rti-pitch-jpype/src",
     "packages/hla2010-rti-pitch-py4j/src",
-    "packages/hla2010-rti-portico/src"
+    "packages/hla2010-rti-portico/src",
+    "packages/hla2010-rti-transport-grpc/src",
+    "packages/hla2010-rti-transport-rest/src"
   ]
 }

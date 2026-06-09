@@ -28,6 +28,8 @@ def test_transitional_mega_package_includes_split_python_rti_package():
     pitch_jpype_packages = set(find_packages(where="packages/hla2010-rti-pitch-jpype/src", include=["hla2010_rti_pitch_jpype*"]))
     pitch_py4j_packages = set(find_packages(where="packages/hla2010-rti-pitch-py4j/src", include=["hla2010_rti_pitch_py4j*"]))
     portico_packages = set(find_packages(where="packages/hla2010-rti-portico/src", include=["hla2010_rti_portico*"]))
+    grpc_transport_packages = set(find_packages(where="packages/hla2010-rti-transport-grpc/src", include=["hla2010_rti_transport_grpc*"]))
+    rest_transport_packages = set(find_packages(where="packages/hla2010-rti-transport-rest/src", include=["hla2010_rti_transport_rest*"]))
     target_radar_packages = set(find_packages(where="packages/hla2010-fom-target-radar/src", include=["hla2010_fom_target_radar*"]))
     verification_harness_packages = set(find_packages(where="packages/hla2010-verification-harness/src", include=["hla2010_verification_harness*"]))
 
@@ -44,6 +46,8 @@ def test_transitional_mega_package_includes_split_python_rti_package():
     assert "hla2010_rti_pitch_jpype" in pitch_jpype_packages
     assert "hla2010_rti_pitch_py4j" in pitch_py4j_packages
     assert "hla2010_rti_portico" in portico_packages
+    assert "hla2010_rti_transport_grpc" in grpc_transport_packages
+    assert "hla2010_rti_transport_rest" in rest_transport_packages
     assert "hla2010_fom_target_radar" in target_radar_packages
     assert "hla2010_fom_target_radar.scenarios" in target_radar_packages
     assert "hla2010_fom_target_radar.testing" in target_radar_packages

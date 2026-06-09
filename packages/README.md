@@ -31,6 +31,8 @@ hla2010-spec
        <- hla2010-rti-pitch-jpype -> hla2010-rti-java-jpype
        <- hla2010-rti-pitch-py4j -> hla2010-rti-java-py4j
   <- hla2010-rti-portico -> hla2010-rti-java-jpype / hla2010-rti-java-py4j
+  <- hla2010-rti-transport-grpc -> hla2010-rti-python / hla2010-rti-certi
+  <- hla2010-rti-transport-rest -> hla2010-rti-transport-grpc / hla2010-rti-python / hla2010-rti-certi
   <- hla2010-verification-harness
   <- hla2010-fom-target-radar
 ```
@@ -44,6 +46,7 @@ Rules for the split:
 - Verification-harness packages own shared repo-internal suite/report helpers.
 - FOM/example packages own concrete resources and scenario helpers.
 - Vendor runtime packages own their own runbooks and vendor-specific findings under `packages/<name>/docs/`.
+- Transport packages own wire-format clients, hosted servers, and protocol assets for one transport family.
 - Backend packages may depend on `hla2010-spec`, but `hla2010-spec` must not
   import concrete backends, vendor runtime discovery, test shims, or examples.
 - During migration, package ownership moves one family at a time after
@@ -64,6 +67,8 @@ Suggested move order:
 9. `hla2010-rti-pitch-jpype`
 10. `hla2010-rti-pitch-py4j`
 11. `hla2010-rti-portico`
-12. `hla2010-verification-harness`
-13. `hla2010-fom-target-radar`
-14. trim `hla2010-spec` to the final core surface
+12. `hla2010-rti-transport-grpc`
+13. `hla2010-rti-transport-rest`
+14. `hla2010-verification-harness`
+15. `hla2010-fom-target-radar`
+16. trim `hla2010-spec` to the final core surface

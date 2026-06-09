@@ -24,8 +24,14 @@ from hla2010.fom import (
 )
 
 
+RESOURCE_ROOT = Path(__file__).resolve().parents[2] / "src" / "hla2010" / "resources" / "foms"
+VENDOR_SMOKE_FOM = str((RESOURCE_ROOT / "VendorSmokeFOM.xml").resolve())
+TARGET_RADAR_FOM = str((RESOURCE_ROOT / "TargetRadarFOMmodule.xml").resolve())
+STANDARD_MIM_FOM = str((RESOURCE_ROOT / "HLAstandardMIM.xml").resolve())
+
+
 def test_parse_fom_xml_extracts_identification_names_and_reference_datatypes():
-    module = parse_fom_xml("hla2010/resources/foms/TargetRadarFOMmodule.xml")
+    module = parse_fom_xml(TARGET_RADAR_FOM)
 
     assert module.name == "Target Radar FOM Module"
     assert module.model_type == "FOM"
@@ -95,8 +101,8 @@ def test_parse_fom_xml_extracts_transportation_update_rate_and_datatype_tables(t
 
 
 def test_parse_standard_mim_xml_exposes_mim_content_and_merge_summary():
-    mim_module = parse_fom_xml("hla2010/resources/foms/HLAstandardMIM.xml")
-    target_module = parse_fom_xml("hla2010/resources/foms/TargetRadarFOMmodule.xml")
+    mim_module = parse_fom_xml(STANDARD_MIM_FOM)
+    target_module = parse_fom_xml(TARGET_RADAR_FOM)
     catalog = merge_fom_modules((target_module,), mim_module=mim_module)
 
     assert mim_module.is_mim is True
@@ -138,7 +144,7 @@ def test_parse_fom_xml_requires_and_preserves_model_identification_metadata(tmp_
 
 
 def test_parse_standard_mim_xml_extracts_structured_datatype_definitions():
-    mim_module = parse_fom_xml("hla2010/resources/foms/HLAstandardMIM.xml")
+    mim_module = parse_fom_xml(STANDARD_MIM_FOM)
 
     assert mim_module.basic_datatypes["HLAinteger16BE"].size == "16"
     assert mim_module.basic_datatypes["HLAinteger16BE"].endian == "Big"
@@ -153,8 +159,8 @@ def test_parse_standard_mim_xml_extracts_structured_datatype_definitions():
 
 
 def test_merge_with_standard_mim_preserves_mom_table_definitions_without_alteration():
-    mim_module = parse_fom_xml("hla2010/resources/foms/HLAstandardMIM.xml")
-    target_module = parse_fom_xml("hla2010/resources/foms/TargetRadarFOMmodule.xml")
+    mim_module = parse_fom_xml(STANDARD_MIM_FOM)
+    target_module = parse_fom_xml(TARGET_RADAR_FOM)
     catalog = merge_fom_modules((target_module,), mim_module=mim_module)
 
     assert catalog.mim_module is mim_module
@@ -178,8 +184,8 @@ def test_merge_with_standard_mim_preserves_mom_table_definitions_without_alterat
 
 
 def test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata():
-    mim_module = parse_fom_xml("hla2010/resources/foms/HLAstandardMIM.xml")
-    target_module = parse_fom_xml("hla2010/resources/foms/TargetRadarFOMmodule.xml")
+    mim_module = parse_fom_xml(STANDARD_MIM_FOM)
+    target_module = parse_fom_xml(TARGET_RADAR_FOM)
     catalog = merge_fom_modules((target_module,), mim_module=mim_module)
 
     assert catalog.mim_module is mim_module
@@ -250,8 +256,8 @@ def test_merge_allows_extending_standard_mom_classes_with_subclasses_and_attribu
         encoding="utf-8",
     )
 
-    mim_module = parse_fom_xml("hla2010/resources/foms/HLAstandardMIM.xml")
-    target_module = parse_fom_xml("hla2010/resources/foms/TargetRadarFOMmodule.xml")
+    mim_module = parse_fom_xml(STANDARD_MIM_FOM)
+    target_module = parse_fom_xml(TARGET_RADAR_FOM)
     extension_module = parse_fom_xml(extension_path)
     catalog = merge_fom_modules((target_module, extension_module), mim_module=mim_module)
 
@@ -286,9 +292,9 @@ def test_parse_fom_xml_distinguishes_fom_som_and_mim_types_and_preserves_notes(t
         encoding="utf-8",
     )
 
-    fom_module = parse_fom_xml("hla2010/resources/foms/TargetRadarFOMmodule.xml")
+    fom_module = parse_fom_xml(TARGET_RADAR_FOM)
     som_module = parse_fom_xml(som_path)
-    mim_module = parse_fom_xml("hla2010/resources/foms/HLAstandardMIM.xml")
+    mim_module = parse_fom_xml(STANDARD_MIM_FOM)
 
     assert fom_module.model_type == "FOM"
     assert fom_module.is_mim is False
@@ -303,7 +309,7 @@ def test_parse_fom_xml_distinguishes_fom_som_and_mim_types_and_preserves_notes(t
 def test_parse_fom_xml_recognizes_standard_omt_component_tables_across_fom_som_and_mim():
     som_module = parse_fom_xml("CERTI/xml/ieee1516-2010/1516_2-2010/RestaurantSOMmodule.xml")
     fom_module = parse_fom_xml("CERTI/xml/ieee1516-2010/1516_2-2010/RestaurantFOMmodule.xml")
-    mim_module = parse_fom_xml("hla2010/resources/foms/HLAstandardMIM.xml")
+    mim_module = parse_fom_xml(STANDARD_MIM_FOM)
 
     assert som_module.model_identification["type"] == "SOM"
     assert som_module.service_utilization["joinFederationExecution"]["isUsed"] == "true"
@@ -399,7 +405,7 @@ def test_parse_fom_xml_distinguishes_required_optional_and_conditionally_require
 
 
 def test_parse_fom_xml_extracts_switch_table_settings_and_merge_summary():
-    module = parse_fom_xml("hla2010/resources/foms/VendorSmokeFOM.xml")
+    module = parse_fom_xml(VENDOR_SMOKE_FOM)
     catalog = merge_fom_modules((module,))
 
     assert module.model_type == "FOM"
@@ -454,8 +460,8 @@ def test_parse_fom_xml_extracts_synchronization_table_and_merge_summary(tmp_path
 
 
 def test_parse_fom_xml_extracts_tag_table_and_merge_summary():
-    target_module = parse_fom_xml("hla2010/resources/foms/TargetRadarFOMmodule.xml")
-    vendor_module = parse_fom_xml("hla2010/resources/foms/VendorSmokeFOM.xml")
+    target_module = parse_fom_xml(TARGET_RADAR_FOM)
+    vendor_module = parse_fom_xml(VENDOR_SMOKE_FOM)
     catalog = merge_fom_modules((target_module, vendor_module))
 
     assert target_module.tag_representations["updateReflectTag"] == {
@@ -1303,7 +1309,7 @@ def test_serialize_fom_module_preserves_metadata_subset_across_round_trip(tmp_pa
 
 
 def test_parse_fom_xml_with_schema_validation_accepts_standard_target_radar_module():
-    module = parse_fom_xml("hla2010/resources/foms/TargetRadarFOMmodule.xml", validate_schema=True)
+    module = parse_fom_xml(TARGET_RADAR_FOM, validate_schema=True)
     assert module.name == "Target Radar FOM Module"
 
 
@@ -2161,3 +2167,6 @@ def test_1516_2_hierarchy_doc_declares_omt_lexicon_and_conformance_boundary():
     assert "merge validation" in text
     assert "parse/serialize round-trip validation" in text
     assert "serviceUtilization" in text
+RESOURCE_ROOT = Path(__file__).resolve().parents[2] / "src" / "hla2010" / "resources" / "foms"
+VENDOR_SMOKE_FOM = str((RESOURCE_ROOT / "VendorSmokeFOM.xml").resolve())
+TARGET_RADAR_FOM = str((RESOURCE_ROOT / "TargetRadarFOMmodule.xml").resolve())

@@ -32,6 +32,9 @@ from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interva
 
 pytestmark = pytest.mark.requires_loopback_server
 
+RESOURCE_ROOT = Path(__file__).resolve().parents[2] / "src" / "hla2010" / "resources" / "foms"
+VENDOR_SMOKE_FOM = str((RESOURCE_ROOT / "VendorSmokeFOM.xml").resolve())
+
 
 class _RestHandler(BaseHTTPRequestHandler):
     requests: list[dict[str, object]] = []
@@ -136,7 +139,7 @@ def test_rest_transport_can_host_python_rti_exchange_end_to_end(time_factory_nam
         subscriber_federate = RecordingFederateAmbassador()
         config = TwoFederateExchangeConfig(
             federation_name=f"RestHostedPythonFederation-{time_factory_name}",
-            fom_modules=(str(Path("hla2010/resources/foms/VendorSmokeFOM.xml").resolve()),),
+            fom_modules=(VENDOR_SMOKE_FOM,),
             object_class_name="HLAobjectRoot.SmokeObject",
             attribute_name="Payload",
             interaction_class_name="HLAinteractionRoot.SmokeInteraction",
@@ -196,7 +199,7 @@ def test_rest_transport_polling_contract_drains_buffered_callbacks():
         publisher.connect(publisher_federate, CallbackModel.HLA_EVOKED)
         subscriber.connect(subscriber_federate, CallbackModel.HLA_EVOKED)
 
-        fom = str(Path("hla2010/resources/foms/VendorSmokeFOM.xml").resolve())
+        fom = VENDOR_SMOKE_FOM
         publisher.create_federation_execution("RestPollingContractFederation", [fom], "HLAfloat64Time")
         publisher.join_federation_execution("Publisher", "ProbeFederate", "RestPollingContractFederation")
         subscriber.join_federation_execution("Subscriber", "ProbeFederate", "RestPollingContractFederation")
@@ -248,7 +251,7 @@ def test_rest_transport_can_host_python_rti_synchronization_end_to_end():
         wing_federate = RecordingFederateAmbassador()
         config = SynchronizationScenarioConfig(
             federation_name="RestHostedSyncFederation",
-            fom_modules=(str(Path("hla2010/resources/foms/VendorSmokeFOM.xml").resolve()),),
+            fom_modules=(VENDOR_SMOKE_FOM,),
             logical_time_implementation_name="HLAfloat64Time",
             leader_name="Leader",
             wing_name="Wing",
@@ -293,7 +296,7 @@ def test_rest_transport_can_host_python_rti_fm_lifecycle_end_to_end():
         leader_federate = RecordingFederateAmbassador()
         wing_federate = RecordingFederateAmbassador()
         federation_name = "RestHostedLifecycleFederation"
-        fom = str(Path("hla2010/resources/foms/VendorSmokeFOM.xml").resolve())
+        fom = VENDOR_SMOKE_FOM
 
         leader.connect(leader_federate, CallbackModel.HLA_EVOKED)
         wing.connect(wing_federate, CallbackModel.HLA_EVOKED)
@@ -330,7 +333,7 @@ def test_rest_transport_can_host_python_rti_save_restore_end_to_end():
         federation_name = "RestHostedSaveRestoreFederation"
         save_name = "REST-SAVE-1"
         abort_save_name = "REST-SAVE-ABORT"
-        fom = str(Path("hla2010/resources/foms/VendorSmokeFOM.xml").resolve())
+        fom = VENDOR_SMOKE_FOM
 
         leader.connect(leader_federate, CallbackModel.HLA_EVOKED)
         wing.connect(wing_federate, CallbackModel.HLA_EVOKED)
@@ -425,7 +428,7 @@ def test_rest_transport_can_host_python_rti_ownership_end_to_end():
         acquirer_federate = RecordingFederateAmbassador()
         config = OwnershipScenarioConfig(
             federation_name="RestHostedOwnershipFederation",
-            fom_modules=(str(Path("hla2010/resources/foms/VendorSmokeFOM.xml").resolve()),),
+            fom_modules=(VENDOR_SMOKE_FOM,),
             logical_time_implementation_name="HLAfloat64Time",
             owner_name="Owner",
             acquirer_name="Acquirer",
@@ -471,7 +474,7 @@ def test_rest_transport_can_host_python_rti_negotiated_ownership_end_to_end():
         acquirer_federate = RecordingFederateAmbassador()
         config = NegotiatedOwnershipScenarioConfig(
             federation_name="RestHostedNegotiatedOwnershipFederation",
-            fom_modules=(str(Path("hla2010/resources/foms/VendorSmokeFOM.xml").resolve()),),
+            fom_modules=(VENDOR_SMOKE_FOM,),
             logical_time_implementation_name="HLAfloat64Time",
             owner_name="Owner",
             acquirer_name="Acquirer",

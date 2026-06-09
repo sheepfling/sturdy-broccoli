@@ -30,8 +30,8 @@ package root.
 - `packages/hla2010-rti-java-common/src/hla2010_rti_java_common/`: shared Java bridge support, overload resolution, callback dispatching, and Java-side value conversion.
 - `packages/hla2010-rti-runtime-common/src/hla2010_rti_runtime_common/`: shared vendor-runtime process lifecycle and loopback TCP helpers.
 - `docs/openapi/rti_transport.yaml`: formal REST transport schema.
-- `src/hla2010/backends/grpc_transport/`: shared gRPC transport infrastructure with `.proto` schema, generated-compatible Python stubs, client adapter, and hosted server helpers.
-- `src/hla2010/backends/rest_transport/`: shared REST transport infrastructure with the OpenAPI-aligned Python client adapter and transport runtime.
+- `packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc/`: canonical gRPC transport infrastructure with `.proto` schema, checked-in Python stubs, client adapter, and hosted server helpers.
+- `packages/hla2010-rti-transport-rest/src/hla2010_rti_transport_rest/`: canonical REST transport infrastructure with the OpenAPI-aligned Python client adapter and hosted server runtime.
 
 ## Concrete Backends
 
@@ -53,7 +53,7 @@ package root.
 
 Java transport stubs generated from the RTI REST or gRPC transport contracts are not checked in and are currently out of scope. Java integration in this repo is through the backend families above, not through generated transport bindings.
 
-The `grpc_transport` and `rest_transport` trees remain root-owned shared infrastructure for now. They are not treated as CERTI, Pitch, or Portico package families unless they are later promoted into their own installable transport packages.
+The legacy `src/hla2010/backends/grpc_transport/`, `src/hla2010/backends/rest_transport/`, and `src/hla2010/backends/rest_transport_host.py` modules are compatibility facades over the split transport packages.
 
 ## Backend Factories
 
@@ -89,6 +89,8 @@ The intended package split is:
 - `hla2010-rti-pitch-jpype`: Pitch Java RTI adapter through JPype.
 - `hla2010-rti-pitch-py4j`: Pitch Java RTI adapter through Py4J.
 - `hla2010-rti-portico`: Portico Java RTI adapters through JPype and Py4J.
+- `hla2010-rti-transport-grpc`: gRPC transport adapters and hosted servers.
+- `hla2010-rti-transport-rest`: REST transport adapters and hosted servers.
 - `hla2010-verification-harness`: shared two-federate packet, timeline, summary, and writer helpers for repo-internal verification.
 - `hla2010-fom-target-radar`: concrete target/radar FOM resources and
   target/radar scenario/example package.

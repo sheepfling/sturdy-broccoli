@@ -68,9 +68,9 @@ _BACKEND_PLUGINS: dict[str, RTIBackendPlugin] = {}
 _BACKEND_PLUGINS_LOADED = False
 _TRANSPORT_FACTORIES: dict[str, Any] = {}
 _TRANSPORT_MODULES: dict[str, str] = {
-    "grpc": "hla2010.backends.grpc_transport",
-    "http-json": "hla2010.backends.rest_transport",
-    "rest": "hla2010.backends.rest_transport",
+    "grpc": "hla2010_rti_transport_grpc",
+    "http-json": "hla2010_rti_transport_rest",
+    "rest": "hla2010_rti_transport_rest",
 }
 
 

@@ -48,6 +48,8 @@ where = [
   "packages/hla2010-rti-pitch-jpype/src",
   "packages/hla2010-rti-pitch-py4j/src",
   "packages/hla2010-rti-portico/src",
+  "packages/hla2010-rti-transport-grpc/src",
+  "packages/hla2010-rti-transport-rest/src",
   "packages/hla2010-fom-target-radar/src",
   "packages/hla2010-verification-harness/src",
 ]
@@ -64,6 +66,8 @@ include = [
   "hla2010_rti_pitch_jpype*",
   "hla2010_rti_pitch_py4j*",
   "hla2010_rti_portico*",
+  "hla2010_rti_transport_grpc*",
+  "hla2010_rti_transport_rest*",
   "hla2010_fom_target_radar*",
   "hla2010_verification_harness*",
 ]
@@ -88,6 +92,8 @@ pythonpath = [
   "packages/hla2010-rti-pitch-jpype/src",
   "packages/hla2010-rti-pitch-py4j/src",
   "packages/hla2010-rti-portico/src",
+  "packages/hla2010-rti-transport-grpc/src",
+  "packages/hla2010-rti-transport-rest/src",
   "packages/hla2010-fom-target-radar/src",
   "packages/hla2010-verification-harness/src",
 ]
