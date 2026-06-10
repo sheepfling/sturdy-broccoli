@@ -276,7 +276,7 @@ def rti_parameter_payload_for_negative_case(rti: Any, case: MOMNegativeCase) -> 
     if case.case_kind == "unexpected_parameter":
         values = valid_parameter_name_payloads(rti, case.interaction_name)
         result = parameter_handles_for_names(rti, case.interaction_name, values)
-        result[rti.get_parameter_handle(interaction, "HLAunexpectedNegativeTestParameter")] = hla_mom.encode_text("unexpected")
+        result[rti.backend.engine.get_or_create_parameter(interaction, "HLAunexpectedNegativeTestParameter")] = hla_mom.encode_text("unexpected")
         return result
     return parameter_handles_for_names(rti, case.interaction_name, parameter_name_payloads_for_negative_case(rti, case))
 

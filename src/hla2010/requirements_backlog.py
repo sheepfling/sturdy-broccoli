@@ -215,7 +215,7 @@ def _filter_rows(rows: list[BacklogRow], predicate: Callable[[BacklogRow], bool]
 
 
 def build_imported_hla_backlog(project_root: Path | None = None) -> dict[str, object]:
-    base = project_root or Path(__file__).resolve().parents[1]
+    base = project_root or Path(__file__).resolve().parents[2]
     families: list[BacklogFamily] = []
 
     base_specs = [

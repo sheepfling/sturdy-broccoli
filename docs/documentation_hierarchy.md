@@ -20,11 +20,13 @@ Use these as the normal entry points:
 - [README.md](../README.md): install, bootstrap, smoke, and operator commands
 - [docs/first_run.md](first_run.md): shortest path from fresh checkout to a working pure-Python example
 - [docs/python_environment.md](python_environment.md): Python environment setup and install order
+- [docs/vendor_runtime_runner_guide.md](vendor_runtime_runner_guide.md): supported unsandboxed-local and dedicated-runner path for real vendor runtimes
 - [docs/install_matrix.md](install_matrix.md): extras, bridge deps, and vendor-runtime install order
 - [docs/agent_runbook.md](agent_runbook.md): startup sequence for agents and automation
 - [docs/README.md](README.md): documentation map and doc-family index
 - [docs/architecture.md](architecture.md): package and module structure
 - [docs/package_layout.md](package_layout.md): source-tree layout and import discipline
+- [docs/import_boundary_rules.md](import_boundary_rules.md): package-family dependency rules and transport/backend separation
 - [docs/backend_route_inventory.md](backend_route_inventory.md): runtime/bridge/transport route inventory
 - [docs/backend_route_inventory_routes.md](backend_route_inventory_routes.md): backend route table
 - [docs/backend_route_inventory_baselines.md](backend_route_inventory_baselines.md): CERTI baseline attribution

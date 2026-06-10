@@ -6,10 +6,11 @@ from tests.vendors.certi_real_backend_matrix_support import (
     _normalized_exchange_profile,
     _require_real_rti_smoke,
 )
+from tests.vendors.runtime_support import cleanup_federation, close_all, reserve_udp_pair, terminate_all
 
-@pytest.mark.parametrize("kind,udp_base", [("certi", 60601), ("certi-jpype", 60611), ("certi-py4j", 60621)])
+@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
-def test_certi_backend_exchange_matrix(kind: str, udp_base: int, time_factory_name: str):
+def test_certi_backend_exchange_matrix(kind: str, time_factory_name: str):
     _require_real_rti_smoke()
     try:
         rtig = launch_certi_rtig(verbose=0)
@@ -23,8 +24,12 @@ def test_certi_backend_exchange_matrix(kind: str, udp_base: int, time_factory_na
     publisher = None
     subscriber = None
     try:
-        publisher = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base)
-        subscriber = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base + 1)
+        with reserve_udp_pair() as lease:
+            publisher_udp_port, subscriber_udp_port = lease.ports
+        publisher = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=publisher_udp_port)
+        subscriber = create_rti_ambassador(
+            kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=subscriber_udp_port
+        )
 
         config = _certi_exchange_config(
             smoke_fom,
@@ -55,21 +60,20 @@ def test_certi_backend_exchange_matrix(kind: str, udp_base: int, time_factory_na
         assert history["receive_reflect"].args[3] is OrderType.RECEIVE
         assert history["timestamp_interaction"].args[3] is OrderType.TIMESTAMP
 
-        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
-        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        publisher.destroy_federation_execution(federation_name)
-        subscriber.disconnect()
-        publisher.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=publisher,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
+            disconnect_rtis=(subscriber, publisher),
+        )
     finally:
-        if subscriber is not None:
-            subscriber.close()
-        if publisher is not None:
-            publisher.close()
-        rtig.terminate()
+        close_all(subscriber, publisher)
+        terminate_all(rtig)
 
 
-@pytest.mark.parametrize("kind,udp_base", [("certi", 60701), ("certi-jpype", 60711), ("certi-py4j", 60721)])
-def test_certi_backend_synchronization_matrix(kind: str, udp_base: int):
+@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+def test_certi_backend_synchronization_matrix(kind: str):
     _require_real_rti_smoke()
     try:
         rtig = launch_certi_rtig(verbose=0)
@@ -83,8 +87,10 @@ def test_certi_backend_synchronization_matrix(kind: str, udp_base: int):
     leader = None
     wing = None
     try:
-        leader = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base)
-        wing = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base + 1)
+        with reserve_udp_pair() as lease:
+            leader_udp_port, wing_udp_port = lease.ports
+        leader = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=leader_udp_port)
+        wing = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=wing_udp_port)
 
         config = SynchronizationScenarioConfig(
             federation_name=federation_name,
@@ -111,17 +117,16 @@ def test_certi_backend_synchronization_matrix(kind: str, udp_base: int):
         assert len(summary["leader_sync"].args[1]) == 0
         assert len(summary["wing_sync"].args[1]) == 0
 
-        wing.resign_federation_execution(ResignAction.NO_ACTION)
-        leader.resign_federation_execution(ResignAction.NO_ACTION)
-        leader.destroy_federation_execution(federation_name)
-        wing.disconnect()
-        leader.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=leader,
+            destroyer_resign_action=ResignAction.NO_ACTION,
+            remaining_resignations=((wing, ResignAction.NO_ACTION),),
+            disconnect_rtis=(wing, leader),
+        )
     finally:
-        if wing is not None:
-            wing.close()
-        if leader is not None:
-            leader.close()
-        rtig.terminate()
+        close_all(wing, leader)
+        terminate_all(rtig)
 
 
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
@@ -133,7 +138,7 @@ def test_certi_time_semantic_profile_matches_across_native_and_java_facades(time
         pytest.skip(str(exc))
 
     profiles: dict[str, dict[str, object]] = {}
-    for kind, udp_base in (("certi", 61001), ("certi-jpype", 61011), ("certi-py4j", 61021)):
+    for kind in ("certi", "certi-jpype", "certi-py4j"):
         try:
             rtig = launch_certi_rtig(verbose=0)
         except BackendUnavailableError as exc:
@@ -144,8 +149,14 @@ def test_certi_time_semantic_profile_matches_across_native_and_java_facades(time
         publisher = None
         subscriber = None
         try:
-            publisher = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base)
-            subscriber = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base + 1)
+            with reserve_udp_pair() as lease:
+                publisher_udp_port, subscriber_udp_port = lease.ports
+            publisher = create_rti_ambassador(
+                kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=publisher_udp_port
+            )
+            subscriber = create_rti_ambassador(
+                kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=subscriber_udp_port
+            )
             summary = run_two_federate_exchange_scenario(
                 publisher,
                 subscriber,
@@ -160,11 +171,8 @@ def test_certi_time_semantic_profile_matches_across_native_and_java_facades(time
             )
             profiles[kind] = _normalized_exchange_profile(summary)
         finally:
-            if subscriber is not None:
-                subscriber.close()
-            if publisher is not None:
-                publisher.close()
-            rtig.terminate()
+            close_all(subscriber, publisher)
+            terminate_all(rtig)
 
     assert profiles["certi-jpype"] == profiles["certi"]
     assert profiles["certi-py4j"] == profiles["certi"]

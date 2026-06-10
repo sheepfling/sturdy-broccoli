@@ -27,11 +27,11 @@ fi
 cd "$ROOT_DIR"
 
 run_time_query() {
-  ./scripts/ci/vendor_runtime_smoke.sh certi-compare
+  ./scripts/ci/vendor_green.sh certi-compare
 }
 
 run_negotiated_ownership() {
-  ./scripts/ci/vendor_runtime_smoke.sh pitch
+  ./scripts/ci/vendor_green.sh pitch
 }
 
 case "$PROFILE" in

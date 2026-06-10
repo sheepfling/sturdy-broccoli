@@ -10,6 +10,7 @@ Canonical Target/Radar ownership now lives under:
 - `src/hla2010_fom_target_radar/testing/two_federate_target_radar.py`
 - `src/hla2010_fom_target_radar/testing/two_federate_target_radar_artifacts.py`
 - `src/hla2010_fom_target_radar/testing/two_federate_suite_profiles.py`
+- `src/hla2010_fom_target_radar/testing/two_federate_suite_runner.py`
 
 The root `src/hla2010/scenarios/` modules remain as compatibility facades for
 older imports. The root `src/hla2010/resources/foms/TargetRadarFOMmodule.xml`

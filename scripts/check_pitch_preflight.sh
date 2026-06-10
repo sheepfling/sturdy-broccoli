@@ -10,6 +10,10 @@ hla2010_shell_init "$0"
 PITCH_BUNDLE_DIR="${HLA2010_PITCH_HOME:-$ROOT_DIR/third_party/pitch/PITCH-prti1516e-manual}"
 PITCH_ZIP="${ROOT_DIR}/third_party/pitch/HLA_PITCH_linux.zip"
 PITCH_LOCAL_ARCHIVE_DIR="${ROOT_DIR}/third_party/pitch/HLA_PITCH_linux"
+CONTAINER_NAME="${HLA2010_PITCH_DOCKER_NAME:-hla2010-pitch-crc}"
+IMAGE_NAME="${HLA2010_PITCH_DOCKER_IMAGE:-hla2010-pitch-prti-free-crc:5.5.10}"
+CRC_PORT="${HLA2010_PITCH_CRC_PORT:-8989}"
+FEDPRO_PORT="${HLA2010_PITCH_FEDPRO_PORT:-15164}"
 OUTPUT_JSON=0
 OUTPUT_JSON_FILE=""
 NEXT_IS_JSON_FILE=0
@@ -76,6 +80,15 @@ emit_json_payload() {
   PITCH_BUNDLE_STATUS="$bundle_status" \
   PITCH_BUNDLE_DETAIL="$bundle_detail" \
   PITCH_USER_HOME="$user_home_detail" \
+  PITCH_CRC_PORT_STATUS="$crc_port_status" \
+  PITCH_CRC_PORT_DETAIL="$crc_port_detail" \
+  PITCH_FEDPRO_PORT_STATUS="$fedpro_port_status" \
+  PITCH_FEDPRO_PORT_DETAIL="$fedpro_port_detail" \
+  PITCH_RUNTIME_HOME="$runtime_home_detail" \
+  PITCH_IMAGE_NAME="$IMAGE_NAME" \
+  PITCH_CONTAINER_NAME="$CONTAINER_NAME" \
+  PITCH_CRC_PORT="$CRC_PORT" \
+  PITCH_FEDPRO_PORT="$FEDPRO_PORT" \
   PITCH_NEXT_STEP="$next_step" \
   "$python_bin" - <<'PY'
 import json
@@ -106,12 +119,68 @@ payload = {
             "status": "ok" if os.environ.get("PITCH_USER_HOME") else "missing",
             "detail": os.environ.get("PITCH_USER_HOME") or "missing user.home",
         },
+        {
+            "name": "crc_port",
+            "ok": os.environ.get("PITCH_CRC_PORT_STATUS") == "ok",
+            "status": os.environ.get("PITCH_CRC_PORT_STATUS"),
+            "detail": os.environ.get("PITCH_CRC_PORT_DETAIL"),
+        },
+        {
+            "name": "fedpro_port",
+            "ok": os.environ.get("PITCH_FEDPRO_PORT_STATUS") == "ok",
+            "status": os.environ.get("PITCH_FEDPRO_PORT_STATUS"),
+            "detail": os.environ.get("PITCH_FEDPRO_PORT_DETAIL"),
+        },
     ],
+    "runtime": {
+        "home": os.environ.get("PITCH_RUNTIME_HOME"),
+        "user_home": os.environ.get("PITCH_USER_HOME"),
+        "image_name": os.environ.get("PITCH_IMAGE_NAME"),
+        "container_name": os.environ.get("PITCH_CONTAINER_NAME"),
+    },
+    "ports": {
+        "crc": {
+            "host": "127.0.0.1",
+            "port": int(os.environ.get("PITCH_CRC_PORT", "8989")),
+            "status": os.environ.get("PITCH_CRC_PORT_STATUS"),
+            "detail": os.environ.get("PITCH_CRC_PORT_DETAIL"),
+        },
+        "fedpro": {
+            "host": "127.0.0.1",
+            "port": int(os.environ.get("PITCH_FEDPRO_PORT", "15164")),
+            "status": os.environ.get("PITCH_FEDPRO_PORT_STATUS"),
+            "detail": os.environ.get("PITCH_FEDPRO_PORT_DETAIL"),
+        },
+    },
     "next_step": os.environ.get("PITCH_NEXT_STEP"),
     "exit_code": int(os.environ.get("PITCH_STATUS", "1")),
 }
 json.dump(payload, sys.stdout, indent=2, sort_keys=True)
 sys.stdout.write("\n")
+PY
+}
+
+docker_container_running() {
+  docker ps --format '{{.Names}}' | grep -Fxq "$CONTAINER_NAME"
+}
+
+check_port_available() {
+  local port="$1"
+  local python_bin
+  python_bin="$(hla2010_shell_python_bin)"
+  "$python_bin" - "$port" <<'PY'
+import socket
+import sys
+
+port = int(sys.argv[1])
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    try:
+        sock.bind(("127.0.0.1", port))
+    except OSError as exc:
+        print(exc)
+        raise SystemExit(1)
+raise SystemExit(0)
 PY
 }
 
@@ -122,6 +191,12 @@ docker_detail="ok"
 bundle_status="ok"
 bundle_detail="ok"
 user_home_detail=""
+runtime_home_detail=""
+crc_port_status="ok"
+crc_port_detail="ok"
+fedpro_port_status="ok"
+fedpro_port_detail="ok"
+managed_container_running=0
 
 if [[ "$OUTPUT_JSON" -eq 0 ]]; then
   hla2010_shell_log "Pitch preflight"
@@ -131,6 +206,9 @@ fi
 if hla2010_shell_have docker; then
   if docker info >/dev/null 2>&1; then
     docker_detail="ok: $(command -v docker)"
+    if docker_container_running; then
+      managed_container_running=1
+    fi
     if [[ "$OUTPUT_JSON" -eq 0 ]]; then
       show_hint "docker" "$docker_detail"
     fi
@@ -152,6 +230,7 @@ else
 fi
 
 if resolved_home="$(resolve_pitch_home)"; then
+  runtime_home_detail="$resolved_home"
   bundle_detail="ok: $resolved_home"
   user_home_detail="${HLA2010_PITCH_USER_HOME:-/private/tmp/hla-2010/pitch-user-home}"
   if [[ "$OUTPUT_JSON" -eq 0 ]]; then
@@ -181,11 +260,41 @@ if [[ -d "${resolved_home:-}" ]]; then
   fi
 fi
 
+if [[ "$managed_container_running" -eq 1 ]]; then
+  crc_port_detail="ok: managed container $CONTAINER_NAME is already running on 127.0.0.1:$CRC_PORT"
+  fedpro_port_detail="ok: managed container $CONTAINER_NAME is already running on 127.0.0.1:$FEDPRO_PORT"
+elif check_port_available "$CRC_PORT" >/tmp/hla2010_pitch_crc_port_check.$$ 2>&1; then
+  crc_port_detail="ok: 127.0.0.1:$CRC_PORT is available"
+else
+  status=1
+  crc_port_status="blocked"
+  crc_port_detail="blocked: 127.0.0.1:$CRC_PORT is not available: $(cat /tmp/hla2010_pitch_crc_port_check.$$)"
+fi
+rm -f /tmp/hla2010_pitch_crc_port_check.$$
+
+if [[ "$managed_container_running" -eq 1 ]]; then
+  :
+elif check_port_available "$FEDPRO_PORT" >/tmp/hla2010_pitch_fedpro_port_check.$$ 2>&1; then
+  fedpro_port_detail="ok: 127.0.0.1:$FEDPRO_PORT is available"
+else
+  status=1
+  fedpro_port_status="blocked"
+  fedpro_port_detail="blocked: 127.0.0.1:$FEDPRO_PORT is not available: $(cat /tmp/hla2010_pitch_fedpro_port_check.$$)"
+fi
+rm -f /tmp/hla2010_pitch_fedpro_port_check.$$
+
+if [[ "$OUTPUT_JSON" -eq 0 ]]; then
+  show_hint "crc port" "$crc_port_detail"
+  show_hint "fedpro port" "$fedpro_port_detail"
+fi
+
 environment="ready"
 if [[ "$docker_status" != "ok" ]]; then
   environment="docker-blocked"
 elif [[ "$bundle_status" != "ok" ]]; then
   environment="bundle-blocked"
+elif [[ "$crc_port_status" != "ok" || "$fedpro_port_status" != "ok" ]]; then
+  environment="ports-blocked"
 fi
 
 result="not ready; fix the blocked prerequisite(s) above and rerun"

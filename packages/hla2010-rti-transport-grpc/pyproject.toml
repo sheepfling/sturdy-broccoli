@@ -12,6 +12,7 @@ dependencies = [
   "hla2010-spec==0.13.0",
   "hla2010-rti-python==0.13.0",
   "hla2010-rti-certi==0.13.0",
+  "hla2010-rti-transport-common==0.13.0",
   "grpcio",
 ]
 

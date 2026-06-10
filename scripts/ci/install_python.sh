@@ -31,5 +31,10 @@ hla2010_shell_log "install python extras=${EXTRAS}"
 # shellcheck disable=SC1091
 source "$ROOT_DIR/.venv/bin/activate"
 hla2010_shell_log "pip install editable package with extras [${EXTRAS}]"
-python -m pip install --upgrade pip
+if [[ "${HLA2010_UPGRADE_PIP:-0}" == "1" ]]; then
+  hla2010_shell_log "upgrading pip"
+  python -m pip install --upgrade pip
+else
+  hla2010_shell_log "skipping pip upgrade (set HLA2010_UPGRADE_PIP=1 to enable)"
+fi
 python -m pip install --no-build-isolation -e ".[${EXTRAS}]"

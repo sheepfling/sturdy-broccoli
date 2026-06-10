@@ -265,7 +265,7 @@ def regulating_base_time(federate: Any) -> Any:
     requested = _request_time(request)
     if requested is None:
         return current
-    return time_min((current, requested))
+    return requested
 
 
 def regulating_lower_bound(federate: Any, *, factory: Any | None = None) -> Any | None:
@@ -583,7 +583,15 @@ def valid_tso_lower_bound(federate: Any, *, factory: Any | None = None) -> Any |
 
     if not getattr(federate, "time_regulation_enabled", False):
         return None
-    return regulating_lower_bound(federate, factory=factory)
+    lookahead = getattr(federate, "lookahead", None)
+    if lookahead is None:
+        return None
+    _validate_lookahead(lookahead)
+    current = _required_time_field(federate, "current_time")
+    request = getattr(federate, "pending_time_advance", None)
+    requested = _request_time(request)
+    base = current if requested is None else time_min((current, requested))
+    return add_time(base, lookahead, factory=factory)
 
 
 def scheduled_save_time_reached(federate: Any, save_time: Any, next_grant_time: Any | None = None) -> bool:

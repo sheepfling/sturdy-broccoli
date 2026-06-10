@@ -11,14 +11,15 @@ from hla2010.backends.grpc_transport import start_certi_grpc_server
 from hla2010.enums import OrderType, ResignAction
 from hla2010.real_rti import discover_certi_smoke_fom, launch_certi_rtig
 from hla2010.rti import create_rti_ambassador
-from hla2010.testing.scenario_exchange import (
+from hla2010_verification_harness.scenario_exchange import (
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
     run_two_federate_exchange_scenario,
 )
-from hla2010.testing.scenario_ownership import OwnershipScenarioConfig, run_attribute_ownership_scenario
-from hla2010.testing.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
+from hla2010_verification_harness.scenario_ownership import OwnershipScenarioConfig, run_attribute_ownership_scenario
+from hla2010_verification_harness.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time
+from tests.vendors.runtime_support import cleanup_federation, close_all, reserve_udp_pair, terminate_all
 
 pytestmark = pytest.mark.requires_loopback_server
 
@@ -39,8 +40,10 @@ def test_grpc_transport_can_host_certi_exchange_end_to_end():
     left_server = right_server = None
     left = right = None
     try:
-        left_server = start_certi_grpc_server(launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=60901)
-        right_server = start_certi_grpc_server(launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=60911)
+        with reserve_udp_pair() as lease:
+            left_udp_port, right_udp_port = lease.ports
+        left_server = start_certi_grpc_server(launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=left_udp_port)
+        right_server = start_certi_grpc_server(launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=right_udp_port)
         left = create_rti_ambassador("certi", transport={"kind": "grpc", "target": left_server.target})
         right = create_rti_ambassador("certi", transport={"kind": "grpc", "target": right_server.target})
 
@@ -86,21 +89,16 @@ def test_grpc_transport_can_host_certi_exchange_end_to_end():
         assert history["receive_reflect"].args[3] is OrderType.RECEIVE
         assert history["timestamp_interaction"].args[3] is OrderType.TIMESTAMP
 
-        right.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
-        left.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        left.destroy_federation_execution(federation_name)
-        right.disconnect()
-        left.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=left,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((right, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(right, left),
+        )
     finally:
-        if right is not None:
-            right.close()
-        if left is not None:
-            left.close()
-        if right_server is not None:
-            right_server.close()
-        if left_server is not None:
-            left_server.close()
-        rtig.terminate()
+        close_all(right, left, right_server, left_server)
+        terminate_all(rtig)
 
 
 def test_grpc_transport_can_host_certi_synchronization_end_to_end():
@@ -114,8 +112,10 @@ def test_grpc_transport_can_host_certi_synchronization_end_to_end():
     left_server = right_server = None
     left = right = None
     try:
-        left_server = start_certi_grpc_server(launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=61001)
-        right_server = start_certi_grpc_server(launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=61011)
+        with reserve_udp_pair() as lease:
+            left_udp_port, right_udp_port = lease.ports
+        left_server = start_certi_grpc_server(launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=left_udp_port)
+        right_server = start_certi_grpc_server(launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=right_udp_port)
         left = create_rti_ambassador("certi", transport={"kind": "grpc", "target": left_server.target})
         right = create_rti_ambassador("certi", transport={"kind": "grpc", "target": right_server.target})
 
@@ -144,21 +144,16 @@ def test_grpc_transport_can_host_certi_synchronization_end_to_end():
         assert summary["leader_sync"].args[0] == "ReadyToRun"
         assert summary["wing_sync"].args[0] == "ReadyToRun"
 
-        right.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
-        left.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        left.destroy_federation_execution(federation_name)
-        right.disconnect()
-        left.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=left,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((right, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(right, left),
+        )
     finally:
-        if right is not None:
-            right.close()
-        if left is not None:
-            left.close()
-        if right_server is not None:
-            right_server.close()
-        if left_server is not None:
-            left_server.close()
-        rtig.terminate()
+        close_all(right, left, right_server, left_server)
+        terminate_all(rtig)
 
 
 def test_grpc_transport_can_host_certi_ownership_end_to_end():
@@ -172,8 +167,10 @@ def test_grpc_transport_can_host_certi_ownership_end_to_end():
     left_server = right_server = None
     left = right = None
     try:
-        left_server = start_certi_grpc_server(launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=61101)
-        right_server = start_certi_grpc_server(launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=61111)
+        with reserve_udp_pair() as lease:
+            left_udp_port, right_udp_port = lease.ports
+        left_server = start_certi_grpc_server(launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=left_udp_port)
+        right_server = start_certi_grpc_server(launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=right_udp_port)
         left = create_rti_ambassador("certi", transport={"kind": "grpc", "target": left_server.target})
         right = create_rti_ambassador("certi", transport={"kind": "grpc", "target": right_server.target})
 
@@ -202,18 +199,13 @@ def test_grpc_transport_can_host_certi_ownership_end_to_end():
         assert summary["acquired"].args[0] == summary["acquirer_object_instance"]
         assert summary["informed"].args[0] == summary["object_instance"]
 
-        right.resign_federation_execution(ResignAction.NO_ACTION)
-        left.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        left.destroy_federation_execution(federation_name)
-        right.disconnect()
-        left.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=left,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((right, ResignAction.NO_ACTION),),
+            disconnect_rtis=(right, left),
+        )
     finally:
-        if right is not None:
-            right.close()
-        if left is not None:
-            left.close()
-        if right_server is not None:
-            right_server.close()
-        if left_server is not None:
-            left_server.close()
-        rtig.terminate()
+        close_all(right, left, right_server, left_server)
+        terminate_all(rtig)

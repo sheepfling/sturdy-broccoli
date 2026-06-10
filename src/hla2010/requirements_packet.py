@@ -259,7 +259,7 @@ class ImportedHLAPacket:
 
 
 def imported_hla_packet_root(project_root: Path | None = None) -> Path:
-    base = project_root or Path(__file__).resolve().parents[1]
+    base = project_root or Path(__file__).resolve().parents[2]
     return base / "requirements" / "imports" / "hla_1516_requirements_codebase_packet_v1_0"
 
 

@@ -5,27 +5,37 @@ These are the commands that exercise the current backend routes.
 ### Patched CERTI
 
 ```bash
-./scripts/ci/vendor_runtime_smoke.sh certi-patched
+./certi-easy preflight
+./certi-easy smoke patched
 ```
 
 ### Upstream vs patched CERTI attribution
 
 ```bash
-./scripts/ci/vendor_runtime_smoke.sh certi-compare
+./certi-easy preflight
+./certi-easy smoke compare
 ```
 
 ### Pitch
 
 ```bash
-./scripts/ci/vendor_runtime_smoke.sh pitch
+./pitch preflight
+./pitch smoke
 ```
 
 Simplest operator path:
 
 ```bash
-./scripts/pitch_docker_easy.sh install
-./scripts/pitch_docker_easy.sh start
-./scripts/pitch_docker_easy.sh smoke
+./pitch install
+./pitch start
+./pitch smoke
+```
+
+### Green lanes
+
+```bash
+./scripts/ci/repo_green.sh
+./scripts/ci/vendor_green.sh matrix
 ```
 
 Quickstart:

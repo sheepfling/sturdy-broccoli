@@ -42,8 +42,8 @@
             "mapped": 320
           },
           "CAP-OMT": {
-            "mapped": 55,
-            "partial": 5
+            "mapped": 58,
+            "partial": 2
           },
           "CAP-XML": {
             "mapped": 3,
@@ -61,8 +61,8 @@
       {
         "capability_counts": {
           "CAP-API": {
-            "mapped": 217,
-            "partial": 397
+            "mapped": 220,
+            "partial": 394
           }
         },
         "evidence_present": true,
@@ -633,8 +633,8 @@
       {
         "capability_counts": {
           "CAP-API": {
-            "mapped": 217,
-            "partial": 397
+            "mapped": 220,
+            "partial": 394
           }
         },
         "evidence_present": true,
@@ -649,8 +649,8 @@
       {
         "capability_counts": {
           "CAP-OMT": {
-            "mapped": 55,
-            "partial": 5
+            "mapped": 58,
+            "partial": 2
           },
           "CAP-XML": {
             "mapped": 3,

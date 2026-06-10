@@ -6,6 +6,24 @@ on:
   workflow_dispatch:
 
 jobs:
+  repo-green:
+    runs-on: ubuntu-latest
+    env:
+      HLA2010_SKIP_TARGET_RADAR_BACKEND_MATRIX: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Run repo-green lane
+        env:
+          HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
+        run: ./scripts/ci/repo_green.sh
+
   seed-suite:
     runs-on: ubuntu-latest
     env:
@@ -109,8 +127,8 @@ jobs:
         env:
           HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
         run: ./scripts/ci/install_python.sh
-      - name: Run required CERTI runtime profile
-        run: ./scripts/ci/vendor_runtime_smoke.sh certi
+      - name: Run required CERTI vendor-green profile
+        run: ./scripts/ci/vendor_green.sh certi
 
   pitch-runtime-required:
     runs-on: macos-latest
@@ -131,8 +149,8 @@ jobs:
         env:
           HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
         run: ./scripts/ci/install_python.sh
-      - name: Run required Pitch runtime profile
-        run: ./scripts/ci/vendor_runtime_smoke.sh pitch
+      - name: Run required Pitch vendor-green profile
+        run: ./scripts/ci/vendor_green.sh pitch
 
   real-profile-matrix-required:
     runs-on: macos-latest
@@ -155,8 +173,8 @@ jobs:
         env:
           HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
         run: ./scripts/ci/install_python.sh
-      - name: Run real profile matrix
-        run: ./scripts/ci/vendor_runtime_smoke.sh matrix
+      - name: Run vendor-green matrix
+        run: ./scripts/ci/vendor_green.sh matrix
 
   vendor-edge-matrix-required:
     runs-on: macos-latest

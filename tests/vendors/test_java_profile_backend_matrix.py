@@ -12,19 +12,20 @@ from hla2010.real_rti import discover_certi_smoke_fom, launch_certi_rtig
 from hla2010.rti import create_rti_ambassador
 from hla2010.testing.java_shim_factory import create_shared_java_shim_backend
 from hla2010.testing.java_shim_kernel import SharedJavaShimKernel
-from hla2010.testing.scenario_exchange import (
+from hla2010_verification_harness.scenario_exchange import (
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
     run_two_federate_exchange_scenario,
 )
-from hla2010.testing.scenario_ownership import (
+from hla2010_verification_harness.scenario_ownership import (
     NegotiatedOwnershipScenarioConfig,
     OwnershipScenarioConfig,
     run_attribute_ownership_scenario,
     run_negotiated_attribute_ownership_scenario,
 )
-from hla2010.testing.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
+from hla2010_verification_harness.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
+from tests.vendors.runtime_support import cleanup_federation, close_all, terminate_all, udp_port_pair
 
 
 def _require_real_rti_smoke() -> None:
@@ -89,14 +90,15 @@ def test_inprocess_java_shim_time_factory_matrix(profile: str, time_factory_name
             config=config,
         )
         assert history["receive_reflect"].args[2] == b"reflect-tag"
-        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
-        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        publisher.destroy_federation_execution(config.federation_name)
-        subscriber.disconnect()
-        publisher.disconnect()
+        cleanup_federation(
+            config.federation_name,
+            destroyer=publisher,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
+            disconnect_rtis=(subscriber, publisher),
+        )
     finally:
-        subscriber.close()
-        publisher.close()
+        close_all(subscriber, publisher)
 
 
 @pytest.mark.parametrize("profile", ["jpype", "py4j"])
@@ -136,14 +138,15 @@ def test_inprocess_java_shim_backend_matrix(profile: str):
             require_timed_delivery=False,
         )
         assert history["receive_interaction"].args[2] == b"interaction-tag"
-        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
-        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        publisher.destroy_federation_execution(config.federation_name)
-        subscriber.disconnect()
-        publisher.disconnect()
+        cleanup_federation(
+            config.federation_name,
+            destroyer=publisher,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
+            disconnect_rtis=(subscriber, publisher),
+        )
     finally:
-        subscriber.close()
-        publisher.close()
+        close_all(subscriber, publisher)
 
 
 @pytest.mark.parametrize("profile", ["jpype", "py4j"])
@@ -169,14 +172,15 @@ def test_inprocess_java_shim_synchronization_scenario(profile: str):
         )
         assert summary["leader_sync"].args[0] == "ReadyToRun"
         assert summary["wing_sync"].args[0] == "ReadyToRun"
-        wing.resign_federation_execution(ResignAction.NO_ACTION)
-        leader.resign_federation_execution(ResignAction.NO_ACTION)
-        leader.destroy_federation_execution(config.federation_name)
-        wing.disconnect()
-        leader.disconnect()
+        cleanup_federation(
+            config.federation_name,
+            destroyer=leader,
+            destroyer_resign_action=ResignAction.NO_ACTION,
+            remaining_resignations=((wing, ResignAction.NO_ACTION),),
+            disconnect_rtis=(wing, leader),
+        )
     finally:
-        wing.close()
-        leader.close()
+        close_all(wing, leader)
 
 
 @pytest.mark.parametrize("profile", ["jpype", "py4j"])
@@ -203,14 +207,15 @@ def test_inprocess_java_shim_ownership_scenario(profile: str):
         )
         assert summary["acquired"].args[0] == summary["object_instance"]
         assert owner.get_federate_name(summary["informed"].args[2]) == config.acquirer_name
-        acquirer.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
-        owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        owner.destroy_federation_execution(config.federation_name)
-        acquirer.disconnect()
-        owner.disconnect()
+        cleanup_federation(
+            config.federation_name,
+            destroyer=owner,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((acquirer, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(acquirer, owner),
+        )
     finally:
-        acquirer.close()
-        owner.close()
+        close_all(acquirer, owner)
 
 
 @pytest.mark.parametrize("profile", ["jpype", "py4j"])
@@ -246,18 +251,19 @@ def test_inprocess_java_shim_negotiated_ownership_scenario(profile: str):
             assert summary["offered_acquired"] is not None
             assert summary["divestiture_confirmation"] is not None
 
-        acquirer.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
-        owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        owner.destroy_federation_execution(config.federation_name)
-        acquirer.disconnect()
-        owner.disconnect()
+        cleanup_federation(
+            config.federation_name,
+            destroyer=owner,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((acquirer, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(acquirer, owner),
+        )
     finally:
-        acquirer.close()
-        owner.close()
+        close_all(acquirer, owner)
 
 
-@pytest.mark.parametrize("kind,udp_base", [("certi-jpype", 60711), ("certi-py4j", 60721)])
-def test_certi_java_profile_backend_matrix(kind: str, udp_base: int):
+@pytest.mark.parametrize("kind", ["certi-jpype", "certi-py4j"])
+def test_certi_java_profile_backend_matrix(kind: str):
     _require_real_rti_smoke()
     try:
         rtig = launch_certi_rtig(verbose=0)
@@ -294,8 +300,13 @@ def test_certi_java_profile_backend_matrix(kind: str, udp_base: int):
         timestamped_interaction_time=HLAfloat64Time(6.0),
     )
     try:
-        publisher = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base)
-        subscriber = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base + 1)
+        with udp_port_pair() as (publisher_udp_port, subscriber_udp_port):
+            publisher = create_rti_ambassador(
+                kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=publisher_udp_port
+            )
+            subscriber = create_rti_ambassador(
+                kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=subscriber_udp_port
+            )
         summary = run_two_federate_exchange_scenario(
             publisher,
             subscriber,
@@ -310,14 +321,13 @@ def test_certi_java_profile_backend_matrix(kind: str, udp_base: int):
             config=config,
         )
         assert history["receive_reflect"].args[2] == b"reflect-tag"
-        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
-        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        publisher.destroy_federation_execution(federation_name)
-        subscriber.disconnect()
-        publisher.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=publisher,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
+            disconnect_rtis=(subscriber, publisher),
+        )
     finally:
-        if subscriber is not None:
-            subscriber.close()
-        if publisher is not None:
-            publisher.close()
-        rtig.terminate()
+        close_all(subscriber, publisher)
+        terminate_all(rtig)

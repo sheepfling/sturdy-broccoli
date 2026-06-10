@@ -36,7 +36,7 @@ bootstrap_certi_profile() {
 
 bootstrap_pitch_profile() {
   hla2010_shell_log "bootstrap pitch"
-  "$ROOT_DIR/scripts/pitch_docker_easy.sh" install
+  "$ROOT_DIR/pitch" install
 }
 
 case "${1:-python}" in

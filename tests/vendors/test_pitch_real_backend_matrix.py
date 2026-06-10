@@ -11,12 +11,12 @@ from hla2010.enums import CallbackModel, OrderType, ResignAction
 from hla2010.exceptions import InvalidLogicalTime, RTIexception
 from hla2010.real_rti import launch_pitch_runtime
 from hla2010.rti import create_rti_ambassador
-from hla2010.testing.scenario_exchange import (
+from hla2010_verification_harness.scenario_exchange import (
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
     run_two_federate_exchange_scenario,
 )
-from hla2010.testing.scenario_ownership import (
+from hla2010_verification_harness.scenario_ownership import (
     NegotiatedOwnershipScenarioConfig,
     OwnershipScenarioConfig,
     ReleaseRequestOwnershipScenarioConfig,
@@ -25,8 +25,9 @@ from hla2010.testing.scenario_ownership import (
     run_negotiated_attribute_ownership_scenario,
     run_release_request_ownership_scenario,
 )
-from hla2010.testing.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
+from hla2010_verification_harness.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
 from hla2010.time import HLAinteger64Interval, HLAinteger64Time
+from tests.vendors.runtime_support import cleanup_federation, close_all, terminate_all
 
 
 def _require_real_rti_smoke() -> None:
@@ -93,30 +94,6 @@ def _normalized_negotiated_profile(summary: dict[str, object]) -> dict[str, obje
     }
 
 
-def _cleanup_pitch_ownership_federation(
-    federation_name: str,
-    owner,
-    acquirer,
-) -> None:
-    try:
-        acquirer.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
-    except BaseException:
-        pass
-    try:
-        owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    except BaseException:
-        pass
-    try:
-        owner.destroy_federation_execution(federation_name)
-    except BaseException:
-        pass
-    for rti in (acquirer, owner):
-        try:
-            rti.disconnect()
-        except BaseException:
-            pass
-
-
 def _format_probe_exception(exc: BaseException) -> str:
     return f"{type(exc).__name__}: {exc!r}"
 
@@ -161,17 +138,16 @@ def test_pitch_backend_exchange_matrix(kind: str):
         assert history["receive_reflect"].args[3] is OrderType.RECEIVE
         assert history["timestamp_interaction"].args[3] is OrderType.TIMESTAMP
 
-        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
-        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        publisher.destroy_federation_execution(federation_name)
-        subscriber.disconnect()
-        publisher.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=publisher,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
+            disconnect_rtis=(subscriber, publisher),
+        )
     finally:
-        if subscriber is not None:
-            subscriber.close()
-        if publisher is not None:
-            publisher.close()
-        runtime.terminate()
+        close_all(subscriber, publisher)
+        terminate_all(runtime)
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -239,17 +215,16 @@ def test_pitch_backend_lookahead_matrix(kind: str):
                 zero_time,
             )
 
-        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
-        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        publisher.destroy_federation_execution(federation_name)
-        subscriber.disconnect()
-        publisher.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=publisher,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
+            disconnect_rtis=(subscriber, publisher),
+        )
     finally:
-        if subscriber is not None:
-            subscriber.close()
-        if publisher is not None:
-            publisher.close()
-        runtime.terminate()
+        close_all(subscriber, publisher)
+        terminate_all(runtime)
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -291,17 +266,16 @@ def test_pitch_backend_synchronization_matrix(kind: str):
         assert summary["leader_sync"].args[0] == "ReadyToRun"
         assert summary["wing_sync"].args[0] == "ReadyToRun"
 
-        wing.resign_federation_execution(ResignAction.NO_ACTION)
-        leader.resign_federation_execution(ResignAction.NO_ACTION)
-        leader.destroy_federation_execution(federation_name)
-        wing.disconnect()
-        leader.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=leader,
+            destroyer_resign_action=ResignAction.NO_ACTION,
+            remaining_resignations=((wing, ResignAction.NO_ACTION),),
+            disconnect_rtis=(wing, leader),
+        )
     finally:
-        if wing is not None:
-            wing.close()
-        if leader is not None:
-            leader.close()
-        runtime.terminate()
+        close_all(wing, leader)
+        terminate_all(runtime)
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -348,17 +322,16 @@ def test_pitch_backend_ownership_matrix(kind: str):
         assert informed.args[0] == summary["object_instance"]
         assert informed.args[1] == summary["owner_attribute"]
 
-        acquirer.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
-        owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        owner.destroy_federation_execution(federation_name)
-        acquirer.disconnect()
-        owner.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=owner,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((acquirer, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(acquirer, owner),
+        )
     finally:
-        if acquirer is not None:
-            acquirer.close()
-        if owner is not None:
-            owner.close()
-        runtime.terminate()
+        close_all(acquirer, owner)
+        terminate_all(runtime)
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -419,17 +392,16 @@ def test_pitch_backend_negotiated_ownership_matrix(kind: str):
         assert summary["informed"].args[0] == summary["release_object_instance"]
         assert summary["informed"].args[1] == summary["owner_attribute"]
 
-        acquirer.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
-        owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        owner.destroy_federation_execution(federation_name)
-        acquirer.disconnect()
-        owner.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=owner,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((acquirer, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(acquirer, owner),
+        )
     finally:
-        if acquirer is not None:
-            acquirer.close()
-        if owner is not None:
-            owner.close()
-        runtime.terminate()
+        close_all(acquirer, owner)
+        terminate_all(runtime)
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -491,13 +463,16 @@ def test_pitch_negotiated_divesting_offer_probe(kind: str):
                 b"acquire-request",
             )
 
-        _cleanup_pitch_ownership_federation(federation_name, owner, acquirer)
+        cleanup_federation(
+            federation_name,
+            destroyer=owner,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((acquirer, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(acquirer, owner),
+        )
     finally:
-        if acquirer is not None:
-            acquirer.close()
-        if owner is not None:
-            owner.close()
-        runtime.terminate()
+        close_all(acquirer, owner)
+        terminate_all(runtime)
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -553,13 +528,16 @@ def test_pitch_release_request_owned_attribute_probe(kind: str):
         assert summary["informed"].args[0] == summary["object_instance"]
         assert summary["informed"].args[1] == summary["owner_attribute"]
 
-        _cleanup_pitch_ownership_federation(federation_name, owner, acquirer)
+        cleanup_federation(
+            federation_name,
+            destroyer=owner,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((acquirer, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(acquirer, owner),
+        )
     finally:
-        if acquirer is not None:
-            acquirer.close()
-        if owner is not None:
-            owner.close()
-        runtime.terminate()
+        close_all(acquirer, owner)
+        terminate_all(runtime)
 
 
 def test_pitch_time_semantic_profile_matches_across_java_bridges():
@@ -588,18 +566,17 @@ def test_pitch_time_semantic_profile_matches_across_java_bridges():
                     subscriber_federate=subscriber_fed,
                 )
                 profiles[kind] = _normalized_exchange_profile(summary)
-                subscriber.resign_federation_execution(ResignAction.NO_ACTION)
-                publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-                publisher.destroy_federation_execution(federation_name)
-                subscriber.disconnect()
-                publisher.disconnect()
+                cleanup_federation(
+                    federation_name,
+                    destroyer=publisher,
+                    destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+                    remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
+                    disconnect_rtis=(subscriber, publisher),
+                )
             finally:
-                if subscriber is not None:
-                    subscriber.close()
-                if publisher is not None:
-                    publisher.close()
+                close_all(subscriber, publisher)
     finally:
-        runtime.terminate()
+        terminate_all(runtime)
 
     assert profiles["pitch-py4j"] == profiles["pitch-jpype"]
 
@@ -650,11 +627,8 @@ def test_pitch_negotiated_ownership_profile_matches_across_java_bridges():
                     )
                 profiles[kind] = _normalized_negotiated_profile(summary)
             finally:
-                if acquirer is not None:
-                    acquirer.close()
-                if owner is not None:
-                    owner.close()
+                close_all(acquirer, owner)
     finally:
-        runtime.terminate()
+        terminate_all(runtime)
 
     assert profiles["pitch-py4j"] == profiles["pitch-jpype"]

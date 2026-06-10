@@ -76,7 +76,7 @@ If you just want the standard vendor smoke wrapper, this now works with
 repo-local Pitch defaults:
 
 ```bash
-./scripts/ci/vendor_runtime_smoke.sh pitch
+./scripts/ci/vendor_green.sh pitch
 ```
 
 ## If it fails
@@ -96,4 +96,4 @@ Common causes:
 - another process is already bound to `8989` or `15164`
 
 If you prefer the explicit script path, `./pitch` is a thin alias for
-`./scripts/pitch_docker_easy.sh`.
+`./pitch`.

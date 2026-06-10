@@ -3,6 +3,12 @@
 The `./certi-easy preflight` and `./pitch preflight` commands can emit either
 human-readable output or machine-readable JSON.
 
+The CI/operator wrapper `./scripts/ci/vendor_runtime_smoke.sh` now emits the
+same standard JSON files by default under `analysis/preflight_artifacts/`
+before it decides whether a vendor profile should run or skip. Use
+`./scripts/ci/vendor_green.sh` when blocked prerequisites should fail the run
+instead of short-circuiting cleanly.
+
 Use the JSON form when you want to:
 
 - branch in scripts or CI
@@ -90,6 +96,7 @@ CERTI JSON includes:
 - `environment`
 - `result`
 - `checks`
+- `runtime_profiles`
 - `next_steps`
 - `exit_code`
 
@@ -100,6 +107,8 @@ Pitch JSON includes:
 - `environment`
 - `result`
 - `checks`
+- `runtime`
+- `ports`
 - `next_step`
 - `exit_code`
 
@@ -111,6 +120,17 @@ Pitch JSON includes:
 - `environment: docker-blocked` means Pitch Docker is not ready yet.
 - `environment: bundle-blocked` means the Pitch runtime bundle is missing or
   not extracted where the wrapper expects it.
+- `environment: ports-blocked` means one or more required local Pitch ports are
+  already occupied by another process.
+
+The richer payloads also make the selected runtime state explicit:
+
+- CERTI `runtime_profiles` records the active, patched, and upstream path roots
+  plus whether the expected markers exist.
+- Pitch `runtime` records the selected runtime home, user-home, image name, and
+  container name.
+- Pitch `ports` records the expected local CRC and FedPro bindings and whether
+  they are available, blocked, or already managed by the expected container.
 
 If you want to understand the operator flow first, read:
 

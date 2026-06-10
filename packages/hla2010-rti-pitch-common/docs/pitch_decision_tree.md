@@ -219,7 +219,7 @@ For file output and inspection examples, see
 Use the vendor smoke wrapper:
 
 ```bash
-./scripts/ci/vendor_runtime_smoke.sh pitch
+./scripts/ci/vendor_green.sh pitch
 ```
 
 Or inspect the negotiated ownership diagnostics:

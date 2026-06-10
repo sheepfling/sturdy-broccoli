@@ -6,12 +6,14 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from threading import Thread
 from typing import Any, Mapping
 
-from hla2010.rti import create_rti_ambassador
-from hla2010.backends.transport import TransportRequest
 from hla2010_rti_python.engine import InMemoryRTIEngine
 from hla2010_rti_python.factory import rti_ambassador
 from hla2010_rti_python.state import PythonRTIConfig
-from hla2010_rti_transport_grpc.python_server import _RTITransportServicer
+from hla2010_rti_transport_common.hosted_server import HostedRTICommandProcessor
+
+from hla2010.backends.transport import TransportRequest
+from hla2010.rti import create_rti_ambassador
+
 from .client import RestTransportClientAdapter
 
 
@@ -43,7 +45,7 @@ class _TransportHTTPHandler(BaseHTTPRequestHandler):
         payload = self.rfile.read(content_length).decode("utf-8")
         try:
             request = self.server_ref._decode_request(payload)
-            response = self.server_ref.servicer._handle_request(request)
+            response = self.server_ref.processor.handle_request(request)
             body = self.server_ref._encode_response(response)
             self.send_response(200)
         except Exception as exc:
@@ -59,9 +61,9 @@ class _TransportHTTPHandler(BaseHTTPRequestHandler):
 
 
 class _BaseRestServer:
-    def __init__(self, *, request_path: str, servicer: _RTITransportServicer, host: str, port: int) -> None:
+    def __init__(self, *, request_path: str, processor: HostedRTICommandProcessor, host: str, port: int) -> None:
         self.request_path = request_path
-        self.servicer = servicer
+        self.processor = processor
         self.client_adapter = RestTransportClientAdapter()
         handler = type("_BoundTransportHTTPHandler", (_TransportHTTPHandler,), {})
         handler.server_ref = self
@@ -77,7 +79,7 @@ class _BaseRestServer:
         return self
 
     def close(self) -> None:
-        self.servicer.close()
+        self.processor.close()
         if self._started:
             self.server.shutdown()
             self.server.server_close()
@@ -98,7 +100,7 @@ class PythonRTIRestServer(_BaseRestServer):
     def __init__(self, config: PythonRTIRestServerConfig = PythonRTIRestServerConfig()) -> None:
         super().__init__(
             request_path=config.request_path,
-            servicer=_RTITransportServicer(rti_ambassador(engine=config.engine, config=config.python_config)),
+            processor=HostedRTICommandProcessor(rti_ambassador(engine=config.engine, config=config.python_config)),
             host=config.host,
             port=config.port,
         )
@@ -108,7 +110,7 @@ class CERTIRestServer(_BaseRestServer):
     def __init__(self, config: CERTIRestServerConfig = CERTIRestServerConfig()) -> None:
         super().__init__(
             request_path=config.request_path,
-            servicer=_RTITransportServicer(create_rti_ambassador("certi", **dict(config.backend_options))),
+            processor=HostedRTICommandProcessor(create_rti_ambassador("certi", **dict(config.backend_options))),
             host=config.host,
             port=config.port,
         )

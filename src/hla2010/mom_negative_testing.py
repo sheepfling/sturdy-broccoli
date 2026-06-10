@@ -286,7 +286,18 @@ def build_mom_negative_parameter_map(rti: Any, case: MOMNegativeTestCase, rule: 
     payloads: dict[str, bytes] = {}
 
     if case.case == "unexpected_parameter":
-        payloads["HLAunexpectedParameter"] = b"unexpected"
+        encoded = {
+            rti.backend.engine.get_or_create_parameter(interaction, "HLAunexpectedParameter"): b"unexpected"
+        }
+        for name in rule.required_parameters:
+            encoded[rti.get_parameter_handle(interaction, name)] = valid_mom_payload_for_parameter(rti, rule, name)
+        if rule.at_least_one_of:
+            name = rule.at_least_one_of[0]
+            encoded.setdefault(
+                rti.get_parameter_handle(interaction, name),
+                valid_mom_payload_for_parameter(rti, rule, name),
+            )
+        return encoded
     elif case.case == "missing_required_parameter":
         missing = case.parameter
         for name in rule.required_parameters:

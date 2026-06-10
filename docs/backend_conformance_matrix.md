@@ -64,7 +64,7 @@ row is sensitive to our local CERTI modifications, promote it to separate
 column.
 
 Current named CERTI baseline split for the promoted time-query probe,
-reproduced through `./scripts/ci/vendor_runtime_smoke.sh certi-compare`:
+reproduced through `./certi-easy smoke compare`:
 
 - `certi-upstream`: create/join succeeds, then the first `queryGALT` collapses
   the RTIA path before clause-level time-query semantics can be proved.

@@ -183,6 +183,9 @@ Once the Python path is working:
 
 Do not start with CERTI or Pitch before the Python bootstrap succeeds.
 
+For real runtime proof on an unrestricted local terminal or a dedicated CI
+runner, use [vendor_runtime_runner_guide.md](vendor_runtime_runner_guide.md).
+
 ## Repo Layout For Setup Purposes
 
 The setup-relevant parts of this repo are:

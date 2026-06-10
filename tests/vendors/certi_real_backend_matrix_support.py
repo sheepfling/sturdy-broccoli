@@ -12,8 +12,8 @@ from hla2010.enums import CallbackModel, OrderType, ResignAction
 from hla2010.exceptions import AttributeDivestitureWasNotRequested, InvalidLogicalTime, RTIinternalError
 from hla2010.real_rti import discover_certi_runtime_profile, discover_certi_smoke_fom, launch_certi_rtig, project_root
 from hla2010.rti import create_rti_ambassador
-from hla2010.testing.scenario_exchange import TwoFederateExchangeConfig
-from hla2010.testing.scenario_ownership import (
+from hla2010_verification_harness.scenario_exchange import TwoFederateExchangeConfig
+from hla2010_verification_harness.scenario_ownership import (
     NegotiatedOwnershipScenarioConfig,
     ReleaseRequestOwnershipScenarioConfig,
     run_confirm_divestiture_negotiated_scenario,
@@ -22,6 +22,7 @@ from hla2010.testing.scenario_ownership import (
 )
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 from hla2010.types import TimeQueryReturn
+from tests.vendors.runtime_support import cleanup_federation, close_all, terminate_all, udp_port_pair
 
 
 def _require_real_rti_smoke() -> None:
@@ -218,7 +219,7 @@ def _certi_release_request_config(
 
 def _assert_certi_profile_time_query_and_fqr_baseline(
     profile_name: str,
-    udp_base: int,
+    udp_base: int | None,
     time_factory_name: str,
 ) -> None:
     _require_real_rti_smoke()
@@ -240,116 +241,116 @@ def _assert_certi_profile_time_query_and_fqr_baseline(
     regulator = None
     constrained = None
     try:
-        regulator = create_rti_ambassador(
-            "certi",
-            launch_rtig=False,
-            tcp_port=rtig.tcp_port,
-            udp_port=udp_base,
-            **options,
-        )
-        constrained = create_rti_ambassador(
-            "certi",
-            launch_rtig=False,
-            tcp_port=rtig.tcp_port,
-            udp_port=udp_base + 1,
-            **options,
-        )
-
-        regulator.connect(regulator_fed, CallbackModel.HLA_EVOKED)
-        constrained.connect(constrained_fed, CallbackModel.HLA_EVOKED)
-        regulator.create_federation_execution(federation_name, [smoke_fom], time_factory_name)
-        regulator.join_federation_execution("Regulator", "TimeFederate", federation_name)
-        constrained.join_federation_execution("Constrained", "TimeFederate", federation_name)
-
-        if profile_name == "certi-upstream":
-            with pytest.raises((BackendUnavailableError, RTIinternalError), match="Network Read Error|LAST message type"):
-                constrained.query_galt()
-            return
-
-        initial_galt = constrained.query_galt()
-        initial_lits = constrained.query_lits()
-        assert isinstance(initial_galt, TimeQueryReturn)
-        assert isinstance(initial_lits, TimeQueryReturn)
-        assert initial_galt.time_is_valid is True
-        assert initial_lits.time_is_valid is True
-        assert isinf(initial_galt.time.value)
-        assert isinf(initial_lits.time.value)
-
-        time_profile = _exchange_time_profile(time_factory_name)
-        regulator.enable_time_regulation(time_profile["lookahead"])
-        constrained.enable_time_constrained()
-        _evoke_pair(regulator, constrained)
-
-        assert regulator_fed.last_callback("timeRegulationEnabled") is not None
-        assert constrained_fed.last_callback("timeConstrainedEnabled") is not None
-        enabled_galt = constrained.query_galt()
-        enabled_lits = constrained.query_lits()
-        assert enabled_galt.time_is_valid is True
-        assert enabled_lits.time_is_valid is True
-        assert _logical_time_value(enabled_galt.time) == _logical_time_value(time_profile["lookahead"])
-        assert _logical_time_value(enabled_lits.time) == _logical_time_value(time_profile["lookahead"])
-        try:
-            assert _logical_time_value(regulator.query_lookahead()) == _logical_time_value(time_profile["lookahead"])
-            regulator.modify_lookahead(time_profile["modified_lookahead"])
-            assert _logical_time_value(regulator.query_lookahead()) == _logical_time_value(time_profile["modified_lookahead"])
-        except RTIinternalError as exc:
-            if profile_name in {"certi-upstream", "certi-patched"} and "Not yet implemented" in str(exc):
-                pytest.xfail("CERTI queryLookahead/modifyLookahead are not implemented in this runtime")
-            raise
-
-        regulator_cls = regulator.get_object_class_handle("TestObjectClassR")
-        constrained_cls = constrained.get_object_class_handle("TestObjectClassR")
-        regulator_attr = regulator.get_attribute_handle(regulator_cls, "DataR")
-        constrained_attr = constrained.get_attribute_handle(constrained_cls, "DataR")
-        regulator_int = regulator.get_interaction_class_handle("MsgR")
-        regulator_param = regulator.get_parameter_handle(regulator_int, "MsgDataR")
-        regulator.publish_object_class_attributes(regulator_cls, {regulator_attr})
-        constrained.subscribe_object_class_attributes(constrained_cls, {constrained_attr})
-        regulator.publish_interaction_class(regulator_int)
-        constrained.subscribe_interaction_class(regulator_int)
-        regulator_obj = regulator.register_object_instance(regulator_cls, f"{federation_name}-Lookahead")
-        _evoke_pair(regulator, constrained)
-
-        zero_time = time_profile["initial_time"]
-        with pytest.raises(InvalidLogicalTime):
-            regulator.update_attribute_values(
-                regulator_obj,
-                {regulator_attr: b"lookahead-early"},
-                b"lookahead-early",
-                zero_time,
+        with udp_port_pair(udp_base) as (regulator_udp_port, constrained_udp_port):
+            regulator = create_rti_ambassador(
+                "certi",
+                launch_rtig=False,
+                tcp_port=rtig.tcp_port,
+                udp_port=regulator_udp_port,
+                **options,
             )
-        with pytest.raises(InvalidLogicalTime):
-            regulator.send_interaction(
-                regulator_int,
-                {regulator_param: b"lookahead-early"},
-                b"lookahead-early",
-                zero_time,
+            constrained = create_rti_ambassador(
+                "certi",
+                launch_rtig=False,
+                tcp_port=rtig.tcp_port,
+                udp_port=constrained_udp_port,
+                **options,
             )
 
-        constrained.flush_queue_request(time_profile["timestamped_interaction_time"])
-        _evoke_pair(regulator, constrained)
+            regulator.connect(regulator_fed, CallbackModel.HLA_EVOKED)
+            constrained.connect(constrained_fed, CallbackModel.HLA_EVOKED)
+            regulator.create_federation_execution(federation_name, [smoke_fom], time_factory_name)
+            regulator.join_federation_execution("Regulator", "TimeFederate", federation_name)
+            constrained.join_federation_execution("Constrained", "TimeFederate", federation_name)
 
-        grant = constrained_fed.last_callback("timeAdvanceGrant")
-        assert grant is not None
-        _assert_time_value_type(grant.args[0], time_factory_name)
-        assert getattr(grant.args[0], "value", grant.args[0]) == getattr(time_profile["lookahead"], "value", time_profile["lookahead"])
+            if profile_name == "certi-upstream":
+                with pytest.raises((BackendUnavailableError, RTIinternalError), match="Network Read Error|LAST message type"):
+                    constrained.query_galt()
+                return
 
-        constrained.resign_federation_execution(ResignAction.NO_ACTION)
-        regulator.resign_federation_execution(ResignAction.NO_ACTION)
-        regulator.destroy_federation_execution(federation_name)
-        constrained.disconnect()
-        regulator.disconnect()
+            initial_galt = constrained.query_galt()
+            initial_lits = constrained.query_lits()
+            assert isinstance(initial_galt, TimeQueryReturn)
+            assert isinstance(initial_lits, TimeQueryReturn)
+            assert initial_galt.time_is_valid is True
+            assert initial_lits.time_is_valid is True
+            assert isinf(initial_galt.time.value)
+            assert isinf(initial_lits.time.value)
+
+            time_profile = _exchange_time_profile(time_factory_name)
+            regulator.enable_time_regulation(time_profile["lookahead"])
+            constrained.enable_time_constrained()
+            _evoke_pair(regulator, constrained)
+
+            assert regulator_fed.last_callback("timeRegulationEnabled") is not None
+            assert constrained_fed.last_callback("timeConstrainedEnabled") is not None
+            enabled_galt = constrained.query_galt()
+            enabled_lits = constrained.query_lits()
+            assert enabled_galt.time_is_valid is True
+            assert enabled_lits.time_is_valid is True
+            assert _logical_time_value(enabled_galt.time) == _logical_time_value(time_profile["lookahead"])
+            assert _logical_time_value(enabled_lits.time) == _logical_time_value(time_profile["lookahead"])
+            try:
+                assert _logical_time_value(regulator.query_lookahead()) == _logical_time_value(time_profile["lookahead"])
+                regulator.modify_lookahead(time_profile["modified_lookahead"])
+                assert _logical_time_value(regulator.query_lookahead()) == _logical_time_value(time_profile["modified_lookahead"])
+            except RTIinternalError as exc:
+                if profile_name in {"certi-upstream", "certi-patched"} and "Not yet implemented" in str(exc):
+                    pytest.xfail("CERTI queryLookahead/modifyLookahead are not implemented in this runtime")
+                raise
+
+            regulator_cls = regulator.get_object_class_handle("TestObjectClassR")
+            constrained_cls = constrained.get_object_class_handle("TestObjectClassR")
+            regulator_attr = regulator.get_attribute_handle(regulator_cls, "DataR")
+            constrained_attr = constrained.get_attribute_handle(constrained_cls, "DataR")
+            regulator_int = regulator.get_interaction_class_handle("MsgR")
+            regulator_param = regulator.get_parameter_handle(regulator_int, "MsgDataR")
+            regulator.publish_object_class_attributes(regulator_cls, {regulator_attr})
+            constrained.subscribe_object_class_attributes(constrained_cls, {constrained_attr})
+            regulator.publish_interaction_class(regulator_int)
+            constrained.subscribe_interaction_class(regulator_int)
+            regulator_obj = regulator.register_object_instance(regulator_cls, f"{federation_name}-Lookahead")
+            _evoke_pair(regulator, constrained)
+
+            zero_time = time_profile["initial_time"]
+            with pytest.raises(InvalidLogicalTime):
+                regulator.update_attribute_values(
+                    regulator_obj,
+                    {regulator_attr: b"lookahead-early"},
+                    b"lookahead-early",
+                    zero_time,
+                )
+            with pytest.raises(InvalidLogicalTime):
+                regulator.send_interaction(
+                    regulator_int,
+                    {regulator_param: b"lookahead-early"},
+                    b"lookahead-early",
+                    zero_time,
+                )
+
+            constrained.flush_queue_request(time_profile["timestamped_interaction_time"])
+            _evoke_pair(regulator, constrained)
+
+            grant = constrained_fed.last_callback("timeAdvanceGrant")
+            assert grant is not None
+            _assert_time_value_type(grant.args[0], time_factory_name)
+            assert getattr(grant.args[0], "value", grant.args[0]) == getattr(time_profile["lookahead"], "value", time_profile["lookahead"])
+
+            cleanup_federation(
+                federation_name,
+                destroyer=regulator,
+                destroyer_resign_action=ResignAction.NO_ACTION,
+                remaining_resignations=((constrained, ResignAction.NO_ACTION),),
+                disconnect_rtis=(constrained, regulator),
+            )
     finally:
-        if constrained is not None:
-            constrained.close()
-        if regulator is not None:
-            regulator.close()
-        rtig.terminate()
+        close_all(constrained, regulator)
+        terminate_all(rtig)
 
 
 def _assert_certi_profile_queued_fqr_baseline(
     profile_name: str,
-    udp_base: int,
+    udp_base: int | None,
     time_factory_name: str,
 ) -> None:
     _require_real_rti_smoke()
@@ -371,31 +372,32 @@ def _assert_certi_profile_queued_fqr_baseline(
     regulator = None
     constrained = None
     try:
-        regulator = create_rti_ambassador(
-            "certi",
-            launch_rtig=False,
-            tcp_port=rtig.tcp_port,
-            udp_port=udp_base,
-            **options,
-        )
-        constrained = create_rti_ambassador(
-            "certi",
-            launch_rtig=False,
-            tcp_port=rtig.tcp_port,
-            udp_port=udp_base + 1,
-            **options,
-        )
+        with udp_port_pair(udp_base) as (regulator_udp_port, constrained_udp_port):
+            regulator = create_rti_ambassador(
+                "certi",
+                launch_rtig=False,
+                tcp_port=rtig.tcp_port,
+                udp_port=regulator_udp_port,
+                **options,
+            )
+            constrained = create_rti_ambassador(
+                "certi",
+                launch_rtig=False,
+                tcp_port=rtig.tcp_port,
+                udp_port=constrained_udp_port,
+                **options,
+            )
 
-        regulator.connect(regulator_fed, CallbackModel.HLA_EVOKED)
-        constrained.connect(constrained_fed, CallbackModel.HLA_EVOKED)
-        regulator.create_federation_execution(federation_name, [smoke_fom], time_factory_name)
-        regulator.join_federation_execution("Regulator", "TimeFederate", federation_name)
-        constrained.join_federation_execution("Constrained", "TimeFederate", federation_name)
+            regulator.connect(regulator_fed, CallbackModel.HLA_EVOKED)
+            constrained.connect(constrained_fed, CallbackModel.HLA_EVOKED)
+            regulator.create_federation_execution(federation_name, [smoke_fom], time_factory_name)
+            regulator.join_federation_execution("Regulator", "TimeFederate", federation_name)
+            constrained.join_federation_execution("Constrained", "TimeFederate", federation_name)
 
-        if profile_name == "certi-upstream":
-            with pytest.raises((BackendUnavailableError, RTIinternalError), match="LAST message type|Network Read Error|Unimplemented|RTIinternalError"):
-                regulator.get_object_class_handle("TestObjectClassR")
-            return
+            if profile_name == "certi-upstream":
+                with pytest.raises((BackendUnavailableError, RTIinternalError), match="LAST message type|Network Read Error|Unimplemented|RTIinternalError"):
+                    regulator.get_object_class_handle("TestObjectClassR")
+                return
 
         regulator_cls = regulator.get_object_class_handle("TestObjectClassR")
         constrained_cls = constrained.get_object_class_handle("TestObjectClassR")
@@ -447,21 +449,20 @@ def _assert_certi_profile_queued_fqr_baseline(
         _assert_time_value_type(grant.args[0], time_factory_name)
         assert _logical_time_value(grant.args[0]) == _logical_time_value(earlier_time)
 
-        constrained.resign_federation_execution(ResignAction.NO_ACTION)
-        regulator.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        regulator.destroy_federation_execution(federation_name)
-        constrained.disconnect()
-        regulator.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=regulator,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((constrained, ResignAction.NO_ACTION),),
+            disconnect_rtis=(constrained, regulator),
+        )
     finally:
-        if constrained is not None:
-            constrained.close()
-        if regulator is not None:
-            regulator.close()
-        rtig.terminate()
+        close_all(constrained, regulator)
+        terminate_all(rtig)
 
 
 def _assert_certi_patched_fail_fast_time_request_matrix(
-    udp_base: int,
+    udp_base: int | None,
     time_factory_name: str,
     helper_command: str,
 ) -> None:
@@ -484,26 +485,27 @@ def _assert_certi_patched_fail_fast_time_request_matrix(
     regulator = None
     constrained = None
     try:
-        regulator = create_rti_ambassador(
-            "certi",
-            launch_rtig=False,
-            tcp_port=rtig.tcp_port,
-            udp_port=udp_base,
-            **options,
-        )
-        constrained = create_rti_ambassador(
-            "certi",
-            launch_rtig=False,
-            tcp_port=rtig.tcp_port,
-            udp_port=udp_base + 1,
-            **options,
-        )
+        with udp_port_pair(udp_base) as (regulator_udp_port, constrained_udp_port):
+            regulator = create_rti_ambassador(
+                "certi",
+                launch_rtig=False,
+                tcp_port=rtig.tcp_port,
+                udp_port=regulator_udp_port,
+                **options,
+            )
+            constrained = create_rti_ambassador(
+                "certi",
+                launch_rtig=False,
+                tcp_port=rtig.tcp_port,
+                udp_port=constrained_udp_port,
+                **options,
+            )
 
-        regulator.connect(regulator_fed, CallbackModel.HLA_EVOKED)
-        constrained.connect(constrained_fed, CallbackModel.HLA_EVOKED)
-        regulator.create_federation_execution(federation_name, [smoke_fom], time_factory_name)
-        regulator.join_federation_execution("Regulator", "TimeFederate", federation_name)
-        constrained.join_federation_execution("Constrained", "TimeFederate", federation_name)
+            regulator.connect(regulator_fed, CallbackModel.HLA_EVOKED)
+            constrained.connect(constrained_fed, CallbackModel.HLA_EVOKED)
+            regulator.create_federation_execution(federation_name, [smoke_fom], time_factory_name)
+            regulator.join_federation_execution("Regulator", "TimeFederate", federation_name)
+            constrained.join_federation_execution("Constrained", "TimeFederate", federation_name)
 
         time_profile = _exchange_time_profile(time_factory_name)
         regulator.enable_time_regulation(time_profile["lookahead"])
@@ -577,20 +579,19 @@ def _assert_certi_patched_fail_fast_time_request_matrix(
         else:
             raise AssertionError(f"unexpected helper command {helper_command}")
 
-        constrained.resign_federation_execution(ResignAction.NO_ACTION)
-        regulator.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        regulator.destroy_federation_execution(federation_name)
-        constrained.disconnect()
-        regulator.disconnect()
+            cleanup_federation(
+                federation_name,
+                destroyer=regulator,
+                destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+                remaining_resignations=((constrained, ResignAction.NO_ACTION),),
+                disconnect_rtis=(constrained, regulator),
+            )
     finally:
-        if constrained is not None:
-            constrained.close()
-        if regulator is not None:
-            regulator.close()
-        rtig.terminate()
+        close_all(constrained, regulator)
+        terminate_all(rtig)
 
 
-def _assert_certi_profile_negotiated_ownership_baseline(profile_name: str, udp_base: int) -> None:
+def _assert_certi_profile_negotiated_ownership_baseline(profile_name: str, udp_base: int | None) -> None:
     _require_real_rti_smoke()
     try:
         options = _certi_profile_backend_options(profile_name)
@@ -610,71 +611,71 @@ def _assert_certi_profile_negotiated_ownership_baseline(profile_name: str, udp_b
     owner = None
     acquirer = None
     try:
-        owner = create_rti_ambassador(
-            "certi",
-            launch_rtig=False,
-            tcp_port=rtig.tcp_port,
-            udp_port=udp_base,
-            **options,
-        )
-        acquirer = create_rti_ambassador(
-            "certi",
-            launch_rtig=False,
-            tcp_port=rtig.tcp_port,
-            udp_port=udp_base + 1,
-            **options,
-        )
+        with udp_port_pair(udp_base) as (owner_udp_port, acquirer_udp_port):
+            owner = create_rti_ambassador(
+                "certi",
+                launch_rtig=False,
+                tcp_port=rtig.tcp_port,
+                udp_port=owner_udp_port,
+                **options,
+            )
+            acquirer = create_rti_ambassador(
+                "certi",
+                launch_rtig=False,
+                tcp_port=rtig.tcp_port,
+                udp_port=acquirer_udp_port,
+                **options,
+            )
 
-        config = _certi_negotiated_config(smoke_fom, federation_name, f"{profile_name}-NegotiatedBaseline-1")
-        if profile_name == "certi-upstream":
-            with pytest.raises(
-                RTIinternalError,
-                match="Network Read Error|Connection closed by client|LAST message type",
-            ):
-                run_negotiated_attribute_ownership_scenario(
-                    owner,
-                    acquirer,
-                    config=config,
-                    owner_federate=owner_fed,
-                    acquirer_federate=acquirer_fed,
-                )
-            return
+            config = _certi_negotiated_config(smoke_fom, federation_name, f"{profile_name}-NegotiatedBaseline-1")
+            if profile_name == "certi-upstream":
+                with pytest.raises(
+                    RTIinternalError,
+                    match="Network Read Error|Connection closed by client|LAST message type",
+                ):
+                    run_negotiated_attribute_ownership_scenario(
+                        owner,
+                        acquirer,
+                        config=config,
+                        owner_federate=owner_fed,
+                        acquirer_federate=acquirer_fed,
+                    )
+                return
 
-        summary = run_negotiated_attribute_ownership_scenario(
-            owner,
-            acquirer,
-            config=config,
-            owner_federate=owner_fed,
-            acquirer_federate=acquirer_fed,
-        )
-        assert summary["negotiated_divestiture_supported"] is True
-        assert summary["assumption"] is not None
-        assert summary["release"].args == (
-            summary["release_object_instance"],
-            {summary["owner_attribute"]},
-            b"reacquire-request",
-        )
-        assert summary["cancellation"].args == (
-            summary["release_acquirer_object_instance"],
-            {summary["acquirer_attribute"]},
-        )
-        assert summary["divested"] == {summary["owner_attribute"]}
-        assert summary["acquired"].args[0] == summary["release_acquirer_object_instance"]
-        assert summary["acquired"].args[1] == {summary["acquirer_attribute"]}
-        assert summary["informed"].args[0] == summary["release_object_instance"]
-        assert summary["informed"].args[1] == summary["owner_attribute"]
+            summary = run_negotiated_attribute_ownership_scenario(
+                owner,
+                acquirer,
+                config=config,
+                owner_federate=owner_fed,
+                acquirer_federate=acquirer_fed,
+            )
+            assert summary["negotiated_divestiture_supported"] is True
+            assert summary["assumption"] is not None
+            assert summary["release"].args == (
+                summary["release_object_instance"],
+                {summary["owner_attribute"]},
+                b"reacquire-request",
+            )
+            assert summary["cancellation"].args == (
+                summary["release_acquirer_object_instance"],
+                {summary["acquirer_attribute"]},
+            )
+            assert summary["divested"] == {summary["owner_attribute"]}
+            assert summary["acquired"].args[0] == summary["release_acquirer_object_instance"]
+            assert summary["acquired"].args[1] == {summary["acquirer_attribute"]}
+            assert summary["informed"].args[0] == summary["release_object_instance"]
+            assert summary["informed"].args[1] == summary["owner_attribute"]
 
-        acquirer.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
-        owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        owner.destroy_federation_execution(federation_name)
-        acquirer.disconnect()
-        owner.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=owner,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((acquirer, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(acquirer, owner),
+        )
     finally:
-        if acquirer is not None:
-            acquirer.close()
-        if owner is not None:
-            owner.close()
-        rtig.terminate()
+        close_all(acquirer, owner)
+        terminate_all(rtig)
 
 
 def _normalized_release_request_profile(summary: dict[str, object]) -> dict[str, object]:
@@ -705,7 +706,7 @@ def _normalized_confirm_divestiture_profile(summary: dict[str, object]) -> dict[
 
 def _run_certi_profile_release_request_branch_baseline(
     profile_name: str,
-    udp_base: int,
+    udp_base: int | None,
     owner_action: str,
 ) -> dict[str, object] | None:
     _require_real_rti_smoke()
@@ -727,20 +728,21 @@ def _run_certi_profile_release_request_branch_baseline(
     owner = None
     acquirer = None
     try:
-        owner = create_rti_ambassador(
-            "certi",
-            launch_rtig=False,
-            tcp_port=rtig.tcp_port,
-            udp_port=udp_base,
-            **options,
-        )
-        acquirer = create_rti_ambassador(
-            "certi",
-            launch_rtig=False,
-            tcp_port=rtig.tcp_port,
-            udp_port=udp_base + 1,
-            **options,
-        )
+        with udp_port_pair(udp_base) as (owner_udp_port, acquirer_udp_port):
+            owner = create_rti_ambassador(
+                "certi",
+                launch_rtig=False,
+                tcp_port=rtig.tcp_port,
+                udp_port=owner_udp_port,
+                **options,
+            )
+            acquirer = create_rti_ambassador(
+                "certi",
+                launch_rtig=False,
+                tcp_port=rtig.tcp_port,
+                udp_port=acquirer_udp_port,
+                **options,
+            )
 
         config = _certi_release_request_config(
             smoke_fom,
@@ -798,18 +800,17 @@ def _run_certi_profile_release_request_branch_baseline(
         else:
             raise AssertionError(f"unexpected owner_action {owner_action!r}")
 
-        acquirer.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
-        owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        owner.destroy_federation_execution(federation_name)
-        acquirer.disconnect()
-        owner.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=owner,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((acquirer, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(acquirer, owner),
+        )
         return summary
     finally:
-        if acquirer is not None:
-            acquirer.close()
-        if owner is not None:
-            owner.close()
-        rtig.terminate()
+        close_all(acquirer, owner)
+        terminate_all(rtig)
 
 
 def _assert_certi_profile_release_request_branch_baseline(profile_name: str, udp_base: int, owner_action: str) -> None:
@@ -821,7 +822,7 @@ def _assert_certi_profile_release_request_branch_baseline(profile_name: str, udp
         assert summary["confirm_exception"] == "AttributeDivestitureWasNotRequested"
 
 
-def _run_certi_profile_confirm_divestiture_negotiated_baseline(profile_name: str, udp_base: int) -> dict[str, object] | None:
+def _run_certi_profile_confirm_divestiture_negotiated_baseline(profile_name: str, udp_base: int | None) -> dict[str, object] | None:
     _require_real_rti_smoke()
     try:
         options = _certi_profile_backend_options(profile_name)
@@ -841,20 +842,21 @@ def _run_certi_profile_confirm_divestiture_negotiated_baseline(profile_name: str
     owner = None
     acquirer = None
     try:
-        owner = create_rti_ambassador(
-            "certi",
-            launch_rtig=False,
-            tcp_port=rtig.tcp_port,
-            udp_port=udp_base,
-            **options,
-        )
-        acquirer = create_rti_ambassador(
-            "certi",
-            launch_rtig=False,
-            tcp_port=rtig.tcp_port,
-            udp_port=udp_base + 1,
-            **options,
-        )
+        with udp_port_pair(udp_base) as (owner_udp_port, acquirer_udp_port):
+            owner = create_rti_ambassador(
+                "certi",
+                launch_rtig=False,
+                tcp_port=rtig.tcp_port,
+                udp_port=owner_udp_port,
+                **options,
+            )
+            acquirer = create_rti_ambassador(
+                "certi",
+                launch_rtig=False,
+                tcp_port=rtig.tcp_port,
+                udp_port=acquirer_udp_port,
+                **options,
+            )
 
         config = _certi_negotiated_config(smoke_fom, federation_name, f"{profile_name}-ConfirmNegotiated-1")
         if profile_name == "certi-upstream":
@@ -883,18 +885,17 @@ def _run_certi_profile_confirm_divestiture_negotiated_baseline(profile_name: str
         )
         assert summary["acquired"].args[2] == b"confirm-tag"
 
-        acquirer.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
-        owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        owner.destroy_federation_execution(federation_name)
-        acquirer.disconnect()
-        owner.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=owner,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((acquirer, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(acquirer, owner),
+        )
         return summary
     finally:
-        if acquirer is not None:
-            acquirer.close()
-        if owner is not None:
-            owner.close()
-        rtig.terminate()
+        close_all(acquirer, owner)
+        terminate_all(rtig)
 
 
 def _assert_certi_profile_confirm_divestiture_negotiated_baseline(profile_name: str, udp_base: int) -> None:

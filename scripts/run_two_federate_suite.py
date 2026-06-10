@@ -2,10 +2,13 @@
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 
 import _bootstrap  # noqa: F401
 
-from hla2010.testing.two_federate_suite_runner import write_two_federate_suite_artifacts
+from hla2010_fom_target_radar.testing.two_federate_suite_runner import write_two_federate_suite_artifacts
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 def main(argv: list[str] | None = None) -> int:

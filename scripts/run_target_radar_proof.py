@@ -5,10 +5,13 @@ import argparse
 import ast
 import json
 import sys
+from pathlib import Path
 
 import _bootstrap  # noqa: F401
 
 from hla2010.testing.target_radar_proof import write_target_radar_proof_artifacts
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 DEFAULT_BACKENDS = [
     "python",

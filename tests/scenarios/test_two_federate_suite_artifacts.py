@@ -3,7 +3,7 @@ from __future__ import annotations
 import csv
 import json
 
-from hla2010.testing.two_federate_suite_runner import write_two_federate_suite_artifacts
+from hla2010_fom_target_radar.testing.two_federate_suite_runner import write_two_federate_suite_artifacts
 
 
 def test_two_federate_suite_artifacts_are_generated(tmp_path):

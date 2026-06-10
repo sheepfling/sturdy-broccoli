@@ -3,7 +3,7 @@ import pytest
 from hla2010.backends.base import make_rti_ambassador
 from hla2010.exceptions import FederationExecutionDoesNotExist
 from hla2010.testing.java_shim_factory import create_java_shim_backend
-from hla2010.testing.scenario_basic import run_basic_federate_scenario
+from hla2010_verification_harness.scenario_basic import run_basic_federate_scenario
 
 
 @pytest.mark.parametrize("profile", ["jpype", "py4j"])

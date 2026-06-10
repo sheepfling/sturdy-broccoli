@@ -3,6 +3,9 @@
 The repository separates public API definitions, backend abstractions, concrete
 RTI implementations, transport adapters, and verification assets.
 
+For the stricter rule table about what may import what, use
+[`import_boundary_rules.md`](import_boundary_rules.md).
+
 This is a monorepo workspace with multiple installable package roots. The
 stable import surface is the `src/hla2010/` package, while concrete backend
 and support implementations live in package-owned directories under
@@ -30,8 +33,12 @@ package root.
 - `packages/hla2010-rti-java-common/src/hla2010_rti_java_common/`: shared Java bridge support, overload resolution, callback dispatching, and Java-side value conversion.
 - `packages/hla2010-rti-runtime-common/src/hla2010_rti_runtime_common/`: shared vendor-runtime process lifecycle and loopback TCP helpers.
 - `docs/openapi/rti_transport.yaml`: formal REST transport schema.
+- `packages/hla2010-rti-transport-common/src/hla2010_rti_transport_common/`: shared hosted transport request-processing helpers used by multiple wire protocols.
 - `packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc/`: canonical gRPC transport infrastructure with `.proto` schema, checked-in Python stubs, client adapter, and hosted server helpers.
 - `packages/hla2010-rti-transport-rest/src/hla2010_rti_transport_rest/`: canonical REST transport infrastructure with the OpenAPI-aligned Python client adapter and hosted server runtime.
+
+Transport packages are not backend families. They are the wire layer beneath a
+backend-neutral ambassador surface.
 
 ## Concrete Backends
 
@@ -83,6 +90,7 @@ The intended package split is:
 - `hla2010-rti-backend-common`: shared backend conversion support layer.
 - `hla2010-rti-java-common`: shared Java RTI support layer.
 - `hla2010-rti-runtime-common`: shared vendor-runtime process helper layer.
+- `hla2010-rti-transport-common`: shared hosted transport request-processing helpers.
 - `hla2010-rti-java-jpype`: generic JPype Java RTI bridge and `jpype` backend plugin.
 - `hla2010-rti-java-py4j`: generic Py4J Java RTI bridge and `py4j` backend plugin.
 - `hla2010-rti-pitch-common`: shared Pitch runtime discovery and process launch.
@@ -112,11 +120,12 @@ so editable/source checkouts work even before the package is physically split.
 ## Verification And Scenarios
 
 - `src/hla2010/testing/`: reusable scenario and artifact-producing test helpers.
-- `src/hla2010/testing/scenario_support.py`, `scenario_exchange.py`, `scenario_sync.py`, `scenario_ownership.py`, `scenario_basic.py`: scenario-family split beneath the compatibility facade `src/hla2010/testing/scenarios.py`.
+- `src/hla2010/testing/scenario_support.py`, `scenario_exchange.py`, `scenario_exchange_history.py`, `scenario_sync.py`, `scenario_ownership.py`, `scenario_basic.py`: compatibility facades for split generic scenario helpers now owned by `packages/hla2010-verification-harness/src/hla2010_verification_harness/`.
 - `src/hla2010/testing/java_shim_types.py`, `java_shim_backend.py`, `java_shim_kernel.py`, `java_shim_factory.py`: Java-shaped shim split beneath the compatibility facade `src/hla2010/testing/java_shim.py`.
-- `src/hla2010/testing/two_federate_suite_runner.py`: suite coordinator.
+- `src/hla2010/testing/two_federate_suite_runner.py`: compatibility facade for the Target/Radar-owned composite suite coordinator.
 - `packages/hla2010-verification-harness/src/hla2010_verification_harness/`: canonical generic suite pairs, configs, scenario bodies, packet types, summary/timeline shaping, and writer helpers.
 - `packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/testing/two_federate_suite_profiles.py`: target/radar-owned profile policy for the composite suite.
+- `packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/testing/two_federate_suite_runner.py`: canonical Target/Radar-owned composite suite coordinator.
 - `packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/scenarios/`: canonical Target/Radar scenario implementation and FOM helper entrypoints.
 - `src/hla2010/scenarios/`: compatibility facades plus reusable domain scenarios that are safe to import from both tests and example entrypoints.
 - `examples/`: runnable scripts and example-only assets. Nothing under `examples/` is part of the installable `hla2010` package.

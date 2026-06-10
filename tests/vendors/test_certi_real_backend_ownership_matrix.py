@@ -1,9 +1,10 @@
 # ruff: noqa: F401,F403
 
 from tests.vendors.certi_real_backend_matrix_support import *
+from tests.vendors.runtime_support import cleanup_federation, close_all, reserve_udp_pair, terminate_all
 
-@pytest.mark.parametrize("kind,udp_base", [("certi", 60801), ("certi-jpype", 60811), ("certi-py4j", 60821)])
-def test_certi_backend_ownership_matrix(kind: str, udp_base: int):
+@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+def test_certi_backend_ownership_matrix(kind: str):
     _require_real_rti_smoke()
     try:
         rtig = launch_certi_rtig(verbose=0)
@@ -17,8 +18,12 @@ def test_certi_backend_ownership_matrix(kind: str, udp_base: int):
     owner = None
     acquirer = None
     try:
-        owner = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base)
-        acquirer = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base + 1)
+        with reserve_udp_pair() as lease:
+            owner_udp_port, acquirer_udp_port = lease.ports
+        owner = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=owner_udp_port)
+        acquirer = create_rti_ambassador(
+            kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=acquirer_udp_port
+        )
 
         config = OwnershipScenarioConfig(
             federation_name=federation_name,
@@ -48,31 +53,30 @@ def test_certi_backend_ownership_matrix(kind: str, udp_base: int):
         assert informed.args[0] == summary["object_instance"]
         assert informed.args[1] == summary["owner_attribute"]
 
-        acquirer.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
-        owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        owner.destroy_federation_execution(federation_name)
-        acquirer.disconnect()
-        owner.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=owner,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((acquirer, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(acquirer, owner),
+        )
     finally:
-        if acquirer is not None:
-            acquirer.close()
-        if owner is not None:
-            owner.close()
-        rtig.terminate()
+        close_all(acquirer, owner)
+        terminate_all(rtig)
 
 
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_patched_next_message_request_fail_fast_matrix(time_factory_name: str):
-    _assert_certi_patched_fail_fast_time_request_matrix(61051, time_factory_name, "NEXT_MESSAGE_REQUEST")
+    _assert_certi_patched_fail_fast_time_request_matrix(None, time_factory_name, "NEXT_MESSAGE_REQUEST")
 
 
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_patched_next_message_request_available_fail_fast_matrix(time_factory_name: str):
-    _assert_certi_patched_fail_fast_time_request_matrix(61061, time_factory_name, "NEXT_MESSAGE_REQUEST_AVAILABLE")
+    _assert_certi_patched_fail_fast_time_request_matrix(None, time_factory_name, "NEXT_MESSAGE_REQUEST_AVAILABLE")
 
 
-@pytest.mark.parametrize("kind,udp_base", [("certi", 60901), ("certi-jpype", 60911), ("certi-py4j", 60921)])
-def test_certi_backend_negotiated_ownership_matrix(kind: str, udp_base: int):
+@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+def test_certi_backend_negotiated_ownership_matrix(kind: str):
     _require_real_rti_smoke()
     try:
         rtig = launch_certi_rtig(verbose=0)
@@ -86,8 +90,12 @@ def test_certi_backend_negotiated_ownership_matrix(kind: str, udp_base: int):
     owner = None
     acquirer = None
     try:
-        owner = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base)
-        acquirer = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base + 1)
+        with reserve_udp_pair() as lease:
+            owner_udp_port, acquirer_udp_port = lease.ports
+        owner = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=owner_udp_port)
+        acquirer = create_rti_ambassador(
+            kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=acquirer_udp_port
+        )
 
         config = _certi_negotiated_config(smoke_fom, federation_name, f"{kind}-Negotiated-1")
         try:
@@ -118,48 +126,47 @@ def test_certi_backend_negotiated_ownership_matrix(kind: str, udp_base: int):
         assert summary["informed"].args[0] == summary["release_object_instance"]
         assert summary["informed"].args[1] == summary["owner_attribute"]
 
-        acquirer.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
-        owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        owner.destroy_federation_execution(federation_name)
-        acquirer.disconnect()
-        owner.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=owner,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((acquirer, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(acquirer, owner),
+        )
     finally:
-        if acquirer is not None:
-            acquirer.close()
-        if owner is not None:
-            owner.close()
-        rtig.terminate()
+        close_all(acquirer, owner)
+        terminate_all(rtig)
 
 
 def test_certi_upstream_negotiated_ownership_baseline():
-    _assert_certi_profile_negotiated_ownership_baseline("certi-upstream", 61201)
+    _assert_certi_profile_negotiated_ownership_baseline("certi-upstream", None)
 
 
 def test_certi_patched_negotiated_ownership_baseline():
-    _assert_certi_profile_negotiated_ownership_baseline("certi-patched", 61211)
+    _assert_certi_profile_negotiated_ownership_baseline("certi-patched", None)
 
 
-@pytest.mark.parametrize("owner_action,udp_base", [("deny", 61301), ("confirm", 61311), ("ifwanted", 61321)])
-def test_certi_upstream_release_request_branch_baseline(owner_action: str, udp_base: int):
-    _assert_certi_profile_release_request_branch_baseline("certi-upstream", udp_base, owner_action)
+@pytest.mark.parametrize("owner_action", ["deny", "confirm", "ifwanted"])
+def test_certi_upstream_release_request_branch_baseline(owner_action: str):
+    _assert_certi_profile_release_request_branch_baseline("certi-upstream", None, owner_action)
 
 
-@pytest.mark.parametrize("owner_action,udp_base", [("deny", 61401), ("confirm", 61411), ("ifwanted", 61421)])
-def test_certi_patched_release_request_branch_baseline(owner_action: str, udp_base: int):
-    _assert_certi_profile_release_request_branch_baseline("certi-patched", udp_base, owner_action)
+@pytest.mark.parametrize("owner_action", ["deny", "confirm", "ifwanted"])
+def test_certi_patched_release_request_branch_baseline(owner_action: str):
+    _assert_certi_profile_release_request_branch_baseline("certi-patched", None, owner_action)
 
 
 def test_certi_upstream_confirm_divestiture_negotiated_baseline():
-    _assert_certi_profile_confirm_divestiture_negotiated_baseline("certi-upstream", 61501)
+    _assert_certi_profile_confirm_divestiture_negotiated_baseline("certi-upstream", None)
 
 
 def test_certi_patched_confirm_divestiture_negotiated_baseline():
-    _assert_certi_profile_confirm_divestiture_negotiated_baseline("certi-patched", 61511)
+    _assert_certi_profile_confirm_divestiture_negotiated_baseline("certi-patched", None)
 
 
 def test_certi_patched_confirm_release_request_is_distinct_from_ifwanted():
-    confirm = _run_certi_profile_release_request_branch_baseline("certi-patched", 61521, "confirm")
-    ifwanted = _run_certi_profile_release_request_branch_baseline("certi-patched", 61531, "ifwanted")
+    confirm = _run_certi_profile_release_request_branch_baseline("certi-patched", None, "confirm")
+    ifwanted = _run_certi_profile_release_request_branch_baseline("certi-patched", None, "ifwanted")
     assert confirm is not None
     assert ifwanted is not None
     assert confirm["confirm_exception"] == "AttributeDivestitureWasNotRequested"
@@ -176,7 +183,7 @@ def test_certi_negotiated_ownership_profile_matches_across_native_and_java_facad
         pytest.skip(str(exc))
 
     profiles: dict[str, dict[str, object]] = {}
-    for kind, udp_base in (("certi", 61101), ("certi-jpype", 61111), ("certi-py4j", 61121)):
+    for kind in ("certi", "certi-jpype", "certi-py4j"):
         try:
             rtig = launch_certi_rtig(verbose=0)
         except BackendUnavailableError as exc:
@@ -187,8 +194,12 @@ def test_certi_negotiated_ownership_profile_matches_across_native_and_java_facad
         owner = None
         acquirer = None
         try:
-            owner = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base)
-            acquirer = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base + 1)
+            with reserve_udp_pair() as lease:
+                owner_udp_port, acquirer_udp_port = lease.ports
+            owner = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=owner_udp_port)
+            acquirer = create_rti_ambassador(
+                kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=acquirer_udp_port
+            )
             try:
                 summary = run_negotiated_attribute_ownership_scenario(
                     owner,
@@ -201,11 +212,8 @@ def test_certi_negotiated_ownership_profile_matches_across_native_and_java_facad
                 pytest.skip(f"CERTI negotiated ownership path is not stable in this runtime: {exc}")
             profiles[kind] = _normalized_negotiated_profile(summary)
         finally:
-            if acquirer is not None:
-                acquirer.close()
-            if owner is not None:
-                owner.close()
-            rtig.terminate()
+            close_all(acquirer, owner)
+            terminate_all(rtig)
 
     assert profiles["certi-jpype"] == profiles["certi"]
     assert profiles["certi-py4j"] == profiles["certi"]

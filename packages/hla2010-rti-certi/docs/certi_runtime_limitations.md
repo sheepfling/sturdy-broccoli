@@ -88,9 +88,9 @@ Use these as the standard operator commands for CERTI evidence:
 ```bash
 ./scripts/rebuild_certi.sh
 ./scripts/rebuild_certi_upstream.sh
-./scripts/ci/vendor_runtime_smoke.sh certi-patched
-./scripts/ci/vendor_runtime_smoke.sh certi-upstream
-./scripts/ci/vendor_runtime_smoke.sh certi-compare
+./certi-easy smoke patched
+./certi-easy smoke upstream
+./certi-easy smoke compare
 ```
 
 Route meaning:
@@ -137,7 +137,7 @@ Session prerequisite:
   local terminal or an approved unsandboxed command to retest.
 
 Current named-baseline outcome from the runnable compare route
-`./scripts/ci/vendor_runtime_smoke.sh certi-compare`:
+`./certi-easy smoke compare`:
 
 - `certi-upstream`:
   - federation create/join succeeds, but the first `queryGALT` tears down the

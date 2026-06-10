@@ -45,6 +45,7 @@
     "packages/hla2010-rti-pitch-py4j/src",
     "packages/hla2010-rti-portico/src",
     "packages/hla2010-rti-transport-grpc/src",
-    "packages/hla2010-rti-transport-rest/src"
+    "packages/hla2010-rti-transport-rest/src",
+    "packages/hla2010-fom-target-radar/src"
   ]
 }

@@ -71,7 +71,7 @@ For CERTI specifically, keep two runtime baselines distinct:
 - `certi-upstream`: a pristine upstream CERTI install selected only through the
   named upstream environment variables
 
-Use `./scripts/ci/vendor_runtime_smoke.sh certi-compare` when the goal is
+Use `./certi-easy smoke compare` when the goal is
 vendor-vs-local attribution rather than generic CERTI smoke.
 
 ## Python/Java Interaction Models

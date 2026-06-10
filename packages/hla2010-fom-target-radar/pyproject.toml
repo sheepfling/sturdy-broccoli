@@ -8,7 +8,10 @@ version = "0.13.0"
 description = "Target/Radar FOM resources and examples for hla2010-spec"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["hla2010-spec==0.13.0"]
+dependencies = [
+  "hla2010-spec==0.13.0",
+  "hla2010-verification-harness==0.13.0",
+]
 
 [project.optional-dependencies]
 python-rti = ["hla2010-rti-python==0.13.0"]
@@ -38,8 +41,10 @@ source_roots = [
   "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/testing/two_federate_target_radar.py",
   "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/testing/two_federate_target_radar_artifacts.py",
   "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/testing/two_federate_suite_profiles.py",
+  "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/testing/two_federate_suite_runner.py",
   "src/hla2010/scenarios/target_radar.py",
   "src/hla2010/scenarios/target_radar_cli.py",
   "src/hla2010/testing/target_radar_backend_matrix.py",
   "src/hla2010/testing/target_radar_proof.py",
+  "src/hla2010/testing/two_federate_suite_runner.py",
 ]

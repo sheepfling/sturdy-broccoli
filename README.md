@@ -81,6 +81,9 @@ If you need the vendor flows, the repo also includes:
 ./pitch install
 ./pitch smoke
 ./pitch verify
+
+./scripts/ci/repo_green.sh
+./scripts/ci/vendor_green.sh matrix
 ```
 
 ## What This Repo Is For

@@ -2,10 +2,13 @@
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 
 import _bootstrap  # noqa: F401
 
 from hla2010.testing.vendor_parity_artifacts import write_vendor_parity_artifacts
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 def main(argv: list[str] | None = None) -> int:

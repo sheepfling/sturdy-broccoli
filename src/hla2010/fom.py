@@ -464,13 +464,35 @@ def _path_to_file_uri(path: Path) -> str:
 def default_fom_search_paths() -> tuple[Path, ...]:
     """Return bundled package FOM search paths."""
 
+    candidates: list[Path] = []
     try:
         package_root = resources.files("hla2010")
         fom_root = package_root.joinpath("resources", "foms")
         package_path = Path(str(package_root))
-        return (Path(str(fom_root)), package_path, package_path.parent)
+        candidates.extend((Path(str(fom_root)), package_path, package_path.parent))
     except Exception:
-        return ()
+        pass
+
+    module_root = Path(__file__).resolve().parent
+    candidates.extend((module_root / "resources" / "foms", module_root, module_root.parent))
+
+    existing: list[Path] = []
+    seen: set[Path] = set()
+    for candidate in candidates:
+        resolved = candidate.resolve()
+        if resolved in seen or not resolved.exists():
+            continue
+        seen.add(resolved)
+        existing.append(resolved)
+    return tuple(existing)
+
+
+def _bundled_standard_mim_path() -> Path:
+    for base in default_fom_search_paths():
+        candidate = base / "HLAstandardMIM.xml"
+        if candidate.exists():
+            return candidate
+    raise FileNotFoundError("bundled HLAstandardMIM.xml not found in default FOM search paths")
 
 
 def standard_mim_module() -> FOMModule:
@@ -1014,14 +1036,14 @@ def _extract_variant_record_datatypes(root: ET.Element, *, path: Path) -> dict[s
 
 @lru_cache(maxsize=1)
 def _standard_mim_datatype_names() -> frozenset[str]:
-    path = default_fom_search_paths()[0] / "HLAstandardMIM.xml"
+    path = _bundled_standard_mim_path()
     root = ET.parse(path).getroot()
     return frozenset(_extract_datatype_names(root, path=path))
 
 
 @lru_cache(maxsize=1)
 def _standard_mim_datatype_catalog() -> dict[str, Any]:
-    path = default_fom_search_paths()[0] / "HLAstandardMIM.xml"
+    path = _bundled_standard_mim_path()
     root = ET.parse(path).getroot()
     return {
         **_extract_basic_datatypes(root, path=path),

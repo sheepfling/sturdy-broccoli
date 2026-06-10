@@ -11,10 +11,13 @@ usage() {
   cat <<'EOF'
 usage: ./scripts/ci/full_sequence.sh
 
-Run the full documented local lifecycle sequence:
+Run the repo-green full documented local lifecycle sequence:
 install -> compilation -> lint / type annotations -> unit tests
 -> integration smoke -> integration tests -> compliance matrices
 -> full backend matrixed compliance -> other evidence
+
+Blocked vendor prerequisites still run mandatory preflight first and then skip
+cleanly. Use ./scripts/ci/vendor_green.sh for strict real-runtime failure.
 EOF
 }
 
@@ -38,10 +41,7 @@ run_step "lint / type annotations" "$ROOT_DIR/scripts/ci/pyright.sh"
 run_step "unit tests" "$ROOT_DIR/scripts/ci/test.sh"
 run_step "integration smoke" "$ROOT_DIR/scripts/ci/vendor_runtime_smoke.sh" matrix
 run_step "integration tests" "$ROOT_DIR/scripts/run_two_federate_suite.py"
-run_step "other tests" "$ROOT_DIR/scripts/ci/target_radar_backend_matrix.sh" \
-  --backend python \
-  --backend java-shim-jpype \
-  --backend java-shim-py4j
+run_step "other tests" "$ROOT_DIR/scripts/ci/target_radar_backend_matrix.sh"
 run_step "other tests" "$ROOT_DIR/scripts/ci/target_radar_proof.sh"
 run_step "compliance matrices" "$ROOT_DIR/scripts/ci/section8_backend_matrix_gate.sh"
 run_step "full backend matrixed compliance" "$ROOT_DIR/scripts/ci/vendor_runtime_smoke.sh" all

@@ -6,6 +6,9 @@ The main repository pattern is:
 
 That pattern exists to keep HLA service behavior reviewable by domain while still allowing multiple runtime and transport paths behind the same ambassador surface.
 
+The stricter package dependency rules live in
+[`import_boundary_rules.md`](import_boundary_rules.md).
+
 ## Facades
 
 - `hla2010/rti.py`: top-level backend and transport selection facade.
@@ -61,9 +64,10 @@ This layer contains reusable backend mechanics that should not be duplicated acr
 The testing package mirrors the same structure where feasible:
 
 - compatibility facade: `scenarios.py`, `java_shim.py`
-- domain/scenario roots: `scenario_exchange.py`, `scenario_sync.py`, `scenario_ownership.py`
-- focused support modules: `scenario_support.py`, `java_shim_types.py`, `java_shim_backend.py`, `java_shim_factory.py`
-- suite coordinator at root `two_federate_suite_runner.py`, plus split generic harness helpers in `packages/hla2010-verification-harness`
+- root compatibility facades: `scenario_basic.py`, `scenario_exchange.py`, `scenario_exchange_history.py`, `scenario_sync.py`, `scenario_ownership.py`, `scenario_support.py`
+- canonical generic scenario bodies: `packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_*.py`
+- focused root-only support modules: `java_shim_types.py`, `java_shim_backend.py`, `java_shim_factory.py`
+- target/radar-owned suite coordinator: `packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/testing/two_federate_suite_runner.py`
 
 The goal is the same as production code: keep scenario orchestration separate from dense helper mechanics and artifact writing.
 
@@ -81,6 +85,7 @@ The rule is that new backend kinds or transport kinds should register themselves
 - `packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/conversion.py`: shared backend conversion and native-handle policy.
 - `packages/hla2010-rti-java-common/src/hla2010_rti_java_common/java_common.py`: shared Java bridge-independent adapter policy.
 - `packages/hla2010-rti-runtime-common/src/hla2010_rti_runtime_common/real_rti_process.py`: shared vendor runtime-process lifecycle and loopback TCP policy.
+- `packages/hla2010-rti-transport-common/src/hla2010_rti_transport_common`: shared hosted transport request-processing and callback polling helpers.
 - `packages/hla2010-rti-transport-rest/src/hla2010_rti_transport_rest`: package-owned JSON-over-HTTP transport infrastructure with a checked-in client adapter around the OpenAPI envelope.
 - `packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc`: package-owned gRPC transport infrastructure with checked-in protobuf schema and Python stubs.
 - `docs/openapi/rti_transport.yaml`: formal REST transport schema for generated clients.

@@ -33,7 +33,7 @@ for the current runtime shortfalls and patched-vs-upstream baseline policy.
 
 Operational note:
 
-- The named compare route is `./scripts/ci/vendor_runtime_smoke.sh certi-compare`.
+- The named compare route is `./certi-easy smoke compare`.
 - If loopback TCP bind/connect is not permitted for `127.0.0.1`, the route
   skips before collecting runtime evidence. That is an environment limitation,
   not a CERTI protocol result.

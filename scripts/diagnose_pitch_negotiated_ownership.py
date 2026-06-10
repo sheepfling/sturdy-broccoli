@@ -16,7 +16,7 @@ from hla2010.backends.base import BackendUnavailableError
 from hla2010.enums import ResignAction
 from hla2010.real_rti import launch_pitch_runtime
 from hla2010.rti import create_rti_ambassador
-from hla2010.testing.scenario_ownership import (
+from hla2010_verification_harness.scenario_ownership import (
     NegotiatedOwnershipScenarioConfig,
     ReleaseRequestOwnershipScenarioConfig,
     probe_negotiated_attribute_ownership_offer,

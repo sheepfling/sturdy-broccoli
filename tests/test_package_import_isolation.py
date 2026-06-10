@@ -11,35 +11,33 @@ PACKAGES = ROOT / "packages"
 # Installable package families are allowed to depend on a small, explicit set
 # of sibling package roots. This keeps the split packages honest while still
 # allowing the transitional spec/runtime facade under `hla2010`.
+#
+# The architectural rule is:
+# - backend families depend on core plus narrow support packages
+# - transports depend on core plus the hosted backend families they expose
+# - FOM and verification packages depend only on the shared runtime surface
+#
+# See docs/import_boundary_rules.md for the prose version of the same rules.
+CORE_ONLY = {"hla2010"}
+JAVA_COMMON = CORE_ONLY | {"hla2010_rti_java_common"}
+
 PACKAGE_IMPORT_ALLOWLISTS: dict[str, set[str]] = {
-    "hla2010_rti_java_common": {"hla2010"},
-    "hla2010_rti_java_jpype": {"hla2010", "hla2010_rti_java_common"},
-    "hla2010_rti_java_py4j": {"hla2010", "hla2010_rti_java_common"},
-    "hla2010_rti_python": {"hla2010"},
-    "hla2010_rti_certi": {"hla2010", "hla2010_rti_java_common"},
-    "hla2010_rti_pitch_common": {"hla2010", "hla2010_rti_java_jpype"},
-    "hla2010_rti_pitch_jpype": {
-        "hla2010",
-        "hla2010_rti_java_common",
-        "hla2010_rti_java_jpype",
-        "hla2010_rti_pitch_common",
-    },
-    "hla2010_rti_pitch_py4j": {
-        "hla2010",
-        "hla2010_rti_java_common",
-        "hla2010_rti_java_py4j",
-        "hla2010_rti_pitch_common",
-    },
-    "hla2010_rti_portico": {
-        "hla2010",
-        "hla2010_rti_java_common",
-        "hla2010_rti_java_jpype",
-        "hla2010_rti_java_py4j",
-    },
-    "hla2010_rti_transport_grpc": {"hla2010", "hla2010_rti_certi", "hla2010_rti_python"},
-    "hla2010_rti_transport_rest": {"hla2010", "hla2010_rti_certi", "hla2010_rti_python", "hla2010_rti_transport_grpc"},
-    "hla2010_fom_target_radar": {"hla2010", "hla2010_rti_certi", "hla2010_rti_pitch_common"},
-    "hla2010_verification_harness": {"hla2010"},
+    "hla2010_rti_java_common": CORE_ONLY,
+    "hla2010_rti_python": CORE_ONLY,
+    "hla2010_verification_harness": CORE_ONLY,
+    "hla2010_rti_transport_common": CORE_ONLY | {"hla2010_rti_certi"},
+    "hla2010_rti_java_jpype": JAVA_COMMON,
+    "hla2010_rti_java_py4j": JAVA_COMMON,
+    "hla2010_rti_certi": JAVA_COMMON,
+    "hla2010_rti_pitch_common": CORE_ONLY | {"hla2010_rti_java_jpype"},
+    "hla2010_rti_pitch_jpype": JAVA_COMMON | {"hla2010_rti_java_jpype", "hla2010_rti_pitch_common"},
+    "hla2010_rti_pitch_py4j": JAVA_COMMON | {"hla2010_rti_java_py4j", "hla2010_rti_pitch_common"},
+    "hla2010_rti_portico": JAVA_COMMON | {"hla2010_rti_java_jpype", "hla2010_rti_java_py4j"},
+    "hla2010_rti_transport_grpc": CORE_ONLY | {"hla2010_rti_certi", "hla2010_rti_python", "hla2010_rti_transport_common"},
+    "hla2010_rti_transport_rest": CORE_ONLY
+    | {"hla2010_rti_certi", "hla2010_rti_python", "hla2010_rti_transport_common"},
+    "hla2010_fom_target_radar": CORE_ONLY
+    | {"hla2010_rti_certi", "hla2010_rti_pitch_common", "hla2010_verification_harness"},
 }
 
 FORBIDDEN_IMPORT_PREFIXES = ("hla2010.testing",)

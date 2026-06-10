@@ -15,7 +15,7 @@ from hla2010.backends.base import BackendUnavailableError
 from hla2010.enums import ResignAction
 from hla2010.real_rti import launch_pitch_runtime
 from hla2010.rti import create_rti_ambassador
-from hla2010.testing.scenario_exchange import TwoFederateExchangeConfig, run_two_federate_exchange_scenario
+from hla2010_verification_harness.scenario_exchange import TwoFederateExchangeConfig, run_two_federate_exchange_scenario
 from hla2010.time import HLAinteger64Interval, HLAinteger64Time
 
 

@@ -267,13 +267,9 @@ def create_standard_mim_module() -> FOMModule:
     """
 
     try:
-        from importlib import resources
-        from pathlib import Path
+        from .fom import _bundled_standard_mim_path, _path_to_file_uri, parse_fom_xml
 
-        from .fom import _path_to_file_uri, parse_fom_xml
-
-        resource = resources.files("hla2010").joinpath("resources", "foms", "HLAstandardMIM.xml")
-        path = Path(str(resource))
+        path = _bundled_standard_mim_path()
         parsed = parse_fom_xml(path, source=STANDARD_MIM_NAME, uri=_path_to_file_uri(path))
         return FOMModule(
             source=STANDARD_MIM_NAME,

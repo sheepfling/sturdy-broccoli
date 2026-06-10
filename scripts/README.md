@@ -31,6 +31,16 @@ Operator guide links:
 - [../docs/preflight_artifacts.md](../docs/preflight_artifacts.md): JSON preflight artifacts and inspection examples
 - `./certi-easy preflight [--json] [--json-file FILE]`: CERTI readiness check before install or smoke
 - `./pitch preflight [--json] [--json-file FILE]`: Pitch Docker readiness check before install or run
+- `./scripts/ci/vendor_runtime_smoke.sh ...`: CI/operator smoke wrapper that now runs mandatory vendor preflight first and writes standard JSON artifacts under `analysis/preflight_artifacts/`
+- `./scripts/ci/repo_green.sh`: explicit repo-green wrapper around the default full verification lane
+- `./scripts/ci/vendor_green.sh ...`: strict vendor-runtime gate for dedicated real-runtime runners
+
+CI lane rule:
+
+- use `./scripts/ci/repo_green.sh` for the default repo-green lane
+- use `./scripts/ci/vendor_green.sh ...` for dedicated real-runtime runners
+- treat `./scripts/ci/vendor_runtime_smoke.sh ...` as the shared implementation
+  behind the vendor-green lane, not as the preferred top-level CI contract
 
 Copy-paste preflight artifact flow:
 
@@ -45,6 +55,8 @@ python3 -m json.tool analysis/preflight_artifacts/pitch-preflight.json
 ```
 
 Both preflight entrypoints also accept `--json` for machine-readable output.
+The vendor smoke wrapper writes the same JSON artifacts by default before it
+decides whether to run or skip a vendor profile.
 
 Script families:
 
@@ -61,7 +73,8 @@ Script families:
 - `rebuild_certi_upstream.sh`: pristine upstream CERTI build/install
 - `run_certi_local.sh`: launch local `rtig` / `rtia`
 - `check_certi_preflight.py`: host/session readiness probe
-- `ci/vendor_runtime_smoke.sh`: CERTI and Pitch runtime smoke matrix
+- `ci/vendor_runtime_smoke.sh`: CERTI and Pitch runtime smoke matrix with mandatory preflight and artifact emission
+- `ci/vendor_green.sh`: strict vendor-runtime gate for dedicated real-runtime runners
 
 ### Pitch Runtime
 
@@ -117,6 +130,7 @@ New generated backlog artifacts:
 - [ci/README.md](ci/README.md): CI wrapper family index
 - `ci/install_python.sh`: local QA environment install
 - `ci/full_sequence.sh`: full verification sequence with lint and type annotations
+- `ci/repo_green.sh`: explicit repo-green wrapper around `full_sequence.sh`
 - `ci/lint.sh`: required lint/syntax gate
 - `ci/requirements_lint.sh`: canonical imported requirements packet gate
 - `ci/lint_backlog.sh`: broader Ruff backlog report

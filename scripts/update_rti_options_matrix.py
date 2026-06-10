@@ -15,13 +15,9 @@ END = "<!-- GENERATED_BACKEND_ALIASES_END -->"
 def _extract_alias_sets() -> list[tuple[str, list[str]]]:
     from hla2010 import rti
 
-    rti._register_builtin_backend_factories()
-    by_factory: dict[int, list[str]] = {}
-    for alias, factory in rti._BACKEND_FACTORIES.items():
-        by_factory.setdefault(id(factory), []).append(alias)
-
     groups: list[tuple[str, list[str]]] = []
-    for aliases in by_factory.values():
+    for plugin in rti.iter_rti_backend_plugins():
+        aliases = sorted({plugin.name, *plugin.aliases})
         alias_values = sorted(aliases)
         key = _classify(alias_values)
         if key is None:

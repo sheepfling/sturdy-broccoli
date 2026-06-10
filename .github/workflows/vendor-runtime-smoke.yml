@@ -22,5 +22,5 @@ jobs:
         env:
           HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
         run: ./scripts/ci/install_python.sh
-      - name: Run explicit vendor smoke tests
-        run: ./scripts/ci/vendor_runtime_smoke.sh all
+      - name: Run explicit vendor-green smoke tests
+        run: ./scripts/ci/vendor_green.sh all

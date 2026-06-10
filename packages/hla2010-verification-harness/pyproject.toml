@@ -24,6 +24,12 @@ include = ["hla2010_verification_harness*"]
 status = "implementation-moved"
 role = "verification-harness"
 source_roots = [
+  "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support.py",
+  "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_basic.py",
+  "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py",
+  "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange_history.py",
+  "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py",
+  "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py",
   "packages/hla2010-verification-harness/src/hla2010_verification_harness/two_federate_suite_pairs.py",
   "packages/hla2010-verification-harness/src/hla2010_verification_harness/two_federate_suite_configs.py",
   "packages/hla2010-verification-harness/src/hla2010_verification_harness/two_federate_suite_scenarios.py",
@@ -31,4 +37,11 @@ source_roots = [
   "packages/hla2010-verification-harness/src/hla2010_verification_harness/two_federate_suite_timeline.py",
   "packages/hla2010-verification-harness/src/hla2010_verification_harness/two_federate_suite_summary.py",
   "packages/hla2010-verification-harness/src/hla2010_verification_harness/two_federate_suite_writers.py",
+  "src/hla2010/testing/scenario_support.py",
+  "src/hla2010/testing/scenario_basic.py",
+  "src/hla2010/testing/scenario_exchange.py",
+  "src/hla2010/testing/scenario_exchange_history.py",
+  "src/hla2010/testing/scenario_sync.py",
+  "src/hla2010/testing/scenario_ownership.py",
+  "src/hla2010/testing/scenarios.py",
 ]

@@ -19,4 +19,8 @@ esac
 
 echo "running target/radar proof packet"
 
-python3 scripts/run_target_radar_proof.py "$@"
+if [[ "$#" -eq 0 ]]; then
+  python3 scripts/run_target_radar_proof.py --backend python --proof-backend python
+else
+  python3 scripts/run_target_radar_proof.py "$@"
+fi

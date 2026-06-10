@@ -12,8 +12,9 @@ from hla2010.handles import FederateHandle
 from hla2010.real_rti import discover_certi_smoke_fom, launch_certi_rtig, launch_pitch_runtime
 from hla2010.rti import create_rti_ambassador
 from hla2010.startup import FederationStartupConfig, connect_create_join
-from hla2010.testing.scenario_exchange import TwoFederateExchangeConfig, run_two_federate_exchange_scenario
+from hla2010_verification_harness.scenario_exchange import TwoFederateExchangeConfig, run_two_federate_exchange_scenario
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
+from tests.vendors.runtime_support import cleanup_federation, close_all, reserve_udp_pair, terminate_all
 
 
 def _require_real_rti_smoke() -> None:
@@ -47,13 +48,15 @@ def test_pitch_java_real_lifecycle_smoke(kind: str):
             ),
         )
         assert isinstance(result.federate_handle, FederateHandle)
-        rti.resign_federation_execution(ResignAction.NO_ACTION)
-        rti.destroy_federation_execution(federation_name)
-        rti.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=rti,
+            destroyer_resign_action=ResignAction.NO_ACTION,
+            disconnect_rtis=(rti,),
+        )
     finally:
-        if rti is not None:
-            rti.close()
-        runtime.terminate()
+        close_all(rti)
+        terminate_all(runtime)
 
 
 def test_certi_real_lifecycle_smoke():
@@ -82,11 +85,14 @@ def test_certi_real_lifecycle_smoke():
             ),
         )
         assert isinstance(result.federate_handle, FederateHandle)
-        rti.resign_federation_execution(ResignAction.NO_ACTION)
-        rti.destroy_federation_execution(federation_name)
-        rti.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=rti,
+            destroyer_resign_action=ResignAction.NO_ACTION,
+            disconnect_rtis=(rti,),
+        )
     finally:
-        rti.close()
+        close_all(rti)
 
 
 def test_certi_real_exchange_smoke():
@@ -103,8 +109,14 @@ def test_certi_real_exchange_smoke():
     publisher = None
     subscriber = None
     try:
-        publisher = create_rti_ambassador("certi", launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=60501)
-        subscriber = create_rti_ambassador("certi", launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=60502)
+        with reserve_udp_pair() as lease:
+            publisher_udp_port, subscriber_udp_port = lease.ports
+        publisher = create_rti_ambassador(
+            "certi", launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=publisher_udp_port
+        )
+        subscriber = create_rti_ambassador(
+            "certi", launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=subscriber_udp_port
+        )
         summary = run_two_federate_exchange_scenario(
             publisher,
             subscriber,
@@ -135,18 +147,16 @@ def test_certi_real_exchange_smoke():
             subscriber_federate=subscriber_fed,
         )
         assert summary["advance_grant"].args[0] == HLAfloat64Time(8.0)
-
-        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
-        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        publisher.destroy_federation_execution(federation_name)
-        subscriber.disconnect()
-        publisher.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=publisher,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
+            disconnect_rtis=(subscriber, publisher),
+        )
     finally:
-        if subscriber is not None:
-            subscriber.close()
-        if publisher is not None:
-            publisher.close()
-        rtig.terminate()
+        close_all(subscriber, publisher)
+        terminate_all(rtig)
 
 
 @pytest.mark.parametrize("kind", ["certi-jpype", "certi-py4j"])
@@ -161,7 +171,9 @@ def test_certi_java_profile_real_lifecycle_smoke(kind: str):
         pytest.skip(str(exc))
     rti = None
     try:
-        rti = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=60511)
+        with reserve_udp_pair() as lease:
+            (rti_udp_port, _) = lease.ports
+        rti = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=rti_udp_port)
         assert rti.getHLAversion() == "IEEE 1516-2010"
         result = connect_create_join(
             rti,
@@ -175,13 +187,15 @@ def test_certi_java_profile_real_lifecycle_smoke(kind: str):
             ),
         )
         assert isinstance(result.federate_handle, FederateHandle)
-        rti.resign_federation_execution(ResignAction.NO_ACTION)
-        rti.destroy_federation_execution(federation_name)
-        rti.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=rti,
+            destroyer_resign_action=ResignAction.NO_ACTION,
+            disconnect_rtis=(rti,),
+        )
     finally:
-        if rti is not None:
-            rti.close()
-        rtig.terminate()
+        close_all(rti)
+        terminate_all(rtig)
 
 
 @pytest.mark.parametrize("kind", ["certi-jpype", "certi-py4j"])
@@ -199,8 +213,14 @@ def test_certi_java_profile_real_exchange_smoke(kind: str):
     publisher = None
     subscriber = None
     try:
-        publisher = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=60521)
-        subscriber = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=60522)
+        with reserve_udp_pair() as lease:
+            publisher_udp_port, subscriber_udp_port = lease.ports
+        publisher = create_rti_ambassador(
+            kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=publisher_udp_port
+        )
+        subscriber = create_rti_ambassador(
+            kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=subscriber_udp_port
+        )
         summary = run_two_federate_exchange_scenario(
             publisher,
             subscriber,
@@ -231,17 +251,16 @@ def test_certi_java_profile_real_exchange_smoke(kind: str):
             subscriber_federate=subscriber_fed,
         )
         assert summary["advance_grant"].args[0] == HLAfloat64Time(8.0)
-        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
-        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        publisher.destroy_federation_execution(federation_name)
-        subscriber.disconnect()
-        publisher.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=publisher,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
+            disconnect_rtis=(subscriber, publisher),
+        )
     finally:
-        if subscriber is not None:
-            subscriber.close()
-        if publisher is not None:
-            publisher.close()
-        rtig.terminate()
+        close_all(subscriber, publisher)
+        terminate_all(rtig)
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -282,14 +301,13 @@ def test_pitch_java_real_exchange_smoke(kind: str):
             subscriber_federate=subscriber_fed,
         )
         assert summary["advance_grant"].args[0] == HLAinteger64Time(8)
-        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
-        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        publisher.destroy_federation_execution(federation_name)
-        subscriber.disconnect()
-        publisher.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=publisher,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
+            disconnect_rtis=(subscriber, publisher),
+        )
     finally:
-        if subscriber is not None:
-            subscriber.close()
-        if publisher is not None:
-            publisher.close()
-        runtime.terminate()
+        close_all(subscriber, publisher)
+        terminate_all(runtime)

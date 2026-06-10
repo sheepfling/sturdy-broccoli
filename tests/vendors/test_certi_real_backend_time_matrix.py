@@ -12,10 +12,11 @@ from tests.vendors.certi_real_backend_matrix_support import (
     _logical_time_value,
     _require_real_rti_smoke,
 )
+from tests.vendors.runtime_support import cleanup_federation, close_all, reserve_udp_pair, terminate_all
 
-@pytest.mark.parametrize("kind,udp_base", [("certi", 60901), ("certi-jpype", 60911), ("certi-py4j", 60921)])
+@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
-def test_certi_backend_time_query_and_fqr_matrix(kind: str, udp_base: int, time_factory_name: str):
+def test_certi_backend_time_query_and_fqr_matrix(kind: str, time_factory_name: str):
     _require_real_rti_smoke()
     try:
         rtig = launch_certi_rtig(verbose=0)
@@ -29,8 +30,14 @@ def test_certi_backend_time_query_and_fqr_matrix(kind: str, udp_base: int, time_
     regulator = None
     constrained = None
     try:
-        regulator = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base)
-        constrained = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_base + 1)
+        with reserve_udp_pair() as lease:
+            regulator_udp_port, constrained_udp_port = lease.ports
+        regulator = create_rti_ambassador(
+            kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=regulator_udp_port
+        )
+        constrained = create_rti_ambassador(
+            kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=constrained_udp_port
+        )
 
         regulator.connect(regulator_fed, CallbackModel.HLA_EVOKED)
         constrained.connect(constrained_fed, CallbackModel.HLA_EVOKED)
@@ -75,37 +82,36 @@ def test_certi_backend_time_query_and_fqr_matrix(kind: str, udp_base: int, time_
             _logical_time_value(time_profile["lookahead"])
         )
 
-        constrained.resign_federation_execution(ResignAction.NO_ACTION)
-        regulator.resign_federation_execution(ResignAction.NO_ACTION)
-        regulator.destroy_federation_execution(federation_name)
-        constrained.disconnect()
-        regulator.disconnect()
+        cleanup_federation(
+            federation_name,
+            destroyer=regulator,
+            destroyer_resign_action=ResignAction.NO_ACTION,
+            remaining_resignations=((constrained, ResignAction.NO_ACTION),),
+            disconnect_rtis=(constrained, regulator),
+        )
     finally:
-        if constrained is not None:
-            constrained.close()
-        if regulator is not None:
-            regulator.close()
-        rtig.terminate()
+        close_all(constrained, regulator)
+        terminate_all(rtig)
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_upstream_time_query_and_fqr_baseline(time_factory_name: str):
-    _assert_certi_profile_time_query_and_fqr_baseline("certi-upstream", 61001, time_factory_name)
+    _assert_certi_profile_time_query_and_fqr_baseline("certi-upstream", None, time_factory_name)
 
 
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_patched_time_query_and_fqr_baseline(time_factory_name: str):
-    _assert_certi_profile_time_query_and_fqr_baseline("certi-patched", 61011, time_factory_name)
+    _assert_certi_profile_time_query_and_fqr_baseline("certi-patched", None, time_factory_name)
 
 
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_upstream_queued_fqr_baseline(time_factory_name: str):
-    _assert_certi_profile_queued_fqr_baseline("certi-upstream", 61021, time_factory_name)
+    _assert_certi_profile_queued_fqr_baseline("certi-upstream", None, time_factory_name)
 
 
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_patched_queued_fqr_baseline(time_factory_name: str):
-    _assert_certi_profile_queued_fqr_baseline("certi-patched", 61031, time_factory_name)
+    _assert_certi_profile_queued_fqr_baseline("certi-patched", None, time_factory_name)
 
 
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_patched_time_advance_request_available_fail_fast_matrix(time_factory_name: str):
-    _assert_certi_patched_fail_fast_time_request_matrix(61041, time_factory_name, "TIME_ADVANCE_REQUEST_AVAILABLE")
+    _assert_certi_patched_fail_fast_time_request_matrix(None, time_factory_name, "TIME_ADVANCE_REQUEST_AVAILABLE")
