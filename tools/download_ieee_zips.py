@@ -32,7 +32,7 @@ def main() -> None:
     parser.add_argument(
         "--out",
         type=Path,
-        default=Path(os.environ.get("HLA2010_DOWNLOADS_DIR", "/private/tmp/hla-2010/downloads")),
+        default=Path(os.environ.get("HLA2010_DOWNLOADS_DIR", "analysis/downloads")),
     )
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)

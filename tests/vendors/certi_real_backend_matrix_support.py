@@ -22,12 +22,13 @@ from hla2010_verification_harness.scenario_ownership import (
 )
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 from hla2010.types import TimeQueryReturn
-from tests.vendors.runtime_support import cleanup_federation, close_all, terminate_all, udp_port_pair
+from tests.vendors.runtime_support import cleanup_federation, require_vendor_preflight, shutdown_runtime_resources, udp_port_pair
 
 
 def _require_real_rti_smoke() -> None:
     if os.environ.get("HLA2010_ENABLE_REAL_RTI_SMOKE") != "1":
         pytest.skip("real vendor RTI smoke disabled; set HLA2010_ENABLE_REAL_RTI_SMOKE=1")
+    require_vendor_preflight("certi", operator_hint="./scripts/certi_easy.sh preflight")
 
 
 def _exchange_time_profile(time_factory_name: str) -> dict[str, object]:
@@ -344,8 +345,7 @@ def _assert_certi_profile_time_query_and_fqr_baseline(
                 disconnect_rtis=(constrained, regulator),
             )
     finally:
-        close_all(constrained, regulator)
-        terminate_all(rtig)
+        shutdown_runtime_resources(close_resources=(constrained, regulator), runtime_resources=(rtig,))
 
 
 def _assert_certi_profile_queued_fqr_baseline(
@@ -457,8 +457,7 @@ def _assert_certi_profile_queued_fqr_baseline(
             disconnect_rtis=(constrained, regulator),
         )
     finally:
-        close_all(constrained, regulator)
-        terminate_all(rtig)
+        shutdown_runtime_resources(close_resources=(constrained, regulator), runtime_resources=(rtig,))
 
 
 def _assert_certi_patched_fail_fast_time_request_matrix(
@@ -579,16 +578,15 @@ def _assert_certi_patched_fail_fast_time_request_matrix(
         else:
             raise AssertionError(f"unexpected helper command {helper_command}")
 
-            cleanup_federation(
-                federation_name,
-                destroyer=regulator,
-                destroyer_resign_action=ResignAction.DELETE_OBJECTS,
-                remaining_resignations=((constrained, ResignAction.NO_ACTION),),
-                disconnect_rtis=(constrained, regulator),
-            )
+        cleanup_federation(
+            federation_name,
+            destroyer=regulator,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((constrained, ResignAction.NO_ACTION),),
+            disconnect_rtis=(constrained, regulator),
+        )
     finally:
-        close_all(constrained, regulator)
-        terminate_all(rtig)
+        shutdown_runtime_resources(close_resources=(constrained, regulator), runtime_resources=(rtig,))
 
 
 def _assert_certi_profile_negotiated_ownership_baseline(profile_name: str, udp_base: int | None) -> None:
@@ -674,8 +672,7 @@ def _assert_certi_profile_negotiated_ownership_baseline(profile_name: str, udp_b
             disconnect_rtis=(acquirer, owner),
         )
     finally:
-        close_all(acquirer, owner)
-        terminate_all(rtig)
+        shutdown_runtime_resources(close_resources=(acquirer, owner), runtime_resources=(rtig,))
 
 
 def _normalized_release_request_profile(summary: dict[str, object]) -> dict[str, object]:
@@ -809,8 +806,7 @@ def _run_certi_profile_release_request_branch_baseline(
         )
         return summary
     finally:
-        close_all(acquirer, owner)
-        terminate_all(rtig)
+        shutdown_runtime_resources(close_resources=(acquirer, owner), runtime_resources=(rtig,))
 
 
 def _assert_certi_profile_release_request_branch_baseline(profile_name: str, udp_base: int, owner_action: str) -> None:
@@ -894,8 +890,7 @@ def _run_certi_profile_confirm_divestiture_negotiated_baseline(profile_name: str
         )
         return summary
     finally:
-        close_all(acquirer, owner)
-        terminate_all(rtig)
+        shutdown_runtime_resources(close_resources=(acquirer, owner), runtime_resources=(rtig,))
 
 
 def _assert_certi_profile_confirm_divestiture_negotiated_baseline(profile_name: str, udp_base: int) -> None:

@@ -2,7 +2,6 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-HLA2010_LOCAL_STATE_ROOT="${HLA2010_LOCAL_STATE_ROOT:-/private/tmp/hla-2010}"
 pitch_home="${HLA2010_PITCH_HOME:-}"
 pitch_java_home="${HLA2010_PITCH_JAVA_HOME:-}"
 pitch_java_bin="${HLA2010_PITCH_JAVA_BIN:-}"
@@ -10,6 +9,8 @@ launcher_mode="${HLA2010_PITCH_LAUNCHER_MODE:-raw}"
 
 # shellcheck source=lib/shell.sh
 source "$ROOT_DIR/scripts/lib/shell.sh"
+# shellcheck disable=SC1091
+source "$ROOT_DIR/scripts/local_state.sh"
 hla2010_shell_init "$0"
 
 usage() {
@@ -35,7 +36,7 @@ if [[ -z "$pitch_home" ]]; then
   hla2010_shell_die "Pitch runtime home not found; set HLA2010_PITCH_HOME"
 fi
 
-pitch_user_home="${HLA2010_PITCH_USER_HOME:-$HLA2010_LOCAL_STATE_ROOT/pitch-user-home}"
+pitch_user_home="${HLA2010_PITCH_USER_HOME:-$(local_state_path "pitch-user-home")}"
 prti_jar="$pitch_home/lib/prtifull.jar"
 
 if [[ -n "$pitch_java_bin" && -x "$pitch_java_bin" ]]; then

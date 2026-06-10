@@ -64,7 +64,7 @@ row is sensitive to our local CERTI modifications, promote it to separate
 column.
 
 Current named CERTI baseline split for the promoted time-query probe,
-reproduced through `./certi-easy smoke compare`:
+reproduced through `./scripts/certi_easy.sh smoke compare`:
 
 - `certi-upstream`: create/join succeeds, then the first `queryGALT` collapses
   the RTIA path before clause-level time-query semantics can be proved.
@@ -181,6 +181,17 @@ reproduced through `./certi-easy smoke compare`:
 - Pitch now covers the promoted overlap rows through the Docker-backed vendor
   route, but save/restore, DDM, and negotiated ownership remain unpromoted on
   the Pitch side.
+- The operator path is now explicit for one of those missing slices:
+  `./scripts/certi_easy.sh save-restore`, `./scripts/pitch_docker_easy.sh save-restore`, `./scripts/certi_easy.sh ddm`, and
+  `./scripts/pitch_docker_easy.sh ddm` preflight first and then emit machine-readable known-gap
+  artifacts rather than leaving the current status implicit.
+- CERTI now also has a deeper executable save/restore probe route:
+  `./scripts/certi_easy.sh save-restore-probe`. Treat that as a
+  narrow runtime probe until repeated real-host evidence proves it stable
+  enough to promote.
+- CERTI now also has a deeper executable DDM probe route:
+  `./scripts/certi_easy.sh ddm-probe`. Treat that as a narrow runtime probe until
+  repeated real-host evidence proves it stable enough to promote.
 - Negotiated ownership should now be read as bridge-divergent on Pitch, not
   merely absent. The current evidence is captured in
   [pitch_negotiated_ownership_vendor_bug_2026-06-07.md](../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)

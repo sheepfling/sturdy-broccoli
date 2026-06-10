@@ -10,16 +10,17 @@ Start here:
 - [../docs/README.md](../docs/README.md): documentation index
 - [../docs/python_environment.md](../docs/python_environment.md): Python bootstrap, `.venv`, extras, and install order
 - [../docs/documentation_hierarchy.md](../docs/documentation_hierarchy.md): canonical doc hierarchy
+- [../java_shims/README.md](../java_shims/README.md): Java bridge verification-fixture contract
 
 Primary operator entrypoints:
 
-- `./bootstrap` profile-based setup for `python`, `certi`, `pitch`, or `all`
-- `./bootstrap doctor` workspace setup and prerequisite check
-- `./certi-easy` CERTI install, doctor, build, run, smoke, and compare flow
+- `./scripts/bootstrap_profile.sh` profile-based setup for `python`, `certi`, `pitch`, or `all`
+- `./scripts/bootstrap_profile.sh doctor` workspace setup and prerequisite check
+- `./scripts/certi_easy.sh` CERTI install, doctor, build, run, smoke, and compare flow
 
 Normal setup order:
 
-1. `./bootstrap python`
+1. `./scripts/bootstrap_profile.sh python`
 2. `source .venv/bin/activate`
 3. run a pure-Python smoke path
 4. only then move on to CERTI, Pitch, JPype, or Py4J work
@@ -29,9 +30,13 @@ Operator guide links:
 - [../packages/hla2010-rti-certi/docs/certi_section8_runbook.md](../packages/hla2010-rti-certi/docs/certi_section8_runbook.md): CERTI operator runbook
 - [../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md](../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md): Pitch selection and troubleshooting
 - [../docs/preflight_artifacts.md](../docs/preflight_artifacts.md): JSON preflight artifacts and inspection examples
-- `./certi-easy preflight [--json] [--json-file FILE]`: CERTI readiness check before install or smoke
-- `./pitch preflight [--json] [--json-file FILE]`: Pitch Docker readiness check before install or run
-- `./scripts/ci/vendor_runtime_smoke.sh ...`: CI/operator smoke wrapper that now runs mandatory vendor preflight first and writes standard JSON artifacts under `analysis/preflight_artifacts/`
+- `./scripts/certi_easy.sh preflight [--json] [--json-file FILE]`: CERTI readiness check before install or smoke
+- `./scripts/pitch_docker_easy.sh preflight [--json] [--json-file FILE]`: Pitch Docker readiness check before install or run
+- `python3 scripts/classify_vendor_runtime.py --lane repo-green|vendor-green [--vendor certi|pitch] [--json]`: classify preflight artifacts into ready vs blocked vs broken states
+- `python3 scripts/ci/write_vendor_runtime_job_summary.py`: render the normalized vendor runtime status into GitHub-job-friendly Markdown
+- `python3 scripts/ci/check_vendor_runtime_ci_state.py --profile ...`: validate dedicated CI runtime env/path state before vendor-green execution
+- `python3 scripts/check_vendor_runner_template_drift.py`: verify the runner provisioning template, validator profiles, and workflow env contracts stay aligned
+- `./scripts/ci/vendor_runtime_smoke.sh ...`: CI/operator smoke wrapper that now runs mandatory vendor preflight first, writes standard JSON artifacts under `analysis/preflight_artifacts/`, and can still classify/skip blocked vendor runs even when the repo virtualenv has not been activated yet
 - `./scripts/ci/repo_green.sh`: explicit repo-green wrapper around the default full verification lane
 - `./scripts/ci/vendor_green.sh ...`: strict vendor-runtime gate for dedicated real-runtime runners
 
@@ -47,14 +52,18 @@ Copy-paste preflight artifact flow:
 ```bash
 mkdir -p analysis/preflight_artifacts
 
-./certi-easy preflight --json-file analysis/preflight_artifacts/certi-preflight.json
+./scripts/certi_easy.sh preflight --json-file analysis/preflight_artifacts/certi-preflight.json
 python3 -m json.tool analysis/preflight_artifacts/certi-preflight.json
 
-./pitch preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
+./scripts/pitch_docker_easy.sh preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
 python3 -m json.tool analysis/preflight_artifacts/pitch-preflight.json
 ```
 
 Both preflight entrypoints also accept `--json` for machine-readable output.
+The canonical `./scripts/certi_easy.sh preflight` and
+`./scripts/pitch_docker_easy.sh preflight` commands now also persist the
+default JSON artifact plus normalized runtime-status/parity
+reports even when no explicit `--json-file` is provided.
 The vendor smoke wrapper writes the same JSON artifacts by default before it
 decides whether to run or skip a vendor profile.
 
@@ -147,7 +156,7 @@ New generated backlog artifacts:
 ### Local State And Repo Plumbing
 
 - `local_state.sh`: shared local-state helper
-- `setup_local_state.sh`: create repo-managed symlinked caches/build trees
+- `setup_local_state.sh`: create the repo-local vendor runtime/build state layout under `.local/`
 - `setup_local_git_remote.sh`: local bare Git remote
 - `scripts/lib/shell.sh`: shared shell helper library
 
@@ -161,8 +170,8 @@ New generated backlog artifacts:
 
 ## Operating Rules
 
-- Keep generated downloads, caches, and transient runtime state under
-  `/private/tmp/hla-2010`.
+- Keep generated verification outputs under `analysis/`, and keep transient
+  vendor runtime/build state under `.local/`.
 - Update the shell scripts first, then let CI call through to them.
 - Keep the wrappers thin: the scripts should orchestrate, not reimplement the
   backend logic or the evidence generation logic.

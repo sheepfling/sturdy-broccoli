@@ -1,7 +1,7 @@
 # ruff: noqa: F401,F403
 
 from tests.vendors.certi_real_backend_matrix_support import *
-from tests.vendors.runtime_support import cleanup_federation, close_all, reserve_udp_pair, terminate_all
+from tests.vendors.runtime_support import assert_all_terminated, cleanup_federation, close_all, reserve_udp_pair, terminate_all
 
 @pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
 def test_certi_backend_ownership_matrix(kind: str):
@@ -63,6 +63,7 @@ def test_certi_backend_ownership_matrix(kind: str):
     finally:
         close_all(acquirer, owner)
         terminate_all(rtig)
+        assert_all_terminated(rtig)
 
 
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
@@ -136,6 +137,7 @@ def test_certi_backend_negotiated_ownership_matrix(kind: str):
     finally:
         close_all(acquirer, owner)
         terminate_all(rtig)
+        assert_all_terminated(rtig)
 
 
 def test_certi_upstream_negotiated_ownership_baseline():
@@ -214,6 +216,7 @@ def test_certi_negotiated_ownership_profile_matches_across_native_and_java_facad
         finally:
             close_all(acquirer, owner)
             terminate_all(rtig)
+            assert_all_terminated(rtig)
 
     assert profiles["certi-jpype"] == profiles["certi"]
     assert profiles["certi-py4j"] == profiles["certi"]

@@ -10,8 +10,8 @@ environment exists. Do not do that.
 From the repository root:
 
 ```bash
-./bootstrap doctor
-./bootstrap python
+./scripts/bootstrap_profile.sh doctor
+./scripts/bootstrap_profile.sh python
 source .venv/bin/activate
 python examples/backend_recording.py
 ```
@@ -47,8 +47,8 @@ Do not assume:
 Use these before anything vendor-specific:
 
 ```bash
-./bootstrap doctor
-./bootstrap python
+./scripts/bootstrap_profile.sh doctor
+./scripts/bootstrap_profile.sh python
 source .venv/bin/activate
 python examples/backend_recording.py
 python examples/target_radar_simulation.py --backend python --steps 5

@@ -12,8 +12,14 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-LOCAL_STATE_ROOT = Path(os.environ.get("HLA2010_LOCAL_STATE_ROOT", "/private/tmp/hla-2010"))
+LOCAL_STATE_ROOT = Path(
+    os.environ.get("HLA2010_LOCAL_STATE_ROOT", str(REPO_ROOT / ".local"))
+)
 MIN_PYTHON = (3, 10)
+
+
+def local_state_path(*parts: str) -> Path:
+    return LOCAL_STATE_ROOT.joinpath(*parts)
 
 
 @dataclass
@@ -127,19 +133,13 @@ def check_python_runtime(python_bin: Path) -> Check:
 def check_venv() -> Check:
     repo_venv = REPO_ROOT / ".venv"
     venv_python = repo_venv / "bin/python"
-    expected_target = LOCAL_STATE_ROOT / ".venv"
     if not repo_venv.exists():
-        return Check("venv", "fail", ".venv missing", "run ./bootstrap python")
-    if repo_venv.is_symlink():
-        target = repo_venv.resolve()
-        detail = f"{repo_venv} -> {target}"
-        if target != expected_target:
-            return Check("venv", "warn", ".venv points at a non-default target", detail)
-    else:
-        detail = str(repo_venv)
-        return Check("venv", "warn", ".venv is present but not a symlink", detail)
+        return Check("venv", "fail", ".venv missing", "run ./scripts/bootstrap_profile.sh python")
     if not venv_python.exists():
-        return Check("venv", "fail", ".venv exists but has no python", "rerun ./bootstrap python")
+        return Check("venv", "fail", ".venv exists but has no python", "rerun ./scripts/bootstrap_profile.sh python")
+    detail = str(repo_venv)
+    if repo_venv.is_symlink():
+        detail = f"{repo_venv} -> {repo_venv.resolve()}"
     return Check("venv", "ok", ".venv is ready", detail)
 
 
@@ -163,7 +163,7 @@ def check_workspace_imports(venv_python: Path) -> Check:
             "workspace_imports",
             "fail",
             "workspace packages are not importable in .venv",
-            f"missing: {', '.join(missing)}; rerun ./bootstrap python",
+            f"missing: {', '.join(missing)}; rerun ./scripts/bootstrap_profile.sh python",
         )
     return Check("workspace_imports", "ok", "workspace packages import from .venv", str(probe.get("executable", venv_python)))
 
@@ -220,8 +220,8 @@ def check_java_bridge_extras(venv_python: Path) -> Check:
 
 def check_certi_state() -> Check:
     source_dir = REPO_ROOT / "CERTI"
-    patched_rtig = LOCAL_STATE_ROOT / "CERTI-install/bin/rtig"
-    upstream_rtig = LOCAL_STATE_ROOT / "CERTI-upstream-install/bin/rtig"
+    patched_rtig = local_state_path("certi", "patched", "install", "bin", "rtig")
+    upstream_rtig = local_state_path("certi", "upstream", "install", "bin", "rtig")
     if patched_rtig.exists() or upstream_rtig.exists():
         built: list[str] = []
         if patched_rtig.exists():
@@ -230,7 +230,7 @@ def check_certi_state() -> Check:
             built.append("upstream")
         return Check("certi", "ok", "CERTI install artifacts present", ", ".join(built))
     if source_dir.exists():
-        return Check("certi", "warn", "CERTI source tree present but install artifacts missing", "run ./certi-easy preflight or ./bootstrap certi when needed")
+        return Check("certi", "warn", "CERTI source tree present but install artifacts missing", "run ./scripts/certi_easy.sh preflight or ./scripts/bootstrap_profile.sh certi when needed")
     return Check("certi", "warn", "CERTI runtime not prepared", "optional; use only for real CERTI paths")
 
 
@@ -249,7 +249,7 @@ def check_pitch_state() -> Check:
             detail += f"; docker={docker_bin}"
         return Check("pitch", "warn", "Pitch zip is present but not extracted", detail)
     if docker_bin:
-        return Check("pitch", "warn", "Pitch runtime bundle missing", f"docker={docker_bin}; add vendor bundle before using ./pitch")
+        return Check("pitch", "warn", "Pitch runtime bundle missing", f"docker={docker_bin}; add vendor bundle before using ./scripts/pitch_docker_easy.sh")
     return Check("pitch", "warn", "Pitch runtime and Docker are unavailable", "optional; only needed for Pitch routes")
 
 
@@ -260,7 +260,7 @@ def next_steps(checks: list[Check]) -> list[str]:
         steps.append(f"install or select Python >= {format_version_info(MIN_PYTHON)}")
         return steps
     if by_name["venv"].status == "fail" or by_name["workspace_imports"].status == "fail":
-        steps.append("./bootstrap python")
+        steps.append("./scripts/bootstrap_profile.sh python")
         steps.append("source .venv/bin/activate")
         return steps
     steps.append("source .venv/bin/activate")
@@ -269,9 +269,9 @@ def next_steps(checks: list[Check]) -> list[str]:
     if by_name["java_bridge_extras"].status != "ok":
         steps.append("HLA2010_BOOTSTRAP_EXTRAS=java ./scripts/bootstrap_python.sh")
     if by_name["certi"].status != "ok":
-        steps.append("./certi-easy preflight")
+        steps.append("./scripts/certi_easy.sh preflight")
     if by_name["pitch"].status != "ok":
-        steps.append("./pitch preflight")
+        steps.append("./scripts/pitch_docker_easy.sh preflight")
     return steps
 
 

@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from .vendor_runtime_status import build_vendor_runtime_status
+
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
@@ -23,6 +25,7 @@ class VendorParityArtifactPaths:
 class VendorParityArtifactRow:
     vendor_family: str
     profile: str
+    evidence_tier: str
     artifact_kind: str
     role: str
     path: str
@@ -80,6 +83,33 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
     {
         "vendor_family": "shared",
         "profile": "shared",
+        "artifact_kind": "script",
+        "role": "preflight classifier",
+        "path": "scripts/classify_vendor_runtime.py",
+        "required": True,
+        "note": "Machine-readable readiness classifier over vendor preflight artifacts.",
+    },
+    {
+        "vendor_family": "shared",
+        "profile": "shared",
+        "artifact_kind": "script",
+        "role": "probe stability entrypoint",
+        "path": "scripts/ci/vendor_probe_stability.sh",
+        "required": True,
+        "note": "Repeated-run stability harness for dedicated vendor probe profiles.",
+    },
+    {
+        "vendor_family": "shared",
+        "profile": "shared",
+        "artifact_kind": "script",
+        "role": "promotion review entrypoint",
+        "path": "scripts/ci/write_vendor_probe_promotion_review.py",
+        "required": True,
+        "note": "Promotion-review artifact writer over repeated-run vendor probe evidence.",
+    },
+    {
+        "vendor_family": "shared",
+        "profile": "shared",
         "artifact_kind": "preflight",
         "role": "preflight snapshot",
         "path": "analysis/preflight_artifacts/certi-preflight.json",
@@ -94,6 +124,105 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "path": "analysis/preflight_artifacts/pitch-preflight.json",
         "required": False,
         "note": "Optional machine-readable Pitch environment snapshot.",
+    },
+    {
+        "vendor_family": "certi",
+        "profile": "certi-save-restore-probe",
+        "artifact_kind": "stability-summary",
+        "role": "probe stability summary",
+        "path": "analysis/vendor_probe_stability/certi-save-restore-probe/vendor_probe_stability_summary.json",
+        "required": False,
+        "note": "Optional repeated-run stability summary for the CERTI save/restore probe.",
+    },
+    {
+        "vendor_family": "certi",
+        "profile": "certi-ddm-probe",
+        "artifact_kind": "stability-summary",
+        "role": "probe stability summary",
+        "path": "analysis/vendor_probe_stability/certi-ddm-probe/vendor_probe_stability_summary.json",
+        "required": False,
+        "note": "Optional repeated-run stability summary for the CERTI DDM probe.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-save-restore-probe",
+        "artifact_kind": "stability-summary",
+        "role": "probe stability summary",
+        "path": "analysis/vendor_probe_stability/pitch-save-restore-probe/vendor_probe_stability_summary.json",
+        "required": False,
+        "note": "Optional repeated-run stability summary for the Pitch save/restore probe.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-ddm-probe",
+        "artifact_kind": "stability-summary",
+        "role": "probe stability summary",
+        "path": "analysis/vendor_probe_stability/pitch-ddm-probe/vendor_probe_stability_summary.json",
+        "required": False,
+        "note": "Optional repeated-run stability summary for the Pitch DDM probe.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-negotiated-probe",
+        "artifact_kind": "stability-summary",
+        "role": "probe stability summary",
+        "path": "analysis/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json",
+        "required": False,
+        "note": "Optional repeated-run stability summary for the Pitch negotiated-ownership probe.",
+    },
+    {
+        "vendor_family": "shared",
+        "profile": "shared",
+        "artifact_kind": "promotion-review",
+        "role": "probe promotion review summary",
+        "path": "analysis/vendor_probe_promotion_review/vendor_probe_promotion_review_summary.json",
+        "required": False,
+        "note": "Optional promotion-review summary comparing repeated-run probe evidence against documented conformance stance.",
+    },
+    {
+        "vendor_family": "certi",
+        "profile": "certi-save-restore",
+        "artifact_kind": "gap-profile",
+        "role": "known gap profile",
+        "path": "analysis/vendor_gap_profiles/certi-save-restore.json",
+        "required": False,
+        "note": "Optional machine-readable CERTI save/restore known-gap profile.",
+    },
+    {
+        "vendor_family": "certi",
+        "profile": "certi-ddm",
+        "artifact_kind": "gap-profile",
+        "role": "known gap profile",
+        "path": "analysis/vendor_gap_profiles/certi-ddm.json",
+        "required": False,
+        "note": "Optional machine-readable CERTI DDM known-gap profile.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-save-restore",
+        "artifact_kind": "gap-profile",
+        "role": "known gap profile",
+        "path": "analysis/vendor_gap_profiles/pitch-save-restore.json",
+        "required": False,
+        "note": "Optional machine-readable Pitch save/restore known-gap profile.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-ddm",
+        "artifact_kind": "gap-profile",
+        "role": "known gap profile",
+        "path": "analysis/vendor_gap_profiles/pitch-ddm.json",
+        "required": False,
+        "note": "Optional machine-readable Pitch DDM known-gap profile.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-negotiated",
+        "artifact_kind": "gap-profile",
+        "role": "known gap profile",
+        "path": "analysis/vendor_gap_profiles/pitch-negotiated.json",
+        "required": False,
+        "note": "Optional machine-readable Pitch negotiated-ownership known-gap profile.",
     },
     {
         "vendor_family": "certi",
@@ -212,8 +341,122 @@ _PROFILE_COMMANDS: tuple[dict[str, str], ...] = (
     {
         "vendor_family": "shared",
         "profile": "shared",
+        "command": "python3 scripts/classify_vendor_runtime.py --lane repo-green --json",
+        "purpose": "Classify whether blocked vendor prerequisites are acceptable for the repo-green lane.",
+    },
+    {
+        "vendor_family": "shared",
+        "profile": "shared",
+        "command": "python3 scripts/classify_vendor_runtime.py --lane vendor-green --vendor certi --json",
+        "purpose": "Classify strict CERTI vendor-green readiness from preflight artifacts.",
+    },
+    {
+        "vendor_family": "shared",
+        "profile": "shared",
+        "command": "python3 scripts/classify_vendor_runtime.py --lane vendor-green --vendor pitch --json",
+        "purpose": "Classify strict Pitch vendor-green readiness from preflight artifacts.",
+    },
+    {
+        "vendor_family": "certi",
+        "profile": "certi-save-restore",
+        "command": "./scripts/certi_easy.sh save-restore",
+        "purpose": "Emit the current explicit CERTI save/restore known-gap status after preflight.",
+    },
+    {
+        "vendor_family": "certi",
+        "profile": "certi-save-restore-probe",
+        "command": "./scripts/certi_easy.sh save-restore-probe",
+        "purpose": "Run the current narrow executable CERTI save/restore runtime probe after preflight.",
+    },
+    {
+        "vendor_family": "certi",
+        "profile": "certi-ddm",
+        "command": "./scripts/certi_easy.sh ddm",
+        "purpose": "Emit the current explicit CERTI DDM known-gap status after preflight.",
+    },
+    {
+        "vendor_family": "certi",
+        "profile": "certi-ddm-probe",
+        "command": "./scripts/certi_easy.sh ddm-probe",
+        "purpose": "Run the current narrow executable CERTI DDM runtime probe after preflight.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-save-restore",
+        "command": "./scripts/pitch_docker_easy.sh save-restore",
+        "purpose": "Emit the current explicit Pitch save/restore known-gap status after preflight.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-save-restore-probe",
+        "command": "./scripts/pitch_docker_easy.sh save-restore-probe",
+        "purpose": "Run the current narrow executable Pitch save/restore runtime probe after preflight.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-ddm",
+        "command": "./scripts/pitch_docker_easy.sh ddm",
+        "purpose": "Emit the current explicit Pitch DDM known-gap status after preflight.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-ddm-probe",
+        "command": "./scripts/pitch_docker_easy.sh ddm-probe",
+        "purpose": "Run the current narrow executable Pitch DDM runtime probe after preflight.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-negotiated",
+        "command": "./scripts/pitch_docker_easy.sh negotiated",
+        "purpose": "Emit the current explicit Pitch negotiated-ownership known-gap status after preflight.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-negotiated-probe",
+        "command": "./scripts/pitch_docker_easy.sh negotiated-probe",
+        "purpose": "Run the current narrow executable Pitch negotiated-ownership runtime probe after preflight.",
+    },
+    {
+        "vendor_family": "shared",
+        "profile": "shared",
         "command": "./scripts/ci/vendor_edge_matrix.sh all",
         "purpose": "Run the highest-value vendor edge packet refresh.",
+    },
+    {
+        "vendor_family": "shared",
+        "profile": "shared",
+        "command": "./scripts/certi_easy.sh save-restore-review 5",
+        "purpose": "Run repeated stability evidence plus promotion/parity refresh for the CERTI save/restore probe.",
+    },
+    {
+        "vendor_family": "shared",
+        "profile": "shared",
+        "command": "./scripts/certi_easy.sh ddm-review 5",
+        "purpose": "Run repeated stability evidence plus promotion/parity refresh for the CERTI DDM probe.",
+    },
+    {
+        "vendor_family": "shared",
+        "profile": "shared",
+        "command": "./scripts/pitch_docker_easy.sh save-restore-review 5",
+        "purpose": "Run repeated stability evidence plus promotion/parity refresh for the Pitch save/restore probe.",
+    },
+    {
+        "vendor_family": "shared",
+        "profile": "shared",
+        "command": "./scripts/pitch_docker_easy.sh ddm-review 5",
+        "purpose": "Run repeated stability evidence plus promotion/parity refresh for the Pitch DDM probe.",
+    },
+    {
+        "vendor_family": "shared",
+        "profile": "shared",
+        "command": "./scripts/pitch_docker_easy.sh negotiated-review 5",
+        "purpose": "Run repeated stability evidence plus promotion/parity refresh for the Pitch negotiated-ownership probe.",
+    },
+    {
+        "vendor_family": "shared",
+        "profile": "shared",
+        "command": "python3 scripts/ci/write_vendor_probe_promotion_review.py",
+        "purpose": "Write the promotion-review artifact over repeated-run vendor probe evidence.",
     },
     {
         "vendor_family": "shared",
@@ -222,6 +465,34 @@ _PROFILE_COMMANDS: tuple[dict[str, str], ...] = (
         "purpose": "Refresh generated compliance matrices after a vendor run.",
     },
 )
+
+
+def _profile_evidence_tier(profile: str) -> str:
+    if profile == "shared":
+        return "shared"
+    if profile.endswith("-probe"):
+        return "probe"
+    if profile in {
+        "certi-save-restore",
+        "certi-ddm",
+        "pitch-save-restore",
+        "pitch-ddm",
+        "pitch-negotiated",
+    }:
+        return "known-gap"
+    if profile in {
+        "certi",
+        "certi-patched",
+        "certi-upstream",
+        "certi-compare",
+        "pitch",
+        "pitch-smoke",
+        "pitch-verify",
+        "matrix",
+        "all",
+    }:
+        return "promoted"
+    return "other"
 
 
 def _jsonable(value: Any) -> Any:
@@ -246,6 +517,7 @@ def _build_rows() -> tuple[VendorParityArtifactRow, ...]:
             VendorParityArtifactRow(
                 vendor_family=spec["vendor_family"],
                 profile=spec["profile"],
+                evidence_tier=_profile_evidence_tier(spec["profile"]),
                 artifact_kind=spec["artifact_kind"],
                 role=spec["role"],
                 path=spec["path"],
@@ -273,6 +545,58 @@ def _load_preflight_snapshot(path: Path) -> dict[str, Any] | None:
     }
 
 
+def _load_gap_profile(path: Path) -> dict[str, Any] | None:
+    if not path.exists():
+        return None
+    try:
+        data = json.loads(path.read_text())
+    except (OSError, json.JSONDecodeError):
+        return None
+    return {
+        "path": str(path.relative_to(REPO_ROOT)),
+        "profile": data.get("profile"),
+        "vendor": data.get("vendor"),
+        "area": data.get("area"),
+        "classification": data.get("classification"),
+        "status": data.get("status"),
+    }
+
+
+def _load_probe_stability_summary(path: Path) -> dict[str, Any] | None:
+    if not path.exists():
+        return None
+    try:
+        data = json.loads(path.read_text())
+    except (OSError, json.JSONDecodeError):
+        return None
+    return {
+        "path": str(path.relative_to(REPO_ROOT)),
+        "profile": data.get("profile"),
+        "evidence_tier": data.get("evidence_tier"),
+        "repeat_count": data.get("repeat_count"),
+        "attempt_count": data.get("attempt_count"),
+        "success_count": data.get("success_count"),
+        "failure_count": data.get("failure_count"),
+        "stable": data.get("stable"),
+        "promotion_readiness": data.get("promotion_readiness"),
+        "promotion_note": data.get("promotion_note"),
+    }
+
+
+def _load_probe_promotion_review(path: Path) -> dict[str, Any] | None:
+    if not path.exists():
+        return None
+    try:
+        data = json.loads(path.read_text())
+    except (OSError, json.JSONDecodeError):
+        return None
+    return {
+        "path": str(path.relative_to(REPO_ROOT)),
+        "candidate_count": data.get("candidate_count"),
+        "profiles": data.get("profiles"),
+    }
+
+
 def _build_summary(rows: tuple[VendorParityArtifactRow, ...]) -> dict[str, Any]:
     profiles: dict[str, dict[str, Any]] = {}
     for row in rows:
@@ -282,6 +606,7 @@ def _build_summary(rows: tuple[VendorParityArtifactRow, ...]) -> dict[str, Any]:
             {
                 "vendor_family": row.vendor_family,
                 "profile": row.profile,
+                "evidence_tier": row.evidence_tier,
                 "artifact_count": 0,
                 "existing_count": 0,
                 "missing_required_count": 0,
@@ -296,10 +621,47 @@ def _build_summary(rows: tuple[VendorParityArtifactRow, ...]) -> dict[str, Any]:
         if row.artifact_kind not in entry["artifact_kinds"]:
             entry["artifact_kinds"].append(row.artifact_kind)
 
+    preflight_dir = REPO_ROOT / "analysis" / "preflight_artifacts"
     preflight = {
-        "certi": _load_preflight_snapshot(REPO_ROOT / "analysis" / "preflight_artifacts" / "certi-preflight.json"),
-        "pitch": _load_preflight_snapshot(REPO_ROOT / "analysis" / "preflight_artifacts" / "pitch-preflight.json"),
+        "certi": _load_preflight_snapshot(preflight_dir / "certi-preflight.json"),
+        "pitch": _load_preflight_snapshot(preflight_dir / "pitch-preflight.json"),
     }
+    runtime_status = {
+        "repo_green": build_vendor_runtime_status(artifact_dir=preflight_dir, lane="repo-green"),
+        "vendor_green": {
+            "certi": build_vendor_runtime_status(artifact_dir=preflight_dir, lane="vendor-green", vendors=("certi",)),
+            "pitch": build_vendor_runtime_status(artifact_dir=preflight_dir, lane="vendor-green", vendors=("pitch",)),
+        },
+    }
+    gap_profile_dir = REPO_ROOT / "analysis" / "vendor_gap_profiles"
+    gap_profiles = {
+        "certi-save-restore": _load_gap_profile(gap_profile_dir / "certi-save-restore.json"),
+        "certi-ddm": _load_gap_profile(gap_profile_dir / "certi-ddm.json"),
+        "pitch-save-restore": _load_gap_profile(gap_profile_dir / "pitch-save-restore.json"),
+        "pitch-ddm": _load_gap_profile(gap_profile_dir / "pitch-ddm.json"),
+        "pitch-negotiated": _load_gap_profile(gap_profile_dir / "pitch-negotiated.json"),
+    }
+    probe_stability_dir = REPO_ROOT / "analysis" / "vendor_probe_stability"
+    probe_stability = {
+        "certi-save-restore-probe": _load_probe_stability_summary(
+            probe_stability_dir / "certi-save-restore-probe" / "vendor_probe_stability_summary.json"
+        ),
+        "certi-ddm-probe": _load_probe_stability_summary(
+            probe_stability_dir / "certi-ddm-probe" / "vendor_probe_stability_summary.json"
+        ),
+        "pitch-save-restore-probe": _load_probe_stability_summary(
+            probe_stability_dir / "pitch-save-restore-probe" / "vendor_probe_stability_summary.json"
+        ),
+        "pitch-ddm-probe": _load_probe_stability_summary(
+            probe_stability_dir / "pitch-ddm-probe" / "vendor_probe_stability_summary.json"
+        ),
+        "pitch-negotiated-probe": _load_probe_stability_summary(
+            probe_stability_dir / "pitch-negotiated-probe" / "vendor_probe_stability_summary.json"
+        ),
+    }
+    probe_promotion_review = _load_probe_promotion_review(
+        REPO_ROOT / "analysis" / "vendor_probe_promotion_review" / "vendor_probe_promotion_review_summary.json"
+    )
     required_count = sum(1 for row in rows if row.required)
     existing_count = sum(1 for row in rows if row.exists)
     missing_required_count = sum(1 for row in rows if row.required and not row.exists)
@@ -310,8 +672,18 @@ def _build_summary(rows: tuple[VendorParityArtifactRow, ...]) -> dict[str, Any]:
         "required_count": required_count,
         "existing_count": existing_count,
         "missing_required_count": missing_required_count,
-        "profile_commands": list(_PROFILE_COMMANDS),
+        "profile_commands": [
+            {
+                **command,
+                "evidence_tier": _profile_evidence_tier(command["profile"]),
+            }
+            for command in _PROFILE_COMMANDS
+        ],
         "preflight": preflight,
+        "runtime_status": runtime_status,
+        "gap_profiles": gap_profiles,
+        "probe_stability": probe_stability,
+        "probe_promotion_review": probe_promotion_review,
         "artifacts": [_jsonable(row) for row in rows],
     }
 
@@ -323,6 +695,7 @@ def _write_manifest_csv(path: Path, rows: tuple[VendorParityArtifactRow, ...]) -
             fieldnames=[
                 "vendor_family",
                 "profile",
+                "evidence_tier",
                 "artifact_kind",
                 "role",
                 "path",
@@ -349,13 +722,13 @@ def _write_markdown(path: Path, summary: dict[str, Any], paths: VendorParityArti
         "",
         "## Profiles",
         "",
-        "| Vendor | Profile | Indexed | Existing | Missing required | Kinds |",
-        "| --- | --- | ---: | ---: | ---: | --- |",
+        "| Vendor | Profile | Tier | Indexed | Existing | Missing required | Kinds |",
+        "| --- | --- | --- | ---: | ---: | ---: | --- |",
     ]
     for profile in summary["profiles"]:
         kinds = ", ".join(profile["artifact_kinds"])
         lines.append(
-            f"| {profile['vendor_family']} | {profile['profile']} | {profile['artifact_count']} | "
+            f"| {profile['vendor_family']} | {profile['profile']} | {profile['evidence_tier']} | {profile['artifact_count']} | "
             f"{profile['existing_count']} | {profile['missing_required_count']} | {kinds} |"
         )
     lines.extend(
@@ -366,7 +739,7 @@ def _write_markdown(path: Path, summary: dict[str, Any], paths: VendorParityArti
         ]
     )
     for command in summary["profile_commands"]:
-        lines.append(f"- `{command['command']}`")
+        lines.append(f"- `{command['command']}` [{command['evidence_tier']}]")
         lines.append(f"  {command['purpose']}")
     lines.extend(
         [
@@ -382,6 +755,90 @@ def _write_markdown(path: Path, summary: dict[str, Any], paths: VendorParityArti
             lines.append(
                 f"- `{vendor_family}`: result `{snapshot.get('result')}`, environment `{snapshot.get('environment')}`, "
                 f"exit `{snapshot.get('exit_code')}`, file `{snapshot.get('path')}`"
+            )
+    lines.extend(
+        [
+            "",
+            "## Runtime Status",
+            "",
+            f"- repo-green: `{summary['runtime_status']['repo_green']['overall_classification']}` "
+            f"(exit `{summary['runtime_status']['repo_green']['exit_code']}`)",
+            f"- certi vendor-green: `{summary['runtime_status']['vendor_green']['certi']['overall_classification']}` "
+            f"(exit `{summary['runtime_status']['vendor_green']['certi']['exit_code']}`)",
+            f"- pitch vendor-green: `{summary['runtime_status']['vendor_green']['pitch']['overall_classification']}` "
+            f"(exit `{summary['runtime_status']['vendor_green']['pitch']['exit_code']}`)",
+        ]
+    )
+    for lane_name, lane_summary in (
+        ("repo-green", summary["runtime_status"]["repo_green"]),
+        ("certi vendor-green", summary["runtime_status"]["vendor_green"]["certi"]),
+        ("pitch vendor-green", summary["runtime_status"]["vendor_green"]["pitch"]),
+    ):
+        for vendor in lane_summary.get("vendors", []):
+            required_markers = vendor.get("required_markers") or {}
+            required_ports = vendor.get("required_ports") or {}
+            if required_markers:
+                lines.append("")
+                lines.append(f"Required markers for `{vendor.get('vendor')}` in `{lane_name}`:")
+                for name, marker in required_markers.items():
+                    lines.append(f"- `{name}`: `{marker}`")
+            if required_ports:
+                lines.append("")
+                lines.append(f"Required ports for `{vendor.get('vendor')}` in `{lane_name}`:")
+                for name, port in required_ports.items():
+                    host = port.get("host") or "unknown-host"
+                    number = port.get("port")
+                    status = port.get("status")
+                    rendered_status = f" [{status}]" if status else ""
+                    lines.append(f"- `{name}`: `{host}:{number}`{rendered_status}")
+    lines.extend(
+        [
+            "",
+            "## Known Gaps",
+            "",
+        ]
+    )
+    for profile_name, profile in summary["gap_profiles"].items():
+        if profile is None:
+            lines.append(f"- `{profile_name}`: no known-gap artifact is currently present")
+        else:
+            lines.append(
+                f"- `{profile_name}`: classification `{profile.get('classification')}`, status `{profile.get('status')}`, "
+                f"file `{profile.get('path')}`"
+            )
+    lines.extend(
+        [
+            "",
+            "## Probe Stability",
+            "",
+        ]
+    )
+    for profile_name, stability in summary["probe_stability"].items():
+        if stability is None:
+            lines.append(f"- `{profile_name}`: no stability artifact is currently present")
+        else:
+            lines.append(
+                f"- `{profile_name}`: stable `{stability.get('stable')}`, "
+                f"success `{stability.get('success_count')}` / attempts `{stability.get('attempt_count')}`, "
+                f"promotion `{stability.get('promotion_readiness')}`, "
+                f"file `{stability.get('path')}`"
+            )
+    lines.extend(
+        [
+            "",
+            "## Promotion Review",
+            "",
+        ]
+    )
+    review = summary["probe_promotion_review"]
+    if review is None:
+        lines.append("- no promotion-review artifact is currently present")
+    else:
+        lines.append(f"- candidate count: `{review.get('candidate_count')}`")
+        for row in review.get("profiles") or []:
+            lines.append(
+                f"- `{row.get('profile')}`: decision `{row.get('review_decision')}`, "
+                f"readiness `{row.get('promotion_readiness') or 'missing'}`, docs `{row.get('docs_ref')}`"
             )
     lines.extend(
         [

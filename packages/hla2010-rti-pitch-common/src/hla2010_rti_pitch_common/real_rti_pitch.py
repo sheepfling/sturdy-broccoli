@@ -29,6 +29,10 @@ def _project_root() -> Path:
     return path.parents[4]
 
 
+def _local_state_root() -> Path:
+    return Path(os.environ.get("HLA2010_LOCAL_STATE_ROOT", str(_project_root() / ".local")))
+
+
 @dataclass(frozen=True)
 class PitchRuntime:
     home: Path
@@ -45,8 +49,7 @@ class PitchRuntime:
         env_value = os.environ.get("HLA2010_PITCH_USER_HOME")
         if env_value:
             return Path(env_value).expanduser()
-        root = Path(os.environ.get("HLA2010_LOCAL_STATE_ROOT", "/private/tmp/hla-2010"))
-        return root / "pitch-user-home"
+        return _local_state_root() / "pitch" / "user-home"
 
     def jpype_config(self, **overrides: Any) -> "JPypeConfig":
         from hla2010_rti_java_jpype import JPypeConfig

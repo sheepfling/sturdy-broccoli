@@ -21,9 +21,12 @@ Use these as the normal entry points:
 - [docs/first_run.md](first_run.md): shortest path from fresh checkout to a working pure-Python example
 - [docs/python_environment.md](python_environment.md): Python environment setup and install order
 - [docs/vendor_runtime_runner_guide.md](vendor_runtime_runner_guide.md): supported unsandboxed-local and dedicated-runner path for real vendor runtimes
+- [docs/vendor_runner_provisioning.md](vendor_runner_provisioning.md): dedicated runner variables, marker paths, and provisioning checklist
+- [docs/vendor_runner_provisioning_template.yaml](vendor_runner_provisioning_template.yaml): machine-readable runner provisioning template
 - [docs/install_matrix.md](install_matrix.md): extras, bridge deps, and vendor-runtime install order
 - [docs/agent_runbook.md](agent_runbook.md): startup sequence for agents and automation
 - [docs/README.md](README.md): documentation map and doc-family index
+- [docs/package_dependency_tree.md](package_dependency_tree.md): machine-derived installable package dependency tree
 - [docs/architecture.md](architecture.md): package and module structure
 - [docs/package_layout.md](package_layout.md): source-tree layout and import discipline
 - [docs/import_boundary_rules.md](import_boundary_rules.md): package-family dependency rules and transport/backend separation
@@ -36,6 +39,7 @@ Use these as the normal entry points:
 - [docs/rti_options_and_test_matrix.md](rti_options_and_test_matrix.md): operator-facing runtime and test matrix
 - [docs/backend_capability_matrix.md](backend_capability_matrix.md): backend feature coverage
 - [docs/backend_conformance_matrix.md](backend_conformance_matrix.md): clause-level conformance and parity status
+- [docs/vendor_runtime_gap_map.md](vendor_runtime_gap_map.md): promoted slices vs environment prerequisites vs true vendor/runtime gaps
 - [docs/source_documents.md](source_documents.md): retained source references and provenance
 - [docs/source_documents_inventory.md](source_documents_inventory.md): source inventory
 - [docs/source_documents_policy.md](source_documents_policy.md): source policy and extraction notes

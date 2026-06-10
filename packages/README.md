@@ -9,7 +9,7 @@ package-owned source roots.
 Before you work in any package subtree, bootstrap the workspace Python
 environment from the repo root:
 
-1. `./bootstrap python`
+1. `./scripts/bootstrap_profile.sh python`
 2. `source .venv/bin/activate`
 3. run a pure-Python smoke path
 

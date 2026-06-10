@@ -12,7 +12,7 @@ from tests.vendors.certi_real_backend_matrix_support import (
     _logical_time_value,
     _require_real_rti_smoke,
 )
-from tests.vendors.runtime_support import cleanup_federation, close_all, reserve_udp_pair, terminate_all
+from tests.vendors.runtime_support import assert_all_terminated, cleanup_federation, close_all, reserve_udp_pair, terminate_all
 
 @pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
@@ -92,6 +92,7 @@ def test_certi_backend_time_query_and_fqr_matrix(kind: str, time_factory_name: s
     finally:
         close_all(constrained, regulator)
         terminate_all(rtig)
+        assert_all_terminated(rtig)
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_upstream_time_query_and_fqr_baseline(time_factory_name: str):
     _assert_certi_profile_time_query_and_fqr_baseline("certi-upstream", None, time_factory_name)

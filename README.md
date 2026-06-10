@@ -25,7 +25,7 @@ The repo is organized as a monorepo workspace:
 1. Bootstrap the Python environment:
 
 ```bash
-./bootstrap python
+./scripts/bootstrap_profile.sh python
 source .venv/bin/activate
 ```
 
@@ -49,7 +49,7 @@ If you want the shortest single walkthrough, use
 If you want an executable setup check first, run:
 
 ```bash
-./bootstrap doctor
+./scripts/bootstrap_profile.sh doctor
 ```
 
 2. Run the simplest scenario:
@@ -73,14 +73,14 @@ python examples/backend_recording.py
 If you need the vendor flows, the repo also includes:
 
 ```bash
-./certi-easy preflight
-./certi-easy install
-./certi-easy smoke compare
+./scripts/certi_easy.sh preflight
+./scripts/certi_easy.sh install
+./scripts/certi_easy.sh smoke compare
 
-./pitch preflight
-./pitch install
-./pitch smoke
-./pitch verify
+./scripts/pitch_docker_easy.sh preflight
+./scripts/pitch_docker_easy.sh install
+./scripts/pitch_docker_easy.sh smoke
+./scripts/pitch_docker_easy.sh verify
 
 ./scripts/ci/repo_green.sh
 ./scripts/ci/vendor_green.sh matrix

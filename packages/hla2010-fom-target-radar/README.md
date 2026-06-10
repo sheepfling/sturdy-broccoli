@@ -23,7 +23,7 @@ implementations.
 For setup, bootstrap the repo root first:
 
 ```bash
-./bootstrap python
+./scripts/bootstrap_profile.sh python
 source .venv/bin/activate
 ```
 

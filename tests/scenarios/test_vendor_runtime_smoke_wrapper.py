@@ -48,6 +48,29 @@ def test_vendor_runtime_smoke_writes_certi_preflight_and_skips_cleanly(tmp_path:
     assert "skipping runtime smoke for this vendor" in result.stderr
 
 
+def test_vendor_runtime_smoke_skips_cleanly_without_repo_venv(tmp_path: Path) -> None:
+    env = _base_env(tmp_path)
+    env["HLA2010_VENV_DIR"] = str(tmp_path / "missing-venv")
+    env["HLA2010_VENDOR_AUTO_BOOTSTRAP_PYTHON"] = "0"
+    result = subprocess.run(
+        ["bash", "scripts/ci/vendor_runtime_smoke.sh", "certi-patched"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    artifact_path = tmp_path / "preflight" / "certi-preflight.json"
+    assert artifact_path.exists()
+    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
+    assert payload["tool"] == "certi-preflight"
+    assert payload["exit_code"] == 1
+    assert "python test environment is missing" not in result.stderr
+    assert "skipping runtime smoke for this vendor" in result.stderr
+
+
 def test_vendor_runtime_smoke_writes_pitch_preflight_and_skips_cleanly(tmp_path: Path) -> None:
     env = _base_env(tmp_path)
     result = subprocess.run(

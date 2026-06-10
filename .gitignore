@@ -25,6 +25,7 @@ htmlcov
 build
 dist
 .venv
+.local/
 
 # Generated project outputs
 analysis

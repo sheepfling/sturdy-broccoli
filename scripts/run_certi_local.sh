@@ -3,6 +3,9 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
+# shellcheck disable=SC1091
+source "$ROOT_DIR/scripts/local_state.sh"
+
 usage() {
   cat <<'EOF'
 usage: ./scripts/run_certi_local.sh <rtig|rtia> [args...]
@@ -37,8 +40,11 @@ case "$backend" in
 esac
 
 certi_prefix="${HLA2010_CERTI_PREFIX:-}"
-if [[ -z "$certi_prefix" && -d "$ROOT_DIR/CERTI-install" ]]; then
-  certi_prefix="$ROOT_DIR/CERTI-install"
+if [[ -z "$certi_prefix" ]]; then
+  default_prefix="$(local_state_path "CERTI-install")"
+  if [[ -d "$default_prefix" ]]; then
+    certi_prefix="$default_prefix"
+  fi
 fi
 if [[ -z "$certi_prefix" ]]; then
   echo "error: CERTI install prefix not found; set HLA2010_CERTI_PREFIX"

@@ -107,7 +107,7 @@ def run_suite_ddm_scenario(
     sender_rti.join_federation_execution("sender", "ddm", federation_name)
     receiver_rti.join_federation_execution("receiver", "ddm", federation_name)
 
-    sender_rti.enable_time_regulation(HLAfloat64Interval(1.0))
+    sender_rti.enable_time_regulation(config.get("lookahead", HLAfloat64Interval(1.0)))
     receiver_rti.enable_time_constrained()
     for _ in range(16):
         sender_rti.evoke_multiple_callbacks(0.0, 0.1)
@@ -161,7 +161,7 @@ def run_suite_ddm_scenario(
         "receiver_callbacks": _jsonable(receiver_federate.records),
         "received_callbacks": _jsonable(received),
         "received_count": len(received),
-        "received_payload": _jsonable(received[-1].args[2]) if received else None,
+        "received_payload": _jsonable(received[-1].args[1]) if received else None,
         "received_time": _jsonable(received[-1].args[5]) if received else None,
     }
 

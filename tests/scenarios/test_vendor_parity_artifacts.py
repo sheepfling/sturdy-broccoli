@@ -2,35 +2,279 @@ from __future__ import annotations
 
 import csv
 import json
+from pathlib import Path
 
 from hla2010.testing.vendor_parity_artifacts import write_vendor_parity_artifacts
 
 
-def test_vendor_parity_artifacts_are_generated(tmp_path):
-    paths = write_vendor_parity_artifacts(tmp_path)
-
-    summary = json.loads(paths.summary_json.read_text())
-    assert summary["suite_name"] == "vendor-parity-artifacts"
-    assert summary["artifact_count"] >= 10
-    assert summary["missing_required_count"] == 0
-    assert any(profile["vendor_family"] == "certi" for profile in summary["profiles"])
-    assert any(profile["vendor_family"] == "pitch" for profile in summary["profiles"])
-    assert any(command["command"] == "./scripts/ci/vendor_runtime_smoke.sh certi-compare" for command in summary["profile_commands"])
-    assert "certi" in summary["preflight"]
-    assert "pitch" in summary["preflight"]
-
-    with paths.artifact_manifest_csv.open() as handle:
-        rows = list(csv.DictReader(handle))
-    assert rows
-    assert any(row["path"] == "tests/vendors/test_pitch_real_backend_matrix.py" for row in rows)
-    assert any(
-        row["path"] == "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md"
-        for row in rows
+def _write_preflight(path: Path, *, tool: str, environment: str, result: str, exit_code: int) -> None:
+    payload = {
+        "tool": tool,
+        "environment": environment,
+        "result": result,
+        "exit_code": exit_code,
+    }
+    if tool == "certi-preflight":
+        payload["required_markers"] = {
+            "active_prefix": "/tmp/certi/bin/rtig",
+            "active_build_root": "/tmp/certi-build/libRTI/ieee1516-2010",
+        }
+    else:
+        payload["required_markers"] = {
+            "runtime_home": "/tmp/pitch/lib/prtifull.jar",
+        }
+        payload["ports"] = {
+            "crc": {
+                "host": "127.0.0.1",
+                "port": 8989,
+                "status": "blocked" if exit_code else "ok",
+                "detail": result,
+            },
+            "fedpro": {
+                "host": "127.0.0.1",
+                "port": 15164,
+                "status": "blocked" if exit_code else "ok",
+                "detail": result,
+            },
+        }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True)
+        + "\n",
+        encoding="utf-8",
     )
-    assert any(row["artifact_kind"] == "preflight" for row in rows)
 
-    report_text = paths.report_markdown.read_text()
-    assert "Vendor Parity Artifacts" in report_text
-    assert "## Profiles" in report_text
-    assert "## Commands" in report_text
-    assert "vendor_runtime_smoke.sh certi-compare" in report_text
+
+def _write_gap_profile(path: Path, *, profile: str, vendor: str, area: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(
+            {
+                "profile": profile,
+                "vendor": vendor,
+                "area": area,
+                "classification": "known-gap",
+                "status": "not-promoted",
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def _write_probe_stability(
+    path: Path,
+    *,
+    profile: str,
+    evidence_tier: str,
+    repeat_count: int,
+    attempt_count: int,
+    success_count: int,
+    failure_count: int,
+    stable: bool,
+    promotion_readiness: str,
+    promotion_note: str,
+) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(
+            {
+                "profile": profile,
+                "evidence_tier": evidence_tier,
+                "repeat_count": repeat_count,
+                "attempt_count": attempt_count,
+                "success_count": success_count,
+                "failure_count": failure_count,
+                "stable": stable,
+                "promotion_readiness": promotion_readiness,
+                "promotion_note": promotion_note,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def test_vendor_parity_artifacts_are_generated(tmp_path):
+    analysis_root = Path("analysis/preflight_artifacts")
+    gap_root = Path("analysis/vendor_gap_profiles")
+    certi_path = analysis_root / "certi-preflight.json"
+    pitch_path = analysis_root / "pitch-preflight.json"
+    certi_gap_path = gap_root / "certi-save-restore.json"
+    pitch_gap_path = gap_root / "pitch-ddm.json"
+    pitch_negotiated_gap_path = gap_root / "pitch-negotiated.json"
+    stability_root = Path("analysis/vendor_probe_stability")
+    pitch_stability_path = stability_root / "pitch-negotiated-probe" / "vendor_probe_stability_summary.json"
+    promotion_review_path = (
+        Path("analysis/vendor_probe_promotion_review") / "vendor_probe_promotion_review_summary.json"
+    )
+    certi_original = certi_path.read_text(encoding="utf-8") if certi_path.exists() else None
+    pitch_original = pitch_path.read_text(encoding="utf-8") if pitch_path.exists() else None
+    certi_gap_original = certi_gap_path.read_text(encoding="utf-8") if certi_gap_path.exists() else None
+    pitch_gap_original = pitch_gap_path.read_text(encoding="utf-8") if pitch_gap_path.exists() else None
+    pitch_negotiated_gap_original = (
+        pitch_negotiated_gap_path.read_text(encoding="utf-8") if pitch_negotiated_gap_path.exists() else None
+    )
+    pitch_stability_original = pitch_stability_path.read_text(encoding="utf-8") if pitch_stability_path.exists() else None
+    promotion_review_original = promotion_review_path.read_text(encoding="utf-8") if promotion_review_path.exists() else None
+    _write_preflight(
+        certi_path,
+        tool="certi-preflight",
+        environment="loopback-blocked",
+        result="real CERTI will skip",
+        exit_code=1,
+    )
+    _write_preflight(
+        pitch_path,
+        tool="pitch-preflight",
+        environment="docker-blocked",
+        result="Pitch runtime is not ready",
+        exit_code=1,
+    )
+    _write_gap_profile(certi_gap_path, profile="certi-save-restore", vendor="certi", area="save_restore")
+    _write_gap_profile(pitch_gap_path, profile="pitch-ddm", vendor="pitch", area="ddm")
+    _write_gap_profile(
+        pitch_negotiated_gap_path,
+        profile="pitch-negotiated",
+        vendor="pitch",
+        area="negotiated_ownership",
+    )
+    _write_probe_stability(
+        pitch_stability_path,
+        profile="pitch-negotiated-probe",
+        evidence_tier="probe",
+        repeat_count=5,
+        attempt_count=5,
+        success_count=5,
+        failure_count=0,
+        stable=True,
+        promotion_readiness="candidate",
+        promotion_note="repeated-run stability evidence is present; promotion still requires clause-level parity review",
+    )
+    promotion_review_path.parent.mkdir(parents=True, exist_ok=True)
+    promotion_review_path.write_text(
+        json.dumps(
+            {
+                "candidate_count": 1,
+                "profiles": [
+                    {
+                        "profile": "pitch-negotiated-probe",
+                        "promotion_readiness": "candidate",
+                        "review_decision": "candidate-review",
+                        "docs_ref": "packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md",
+                    }
+                ],
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    try:
+        paths = write_vendor_parity_artifacts(tmp_path)
+
+        summary = json.loads(paths.summary_json.read_text())
+        assert summary["suite_name"] == "vendor-parity-artifacts"
+        assert summary["artifact_count"] >= 10
+        assert summary["missing_required_count"] == 0
+        assert any(profile["vendor_family"] == "certi" for profile in summary["profiles"])
+        assert any(profile["vendor_family"] == "pitch" for profile in summary["profiles"])
+        assert any(profile["evidence_tier"] == "promoted" for profile in summary["profiles"])
+        assert any(profile["evidence_tier"] == "known-gap" for profile in summary["profiles"])
+        assert any(command["command"] == "./scripts/ci/vendor_runtime_smoke.sh certi-compare" for command in summary["profile_commands"])
+        assert any(command["command"] == "./scripts/pitch_docker_easy.sh negotiated-probe" and command["evidence_tier"] == "probe" for command in summary["profile_commands"])
+        assert any(command["command"] == "./scripts/pitch_docker_easy.sh negotiated" and command["evidence_tier"] == "known-gap" for command in summary["profile_commands"])
+        assert any(command["command"] == "python3 scripts/classify_vendor_runtime.py --lane repo-green --json" for command in summary["profile_commands"])
+        assert "certi" in summary["preflight"]
+        assert "pitch" in summary["preflight"]
+        assert summary["runtime_status"]["repo_green"]["overall_classification"] == "repo-green"
+        assert summary["runtime_status"]["vendor_green"]["certi"]["overall_classification"] == "environment-blocked"
+        assert summary["runtime_status"]["vendor_green"]["pitch"]["overall_classification"] == "environment-blocked"
+        assert summary["gap_profiles"]["certi-save-restore"]["classification"] == "known-gap"
+        assert summary["gap_profiles"]["pitch-ddm"]["area"] == "ddm"
+        assert summary["gap_profiles"]["pitch-negotiated"]["area"] == "negotiated_ownership"
+        assert summary["gap_profiles"]["pitch-save-restore"] is None
+        assert summary["probe_stability"]["pitch-negotiated-probe"]["stable"] is True
+        assert summary["probe_stability"]["pitch-negotiated-probe"]["promotion_readiness"] == "candidate"
+        assert summary["probe_stability"]["pitch-negotiated-probe"]["attempt_count"] == 5
+        assert summary["probe_stability"]["certi-ddm-probe"] is None
+        assert summary["probe_promotion_review"]["candidate_count"] == 1
+
+        with paths.artifact_manifest_csv.open() as handle:
+            rows = list(csv.DictReader(handle))
+        assert rows
+        assert any(row["path"] == "tests/vendors/test_pitch_real_backend_matrix.py" for row in rows)
+        assert any(
+            row["path"] == "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md"
+            for row in rows
+        )
+        assert any(row["artifact_kind"] == "preflight" for row in rows)
+        assert any(row["path"] == "scripts/classify_vendor_runtime.py" for row in rows)
+        assert any(row["artifact_kind"] == "gap-profile" for row in rows)
+        assert any(row["artifact_kind"] == "stability-summary" for row in rows)
+        assert any(row["artifact_kind"] == "promotion-review" for row in rows)
+        assert any(row["evidence_tier"] == "promoted" for row in rows)
+        assert any(row["evidence_tier"] == "known-gap" for row in rows)
+        assert any(row["path"] == "analysis/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json" for row in rows)
+        assert any(row["path"] == "analysis/vendor_gap_profiles/certi-save-restore.json" for row in rows)
+
+        report_text = paths.report_markdown.read_text()
+        assert "Vendor Parity Artifacts" in report_text
+        assert "## Profiles" in report_text
+        assert "## Commands" in report_text
+        assert "## Runtime Status" in report_text
+        assert "## Known Gaps" in report_text
+        assert "## Probe Stability" in report_text
+        assert "## Promotion Review" in report_text
+        assert "| Vendor | Profile | Tier | Indexed | Existing | Missing required | Kinds |" in report_text
+        assert "vendor_runtime_smoke.sh certi-compare" in report_text
+        assert "./scripts/pitch_docker_easy.sh negotiated-probe` [probe]" in report_text
+        assert "./scripts/pitch_docker_easy.sh negotiated` [known-gap]" in report_text
+        assert "./scripts/pitch_docker_easy.sh negotiated-review 5" in report_text
+        assert "python3 scripts/ci/write_vendor_probe_promotion_review.py" in report_text
+        assert "pitch-negotiated-probe`: stable `True`" in report_text
+        assert "promotion `candidate`" in report_text
+        assert "decision `candidate-review`" in report_text
+        assert "repo-green" in report_text
+        assert "./scripts/pitch_docker_easy.sh ddm" in report_text
+        assert "Required markers for `certi` in `repo-green`:" in report_text
+        assert "`active_build_root`: `/tmp/certi-build/libRTI/ieee1516-2010`" in report_text
+        assert "Required markers for `pitch` in `pitch vendor-green`:" in report_text
+        assert "`runtime_home`: `/tmp/pitch/lib/prtifull.jar`" in report_text
+        assert "Required ports for `pitch` in `pitch vendor-green`:" in report_text
+        assert "`crc`: `127.0.0.1:8989` [blocked]" in report_text
+    finally:
+        if certi_original is None:
+            certi_path.unlink(missing_ok=True)
+        else:
+            certi_path.write_text(certi_original, encoding="utf-8")
+        if pitch_original is None:
+            pitch_path.unlink(missing_ok=True)
+        else:
+            pitch_path.write_text(pitch_original, encoding="utf-8")
+        if certi_gap_original is None:
+            certi_gap_path.unlink(missing_ok=True)
+        else:
+            certi_gap_path.write_text(certi_gap_original, encoding="utf-8")
+        if pitch_gap_original is None:
+            pitch_gap_path.unlink(missing_ok=True)
+        else:
+            pitch_gap_path.write_text(pitch_gap_original, encoding="utf-8")
+        if pitch_negotiated_gap_original is None:
+            pitch_negotiated_gap_path.unlink(missing_ok=True)
+        else:
+            pitch_negotiated_gap_path.write_text(pitch_negotiated_gap_original, encoding="utf-8")
+        if pitch_stability_original is None:
+            pitch_stability_path.unlink(missing_ok=True)
+        else:
+            pitch_stability_path.write_text(pitch_stability_original, encoding="utf-8")
+        if promotion_review_original is None:
+            promotion_review_path.unlink(missing_ok=True)
+        else:
+            promotion_review_path.write_text(promotion_review_original, encoding="utf-8")

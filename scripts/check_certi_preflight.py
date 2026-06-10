@@ -16,6 +16,11 @@ from hla2010.real_rti_process import reserve_tcp_port
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
+LOCAL_STATE_ROOT = Path(os.environ.get("HLA2010_LOCAL_STATE_ROOT", str(ROOT_DIR / ".local")))
+
+
+def _local_state_path(*parts: str) -> Path:
+    return LOCAL_STATE_ROOT.joinpath(*parts)
 
 
 def _check(name: str, func):
@@ -50,45 +55,76 @@ def _runtime_profiles() -> dict[str, dict[str, object]]:
         os.environ.get("HLA2010_CERTI_SOURCE", str(ROOT_DIR / "CERTI"))
     )
     patched_build = Path(
-        os.environ.get("HLA2010_CERTI_BUILD_ROOT", str(ROOT_DIR / "CERTI-build"))
+        os.environ.get(
+            "HLA2010_CERTI_BUILD_ROOT",
+            str(_local_state_path("certi", "patched", "build")),
+        )
     )
     patched_prefix = Path(
-        os.environ.get("HLA2010_CERTI_PATCHED_PREFIX", os.environ.get("HLA2010_CERTI_PREFIX", str(ROOT_DIR / "CERTI-install")))
+        os.environ.get(
+            "HLA2010_CERTI_PATCHED_PREFIX",
+            os.environ.get(
+                "HLA2010_CERTI_PREFIX",
+                str(_local_state_path("certi", "patched", "install")),
+            ),
+        )
     )
     upstream_source = Path(
-        os.environ.get("HLA2010_CERTI_UPSTREAM_SOURCE", "/private/tmp/hla-2010/CERTI-upstream-source")
+        os.environ.get(
+            "HLA2010_CERTI_UPSTREAM_SOURCE",
+            str(_local_state_path("certi", "upstream", "source")),
+        )
     )
     upstream_build = Path(
-        os.environ.get("HLA2010_CERTI_UPSTREAM_BUILD_ROOT", "/private/tmp/hla-2010/CERTI-upstream-build")
+        os.environ.get(
+            "HLA2010_CERTI_UPSTREAM_BUILD_ROOT",
+            str(_local_state_path("certi", "upstream", "build")),
+        )
     )
     upstream_prefix = Path(
-        os.environ.get("HLA2010_CERTI_UPSTREAM_PREFIX", "/private/tmp/hla-2010/CERTI-upstream-install")
+        os.environ.get(
+            "HLA2010_CERTI_UPSTREAM_PREFIX",
+            str(_local_state_path("certi", "upstream", "install")),
+        )
     )
     active_prefix = Path(
-        os.environ.get("HLA2010_CERTI_PREFIX", str(ROOT_DIR / "CERTI-install"))
+        os.environ.get(
+            "HLA2010_CERTI_PREFIX",
+            str(_local_state_path("certi", "patched", "install")),
+        )
     )
     active_build = Path(
-        os.environ.get("HLA2010_CERTI_BUILD_ROOT", str(ROOT_DIR / "CERTI-build"))
+        os.environ.get(
+            "HLA2010_CERTI_BUILD_ROOT",
+            str(_local_state_path("certi", "patched", "build")),
+        )
     )
     return {
         "active": {
             "profile": "certi",
             "prefix": _path_record(active_prefix, marker="bin/rtig"),
-            "build_root": _path_record(active_build),
+            "build_root": _path_record(active_build, marker="libRTI/ieee1516-2010"),
         },
         "patched": {
             "profile": "certi-patched",
             "source": _path_record(patched_source, marker="test/InteractiveFederate/1516-2010/Certi-Test-02.xml"),
-            "build_root": _path_record(patched_build),
+            "build_root": _path_record(patched_build, marker="libRTI/ieee1516-2010"),
             "prefix": _path_record(patched_prefix, marker="bin/rtig"),
         },
         "upstream": {
             "profile": "certi-upstream",
             "source": _path_record(upstream_source),
-            "build_root": _path_record(upstream_build),
+            "build_root": _path_record(upstream_build, marker="libRTI/ieee1516-2010"),
             "prefix": _path_record(upstream_prefix, marker="bin/rtig"),
         },
     }
+
+
+def _require_marker(record: dict[str, object], label: str) -> str:
+    if not bool(record.get("marker_exists")):
+        marker = record.get("marker") or record.get("path") or label
+        raise BackendUnavailableError(f"{label} missing: {marker}")
+    return str(record.get("marker") or record.get("path") or label)
 
 
 def main() -> int:
@@ -97,12 +133,14 @@ def main() -> int:
     parser.add_argument("--json-file", type=Path, help="write machine-readable JSON to this file")
     args = parser.parse_args()
 
+    runtime_profiles = _runtime_profiles()
     checks: list[dict[str, object]] = [
         _check("certi_runtime", lambda: discover_certi_runtime().prefix),
+        _check("active_prefix", lambda: _require_marker(runtime_profiles["active"]["prefix"], "active CERTI install prefix")),
+        _check("active_build_root", lambda: _require_marker(runtime_profiles["active"]["build_root"], "active CERTI build root")),
         _check("certi_smoke_fom", discover_certi_smoke_fom),
         _check("loopback_bind", lambda: f"reserved tcp port {reserve_tcp_port('127.0.0.1')}"),
     ]
-    runtime_profiles = _runtime_profiles()
 
     environment = "loopback-ok" if all(bool(item["ok"]) for item in checks) else "partial"
     failed_names = {str(item["name"]) for item in checks if not bool(item["ok"])}
@@ -112,7 +150,7 @@ def main() -> int:
     result = "real CERTI runnable" if all(bool(item["ok"]) for item in checks) else "real CERTI will skip"
     next_steps = (
         [
-            "./certi-easy smoke compare",
+            "./scripts/certi_easy.sh smoke compare",
             (
                 "HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q "
                 "tests/vendors/test_certi_real_backend_exchange_matrix.py "
@@ -121,7 +159,7 @@ def main() -> int:
             ),
         ]
         if result == "real CERTI runnable"
-        else ["fix the blocked prerequisite above", "./certi-easy preflight"]
+        else ["fix the blocked prerequisite above", "./scripts/certi_easy.sh preflight"]
     )
 
     if args.json:
@@ -131,6 +169,14 @@ def main() -> int:
             "result": result,
             "checks": checks,
             "runtime_profiles": runtime_profiles,
+            "required_markers": {
+                "active_prefix": runtime_profiles["active"]["prefix"].get("marker"),
+                "active_build_root": runtime_profiles["active"]["build_root"].get("marker"),
+                "patched_prefix": runtime_profiles["patched"]["prefix"].get("marker"),
+                "patched_build_root": runtime_profiles["patched"]["build_root"].get("marker"),
+                "upstream_prefix": runtime_profiles["upstream"]["prefix"].get("marker"),
+                "upstream_build_root": runtime_profiles["upstream"]["build_root"].get("marker"),
+            },
             "next_steps": next_steps,
             "exit_code": 0 if result == "real CERTI runnable" else 1,
         }
@@ -147,6 +193,14 @@ def main() -> int:
             "result": result,
             "checks": checks,
             "runtime_profiles": runtime_profiles,
+            "required_markers": {
+                "active_prefix": runtime_profiles["active"]["prefix"].get("marker"),
+                "active_build_root": runtime_profiles["active"]["build_root"].get("marker"),
+                "patched_prefix": runtime_profiles["patched"]["prefix"].get("marker"),
+                "patched_build_root": runtime_profiles["patched"]["build_root"].get("marker"),
+                "upstream_prefix": runtime_profiles["upstream"]["prefix"].get("marker"),
+                "upstream_build_root": runtime_profiles["upstream"]["build_root"].get("marker"),
+            },
             "next_steps": next_steps,
             "exit_code": 0 if result == "real CERTI runnable" else 1,
         }
@@ -158,8 +212,8 @@ def main() -> int:
     if result == "real CERTI runnable":
         print("environment: loopback-ok")
         print("result: real CERTI runnable")
-        print("easy: ./certi-easy preflight")
-        print("next: ./certi-easy smoke compare")
+        print("easy: ./scripts/certi_easy.sh preflight")
+        print("next: ./scripts/certi_easy.sh smoke compare")
         print(
             "next: HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q "
             "tests/vendors/test_certi_real_backend_exchange_matrix.py "
@@ -178,8 +232,8 @@ def main() -> int:
         print("environment: partial")
 
     print("result: real CERTI will skip")
-    print("easy: ./certi-easy preflight")
-    print("next: fix the blocked prerequisite above, then rerun ./certi-easy preflight")
+    print("easy: ./scripts/certi_easy.sh preflight")
+    print("next: fix the blocked prerequisite above, then rerun ./scripts/certi_easy.sh preflight")
     return 1
 
 

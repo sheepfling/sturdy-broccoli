@@ -23,7 +23,7 @@ Optional later:
 From the repository root:
 
 ```bash
-./bootstrap python
+./scripts/bootstrap_profile.sh python
 source .venv/bin/activate
 python examples/target_radar_simulation.py --backend python --steps 5
 ```
@@ -33,7 +33,7 @@ That is the shortest supported path to a working local Python setup.
 If you want to check the machine and workspace before bootstrapping, run:
 
 ```bash
-./bootstrap doctor
+./scripts/bootstrap_profile.sh doctor
 ```
 
 That verifies Python, `.venv`, workspace imports, and optional backend
@@ -44,13 +44,13 @@ prerequisites without trying to install anything.
 There are two normal entrypoints:
 
 ```bash
-./bootstrap python
+./scripts/bootstrap_profile.sh python
 ./scripts/bootstrap_python.sh
 ```
 
 They are related, but not identical:
 
-- `./bootstrap python` is the operator-first entrypoint.
+- `./scripts/bootstrap_profile.sh python` is the operator-first entrypoint.
   It defaults to the lean `test` extras.
 - `./scripts/bootstrap_python.sh` is the direct Python bootstrap entrypoint.
   It defaults to the broader `qa` extras.
@@ -63,20 +63,15 @@ Both commands:
 
 ## Where The Virtual Environment Lives
 
-The repository-managed `.venv` path is a symlink into local state under:
-
-```text
-/private/tmp/hla-2010/.venv
-```
-
-From the repo root you should still use it normally:
+The repository-managed virtual environment lives at the repo root:
 
 ```bash
 source .venv/bin/activate
 ```
 
-The same local-state mechanism is also used for caches, build trees, and some
-generated artifacts.
+Older local worktrees may still have `.venv` as a symlink from an earlier
+layout. That is tolerated, but the supported bootstrap contract is the plain
+repo-local `.venv` path.
 
 ## Which Extras To Install
 
@@ -85,7 +80,7 @@ Pick the smallest thing that matches your work.
 ### 1. Basic Python development
 
 ```bash
-./bootstrap python
+./scripts/bootstrap_profile.sh python
 ```
 
 This gives you:
@@ -137,7 +132,7 @@ python -m pip install --no-build-isolation -e ".[qa,java]"
 
 Use this order unless you have a specific reason not to.
 
-0. Optionally run `./bootstrap doctor`.
+0. Optionally run `./scripts/bootstrap_profile.sh doctor`.
 1. Bootstrap Python first.
 2. Activate `.venv`.
 3. Run a pure-Python example or smoke test.
@@ -167,18 +162,18 @@ Once the Python path is working:
 ### CERTI
 
 ```bash
-./certi-easy preflight
-./certi-easy install
-./certi-easy smoke compare
+./scripts/certi_easy.sh preflight
+./scripts/certi_easy.sh install
+./scripts/certi_easy.sh smoke compare
 ```
 
 ### Pitch
 
 ```bash
-./pitch preflight
-./pitch install
-./pitch smoke
-./pitch verify
+./scripts/pitch_docker_easy.sh preflight
+./scripts/pitch_docker_easy.sh install
+./scripts/pitch_docker_easy.sh smoke
+./scripts/pitch_docker_easy.sh verify
 ```
 
 Do not start with CERTI or Pitch before the Python bootstrap succeeds.
@@ -205,8 +200,8 @@ editable mode.
 Use this sequence:
 
 ```bash
-./bootstrap doctor
-./bootstrap python
+./scripts/bootstrap_profile.sh doctor
+./scripts/bootstrap_profile.sh python
 source .venv/bin/activate
 python examples/backend_recording.py
 ```

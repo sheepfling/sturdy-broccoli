@@ -25,12 +25,13 @@ from hla2010_verification_harness.scenario_ownership import (
 )
 from hla2010_verification_harness.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from tests.vendors.runtime_support import cleanup_federation, close_all, terminate_all, udp_port_pair
+from tests.vendors.runtime_support import cleanup_federation, close_all, require_vendor_preflight, terminate_all, udp_port_pair
 
 
 def _require_real_rti_smoke() -> None:
     if os.environ.get("HLA2010_ENABLE_REAL_RTI_SMOKE") != "1":
         pytest.skip("real vendor RTI smoke disabled; set HLA2010_ENABLE_REAL_RTI_SMOKE=1")
+    require_vendor_preflight("certi", operator_hint="./scripts/certi_easy.sh preflight")
 
 
 def _exchange_time_profile(time_factory_name: str) -> dict[str, object]:

@@ -31,11 +31,7 @@ if ! hla2010_shell_have "$PYTHON_BIN"; then
   PYTHON_BIN="$(hla2010_shell_python_bin)"
 fi
 
-# shellcheck disable=SC1091
-source "$ROOT_DIR/scripts/local_state.sh"
-
-ensure_local_state_layout
-VENV_DIR="$(local_state_path ".venv")"
+VENV_DIR="$ROOT_DIR/.venv"
 
 if [[ ! -d "$VENV_DIR" ]]; then
   hla2010_shell_log "creating venv at $VENV_DIR"

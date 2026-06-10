@@ -5,6 +5,9 @@ ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 PROFILE="${1:-all}"
 PREFLIGHT_ARTIFACT_DIR="${HLA2010_PREFLIGHT_ARTIFACT_DIR:-$ROOT_DIR/analysis/preflight_artifacts}"
 VENDOR_PREFLIGHT_STRICT="${HLA2010_VENDOR_PREFLIGHT_STRICT:-0}"
+VENDOR_GAP_PROFILE_DIR="${HLA2010_VENDOR_GAP_PROFILE_DIR:-$ROOT_DIR/analysis/vendor_gap_profiles}"
+VENV_DIR="${HLA2010_VENV_DIR:-$ROOT_DIR/.venv}"
+VENDOR_AUTO_BOOTSTRAP_PYTHON="${HLA2010_VENDOR_AUTO_BOOTSTRAP_PYTHON:-1}"
 
 # shellcheck source=lib/shell.sh
 source "$ROOT_DIR/scripts/lib/shell.sh"
@@ -15,7 +18,17 @@ if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
 vendor_runtime_smoke.sh: run CERTI and Pitch runtime smoke/profile checks.
 Profiles:
 - certi, certi-patched, certi-upstream, certi-compare
-- pitch
+- certi-save-restore
+- certi-save-restore-probe
+- certi-ddm
+- certi-ddm-probe
+- pitch, pitch-smoke, pitch-verify
+- pitch-save-restore
+- pitch-save-restore-probe
+- pitch-ddm
+- pitch-ddm-probe
+- pitch-negotiated
+- pitch-negotiated-probe
 - matrix
 - all
 EOF
@@ -24,10 +37,48 @@ fi
 
 # shellcheck disable=SC1091
 source "$ROOT_DIR/scripts/local_state.sh"
-# shellcheck disable=SC1091
-source "$ROOT_DIR/.venv/bin/activate"
 
 export HLA2010_ENABLE_REAL_RTI_SMOKE=1
+export HLA2010_CERTI_PREFLIGHT_OK="${HLA2010_CERTI_PREFLIGHT_OK:-0}"
+export HLA2010_PITCH_PREFLIGHT_OK="${HLA2010_PITCH_PREFLIGHT_OK:-0}"
+
+activate_python_env_if_present() {
+  if [[ -f "$VENV_DIR/bin/activate" ]]; then
+    # shellcheck disable=SC1091
+    source "$VENV_DIR/bin/activate"
+    return 0
+  fi
+  return 1
+}
+
+python_bin() {
+  if [[ -x "$VENV_DIR/bin/python" ]]; then
+    printf '%s\n' "$VENV_DIR/bin/python"
+    return 0
+  fi
+  hla2010_shell_python_bin
+}
+
+ensure_python_test_env() {
+  if activate_python_env_if_present; then
+    return 0
+  fi
+
+  if [[ "$VENDOR_AUTO_BOOTSTRAP_PYTHON" != "1" ]]; then
+    hla2010_shell_die \
+      "python test environment is missing at $VENV_DIR; set HLA2010_VENDOR_AUTO_BOOTSTRAP_PYTHON=1 or run ./scripts/bootstrap_python.sh"
+  fi
+
+  hla2010_shell_warn "python test environment missing at $VENV_DIR; bootstrapping repo virtualenv"
+  "$ROOT_DIR/scripts/bootstrap_python.sh"
+  VENV_DIR="$ROOT_DIR/.venv"
+  activate_python_env_if_present || hla2010_shell_die "bootstrap did not produce $VENV_DIR/bin/activate"
+}
+
+run_pytest() {
+  ensure_python_test_env
+  python -m pytest "$@"
+}
 
 ensure_preflight_artifact_dir() {
   mkdir -p "$PREFLIGHT_ARTIFACT_DIR"
@@ -41,7 +92,7 @@ preflight_artifact_path() {
 log_preflight_summary() {
   local vendor="$1"
   local artifact_path="$2"
-  "$ROOT_DIR/.venv/bin/python" - "$vendor" "$artifact_path" <<'PY'
+  "$(python_bin)" - "$vendor" "$artifact_path" <<'PY'
 import json
 import sys
 from pathlib import Path
@@ -74,6 +125,16 @@ handle_blocked_preflight() {
   fi
   hla2010_shell_warn "$vendor preflight blocked; skipping runtime smoke for this vendor"
   return 2
+}
+
+emit_known_gap_profile() {
+  local profile="$1"
+  mkdir -p "$VENDOR_GAP_PROFILE_DIR"
+  local python_bin
+  python_bin="$(hla2010_shell_python_bin)"
+  "$python_bin" "$ROOT_DIR/scripts/write_vendor_gap_profile.py" \
+    --profile "$profile" \
+    --output-dir "$VENDOR_GAP_PROFILE_DIR"
 }
 
 run_certi_preflight() {
@@ -110,6 +171,7 @@ guard_vendor_preflight() {
   case "$vendor" in
     certi)
       if run_certi_preflight; then
+        export HLA2010_CERTI_PREFLIGHT_OK=1
         return 0
       else
         status=$?
@@ -117,6 +179,7 @@ guard_vendor_preflight() {
       ;;
     pitch)
       if run_pitch_preflight; then
+        export HLA2010_PITCH_PREFLIGHT_OK=1
         return 0
       else
         status=$?
@@ -180,8 +243,8 @@ run_certi_patched() {
   export HLA2010_CERTI_PREFIX="$HLA2010_CERTI_PATCHED_PREFIX"
   export HLA2010_CERTI_BUILD_ROOT="$HLA2010_CERTI_PATCHED_BUILD_ROOT"
   require_runtime_prefix "patched CERTI install prefix" "${HLA2010_CERTI_PATCHED_PREFIX:-}"
-  python -m pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'certi'
-  python -m pytest -q \
+  run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'certi'
+  run_pytest -q \
     tests/vendors/test_certi_real_backend_exchange_matrix.py \
     tests/vendors/test_certi_real_backend_time_matrix.py \
     tests/vendors/test_certi_real_backend_ownership_matrix.py \
@@ -201,7 +264,7 @@ run_certi_upstream() {
   export HLA2010_CERTI_UPSTREAM_PREFIX="${HLA2010_CERTI_UPSTREAM_PREFIX:-$(default_state_path "CERTI-upstream-install")}"
   export HLA2010_CERTI_UPSTREAM_BUILD_ROOT="${HLA2010_CERTI_UPSTREAM_BUILD_ROOT:-$(default_state_path "CERTI-upstream-build")}"
   require_runtime_prefix "upstream CERTI install prefix" "${HLA2010_CERTI_UPSTREAM_PREFIX:-}"
-  python -m pytest -q \
+  run_pytest -q \
     tests/vendors/test_certi_real_backend_time_matrix.py \
     tests/vendors/test_certi_real_backend_ownership_matrix.py \
     -k 'test_certi_upstream_time_query_and_fqr_baseline or test_certi_upstream_queued_fqr_baseline or test_certi_upstream_negotiated_ownership_baseline or test_certi_upstream_release_request_branch_baseline'
@@ -223,7 +286,7 @@ run_certi_compare() {
   export HLA2010_CERTI_PATCHED_BUILD_ROOT="${HLA2010_CERTI_PATCHED_BUILD_ROOT:-${HLA2010_CERTI_BUILD_ROOT:-$(default_state_path "CERTI-build")}}"
   require_runtime_prefix "upstream CERTI install prefix" "${HLA2010_CERTI_UPSTREAM_PREFIX:-}"
   require_runtime_prefix "patched CERTI install prefix" "${HLA2010_CERTI_PATCHED_PREFIX:-}"
-  python -m pytest -q \
+  run_pytest -q \
     tests/vendors/test_certi_real_backend_time_matrix.py \
     tests/vendors/test_certi_real_backend_ownership_matrix.py \
     -k 'test_certi_upstream_time_query_and_fqr_baseline or test_certi_patched_time_query_and_fqr_baseline or test_certi_upstream_queued_fqr_baseline or test_certi_patched_queued_fqr_baseline or test_certi_upstream_negotiated_ownership_baseline or test_certi_upstream_release_request_branch_baseline or test_certi_patched_release_request_branch_baseline'
@@ -242,7 +305,69 @@ case "$PROFILE" in
   certi-compare)
     run_certi_compare
     ;;
-  pitch)
+  certi-save-restore)
+    hla2010_shell_log "vendor runtime profile: certi save/restore"
+    if guard_vendor_preflight certi; then
+      :
+    else
+      case "$?" in
+        2) exit 0 ;;
+        *) exit $? ;;
+      esac
+    fi
+    emit_known_gap_profile "certi-save-restore"
+    hla2010_shell_warn "CERTI real-runtime save/restore remains a known unpromoted gap in this workspace"
+    exit 3
+    ;;
+  certi-save-restore-probe)
+    hla2010_shell_log "vendor runtime profile: certi save/restore probe"
+    if guard_vendor_preflight certi; then
+      :
+    else
+      case "$?" in
+        2) exit 0 ;;
+        *) exit $? ;;
+      esac
+    fi
+    export HLA2010_CERTI_PATCHED_PREFIX="${HLA2010_CERTI_PATCHED_PREFIX:-${HLA2010_CERTI_PREFIX:-$(default_state_path "CERTI-install")}}"
+    export HLA2010_CERTI_PATCHED_BUILD_ROOT="${HLA2010_CERTI_PATCHED_BUILD_ROOT:-${HLA2010_CERTI_BUILD_ROOT:-$(default_state_path "CERTI-build")}}"
+    export HLA2010_CERTI_PREFIX="$HLA2010_CERTI_PATCHED_PREFIX"
+    export HLA2010_CERTI_BUILD_ROOT="$HLA2010_CERTI_PATCHED_BUILD_ROOT"
+    require_runtime_prefix "patched CERTI install prefix" "${HLA2010_CERTI_PATCHED_PREFIX:-}"
+    run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'certi_real_save_restore_smoke'
+    ;;
+  certi-ddm)
+    hla2010_shell_log "vendor runtime profile: certi DDM"
+    if guard_vendor_preflight certi; then
+      :
+    else
+      case "$?" in
+        2) exit 0 ;;
+        *) exit $? ;;
+      esac
+    fi
+    emit_known_gap_profile "certi-ddm"
+    hla2010_shell_warn "CERTI real-runtime DDM remains a known unpromoted gap in this workspace"
+    exit 3
+    ;;
+  certi-ddm-probe)
+    hla2010_shell_log "vendor runtime profile: certi DDM probe"
+    if guard_vendor_preflight certi; then
+      :
+    else
+      case "$?" in
+        2) exit 0 ;;
+        *) exit $? ;;
+      esac
+    fi
+    export HLA2010_CERTI_PATCHED_PREFIX="${HLA2010_CERTI_PATCHED_PREFIX:-${HLA2010_CERTI_PREFIX:-$(default_state_path "CERTI-install")}}"
+    export HLA2010_CERTI_PATCHED_BUILD_ROOT="${HLA2010_CERTI_PATCHED_BUILD_ROOT:-${HLA2010_CERTI_BUILD_ROOT:-$(default_state_path "CERTI-build")}}"
+    export HLA2010_CERTI_PREFIX="$HLA2010_CERTI_PATCHED_PREFIX"
+    export HLA2010_CERTI_BUILD_ROOT="$HLA2010_CERTI_PATCHED_BUILD_ROOT"
+    require_runtime_prefix "patched CERTI install prefix" "${HLA2010_CERTI_PATCHED_PREFIX:-}"
+    run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'certi_real_ddm_smoke'
+    ;;
+  pitch|pitch-verify|pitch-smoke)
     hla2010_shell_log "vendor runtime smoke: pitch"
     if guard_vendor_preflight pitch; then
       :
@@ -257,8 +382,105 @@ case "$PROFILE" in
     export HLA2010_PITCH_USER_HOME="${HLA2010_PITCH_USER_HOME:-$("$ROOT_DIR/scripts/setup_pitch_state.sh")}"
     export HLA2010_PITCH_CRC_MODE="${HLA2010_PITCH_CRC_MODE:-docker}"
     export HLA2010_PITCH_DOCKER_BUILD="${HLA2010_PITCH_DOCKER_BUILD:-0}"
-    python -m pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'pitch'
-    python -m pytest -q tests/vendors/test_pitch_real_backend_matrix.py
+    if [[ "$PROFILE" == "pitch-smoke" || "$PROFILE" == "pitch" ]]; then
+      run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'pitch'
+    fi
+    if [[ "$PROFILE" == "pitch-verify" || "$PROFILE" == "pitch" ]]; then
+      run_pytest -q tests/vendors/test_pitch_real_backend_matrix.py
+    fi
+    ;;
+  pitch-save-restore)
+    hla2010_shell_log "vendor runtime profile: pitch save/restore"
+    if guard_vendor_preflight pitch; then
+      :
+    else
+      case "$?" in
+        2) exit 0 ;;
+        *) exit $? ;;
+      esac
+    fi
+    emit_known_gap_profile "pitch-save-restore"
+    hla2010_shell_warn "Pitch real-runtime save/restore remains a known unpromoted gap in this workspace"
+    exit 3
+    ;;
+  pitch-save-restore-probe)
+    hla2010_shell_log "vendor runtime profile: pitch save/restore probe"
+    if guard_vendor_preflight pitch; then
+      :
+    else
+      case "$?" in
+        2) exit 0 ;;
+        *) exit $? ;;
+      esac
+    fi
+    export HLA2010_PITCH_HOME="${HLA2010_PITCH_HOME:-$(default_pitch_home)}"
+    test -n "${HLA2010_PITCH_HOME:-}" || { echo "Pitch runtime bundle is required"; exit 1; }
+    export HLA2010_PITCH_USER_HOME="${HLA2010_PITCH_USER_HOME:-$("$ROOT_DIR/scripts/setup_pitch_state.sh")}"
+    export HLA2010_PITCH_CRC_MODE="${HLA2010_PITCH_CRC_MODE:-docker}"
+    export HLA2010_PITCH_DOCKER_BUILD="${HLA2010_PITCH_DOCKER_BUILD:-0}"
+    run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'pitch_java_real_save_restore_smoke'
+    ;;
+  pitch-ddm)
+    hla2010_shell_log "vendor runtime profile: pitch DDM"
+    if guard_vendor_preflight pitch; then
+      :
+    else
+      case "$?" in
+        2) exit 0 ;;
+        *) exit $? ;;
+      esac
+    fi
+    emit_known_gap_profile "pitch-ddm"
+    hla2010_shell_warn "Pitch real-runtime DDM remains a known unpromoted gap in this workspace"
+    exit 3
+    ;;
+  pitch-ddm-probe)
+    hla2010_shell_log "vendor runtime profile: pitch DDM probe"
+    if guard_vendor_preflight pitch; then
+      :
+    else
+      case "$?" in
+        2) exit 0 ;;
+        *) exit $? ;;
+      esac
+    fi
+    export HLA2010_PITCH_HOME="${HLA2010_PITCH_HOME:-$(default_pitch_home)}"
+    test -n "${HLA2010_PITCH_HOME:-}" || { echo "Pitch runtime bundle is required"; exit 1; }
+    export HLA2010_PITCH_USER_HOME="${HLA2010_PITCH_USER_HOME:-$("$ROOT_DIR/scripts/setup_pitch_state.sh")}"
+    export HLA2010_PITCH_CRC_MODE="${HLA2010_PITCH_CRC_MODE:-docker}"
+    export HLA2010_PITCH_DOCKER_BUILD="${HLA2010_PITCH_DOCKER_BUILD:-0}"
+    run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'pitch_java_real_ddm_smoke'
+    ;;
+  pitch-negotiated)
+    hla2010_shell_log "vendor runtime profile: pitch negotiated ownership"
+    if guard_vendor_preflight pitch; then
+      :
+    else
+      case "$?" in
+        2) exit 0 ;;
+        *) exit $? ;;
+      esac
+    fi
+    emit_known_gap_profile "pitch-negotiated"
+    hla2010_shell_warn "Pitch real-runtime negotiated ownership remains a known bridge-divergent unpromoted gap in this workspace"
+    exit 3
+    ;;
+  pitch-negotiated-probe)
+    hla2010_shell_log "vendor runtime profile: pitch negotiated ownership probe"
+    if guard_vendor_preflight pitch; then
+      :
+    else
+      case "$?" in
+        2) exit 0 ;;
+        *) exit $? ;;
+      esac
+    fi
+    export HLA2010_PITCH_HOME="${HLA2010_PITCH_HOME:-$(default_pitch_home)}"
+    test -n "${HLA2010_PITCH_HOME:-}" || { echo "Pitch runtime bundle is required"; exit 1; }
+    export HLA2010_PITCH_USER_HOME="${HLA2010_PITCH_USER_HOME:-$("$ROOT_DIR/scripts/setup_pitch_state.sh")}"
+    export HLA2010_PITCH_CRC_MODE="${HLA2010_PITCH_CRC_MODE:-docker}"
+    export HLA2010_PITCH_DOCKER_BUILD="${HLA2010_PITCH_DOCKER_BUILD:-0}"
+    run_pytest -q tests/vendors/test_pitch_real_backend_matrix.py -k 'pitch_negotiated_divesting_offer_probe or pitch_release_request_owned_attribute_probe'
     ;;
   matrix)
     hla2010_shell_log "vendor runtime smoke: matrix"
@@ -290,19 +512,19 @@ case "$PROFILE" in
       exit 0
     fi
     if [[ "$certi_ready" -eq 1 && "$pitch_ready" -eq 1 ]]; then
-      python -m pytest -q tests/vendors/test_real_vendor_runtime_smoke.py
+      run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py
     elif [[ "$certi_ready" -eq 1 ]]; then
-      python -m pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'certi'
+      run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'certi'
     else
       export HLA2010_PITCH_HOME="${HLA2010_PITCH_HOME:-$(default_pitch_home)}"
       export HLA2010_PITCH_USER_HOME="${HLA2010_PITCH_USER_HOME:-$("$ROOT_DIR/scripts/setup_pitch_state.sh")}"
       export HLA2010_PITCH_CRC_MODE="${HLA2010_PITCH_CRC_MODE:-docker}"
       export HLA2010_PITCH_DOCKER_BUILD="${HLA2010_PITCH_DOCKER_BUILD:-0}"
-      python -m pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'pitch'
+      run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'pitch'
     fi
     ;;
   *)
-    echo "usage: $0 [certi|certi-patched|certi-upstream|certi-compare|pitch|matrix|all]" >&2
+    echo "usage: $0 [certi|certi-patched|certi-upstream|certi-compare|certi-save-restore|certi-save-restore-probe|certi-ddm|certi-ddm-probe|pitch|pitch-smoke|pitch-verify|pitch-save-restore|pitch-save-restore-probe|pitch-ddm|pitch-ddm-probe|pitch-negotiated|pitch-negotiated-probe|matrix|all]" >&2
     exit 2
     ;;
 esac

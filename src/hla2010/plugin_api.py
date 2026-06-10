@@ -1,6 +1,6 @@
 """Runtime-checkable plugin and adapter surface contracts.
 
-The clean abstract spec lives in :mod:`hla2010.spec`.  This module carries the
+The clean abstract spec lives in :mod:`hla2010.spec`. This module carries the
 structural protocols that are convenient at integration boundaries, where
 callers may want to validate shape without forcing inheritance from the spec
 ABCs.
@@ -43,7 +43,9 @@ class RTIBackendLike(Protocol):
 
     def close(self) -> None: ...
 
-    def translate_exception(self, exc: BaseException, invocation: Any) -> BaseException: ...
+    def translate_exception(
+        self, exc: BaseException, invocation: Any
+    ) -> BaseException: ...
 
 
 @runtime_checkable
@@ -64,4 +66,3 @@ __all__ = [
     "RTIBackendPluginLike",
     "RTIambassadorLike",
 ]
-

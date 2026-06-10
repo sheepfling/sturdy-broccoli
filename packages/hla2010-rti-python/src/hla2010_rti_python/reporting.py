@@ -11,6 +11,14 @@ from hla2010 import mom as hla_mom
 from .state import FederateState, FederationState
 
 
+def _project_root() -> Path:
+    path = Path(__file__).resolve()
+    for parent in path.parents:
+        if (parent / "pyproject.toml").exists() and (parent / "analysis").exists():
+            return parent
+    return path.parents[4]
+
+
 def _is_non_string_sequence(value: Any) -> bool:
     return isinstance(value, (list, tuple, set, frozenset)) and not isinstance(value, (str, bytes, bytearray))
 
@@ -36,8 +44,7 @@ class PythonRTIServiceReportFiles:
         if raw:
             directory = Path(raw)
         else:
-            root = Path(os.environ.get("HLA2010_LOCAL_STATE_ROOT", "/private/tmp/hla-2010"))
-            directory = root / "service_reports"
+            directory = _project_root() / "analysis" / "service_reports"
         directory.mkdir(parents=True, exist_ok=True)
         return directory
 

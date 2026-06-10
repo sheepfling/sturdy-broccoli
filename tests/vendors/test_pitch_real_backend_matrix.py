@@ -27,12 +27,13 @@ from hla2010_verification_harness.scenario_ownership import (
 )
 from hla2010_verification_harness.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
 from hla2010.time import HLAinteger64Interval, HLAinteger64Time
-from tests.vendors.runtime_support import cleanup_federation, close_all, terminate_all
+from tests.vendors.runtime_support import cleanup_federation, require_vendor_preflight, shutdown_runtime_resources
 
 
 def _require_real_rti_smoke() -> None:
     if os.environ.get("HLA2010_ENABLE_REAL_RTI_SMOKE") != "1":
         pytest.skip("real vendor RTI smoke disabled; set HLA2010_ENABLE_REAL_RTI_SMOKE=1")
+    require_vendor_preflight("pitch", operator_hint="./scripts/pitch_docker_easy.sh preflight")
 
 
 def _pitch_exchange_config(federation_name: str, object_instance_name: str) -> TwoFederateExchangeConfig:
@@ -146,8 +147,7 @@ def test_pitch_backend_exchange_matrix(kind: str):
             disconnect_rtis=(subscriber, publisher),
         )
     finally:
-        close_all(subscriber, publisher)
-        terminate_all(runtime)
+        shutdown_runtime_resources(close_resources=(subscriber, publisher), runtime_resources=(runtime,))
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -223,8 +223,7 @@ def test_pitch_backend_lookahead_matrix(kind: str):
             disconnect_rtis=(subscriber, publisher),
         )
     finally:
-        close_all(subscriber, publisher)
-        terminate_all(runtime)
+        shutdown_runtime_resources(close_resources=(subscriber, publisher), runtime_resources=(runtime,))
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -274,8 +273,7 @@ def test_pitch_backend_synchronization_matrix(kind: str):
             disconnect_rtis=(wing, leader),
         )
     finally:
-        close_all(wing, leader)
-        terminate_all(runtime)
+        shutdown_runtime_resources(close_resources=(wing, leader), runtime_resources=(runtime,))
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -330,8 +328,7 @@ def test_pitch_backend_ownership_matrix(kind: str):
             disconnect_rtis=(acquirer, owner),
         )
     finally:
-        close_all(acquirer, owner)
-        terminate_all(runtime)
+        shutdown_runtime_resources(close_resources=(acquirer, owner), runtime_resources=(runtime,))
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -400,8 +397,7 @@ def test_pitch_backend_negotiated_ownership_matrix(kind: str):
             disconnect_rtis=(acquirer, owner),
         )
     finally:
-        close_all(acquirer, owner)
-        terminate_all(runtime)
+        shutdown_runtime_resources(close_resources=(acquirer, owner), runtime_resources=(runtime,))
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -471,8 +467,7 @@ def test_pitch_negotiated_divesting_offer_probe(kind: str):
             disconnect_rtis=(acquirer, owner),
         )
     finally:
-        close_all(acquirer, owner)
-        terminate_all(runtime)
+        shutdown_runtime_resources(close_resources=(acquirer, owner), runtime_resources=(runtime,))
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -536,8 +531,7 @@ def test_pitch_release_request_owned_attribute_probe(kind: str):
             disconnect_rtis=(acquirer, owner),
         )
     finally:
-        close_all(acquirer, owner)
-        terminate_all(runtime)
+        shutdown_runtime_resources(close_resources=(acquirer, owner), runtime_resources=(runtime,))
 
 
 def test_pitch_time_semantic_profile_matches_across_java_bridges():
@@ -574,9 +568,9 @@ def test_pitch_time_semantic_profile_matches_across_java_bridges():
                     disconnect_rtis=(subscriber, publisher),
                 )
             finally:
-                close_all(subscriber, publisher)
+                shutdown_runtime_resources(close_resources=(subscriber, publisher))
     finally:
-        terminate_all(runtime)
+        shutdown_runtime_resources(runtime_resources=(runtime,))
 
     assert profiles["pitch-py4j"] == profiles["pitch-jpype"]
 
@@ -627,8 +621,8 @@ def test_pitch_negotiated_ownership_profile_matches_across_java_bridges():
                     )
                 profiles[kind] = _normalized_negotiated_profile(summary)
             finally:
-                close_all(acquirer, owner)
+                shutdown_runtime_resources(close_resources=(acquirer, owner))
     finally:
-        terminate_all(runtime)
+        shutdown_runtime_resources(runtime_resources=(runtime,))
 
     assert profiles["pitch-py4j"] == profiles["pitch-jpype"]

@@ -19,18 +19,25 @@ UPSTREAM_SOURCE="${HLA2010_CERTI_UPSTREAM_SOURCE:-$(local_state_path "CERTI-upst
 UPSTREAM_BUILD="${HLA2010_CERTI_UPSTREAM_BUILD_ROOT:-$(local_state_path "CERTI-upstream-build")}"
 UPSTREAM_PREFIX="${HLA2010_CERTI_UPSTREAM_PREFIX:-$(local_state_path "CERTI-upstream-install")}"
 VENV_PYTHON="$ROOT_DIR/.venv/bin/python"
+PREFLIGHT_ARTIFACT_DIR="${HLA2010_PREFLIGHT_ARTIFACT_DIR:-$ROOT_DIR/analysis/preflight_artifacts}"
 
 usage() {
   cat <<'EOF'
 Usage:
-  ./certi-easy install
-  ./certi-easy preflight [--json] [--json-file FILE]
-  ./certi-easy doctor
-  ./certi-easy paths
-  ./certi-easy build [patched|upstream|all]
-  ./certi-easy run [patched|upstream] [rtig|rtia] [args...]
-  ./certi-easy smoke [patched|upstream|compare]
-  ./certi-easy test [patched|upstream|compare]
+  ./scripts/certi_easy.sh install
+  ./scripts/certi_easy.sh preflight [--json] [--json-file FILE]
+  ./scripts/certi_easy.sh doctor
+  ./scripts/certi_easy.sh paths
+  ./scripts/certi_easy.sh build [patched|upstream|all]
+  ./scripts/certi_easy.sh run [patched|upstream] [rtig|rtia] [args...]
+  ./scripts/certi_easy.sh smoke [patched|upstream|compare]
+  ./scripts/certi_easy.sh save-restore
+  ./scripts/certi_easy.sh save-restore-probe
+  ./scripts/certi_easy.sh save-restore-review [repeat-count]
+  ./scripts/certi_easy.sh ddm
+  ./scripts/certi_easy.sh ddm-probe
+  ./scripts/certi_easy.sh ddm-review [repeat-count]
+  ./scripts/certi_easy.sh test [patched|upstream|compare]
 
 What these mean:
   install   bootstrap Python, build patched CERTI, clone/build pristine upstream CERTI
@@ -38,13 +45,19 @@ What these mean:
   build     rebuild one or both CERTI variants
   run       launch rtig or rtia for patched or upstream CERTI
   smoke     run the supported real-runtime smoke/matrix profile
+  save-restore report the current real-runtime save/restore gap profile
+  save-restore-probe run the current narrow real-runtime save/restore probe
+  save-restore-review run repeated review for the save/restore probe and refresh promotion/parity artifacts
+  ddm       report the current real-runtime DDM gap profile
+  ddm-probe run the current narrow real-runtime DDM probe
+  ddm-review run repeated review for the DDM probe and refresh promotion/parity artifacts
   test      alias for smoke
 
 Simple path:
-  ./certi-easy install
-  ./certi-easy preflight [--json] [--json-file FILE]
-  ./certi-easy doctor
-  ./certi-easy smoke compare
+  ./scripts/certi_easy.sh install
+  ./scripts/certi_easy.sh preflight [--json] [--json-file FILE]
+  ./scripts/certi_easy.sh doctor
+  ./scripts/certi_easy.sh smoke compare
 EOF
 }
 
@@ -54,11 +67,43 @@ die() {
 }
 
 require_venv() {
-  [[ -x "$VENV_PYTHON" ]] || die "missing .venv. Run ./certi-easy install first."
+  [[ -x "$VENV_PYTHON" ]] || die "missing .venv. Run ./scripts/certi_easy.sh install first."
 }
 
 preflight_certi() {
   "$ROOT_DIR/scripts/check_certi_preflight.sh" "$@"
+}
+
+certi_preflight_artifact_path() {
+  printf '%s/%s\n' "$PREFLIGHT_ARTIFACT_DIR" "certi-preflight.json"
+}
+
+preflight_has_json_file() {
+  local arg
+  for arg in "$@"; do
+    case "$arg" in
+      --json-file|--json-file=*)
+        return 0
+        ;;
+    esac
+  done
+  return 1
+}
+
+run_persisted_certi_preflight() {
+  mkdir -p "$PREFLIGHT_ARTIFACT_DIR"
+  local artifact_path
+  artifact_path="$(certi_preflight_artifact_path)"
+  if preflight_has_json_file "$@"; then
+    preflight_certi "$@"
+  else
+    preflight_certi "$@" --json-file "$artifact_path"
+  fi
+}
+
+emit_certi_runtime_reports() {
+  local profile="${1:-certi}"
+  "$ROOT_DIR/scripts/ci/emit_vendor_runtime_reports.sh" vendor-green "$profile" || true
 }
 
 variant_or_default() {
@@ -163,7 +208,7 @@ if "will skip" in result and len(next_steps) > 1:
 elif next_steps:
     next_step = next_steps[0]
 else:
-    next_step = "./certi-easy preflight"
+    next_step = "./scripts/certi_easy.sh preflight"
 print(f"environment: {environment}")
 print(f"result: {result}")
 print(f"next step: {next_step}")
@@ -196,22 +241,38 @@ run_variant_binary() {
 
 run_smoke() {
   local profile="${1:-compare}"
+  local preflight_status=0
   require_venv
-  if preflight_certi; then
+  if run_persisted_certi_preflight; then
     :
   else
-    return $?
+    preflight_status=$?
+    case "$profile" in
+      patched)
+        emit_certi_runtime_reports "certi-patched"
+        ;;
+      upstream)
+        emit_certi_runtime_reports "certi-upstream"
+        ;;
+      compare)
+        emit_certi_runtime_reports "certi-compare"
+        ;;
+      *)
+        emit_certi_runtime_reports "certi"
+        ;;
+    esac
+    return "$preflight_status"
   fi
   hla2010_shell_log "CERTI smoke profile=${profile}"
   case "$profile" in
     patched)
-      "$ROOT_DIR/scripts/ci/vendor_runtime_smoke.sh" certi-patched
+      "$ROOT_DIR/scripts/ci/vendor_green.sh" certi-patched
       ;;
     upstream)
-      "$ROOT_DIR/scripts/ci/vendor_runtime_smoke.sh" certi-upstream
+      "$ROOT_DIR/scripts/ci/vendor_green.sh" certi-upstream
       ;;
     compare)
-      "$ROOT_DIR/scripts/ci/vendor_runtime_smoke.sh" certi-compare
+      "$ROOT_DIR/scripts/ci/vendor_green.sh" certi-compare
       ;;
     *)
       die "smoke requires patched, upstream, or compare"
@@ -226,11 +287,12 @@ case "$COMMAND" in
     ;;
   preflight)
     preflight_status=0
-    if preflight_certi "${@:2}"; then
+    if run_persisted_certi_preflight "${@:2}"; then
       preflight_status=0
     else
       preflight_status=$?
     fi
+    emit_certi_runtime_reports
     exit "$preflight_status"
     ;;
   install)
@@ -252,7 +314,7 @@ case "$COMMAND" in
     run_build "${2:-all}"
     ;;
   run)
-    [[ $# -ge 3 ]] || die "usage: ./certi-easy run [patched|upstream] [rtig|rtia] [args...]"
+    [[ $# -ge 3 ]] || die "usage: ./scripts/certi_easy.sh run [patched|upstream] [rtig|rtia] [args...]"
     run_status=0
     if run_variant_binary "$2" "$3" "${@:4}"; then
       run_status=0
@@ -269,6 +331,60 @@ case "$COMMAND" in
       smoke_status=$?
     fi
     exit "$smoke_status"
+    ;;
+  save-restore)
+    save_restore_status=0
+    if "$ROOT_DIR/scripts/ci/vendor_green.sh" certi-save-restore; then
+      save_restore_status=0
+    else
+      save_restore_status=$?
+    fi
+    exit "$save_restore_status"
+    ;;
+  save-restore-probe)
+    save_restore_probe_status=0
+    if "$ROOT_DIR/scripts/ci/vendor_green.sh" certi-save-restore-probe; then
+      save_restore_probe_status=0
+    else
+      save_restore_probe_status=$?
+    fi
+    exit "$save_restore_probe_status"
+    ;;
+  save-restore-review)
+    save_restore_review_status=0
+    if bash "$ROOT_DIR/scripts/ci/vendor_probe_review.sh" certi-save-restore-probe "${2:-5}"; then
+      save_restore_review_status=0
+    else
+      save_restore_review_status=$?
+    fi
+    exit "$save_restore_review_status"
+    ;;
+  ddm)
+    ddm_status=0
+    if "$ROOT_DIR/scripts/ci/vendor_green.sh" certi-ddm; then
+      ddm_status=0
+    else
+      ddm_status=$?
+    fi
+    exit "$ddm_status"
+    ;;
+  ddm-probe)
+    ddm_probe_status=0
+    if "$ROOT_DIR/scripts/ci/vendor_green.sh" certi-ddm-probe; then
+      ddm_probe_status=0
+    else
+      ddm_probe_status=$?
+    fi
+    exit "$ddm_probe_status"
+    ;;
+  ddm-review)
+    ddm_review_status=0
+    if bash "$ROOT_DIR/scripts/ci/vendor_probe_review.sh" certi-ddm-probe "${2:-5}"; then
+      ddm_review_status=0
+    else
+      ddm_review_status=$?
+    fi
+    exit "$ddm_review_status"
     ;;
   *)
     usage

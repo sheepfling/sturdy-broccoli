@@ -86,7 +86,7 @@ So the codebase is not simply missing the feature at every layer.
   defines a `TestRTIG` gtest target that would include
   `messageprocessor_test.cpp` and `federation_test.cpp`.
 - The current local build tree does not expose that target:
-  - `cmake --build hla-2010/CERTI-build --target TestRTIG`
+  - `cmake --build hla-2010/.local/certi/patched/build --target TestRTIG`
     fails with `No rule to make target 'TestRTIG'`.
 - The ownership-specific source tests that do exist in
   [messageprocessor_test.cpp](CERTI/tests/RTIG/messageprocessor_test.cpp)

@@ -6,6 +6,7 @@ CONTAINER_NAME="${HLA2010_PITCH_DOCKER_NAME:-hla2010-pitch-crc}"
 IMAGE_NAME="${HLA2010_PITCH_DOCKER_IMAGE:-hla2010-pitch-prti-free-crc:5.5.10}"
 CRC_PORT="${HLA2010_PITCH_CRC_PORT:-8989}"
 FEDPRO_PORT="${HLA2010_PITCH_FEDPRO_PORT:-15164}"
+PREFLIGHT_ARTIFACT_DIR="${HLA2010_PREFLIGHT_ARTIFACT_DIR:-$ROOT_DIR/analysis/preflight_artifacts}"
 
 # shellcheck source=lib/shell.sh
 source "$ROOT_DIR/scripts/lib/shell.sh"
@@ -17,6 +18,37 @@ python_cmd() {
 
 preflight_pitch_docker() {
   "$ROOT_DIR/scripts/check_pitch_preflight.sh" "$@"
+}
+
+pitch_preflight_artifact_path() {
+  printf '%s/%s\n' "$PREFLIGHT_ARTIFACT_DIR" "pitch-preflight.json"
+}
+
+preflight_has_json_file() {
+  local arg
+  for arg in "$@"; do
+    case "$arg" in
+      --json-file|--json-file=*)
+        return 0
+        ;;
+    esac
+  done
+  return 1
+}
+
+run_persisted_pitch_preflight() {
+  mkdir -p "$PREFLIGHT_ARTIFACT_DIR"
+  local artifact_path
+  artifact_path="$(pitch_preflight_artifact_path)"
+  if preflight_has_json_file "$@"; then
+    preflight_pitch_docker "$@"
+  else
+    preflight_pitch_docker "$@" --json-file "$artifact_path"
+  fi
+}
+
+emit_pitch_runtime_reports() {
+  "$ROOT_DIR/scripts/ci/emit_vendor_runtime_reports.sh" vendor-green pitch || true
 }
 
 require_pitch_preflight() {
@@ -181,49 +213,13 @@ logs_pitch_docker() {
 }
 
 smoke_pitch_docker() {
-  require_pitch_preflight
-  local pitch_home
-  local pitch_user_home
-  local python_bin
-  pitch_home="$(resolve_pitch_home)"
-  pitch_user_home="$(resolve_pitch_user_home)"
-  python_bin="$(python_cmd)"
-  ensure_docker_daemon
-  docker image inspect "$IMAGE_NAME" >/dev/null 2>&1 || install_pitch_docker
-  if docker_container_running; then
-    stop_pitch_docker
-  fi
   hla2010_shell_log "running Pitch smoke"
-  export HLA2010_ENABLE_REAL_RTI_SMOKE=1
-  export HLA2010_PITCH_HOME="$pitch_home"
-  export HLA2010_PITCH_USER_HOME="$pitch_user_home"
-  export HLA2010_PITCH_CRC_MODE=docker
-  export HLA2010_PITCH_DOCKER_BUILD=0
-  hla2010_shell_log "python: $python_bin"
-  "$python_bin" -m pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k pitch -rs
+  "$ROOT_DIR/scripts/ci/vendor_green.sh" pitch-smoke
 }
 
 verify_pitch_docker() {
-  require_pitch_preflight
-  local pitch_home
-  local pitch_user_home
-  local python_bin
-  pitch_home="$(resolve_pitch_home)"
-  pitch_user_home="$(resolve_pitch_user_home)"
-  python_bin="$(python_cmd)"
-  ensure_docker_daemon
-  docker image inspect "$IMAGE_NAME" >/dev/null 2>&1 || install_pitch_docker
-  if docker_container_running; then
-    stop_pitch_docker
-  fi
   hla2010_shell_log "running Pitch verify"
-  export HLA2010_ENABLE_REAL_RTI_SMOKE=1
-  export HLA2010_PITCH_HOME="$pitch_home"
-  export HLA2010_PITCH_USER_HOME="$pitch_user_home"
-  export HLA2010_PITCH_CRC_MODE=docker
-  export HLA2010_PITCH_DOCKER_BUILD=0
-  hla2010_shell_log "python: $python_bin"
-  "$python_bin" -m pytest -q tests/vendors/test_pitch_real_backend_matrix.py -rs
+  "$ROOT_DIR/scripts/ci/vendor_green.sh" pitch-verify
 }
 
 doctor_pitch_docker() {
@@ -257,7 +253,7 @@ import sys
 payload = json.loads(sys.argv[1])
 environment = payload.get("environment", "unknown")
 result = payload.get("result", "unknown")
-next_step = payload.get("next_step", "./pitch preflight")
+next_step = payload.get("next_step", "./scripts/pitch_docker_easy.sh preflight")
 print(f"environment: {environment}")
 print(f"result: {result}")
 print(f"next step: {next_step}")
@@ -282,7 +278,7 @@ PY
 }
 
 usage() {
-  local script_name="${HLA2010_SCRIPT_NAME:-$(basename "$0")}"
+  local script_name="./scripts/pitch_docker_easy.sh"
   cat <<EOF
 usage: $script_name [preflight|install|start|stop|restart|status|logs|smoke|verify|all|doctor]
 
@@ -292,6 +288,15 @@ Simple Pitch Docker workflow:
   $script_name start     # start CRC + FedPro in Docker and wait for ports
   $script_name smoke     # run the real Pitch smoke test
   $script_name verify    # run the full real Pitch backend matrix
+  $script_name save-restore # report the current real Pitch save/restore gap profile
+  $script_name save-restore-probe # run the current narrow real Pitch save/restore probe
+  $script_name save-restore-review [repeat-count] # run repeated review for the real Pitch save/restore probe
+  $script_name ddm       # report the current real Pitch DDM gap profile
+  $script_name ddm-probe # run the current narrow real Pitch DDM probe
+  $script_name ddm-review [repeat-count] # run repeated review for the real Pitch DDM probe
+  $script_name negotiated # report the current real Pitch negotiated-ownership gap profile
+  $script_name negotiated-probe # run the current narrow real Pitch negotiated-ownership probe
+  $script_name negotiated-review [repeat-count] # run repeated review for the real Pitch negotiated-ownership probe
   $script_name all       # install, then smoke, then verify
   $script_name logs      # show container logs
   $script_name stop      # stop and remove the container
@@ -304,11 +309,12 @@ case "${1:-start}" in
     ;;
   preflight)
     preflight_status=0
-    if preflight_pitch_docker "${@:2}"; then
+    if run_persisted_pitch_preflight "${@:2}"; then
       preflight_status=0
     else
       preflight_status=$?
     fi
+    emit_pitch_runtime_reports
     exit "$preflight_status"
     ;;
   install)
@@ -335,6 +341,33 @@ case "${1:-start}" in
     ;;
   verify)
     verify_pitch_docker
+    ;;
+  save-restore)
+    "$ROOT_DIR/scripts/ci/vendor_green.sh" pitch-save-restore
+    ;;
+  save-restore-probe)
+    "$ROOT_DIR/scripts/ci/vendor_green.sh" pitch-save-restore-probe
+    ;;
+  save-restore-review)
+    bash "$ROOT_DIR/scripts/ci/vendor_probe_review.sh" pitch-save-restore-probe "${2:-5}"
+    ;;
+  ddm)
+    "$ROOT_DIR/scripts/ci/vendor_green.sh" pitch-ddm
+    ;;
+  ddm-probe)
+    "$ROOT_DIR/scripts/ci/vendor_green.sh" pitch-ddm-probe
+    ;;
+  ddm-review)
+    bash "$ROOT_DIR/scripts/ci/vendor_probe_review.sh" pitch-ddm-probe "${2:-5}"
+    ;;
+  negotiated)
+    "$ROOT_DIR/scripts/ci/vendor_green.sh" pitch-negotiated
+    ;;
+  negotiated-probe)
+    "$ROOT_DIR/scripts/ci/vendor_green.sh" pitch-negotiated-probe
+    ;;
+  negotiated-review)
+    bash "$ROOT_DIR/scripts/ci/vendor_probe_review.sh" pitch-negotiated-probe "${2:-5}"
     ;;
   all)
     install_pitch_docker

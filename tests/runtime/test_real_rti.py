@@ -26,7 +26,13 @@ def test_discover_pitch_runtime_from_env(tmp_path, monkeypatch):
     assert runtime.home == home
     assert any(path.name == "prtifull.jar" for path in runtime.classpath)
     config = runtime.jpype_config()
-    expected_user_home = Path(os.environ.get("HLA2010_LOCAL_STATE_ROOT", "/private/tmp/hla-2010")) / "pitch-user-home"
+    local_state_root = Path(
+        os.environ.get(
+            "HLA2010_LOCAL_STATE_ROOT",
+            str(Path(__file__).resolve().parents[2] / ".local"),
+        )
+    )
+    expected_user_home = local_state_root / "pitch" / "user-home"
     assert any(str(expected_user_home) in arg for arg in config.jvm_args)
     assert any("java.library.path=" in arg for arg in config.jvm_args)
     assert config.connect_local_settings_designator == "localhost"

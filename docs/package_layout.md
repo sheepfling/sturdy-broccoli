@@ -6,6 +6,9 @@ RTI implementations, transport adapters, and verification assets.
 For the stricter rule table about what may import what, use
 [`import_boundary_rules.md`](import_boundary_rules.md).
 
+For the machine-derived installable package dependency graph, use
+[`package_dependency_tree.md`](package_dependency_tree.md).
+
 This is a monorepo workspace with multiple installable package roots. The
 stable import surface is the `src/hla2010/` package, while concrete backend
 and support implementations live in package-owned directories under

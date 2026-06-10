@@ -24,8 +24,8 @@ Get all of these working in order:
 From the repository root:
 
 ```bash
-./bootstrap doctor
-./bootstrap python
+./scripts/bootstrap_profile.sh doctor
+./scripts/bootstrap_profile.sh python
 source .venv/bin/activate
 python examples/backend_recording.py
 python examples/target_radar_simulation.py --backend python --steps 5
@@ -35,7 +35,7 @@ If those commands succeed, your base environment is working.
 
 ## What This Does
 
-- `./bootstrap python`
+- `./scripts/bootstrap_profile.sh python`
   creates or refreshes the repo-local virtual environment
 - `source .venv/bin/activate`
   activates the repo-managed Python environment
@@ -48,8 +48,8 @@ If those commands succeed, your base environment is working.
 
 Do not start with:
 
-- `./certi-easy`
-- `./pitch`
+- `./scripts/certi_easy.sh`
+- `./scripts/pitch_docker_easy.sh`
 - JPype-only examples
 - Py4J-only examples
 

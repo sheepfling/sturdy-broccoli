@@ -10,10 +10,13 @@ Start here:
 
 - [documentation_hierarchy.md](documentation_hierarchy.md): canonical doc flow and hierarchy
 - [workspace_layout.md](workspace_layout.md): top-level workspace areas and ownership split
+- [package_dependency_tree.md](package_dependency_tree.md): machine-derived installable package dependency tree
 - [../README.md](../README.md): install, bootstrap, smoke, and operator commands
 - [first_run.md](first_run.md): shortest path from fresh checkout to a working pure-Python example
 - [python_environment.md](python_environment.md): Python bootstrap, `.venv`, extras, and install order
 - [vendor_runtime_runner_guide.md](vendor_runtime_runner_guide.md): supported unsandboxed-local and dedicated-runner path for real CERTI/Pitch runtimes
+- [vendor_runner_provisioning.md](vendor_runner_provisioning.md): dedicated runner variables, marker paths, and provisioning checklist
+- [vendor_runner_provisioning_template.yaml](vendor_runner_provisioning_template.yaml): machine-readable dedicated runner provisioning template
 - [install_matrix.md](install_matrix.md): extras, backend families, and dependency order
 - [agent_runbook.md](agent_runbook.md): start-here sequence for agents and automation
 - [python_api_spec.md](python_api_spec.md): clean Python spec package
@@ -41,12 +44,15 @@ Backend and runtime docs:
 - [rti_options_and_test_matrix.md](rti_options_and_test_matrix.md): operator-facing runtime and test matrix
 - [backend_capability_matrix.md](backend_capability_matrix.md): backend feature coverage
 - [backend_conformance_matrix.md](backend_conformance_matrix.md): clause-level conformance and parity status
+- [vendor_runtime_gap_map.md](vendor_runtime_gap_map.md): promoted slices, blocked prerequisites, and remaining vendor/runtime gaps
 - [../packages/hla2010-rti-certi/docs/certi_spec_traceability.md](../packages/hla2010-rti-certi/docs/certi_spec_traceability.md): real CERTI sync/ownership coverage
 - [../packages/hla2010-rti-certi/docs/certi_runtime_limitations.md](../packages/hla2010-rti-certi/docs/certi_runtime_limitations.md): patched-vs-upstream CERTI baseline policy and runtime shortfalls
 - [../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md](../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md): CERTI negotiated ownership investigation
 - [../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md](../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md): Pitch runtime selection and troubleshooting
 - [../packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md](../packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md): shortest Pitch operator path
 - [vendor_runtime_runner_guide.md](vendor_runtime_runner_guide.md): repo-green versus vendor-green runner contract
+- [vendor_runner_provisioning.md](vendor_runner_provisioning.md): dedicated runner provisioning spec and CI variable checklist
+- [vendor_runner_provisioning_template.yaml](vendor_runner_provisioning_template.yaml): machine-readable runner provisioning template
 - [vendor_parity_artifacts.md](vendor_parity_artifacts.md): harmonized vendor artifact packet
 - [../packages/hla2010-rti-certi/docs/certi_section8_runbook.md](../packages/hla2010-rti-certi/docs/certi_section8_runbook.md): CERTI operator runbook
 

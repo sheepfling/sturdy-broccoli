@@ -16,7 +16,7 @@ New CERTI-specific code should import from `hla2010_rti_certi`.
 Bootstrap the repo root Python environment before you add CERTI runtime work:
 
 ```bash
-./bootstrap python
+./scripts/bootstrap_profile.sh python
 source .venv/bin/activate
 ```
 

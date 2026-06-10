@@ -12,11 +12,22 @@ from hla2010_rti_runtime_common import RuntimeProcess, reserve_tcp_port, wait_fo
 
 
 def _project_root() -> Path:
-    return Path(__file__).resolve().parents[1]
+    path = Path(__file__).resolve()
+    for parent in path.parents:
+        if (parent / "pyproject.toml").exists() and (
+            (parent / "src" / "hla2010").exists() or (parent / "hla2010").exists()
+        ):
+            return parent
+    return path.parents[4]
 
 
 def _candidate_paths(*parts: str) -> list[Path]:
     return [_project_root().joinpath(*parts)]
+
+
+def _local_state_path(*parts: str) -> Path:
+    root = Path(os.environ.get("HLA2010_LOCAL_STATE_ROOT", str(_project_root() / ".local")))
+    return root.joinpath(*parts)
 
 
 @dataclass(frozen=True)
@@ -93,7 +104,7 @@ def discover_certi_runtime(
         candidates.append(explicit)
     if env_prefix:
         candidates.append(Path(env_prefix).expanduser())
-    candidates.extend(_candidate_paths("CERTI-install"))
+    candidates.append(_local_state_path("certi", "patched", "install"))
     prefix = _first_existing(candidates, "bin/rtig")
     if prefix is None:
         raise BackendUnavailableError("CERTI install prefix not found; set HLA2010_CERTI_PREFIX to the install root")
@@ -106,7 +117,7 @@ def discover_certi_runtime(
     elif env_build_root and allow_repo_build_overlay:
         build_candidates.append(Path(env_build_root).expanduser())
     if allow_repo_build_overlay:
-        build_candidates.extend(_candidate_paths("CERTI-build"))
+        build_candidates.append(_local_state_path("certi", "patched", "build"))
 
     for build_root in build_candidates:
         build_root = build_root.expanduser().resolve()

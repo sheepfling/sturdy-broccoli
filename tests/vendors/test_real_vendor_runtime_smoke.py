@@ -7,24 +7,29 @@ import pytest
 
 from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.backends.base import BackendUnavailableError
-from hla2010.enums import ResignAction
+from hla2010.enums import CallbackModel, ResignAction
 from hla2010.handles import FederateHandle
 from hla2010.real_rti import discover_certi_smoke_fom, launch_certi_rtig, launch_pitch_runtime
 from hla2010.rti import create_rti_ambassador
 from hla2010.startup import FederationStartupConfig, connect_create_join
+from hla2010.types import RangeBounds
 from hla2010_verification_harness.scenario_exchange import TwoFederateExchangeConfig, run_two_federate_exchange_scenario
+from hla2010_verification_harness.two_federate_suite_pairs import SuiteRecordingFederateAmbassador
+from hla2010_verification_harness.two_federate_suite_scenarios import run_suite_ddm_scenario
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from tests.vendors.runtime_support import cleanup_federation, close_all, reserve_udp_pair, terminate_all
+from tests.vendors.runtime_support import cleanup_federation, require_vendor_preflight, reserve_udp_pair, shutdown_runtime_resources
 
 
-def _require_real_rti_smoke() -> None:
+def _require_real_rti_smoke(vendor: str) -> None:
     if os.environ.get("HLA2010_ENABLE_REAL_RTI_SMOKE") != "1":
         pytest.skip("real vendor RTI smoke disabled; set HLA2010_ENABLE_REAL_RTI_SMOKE=1")
+    operator_hint = "./scripts/certi_easy.sh preflight" if vendor == "certi" else "./scripts/pitch_docker_easy.sh preflight"
+    require_vendor_preflight(vendor, operator_hint=operator_hint)
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
 def test_pitch_java_real_lifecycle_smoke(kind: str):
-    _require_real_rti_smoke()
+    _require_real_rti_smoke("pitch")
     try:
         runtime = launch_pitch_runtime()
     except BackendUnavailableError as exc:
@@ -55,12 +60,11 @@ def test_pitch_java_real_lifecycle_smoke(kind: str):
             disconnect_rtis=(rti,),
         )
     finally:
-        close_all(rti)
-        terminate_all(runtime)
+        shutdown_runtime_resources(close_resources=(rti,), runtime_resources=(runtime,))
 
 
 def test_certi_real_lifecycle_smoke():
-    _require_real_rti_smoke()
+    _require_real_rti_smoke("certi")
     federation_name = f"certi-smoke-{uuid.uuid4().hex[:8]}"
     fed = RecordingFederateAmbassador()
     try:
@@ -92,11 +96,11 @@ def test_certi_real_lifecycle_smoke():
             disconnect_rtis=(rti,),
         )
     finally:
-        close_all(rti)
+        shutdown_runtime_resources(close_resources=(rti,))
 
 
 def test_certi_real_exchange_smoke():
-    _require_real_rti_smoke()
+    _require_real_rti_smoke("certi")
     try:
         smoke_fom = discover_certi_smoke_fom()
         rtig = launch_certi_rtig(verbose=0)
@@ -155,13 +159,143 @@ def test_certi_real_exchange_smoke():
             disconnect_rtis=(subscriber, publisher),
         )
     finally:
-        close_all(subscriber, publisher)
-        terminate_all(rtig)
+        shutdown_runtime_resources(close_resources=(subscriber, publisher), runtime_resources=(rtig,))
+
+
+def test_certi_real_save_restore_smoke():
+    _require_real_rti_smoke("certi")
+    try:
+        smoke_fom = discover_certi_smoke_fom()
+        rtig = launch_certi_rtig(verbose=0)
+    except BackendUnavailableError as exc:
+        pytest.skip(str(exc))
+
+    federation_name = f"certi-save-restore-{uuid.uuid4().hex[:8]}"
+    save_name = f"CERTI-SAVE-{uuid.uuid4().hex[:8]}"
+    leader_fed = RecordingFederateAmbassador()
+    wing_fed = RecordingFederateAmbassador()
+    leader = None
+    wing = None
+    try:
+        with reserve_udp_pair() as lease:
+            leader_udp_port, wing_udp_port = lease.ports
+        leader = create_rti_ambassador(
+            "certi", launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=leader_udp_port
+        )
+        wing = create_rti_ambassador(
+            "certi", launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=wing_udp_port
+        )
+        leader.connect(leader_fed, CallbackModel.HLA_EVOKED)
+        wing.connect(wing_fed, CallbackModel.HLA_EVOKED)
+        leader.create_federation_execution(federation_name, [smoke_fom], "HLAinteger64Time")
+        leader.join_federation_execution("Leader", "SaveRestoreFederate", federation_name)
+        wing.join_federation_execution("Wing", "SaveRestoreFederate", federation_name)
+
+        leader.request_federation_save(save_name)
+        for _ in range(16):
+            leader.evoke_multiple_callbacks(0.0, 0.05)
+            wing.evoke_multiple_callbacks(0.0, 0.05)
+        assert leader_fed.last_callback("initiateFederateSave") is not None
+        assert wing_fed.last_callback("initiateFederateSave") is not None
+
+        leader.federate_save_begun()
+        wing.federate_save_begun()
+        leader.federate_save_complete()
+        wing.federate_save_complete()
+        for _ in range(16):
+            leader.evoke_multiple_callbacks(0.0, 0.05)
+            wing.evoke_multiple_callbacks(0.0, 0.05)
+        assert leader_fed.last_callback("federationSaved") is not None
+
+        leader.request_federation_restore(save_name)
+        for _ in range(16):
+            leader.evoke_multiple_callbacks(0.0, 0.05)
+            wing.evoke_multiple_callbacks(0.0, 0.05)
+        assert leader_fed.last_callback("requestFederationRestoreSucceeded") is not None
+        assert wing_fed.last_callback("initiateFederateRestore") is not None
+
+        leader.federate_restore_complete()
+        wing.federate_restore_complete()
+        for _ in range(16):
+            leader.evoke_multiple_callbacks(0.0, 0.05)
+            wing.evoke_multiple_callbacks(0.0, 0.05)
+        assert leader_fed.last_callback("federationRestored") is not None
+
+        cleanup_federation(
+            federation_name,
+            destroyer=leader,
+            destroyer_resign_action=ResignAction.NO_ACTION,
+            remaining_resignations=((wing, ResignAction.NO_ACTION),),
+            disconnect_rtis=(wing, leader),
+        )
+    finally:
+        shutdown_runtime_resources(close_resources=(wing, leader), runtime_resources=(rtig,))
+
+
+def test_certi_real_ddm_smoke():
+    _require_real_rti_smoke("certi")
+    try:
+        smoke_fom = discover_certi_smoke_fom()
+        rtig = launch_certi_rtig(verbose=0)
+    except BackendUnavailableError as exc:
+        pytest.skip(str(exc))
+
+    federation_name = f"certi-ddm-{uuid.uuid4().hex[:8]}"
+    sender_fed = SuiteRecordingFederateAmbassador(profile="certi", scenario="ddm-probe", role="sender")
+    receiver_fed = SuiteRecordingFederateAmbassador(profile="certi", scenario="ddm-probe", role="receiver")
+    sender = None
+    receiver = None
+    try:
+        with reserve_udp_pair() as lease:
+            sender_udp_port, receiver_udp_port = lease.ports
+        sender = create_rti_ambassador(
+            "certi", launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=sender_udp_port
+        )
+        receiver = create_rti_ambassador(
+            "certi", launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=receiver_udp_port
+        )
+        summary = run_suite_ddm_scenario(
+            sender,
+            receiver,
+            config={
+                "federation_name": federation_name,
+                "fom_modules": (smoke_fom,),
+                "logical_time_implementation_name": "HLAfloat64Time",
+                "lookahead": HLAfloat64Interval(1.0),
+                "source_near": RangeBounds(10, 20),
+                "source_far": RangeBounds(30, 40),
+                "target_bounds": RangeBounds(15, 25),
+                "interaction_class_name": "MsgR",
+                "parameter_name": "MsgDataR",
+                "far_payload": b"far",
+                "far_tag": b"far-tag",
+                "far_time": HLAfloat64Time(2.0),
+                "near_payload": b"near",
+                "near_tag": b"near-tag",
+                "near_time": HLAfloat64Time(3.0),
+                "grant_time": HLAfloat64Time(10.0),
+                "next_request_time": HLAfloat64Time(10.0),
+            },
+            sender_federate=sender_fed,
+            receiver_federate=receiver_fed,
+        )
+        assert summary["received_count"] == 1
+        assert summary["received_payload"] == {"MsgDataR": "near"}
+
+        cleanup_federation(
+            federation_name,
+            destroyer=sender,
+            destroyer_resign_action=ResignAction.NO_ACTION,
+            remaining_resignations=((receiver, ResignAction.NO_ACTION),),
+            disconnect_rtis=(receiver, sender),
+        )
+    finally:
+        shutdown_runtime_resources(close_resources=(receiver, sender), runtime_resources=(rtig,))
 
 
 @pytest.mark.parametrize("kind", ["certi-jpype", "certi-py4j"])
 def test_certi_java_profile_real_lifecycle_smoke(kind: str):
-    _require_real_rti_smoke()
+    _require_real_rti_smoke("certi")
     federation_name = f"{kind}-smoke-{uuid.uuid4().hex[:8]}"
     fed = RecordingFederateAmbassador()
     try:
@@ -194,13 +328,12 @@ def test_certi_java_profile_real_lifecycle_smoke(kind: str):
             disconnect_rtis=(rti,),
         )
     finally:
-        close_all(rti)
-        terminate_all(rtig)
+        shutdown_runtime_resources(close_resources=(rti,), runtime_resources=(rtig,))
 
 
 @pytest.mark.parametrize("kind", ["certi-jpype", "certi-py4j"])
 def test_certi_java_profile_real_exchange_smoke(kind: str):
-    _require_real_rti_smoke()
+    _require_real_rti_smoke("certi")
     try:
         smoke_fom = discover_certi_smoke_fom()
         rtig = launch_certi_rtig(verbose=0)
@@ -259,13 +392,131 @@ def test_certi_java_profile_real_exchange_smoke(kind: str):
             disconnect_rtis=(subscriber, publisher),
         )
     finally:
-        close_all(subscriber, publisher)
-        terminate_all(rtig)
+        shutdown_runtime_resources(close_resources=(subscriber, publisher), runtime_resources=(rtig,))
+
+
+@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+def test_pitch_java_real_save_restore_smoke(kind: str):
+    _require_real_rti_smoke("pitch")
+    try:
+        runtime = launch_pitch_runtime()
+    except BackendUnavailableError as exc:
+        pytest.skip(str(exc))
+
+    federation_name = f"{kind}-save-restore-{uuid.uuid4().hex[:8]}"
+    save_name = f"PITCH-SAVE-{uuid.uuid4().hex[:8]}"
+    leader_fed = RecordingFederateAmbassador()
+    wing_fed = RecordingFederateAmbassador()
+    leader = None
+    wing = None
+    try:
+        leader = create_rti_ambassador(kind)
+        wing = create_rti_ambassador(kind)
+        leader.connect(leader_fed, CallbackModel.HLA_EVOKED)
+        wing.connect(wing_fed, CallbackModel.HLA_EVOKED)
+        leader.create_federation_execution(federation_name, ["hla2010:VendorSmokeFOM.xml"], "HLAinteger64Time")
+        leader.join_federation_execution("Leader", "SaveRestoreFederate", federation_name)
+        wing.join_federation_execution("Wing", "SaveRestoreFederate", federation_name)
+
+        leader.request_federation_save(save_name)
+        for _ in range(16):
+            leader.evoke_multiple_callbacks(0.0, 0.05)
+            wing.evoke_multiple_callbacks(0.0, 0.05)
+        assert leader_fed.last_callback("initiateFederateSave") is not None
+        assert wing_fed.last_callback("initiateFederateSave") is not None
+
+        leader.federate_save_begun()
+        wing.federate_save_begun()
+        leader.federate_save_complete()
+        wing.federate_save_complete()
+        for _ in range(16):
+            leader.evoke_multiple_callbacks(0.0, 0.05)
+            wing.evoke_multiple_callbacks(0.0, 0.05)
+        assert leader_fed.last_callback("federationSaved") is not None
+
+        leader.request_federation_restore(save_name)
+        for _ in range(16):
+            leader.evoke_multiple_callbacks(0.0, 0.05)
+            wing.evoke_multiple_callbacks(0.0, 0.05)
+        assert leader_fed.last_callback("requestFederationRestoreSucceeded") is not None
+        assert wing_fed.last_callback("initiateFederateRestore") is not None
+
+        leader.federate_restore_complete()
+        wing.federate_restore_complete()
+        for _ in range(16):
+            leader.evoke_multiple_callbacks(0.0, 0.05)
+            wing.evoke_multiple_callbacks(0.0, 0.05)
+        assert leader_fed.last_callback("federationRestored") is not None
+
+        cleanup_federation(
+            federation_name,
+            destroyer=leader,
+            destroyer_resign_action=ResignAction.NO_ACTION,
+            remaining_resignations=((wing, ResignAction.NO_ACTION),),
+            disconnect_rtis=(wing, leader),
+        )
+    finally:
+        shutdown_runtime_resources(close_resources=(wing, leader), runtime_resources=(runtime,))
+
+
+@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+def test_pitch_java_real_ddm_smoke(kind: str):
+    _require_real_rti_smoke("pitch")
+    try:
+        runtime = launch_pitch_runtime()
+    except BackendUnavailableError as exc:
+        pytest.skip(str(exc))
+
+    federation_name = f"{kind}-ddm-{uuid.uuid4().hex[:8]}"
+    sender_fed = SuiteRecordingFederateAmbassador(profile=kind, scenario="ddm-probe", role="sender")
+    receiver_fed = SuiteRecordingFederateAmbassador(profile=kind, scenario="ddm-probe", role="receiver")
+    sender = None
+    receiver = None
+    try:
+        sender = create_rti_ambassador(kind)
+        receiver = create_rti_ambassador(kind)
+        summary = run_suite_ddm_scenario(
+            sender,
+            receiver,
+            config={
+                "federation_name": federation_name,
+                "fom_modules": ("hla2010:VendorSmokeFOM.xml",),
+                "logical_time_implementation_name": "HLAinteger64Time",
+                "lookahead": HLAinteger64Interval(1),
+                "source_near": RangeBounds(10, 20),
+                "source_far": RangeBounds(30, 40),
+                "target_bounds": RangeBounds(15, 25),
+                "interaction_class_name": "HLAinteractionRoot.SmokeInteraction",
+                "parameter_name": "Message",
+                "far_payload": b"far",
+                "far_tag": b"far-tag",
+                "far_time": HLAinteger64Time(2),
+                "near_payload": b"near",
+                "near_tag": b"near-tag",
+                "near_time": HLAinteger64Time(3),
+                "grant_time": HLAinteger64Time(10),
+                "next_request_time": HLAinteger64Time(10),
+            },
+            sender_federate=sender_fed,
+            receiver_federate=receiver_fed,
+        )
+        assert summary["received_count"] == 1
+        assert summary["received_payload"] == {"Message": "near"}
+
+        cleanup_federation(
+            federation_name,
+            destroyer=sender,
+            destroyer_resign_action=ResignAction.NO_ACTION,
+            remaining_resignations=((receiver, ResignAction.NO_ACTION),),
+            disconnect_rtis=(receiver, sender),
+        )
+    finally:
+        shutdown_runtime_resources(close_resources=(receiver, sender), runtime_resources=(runtime,))
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
 def test_pitch_java_real_exchange_smoke(kind: str):
-    _require_real_rti_smoke()
+    _require_real_rti_smoke("pitch")
     try:
         runtime = launch_pitch_runtime()
     except BackendUnavailableError as exc:
@@ -309,5 +560,4 @@ def test_pitch_java_real_exchange_smoke(kind: str):
             disconnect_rtis=(subscriber, publisher),
         )
     finally:
-        close_all(subscriber, publisher)
-        terminate_all(runtime)
+        shutdown_runtime_resources(close_resources=(subscriber, publisher), runtime_resources=(runtime,))

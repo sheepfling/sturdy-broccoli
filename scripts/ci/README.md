@@ -29,6 +29,14 @@ The rule is simple:
 - `seed_suite.sh`: default local seed suite
 - `vendor_runtime_smoke.sh`: CERTI and Pitch smoke/profile runner with mandatory preflight and default JSON artifact emission
 - `vendor_green.sh`: strict vendor-runtime gate for dedicated real-runtime runners
+- `vendor_edge_matrix.sh`: explicit high-value vendor probe packet across time-query, negotiated ownership, save/restore, and DDM slices
+- `vendor_probe_stability.sh`: repeated-run probe harness for dedicated runner stability evidence
+- `vendor_probe_review.sh`: repeated-run probe wrapper that also writes promotion review and refreshes the parity packet
+- `write_vendor_probe_promotion_review.py`: summarize which repeated-run probe slices are actual promotion-review candidates
+- `emit_vendor_runtime_reports.sh`: shared post-lane runtime-status and parity artifact emitter
+- `write_vendor_runtime_job_summary.py`: render normalized runtime-status artifacts into a GitHub job summary
+- `check_vendor_runtime_ci_state.py`: validate dedicated runner runtime env/path state before vendor-green jobs
+- `../check_vendor_runner_template_drift.py`: verify the runner provisioning template, validator profiles, and workflow env contracts stay aligned
 - `section8_backend_matrix_gate.sh`: Section 8 cross-backend matrix gate
 - `target_radar_backend_matrix.sh`: target/radar backend matrix gate
 - `target_radar_proof.sh`: target/radar proof packet gate
@@ -41,7 +49,15 @@ The rule is simple:
 - `vendor_green.sh` is the strict real-runtime path: it sets
   `HLA2010_VENDOR_PREFLIGHT_STRICT=1` and fails immediately when CERTI or Pitch
   prerequisites are missing or blocked.
+- Both wrappers now emit normalized post-run artifacts:
+  - `analysis/vendor_runtime_status/...`
+  - `analysis/vendor_parity_artifacts/...`
+  even when the underlying lane fails or skips after preflight.
 - `.github/workflows/ci.yml` now reflects that split directly:
+  it also runs a lightweight `vendor-runner-contract` guard so the runner
+  template, validator profiles, and workflow env blocks do not drift apart.
+  Specifically:
+  `vendor-runner-contract` runs `python3 scripts/check_vendor_runner_template_drift.py`;
   `repo-green` runs `./scripts/ci/repo_green.sh`, while the vendor-runtime jobs
   run `./scripts/ci/vendor_green.sh ...`.
 

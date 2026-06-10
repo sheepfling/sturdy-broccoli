@@ -8,8 +8,8 @@ from time_management_requirements import TIME_REQUIREMENTS
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MATRIX_CSV = ROOT / "reports/time_management_compliance_matrix.csv"
-BACKEND_CSV = ROOT / "reports/time_management_backend_comparison.csv"
+MATRIX_CSV = ROOT / "analysis/time_management/time_management_compliance_matrix.csv"
+BACKEND_CSV = ROOT / "analysis/time_management/time_management_backend_comparison.csv"
 TEST_PATHS = [
     ROOT / "tests/time/test_galt.py",
     ROOT / "tests/time/test_lits.py",
@@ -99,4 +99,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

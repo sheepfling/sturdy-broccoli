@@ -9,7 +9,7 @@ hla2010_shell_init "$0"
 
 usage() {
   cat <<'EOF'
-usage: ./bootstrap [python|certi|pitch|all|doctor]
+usage: ./scripts/bootstrap_profile.sh [python|certi|pitch|all|doctor]
 
 Profiles:
   python  bootstrap the editable Python package and lean test dependencies
@@ -36,7 +36,7 @@ bootstrap_certi_profile() {
 
 bootstrap_pitch_profile() {
   hla2010_shell_log "bootstrap pitch"
-  "$ROOT_DIR/pitch" install
+  "$ROOT_DIR/scripts/pitch_docker_easy.sh" install
 }
 
 case "${1:-python}" in

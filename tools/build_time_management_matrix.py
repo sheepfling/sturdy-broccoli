@@ -19,8 +19,8 @@ TEST_PATHS = [
 ]
 MATRIX_MD = Path("docs/compliance/hla1516_2010_time_management_matrix.md")
 KNOWN_LIMITS_MD = Path("docs/compliance/time_management_known_limits.md")
-MATRIX_CSV = Path("reports/time_management_compliance_matrix.csv")
-BACKEND_CSV = Path("reports/time_management_backend_comparison.csv")
+MATRIX_CSV = Path("analysis/time_management/time_management_compliance_matrix.csv")
+BACKEND_CSV = Path("analysis/time_management/time_management_backend_comparison.csv")
 
 
 def _literal_requirement_args(call: ast.Call) -> list[str]:
@@ -177,4 +177,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -6,7 +6,7 @@ from tests.vendors.certi_real_backend_matrix_support import (
     _normalized_exchange_profile,
     _require_real_rti_smoke,
 )
-from tests.vendors.runtime_support import cleanup_federation, close_all, reserve_udp_pair, terminate_all
+from tests.vendors.runtime_support import assert_all_terminated, cleanup_federation, close_all, reserve_udp_pair, terminate_all
 
 @pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
@@ -70,6 +70,7 @@ def test_certi_backend_exchange_matrix(kind: str, time_factory_name: str):
     finally:
         close_all(subscriber, publisher)
         terminate_all(rtig)
+        assert_all_terminated(rtig)
 
 
 @pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
@@ -127,6 +128,7 @@ def test_certi_backend_synchronization_matrix(kind: str):
     finally:
         close_all(wing, leader)
         terminate_all(rtig)
+        assert_all_terminated(rtig)
 
 
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
@@ -173,6 +175,7 @@ def test_certi_time_semantic_profile_matches_across_native_and_java_facades(time
         finally:
             close_all(subscriber, publisher)
             terminate_all(rtig)
+            assert_all_terminated(rtig)
 
     assert profiles["certi-jpype"] == profiles["certi"]
     assert profiles["certi-py4j"] == profiles["certi"]

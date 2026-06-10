@@ -85,6 +85,7 @@ emit_json_payload() {
   PITCH_FEDPRO_PORT_STATUS="$fedpro_port_status" \
   PITCH_FEDPRO_PORT_DETAIL="$fedpro_port_detail" \
   PITCH_RUNTIME_HOME="$runtime_home_detail" \
+  PITCH_RUNTIME_MARKER="$runtime_marker_detail" \
   PITCH_IMAGE_NAME="$IMAGE_NAME" \
   PITCH_CONTAINER_NAME="$CONTAINER_NAME" \
   PITCH_CRC_PORT="$CRC_PORT" \
@@ -134,9 +135,13 @@ payload = {
     ],
     "runtime": {
         "home": os.environ.get("PITCH_RUNTIME_HOME"),
+        "required_marker": os.environ.get("PITCH_RUNTIME_MARKER"),
         "user_home": os.environ.get("PITCH_USER_HOME"),
         "image_name": os.environ.get("PITCH_IMAGE_NAME"),
         "container_name": os.environ.get("PITCH_CONTAINER_NAME"),
+    },
+    "required_markers": {
+        "runtime_home": os.environ.get("PITCH_RUNTIME_MARKER"),
     },
     "ports": {
         "crc": {
@@ -192,6 +197,7 @@ bundle_status="ok"
 bundle_detail="ok"
 user_home_detail=""
 runtime_home_detail=""
+runtime_marker_detail=""
 crc_port_status="ok"
 crc_port_detail="ok"
 fedpro_port_status="ok"
@@ -231,10 +237,20 @@ fi
 
 if resolved_home="$(resolve_pitch_home)"; then
   runtime_home_detail="$resolved_home"
-  bundle_detail="ok: $resolved_home"
-  user_home_detail="${HLA2010_PITCH_USER_HOME:-/private/tmp/hla-2010/pitch-user-home}"
-  if [[ "$OUTPUT_JSON" -eq 0 ]]; then
-    show_hint "pitch bundle" "$bundle_detail"
+  runtime_marker_detail="$resolved_home/lib/prtifull.jar"
+  if [[ -f "$runtime_marker_detail" ]]; then
+    bundle_detail="ok: $resolved_home"
+    user_home_detail="${HLA2010_PITCH_USER_HOME:-$ROOT_DIR/.local/pitch/user-home}"
+    if [[ "$OUTPUT_JSON" -eq 0 ]]; then
+      show_hint "pitch bundle" "$bundle_detail"
+    fi
+  else
+    status=1
+    bundle_status="blocked"
+    bundle_detail="blocked: required runtime marker is missing: $runtime_marker_detail"
+    if [[ "$OUTPUT_JSON" -eq 0 ]]; then
+      show_hint "pitch bundle" "$bundle_detail"
+    fi
   fi
 else
   status=1
@@ -253,8 +269,8 @@ else
   fi
 fi
 
-if [[ -d "${resolved_home:-}" ]]; then
-  user_home_detail="${HLA2010_PITCH_USER_HOME:-/private/tmp/hla-2010/pitch-user-home}"
+if [[ -d "${resolved_home:-}" && "$bundle_status" == "ok" ]]; then
+  user_home_detail="${HLA2010_PITCH_USER_HOME:-$ROOT_DIR/.local/pitch/user-home}"
   if [[ "$OUTPUT_JSON" -eq 0 ]]; then
     show_hint "pitch user home" "ok: $user_home_detail"
   fi
@@ -300,8 +316,8 @@ fi
 result="not ready; fix the blocked prerequisite(s) above and rerun"
 next_step="fix the blocked prerequisite(s) above and rerun"
 if [[ $status -eq 0 ]]; then
-  result="ready to run ./pitch install or ./pitch all"
-  next_step="./pitch install or ./pitch all"
+  result="ready to run ./scripts/pitch_docker_easy.sh install or ./scripts/pitch_docker_easy.sh all"
+  next_step="./scripts/pitch_docker_easy.sh install or ./scripts/pitch_docker_easy.sh all"
 fi
 
 if [[ "$OUTPUT_JSON" -eq 1 ]]; then

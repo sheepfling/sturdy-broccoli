@@ -8,10 +8,10 @@ used by this repository.
 If you want the simplest operator flow:
 
 ```bash
-./certi-easy preflight
-./certi-easy install
-./certi-easy doctor
-./certi-easy smoke compare
+./scripts/certi_easy.sh preflight
+./scripts/certi_easy.sh install
+./scripts/certi_easy.sh doctor
+./scripts/certi_easy.sh smoke compare
 ```
 
 That one wrapper handles:
@@ -39,9 +39,9 @@ the repo-local vendored CERTI build, not a pristine upstream install.
 Default discovery order:
 
 - `HLA2010_CERTI_PREFIX`, if set
-- repo-local `CERTI-install/`
+- repo-local `.local/certi/patched/install/`
 - libraries from `HLA2010_CERTI_BUILD_ROOT`, if set
-- repo-local `CERTI-build/` as a build-overlay library source
+- repo-local `.local/certi/patched/build/` as a build-overlay library source
 
 The normal local rebuild path is:
 
@@ -67,7 +67,7 @@ python3 -m pytest -q tests/vendors/test_certi_real_backend_matrix.py -k upstream
 ```
 
 The upstream selector intentionally does not fall back to repo-local
-`CERTI-build/` libraries. If upstream needs a build overlay, set
+`.local/certi/patched/build/` libraries. If upstream needs a build overlay, set
 `HLA2010_CERTI_UPSTREAM_BUILD_ROOT` explicitly.
 
 For the patched baseline, either use the repo-local default or set:
@@ -88,9 +88,13 @@ Use these as the standard operator commands for CERTI evidence:
 ```bash
 ./scripts/rebuild_certi.sh
 ./scripts/rebuild_certi_upstream.sh
-./certi-easy smoke patched
-./certi-easy smoke upstream
-./certi-easy smoke compare
+./scripts/certi_easy.sh smoke patched
+./scripts/certi_easy.sh smoke upstream
+./scripts/certi_easy.sh smoke compare
+./scripts/certi_easy.sh save-restore
+./scripts/certi_easy.sh save-restore-probe
+./scripts/certi_easy.sh ddm
+./scripts/certi_easy.sh ddm-probe
 ```
 
 Route meaning:
@@ -118,11 +122,11 @@ Reason:
   smoke-stable slices
 - the test is useful as a targeted matrix/regression probe
 - it is not yet stable enough to advertise as part of
-  `./certi-easy smoke compare`
+  `./scripts/certi_easy.sh smoke compare`
 
 Operator rule:
 
-- use `./certi-easy smoke compare` for the honest stable baseline
+- use `./scripts/certi_easy.sh smoke compare` for the honest stable baseline
 - use the deeper ownership matrix tests when you are explicitly working on
   negotiated-ownership parity
 
@@ -131,13 +135,13 @@ Session prerequisite:
 - These commands only produce real runtime evidence when local loopback TCP
   bind/connect is permitted for `127.0.0.1`.
 - In sessions where that preflight fails, the compare route skips with:
-  `Local socket bind is not permitted for 127.0.0.1. Run ./certi-easy preflight to verify local CERTI prerequisites.`
+  `Local socket bind is not permitted for 127.0.0.1. Run ./scripts/certi_easy.sh preflight to verify local CERTI prerequisites.`
 - That skip is an execution-environment limitation, not a CERTI baseline result.
 - If the preflight reports `environment: loopback-blocked`, use an unrestricted
   local terminal or an approved unsandboxed command to retest.
 
 Current named-baseline outcome from the runnable compare route
-`./certi-easy smoke compare`:
+`./scripts/certi_easy.sh smoke compare`:
 
 - `certi-upstream`:
   - federation create/join succeeds, but the first `queryGALT` tears down the
@@ -221,5 +225,16 @@ Current named-baseline outcome from the runnable compare route
   evidence from pristine upstream CERTI evidence.
 - Prefer adding fail-fast real-runtime probes before promoting any CERTI row to
   `yes`.
+- Use `./scripts/certi_easy.sh save-restore` when you want the current explicit status for
+  that missing slice. Today it reports a machine-readable known-gap profile
+  after preflight instead of pretending the route is absent.
+- Use `./scripts/certi_easy.sh save-restore-probe` when you want the
+  current narrow executable CERTI save/restore probe. Treat it as deeper probe
+  evidence, not as a promoted stable slice yet.
+- Use `./scripts/certi_easy.sh ddm` for the same explicit known-gap treatment on the
+  current missing DDM slice.
+- Use `./scripts/certi_easy.sh ddm-probe` when you want the current narrow executable
+  CERTI DDM probe. Treat it as deeper probe evidence, not as a promoted stable
+  slice yet.
 - Treat Pitch as a separate vendor baseline once activation/runtime startup is
   reliable.

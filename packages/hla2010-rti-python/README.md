@@ -9,7 +9,7 @@ compatibility facade that re-exports these modules during the migration.
 Bootstrap the repo root before working in this package:
 
 ```bash
-./bootstrap python
+./scripts/bootstrap_profile.sh python
 source .venv/bin/activate
 ```
 

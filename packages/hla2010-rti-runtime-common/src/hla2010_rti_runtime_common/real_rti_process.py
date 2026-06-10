@@ -12,7 +12,7 @@ from hla2010.backends.base import BackendUnavailableError
 def _loopback_remediation(host: str, port: int | None = None) -> str:
     target = f"{host}:{port}" if port is not None else host
     return (
-        f"Run `./certi-easy preflight` to verify local CERTI prerequisites. "
+        f"Run `./scripts/certi_easy.sh preflight` to verify local CERTI prerequisites. "
         f"Real RTI smoke needs loopback TCP bind/connect permission for {target}."
     )
 
