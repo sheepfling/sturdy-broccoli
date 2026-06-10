@@ -14,7 +14,9 @@ from hla2010.handles import (
     ParameterHandle,
     TransportationTypeHandle,
 )
-from hla2010.java_shim import (
+from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
+from hla2010_rti_java_common import JavaValueConverter
+from hla2010_rti_java_common.java_shim_types import (
     JavaAttributeHandle,
     JavaByteArray,
     JavaEnumConstant,
@@ -28,8 +30,6 @@ from hla2010.java_shim import (
     JavaParameterHandle,
     JavaTransportationTypeHandle,
 )
-from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from hla2010_rti_java_common import JavaValueConverter
 
 
 def python_bytes(value: Any) -> bytes:

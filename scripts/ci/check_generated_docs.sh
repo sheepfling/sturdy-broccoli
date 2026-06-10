@@ -23,3 +23,5 @@ if ! cmp -s "$DOC_PATH" "$TMP_DOC"; then
   printf '%s\n' "run: python3 scripts/update_rti_options_matrix.py" >&2
   exit 1
 fi
+
+python3 "$ROOT_DIR/scripts/ci/check_doc_links.py"

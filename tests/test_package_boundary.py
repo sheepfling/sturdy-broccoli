@@ -1,6 +1,19 @@
 from __future__ import annotations
 
+import os
+import subprocess
+import sys
+from pathlib import Path
+
 from setuptools import find_packages
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE_ROOTS = (
+    ROOT / "src",
+    ROOT / "packages/hla2010-rti-python/src",
+    ROOT / "packages/hla2010-rti-backend-common/src",
+)
 
 
 def test_installable_package_excludes_repo_internal_testing_helpers():
@@ -50,5 +63,24 @@ def test_transitional_mega_package_includes_split_python_rti_package():
     assert "hla2010_rti_transport_rest" in rest_transport_packages
     assert "hla2010_fom_target_radar" in target_radar_packages
     assert "hla2010_fom_target_radar.scenarios" in target_radar_packages
-    assert "hla2010_fom_target_radar.testing" in target_radar_packages
+    assert "hla2010_fom_target_radar.testing" not in target_radar_packages
     assert "hla2010_verification_harness" in verification_harness_packages
+
+
+def test_core_and_python_backend_import_without_repo_root_on_pythonpath(tmp_path: Path):
+    env = dict(os.environ)
+    env["PYTHONPATH"] = os.pathsep.join(str(path) for path in SOURCE_ROOTS)
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "import hla2010; from hla2010 import rti; ambassador = rti.create_rti_ambassador('python'); print(hla2010.__version__, ambassador.backend_info.kind)",
+        ],
+        cwd=tmp_path,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert "python/in-memory" in result.stdout

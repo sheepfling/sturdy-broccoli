@@ -24,20 +24,20 @@ PREFLIGHT_ARTIFACT_DIR="${HLA2010_PREFLIGHT_ARTIFACT_DIR:-$ROOT_DIR/analysis/pre
 usage() {
   cat <<'EOF'
 Usage:
-  ./scripts/certi_easy.sh install
-  ./scripts/certi_easy.sh preflight [--json] [--json-file FILE]
-  ./scripts/certi_easy.sh doctor
-  ./scripts/certi_easy.sh paths
-  ./scripts/certi_easy.sh build [patched|upstream|all]
-  ./scripts/certi_easy.sh run [patched|upstream] [rtig|rtia] [args...]
-  ./scripts/certi_easy.sh smoke [patched|upstream|compare]
-  ./scripts/certi_easy.sh save-restore
-  ./scripts/certi_easy.sh save-restore-probe
-  ./scripts/certi_easy.sh save-restore-review [repeat-count]
-  ./scripts/certi_easy.sh ddm
-  ./scripts/certi_easy.sh ddm-probe
-  ./scripts/certi_easy.sh ddm-review [repeat-count]
-  ./scripts/certi_easy.sh test [patched|upstream|compare]
+  ./tools/certi-easy install
+  ./tools/certi-easy preflight [--json] [--json-file FILE]
+  ./tools/certi-easy doctor
+  ./tools/certi-easy paths
+  ./tools/certi-easy build [patched|upstream|all]
+  ./tools/certi-easy run [patched|upstream] [rtig|rtia] [args...]
+  ./tools/certi-easy smoke [patched|upstream|compare]
+  ./tools/certi-easy save-restore
+  ./tools/certi-easy save-restore-probe
+  ./tools/certi-easy save-restore-review [repeat-count]
+  ./tools/certi-easy ddm
+  ./tools/certi-easy ddm-probe
+  ./tools/certi-easy ddm-review [repeat-count]
+  ./tools/certi-easy test [patched|upstream|compare]
 
 What these mean:
   install   bootstrap Python, build patched CERTI, clone/build pristine upstream CERTI
@@ -54,10 +54,10 @@ What these mean:
   test      alias for smoke
 
 Simple path:
-  ./scripts/certi_easy.sh install
-  ./scripts/certi_easy.sh preflight [--json] [--json-file FILE]
-  ./scripts/certi_easy.sh doctor
-  ./scripts/certi_easy.sh smoke compare
+  ./tools/certi-easy install
+  ./tools/certi-easy preflight [--json] [--json-file FILE]
+  ./tools/certi-easy doctor
+  ./tools/certi-easy smoke compare
 EOF
 }
 
@@ -67,7 +67,7 @@ die() {
 }
 
 require_venv() {
-  [[ -x "$VENV_PYTHON" ]] || die "missing .venv. Run ./scripts/certi_easy.sh install first."
+  [[ -x "$VENV_PYTHON" ]] || die "missing .venv. Run ./tools/certi-easy install first."
 }
 
 preflight_certi() {
@@ -208,7 +208,7 @@ if "will skip" in result and len(next_steps) > 1:
 elif next_steps:
     next_step = next_steps[0]
 else:
-    next_step = "./scripts/certi_easy.sh preflight"
+    next_step = "./tools/certi-easy preflight"
 print(f"environment: {environment}")
 print(f"result: {result}")
 print(f"next step: {next_step}")
@@ -314,7 +314,7 @@ case "$COMMAND" in
     run_build "${2:-all}"
     ;;
   run)
-    [[ $# -ge 3 ]] || die "usage: ./scripts/certi_easy.sh run [patched|upstream] [rtig|rtia] [args...]"
+    [[ $# -ge 3 ]] || die "usage: ./tools/certi-easy run [patched|upstream] [rtig|rtia] [args...]"
     run_status=0
     if run_variant_binary "$2" "$3" "${@:4}"; then
       run_status=0

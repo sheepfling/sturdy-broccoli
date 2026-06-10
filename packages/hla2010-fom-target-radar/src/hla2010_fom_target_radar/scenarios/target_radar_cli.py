@@ -5,8 +5,7 @@ from collections.abc import Callable, Sequence
 from importlib import resources
 from typing import Any
 
-from hla2010.backends.python import InMemoryRTIEngine
-from hla2010.rti import create_rti_ambassador
+from hla2010.rti import create_python_pair, create_rti_ambassador
 
 
 def target_radar_fom_path() -> str:
@@ -30,25 +29,18 @@ def make_target_radar_factory(
     normalized = backend.strip().lower()
     backend_options = dict(backend_options or {})
     if normalized in {"python", "inmemory", "in-memory"}:
-        engine = InMemoryRTIEngine(name="target-radar-engine")
+        pair_by_role: dict[str, Any] = {}
 
-        def factory(_role: str) -> Any:
-            return create_rti_ambassador("python", engine=engine)
-
-        return factory
-
-    if normalized in {"java-shim-jpype", "java-shim-py4j"}:
-        from hla2010.testing.java_shim_kernel import SharedJavaShimKernel
-
-        kernel = SharedJavaShimKernel()
-
-        def factory(_role: str) -> Any:
-            return create_rti_ambassador(normalized, kernel=kernel, shared=True)
+        def factory(role: str) -> Any:
+            if role not in pair_by_role:
+                target_rti, radar_rti = create_python_pair()
+                pair_by_role.update({"target": target_rti, "radar": radar_rti})
+            return pair_by_role[role]
 
         return factory
 
     if normalized in {"jpype", "java-jpype"}:
-        from hla2010.backends.jpype import JPypeConfig, rti_ambassador
+        from hla2010_rti_java_jpype import JPypeConfig, rti_ambassador
 
         jpype_options = dict(backend_options)
         classpath_list = [item for item in classpath if item]
@@ -64,7 +56,7 @@ def make_target_radar_factory(
         return factory
 
     if normalized in {"py4j", "java-py4j"}:
-        from hla2010.backends.py4j import Py4JConfig, rti_ambassador
+        from hla2010_rti_java_py4j import Py4JConfig, rti_ambassador
 
         py4j_options = dict(backend_options)
         py4j_options.setdefault("gateway_parameters", {"address": py4j_address, "port": py4j_port})

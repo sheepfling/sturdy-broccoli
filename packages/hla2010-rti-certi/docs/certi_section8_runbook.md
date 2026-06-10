@@ -11,10 +11,10 @@ runtime quirks without reading the deeper parity notes first.
 Run these commands first:
 
 ```bash
-./scripts/certi_easy.sh preflight
-./scripts/certi_easy.sh install
-./scripts/certi_easy.sh doctor
-./scripts/certi_easy.sh smoke compare
+./tools/certi-easy preflight
+./tools/certi-easy install
+./tools/certi-easy doctor
+./tools/certi-easy smoke compare
 ```
 
 Meaning:
@@ -48,19 +48,19 @@ stable slices.
 These are the easy, junior-friendly entrypoints:
 
 ```bash
-./scripts/certi_easy.sh preflight
-./scripts/certi_easy.sh install
-./scripts/certi_easy.sh doctor
-./scripts/certi_easy.sh smoke compare
-./scripts/certi_easy.sh smoke patched
-./scripts/certi_easy.sh smoke upstream
-./scripts/certi_easy.sh run patched rtig -v 0
-./scripts/certi_easy.sh run upstream rtig -v 0
+./tools/certi-easy preflight
+./tools/certi-easy install
+./tools/certi-easy doctor
+./tools/certi-easy smoke compare
+./tools/certi-easy smoke patched
+./tools/certi-easy smoke upstream
+./tools/certi-easy run patched rtig -v 0
+./tools/certi-easy run upstream rtig -v 0
 ```
 
-If you only remember one thing, remember `./scripts/certi_easy.sh`.
+If you only remember one thing, remember `./tools/certi-easy`.
 
-`./scripts/certi_easy.sh doctor` is the same path shape as `preflight`, but with the
+`./tools/certi-easy doctor` is the same path shape as `preflight`, but with the
 installed paths printed first so you can see what it is about to use.
 
 ## What Is Secondary
@@ -107,19 +107,19 @@ These are the runtime facts that matter most for day-to-day use:
 Run the preflight first:
 
 ```bash
-./scripts/certi_easy.sh preflight
+./tools/certi-easy preflight
 ```
 
 If the result says `real CERTI will skip`, the problem is the host/session, not
 the tests.
 
-If `./scripts/certi_easy.sh preflight` reports `environment: loopback-blocked`, this is a
+If `./tools/certi-easy preflight` reports `environment: loopback-blocked`, this is a
 Codex/session restriction rather than a repo bug. Use an unrestricted local
 terminal or an approved unsandboxed command to retest.
 
-For scripts or CI, `./scripts/certi_easy.sh preflight --json` emits machine-readable
+For scripts or CI, `./tools/certi-easy preflight --json` emits machine-readable
 status with `environment`, `result`, and per-check records. To write a file
-you can inspect or archive, use `./scripts/certi_easy.sh preflight --json-file ...`.
+you can inspect or archive, use `./tools/certi-easy preflight --json-file ...`.
 
 Dedicated CI runners now also validate explicit CERTI runtime state before
 `vendor-green` starts. The supported CI variables are:
@@ -143,7 +143,7 @@ python3 scripts/ci/check_vendor_runtime_ci_state.py --profile certi --json
 python3 scripts/ci/check_vendor_runtime_ci_state.py --profile matrix --json
 ```
 
-Even without `--json-file`, `./scripts/certi_easy.sh preflight` now persists the default
+Even without `--json-file`, `./tools/certi-easy preflight` now persists the default
 preflight artifact and normalized status reports under:
 
 - `analysis/preflight_artifacts/`
@@ -167,7 +167,7 @@ When you need the full Section 8 and ownership evidence, use the deeper
 matrices instead of the easy path:
 
 ```bash
-./scripts/certi_easy.sh preflight
+./tools/certi-easy preflight
 python3 -m pytest -q tests/time/test_section8_backend_matrix.py
 python3 -m pytest -q tests/vendors/test_certi_real_backend_matrix.py
 python3 -m pytest -q tests/vendors/test_certi_real_backend_ownership_matrix.py
@@ -176,4 +176,4 @@ python3 -m pytest -q tests/vendors/test_certi_real_backend_ownership_matrix.py
 
 Those are not the first commands a junior should start with, and they are not
 the supported first step on a fresh session. Confirm the operator/preflight
-path first with `./scripts/certi_easy.sh preflight`.
+path first with `./tools/certi-easy preflight`.

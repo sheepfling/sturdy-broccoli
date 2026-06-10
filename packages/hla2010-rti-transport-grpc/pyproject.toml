@@ -10,8 +10,6 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
   "hla2010-spec==0.13.0",
-  "hla2010-rti-python==0.13.0",
-  "hla2010-rti-certi==0.13.0",
   "hla2010-rti-transport-common==0.13.0",
   "grpcio",
 ]
@@ -35,5 +33,4 @@ role = "transport"
 transport_names = ["grpc"]
 source_roots = [
   "packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc",
-  "src/hla2010/backends/grpc_transport",
 ]

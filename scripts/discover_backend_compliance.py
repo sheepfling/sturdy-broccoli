@@ -5,10 +5,22 @@ import argparse
 import json
 import subprocess
 import sys
+from pathlib import Path
+import site
 
-import _bootstrap  # noqa: F401
 
-from hla2010.testing.backend_compliance_discovery import (  # noqa: E402
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def _bootstrap_workspace_imports() -> None:
+    for source_root in (REPO_ROOT / "src", *sorted((REPO_ROOT / "packages").glob("*/src"))):
+        if source_root.is_dir():
+            site.addsitedir(str(source_root))
+
+
+_bootstrap_workspace_imports()
+
+from hla2010_repo_internal.verification.backend_compliance_discovery import (
     build_discovery_payload,
     render_backend_compliance_catalog_text,
 )

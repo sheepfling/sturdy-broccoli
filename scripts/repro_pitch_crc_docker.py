@@ -7,10 +7,14 @@ import socket
 import subprocess
 import sys
 import time
+from pathlib import Path
 
-import _bootstrap  # noqa: F401
+from hla2010_rti_pitch_common.real_rti_pitch import (
+    discover_pitch_runtime,
+    prepare_pitch_user_home,
+)
 
-from hla2010.real_rti import discover_pitch_runtime, prepare_pitch_user_home
+REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 def _wait_for_port(host: str, port: int, timeout: float) -> bool:

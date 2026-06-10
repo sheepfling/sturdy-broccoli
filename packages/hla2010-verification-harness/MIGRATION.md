@@ -14,5 +14,6 @@ Canonical generic verification harness ownership now lives under:
 - `src/hla2010_verification_harness/two_federate_suite_summary.py`
 - `src/hla2010_verification_harness/two_federate_suite_writers.py`
 
-The root `src/hla2010/testing/` modules remain as compatibility facades while
-callers move toward the split package imports.
+The old `src/hla2010/testing/` facade has been removed. Callers should import
+generic verification helpers directly from the installable
+`hla2010-verification-harness` package.

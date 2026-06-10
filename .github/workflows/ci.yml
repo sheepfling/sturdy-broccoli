@@ -6,6 +6,28 @@ on:
   workflow_dispatch:
 
 jobs:
+  vendor-runner-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install contract-check environment
+        env:
+          HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
+        run: ./scripts/ci/install_python.sh
+      - name: Check vendor runner contract drift
+        run: python3 scripts/check_vendor_runner_template_drift.py
+      - name: Upload vendor runner contract artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vendor-runner-contract-artifacts
+          path: analysis/vendor_runner_template_drift/
+          if-no-files-found: ignore
+          retention-days: 14
+
   repo-green:
     runs-on: ubuntu-latest
     env:
@@ -23,6 +45,20 @@ jobs:
         env:
           HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
         run: ./scripts/ci/repo_green.sh
+      - name: Publish repo-green runtime summary
+        if: always()
+        run: python3 scripts/ci/write_vendor_runtime_job_summary.py --output "$GITHUB_STEP_SUMMARY"
+      - name: Upload repo-green runtime artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: repo-green-runtime-artifacts
+          path: |
+            analysis/preflight_artifacts/
+            analysis/vendor_runtime_status/
+            analysis/vendor_parity_artifacts/
+          if-no-files-found: ignore
+          retention-days: 14
 
   seed-suite:
     runs-on: ubuntu-latest
@@ -112,8 +148,10 @@ jobs:
     runs-on: macos-latest
     env:
       HLA2010_ENABLE_REAL_RTI_SMOKE: "1"
-      HLA2010_CERTI_PREFIX: ${{ vars.HLA2010_CERTI_PREFIX }}
-      HLA2010_CERTI_BUILD_ROOT: ${{ vars.HLA2010_CERTI_BUILD_ROOT }}
+      HLA2010_CERTI_PATCHED_PREFIX: ${{ vars.HLA2010_CERTI_PATCHED_PREFIX }}
+      HLA2010_CERTI_PATCHED_BUILD_ROOT: ${{ vars.HLA2010_CERTI_PATCHED_BUILD_ROOT }}
+      HLA2010_CERTI_PREFIX: ${{ vars.HLA2010_CERTI_PATCHED_PREFIX }}
+      HLA2010_CERTI_BUILD_ROOT: ${{ vars.HLA2010_CERTI_PATCHED_BUILD_ROOT }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -127,8 +165,28 @@ jobs:
         env:
           HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
         run: ./scripts/ci/install_python.sh
+      - name: Validate CERTI runtime state
+        run: python3 scripts/ci/check_vendor_runtime_ci_state.py --profile certi
       - name: Run required CERTI vendor-green profile
         run: ./scripts/ci/vendor_green.sh certi
+      - name: Publish CERTI runtime-state summary
+        if: always()
+        run: cat analysis/vendor_runtime_ci_state/certi/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Publish CERTI vendor-green runtime summary
+        if: always()
+        run: python3 scripts/ci/write_vendor_runtime_job_summary.py --output "$GITHUB_STEP_SUMMARY"
+      - name: Upload CERTI vendor-green artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: certi-vendor-green-artifacts
+          path: |
+            analysis/preflight_artifacts/
+            analysis/vendor_runtime_ci_state/
+            analysis/vendor_runtime_status/
+            analysis/vendor_parity_artifacts/
+          if-no-files-found: ignore
+          retention-days: 14
 
   pitch-runtime-required:
     runs-on: macos-latest
@@ -149,15 +207,39 @@ jobs:
         env:
           HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
         run: ./scripts/ci/install_python.sh
+      - name: Validate Pitch runtime state
+        run: python3 scripts/ci/check_vendor_runtime_ci_state.py --profile pitch
       - name: Run required Pitch vendor-green profile
         run: ./scripts/ci/vendor_green.sh pitch
+      - name: Publish Pitch runtime-state summary
+        if: always()
+        run: cat analysis/vendor_runtime_ci_state/pitch/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Publish Pitch vendor-green runtime summary
+        if: always()
+        run: python3 scripts/ci/write_vendor_runtime_job_summary.py --output "$GITHUB_STEP_SUMMARY"
+      - name: Upload Pitch vendor-green artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pitch-vendor-green-artifacts
+          path: |
+            analysis/preflight_artifacts/
+            analysis/vendor_runtime_ci_state/
+            analysis/vendor_runtime_status/
+            analysis/vendor_parity_artifacts/
+          if-no-files-found: ignore
+          retention-days: 14
 
   real-profile-matrix-required:
     runs-on: macos-latest
     env:
       HLA2010_ENABLE_REAL_RTI_SMOKE: "1"
-      HLA2010_CERTI_PREFIX: ${{ vars.HLA2010_CERTI_PREFIX }}
-      HLA2010_CERTI_BUILD_ROOT: ${{ vars.HLA2010_CERTI_BUILD_ROOT }}
+      HLA2010_CERTI_PATCHED_PREFIX: ${{ vars.HLA2010_CERTI_PATCHED_PREFIX }}
+      HLA2010_CERTI_PATCHED_BUILD_ROOT: ${{ vars.HLA2010_CERTI_PATCHED_BUILD_ROOT }}
+      HLA2010_CERTI_PREFIX: ${{ vars.HLA2010_CERTI_PATCHED_PREFIX }}
+      HLA2010_CERTI_BUILD_ROOT: ${{ vars.HLA2010_CERTI_PATCHED_BUILD_ROOT }}
+      HLA2010_CERTI_UPSTREAM_PREFIX: ${{ vars.HLA2010_CERTI_UPSTREAM_PREFIX }}
+      HLA2010_CERTI_UPSTREAM_BUILD_ROOT: ${{ vars.HLA2010_CERTI_UPSTREAM_BUILD_ROOT }}
       HLA2010_PITCH_HOME: ${{ vars.HLA2010_PITCH_HOME }}
       HLA2010_PITCH_USER_HOME: ${{ vars.HLA2010_PITCH_USER_HOME }}
     steps:
@@ -173,19 +255,43 @@ jobs:
         env:
           HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
         run: ./scripts/ci/install_python.sh
+      - name: Validate real-profile matrix runtime state
+        run: python3 scripts/ci/check_vendor_runtime_ci_state.py --profile matrix
       - name: Run vendor-green matrix
         run: ./scripts/ci/vendor_green.sh matrix
+      - name: Publish real-profile matrix runtime-state summary
+        if: always()
+        run: cat analysis/vendor_runtime_ci_state/matrix/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Publish vendor-green matrix runtime summary
+        if: always()
+        run: python3 scripts/ci/write_vendor_runtime_job_summary.py --output "$GITHUB_STEP_SUMMARY"
+      - name: Upload real profile matrix runtime artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-profile-matrix-runtime-artifacts
+          path: |
+            analysis/preflight_artifacts/
+            analysis/vendor_runtime_ci_state/
+            analysis/vendor_runtime_status/
+            analysis/vendor_parity_artifacts/
+          if-no-files-found: ignore
+          retention-days: 14
 
   vendor-edge-matrix-required:
     runs-on: macos-latest
     strategy:
       fail-fast: false
       matrix:
-        profile: [time-query, negotiated-ownership]
+        profile: [time-query, negotiated-ownership, save-restore, ddm]
     env:
       HLA2010_ENABLE_REAL_RTI_SMOKE: "1"
-      HLA2010_CERTI_PREFIX: ${{ vars.HLA2010_CERTI_PREFIX }}
-      HLA2010_CERTI_BUILD_ROOT: ${{ vars.HLA2010_CERTI_BUILD_ROOT }}
+      HLA2010_CERTI_PATCHED_PREFIX: ${{ vars.HLA2010_CERTI_PATCHED_PREFIX }}
+      HLA2010_CERTI_PATCHED_BUILD_ROOT: ${{ vars.HLA2010_CERTI_PATCHED_BUILD_ROOT }}
+      HLA2010_CERTI_PREFIX: ${{ vars.HLA2010_CERTI_PATCHED_PREFIX }}
+      HLA2010_CERTI_BUILD_ROOT: ${{ vars.HLA2010_CERTI_PATCHED_BUILD_ROOT }}
+      HLA2010_CERTI_UPSTREAM_PREFIX: ${{ vars.HLA2010_CERTI_UPSTREAM_PREFIX }}
+      HLA2010_CERTI_UPSTREAM_BUILD_ROOT: ${{ vars.HLA2010_CERTI_UPSTREAM_BUILD_ROOT }}
       HLA2010_PITCH_HOME: ${{ vars.HLA2010_PITCH_HOME }}
       HLA2010_PITCH_USER_HOME: ${{ vars.HLA2010_PITCH_USER_HOME }}
     steps:
@@ -201,13 +307,87 @@ jobs:
         env:
           HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
         run: ./scripts/ci/install_python.sh
+      - name: Validate vendor-edge runtime state
+        run: python3 scripts/ci/check_vendor_runtime_ci_state.py --profile vendor-edge
       - name: Run vendor edge matrix profile
         run: ./scripts/ci/vendor_edge_matrix.sh ${{ matrix.profile }}
+      - name: Publish vendor-edge runtime-state summary
+        if: always()
+        run: cat analysis/vendor_runtime_ci_state/vendor_edge/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
       - name: Upload vendor edge matrix artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: vendor-edge-${{ matrix.profile }}
-          path: analysis/compliance/
+          path: |
+            analysis/compliance/
+            analysis/preflight_artifacts/
+            analysis/vendor_runtime_ci_state/
+            analysis/vendor_runtime_status/
+            analysis/vendor_parity_artifacts/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  vendor-probe-stability-required:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: certi-save-restore-probe
+            command: ./tools/certi-easy save-restore-review 5
+          - name: certi-ddm-probe
+            command: ./tools/certi-easy ddm-review 5
+          - name: pitch-save-restore-probe
+            command: ./tools/pitch save-restore-review 5
+          - name: pitch-ddm-probe
+            command: ./tools/pitch ddm-review 5
+          - name: pitch-negotiated-probe
+            command: ./tools/pitch negotiated-review 5
+    env:
+      HLA2010_ENABLE_REAL_RTI_SMOKE: "1"
+      HLA2010_CERTI_PATCHED_PREFIX: ${{ vars.HLA2010_CERTI_PATCHED_PREFIX }}
+      HLA2010_CERTI_PATCHED_BUILD_ROOT: ${{ vars.HLA2010_CERTI_PATCHED_BUILD_ROOT }}
+      HLA2010_CERTI_PREFIX: ${{ vars.HLA2010_CERTI_PATCHED_PREFIX }}
+      HLA2010_CERTI_BUILD_ROOT: ${{ vars.HLA2010_CERTI_PATCHED_BUILD_ROOT }}
+      HLA2010_CERTI_UPSTREAM_PREFIX: ${{ vars.HLA2010_CERTI_UPSTREAM_PREFIX }}
+      HLA2010_CERTI_UPSTREAM_BUILD_ROOT: ${{ vars.HLA2010_CERTI_UPSTREAM_BUILD_ROOT }}
+      HLA2010_PITCH_HOME: ${{ vars.HLA2010_PITCH_HOME }}
+      HLA2010_PITCH_USER_HOME: ${{ vars.HLA2010_PITCH_USER_HOME }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Install vendor probe stability environment
+        env:
+          HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
+        run: ./scripts/ci/install_python.sh
+      - name: Validate vendor-edge runtime state
+        run: python3 scripts/ci/check_vendor_runtime_ci_state.py --profile vendor-edge
+      - name: Run vendor probe review profile
+        run: ${{ matrix.command }}
+      - name: Publish vendor probe stability runtime-state summary
+        if: always()
+        run: cat analysis/vendor_runtime_ci_state/vendor_edge/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Publish vendor probe stability runtime summary
+        if: always()
+        run: python3 scripts/ci/write_vendor_runtime_job_summary.py --output "$GITHUB_STEP_SUMMARY"
+      - name: Upload vendor probe stability artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vendor-probe-stability-${{ matrix.name }}
+          path: |
+            analysis/preflight_artifacts/
+            analysis/vendor_runtime_ci_state/
+            analysis/vendor_runtime_status/
+            analysis/vendor_parity_artifacts/
+            analysis/vendor_probe_stability/
+            analysis/vendor_probe_promotion_review/
           if-no-files-found: ignore
           retention-days: 14

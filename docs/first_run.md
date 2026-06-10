@@ -27,6 +27,7 @@ From the repository root:
 ./scripts/bootstrap_profile.sh doctor
 ./scripts/bootstrap_profile.sh python
 source .venv/bin/activate
+python -m pip install --no-build-isolation -e packages/hla2010-spec -e packages/hla2010-rti-backend-common -e packages/hla2010-rti-python -e packages/hla2010-verification-harness -e packages/hla2010-fom-target-radar
 python examples/backend_recording.py
 python examples/target_radar_simulation.py --backend python --steps 5
 ```
@@ -39,6 +40,9 @@ If those commands succeed, your base environment is working.
   creates or refreshes the repo-local virtual environment
 - `source .venv/bin/activate`
   activates the repo-managed Python environment
+- `python -m pip install ...`
+  installs the core split packages in editable mode; the repo root itself is
+  tooling-only and is not installed as a package
 - `python examples/backend_recording.py`
   proves the lightweight backend path works
 - `python examples/target_radar_simulation.py --backend python --steps 5`
@@ -48,8 +52,8 @@ If those commands succeed, your base environment is working.
 
 Do not start with:
 
-- `./scripts/certi_easy.sh`
-- `./scripts/pitch_docker_easy.sh`
+- `./tools/certi-easy`
+- `./tools/pitch`
 - JPype-only examples
 - Py4J-only examples
 
@@ -69,3 +73,9 @@ If you need the broader setup story, go to
 
 If you want the two-federate verification path next, go to
 [`two_federate_quickstart.md`](two_federate_quickstart.md).
+
+## Read Next
+
+1. [`python_environment.md`](python_environment.md)
+2. [`two_federate_quickstart.md`](two_federate_quickstart.md)
+3. [`../README.md`](../README.md)

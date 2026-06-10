@@ -5,8 +5,8 @@ checks when the host matters.
 
 Use it when:
 
-- `./scripts/certi_easy.sh preflight` reports `environment: loopback-blocked`
-- `./scripts/pitch_docker_easy.sh preflight` reports `environment: docker-blocked`
+- `./tools/certi-easy preflight` reports `environment: loopback-blocked`
+- `./tools/pitch preflight` reports `environment: docker-blocked`
 - you need stable real-runtime evidence rather than repo-green coverage
 - you are configuring CI runners for vendor runtime proof
 
@@ -70,8 +70,8 @@ Direct real-runtime pytest invocation is not the supported first step anymore.
 Use the vendor operator path so preflight is confirmed before the runtime tests
 start:
 
-- CERTI: `./scripts/certi_easy.sh ...`
-- Pitch: `./scripts/pitch_docker_easy.sh ...`
+- CERTI: `./tools/certi-easy ...`
+- Pitch: `./tools/pitch ...`
 
 ### CERTI vendor-green
 
@@ -79,13 +79,13 @@ start:
 ./scripts/bootstrap_profile.sh python
 source .venv/bin/activate
 
-./scripts/certi_easy.sh preflight
-./scripts/certi_easy.sh install
+./tools/certi-easy preflight
+./tools/certi-easy install
 ./scripts/ci/vendor_green.sh certi
 ./scripts/ci/vendor_green.sh certi-compare
 ```
 
-Use `./scripts/certi_easy.sh smoke compare` when you want the top-level operator route for
+Use `./tools/certi-easy smoke compare` when you want the top-level operator route for
 patched-vs-upstream attribution.
 
 ### Pitch vendor-green
@@ -94,10 +94,10 @@ patched-vs-upstream attribution.
 ./scripts/bootstrap_profile.sh python
 source .venv/bin/activate
 
-./scripts/pitch_docker_easy.sh preflight
-./scripts/pitch_docker_easy.sh install
-./scripts/pitch_docker_easy.sh smoke
-./scripts/pitch_docker_easy.sh verify
+./tools/pitch preflight
+./tools/pitch install
+./tools/pitch smoke
+./tools/pitch verify
 ```
 
 Underlying shared strict profiles:
@@ -181,6 +181,15 @@ Artifacts emitted by that validator:
 Those artifacts are now uploaded by the dedicated GitHub Actions vendor jobs
 alongside the existing preflight, runtime-status, and parity artifacts.
 
+The strict wrapper now also defends itself when it runs under CI:
+
+- `./scripts/ci/vendor_green.sh ...` auto-runs `check_vendor_runtime_ci_state.py`
+  for the profile it needs before it tries the real runtime lane
+- if the dedicated runner contract is broken, the wrapper fails before it
+  touches the vendor runtime delegate path
+- this keeps misconfigured CI jobs from looking like runtime/test failures when
+  the real issue is missing vendor state
+
 The dedicated `vendor-edge` job now runs these explicit profiles rather than
 one broad catch-all path:
 
@@ -193,18 +202,18 @@ The standalone `vendor-runtime-smoke` workflow also now fans out across the
 explicit probe packet instead of only running one broad `all` command:
 
 - `all`
-- `./scripts/certi_easy.sh save-restore-probe`
-- `./scripts/certi_easy.sh ddm-probe`
-- `./scripts/pitch_docker_easy.sh save-restore-probe`
-- `./scripts/pitch_docker_easy.sh ddm-probe`
-- `./scripts/pitch_docker_easy.sh negotiated-probe`
+- `./tools/certi-easy save-restore-probe`
+- `./tools/certi-easy ddm-probe`
+- `./tools/pitch save-restore-probe`
+- `./tools/pitch ddm-probe`
+- `./tools/pitch negotiated-probe`
 
 Each row now validates only the runtime-state profile it actually needs before
 running:
 
 - `all` -> `check_vendor_runtime_ci_state.py --profile all`
-- `./scripts/certi_easy.sh ...` rows -> `--profile certi`
-- `./scripts/pitch_docker_easy.sh ...` rows -> `--profile pitch`
+- `./tools/certi-easy ...` rows -> `--profile certi`
+- `./tools/pitch ...` rows -> `--profile pitch`
 
 The dedicated repeated-run stability workflow currently fans out across:
 
@@ -218,9 +227,9 @@ When a probe looks promising and you need promotion-quality repetition
 evidence, use the repeated-run harness on the dedicated runner:
 
 ```bash
-./scripts/pitch_docker_easy.sh negotiated-review 5
-./scripts/pitch_docker_easy.sh ddm-review 5
-./scripts/certi_easy.sh ddm-review 5
+./tools/pitch negotiated-review 5
+./tools/pitch ddm-review 5
+./tools/certi-easy ddm-review 5
 ```
 
 Underlying shared wrapper:
@@ -228,6 +237,12 @@ Underlying shared wrapper:
 ```bash
 ./scripts/ci/vendor_probe_review.sh <profile> 5
 ```
+
+Under CI, the repeated-run path now validates the dedicated runner contract
+once before it starts the repetition loop. If the runner is missing explicit
+CERTI or Pitch state, the wrapper fails before it spends time collecting
+misleading repeated-run artifacts. The inner `vendor_green` calls in that loop
+then run with redundant CI-state validation disabled for that one process tree.
 
 Artifacts:
 
@@ -271,8 +286,8 @@ Commands:
 ```bash
 mkdir -p analysis/preflight_artifacts
 
-./scripts/certi_easy.sh preflight --json-file analysis/preflight_artifacts/certi-preflight.json
-./scripts/pitch_docker_easy.sh preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
+./tools/certi-easy preflight --json-file analysis/preflight_artifacts/certi-preflight.json
+./tools/pitch preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
 ```
 
 Or let the vendor-green path emit the same files automatically:
@@ -325,8 +340,8 @@ The green-lane wrappers also emit these report directories automatically:
 
 So a normal `./scripts/ci/repo_green.sh` or `./scripts/ci/vendor_green.sh ...`
 run now leaves behind both the raw preflight JSON and a normalized status view.
-The supported top-level operator routes such as `./scripts/certi_easy.sh ...` and
-`./scripts/pitch_docker_easy.sh ...` are expected to leave behind the same diagnostic bundle through
+The supported top-level operator routes such as `./tools/certi-easy ...` and
+`./tools/pitch ...` are expected to leave behind the same diagnostic bundle through
 their delegated `vendor_green` paths, even when preflight blocks the real
 runtime from running.
 

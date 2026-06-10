@@ -4,13 +4,12 @@ from __future__ import annotations
 from hla2010.backends.base import BackendInfo
 from hla2010_rti_certi.certi import CERTIConfig
 from hla2010_rti_java_common import JavaRTIBackend
+from hla2010_rti_java_common.java_shim_backend import ShimJavaBridge
 from .adapter import CERTIJavaRTIShim
 from .runtime import CERTIJavaValueConverter
 
 
 def create_certi_java_backend(profile: str, config: CERTIConfig = CERTIConfig()) -> JavaRTIBackend:
-    from hla2010.java_shim import ShimJavaBridge
-
     bridge = ShimJavaBridge(profile)
     info = BackendInfo(
         name="CERTI",

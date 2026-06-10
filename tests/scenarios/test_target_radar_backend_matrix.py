@@ -3,7 +3,7 @@ from __future__ import annotations
 import csv
 import json
 
-from hla2010.testing.target_radar_backend_matrix import write_target_radar_backend_matrix_artifacts
+from hla2010_repo_internal.verification.target_radar_backend_matrix import write_target_radar_backend_matrix_artifacts
 
 
 def test_target_radar_backend_matrix_artifacts_are_generated(tmp_path):

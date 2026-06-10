@@ -16,7 +16,7 @@ If you just want to run the certified Pitch path in the least painful way, use:
 
 ```bash
 ./scripts/bootstrap_profile.sh pitch
-./scripts/pitch_docker_easy.sh all
+./tools/pitch all
 ```
 
 That is the junior-friendly path.
@@ -42,16 +42,16 @@ Choose the Docker-backed Pitch flow when you want:
 Commands:
 
 ```bash
-./scripts/pitch_docker_easy.sh install
-./scripts/pitch_docker_easy.sh start
-./scripts/pitch_docker_easy.sh smoke
-./scripts/pitch_docker_easy.sh verify
+./tools/pitch install
+./tools/pitch start
+./tools/pitch smoke
+./tools/pitch verify
 ```
 
 Or just:
 
 ```bash
-./scripts/pitch_docker_easy.sh all
+./tools/pitch all
 ```
 
 ### Use `jpype` or `py4j` if you are debugging bridge behavior
@@ -81,7 +81,7 @@ What it does:
 
 ### Build
 
-`./scripts/pitch_docker_easy.sh install`
+`./tools/pitch install`
 
 This:
 
@@ -91,7 +91,7 @@ This:
 
 ### Run
 
-`./scripts/pitch_docker_easy.sh start`
+`./tools/pitch start`
 
 This launches the vendor runtime container and waits for:
 
@@ -115,15 +115,15 @@ For the local launcher path, the Pitch runtime uses the extracted runtime under:
 Use this for most work:
 
 ```bash
-./scripts/pitch_docker_easy.sh all
-./scripts/pitch_docker_easy.sh smoke
-./scripts/pitch_docker_easy.sh verify
-./scripts/pitch_docker_easy.sh doctor
-./scripts/pitch_docker_easy.sh logs
-./scripts/pitch_docker_easy.sh stop
+./tools/pitch all
+./tools/pitch smoke
+./tools/pitch verify
+./tools/pitch doctor
+./tools/pitch logs
+./tools/pitch stop
 ```
 
-`./scripts/pitch_docker_easy.sh doctor` follows the same shape as `./scripts/pitch_docker_easy.sh preflight`, but adds the
+`./tools/pitch doctor` follows the same shape as `./tools/pitch preflight`, but adds the
 resolved runtime paths and container state so the operator can see what the
 next step is before doing anything else.
 
@@ -157,11 +157,11 @@ Use the route inventory if you need the full matrix:
 The non-Docker local launcher can still involve the vendor acceptance flow and
 host GUI behavior on macOS.
 
-The Docker-backed `./scripts/pitch_docker_easy.sh` path is the easiest way to avoid that pain.
+The Docker-backed `./tools/pitch` path is the easiest way to avoid that pain.
 
 ### Linux Docker host mapping
 
-The Docker launcher adds `host.docker.internal` on Linux so the same `./scripts/pitch_docker_easy.sh`
+The Docker launcher adds `host.docker.internal` on Linux so the same `./tools/pitch`
 flow works on macOS and Linux.
 
 ### Negotiated ownership
@@ -192,7 +192,7 @@ If you want the current explicit operator result for the negotiated-ownership
 gap, use:
 
 ```bash
-./scripts/pitch_docker_easy.sh negotiated
+./tools/pitch negotiated
 ```
 
 That route preflights first, then emits a machine-readable known-gap profile
@@ -201,7 +201,7 @@ instead of pretending the slice is silently missing.
 If you want the current explicit operator result for the save/restore gap, use:
 
 ```bash
-./scripts/pitch_docker_easy.sh save-restore
+./tools/pitch save-restore
 ```
 
 That route preflights first, then emits a machine-readable known-gap profile
@@ -210,7 +210,7 @@ instead of pretending the slice is silently missing.
 If you want the current narrow executable save/restore probe instead, use:
 
 ```bash
-./scripts/pitch_docker_easy.sh save-restore-probe
+./tools/pitch save-restore-probe
 ```
 
 Treat that as a deeper runtime probe, not as a promoted stable parity slice yet.
@@ -218,13 +218,13 @@ Treat that as a deeper runtime probe, not as a promoted stable parity slice yet.
 For the current explicit operator result on the DDM gap, use:
 
 ```bash
-./scripts/pitch_docker_easy.sh ddm
+./tools/pitch ddm
 ```
 
 If you want the current narrow executable DDM probe instead, use:
 
 ```bash
-./scripts/pitch_docker_easy.sh ddm-probe
+./tools/pitch ddm-probe
 ```
 
 Treat that as a deeper runtime probe, not as a promoted stable parity slice yet.
@@ -232,7 +232,7 @@ Treat that as a deeper runtime probe, not as a promoted stable parity slice yet.
 For the current narrow executable negotiated-ownership probe, use:
 
 ```bash
-./scripts/pitch_docker_easy.sh negotiated-probe
+./tools/pitch negotiated-probe
 ```
 
 Treat that as a deeper runtime probe for the currently bridge-divergent
@@ -247,11 +247,11 @@ blanket parity.
 ### First-line checks
 
 ```bash
-./scripts/pitch_docker_easy.sh doctor
-./scripts/pitch_docker_easy.sh logs
+./tools/pitch doctor
+./tools/pitch logs
 ```
 
-For scripts or CI, `./scripts/pitch_docker_easy.sh preflight --json` emits machine-readable status
+For scripts or CI, `./tools/pitch preflight --json` emits machine-readable status
 with `environment`, `result`, and per-check records.
 
 For file output and inspection examples, see
@@ -269,8 +269,8 @@ For file output and inspection examples, see
 Use the supported operator path first:
 
 ```bash
-./scripts/pitch_docker_easy.sh preflight
-./scripts/pitch_docker_easy.sh verify
+./tools/pitch preflight
+./tools/pitch verify
 ```
 
 Use `./scripts/ci/vendor_green.sh pitch` only when you are debugging the shared
@@ -278,7 +278,7 @@ CI wrapper behavior itself.
 
 Or inspect the negotiated ownership diagnostics:
 
-- [`analysis/pitch_negotiated_ownership_2026-06-07/`](../analysis/pitch_negotiated_ownership_2026-06-07/)
+- [`analysis/pitch_negotiated_ownership_2026-06-07/`](../../../analysis/pitch_negotiated_ownership_2026-06-07/)
 
 ## Short Answer
 
@@ -286,7 +286,7 @@ If you are a junior or just want Pitch working, use:
 
 ```bash
 ./scripts/bootstrap_profile.sh pitch
-./scripts/pitch_docker_easy.sh all
+./tools/pitch all
 ```
 
 If you are debugging Java bridge behavior, use `pitch-jpype` and `pitch-py4j`.

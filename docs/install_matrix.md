@@ -35,8 +35,8 @@ machine/workspace readiness check.
 | JPype bridge | `jpype1` | `HLA2010_BOOTSTRAP_EXTRAS=jpype ./scripts/bootstrap_python.sh` | `python examples/jpype_java_rti.py` |
 | Py4J bridge | `py4j` | `HLA2010_BOOTSTRAP_EXTRAS=py4j ./scripts/bootstrap_python.sh` | `python examples/py4j_java_rti.py` |
 | JPype + Py4J | both bridge deps | `HLA2010_BOOTSTRAP_EXTRAS=java ./scripts/bootstrap_python.sh` | bridge-specific examples or tests |
-| CERTI | working base Python plus local CERTI runtime | bootstrap Python first, then `./scripts/certi_easy.sh preflight` | `./scripts/certi_easy.sh smoke compare` |
-| Pitch | working base Python plus local Pitch runtime or Docker flow | bootstrap Python first, then `./scripts/pitch_docker_easy.sh preflight` | `./scripts/pitch_docker_easy.sh smoke` |
+| CERTI | working base Python plus local CERTI runtime | bootstrap Python first, then `./tools/certi-easy preflight` | `./tools/certi-easy smoke compare` |
+| Pitch | working base Python plus local Pitch runtime or Docker flow | bootstrap Python first, then `./tools/pitch preflight` | `./tools/pitch smoke` |
 | Portico | working base Python plus a Portico runtime and a Java bridge path | bootstrap Python first, then add `jpype` or `py4j` extras | route-specific tests |
 | REST / gRPC transport | working base Python | bootstrap Python first | transport tests and discovery scripts |
 

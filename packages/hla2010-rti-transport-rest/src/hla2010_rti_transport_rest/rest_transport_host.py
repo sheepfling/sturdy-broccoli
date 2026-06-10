@@ -6,9 +6,6 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from threading import Thread
 from typing import Any, Mapping
 
-from hla2010_rti_python.engine import InMemoryRTIEngine
-from hla2010_rti_python.factory import rti_ambassador
-from hla2010_rti_python.state import PythonRTIConfig
 from hla2010_rti_transport_common.hosted_server import HostedRTICommandProcessor
 
 from hla2010.backends.transport import TransportRequest
@@ -21,8 +18,8 @@ from .client import RestTransportClientAdapter
 class PythonRTIRestServerConfig:
     host: str = "127.0.0.1"
     port: int = 0
-    engine: InMemoryRTIEngine | None = None
-    python_config: PythonRTIConfig | None = None
+    engine: Any | None = None
+    python_config: Any | None = None
     request_path: str = "/rti/request"
 
 
@@ -100,7 +97,9 @@ class PythonRTIRestServer(_BaseRestServer):
     def __init__(self, config: PythonRTIRestServerConfig = PythonRTIRestServerConfig()) -> None:
         super().__init__(
             request_path=config.request_path,
-            processor=HostedRTICommandProcessor(rti_ambassador(engine=config.engine, config=config.python_config)),
+            processor=HostedRTICommandProcessor(
+                create_rti_ambassador("python", engine=config.engine, config=config.python_config)
+            ),
             host=config.host,
             port=config.port,
         )
@@ -118,8 +117,8 @@ class CERTIRestServer(_BaseRestServer):
 
 def start_python_rest_server(
     *,
-    engine: InMemoryRTIEngine | None = None,
-    python_config: PythonRTIConfig | None = None,
+    engine: Any | None = None,
+    python_config: Any | None = None,
     host: str = "127.0.0.1",
     port: int = 0,
     request_path: str = "/rti/request",

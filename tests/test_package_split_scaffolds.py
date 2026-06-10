@@ -9,7 +9,7 @@ PACKAGES = ROOT / "packages"
 
 
 EXPECTED_PACKAGES = {
-    "hla2010-spec": {"role": "core-spec", "entry_points": set()},
+    "hla2010-spec": {"role": "core-spec", "entry_points": set(), "status": "implementation-owned"},
     "hla2010-rti-python": {"role": "rti-backend", "entry_points": {"python"}, "status": "implementation-moved"},
     "hla2010-rti-certi": {
         "role": "rti-backend",
@@ -28,6 +28,11 @@ EXPECTED_PACKAGES = {
     },
     "hla2010-rti-runtime-common": {
         "role": "runtime-support",
+        "entry_points": set(),
+        "status": "implementation-moved",
+    },
+    "hla2010-rti-transport-common": {
+        "role": "transport-support",
         "entry_points": set(),
         "status": "implementation-moved",
     },
@@ -85,7 +90,9 @@ def test_split_packages_use_package_owned_src_roots():
         source_roots = split["source_roots"]
         assert source_roots
         if expected.get("status") == "implementation-moved":
-            assert any(root.startswith(f"packages/{package_name}/src/") for root in source_roots)
+            assert all(root.startswith(f"packages/{package_name}/src/") for root in source_roots)
+        assert all("src/hla2010/testing/" not in root for root in source_roots)
+        assert all("hla2010_fom_target_radar/testing/" not in root for root in source_roots)
 
 
 def test_package_split_pyprojects_have_expected_boundaries():
@@ -167,7 +174,8 @@ def test_vendor_java_backend_packages_depend_on_generic_bridge_packages():
     assert "hla2010-rti-java-py4j==0.13.0" in pitch_py4j_dependencies
     assert "hla2010-rti-java-jpype==0.13.0" in portico_dependencies
     assert "hla2010-rti-java-py4j==0.13.0" in portico_dependencies
-    assert "hla2010-rti-java-common==0.13.0" in python_dependencies
+    assert "hla2010-rti-backend-common==0.13.0" in python_dependencies
+    assert "hla2010-rti-java-common==0.13.0" not in python_dependencies
     assert "hla2010-rti-java-common==0.13.0" in certi_dependencies
     assert "jpype1" not in pitch_jpype_dependencies
     assert "py4j" not in pitch_py4j_dependencies
@@ -184,20 +192,40 @@ def test_vendor_runtime_packages_depend_on_runtime_common_package():
     assert "hla2010-rti-runtime-common==0.13.0" in pitch_common_dependencies
 
 
+def test_transport_packages_depend_only_on_spec_and_transport_common():
+    transport_common_dependencies = set(_load_project("hla2010-rti-transport-common")["project"].get("dependencies", ()))
+    grpc_dependencies = set(_load_project("hla2010-rti-transport-grpc")["project"].get("dependencies", ()))
+    rest_dependencies = set(_load_project("hla2010-rti-transport-rest")["project"].get("dependencies", ()))
+
+    assert transport_common_dependencies == {"hla2010-spec==0.13.0"}
+    assert "hla2010-rti-transport-common==0.13.0" in grpc_dependencies
+    assert "hla2010-rti-transport-common==0.13.0" in rest_dependencies
+    assert "hla2010-rti-python==0.13.0" not in grpc_dependencies
+    assert "hla2010-rti-python==0.13.0" not in rest_dependencies
+    assert "hla2010-rti-certi==0.13.0" not in grpc_dependencies
+    assert "hla2010-rti-certi==0.13.0" not in rest_dependencies
+
+
+def test_leaf_packages_depend_only_on_spec_and_verification_harness():
+    target_radar_dependencies = set(_load_project("hla2010-fom-target-radar")["project"].get("dependencies", ()))
+    assert target_radar_dependencies == {
+        "hla2010-spec==0.13.0",
+        "hla2010-verification-harness==0.13.0",
+    }
+
+
 def test_root_pyproject_declares_workspace_package_roots():
     root_project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
-    package_roots = root_project["tool"]["setuptools"]["packages"]["find"]["where"]
     pytest_roots = root_project["tool"]["pytest"]["ini_options"]["pythonpath"]
 
-    assert package_roots[0] == "src"
     assert pytest_roots[0] == "src"
-    assert "packages/hla2010-rti-python/src" in package_roots
-    assert "packages/hla2010-rti-certi/src" in package_roots
-    assert "packages/hla2010-rti-java-jpype/src" in package_roots
-    assert "packages/hla2010-rti-java-py4j/src" in package_roots
-    assert "packages/hla2010-rti-portico/src" in package_roots
-    assert "packages/hla2010-rti-transport-grpc/src" in package_roots
-    assert "packages/hla2010-rti-transport-rest/src" in package_roots
-    assert "packages/hla2010-fom-target-radar/src" in package_roots
-    assert "packages/hla2010-verification-harness/src" in package_roots
-    assert package_roots == pytest_roots
+    assert "packages/hla2010-rti-python/src" in pytest_roots
+    assert "packages/hla2010-rti-certi/src" in pytest_roots
+    assert "packages/hla2010-rti-java-jpype/src" in pytest_roots
+    assert "packages/hla2010-rti-java-py4j/src" in pytest_roots
+    assert "packages/hla2010-rti-portico/src" in pytest_roots
+    assert "packages/hla2010-rti-transport-common/src" in pytest_roots
+    assert "packages/hla2010-rti-transport-grpc/src" in pytest_roots
+    assert "packages/hla2010-rti-transport-rest/src" in pytest_roots
+    assert "packages/hla2010-fom-target-radar/src" in pytest_roots
+    assert "packages/hla2010-verification-harness/src" in pytest_roots

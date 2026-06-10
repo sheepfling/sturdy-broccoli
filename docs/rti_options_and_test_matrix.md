@@ -25,7 +25,7 @@ plumbing.
 
 For the exhaustive route list, including named CERTI baselines and remote
 transport-hosted variants, see
-[backend_route_inventory.md](docs/backend_route_inventory.md).
+[backend_route_inventory.md](backend_route_inventory.md).
 
 ## Mental Model
 
@@ -71,7 +71,7 @@ For CERTI specifically, keep two runtime baselines distinct:
 - `certi-upstream`: a pristine upstream CERTI install selected only through the
   named upstream environment variables
 
-Use `./scripts/certi_easy.sh smoke compare` when the goal is
+Use `./tools/certi-easy smoke compare` when the goal is
 vendor-vs-local attribution rather than generic CERTI smoke.
 
 ## Python/Java Interaction Models
@@ -104,10 +104,10 @@ Current remote callback contract for both `grpc` and `rest`:
 ## Supported Backend Names
 
 These are the backend names currently recognized by
-[rti.py](hla2010/rti.py).
+[rti.py](../src/hla2010/rti.py).
 
 This section is generated from `create_backend(...)` by
-[update_rti_options_matrix.py](scripts/update_rti_options_matrix.py).
+[update_rti_options_matrix.py](../scripts/update_rti_options_matrix.py).
 
 <!-- GENERATED_BACKEND_ALIASES_START -->
 
@@ -157,15 +157,6 @@ These are only useful when you provide a Java RTI configuration explicitly.
 
 - `certi-py4j`
 - `java-certi-py4j`
-
-### Java Shim
-
-- `java-shim`
-- `java-shim-jpype`
-- `shim-jpype`
-
-- `java-shim-py4j`
-- `shim-py4j`
 
 <!-- GENERATED_BACKEND_ALIASES_END -->
 
@@ -222,45 +213,45 @@ Current CERTI qualifier:
 
 ### Python reference RTI
 
-- [test_python_backend_support_services.py](tests/backends/test_python_backend_support_services.py), [test_python_backend_federation_extended.py](tests/backends/test_python_backend_federation_extended.py), [test_python_backend_object_ownership_extended.py](tests/backends/test_python_backend_object_ownership_extended.py), [test_python_backend_time_ddm_extended.py](tests/backends/test_python_backend_time_ddm_extended.py)
+- [test_python_backend_support_services.py](../tests/backends/test_python_backend_support_services.py), [test_python_backend_federation_extended.py](../tests/backends/test_python_backend_federation_extended.py), [test_python_backend_object_ownership_extended.py](../tests/backends/test_python_backend_object_ownership_extended.py), [test_python_backend_time_ddm_extended.py](../tests/backends/test_python_backend_time_ddm_extended.py)
 
 ### Java shim bridge proofs
 
-- [test_java_profile_backend_matrix.py](tests/vendors/test_java_profile_backend_matrix.py)
-- [test_java_shim_backends.py](tests/backends/test_java_shim_backends.py)
+- [test_java_profile_backend_matrix.py](../tests/vendors/test_java_profile_backend_matrix.py)
+- [test_java_shim_backends.py](../tests/backends/test_java_shim_backends.py)
 
 ### Real CERTI
 
-- [test_certi_real_backend_matrix.py](tests/vendors/test_certi_real_backend_matrix.py)
-- [test_real_vendor_runtime_smoke.py](tests/vendors/test_real_vendor_runtime_smoke.py)
-- [vendor_runtime_smoke.sh](scripts/ci/vendor_runtime_smoke.sh)
+- [tests/vendors/README.md](../tests/vendors/README.md)
+- [test_real_vendor_runtime_smoke.py](../tests/vendors/test_real_vendor_runtime_smoke.py)
+- [vendor_runtime_smoke.sh](../scripts/ci/vendor_runtime_smoke.sh)
 
 ### CERTI behind transport surfaces
 
-- [test_certi_backend_transport.py](tests/backends/test_certi_backend_transport.py)
-- [test_grpc_transport_certi_server.py](tests/transport/test_grpc_transport_certi_server.py)
-- [backend_route_inventory.md](docs/backend_route_inventory.md)
+- [test_certi_backend_transport.py](../tests/backends/test_certi_backend_transport.py)
+- [test_grpc_transport_certi_server.py](../tests/transport/test_grpc_transport_certi_server.py)
+- [backend_route_inventory.md](backend_route_inventory.md)
 
 ### Python RTI behind transport surfaces
 
-- [test_grpc_transport_python_server.py](tests/transport/test_grpc_transport_python_server.py)
-- [test_rest_transport.py](tests/transport/test_rest_transport.py)
+- [test_grpc_transport_python_server.py](../tests/transport/test_grpc_transport_python_server.py)
+- [test_rest_transport.py](../tests/transport/test_rest_transport.py)
 
 ### Real Pitch
 
-- [test_pitch_real_backend_matrix.py](tests/vendors/test_pitch_real_backend_matrix.py)
-- [test_real_vendor_runtime_smoke.py](tests/vendors/test_real_vendor_runtime_smoke.py)
+- [test_pitch_real_backend_matrix.py](../tests/vendors/test_pitch_real_backend_matrix.py)
+- [test_real_vendor_runtime_smoke.py](../tests/vendors/test_real_vendor_runtime_smoke.py)
 - Negotiated ownership is currently bridge-divergent rather than simply absent:
   - `pitch-jpype` and `pitch-py4j` do not fail in the same place
   - `pitch-py4j` gets farther on the owned-attribute release-request branch
   - `pitch-jpype` gets farther on the negotiated-offer branch and shows explicit FedPro session-drop / failed-resume lines
 - See:
   - [pitch_negotiated_ownership_vendor_bug_2026-06-07.md](../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)
-  - [diagnostic_summary.md](analysis/pitch_negotiated_ownership_2026-06-07/diagnostic_summary.md)
+  - [diagnostic_summary.md](../analysis/pitch_negotiated_ownership_2026-06-07/diagnostic_summary.md)
 
 ### Runtime discovery and local install assumptions
 
-- [test_real_rti.py](tests/runtime/test_real_rti.py)
+- [test_real_rti.py](../tests/runtime/test_real_rti.py)
 
 ## Recommended Matrix For Day-To-Day Use
 
@@ -296,7 +287,7 @@ That gives one matrix that covers:
 ## Maintenance
 
 If backend aliases change in
-[rti.py](hla2010/rti.py),
+[rti.py](../src/hla2010/rti.py),
 rerun:
 
 ```bash

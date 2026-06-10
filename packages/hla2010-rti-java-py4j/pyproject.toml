@@ -30,5 +30,4 @@ backend_names = ["py4j"]
 backend_aliases = ["java-py4j"]
 source_roots = [
   "packages/hla2010-rti-java-py4j/src/hla2010_rti_java_py4j",
-  "hla2010/backends/py4j",
 ]

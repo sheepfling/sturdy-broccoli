@@ -30,13 +30,14 @@ The packet now also embeds:
 - optional known-gap profiles for explicit unpromoted vendor slices
 - optional repeated-run probe stability summaries from dedicated runners
 - optional promotion-review summaries over those repeated-run probe slices
+- explicit promotion-review next actions for candidate, blocked, or incomplete probe lanes
 
 The generated packet also classifies profile artifacts and commands by evidence
 tier:
 
 - `promoted`: defended vendor lanes such as `certi-compare` or `pitch`
 - `probe`: narrow executable runtime probes such as `*-probe`
-- `known-gap`: explicit unpromoted operator routes such as `./scripts/pitch_docker_easy.sh negotiated`
+- `known-gap`: explicit unpromoted operator routes such as `./tools/pitch negotiated`
 - `shared`: repo-wide support artifacts and commands
 
 That means one generated summary can answer both:
@@ -46,12 +47,13 @@ That means one generated summary can answer both:
 - whether a missing vendor slice is still an explicit known gap rather than an absent route
 - whether a probe slice has accumulated repeated-run stability evidence yet
 - whether any of those repeated-run probe slices are actual promotion-review candidates
+- what the next promotion action is for a candidate or blocked probe lane
 
 Typical sequence:
 
 ```bash
-./scripts/certi_easy.sh preflight --json-file analysis/preflight_artifacts/certi-preflight.json
-./scripts/pitch_docker_easy.sh preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
+./tools/certi-easy preflight --json-file analysis/preflight_artifacts/certi-preflight.json
+./tools/pitch preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
 ./scripts/ci/vendor_edge_matrix.sh all
 python3 scripts/run_vendor_parity_artifacts.py
 ```

@@ -14,12 +14,20 @@ lint = ["ruff>=0.5"]
 typecheck = ["pyright>=1.1.408"]
 test = ["pytest"]
 
+[tool.setuptools.package-dir]
+"" = "../../src"
+
+[tool.setuptools.packages.find]
+where = ["../../src"]
+include = ["hla2010*"]
+exclude = ["hla2010.testing*", "hla2010_repo_internal*"]
+
+[tool.setuptools.package-data]
+hla2010 = ["resources/foms/*.xml"]
+
 [tool.hla2010.package-split]
-status = "migration-scaffold"
+status = "implementation-owned"
 role = "core-spec"
 source_roots = [
-  "hla2010/spec",
-  "hla2010/runtime_api.py",
-  "hla2010/backends/base.py",
-  "hla2010/rti.py",
+  "src/hla2010",
 ]

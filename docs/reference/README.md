@@ -1,5 +1,10 @@
 # Reference
 
+Historical / provenance note:
+This directory holds retained archive material and acquisition notes. It is
+reference-only and is not the primary path for understanding how to run the
+current repo.
+
 This family holds acquisition notes and retained archive copies for the HLA 2010
 reference material.
 

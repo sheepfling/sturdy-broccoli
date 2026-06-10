@@ -81,6 +81,10 @@ class MOMNegativeTestCase:
     section_refs: tuple[str, ...] = ("1516.1-2010 §11.4.1", "1516.1-2010 §11.5")
     metadata: Mapping[str, Any] = field(default_factory=dict)
 
+    @property
+    def execution_level(self) -> str:
+        return "rti-strict" if self.executable else "planned"
+
     def as_dict(self) -> dict[str, Any]:
         return {
             "case_id": self.case_id,
@@ -91,6 +95,7 @@ class MOMNegativeTestCase:
             "expected_mom_exception": self.expected_mom_exception,
             "expected_python_exception": self.expected_python_exception,
             "executable": self.executable,
+            "execution_level": self.execution_level,
             "reason": self.reason,
             "section_refs": list(self.section_refs),
             "metadata": dict(self.metadata),

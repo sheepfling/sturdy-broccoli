@@ -9,7 +9,6 @@ from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.backends.base import BackendUnavailableError
 from hla2010.backends.grpc_transport import start_certi_grpc_server
 from hla2010.enums import OrderType, ResignAction
-from hla2010.real_rti import discover_certi_smoke_fom, launch_certi_rtig
 from hla2010.rti import create_rti_ambassador
 from hla2010_verification_harness.scenario_exchange import (
     TwoFederateExchangeConfig,
@@ -19,6 +18,7 @@ from hla2010_verification_harness.scenario_exchange import (
 from hla2010_verification_harness.scenario_ownership import OwnershipScenarioConfig, run_attribute_ownership_scenario
 from hla2010_verification_harness.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time
+from hla2010_rti_certi.real_rti_certi import discover_certi_smoke_fom, launch_certi_rtig
 from tests.vendors.runtime_support import cleanup_federation, close_all, require_vendor_preflight, reserve_udp_pair, terminate_all
 
 pytestmark = pytest.mark.requires_loopback_server
@@ -27,7 +27,7 @@ pytestmark = pytest.mark.requires_loopback_server
 def _require_real_rti_smoke() -> None:
     if os.environ.get("HLA2010_ENABLE_REAL_RTI_SMOKE") != "1":
         pytest.skip("real vendor RTI smoke disabled; set HLA2010_ENABLE_REAL_RTI_SMOKE=1")
-    require_vendor_preflight("certi", operator_hint="./scripts/certi_easy.sh preflight")
+    require_vendor_preflight("certi", operator_hint="./tools/certi-easy preflight")
 
 
 def test_grpc_transport_can_host_certi_exchange_end_to_end():

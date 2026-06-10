@@ -33,7 +33,7 @@ Keep verification docs in this order:
 - [../backend_route_inventory.md](../backend_route_inventory.md): runtime and transport route inventory
 - [../backend_capability_matrix.md](../backend_capability_matrix.md): feature coverage by backend
 - [../backend_conformance_matrix.md](../backend_conformance_matrix.md): clause-level conformance matrix
-- [../certi_spec_traceability.md](../certi_spec_traceability.md): CERTI clause traceability
+- [../certi_spec_traceability.md](../../packages/hla2010-rti-certi/docs/certi_spec_traceability.md): CERTI clause traceability
 - [../local_verification.md](../local_verification.md): local verification workflow
 - [../source_documents.md](../source_documents.md): source provenance and reference map
 - [../evidence/README.md](../evidence/README.md): promoted evidence packets

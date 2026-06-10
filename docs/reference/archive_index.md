@@ -1,5 +1,9 @@
 # Archive Index
 
+Historical / provenance note:
+This page exists for retained archive lookup, not for the normal runtime or
+setup path.
+
 This sub-index points to the retained archive copies stored in `docs/reference/`.
 
 Canonical order:

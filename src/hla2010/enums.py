@@ -67,4 +67,15 @@ class TransportationType(Enum):
     RELIABLE = 1
     BEST_EFFORT = 2
 
-__all__ = [name for name, value in globals().items() if isinstance(value, type) and issubclass(value, Enum)]
+__all__ = [
+    "CallbackModel",
+    "OrderType",
+    "ResignAction",
+    "RestoreFailureReason",
+    "RestoreStatus",
+    "SaveFailureReason",
+    "SaveStatus",
+    "ServiceGroup",
+    "SynchronizationPointFailureReason",
+    "TransportationType",
+]

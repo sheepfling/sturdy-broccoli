@@ -4,7 +4,7 @@ import csv
 import json
 from pathlib import Path
 
-from hla2010.testing.vendor_parity_artifacts import write_vendor_parity_artifacts
+from hla2010_repo_internal.verification.vendor_parity_artifacts import write_vendor_parity_artifacts
 
 
 def _write_preflight(path: Path, *, tool: str, environment: str, result: str, exit_code: int) -> None:
@@ -108,6 +108,7 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
     pitch_gap_path = gap_root / "pitch-ddm.json"
     pitch_negotiated_gap_path = gap_root / "pitch-negotiated.json"
     stability_root = Path("analysis/vendor_probe_stability")
+    certi_ddm_stability_path = stability_root / "certi-ddm-probe" / "vendor_probe_stability_summary.json"
     pitch_stability_path = stability_root / "pitch-negotiated-probe" / "vendor_probe_stability_summary.json"
     promotion_review_path = (
         Path("analysis/vendor_probe_promotion_review") / "vendor_probe_promotion_review_summary.json"
@@ -118,6 +119,9 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
     pitch_gap_original = pitch_gap_path.read_text(encoding="utf-8") if pitch_gap_path.exists() else None
     pitch_negotiated_gap_original = (
         pitch_negotiated_gap_path.read_text(encoding="utf-8") if pitch_negotiated_gap_path.exists() else None
+    )
+    certi_ddm_stability_original = (
+        certi_ddm_stability_path.read_text(encoding="utf-8") if certi_ddm_stability_path.exists() else None
     )
     pitch_stability_original = pitch_stability_path.read_text(encoding="utf-8") if pitch_stability_path.exists() else None
     promotion_review_original = promotion_review_path.read_text(encoding="utf-8") if promotion_review_path.exists() else None
@@ -144,6 +148,18 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         area="negotiated_ownership",
     )
     _write_probe_stability(
+        certi_ddm_stability_path,
+        profile="certi-ddm-probe",
+        evidence_tier="probe",
+        repeat_count=5,
+        attempt_count=5,
+        success_count=5,
+        failure_count=0,
+        stable=True,
+        promotion_readiness="candidate",
+        promotion_note="repeated-run stability evidence is present; promotion still requires clause-level parity review",
+    )
+    _write_probe_stability(
         pitch_stability_path,
         profile="pitch-negotiated-probe",
         evidence_tier="probe",
@@ -159,10 +175,18 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
     promotion_review_path.write_text(
         json.dumps(
             {
-                "candidate_count": 1,
+                "candidate_count": 2,
                 "profiles": [
                     {
+                        "profile": "certi-ddm-probe",
+                        "next_action": "compare certi-ddm-probe against docs/backend_conformance_matrix.md and promote only if clause-level parity is now defensible",
+                        "promotion_readiness": "candidate",
+                        "review_decision": "candidate-review",
+                        "docs_ref": "docs/backend_conformance_matrix.md",
+                    },
+                    {
                         "profile": "pitch-negotiated-probe",
+                        "next_action": "resolve the documented bridge-divergent state before promotion; keep the lane at probe status",
                         "promotion_readiness": "candidate",
                         "review_decision": "candidate-review",
                         "docs_ref": "packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md",
@@ -187,9 +211,9 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         assert any(profile["vendor_family"] == "pitch" for profile in summary["profiles"])
         assert any(profile["evidence_tier"] == "promoted" for profile in summary["profiles"])
         assert any(profile["evidence_tier"] == "known-gap" for profile in summary["profiles"])
-        assert any(command["command"] == "./scripts/ci/vendor_runtime_smoke.sh certi-compare" for command in summary["profile_commands"])
-        assert any(command["command"] == "./scripts/pitch_docker_easy.sh negotiated-probe" and command["evidence_tier"] == "probe" for command in summary["profile_commands"])
-        assert any(command["command"] == "./scripts/pitch_docker_easy.sh negotiated" and command["evidence_tier"] == "known-gap" for command in summary["profile_commands"])
+        assert any(command["command"] == "./tools/certi-easy smoke compare" for command in summary["profile_commands"])
+        assert any(command["command"] == "./tools/pitch negotiated-probe" and command["evidence_tier"] == "probe" for command in summary["profile_commands"])
+        assert any(command["command"] == "./tools/pitch negotiated" and command["evidence_tier"] == "known-gap" for command in summary["profile_commands"])
         assert any(command["command"] == "python3 scripts/classify_vendor_runtime.py --lane repo-green --json" for command in summary["profile_commands"])
         assert "certi" in summary["preflight"]
         assert "pitch" in summary["preflight"]
@@ -197,14 +221,30 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         assert summary["runtime_status"]["vendor_green"]["certi"]["overall_classification"] == "environment-blocked"
         assert summary["runtime_status"]["vendor_green"]["pitch"]["overall_classification"] == "environment-blocked"
         assert summary["gap_profiles"]["certi-save-restore"]["classification"] == "known-gap"
+        assert summary["gap_profiles"]["certi-save-restore"]["next_steps"] == [
+            "./tools/certi-easy preflight",
+            "./tools/certi-easy save-restore-probe",
+            "./tools/certi-easy save-restore-review 5",
+        ]
         assert summary["gap_profiles"]["pitch-ddm"]["area"] == "ddm"
+        assert summary["gap_profiles"]["pitch-ddm"]["next_steps"] == [
+            "./tools/pitch preflight",
+            "./tools/pitch ddm-probe",
+            "./tools/pitch ddm-review 5",
+        ]
         assert summary["gap_profiles"]["pitch-negotiated"]["area"] == "negotiated_ownership"
+        assert summary["gap_profiles"]["pitch-negotiated"]["next_steps"] == [
+            "./tools/pitch preflight",
+            "./tools/pitch negotiated-probe",
+            "./tools/pitch negotiated-review 5",
+        ]
         assert summary["gap_profiles"]["pitch-save-restore"] is None
         assert summary["probe_stability"]["pitch-negotiated-probe"]["stable"] is True
         assert summary["probe_stability"]["pitch-negotiated-probe"]["promotion_readiness"] == "candidate"
         assert summary["probe_stability"]["pitch-negotiated-probe"]["attempt_count"] == 5
-        assert summary["probe_stability"]["certi-ddm-probe"] is None
-        assert summary["probe_promotion_review"]["candidate_count"] == 1
+        assert summary["probe_stability"]["certi-ddm-probe"]["promotion_readiness"] == "candidate"
+        assert summary["probe_stability"]["certi-ddm-probe"]["attempt_count"] == 5
+        assert summary["probe_promotion_review"]["candidate_count"] == 2
 
         with paths.artifact_manifest_csv.open() as handle:
             rows = list(csv.DictReader(handle))
@@ -221,6 +261,7 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         assert any(row["artifact_kind"] == "promotion-review" for row in rows)
         assert any(row["evidence_tier"] == "promoted" for row in rows)
         assert any(row["evidence_tier"] == "known-gap" for row in rows)
+        assert any(row["path"] == "analysis/vendor_probe_stability/certi-ddm-probe/vendor_probe_stability_summary.json" for row in rows)
         assert any(row["path"] == "analysis/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json" for row in rows)
         assert any(row["path"] == "analysis/vendor_gap_profiles/certi-save-restore.json" for row in rows)
 
@@ -233,16 +274,19 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         assert "## Probe Stability" in report_text
         assert "## Promotion Review" in report_text
         assert "| Vendor | Profile | Tier | Indexed | Existing | Missing required | Kinds |" in report_text
-        assert "vendor_runtime_smoke.sh certi-compare" in report_text
-        assert "./scripts/pitch_docker_easy.sh negotiated-probe` [probe]" in report_text
-        assert "./scripts/pitch_docker_easy.sh negotiated` [known-gap]" in report_text
-        assert "./scripts/pitch_docker_easy.sh negotiated-review 5" in report_text
+        assert "./tools/certi-easy smoke compare" in report_text
+        assert "./tools/pitch negotiated-probe` [probe]" in report_text
+        assert "./tools/pitch negotiated` [known-gap]" in report_text
+        assert "./tools/pitch negotiated-review 5" in report_text
+        assert "next: `./tools/pitch ddm-review 5`" in report_text
         assert "python3 scripts/ci/write_vendor_probe_promotion_review.py" in report_text
         assert "pitch-negotiated-probe`: stable `True`" in report_text
         assert "promotion `candidate`" in report_text
         assert "decision `candidate-review`" in report_text
+        assert "next: compare certi-ddm-probe against docs/backend_conformance_matrix.md and promote only if clause-level parity is now defensible" in report_text
+        assert "next: resolve the documented bridge-divergent state before promotion; keep the lane at probe status" in report_text
         assert "repo-green" in report_text
-        assert "./scripts/pitch_docker_easy.sh ddm" in report_text
+        assert "./tools/pitch ddm" in report_text
         assert "Required markers for `certi` in `repo-green`:" in report_text
         assert "`active_build_root`: `/tmp/certi-build/libRTI/ieee1516-2010`" in report_text
         assert "Required markers for `pitch` in `pitch vendor-green`:" in report_text
@@ -270,6 +314,10 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
             pitch_negotiated_gap_path.unlink(missing_ok=True)
         else:
             pitch_negotiated_gap_path.write_text(pitch_negotiated_gap_original, encoding="utf-8")
+        if certi_ddm_stability_original is None:
+            certi_ddm_stability_path.unlink(missing_ok=True)
+        else:
+            certi_ddm_stability_path.write_text(certi_ddm_stability_original, encoding="utf-8")
         if pitch_stability_original is None:
             pitch_stability_path.unlink(missing_ok=True)
         else:

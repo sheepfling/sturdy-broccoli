@@ -3,28 +3,24 @@
 This repository works best when the documentation follows the same pattern as
 the code:
 
-`family -> subfamily -> mechanism -> evidence`
+`start here -> reference -> historical/provenance`
 
-That keeps the story simple for each backend, transport, and verification path.
-It also makes it easier to answer the same question at different levels:
-
-- what runtime family is this?
-- how does Python talk to it?
-- what transport or bridge is underneath?
-- what test or artifact proves it?
+That keeps the repo usable for a human reader before they know the package and
+backend vocabulary.
 
 ## Canonical Top-Level Paths
 
-Use these as the normal entry points:
+### Start Here
 
 - [README.md](../README.md): install, bootstrap, smoke, and operator commands
 - [docs/first_run.md](first_run.md): shortest path from fresh checkout to a working pure-Python example
 - [docs/python_environment.md](python_environment.md): Python environment setup and install order
-- [docs/vendor_runtime_runner_guide.md](vendor_runtime_runner_guide.md): supported unsandboxed-local and dedicated-runner path for real vendor runtimes
-- [docs/vendor_runner_provisioning.md](vendor_runner_provisioning.md): dedicated runner variables, marker paths, and provisioning checklist
-- [docs/vendor_runner_provisioning_template.yaml](vendor_runner_provisioning_template.yaml): machine-readable runner provisioning template
+- [docs/two_federate_quickstart.md](two_federate_quickstart.md): first artifact-producing two-federate example
 - [docs/install_matrix.md](install_matrix.md): extras, bridge deps, and vendor-runtime install order
 - [docs/agent_runbook.md](agent_runbook.md): startup sequence for agents and automation
+
+### Reference
+
 - [docs/README.md](README.md): documentation map and doc-family index
 - [docs/package_dependency_tree.md](package_dependency_tree.md): machine-derived installable package dependency tree
 - [docs/architecture.md](architecture.md): package and module structure
@@ -40,6 +36,12 @@ Use these as the normal entry points:
 - [docs/backend_capability_matrix.md](backend_capability_matrix.md): backend feature coverage
 - [docs/backend_conformance_matrix.md](backend_conformance_matrix.md): clause-level conformance and parity status
 - [docs/vendor_runtime_gap_map.md](vendor_runtime_gap_map.md): promoted slices vs environment prerequisites vs true vendor/runtime gaps
+- [docs/vendor_runtime_runner_guide.md](vendor_runtime_runner_guide.md): supported unsandboxed-local and dedicated-runner path for real vendor runtimes
+- [docs/vendor_runner_provisioning.md](vendor_runner_provisioning.md): dedicated runner variables, marker paths, and provisioning checklist
+- [docs/vendor_runner_provisioning_template.yaml](vendor_runner_provisioning_template.yaml): machine-readable runner provisioning template
+
+### Historical / Provenance
+
 - [docs/source_documents.md](source_documents.md): retained source references and provenance
 - [docs/source_documents_inventory.md](source_documents_inventory.md): source inventory
 - [docs/source_documents_policy.md](source_documents_policy.md): source policy and extraction notes
@@ -117,3 +119,10 @@ Keep operator-facing docs in this order:
 6. compare or attribute failures
 
 The root [README.md](../README.md) should stay the shortest path to that flow.
+
+## Read Next
+
+1. [first_run.md](first_run.md)
+2. [python_environment.md](python_environment.md)
+3. [two_federate_quickstart.md](two_federate_quickstart.md)
+4. [README.md](README.md)

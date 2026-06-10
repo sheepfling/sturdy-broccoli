@@ -9,9 +9,9 @@ bash ./scripts/ci/repo_green.sh
 bash ./scripts/ci/vendor_green.sh matrix
 python3 scripts/run_two_federate_suite.py --output-dir analysis/python_two_federate_suite_2026-06-07
 python3 -m pytest -q tests/runtime/test_real_rti.py
-./scripts/pitch_docker_easy.sh preflight
-./scripts/pitch_docker_easy.sh verify
-./scripts/pitch_docker_easy.sh smoke
+./tools/pitch preflight
+./tools/pitch verify
+./tools/pitch smoke
 ```
 
 Use this page when you want the exact local commands, not the broader status.

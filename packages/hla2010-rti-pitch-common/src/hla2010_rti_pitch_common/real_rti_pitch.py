@@ -22,11 +22,7 @@ _PITCH_USER_HOME_MARKER = ".hla2010_pitch_user_home_seeded"
 
 
 def _project_root() -> Path:
-    path = Path(__file__).resolve()
-    for parent in path.parents:
-        if (parent / "pyproject.toml").exists() and (parent / "hla2010").exists():
-            return parent
-    return path.parents[4]
+    return Path(os.environ.get("HLA2010_PROJECT_ROOT", os.getcwd())).expanduser().resolve()
 
 
 def _local_state_root() -> Path:

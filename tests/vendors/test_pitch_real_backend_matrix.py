@@ -9,7 +9,6 @@ from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.backends.base import BackendUnavailableError
 from hla2010.enums import CallbackModel, OrderType, ResignAction
 from hla2010.exceptions import InvalidLogicalTime, RTIexception
-from hla2010.real_rti import launch_pitch_runtime
 from hla2010.rti import create_rti_ambassador
 from hla2010_verification_harness.scenario_exchange import (
     TwoFederateExchangeConfig,
@@ -27,13 +26,14 @@ from hla2010_verification_harness.scenario_ownership import (
 )
 from hla2010_verification_harness.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
 from hla2010.time import HLAinteger64Interval, HLAinteger64Time
+from hla2010_rti_pitch_common.real_rti_pitch import launch_pitch_runtime
 from tests.vendors.runtime_support import cleanup_federation, require_vendor_preflight, shutdown_runtime_resources
 
 
 def _require_real_rti_smoke() -> None:
     if os.environ.get("HLA2010_ENABLE_REAL_RTI_SMOKE") != "1":
         pytest.skip("real vendor RTI smoke disabled; set HLA2010_ENABLE_REAL_RTI_SMOKE=1")
-    require_vendor_preflight("pitch", operator_hint="./scripts/pitch_docker_easy.sh preflight")
+    require_vendor_preflight("pitch", operator_hint="./tools/pitch preflight")
 
 
 def _pitch_exchange_config(federation_name: str, object_instance_name: str) -> TwoFederateExchangeConfig:

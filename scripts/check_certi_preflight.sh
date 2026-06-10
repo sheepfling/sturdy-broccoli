@@ -34,7 +34,7 @@ show_hint "platform" "$(uname -s -r -m)"
 
 if [[ ! -x "$VENV_PYTHON" ]]; then
   show_hint "python env" "blocked: missing .venv"
-  show_hint "next step" "./scripts/bootstrap_profile.sh certi or ./scripts/certi_easy.sh install"
+  show_hint "next step" "./scripts/bootstrap_profile.sh certi or ./tools/certi-easy install"
   show_hint "result" "not ready; bootstrap Python first"
   exit 1
 fi

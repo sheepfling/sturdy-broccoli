@@ -4,11 +4,15 @@ from hla2010_rti_pitch_common import PitchRuntime, pitch_fedpro_local_settings_d
 
 
 def test_split_pitch_common_package_exports_runtime_helpers():
-    from hla2010.real_rti_pitch import PitchRuntime as OldPitchRuntime
-    from hla2010.real_rti_pitch import pitch_fedpro_local_settings_designator as old_designator
+    from hla2010_rti_pitch_common.real_rti_pitch import (
+        PitchRuntime as RuntimeFromModule,
+    )
+    from hla2010_rti_pitch_common.real_rti_pitch import (
+        pitch_fedpro_local_settings_designator as designator_from_module,
+    )
 
-    assert OldPitchRuntime is PitchRuntime
-    assert old_designator is pitch_fedpro_local_settings_designator
+    assert RuntimeFromModule is PitchRuntime
+    assert designator_from_module is pitch_fedpro_local_settings_designator
 
 
 def test_pitch_plugins_import_common_runtime_helpers():

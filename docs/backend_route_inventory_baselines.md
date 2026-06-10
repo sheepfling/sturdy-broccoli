@@ -16,7 +16,7 @@ baseline is selected by environment:
 Primary compare command:
 
 ```bash
-./scripts/certi_easy.sh smoke compare
+./tools/certi-easy smoke compare
 ```
 
 Use this page when the question is:

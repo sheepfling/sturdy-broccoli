@@ -5,4 +5,4 @@ ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 
 source "$ROOT_DIR/.venv/bin/activate"
 
-ruff check hla2010 tests scripts tools --statistics
+ruff check src packages tests scripts tools --statistics

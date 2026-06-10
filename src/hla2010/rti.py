@@ -184,16 +184,12 @@ def _iter_entry_point_backend_plugins() -> list[RTIBackendPlugin]:
 def _register_in_tree_backend_plugins() -> None:
     modules = (
         "hla2010_rti_python.plugin",
-        "hla2010.backends.python.plugin",
         "hla2010_rti_java_jpype.plugin",
         "hla2010_rti_java_py4j.plugin",
         "hla2010_rti_pitch_jpype.plugin",
         "hla2010_rti_pitch_py4j.plugin",
         "hla2010_rti_portico.plugin",
-        "hla2010.backends.java_plugins",
         "hla2010_rti_certi.certi.plugin",
-        "hla2010.backends.certi.plugin",
-        "hla2010.testing.java_shim_plugin",
     )
     for module_name in modules:
         try:

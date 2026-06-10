@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from collections import defaultdict
@@ -258,8 +259,31 @@ class ImportedHLAPacket:
         return {key: tuple(value) for key, value in grouped.items()}
 
 
+def _candidate_project_roots() -> tuple[Path, ...]:
+    raw_root = os.environ.get("HLA2010_PROJECT_ROOT")
+    candidates: list[Path] = []
+    if raw_root:
+        candidates.append(Path(raw_root).expanduser().resolve())
+    cwd = Path.cwd().resolve()
+    candidates.extend((cwd, *cwd.parents))
+    return tuple(dict.fromkeys(candidates))
+
+
+def _resolve_project_root(project_root: Path | None = None) -> Path:
+    if project_root is not None:
+        return project_root.resolve()
+    packet_suffix = Path("requirements/imports/hla_1516_requirements_codebase_packet_v1_0")
+    for candidate in _candidate_project_roots():
+        if (candidate / packet_suffix).is_dir():
+            return candidate
+    raise ValueError(
+        "project_root is required unless the current working tree contains "
+        "requirements/imports/hla_1516_requirements_codebase_packet_v1_0"
+    )
+
+
 def imported_hla_packet_root(project_root: Path | None = None) -> Path:
-    base = project_root or Path(__file__).resolve().parents[2]
+    base = _resolve_project_root(project_root)
     return base / "requirements" / "imports" / "hla_1516_requirements_codebase_packet_v1_0"
 
 

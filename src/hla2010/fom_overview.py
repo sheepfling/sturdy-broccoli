@@ -25,7 +25,7 @@ from typing import Any, Iterable
 from .fom import FOMModule, FOMResolver
 
 
-DEFAULT_OUTPUT_DIR = Path(__file__).resolve().parents[1] / "analysis" / "fom_overview"
+DEFAULT_OUTPUT_DIR = Path.cwd() / "analysis" / "fom_overview"
 
 
 @dataclass(frozen=True)

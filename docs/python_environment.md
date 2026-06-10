@@ -150,6 +150,7 @@ After the Python environment is up:
 source .venv/bin/activate
 python examples/backend_recording.py
 python examples/target_radar_simulation.py --backend python --steps 5
+python scripts/run_two_federate_suite.py --target-radar-steps 3
 ./scripts/ci/test.sh
 ```
 
@@ -162,18 +163,18 @@ Once the Python path is working:
 ### CERTI
 
 ```bash
-./scripts/certi_easy.sh preflight
-./scripts/certi_easy.sh install
-./scripts/certi_easy.sh smoke compare
+./tools/certi-easy preflight
+./tools/certi-easy install
+./tools/certi-easy smoke compare
 ```
 
 ### Pitch
 
 ```bash
-./scripts/pitch_docker_easy.sh preflight
-./scripts/pitch_docker_easy.sh install
-./scripts/pitch_docker_easy.sh smoke
-./scripts/pitch_docker_easy.sh verify
+./tools/pitch preflight
+./tools/pitch install
+./tools/pitch smoke
+./tools/pitch verify
 ```
 
 Do not start with CERTI or Pitch before the Python bootstrap succeeds.
@@ -208,3 +209,9 @@ python examples/backend_recording.py
 
 Do not assume the environment is already active.
 Do not start with vendor runtime flows unless the task explicitly requires them.
+
+## Read Next
+
+1. [`first_run.md`](first_run.md)
+2. [`two_federate_quickstart.md`](two_federate_quickstart.md)
+3. [`install_matrix.md`](install_matrix.md)

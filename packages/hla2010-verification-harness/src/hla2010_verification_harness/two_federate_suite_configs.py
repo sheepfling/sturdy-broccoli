@@ -2,15 +2,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from pathlib import Path
+from importlib import resources
 from typing import Any
 
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[4]
-RESOURCE_ROOT = PROJECT_ROOT / "src" / "hla2010" / "resources" / "foms"
-VENDOR_SMOKE_FOM = RESOURCE_ROOT / "VendorSmokeFOM.xml"
+VENDOR_SMOKE_FOM = resources.files("hla2010").joinpath("resources", "foms", "VendorSmokeFOM.xml")
 
 
 @dataclass(frozen=True)

@@ -14,7 +14,7 @@ the named CERTI baselines:
 The standard comparison entrypoint is:
 
 ```bash
-./scripts/certi_easy.sh smoke compare
+./tools/certi-easy smoke compare
 ```
 
 That compare route currently exercises:

@@ -154,4 +154,31 @@ class HLAvariableArray(DataElement):
             e.decode(data[offset:])
             offset += e.encoded_length()
 
-__all__ = [name for name in globals() if name.startswith('HLA') or name in ('DataElement', 'EncoderException', 'DecoderException')]
+__all__ = [
+    "DataElement",
+    "DecoderException",
+    "EncoderException",
+    "HLAASCIIchar",
+    "HLAASCIIstring",
+    "HLAboolean",
+    "HLAbyte",
+    "HLAfixedArray",
+    "HLAfixedRecord",
+    "HLAfloat32BE",
+    "HLAfloat32LE",
+    "HLAfloat64BE",
+    "HLAfloat64LE",
+    "HLAinteger16BE",
+    "HLAinteger16LE",
+    "HLAinteger32BE",
+    "HLAinteger32LE",
+    "HLAinteger64BE",
+    "HLAinteger64LE",
+    "HLAoctet",
+    "HLAoctetPairBE",
+    "HLAoctetPairLE",
+    "HLAopaqueData",
+    "HLAunicodeChar",
+    "HLAunicodeString",
+    "HLAvariableArray",
+]

@@ -19,7 +19,7 @@ As of June 7, 2026, the current `hla-2010` vendor matrix result is:
 The observable runtime failure is that the negotiated ownership scenario never
 reaches the expected release/acquisition handshake. In the current matrix this
 surfaces at
-[scenario_ownership.py](hla2010/testing/scenario_ownership.py:192)
+[scenario_ownership.py](../../hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py)
 as a missing `attributeOwnershipAcquisitionNotification`/handoff outcome rather
 than as a Python adapter crash.
 
@@ -55,9 +55,9 @@ in the Python adapter/helper layer or treated as a vendor/runtime limitation.
 
 ### Explicit gaps in the 2010 client implementation
 
-- [RTIambassadorImplementation.cpp](CERTI/libRTI/ieee1516-2010/RTIambassadorImplementation.cpp)
+- [RTIambassadorImplementation.cpp](../../../CERTI/libRTI/ieee1516-2010/RTIambassadorImplementation.cpp)
   marks `confirmDivestiture` as `Not yet implemented`.
-- [RTIambassadorImplementation.cpp](CERTI/libRTI/ieee1516-2010/RTIambassadorImplementation.cpp)
+- [RTIambassadorImplementation.cpp](../../../CERTI/libRTI/ieee1516-2010/RTIambassadorImplementation.cpp)
   marks `attributeOwnershipReleaseDenied` as `Not Implemented`.
 
 Those are hard evidence that the 2010 ownership surface is incomplete on the
@@ -65,12 +65,12 @@ client side.
 
 ### Server-side ownership logic does exist
 
-- [MessageProcessor.cc](CERTI/RTIG/MessageProcessor.cc)
+- [MessageProcessor.cc](../../../CERTI/RTIG/MessageProcessor.cc)
   routes negotiated divestiture, acquisition, release response, and cancel
   messages into federation logic.
-- [Federation.cc](CERTI/RTIG/Federation.cc)
+- [Federation.cc](../../../CERTI/RTIG/Federation.cc)
   forwards those requests into object-class ownership code.
-- [ObjectClass.cc](CERTI/libCERTI/ObjectClass.cc)
+- [ObjectClass.cc](../../../CERTI/libCERTI/ObjectClass.cc)
   contains a coherent state machine:
   - negotiated divestiture marks attributes as divesting when there are no candidates
   - acquisition on divesting attributes grants immediately and notifies the old owner
@@ -82,14 +82,14 @@ So the codebase is not simply missing the feature at every layer.
 
 ### The available CERTI tests do not give end-to-end ownership proof
 
-- [tests/RTIG/CMakeLists.txt](CERTI/tests/RTIG/CMakeLists.txt)
+- [tests/RTIG/CMakeLists.txt](../../../CERTI/tests/RTIG/CMakeLists.txt)
   defines a `TestRTIG` gtest target that would include
   `messageprocessor_test.cpp` and `federation_test.cpp`.
 - The current local build tree does not expose that target:
   - `cmake --build hla-2010/.local/certi/patched/build --target TestRTIG`
     fails with `No rule to make target 'TestRTIG'`.
 - The ownership-specific source tests that do exist in
-  [messageprocessor_test.cpp](CERTI/tests/RTIG/messageprocessor_test.cpp)
+  [messageprocessor_test.cpp](../../../CERTI/tests/RTIG/messageprocessor_test.cpp)
   are only empty-message dispatch checks. They assert that malformed ownership
   request messages throw, not that negotiated ownership completes across a
   running RTIA/RTIG pair.
@@ -140,9 +140,9 @@ in this workspace.
 ### Direct CERTI-side harness result
 
 - A dedicated CERTI-side ownership probe now exists on the patch branch:
-  - [ownershipProbe-IEEE1516_2010.cc](CERTI/test/testFederate/ownershipProbe-IEEE1516_2010.cc)
-  - [run_ownership_probe.sh](CERTI/test/testFederate/run_ownership_probe.sh)
-  - [rtia_verbose_wrapper.sh](CERTI/test/testFederate/rtia_verbose_wrapper.sh)
+  - [ownershipProbe-IEEE1516_2010.cc](../../../CERTI/test/testFederate/ownershipProbe-IEEE1516_2010.cc)
+  - [run_ownership_probe.sh](../../../CERTI/test/testFederate/run_ownership_probe.sh)
+  - [rtia_verbose_wrapper.sh](../../../CERTI/test/testFederate/rtia_verbose_wrapper.sh)
 - The probe runs below `hla-2010` and talks directly to the patched CERTI
   `RTI1516e` client/runtime path.
 - Current outcome for both owner and acquirer paths:
@@ -161,21 +161,21 @@ in this workspace.
 ### Updated direct 1516-2010 findings after RTIA/RTIG instrumentation
 
 - The spawned RTIA `-f` path is now instrumented in:
-  - [RTIA.cc](CERTI/RTIA/RTIA.cc)
-  - [Communications.cc](CERTI/RTIA/Communications.cc)
-  - [RTIA_federate.cc](CERTI/RTIA/RTIA_federate.cc)
-  - [FederationManagement.cc](CERTI/RTIA/FederationManagement.cc)
-  - [Federation_fom.cc](CERTI/RTIG/Federation_fom.cc)
+  - [RTIA.cc](../../../CERTI/RTIA/RTIA.cc)
+  - [Communications.cc](../../../CERTI/RTIA/Communications.cc)
+  - [RTIA_federate.cc](../../../CERTI/RTIA/RTIA_federate.cc)
+  - [FederationManagement.cc](../../../CERTI/RTIA/FederationManagement.cc)
+  - [Federation_fom.cc](../../../CERTI/RTIG/Federation_fom.cc)
 - That instrumentation showed the original empty `RTIinternalError` at
   create/join was actually a FOM-module rejection from RTIG, not a blind
   transport failure.
 - CERTI's FOM-module merge rule in
-  [RootObject.cc](CERTI/libCERTI/RootObject.cc)
+  [RootObject.cc](../../../CERTI/libCERTI/RootObject.cc)
   rejected normal 2010 modules because it required an existing class from the
   MIM, especially `HLAobjectRoot`, to repeat the full MIM-owned attribute set.
 - A local patch now treats empty repeated class definitions as scaffolding,
   which is enough for the direct 1516-2010 path to accept CERTI's own shipped
-  [RestaurantFOMmodule.xml](CERTI/xml/ieee1516-2010/1516_2-2010/RestaurantFOMmodule.xml).
+  [RestaurantFOMmodule.xml](../../../CERTI/xml/ieee1516-2010/1516_2-2010/RestaurantFOMmodule.xml).
 - With that patch in place, direct 1516-2010 `createFederationExecution(...)`
   and `joinFederationExecution(...)` complete successfully in the dedicated
   ownership harness.
@@ -191,9 +191,9 @@ in this workspace.
 ### RTIG ownership-path narrowing
 
 - RTIG ownership instrumentation now exists in:
-  - [MessageProcessor.cc](CERTI/RTIG/MessageProcessor.cc)
-  - [Federation.cc](CERTI/RTIG/Federation.cc)
-  - [ObjectClass.cc](CERTI/libCERTI/ObjectClass.cc)
+  - [MessageProcessor.cc](../../../CERTI/RTIG/MessageProcessor.cc)
+  - [Federation.cc](../../../CERTI/RTIG/Federation.cc)
+  - [ObjectClass.cc](../../../CERTI/libCERTI/ObjectClass.cc)
 - The latest direct `deny` probe with a two-phase harness barrier shows RTIG
   progresses through:
   - `MessageProcessor::process(NM_Negotiated_Attribute_Ownership_Divestiture)`
@@ -214,7 +214,7 @@ in this workspace.
 
 That specific broadcast-path crash is now fixed. The root cause was a bad
 message accessor in
-[ObjectClass.cc](CERTI/libCERTI/ObjectClass.cc):
+[ObjectClass.cc](../../../CERTI/libCERTI/ObjectClass.cc):
 
 - the `REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION` branch in
   `broadcastClassMessage(...)` read `getMsgRAV()->getAttributesSize()`
@@ -283,7 +283,7 @@ This also makes the current CERTI mapping explicit:
 ## Runtime Findings
 
 The real probe in
-[test_certi_real_backend_matrix.py](tests/vendors/test_certi_real_backend_matrix.py)
+[tests/vendors/README.md](../../../tests/vendors/README.md)
 shows:
 
 - exchange, time, synchronization, unconditional divestiture, acquisition-if-available, and ownership query all pass

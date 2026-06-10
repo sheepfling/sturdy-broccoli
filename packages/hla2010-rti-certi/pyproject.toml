@@ -35,7 +35,4 @@ backend_names = ["certi", "certi-jpype", "certi-py4j"]
 backend_aliases = ["certi-native", "native-certi", "java-certi-jpype", "java-certi-py4j"]
 source_roots = [
   "packages/hla2010-rti-certi/src/hla2010_rti_certi",
-  "hla2010/backends/certi",
-  "hla2010/backends/certi_java",
-  "hla2010/real_rti_certi.py",
 ]

@@ -1,5 +1,9 @@
 # Evidence Packet Index
 
+Historical / provenance note:
+This index is for preserved packet contents and audit work. Do not use it as
+the first stop for current runtime or onboarding guidance.
+
 This page indexes the unpacked evidence packets stored under `docs/evidence/`.
 
 Canonical order:

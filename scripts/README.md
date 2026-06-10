@@ -11,12 +11,14 @@ Start here:
 - [../docs/python_environment.md](../docs/python_environment.md): Python bootstrap, `.venv`, extras, and install order
 - [../docs/documentation_hierarchy.md](../docs/documentation_hierarchy.md): canonical doc hierarchy
 - [../java_shims/README.md](../java_shims/README.md): Java bridge verification-fixture contract
+- `python3 scripts/ci/check_doc_links.py`: canonical Markdown link and navigation check
 
 Primary operator entrypoints:
 
 - `./scripts/bootstrap_profile.sh` profile-based setup for `python`, `certi`, `pitch`, or `all`
 - `./scripts/bootstrap_profile.sh doctor` workspace setup and prerequisite check
-- `./scripts/certi_easy.sh` CERTI install, doctor, build, run, smoke, and compare flow
+- `./tools/certi-easy` canonical CERTI install, doctor, build, run, smoke, and compare flow
+- `./tools/pitch` canonical Pitch Docker-backed install, start, smoke, verify, and support flow
 
 Normal setup order:
 
@@ -25,20 +27,26 @@ Normal setup order:
 3. run a pure-Python smoke path
 4. only then move on to CERTI, Pitch, JPype, or Py4J work
 
+The repository root is not an installable Python distribution. Python setup
+installs the split packages in editable mode, starting with
+`packages/hla2010-spec`. Do not use root `pip install -e .` and do not add
+workspace source roots through `.pth` or `sys.path` injection.
+
 Operator guide links:
 
 - [../packages/hla2010-rti-certi/docs/certi_section8_runbook.md](../packages/hla2010-rti-certi/docs/certi_section8_runbook.md): CERTI operator runbook
 - [../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md](../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md): Pitch selection and troubleshooting
 - [../docs/preflight_artifacts.md](../docs/preflight_artifacts.md): JSON preflight artifacts and inspection examples
-- `./scripts/certi_easy.sh preflight [--json] [--json-file FILE]`: CERTI readiness check before install or smoke
-- `./scripts/pitch_docker_easy.sh preflight [--json] [--json-file FILE]`: Pitch Docker readiness check before install or run
+- `./tools/certi-easy preflight [--json] [--json-file FILE]`: CERTI readiness check before install or smoke
+- `./tools/pitch preflight [--json] [--json-file FILE]`: Pitch Docker readiness check before install or run
 - `python3 scripts/classify_vendor_runtime.py --lane repo-green|vendor-green [--vendor certi|pitch] [--json]`: classify preflight artifacts into ready vs blocked vs broken states
 - `python3 scripts/ci/write_vendor_runtime_job_summary.py`: render the normalized vendor runtime status into GitHub-job-friendly Markdown
 - `python3 scripts/ci/check_vendor_runtime_ci_state.py --profile ...`: validate dedicated CI runtime env/path state before vendor-green execution
 - `python3 scripts/check_vendor_runner_template_drift.py`: verify the runner provisioning template, validator profiles, and workflow env contracts stay aligned
 - `./scripts/ci/vendor_runtime_smoke.sh ...`: CI/operator smoke wrapper that now runs mandatory vendor preflight first, writes standard JSON artifacts under `analysis/preflight_artifacts/`, and can still classify/skip blocked vendor runs even when the repo virtualenv has not been activated yet
 - `./scripts/ci/repo_green.sh`: explicit repo-green wrapper around the default full verification lane
-- `./scripts/ci/vendor_green.sh ...`: strict vendor-runtime gate for dedicated real-runtime runners
+- `./scripts/ci/vendor_green.sh ...`: strict vendor-runtime gate for dedicated real-runtime runners; under CI it now self-validates the dedicated runner contract before trying the runtime lane
+- `./scripts/ci/vendor_probe_stability.sh ...`: repeated probe harness; under CI it now validates the dedicated runner contract once before collecting repeated-run evidence and disables redundant per-attempt revalidation inside the loop
 
 CI lane rule:
 
@@ -52,20 +60,24 @@ Copy-paste preflight artifact flow:
 ```bash
 mkdir -p analysis/preflight_artifacts
 
-./scripts/certi_easy.sh preflight --json-file analysis/preflight_artifacts/certi-preflight.json
+./tools/certi-easy preflight --json-file analysis/preflight_artifacts/certi-preflight.json
 python3 -m json.tool analysis/preflight_artifacts/certi-preflight.json
 
-./scripts/pitch_docker_easy.sh preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
+./tools/pitch preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
 python3 -m json.tool analysis/preflight_artifacts/pitch-preflight.json
 ```
 
 Both preflight entrypoints also accept `--json` for machine-readable output.
-The canonical `./scripts/certi_easy.sh preflight` and
-`./scripts/pitch_docker_easy.sh preflight` commands now also persist the
+The canonical `./tools/certi-easy preflight` and `./tools/pitch preflight` commands now also persist the
 default JSON artifact plus normalized runtime-status/parity
 reports even when no explicit `--json-file` is provided.
 The vendor smoke wrapper writes the same JSON artifacts by default before it
 decides whether to run or skip a vendor profile.
+
+Implementation shims still exist:
+
+- `./scripts/certi_easy.sh`
+- `./scripts/pitch_docker_easy.sh`
 
 Script families:
 
@@ -90,13 +102,13 @@ Script families:
 - `check_pitch_preflight.sh`: Docker and bundled Pitch readiness probe
 - `setup_pitch_state.sh`: persistent Pitch `user.home`
 - `run_pitch_local.sh`: launch extracted Pitch runtime
-- `pitch_docker_easy.sh`: simple Pitch Docker operator flow
+- `pitch_docker_easy.sh`: compatibility alias behind the top-level `./tools/pitch` operator flow
 - `run_pitch_docker_crc.sh`: Docker-backed Pitch CRC runner
 - `accept_pitch_dialog.sh`: acceptance dialog helper
 
 ### Evidence and Analysis
 
-- `run_two_federate_suite.py`: composite two-federate artifact packet
+- `run_two_federate_suite.py`: composite two-federate artifact packet through the repo-level workspace wrapper, including vendor launcher injection when vendor packages are installed
 - `run_target_radar_backend_matrix.py`: target/radar backend diagnostic packet
 - `run_target_radar_proof.py`: target/radar proof packet
 - `generate_fom_overview.py`: merged FOM/MIM tree and matrix overview packet, with optional interactive HTML output via `--html`
@@ -123,6 +135,8 @@ When `generate_compliance_artifacts.py` finishes, the best operator entrypoints 
 For the shortest “what do we know about backend compliance right now?” path:
 
 ```bash
+./scripts/bootstrap_profile.sh python
+source .venv/bin/activate
 python3 scripts/generate_compliance_artifacts.py
 python3 scripts/discover_backend_compliance.py --show-backlog
 ```
@@ -167,6 +181,7 @@ New generated backlog artifacts:
 - `run_pitch_docker_crc.sh`: Docker-backed Pitch CRC launcher
 - `run_two_federate_suite.py`: composite suite artifact packet
 - `generate_compliance_artifacts.py`: compliance packet generator
+- `ci/check_doc_links.py`: canonical Markdown link integrity checker
 
 ## Operating Rules
 

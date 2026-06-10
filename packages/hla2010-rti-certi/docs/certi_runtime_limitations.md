@@ -8,10 +8,10 @@ used by this repository.
 If you want the simplest operator flow:
 
 ```bash
-./scripts/certi_easy.sh preflight
-./scripts/certi_easy.sh install
-./scripts/certi_easy.sh doctor
-./scripts/certi_easy.sh smoke compare
+./tools/certi-easy preflight
+./tools/certi-easy install
+./tools/certi-easy doctor
+./tools/certi-easy smoke compare
 ```
 
 That one wrapper handles:
@@ -88,13 +88,13 @@ Use these as the standard operator commands for CERTI evidence:
 ```bash
 ./scripts/rebuild_certi.sh
 ./scripts/rebuild_certi_upstream.sh
-./scripts/certi_easy.sh smoke patched
-./scripts/certi_easy.sh smoke upstream
-./scripts/certi_easy.sh smoke compare
-./scripts/certi_easy.sh save-restore
-./scripts/certi_easy.sh save-restore-probe
-./scripts/certi_easy.sh ddm
-./scripts/certi_easy.sh ddm-probe
+./tools/certi-easy smoke patched
+./tools/certi-easy smoke upstream
+./tools/certi-easy smoke compare
+./tools/certi-easy save-restore
+./tools/certi-easy save-restore-probe
+./tools/certi-easy ddm
+./tools/certi-easy ddm-probe
 ```
 
 Route meaning:
@@ -122,11 +122,11 @@ Reason:
   smoke-stable slices
 - the test is useful as a targeted matrix/regression probe
 - it is not yet stable enough to advertise as part of
-  `./scripts/certi_easy.sh smoke compare`
+  `./tools/certi-easy smoke compare`
 
 Operator rule:
 
-- use `./scripts/certi_easy.sh smoke compare` for the honest stable baseline
+- use `./tools/certi-easy smoke compare` for the honest stable baseline
 - use the deeper ownership matrix tests when you are explicitly working on
   negotiated-ownership parity
 
@@ -135,13 +135,13 @@ Session prerequisite:
 - These commands only produce real runtime evidence when local loopback TCP
   bind/connect is permitted for `127.0.0.1`.
 - In sessions where that preflight fails, the compare route skips with:
-  `Local socket bind is not permitted for 127.0.0.1. Run ./scripts/certi_easy.sh preflight to verify local CERTI prerequisites.`
+  `Local socket bind is not permitted for 127.0.0.1. Run ./tools/certi-easy preflight to verify local CERTI prerequisites.`
 - That skip is an execution-environment limitation, not a CERTI baseline result.
 - If the preflight reports `environment: loopback-blocked`, use an unrestricted
   local terminal or an approved unsandboxed command to retest.
 
 Current named-baseline outcome from the runnable compare route
-`./scripts/certi_easy.sh smoke compare`:
+`./tools/certi-easy smoke compare`:
 
 - `certi-upstream`:
   - federation create/join succeeds, but the first `queryGALT` tears down the
@@ -225,15 +225,15 @@ Current named-baseline outcome from the runnable compare route
   evidence from pristine upstream CERTI evidence.
 - Prefer adding fail-fast real-runtime probes before promoting any CERTI row to
   `yes`.
-- Use `./scripts/certi_easy.sh save-restore` when you want the current explicit status for
+- Use `./tools/certi-easy save-restore` when you want the current explicit status for
   that missing slice. Today it reports a machine-readable known-gap profile
   after preflight instead of pretending the route is absent.
-- Use `./scripts/certi_easy.sh save-restore-probe` when you want the
+- Use `./tools/certi-easy save-restore-probe` when you want the
   current narrow executable CERTI save/restore probe. Treat it as deeper probe
   evidence, not as a promoted stable slice yet.
-- Use `./scripts/certi_easy.sh ddm` for the same explicit known-gap treatment on the
+- Use `./tools/certi-easy ddm` for the same explicit known-gap treatment on the
   current missing DDM slice.
-- Use `./scripts/certi_easy.sh ddm-probe` when you want the current narrow executable
+- Use `./tools/certi-easy ddm-probe` when you want the current narrow executable
   CERTI DDM probe. Treat it as deeper probe evidence, not as a promoted stable
   slice yet.
 - Treat Pitch as a separate vendor baseline once activation/runtime startup is

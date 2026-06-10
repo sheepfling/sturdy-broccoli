@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import argparse
-import importlib.util
+import importlib
 import json
 import os
 import shutil
@@ -56,7 +56,7 @@ def detect_python_bin() -> Path:
 def run_python_probe(python_bin: Path) -> tuple[dict[str, object], str | None]:
     script = """
 from __future__ import annotations
-import importlib.util
+import importlib
 import json
 import shutil
 import sys
@@ -72,12 +72,19 @@ modules = {
 payload = {
     "executable": sys.executable,
     "version": ".".join(str(part) for part in sys.version_info[:3]),
-    "modules": {name: importlib.util.find_spec(module) is not None for name, module in modules.items()},
+    "modules": {},
     "executables": {
         "ruff": shutil.which("ruff") is not None,
         "pyright": shutil.which("pyright") is not None,
     },
 }
+for name, module in modules.items():
+    try:
+        importlib.import_module(module)
+    except Exception:
+        payload["modules"][name] = False
+    else:
+        payload["modules"][name] = True
 print(json.dumps(payload))
 """.strip()
     try:
@@ -230,7 +237,7 @@ def check_certi_state() -> Check:
             built.append("upstream")
         return Check("certi", "ok", "CERTI install artifacts present", ", ".join(built))
     if source_dir.exists():
-        return Check("certi", "warn", "CERTI source tree present but install artifacts missing", "run ./scripts/certi_easy.sh preflight or ./scripts/bootstrap_profile.sh certi when needed")
+        return Check("certi", "warn", "CERTI source tree present but install artifacts missing", "run ./tools/certi-easy preflight or ./scripts/bootstrap_profile.sh certi when needed")
     return Check("certi", "warn", "CERTI runtime not prepared", "optional; use only for real CERTI paths")
 
 
@@ -249,7 +256,7 @@ def check_pitch_state() -> Check:
             detail += f"; docker={docker_bin}"
         return Check("pitch", "warn", "Pitch zip is present but not extracted", detail)
     if docker_bin:
-        return Check("pitch", "warn", "Pitch runtime bundle missing", f"docker={docker_bin}; add vendor bundle before using ./scripts/pitch_docker_easy.sh")
+        return Check("pitch", "warn", "Pitch runtime bundle missing", f"docker={docker_bin}; add vendor bundle before using ./tools/pitch")
     return Check("pitch", "warn", "Pitch runtime and Docker are unavailable", "optional; only needed for Pitch routes")
 
 
@@ -269,9 +276,9 @@ def next_steps(checks: list[Check]) -> list[str]:
     if by_name["java_bridge_extras"].status != "ok":
         steps.append("HLA2010_BOOTSTRAP_EXTRAS=java ./scripts/bootstrap_python.sh")
     if by_name["certi"].status != "ok":
-        steps.append("./scripts/certi_easy.sh preflight")
+        steps.append("./tools/certi-easy preflight")
     if by_name["pitch"].status != "ok":
-        steps.append("./scripts/pitch_docker_easy.sh preflight")
+        steps.append("./tools/pitch preflight")
     return steps
 
 

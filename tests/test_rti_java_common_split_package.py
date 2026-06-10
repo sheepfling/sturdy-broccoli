@@ -2,14 +2,14 @@ from __future__ import annotations
 
 
 def test_split_java_common_package_exports_shared_java_support_surface():
-    from hla2010.backends.java_common import JavaBridge as OldJavaBridge
-    from hla2010.backends.java_common import JavaRTIBackend as OldJavaRTIBackend
-    from hla2010.backends.java_common import resolve_java_arguments as old_resolve_java_arguments
     from hla2010_rti_java_common import JavaBridge, JavaRTIBackend, resolve_java_arguments
 
-    assert OldJavaBridge is JavaBridge
-    assert OldJavaRTIBackend is JavaRTIBackend
-    assert old_resolve_java_arguments is resolve_java_arguments
+    assert JavaBridge.__module__.startswith("hla2010_rti_java_common")
+    assert JavaRTIBackend.__module__.startswith("hla2010_rti_java_common")
+    assert resolve_java_arguments.__module__ in {
+        "hla2010_rti_java_common.java_common",
+        "hla2010_rti_backend_common.invocation",
+    }
 
 
 def test_split_java_bridge_packages_import_shared_java_support_from_new_package():

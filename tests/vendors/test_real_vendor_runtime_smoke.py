@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import uuid
+from pathlib import Path
 
 import pytest
 
@@ -9,7 +10,6 @@ from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.backends.base import BackendUnavailableError
 from hla2010.enums import CallbackModel, ResignAction
 from hla2010.handles import FederateHandle
-from hla2010.real_rti import discover_certi_smoke_fom, launch_certi_rtig, launch_pitch_runtime
 from hla2010.rti import create_rti_ambassador
 from hla2010.startup import FederationStartupConfig, connect_create_join
 from hla2010.types import RangeBounds
@@ -17,86 +17,103 @@ from hla2010_verification_harness.scenario_exchange import TwoFederateExchangeCo
 from hla2010_verification_harness.two_federate_suite_pairs import SuiteRecordingFederateAmbassador
 from hla2010_verification_harness.two_federate_suite_scenarios import run_suite_ddm_scenario
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from tests.vendors.runtime_support import cleanup_federation, require_vendor_preflight, reserve_udp_pair, shutdown_runtime_resources
+from hla2010_rti_certi.real_rti_certi import discover_certi_smoke_fom, launch_certi_rtig
+from hla2010_rti_pitch_common.real_rti_pitch import launch_pitch_runtime
+from tests.vendors.runtime_support import (
+    cleanup_federation,
+    isolated_vendor_runtime_test_state,
+    require_vendor_preflight,
+    reserve_udp_pair,
+    shutdown_runtime_resources,
+)
 
 
 def _require_real_rti_smoke(vendor: str) -> None:
     if os.environ.get("HLA2010_ENABLE_REAL_RTI_SMOKE") != "1":
         pytest.skip("real vendor RTI smoke disabled; set HLA2010_ENABLE_REAL_RTI_SMOKE=1")
-    operator_hint = "./scripts/certi_easy.sh preflight" if vendor == "certi" else "./scripts/pitch_docker_easy.sh preflight"
+    operator_hint = "./tools/certi-easy preflight" if vendor == "certi" else "./tools/pitch preflight"
     require_vendor_preflight(vendor, operator_hint=operator_hint)
+
+
+def _runtime_state_root(vendor: str, *, kind: str | None = None) -> Path:
+    suffix = vendor if kind is None else f"{vendor}-{kind}"
+    return Path(__file__).resolve().parents[2] / ".pytest-runtime-state" / suffix
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
 def test_pitch_java_real_lifecycle_smoke(kind: str):
     _require_real_rti_smoke("pitch")
-    try:
-        runtime = launch_pitch_runtime()
-    except BackendUnavailableError as exc:
-        pytest.skip(str(exc))
+    with isolated_vendor_runtime_test_state(_runtime_state_root("pitch", kind=kind)):
+        runtime = None
+        try:
+            runtime = launch_pitch_runtime()
+        except BackendUnavailableError as exc:
+            pytest.skip(str(exc))
 
-    federation_name = f"pitch-smoke-{uuid.uuid4().hex[:8]}"
-    rti = None
-    try:
-        fed = RecordingFederateAmbassador()
-        rti = create_rti_ambassador(kind)
-        assert rti.getHLAversion() == "IEEE 1516-2010"
-        result = connect_create_join(
-            rti,
-            fed,
-            FederationStartupConfig(
-                federation_name=federation_name,
-                federate_name=f"{kind}-SmokeFederate",
-                federate_type="SmokeFederate",
-                fom_modules=("hla2010:VendorSmokeFOM.xml",),
-                logical_time_implementation_name="HLAinteger64Time",
-            ),
-        )
-        assert isinstance(result.federate_handle, FederateHandle)
-        cleanup_federation(
-            federation_name,
-            destroyer=rti,
-            destroyer_resign_action=ResignAction.NO_ACTION,
-            disconnect_rtis=(rti,),
-        )
-    finally:
-        shutdown_runtime_resources(close_resources=(rti,), runtime_resources=(runtime,))
+        federation_name = f"pitch-smoke-{uuid.uuid4().hex[:8]}"
+        rti = None
+        try:
+            fed = RecordingFederateAmbassador()
+            rti = create_rti_ambassador(kind)
+            assert rti.getHLAversion() == "IEEE 1516-2010"
+            result = connect_create_join(
+                rti,
+                fed,
+                FederationStartupConfig(
+                    federation_name=federation_name,
+                    federate_name=f"{kind}-SmokeFederate",
+                    federate_type="SmokeFederate",
+                    fom_modules=("hla2010:VendorSmokeFOM.xml",),
+                    logical_time_implementation_name="HLAinteger64Time",
+                ),
+            )
+            assert isinstance(result.federate_handle, FederateHandle)
+            cleanup_federation(
+                federation_name,
+                destroyer=rti,
+                destroyer_resign_action=ResignAction.NO_ACTION,
+                disconnect_rtis=(rti,),
+            )
+        finally:
+            shutdown_runtime_resources(close_resources=(rti,), runtime_resources=(runtime,))
 
 
 def test_certi_real_lifecycle_smoke():
     _require_real_rti_smoke("certi")
-    federation_name = f"certi-smoke-{uuid.uuid4().hex[:8]}"
-    fed = RecordingFederateAmbassador()
-    try:
-        smoke_fom = discover_certi_smoke_fom()
-    except BackendUnavailableError as exc:
-        pytest.skip(str(exc))
-    try:
-        rti = create_rti_ambassador("certi")
-    except BackendUnavailableError as exc:
-        pytest.skip(str(exc))
-    try:
-        assert rti.getHLAversion() == "IEEE 1516-2010"
-        result = connect_create_join(
-            rti,
-            fed,
-            FederationStartupConfig(
-                federation_name=federation_name,
-                federate_name="CERTISmokeFederate",
-                federate_type="SmokeFederate",
-                fom_modules=(smoke_fom,),
-                logical_time_implementation_name="HLAinteger64Time",
-            ),
-        )
-        assert isinstance(result.federate_handle, FederateHandle)
-        cleanup_federation(
-            federation_name,
-            destroyer=rti,
-            destroyer_resign_action=ResignAction.NO_ACTION,
-            disconnect_rtis=(rti,),
-        )
-    finally:
-        shutdown_runtime_resources(close_resources=(rti,))
+    with isolated_vendor_runtime_test_state(_runtime_state_root("certi")):
+        federation_name = f"certi-smoke-{uuid.uuid4().hex[:8]}"
+        fed = RecordingFederateAmbassador()
+        rti = None
+        try:
+            smoke_fom = discover_certi_smoke_fom()
+        except BackendUnavailableError as exc:
+            pytest.skip(str(exc))
+        try:
+            rti = create_rti_ambassador("certi")
+        except BackendUnavailableError as exc:
+            pytest.skip(str(exc))
+        try:
+            assert rti.getHLAversion() == "IEEE 1516-2010"
+            result = connect_create_join(
+                rti,
+                fed,
+                FederationStartupConfig(
+                    federation_name=federation_name,
+                    federate_name="CERTISmokeFederate",
+                    federate_type="SmokeFederate",
+                    fom_modules=(smoke_fom,),
+                    logical_time_implementation_name="HLAinteger64Time",
+                ),
+            )
+            assert isinstance(result.federate_handle, FederateHandle)
+            cleanup_federation(
+                federation_name,
+                destroyer=rti,
+                destroyer_resign_action=ResignAction.NO_ACTION,
+                disconnect_rtis=(rti,),
+            )
+        finally:
+            shutdown_runtime_resources(close_resources=(rti,))
 
 
 def test_certi_real_exchange_smoke():

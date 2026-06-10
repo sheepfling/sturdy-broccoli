@@ -25,5 +25,4 @@ status = "implementation-moved"
 role = "runtime-common"
 source_roots = [
   "packages/hla2010-rti-pitch-common/src/hla2010_rti_pitch_common",
-  "hla2010/real_rti_pitch.py",
 ]

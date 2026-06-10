@@ -4,18 +4,29 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import site
 import sys
 from pathlib import Path
 
-import _bootstrap  # noqa: F401
-
-from hla2010.backends.base import BackendUnavailableError
-from hla2010.real_rti import discover_certi_smoke_fom
-from hla2010.real_rti_certi import discover_certi_runtime
-from hla2010.real_rti_process import reserve_tcp_port
-
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
+
+
+def _bootstrap_workspace_imports() -> None:
+    for source_root in (ROOT_DIR / "src", *sorted((ROOT_DIR / "packages").glob("*/src"))):
+        if source_root.is_dir():
+            site.addsitedir(str(source_root))
+
+
+_bootstrap_workspace_imports()
+
+from hla2010.backends.base import BackendUnavailableError
+from hla2010_rti_certi.real_rti_certi import (
+    discover_certi_runtime,
+    discover_certi_smoke_fom,
+)
+from hla2010_rti_runtime_common.real_rti_process import reserve_tcp_port
+
 LOCAL_STATE_ROOT = Path(os.environ.get("HLA2010_LOCAL_STATE_ROOT", str(ROOT_DIR / ".local")))
 
 
@@ -120,6 +131,12 @@ def _runtime_profiles() -> dict[str, dict[str, object]]:
     }
 
 
+def _loopback_bind_check() -> str:
+    if os.environ.get("HLA2010_CERTI_PREFLIGHT_ASSUME_LOOPBACK_OK") == "1":
+        return "assumed loopback bind availability"
+    return f"reserved tcp port {reserve_tcp_port('127.0.0.1')}"
+
+
 def _require_marker(record: dict[str, object], label: str) -> str:
     if not bool(record.get("marker_exists")):
         marker = record.get("marker") or record.get("path") or label
@@ -139,7 +156,7 @@ def main() -> int:
         _check("active_prefix", lambda: _require_marker(runtime_profiles["active"]["prefix"], "active CERTI install prefix")),
         _check("active_build_root", lambda: _require_marker(runtime_profiles["active"]["build_root"], "active CERTI build root")),
         _check("certi_smoke_fom", discover_certi_smoke_fom),
-        _check("loopback_bind", lambda: f"reserved tcp port {reserve_tcp_port('127.0.0.1')}"),
+        _check("loopback_bind", _loopback_bind_check),
     ]
 
     environment = "loopback-ok" if all(bool(item["ok"]) for item in checks) else "partial"
@@ -150,7 +167,7 @@ def main() -> int:
     result = "real CERTI runnable" if all(bool(item["ok"]) for item in checks) else "real CERTI will skip"
     next_steps = (
         [
-            "./scripts/certi_easy.sh smoke compare",
+            "./tools/certi-easy smoke compare",
             (
                 "HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q "
                 "tests/vendors/test_certi_real_backend_exchange_matrix.py "
@@ -159,7 +176,7 @@ def main() -> int:
             ),
         ]
         if result == "real CERTI runnable"
-        else ["fix the blocked prerequisite above", "./scripts/certi_easy.sh preflight"]
+        else ["fix the blocked prerequisite above", "./tools/certi-easy preflight"]
     )
 
     if args.json:
@@ -212,8 +229,8 @@ def main() -> int:
     if result == "real CERTI runnable":
         print("environment: loopback-ok")
         print("result: real CERTI runnable")
-        print("easy: ./scripts/certi_easy.sh preflight")
-        print("next: ./scripts/certi_easy.sh smoke compare")
+        print("easy: ./tools/certi-easy preflight")
+        print("next: ./tools/certi-easy smoke compare")
         print(
             "next: HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q "
             "tests/vendors/test_certi_real_backend_exchange_matrix.py "
@@ -232,8 +249,8 @@ def main() -> int:
         print("environment: partial")
 
     print("result: real CERTI will skip")
-    print("easy: ./scripts/certi_easy.sh preflight")
-    print("next: fix the blocked prerequisite above, then rerun ./scripts/certi_easy.sh preflight")
+    print("easy: ./tools/certi-easy preflight")
+    print("next: fix the blocked prerequisite above, then rerun ./tools/certi-easy preflight")
     return 1
 
 

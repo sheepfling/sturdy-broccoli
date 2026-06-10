@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import argparse
-
-import _bootstrap  # noqa: F401
+from pathlib import Path
 
 from hla2010.requirements_backlog import write_imported_hla_backlog
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -2,10 +2,13 @@ import os
 import subprocess
 from pathlib import Path
 
-from hla2010.real_rti import (
-    _parse_pitch_license_list,
+import hla2010_rti_pitch_common.real_rti_pitch as pitch_runtime_module
+from hla2010_rti_certi.real_rti_certi import (
     discover_certi_runtime,
     discover_certi_runtime_profile,
+)
+from hla2010_rti_pitch_common.real_rti_pitch import (
+    _parse_pitch_license_list,
     discover_pitch_runtime,
     list_pitch_licenses,
     launch_pitch_runtime,
@@ -104,9 +107,6 @@ def test_launch_pitch_runtime_passes_ui_automation_env(tmp_path, monkeypatch):
     (home / "lib" / "prtifull.jar").write_text("")
 
     monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
-    monkeypatch.setattr("hla2010.real_rti.wait_for_process_boot", lambda *args, **kwargs: None)
-    monkeypatch.setattr("hla2010.real_rti.wait_for_tcp_listener", lambda *args, **kwargs: None)
-
     captured: dict[str, object] = {}
 
     class FakeProcess:
@@ -129,9 +129,13 @@ def test_launch_pitch_runtime_passes_ui_automation_env(tmp_path, monkeypatch):
         captured.setdefault("envs", []).append(kwargs["env"])
         return FakeProcess()
 
-    monkeypatch.setattr("hla2010.real_rti.subprocess.Popen", fake_popen)
+    monkeypatch.setattr(pitch_runtime_module.subprocess, "Popen", fake_popen)
 
-    runtime = launch_pitch_runtime(ui_automation=True)
+    runtime = launch_pitch_runtime(
+        ui_automation=True,
+        _wait_for_process_boot=lambda *args, **kwargs: None,
+        _wait_for_tcp_listener=lambda *args, **kwargs: None,
+    )
     runtime.terminate()
 
     assert any(env.get("HLA2010_PITCH_UI_AUTOMATION") == "1" for env in captured["envs"])
@@ -145,9 +149,6 @@ def test_launch_pitch_runtime_can_use_docker_crc_mode(tmp_path, monkeypatch):
     (home / "lib" / "prtifull.jar").write_text("")
 
     monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
-    monkeypatch.setattr("hla2010.real_rti.wait_for_process_boot", lambda *args, **kwargs: None)
-    monkeypatch.setattr("hla2010.real_rti.wait_for_tcp_listener", lambda *args, **kwargs: None)
-
     captured: dict[str, object] = {}
 
     class FakeProcess:
@@ -170,9 +171,13 @@ def test_launch_pitch_runtime_can_use_docker_crc_mode(tmp_path, monkeypatch):
         captured.setdefault("envs", []).append(kwargs["env"])
         return FakeProcess()
 
-    monkeypatch.setattr("hla2010.real_rti.subprocess.Popen", fake_popen)
+    monkeypatch.setattr(pitch_runtime_module.subprocess, "Popen", fake_popen)
 
-    runtime = launch_pitch_runtime(crc_mode="docker")
+    runtime = launch_pitch_runtime(
+        crc_mode="docker",
+        _wait_for_process_boot=lambda *args, **kwargs: None,
+        _wait_for_tcp_listener=lambda *args, **kwargs: None,
+    )
     runtime.terminate()
 
     commands = captured["commands"]
@@ -193,9 +198,6 @@ def test_launch_pitch_runtime_honors_docker_crc_mode_env(tmp_path, monkeypatch):
 
     monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
     monkeypatch.setenv("HLA2010_PITCH_CRC_MODE", "docker")
-    monkeypatch.setattr("hla2010.real_rti.wait_for_process_boot", lambda *args, **kwargs: None)
-    monkeypatch.setattr("hla2010.real_rti.wait_for_tcp_listener", lambda *args, **kwargs: None)
-
     captured: dict[str, object] = {}
 
     class FakeProcess:
@@ -218,9 +220,12 @@ def test_launch_pitch_runtime_honors_docker_crc_mode_env(tmp_path, monkeypatch):
         captured.setdefault("envs", []).append(kwargs["env"])
         return FakeProcess()
 
-    monkeypatch.setattr("hla2010.real_rti.subprocess.Popen", fake_popen)
+    monkeypatch.setattr(pitch_runtime_module.subprocess, "Popen", fake_popen)
 
-    runtime = launch_pitch_runtime()
+    runtime = launch_pitch_runtime(
+        _wait_for_process_boot=lambda *args, **kwargs: None,
+        _wait_for_tcp_listener=lambda *args, **kwargs: None,
+    )
     runtime.terminate()
 
     commands = captured["commands"]
@@ -384,7 +389,7 @@ def test_prepare_pitch_user_home_copies_license_state_and_validates(tmp_path, mo
             " 1   primary  2      abcd1234     rick\n"
         )
 
-    monkeypatch.setattr("hla2010.real_rti.list_pitch_licenses", fake_list_pitch_licenses)
+    monkeypatch.setattr(pitch_runtime_module, "list_pitch_licenses", fake_list_pitch_licenses)
     runtime = discover_pitch_runtime()
     prepared = prepare_pitch_user_home(runtime, user_home=tmp_path / "pitch-user-home-work")
 
@@ -406,7 +411,7 @@ def test_prepare_pitch_user_home_tolerates_empty_license_list_and_copies_bundled
     (bundled_user_home / "FedProServer.properties").write_text("server-address = all\n")
 
     monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
-    monkeypatch.setattr("hla2010.real_rti.list_pitch_licenses", lambda *_args, **_kwargs: ())
+    monkeypatch.setattr(pitch_runtime_module, "list_pitch_licenses", lambda *_args, **_kwargs: ())
 
     runtime = discover_pitch_runtime()
     prepared = prepare_pitch_user_home(runtime, user_home=tmp_path / "pitch-user-home-work")
@@ -433,7 +438,7 @@ def test_prepare_pitch_user_home_preserves_existing_runtime_state(tmp_path, monk
     (working_user_home / "prti_common.settings").write_text("accepted = true\n")
 
     monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
-    monkeypatch.setattr("hla2010.real_rti.list_pitch_licenses", lambda *_args, **_kwargs: ())
+    monkeypatch.setattr(pitch_runtime_module, "list_pitch_licenses", lambda *_args, **_kwargs: ())
 
     runtime = discover_pitch_runtime()
     prepared = prepare_pitch_user_home(runtime, user_home=tmp_path / "pitch-user-home-work")
@@ -457,7 +462,7 @@ def test_prepare_pitch_user_home_sets_pitch_free_eula_accepted_when_missing(tmp_
     (bundled_user_home / "prti_common.settings").write_text("# Settings that apply to all pRTI applications\n")
 
     monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
-    monkeypatch.setattr("hla2010.real_rti.list_pitch_licenses", lambda *_args, **_kwargs: ())
+    monkeypatch.setattr(pitch_runtime_module, "list_pitch_licenses", lambda *_args, **_kwargs: ())
 
     runtime = discover_pitch_runtime()
     prepared = prepare_pitch_user_home(runtime, user_home=tmp_path / "pitch-user-home-work")
@@ -482,7 +487,7 @@ def test_prepare_pitch_user_home_disables_crc_webview_passphrase(tmp_path, monke
     )
 
     monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
-    monkeypatch.setattr("hla2010.real_rti.list_pitch_licenses", lambda *_args, **_kwargs: ())
+    monkeypatch.setattr(pitch_runtime_module, "list_pitch_licenses", lambda *_args, **_kwargs: ())
 
     runtime = discover_pitch_runtime()
     prepared = prepare_pitch_user_home(runtime, user_home=tmp_path / "pitch-user-home-work")
@@ -517,7 +522,7 @@ def test_prepare_pitch_user_home_normalizes_docker_crc_and_lrc_networking(tmp_pa
 
     monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
     monkeypatch.setenv("HLA2010_PITCH_LRC_ADVERTISE_ADDRESS", "host.docker.internal")
-    monkeypatch.setattr("hla2010.real_rti.list_pitch_licenses", lambda *_args, **_kwargs: ())
+    monkeypatch.setattr(pitch_runtime_module, "list_pitch_licenses", lambda *_args, **_kwargs: ())
 
     runtime = discover_pitch_runtime()
     prepared = prepare_pitch_user_home(runtime, user_home=tmp_path / "pitch-user-home-work", crc_mode="docker")

@@ -17,11 +17,10 @@ from dataclasses import dataclass, field
 from typing import Any, Callable, Iterable, Mapping, Protocol
 
 from hla2010.runtime_api import FederateAmbassador
-from hla2010.backends.python import InMemoryRTIEngine
 from hla2010.enums import CallbackModel, ResignAction
 from hla2010.exceptions import FederatesCurrentlyJoined, FederationExecutionAlreadyExists, FederationExecutionDoesNotExist, RTIexception
 from hla2010.handles import AttributeHandle, InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle, ParameterHandle
-from hla2010.rti import create_rti_ambassador
+from hla2010.rti import create_python_pair, create_rti_ambassador
 from hla2010.time import HLAinteger64Time
 
 TARGET_CLASS = "HLAobjectRoot.Target"
@@ -424,8 +423,19 @@ class RadarFederate(FederateAmbassador):
 def create_python_target_radar_pair() -> tuple[Any, Any]:
     """Create target/radar RTI ambassadors sharing one Python in-memory engine."""
 
-    engine = InMemoryRTIEngine()
-    return create_rti_ambassador("python", engine=engine), create_rti_ambassador("python", engine=engine)
+    return create_python_pair()
+
+
+def _python_pair_factory() -> RtiFactory:
+    pair_by_role: dict[str, RTIAmbassadorLike] = {}
+
+    def factory(role: str) -> RTIAmbassadorLike:
+        if role not in pair_by_role:
+            target_rti, radar_rti = create_python_target_radar_pair()
+            pair_by_role.update({"target": target_rti, "radar": radar_rti})
+        return pair_by_role[role]
+
+    return factory
 
 
 def _call_factory(factory: RtiFactory, role: str) -> RTIAmbassadorLike:
@@ -465,10 +475,7 @@ def run_target_radar_scenario(
     """
 
     if rti_factory is None:
-        engine = InMemoryRTIEngine()
-
-        def rti_factory(role: str) -> RTIAmbassadorLike:
-            return create_rti_ambassador("python", engine=engine)
+        rti_factory = _python_pair_factory()
 
     target = target or TargetFederate()
     radar = radar or RadarFederate()

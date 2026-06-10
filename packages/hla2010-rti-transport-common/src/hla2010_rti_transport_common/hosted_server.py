@@ -4,7 +4,7 @@ from __future__ import annotations
 from collections import deque
 from typing import Any, Sequence, cast
 
-from hla2010_rti_certi.certi.codecs import (
+from hla2010.transport_codecs import (
     decode_bytes,
     decode_handle_set,
     decode_handle_value_map,

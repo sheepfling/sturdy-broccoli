@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import uuid
 from math import isinf
+from pathlib import Path
 
 import pytest
 
@@ -10,7 +11,6 @@ from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.backends.base import BackendUnavailableError
 from hla2010.enums import CallbackModel, OrderType, ResignAction
 from hla2010.exceptions import AttributeDivestitureWasNotRequested, InvalidLogicalTime, RTIinternalError
-from hla2010.real_rti import discover_certi_runtime_profile, discover_certi_smoke_fom, launch_certi_rtig, project_root
 from hla2010.rti import create_rti_ambassador
 from hla2010_verification_harness.scenario_exchange import TwoFederateExchangeConfig
 from hla2010_verification_harness.scenario_ownership import (
@@ -22,13 +22,18 @@ from hla2010_verification_harness.scenario_ownership import (
 )
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 from hla2010.types import TimeQueryReturn
+from hla2010_rti_certi.real_rti_certi import (
+    discover_certi_runtime_profile,
+    discover_certi_smoke_fom,
+    launch_certi_rtig,
+)
 from tests.vendors.runtime_support import cleanup_federation, require_vendor_preflight, shutdown_runtime_resources, udp_port_pair
 
 
 def _require_real_rti_smoke() -> None:
     if os.environ.get("HLA2010_ENABLE_REAL_RTI_SMOKE") != "1":
         pytest.skip("real vendor RTI smoke disabled; set HLA2010_ENABLE_REAL_RTI_SMOKE=1")
-    require_vendor_preflight("certi", operator_hint="./scripts/certi_easy.sh preflight")
+    require_vendor_preflight("certi", operator_hint="./tools/certi-easy preflight")
 
 
 def _exchange_time_profile(time_factory_name: str) -> dict[str, object]:
@@ -148,7 +153,8 @@ def _helper_time_request(rti: object, command: str, logical_time: object, *, tim
 
 def _certi_profile_backend_options(profile_name: str) -> dict[str, object]:
     profile = discover_certi_runtime_profile(profile_name)
-    helper_path = project_root() / "build" / "certi" / f"certi_smoke_helper_{profile.name}"
+    repo_root = Path(__file__).resolve().parents[2]
+    helper_path = repo_root / "build" / "certi" / f"certi_smoke_helper_{profile.name}"
     options: dict[str, object] = {
         "certi_prefix": str(profile.runtime.prefix),
         "helper_path": helper_path,

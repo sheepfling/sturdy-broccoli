@@ -64,6 +64,7 @@ The rule is simple:
 ### Docs / Generated Artifacts
 
 - `check_generated_docs.sh`: verify generated backend alias inventory
+- `check_doc_links.py`: verify Markdown link integrity and catch repo-root-relative assumptions in docs
 
 ## Help Convention
 

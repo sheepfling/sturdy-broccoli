@@ -2,10 +2,12 @@ import math
 
 import pytest
 
+from hla2010.backends.base import make_rti_ambassador
 from hla2010_rti_python import InMemoryRTIEngine
 from hla2010.rti import create_rti_ambassador
 from hla2010.scenarios.target_radar import run_target_radar_scenario
-from hla2010.testing.java_shim_kernel import SharedJavaShimKernel
+from hla2010_rti_java_common.java_shim_factory import create_shared_java_shim_backend
+from hla2010_rti_java_common.java_shim_kernel import SharedJavaShimKernel
 
 
 def test_target_radar_runs_on_python_rti():
@@ -31,7 +33,7 @@ def test_target_radar_same_code_runs_on_shared_java_shim(kind, profile):
     kernel = SharedJavaShimKernel()
 
     def factory(role):
-        return create_rti_ambassador(kind, kernel=kernel, shared=True)
+        return make_rti_ambassador(create_shared_java_shim_backend(profile, kernel))
 
     result = run_target_radar_scenario(factory, federation_name=f"target-radar-{profile}", steps=2)
     assert result.backend_kinds == (f"java/{profile}/shared-shim", f"java/{profile}/shared-shim")

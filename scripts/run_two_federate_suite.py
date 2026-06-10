@@ -3,12 +3,21 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+import site
 
-import _bootstrap  # noqa: F401
-
-from hla2010_fom_target_radar.testing.two_federate_suite_runner import write_two_federate_suite_artifacts
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+
+def _bootstrap_workspace_imports() -> None:
+    for source_root in (PROJECT_ROOT / "src", *sorted((PROJECT_ROOT / "packages").glob("*/src"))):
+        if source_root.is_dir():
+            site.addsitedir(str(source_root))
+
+
+_bootstrap_workspace_imports()
+
+from hla2010_repo_internal.verification.workspace_two_federate_suite import write_workspace_two_federate_suite_artifacts
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -21,7 +30,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--target-radar-steps", type=int, default=4)
     args = parser.parse_args(argv)
 
-    paths = write_two_federate_suite_artifacts(
+    paths = write_workspace_two_federate_suite_artifacts(
         args.output_dir,
         target_radar_steps=args.target_radar_steps,
     )

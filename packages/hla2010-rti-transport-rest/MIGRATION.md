@@ -8,6 +8,5 @@ Canonical REST transport implementation now lives under:
 
 Legacy compatibility imports remain available through:
 
-- `src/hla2010/backends/rest_transport/__init__.py`
-- `src/hla2010/backends/rest_transport/client.py`
-- `src/hla2010/backends/rest_transport_host.py`
+- `src/hla2010/backends/rest_transport/__init__.py` and
+  `client.py` were removed after repo-internal imports migrated.

@@ -21,7 +21,8 @@ from .backends.base import CALLBACK_METHOD_NAMES, RTI_METHOD_NAMES, lower_camel_
 from .backends.python import PythonRTIBackend
 from .raw_api import API_METADATA
 from .spec_refs import method_reference
-from .testing.mom_negative import generate_mom_negative_cases, generated_mom_negative_case_summary
+from .mom_negative_testing import build_mom_negative_test_cases
+from .mom_negative_testing import default_mom_model, mom_negative_case_report
 
 _FOCUSED_EVIDENCE_BY_GROUP: dict[str, tuple[str, ...]] = {
     "Federation Management": (
@@ -1201,7 +1202,8 @@ def _requirement_outcome(row: ServiceConformanceRow) -> tuple[str, str]:
 def build_service_conformance_matrix(*, version: str = "0.13.0") -> ServiceConformanceMatrix:
     """Build the current service-by-service conformance matrix."""
 
-    mom_cases = generate_mom_negative_cases()
+    mom_model = default_mom_model()
+    mom_cases = build_mom_negative_test_cases(mom_model)
     mom_executable_count = sum(1 for case in mom_cases if case.execution_level == "rti-strict")
     rows: list[ServiceConformanceRow] = []
 
@@ -1343,7 +1345,7 @@ def build_service_conformance_matrix(*, version: str = "0.13.0") -> ServiceConfo
     return ServiceConformanceMatrix(
         version=version,
         rows=tuple(sorted(rows, key=lambda row: (row.interface, row.service_group, row.section, row.method_name))),
-        mom_negative_summary=generated_mom_negative_case_summary(mom_cases),
+        mom_negative_summary=mom_negative_case_report(mom_model),
     )
 
 

@@ -316,8 +316,8 @@ fi
 result="not ready; fix the blocked prerequisite(s) above and rerun"
 next_step="fix the blocked prerequisite(s) above and rerun"
 if [[ $status -eq 0 ]]; then
-  result="ready to run ./scripts/pitch_docker_easy.sh install or ./scripts/pitch_docker_easy.sh all"
-  next_step="./scripts/pitch_docker_easy.sh install or ./scripts/pitch_docker_easy.sh all"
+  result="ready to run ./tools/pitch install or ./tools/pitch all"
+  next_step="./tools/pitch install or ./tools/pitch all"
 fi
 
 if [[ "$OUTPUT_JSON" -eq 1 ]]; then

@@ -18,8 +18,10 @@ from typing import Any
 from .spec_refs import FOM_REFERENCES, SERVICE_AREAS
 
 
-def _repo_root() -> Path:
-    return Path(__file__).resolve().parents[2]
+def _require_project_root(project_root: str | Path | None) -> Path:
+    if project_root is None:
+        raise ValueError("project_root is required for repo-backed verification artifacts")
+    return Path(project_root).resolve()
 
 
 def _split_semicolon_list(value: Any) -> list[str]:
@@ -385,8 +387,8 @@ def _curated_service_group(row: dict[str, Any]) -> str:
     return "requirement"
 
 
-def _load_curated_requirement_rows() -> list[dict[str, Any]]:
-    repo_root = _repo_root()
+def _load_curated_requirement_rows(project_root: str | Path) -> list[dict[str, Any]]:
+    repo_root = Path(project_root).resolve()
     traceability_path = repo_root / "requirements" / "traceability_matrix.csv"
     requirements_dir = repo_root / "requirements"
     if not requirements_dir.exists() or not traceability_path.exists():
@@ -486,8 +488,8 @@ def _load_curated_requirement_rows() -> list[dict[str, Any]]:
     return [curated_rows_by_id[key] for key in sorted(curated_rows_by_id)]
 
 
-def _load_backend_conformance_vendor_rows() -> dict[str, dict[str, Any]]:
-    matrix_path = _repo_root() / "docs" / "backend_conformance_matrix.md"
+def _load_backend_conformance_vendor_rows(project_root: str | Path) -> dict[str, dict[str, Any]]:
+    matrix_path = Path(project_root).resolve() / "docs" / "backend_conformance_matrix.md"
     if not matrix_path.exists():
         return {}
 
@@ -515,8 +517,8 @@ def _load_backend_conformance_vendor_rows() -> dict[str, dict[str, Any]]:
     return rows_by_clause
 
 
-def _load_operational_vendor_profiles() -> dict[str, list[dict[str, Any]]]:
-    matrix_path = _repo_root() / "docs" / "rti_options_and_test_matrix.md"
+def _load_operational_vendor_profiles(project_root: str | Path) -> dict[str, list[dict[str, Any]]]:
+    matrix_path = Path(project_root).resolve() / "docs" / "rti_options_and_test_matrix.md"
     if not matrix_path.exists():
         return {}
 
@@ -1422,11 +1424,11 @@ _EXTRACTED_REQUIREMENTS_1516_1_CLAUSES_5_6: tuple[dict[str, Any], ...] = (
 
 def build_requirements_matrix_2010(project_root: str | Path | None = None, *, version: str = "0.13.0") -> dict[str, Any]:
     """Return a whole-spec requirements matrix spanning section areas, service rows, and verification slices."""
-    del project_root
+    repo_root = _require_project_root(project_root)
     ledger = build_requirements_ledger(version=version)
     plan = build_verification_plan(version)
-    vendor_rows_by_clause = _load_backend_conformance_vendor_rows()
-    operational_vendor_profiles = _load_operational_vendor_profiles()
+    vendor_rows_by_clause = _load_backend_conformance_vendor_rows(repo_root)
+    operational_vendor_profiles = _load_operational_vendor_profiles(repo_root)
 
     rows: list[dict[str, Any]] = []
     verification_slice_rows: list[dict[str, Any]] = []
@@ -1525,7 +1527,7 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
         )
 
     curated_requirement_ids: set[str] = set()
-    for row in _load_curated_requirement_rows():
+    for row in _load_curated_requirement_rows(repo_root):
         normalized = dict(row)
         extracted_spec = extracted_specs_by_id.get(str(normalized.get("requirement_id", "")))
         if extracted_spec is not None:
@@ -1749,10 +1751,10 @@ def write_requirements_matrix_2010_json(
     *,
     version: str = "0.13.0",
 ) -> Path:
-    del project_root
+    repo_root = _require_project_root(project_root)
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(json.dumps(build_requirements_matrix_2010(version=version), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    target.write_text(json.dumps(build_requirements_matrix_2010(repo_root, version=version), indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return target
 
 
@@ -1762,8 +1764,8 @@ def write_requirements_matrix_2010_csv(
     *,
     version: str = "0.13.0",
 ) -> Path:
-    del project_root
-    matrix = build_requirements_matrix_2010(version=version)
+    repo_root = _require_project_root(project_root)
+    matrix = build_requirements_matrix_2010(repo_root, version=version)
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = [
@@ -1812,9 +1814,19 @@ def write_requirements_matrix_2010_csv(
 __all__ = [
     "VerificationAsset",
     "VerificationPlan",
+    "build_requirements_matrix_2010",
+    "build_requirements_ledger",
+    "build_service_conformance_matrix",
     "build_verification_plan",
-    "write_verification_assets",
+    "write_requirements_matrix_2010_csv",
+    "write_requirements_matrix_2010_json",
+    "write_requirements_ledger_csv",
+    "write_requirements_ledger_json",
+    "write_service_conformance_matrix_json",
+    "write_service_conformance_matrix_csv",
+    "write_service_conformance_summary_markdown",
     "write_traceability_csv",
+    "write_verification_assets",
 ]
 
 # Compatibility helpers for repo-seed tests.  The canonical implementation lives
@@ -2053,22 +2065,3 @@ def write_requirements_ledger_csv(
                     record[key] = "; ".join(str(item) for item in value)
             writer.writerow(record)
     return target
-
-
-__all__ = tuple(
-    dict.fromkeys(
-        __all__
-        + [
-            "build_requirements_matrix_2010",
-            "build_requirements_ledger",
-            "build_service_conformance_matrix",
-            "write_requirements_matrix_2010_csv",
-            "write_requirements_matrix_2010_json",
-            "write_requirements_ledger_csv",
-            "write_requirements_ledger_json",
-            "write_service_conformance_matrix_json",
-            "write_service_conformance_matrix_csv",
-            "write_service_conformance_summary_markdown",
-        ]
-    )
-)

@@ -253,7 +253,7 @@ import sys
 payload = json.loads(sys.argv[1])
 environment = payload.get("environment", "unknown")
 result = payload.get("result", "unknown")
-next_step = payload.get("next_step", "./scripts/pitch_docker_easy.sh preflight")
+next_step = payload.get("next_step", "./tools/pitch preflight")
 print(f"environment: {environment}")
 print(f"result: {result}")
 print(f"next step: {next_step}")
@@ -278,7 +278,7 @@ PY
 }
 
 usage() {
-  local script_name="./scripts/pitch_docker_easy.sh"
+  local script_name="./tools/pitch"
   cat <<EOF
 usage: $script_name [preflight|install|start|stop|restart|status|logs|smoke|verify|all|doctor]
 

@@ -16,8 +16,10 @@ The stricter package dependency rules live in
 - `hla2010/backends/conversion.py`: compatibility facade for split backend conversion support.
 - `hla2010/backends/java_common.py`: compatibility facade for split shared Java RTI support.
 - `hla2010/real_rti_process.py`: compatibility facade for split runtime process helpers.
-- `hla2010/real_rti.py`: runtime discovery compatibility facade.
 - `hla2010/real_rti_certi.py`, `hla2010/real_rti_pitch.py`, `hla2010/real_rti_portico.py`: compatibility facades for split vendor runtime packages.
+
+These facade modules are workspace-stable import paths. They are not counted as
+package-owned implementation roots for packages marked `implementation-moved`.
 
 ## Domain Modules And Mixins
 
@@ -63,13 +65,17 @@ This layer contains reusable backend mechanics that should not be duplicated acr
 
 The testing package mirrors the same structure where feasible:
 
-- compatibility facade: `scenarios.py`, `java_shim.py`
+- compatibility facade: `scenarios.py`
 - root compatibility facades: `scenario_basic.py`, `scenario_exchange.py`, `scenario_exchange_history.py`, `scenario_sync.py`, `scenario_ownership.py`, `scenario_support.py`
 - canonical generic scenario bodies: `packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_*.py`
-- focused root-only support modules: `java_shim_types.py`, `java_shim_backend.py`, `java_shim_factory.py`
-- target/radar-owned suite coordinator: `packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/testing/two_federate_suite_runner.py`
+- Java-shaped shim support: `packages/hla2010-rti-java-common/src/hla2010_rti_java_common/java_shim_*.py`
+- repo-internal target/radar suite coordinator: `src/hla2010_repo_internal/verification/two_federate_suite_runner.py`
 
 The goal is the same as production code: keep scenario orchestration separate from dense helper mechanics and artifact writing.
+
+Compatibility imports that remain in tests are intentional when they verify
+migration aliases or workspace-facade behavior. They should not be mistaken for
+installable package dependencies.
 
 ## Factories And Registries
 

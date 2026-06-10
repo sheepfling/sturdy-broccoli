@@ -9,7 +9,7 @@ from hla2010.exceptions import *
 from hla2010.handles import *
 from hla2010.raw_api import API_METADATA
 from hla2010.enums import OrderType, ResignAction, ServiceGroup
-from hla2010.testing.section8_matrix import run_section8_request_retraction_case, section8_matrix_config
+from hla2010_verification_harness.section8_matrix import run_section8_request_retraction_case, section8_matrix_config
 from hla2010.types import AttributeRegionAssociation, RangeBounds
 from hla2010.exceptions import AttributeAlreadyBeingDivested, AttributeAlreadyOwned, AttributeNotPublished, InteractionClassNotPublished
 

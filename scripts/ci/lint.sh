@@ -7,7 +7,7 @@ if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   cat <<'EOF'
 lint.sh: run the required lint/syntax gate.
 Evidence:
-- ruff E9/F63/F7/F82 on hla2010, tests, scripts, tools
+- ruff E9/F63/F7/F82 on src, package-owned source roots, tests, scripts, tools
 - python compileall on repo Python sources
 - canonical imported requirements packet validation
 - generated-doc sync check
@@ -18,10 +18,18 @@ fi
 # shellcheck disable=SC1091
 source "$ROOT_DIR/.venv/bin/activate"
 
-ruff check hla2010 tests --select E9,F63,F7,F82
+RUFF_TARGETS=(
+  "src"
+  "packages"
+  "tests"
+  "scripts"
+  "tools"
+)
+
+ruff check "${RUFF_TARGETS[@]}" --select E9,F63,F7,F82
 
 COMPILE_TARGETS=()
-for target in hla2010 tests tools; do
+for target in src packages tests scripts tools; do
     if [ -d "$ROOT_DIR/$target" ] && find "$ROOT_DIR/$target" -name '*.py' -print -quit | grep -q .; then
         COMPILE_TARGETS+=("$target")
     fi

@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 import json
 import os
 import socket
+from pathlib import Path
 import pytest
 
 from hla2010.enums import ResignAction
@@ -13,6 +14,7 @@ from tests.vendors.runtime_support import (
     assert_runtime_process_stopped,
     cleanup_federation,
     close_all,
+    isolated_vendor_runtime_test_state,
     require_vendor_preflight,
     reserve_udp_pair,
     shutdown_runtime_resources,
@@ -20,6 +22,17 @@ from tests.vendors.runtime_support import (
     udp_port_pair,
     wait_for_tcp_listener_closed,
 )
+
+
+def _require_local_socket_permissions() -> None:
+    probe = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        try:
+            probe.bind(("127.0.0.1", 0))
+        except PermissionError:
+            pytest.skip("local socket bind is not permitted in this environment")
+    finally:
+        probe.close()
 
 
 @dataclass
@@ -43,11 +56,38 @@ class _FakeRTI:
 
 
 def test_reserve_udp_pair_returns_distinct_ports_and_releases_them() -> None:
+    _require_local_socket_permissions()
     with reserve_udp_pair() as lease:
         assert len(lease.ports) == 2
         assert lease.ports[0] != lease.ports[1]
 
     assert lease._sockets == ()
+
+
+def test_isolated_vendor_runtime_test_state_scopes_environment(tmp_path) -> None:
+    original_home = os.environ.get("HOME")
+    original_local_state = os.environ.get("HLA2010_LOCAL_STATE_ROOT")
+    original_pitch_user_home = os.environ.get("HLA2010_PITCH_USER_HOME")
+
+    with isolated_vendor_runtime_test_state(tmp_path / "runtime-state") as state:
+        assert Path(os.environ["HLA2010_LOCAL_STATE_ROOT"]) == state.local_state_root
+        assert Path(os.environ["HLA2010_PITCH_USER_HOME"]) == state.pitch_user_home
+        assert Path(os.environ["HOME"]) == state.home
+        assert state.pitch_user_home.exists()
+        assert state.home.exists()
+
+    if original_home is None:
+        assert "HOME" not in os.environ
+    else:
+        assert os.environ["HOME"] == original_home
+    if original_local_state is None:
+        assert "HLA2010_LOCAL_STATE_ROOT" not in os.environ
+    else:
+        assert os.environ["HLA2010_LOCAL_STATE_ROOT"] == original_local_state
+    if original_pitch_user_home is None:
+        assert "HLA2010_PITCH_USER_HOME" not in os.environ
+    else:
+        assert os.environ["HLA2010_PITCH_USER_HOME"] == original_pitch_user_home
 
 
 def test_cleanup_federation_runs_best_effort_sequence() -> None:
@@ -114,6 +154,7 @@ def test_udp_port_pair_can_wrap_static_base() -> None:
 
 
 def test_wait_for_tcp_listener_closed_detects_listener_shutdown() -> None:
+    _require_local_socket_permissions()
     listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     listener.bind(("127.0.0.1", 0))
     listener.listen(1)
@@ -124,6 +165,7 @@ def test_wait_for_tcp_listener_closed_detects_listener_shutdown() -> None:
 
 
 def test_assert_runtime_process_stopped_waits_for_poll_and_listener_shutdown() -> None:
+    _require_local_socket_permissions()
     listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     listener.bind(("127.0.0.1", 0))
     listener.listen(1)
@@ -176,13 +218,13 @@ def test_require_vendor_preflight_skips_when_flag_is_missing(monkeypatch: pytest
     monkeypatch.delenv("HLA2010_CERTI_PREFLIGHT_OK", raising=False)
 
     with pytest.raises(pytest.skip.Exception, match="certi preflight not confirmed"):
-        require_vendor_preflight("certi", operator_hint="./scripts/certi_easy.sh preflight")
+        require_vendor_preflight("certi", operator_hint="./tools/certi-easy preflight")
 
 
 def test_require_vendor_preflight_accepts_confirmed_flag(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("HLA2010_PITCH_PREFLIGHT_OK", "1")
 
-    require_vendor_preflight("pitch", operator_hint="./scripts/pitch_docker_easy.sh preflight")
+    require_vendor_preflight("pitch", operator_hint="./tools/pitch preflight")
 
 
 def test_require_vendor_preflight_accepts_successful_artifact(
@@ -206,7 +248,7 @@ def test_require_vendor_preflight_accepts_successful_artifact(
     monkeypatch.delenv("HLA2010_CERTI_PREFLIGHT_OK", raising=False)
     monkeypatch.setenv("HLA2010_PREFLIGHT_ARTIFACT_DIR", str(artifact_dir))
 
-    require_vendor_preflight("certi", operator_hint="./scripts/certi_easy.sh preflight")
+    require_vendor_preflight("certi", operator_hint="./tools/certi-easy preflight")
 
 
 def test_require_vendor_preflight_ignores_failed_artifact(
@@ -219,7 +261,7 @@ def test_require_vendor_preflight_ignores_failed_artifact(
             {
                 "tool": "pitch-preflight",
                 "environment": "ready",
-                "result": "ready to run ./scripts/pitch_docker_easy.sh install or ./scripts/pitch_docker_easy.sh all",
+                "result": "ready to run ./tools/pitch install or ./tools/pitch all",
                 "exit_code": 1,
             },
             indent=2,
@@ -231,7 +273,7 @@ def test_require_vendor_preflight_ignores_failed_artifact(
     monkeypatch.setenv("HLA2010_PREFLIGHT_ARTIFACT_DIR", str(artifact_dir))
 
     with pytest.raises(pytest.skip.Exception, match="pitch preflight not confirmed"):
-        require_vendor_preflight("pitch", operator_hint="./scripts/pitch_docker_easy.sh preflight")
+        require_vendor_preflight("pitch", operator_hint="./tools/pitch preflight")
 
 
 def test_require_vendor_preflight_ignores_wrong_tool_artifact(
@@ -256,7 +298,7 @@ def test_require_vendor_preflight_ignores_wrong_tool_artifact(
     monkeypatch.setenv("HLA2010_PREFLIGHT_ARTIFACT_DIR", str(artifact_dir))
 
     with pytest.raises(pytest.skip.Exception, match="certi preflight not confirmed"):
-        require_vendor_preflight("certi", operator_hint="./scripts/certi_easy.sh preflight")
+        require_vendor_preflight("certi", operator_hint="./tools/certi-easy preflight")
 
 
 def test_require_vendor_preflight_ignores_wrong_environment_artifact(
@@ -269,7 +311,7 @@ def test_require_vendor_preflight_ignores_wrong_environment_artifact(
             {
                 "tool": "pitch-preflight",
                 "environment": "ports-blocked",
-                "result": "ready to run ./scripts/pitch_docker_easy.sh install or ./scripts/pitch_docker_easy.sh all",
+                "result": "ready to run ./tools/pitch install or ./tools/pitch all",
                 "exit_code": 0,
             },
             indent=2,
@@ -281,7 +323,7 @@ def test_require_vendor_preflight_ignores_wrong_environment_artifact(
     monkeypatch.setenv("HLA2010_PREFLIGHT_ARTIFACT_DIR", str(artifact_dir))
 
     with pytest.raises(pytest.skip.Exception, match="pitch preflight not confirmed"):
-        require_vendor_preflight("pitch", operator_hint="./scripts/pitch_docker_easy.sh preflight")
+        require_vendor_preflight("pitch", operator_hint="./tools/pitch preflight")
 
 
 def test_require_vendor_preflight_ignores_wrong_result_artifact(
@@ -306,7 +348,7 @@ def test_require_vendor_preflight_ignores_wrong_result_artifact(
     monkeypatch.setenv("HLA2010_PREFLIGHT_ARTIFACT_DIR", str(artifact_dir))
 
     with pytest.raises(pytest.skip.Exception, match="certi preflight not confirmed"):
-        require_vendor_preflight("certi", operator_hint="./scripts/certi_easy.sh preflight")
+        require_vendor_preflight("certi", operator_hint="./tools/certi-easy preflight")
 
 
 def test_require_vendor_preflight_ignores_stale_artifact(
@@ -335,4 +377,4 @@ def test_require_vendor_preflight_ignores_stale_artifact(
     monkeypatch.setenv("HLA2010_PREFLIGHT_MAX_AGE_SECONDS", "60")
 
     with pytest.raises(pytest.skip.Exception, match="certi preflight not confirmed"):
-        require_vendor_preflight("certi", operator_hint="./scripts/certi_easy.sh preflight")
+        require_vendor_preflight("certi", operator_hint="./tools/certi-easy preflight")

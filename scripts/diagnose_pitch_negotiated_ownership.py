@@ -9,12 +9,9 @@ import traceback
 import uuid
 from pathlib import Path
 
-import _bootstrap  # noqa: F401
-
 from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.backends.base import BackendUnavailableError
 from hla2010.enums import ResignAction
-from hla2010.real_rti import launch_pitch_runtime
 from hla2010.rti import create_rti_ambassador
 from hla2010_verification_harness.scenario_ownership import (
     NegotiatedOwnershipScenarioConfig,
@@ -22,6 +19,7 @@ from hla2010_verification_harness.scenario_ownership import (
     probe_negotiated_attribute_ownership_offer,
     run_release_request_ownership_scenario,
 )
+from hla2010_rti_pitch_common.real_rti_pitch import launch_pitch_runtime
 
 CALLBACK_FILTER = {
     "discoverObjectInstance",

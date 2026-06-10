@@ -4,12 +4,16 @@ from hla2010.rti import RTIBackendPlugin
 
 
 def test_split_portico_package_exports_runtime_helpers():
-    from hla2010.real_rti_portico import PorticoRuntime as OldRuntime
-    from hla2010.real_rti_portico import discover_portico_runtime as old_discover
     from hla2010_rti_portico import PorticoRuntime, discover_portico_runtime
+    from hla2010_rti_portico.real_rti_portico import (
+        PorticoRuntime as RuntimeFromModule,
+    )
+    from hla2010_rti_portico.real_rti_portico import (
+        discover_portico_runtime as discover_from_module,
+    )
 
-    assert OldRuntime is PorticoRuntime
-    assert old_discover is discover_portico_runtime
+    assert RuntimeFromModule is PorticoRuntime
+    assert discover_from_module is discover_portico_runtime
 
 
 def test_split_portico_plugin_descriptors_are_registered():

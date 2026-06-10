@@ -13,7 +13,7 @@ from hla2010.fom import FOMCatalog, FOMResolver
 from hla2010.service_reporting import ServiceReportSink
 from hla2010.time import LogicalTimeFactory
 from hla2010.backends.base import BackendInfo, Invocation, RTIBackend, UnsupportedBackendService
-from hla2010_rti_java_common import resolve_java_arguments
+from hla2010_rti_backend_common import resolve_java_arguments
 from .callbacks import PythonRTICallbacksMixin
 from .ddm import PythonRTIDdmMixin
 from .declaration import PythonRTIDeclarationMixin

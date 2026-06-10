@@ -1,5 +1,10 @@
 # Evidence
 
+Historical / provenance note:
+This directory is retained for unpacked evidence packets and imported analysis
+artifacts. It is not the primary onboarding or operator path for the current
+repo layout.
+
 This family stores unpacked verification and analysis packets that were
 promoted from `INBOX`.
 

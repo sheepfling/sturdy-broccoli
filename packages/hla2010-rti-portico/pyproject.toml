@@ -35,5 +35,4 @@ backend_names = ["portico-jpype", "portico-py4j"]
 backend_aliases = ["portico", "java-portico-jpype", "java-portico-py4j"]
 source_roots = [
   "packages/hla2010-rti-portico/src/hla2010_rti_portico",
-  "hla2010/real_rti_portico.py",
 ]

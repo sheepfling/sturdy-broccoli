@@ -2,9 +2,9 @@
 
 This directory contains the installable workspace packages for the repo. Some
 packages still carry migration metadata, but several already own their runtime
-implementation outright. The root `src/hla2010/` package now serves as the
-stable API and compatibility layer while backend families move behind these
-package-owned source roots.
+implementation outright.
+
+## Start Here
 
 Before you work in any package subtree, bootstrap the workspace Python
 environment from the repo root:
@@ -16,43 +16,58 @@ environment from the repo root:
 The canonical environment and install-order guide is
 [`../docs/python_environment.md`](../docs/python_environment.md).
 
+## Reference
+
+Architecturally, `hla2010-spec` is the one installable root. The
+`src/hla2010/` tree is the workspace facade used for stable imports,
+compatibility re-exports, and plugin routing.
+
 The target dependency direction is:
 
 ```text
 hla2010-spec
-  <- hla2010-rti-python
-  <- hla2010-rti-certi
   <- hla2010-rti-backend-common
-  <- hla2010-rti-java-common
   <- hla2010-rti-runtime-common
-  <- hla2010-rti-java-jpype
-  <- hla2010-rti-java-py4j
-  <- hla2010-rti-pitch-common
-       <- hla2010-rti-pitch-jpype -> hla2010-rti-java-jpype
-       <- hla2010-rti-pitch-py4j -> hla2010-rti-java-py4j
-  <- hla2010-rti-portico -> hla2010-rti-java-jpype / hla2010-rti-java-py4j
-  <- hla2010-rti-transport-grpc -> hla2010-rti-python / hla2010-rti-certi
-  <- hla2010-rti-transport-rest -> hla2010-rti-transport-grpc / hla2010-rti-python / hla2010-rti-certi
+  <- hla2010-rti-transport-common
   <- hla2010-verification-harness
+  <- hla2010-rti-java-common <- hla2010-rti-java-jpype <- hla2010-rti-pitch-jpype
+  <- hla2010-rti-java-common <- hla2010-rti-java-py4j <- hla2010-rti-pitch-py4j
+  <- hla2010-rti-backend-common <- hla2010-rti-python
+  <- hla2010-rti-runtime-common <- hla2010-rti-pitch-common
+  <- hla2010-rti-runtime-common <- hla2010-rti-certi
+  <- hla2010-rti-transport-common <- hla2010-rti-transport-grpc
+  <- hla2010-rti-transport-common <- hla2010-rti-transport-rest
   <- hla2010-fom-target-radar
+
+hla2010-rti-java-jpype + hla2010-rti-java-py4j
+  <- hla2010-rti-portico
 ```
 
 Rules for the split:
 
 - `hla2010-spec` owns the abstract API, shared HLA value types, exceptions,
   FOM/MOM helpers needed by federates, and backend plugin contract.
+- `hla2010-rti-backend-common` owns backend-neutral invocation resolution and
+  backend support utilities.
+- `hla2010-rti-runtime-common` owns runtime-process and loopback support.
+- `hla2010-rti-transport-common` owns transport-neutral hosted request handling.
 - RTI packages own one backend family and register through the
   `hla2010.rti_backends` entry point group.
-- Verification-harness packages own shared repo-internal suite/report helpers.
-- FOM/example packages own concrete resources and scenario helpers.
+- `hla2010-verification-harness` is the only supported public verification package.
+- FOM/example packages own concrete resources and scenario helpers, not public testing namespaces.
 - Vendor runtime packages own their own runbooks and vendor-specific findings under `packages/<name>/docs/`.
 - Transport packages own wire-format clients, hosted servers, and protocol assets for one transport family.
-- Backend packages may depend on `hla2010-spec`, but `hla2010-spec` must not
-  import concrete backends, vendor runtime discovery, test shims, or examples.
+- Backend packages may depend on `hla2010-spec` plus approved shared support
+  layers, but `hla2010-spec` must not import concrete backends, vendor runtime
+  discovery, test shims, or examples.
+- Python and Java backend families are intentionally separated.
+- Transport packages must not depend directly on concrete backend packages.
+- Leaf packages must not depend directly on backend or vendor packages.
 - During migration, package ownership moves one family at a time after
   import-boundary tests are in place. A package marked
   `implementation-moved` in its `pyproject.toml` is already the canonical
-  implementation root for that family.
+  implementation root for that family, and its declared `source_roots` should
+  point only at files under that package's own `packages/<name>/src/...` tree.
 
 Suggested move order:
 
@@ -72,3 +87,9 @@ Suggested move order:
 14. `hla2010-verification-harness`
 15. `hla2010-fom-target-radar`
 16. trim `hla2010-spec` to the final core surface
+
+## Read Next
+
+1. [`../docs/package_dependency_tree.md`](../docs/package_dependency_tree.md)
+2. [`../docs/package_layout.md`](../docs/package_layout.md)
+3. [`../docs/import_boundary_rules.md`](../docs/import_boundary_rules.md)

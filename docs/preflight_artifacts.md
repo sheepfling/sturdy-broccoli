@@ -1,6 +1,6 @@
 # Preflight Artifacts
 
-The `./scripts/certi_easy.sh preflight` and `./scripts/pitch_docker_easy.sh preflight` commands can emit either
+The `./tools/certi-easy preflight` and `./tools/pitch preflight` commands can emit either
 human-readable output or machine-readable JSON.
 
 The CI/operator wrapper `./scripts/ci/vendor_runtime_smoke.sh` now emits the
@@ -33,10 +33,10 @@ If you just want the shortest repeatable path, use this:
 ```bash
 mkdir -p analysis/preflight_artifacts
 
-./scripts/certi_easy.sh preflight --json-file analysis/preflight_artifacts/certi-preflight.json
+./tools/certi-easy preflight --json-file analysis/preflight_artifacts/certi-preflight.json
 python3 -m json.tool analysis/preflight_artifacts/certi-preflight.json
 
-./scripts/pitch_docker_easy.sh preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
+./tools/pitch preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
 python3 -m json.tool analysis/preflight_artifacts/pitch-preflight.json
 ```
 
@@ -62,13 +62,13 @@ cp analysis/preflight_artifacts/pitch-preflight.json "analysis/preflight_artifac
 Write a JSON options file:
 
 ```bash
-./scripts/certi_easy.sh preflight --json-file certi-preflight.json
+./tools/certi-easy preflight --json-file certi-preflight.json
 ```
 
 Print JSON to stdout:
 
 ```bash
-./scripts/certi_easy.sh preflight --json
+./tools/certi-easy preflight --json
 ```
 
 Inspect the file:
@@ -83,13 +83,13 @@ jq . certi-preflight.json
 Write a JSON options file:
 
 ```bash
-./scripts/pitch_docker_easy.sh preflight --json-file=pitch-preflight.json
+./tools/pitch preflight --json-file=pitch-preflight.json
 ```
 
 Print JSON to stdout:
 
 ```bash
-./scripts/pitch_docker_easy.sh preflight --json
+./tools/pitch preflight --json
 ```
 
 Inspect the file:

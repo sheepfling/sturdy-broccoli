@@ -8,7 +8,7 @@ It gives you:
 - Java bridge profiles through JPype and Py4J
 - repo-local CERTI and Pitch operator flows
 - transport-hosted gRPC and REST routes
-- example federates, scenario runners, tests, and verification artifacts
+- example federates, scenario runners, verification harnesses, and repo-local evidence tooling
 
 If you want the shortest path to "something runs", start with the pure Python
 backend and the Target/Radar example.
@@ -18,9 +18,10 @@ The repo is organized as a monorepo workspace:
 - `src/hla2010/` is the root Python package and compatibility layer
 - `hla2010/` is a narrow top-level shim area for plugin-facing glue
 - `packages/*/src/` holds package-owned backend, FOM, and support implementations
+- `tools/` is the canonical home for human-facing operator entrypoints
 - `examples/`, `scripts/`, `tests/`, and `docs/` stay repo-local
 
-## Quick Start
+## Start Here
 
 1. Bootstrap the Python environment:
 
@@ -73,14 +74,14 @@ python examples/backend_recording.py
 If you need the vendor flows, the repo also includes:
 
 ```bash
-./scripts/certi_easy.sh preflight
-./scripts/certi_easy.sh install
-./scripts/certi_easy.sh smoke compare
+./tools/certi-easy preflight
+./tools/certi-easy install
+./tools/certi-easy smoke compare
 
-./scripts/pitch_docker_easy.sh preflight
-./scripts/pitch_docker_easy.sh install
-./scripts/pitch_docker_easy.sh smoke
-./scripts/pitch_docker_easy.sh verify
+./tools/pitch preflight
+./tools/pitch install
+./tools/pitch smoke
+./tools/pitch verify
 
 ./scripts/ci/repo_green.sh
 ./scripts/ci/vendor_green.sh matrix
@@ -96,8 +97,8 @@ distributions. In practice:
 - the backend-neutral RTI surface
 - compatibility exports for split backend families
 - shared abstractions used across backend packages
-- scenario support for Target/Radar, synchronization, ownership, time, and MOM/MIM work
-- compliance, traceability, and verification helpers
+- scenario support for synchronization, ownership, time, and MOM/MIM work
+- backend-neutral types, contracts, and adapter-facing abstractions
 
 Concrete backend implementations now live in package-owned source trees such as:
 
@@ -107,9 +108,13 @@ Concrete backend implementations now live in package-owned source trees such as:
 - `packages/hla2010-rti-java-py4j/src/hla2010_rti_java_py4j/`
 - `packages/hla2010-rti-portico/src/hla2010_rti_portico/`
 
-The installable package intentionally excludes `hla2010/testing`; those modules
-are repo-internal support code for tests, scenario runners, and artifact
-generation.
+Namespace policy:
+
+- `hla2010` is the supported runtime namespace
+- `hla2010_verification_harness` is the only supported public verification namespace
+- `hla2010_fom_target_radar.scenarios` is public scenario/FOM surface
+- `hla2010.testing` is not public API and is intentionally removed
+- repo-only proof, report, and suite orchestration helpers live under `src/hla2010_repo_internal/verification/`
 
 The repo is intended to make it easy to:
 
@@ -128,7 +133,7 @@ Good starting points:
 - `examples/target_radar.py` - JSON-formatted Target/Radar scenario output
 - `examples/backend_recording.py` - tiny backend abstraction smoke example
 - `examples/minimal_federate.py` - minimal callback skeleton
-- `examples/java_shim_federate.py` - Java-bridge demo through the in-process shim or a real bridge
+- `examples/java_shim_federate.py` - Java-bridge demo through the repo verification shim or a real bridge
 - `examples/jpype_java_rti.py` - JPype vendor-RTI skeleton
 - `examples/py4j_java_rti.py` - Py4J vendor-RTI skeleton
 - `examples/fom_time_factories.py` - FOM/time factory example
@@ -154,7 +159,6 @@ This workspace has a lot more than just the pure Python RTI.
 Current backend names include:
 
 - `python`, `in-memory`, `python-in-memory`
-- `java-shim-jpype`, `java-shim-py4j`
 - `jpype`, `py4j`
 - `pitch-jpype`, `pitch-py4j`
 - `certi`, `certi-jpype`, `certi-py4j`
@@ -164,7 +168,7 @@ Current backend names include:
 The important part is that these are not all the same level of maturity:
 
 - `python` is the strongest local reference path
-- the Java shims are useful bridge proofs
+- the Java shims are repo verification backends, not part of the public runtime surface
 - CERTI and Pitch are real vendor paths with their own launch and smoke flows
 - Portico wiring exists, but local evidence depends on installed runtime
 - `grpc` and `rest` are transport surfaces, not separate RTI families
@@ -188,10 +192,12 @@ python3 scripts/discover_backend_compliance.py --show-backlog
 ```text
 src/hla2010/          core API layer and compatibility facades
 hla2010/              narrow plugin-facing shim area
+src/hla2010_repo_internal/ verification/proof/report helpers kept out of public API
 packages/*/src/       package-owned backend and support implementation roots
 examples/             runnable example federates and scenario entrypoints
 tests/                pytest coverage and smoke tests
-scripts/              operator entrypoints and CI wrappers
+tools/                human-facing operator entrypoints
+scripts/              implementation helpers, CI wrappers, and plumbing
 docs/                 route inventories, runbooks, and verification docs
 packages/             installable workspace packages and migration metadata
 specs/ieee-1516-2010/  retained IEEE reference PDFs and source ZIPs
@@ -200,19 +206,36 @@ java_shims/           Java shim source for bridge validation
 analysis/             generated compliance and verification artifacts
 ```
 
-## More Detail
+## Read Next
+
+1. [`docs/first_run.md`](docs/first_run.md) for the shortest new-machine-to-first-example path
+2. [`docs/python_environment.md`](docs/python_environment.md) for environment setup and install order
+3. [`docs/two_federate_quickstart.md`](docs/two_federate_quickstart.md) for the first artifact-producing two-federate flow
+4. [`docs/README.md`](docs/README.md) for the full documentation map
+
+## Reference
 
 - [`docs/README.md`](docs/README.md) for the documentation index
 - [`docs/first_run.md`](docs/first_run.md) for the shortest new-machine-to-first-example path
 - [`docs/python_environment.md`](docs/python_environment.md) for environment setup and install order
+- [`docs/top_to_bottom_green.md`](docs/top_to_bottom_green.md) for the explicit finish definition and green acceptance contract
 - [`docs/install_matrix.md`](docs/install_matrix.md) for extras, bridge deps, and vendor-runtime ordering
 - [`docs/agent_runbook.md`](docs/agent_runbook.md) for the agent/automation startup sequence
 - [`docs/workspace_layout.md`](docs/workspace_layout.md) for the top-level workspace area split
 - [`docs/python_api_spec.md`](docs/python_api_spec.md) for the clean Python spec package
-- [`scripts/README.md`](scripts/README.md) for operator commands and wrappers
+- [`tools/README.md`](tools/README.md) for the supported operator command surface
+- [`scripts/README.md`](scripts/README.md) for implementation helpers and wrappers
 - [`docs/documentation_hierarchy.md`](docs/documentation_hierarchy.md) for the doc structure
 - [`requirements/README.md`](requirements/README.md) for the seeded requirements catalog
 - [`packages/hla2010-rti-certi/docs/certi_section8_runbook.md`](packages/hla2010-rti-certi/docs/certi_section8_runbook.md) for the CERTI operator runbook
 - [`packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md`](packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md) for Pitch selection and troubleshooting
+
+## Historical / Provenance
+
+These are kept for audit and provenance, not for onboarding:
+
+- [`docs/source_documents.md`](docs/source_documents.md)
+- [`docs/reference/README.md`](docs/reference/README.md)
+- [`docs/evidence/README.md`](docs/evidence/README.md)
 
 The repository intentionally keeps generated artifacts out of version control when they can be reproduced from source.

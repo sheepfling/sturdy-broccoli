@@ -12,13 +12,7 @@ from hla2010_rti_runtime_common import RuntimeProcess, reserve_tcp_port, wait_fo
 
 
 def _project_root() -> Path:
-    path = Path(__file__).resolve()
-    for parent in path.parents:
-        if (parent / "pyproject.toml").exists() and (
-            (parent / "src" / "hla2010").exists() or (parent / "hla2010").exists()
-        ):
-            return parent
-    return path.parents[4]
+    return Path(os.environ.get("HLA2010_PROJECT_ROOT", os.getcwd())).expanduser().resolve()
 
 
 def _candidate_paths(*parts: str) -> list[Path]:
@@ -215,7 +209,8 @@ def launch_certi_rtig(
             "CERTI_UDP_PORT": str(udp_port),
         }
     )
-    command = [str(_project_root() / "scripts" / "run_certi_local.sh"), "rtig", "-v", str(verbose)]
+    runner = Path(os.environ.get("HLA2010_CERTI_RUN_SCRIPT", str(_project_root() / "scripts" / "run_certi_local.sh")))
+    command = [str(runner), "rtig", "-v", str(verbose)]
     process = subprocess.Popen(command, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     try:
         wait_for_tcp_listener(host, tcp_port)

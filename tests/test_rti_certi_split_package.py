@@ -22,20 +22,15 @@ def test_split_certi_package_exports_backend_surface():
 
 
 def test_legacy_certi_modules_are_compatibility_facades():
-    from hla2010.backends.certi import CERTIBackend as OldBackend
-    from hla2010.backends.certi.service_adapter import CERTIBackend as OldServiceBackend
-    from hla2010.backends.certi.transport import CERTITransport as OldTransport
-    from hla2010.backends.certi_java.factory import create_certi_java_backend as old_create_java_backend
-    from hla2010.real_rti_certi import CERTIRuntime as OldRuntime
     from hla2010_rti_certi import CERTIBackend, CERTITransport
     from hla2010_rti_certi.certi_java.factory import create_certi_java_backend
-    from hla2010_rti_certi.real_rti_certi import CERTIRuntime
+    from hla2010_rti_certi.certi.service_adapter import CERTIBackend as ServiceBackend
+    from hla2010_rti_certi.certi.transport import CERTITransport as PackageTransport
+    from hla2010_rti_certi.certi_java import create_certi_java_backend as package_create_java_backend
 
-    assert OldBackend is CERTIBackend
-    assert OldServiceBackend is CERTIBackend
-    assert OldTransport is CERTITransport
-    assert old_create_java_backend is create_certi_java_backend
-    assert OldRuntime is CERTIRuntime
+    assert ServiceBackend is CERTIBackend
+    assert PackageTransport is CERTITransport
+    assert package_create_java_backend is create_certi_java_backend
 
 
 def test_split_certi_plugin_descriptors_create_transport_backends():

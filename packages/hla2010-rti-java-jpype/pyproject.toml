@@ -30,5 +30,4 @@ backend_names = ["jpype"]
 backend_aliases = ["java-jpype"]
 source_roots = [
   "packages/hla2010-rti-java-jpype/src/hla2010_rti_java_jpype",
-  "hla2010/backends/jpype",
 ]

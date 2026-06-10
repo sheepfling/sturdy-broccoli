@@ -13,8 +13,8 @@ known quirks, see:
 Fastest path:
 
 ```bash
-./scripts/pitch_docker_easy.sh preflight
-./scripts/pitch_docker_easy.sh all
+./tools/pitch preflight
+./tools/pitch all
 ```
 
 That runs:
@@ -23,7 +23,7 @@ That runs:
 - smoke
 - verify
 
-`./scripts/pitch_docker_easy.sh preflight` also persists the default preflight artifact and normalized
+`./tools/pitch preflight` also persists the default preflight artifact and normalized
 status reports under:
 
 - `analysis/preflight_artifacts/`
@@ -34,7 +34,7 @@ status reports under:
 If you want the staged flow:
 
 ```bash
-./scripts/pitch_docker_easy.sh install
+./tools/pitch install
 ```
 
 What that does:
@@ -46,7 +46,7 @@ What that does:
 ## Start Pitch
 
 ```bash
-./scripts/pitch_docker_easy.sh start
+./tools/pitch start
 ```
 
 That starts one named container:
@@ -58,7 +58,7 @@ That starts one named container:
 ## Smoke test
 
 ```bash
-./scripts/pitch_docker_easy.sh smoke
+./tools/pitch smoke
 ```
 
 That dispatches to the strict shared vendor lane for the Pitch smoke slice.
@@ -66,7 +66,7 @@ That dispatches to the strict shared vendor lane for the Pitch smoke slice.
 ## Full real Pitch matrix
 
 ```bash
-./scripts/pitch_docker_easy.sh verify
+./tools/pitch verify
 ```
 
 That dispatches to the strict shared vendor lane for the Pitch verify slice.
@@ -74,16 +74,16 @@ That dispatches to the strict shared vendor lane for the Pitch verify slice.
 ## Day-to-day commands
 
 ```bash
-./scripts/pitch_docker_easy.sh status
-./scripts/pitch_docker_easy.sh logs
-./scripts/pitch_docker_easy.sh stop
-./scripts/pitch_docker_easy.sh restart
-./scripts/pitch_docker_easy.sh doctor
-./scripts/pitch_docker_easy.sh save-restore
-./scripts/pitch_docker_easy.sh save-restore-probe
-./scripts/pitch_docker_easy.sh ddm
-./scripts/pitch_docker_easy.sh ddm-probe
-./scripts/pitch_docker_easy.sh all
+./tools/pitch status
+./tools/pitch logs
+./tools/pitch stop
+./tools/pitch restart
+./tools/pitch doctor
+./tools/pitch save-restore
+./tools/pitch save-restore-probe
+./tools/pitch ddm
+./tools/pitch ddm-probe
+./tools/pitch all
 ```
 
 ## Zero-thinking vendor smoke
@@ -92,9 +92,9 @@ If you just want the standard vendor smoke wrapper, this now works with
 repo-local Pitch defaults:
 
 ```bash
-./scripts/pitch_docker_easy.sh smoke
-./scripts/pitch_docker_easy.sh verify
-./scripts/pitch_docker_easy.sh all
+./tools/pitch smoke
+./tools/pitch verify
+./tools/pitch all
 ```
 
 Use `./scripts/ci/vendor_green.sh ...` only when you specifically need the
@@ -130,9 +130,9 @@ Those checks emit:
 Use:
 
 ```bash
-./scripts/pitch_docker_easy.sh preflight
-./scripts/pitch_docker_easy.sh doctor
-./scripts/pitch_docker_easy.sh logs
+./tools/pitch preflight
+./tools/pitch doctor
+./tools/pitch logs
 ```
 
 Common causes:
@@ -141,5 +141,5 @@ Common causes:
 - the Pitch runtime bundle is missing from `third_party/pitch/PITCH-prti1516e-manual`
 - another process is already bound to `8989` or `15164`
 
-If you prefer the explicit script path, `./scripts/pitch_docker_easy.sh` is a thin alias for
-`./scripts/pitch_docker_easy.sh`.
+The implementation shim remains `./scripts/pitch_docker_easy.sh`, but the
+supported operator path is `./tools/pitch`.

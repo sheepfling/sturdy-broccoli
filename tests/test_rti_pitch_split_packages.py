@@ -4,23 +4,19 @@ from hla2010.rti import RTIBackendPlugin
 
 
 def test_split_pitch_jpype_package_exports_adapter_surface():
-    from hla2010.backends.jpype import JPypeConfig as OldConfig
-    from hla2010.backends.jpype.factory import create_jpype_backend as old_create_backend
     from hla2010_rti_pitch_jpype import JPypeConfig
     from hla2010_rti_pitch_jpype.factory import create_jpype_backend
 
-    assert OldConfig is JPypeConfig
-    assert old_create_backend is create_jpype_backend
+    assert JPypeConfig.__module__.startswith("hla2010_rti_java_jpype")
+    assert create_jpype_backend.__module__.startswith("hla2010_rti_java_jpype")
 
 
 def test_split_pitch_py4j_package_exports_adapter_surface():
-    from hla2010.backends.py4j import Py4JConfig as OldConfig
-    from hla2010.backends.py4j.factory import create_py4j_backend as old_create_backend
     from hla2010_rti_pitch_py4j import Py4JConfig
     from hla2010_rti_pitch_py4j.factory import create_py4j_backend
 
-    assert OldConfig is Py4JConfig
-    assert old_create_backend is create_py4j_backend
+    assert Py4JConfig.__module__.startswith("hla2010_rti_java_py4j")
+    assert create_py4j_backend.__module__.startswith("hla2010_rti_java_py4j")
 
 
 def test_split_pitch_plugin_descriptors_are_registered():

@@ -10,8 +10,6 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
   "hla2010-spec==0.13.0",
-  "hla2010-rti-python==0.13.0",
-  "hla2010-rti-certi==0.13.0",
   "hla2010-rti-transport-common==0.13.0",
 ]
 
@@ -31,6 +29,4 @@ role = "transport"
 transport_names = ["rest", "http-json"]
 source_roots = [
   "packages/hla2010-rti-transport-rest/src/hla2010_rti_transport_rest",
-  "src/hla2010/backends/rest_transport",
-  "src/hla2010/backends/rest_transport_host.py",
 ]

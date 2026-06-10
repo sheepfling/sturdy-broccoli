@@ -14,33 +14,36 @@ PACKAGES = ROOT / "packages"
 #
 # The architectural rule is:
 # - backend families depend on core plus narrow support packages
-# - transports depend on core plus the hosted backend families they expose
+# - transports depend on core plus narrow transport support packages
 # - FOM and verification packages depend only on the shared runtime surface
 #
 # See docs/import_boundary_rules.md for the prose version of the same rules.
 CORE_ONLY = {"hla2010"}
+BACKEND_COMMON = CORE_ONLY | {"hla2010_rti_backend_common"}
 JAVA_COMMON = CORE_ONLY | {"hla2010_rti_java_common"}
 
 PACKAGE_IMPORT_ALLOWLISTS: dict[str, set[str]] = {
     "hla2010_rti_java_common": CORE_ONLY,
-    "hla2010_rti_python": CORE_ONLY,
+    "hla2010_rti_python": BACKEND_COMMON,
     "hla2010_verification_harness": CORE_ONLY,
-    "hla2010_rti_transport_common": CORE_ONLY | {"hla2010_rti_certi"},
+    "hla2010_rti_transport_common": CORE_ONLY,
     "hla2010_rti_java_jpype": JAVA_COMMON,
     "hla2010_rti_java_py4j": JAVA_COMMON,
     "hla2010_rti_certi": JAVA_COMMON,
-    "hla2010_rti_pitch_common": CORE_ONLY | {"hla2010_rti_java_jpype"},
+    "hla2010_rti_pitch_common": CORE_ONLY,
     "hla2010_rti_pitch_jpype": JAVA_COMMON | {"hla2010_rti_java_jpype", "hla2010_rti_pitch_common"},
     "hla2010_rti_pitch_py4j": JAVA_COMMON | {"hla2010_rti_java_py4j", "hla2010_rti_pitch_common"},
     "hla2010_rti_portico": JAVA_COMMON | {"hla2010_rti_java_jpype", "hla2010_rti_java_py4j"},
-    "hla2010_rti_transport_grpc": CORE_ONLY | {"hla2010_rti_certi", "hla2010_rti_python", "hla2010_rti_transport_common"},
-    "hla2010_rti_transport_rest": CORE_ONLY
-    | {"hla2010_rti_certi", "hla2010_rti_python", "hla2010_rti_transport_common"},
-    "hla2010_fom_target_radar": CORE_ONLY
-    | {"hla2010_rti_certi", "hla2010_rti_pitch_common", "hla2010_verification_harness"},
+    "hla2010_rti_transport_grpc": CORE_ONLY | {"hla2010_rti_transport_common"},
+    "hla2010_rti_transport_rest": CORE_ONLY | {"hla2010_rti_transport_common"},
+    "hla2010_fom_target_radar": CORE_ONLY | {"hla2010_verification_harness"},
 }
 
-FORBIDDEN_IMPORT_PREFIXES = ("hla2010.testing",)
+FORBIDDEN_IMPORT_PREFIXES = (
+    "hla2010.testing",
+    "hla2010_repo_internal",
+    "hla2010_fom_target_radar.testing",
+)
 
 
 def _load_pyproject(package_name: str) -> dict[str, object]:
@@ -63,19 +66,30 @@ def _iter_imported_modules(path: Path) -> list[str]:
 
 
 def _scan_package_source(package_name: str) -> list[tuple[Path, str]]:
-    src_root = PACKAGES / package_name / "src"
-    if not src_root.exists():
-        return []
+    split = _load_pyproject(package_name)["tool"]["hla2010"]["package-split"]  # type: ignore[index]
+    source_roots = split["source_roots"]  # type: ignore[index]
     allowed_roots = PACKAGE_IMPORT_ALLOWLISTS[package_name]
     issues: list[tuple[Path, str]] = []
-    for path in src_root.rglob("*.py"):
-        for module_name in _iter_imported_modules(path):
-            if any(module_name == prefix or module_name.startswith(f"{prefix}.") for prefix in FORBIDDEN_IMPORT_PREFIXES):
-                issues.append((path, f"forbidden import of {module_name!r}"))
+    seen_paths: set[Path] = set()
+    for source_root in source_roots:
+        root_path = ROOT / str(source_root)
+        if not root_path.exists():
+            continue
+        if root_path.is_file():
+            candidate_paths = [root_path] if root_path.suffix == ".py" else []
+        else:
+            candidate_paths = sorted(root_path.rglob("*.py"))
+        for path in candidate_paths:
+            if path in seen_paths:
                 continue
-            root = _import_root(module_name)
-            if root in PACKAGE_IMPORT_ALLOWLISTS and root not in allowed_roots and root != package_name:
-                issues.append((path, f"import of sibling package root {root!r} is not allowed"))
+            seen_paths.add(path)
+            for module_name in _iter_imported_modules(path):
+                if any(module_name == prefix or module_name.startswith(f"{prefix}.") for prefix in FORBIDDEN_IMPORT_PREFIXES):
+                    issues.append((path, f"forbidden import of {module_name!r}"))
+                    continue
+                root = _import_root(module_name)
+                if root in PACKAGE_IMPORT_ALLOWLISTS and root not in allowed_roots and root != package_name:
+                    issues.append((path, f"import of sibling package root {root!r} is not allowed"))
     return issues
 
 

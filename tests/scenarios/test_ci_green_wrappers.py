@@ -162,6 +162,85 @@ def test_vendor_green_emits_runtime_status_and_preserves_delegate_failure(tmp_pa
     assert "pitch" in report_text
 
 
+def test_vendor_green_ci_auto_validation_blocks_delegate_on_invalid_runtime_state(tmp_path: Path) -> None:
+    delegate = tmp_path / "vendor_delegate.py"
+    _write_vendor_edge_delegate(delegate)
+    env = os.environ.copy()
+    for name in (
+        "HLA2010_PITCH_HOME",
+        "HLA2010_PITCH_USER_HOME",
+        "HLA2010_CERTI_PREFIX",
+        "HLA2010_CERTI_BUILD_ROOT",
+        "HLA2010_CERTI_PATCHED_PREFIX",
+        "HLA2010_CERTI_PATCHED_BUILD_ROOT",
+        "HLA2010_CERTI_UPSTREAM_PREFIX",
+        "HLA2010_CERTI_UPSTREAM_BUILD_ROOT",
+    ):
+        env.pop(name, None)
+    env["GITHUB_ACTIONS"] = "true"
+    env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
+    env["HLA2010_TEST_RECORD_FILE"] = str(tmp_path / "record.json")
+    env["HLA2010_PREFLIGHT_ARTIFACT_DIR"] = str(tmp_path / "preflight")
+    env["HLA2010_VENDOR_RUNTIME_CI_STATE_DIR"] = str(tmp_path / "runtime-ci-state")
+    env["HLA2010_VENDOR_RUNTIME_STATUS_DIR"] = str(tmp_path / "runtime-status")
+    env["HLA2010_VENDOR_PARITY_ARTIFACT_DIR"] = str(tmp_path / "parity")
+
+    result = subprocess.run(
+        ["bash", "scripts/ci/vendor_green.sh", "pitch"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 1
+    assert not (tmp_path / "record.json").exists()
+    summary_path = tmp_path / "runtime-ci-state" / "pitch" / "vendor_runtime_ci_state_summary.json"
+    assert summary_path.exists()
+    payload = json.loads(summary_path.read_text(encoding="utf-8"))
+    assert payload["profile"] == "pitch"
+    assert payload["classification"] == "invalid-runtime-state"
+
+
+def test_vendor_green_ci_auto_validation_allows_delegate_with_valid_runtime_state(tmp_path: Path) -> None:
+    delegate = tmp_path / "vendor_delegate.py"
+    _write_vendor_edge_delegate(delegate)
+    pitch_home = tmp_path / "pitch-home"
+    pitch_user_home = tmp_path / "pitch-user-home"
+    (pitch_home / "lib").mkdir(parents=True)
+    (pitch_home / "lib" / "prtifull.jar").write_text("", encoding="utf-8")
+    pitch_user_home.parent.mkdir(parents=True, exist_ok=True)
+
+    env = os.environ.copy()
+    env["GITHUB_ACTIONS"] = "true"
+    env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
+    env["HLA2010_TEST_RECORD_FILE"] = str(tmp_path / "record.json")
+    env["HLA2010_PITCH_HOME"] = str(pitch_home)
+    env["HLA2010_PITCH_USER_HOME"] = str(pitch_user_home)
+    env["HLA2010_PREFLIGHT_ARTIFACT_DIR"] = str(tmp_path / "preflight")
+    env["HLA2010_VENDOR_RUNTIME_CI_STATE_DIR"] = str(tmp_path / "runtime-ci-state")
+    env["HLA2010_VENDOR_RUNTIME_STATUS_DIR"] = str(tmp_path / "runtime-status")
+    env["HLA2010_VENDOR_PARITY_ARTIFACT_DIR"] = str(tmp_path / "parity")
+
+    result = subprocess.run(
+        ["bash", "scripts/ci/vendor_green.sh", "pitch"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    payload = json.loads((tmp_path / "record.json").read_text(encoding="utf-8"))
+    assert payload == [{"argv": ["pitch"]}]
+    summary_path = tmp_path / "runtime-ci-state" / "pitch" / "vendor_runtime_ci_state_summary.json"
+    assert summary_path.exists()
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    assert summary["classification"] == "ready"
+
+
 def test_vendor_green_pitch_smoke_uses_profile_named_status_directory(tmp_path: Path) -> None:
     delegate = tmp_path / "vendor_delegate.py"
     _write_delegate_script(

@@ -10,8 +10,8 @@ from hla2010.exceptions import NameNotFound
 from hla2010.handles import AttributeHandle, AttributeHandleValueMap, FederateHandleSet, ObjectInstanceHandle
 from hla2010.rti import create_rti_ambassador
 from hla2010.startup import FederationStartupConfig, connect_create_join, drain_callbacks, synchronize_ready_to_run
-from hla2010.testing.java_shim_backend import ShimJavaBridge
-from hla2010.testing.java_shim_types import JavaByteArray, JavaLikeObject
+from hla2010_rti_java_common.java_shim_backend import ShimJavaBridge
+from hla2010_rti_java_common.java_shim_types import JavaByteArray, JavaLikeObject
 
 
 def _python_rti(engine: InMemoryRTIEngine, *, config: PythonRTIConfig | None = None):

@@ -5,13 +5,22 @@ import argparse
 import importlib
 import inspect
 import json
-import pkgutil
+import site
 from collections import defaultdict
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-import _bootstrap  # noqa: F401
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def _bootstrap_workspace_imports() -> None:
+    for source_root in (REPO_ROOT / "src", *sorted((REPO_ROOT / "packages").glob("*/src"))):
+        if source_root.is_dir():
+            site.addsitedir(str(source_root))
+
+
+_bootstrap_workspace_imports()
 
 import hla2010
 from hla2010.conformance import (
@@ -24,7 +33,7 @@ from hla2010.conformance import (
     write_service_conformance_csv,
     write_service_conformance_json,
 )
-from hla2010.testing.backend_compliance_discovery import write_vendor_discovery_backlog_artifacts
+from hla2010_repo_internal.verification.backend_compliance_discovery import write_vendor_discovery_backlog_artifacts
 from hla2010.verification import (
     build_requirements_matrix_2010,
     write_requirements_matrix_2010_csv,
@@ -33,7 +42,6 @@ from hla2010.verification import (
     write_verification_assets,
 )
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_DIR = REPO_ROOT / "analysis" / "compliance"
 
 
@@ -1140,20 +1148,36 @@ def _mapping_status(module_name: str, cls: type[Any]) -> tuple[str, str]:
         return ("adapted", "Python dataclass wrappers for HLA concepts and return values, not literal header-level classes.")
     if module_name in {"hla2010.encoding", "hla2010.ambassadors", "hla2010.startup", "hla2010.rti", "hla2010.conformance", "hla2010.verification"}:
         return ("supporting-scaffold", "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type.")
-    if module_name.startswith("hla2010.real_rti") or module_name.startswith("hla2010.backends"):
+    if module_name.startswith("hla2010.backends"):
         return ("supporting-scaffold", "Runtime/backend integration support, not a direct spec class mapping.")
     return ("adapted", "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type.")
+
+
+PUBLIC_CLASS_INVENTORY_MODULES = (
+    "hla2010.ambassadors",
+    "hla2010.api",
+    "hla2010.conformance",
+    "hla2010.encoding",
+    "hla2010.enums",
+    "hla2010.exceptions",
+    "hla2010.fom",
+    "hla2010.handles",
+    "hla2010.mom",
+    "hla2010.raw_api",
+    "hla2010.rti",
+    "hla2010.runtime_api",
+    "hla2010.startup",
+    "hla2010.time",
+    "hla2010.types",
+    "hla2010.verification",
+)
 
 
 def _public_class_inventory() -> list[PublicClassInventoryRow]:
     exported_names = set(getattr(hla2010, "__dict__", {}).keys())
     rows: list[PublicClassInventoryRow] = []
-    package_dir = Path(next(iter(hla2010.__path__)))
 
-    for module_info in pkgutil.iter_modules([str(package_dir)]):
-        if module_info.ispkg or module_info.name == "backends" or " " in module_info.name:
-            continue
-        module_name = f"hla2010.{module_info.name}"
+    for module_name in PUBLIC_CLASS_INVENTORY_MODULES:
         module = importlib.import_module(module_name)
         module_public = getattr(module, "__all__", None)
         public_names = set(module_public) if module_public is not None else {name for name in vars(module) if not name.startswith("_")}
@@ -1218,7 +1242,7 @@ def _write_markdown(path: Path, lines: list[str]) -> None:
 
 
 def _extracted_requirement_rows_by_prefixes(prefixes: tuple[str, ...]) -> list[dict[str, Any]]:
-    matrix = build_requirements_matrix_2010(version=hla2010.__version__)
+    matrix = build_requirements_matrix_2010(REPO_ROOT, version=hla2010.__version__)
     return [
         row
         for row in matrix["rows"]
@@ -1329,7 +1353,7 @@ def _write_clause79_extracted_requirements_artifacts() -> None:
 
 
 def _write_supported_subset_policy_artifacts() -> None:
-    matrix = build_requirements_matrix_2010(version=hla2010.__version__)
+    matrix = build_requirements_matrix_2010(REPO_ROOT, version=hla2010.__version__)
     rows = [
         row
         for row in matrix["rows"]
@@ -1425,7 +1449,7 @@ def _write_supported_subset_policy_artifacts() -> None:
 
 
 def _write_defended_partials_index_artifacts() -> None:
-    matrix = build_requirements_matrix_2010(version=hla2010.__version__)
+    matrix = build_requirements_matrix_2010(REPO_ROOT, version=hla2010.__version__)
     rows = [row for row in matrix["rows"] if row["kind"] == "extracted-requirement"]
     rows_by_id = {str(row["requirement_id"]): row for row in rows if row.get("requirement_id")}
     broad_partials = [
@@ -2048,8 +2072,8 @@ def main(argv: list[str] | None = None) -> int:
     write_service_conformance_csv(OUTPUT_DIR / "service_conformance.csv", version=hla2010.__version__)
     write_requirements_ledger_json(OUTPUT_DIR / "requirements_ledger.json", version=hla2010.__version__)
     write_requirements_ledger_csv(OUTPUT_DIR / "requirements_ledger.csv", version=hla2010.__version__)
-    write_requirements_matrix_2010_json(OUTPUT_DIR / "requirements_matrix_2010.json", version=hla2010.__version__)
-    write_requirements_matrix_2010_csv(OUTPUT_DIR / "requirements_matrix_2010.csv", version=hla2010.__version__)
+    write_requirements_matrix_2010_json(OUTPUT_DIR / "requirements_matrix_2010.json", REPO_ROOT, version=hla2010.__version__)
+    write_requirements_matrix_2010_csv(OUTPUT_DIR / "requirements_matrix_2010.csv", REPO_ROOT, version=hla2010.__version__)
     _write_clause56_extracted_requirements_artifacts()
     _write_clause79_extracted_requirements_artifacts()
     _write_supported_subset_policy_artifacts()

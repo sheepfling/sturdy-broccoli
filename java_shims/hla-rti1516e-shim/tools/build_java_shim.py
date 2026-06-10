@@ -5,7 +5,6 @@ from __future__ import annotations
 import argparse
 import shutil
 import subprocess
-import sys
 import tempfile
 from pathlib import Path
 
@@ -16,10 +15,6 @@ def main() -> int:
     args = parser.parse_args()
 
     root = Path(__file__).resolve().parents[1]
-    project_root = root.parents[1]
-    if str(project_root) not in sys.path:
-        sys.path.insert(0, str(project_root))
-
     from hla2010.java_runtime import discover_java_tool, ensure_java_home
 
     src_root = root / "src" / "main" / "java"

@@ -5,9 +5,6 @@ from concurrent import futures
 from dataclasses import dataclass, field
 from typing import Any, Mapping
 
-from hla2010_rti_python.engine import InMemoryRTIEngine
-from hla2010_rti_python.factory import rti_ambassador
-from hla2010_rti_python.state import PythonRTIConfig
 from hla2010_rti_transport_common.hosted_server import HostedRTICommandProcessor
 
 from hla2010.exceptions import RTIexception
@@ -30,8 +27,8 @@ class PythonRTIGrpcServerConfig:
     host: str = "127.0.0.1"
     port: int = 0
     max_workers: int = 4
-    engine: InMemoryRTIEngine | None = None
-    python_config: PythonRTIConfig | None = None
+    engine: Any | None = None
+    python_config: Any | None = None
 
 
 @dataclass(frozen=True)
@@ -66,7 +63,9 @@ class PythonRTIGrpcServer:
         if grpc is None:  # pragma: no cover - optional dependency guard
             raise RuntimeError("gRPC server requested, but grpcio is not installed") from _GRPC_IMPORT_ERROR
         self.config = config
-        self.servicer = _RTITransportServicer(rti_ambassador(engine=config.engine, config=config.python_config))
+        self.servicer = _RTITransportServicer(
+            create_rti_ambassador("python", engine=config.engine, config=config.python_config)
+        )
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=config.max_workers))
         pb2_grpc.add_RTITransportServiceServicer_to_server(self.servicer, self.server)
         self.port = self.server.add_insecure_port(f"{config.host}:{config.port}")
@@ -113,8 +112,8 @@ class CERTIRTIGrpcServer:
 
 def start_python_grpc_server(
     *,
-    engine: InMemoryRTIEngine | None = None,
-    python_config: PythonRTIConfig | None = None,
+    engine: Any | None = None,
+    python_config: Any | None = None,
     host: str = "127.0.0.1",
     port: int = 0,
 ) -> PythonRTIGrpcServer:

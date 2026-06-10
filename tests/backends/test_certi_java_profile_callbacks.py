@@ -14,8 +14,8 @@ from hla2010.handles import (
     ParameterHandle,
     TransportationTypeHandle,
 )
-from hla2010.testing.java_shim_backend import ShimJavaBridge
-from hla2010.testing.java_shim_types import (
+from hla2010_rti_java_common.java_shim_backend import ShimJavaBridge
+from hla2010_rti_java_common.java_shim_types import (
     JavaAttributeHandle,
     JavaByteArray,
     JavaInteractionClassHandle,

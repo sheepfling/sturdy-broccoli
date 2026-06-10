@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -214,8 +215,34 @@ def _filter_rows(rows: list[BacklogRow], predicate: Callable[[BacklogRow], bool]
     return [row for row in rows if predicate(row)]
 
 
+def _candidate_project_roots() -> tuple[Path, ...]:
+    raw_root = os.environ.get("HLA2010_PROJECT_ROOT")
+    candidates: list[Path] = []
+    if raw_root:
+        candidates.append(Path(raw_root).expanduser().resolve())
+    cwd = Path.cwd().resolve()
+    candidates.extend((cwd, *cwd.parents))
+    return tuple(dict.fromkeys(candidates))
+
+
+def _resolve_project_root(project_root: Path | None = None) -> Path:
+    if project_root is not None:
+        return project_root.resolve()
+    required_files = (
+        "requirements/hla1516_1_clause_4_fm_service_decomposition.csv",
+        "requirements/hla1516_1_clause_10_sup_detailed_reconciliation.csv",
+        "requirements/hla1516_2_omt.csv",
+    )
+    for candidate in _candidate_project_roots():
+        if all((candidate / relative_path).is_file() for relative_path in required_files):
+            return candidate
+    raise ValueError(
+        "project_root is required unless the current working tree contains the imported-HLA requirements artifacts"
+    )
+
+
 def build_imported_hla_backlog(project_root: Path | None = None) -> dict[str, object]:
-    base = project_root or Path(__file__).resolve().parents[2]
+    base = _resolve_project_root(project_root)
     families: list[BacklogFamily] = []
 
     base_specs = [

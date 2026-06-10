@@ -3,9 +3,6 @@ from __future__ import annotations
 
 import json
 
-# Allow running directly from the source checkout.
-import _bootstrap  # noqa: F401
-
 from hla2010.scenarios import make_target_radar_factory, run_target_radar_scenario
 
 

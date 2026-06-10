@@ -7,11 +7,9 @@ import uuid
 import pytest
 
 from hla2010.backends.grpc_transport.python_server import start_python_grpc_server
-from hla2010_rti_python import InMemoryRTIEngine
-from hla2010.backends.rest_transport_host import start_python_rest_server
 from hla2010.enums import OrderType
 from hla2010.rti import create_rti_ambassador
-from hla2010.testing.section8_matrix import (
+from hla2010_verification_harness.section8_matrix import (
     run_section8_available_and_retraction_case,
     run_section8_order_override_case,
     run_section8_ordering_and_query_case,
@@ -20,6 +18,8 @@ from hla2010.testing.section8_matrix import (
     section8_matrix_config,
 )
 from hla2010.types import TimeQueryReturn
+from hla2010_rti_python import InMemoryRTIEngine
+from hla2010_rti_transport_rest.rest_transport_host import start_python_rest_server
 
 
 @dataclass(frozen=True)

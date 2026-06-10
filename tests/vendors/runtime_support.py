@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import os
 import json
+import os
 import socket
 import time
 from contextlib import AbstractContextManager, contextmanager
@@ -36,7 +36,7 @@ _VENDOR_PREFLIGHT_ENVIRONMENT = {
 
 _VENDOR_PREFLIGHT_RESULT = {
     "certi": "real CERTI runnable",
-    "pitch": "ready to run ./scripts/pitch_docker_easy.sh install or ./scripts/pitch_docker_easy.sh all",
+    "pitch": "ready to run ./tools/pitch install or ./tools/pitch all",
 }
 
 
@@ -57,6 +57,14 @@ class ReservedUDPPorts(AbstractContextManager["ReservedUDPPorts"]):
     def __exit__(self, exc_type, exc, tb) -> None:
         self.close()
         return None
+
+
+@dataclass(frozen=True)
+class VendorRuntimeTestState:
+    root: Path
+    local_state_root: Path
+    pitch_user_home: Path
+    home: Path
 
 
 def reserve_udp_ports(count: int, *, host: str = "127.0.0.1") -> ReservedUDPPorts:
@@ -80,6 +88,41 @@ def reserve_udp_ports(count: int, *, host: str = "127.0.0.1") -> ReservedUDPPort
 
 def reserve_udp_pair(*, host: str = "127.0.0.1") -> ReservedUDPPorts:
     return reserve_udp_ports(2, host=host)
+
+
+@contextmanager
+def isolated_vendor_runtime_test_state(root: Path | str) -> Iterator[VendorRuntimeTestState]:
+    state_root = Path(root)
+    local_state_root = state_root / "local-state"
+    pitch_user_home = local_state_root / "pitch" / "user-home"
+    home = state_root / "home"
+    pitch_user_home.mkdir(parents=True, exist_ok=True)
+    home.mkdir(parents=True, exist_ok=True)
+
+    previous: dict[str, str | None] = {
+        name: os.environ.get(name)
+        for name in (
+            "HLA2010_LOCAL_STATE_ROOT",
+            "HLA2010_PITCH_USER_HOME",
+            "HOME",
+        )
+    }
+    os.environ["HLA2010_LOCAL_STATE_ROOT"] = str(local_state_root)
+    os.environ["HLA2010_PITCH_USER_HOME"] = str(pitch_user_home)
+    os.environ["HOME"] = str(home)
+    try:
+        yield VendorRuntimeTestState(
+            root=state_root,
+            local_state_root=local_state_root,
+            pitch_user_home=pitch_user_home,
+            home=home,
+        )
+    finally:
+        for name, value in previous.items():
+            if value is None:
+                os.environ.pop(name, None)
+            else:
+                os.environ[name] = value
 
 
 def _default_preflight_artifact_dir() -> Path:

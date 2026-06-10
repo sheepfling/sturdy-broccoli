@@ -25,5 +25,4 @@ status = "implementation-moved"
 role = "java-support"
 source_roots = [
   "packages/hla2010-rti-java-common/src/hla2010_rti_java_common",
-  "hla2010/backends/java_common.py",
 ]

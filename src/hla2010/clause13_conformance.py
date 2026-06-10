@@ -44,7 +44,7 @@ CLAUSE13_EVIDENCE_REFS = {
 
 def _repo_root(project_root: str | Path | None = None) -> Path:
     if project_root is None:
-        return Path(__file__).resolve().parents[2]
+        raise ValueError("project_root is required for Clause 13 conformance artifacts")
     return Path(project_root).resolve()
 
 

@@ -26,6 +26,7 @@ from .scenario_support import (
     wait_for_callback_count,
     wait_for_callback_count_pair,
 )
+from .section8_matrix import Section8MatrixConfig, run_section8_request_retraction_case, section8_matrix_config
 from .scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
 from .two_federate_suite_pairs import (
     SuiteRecordingFederateAmbassador,
@@ -64,6 +65,7 @@ __all__ = [
     "NegotiatedOwnershipScenarioConfig",
     "OwnershipScenarioConfig",
     "ReleaseRequestOwnershipScenarioConfig",
+    "Section8MatrixConfig",
     "SynchronizationScenarioConfig",
     "TwoFederateExchangeConfig",
     "_exchange_config",
@@ -95,8 +97,10 @@ __all__ = [
     "run_synchronization_scenario",
     "run_two_federate_exchange_scenario",
     "run_two_federate_suite_for_pair_factory",
+    "run_section8_request_retraction_case",
     "safe_evoke_callback",
     "safe_evoke_multiple_callbacks",
+    "section8_matrix_config",
     "wait_for_callback",
     "wait_for_callback_count",
     "wait_for_callback_count_pair",

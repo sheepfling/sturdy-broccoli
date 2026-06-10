@@ -1,13 +1,37 @@
 # Python API Spec
 
-If you want the cleanest Python surface for this workspace, start here:
+Use this page when you want the clean public Python surface for the HLA 2010
+spec without reading the full workspace layout first.
 
-- [`hla2010/spec/`](../hla2010/spec/): standalone clean Python spec package
-- [`hla2010/spec_inventory.py`](../hla2010/spec_inventory.py): plain-text method inventory used by the clean spec layer
-- [`hla2010/spec_sources.py`](../hla2010/spec_sources.py): readable Java/C++ source locations surfaced in the spec docstrings
-- [`hla2010/runtime_api.py`](../hla2010/runtime_api.py): explicit runtime-facing convenience layer
-- [`hla2010/api.py`](../hla2010/api.py): compatibility shim that re-exports the runtime layer
-- [`hla2010/spec_refs.py`](../hla2010/spec_refs.py): clause and service references used for traceability
+## Package Reality
+
+- installable root: `hla2010-spec`
+- workspace facade: `src/hla2010/`
+- package-owned implementations: `packages/*/src/...`
+
+The installable root owns the abstract API surface and spec-facing support
+modules. The workspace facade keeps stable imports and compatibility routing
+across the split packages.
+
+## Canonical Files
+
+- [`../packages/hla2010-spec/README.md`](../packages/hla2010-spec/README.md): installable root package role
+- [`../src/hla2010/spec/__init__.py`](../src/hla2010/spec/__init__.py): clean abstract/prototype spec surface
+- [`../src/hla2010/runtime_api.py`](../src/hla2010/runtime_api.py): runtime-facing convenience facade
+- [`../src/hla2010/api.py`](../src/hla2010/api.py): compatibility shim that re-exports the runtime layer
+- [`../src/hla2010/spec_inventory.py`](../src/hla2010/spec_inventory.py): plain-text method inventory used by the spec layer
+- [`../src/hla2010/spec_sources.py`](../src/hla2010/spec_sources.py): readable Java/C++ source locations surfaced in docstrings
+- [`../src/hla2010/spec_refs.py`](../src/hla2010/spec_refs.py): clause and service references used for traceability
+- [`../src/hla2010/rti.py`](../src/hla2010/rti.py): backend registry and convenience constructors
+
+## Import Table
+
+| Use case | Import |
+|---|---|
+| Abstract spec contracts | `from hla2010.spec import RTIambassadorSpec, FederateAmbassadorSpec` |
+| Runtime convenience facade | `from hla2010.runtime_api import RTIambassador, FederateAmbassador` |
+| Scenario / FOM entrypoint | `from hla2010_fom_target_radar.scenarios import run_target_radar_scenario` |
+| Verification harness | `from hla2010_verification_harness import run_basic_federate_scenario` |
 
 ## Recommended Imports
 
@@ -28,13 +52,14 @@ from hla2010.runtime_api import RTIambassador, FederateAmbassador
 
 ## Why This Split Exists
 
-- `spec_inventory.py` keeps the method names in a small plain-text module.
-- `spec_sources.py` keeps the Java and C++ source locations readable and lets the spec package surface them in docstrings.
-- `_spec_impl.py` is the implementation module behind `hla2010.spec`.
-- `runtime_api.py` keeps the current runtime adapters working without forcing consumers to read the raw scaffold.
-- `api.py` remains as a compatibility shim for older imports.
+- `hla2010-spec` is the installable root package for the clean spec surface.
+- `src/hla2010/spec/__init__.py` exposes the abstract base classes and prototypes.
+- `src/hla2010/runtime_api.py` keeps the runtime adapters working without forcing callers onto raw source-derived names.
+- `src/hla2010/api.py` remains as a compatibility shim for older imports.
+- `src/hla2010/spec_inventory.py`, `src/hla2010/spec_sources.py`, and `src/hla2010/spec_refs.py` keep source mappings readable rather than hiding them in opaque blobs.
 
-That keeps the spec-like surface clean while still preserving the source mapping needed for traceability.
+That keeps the spec-like surface clean while still preserving the source
+mapping needed for traceability.
 
 ## Minimal Pattern
 
@@ -47,4 +72,11 @@ class MyFederate(FederateAmbassadorSpec):
         print("granted", logical_time)
 ```
 
-The camelCase callback names remain available for compatibility, but the snake_case overrides are the intended Python style.
+The camelCase callback names remain available for compatibility, but the
+snake_case overrides are the intended Python style.
+
+## Read Next
+
+1. [`package_dependency_tree.md`](package_dependency_tree.md)
+2. [`package_layout.md`](package_layout.md)
+3. [`../packages/hla2010-spec/README.md`](../packages/hla2010-spec/README.md)

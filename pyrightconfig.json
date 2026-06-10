@@ -5,9 +5,10 @@
     "src/hla2010/ambassadors.py",
     "src/hla2010/backends/base.py",
     "src/hla2010/backends/conversion.py",
+    "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common",
     "packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc",
-    "src/hla2010/backends/certi/service_adapter.py",
-    "src/hla2010/backends/java_common.py",
+    "packages/hla2010-rti-certi/src/hla2010_rti_certi/certi/service_adapter.py",
+    "packages/hla2010-rti-java-common/src/hla2010_rti_java_common/java_common.py",
     "src/hla2010/runtime_api.py",
     "src/hla2010/backends/python/__init__.py",
     "packages/hla2010-rti-transport-rest/src/hla2010_rti_transport_rest",
@@ -21,10 +22,10 @@
     "src/hla2010/spec_inventory.py",
     "src/hla2010/spec_refs.py",
     "src/hla2010/spec_sources.py",
-    "src/hla2010/testing/java_shim_kernel.py",
-    "src/hla2010/testing/java_shim_records.py",
-    "src/hla2010/testing/java_shim_runtime.py",
-    "src/hla2010/testing/target_radar_proof.py"
+    "packages/hla2010-rti-java-common/src/hla2010_rti_java_common/java_shim_kernel.py",
+    "packages/hla2010-rti-java-common/src/hla2010_rti_java_common/java_shim_records.py",
+    "packages/hla2010-rti-java-common/src/hla2010_rti_java_common/java_shim_runtime.py",
+    "src/hla2010_repo_internal/verification/target_radar_proof.py"
   ],
   "exclude": [
     "**/__pycache__",
@@ -44,8 +45,10 @@
     "packages/hla2010-rti-pitch-jpype/src",
     "packages/hla2010-rti-pitch-py4j/src",
     "packages/hla2010-rti-portico/src",
+    "packages/hla2010-rti-transport-common/src",
     "packages/hla2010-rti-transport-grpc/src",
     "packages/hla2010-rti-transport-rest/src",
-    "packages/hla2010-fom-target-radar/src"
+    "packages/hla2010-fom-target-radar/src",
+    "packages/hla2010-verification-harness/src"
   ]
 }

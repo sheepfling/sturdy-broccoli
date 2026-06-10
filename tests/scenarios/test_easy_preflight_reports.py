@@ -50,13 +50,14 @@ def _make_certi_runnable_env(tmp_path: Path) -> dict[str, str]:
     env["HLA2010_CERTI_PATCHED_BUILD_ROOT"] = str(patched_build)
     env["HLA2010_CERTI_UPSTREAM_PREFIX"] = str(upstream_prefix)
     env["HLA2010_CERTI_UPSTREAM_BUILD_ROOT"] = str(upstream_build)
+    env["HLA2010_CERTI_PREFLIGHT_ASSUME_LOOPBACK_OK"] = "1"
     return env
 
 
 def test_certi_easy_preflight_writes_default_artifact_and_reports(tmp_path: Path) -> None:
     env = _base_env(tmp_path)
     result = subprocess.run(
-        ["bash", "./scripts/certi_easy.sh", "preflight"],
+        ["bash", "./tools/certi-easy", "preflight"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -80,7 +81,7 @@ def test_certi_easy_preflight_writes_default_artifact_and_reports(tmp_path: Path
 def test_pitch_preflight_writes_default_artifact_and_reports(tmp_path: Path) -> None:
     env = _base_env(tmp_path)
     result = subprocess.run(
-        ["bash", "./scripts/pitch_docker_easy.sh", "preflight"],
+        ["bash", "./tools/pitch", "preflight"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -156,7 +157,7 @@ def test_pitch_smoke_uses_vendor_green_profile(tmp_path: Path) -> None:
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
 
     result = subprocess.run(
-        ["bash", "./scripts/pitch_docker_easy.sh", "smoke"],
+        ["bash", "./tools/pitch", "smoke"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -181,7 +182,7 @@ def test_certi_smoke_compare_uses_vendor_green_profile_and_emits_reports(tmp_pat
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
 
     result = subprocess.run(
-        ["bash", "./scripts/certi_easy.sh", "smoke", "compare"],
+        ["bash", "./tools/certi-easy", "smoke", "compare"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -206,7 +207,7 @@ def test_certi_smoke_patched_uses_vendor_green_profile_and_emits_reports(tmp_pat
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
 
     result = subprocess.run(
-        ["bash", "./scripts/certi_easy.sh", "smoke", "patched"],
+        ["bash", "./tools/certi-easy", "smoke", "patched"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -231,7 +232,7 @@ def test_certi_smoke_upstream_uses_vendor_green_profile_and_emits_reports(tmp_pa
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
 
     result = subprocess.run(
-        ["bash", "./scripts/certi_easy.sh", "smoke", "upstream"],
+        ["bash", "./tools/certi-easy", "smoke", "upstream"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -256,7 +257,7 @@ def test_pitch_verify_uses_vendor_green_profile(tmp_path: Path) -> None:
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
 
     result = subprocess.run(
-        ["bash", "./scripts/pitch_docker_easy.sh", "verify"],
+        ["bash", "./tools/pitch", "verify"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -283,7 +284,7 @@ def test_certi_ddm_review_uses_probe_review_wrapper(tmp_path: Path) -> None:
     env["HLA2010_VENDOR_PROBE_REVIEW_PARITY_CMD"] = f"python3 {recorder} parity"
 
     result = subprocess.run(
-        ["bash", "./scripts/certi_easy.sh", "ddm-review", "7"],
+        ["bash", "./tools/certi-easy", "ddm-review", "7"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -310,7 +311,7 @@ def test_pitch_negotiated_review_uses_probe_review_wrapper(tmp_path: Path) -> No
     env["HLA2010_VENDOR_PROBE_REVIEW_PARITY_CMD"] = f"python3 {recorder} parity"
 
     result = subprocess.run(
-        ["bash", "./scripts/pitch_docker_easy.sh", "negotiated-review", "7"],
+        ["bash", "./tools/pitch", "negotiated-review", "7"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -331,7 +332,7 @@ def test_certi_smoke_compare_writes_reports_when_preflight_is_blocked(tmp_path: 
     env = _base_env(tmp_path)
 
     result = subprocess.run(
-        ["bash", "./scripts/certi_easy.sh", "smoke", "compare"],
+        ["bash", "./tools/certi-easy", "smoke", "compare"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -354,7 +355,7 @@ def test_pitch_smoke_writes_reports_when_preflight_is_blocked(tmp_path: Path) ->
     env = _base_env(tmp_path)
 
     result = subprocess.run(
-        ["bash", "./scripts/pitch_docker_easy.sh", "smoke"],
+        ["bash", "./tools/pitch", "smoke"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -377,7 +378,7 @@ def test_pitch_verify_writes_reports_when_preflight_is_blocked(tmp_path: Path) -
     env = _base_env(tmp_path)
 
     result = subprocess.run(
-        ["bash", "./scripts/pitch_docker_easy.sh", "verify"],
+        ["bash", "./tools/pitch", "verify"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -400,7 +401,7 @@ def test_certi_save_restore_writes_reports_when_preflight_is_blocked(tmp_path: P
     env = _base_env(tmp_path)
 
     result = subprocess.run(
-        ["bash", "./scripts/certi_easy.sh", "save-restore"],
+        ["bash", "./tools/certi-easy", "save-restore"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -423,7 +424,7 @@ def test_pitch_save_restore_writes_reports_when_preflight_is_blocked(tmp_path: P
     env = _base_env(tmp_path)
 
     result = subprocess.run(
-        ["bash", "./scripts/pitch_docker_easy.sh", "save-restore"],
+        ["bash", "./tools/pitch", "save-restore"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -450,7 +451,7 @@ def test_certi_save_restore_probe_uses_vendor_green_profile_and_emits_reports(tm
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
 
     result = subprocess.run(
-        ["bash", "./scripts/certi_easy.sh", "save-restore-probe"],
+        ["bash", "./tools/certi-easy", "save-restore-probe"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -475,7 +476,7 @@ def test_pitch_save_restore_probe_uses_vendor_green_profile_and_emits_reports(tm
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
 
     result = subprocess.run(
-        ["bash", "./scripts/pitch_docker_easy.sh", "save-restore-probe"],
+        ["bash", "./tools/pitch", "save-restore-probe"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -496,7 +497,7 @@ def test_certi_easy_ddm_writes_reports_when_preflight_is_blocked(tmp_path: Path)
     env = _base_env(tmp_path)
 
     result = subprocess.run(
-        ["bash", "./scripts/certi_easy.sh", "ddm"],
+        ["bash", "./tools/certi-easy", "ddm"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -519,7 +520,7 @@ def test_pitch_ddm_writes_reports_when_preflight_is_blocked(tmp_path: Path) -> N
     env = _base_env(tmp_path)
 
     result = subprocess.run(
-        ["bash", "./scripts/pitch_docker_easy.sh", "ddm"],
+        ["bash", "./tools/pitch", "ddm"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -542,7 +543,7 @@ def test_pitch_negotiated_writes_reports_when_preflight_is_blocked(tmp_path: Pat
     env = _base_env(tmp_path)
 
     result = subprocess.run(
-        ["bash", "./scripts/pitch_docker_easy.sh", "negotiated"],
+        ["bash", "./tools/pitch", "negotiated"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -569,7 +570,7 @@ def test_certi_ddm_probe_uses_vendor_green_profile_and_emits_reports(tmp_path: P
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
 
     result = subprocess.run(
-        ["bash", "./scripts/certi_easy.sh", "ddm-probe"],
+        ["bash", "./tools/certi-easy", "ddm-probe"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -594,7 +595,7 @@ def test_pitch_ddm_probe_uses_vendor_green_profile_and_emits_reports(tmp_path: P
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
 
     result = subprocess.run(
-        ["bash", "./scripts/pitch_docker_easy.sh", "ddm-probe"],
+        ["bash", "./tools/pitch", "ddm-probe"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -619,7 +620,7 @@ def test_pitch_negotiated_probe_uses_vendor_green_profile_and_emits_reports(tmp_
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
 
     result = subprocess.run(
-        ["bash", "./scripts/pitch_docker_easy.sh", "negotiated-probe"],
+        ["bash", "./tools/pitch", "negotiated-probe"],
         cwd=ROOT,
         env=env,
         capture_output=True,
