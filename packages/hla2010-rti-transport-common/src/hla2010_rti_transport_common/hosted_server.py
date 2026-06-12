@@ -206,6 +206,11 @@ class HostedRTICommandProcessor:
 
         if command == "GET_HLA_VERSION":
             return TransportResponse(fields=(self.rti.get_hla_version(),))
+        if command == "GET_FEDERATE_HANDLE":
+            handle = self.rti.get_federate_handle(str(fields[0]))
+            return TransportResponse(fields=(str(int(handle.value)),))
+        if command == "GET_FEDERATE_NAME":
+            return TransportResponse(fields=(self.rti.get_federate_name(FederateHandle(int(fields[0]))),))
         if command == "CONNECT":
             callback_model = CallbackModel[str(fields[0])]
             local_settings = str(fields[1]) if len(fields) >= 2 and fields[1] not in {"", None} else None
