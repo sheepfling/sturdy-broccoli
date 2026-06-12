@@ -10,10 +10,18 @@ backend vocabulary.
 
 ## Canonical Top-Level Paths
 
+The intended reading order for a new contributor is:
+
+1. repo front door
+2. first working example
+3. environment and package map
+4. deeper backend or verification reference
+
 ### Start Here
 
 - [README.md](../README.md): install, bootstrap, smoke, and operator commands
 - [docs/first_run.md](first_run.md): shortest path from fresh checkout to a working pure-Python example
+- [docs/networked_rti_python.md](networked_rti_python.md): hosted Python RTI and Target/Radar extension path
 - [docs/python_environment.md](python_environment.md): Python environment setup and install order
 - [docs/two_federate_quickstart.md](two_federate_quickstart.md): first artifact-producing two-federate example
 - [docs/install_matrix.md](install_matrix.md): extras, bridge deps, and vendor-runtime install order
@@ -25,6 +33,7 @@ backend vocabulary.
 - [docs/package_dependency_tree.md](package_dependency_tree.md): machine-derived installable package dependency tree
 - [docs/architecture.md](architecture.md): package and module structure
 - [docs/package_layout.md](package_layout.md): source-tree layout and import discipline
+- [docs/python_api_spec.md](python_api_spec.md): supported HLA-facing import surface
 - [docs/import_boundary_rules.md](import_boundary_rules.md): package-family dependency rules and transport/backend separation
 - [docs/backend_route_inventory.md](backend_route_inventory.md): runtime/bridge/transport route inventory
 - [docs/backend_route_inventory_routes.md](backend_route_inventory_routes.md): backend route table

@@ -16,10 +16,18 @@ Import the canonical implementation from `hla2010_fom_target_radar`; the old
 root-level `hla2010.scenarios.target_radar` compatibility path has been
 removed.
 
+Use this package when you want:
+
+- the bundled Target/Radar FOM path
+- a reusable scenario runner for the example
+- a backend factory that can target local Python, JPype, Py4J, or the split
+  runtime helper defaults
+- a stable place to extend the example without touching the generic HLA
+  interface package
+
 This package depends on `hla2010-spec` and may optionally be combined with
 backend plugin packages for runnable examples, but it does not own RTI backend
 implementations.
-Import the canonical implementation from `hla2010_fom_target_radar`.
 Split-package guard coverage lives in
 `tests/test_fom_target_radar_split_package.py`.
 
@@ -35,3 +43,17 @@ source .venv/bin/activate
 
 Then run the scenario entrypoints. Full install order lives in
 [`../../docs/python_environment.md`](../../docs/python_environment.md).
+
+If you are extending the example, the useful imports are:
+
+```python
+from hla2010_fom_target_radar.scenarios import (
+    make_target_radar_factory,
+    run_target_radar_scenario,
+    target_radar_fom_path,
+)
+```
+
+The package-local docs page is
+[`docs/README.md`](docs/README.md), and the broader walkthrough is in
+[`../../docs/networked_rti_python.md`](../../docs/networked_rti_python.md).

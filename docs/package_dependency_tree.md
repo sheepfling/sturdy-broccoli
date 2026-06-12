@@ -3,6 +3,12 @@
 This page is generated from the `project.dependencies` fields in
 `packages/*/pyproject.toml`.
 
+Use this page to answer three practical questions:
+
+1. what is the architectural root package
+2. which packages are shared support versus concrete backends or leaves
+3. whether a new dependency is moving in the right direction
+
 Regenerate it with:
 
 ```bash
@@ -16,6 +22,19 @@ Regenerate it with:
 - Python and Java backend families are separated; `hla2010-rti-python` depends on backend-common rather than on Java support packages.
 - transport packages depend on `hla2010-spec`, `hla2010-rti-backend-common`, `hla2010-rti-transport-common`, and for hosted transports also `hla2010-rti-runtime-common`.
 - FOM and verification leaf packages depend only on `hla2010-spec` and `hla2010-verification-harness`.
+
+## How To Read It
+
+Read the page from top to bottom:
+
+1. summary for the mental model
+2. layers for package rank
+3. graph for direct edges
+4. table for manifest-level details
+
+If you need the policy behind the graph, read
+[`import_boundary_rules.md`](import_boundary_rules.md) and
+[`package_layout.md`](package_layout.md).
 
 ## Dependency Layers
 

@@ -12,12 +12,23 @@ For the machine-derived installable package dependency graph, use
 This is a monorepo workspace with multiple installable package roots. The
 repository root is tooling-only: it keeps pytest, Ruff, and Pyright
 configuration, but it is not a Python distribution. The architectural root is
-`hla2010-spec`, whose package manifest owns `src/hla2010/`. Concrete backend
-and support implementations live in package-owned directories under
-`packages/*/src`.
+`hla2010-spec`, whose package manifest owns `src/hla2010/`. Concrete backend,
+transport, FOM, and support implementations live in package-owned directories
+under `packages/*/src`.
 Within `src/hla2010/`, `hla2010.rti` remains only as the documented temporary
-workspace facade and compatibility surface into split packages. Everything else in
-that tree should stay abstract/core API rather than backend implementation.
+workspace facade into split packages. Everything else in that tree should stay
+abstract/core API rather than backend implementation.
+
+## Front Door
+
+If you are trying to find the supported HLA entry points, start here:
+
+- `src/hla2010/spec/`: clean abstract spec surface
+- `src/hla2010/runtime_api.py`: Pythonic runtime convenience layer
+- `src/hla2010/rti.py`: temporary workspace facade for backend discovery and ambassador creation only
+- `packages/hla2010-rti-python/src/hla2010_rti_python/`: in-memory Python RTI backend
+- `packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc/`: hosted gRPC transport surface
+- `packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/scenarios/`: Target/Radar scenario and FOM entrypoints
 
 Do not use `pip install -e .` at the repository root. Install the split
 packages directly, starting with `packages/hla2010-spec`, or use

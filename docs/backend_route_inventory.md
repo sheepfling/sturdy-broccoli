@@ -2,6 +2,12 @@
 
 This page is the hub for the backend route story.
 
+Use it when you need to answer:
+
+- which backend routes exist at all
+- which routes are direct versus transport-hosted
+- where the evidence and command references live
+
 Canonical order:
 
 1. route inventory

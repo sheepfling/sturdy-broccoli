@@ -10,6 +10,13 @@ This package owns:
 
 The legacy `hla2010.backends.grpc_transport.*` modules have been removed.
 Import `hla2010_rti_transport_grpc` and its submodules directly.
+
+Use this package when you need the networked RTI route:
+
+- `start_python_grpc_server(...)` to host the in-memory Python RTI behind gRPC
+- `start_certi_grpc_server(...)` to host CERTI behind the same transport seam
+- `GrpcTransportConfig` and `create_grpc_transport(...)` for client-side transport wiring
+
 Boundary, import-isolation, and thin-wrapper guard coverage lives in
 `tests/test_rti_transport_grpc_split_package.py`,
 `tests/test_package_boundary.py`, and `tests/test_backend_wrapper_policy.py`.

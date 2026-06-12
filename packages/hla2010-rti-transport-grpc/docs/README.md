@@ -18,3 +18,6 @@ Key owned surfaces:
 
 Human operator entrypoints remain in `./tools/`; this package owns the code
 surface, not the operator command surface.
+
+For a concrete usage guide, read
+[`../../../docs/networked_rti_python.md`](../../../docs/networked_rti_python.md).

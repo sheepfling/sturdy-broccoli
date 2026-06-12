@@ -6,10 +6,18 @@ This tree uses one simple parallel pattern:
 
 `start here -> reference -> historical/provenance`
 
+If you only need the shortest on-ramp:
+
+1. read [`../README.md`](../README.md)
+2. read [`first_run.md`](first_run.md)
+3. read [`networked_rti_python.md`](networked_rti_python.md) if you need a hosted Python RTI route
+4. read [`../packages/hla2010-fom-target-radar/README.md`](../packages/hla2010-fom-target-radar/README.md) if you are extending the Target/Radar example
+
 ## Start Here
 
 - [../README.md](../README.md): install, bootstrap, smoke, and operator commands
 - [first_run.md](first_run.md): shortest path from fresh checkout to a working pure-Python example
+- [networked_rti_python.md](networked_rti_python.md): hosted Python RTI over gRPC, with concrete entrypoints and usage shape
 - [python_environment.md](python_environment.md): Python bootstrap, `.venv`, extras, and install order
 - [two_federate_quickstart.md](two_federate_quickstart.md): first stop for the composite two-federate example
 - [install_matrix.md](install_matrix.md): extras, backend families, and dependency order
@@ -23,6 +31,7 @@ This tree uses one simple parallel pattern:
 - [python_api_spec.md](python_api_spec.md): clean Python spec package and runtime facade split
 - [callback_model_guide.md](callback_model_guide.md): evoked vs immediate callback behavior, tests, and implementation entry points
 - [import_boundary_rules.md](import_boundary_rules.md): package-family import rules and transport-versus-backend boundaries
+- [package_layout.md](package_layout.md): package ownership map and front-door package roles
 - [verification/run_sequence.md](verification/run_sequence.md): full verification sequence and run order
 - [top_to_bottom_green.md](top_to_bottom_green.md): explicit repo-wide finish definition for base Python, repo-green, and vendor-green
 

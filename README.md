@@ -2,21 +2,22 @@
 
 This repository is an unofficial IEEE 1516.1-2010 HLA workspace centered on a
 clean Python spec surface plus pluggable RTI backends.
-It gives you:
 
-- a dependency-free in-memory Python RTI for fast local development
-- Java bridge profiles through JPype and Py4J
-- repo-local CERTI and Pitch operator flows through `tools/`
-- transport-hosted gRPC and REST routes
-- example federates, scenario runners, verification harnesses, and repo-local evidence tooling
+The supported front door is:
+
+- `hla2010.spec` for the clean interface contract
+- `hla2010.runtime_api` for the Pythonic convenience layer
+- `hla2010_rti_python` for the local in-memory RTI backend
+- `hla2010_rti_transport_grpc` for networked transport-hosted RTI routes
+- `hla2010_fom_target_radar.scenarios` for the Target/Radar example package
 
 If you want the shortest path to "something runs", start with the pure Python
 backend and the Target/Radar example.
 
 The repo is organized as a monorepo workspace:
 
-- `src/hla2010/` is the root Python package for the abstract/core API plus the one documented temporary compatibility facade `hla2010.rti`
-- `packages/*/src/` holds package-owned backend, FOM, and support implementations
+- `src/hla2010/` is the root Python package for the abstract/core API plus the documented temporary compatibility facade `hla2010.rti`
+- `packages/*/src/` holds package-owned backend, FOM, transport, and support implementations
 - `tools/` is the canonical home for human-facing operator entrypoints
 - `examples/`, `scripts/`, `tests/`, and `docs/` stay repo-local
 
@@ -45,6 +46,12 @@ For the full environment and install order, read
 
 If you want the shortest single walkthrough, use
 [`docs/first_run.md`](docs/first_run.md).
+
+If you want the networked Python RTI guide, use
+[`docs/networked_rti_python.md`](docs/networked_rti_python.md).
+
+If you want the Target/Radar package guide, use
+[`packages/hla2010-fom-target-radar/README.md`](packages/hla2010-fom-target-radar/README.md).
 
 If you want an executable setup check first, run:
 
@@ -89,10 +96,9 @@ If you need the vendor flows, use the `tools/` operator surface:
 ## What This Repo Is For
 
 The main import surface is `hla2010`, with the clean contract at
-`hla2010.spec`. The `src/hla2010/` tree is intended to stay limited to the
-abstract/core API, backend-neutral types and contracts, FOM/MOM helpers, and
-the one documented temporary split-package facade `hla2010.rti` while package
-ownership finishes moving into separate installable distributions.
+`hla2010.spec`. The `src/hla2010/` tree stays limited to the abstract/core API,
+backend-neutral types and contracts, FOM/MOM helpers, and the one documented
+temporary split-package facade `hla2010.rti`.
 
 Concrete backend implementations now live in package-owned source trees such as:
 
@@ -138,8 +144,7 @@ For the Target/Radar example, the bundled FOM lives at:
 
 The `examples/` tree is for runnable entrypoints and thin example-only assets.
 Reusable runtime assets belong under their owning package roots. For
-Target/Radar that canonical owner is `hla2010-fom-target-radar`; the
-`src/hla2010/resources/` path is kept only for compatibility during migration.
+Target/Radar that canonical owner is `hla2010-fom-target-radar`.
 
 ## Two-Federate Starter
 
@@ -173,6 +178,7 @@ For the current route inventory and support status, read:
 - [`docs/backend_capability_matrix.md`](docs/backend_capability_matrix.md)
 - [`docs/backend_conformance_matrix.md`](docs/backend_conformance_matrix.md)
 - [`docs/rti_options_and_test_matrix.md`](docs/rti_options_and_test_matrix.md)
+- [`docs/networked_rti_python.md`](docs/networked_rti_python.md)
 
 If you only need the shortest "what works right now?" answer, use:
 
@@ -184,7 +190,7 @@ If you only need the shortest "what works right now?" answer, use:
 ## Repository Layout
 
 ```text
-src/hla2010/          core API layer plus the temporary compatibility facade hla2010.rti
+src/hla2010/          core API layer plus the documented temporary compatibility facade hla2010.rti
 src/hla2010_repo_internal/ verification/proof/report helpers kept out of public API
 packages/*/src/       package-owned backend and support implementation roots
 examples/             runnable example federates and scenario entrypoints

@@ -2,7 +2,7 @@
 
 The main repository pattern is:
 
-`facade -> domain modules/mixins -> shared state/engine -> factories/registries -> optional transport/runtime adapters`
+`front door -> domain modules/mixins -> shared state/engine -> factories/registries -> optional transport/runtime adapters`
 
 That pattern exists to keep HLA service behavior reviewable by domain while still allowing multiple runtime and transport paths behind the same ambassador surface.
 

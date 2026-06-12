@@ -14,3 +14,6 @@ Key owned surfaces:
 
 This package does not own RTI backend implementations or generic shared
 verification-harness scenarios.
+
+If you want the package entrypoint and usage story, read
+[`../README.md`](../README.md).

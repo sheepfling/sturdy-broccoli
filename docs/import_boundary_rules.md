@@ -9,7 +9,7 @@ The workspace facade is `src/hla2010/`.
 Those are not the same thing:
 
 - `hla2010-spec` owns the architectural root surface
-- `src/hla2010/` owns the abstract/core API plus only documented workspace
+- `src/hla2010/` owns the abstract/core API plus only the documented workspace
   compatibility facade: `hla2010.rti`
 
 Do not treat `src/hla2010/` as a second conceptual root.
@@ -141,8 +141,8 @@ Examples:
 - transport request processing and transport selection/coercion belong in `hla2010-rti-transport-common`
 
 The same rule applies to `hla2010.rti`: it is a temporary documented root
-compatibility facade for backend discovery and ambassador creation, not a place to move
-package-owned backend logic back into `src/hla2010/`.
+compatibility facade for backend discovery and ambassador creation, not a
+place to move package-owned backend logic back into `src/hla2010/`.
 Package-owned code should import runtime factory helpers from
 `hla2010_rti_runtime_common` directly rather than through `hla2010.rti`.
 Do not import plugin contract types, backend registry internals, low-level

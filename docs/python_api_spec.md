@@ -1,7 +1,16 @@
 # Python API Spec
 
 Use this page when you want the clean public Python surface for the HLA 2010
-spec without reading the full workspace layout first.
+interface without reading the full workspace layout first.
+
+## Front Door
+
+If you only need the supported import ladder, use:
+
+- `from hla2010.spec import RTIambassadorSpec, FederateAmbassadorSpec`
+- `from hla2010.runtime_api import RTIambassador, FederateAmbassador`
+- `from hla2010_rti_python import rti_ambassador`
+- `from hla2010_fom_target_radar.scenarios import run_target_radar_scenario`
 
 ## Package Reality
 
