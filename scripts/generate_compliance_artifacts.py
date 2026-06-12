@@ -1244,6 +1244,42 @@ for requirement_id in (
     )
 
 
+_PYTHON_REQUIREMENT_EVIDENCE: dict[str, tuple[tuple[str, ...], str]] = {
+    "HLA1516.2-DT-002": (
+        (
+            "tests/factories/test_fom_omt_parsing.py::test_parse_standard_mim_xml_extracts_structured_datatype_definitions",
+            "tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_rejects_unresolved_array_and_fixed_record_datatype_references",
+            "tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_rejects_invalid_fixed_array_cardinality",
+        ),
+        "Python OMT datatype parsing and validation tests cover the basic, simple, enumerated, array, fixed-record, and variant-record datatype families directly.",
+    ),
+    "HLA1516.2-SYNC-001": (
+        (
+            "tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_extracts_synchronization_table_and_merge_summary",
+            "tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_rejects_duplicate_synchronization_point_labels",
+        ),
+        "Python OMT synchronization parsing tests cover declaration, validation, and serialization of synchronization-point metadata directly.",
+    ),
+    "HLA1516.2-MERGE-001": (
+        (
+            "tests/factories/test_fom_omt_parsing.py::test_merge_with_standard_mim_preserves_standard_mom_definitions_and_catalog_metadata",
+            "tests/factories/test_fom_omt_parsing.py::test_merge_with_standard_mim_preserves_mom_table_definitions_without_alteration",
+            "tests/factories/test_fom_omt_parsing.py::test_merge_fom_modules_preserves_class_datatype_and_dimension_consistency",
+        ),
+        "Python OMT merge tests cover the merged class, datatype, dimension, and standard MIM composition contract directly.",
+    ),
+    "HLA1516.2-XML-001": (
+        (
+            "tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_with_omt_schema_validation_accepts_restaurant_reference_module_and_rejects_invalid_document",
+            "tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_rejects_unknown_object_model_namespace",
+            "tests/factories/test_fom_omt_parsing.py::test_serialize_fom_module_emits_schema_valid_xml_and_preserves_identification",
+            "tests/factories/test_fom_omt_parsing.py::test_parse_fom_xml_preserves_notes_and_catalog_notes",
+        ),
+        "Python OMT XML interchange tests cover namespace validation, schema rejection, schema-valid serialization, and semantic round-trip fidelity directly.",
+    ),
+}
+
+
 _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF = (
     "packages/hla2010-rti-pitch-common/docs/evidence/"
     "pitch_section8_time_management_vendor_divergence_2026-06-11.md",
@@ -5540,9 +5576,11 @@ def _pitch_evidence_refs(source_row: dict[str, Any], *, clause_root: str) -> tup
 
 def _family_evidence_refs(source_row: dict[str, Any], *, backend: str, clause_root: str) -> tuple[str, ...]:
     vendor_evidence = tuple(str(ref) for ref in source_row.get("vendor_evidence_refs", []) if str(ref))
+    requirement_id = str(source_row.get("requirement_id") or source_row.get("matrix_id") or "")
+    if backend == "python" and requirement_id in _PYTHON_REQUIREMENT_EVIDENCE:
+        return _normalized_evidence_refs(_PYTHON_REQUIREMENT_EVIDENCE[requirement_id][0])
     if backend != "python":
         if backend == "certi":
-            requirement_id = str(source_row.get("requirement_id") or source_row.get("matrix_id") or "")
             if requirement_id in _CERTI_REQUIREMENT_EVIDENCE:
                 return _normalized_evidence_refs(_CERTI_REQUIREMENT_EVIDENCE[requirement_id][0])
             allowed_prefixes = (
@@ -5605,7 +5643,6 @@ def _family_evidence_refs(source_row: dict[str, Any], *, backend: str, clause_ro
         ),
     }
     allowed_prefixes = allowed_prefixes_by_clause.get(clause_root)
-    requirement_id = str(source_row.get("requirement_id") or source_row.get("matrix_id") or "")
     mapped_evidence = _PITCH_REQUIREMENT_EVIDENCE.get(requirement_id, ("", (), ""))[1]
     if not allowed_prefixes:
         return _normalized_evidence_refs(vendor_evidence)
@@ -5620,6 +5657,9 @@ def _family_requirement_notes(source_row: dict[str, Any], *, backend: str, dispo
     generic_notes = str(source_row.get("notes") or "").strip()
     status_field = f"{backend}_runtime_status"
     runtime_status = str(source_row.get(status_field, "")).strip()
+
+    if backend == "python" and requirement_id in _PYTHON_REQUIREMENT_EVIDENCE:
+        return _PYTHON_REQUIREMENT_EVIDENCE[requirement_id][1]
 
     if backend == "certi":
         if requirement_id in _CERTI_NOTE_OVERRIDES:
@@ -6268,6 +6308,10 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
         "HLA1516.1-FM-4.1-006": "verified",
         "HLA1516.1-FM-4.1.4.1-002": "verified",
         "HLA1516.1-TM-8.1.2-003": "verified",
+        "HLA1516.2-DT-002": "verified",
+        "HLA1516.2-SYNC-001": "verified",
+        "HLA1516.2-MERGE-001": "verified",
+        "HLA1516.2-XML-001": "verified",
     }
     certi_requirement_overrides = {
         "REQ-RTI-FM-4_16-requestFederationSave": "verified",
