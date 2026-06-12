@@ -33,7 +33,7 @@ def test_ownership_detailed_reconciliation_spot_checks_key_rows():
     rows = {row["packet_requirement_id"]: row for row in _read_rows()}
 
     assert rows["HLA1516.1-OWN-OVERVIEW-008"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-OWN-OVERVIEW-008"]["reconciliation_kind"] == "seed"
+    assert rows["HLA1516.1-OWN-OVERVIEW-008"]["reconciliation_kind"] == "OVW"
     assert rows["HLA1516.1-OWN-7_2-RTIAPI-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OWN-7_2-RTIAPI-001"]["reconciliation_kind"] == "RTI_API"
     assert rows["HLA1516.1-OWN-7_2-RTIAPI-001-EXC"]["current_status"] == "partial"

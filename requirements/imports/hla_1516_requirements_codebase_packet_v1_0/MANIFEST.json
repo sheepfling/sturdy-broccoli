@@ -14,9 +14,9 @@
       "source_path": "/mnt/data/hla_1516_requirements_master_v1_0.xlsx"
     },
     {
-      "bytes": 2889463,
+      "bytes": 2889189,
       "path": "requirements/latest/hla_1516_requirements_master_v1_0.csv",
-      "sha256": "e3c543c30e2ea56d017f68884051466bc148096e53c598d26adf977ac7ed6df3",
+      "sha256": "5330ac22133e1251e8106feafdd24c8579cd247d1298fef9cfdf7604a0c0760f",
       "source_path": "/mnt/data/hla_1516_requirements_master_v1_0.csv"
     },
     {
@@ -122,9 +122,9 @@
       "source_path": "/mnt/data/hla_1516_requirements_master_v0_2.xlsx"
     },
     {
-      "bytes": 430861,
+      "bytes": 430587,
       "path": "requirements/history/hla_1516_requirements_master_v0_2.csv",
-      "sha256": "0cd72dd1c080b0330be8266ea83df5946594a5de97fabca1eddb1ac00eeb5eee",
+      "sha256": "40e282840febc8aea08726f91f8f6f18b1c1571dacf07ce74c6c8e1c0a6c2ef2",
       "source_path": "/mnt/data/hla_1516_requirements_master_v0_2.csv"
     },
     {
@@ -146,9 +146,9 @@
       "source_path": "/mnt/data/hla_1516_requirements_master_v0_3.xlsx"
     },
     {
-      "bytes": 1757594,
+      "bytes": 1757320,
       "path": "requirements/history/hla_1516_requirements_master_v0_3.csv",
-      "sha256": "3853c0b66273439bfbb7f12c18183faa1c0a5d4c8a7c93bc6d6f76e104a898fe",
+      "sha256": "74bb3baa90b06b68d9af9144def796f462cd6c896a6a34a7c468ff2e295b456b",
       "source_path": "/mnt/data/hla_1516_requirements_master_v0_3.csv"
     },
     {
@@ -176,9 +176,9 @@
       "source_path": "/mnt/data/hla_1516_requirements_master_v0_4.xlsx"
     },
     {
-      "bytes": 1950812,
+      "bytes": 1950538,
       "path": "requirements/history/hla_1516_requirements_master_v0_4.csv",
-      "sha256": "7c7feeff90b8554b7fca59248f3bec1d976c231569eb1df480f6a7b709ff8d51",
+      "sha256": "5533ab17d11deec709fdbcd717c98dfebaf61fb647aa88380a5d7052647fc7f5",
       "source_path": "/mnt/data/hla_1516_requirements_master_v0_4.csv"
     },
     {

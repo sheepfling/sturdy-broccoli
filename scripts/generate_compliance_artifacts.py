@@ -3599,6 +3599,17 @@ _PITCH_REQUIREMENT_EVIDENCE["REQ-OM-TRANSPORT-SCOPE-001"] = (
     "Pitch real-runtime shared object-management scenarios verify the implemented subset of this broad slice: scope-driven relevance callbacks, local-delete knowledge restrictions, and reliable/best-effort transportation change, query, report, rejection, and restore-persistence behavior. The slice remains vendor-divergent because its transport-semantics language is broader than the backend's supported reliable/best-effort subset and does not stop at the implemented transportation profile.",
 )
 
+_SEED_ROW_NOT_APPLICABLE_NOTES: dict[str, str] = {
+    "HLA1516-TIME-001": "Time-concept seed row is a planning umbrella for the detailed time-management slices, not an executable Python backend requirement.",
+    "HLA1516.1-DM-001": "Declaration-management seed row is a planning umbrella for the detailed Clause 5 service rows, not an executable backend parity requirement.",
+    "HLA1516.1-OM-001": "Object-management seed row is a planning umbrella for the detailed Clause 6 service and callback rows, not an executable backend parity requirement.",
+    "HLA1516.1-OWN-001": "Ownership-management seed row is a planning umbrella for the detailed Clause 7 service rows, not an executable backend parity requirement.",
+    "HLA1516.1-TM-001": "Time-management seed row is a planning umbrella for the detailed Clause 8 service rows, not an executable backend parity requirement.",
+    "HLA1516.1-DDM-001": "DDM seed row is a planning umbrella for the detailed Clause 9 service rows, not an executable backend parity requirement.",
+    "HLA1516.1-SUP-001": "Support-services seed row is a planning umbrella for the detailed Clause 10 service rows, not an executable backend parity requirement.",
+    "HLA1516.1-MOM-001": "MOM seed row is a planning umbrella for the detailed Clause 11 reporting and observer rows, not an executable backend parity requirement.",
+}
+
 
 def _negative_priority(row: ServiceConformanceRow) -> tuple[str, str, tuple[int, int, str, str]]:
     root = row.section.split(".", 1)[0] if row.section else "unmapped"
@@ -5577,6 +5588,8 @@ def _pitch_evidence_refs(source_row: dict[str, Any], *, clause_root: str) -> tup
 def _family_evidence_refs(source_row: dict[str, Any], *, backend: str, clause_root: str) -> tuple[str, ...]:
     vendor_evidence = tuple(str(ref) for ref in source_row.get("vendor_evidence_refs", []) if str(ref))
     requirement_id = str(source_row.get("requirement_id") or source_row.get("matrix_id") or "")
+    if requirement_id in _SEED_ROW_NOT_APPLICABLE_NOTES:
+        return ()
     if backend == "python" and requirement_id in _PYTHON_REQUIREMENT_EVIDENCE:
         return _normalized_evidence_refs(_PYTHON_REQUIREMENT_EVIDENCE[requirement_id][0])
     if backend != "python":
@@ -5658,6 +5671,8 @@ def _family_requirement_notes(source_row: dict[str, Any], *, backend: str, dispo
     status_field = f"{backend}_runtime_status"
     runtime_status = str(source_row.get(status_field, "")).strip()
 
+    if requirement_id in _SEED_ROW_NOT_APPLICABLE_NOTES:
+        return _SEED_ROW_NOT_APPLICABLE_NOTES[requirement_id]
     if backend == "python" and requirement_id in _PYTHON_REQUIREMENT_EVIDENCE:
         return _PYTHON_REQUIREMENT_EVIDENCE[requirement_id][1]
 
@@ -5689,6 +5704,8 @@ def _family_requirement_notes(source_row: dict[str, Any], *, backend: str, dispo
 
 def _pitch_requirement_disposition(row: dict[str, Any]) -> tuple[str, str]:
     requirement_id = str(row.get("requirement_id") or row.get("matrix_id") or "")
+    if requirement_id in _SEED_ROW_NOT_APPLICABLE_NOTES:
+        return "not-applicable", _SEED_ROW_NOT_APPLICABLE_NOTES[requirement_id]
     if requirement_id in _PITCH_REQUIREMENT_EVIDENCE:
         mapped_status, _, mapped_note = _PITCH_REQUIREMENT_EVIDENCE[requirement_id]
         return mapped_status, mapped_note
@@ -6313,6 +6330,7 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
         "HLA1516.2-MERGE-001": "verified",
         "HLA1516.2-XML-001": "verified",
     }
+    python_requirement_overrides.update({requirement_id: "not-applicable" for requirement_id in _SEED_ROW_NOT_APPLICABLE_NOTES})
     certi_requirement_overrides = {
         "REQ-RTI-FM-4_16-requestFederationSave": "verified",
         "REQ-FED-FM-4_17-initiateFederateSave": "verified",
@@ -6347,6 +6365,8 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
         legacy_status: str,
     ) -> str:
         requirement_id = str(row.get("requirement_id") or row.get("matrix_id") or "")
+        if requirement_id in _SEED_ROW_NOT_APPLICABLE_NOTES:
+            return "not-applicable"
         if backend == "python" and requirement_id in python_requirement_overrides:
             return python_requirement_overrides[requirement_id]
         if backend == "certi" and requirement_id in certi_requirement_overrides:

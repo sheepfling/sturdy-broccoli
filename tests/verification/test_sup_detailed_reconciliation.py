@@ -27,18 +27,19 @@ def test_sup_detailed_reconciliation_has_expected_shape():
     assert Counter((row["reconciliation_kind"], row["current_status"]) for row in rows) == Counter(
         {
             ("SIG", "mapped"): 86,
+            ("SVC", "mapped"): 82,
             ("EFF", "mapped"): 55,
-            ("seed", "mapped"): 44,
             ("ARG", "mapped"): 43,
             ("EXC", "partial"): 43,
             ("MOM", "mapped"): 43,
             ("PRE", "partial"): 43,
-            ("SVC", "mapped"): 43,
             ("TEST", "mapped"): 43,
             ("RTI_API", "mapped"): 43,
             ("EXC_API", "partial"): 43,
             ("MOM_TRACE", "mapped"): 43,
             ("RET", "mapped"): 31,
+            ("CB", "mapped"): 4,
+            ("OVW", "mapped"): 1,
         }
     )
     assert {row["source_packet_file"] for row in rows} == {

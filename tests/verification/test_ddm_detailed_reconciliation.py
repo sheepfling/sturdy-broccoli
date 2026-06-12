@@ -33,7 +33,7 @@ def test_ddm_detailed_reconciliation_spot_checks_key_rows():
     rows = {row["packet_requirement_id"]: row for row in _read_rows()}
 
     assert rows["HLA1516.1-DDM-OVERVIEW-012"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-DDM-OVERVIEW-012"]["reconciliation_kind"] == "seed"
+    assert rows["HLA1516.1-DDM-OVERVIEW-012"]["reconciliation_kind"] == "OVW"
     assert rows["HLA1516.1-DDM-9_2-RTIAPI-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-DDM-9_2-RTIAPI-001"]["reconciliation_kind"] == "RTI_API"
     assert rows["HLA1516.1-DDM-9_2-RTIAPI-001-EXC"]["current_status"] == "partial"
@@ -45,7 +45,7 @@ def test_ddm_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-DDM-9_2-RTIAPI-001-SIG"]["current_status"] == "mapped"
     assert rows["HLA1516.1-DDM-9_2-RTIAPI-001-SIG"]["reconciliation_kind"] == "SIG"
     assert rows["HLA1516.1-DDM-9_5-001"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-DDM-9_5-001"]["reconciliation_kind"] == "seed"
+    assert rows["HLA1516.1-DDM-9_5-001"]["reconciliation_kind"] == "SVC"
     assert rows["HLA1516.1-DDM-9_2-CREATEREGION-TEST-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-DDM-9_2-CREATEREGION-TEST-001"]["reconciliation_kind"] == "TEST"
     assert rows["HLA1516.1-DDM-9_12-RTIAPI-002-RET"]["current_status"] == "mapped"

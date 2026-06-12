@@ -28,9 +28,10 @@ def test_xml_detailed_reconciliation_has_expected_shape():
         {
             ("XML_ELEM", "partial"): 274,
             ("XML_TYPE", "partial"): 89,
-            ("seed", "mapped"): 2,
             ("CLAUSE12_13_DETAIL", "partial"): 1,
+            ("XML_DIF", "mapped"): 1,
             ("OMT_CLAUSE_DETAIL", "mapped"): 1,
+            ("XML_SCHEMA", "mapped"): 1,
         }
     )
     assert {row["source_packet_file"] for row in rows} == {

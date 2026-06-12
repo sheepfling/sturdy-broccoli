@@ -33,7 +33,7 @@ def test_declaration_detailed_reconciliation_spot_checks_key_rows():
     rows = {row["packet_requirement_id"]: row for row in _read_rows()}
 
     assert rows["HLA1516.1-DM-OVERVIEW-004"]["current_status"] == "mapped"
-    assert rows["HLA1516.1-DM-OVERVIEW-004"]["reconciliation_kind"] == "seed"
+    assert rows["HLA1516.1-DM-OVERVIEW-004"]["reconciliation_kind"] == "OVW"
     assert rows["HLA1516.1-DM-OVERVIEW-005"]["current_status"] == "mapped"
     assert rows["HLA1516.1-DM-5_2-RTIAPI-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-DM-5_2-RTIAPI-001"]["reconciliation_kind"] == "RTI_API"
