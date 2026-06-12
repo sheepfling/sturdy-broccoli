@@ -19,6 +19,7 @@ DOC_GLOBS = (
 )
 MARKDOWN_LINK_RE = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
 IGNORED_SCHEMES = ("http://", "https://", "mailto:")
+ABSOLUTE_TARGET_RE = re.compile(r"^(?:/|[A-Za-z]:[\\/]|file://)")
 ALLOW_MISSING_ROOT_PREFIXES = (
     "analysis/",
     "archives/",
@@ -63,6 +64,10 @@ def _is_ignored_target(target: str) -> bool:
     return target.startswith(IGNORED_SCHEMES) or target.startswith("#")
 
 
+def _is_absolute_target(target: str) -> bool:
+    return bool(ABSOLUTE_TARGET_RE.match(target))
+
+
 def _allow_missing_resolved_path(path: Path) -> bool:
     try:
         rel = path.relative_to(ROOT).as_posix()
@@ -80,6 +85,13 @@ def _link_note(source_path: Path, target: str, resolved_path: Path) -> str:
     return "missing target"
 
 
+def _absolute_link_note(source_path: Path, target: str) -> str:
+    rel_source = source_path.relative_to(ROOT).as_posix()
+    if rel_source.startswith("docs/"):
+        return "absolute links are not allowed in documentation"
+    return "absolute link target is not allowed"
+
+
 def _find_broken_links(path: Path) -> list[LinkViolation]:
     text = path.read_text(encoding="utf-8")
     violations: list[LinkViolation] = []
@@ -90,6 +102,18 @@ def _find_broken_links(path: Path) -> list[LinkViolation]:
                 continue
             clean_target = target.split("#", 1)[0].strip()
             if not clean_target:
+                continue
+            if _is_absolute_target(clean_target):
+                violations.append(
+                    LinkViolation(
+                        source_path=path,
+                        line_number=line_number,
+                        label=label,
+                        target=target,
+                        resolved_path=Path(clean_target),
+                        note=_absolute_link_note(path, clean_target),
+                    )
+                )
                 continue
             resolved_path = (path.parent / clean_target).resolve()
             if resolved_path.exists():

@@ -110,6 +110,15 @@ def test_key_newcomer_docs_reference_existing_paths() -> None:
             assert expected_path.exists(), rel
 
 
+def test_repo_does_not_keep_duplicate_markdown_copies() -> None:
+    duplicates = sorted(
+        path.relative_to(ROOT).as_posix()
+        for path in ROOT.glob("**/* 2.md")
+        if path.is_file()
+    )
+    assert duplicates == [], f"duplicate markdown copies remain: {duplicates}"
+
+
 def test_python_api_spec_matches_split_package_reality() -> None:
     path = ROOT / "docs/python_api_spec.md"
     text = _read(path)
@@ -128,7 +137,6 @@ def test_repo_overview_docs_describe_root_namespace_as_core_plus_temporary_facad
     readme = _read(ROOT / "README.md")
     packages_readme = _read(ROOT / "packages" / "README.md")
 
-    assert "`src/hla2010/` is the root Python package for the abstract/core API plus the one documented temporary compatibility facade `hla2010.rti`" in readme
+    assert "`src/hla2010/` is the root Python package for the abstract/core API plus the documented temporary compatibility facade `hla2010.rti`" in readme
     assert "`hla2010/` is a narrow top-level shim area for plugin-facing glue" not in readme
-    assert "src/hla2010/          core API layer plus the temporary compatibility facade hla2010.rti" in readme
     assert "`src/hla2010/` tree is the workspace facade used for stable imports, abstract\ncore API ownership, and only documented temporary compatibility routing." in packages_readme
