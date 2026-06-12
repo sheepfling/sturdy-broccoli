@@ -1,0 +1,549 @@
+{
+  "backend_summaries": {
+    "certi-jpype": {
+      "env-gated-positive": 1,
+      "vendor-divergent": 1,
+      "verified-in-this-session": 2
+    },
+    "certi-native": {
+      "env-gated-positive": 1,
+      "vendor-divergent": 1,
+      "verified-in-this-session": 2
+    },
+    "certi-py4j": {
+      "env-gated-positive": 1,
+      "vendor-divergent": 1,
+      "verified-in-this-session": 2
+    },
+    "grpc-hosted-python": {
+      "positive-path-passing": 4
+    },
+    "java-shim-jpype": {
+      "positive-path-passing": 4
+    },
+    "java-shim-py4j": {
+      "positive-path-passing": 4
+    },
+    "python-inmemory": {
+      "reference-passing": 4
+    },
+    "rest-hosted-python": {
+      "positive-path-passing": 4
+    }
+  },
+  "row_count": 32,
+  "rows": [
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/vendors/test_java_profile_backend_matrix.py"
+      ],
+      "notes": "Reference backend semantics are exercised indirectly through shared scenario helpers and broader federation tests.",
+      "scope": "core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a74.25",
+        "IEEE 1516.1-2010 \u00a74.26"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "federation-sync",
+      "status": "reference-passing"
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/transport/test_rest_transport.py"
+      ],
+      "notes": "REST-hosted Python RTI now has explicit synchronization end-to-end coverage.",
+      "scope": "hosted core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a74.25",
+        "IEEE 1516.1-2010 \u00a74.26"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "federation-sync",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "notes": "gRPC-hosted Python RTI has explicit synchronization end-to-end coverage.",
+      "scope": "hosted core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a74.25",
+        "IEEE 1516.1-2010 \u00a74.26"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "federation-sync",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "java-shim",
+      "backend_id": "java-shim-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_java_profile_backend_matrix.py"
+      ],
+      "notes": "JPype Java shim has explicit synchronization coverage.",
+      "scope": "in-process Java shim slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a74.25",
+        "IEEE 1516.1-2010 \u00a74.26"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "federation-sync",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "java-shim",
+      "backend_id": "java-shim-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_java_profile_backend_matrix.py"
+      ],
+      "notes": "Py4J Java shim has explicit synchronization coverage.",
+      "scope": "in-process Java shim slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a74.25",
+        "IEEE 1516.1-2010 \u00a74.26"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "federation-sync",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py"
+      ],
+      "notes": "CERTI synchronization matrix exists but was not rerun in this session.",
+      "scope": "real-vendor core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a74.25",
+        "IEEE 1516.1-2010 \u00a74.26"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "federation-sync",
+      "status": "env-gated-positive"
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py"
+      ],
+      "notes": "CERTI JPype synchronization matrix exists but was not rerun in this session.",
+      "scope": "real-vendor core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a74.25",
+        "IEEE 1516.1-2010 \u00a74.26"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "federation-sync",
+      "status": "env-gated-positive"
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py"
+      ],
+      "notes": "CERTI Py4J synchronization matrix exists but was not rerun in this session.",
+      "scope": "real-vendor core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a74.25",
+        "IEEE 1516.1-2010 \u00a74.26"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "federation-sync",
+      "status": "env-gated-positive"
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py"
+      ],
+      "notes": "Reference backend exchange behavior is exercised heavily through the Section 8 and scenario suites.",
+      "scope": "core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a75.2",
+        "IEEE 1516.1-2010 \u00a76.9"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "exchange",
+      "status": "reference-passing"
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/transport/test_rest_transport.py"
+      ],
+      "notes": "REST-hosted Python RTI has explicit exchange end-to-end coverage.",
+      "scope": "hosted core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a75.2",
+        "IEEE 1516.1-2010 \u00a76.9"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "exchange",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "notes": "gRPC-hosted Python RTI has explicit exchange end-to-end coverage.",
+      "scope": "hosted core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a75.2",
+        "IEEE 1516.1-2010 \u00a76.9"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "exchange",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "java-shim",
+      "backend_id": "java-shim-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_java_profile_backend_matrix.py"
+      ],
+      "notes": "JPype Java shim has explicit exchange coverage including timed exchange.",
+      "scope": "in-process Java shim slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a75.2",
+        "IEEE 1516.1-2010 \u00a76.9"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "exchange",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "java-shim",
+      "backend_id": "java-shim-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_java_profile_backend_matrix.py"
+      ],
+      "notes": "Py4J Java shim has explicit exchange coverage including timed exchange.",
+      "scope": "in-process Java shim slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a75.2",
+        "IEEE 1516.1-2010 \u00a76.9"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "exchange",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py"
+      ],
+      "notes": "CERTI native exchange and cross-facade parity slices passed in this session.",
+      "scope": "real-vendor core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a75.2",
+        "IEEE 1516.1-2010 \u00a76.9"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "exchange",
+      "status": "verified-in-this-session"
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py"
+      ],
+      "notes": "CERTI JPype exchange and cross-facade parity slices passed in this session.",
+      "scope": "real-vendor core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a75.2",
+        "IEEE 1516.1-2010 \u00a76.9"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "exchange",
+      "status": "verified-in-this-session"
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py"
+      ],
+      "notes": "CERTI Py4J exchange and cross-facade parity slices passed in this session.",
+      "scope": "real-vendor core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a75.2",
+        "IEEE 1516.1-2010 \u00a76.9"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "exchange",
+      "status": "verified-in-this-session"
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "notes": "Reference backend ownership semantics are covered in the Python backend suite.",
+      "scope": "core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.2",
+        "IEEE 1516.1-2010 \u00a77.18"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "ownership",
+      "status": "reference-passing"
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/transport/test_rest_transport.py"
+      ],
+      "notes": "REST-hosted Python RTI now has explicit ownership end-to-end coverage.",
+      "scope": "hosted core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.2",
+        "IEEE 1516.1-2010 \u00a77.18"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "ownership",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "notes": "gRPC-hosted Python RTI has explicit ownership and negotiated ownership coverage.",
+      "scope": "hosted core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.2",
+        "IEEE 1516.1-2010 \u00a77.18"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "ownership",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "java-shim",
+      "backend_id": "java-shim-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_java_profile_backend_matrix.py"
+      ],
+      "notes": "JPype Java shim has explicit ownership coverage.",
+      "scope": "in-process Java shim slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.2",
+        "IEEE 1516.1-2010 \u00a77.18"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "ownership",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "java-shim",
+      "backend_id": "java-shim-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_java_profile_backend_matrix.py"
+      ],
+      "notes": "Py4J Java shim has explicit ownership coverage.",
+      "scope": "in-process Java shim slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.2",
+        "IEEE 1516.1-2010 \u00a77.18"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "ownership",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "notes": "CERTI native plain ownership slice passed in this session.",
+      "scope": "real-vendor core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.2",
+        "IEEE 1516.1-2010 \u00a77.18"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "ownership",
+      "status": "verified-in-this-session"
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "notes": "CERTI JPype plain ownership slice passed in this session.",
+      "scope": "real-vendor core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.2",
+        "IEEE 1516.1-2010 \u00a77.18"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "ownership",
+      "status": "verified-in-this-session"
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "notes": "CERTI Py4J plain ownership slice passed in this session.",
+      "scope": "real-vendor core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.2",
+        "IEEE 1516.1-2010 \u00a77.18"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "ownership",
+      "status": "verified-in-this-session"
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "notes": "Reference backend negotiated ownership semantics are covered in the Python backend suite.",
+      "scope": "core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.3",
+        "IEEE 1516.1-2010 \u00a77.15"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "negotiated-ownership",
+      "status": "reference-passing"
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/transport/test_rest_transport.py"
+      ],
+      "notes": "REST-hosted Python RTI has explicit negotiated ownership end-to-end coverage.",
+      "scope": "hosted core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.3",
+        "IEEE 1516.1-2010 \u00a77.15"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "negotiated-ownership",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "notes": "gRPC-hosted Python RTI has explicit negotiated ownership end-to-end coverage.",
+      "scope": "hosted core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.3",
+        "IEEE 1516.1-2010 \u00a77.15"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "negotiated-ownership",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "java-shim",
+      "backend_id": "java-shim-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_java_profile_backend_matrix.py"
+      ],
+      "notes": "JPype Java shim has explicit negotiated ownership coverage.",
+      "scope": "in-process Java shim slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.3",
+        "IEEE 1516.1-2010 \u00a77.15"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "negotiated-ownership",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "java-shim",
+      "backend_id": "java-shim-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_java_profile_backend_matrix.py"
+      ],
+      "notes": "Py4J Java shim has explicit negotiated ownership coverage.",
+      "scope": "in-process Java shim slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.3",
+        "IEEE 1516.1-2010 \u00a77.15"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "negotiated-ownership",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "notes": "CERTI native negotiated ownership failed in this session because the runtime never produced the expected release/acquisition handshake.",
+      "scope": "real-vendor core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.3",
+        "IEEE 1516.1-2010 \u00a77.15"
+      ],
+      "session_status": "failing-in-this-session",
+      "slice_id": "negotiated-ownership",
+      "status": "vendor-divergent"
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "notes": "CERTI JPype negotiated ownership failed in this session because the runtime never produced the expected release/acquisition handshake.",
+      "scope": "real-vendor core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.3",
+        "IEEE 1516.1-2010 \u00a77.15"
+      ],
+      "session_status": "failing-in-this-session",
+      "slice_id": "negotiated-ownership",
+      "status": "vendor-divergent"
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "notes": "CERTI Py4J negotiated ownership failed in this session because the runtime never produced the expected release/acquisition handshake.",
+      "scope": "real-vendor core scenario slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.3",
+        "IEEE 1516.1-2010 \u00a77.15"
+      ],
+      "session_status": "failing-in-this-session",
+      "slice_id": "negotiated-ownership",
+      "status": "vendor-divergent"
+    }
+  ]
+}

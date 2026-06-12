@@ -1,0 +1,198 @@
+{
+  "exit_code": 0,
+  "profiles": [
+    {
+      "expected_compatibility_vars": {
+        "HLA2010_CERTI_BUILD_ROOT": "HLA2010_CERTI_PATCHED_BUILD_ROOT",
+        "HLA2010_CERTI_PREFIX": "HLA2010_CERTI_PATCHED_PREFIX"
+      },
+      "expected_required_markers": [
+        "${HLA2010_CERTI_PATCHED_PREFIX}/bin/rtig",
+        "${HLA2010_CERTI_PATCHED_BUILD_ROOT}/libRTI/ieee1516-2010"
+      ],
+      "expected_required_vars": [
+        "HLA2010_CERTI_PATCHED_PREFIX",
+        "HLA2010_CERTI_PATCHED_BUILD_ROOT"
+      ],
+      "job_name": "certi-runtime-required",
+      "missing_compatibility_vars": [],
+      "missing_workflow_vars": [],
+      "ok": true,
+      "profile": "certi",
+      "reason": "ok",
+      "template_compatibility_vars": {
+        "HLA2010_CERTI_BUILD_ROOT": "HLA2010_CERTI_PATCHED_BUILD_ROOT",
+        "HLA2010_CERTI_PREFIX": "HLA2010_CERTI_PATCHED_PREFIX"
+      },
+      "template_required_markers": [
+        "${HLA2010_CERTI_PATCHED_PREFIX}/bin/rtig",
+        "${HLA2010_CERTI_PATCHED_BUILD_ROOT}/libRTI/ieee1516-2010"
+      ],
+      "template_required_vars": [
+        "HLA2010_CERTI_PATCHED_PREFIX",
+        "HLA2010_CERTI_PATCHED_BUILD_ROOT"
+      ],
+      "workflow": ".github/workflows/ci.yml"
+    },
+    {
+      "expected_compatibility_vars": {},
+      "expected_required_markers": [
+        "${HLA2010_PITCH_HOME}/lib/prtifull.jar"
+      ],
+      "expected_required_vars": [
+        "HLA2010_PITCH_HOME",
+        "HLA2010_PITCH_USER_HOME"
+      ],
+      "job_name": "pitch-runtime-required",
+      "missing_compatibility_vars": [],
+      "missing_workflow_vars": [],
+      "ok": true,
+      "profile": "pitch",
+      "reason": "ok",
+      "template_compatibility_vars": {},
+      "template_required_markers": [
+        "${HLA2010_PITCH_HOME}/lib/prtifull.jar"
+      ],
+      "template_required_vars": [
+        "HLA2010_PITCH_HOME",
+        "HLA2010_PITCH_USER_HOME"
+      ],
+      "workflow": ".github/workflows/ci.yml"
+    },
+    {
+      "expected_compatibility_vars": {
+        "HLA2010_CERTI_BUILD_ROOT": "HLA2010_CERTI_PATCHED_BUILD_ROOT",
+        "HLA2010_CERTI_PREFIX": "HLA2010_CERTI_PATCHED_PREFIX"
+      },
+      "expected_required_markers": [
+        "${HLA2010_CERTI_PATCHED_PREFIX}/bin/rtig",
+        "${HLA2010_CERTI_PATCHED_BUILD_ROOT}/libRTI/ieee1516-2010",
+        "${HLA2010_CERTI_UPSTREAM_PREFIX}/bin/rtig",
+        "${HLA2010_CERTI_UPSTREAM_BUILD_ROOT}/libRTI/ieee1516-2010",
+        "${HLA2010_PITCH_HOME}/lib/prtifull.jar"
+      ],
+      "expected_required_vars": [
+        "HLA2010_CERTI_PATCHED_PREFIX",
+        "HLA2010_CERTI_PATCHED_BUILD_ROOT",
+        "HLA2010_CERTI_UPSTREAM_PREFIX",
+        "HLA2010_CERTI_UPSTREAM_BUILD_ROOT",
+        "HLA2010_PITCH_HOME",
+        "HLA2010_PITCH_USER_HOME"
+      ],
+      "job_name": "real-profile-matrix-required",
+      "missing_compatibility_vars": [],
+      "missing_workflow_vars": [],
+      "ok": true,
+      "profile": "matrix",
+      "reason": "ok",
+      "template_compatibility_vars": {
+        "HLA2010_CERTI_BUILD_ROOT": "HLA2010_CERTI_PATCHED_BUILD_ROOT",
+        "HLA2010_CERTI_PREFIX": "HLA2010_CERTI_PATCHED_PREFIX"
+      },
+      "template_required_markers": [
+        "${HLA2010_CERTI_PATCHED_PREFIX}/bin/rtig",
+        "${HLA2010_CERTI_PATCHED_BUILD_ROOT}/libRTI/ieee1516-2010",
+        "${HLA2010_CERTI_UPSTREAM_PREFIX}/bin/rtig",
+        "${HLA2010_CERTI_UPSTREAM_BUILD_ROOT}/libRTI/ieee1516-2010",
+        "${HLA2010_PITCH_HOME}/lib/prtifull.jar"
+      ],
+      "template_required_vars": [
+        "HLA2010_CERTI_PATCHED_PREFIX",
+        "HLA2010_CERTI_PATCHED_BUILD_ROOT",
+        "HLA2010_CERTI_UPSTREAM_PREFIX",
+        "HLA2010_CERTI_UPSTREAM_BUILD_ROOT",
+        "HLA2010_PITCH_HOME",
+        "HLA2010_PITCH_USER_HOME"
+      ],
+      "workflow": ".github/workflows/ci.yml"
+    },
+    {
+      "expected_compatibility_vars": {
+        "HLA2010_CERTI_BUILD_ROOT": "HLA2010_CERTI_PATCHED_BUILD_ROOT",
+        "HLA2010_CERTI_PREFIX": "HLA2010_CERTI_PATCHED_PREFIX"
+      },
+      "expected_required_markers": [
+        "${HLA2010_CERTI_PATCHED_PREFIX}/bin/rtig",
+        "${HLA2010_CERTI_PATCHED_BUILD_ROOT}/libRTI/ieee1516-2010",
+        "${HLA2010_CERTI_UPSTREAM_PREFIX}/bin/rtig",
+        "${HLA2010_CERTI_UPSTREAM_BUILD_ROOT}/libRTI/ieee1516-2010",
+        "${HLA2010_PITCH_HOME}/lib/prtifull.jar"
+      ],
+      "expected_required_vars": [
+        "HLA2010_CERTI_PATCHED_PREFIX",
+        "HLA2010_CERTI_PATCHED_BUILD_ROOT",
+        "HLA2010_CERTI_UPSTREAM_PREFIX",
+        "HLA2010_CERTI_UPSTREAM_BUILD_ROOT",
+        "HLA2010_PITCH_HOME",
+        "HLA2010_PITCH_USER_HOME"
+      ],
+      "job_name": "vendor-edge-matrix-required",
+      "missing_compatibility_vars": [],
+      "missing_workflow_vars": [],
+      "ok": true,
+      "profile": "vendor-edge",
+      "reason": "ok",
+      "template_compatibility_vars": {
+        "HLA2010_CERTI_BUILD_ROOT": "HLA2010_CERTI_PATCHED_BUILD_ROOT",
+        "HLA2010_CERTI_PREFIX": "HLA2010_CERTI_PATCHED_PREFIX"
+      },
+      "template_required_markers": [
+        "${HLA2010_CERTI_PATCHED_PREFIX}/bin/rtig",
+        "${HLA2010_CERTI_PATCHED_BUILD_ROOT}/libRTI/ieee1516-2010",
+        "${HLA2010_CERTI_UPSTREAM_PREFIX}/bin/rtig",
+        "${HLA2010_CERTI_UPSTREAM_BUILD_ROOT}/libRTI/ieee1516-2010",
+        "${HLA2010_PITCH_HOME}/lib/prtifull.jar"
+      ],
+      "template_required_vars": [
+        "HLA2010_CERTI_PATCHED_PREFIX",
+        "HLA2010_CERTI_PATCHED_BUILD_ROOT",
+        "HLA2010_CERTI_UPSTREAM_PREFIX",
+        "HLA2010_CERTI_UPSTREAM_BUILD_ROOT",
+        "HLA2010_PITCH_HOME",
+        "HLA2010_PITCH_USER_HOME"
+      ],
+      "workflow": ".github/workflows/ci.yml"
+    },
+    {
+      "expected_compatibility_vars": {
+        "HLA2010_CERTI_BUILD_ROOT": "HLA2010_CERTI_PATCHED_BUILD_ROOT",
+        "HLA2010_CERTI_PREFIX": "HLA2010_CERTI_PATCHED_PREFIX"
+      },
+      "expected_required_markers": [
+        "${HLA2010_CERTI_PATCHED_PREFIX}/bin/rtig",
+        "${HLA2010_CERTI_PATCHED_BUILD_ROOT}/libRTI/ieee1516-2010",
+        "${HLA2010_PITCH_HOME}/lib/prtifull.jar"
+      ],
+      "expected_required_vars": [
+        "HLA2010_CERTI_PATCHED_PREFIX",
+        "HLA2010_CERTI_PATCHED_BUILD_ROOT",
+        "HLA2010_PITCH_HOME",
+        "HLA2010_PITCH_USER_HOME"
+      ],
+      "job_name": "vendor-runtime-smoke",
+      "missing_compatibility_vars": [],
+      "missing_workflow_vars": [],
+      "ok": true,
+      "profile": "all",
+      "reason": "ok",
+      "template_compatibility_vars": {
+        "HLA2010_CERTI_BUILD_ROOT": "HLA2010_CERTI_PATCHED_BUILD_ROOT",
+        "HLA2010_CERTI_PREFIX": "HLA2010_CERTI_PATCHED_PREFIX"
+      },
+      "template_required_markers": [
+        "${HLA2010_CERTI_PATCHED_PREFIX}/bin/rtig",
+        "${HLA2010_CERTI_PATCHED_BUILD_ROOT}/libRTI/ieee1516-2010",
+        "${HLA2010_PITCH_HOME}/lib/prtifull.jar"
+      ],
+      "template_required_vars": [
+        "HLA2010_CERTI_PATCHED_PREFIX",
+        "HLA2010_CERTI_PATCHED_BUILD_ROOT",
+        "HLA2010_PITCH_HOME",
+        "HLA2010_PITCH_USER_HOME"
+      ],
+      "workflow": ".github/workflows/vendor-runtime-smoke.yml"
+    }
+  ],
+  "suite_name": "vendor-runner-template-drift",
+  "template_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/docs/vendor_runner_provisioning_template.yaml"
+}

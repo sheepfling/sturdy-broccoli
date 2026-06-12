@@ -1,0 +1,242 @@
+{
+  "backend_summaries": {
+    "pitch-jpype": {
+      "not-yet-matrixed": 1,
+      "positive-path-passing": 5,
+      "vendor-divergent": 1
+    },
+    "pitch-py4j": {
+      "blocked-runtime": 1,
+      "positive-path-passing": 5,
+      "vendor-divergent": 1
+    }
+  },
+  "row_count": 14,
+  "rows": [
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_real_vendor_runtime_smoke.py"
+      ],
+      "notes": "Pitch JPype lifecycle smoke exists through the Docker-backed CRC/FedPro route.",
+      "scope": "real-vendor lifecycle slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a74.1",
+        "IEEE 1516.1-2010 \u00a74.10"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "lifecycle",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_real_vendor_runtime_smoke.py"
+      ],
+      "notes": "Pitch Py4J lifecycle smoke exists through the Docker-backed CRC/FedPro route.",
+      "scope": "real-vendor lifecycle slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a74.1",
+        "IEEE 1516.1-2010 \u00a74.10"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "lifecycle",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "notes": "Pitch JPype exchange matrix covers receive and timestamped flows.",
+      "scope": "real-vendor exchange/time slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a76.9",
+        "IEEE 1516.1-2010 \u00a78.13"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "exchange",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "notes": "Pitch Py4J exchange matrix covers receive and timestamped flows.",
+      "scope": "real-vendor exchange/time slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a76.9",
+        "IEEE 1516.1-2010 \u00a78.13"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "exchange",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "notes": "Pitch JPype synchronization matrix exists.",
+      "scope": "real-vendor synchronization slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a74.11",
+        "IEEE 1516.1-2010 \u00a74.15"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "synchronization",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "notes": "Pitch Py4J synchronization matrix exists.",
+      "scope": "real-vendor synchronization slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a74.11",
+        "IEEE 1516.1-2010 \u00a74.15"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "synchronization",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md"
+      ],
+      "notes": "Pitch JPype now has a child-process probe path, but executed real-runtime runs still auto-resume the dropped FedPro session instead of yielding observer-visible lost-federate evidence.",
+      "scope": "real-vendor lost-federate slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a74.1.5"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "lost-federate",
+      "status": "not-yet-matrixed"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
+        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md"
+      ],
+      "notes": "Pitch Py4J now has a shared-harness lost-federate wrapper that terminates the victim gateway JVM, but executed real-runtime runs still do not surface the observer-visible lost-federate report.",
+      "scope": "real-vendor lost-federate slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a74.1.5"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "lost-federate",
+      "status": "blocked-runtime"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "notes": "Pitch JPype plain ownership slice exists.",
+      "scope": "real-vendor ownership slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.2",
+        "IEEE 1516.1-2010 \u00a77.19"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "ownership",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "notes": "Pitch Py4J plain ownership slice exists.",
+      "scope": "real-vendor ownership slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.2",
+        "IEEE 1516.1-2010 \u00a77.19"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "ownership",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py",
+        "docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+      ],
+      "notes": "Pitch JPype negotiated ownership is currently bridge-divergent.",
+      "scope": "real-vendor negotiated ownership slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.3",
+        "IEEE 1516.1-2010 \u00a77.16"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "negotiated-ownership",
+      "status": "vendor-divergent"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py",
+        "docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+      ],
+      "notes": "Pitch Py4J negotiated ownership is currently bridge-divergent.",
+      "scope": "real-vendor negotiated ownership slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a77.3",
+        "IEEE 1516.1-2010 \u00a77.16"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "negotiated-ownership",
+      "status": "vendor-divergent"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "notes": "Pitch JPype time-profile and exchange/time parity slice exists.",
+      "scope": "real-vendor time-profile slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a78.2",
+        "IEEE 1516.1-2010 \u00a78.24"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "time-profile",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "notes": "Pitch Py4J time-profile and exchange/time parity slice exists.",
+      "scope": "real-vendor time-profile slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a78.2",
+        "IEEE 1516.1-2010 \u00a78.24"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "time-profile",
+      "status": "positive-path-passing"
+    }
+  ]
+}

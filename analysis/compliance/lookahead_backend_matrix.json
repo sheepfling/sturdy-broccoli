@@ -1,0 +1,162 @@
+{
+  "backend_summaries": {
+    "certi-jpype": {
+      "vendor-divergent": 1
+    },
+    "certi-native": {
+      "vendor-divergent": 1
+    },
+    "certi-py4j": {
+      "vendor-divergent": 1
+    },
+    "grpc-hosted-python": {
+      "positive-path-passing": 1
+    },
+    "pitch-jpype": {
+      "verified-in-this-session": 1
+    },
+    "pitch-py4j": {
+      "verified-in-this-session": 1
+    },
+    "python-inmemory": {
+      "complete-actionable": 1
+    },
+    "rest-hosted-python": {
+      "positive-path-passing": 1
+    }
+  },
+  "row_count": 8,
+  "rows": [
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_lookahead_backend_matrix.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py"
+      ],
+      "notes": "Python reference lookahead is exercised directly and through the Section 8 matrix.",
+      "scope": "reference lookahead slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a78.2",
+        "IEEE 1516.1-2010 \u00a78.17"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "lookahead-window",
+      "status": "complete-actionable"
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_lookahead_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "notes": "REST-hosted Python RTI has explicit lookahead query/modify and early-send coverage.",
+      "scope": "hosted lookahead slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a78.2",
+        "IEEE 1516.1-2010 \u00a78.17"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "lookahead-window",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_lookahead_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "notes": "gRPC-hosted Python RTI has explicit lookahead query/modify and early-send coverage.",
+      "scope": "hosted lookahead slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a78.2",
+        "IEEE 1516.1-2010 \u00a78.17"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "lookahead-window",
+      "status": "positive-path-passing"
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_time_matrix.py"
+      ],
+      "notes": "CERTI native lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
+      "scope": "real-vendor lookahead slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a78.2",
+        "IEEE 1516.1-2010 \u00a78.17"
+      ],
+      "session_status": "failing-in-this-session",
+      "slice_id": "lookahead-window",
+      "status": "vendor-divergent"
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_time_matrix.py"
+      ],
+      "notes": "CERTI JPype lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
+      "scope": "real-vendor lookahead slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a78.2",
+        "IEEE 1516.1-2010 \u00a78.17"
+      ],
+      "session_status": "failing-in-this-session",
+      "slice_id": "lookahead-window",
+      "status": "vendor-divergent"
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_time_matrix.py"
+      ],
+      "notes": "CERTI Py4J lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
+      "scope": "real-vendor lookahead slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a78.2",
+        "IEEE 1516.1-2010 \u00a78.17"
+      ],
+      "session_status": "failing-in-this-session",
+      "slice_id": "lookahead-window",
+      "status": "vendor-divergent"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "notes": "Pitch JPype lookahead query/modify and early-send assertions passed against the Docker-backed real runtime in this session.",
+      "scope": "real-vendor lookahead slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a78.2",
+        "IEEE 1516.1-2010 \u00a78.17"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "lookahead-window",
+      "status": "verified-in-this-session"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "notes": "Pitch Py4J lookahead query/modify and early-send assertions passed against the Docker-backed real runtime in this session.",
+      "scope": "real-vendor lookahead slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a78.2",
+        "IEEE 1516.1-2010 \u00a78.17"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "lookahead-window",
+      "status": "verified-in-this-session"
+    }
+  ]
+}

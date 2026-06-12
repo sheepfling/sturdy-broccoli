@@ -1,0 +1,74 @@
+{
+  "artifact_dir": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts",
+  "blocked_vendors": [
+    "pitch"
+  ],
+  "exit_code": 1,
+  "lane": "vendor-green",
+  "missing_vendors": [],
+  "overall_classification": "environment-blocked",
+  "ready_vendors": [],
+  "recommended_next_steps": {
+    "pitch": [
+      "fix the blocked prerequisite(s) above and rerun"
+    ]
+  },
+  "suite_name": "vendor-runtime-status",
+  "unexpected_failure_vendors": [],
+  "vendors": [
+    {
+      "actionable": false,
+      "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/pitch-preflight.json",
+      "blocked_checks": [
+        {
+          "detail": "blocked: Docker CLI exists but the daemon is not reachable",
+          "message": null,
+          "name": "docker",
+          "status": "blocked"
+        },
+        {
+          "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 1] Operation not permitted",
+          "message": null,
+          "name": "crc_port",
+          "status": "blocked"
+        },
+        {
+          "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 1] Operation not permitted",
+          "message": null,
+          "name": "fedpro_port",
+          "status": "blocked"
+        }
+      ],
+      "blocked_reason": "docker",
+      "classification": "environment-blocked",
+      "environment": "docker-blocked",
+      "exit_code": 1,
+      "lane_ok": false,
+      "next_steps": [
+        "fix the blocked prerequisite(s) above and rerun"
+      ],
+      "note": "host/runtime prerequisites are blocked on this surface",
+      "present": true,
+      "required_markers": {
+        "runtime_home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
+      },
+      "required_ports": {
+        "crc": {
+          "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 1] Operation not permitted",
+          "host": "127.0.0.1",
+          "port": 8989,
+          "status": "blocked"
+        },
+        "fedpro": {
+          "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 1] Operation not permitted",
+          "host": "127.0.0.1",
+          "port": 15164,
+          "status": "blocked"
+        }
+      },
+      "result": "not ready; fix the blocked prerequisite(s) above and rerun",
+      "tool": "pitch-preflight",
+      "vendor": "pitch"
+    }
+  ]
+}

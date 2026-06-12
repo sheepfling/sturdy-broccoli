@@ -1,0 +1,2934 @@
+{
+  "backend_summaries": {
+    "certi-jpype": {
+      "not-yet-matrixed": 14,
+      "verified-in-this-session": 9
+    },
+    "certi-native": {
+      "not-yet-matrixed": 14,
+      "verified-in-this-session": 9
+    },
+    "certi-py4j": {
+      "not-yet-matrixed": 14,
+      "verified-in-this-session": 9
+    },
+    "grpc-hosted-python": {
+      "positive-path-passing": 23
+    },
+    "pitch-jpype": {
+      "not-yet-matrixed": 20,
+      "vendor-divergent": 3
+    },
+    "pitch-py4j": {
+      "not-yet-matrixed": 20,
+      "vendor-divergent": 3
+    },
+    "python-inmemory": {
+      "complete-actionable": 23
+    },
+    "rest-hosted-python": {
+      "positive-path-passing": 23
+    }
+  },
+  "row_count": 184,
+  "rows": [
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "nextMessageRequest",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.10",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "nextMessageRequestAvailable",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.11",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "flushQueueRequest",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.12",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "timeAdvanceGrant",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.13",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "enableAsynchronousDelivery",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.14",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "disableAsynchronousDelivery",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.15",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "queryGALT",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.16",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "queryLogicalTime",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.17",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "queryLITS",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.18",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "modifyLookahead",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.19",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "enableTimeRegulation",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.2",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "queryLookahead",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.20",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "retract",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.21",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "requestRetraction",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.22",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "changeAttributeOrderType",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.23",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "changeInteractionOrderType",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.24",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "timeRegulationEnabled",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.3",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "disableTimeRegulation",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.4",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "enableTimeConstrained",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.5",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "timeConstrainedEnabled",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.6",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "disableTimeConstrained",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.7",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "timeAdvanceRequest",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.8",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "tests/time/test_mom_mim_time_management_v010.py",
+        "tests/time/test_mom_mim_and_time_semantics_v010.py",
+        "tests/backends/test_python_backend_federation_extended.py",
+        "tests/backends/test_python_backend_time_ddm_extended.py",
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "method_name": "timeAdvanceRequestAvailable",
+      "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
+      "scope": "reference-backend complete actionable matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.9",
+      "session_status": "passing-in-this-session",
+      "status": "complete-actionable",
+      "supports_immediate_inline": true
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "nextMessageRequest",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.10",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "nextMessageRequestAvailable",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.11",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "flushQueueRequest",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.12",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "timeAdvanceGrant",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.13",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "enableAsynchronousDelivery",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.14",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "disableAsynchronousDelivery",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.15",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "queryGALT",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.16",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "queryLogicalTime",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.17",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "queryLITS",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.18",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "modifyLookahead",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.19",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "enableTimeRegulation",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.2",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "queryLookahead",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.20",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "retract",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.21",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "requestRetraction",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.22",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "changeAttributeOrderType",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.23",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "changeInteractionOrderType",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.24",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "timeRegulationEnabled",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.3",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "disableTimeRegulation",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.4",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "enableTimeConstrained",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.5",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "timeConstrainedEnabled",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.6",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "disableTimeConstrained",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.7",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "timeAdvanceRequest",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.8",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_rest_transport.py"
+      ],
+      "method_name": "timeAdvanceRequestAvailable",
+      "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.9",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "nextMessageRequest",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.10",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "nextMessageRequestAvailable",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.11",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "flushQueueRequest",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.12",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "timeAdvanceGrant",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.13",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "enableAsynchronousDelivery",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.14",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "disableAsynchronousDelivery",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.15",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "queryGALT",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.16",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "queryLogicalTime",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.17",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "queryLITS",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.18",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "modifyLookahead",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.19",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "enableTimeRegulation",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.2",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "queryLookahead",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.20",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "retract",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.21",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "requestRetraction",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.22",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "changeAttributeOrderType",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.23",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "changeInteractionOrderType",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.24",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "timeRegulationEnabled",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.3",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "disableTimeRegulation",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.4",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "enableTimeConstrained",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.5",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "timeConstrainedEnabled",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.6",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "disableTimeConstrained",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.7",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "timeAdvanceRequest",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.8",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/time/test_section8_backend_matrix.py",
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "method_name": "timeAdvanceRequestAvailable",
+      "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+      "scope": "hosted backend positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.9",
+      "session_status": "passing-in-this-session",
+      "status": "positive-path-passing",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "nextMessageRequest",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.10",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "nextMessageRequestAvailable",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.11",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "flushQueueRequest",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.12",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "timeAdvanceGrant",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.13",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "enableAsynchronousDelivery",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.14",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "disableAsynchronousDelivery",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.15",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "queryGALT",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.16",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "queryLogicalTime",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.17",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "queryLITS",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.18",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "modifyLookahead",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.19",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "enableTimeRegulation",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.2",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "queryLookahead",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.20",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "retract",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.21",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "requestRetraction",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.22",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "changeAttributeOrderType",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.23",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "changeInteractionOrderType",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.24",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "timeRegulationEnabled",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.3",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "disableTimeRegulation",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.4",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "enableTimeConstrained",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.5",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "timeConstrainedEnabled",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.6",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "disableTimeConstrained",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.7",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "timeAdvanceRequest",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.8",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "timeAdvanceRequestAvailable",
+      "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.9",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "nextMessageRequest",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.10",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "nextMessageRequestAvailable",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.11",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "flushQueueRequest",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.12",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "timeAdvanceGrant",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.13",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "enableAsynchronousDelivery",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.14",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "disableAsynchronousDelivery",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.15",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "queryGALT",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.16",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "queryLogicalTime",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.17",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "queryLITS",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.18",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "modifyLookahead",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.19",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "enableTimeRegulation",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.2",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "queryLookahead",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.20",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "retract",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.21",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "requestRetraction",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.22",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "changeAttributeOrderType",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.23",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "changeInteractionOrderType",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.24",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "timeRegulationEnabled",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.3",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "disableTimeRegulation",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.4",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "enableTimeConstrained",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.5",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "timeConstrainedEnabled",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.6",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "disableTimeConstrained",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.7",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "timeAdvanceRequest",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.8",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "timeAdvanceRequestAvailable",
+      "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.9",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "nextMessageRequest",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.10",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "nextMessageRequestAvailable",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.11",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "flushQueueRequest",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.12",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "timeAdvanceGrant",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.13",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "enableAsynchronousDelivery",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.14",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "disableAsynchronousDelivery",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.15",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "queryGALT",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.16",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "queryLogicalTime",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.17",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "queryLITS",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.18",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "modifyLookahead",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.19",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "enableTimeRegulation",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.2",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "queryLookahead",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.20",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "retract",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.21",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "requestRetraction",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.22",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "changeAttributeOrderType",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.23",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "changeInteractionOrderType",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.24",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "timeRegulationEnabled",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.3",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "disableTimeRegulation",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.4",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "enableTimeConstrained",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.5",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "timeConstrainedEnabled",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.6",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "disableTimeConstrained",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.7",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "timeAdvanceRequest",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.8",
+      "session_status": "passing-in-this-session",
+      "status": "verified-in-this-session",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-certi-java-bridge",
+      "backend_id": "certi-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "method_name": "timeAdvanceRequestAvailable",
+      "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+      "scope": "real-vendor positive-path matrix",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.9",
+      "session_status": "passing-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "nextMessageRequest",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.10",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "nextMessageRequestAvailable",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.11",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "flushQueueRequest",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.12",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "timeAdvanceGrant",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.13",
+      "session_status": "xfail-in-this-session",
+      "status": "vendor-divergent",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "enableAsynchronousDelivery",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.14",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "disableAsynchronousDelivery",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.15",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "queryGALT",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.16",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "queryLogicalTime",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.17",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "queryLITS",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.18",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "modifyLookahead",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.19",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "enableTimeRegulation",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.2",
+      "session_status": "xfail-in-this-session",
+      "status": "vendor-divergent",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "queryLookahead",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.20",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "retract",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.21",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "requestRetraction",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.22",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "changeAttributeOrderType",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.23",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "changeInteractionOrderType",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.24",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "timeRegulationEnabled",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.3",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "disableTimeRegulation",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.4",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "enableTimeConstrained",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.5",
+      "session_status": "xfail-in-this-session",
+      "status": "vendor-divergent",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "timeConstrainedEnabled",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.6",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "disableTimeConstrained",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.7",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "timeAdvanceRequest",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.8",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "timeAdvanceRequestAvailable",
+      "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.9",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "nextMessageRequest",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.10",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "nextMessageRequestAvailable",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.11",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "flushQueueRequest",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.12",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "timeAdvanceGrant",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.13",
+      "session_status": "xfail-in-this-session",
+      "status": "vendor-divergent",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "enableAsynchronousDelivery",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.14",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "disableAsynchronousDelivery",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.15",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "queryGALT",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.16",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "queryLogicalTime",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.17",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "queryLITS",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.18",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "modifyLookahead",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.19",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "enableTimeRegulation",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.2",
+      "session_status": "xfail-in-this-session",
+      "status": "vendor-divergent",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "queryLookahead",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.20",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "retract",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.21",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "requestRetraction",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.22",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "changeAttributeOrderType",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.23",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "changeInteractionOrderType",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.24",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "timeRegulationEnabled",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.3",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "disableTimeRegulation",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.4",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "enableTimeConstrained",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.5",
+      "session_status": "xfail-in-this-session",
+      "status": "vendor-divergent",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "timeConstrainedEnabled",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.6",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "disableTimeConstrained",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.7",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "timeAdvanceRequest",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.8",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "method_name": "timeAdvanceRequestAvailable",
+      "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+      "scope": "real-vendor dedicated Section 8 probe",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.9",
+      "session_status": "xfail-in-this-session",
+      "status": "not-yet-matrixed",
+      "supports_immediate_inline": false
+    }
+  ]
+}

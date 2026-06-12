@@ -1,0 +1,53 @@
+{
+  "row_count": 4,
+  "rows": [
+    {
+      "area": "Cross-standard negative-path completeness",
+      "claim_value_rank": 1,
+      "current_state": "Reference ledger still has partial, mapped-not-exhaustive, and not-evidenced rows.",
+      "evidence": [
+        "analysis/compliance/negative_path_completeness.json"
+      ],
+      "priority": "P1",
+      "rationale": "This is the biggest remaining blocker to an honest whole-standard compliance claim.",
+      "target_state": "All actionable rows move to complete or explicit vendor divergence.",
+      "work_id": "close-negative-path-ledger"
+    },
+    {
+      "area": "CERTI negotiated ownership divergence",
+      "claim_value_rank": 2,
+      "current_state": "Negotiated ownership now has matrix rows everywhere, but CERTI native, JPype, and Py4J fail the scenario contract.",
+      "evidence": [
+        "analysis/compliance/core_backend_matrix.json"
+      ],
+      "priority": "P1",
+      "rationale": "This is now the highest-value non-Section-8 backend problem because it is a real failing vendor behavior, not a missing test.",
+      "target_state": "CERTI negotiated ownership is either fixed in the adapter/runtime or documented as an explicit vendor limitation.",
+      "work_id": "certi-negotiated-ownership-divergence"
+    },
+    {
+      "area": "Section 10 backend matrix",
+      "claim_value_rank": 3,
+      "current_state": "A dedicated Section 10 matrix now exists; Python is deeply covered, Java shim support lookups execute, hosted REST/gRPC have explicit transport-limited partial coverage, and CERTI/Pitch support wrappers exist, but the remaining Section 10 slices still lack broader executed parity depth.",
+      "evidence": [
+        "analysis/compliance/section10_backend_matrix.json"
+      ],
+      "priority": "P2",
+      "rationale": "High volume, lower claim value than core federation/object/time behavior, but still necessary for a complete matrix.",
+      "target_state": "Hosted, Java shim, CERTI, and Pitch rows are explicitly exercised or documented as unsupported/vendor-divergent.",
+      "work_id": "section10-backend-matrix"
+    },
+    {
+      "area": "Pitch dedicated backend matrices",
+      "claim_value_rank": 4,
+      "current_state": "Pitch now has a dedicated matrix artifact, but it is still mostly positive-path and negotiated ownership remains divergent.",
+      "evidence": [
+        "analysis/compliance/pitch_backend_matrix.json"
+      ],
+      "priority": "P2",
+      "rationale": "Pitch is still one of the least proven major backend families.",
+      "target_state": "Pitch slices are rerun cleanly and widened beyond the existing real-runtime smoke and parity tests.",
+      "work_id": "pitch-dedicated-matrix"
+    }
+  ]
+}

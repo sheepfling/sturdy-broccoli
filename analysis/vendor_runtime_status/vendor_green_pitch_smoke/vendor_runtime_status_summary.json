@@ -1,0 +1,55 @@
+{
+  "artifact_dir": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts",
+  "blocked_vendors": [],
+  "exit_code": 0,
+  "lane": "vendor-green",
+  "missing_vendors": [],
+  "overall_classification": "vendor-green",
+  "ready_vendors": [
+    "pitch"
+  ],
+  "recommended_next_steps": {
+    "pitch": [
+      "./tools/pitch install or ./tools/pitch all"
+    ]
+  },
+  "suite_name": "vendor-runtime-status",
+  "unexpected_failure_vendors": [],
+  "vendors": [
+    {
+      "actionable": true,
+      "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/pitch-preflight.json",
+      "blocked_checks": [],
+      "blocked_reason": null,
+      "classification": "ready",
+      "environment": "ready",
+      "exit_code": 0,
+      "lane_ok": true,
+      "next_steps": [
+        "./tools/pitch install or ./tools/pitch all"
+      ],
+      "note": "vendor runtime prerequisites are ready",
+      "present": true,
+      "required_markers": {
+        "runtime_home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
+      },
+      "required_ports": {
+        "crc": {
+          "detail": "ok: 127.0.0.1:8989 is available",
+          "host": "127.0.0.1",
+          "port": 8989,
+          "status": "ok"
+        },
+        "fedpro": {
+          "detail": "ok: 127.0.0.1:15164 is available",
+          "host": "127.0.0.1",
+          "port": 15164,
+          "status": "ok"
+        }
+      },
+      "result": "ready to run ./tools/pitch install or ./tools/pitch all",
+      "tool": "pitch-preflight",
+      "vendor": "pitch"
+    }
+  ]
+}

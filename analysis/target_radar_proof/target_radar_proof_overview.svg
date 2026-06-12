@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="318" viewBox="0 0 1280 318">
+  <rect width="1280" height="318" fill="#f6f8fb" />
+  <text x="40" y="42" font-size="28" font-family="Helvetica, Arial, sans-serif" fill="#132238">Target/Radar Simulation Proof</text>
+  <text x="40" y="70" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#48607a">Backend status plus a detailed Python proof trace.</text>
+  <text x="40" y="100" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#132238">Python proof backend</text>
+  <text x="260" y="100" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#132238">python/in-memory</text>
+  <text x="40" y="120" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#132238">Truth samples</text>
+  <text x="260" y="120" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#132238">4</text>
+  <text x="40" y="140" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#132238">Track reports</text>
+  <text x="260" y="140" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#132238">4</text>
+  <text x="40" y="134" font-size="14" font-family="Helvetica, Arial, sans-serif" fill="#132238">python</text><rect x="260" y="118" width="110" height="24" rx="8" fill="#2b9348" opacity="0.92" /><text x="315" y="134" text-anchor="middle" font-size="12" font-family="Helvetica, Arial, sans-serif" fill="#ffffff">passed</text><text x="410" y="134" font-size="12" font-family="Helvetica, Arial, sans-serif" fill="#48607a">4 track reports</text><text x="620" y="134" font-size="12" font-family="Helvetica, Arial, sans-serif" fill="#48607a"></text>
+</svg>

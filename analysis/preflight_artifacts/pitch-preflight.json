@@ -1,0 +1,64 @@
+{
+  "checks": [
+    {
+      "detail": "blocked: Docker CLI exists but the daemon is not reachable",
+      "name": "docker",
+      "ok": false,
+      "status": "blocked"
+    },
+    {
+      "detail": "ok: /Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual",
+      "name": "pitch_bundle",
+      "ok": true,
+      "status": "ok"
+    },
+    {
+      "detail": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/pitch/user-home",
+      "name": "pitch_user_home",
+      "ok": true,
+      "status": "ok"
+    },
+    {
+      "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 1] Operation not permitted",
+      "name": "crc_port",
+      "ok": false,
+      "status": "blocked"
+    },
+    {
+      "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 1] Operation not permitted",
+      "name": "fedpro_port",
+      "ok": false,
+      "status": "blocked"
+    }
+  ],
+  "environment": "docker-blocked",
+  "exit_code": 1,
+  "next_step": "fix the blocked prerequisite(s) above and rerun",
+  "platform": "Darwin 25.5.0 arm64",
+  "ports": {
+    "crc": {
+      "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 1] Operation not permitted",
+      "host": "127.0.0.1",
+      "port": 8989,
+      "status": "blocked"
+    },
+    "fedpro": {
+      "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 1] Operation not permitted",
+      "host": "127.0.0.1",
+      "port": 15164,
+      "status": "blocked"
+    }
+  },
+  "required_markers": {
+    "runtime_home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
+  },
+  "result": "not ready; fix the blocked prerequisite(s) above and rerun",
+  "runtime": {
+    "container_name": "hla2010-pitch-crc",
+    "home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual",
+    "image_name": "hla2010-pitch-prti-free-crc:5.5.10",
+    "required_marker": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar",
+    "user_home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/pitch/user-home"
+  },
+  "tool": "pitch-preflight"
+}

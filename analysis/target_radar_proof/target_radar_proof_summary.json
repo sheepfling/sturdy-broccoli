@@ -1,0 +1,268 @@
+{
+  "backend_matrix": {
+    "dt": 1.0,
+    "failed": 0,
+    "passed": 1,
+    "results": [
+      {
+        "backend": "python",
+        "backend_kinds": [
+          "python/in-memory",
+          "python/in-memory"
+        ],
+        "final_time_seconds": 4.0,
+        "first_range_m": 10493.969696925944,
+        "last_range_m": 11236.298322846364,
+        "range_delta_m": 742.3286259204197,
+        "reason": null,
+        "status": "passed",
+        "track_ids": [
+          "TRK-001",
+          "TRK-002",
+          "TRK-003",
+          "TRK-004"
+        ],
+        "track_reports": 4
+      }
+    ],
+    "skipped": 0,
+    "steps": 4,
+    "suite_name": "target-radar-backend-matrix",
+    "target_radar_fom": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/resources/foms/TargetRadarFOMmodule.xml"
+  },
+  "dt": 1.0,
+  "proof": {
+    "backend": "python",
+    "backend_kinds": [
+      "python/in-memory",
+      "python/in-memory"
+    ],
+    "federation_name": "TargetRadarProofFederation",
+    "radar_event_rows": [
+      {
+        "event_name": "discover",
+        "index": 1,
+        "object_name": "Target-1"
+      },
+      {
+        "attribute_count": 2,
+        "event_name": "reflect",
+        "index": 2,
+        "object_handle": "ObjectInstanceHandle(value=4)",
+        "tag_hex": "7461726765742d696e697469616c",
+        "tag_text": "target-initial"
+      },
+      {
+        "attribute_count": 2,
+        "event_name": "reflect",
+        "index": 3,
+        "object_handle": "ObjectInstanceHandle(value=4)",
+        "tag_hex": "7461726765742d737465702d31",
+        "tag_text": "target-step-1"
+      },
+      {
+        "event_name": "query_rcs",
+        "index": 4,
+        "object_handle": "ObjectInstanceHandle(value=4)"
+      },
+      {
+        "attribute_count": 1,
+        "event_name": "reflect",
+        "index": 5,
+        "object_handle": "ObjectInstanceHandle(value=4)",
+        "tag_hex": "7263732d726573706f6e73653a72616461722d7263732d7175657279",
+        "tag_text": "rcs-response:radar-rcs-query"
+      },
+      {
+        "bearing_rad": 0.10015160425502397,
+        "event_name": "track",
+        "index": 6,
+        "range_m": 10493.969696925944,
+        "rcs_square_meters": 12.5,
+        "target_name": "Target-1",
+        "time_seconds": 1.0,
+        "track_id": "TRK-001"
+      },
+      {
+        "attribute_count": 2,
+        "event_name": "reflect",
+        "index": 7,
+        "object_handle": "ObjectInstanceHandle(value=4)",
+        "tag_hex": "7461726765742d737465702d32",
+        "tag_text": "target-step-2"
+      },
+      {
+        "event_name": "query_rcs",
+        "index": 8,
+        "object_handle": "ObjectInstanceHandle(value=4)"
+      },
+      {
+        "attribute_count": 1,
+        "event_name": "reflect",
+        "index": 9,
+        "object_handle": "ObjectInstanceHandle(value=4)",
+        "tag_hex": "7263732d726573706f6e73653a72616461722d7263732d7175657279",
+        "tag_text": "rcs-response:radar-rcs-query"
+      },
+      {
+        "bearing_rad": 0.10061151474240683,
+        "event_name": "track",
+        "index": 10,
+        "range_m": 10741.210360103743,
+        "rcs_square_meters": 12.5,
+        "target_name": "Target-1",
+        "time_seconds": 2.0,
+        "track_id": "TRK-002"
+      },
+      {
+        "attribute_count": 2,
+        "event_name": "reflect",
+        "index": 11,
+        "object_handle": "ObjectInstanceHandle(value=4)",
+        "tag_hex": "7461726765742d737465702d33",
+        "tag_text": "target-step-3"
+      },
+      {
+        "event_name": "query_rcs",
+        "index": 12,
+        "object_handle": "ObjectInstanceHandle(value=4)"
+      },
+      {
+        "attribute_count": 1,
+        "event_name": "reflect",
+        "index": 13,
+        "object_handle": "ObjectInstanceHandle(value=4)",
+        "tag_hex": "7263732d726573706f6e73653a72616461722d7263732d7175657279",
+        "tag_text": "rcs-response:radar-rcs-query"
+      },
+      {
+        "bearing_rad": 0.10104999427765002,
+        "event_name": "track",
+        "index": 14,
+        "range_m": 10988.657788829352,
+        "rcs_square_meters": 12.5,
+        "target_name": "Target-1",
+        "time_seconds": 3.0,
+        "track_id": "TRK-003"
+      },
+      {
+        "attribute_count": 2,
+        "event_name": "reflect",
+        "index": 15,
+        "object_handle": "ObjectInstanceHandle(value=4)",
+        "tag_hex": "7461726765742d737465702d34",
+        "tag_text": "target-step-4"
+      },
+      {
+        "event_name": "query_rcs",
+        "index": 16,
+        "object_handle": "ObjectInstanceHandle(value=4)"
+      },
+      {
+        "attribute_count": 1,
+        "event_name": "reflect",
+        "index": 17,
+        "object_handle": "ObjectInstanceHandle(value=4)",
+        "tag_hex": "7263732d726573706f6e73653a72616461722d7263732d7175657279",
+        "tag_text": "rcs-response:radar-rcs-query"
+      },
+      {
+        "bearing_rad": 0.10146850655915136,
+        "event_name": "track",
+        "index": 18,
+        "range_m": 11236.298322846364,
+        "rcs_square_meters": 12.5,
+        "target_name": "Target-1",
+        "time_seconds": 4.0,
+        "track_id": "TRK-004"
+      }
+    ],
+    "target_truth_rows": [
+      {
+        "event_name": "step",
+        "index": 1,
+        "position_x": 10250.0,
+        "position_y": 1030.0,
+        "position_z": 2000.0,
+        "step_number": 1,
+        "time_seconds": 1.0
+      },
+      {
+        "event_name": "step",
+        "index": 3,
+        "position_x": 10500.0,
+        "position_y": 1060.0,
+        "position_z": 2000.0,
+        "step_number": 2,
+        "time_seconds": 2.0
+      },
+      {
+        "event_name": "step",
+        "index": 5,
+        "position_x": 10750.0,
+        "position_y": 1090.0,
+        "position_z": 2000.0,
+        "step_number": 3,
+        "time_seconds": 3.0
+      },
+      {
+        "event_name": "step",
+        "index": 7,
+        "position_x": 11000.0,
+        "position_y": 1120.0,
+        "position_z": 2000.0,
+        "step_number": 4,
+        "time_seconds": 4.0
+      }
+    ],
+    "track_reports": [
+      {
+        "bearing_rad": 0.10015160425502397,
+        "position_x": 10250.0,
+        "position_y": 1030.0,
+        "position_z": 2000.0,
+        "range_m": 10493.969696925944,
+        "rcs_square_meters": 12.5,
+        "target_name": "Target-1",
+        "time_seconds": 1.0,
+        "track_id": "TRK-001"
+      },
+      {
+        "bearing_rad": 0.10061151474240683,
+        "position_x": 10500.0,
+        "position_y": 1060.0,
+        "position_z": 2000.0,
+        "range_m": 10741.210360103743,
+        "rcs_square_meters": 12.5,
+        "target_name": "Target-1",
+        "time_seconds": 2.0,
+        "track_id": "TRK-002"
+      },
+      {
+        "bearing_rad": 0.10104999427765002,
+        "position_x": 10750.0,
+        "position_y": 1090.0,
+        "position_z": 2000.0,
+        "range_m": 10988.657788829352,
+        "rcs_square_meters": 12.5,
+        "target_name": "Target-1",
+        "time_seconds": 3.0,
+        "track_id": "TRK-003"
+      },
+      {
+        "bearing_rad": 0.10146850655915136,
+        "position_x": 11000.0,
+        "position_y": 1120.0,
+        "position_z": 2000.0,
+        "range_m": 11236.298322846364,
+        "rcs_square_meters": 12.5,
+        "target_name": "Target-1",
+        "time_seconds": 4.0,
+        "track_id": "TRK-004"
+      }
+    ]
+  },
+  "steps": 4,
+  "suite_name": "target-radar-proof",
+  "target_radar_fom": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/resources/foms/TargetRadarFOMmodule.xml"
+}

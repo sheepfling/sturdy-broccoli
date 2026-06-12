@@ -1,0 +1,56 @@
+{
+  "artifact_dir": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts",
+  "blocked_vendors": [
+    "certi"
+  ],
+  "exit_code": 1,
+  "lane": "vendor-green",
+  "missing_vendors": [],
+  "overall_classification": "environment-blocked",
+  "ready_vendors": [],
+  "recommended_next_steps": {
+    "certi": [
+      "fix the blocked prerequisite above",
+      "./tools/certi-easy preflight"
+    ]
+  },
+  "suite_name": "vendor-runtime-status",
+  "unexpected_failure_vendors": [],
+  "vendors": [
+    {
+      "actionable": false,
+      "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/certi-preflight.json",
+      "blocked_checks": [
+        {
+          "detail": null,
+          "message": "loopback_bind: blocked: Local socket bind is not permitted for 127.0.0.1. Run `./tools/certi-easy preflight` to verify local CERTI prerequisites. Real RTI smoke needs loopback TCP bind/connect permission for 127.0.0.1.",
+          "name": "loopback_bind",
+          "status": null
+        }
+      ],
+      "blocked_reason": "loopback_bind",
+      "classification": "environment-blocked",
+      "environment": "loopback-blocked",
+      "exit_code": 1,
+      "lane_ok": false,
+      "next_steps": [
+        "fix the blocked prerequisite above",
+        "./tools/certi-easy preflight"
+      ],
+      "note": "host/runtime prerequisites are blocked on this surface",
+      "present": true,
+      "required_markers": {
+        "active_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
+        "active_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
+        "patched_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
+        "patched_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
+        "upstream_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/build/libRTI/ieee1516-2010",
+        "upstream_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/install/bin/rtig"
+      },
+      "required_ports": {},
+      "result": "real CERTI will skip",
+      "tool": "certi-preflight",
+      "vendor": "certi"
+    }
+  ]
+}

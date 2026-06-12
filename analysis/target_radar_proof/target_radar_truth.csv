@@ -1,0 +1,5 @@
+index,step_number,event_name,time_seconds,position_x,position_y,position_z
+1,1,step,1.0,10250.0,1030.0,2000.0
+3,2,step,2.0,10500.0,1060.0,2000.0
+5,3,step,3.0,10750.0,1090.0,2000.0
+7,4,step,4.0,11000.0,1120.0,2000.0

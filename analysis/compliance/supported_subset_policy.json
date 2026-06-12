@@ -1,0 +1,1578 @@
+{
+  "policies": [
+    {
+      "broad_gap": "The backend does not invent a wall-clock or unmanaged receive-order throttling policy, so broader vendor-style update-rate semantics remain out of scope.",
+      "broad_spec_rows": [
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "",
+          "claim_scope": "broad-spec",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassively",
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassivelyWithRegions",
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-UPDATE-RATE-001"
+          ],
+          "linked_methods": [
+            "subscribeObjectClassAttributes",
+            "subscribeObjectClassAttributesPassively",
+            "subscribeObjectClassAttributesWithRegions",
+            "subscribeObjectClassAttributesPassivelyWithRegions"
+          ],
+          "matrix_id": "HLA1516.1-DM-5.1.6-001",
+          "negative_test_refs": [
+            "tests/scenarios/test_ddm_backend_matrix.py",
+            "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_object_region_lifecycle_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix"
+          ],
+          "notes": "The backend now proves explicit and FOM-declared update-rate defaults across direct, inherited, and regioned subscriptions, plus receive-order non-suppression when no logical-time basis exists. Broader vendor-style update-rate policies remain outside the current model.",
+          "pitch_runtime_status": "",
+          "policy_basis": "logical-time-update-rate-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_support_services.py::test_fom_declared_update_rate_defaults_apply_to_inherited_and_regioned_subscriptions",
+            "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_does_not_suppress_receive_order_updates",
+            "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_throttles_timed_reflects",
+            "tests/scenarios/test_ddm_backend_matrix.py",
+            "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_object_region_lifecycle_matrix",
+            "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_passive_region_subscription_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_passive_region_subscription_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
+          ],
+          "python_runtime_status": "",
+          "requirement_id": "HLA1516.1-DM-5.1.6-001",
+          "section_ref": "IEEE 1516.1-2010 \u00a75.1.6",
+          "service_group": "Declaration management",
+          "source": "curated-clause5-6",
+          "status": "partial",
+          "supported_subset_for": "",
+          "title": "RTI shall support subscribing with update rate reduction where applicable.",
+          "vendor_evidence_refs": [],
+          "vendor_notes": "",
+          "vendor_profile_bucket": "",
+          "vendor_profile_notes": "",
+          "vendor_profile_refs": [],
+          "vendor_profile_source": "",
+          "vendor_source": ""
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "broad-spec",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "RecordingFederateAmbassador callback + snake_case alias",
+            "hla2010/ambassadors.py",
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-UPDATE-RATE-001"
+          ],
+          "linked_methods": [
+            "reflectAttributeValues",
+            "subscribeObjectClassAttributes",
+            "subscribeObjectClassAttributesWithRegions"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.1.12-001",
+          "negative_test_refs": [
+            "tests/scenarios/test_ddm_backend_matrix.py",
+            "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_object_region_lifecycle_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix"
+          ],
+          "notes": "The backend proves explicit and FOM-declared update-rate throttling for direct, inherited, and regioned subscriptions, plus receive-order non-suppression when no logical-time basis exists. Broader vendor-style update-rate policies remain outside the current model, so this row remains partial.",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "logical-time-update-rate-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_support_services.py::test_fom_declared_update_rate_defaults_apply_to_inherited_and_regioned_subscriptions",
+            "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_does_not_suppress_receive_order_updates",
+            "tests/backends/test_python_backend_support_services.py::test_update_rate_designator_throttles_timed_reflects",
+            "tests/scenarios/test_ddm_backend_matrix.py",
+            "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_object_region_lifecycle_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.1.12-001",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.1.12",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "partial",
+          "supported_subset_for": "",
+          "title": "RTI shall honor update-rate reduction when reflecting attribute updates.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared update-rate scenario verifies Pitch reduces reflected update cadence to the negotiated rate",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        }
+      ],
+      "broad_status_counts": {
+        "partial": 2
+      },
+      "policy_id": "logical-time-update-rate-only",
+      "supported_behavior": "Update-rate reduction is implemented as logical-time-based throttling. Explicit and FOM-declared update-rate designators apply across direct, inherited, and regioned subscriptions when there is a logical-time basis.",
+      "supported_subset_rows": [],
+      "supported_subset_status_counts": {},
+      "title": "Logical-time update-rate subset"
+    },
+    {
+      "broad_gap": "The backend does not model arbitrary custom transportation-type behavior beyond the reliable/best-effort subset.",
+      "broad_spec_rows": [
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "broad-spec",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_queryInteractionTransportationType",
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_requestAttributeTransportationTypeChange",
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_requestInteractionTransportationTypeChange",
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_sendInteraction",
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_updateAttributeValues",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-SCOPE-001",
+            "REQ-OM-TRANSPORT-REPORT-001",
+            "REQ-OM-TRANSPORT-BEST-EFFORT-001"
+          ],
+          "linked_methods": [
+            "updateAttributeValues",
+            "sendInteraction",
+            "requestAttributeTransportationTypeChange",
+            "queryAttributeTransportationType",
+            "requestInteractionTransportationTypeChange",
+            "queryInteractionTransportationType"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.1.10-001",
+          "negative_test_refs": [
+            "tests/scenarios/test_object_management_backend_matrix.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
+          ],
+          "notes": "This broad standards row remains partial. The backend now proves distinct reliable versus best-effort callback transport behavior for both FOM-defined defaults and explicit service-selected overrides, plus restore persistence for the supported subset, but it still does not model the full custom transportation semantic space described by the standard.",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates",
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore",
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_query_interaction_transportation_type_rejects_not_connected_not_joined_invalid_handle_and_save_restore",
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_request_attribute_transportation_type_change_rejects_not_connected_not_joined_and_unknown_object",
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_request_interaction_transportation_type_change_rejects_not_connected_not_joined_and_save_restore",
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks",
+            "tests/backends/test_python_backend_support_services.py::test_fom_declared_transport_defaults_apply_to_attributes_and_interactions",
+            "tests/backends/test_python_backend_time_ddm_extended.py",
+            "tests/scenarios/test_object_management_backend_matrix.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/time/test_mom_mim_time_v10.py",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix",
+            "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.1.10-001",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.1.10",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "partial",
+          "supported_subset_for": "",
+          "title": "RTI shall use transportation types for object updates and interactions as defined by the FDD and service arguments.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type and restore-persistence scenarios verify the supported Pitch transport subset and restore persistence",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "broad-spec",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_requestAttributeTransportationTypeChange",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-SCOPE-001"
+          ],
+          "linked_methods": [
+            "requestAttributeTransportationTypeChange"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.23-001",
+          "negative_test_refs": [
+            "tests/scenarios/test_object_management_backend_matrix.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
+          ],
+          "notes": "The backend exposes this service but the broad standards row remains partial because only the supported reliable plus best-effort subset is modeled directly.",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_time_ddm_extended.py",
+            "tests/scenarios/test_object_management_backend_matrix.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/time/test_mom_mim_time_v10.py",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.23-001",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.23",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "partial",
+          "supported_subset_for": "",
+          "title": "RTI shall provide Request Attribute Transportation Type Change across the full transportation semantic space defined by the standard.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type restore scenario verifies Pitch attribute transport persistence for the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "broad-spec",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "RecordingFederateAmbassador callback + snake_case alias",
+            "hla2010/ambassadors.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-SCOPE-001"
+          ],
+          "linked_methods": [
+            "confirmAttributeTransportationTypeChange"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.24-001",
+          "negative_test_refs": [],
+          "notes": "The backend proves confirm callbacks for the supported reliable plus best-effort subset, not the full broader transport semantic space.",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_time_ddm_extended.py",
+            "tests/time/test_mom_mim_time_v10.py",
+            "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.24-001",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.24",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "partial",
+          "supported_subset_for": "",
+          "title": "RTI shall invoke Confirm Attribute Transportation Type Change across the full transportation semantic space.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenario verifies Pitch attribute transport-change confirmation in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "broad-spec",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-SCOPE-001"
+          ],
+          "linked_methods": [
+            "queryAttributeTransportationType"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.25-001",
+          "negative_test_refs": [],
+          "notes": "The backend proves query/report behavior for the supported reliable plus best-effort subset, not the full broader transport semantic space.",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_time_ddm_extended.py",
+            "tests/scenarios/test_object_management_backend_matrix.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/time/test_mom_mim_time_v10.py",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.25-001",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.25",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "partial",
+          "supported_subset_for": "",
+          "title": "RTI shall provide Query Attribute Transportation Type across the full transportation semantic space defined by the standard.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenario verifies Pitch attribute transport queries in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "broad-spec",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "RecordingFederateAmbassador callback + snake_case alias",
+            "hla2010/ambassadors.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-SCOPE-001"
+          ],
+          "linked_methods": [
+            "reportAttributeTransportationType"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.26-001",
+          "negative_test_refs": [],
+          "notes": "The backend proves report callbacks for the supported reliable plus best-effort subset, not the full broader transport semantic space.",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_time_ddm_extended.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+            "tests/time/test_mom_mim_time_v10.py",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.26-001",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.26",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "partial",
+          "supported_subset_for": "",
+          "title": "RTI shall invoke Report Attribute Transportation Type across the full transportation semantic space.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenario verifies Pitch attribute transport report callbacks in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "broad-spec",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_requestInteractionTransportationTypeChange",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-SCOPE-001"
+          ],
+          "linked_methods": [
+            "requestInteractionTransportationTypeChange"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.27-001",
+          "negative_test_refs": [
+            "tests/scenarios/test_object_management_backend_matrix.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
+          ],
+          "notes": "The backend exposes this service but the broad standards row remains partial because only the supported reliable plus best-effort subset is modeled directly.",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_time_ddm_extended.py",
+            "tests/scenarios/test_object_management_backend_matrix.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/time/test_mom_mim_time_v10.py",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.27-001",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.27",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "partial",
+          "supported_subset_for": "",
+          "title": "RTI shall provide Request Interaction Transportation Type Change across the full transportation semantic space defined by the standard.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type restore scenario verifies Pitch interaction transport persistence for the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "broad-spec",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "RecordingFederateAmbassador callback + snake_case alias",
+            "hla2010/ambassadors.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-SCOPE-001"
+          ],
+          "linked_methods": [
+            "confirmInteractionTransportationTypeChange"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.28-001",
+          "negative_test_refs": [],
+          "notes": "The backend proves confirm callbacks for the supported reliable plus best-effort subset, not the full broader transport semantic space.",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_time_ddm_extended.py",
+            "tests/time/test_mom_mim_time_v10.py",
+            "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.28-001",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.28",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "partial",
+          "supported_subset_for": "",
+          "title": "RTI shall invoke Confirm Interaction Transportation Type Change across the full transportation semantic space.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenario verifies Pitch interaction transport-change confirmation in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "broad-spec",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_queryInteractionTransportationType",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-SCOPE-001"
+          ],
+          "linked_methods": [
+            "queryInteractionTransportationType"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.29-001",
+          "negative_test_refs": [
+            "tests/scenarios/test_object_management_backend_matrix.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
+          ],
+          "notes": "The backend proves query/report behavior for the supported reliable plus best-effort subset, not the full broader transport semantic space.",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_time_ddm_extended.py",
+            "tests/scenarios/test_object_management_backend_matrix.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/time/test_mom_mim_time_v10.py",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.29-001",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.29",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "partial",
+          "supported_subset_for": "",
+          "title": "RTI shall provide Query Interaction Transportation Type across the full transportation semantic space defined by the standard.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenario verifies Pitch interaction transport queries in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "broad-spec",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "RecordingFederateAmbassador callback + snake_case alias",
+            "hla2010/ambassadors.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-SCOPE-001"
+          ],
+          "linked_methods": [
+            "reportInteractionTransportationType"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.30-001",
+          "negative_test_refs": [],
+          "notes": "The backend proves report callbacks for the supported reliable plus best-effort subset, not the full broader transport semantic space.",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_time_ddm_extended.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+            "tests/time/test_mom_mim_time_v10.py",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.30-001",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.30",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "partial",
+          "supported_subset_for": "",
+          "title": "RTI shall invoke Report Interaction Transportation Type across the full transportation semantic space.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenario verifies Pitch interaction transport report callbacks in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        }
+      ],
+      "broad_status_counts": {
+        "partial": 9
+      },
+      "policy_id": "reliable-best-effort-transport-only",
+      "supported_behavior": "Transportation semantics are implemented for the standard HLAreliable and HLAbestEffort pair, including FOM-defined defaults, explicit overrides, callback/query reporting, and restore persistence.",
+      "supported_subset_rows": [
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "supported-subset",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_queryInteractionTransportationType",
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_requestAttributeTransportationTypeChange",
+            "hla2010_rti_python.backend.PythonRTIBackend._svc_requestInteractionTransportationTypeChange",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-REPORT-001",
+            "REQ-SAVE-RESTORE-FEDERATE-LOCAL-STATE-001"
+          ],
+          "linked_methods": [
+            "requestAttributeTransportationTypeChange",
+            "queryAttributeTransportationType",
+            "requestInteractionTransportationTypeChange",
+            "queryInteractionTransportationType"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.1.10-002",
+          "negative_test_refs": [
+            "tests/scenarios/test_object_management_backend_matrix.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
+          ],
+          "notes": "This narrow supported-subset row covers explicit reliable transport selection, report/query callbacks, and restore persistence for object and interaction transport state.",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore",
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_query_interaction_transportation_type_rejects_not_connected_not_joined_invalid_handle_and_save_restore",
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_request_attribute_transportation_type_change_rejects_not_connected_not_joined_and_unknown_object",
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_request_interaction_transportation_type_change_rejects_not_connected_not_joined_and_save_restore",
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks",
+            "tests/scenarios/test_object_management_backend_matrix.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix",
+            "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_order_overrides",
+            "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides",
+            "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_federate_policy_reporting_and_conveyance_switches",
+            "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_federate_runtime_flags_and_lookahead_state"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.1.10-002",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.1.10",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "pass",
+          "supported_subset_for": "HLA1516.1-OM-6.1.10-001",
+          "title": "RTI shall support explicit reliable transportation type selection, query reporting, and restore persistence for object updates and interactions in the currently supported transport subset.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type and restore-persistence scenarios verify the supported Pitch transport subset and restore persistence",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "supported-subset",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/save_restore.py",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/state.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-BEST-EFFORT-001",
+            "REQ-SAVE-RESTORE-FEDERATE-LOCAL-STATE-001"
+          ],
+          "linked_methods": [
+            "updateAttributeValues",
+            "sendInteraction",
+            "requestAttributeTransportationTypeChange",
+            "queryAttributeTransportationType",
+            "requestInteractionTransportationTypeChange",
+            "queryInteractionTransportationType"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.1.10-003",
+          "negative_test_refs": [
+            "tests/scenarios/test_object_management_backend_matrix.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
+          ],
+          "notes": "This supported-subset row is now implemented: explicit reliable versus best-effort transport overrides produce distinct callback transport handles for object updates and interactions, and that non-reliable override state survives restore.",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates",
+            "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.1.10-003",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.1.10",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "pass",
+          "supported_subset_for": "HLA1516.1-OM-6.1.10-001",
+          "title": "RTI shall support distinct best-effort versus reliable delivery semantics for object updates and interactions when explicit transportation selections differ.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenarios verify Pitch distinguishes reliable and best-effort behavior in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "yes",
+          "claim_scope": "supported-subset",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/state.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-BEST-EFFORT-001",
+            "REQ-OM-TRANSPORT-REPORT-001"
+          ],
+          "linked_methods": [
+            "updateAttributeValues",
+            "reflectAttributeValues",
+            "requestAttributeTransportationTypeChange"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.10-005",
+          "negative_test_refs": [],
+          "notes": "",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.10-005",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.10",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "pass",
+          "supported_subset_for": "",
+          "title": "RTI shall deliver reflected attribute updates with transportation metadata that matches the currently implemented reliable and best-effort transport subset.",
+          "vendor_evidence_refs": [
+            "../tests/backends/test_python_backend_support_services.py",
+            "../tests/backends/test_python_backend_federation_extended.py",
+            "../tests/backends/test_python_backend_object_ownership_extended.py",
+            "../tests/backends/test_python_backend_time_ddm_extended.py",
+            "../tests/vendors/README.md",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "receive and timestamp paths covered",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "yes",
+          "claim_scope": "supported-subset",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/state.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-BEST-EFFORT-001",
+            "REQ-OM-TRANSPORT-REPORT-001"
+          ],
+          "linked_methods": [
+            "sendInteraction",
+            "receiveInteraction",
+            "requestInteractionTransportationTypeChange"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.12-005",
+          "negative_test_refs": [],
+          "notes": "",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.12-005",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.12",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "pass",
+          "supported_subset_for": "",
+          "title": "RTI shall deliver received interactions with transportation metadata that matches the currently implemented reliable and best-effort transport subset.",
+          "vendor_evidence_refs": [
+            "../tests/backends/test_python_backend_support_services.py",
+            "../tests/backends/test_python_backend_federation_extended.py",
+            "../tests/backends/test_python_backend_object_ownership_extended.py",
+            "../tests/backends/test_python_backend_time_ddm_extended.py",
+            "../tests/vendors/README.md",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "receive and timestamp paths covered",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "supported-subset",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/save_restore.py",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/state.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-REPORT-001",
+            "REQ-OM-TRANSPORT-BEST-EFFORT-001",
+            "REQ-SAVE-RESTORE-FEDERATE-LOCAL-STATE-001"
+          ],
+          "linked_methods": [
+            "requestAttributeTransportationTypeChange",
+            "queryAttributeTransportationType"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.23-002",
+          "negative_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_request_attribute_transportation_type_change_rejects_not_connected_not_joined_and_unknown_object"
+          ],
+          "notes": "",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks",
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates",
+            "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.23-002",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.23",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "pass",
+          "supported_subset_for": "HLA1516.1-OM-6.23-001",
+          "title": "RTI shall support Request Attribute Transportation Type Change for the currently implemented reliable and best-effort transport subset and persist that selected attribute transport state across restore.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type restore scenario verifies Pitch attribute transport persistence for the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "supported-subset",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py",
+            "hla2010/ambassadors.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-REPORT-001"
+          ],
+          "linked_methods": [
+            "confirmAttributeTransportationTypeChange"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.24-002",
+          "negative_test_refs": [],
+          "notes": "",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.24-002",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.24",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "pass",
+          "supported_subset_for": "HLA1516.1-OM-6.24-001",
+          "title": "RTI shall invoke Confirm Attribute Transportation Type Change for the currently implemented reliable and best-effort transport subset.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenario verifies Pitch attribute transport-change confirmation in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "supported-subset",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py",
+            "hla2010/ambassadors.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-REPORT-001"
+          ],
+          "linked_methods": [
+            "confirmAttributeTransportationTypeChange",
+            "requestAttributeTransportationTypeChange"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.24-003",
+          "negative_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_request_attribute_transportation_type_change_rejects_not_connected_not_joined_and_unknown_object"
+          ],
+          "notes": "",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.24-003",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.24",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "pass",
+          "supported_subset_for": "HLA1516.1-OM-6.24-001",
+          "title": "RTI shall not emit Confirm Attribute Transportation Type Change when the corresponding change request is rejected for invalid state, handle, ownership, publication, or transport inputs.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenario verifies Pitch attribute transport-change confirmation in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "supported-subset",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py",
+            "hla2010/ambassadors.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-REPORT-001"
+          ],
+          "linked_methods": [
+            "queryAttributeTransportationType",
+            "reportAttributeTransportationType"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.25-002",
+          "negative_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore"
+          ],
+          "notes": "",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.25-002",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.25",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "pass",
+          "supported_subset_for": "HLA1516.1-OM-6.25-001",
+          "title": "RTI shall report stored attribute transportation overrides for the currently implemented reliable and best-effort transport subset.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenario verifies Pitch attribute transport queries in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "supported-subset",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py",
+            "hla2010/ambassadors.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-REPORT-001"
+          ],
+          "linked_methods": [
+            "reportAttributeTransportationType"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.26-002",
+          "negative_test_refs": [],
+          "notes": "",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.26-002",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.26",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "pass",
+          "supported_subset_for": "HLA1516.1-OM-6.26-001",
+          "title": "RTI shall invoke Report Attribute Transportation Type for the currently implemented reliable and best-effort transport subset.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenario verifies Pitch attribute transport report callbacks in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "supported-subset",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py",
+            "hla2010/ambassadors.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-REPORT-001"
+          ],
+          "linked_methods": [
+            "reportAttributeTransportationType",
+            "queryAttributeTransportationType"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.26-003",
+          "negative_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore"
+          ],
+          "notes": "",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.26-003",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.26",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "pass",
+          "supported_subset_for": "HLA1516.1-OM-6.26-001",
+          "title": "RTI shall not emit Report Attribute Transportation Type when the corresponding query is rejected for invalid state, object, or attribute inputs.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenario verifies Pitch attribute transport report callbacks in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "supported-subset",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/save_restore.py",
+            "packages/hla2010-rti-python/src/hla2010_rti_python/state.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-REPORT-001",
+            "REQ-OM-TRANSPORT-BEST-EFFORT-001",
+            "REQ-SAVE-RESTORE-FEDERATE-LOCAL-STATE-001"
+          ],
+          "linked_methods": [
+            "requestInteractionTransportationTypeChange",
+            "queryInteractionTransportationType"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.27-002",
+          "negative_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_request_interaction_transportation_type_change_rejects_not_connected_not_joined_and_save_restore"
+          ],
+          "notes": "",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks",
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates",
+            "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.27-002",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.27",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "pass",
+          "supported_subset_for": "HLA1516.1-OM-6.27-001",
+          "title": "RTI shall support Request Interaction Transportation Type Change for the currently implemented reliable and best-effort transport subset and persist that selected interaction transport state across restore.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type restore scenario verifies Pitch interaction transport persistence for the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "supported-subset",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py",
+            "hla2010/ambassadors.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-REPORT-001"
+          ],
+          "linked_methods": [
+            "confirmInteractionTransportationTypeChange"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.28-002",
+          "negative_test_refs": [],
+          "notes": "",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.28-002",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.28",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "pass",
+          "supported_subset_for": "HLA1516.1-OM-6.28-001",
+          "title": "RTI shall invoke Confirm Interaction Transportation Type Change for the currently implemented reliable and best-effort transport subset.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenario verifies Pitch interaction transport-change confirmation in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "supported-subset",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py",
+            "hla2010/ambassadors.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-REPORT-001"
+          ],
+          "linked_methods": [
+            "confirmInteractionTransportationTypeChange",
+            "requestInteractionTransportationTypeChange"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.28-003",
+          "negative_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_request_interaction_transportation_type_change_rejects_not_connected_not_joined_and_save_restore"
+          ],
+          "notes": "",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.28-003",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.28",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "pass",
+          "supported_subset_for": "HLA1516.1-OM-6.28-001",
+          "title": "RTI shall not emit Confirm Interaction Transportation Type Change when the corresponding change request is rejected for invalid state, class, publication, or transport inputs.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenario verifies Pitch interaction transport-change confirmation in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "supported-subset",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py",
+            "hla2010/ambassadors.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-REPORT-001"
+          ],
+          "linked_methods": [
+            "queryInteractionTransportationType",
+            "reportInteractionTransportationType"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.29-002",
+          "negative_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_query_interaction_transportation_type_rejects_not_connected_not_joined_invalid_handle_and_save_restore"
+          ],
+          "notes": "",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.29-002",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.29",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "pass",
+          "supported_subset_for": "HLA1516.1-OM-6.29-001",
+          "title": "RTI shall report stored interaction transportation overrides for the currently implemented reliable and best-effort transport subset.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenario verifies Pitch interaction transport queries in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "supported-subset",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py",
+            "hla2010/ambassadors.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-REPORT-001"
+          ],
+          "linked_methods": [
+            "reportInteractionTransportationType"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.30-002",
+          "negative_test_refs": [],
+          "notes": "",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_transportation_type_services_emit_confirm_and_report_callbacks"
+          ],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.30-002",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.30",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "pass",
+          "supported_subset_for": "HLA1516.1-OM-6.30-001",
+          "title": "RTI shall invoke Report Interaction Transportation Type for the currently implemented reliable and best-effort transport subset.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenario verifies Pitch interaction transport report callbacks in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        },
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json"
+          ],
+          "certi_runtime_status": "no",
+          "claim_scope": "supported-subset",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py",
+            "hla2010/ambassadors.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-OM-TRANSPORT-REPORT-001"
+          ],
+          "linked_methods": [
+            "reportInteractionTransportationType",
+            "queryInteractionTransportationType"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.30-003",
+          "negative_test_refs": [
+            "tests/backends/test_python_backend_object_ownership_extended.py::test_query_interaction_transportation_type_rejects_not_connected_not_joined_invalid_handle_and_save_restore"
+          ],
+          "notes": "",
+          "pitch_runtime_status": "yes",
+          "policy_basis": "reliable-best-effort-transport-only",
+          "positive_test_refs": [],
+          "python_runtime_status": "yes",
+          "requirement_id": "HLA1516.1-OM-6.30-003",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.30",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "pass",
+          "supported_subset_for": "HLA1516.1-OM-6.30-001",
+          "title": "RTI shall not emit Report Interaction Transportation Type when the corresponding query is rejected for invalid state or invalid interaction inputs.",
+          "vendor_evidence_refs": [
+            "../tests/scenarios/test_object_management_backend_matrix.py",
+            "../tests/vendors/test_pitch_real_backend_matrix.py"
+          ],
+          "vendor_notes": "shared transportation-type scenario verifies Pitch interaction transport report callbacks in the supported subset",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": "docs/backend_conformance_matrix.md"
+        }
+      ],
+      "supported_subset_status_counts": {
+        "pass": 16
+      },
+      "title": "Reliable and best-effort transport subset"
+    },
+    {
+      "broad_gap": "Message combination, packaging, and passelization are not explicitly modeled, so the permissive broad row stays partial by policy.",
+      "broad_spec_rows": [
+        {
+          "artifact_refs": [
+            "analysis/compliance/service_conformance.json",
+            "analysis/two_federate_suite/two_federate_callbacks.csv"
+          ],
+          "certi_runtime_status": "",
+          "claim_scope": "broad-spec",
+          "document": "IEEE 1516.1-2010",
+          "implementation_refs": [
+            "RecordingFederateAmbassador callback + snake_case alias",
+            "hla2010/ambassadors.py"
+          ],
+          "kind": "extracted-requirement",
+          "linked_assets": [
+            "REQ-DM-SUBSCRIPTION-DELIVERY-001"
+          ],
+          "linked_methods": [
+            "reflectAttributeValues",
+            "receiveInteraction"
+          ],
+          "matrix_id": "HLA1516.1-OM-6.1.11-001",
+          "negative_test_refs": [],
+          "notes": "This backend proves externally visible delivery semantics for unbatched callbacks. It does not explicitly model message combination, packaging, or passelization, so this row remains partial by policy until those semantics are modeled or separately justified.",
+          "pitch_runtime_status": "",
+          "policy_basis": "unbatched-callback-delivery-only",
+          "positive_test_refs": [
+            "tests/backends/test_python_backend_time_ddm_extended.py",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+            "tests/scenarios/test_target_radar_scenario.py",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
+          ],
+          "python_runtime_status": "",
+          "requirement_id": "HLA1516.1-OM-6.1.11-001",
+          "section_ref": "IEEE 1516.1-2010 \u00a76.1.11",
+          "service_group": "Object management",
+          "source": "curated-clause5-6",
+          "status": "partial",
+          "supported_subset_for": "",
+          "title": "RTI may combine, package, or passelize messages without changing externally visible semantics.",
+          "vendor_evidence_refs": [],
+          "vendor_notes": "",
+          "vendor_profile_bucket": "Exchange",
+          "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+          "vendor_profile_refs": [
+            "docs/rti_options_and_test_matrix.md"
+          ],
+          "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+          "vendor_source": ""
+        }
+      ],
+      "broad_status_counts": {
+        "partial": 1
+      },
+      "policy_id": "unbatched-callback-delivery-only",
+      "supported_behavior": "The backend preserves externally visible delivery semantics with direct unbatched callbacks.",
+      "supported_subset_rows": [],
+      "supported_subset_status_counts": {},
+      "title": "Unbatched callback delivery subset"
+    }
+  ],
+  "policy_count": 3
+}

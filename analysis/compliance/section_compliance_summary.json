@@ -1,0 +1,3095 @@
+{
+  "sections": [
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getObjectInstanceName"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.10",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getAttributeHandle"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.11",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getAttributeName"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.12",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getUpdateRateValue"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.13",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getUpdateRateValueForAttribute"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.14",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getInteractionClassHandle"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.15",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getInteractionClassName"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.16",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getParameterHandle"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.17",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getParameterName"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.18",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getOrderType"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.19",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getAutomaticResignDirective"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.2",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getOrderName"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.20",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 2
+      },
+      "interface_counts": {
+        "RTIambassador": 2
+      },
+      "known_gap_rows": 2,
+      "methods": [
+        "RTIambassador.getTransportationType",
+        "RTIambassador.getTransportationTypeHandle"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.21",
+      "verification_status_counts": {
+        "focused-executable-tests": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 2
+      },
+      "interface_counts": {
+        "RTIambassador": 2
+      },
+      "known_gap_rows": 2,
+      "methods": [
+        "RTIambassador.getTransportationName",
+        "RTIambassador.getTransportationTypeName"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.22",
+      "verification_status_counts": {
+        "focused-executable-tests": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getAvailableDimensionsForClassAttribute"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.23",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getAvailableDimensionsForInteractionClass"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.24",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getDimensionHandle"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.25",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getDimensionName"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.26",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getDimensionUpperBound"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.27",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getDimensionHandleSet"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.28",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getRangeBounds"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.29",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.setAutomaticResignDirective"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.3",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.setRangeBounds"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.30",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.normalizeFederateHandle"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.31",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.normalizeServiceGroup"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.32",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.enableObjectClassRelevanceAdvisorySwitch"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.33",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.disableObjectClassRelevanceAdvisorySwitch"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.34",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.enableAttributeRelevanceAdvisorySwitch"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.35",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.disableAttributeRelevanceAdvisorySwitch"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.36",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.enableAttributeScopeAdvisorySwitch"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.37",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.disableAttributeScopeAdvisorySwitch"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.38",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.enableInteractionRelevanceAdvisorySwitch"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.39",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getFederateHandle"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.4",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.disableInteractionRelevanceAdvisorySwitch"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.40",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.evokeCallback"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.41",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.evokeMultipleCallbacks"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.42",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.enableCallbacks"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.43",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 18,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 18
+      },
+      "interface_counts": {
+        "RTIambassador": 18
+      },
+      "known_gap_rows": 17,
+      "methods": [
+        "RTIambassador.disableCallbacks",
+        "RTIambassador.getAttributeHandleFactory",
+        "RTIambassador.getAttributeHandleSetFactory",
+        "RTIambassador.getAttributeHandleValueMapFactory",
+        "RTIambassador.getAttributeSetRegionSetPairListFactory",
+        "RTIambassador.getDimensionHandleFactory",
+        "RTIambassador.getDimensionHandleSetFactory",
+        "RTIambassador.getFederateHandleFactory",
+        "RTIambassador.getFederateHandleSetFactory",
+        "RTIambassador.getHLAversion",
+        "RTIambassador.getInteractionClassHandleFactory",
+        "RTIambassador.getObjectClassHandleFactory",
+        "RTIambassador.getObjectInstanceHandleFactory",
+        "RTIambassador.getParameterHandleFactory",
+        "RTIambassador.getParameterHandleValueMapFactory",
+        "RTIambassador.getRegionHandleSetFactory",
+        "RTIambassador.getTimeFactory",
+        "RTIambassador.getTransportationTypeHandleFactory"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status_counts": {
+        "focused-executable-tests": 18
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getFederateName"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.5",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getObjectClassHandle"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.6",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getObjectClassName"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.7",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getKnownObjectClassHandle"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.8",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.getObjectInstanceHandle"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a710.9",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 9,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 9
+      },
+      "interface_counts": {
+        "RTIambassador": 9
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "RTIambassador.decodeAttributeHandle",
+        "RTIambassador.decodeDimensionHandle",
+        "RTIambassador.decodeFederateHandle",
+        "RTIambassador.decodeInteractionClassHandle",
+        "RTIambassador.decodeMessageRetractionHandle",
+        "RTIambassador.decodeObjectClassHandle",
+        "RTIambassador.decodeObjectInstanceHandle",
+        "RTIambassador.decodeParameterHandle",
+        "RTIambassador.decodeRegionHandle"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "verification_status_counts": {
+        "focused-executable-tests": 9
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.resignFederationExecution"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.10",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.registerFederationSynchronizationPoint"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.11",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "callback-helper": 2
+      },
+      "interface_counts": {
+        "FederateAmbassador": 2
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.synchronizationPointRegistrationFailed",
+        "FederateAmbassador.synchronizationPointRegistrationSucceeded"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.12",
+      "verification_status_counts": {
+        "callback-helper-covered": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.announceSynchronizationPoint"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.13",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.synchronizationPointAchieved"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.14",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.federationSynchronized"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.15",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.requestFederationSave"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.16",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.initiateFederateSave"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.17",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.federateSaveBegun"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.18",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 2
+      },
+      "interface_counts": {
+        "RTIambassador": 2
+      },
+      "known_gap_rows": 2,
+      "methods": [
+        "RTIambassador.federateSaveComplete",
+        "RTIambassador.federateSaveNotComplete"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.19",
+      "verification_status_counts": {
+        "focused-executable-tests": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.connect"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.2",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "callback-helper": 2
+      },
+      "interface_counts": {
+        "FederateAmbassador": 2
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.federationNotSaved",
+        "FederateAmbassador.federationSaved"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.20",
+      "verification_status_counts": {
+        "callback-helper-covered": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.abortFederationSave"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.21",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.queryFederationSaveStatus"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.22",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.federationSaveStatusResponse"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.23",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.requestFederationRestore"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.24",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "callback-helper": 2
+      },
+      "interface_counts": {
+        "FederateAmbassador": 2
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.requestFederationRestoreFailed",
+        "FederateAmbassador.requestFederationRestoreSucceeded"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.25",
+      "verification_status_counts": {
+        "callback-helper-covered": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.federationRestoreBegun"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.26",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.initiateFederateRestore"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.27",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 2
+      },
+      "interface_counts": {
+        "RTIambassador": 2
+      },
+      "known_gap_rows": 2,
+      "methods": [
+        "RTIambassador.federateRestoreComplete",
+        "RTIambassador.federateRestoreNotComplete"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.28",
+      "verification_status_counts": {
+        "focused-executable-tests": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "callback-helper": 2
+      },
+      "interface_counts": {
+        "FederateAmbassador": 2
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.federationNotRestored",
+        "FederateAmbassador.federationRestored"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.29",
+      "verification_status_counts": {
+        "callback-helper-covered": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.disconnect"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.3",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.abortFederationRestore"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.30",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.queryFederationRestoreStatus"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.31",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.federationRestoreStatusResponse"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.32",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.connectionLost"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.4",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 2
+      },
+      "interface_counts": {
+        "RTIambassador": 2
+      },
+      "known_gap_rows": 2,
+      "methods": [
+        "RTIambassador.createFederationExecution",
+        "RTIambassador.createFederationExecutionWithMIM"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.5",
+      "verification_status_counts": {
+        "focused-executable-tests": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.destroyFederationExecution"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.6",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.listFederationExecutions"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.7",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.reportFederationExecutions"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.8",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.joinFederationExecution"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a74.9",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.startRegistrationForObjectClass"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a75.10",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.stopRegistrationForObjectClass"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a75.11",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.turnInteractionsOn"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a75.12",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.turnInteractionsOff"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a75.13",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.publishObjectClassAttributes"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a75.2",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 2
+      },
+      "interface_counts": {
+        "RTIambassador": 2
+      },
+      "known_gap_rows": 2,
+      "methods": [
+        "RTIambassador.unpublishObjectClass",
+        "RTIambassador.unpublishObjectClassAttributes"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a75.3",
+      "verification_status_counts": {
+        "focused-executable-tests": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.publishInteractionClass"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a75.4",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.unpublishInteractionClass"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a75.5",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 2
+      },
+      "interface_counts": {
+        "RTIambassador": 2
+      },
+      "known_gap_rows": 2,
+      "methods": [
+        "RTIambassador.subscribeObjectClassAttributes",
+        "RTIambassador.subscribeObjectClassAttributesPassively"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a75.6",
+      "verification_status_counts": {
+        "focused-executable-tests": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 2
+      },
+      "interface_counts": {
+        "RTIambassador": 2
+      },
+      "known_gap_rows": 2,
+      "methods": [
+        "RTIambassador.unsubscribeObjectClass",
+        "RTIambassador.unsubscribeObjectClassAttributes"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a75.7",
+      "verification_status_counts": {
+        "focused-executable-tests": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 2
+      },
+      "interface_counts": {
+        "RTIambassador": 2
+      },
+      "known_gap_rows": 2,
+      "methods": [
+        "RTIambassador.subscribeInteractionClass",
+        "RTIambassador.subscribeInteractionClassPassively"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a75.8",
+      "verification_status_counts": {
+        "focused-executable-tests": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.unsubscribeInteractionClass"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a75.9",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.updateAttributeValues"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.10",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.reflectAttributeValues"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.11",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.sendInteraction"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.12",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.receiveInteraction"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.13",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.deleteObjectInstance"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.14",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.removeObjectInstance"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.15",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.localDeleteObjectInstance"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.16",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.attributesInScope"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.17",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.attributesOutOfScope"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.18",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.requestAttributeValueUpdate"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.19",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.reserveObjectInstanceName"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.2",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.provideAttributeValueUpdate"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.20",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.turnUpdatesOnForObjectInstance"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.21",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.turnUpdatesOffForObjectInstance"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.22",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.requestAttributeTransportationTypeChange"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.23",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.confirmAttributeTransportationTypeChange"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.24",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.queryAttributeTransportationType"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.25",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.reportAttributeTransportationType"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.26",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.requestInteractionTransportationTypeChange"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.27",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.confirmInteractionTransportationTypeChange"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.28",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.queryInteractionTransportationType"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.29",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "callback-helper": 2
+      },
+      "interface_counts": {
+        "FederateAmbassador": 2
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.objectInstanceNameReservationFailed",
+        "FederateAmbassador.objectInstanceNameReservationSucceeded"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.3",
+      "verification_status_counts": {
+        "callback-helper-covered": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.reportInteractionTransportationType"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.30",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.releaseObjectInstanceName"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.4",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.reserveMultipleObjectInstanceName"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.5",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "callback-helper": 2
+      },
+      "interface_counts": {
+        "FederateAmbassador": 2
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.multipleObjectInstanceNameReservationFailed",
+        "FederateAmbassador.multipleObjectInstanceNameReservationSucceeded"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.6",
+      "verification_status_counts": {
+        "callback-helper-covered": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.releaseMultipleObjectInstanceName"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.7",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.registerObjectInstance"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.8",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 5,
+      "implementation_status_counts": {
+        "callback-helper": 5
+      },
+      "interface_counts": {
+        "FederateAmbassador": 5
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.discoverObjectInstance",
+        "FederateAmbassador.getProducingFederate",
+        "FederateAmbassador.getSentRegions",
+        "FederateAmbassador.hasProducingFederate",
+        "FederateAmbassador.hasSentRegions"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "verification_status_counts": {
+        "callback-helper-covered": 5
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.attributeOwnershipUnavailable"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.10",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.requestAttributeOwnershipRelease"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.11",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.attributeOwnershipReleaseDenied"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.12",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.attributeOwnershipDivestitureIfWanted"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.13",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.cancelNegotiatedAttributeOwnershipDivestiture"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.14",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.cancelAttributeOwnershipAcquisition"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.15",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.confirmAttributeOwnershipAcquisitionCancellation"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.16",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.queryAttributeOwnership"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.17",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 3,
+      "implementation_status_counts": {
+        "callback-helper": 3
+      },
+      "interface_counts": {
+        "FederateAmbassador": 3
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.attributeIsNotOwned",
+        "FederateAmbassador.attributeIsOwnedByRTI",
+        "FederateAmbassador.informAttributeOwnership"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.18",
+      "verification_status_counts": {
+        "callback-helper-covered": 3
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.isAttributeOwnedByFederate"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.19",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.unconditionalAttributeOwnershipDivestiture"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.2",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.negotiatedAttributeOwnershipDivestiture"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.3",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.requestAttributeOwnershipAssumption"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.4",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.requestDivestitureConfirmation"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.5",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.confirmDivestiture"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.6",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.attributeOwnershipAcquisitionNotification"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.7",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.attributeOwnershipAcquisition"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.8",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.attributeOwnershipAcquisitionIfAvailable"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a77.9",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.nextMessageRequest"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.10",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.nextMessageRequestAvailable"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.11",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.flushQueueRequest"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.12",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.timeAdvanceGrant"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.13",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.enableAsynchronousDelivery"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.14",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.disableAsynchronousDelivery"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.15",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.queryGALT"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.16",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.queryLogicalTime"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.17",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.queryLITS"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.18",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.modifyLookahead"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.19",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.enableTimeRegulation"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.2",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.queryLookahead"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.20",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.retract"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.21",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.requestRetraction"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.22",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.changeAttributeOrderType"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.23",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.changeInteractionOrderType"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.24",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.timeRegulationEnabled"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.3",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.disableTimeRegulation"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.4",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.enableTimeConstrained"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.5",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "callback-helper": 1
+      },
+      "interface_counts": {
+        "FederateAmbassador": 1
+      },
+      "known_gap_rows": 0,
+      "methods": [
+        "FederateAmbassador.timeConstrainedEnabled"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.6",
+      "verification_status_counts": {
+        "callback-helper-covered": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.disableTimeConstrained"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.7",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.timeAdvanceRequest"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.8",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.timeAdvanceRequestAvailable"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a78.9",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 2
+      },
+      "interface_counts": {
+        "RTIambassador": 2
+      },
+      "known_gap_rows": 2,
+      "methods": [
+        "RTIambassador.subscribeInteractionClassPassivelyWithRegions",
+        "RTIambassador.subscribeInteractionClassWithRegions"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a79.10",
+      "verification_status_counts": {
+        "focused-executable-tests": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.unsubscribeInteractionClassWithRegions"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a79.11",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.sendInteractionWithRegions"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a79.12",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.requestAttributeValueUpdateWithRegions"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a79.13",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.createRegion"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a79.2",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.commitRegionModifications"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a79.3",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.deleteRegion"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a79.4",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.registerObjectInstanceWithRegions"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a79.5",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.associateRegionsForUpdates"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a79.6",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.unassociateRegionsForUpdates"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a79.7",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 2,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 2
+      },
+      "interface_counts": {
+        "RTIambassador": 2
+      },
+      "known_gap_rows": 2,
+      "methods": [
+        "RTIambassador.subscribeObjectClassAttributesPassivelyWithRegions",
+        "RTIambassador.subscribeObjectClassAttributesWithRegions"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a79.8",
+      "verification_status_counts": {
+        "focused-executable-tests": 2
+      }
+    },
+    {
+      "exact_requirement_evidence_rows": 1,
+      "implementation_status_counts": {
+        "pure-python-reference-handler": 1
+      },
+      "interface_counts": {
+        "RTIambassador": 1
+      },
+      "known_gap_rows": 1,
+      "methods": [
+        "RTIambassador.unsubscribeObjectClassAttributesWithRegions"
+      ],
+      "no_requirement_evidence_rows": 0,
+      "section_ref": "IEEE 1516.1-2010 \u00a79.9",
+      "verification_status_counts": {
+        "focused-executable-tests": 1
+      }
+    }
+  ],
+  "summary_count": 169
+}

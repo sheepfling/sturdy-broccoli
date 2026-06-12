@@ -1,0 +1,3795 @@
+{
+  "row_count": 217,
+  "rows": [
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "startRegistrationForObjectClass",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a75.10",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "stopRegistrationForObjectClass",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a75.11",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "turnInteractionsOn",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a75.12",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "turnInteractionsOff",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a75.13",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "synchronizationPointRegistrationFailed",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.12",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "synchronizationPointRegistrationSucceeded",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.12",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "announceSynchronizationPoint",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.13",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "federationSynchronized",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.15",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "initiateFederateSave",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.17",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "federationNotSaved",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.20",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "federationSaved",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.20",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "federationSaveStatusResponse",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.23",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "requestFederationRestoreFailed",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.25",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "requestFederationRestoreSucceeded",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.25",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "federationRestoreBegun",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.26",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "initiateFederateRestore",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.27",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "federationNotRestored",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.29",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "federationRestored",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.29",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "federationRestoreStatusResponse",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.32",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "connectionLost",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.4",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "reportFederationExecutions",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.8",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "reflectAttributeValues",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.11",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "receiveInteraction",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.13",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "removeObjectInstance",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.15",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "attributesInScope",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.17",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "attributesOutOfScope",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.18",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "provideAttributeValueUpdate",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.20",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "turnUpdatesOnForObjectInstance",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.21",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "turnUpdatesOffForObjectInstance",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.22",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "confirmAttributeTransportationTypeChange",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.24",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "reportAttributeTransportationType",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.26",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "confirmInteractionTransportationTypeChange",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.28",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "objectInstanceNameReservationFailed",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.3",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "objectInstanceNameReservationSucceeded",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.3",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "reportInteractionTransportationType",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.30",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "multipleObjectInstanceNameReservationFailed",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.6",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "multipleObjectInstanceNameReservationSucceeded",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.6",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "discoverObjectInstance",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [],
+      "interface": "FederateAmbassador",
+      "method_name": "getProducingFederate",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [],
+      "interface": "FederateAmbassador",
+      "method_name": "getSentRegions",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [],
+      "interface": "FederateAmbassador",
+      "method_name": "hasProducingFederate",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [],
+      "interface": "FederateAmbassador",
+      "method_name": "hasSentRegions",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "attributeOwnershipUnavailable",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.10",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "requestAttributeOwnershipRelease",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.11",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "confirmAttributeOwnershipAcquisitionCancellation",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.16",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "attributeIsNotOwned",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.18",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "attributeIsOwnedByRTI",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.18",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "informAttributeOwnership",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.18",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "requestAttributeOwnershipAssumption",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.4",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "requestDivestitureConfirmation",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.5",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "attributeOwnershipAcquisitionNotification",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.7",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "timeAdvanceGrant",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.13",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "requestRetraction",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.22",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "timeRegulationEnabled",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.3",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [
+        "FederateInternalError"
+      ],
+      "interface": "FederateAmbassador",
+      "method_name": "timeConstrainedEnabled",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.6",
+      "verification_status": "callback-helper-covered"
+    },
+    {
+      "actionable_exception_count": 9,
+      "declared_exception_count": 10,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "FederateServiceInvocationsAreBeingReportedViaMOM",
+        "InteractionClassNotDefined",
+        "InvalidRegion",
+        "InvalidRegionContext",
+        "NotConnected",
+        "RTIinternalError",
+        "RegionNotCreatedByThisFederate",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "subscribeInteractionClassPassivelyWithRegions",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a79.10",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 9,
+      "declared_exception_count": 10,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "FederateServiceInvocationsAreBeingReportedViaMOM",
+        "InteractionClassNotDefined",
+        "InvalidRegion",
+        "InvalidRegionContext",
+        "NotConnected",
+        "RTIinternalError",
+        "RegionNotCreatedByThisFederate",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "subscribeInteractionClassWithRegions",
+      "negative_executed_count": 4,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a79.10",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 7,
+      "declared_exception_count": 8,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InteractionClassNotDefined",
+        "InvalidRegion",
+        "NotConnected",
+        "RTIinternalError",
+        "RegionNotCreatedByThisFederate",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "unsubscribeInteractionClassWithRegions",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a79.11",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 11,
+      "declared_exception_count": 12,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InteractionClassNotDefined",
+        "InteractionClassNotPublished",
+        "InteractionParameterNotDefined",
+        "InvalidLogicalTime",
+        "InvalidRegion",
+        "InvalidRegionContext",
+        "NotConnected",
+        "RTIinternalError",
+        "RegionNotCreatedByThisFederate",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "sendInteractionWithRegions",
+      "negative_executed_count": 1,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a79.12",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 9,
+      "declared_exception_count": 10,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "InvalidRegion",
+        "InvalidRegionContext",
+        "NotConnected",
+        "ObjectClassNotDefined",
+        "RTIinternalError",
+        "RegionNotCreatedByThisFederate",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "requestAttributeValueUpdateWithRegions",
+      "negative_executed_count": 3,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a79.13",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidDimensionHandle",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "createRegion",
+      "negative_executed_count": 4,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a79.2",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 6,
+      "declared_exception_count": 7,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidRegion",
+        "NotConnected",
+        "RTIinternalError",
+        "RegionNotCreatedByThisFederate",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "commitRegionModifications",
+      "negative_executed_count": 4,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a79.3",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 7,
+      "declared_exception_count": 8,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidRegion",
+        "NotConnected",
+        "RTIinternalError",
+        "RegionInUseForUpdateOrSubscription",
+        "RegionNotCreatedByThisFederate",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "deleteRegion",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a79.4",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 13,
+      "declared_exception_count": 14,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "AttributeNotPublished",
+        "FederateNotExecutionMember",
+        "InvalidRegion",
+        "InvalidRegionContext",
+        "NotConnected",
+        "ObjectClassNotDefined",
+        "ObjectClassNotPublished",
+        "ObjectInstanceNameInUse",
+        "ObjectInstanceNameNotReserved",
+        "RTIinternalError",
+        "RegionNotCreatedByThisFederate",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "registerObjectInstanceWithRegions",
+      "negative_executed_count": 4,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a79.5",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 9,
+      "declared_exception_count": 10,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "InvalidRegion",
+        "InvalidRegionContext",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RegionNotCreatedByThisFederate",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "associateRegionsForUpdates",
+      "negative_executed_count": 6,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a79.6",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 8,
+      "declared_exception_count": 9,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "InvalidRegion",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RegionNotCreatedByThisFederate",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "unassociateRegionsForUpdates",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a79.7",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 10,
+      "declared_exception_count": 11,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "InvalidRegion",
+        "InvalidRegionContext",
+        "InvalidUpdateRateDesignator",
+        "NotConnected",
+        "ObjectClassNotDefined",
+        "RTIinternalError",
+        "RegionNotCreatedByThisFederate",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "subscribeObjectClassAttributesPassivelyWithRegions",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a79.8",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 10,
+      "declared_exception_count": 11,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "InvalidRegion",
+        "InvalidRegionContext",
+        "InvalidUpdateRateDesignator",
+        "NotConnected",
+        "ObjectClassNotDefined",
+        "RTIinternalError",
+        "RegionNotCreatedByThisFederate",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "subscribeObjectClassAttributesWithRegions",
+      "negative_executed_count": 4,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a79.8",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 8,
+      "declared_exception_count": 9,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "InvalidRegion",
+        "NotConnected",
+        "ObjectClassNotDefined",
+        "RTIinternalError",
+        "RegionNotCreatedByThisFederate",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "unsubscribeObjectClassAttributesWithRegions",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a79.9",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 6,
+      "declared_exception_count": 7,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectClassNotDefined",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "publishObjectClassAttributes",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a75.2",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 6,
+      "declared_exception_count": 7,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectClassNotDefined",
+        "OwnershipAcquisitionPending",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "unpublishObjectClass",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a75.3",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 7,
+      "declared_exception_count": 8,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectClassNotDefined",
+        "OwnershipAcquisitionPending",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "unpublishObjectClassAttributes",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a75.3",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InteractionClassNotDefined",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "publishInteractionClass",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a75.4",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InteractionClassNotDefined",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "unpublishInteractionClass",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a75.5",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 7,
+      "declared_exception_count": 8,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "InvalidUpdateRateDesignator",
+        "NotConnected",
+        "ObjectClassNotDefined",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "subscribeObjectClassAttributes",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a75.6",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 7,
+      "declared_exception_count": 8,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "InvalidUpdateRateDesignator",
+        "NotConnected",
+        "ObjectClassNotDefined",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "subscribeObjectClassAttributesPassively",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a75.6",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectClassNotDefined",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "unsubscribeObjectClass",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a75.7",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 6,
+      "declared_exception_count": 7,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectClassNotDefined",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "unsubscribeObjectClassAttributes",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a75.7",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 6,
+      "declared_exception_count": 7,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "FederateServiceInvocationsAreBeingReportedViaMOM",
+        "InteractionClassNotDefined",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "subscribeInteractionClass",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a75.8",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 6,
+      "declared_exception_count": 7,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "FederateServiceInvocationsAreBeingReportedViaMOM",
+        "InteractionClassNotDefined",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "subscribeInteractionClassPassively",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a75.8",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InteractionClassNotDefined",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "unsubscribeInteractionClass",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a75.9",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 6,
+      "declared_exception_count": 7,
+      "declared_exceptions": [
+        "CallNotAllowedFromWithinCallback",
+        "FederateNotExecutionMember",
+        "FederateOwnsAttributes",
+        "InvalidResignAction",
+        "NotConnected",
+        "OwnershipAcquisitionPending",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "resignFederationExecution",
+      "negative_executed_count": 6,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.10",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidFederateHandle",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "registerFederationSynchronizationPoint",
+      "negative_executed_count": 5,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.11",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress",
+        "SynchronizationPointLabelNotAnnounced"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "synchronizationPointAchieved",
+      "negative_executed_count": 4,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.14",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 7,
+      "declared_exception_count": 8,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "FederateUnableToUseTime",
+        "InvalidLogicalTime",
+        "LogicalTimeAlreadyPassed",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "requestFederationSave",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.16",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 4,
+      "declared_exception_count": 5,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveNotInitiated"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "federateSaveBegun",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.18",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 4,
+      "declared_exception_count": 5,
+      "declared_exceptions": [
+        "FederateHasNotBegunSave",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "federateSaveComplete",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.19",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 4,
+      "declared_exception_count": 5,
+      "declared_exceptions": [
+        "FederateHasNotBegunSave",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "federateSaveNotComplete",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.19",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "AlreadyConnected",
+        "CallNotAllowedFromWithinCallback",
+        "ConnectionFailed",
+        "InvalidLocalSettingsDesignator",
+        "RTIinternalError",
+        "UnsupportedCallbackModel"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "connect",
+      "negative_executed_count": 1,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.2",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "SaveNotInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "abortFederationSave",
+      "negative_executed_count": 1,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.21",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "queryFederationSaveStatus",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.22",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 4,
+      "declared_exception_count": 5,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "requestFederationRestore",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.24",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 4,
+      "declared_exception_count": 5,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreNotRequested",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "federateRestoreComplete",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.28",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 4,
+      "declared_exception_count": 5,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreNotRequested",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "federateRestoreNotComplete",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.28",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 3,
+      "declared_exceptions": [
+        "CallNotAllowedFromWithinCallback",
+        "FederateIsExecutionMember",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "disconnect",
+      "negative_executed_count": 1,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.3",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreNotInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "abortFederationRestore",
+      "negative_executed_count": 1,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.30",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "queryFederationRestoreStatus",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.31",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 9,
+      "declared_exception_count": 10,
+      "declared_exceptions": [
+        "CouldNotCreateLogicalTimeFactory",
+        "CouldNotOpenFDD",
+        "CouldNotOpenMIM",
+        "DesignatorIsHLAstandardMIM",
+        "ErrorReadingFDD",
+        "ErrorReadingMIM",
+        "FederationExecutionAlreadyExists",
+        "InconsistentFDD",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "createFederationExecution",
+      "negative_executed_count": 9,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.5",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 9,
+      "declared_exception_count": 10,
+      "declared_exceptions": [
+        "CouldNotCreateLogicalTimeFactory",
+        "CouldNotOpenFDD",
+        "CouldNotOpenMIM",
+        "DesignatorIsHLAstandardMIM",
+        "ErrorReadingFDD",
+        "ErrorReadingMIM",
+        "FederationExecutionAlreadyExists",
+        "InconsistentFDD",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "createFederationExecutionWithMIM",
+      "negative_executed_count": 9,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.5",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederatesCurrentlyJoined",
+        "FederationExecutionDoesNotExist",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "destroyFederationExecution",
+      "negative_executed_count": 1,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.6",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 1,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "listFederationExecutions",
+      "negative_executed_count": 1,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.7",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 11,
+      "declared_exception_count": 12,
+      "declared_exceptions": [
+        "CallNotAllowedFromWithinCallback",
+        "CouldNotCreateLogicalTimeFactory",
+        "CouldNotOpenFDD",
+        "ErrorReadingFDD",
+        "FederateAlreadyExecutionMember",
+        "FederateNameAlreadyInUse",
+        "FederationExecutionDoesNotExist",
+        "InconsistentFDD",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "joinFederationExecution",
+      "negative_executed_count": 8,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a74.9",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 8,
+      "declared_exception_count": 9,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "AttributeNotOwned",
+        "FederateNotExecutionMember",
+        "InvalidLogicalTime",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "updateAttributeValues",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.10",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 8,
+      "declared_exception_count": 9,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InteractionClassNotDefined",
+        "InteractionClassNotPublished",
+        "InteractionParameterNotDefined",
+        "InvalidLogicalTime",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "sendInteraction",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.12",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 7,
+      "declared_exception_count": 8,
+      "declared_exceptions": [
+        "DeletePrivilegeNotHeld",
+        "FederateNotExecutionMember",
+        "InvalidLogicalTime",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "deleteObjectInstance",
+      "negative_executed_count": 6,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.14",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 7,
+      "declared_exception_count": 8,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "FederateOwnsAttributes",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "OwnershipAcquisitionPending",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "localDeleteObjectInstance",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.16",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 7,
+      "declared_exception_count": 8,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectClassNotDefined",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "requestAttributeValueUpdate",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.19",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "IllegalName",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "reserveObjectInstanceName",
+      "negative_executed_count": 3,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.2",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 9,
+      "declared_exception_count": 10,
+      "declared_exceptions": [
+        "AttributeAlreadyBeingChanged",
+        "AttributeNotDefined",
+        "AttributeNotOwned",
+        "FederateNotExecutionMember",
+        "InvalidTransportationType",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "requestAttributeTransportationTypeChange",
+      "negative_executed_count": 3,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.23",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 6,
+      "declared_exception_count": 7,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "queryAttributeTransportationType",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.25",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 8,
+      "declared_exception_count": 9,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InteractionClassAlreadyBeingChanged",
+        "InteractionClassNotDefined",
+        "InteractionClassNotPublished",
+        "InvalidTransportationType",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "requestInteractionTransportationTypeChange",
+      "negative_executed_count": 3,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.27",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InteractionClassNotDefined",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "queryInteractionTransportationType",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.29",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectInstanceNameNotReserved",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "releaseObjectInstanceName",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.4",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 6,
+      "declared_exception_count": 7,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "IllegalName",
+        "NameSetWasEmpty",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "reserveMultipleObjectInstanceName",
+      "negative_executed_count": 3,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.5",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectInstanceNameNotReserved",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "releaseMultipleObjectInstanceName",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.7",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 8,
+      "declared_exception_count": 9,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectClassNotDefined",
+        "ObjectClassNotPublished",
+        "ObjectInstanceNameInUse",
+        "ObjectInstanceNameNotReserved",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "registerObjectInstance",
+      "negative_executed_count": 3,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a76.8",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 7,
+      "declared_exception_count": 8,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "AttributeNotOwned",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "attributeOwnershipReleaseDenied",
+      "negative_executed_count": 7,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.12",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 7,
+      "declared_exception_count": 8,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "AttributeNotOwned",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "attributeOwnershipDivestitureIfWanted",
+      "negative_executed_count": 7,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.13",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 8,
+      "declared_exception_count": 9,
+      "declared_exceptions": [
+        "AttributeDivestitureWasNotRequested",
+        "AttributeNotDefined",
+        "AttributeNotOwned",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "cancelNegotiatedAttributeOwnershipDivestiture",
+      "negative_executed_count": 8,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.14",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 8,
+      "declared_exception_count": 9,
+      "declared_exceptions": [
+        "AttributeAcquisitionWasNotRequested",
+        "AttributeAlreadyOwned",
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "cancelAttributeOwnershipAcquisition",
+      "negative_executed_count": 8,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.15",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 6,
+      "declared_exception_count": 7,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "queryAttributeOwnership",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.17",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 6,
+      "declared_exception_count": 7,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "isAttributeOwnedByFederate",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.19",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 7,
+      "declared_exception_count": 8,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "AttributeNotOwned",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "unconditionalAttributeOwnershipDivestiture",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.2",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 8,
+      "declared_exception_count": 9,
+      "declared_exceptions": [
+        "AttributeAlreadyBeingDivested",
+        "AttributeNotDefined",
+        "AttributeNotOwned",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "negotiatedAttributeOwnershipDivestiture",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.3",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 9,
+      "declared_exception_count": 10,
+      "declared_exceptions": [
+        "AttributeDivestitureWasNotRequested",
+        "AttributeNotDefined",
+        "AttributeNotOwned",
+        "FederateNotExecutionMember",
+        "NoAcquisitionPending",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "confirmDivestiture",
+      "negative_executed_count": 9,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.6",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 9,
+      "declared_exception_count": 10,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "AttributeNotPublished",
+        "FederateNotExecutionMember",
+        "FederateOwnsAttributes",
+        "NotConnected",
+        "ObjectClassNotPublished",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "attributeOwnershipAcquisition",
+      "negative_executed_count": 9,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.8",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 10,
+      "declared_exception_count": 11,
+      "declared_exceptions": [
+        "AttributeAlreadyBeingAcquired",
+        "AttributeNotDefined",
+        "AttributeNotPublished",
+        "FederateNotExecutionMember",
+        "FederateOwnsAttributes",
+        "NotConnected",
+        "ObjectClassNotPublished",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "attributeOwnershipAcquisitionIfAvailable",
+      "negative_executed_count": 10,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a77.9",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [],
+      "interface": "RTIambassador",
+      "method_name": "decodeAttributeHandle",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [],
+      "interface": "RTIambassador",
+      "method_name": "decodeDimensionHandle",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [],
+      "interface": "RTIambassador",
+      "method_name": "decodeFederateHandle",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [],
+      "interface": "RTIambassador",
+      "method_name": "decodeInteractionClassHandle",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [],
+      "interface": "RTIambassador",
+      "method_name": "decodeMessageRetractionHandle",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [],
+      "interface": "RTIambassador",
+      "method_name": "decodeObjectClassHandle",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [],
+      "interface": "RTIambassador",
+      "method_name": "decodeObjectInstanceHandle",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [],
+      "interface": "RTIambassador",
+      "method_name": "decodeParameterHandle",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [],
+      "interface": "RTIambassador",
+      "method_name": "decodeRegionHandle",
+      "negative_executed_count": 0,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getObjectInstanceName",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.10",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 4,
+      "declared_exception_count": 5,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidObjectClassHandle",
+        "NameNotFound",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getAttributeHandle",
+      "negative_executed_count": 4,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.11",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "InvalidAttributeHandle",
+        "InvalidObjectClassHandle",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getAttributeName",
+      "negative_executed_count": 3,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.12",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidUpdateRateDesignator",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getUpdateRateValue",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.13",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 4,
+      "declared_exception_count": 5,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getUpdateRateValueForAttribute",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.14",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NameNotFound",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getInteractionClassHandle",
+      "negative_executed_count": 3,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.15",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidInteractionClassHandle",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getInteractionClassName",
+      "negative_executed_count": 3,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.16",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 4,
+      "declared_exception_count": 5,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidInteractionClassHandle",
+        "NameNotFound",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getParameterHandle",
+      "negative_executed_count": 3,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.17",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InteractionParameterNotDefined",
+        "InvalidInteractionClassHandle",
+        "InvalidParameterHandle",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getParameterName",
+      "negative_executed_count": 3,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.18",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidOrderName",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getOrderType",
+      "negative_executed_count": 1,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.19",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 3,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getAutomaticResignDirective",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.2",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidOrderType",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getOrderName",
+      "negative_executed_count": 1,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.20",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidTransportationName",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getTransportationType",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.21",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidTransportationName",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getTransportationTypeHandle",
+      "negative_executed_count": 1,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.21",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidTransportationType",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getTransportationName",
+      "negative_executed_count": 1,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.22",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidTransportationType",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getTransportationTypeName",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.22",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "FederateNotExecutionMember",
+        "InvalidAttributeHandle",
+        "InvalidObjectClassHandle",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getAvailableDimensionsForClassAttribute",
+      "negative_executed_count": 3,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.23",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidInteractionClassHandle",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getAvailableDimensionsForInteractionClass",
+      "negative_executed_count": 1,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.24",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NameNotFound",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getDimensionHandle",
+      "negative_executed_count": 3,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.25",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidDimensionHandle",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getDimensionName",
+      "negative_executed_count": 3,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.26",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidDimensionHandle",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getDimensionUpperBound",
+      "negative_executed_count": 3,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.27",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidRegion",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getDimensionHandleSet",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.28",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 6,
+      "declared_exception_count": 7,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidRegion",
+        "NotConnected",
+        "RTIinternalError",
+        "RegionDoesNotContainSpecifiedDimension",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getRangeBounds",
+      "negative_executed_count": 4,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.29",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidResignAction",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "setAutomaticResignDirective",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.3",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 8,
+      "declared_exception_count": 9,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidRangeBound",
+        "InvalidRegion",
+        "NotConnected",
+        "RTIinternalError",
+        "RegionDoesNotContainSpecifiedDimension",
+        "RegionNotCreatedByThisFederate",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "setRangeBounds",
+      "negative_executed_count": 4,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.30",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidFederateHandle",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "normalizeFederateHandle",
+      "negative_executed_count": 1,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.31",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidServiceGroup",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "normalizeServiceGroup",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.32",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectClassRelevanceAdvisorySwitchIsOn",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "enableObjectClassRelevanceAdvisorySwitch",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.33",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectClassRelevanceAdvisorySwitchIsOff",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "disableObjectClassRelevanceAdvisorySwitch",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.34",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "AttributeRelevanceAdvisorySwitchIsOn",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "enableAttributeRelevanceAdvisorySwitch",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.35",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "AttributeRelevanceAdvisorySwitchIsOff",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "disableAttributeRelevanceAdvisorySwitch",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.36",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "AttributeScopeAdvisorySwitchIsOn",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "enableAttributeScopeAdvisorySwitch",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.37",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "AttributeScopeAdvisorySwitchIsOff",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "disableAttributeScopeAdvisorySwitch",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.38",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InteractionRelevanceAdvisorySwitchIsOn",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "enableInteractionRelevanceAdvisorySwitch",
+      "negative_executed_count": 5,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.39",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NameNotFound",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getFederateHandle",
+      "negative_executed_count": 3,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.4",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InteractionRelevanceAdvisorySwitchIsOff",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "disableInteractionRelevanceAdvisorySwitch",
+      "negative_executed_count": 5,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.40",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 1,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "CallNotAllowedFromWithinCallback",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "evokeCallback",
+      "negative_executed_count": 1,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.41",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 1,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "CallNotAllowedFromWithinCallback",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "evokeMultipleCallbacks",
+      "negative_executed_count": 1,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.42",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 3,
+      "declared_exceptions": [
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "enableCallbacks",
+      "negative_executed_count": 2,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.43",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 3,
+      "declared_exceptions": [
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "disableCallbacks",
+      "negative_executed_count": 2,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getAttributeHandleFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getAttributeHandleSetFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getAttributeHandleValueMapFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getAttributeSetRegionSetPairListFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getDimensionHandleFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getDimensionHandleSetFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getFederateHandleFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getFederateHandleSetFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 0,
+      "declared_exception_count": 0,
+      "declared_exceptions": [],
+      "interface": "RTIambassador",
+      "method_name": "getHLAversion",
+      "negative_executed_count": 1,
+      "negative_path_status": "not-applicable",
+      "rationale": "No declared RTI exception matrix is present for this row.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getInteractionClassHandleFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getObjectClassHandleFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getObjectInstanceHandleFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getParameterHandleFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getParameterHandleValueMapFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getRegionHandleSetFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getTimeFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 2,
+      "declared_exception_count": 2,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getTransportationTypeHandleFactory",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 4,
+      "declared_exception_count": 5,
+      "declared_exceptions": [
+        "FederateHandleNotKnown",
+        "FederateNotExecutionMember",
+        "InvalidFederateHandle",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getFederateName",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.5",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NameNotFound",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getObjectClassHandle",
+      "negative_executed_count": 3,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.6",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidObjectClassHandle",
+        "NotConnected",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getObjectClassName",
+      "negative_executed_count": 3,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.7",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getKnownObjectClassHandle",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.8",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 3,
+      "declared_exception_count": 4,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "getObjectInstanceHandle",
+      "negative_executed_count": 2,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a710.9",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 9,
+      "declared_exception_count": 10,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InTimeAdvancingState",
+        "InvalidLogicalTime",
+        "LogicalTimeAlreadyPassed",
+        "NotConnected",
+        "RTIinternalError",
+        "RequestForTimeConstrainedPending",
+        "RequestForTimeRegulationPending",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "nextMessageRequest",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.10",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 9,
+      "declared_exception_count": 10,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InTimeAdvancingState",
+        "InvalidLogicalTime",
+        "LogicalTimeAlreadyPassed",
+        "NotConnected",
+        "RTIinternalError",
+        "RequestForTimeConstrainedPending",
+        "RequestForTimeRegulationPending",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "nextMessageRequestAvailable",
+      "negative_executed_count": 1,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.11",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 9,
+      "declared_exception_count": 10,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InTimeAdvancingState",
+        "InvalidLogicalTime",
+        "LogicalTimeAlreadyPassed",
+        "NotConnected",
+        "RTIinternalError",
+        "RequestForTimeConstrainedPending",
+        "RequestForTimeRegulationPending",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "flushQueueRequest",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.12",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "AsynchronousDeliveryAlreadyEnabled",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "enableAsynchronousDelivery",
+      "negative_executed_count": 5,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.14",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "AsynchronousDeliveryAlreadyDisabled",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "disableAsynchronousDelivery",
+      "negative_executed_count": 5,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.15",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 4,
+      "declared_exception_count": 5,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "queryGALT",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.16",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 4,
+      "declared_exception_count": 5,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "queryLogicalTime",
+      "negative_executed_count": 1,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.17",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 4,
+      "declared_exception_count": 5,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "queryLITS",
+      "negative_executed_count": 1,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.18",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 7,
+      "declared_exception_count": 8,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InTimeAdvancingState",
+        "InvalidLookahead",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress",
+        "TimeRegulationIsNotEnabled"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "modifyLookahead",
+      "negative_executed_count": 4,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.19",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 8,
+      "declared_exception_count": 9,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InTimeAdvancingState",
+        "InvalidLookahead",
+        "NotConnected",
+        "RTIinternalError",
+        "RequestForTimeRegulationPending",
+        "RestoreInProgress",
+        "SaveInProgress",
+        "TimeRegulationAlreadyEnabled"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "enableTimeRegulation",
+      "negative_executed_count": 8,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.2",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress",
+        "TimeRegulationIsNotEnabled"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "queryLookahead",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.20",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 7,
+      "declared_exception_count": 8,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InvalidMessageRetractionHandle",
+        "MessageCanNoLongerBeRetracted",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress",
+        "TimeRegulationIsNotEnabled"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "retract",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.21",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 7,
+      "declared_exception_count": 8,
+      "declared_exceptions": [
+        "AttributeNotDefined",
+        "AttributeNotOwned",
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "ObjectInstanceNotKnown",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "changeAttributeOrderType",
+      "negative_executed_count": 7,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.23",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 6,
+      "declared_exception_count": 7,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InteractionClassNotDefined",
+        "InteractionClassNotPublished",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "changeInteractionOrderType",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.24",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress",
+        "TimeRegulationIsNotEnabled"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "disableTimeRegulation",
+      "negative_executed_count": 5,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.4",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 7,
+      "declared_exception_count": 8,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InTimeAdvancingState",
+        "NotConnected",
+        "RTIinternalError",
+        "RequestForTimeConstrainedPending",
+        "RestoreInProgress",
+        "SaveInProgress",
+        "TimeConstrainedAlreadyEnabled"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "enableTimeConstrained",
+      "negative_executed_count": 7,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.5",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 5,
+      "declared_exception_count": 6,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "NotConnected",
+        "RTIinternalError",
+        "RestoreInProgress",
+        "SaveInProgress",
+        "TimeConstrainedIsNotEnabled"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "disableTimeConstrained",
+      "negative_executed_count": 5,
+      "negative_path_status": "complete",
+      "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.7",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 9,
+      "declared_exception_count": 10,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InTimeAdvancingState",
+        "InvalidLogicalTime",
+        "LogicalTimeAlreadyPassed",
+        "NotConnected",
+        "RTIinternalError",
+        "RequestForTimeConstrainedPending",
+        "RequestForTimeRegulationPending",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "timeAdvanceRequest",
+      "negative_executed_count": 1,
+      "negative_path_status": "partial",
+      "rationale": "Some negative-path execution exists, but completeness is still partial.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.8",
+      "verification_status": "focused-executable-tests"
+    },
+    {
+      "actionable_exception_count": 9,
+      "declared_exception_count": 10,
+      "declared_exceptions": [
+        "FederateNotExecutionMember",
+        "InTimeAdvancingState",
+        "InvalidLogicalTime",
+        "LogicalTimeAlreadyPassed",
+        "NotConnected",
+        "RTIinternalError",
+        "RequestForTimeConstrainedPending",
+        "RequestForTimeRegulationPending",
+        "RestoreInProgress",
+        "SaveInProgress"
+      ],
+      "interface": "RTIambassador",
+      "method_name": "timeAdvanceRequestAvailable",
+      "negative_executed_count": 0,
+      "negative_path_status": "mapped-not-exhaustive",
+      "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
+      "section_ref": "IEEE 1516.1-2010 \u00a78.9",
+      "verification_status": "focused-executable-tests"
+    }
+  ],
+  "status_counts": {
+    "complete": 34,
+    "mapped-not-exhaustive": 60,
+    "not-applicable": 65,
+    "partial": 58
+  }
+}

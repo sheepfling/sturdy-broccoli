@@ -1,0 +1,242 @@
+{
+  "backend_summaries": {
+    "certi-native": {
+      "smoke-gated-wrapper": 1
+    },
+    "grpc-hosted-python": {
+      "partial": 2
+    },
+    "java-shim-jpype": {
+      "complete-actionable": 1
+    },
+    "java-shim-py4j": {
+      "complete-actionable": 1
+    },
+    "pitch-jpype": {
+      "smoke-gated-wrapper": 1
+    },
+    "pitch-py4j": {
+      "smoke-gated-wrapper": 1
+    },
+    "python-inmemory": {
+      "complete-actionable": 4
+    },
+    "rest-hosted-python": {
+      "partial": 2
+    }
+  },
+  "row_count": 13,
+  "rows": [
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
+      "notes": "Reference backend now has a shared-harness support factory/decode matrix plus existing traceability coverage for the broader support lookup surface.",
+      "scope": "reference support lookup slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a710.4",
+        "IEEE 1516.1-2010 \u00a710.32"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "support-lookups",
+      "status": "complete-actionable"
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/transport/test_rest_transport.py"
+      ],
+      "notes": "REST transport exercises hosted Python positive-path federation/object/time flows, but the current CERTI-style transport facade does not expose the full support-service lookup surface such as getFederateHandle, so this slice remains only partially matrixed.",
+      "scope": "hosted support lookup slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a710.4",
+        "IEEE 1516.1-2010 \u00a710.32"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "support-lookups",
+      "status": "partial"
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "notes": "gRPC transport exercises hosted Python positive-path federation/object/time flows, but the current CERTI-style transport facade does not expose the full support-service lookup surface such as getFederateHandle, so this slice remains only partially matrixed.",
+      "scope": "hosted support lookup slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a710.4",
+        "IEEE 1516.1-2010 \u00a710.32"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "support-lookups",
+      "status": "partial"
+    },
+    {
+      "backend_family": "java-shim",
+      "backend_id": "java-shim-jpype",
+      "evidence_tests": [
+        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
+        "tests/vendors/test_java_profile_backend_matrix.py::test_inprocess_java_shim_support_factory_and_decode_scenario"
+      ],
+      "notes": "Java shim JPype now runs the shared support-services scenario in-process for the lookup subset it implements, giving executable Section 10 support-lookup coverage without vendor runtime dependencies.",
+      "scope": "java shim support lookup slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a710.4",
+        "IEEE 1516.1-2010 \u00a710.32"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "support-lookups",
+      "status": "complete-actionable"
+    },
+    {
+      "backend_family": "java-shim",
+      "backend_id": "java-shim-py4j",
+      "evidence_tests": [
+        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
+        "tests/vendors/test_java_profile_backend_matrix.py::test_inprocess_java_shim_support_factory_and_decode_scenario"
+      ],
+      "notes": "Java shim Py4J now runs the shared support-services scenario in-process for the lookup subset it implements, giving executable Section 10 support-lookup coverage without vendor runtime dependencies.",
+      "scope": "java shim support lookup slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a710.4",
+        "IEEE 1516.1-2010 \u00a710.32"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "support-lookups",
+      "status": "complete-actionable"
+    },
+    {
+      "backend_family": "vendor-certi",
+      "backend_id": "certi-native",
+      "evidence_tests": [
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_support_factory_and_decode_matrix"
+      ],
+      "notes": "CERTI native now has a thin real-runtime wrapper for the shared support-services scenario over the lookup subset exposed by the current facade, but local proof is still gated on enabling real vendor smoke and preflight.",
+      "scope": "vendor support lookup slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a710.4",
+        "IEEE 1516.1-2010 \u00a710.32"
+      ],
+      "session_status": "skipped-in-this-session",
+      "slice_id": "support-lookups",
+      "status": "smoke-gated-wrapper"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-jpype",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
+      "notes": "Pitch JPype now has a thin real-runtime wrapper for the shared support factory/decode scenario, but local proof is still gated on enabling real vendor smoke and preflight.",
+      "scope": "vendor support lookup slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a710.4",
+        "IEEE 1516.1-2010 \u00a710.32"
+      ],
+      "session_status": "skipped-in-this-session",
+      "slice_id": "support-lookups",
+      "status": "smoke-gated-wrapper"
+    },
+    {
+      "backend_family": "vendor-pitch-java-bridge",
+      "backend_id": "pitch-py4j",
+      "evidence_tests": [
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
+      ],
+      "notes": "Pitch Py4J now has a thin real-runtime wrapper for the shared support factory/decode scenario, but local proof is still gated on enabling real vendor smoke and preflight.",
+      "scope": "vendor support lookup slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a710.4",
+        "IEEE 1516.1-2010 \u00a710.32"
+      ],
+      "session_status": "skipped-in-this-session",
+      "slice_id": "support-lookups",
+      "status": "smoke-gated-wrapper"
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "notes": "Reference backend now enforces save/restore callback-control blocking and within-callback evoke rejection.",
+      "scope": "reference callback-control slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a710.41",
+        "IEEE 1516.1-2010 \u00a710.44"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "support-callback-control",
+      "status": "complete-actionable"
+    },
+    {
+      "backend_family": "hosted-python-rest",
+      "backend_id": "rest-hosted-python",
+      "evidence_tests": [
+        "tests/transport/test_rest_transport.py"
+      ],
+      "notes": "REST transport exercises evoke paths positively, but the support callback-control slice is not yet matrixed to the same depth.",
+      "scope": "hosted callback-control slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a710.41",
+        "IEEE 1516.1-2010 \u00a710.44"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "support-callback-control",
+      "status": "partial"
+    },
+    {
+      "backend_family": "hosted-python-grpc",
+      "backend_id": "grpc-hosted-python",
+      "evidence_tests": [
+        "tests/transport/test_grpc_transport_python_server.py"
+      ],
+      "notes": "gRPC transport exercises evoke paths positively, but the support callback-control slice is not yet matrixed to the same depth.",
+      "scope": "hosted callback-control slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a710.41",
+        "IEEE 1516.1-2010 \u00a710.44"
+      ],
+      "session_status": "not-run-in-this-session",
+      "slice_id": "support-callback-control",
+      "status": "partial"
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "notes": "Reference backend has explicit advisory on/off and save/restore negative coverage.",
+      "scope": "reference advisory-switch slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a710.33",
+        "IEEE 1516.1-2010 \u00a710.40"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "support-advisories",
+      "status": "complete-actionable"
+    },
+    {
+      "backend_family": "python-reference",
+      "backend_id": "python-inmemory",
+      "evidence_tests": [
+        "tests/backends/test_python_backend_object_ownership_extended.py"
+      ],
+      "notes": "Reference backend factory getters now have explicit connected vs joined negative coverage.",
+      "scope": "reference factory slice",
+      "section_refs": [
+        "IEEE 1516.1-2010 \u00a710.44"
+      ],
+      "session_status": "passing-in-this-session",
+      "slice_id": "support-factories",
+      "status": "complete-actionable"
+    }
+  ]
+}

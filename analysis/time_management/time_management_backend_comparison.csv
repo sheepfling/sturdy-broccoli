@@ -1,0 +1,37 @@
+backend,behavior,status,evidence,notes
+python,valid TSO lower bound,PASS,reports/time_management_compliance_matrix.csv,Pure Python backend covered by closeout unit/API/scenario gates.
+pitch,valid TSO lower bound,NOT_TESTED,,Runtime-dependent vendor bridge; run vendor matrix when Pitch runtime is available.
+certi,valid TSO lower bound,NOT_TESTED,,Runtime-dependent vendor bridge; run real CERTI matrix on a host with rtig permission.
+python,timestamp-order queue,PASS,reports/time_management_compliance_matrix.csv,Pure Python backend covered by closeout unit/API/scenario gates.
+pitch,timestamp-order queue,NOT_TESTED,,Runtime-dependent vendor bridge; run vendor matrix when Pitch runtime is available.
+certi,timestamp-order queue,NOT_TESTED,,Runtime-dependent vendor bridge; run real CERTI matrix on a host with rtig permission.
+python,timeAdvanceRequest,PASS,reports/time_management_compliance_matrix.csv,Pure Python backend covered by closeout unit/API/scenario gates.
+pitch,timeAdvanceRequest,NOT_TESTED,,Runtime-dependent vendor bridge; run vendor matrix when Pitch runtime is available.
+certi,timeAdvanceRequest,NOT_TESTED,,Runtime-dependent vendor bridge; run real CERTI matrix on a host with rtig permission.
+python,timeAdvanceRequestAvailable,PASS,reports/time_management_compliance_matrix.csv,Pure Python backend covered by closeout unit/API/scenario gates.
+pitch,timeAdvanceRequestAvailable,NOT_TESTED,,Runtime-dependent vendor bridge; run vendor matrix when Pitch runtime is available.
+certi,timeAdvanceRequestAvailable,NOT_TESTED,,Runtime-dependent vendor bridge; run real CERTI matrix on a host with rtig permission.
+python,nextMessageRequest,PASS,reports/time_management_compliance_matrix.csv,Pure Python backend covered by closeout unit/API/scenario gates.
+pitch,nextMessageRequest,NOT_TESTED,,Runtime-dependent vendor bridge; run vendor matrix when Pitch runtime is available.
+certi,nextMessageRequest,NOT_TESTED,,Runtime-dependent vendor bridge; run real CERTI matrix on a host with rtig permission.
+python,nextMessageRequestAvailable,PASS,reports/time_management_compliance_matrix.csv,Pure Python backend covered by closeout unit/API/scenario gates.
+pitch,nextMessageRequestAvailable,NOT_TESTED,,Runtime-dependent vendor bridge; run vendor matrix when Pitch runtime is available.
+certi,nextMessageRequestAvailable,NOT_TESTED,,Runtime-dependent vendor bridge; run real CERTI matrix on a host with rtig permission.
+python,flushQueueRequest,PASS,reports/time_management_compliance_matrix.csv,Pure Python backend covered by closeout unit/API/scenario gates.
+pitch,flushQueueRequest,NOT_TESTED,,Runtime-dependent vendor bridge; run vendor matrix when Pitch runtime is available.
+certi,flushQueueRequest,NOT_TESTED,,Runtime-dependent vendor bridge; run real CERTI matrix on a host with rtig permission.
+python,queryGALT,PASS,reports/time_management_compliance_matrix.csv,Pure Python backend covered by closeout unit/API/scenario gates.
+pitch,queryGALT,NOT_TESTED,,Runtime-dependent vendor bridge; run vendor matrix when Pitch runtime is available.
+certi,queryGALT,NOT_TESTED,,Runtime-dependent vendor bridge; run real CERTI matrix on a host with rtig permission.
+python,queryLogicalTime,PASS,reports/time_management_compliance_matrix.csv,Pure Python backend covered by closeout unit/API/scenario gates.
+pitch,queryLogicalTime,NOT_TESTED,,Runtime-dependent vendor bridge; run vendor matrix when Pitch runtime is available.
+certi,queryLogicalTime,NOT_TESTED,,Runtime-dependent vendor bridge; run real CERTI matrix on a host with rtig permission.
+python,queryLITS,PASS,reports/time_management_compliance_matrix.csv,Pure Python backend covered by closeout unit/API/scenario gates.
+pitch,queryLITS,NOT_TESTED,,Runtime-dependent vendor bridge; run vendor matrix when Pitch runtime is available.
+certi,queryLITS,NOT_TESTED,,Runtime-dependent vendor bridge; run real CERTI matrix on a host with rtig permission.
+python,query/modify lookahead,PASS,reports/time_management_compliance_matrix.csv,Pure Python backend covered by closeout unit/API/scenario gates.
+pitch,query/modify lookahead,NOT_TESTED,,Runtime-dependent vendor bridge; run vendor matrix when Pitch runtime is available.
+certi,query/modify lookahead,NOT_TESTED,,Runtime-dependent vendor bridge; run real CERTI matrix on a host with rtig permission.
+python,requestRetraction/retract,PASS,reports/time_management_compliance_matrix.csv,Pure Python backend covered by closeout unit/API/scenario gates.
+pitch,requestRetraction/retract,NOT_TESTED,,Runtime-dependent vendor bridge; run vendor matrix when Pitch runtime is available.
+certi,requestRetraction/retract,NOT_TESTED,,Runtime-dependent vendor bridge; run real CERTI matrix on a host with rtig permission.

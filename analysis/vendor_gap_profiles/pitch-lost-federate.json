@@ -1,0 +1,22 @@
+{
+  "area": "lost_federate",
+  "blocker_summary": "The canonical ./tools/pitch lost-federate-probe lane is currently blocked on this surface because Docker is unreachable and the required CRC/FedPro loopback ports are not permitted.",
+  "classification": "known-gap",
+  "docs_ref": "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+  "next_steps": [
+    "./tools/pitch preflight",
+    "./tools/pitch lost-federate-probe",
+    "./tools/pitch lost-federate-review 5"
+  ],
+  "operator_artifact_refs": [
+    "analysis/preflight_artifacts/pitch-preflight.json",
+    "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
+    "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md"
+  ],
+  "operator_state": "environment-blocked",
+  "profile": "pitch-lost-federate",
+  "recommended_operator_route": "./tools/pitch lost-federate",
+  "status": "backend-split",
+  "summary": "Pitch real-runtime lost-federate parity remains blocked: both bridge routes now have executable probe paths, but the current fault injectors still fail to produce observer-visible lost-federate evidence, and JPype shows session auto-resume instead of stable loss.",
+  "vendor": "pitch"
+}

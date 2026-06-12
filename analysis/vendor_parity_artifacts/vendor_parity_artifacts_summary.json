@@ -1,0 +1,1043 @@
+{
+  "artifact_count": 34,
+  "artifacts": [
+    {
+      "artifact_kind": "script",
+      "evidence_tier": "shared",
+      "exists": true,
+      "note": "Main real-runtime smoke/profile runner for CERTI and Pitch.",
+      "path": "scripts/ci/vendor_runtime_smoke.sh",
+      "profile": "shared",
+      "required": true,
+      "role": "runtime smoke entrypoint",
+      "vendor_family": "shared"
+    },
+    {
+      "artifact_kind": "script",
+      "evidence_tier": "shared",
+      "exists": true,
+      "note": "Highest-value vendor edge slice wrapper.",
+      "path": "tools/vendor-edge",
+      "profile": "shared",
+      "required": true,
+      "role": "edge matrix operator wrapper",
+      "vendor_family": "shared"
+    },
+    {
+      "artifact_kind": "test",
+      "evidence_tier": "shared",
+      "exists": true,
+      "note": "Backend-neutral real vendor runtime smoke anchor.",
+      "path": "tests/vendors/test_real_vendor_runtime_smoke.py",
+      "profile": "shared",
+      "required": true,
+      "role": "smoke test",
+      "vendor_family": "shared"
+    },
+    {
+      "artifact_kind": "doc",
+      "evidence_tier": "shared",
+      "exists": true,
+      "note": "Clause-level parity and vendor status summary.",
+      "path": "docs/backend_conformance_matrix.md",
+      "profile": "shared",
+      "required": true,
+      "role": "parity matrix",
+      "vendor_family": "shared"
+    },
+    {
+      "artifact_kind": "doc",
+      "evidence_tier": "shared",
+      "exists": true,
+      "note": "Supported vendor/runtime families and route inventory.",
+      "path": "docs/rti_options_and_test_matrix.md",
+      "profile": "shared",
+      "required": true,
+      "role": "runtime options matrix",
+      "vendor_family": "shared"
+    },
+    {
+      "artifact_kind": "script",
+      "evidence_tier": "shared",
+      "exists": true,
+      "note": "Machine-readable readiness classifier over vendor preflight artifacts.",
+      "path": "tools/vendor-state",
+      "profile": "shared",
+      "required": true,
+      "role": "preflight classifier wrapper",
+      "vendor_family": "shared"
+    },
+    {
+      "artifact_kind": "script",
+      "evidence_tier": "shared",
+      "exists": true,
+      "note": "Repeated-run stability harness for dedicated vendor probe profiles.",
+      "path": "scripts/ci/vendor_probe_stability.sh",
+      "profile": "shared",
+      "required": true,
+      "role": "probe stability entrypoint",
+      "vendor_family": "shared"
+    },
+    {
+      "artifact_kind": "script",
+      "evidence_tier": "shared",
+      "exists": true,
+      "note": "Promotion-review artifact writer over repeated-run vendor probe evidence.",
+      "path": "tools/vendor-probe-review",
+      "profile": "shared",
+      "required": true,
+      "role": "promotion review operator wrapper",
+      "vendor_family": "shared"
+    },
+    {
+      "artifact_kind": "preflight",
+      "evidence_tier": "shared",
+      "exists": true,
+      "note": "Optional machine-readable CERTI environment snapshot.",
+      "path": "analysis/preflight_artifacts/certi-preflight.json",
+      "profile": "shared",
+      "required": false,
+      "role": "preflight snapshot",
+      "vendor_family": "shared"
+    },
+    {
+      "artifact_kind": "preflight",
+      "evidence_tier": "shared",
+      "exists": true,
+      "note": "Optional machine-readable Pitch environment snapshot.",
+      "path": "analysis/preflight_artifacts/pitch-preflight.json",
+      "profile": "shared",
+      "required": false,
+      "role": "preflight snapshot",
+      "vendor_family": "shared"
+    },
+    {
+      "artifact_kind": "stability-summary",
+      "evidence_tier": "probe",
+      "exists": false,
+      "note": "Optional repeated-run stability summary for the CERTI save/restore probe.",
+      "path": "analysis/vendor_probe_stability/certi-save-restore-probe/vendor_probe_stability_summary.json",
+      "profile": "certi-save-restore-probe",
+      "required": false,
+      "role": "probe stability summary",
+      "vendor_family": "certi"
+    },
+    {
+      "artifact_kind": "stability-summary",
+      "evidence_tier": "probe",
+      "exists": false,
+      "note": "Optional repeated-run stability summary for the CERTI DDM probe.",
+      "path": "analysis/vendor_probe_stability/certi-ddm-probe/vendor_probe_stability_summary.json",
+      "profile": "certi-ddm-probe",
+      "required": false,
+      "role": "probe stability summary",
+      "vendor_family": "certi"
+    },
+    {
+      "artifact_kind": "stability-summary",
+      "evidence_tier": "probe",
+      "exists": false,
+      "note": "Optional repeated-run stability summary for the Pitch save/restore probe.",
+      "path": "analysis/vendor_probe_stability/pitch-save-restore-probe/vendor_probe_stability_summary.json",
+      "profile": "pitch-save-restore-probe",
+      "required": false,
+      "role": "probe stability summary",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_kind": "stability-summary",
+      "evidence_tier": "probe",
+      "exists": false,
+      "note": "Optional repeated-run stability summary for the Pitch DDM probe.",
+      "path": "analysis/vendor_probe_stability/pitch-ddm-probe/vendor_probe_stability_summary.json",
+      "profile": "pitch-ddm-probe",
+      "required": false,
+      "role": "probe stability summary",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_kind": "stability-summary",
+      "evidence_tier": "probe",
+      "exists": false,
+      "note": "Optional repeated-run stability summary for the Pitch negotiated-ownership probe.",
+      "path": "analysis/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json",
+      "profile": "pitch-negotiated-probe",
+      "required": false,
+      "role": "probe stability summary",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_kind": "stability-summary",
+      "evidence_tier": "probe",
+      "exists": false,
+      "note": "Optional repeated-run stability summary for the Pitch lost-federate probe.",
+      "path": "analysis/vendor_probe_stability/pitch-lost-federate-probe/vendor_probe_stability_summary.json",
+      "profile": "pitch-lost-federate-probe",
+      "required": false,
+      "role": "probe stability summary",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_kind": "promotion-review",
+      "evidence_tier": "shared",
+      "exists": false,
+      "note": "Optional promotion-review summary comparing repeated-run probe evidence against documented conformance stance.",
+      "path": "analysis/vendor_probe_promotion_review/vendor_probe_promotion_review_summary.json",
+      "profile": "shared",
+      "required": false,
+      "role": "probe promotion review summary",
+      "vendor_family": "shared"
+    },
+    {
+      "artifact_kind": "gap-profile",
+      "evidence_tier": "known-gap",
+      "exists": false,
+      "note": "Optional machine-readable CERTI save/restore known-gap profile.",
+      "path": "analysis/vendor_gap_profiles/certi-save-restore.json",
+      "profile": "certi-save-restore",
+      "required": false,
+      "role": "known gap profile",
+      "vendor_family": "certi"
+    },
+    {
+      "artifact_kind": "gap-profile",
+      "evidence_tier": "known-gap",
+      "exists": false,
+      "note": "Optional machine-readable CERTI DDM known-gap profile.",
+      "path": "analysis/vendor_gap_profiles/certi-ddm.json",
+      "profile": "certi-ddm",
+      "required": false,
+      "role": "known gap profile",
+      "vendor_family": "certi"
+    },
+    {
+      "artifact_kind": "gap-profile",
+      "evidence_tier": "known-gap",
+      "exists": false,
+      "note": "Optional machine-readable Pitch save/restore known-gap profile.",
+      "path": "analysis/vendor_gap_profiles/pitch-save-restore.json",
+      "profile": "pitch-save-restore",
+      "required": false,
+      "role": "known gap profile",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_kind": "gap-profile",
+      "evidence_tier": "known-gap",
+      "exists": false,
+      "note": "Optional machine-readable Pitch DDM known-gap profile.",
+      "path": "analysis/vendor_gap_profiles/pitch-ddm.json",
+      "profile": "pitch-ddm",
+      "required": false,
+      "role": "known gap profile",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_kind": "gap-profile",
+      "evidence_tier": "known-gap",
+      "exists": false,
+      "note": "Optional machine-readable Pitch negotiated-ownership known-gap profile.",
+      "path": "analysis/vendor_gap_profiles/pitch-negotiated.json",
+      "profile": "pitch-negotiated",
+      "required": false,
+      "role": "known gap profile",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_kind": "gap-profile",
+      "evidence_tier": "known-gap",
+      "exists": true,
+      "note": "Optional machine-readable Pitch lost-federate known-gap profile.",
+      "path": "analysis/vendor_gap_profiles/pitch-lost-federate.json",
+      "profile": "pitch-lost-federate",
+      "required": false,
+      "role": "known gap profile",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_kind": "test",
+      "evidence_tier": "promoted",
+      "exists": true,
+      "note": "Real CERTI exchange scenario parity slice.",
+      "path": "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+      "profile": "certi-compare",
+      "required": true,
+      "role": "exchange parity",
+      "vendor_family": "certi"
+    },
+    {
+      "artifact_kind": "test",
+      "evidence_tier": "promoted",
+      "exists": true,
+      "note": "Real CERTI time-management compare slice.",
+      "path": "tests/vendors/test_certi_real_backend_time_matrix.py",
+      "profile": "certi-compare",
+      "required": true,
+      "role": "time parity",
+      "vendor_family": "certi"
+    },
+    {
+      "artifact_kind": "test",
+      "evidence_tier": "promoted",
+      "exists": true,
+      "note": "Real CERTI ownership compare slice.",
+      "path": "tests/vendors/test_certi_real_backend_ownership_matrix.py",
+      "profile": "certi-compare",
+      "required": true,
+      "role": "ownership parity",
+      "vendor_family": "certi"
+    },
+    {
+      "artifact_kind": "support",
+      "evidence_tier": "promoted",
+      "exists": true,
+      "note": "Shared CERTI runtime guards and helpers.",
+      "path": "tests/vendors/certi_real_backend_matrix_support.py",
+      "profile": "certi-compare",
+      "required": true,
+      "role": "shared matrix helpers",
+      "vendor_family": "certi"
+    },
+    {
+      "artifact_kind": "doc",
+      "evidence_tier": "promoted",
+      "exists": true,
+      "note": "Operational runbook for CERTI compare workflows.",
+      "path": "packages/hla2010-rti-certi/docs/certi_section8_runbook.md",
+      "profile": "certi-compare",
+      "required": true,
+      "role": "runbook",
+      "vendor_family": "certi"
+    },
+    {
+      "artifact_kind": "doc",
+      "evidence_tier": "promoted",
+      "exists": true,
+      "note": "Clause-level CERTI evidence and traceability context.",
+      "path": "packages/hla2010-rti-certi/docs/certi_spec_traceability.md",
+      "profile": "certi-compare",
+      "required": true,
+      "role": "traceability note",
+      "vendor_family": "certi"
+    },
+    {
+      "artifact_kind": "doc",
+      "evidence_tier": "promoted",
+      "exists": true,
+      "note": "Current negotiated ownership divergence notes for CERTI.",
+      "path": "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md",
+      "profile": "certi-compare",
+      "required": true,
+      "role": "vendor findings",
+      "vendor_family": "certi"
+    },
+    {
+      "artifact_kind": "test",
+      "evidence_tier": "promoted",
+      "exists": true,
+      "note": "Real Pitch backend matrix across exchange, time, sync, and ownership slices.",
+      "path": "tests/vendors/test_pitch_real_backend_matrix.py",
+      "profile": "pitch",
+      "required": true,
+      "role": "exchange time ownership parity",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_kind": "doc",
+      "evidence_tier": "promoted",
+      "exists": true,
+      "note": "Shortest supported Pitch runtime activation path.",
+      "path": "packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md",
+      "profile": "pitch",
+      "required": true,
+      "role": "quickstart",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_kind": "doc",
+      "evidence_tier": "promoted",
+      "exists": true,
+      "note": "Pitch operator decision tree and environment branching.",
+      "path": "packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md",
+      "profile": "pitch",
+      "required": true,
+      "role": "decision tree",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_kind": "doc",
+      "evidence_tier": "promoted",
+      "exists": true,
+      "note": "Current negotiated ownership divergence notes for Pitch.",
+      "path": "packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",
+      "profile": "pitch",
+      "required": true,
+      "role": "vendor findings",
+      "vendor_family": "pitch"
+    }
+  ],
+  "existing_count": 22,
+  "gap_profiles": {
+    "certi-ddm": null,
+    "certi-save-restore": null,
+    "pitch-ddm": null,
+    "pitch-lost-federate": {
+      "area": "lost_federate",
+      "blocker_summary": "The canonical ./tools/pitch lost-federate-probe lane is currently blocked on this surface because Docker is unreachable and the required CRC/FedPro loopback ports are not permitted.",
+      "classification": "known-gap",
+      "docs_ref": "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+      "next_steps": [
+        "./tools/pitch preflight",
+        "./tools/pitch lost-federate-probe",
+        "./tools/pitch lost-federate-review 5"
+      ],
+      "operator_artifact_refs": [
+        "analysis/preflight_artifacts/pitch-preflight.json",
+        "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
+        "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md"
+      ],
+      "operator_state": "environment-blocked",
+      "path": "analysis/vendor_gap_profiles/pitch-lost-federate.json",
+      "profile": "pitch-lost-federate",
+      "recommended_operator_route": "./tools/pitch lost-federate",
+      "status": "backend-split",
+      "vendor": "pitch"
+    },
+    "pitch-negotiated": null,
+    "pitch-save-restore": null
+  },
+  "missing_required_count": 0,
+  "preflight": {
+    "certi": {
+      "environment": "loopback-blocked",
+      "exit_code": 1,
+      "path": "analysis/preflight_artifacts/certi-preflight.json",
+      "result": "real CERTI will skip",
+      "tool": "certi-preflight"
+    },
+    "pitch": {
+      "environment": "docker-blocked",
+      "exit_code": 1,
+      "path": "analysis/preflight_artifacts/pitch-preflight.json",
+      "result": "not ready; fix the blocked prerequisite(s) above and rerun",
+      "tool": "pitch-preflight"
+    }
+  },
+  "probe_promotion_review": null,
+  "probe_stability": {
+    "certi-ddm-probe": null,
+    "certi-save-restore-probe": null,
+    "pitch-ddm-probe": null,
+    "pitch-lost-federate-probe": null,
+    "pitch-negotiated-probe": null,
+    "pitch-save-restore-probe": null
+  },
+  "profile_commands": [
+    {
+      "command": "./tools/certi-easy smoke compare",
+      "evidence_tier": "promoted",
+      "profile": "certi-compare",
+      "purpose": "Run the current upstream-vs-patched CERTI compare slice.",
+      "vendor_family": "certi"
+    },
+    {
+      "command": "./tools/pitch smoke",
+      "evidence_tier": "promoted",
+      "profile": "pitch",
+      "purpose": "Run the current Pitch runtime smoke and matrix slice.",
+      "vendor_family": "pitch"
+    },
+    {
+      "command": "./tools/vendor-state classify --lane repo-green --json",
+      "evidence_tier": "shared",
+      "profile": "shared",
+      "purpose": "Classify whether blocked vendor prerequisites are acceptable for the repo-green lane.",
+      "vendor_family": "shared"
+    },
+    {
+      "command": "./tools/vendor-state classify --lane vendor-green --vendor certi --json",
+      "evidence_tier": "shared",
+      "profile": "shared",
+      "purpose": "Classify strict CERTI vendor-green readiness from preflight artifacts.",
+      "vendor_family": "shared"
+    },
+    {
+      "command": "./tools/vendor-state classify --lane vendor-green --vendor pitch --json",
+      "evidence_tier": "shared",
+      "profile": "shared",
+      "purpose": "Classify strict Pitch vendor-green readiness from preflight artifacts.",
+      "vendor_family": "shared"
+    },
+    {
+      "command": "./tools/certi-easy save-restore",
+      "evidence_tier": "known-gap",
+      "profile": "certi-save-restore",
+      "purpose": "Emit the current explicit CERTI save/restore known-gap status after preflight.",
+      "vendor_family": "certi"
+    },
+    {
+      "command": "./tools/certi-easy save-restore-probe",
+      "evidence_tier": "probe",
+      "profile": "certi-save-restore-probe",
+      "purpose": "Run the current narrow executable CERTI save/restore runtime probe after preflight.",
+      "vendor_family": "certi"
+    },
+    {
+      "command": "./tools/certi-easy ddm",
+      "evidence_tier": "known-gap",
+      "profile": "certi-ddm",
+      "purpose": "Emit the current explicit CERTI DDM known-gap status after preflight.",
+      "vendor_family": "certi"
+    },
+    {
+      "command": "./tools/certi-easy ddm-probe",
+      "evidence_tier": "probe",
+      "profile": "certi-ddm-probe",
+      "purpose": "Run the current narrow executable CERTI DDM runtime probe after preflight.",
+      "vendor_family": "certi"
+    },
+    {
+      "command": "./tools/pitch save-restore",
+      "evidence_tier": "known-gap",
+      "profile": "pitch-save-restore",
+      "purpose": "Emit the current explicit Pitch save/restore known-gap status after preflight.",
+      "vendor_family": "pitch"
+    },
+    {
+      "command": "./tools/pitch save-restore-probe",
+      "evidence_tier": "probe",
+      "profile": "pitch-save-restore-probe",
+      "purpose": "Run the current narrow executable Pitch save/restore runtime probe after preflight.",
+      "vendor_family": "pitch"
+    },
+    {
+      "command": "./tools/pitch ddm",
+      "evidence_tier": "known-gap",
+      "profile": "pitch-ddm",
+      "purpose": "Emit the current explicit Pitch DDM known-gap status after preflight.",
+      "vendor_family": "pitch"
+    },
+    {
+      "command": "./tools/pitch ddm-probe",
+      "evidence_tier": "probe",
+      "profile": "pitch-ddm-probe",
+      "purpose": "Run the current narrow executable Pitch DDM runtime probe after preflight.",
+      "vendor_family": "pitch"
+    },
+    {
+      "command": "./tools/pitch negotiated",
+      "evidence_tier": "known-gap",
+      "profile": "pitch-negotiated",
+      "purpose": "Emit the current explicit Pitch negotiated-ownership known-gap status after preflight.",
+      "vendor_family": "pitch"
+    },
+    {
+      "command": "./tools/pitch negotiated-probe",
+      "evidence_tier": "probe",
+      "profile": "pitch-negotiated-probe",
+      "purpose": "Run the current narrow executable Pitch negotiated-ownership runtime probe after preflight.",
+      "vendor_family": "pitch"
+    },
+    {
+      "command": "./tools/pitch lost-federate",
+      "evidence_tier": "known-gap",
+      "profile": "pitch-lost-federate",
+      "purpose": "Emit the current explicit Pitch lost-federate known-gap status after preflight.",
+      "vendor_family": "pitch"
+    },
+    {
+      "command": "./tools/pitch lost-federate-probe",
+      "evidence_tier": "probe",
+      "profile": "pitch-lost-federate-probe",
+      "purpose": "Run the current narrow executable Pitch lost-federate runtime probe after preflight.",
+      "vendor_family": "pitch"
+    },
+    {
+      "command": "./tools/vendor-edge all",
+      "evidence_tier": "shared",
+      "profile": "shared",
+      "purpose": "Run the highest-value vendor edge packet refresh.",
+      "vendor_family": "shared"
+    },
+    {
+      "command": "./tools/certi-easy save-restore-review 5",
+      "evidence_tier": "shared",
+      "profile": "shared",
+      "purpose": "Run repeated stability evidence plus promotion/parity refresh for the CERTI save/restore probe.",
+      "vendor_family": "shared"
+    },
+    {
+      "command": "./tools/certi-easy ddm-review 5",
+      "evidence_tier": "shared",
+      "profile": "shared",
+      "purpose": "Run repeated stability evidence plus promotion/parity refresh for the CERTI DDM probe.",
+      "vendor_family": "shared"
+    },
+    {
+      "command": "./tools/pitch save-restore-review 5",
+      "evidence_tier": "shared",
+      "profile": "shared",
+      "purpose": "Run repeated stability evidence plus promotion/parity refresh for the Pitch save/restore probe.",
+      "vendor_family": "shared"
+    },
+    {
+      "command": "./tools/pitch ddm-review 5",
+      "evidence_tier": "shared",
+      "profile": "shared",
+      "purpose": "Run repeated stability evidence plus promotion/parity refresh for the Pitch DDM probe.",
+      "vendor_family": "shared"
+    },
+    {
+      "command": "./tools/pitch negotiated-review 5",
+      "evidence_tier": "shared",
+      "profile": "shared",
+      "purpose": "Run repeated stability evidence plus promotion/parity refresh for the Pitch negotiated-ownership probe.",
+      "vendor_family": "shared"
+    },
+    {
+      "command": "./tools/pitch lost-federate-review 5",
+      "evidence_tier": "shared",
+      "profile": "shared",
+      "purpose": "Run repeated stability evidence plus promotion/parity refresh for the Pitch lost-federate probe.",
+      "vendor_family": "shared"
+    },
+    {
+      "command": "./tools/vendor-probe-review promotion-review",
+      "evidence_tier": "shared",
+      "profile": "shared",
+      "purpose": "Write the promotion-review artifact over repeated-run vendor probe evidence.",
+      "vendor_family": "shared"
+    },
+    {
+      "command": "python3 scripts/generate_compliance_artifacts.py",
+      "evidence_tier": "shared",
+      "profile": "shared",
+      "purpose": "Refresh generated compliance matrices after a vendor run.",
+      "vendor_family": "shared"
+    }
+  ],
+  "profiles": [
+    {
+      "artifact_count": 11,
+      "artifact_kinds": [
+        "script",
+        "test",
+        "doc",
+        "preflight",
+        "promotion-review"
+      ],
+      "evidence_tier": "shared",
+      "existing_count": 10,
+      "missing_required_count": 0,
+      "profile": "shared",
+      "vendor_family": "shared"
+    },
+    {
+      "artifact_count": 1,
+      "artifact_kinds": [
+        "stability-summary"
+      ],
+      "evidence_tier": "probe",
+      "existing_count": 0,
+      "missing_required_count": 0,
+      "profile": "certi-save-restore-probe",
+      "vendor_family": "certi"
+    },
+    {
+      "artifact_count": 1,
+      "artifact_kinds": [
+        "stability-summary"
+      ],
+      "evidence_tier": "probe",
+      "existing_count": 0,
+      "missing_required_count": 0,
+      "profile": "certi-ddm-probe",
+      "vendor_family": "certi"
+    },
+    {
+      "artifact_count": 1,
+      "artifact_kinds": [
+        "stability-summary"
+      ],
+      "evidence_tier": "probe",
+      "existing_count": 0,
+      "missing_required_count": 0,
+      "profile": "pitch-save-restore-probe",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_count": 1,
+      "artifact_kinds": [
+        "stability-summary"
+      ],
+      "evidence_tier": "probe",
+      "existing_count": 0,
+      "missing_required_count": 0,
+      "profile": "pitch-ddm-probe",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_count": 1,
+      "artifact_kinds": [
+        "stability-summary"
+      ],
+      "evidence_tier": "probe",
+      "existing_count": 0,
+      "missing_required_count": 0,
+      "profile": "pitch-negotiated-probe",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_count": 1,
+      "artifact_kinds": [
+        "stability-summary"
+      ],
+      "evidence_tier": "probe",
+      "existing_count": 0,
+      "missing_required_count": 0,
+      "profile": "pitch-lost-federate-probe",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_count": 1,
+      "artifact_kinds": [
+        "gap-profile"
+      ],
+      "evidence_tier": "known-gap",
+      "existing_count": 0,
+      "missing_required_count": 0,
+      "profile": "certi-save-restore",
+      "vendor_family": "certi"
+    },
+    {
+      "artifact_count": 1,
+      "artifact_kinds": [
+        "gap-profile"
+      ],
+      "evidence_tier": "known-gap",
+      "existing_count": 0,
+      "missing_required_count": 0,
+      "profile": "certi-ddm",
+      "vendor_family": "certi"
+    },
+    {
+      "artifact_count": 1,
+      "artifact_kinds": [
+        "gap-profile"
+      ],
+      "evidence_tier": "known-gap",
+      "existing_count": 0,
+      "missing_required_count": 0,
+      "profile": "pitch-save-restore",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_count": 1,
+      "artifact_kinds": [
+        "gap-profile"
+      ],
+      "evidence_tier": "known-gap",
+      "existing_count": 0,
+      "missing_required_count": 0,
+      "profile": "pitch-ddm",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_count": 1,
+      "artifact_kinds": [
+        "gap-profile"
+      ],
+      "evidence_tier": "known-gap",
+      "existing_count": 0,
+      "missing_required_count": 0,
+      "profile": "pitch-negotiated",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_count": 1,
+      "artifact_kinds": [
+        "gap-profile"
+      ],
+      "evidence_tier": "known-gap",
+      "existing_count": 1,
+      "missing_required_count": 0,
+      "profile": "pitch-lost-federate",
+      "vendor_family": "pitch"
+    },
+    {
+      "artifact_count": 7,
+      "artifact_kinds": [
+        "test",
+        "support",
+        "doc"
+      ],
+      "evidence_tier": "promoted",
+      "existing_count": 7,
+      "missing_required_count": 0,
+      "profile": "certi-compare",
+      "vendor_family": "certi"
+    },
+    {
+      "artifact_count": 4,
+      "artifact_kinds": [
+        "test",
+        "doc"
+      ],
+      "evidence_tier": "promoted",
+      "existing_count": 4,
+      "missing_required_count": 0,
+      "profile": "pitch",
+      "vendor_family": "pitch"
+    }
+  ],
+  "required_count": 19,
+  "runtime_status": {
+    "repo_green": {
+      "artifact_dir": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts",
+      "blocked_vendors": [
+        "certi",
+        "pitch"
+      ],
+      "exit_code": 0,
+      "lane": "repo-green",
+      "missing_vendors": [],
+      "overall_classification": "repo-green",
+      "ready_vendors": [],
+      "recommended_next_steps": {
+        "certi": [
+          "fix the blocked prerequisite above",
+          "./tools/certi-easy preflight"
+        ],
+        "pitch": [
+          "fix the blocked prerequisite(s) above and rerun"
+        ]
+      },
+      "suite_name": "vendor-runtime-status",
+      "unexpected_failure_vendors": [],
+      "vendors": [
+        {
+          "actionable": false,
+          "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/certi-preflight.json",
+          "blocked_checks": [
+            {
+              "detail": null,
+              "message": "loopback_bind: blocked: Local socket bind is not permitted for 127.0.0.1. Run `./tools/certi-easy preflight` to verify local CERTI prerequisites. Real RTI smoke needs loopback TCP bind/connect permission for 127.0.0.1.",
+              "name": "loopback_bind",
+              "status": null
+            }
+          ],
+          "blocked_reason": "loopback_bind",
+          "classification": "environment-blocked",
+          "environment": "loopback-blocked",
+          "exit_code": 1,
+          "lane_ok": true,
+          "next_steps": [
+            "fix the blocked prerequisite above",
+            "./tools/certi-easy preflight"
+          ],
+          "note": "host/runtime prerequisites are blocked on this surface",
+          "present": true,
+          "required_markers": {
+            "active_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
+            "active_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
+            "patched_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
+            "patched_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
+            "upstream_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/build/libRTI/ieee1516-2010",
+            "upstream_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/install/bin/rtig"
+          },
+          "required_ports": {},
+          "result": "real CERTI will skip",
+          "tool": "certi-preflight",
+          "vendor": "certi"
+        },
+        {
+          "actionable": false,
+          "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/pitch-preflight.json",
+          "blocked_checks": [
+            {
+              "detail": "blocked: Docker CLI exists but the daemon is not reachable",
+              "message": null,
+              "name": "docker",
+              "status": "blocked"
+            },
+            {
+              "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 1] Operation not permitted",
+              "message": null,
+              "name": "crc_port",
+              "status": "blocked"
+            },
+            {
+              "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 1] Operation not permitted",
+              "message": null,
+              "name": "fedpro_port",
+              "status": "blocked"
+            }
+          ],
+          "blocked_reason": "docker",
+          "classification": "environment-blocked",
+          "environment": "docker-blocked",
+          "exit_code": 1,
+          "lane_ok": true,
+          "next_steps": [
+            "fix the blocked prerequisite(s) above and rerun"
+          ],
+          "note": "host/runtime prerequisites are blocked on this surface",
+          "present": true,
+          "required_markers": {
+            "runtime_home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
+          },
+          "required_ports": {
+            "crc": {
+              "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 1] Operation not permitted",
+              "host": "127.0.0.1",
+              "port": 8989,
+              "status": "blocked"
+            },
+            "fedpro": {
+              "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 1] Operation not permitted",
+              "host": "127.0.0.1",
+              "port": 15164,
+              "status": "blocked"
+            }
+          },
+          "result": "not ready; fix the blocked prerequisite(s) above and rerun",
+          "tool": "pitch-preflight",
+          "vendor": "pitch"
+        }
+      ]
+    },
+    "vendor_green": {
+      "certi": {
+        "artifact_dir": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts",
+        "blocked_vendors": [
+          "certi"
+        ],
+        "exit_code": 1,
+        "lane": "vendor-green",
+        "missing_vendors": [],
+        "overall_classification": "environment-blocked",
+        "ready_vendors": [],
+        "recommended_next_steps": {
+          "certi": [
+            "fix the blocked prerequisite above",
+            "./tools/certi-easy preflight"
+          ]
+        },
+        "suite_name": "vendor-runtime-status",
+        "unexpected_failure_vendors": [],
+        "vendors": [
+          {
+            "actionable": false,
+            "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/certi-preflight.json",
+            "blocked_checks": [
+              {
+                "detail": null,
+                "message": "loopback_bind: blocked: Local socket bind is not permitted for 127.0.0.1. Run `./tools/certi-easy preflight` to verify local CERTI prerequisites. Real RTI smoke needs loopback TCP bind/connect permission for 127.0.0.1.",
+                "name": "loopback_bind",
+                "status": null
+              }
+            ],
+            "blocked_reason": "loopback_bind",
+            "classification": "environment-blocked",
+            "environment": "loopback-blocked",
+            "exit_code": 1,
+            "lane_ok": false,
+            "next_steps": [
+              "fix the blocked prerequisite above",
+              "./tools/certi-easy preflight"
+            ],
+            "note": "host/runtime prerequisites are blocked on this surface",
+            "present": true,
+            "required_markers": {
+              "active_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
+              "active_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
+              "patched_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
+              "patched_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
+              "upstream_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/build/libRTI/ieee1516-2010",
+              "upstream_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/install/bin/rtig"
+            },
+            "required_ports": {},
+            "result": "real CERTI will skip",
+            "tool": "certi-preflight",
+            "vendor": "certi"
+          }
+        ]
+      },
+      "pitch": {
+        "artifact_dir": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts",
+        "blocked_vendors": [
+          "pitch"
+        ],
+        "exit_code": 1,
+        "lane": "vendor-green",
+        "missing_vendors": [],
+        "overall_classification": "environment-blocked",
+        "ready_vendors": [],
+        "recommended_next_steps": {
+          "pitch": [
+            "fix the blocked prerequisite(s) above and rerun"
+          ]
+        },
+        "suite_name": "vendor-runtime-status",
+        "unexpected_failure_vendors": [],
+        "vendors": [
+          {
+            "actionable": false,
+            "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/pitch-preflight.json",
+            "blocked_checks": [
+              {
+                "detail": "blocked: Docker CLI exists but the daemon is not reachable",
+                "message": null,
+                "name": "docker",
+                "status": "blocked"
+              },
+              {
+                "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 1] Operation not permitted",
+                "message": null,
+                "name": "crc_port",
+                "status": "blocked"
+              },
+              {
+                "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 1] Operation not permitted",
+                "message": null,
+                "name": "fedpro_port",
+                "status": "blocked"
+              }
+            ],
+            "blocked_reason": "docker",
+            "classification": "environment-blocked",
+            "environment": "docker-blocked",
+            "exit_code": 1,
+            "lane_ok": false,
+            "next_steps": [
+              "fix the blocked prerequisite(s) above and rerun"
+            ],
+            "note": "host/runtime prerequisites are blocked on this surface",
+            "present": true,
+            "required_markers": {
+              "runtime_home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
+            },
+            "required_ports": {
+              "crc": {
+                "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 1] Operation not permitted",
+                "host": "127.0.0.1",
+                "port": 8989,
+                "status": "blocked"
+              },
+              "fedpro": {
+                "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 1] Operation not permitted",
+                "host": "127.0.0.1",
+                "port": 15164,
+                "status": "blocked"
+              }
+            },
+            "result": "not ready; fix the blocked prerequisite(s) above and rerun",
+            "tool": "pitch-preflight",
+            "vendor": "pitch"
+          }
+        ]
+      }
+    }
+  },
+  "suite_name": "vendor-parity-artifacts"
+}

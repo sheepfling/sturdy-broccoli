@@ -1,0 +1,97 @@
+{
+  "row_count": 10,
+  "rows": [
+    {
+      "area": "Requirement-level positive-path ledger",
+      "checklist_id": "requirements-ledger",
+      "evidence": [
+        "analysis/compliance/requirements_ledger.json"
+      ],
+      "rationale": "All 217 service rows are represented as pass in the current requirement ledger.",
+      "status": "done"
+    },
+    {
+      "area": "Exact row-level executable evidence",
+      "checklist_id": "exact-row-evidence",
+      "evidence": [
+        "analysis/compliance/no_requirement_evidence_rows.json"
+      ],
+      "rationale": "The exact row-level evidence gap report is empty.",
+      "status": "done"
+    },
+    {
+      "area": "Negative-path accounting",
+      "checklist_id": "negative-path-ledger",
+      "evidence": [
+        "analysis/compliance/negative_path_completeness.json"
+      ],
+      "rationale": "Negative-path coverage is not closed: 34 complete, 58 partial, 60 mapped-not-exhaustive, 0 not-evidenced. Callback-only FederateInternalError rows are now excluded from actionable debt.",
+      "status": "partial"
+    },
+    {
+      "area": "Section 8 cross-backend matrix",
+      "checklist_id": "section8-backend-matrix",
+      "evidence": [
+        "analysis/compliance/section8_backend_matrix.json"
+      ],
+      "rationale": "Python reference is complete-actionable and hosted Python is positive-path passing, CERTI time slices are now verified in this session, but Pitch and the remaining vendor surface are still only partially matrixed.",
+      "status": "partial"
+    },
+    {
+      "area": "Lookahead backend matrix",
+      "checklist_id": "lookahead-backend-matrix",
+      "evidence": [
+        "analysis/compliance/lookahead_backend_matrix.json"
+      ],
+      "rationale": "Lookahead is now explicit in the reference and hosted matrices, and CERTI/Pitch lookahead coverage is being widened into a dedicated backend matrix.",
+      "status": "partial"
+    },
+    {
+      "area": "Non-Section-8 backend matrix",
+      "checklist_id": "core-backend-matrix",
+      "evidence": [
+        "analysis/compliance/core_backend_matrix.json"
+      ],
+      "rationale": "Exchange, synchronization, and ownership slices are now matrixed across Python, hosted Python, Java shim, and CERTI, but negotiated ownership still includes explicit vendor divergences.",
+      "status": "partial"
+    },
+    {
+      "area": "Real CERTI time-profile verification",
+      "checklist_id": "vendor-certi-time",
+      "evidence": [
+        "tests/vendors/test_certi_real_backend_time_matrix.py",
+        "tests/vendors/test_certi_real_backend_exchange_matrix.py"
+      ],
+      "rationale": "Real CERTI time-query/FQR and exchange slices were rerun cleanly in this session, with logical-time type fidelity preserved across native and Java-facade paths.",
+      "status": "partial"
+    },
+    {
+      "area": "Real CERTI ownership verification",
+      "checklist_id": "vendor-certi-ownership",
+      "evidence": [
+        "tests/vendors/test_certi_real_backend_ownership_matrix.py"
+      ],
+      "rationale": "Plain ownership passed in this session, but negotiated ownership failed across native and Java-facade CERTI paths.",
+      "status": "partial"
+    },
+    {
+      "area": "Pitch backend matrix",
+      "checklist_id": "pitch-matrix",
+      "evidence": [
+        "analysis/compliance/pitch_backend_matrix.json",
+        "analysis/compliance/pitch_requirement_disposition.json"
+      ],
+      "rationale": "Pitch now has a dedicated positive-path/backend-divergence matrix, but it remains incomplete and negotiated ownership is still vendor-divergent. The requirement disposition audit now exposes every unclassified Pitch row by clause.",
+      "status": "partial"
+    },
+    {
+      "area": "Section 10 backend matrix",
+      "checklist_id": "support-services-backend-matrix",
+      "evidence": [
+        "analysis/compliance/section10_backend_matrix.json"
+      ],
+      "rationale": "A dedicated Section 10 backend matrix now exists, with deep Python reference coverage, executed Java-shim support coverage, transport-backed hosted partial coverage, and smoke-gated CERTI/Pitch wrappers, but the remaining Section 10 slices still need broader parity depth.",
+      "status": "partial"
+    }
+  ]
+}
