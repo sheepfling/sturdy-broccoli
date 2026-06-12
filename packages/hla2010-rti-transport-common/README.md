@@ -13,6 +13,7 @@ Use this package when logic is:
 - still backend-neutral
 
 Import the canonical implementation from `hla2010_rti_transport_common`.
+It does not own human operator entrypoints; those live under `./tools/`.
 Boundary and import-isolation guard coverage lives in
 `tests/test_rti_transport_common_split_package.py` and
 `tests/test_package_boundary.py`.

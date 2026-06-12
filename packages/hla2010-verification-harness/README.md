@@ -23,6 +23,7 @@ Use this package when you need:
   example package
 
 Import the canonical implementation from `hla2010_verification_harness`.
+It does not own human operator entrypoints; those live under `./tools/`.
 Guard coverage for the shared harness boundary and thin-wrapper contract lives
 in `tests/test_verification_harness_split_package.py` and
 `tests/test_backend_wrapper_policy.py`.
