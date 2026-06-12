@@ -15,16 +15,17 @@ configuration, but it is not a Python distribution. The architectural root is
 `hla2010-spec`, whose package manifest owns `src/hla2010/`. Concrete backend
 and support implementations live in package-owned directories under
 `packages/*/src`.
+Within `src/hla2010/`, `hla2010.rti` remains only as the documented temporary
+workspace facade and compatibility surface into split packages. Everything else in
+that tree should stay abstract/core API rather than backend implementation.
 
 Do not use `pip install -e .` at the repository root. Install the split
 packages directly, starting with `packages/hla2010-spec`, or use
-`./scripts/bootstrap_python.sh` to install the editable workspace package set.
+`./tools/bootstrap python` to install the editable workspace package set.
 
 For packages whose split status is `implementation-moved`, the owning package's
-`pyproject.toml` should declare only package-owned `source_roots`. Files under
-`src/hla2010/` may re-export or forward to those packages, but they are not
-counted as owned implementation roots anymore. For `hla2010-spec`,
-`src/hla2010/` is the owned implementation root.
+`pyproject.toml` should declare only package-owned `source_roots`. For
+`hla2010-spec`, `src/hla2010/` is the owned implementation root.
 
 ## Core API
 
@@ -39,16 +40,15 @@ counted as owned implementation roots anymore. For `hla2010-spec`,
 
 ## Backend Abstractions
 
-- `src/hla2010/backends/base.py`: backend interface, invocation envelope, and delegating ambassador.
-- `src/hla2010/backends/transport.py`: typed transport request/response boundary.
-- `packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/`: shared backend conversion, native handle registries, type inference helpers, and backend-neutral invocation resolution.
-- `packages/hla2010-rti-java-common/src/hla2010_rti_java_common/`: shared Java bridge support, callback dispatching, return-type helpers, and Java-side value conversion.
-- `packages/hla2010-rti-runtime-common/src/hla2010_rti_runtime_common/`: shared vendor-runtime process lifecycle and loopback TCP helpers.
+- `packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/`: shared backend conversion, native handle registries, type inference helpers, backend-neutral invocation resolution, and the canonical shared adapter contract.
+- `packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/time_management.py`: backend-neutral logical-time, GALT/LITS, queued-TSO, and grant-decision helpers shared by the Python RTI and repo verification.
+- `packages/hla2010-rti-java-common/src/hla2010_rti_java_common/`: shared Java bridge support, callback dispatching, Java runtime discovery, return-type helpers, and Java-side value conversion.
+- `packages/hla2010-rti-runtime-common/src/hla2010_rti_runtime_common/`: shared vendor-runtime process lifecycle, backend registry, and backend-neutral RTI factory helpers.
 - `docs/openapi/rti_transport.yaml`: formal REST transport schema.
 - `packages/hla2010-rti-transport-common/src/hla2010_rti_transport_common/`: shared hosted transport request-processing helpers used by multiple wire protocols.
 - `packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc/`: canonical gRPC transport infrastructure with `.proto` schema, checked-in Python stubs, client adapter, and hosted server helpers.
 - `packages/hla2010-rti-transport-rest/src/hla2010_rti_transport_rest/`: canonical REST transport infrastructure with the OpenAPI-aligned Python client adapter and hosted server runtime.
-- `src/hla2010/transport_codecs.py`: backend-neutral transport codec helpers shared by hosted transport layers.
+- `packages/hla2010-rti-transport-common/src/hla2010_rti_transport_common/transport_codecs.py`: backend-neutral transport codec helpers shared by hosted transport layers.
 
 Transport packages are not backend families. They are the wire layer beneath a
 backend-neutral ambassador surface.
@@ -56,11 +56,11 @@ backend-neutral ambassador surface.
 ## Concrete Backends
 
 - `packages/hla2010-rti-python/src/hla2010_rti_python/`: canonical pure in-memory RTI backend implementation package.
-- `src/hla2010/backends/python/`: compatibility facades for the split Python backend.
 - `packages/hla2010-rti-python/src/hla2010_rti_python/state.py`, `engine.py`, `reporting.py`: shared backend state, handle registry, and service-report support.
 - `packages/hla2010-rti-python/src/hla2010_rti_python/federation.py`, `federation_lifecycle.py`, `federation_sync.py`: federation lifecycle and synchronization services.
 - `packages/hla2010-rti-python/src/hla2010_rti_python/object.py`, `object_delivery.py`: object update/delete, interaction delivery, and transport callbacks.
 - `packages/hla2010-rti-python/src/hla2010_rti_python/mom.py`, `mom_actions.py`, `mom_reporting.py`: MOM dispatch/decoding and MOM/service-report emission.
+- `packages/hla2010-rti-python/src/hla2010_rti_python/mom_catalog.py`: Python RTI-owned MOM exposure-model and negative-matrix generation derived from the merged FOM/MIM catalog.
 - `packages/hla2010-rti-python/src/hla2010_rti_python/time.py`, `time_queue.py`, `time_services.py`: queue/grant mechanics and public time-service/validation submodules.
 - `packages/hla2010-rti-python/src/hla2010_rti_python/save_restore.py`, `callbacks.py`, `declaration.py`, `ownership.py`, `ddm.py`: remaining focused Python backend service domains.
 - `packages/hla2010-rti-certi/src/hla2010_rti_certi/`: CERTI runtime, transport, service adapter, and Java-profile CERTI backend package.
@@ -71,26 +71,29 @@ backend-neutral ambassador surface.
 - `packages/hla2010-rti-certi/docs/`, `packages/hla2010-rti-pitch-common/docs/`, and `packages/hla2010-rti-portico/docs/`: vendor-owned runbooks, findings, and package-local operational notes.
 Java transport stubs generated from the RTI REST or gRPC transport contracts are not checked in and are currently out of scope. Java integration in this repo is through the backend families above, not through generated transport bindings.
 
-The legacy `src/hla2010/backends/grpc_transport/` modules are compatibility
-facades over the split transport packages.
+The legacy `src/hla2010/backends/grpc_transport/` modules have been removed.
+Import `hla2010_rti_transport_grpc` directly.
 
 ## Backend Factories
 
-- `src/hla2010/rti.py`: top-level backend plugin descriptor, entry point discovery, and transport registry.
+- `src/hla2010/rti.py`: temporary workspace compatibility facade that re-exports only backend discovery, backend selection, and ambassador-factory helpers from the split runtime-common package.
 - `packages/hla2010-rti-python/src/hla2010_rti_python/factory.py`: pure-Python backend factories.
 - `packages/hla2010-rti-python/src/hla2010_rti_python/plugin.py`: pure-Python backend plugin descriptor.
-- `src/hla2010/backends/java_plugins.py`: compatibility exports for split Java-family plugin descriptors.
 - `packages/hla2010-rti-certi/src/hla2010_rti_certi/certi/plugin.py`: CERTI backend plugin descriptors.
 - `packages/hla2010-rti-certi/src/hla2010_rti_certi/certi/plugin.py`: CERTI backend factories and plugin descriptors.
 
 Installable backend packages register RTI implementations through the
 `hla2010.rti_backends` entry point group. Entry points must return an
-`hla2010.rti.RTIBackendPlugin` descriptor. The descriptor names the backend,
+`hla2010_rti_backend_common.RTIBackendPlugin` descriptor. The descriptor names the backend,
 its aliases, its backend family, and a lazy `create_backend(options)` callable.
-Use `hla2010.rti.iter_rti_backend_plugins()` for a deduplicated list of
-installed backend plugins, and `hla2010.rti.discover_rti_backends(probe=True)`
-when tooling needs to check whether optional vendor runtimes are actually
-configured on the local machine.
+Workspace compatibility users may call
+`hla2010.rti.iter_rti_backend_plugins()` for a deduplicated list of installed
+backend plugins, and `hla2010.rti.discover_rti_backends(probe=True)` when
+tooling needs to check whether optional vendor runtimes are actually
+configured on the local machine. The root facade intentionally does not own
+plugin contract types or low-level transport registration helpers. Package-owned code should import directly
+from `hla2010_rti_runtime_common`, and shared plugin contract types should
+import directly from `hla2010_rti_backend_common`.
 
 The intended package split is:
 
@@ -121,21 +124,21 @@ The intended package split is:
 | --- | --- | --- | --- |
 | `hla2010-spec` | root | `-` | all internal packages |
 | `hla2010-rti-backend-common` | shared | `hla2010-spec` | backend, vendor, transport, leaf packages |
-| `hla2010-rti-runtime-common` | shared | `hla2010-spec` | backend, vendor bridge, transport, leaf packages |
+| `hla2010-rti-runtime-common` | shared | `hla2010-spec`, `hla2010-rti-backend-common`, `hla2010-rti-transport-common` | backend, vendor bridge, leaf packages |
 | `hla2010-rti-transport-common` | shared | `hla2010-spec` | concrete backend, vendor, leaf packages |
-| `hla2010-verification-harness` | shared | `hla2010-spec` | backend, vendor, transport packages |
+| `hla2010-verification-harness` | shared | `hla2010-spec`, `hla2010-rti-backend-common`, `hla2010-rti-runtime-common` | backend, vendor, transport packages |
 | `hla2010-rti-java-common` | vendor/common | `hla2010-spec`, `hla2010-rti-backend-common` | python backend, transport, leaf packages |
 | `hla2010-rti-python` | backend | `hla2010-spec`, `hla2010-rti-backend-common` | java-common, vendor, transport, leaf packages |
 | `hla2010-rti-certi` | backend | `hla2010-spec`, `hla2010-rti-java-common`, `hla2010-rti-runtime-common` | python backend, transport, leaf packages |
 | `hla2010-rti-java-jpype` | backend | `hla2010-spec`, `hla2010-rti-java-common` | python backend, transport, leaf packages |
 | `hla2010-rti-java-py4j` | backend | `hla2010-spec`, `hla2010-rti-java-common` | python backend, transport, leaf packages |
-| `hla2010-rti-pitch-common` | vendor/common | `hla2010-spec`, `hla2010-rti-runtime-common` | python backend, transport, leaf packages |
+| `hla2010-rti-pitch-common` | vendor/common | `hla2010-spec`, `hla2010-rti-java-common`, `hla2010-rti-runtime-common` | python backend, transport, leaf packages |
 | `hla2010-rti-pitch-jpype` | vendor | `hla2010-spec`, `hla2010-rti-pitch-common`, `hla2010-rti-java-jpype` | python backend, transport, leaf packages |
 | `hla2010-rti-pitch-py4j` | vendor | `hla2010-spec`, `hla2010-rti-pitch-common`, `hla2010-rti-java-py4j` | python backend, transport, leaf packages |
-| `hla2010-rti-portico` | vendor | `hla2010-spec`, `hla2010-rti-java-jpype`, `hla2010-rti-java-py4j` | python backend, transport, leaf packages |
-| `hla2010-rti-transport-grpc` | transport | `hla2010-spec`, `hla2010-rti-transport-common` | concrete backend and vendor packages |
-| `hla2010-rti-transport-rest` | transport | `hla2010-spec`, `hla2010-rti-transport-common` | concrete backend and vendor packages |
-| `hla2010-fom-target-radar` | leaf | `hla2010-spec`, `hla2010-verification-harness` | concrete backend, vendor, transport packages |
+| `hla2010-rti-portico` | vendor | `hla2010-spec`, `hla2010-rti-java-common`, `hla2010-rti-java-jpype`, `hla2010-rti-java-py4j` | python backend, transport, leaf packages |
+| `hla2010-rti-transport-grpc` | transport | `hla2010-spec`, `hla2010-rti-transport-common`, `hla2010-rti-runtime-common` | concrete backend and vendor packages |
+| `hla2010-rti-transport-rest` | transport | `hla2010-spec`, `hla2010-rti-transport-common`, `hla2010-rti-runtime-common` | concrete backend and vendor packages |
+| `hla2010-fom-target-radar` | leaf | `hla2010-spec`, `hla2010-verification-harness`, `hla2010-rti-runtime-common` | concrete backend, vendor, transport packages |
 
 Import isolation for the installable `packages/*` trees is enforced by
 [`tests/test_package_import_isolation.py`](../tests/test_package_import_isolation.py).
@@ -148,6 +151,25 @@ Source checkouts should use editable installs or the explicit pytest
 `pythonpath` configuration. Production package code must not mutate
 `sys.path`, import `_bootstrap`, walk package `__path__`, derive repository
 roots from `__file__`, or compute `__all__` from `globals()`.
+
+Backend plugin contracts now live in
+`hla2010_rti_backend_common.plugin_api`. Runtime factory helpers now live in
+`hla2010_rti_runtime_common`, while `hla2010.rti` remains only as the
+documented temporary root-facing workspace compatibility facade for backend
+discovery and ambassador creation over that split package surface.
+Package-owned code should import runtime factory helpers from
+`hla2010_rti_runtime_common` directly; registry, transport, and private helper
+access must stay in the owning split packages instead of flowing back through
+`src/hla2010/`.
+
+Backend base implementation now lives in
+`hla2010_rti_backend_common.base`, and the package root
+`hla2010_rti_backend_common` is the supported import surface for the shared
+adapter contract.
+
+Java runtime discovery helpers now live only in
+`hla2010_rti_java_common.java_runtime` and the `hla2010_rti_java_common`
+package root.
 
 ## Runtime Discovery
 
@@ -164,15 +186,13 @@ roots from `__file__`, or compute `__all__` from `globals()`.
 - `packages/hla2010-rti-java-common/src/hla2010_rti_java_common/java_shim_*.py`: Java-shaped shim support used by Java-profile backends and repo verification flows.
 - `src/hla2010_repo_internal/verification/`: repo-internal proof packets, backend matrices, vendor reports, and two-federate artifact writers.
 - `packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/scenarios/`: canonical Target/Radar scenario implementation and FOM helper entrypoints.
-- `src/hla2010/scenarios/`: compatibility facades that forward to the split scenario packages for workspace-stable imports.
 - `examples/`: runnable scripts and example-only assets. Nothing under `examples/` is part of the installable `hla2010` package.
 - `examples/<scenario>/`: scenario-local scratch or notes only. Canonical reusable assets such as FOM XML live under their owning package roots.
-- `src/hla2010/verification.py` and `src/hla2010/conformance.py`: evidence and requirements-ledger support.
-
 Testing is not part of the public `hla2010` runtime namespace. Repo-only proof
 and packet helpers now live under `src/hla2010_repo_internal/verification/`,
 while `hla2010-verification-harness` is the only supported public verification
-package.
+package. Scenario imports should target the owning split package directly
+rather than a root `hla2010.scenarios` facade.
 
 The Target/Radar leaf package keeps vendor-specific launch policy and proof
 packet assembly out of its installable metadata. Vendor-backed suite profiles
@@ -190,13 +210,11 @@ For environment setup and install order, use
 4. add bridge extras if needed
 5. only then install or build CERTI or Pitch
 
-Legacy flat backend import paths are compatibility facades. New code should
-import from the canonical split package implementations instead.
+Legacy flat backend import paths are removed for split Python RTI and gRPC
+transport code. Import from canonical split package implementations instead.
 
-Compatibility imports may still appear in tests that explicitly verify migration
-aliases, and in a small number of operator/test entrypoints that exercise the
-workspace facade on purpose. Those are compatibility checks, not package-graph
-ownership.
+Tests may still mention removed paths only to assert that those compatibility
+modules no longer import.
 
 ## Example Boundary Rules
 
@@ -204,7 +222,8 @@ Keep example entrypoints thin:
 
 - parse CLI arguments
 - construct a backend or scenario factory
-- call into `hla2010.scenarios.*` or another reusable package module
+- call into the owning split package such as
+  `hla2010_fom_target_radar.scenarios.*` or another reusable package module
 - load reusable data or FOM assets from an owning package root, not from a
   duplicate copy under `examples/`
 

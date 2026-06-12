@@ -1,11 +1,34 @@
 from __future__ import annotations
 
 import argparse
+import sys
+import tomllib
 from pathlib import Path
 
-from hla2010.requirements_backlog import write_imported_hla_backlog
+SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+
+def _bootstrap_source_checkout() -> None:
+    pyproject = tomllib.loads((SCRIPT_REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    source_roots = pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]
+    for root in reversed(source_roots):
+        source_path = str(SCRIPT_REPO_ROOT / root)
+        if source_path not in sys.path:
+            sys.path.insert(0, source_path)
+
+
+_bootstrap_source_checkout()
+
+from hla2010_repo_internal.requirements_backlog import write_imported_hla_backlog
+
+REPO_ROOT = Path.cwd()
+
+
+def _display_path(path: Path) -> Path:
+    try:
+        return path.relative_to(REPO_ROOT)
+    except ValueError:
+        return path
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -30,7 +53,7 @@ def main(argv: list[str] | None = None) -> int:
         REPO_ROOT,
     )
     for path in written.values():
-        print(path.relative_to(REPO_ROOT))
+        print(_display_path(path))
     return 0
 
 

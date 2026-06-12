@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from hla2010.ambassadors import CallbackRecord
+from hla2010_rti_backend_common import CallbackRecord
 
 
 @dataclass(frozen=True)

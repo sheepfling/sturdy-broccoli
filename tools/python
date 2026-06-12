@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/python [verify|help]
+
+Canonical Python / repo-green operator flow:
+  ./tools/python verify   # run the repo-green verification lane
+
+This is the human-facing wrapper over ./scripts/ci/repo_green.sh.
+Use ./tools/certi-easy and ./tools/pitch for vendor-runtime operator flows.
+EOF
+}
+
+case "${1:-verify}" in
+  help|-h|--help)
+    usage
+    ;;
+  verify)
+    shift
+    exec bash "$ROOT_DIR/scripts/ci/repo_green.sh" "$@"
+    ;;
+  *)
+    echo "error: unknown subcommand: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

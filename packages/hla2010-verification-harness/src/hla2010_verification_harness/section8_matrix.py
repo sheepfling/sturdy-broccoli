@@ -5,9 +5,10 @@ from dataclasses import dataclass
 from importlib import resources
 from typing import Any
 
-from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.enums import CallbackModel, OrderType, ResignAction
+from hla2010.exceptions import InvalidLogicalTime, TimeConstrainedAlreadyEnabled, TimeRegulationAlreadyEnabled
 from hla2010.types import MessageRetractionReturn
+from hla2010_rti_backend_common import RecordingFederateAmbassador
 
 
 def vendor_smoke_fom_path() -> str:
@@ -152,7 +153,8 @@ def run_section8_state_services_case(
         subscriber.enable_time_constrained()
         drain_callbacks(publisher, subscriber)
 
-        initial_time = publisher.query_logical_time()
+        publisher_initial_time = publisher.query_logical_time()
+        subscriber_initial_time = subscriber.query_logical_time()
         initial_lookahead = publisher.query_lookahead()
         publisher.modify_lookahead(config.modified_lookahead)
         modified_lookahead = publisher.query_lookahead()
@@ -165,9 +167,86 @@ def run_section8_state_services_case(
         return {
             "publisher_federate": publisher_federate,
             "subscriber_federate": subscriber_federate,
-            "initial_time": initial_time,
+            "initial_time": publisher_initial_time,
+            "publisher_initial_time": publisher_initial_time,
+            "subscriber_initial_time": subscriber_initial_time,
             "initial_lookahead": initial_lookahead,
             "modified_lookahead": modified_lookahead,
+        }
+    finally:
+        cleanup_section8_pair(publisher, subscriber, config.federation_name)
+
+
+def run_section8_early_timestamp_send_case(
+    publisher: Any,
+    subscriber: Any,
+    *,
+    config: Section8MatrixConfig,
+    publisher_federate: RecordingFederateAmbassador | None = None,
+    subscriber_federate: RecordingFederateAmbassador | None = None,
+) -> dict[str, Any]:
+    publisher_federate, subscriber_federate = connect_section8_pair(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=publisher_federate,
+        subscriber_federate=subscriber_federate,
+    )
+    try:
+        publisher_object_class = publisher.get_object_class_handle(config.object_class_name)
+        publisher_attribute = publisher.get_attribute_handle(publisher_object_class, config.attribute_name)
+        publisher_interaction = publisher.get_interaction_class_handle(config.order_interaction_class_name)
+        publisher_parameter = publisher.get_parameter_handle(publisher_interaction, config.order_parameter_name)
+        subscriber_object_class = subscriber.get_object_class_handle(config.object_class_name)
+        subscriber_attribute = subscriber.get_attribute_handle(subscriber_object_class, config.attribute_name)
+        subscriber_interaction = subscriber.get_interaction_class_handle(config.order_interaction_class_name)
+
+        publisher.publish_object_class_attributes(publisher_object_class, {publisher_attribute})
+        subscriber.subscribe_object_class_attributes(subscriber_object_class, {subscriber_attribute})
+        publisher.publish_interaction_class(publisher_interaction)
+        subscriber.subscribe_interaction_class(subscriber_interaction)
+
+        publisher.enable_time_regulation(config.lookahead)
+        subscriber.enable_time_constrained()
+        drain_callbacks(publisher, subscriber)
+
+        publisher_initial_lookahead = publisher.query_lookahead()
+        publisher.modify_lookahead(config.modified_lookahead)
+        modified_lookahead = publisher.query_lookahead()
+        instance = publisher.register_object_instance(publisher_object_class, config.object_instance_name)
+
+        zero_time = type(config.first_timestamp)(0 if config.logical_time_implementation_name == "HLAinteger64Time" else 0.0)
+
+        update_error = None
+        try:
+            publisher.update_attribute_values(
+                instance,
+                {publisher_attribute: config.first_payload},
+                config.first_tag,
+                zero_time,
+            )
+        except InvalidLogicalTime as exc:
+            update_error = exc
+
+        interaction_error = None
+        try:
+            publisher.send_interaction(
+                publisher_interaction,
+                {publisher_parameter: config.second_payload},
+                config.second_tag,
+                zero_time,
+            )
+        except InvalidLogicalTime as exc:
+            interaction_error = exc
+
+        return {
+            "publisher_federate": publisher_federate,
+            "subscriber_federate": subscriber_federate,
+            "publisher_initial_lookahead": publisher_initial_lookahead,
+            "modified_lookahead": modified_lookahead,
+            "instance": instance,
+            "update_error": update_error,
+            "interaction_error": interaction_error,
         }
     finally:
         cleanup_section8_pair(publisher, subscriber, config.federation_name)
@@ -189,17 +268,19 @@ def run_section8_ordering_and_query_case(
         subscriber_federate=subscriber_federate,
     )
     try:
-        interaction = publisher.get_interaction_class_handle(config.interaction_class_name)
-        parameter = publisher.get_parameter_handle(interaction, config.parameter_name)
-        publisher.publish_interaction_class(interaction)
-        subscriber.subscribe_interaction_class(interaction)
+        publisher_interaction = publisher.get_interaction_class_handle(config.interaction_class_name)
+        publisher_parameter = publisher.get_parameter_handle(publisher_interaction, config.parameter_name)
+        subscriber_interaction = subscriber.get_interaction_class_handle(config.interaction_class_name)
+        subscriber_parameter = subscriber.get_parameter_handle(subscriber_interaction, config.parameter_name)
+        publisher.publish_interaction_class(publisher_interaction)
+        subscriber.subscribe_interaction_class(subscriber_interaction)
 
         publisher.enable_time_regulation(config.lookahead)
         subscriber.enable_time_constrained()
         drain_callbacks(publisher, subscriber)
 
-        publisher.send_interaction(interaction, {parameter: config.first_payload}, config.first_tag, config.first_timestamp)
-        publisher.send_interaction(interaction, {parameter: config.second_payload}, config.second_tag, config.second_timestamp)
+        publisher.send_interaction(publisher_interaction, {publisher_parameter: config.first_payload}, config.first_tag, config.first_timestamp)
+        publisher.send_interaction(publisher_interaction, {publisher_parameter: config.second_payload}, config.second_tag, config.second_timestamp)
         drain_callbacks(publisher, subscriber)
 
         initial_galt = subscriber.query_galt()
@@ -222,7 +303,7 @@ def run_section8_ordering_and_query_case(
         return {
             "publisher_federate": publisher_federate,
             "subscriber_federate": subscriber_federate,
-            "parameter": parameter,
+            "parameter": subscriber_parameter,
             "initial_galt": initial_galt,
             "initial_lits": initial_lits,
             "sender_grant": sender_grant,
@@ -230,6 +311,51 @@ def run_section8_ordering_and_query_case(
             "first_grant": first_grant,
             "second_receive": second_receive,
             "second_grant": second_grant,
+        }
+    finally:
+        cleanup_section8_pair(publisher, subscriber, config.federation_name)
+
+
+def run_section8_time_bound_query_case(
+    publisher: Any,
+    subscriber: Any,
+    *,
+    config: Section8MatrixConfig,
+    publisher_federate: RecordingFederateAmbassador | None = None,
+    subscriber_federate: RecordingFederateAmbassador | None = None,
+) -> dict[str, Any]:
+    publisher_federate, subscriber_federate = connect_section8_pair(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=publisher_federate,
+        subscriber_federate=subscriber_federate,
+    )
+    try:
+        publisher_interaction = publisher.get_interaction_class_handle(config.interaction_class_name)
+        publisher_parameter = publisher.get_parameter_handle(publisher_interaction, config.parameter_name)
+        subscriber_interaction = subscriber.get_interaction_class_handle(config.interaction_class_name)
+        subscriber_parameter = subscriber.get_parameter_handle(subscriber_interaction, config.parameter_name)
+        publisher.publish_interaction_class(publisher_interaction)
+        subscriber.subscribe_interaction_class(subscriber_interaction)
+
+        publisher.enable_time_regulation(config.lookahead)
+        subscriber.enable_time_constrained()
+        drain_callbacks(publisher, subscriber)
+
+        publisher.send_interaction(publisher_interaction, {publisher_parameter: config.first_payload}, config.first_tag, config.first_timestamp)
+        publisher.send_interaction(publisher_interaction, {publisher_parameter: config.second_payload}, config.second_tag, config.second_timestamp)
+        drain_callbacks(publisher, subscriber)
+
+        initial_galt = subscriber.query_galt()
+        initial_lits = subscriber.query_lits()
+
+        return {
+            "publisher_federate": publisher_federate,
+            "subscriber_federate": subscriber_federate,
+            "parameter": subscriber_parameter,
+            "initial_galt": initial_galt,
+            "initial_lits": initial_lits,
         }
     finally:
         cleanup_section8_pair(publisher, subscriber, config.federation_name)
@@ -251,18 +377,20 @@ def run_section8_available_and_retraction_case(
         subscriber_federate=subscriber_federate,
     )
     try:
-        interaction = publisher.get_interaction_class_handle(config.interaction_class_name)
-        parameter = publisher.get_parameter_handle(interaction, config.parameter_name)
-        publisher.publish_interaction_class(interaction)
-        subscriber.subscribe_interaction_class(interaction)
+        publisher_interaction = publisher.get_interaction_class_handle(config.interaction_class_name)
+        publisher_parameter = publisher.get_parameter_handle(publisher_interaction, config.parameter_name)
+        subscriber_interaction = subscriber.get_interaction_class_handle(config.interaction_class_name)
+        subscriber_parameter = subscriber.get_parameter_handle(subscriber_interaction, config.parameter_name)
+        publisher.publish_interaction_class(publisher_interaction)
+        subscriber.subscribe_interaction_class(subscriber_interaction)
 
         publisher.enable_time_regulation(config.lookahead)
         subscriber.enable_time_constrained()
         drain_callbacks(publisher, subscriber)
 
         retraction = publisher.send_interaction(
-            interaction,
-            {parameter: config.retracted_payload},
+            publisher_interaction,
+            {publisher_parameter: config.retracted_payload},
             config.retracted_tag,
             config.second_timestamp,
         )
@@ -287,10 +415,67 @@ def run_section8_available_and_retraction_case(
         return {
             "publisher_federate": publisher_federate,
             "subscriber_federate": subscriber_federate,
-            "parameter": parameter,
+            "parameter": subscriber_parameter,
             "available_grant": available_grant,
             "after_retract_callbacks": after_retract_callbacks,
             "flush_grant": flush_grant,
+        }
+    finally:
+        cleanup_section8_pair(publisher, subscriber, config.federation_name)
+
+
+def run_section8_available_and_flush_case(
+    publisher: Any,
+    subscriber: Any,
+    *,
+    config: Section8MatrixConfig,
+    publisher_federate: RecordingFederateAmbassador | None = None,
+    subscriber_federate: RecordingFederateAmbassador | None = None,
+) -> dict[str, Any]:
+    publisher_federate, subscriber_federate = connect_section8_pair(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=publisher_federate,
+        subscriber_federate=subscriber_federate,
+    )
+    try:
+        publisher_interaction = publisher.get_interaction_class_handle(config.interaction_class_name)
+        publisher_parameter = publisher.get_parameter_handle(publisher_interaction, config.parameter_name)
+        subscriber_interaction = subscriber.get_interaction_class_handle(config.interaction_class_name)
+        subscriber_parameter = subscriber.get_parameter_handle(subscriber_interaction, config.parameter_name)
+        publisher.publish_interaction_class(publisher_interaction)
+        subscriber.subscribe_interaction_class(subscriber_interaction)
+
+        publisher.enable_time_regulation(config.lookahead)
+        subscriber.enable_time_constrained()
+        drain_callbacks(publisher, subscriber)
+
+        publisher.send_interaction(
+            publisher_interaction,
+            {publisher_parameter: config.second_payload},
+            config.second_tag,
+            config.second_timestamp,
+        )
+        publisher.time_advance_request(config.sender_advance_time)
+        drain_callbacks(publisher, subscriber)
+
+        subscriber.time_advance_request_available(config.receiver_window_time)
+        drain_callbacks(publisher, subscriber)
+        available_grant = subscriber_federate.last_callback("timeAdvanceGrant")
+
+        subscriber.flush_queue_request(config.receiver_window_time)
+        drain_callbacks(publisher, subscriber)
+        flush_grant = subscriber_federate.last_callback("timeAdvanceGrant")
+        flushed_receive = subscriber_federate.last_callback("receiveInteraction")
+
+        return {
+            "publisher_federate": publisher_federate,
+            "subscriber_federate": subscriber_federate,
+            "parameter": subscriber_parameter,
+            "available_grant": available_grant,
+            "flush_grant": flush_grant,
+            "flushed_receive": flushed_receive,
         }
     finally:
         cleanup_section8_pair(publisher, subscriber, config.federation_name)
@@ -312,35 +497,39 @@ def run_section8_order_override_case(
         subscriber_federate=subscriber_federate,
     )
     try:
-        object_class = publisher.get_object_class_handle(config.object_class_name)
-        attribute = publisher.get_attribute_handle(object_class, config.attribute_name)
-        interaction = publisher.get_interaction_class_handle(config.order_interaction_class_name)
-        parameter = publisher.get_parameter_handle(interaction, config.order_parameter_name)
+        publisher_object_class = publisher.get_object_class_handle(config.object_class_name)
+        publisher_attribute = publisher.get_attribute_handle(publisher_object_class, config.attribute_name)
+        publisher_interaction = publisher.get_interaction_class_handle(config.order_interaction_class_name)
+        publisher_parameter = publisher.get_parameter_handle(publisher_interaction, config.order_parameter_name)
+        subscriber_object_class = subscriber.get_object_class_handle(config.object_class_name)
+        subscriber_attribute = subscriber.get_attribute_handle(subscriber_object_class, config.attribute_name)
+        subscriber_interaction = subscriber.get_interaction_class_handle(config.order_interaction_class_name)
+        subscriber_parameter = subscriber.get_parameter_handle(subscriber_interaction, config.order_parameter_name)
 
-        publisher.publish_object_class_attributes(object_class, {attribute})
-        subscriber.subscribe_object_class_attributes(object_class, {attribute})
-        publisher.publish_interaction_class(interaction)
-        subscriber.subscribe_interaction_class(interaction)
+        publisher.publish_object_class_attributes(publisher_object_class, {publisher_attribute})
+        subscriber.subscribe_object_class_attributes(subscriber_object_class, {subscriber_attribute})
+        publisher.publish_interaction_class(publisher_interaction)
+        subscriber.subscribe_interaction_class(subscriber_interaction)
 
         publisher.enable_time_regulation(config.lookahead)
         subscriber.enable_time_constrained()
         drain_callbacks(publisher, subscriber)
 
-        instance = publisher.register_object_instance(object_class, config.object_instance_name)
+        instance = publisher.register_object_instance(publisher_object_class)
         drain_callbacks(publisher, subscriber)
 
-        publisher.change_attribute_order_type(instance, {attribute}, OrderType.RECEIVE)
-        publisher.change_interaction_order_type(interaction, OrderType.RECEIVE)
+        publisher.change_attribute_order_type(instance, {publisher_attribute}, OrderType.RECEIVE)
+        publisher.change_interaction_order_type(publisher_interaction, OrderType.RECEIVE)
 
         publisher.update_attribute_values(
             instance,
-            {attribute: config.first_payload},
+            {publisher_attribute: config.first_payload},
             config.first_tag,
             config.first_timestamp,
         )
         publisher.send_interaction(
-            interaction,
-            {parameter: config.second_payload},
+            publisher_interaction,
+            {publisher_parameter: config.second_payload},
             config.second_tag,
             config.second_timestamp,
         )
@@ -352,8 +541,8 @@ def run_section8_order_override_case(
         return {
             "publisher_federate": publisher_federate,
             "subscriber_federate": subscriber_federate,
-            "attribute": attribute,
-            "parameter": parameter,
+            "attribute": subscriber_attribute,
+            "parameter": subscriber_parameter,
             "reflect": reflect,
             "receive": receive,
         }
@@ -377,18 +566,20 @@ def run_section8_request_retraction_case(
         subscriber_federate=subscriber_federate,
     )
     try:
-        interaction = publisher.get_interaction_class_handle(config.interaction_class_name)
-        parameter = publisher.get_parameter_handle(interaction, config.parameter_name)
-        publisher.publish_interaction_class(interaction)
-        subscriber.subscribe_interaction_class(interaction)
+        publisher_interaction = publisher.get_interaction_class_handle(config.interaction_class_name)
+        publisher_parameter = publisher.get_parameter_handle(publisher_interaction, config.parameter_name)
+        subscriber_interaction = subscriber.get_interaction_class_handle(config.interaction_class_name)
+        subscriber_parameter = subscriber.get_parameter_handle(subscriber_interaction, config.parameter_name)
+        publisher.publish_interaction_class(publisher_interaction)
+        subscriber.subscribe_interaction_class(subscriber_interaction)
 
         publisher.enable_time_regulation(config.lookahead)
         subscriber.enable_time_constrained()
         drain_callbacks(publisher, subscriber)
 
         sent = publisher.send_interaction(
-            interaction,
-            {parameter: config.first_payload},
+            publisher_interaction,
+            {publisher_parameter: config.first_payload},
             config.first_tag,
             config.first_timestamp,
         )
@@ -408,7 +599,7 @@ def run_section8_request_retraction_case(
         return {
             "publisher_federate": publisher_federate,
             "subscriber_federate": subscriber_federate,
-            "parameter": parameter,
+            "parameter": subscriber_parameter,
             "sent": sent,
             "received": received,
             "request_retraction": request_retraction,
@@ -417,14 +608,103 @@ def run_section8_request_retraction_case(
         cleanup_section8_pair(publisher, subscriber, config.federation_name)
 
 
+def run_section8_duplicate_enable_rejection_case(
+    publisher: Any,
+    subscriber: Any,
+    *,
+    config: Section8MatrixConfig,
+    publisher_federate: RecordingFederateAmbassador | None = None,
+    subscriber_federate: RecordingFederateAmbassador | None = None,
+) -> dict[str, Any]:
+    publisher_federate, subscriber_federate = connect_section8_pair(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=publisher_federate,
+        subscriber_federate=subscriber_federate,
+    )
+    try:
+        publisher.enable_time_regulation(config.lookahead)
+        subscriber.enable_time_constrained()
+        drain_callbacks(publisher, subscriber)
+
+        initial_regulation_callback_count = len(publisher_federate.callbacks_named("timeRegulationEnabled"))
+        initial_constrained_callback_count = len(subscriber_federate.callbacks_named("timeConstrainedEnabled"))
+
+        regulation_error = None
+        try:
+            publisher.enable_time_regulation(config.lookahead)
+        except TimeRegulationAlreadyEnabled as exc:
+            regulation_error = exc
+
+        constrained_error = None
+        try:
+            subscriber.enable_time_constrained()
+        except TimeConstrainedAlreadyEnabled as exc:
+            constrained_error = exc
+
+        drain_callbacks(publisher, subscriber)
+
+        return {
+            "regulation_error": regulation_error,
+            "constrained_error": constrained_error,
+            "initial_regulation_callback_count": initial_regulation_callback_count,
+            "initial_constrained_callback_count": initial_constrained_callback_count,
+            "final_regulation_callback_count": len(publisher_federate.callbacks_named("timeRegulationEnabled")),
+            "final_constrained_callback_count": len(subscriber_federate.callbacks_named("timeConstrainedEnabled")),
+        }
+    finally:
+        cleanup_section8_pair(publisher, subscriber, config.federation_name)
+
+
+def run_section8_tar_galt_boundary_case(
+    publisher: Any,
+    subscriber: Any,
+    *,
+    config: Section8MatrixConfig,
+    publisher_federate: RecordingFederateAmbassador | None = None,
+    subscriber_federate: RecordingFederateAmbassador | None = None,
+) -> dict[str, Any]:
+    publisher_federate, subscriber_federate = connect_section8_pair(
+        publisher,
+        subscriber,
+        config=config,
+        publisher_federate=publisher_federate,
+        subscriber_federate=subscriber_federate,
+    )
+    try:
+        publisher.enable_time_regulation(config.lookahead)
+        subscriber.enable_time_constrained()
+        drain_callbacks(publisher, subscriber)
+
+        publisher.time_advance_request(config.sender_advance_time)
+        drain_callbacks(publisher, subscriber)
+        equal_galt = subscriber.query_galt()
+
+        subscriber.time_advance_request(equal_galt.time)
+        drain_callbacks(publisher, subscriber)
+
+        return {
+            "equal_galt": equal_galt,
+            "grant": subscriber_federate.last_callback("timeAdvanceGrant"),
+        }
+    finally:
+        cleanup_section8_pair(publisher, subscriber, config.federation_name)
+
+
 __all__ = [
     "Section8MatrixConfig",
+    "run_section8_available_and_flush_case",
     "cleanup_section8_pair",
     "connect_section8_pair",
     "drain_callbacks",
     "run_section8_available_and_retraction_case",
+    "run_section8_duplicate_enable_rejection_case",
+    "run_section8_early_timestamp_send_case",
     "run_section8_order_override_case",
     "run_section8_ordering_and_query_case",
+    "run_section8_tar_galt_boundary_case",
+    "run_section8_time_bound_query_case",
     "run_section8_request_retraction_case",
     "run_section8_state_services_case",
     "section8_matrix_config",

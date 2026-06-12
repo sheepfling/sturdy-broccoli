@@ -129,6 +129,17 @@ class JavaHLAfloat64Interval(JavaLikeObject):
     def __init__(self, value: float): super().__init__("HLAfloat64Interval", float(value))
 
 
+class JavaRangeBounds(JavaLikeObject):
+    def __init__(self, lower_bound: int, upper_bound: int):
+        super().__init__("RangeBounds", (int(lower_bound), int(upper_bound)))
+
+    def getLowerBound(self) -> int:
+        return int(self.value[0])
+
+    def getUpperBound(self) -> int:
+        return int(self.value[1])
+
+
 def enum_name(value: Any) -> str:
     if isinstance(value, Enum):
         return value.name
@@ -205,6 +216,7 @@ __all__ = [
     "JavaObjectClassHandle",
     "JavaObjectInstanceHandle",
     "JavaParameterHandle",
+    "JavaRangeBounds",
     "JavaRegionHandle",
     "JavaTransportationTypeHandle",
     "enum_name",

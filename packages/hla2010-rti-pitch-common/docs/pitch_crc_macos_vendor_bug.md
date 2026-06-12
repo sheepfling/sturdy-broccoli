@@ -16,7 +16,7 @@ The earlier repetitive license-acceptance popup and stale `8989` collision paths
   - `CRC.requireWebViewPassPhrase=false`
   - `CRC.webViewPassPhrase=`
 - `launch_pitch_runtime()` can now select either launcher path.
-- `scripts/run_pitch_local.sh` can now be pointed at an alternate Java runtime with:
+- The repo-managed Pitch launcher can now be pointed at an alternate Java runtime with:
   - `HLA2010_PITCH_JAVA_HOME`
   - `HLA2010_PITCH_JAVA_BIN`
   - `HLA2010_PITCH_LAUNCHER_MODE`
@@ -35,19 +35,19 @@ Before installation, no non-bundled Java 11 was present on this machine. `openjd
 Use:
 
 ```bash
-python3 scripts/repro_pitch_crc_macos.py
+./tools/pitch crc-macos-repro
 ```
 
 Install4j path:
 
 ```bash
-python3 scripts/repro_pitch_crc_macos.py --launcher-mode install4j
+./tools/pitch crc-macos-repro --launcher-mode install4j
 ```
 
 External JDK:
 
 ```bash
-python3 scripts/repro_pitch_crc_macos.py \
+./tools/pitch crc-macos-repro \
   --java-home /Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/jdk4py/java-runtime
 ```
 
@@ -106,7 +106,7 @@ The repo now carries a minimal no-WebView variant that uses the installed Pitch 
 than the sample's floating-license-server settings:
 
 ```bash
-python3 scripts/repro_pitch_crc_docker.py
+./tools/pitch crc-docker-repro
 ```
 
 For the full Pitch backend smoke path, select the Docker CRC mode:

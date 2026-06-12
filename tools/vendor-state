@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/vendor-state"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/vendor-state [classify|ci-state|help] [args...]
+
+Canonical vendor state operator flows:
+  ./tools/vendor-state classify --lane repo-green --json
+  ./tools/vendor-state classify --lane vendor-green --vendor pitch --json
+  ./tools/vendor-state ci-state --profile matrix --json
+
+This is the human-facing wrapper over the shared vendor runtime status and
+dedicated CI-state validation scripts.
+EOF
+}
+
+python_bin="$(hla2010_shell_python_bin)"
+
+case "${1:-help}" in
+  help|-h|--help)
+    usage
+    ;;
+  classify)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/classify_vendor_runtime.py" "$@"
+    ;;
+  ci-state)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/ci/check_vendor_runtime_ci_state.py" "$@"
+    ;;
+  *)
+    echo "error: unknown subcommand: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

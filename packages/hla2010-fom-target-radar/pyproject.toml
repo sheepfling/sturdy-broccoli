@@ -11,6 +11,7 @@ requires-python = ">=3.10"
 dependencies = [
   "hla2010-spec==0.13.0",
   "hla2010-verification-harness==0.13.0",
+  "hla2010-rti-runtime-common==0.13.0",
 ]
 
 [project.optional-dependencies]
@@ -33,7 +34,5 @@ hla2010_fom_target_radar = ["resources/foms/*.xml"]
 status = "implementation-moved"
 role = "fom-example"
 source_roots = [
-  "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/resources/foms/TargetRadarFOMmodule.xml",
-  "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/scenarios/target_radar.py",
-  "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/scenarios/target_radar_cli.py",
+  "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar",
 ]

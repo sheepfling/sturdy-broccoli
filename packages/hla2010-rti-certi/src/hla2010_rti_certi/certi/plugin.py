@@ -3,8 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from hla2010.backends.base import BackendInfo, BackendUnavailableError
-from hla2010.rti import RTIBackendPlugin, _coerce_transport_spec
+from hla2010_rti_java_common import BackendInfo, BackendUnavailableError, RTIBackendPlugin
 
 
 def _discover_certi_runtime() -> BackendInfo | None:
@@ -23,8 +22,9 @@ def _discover_certi_runtime() -> BackendInfo | None:
 
 def _certi_backend_factory(options: dict[str, Any]):
     from . import CERTIConfig, create_certi_backend
+    from hla2010_rti_transport_common import coerce_transport_spec
 
-    transport = _coerce_transport_spec(options.pop("transport", None))
+    transport = coerce_transport_spec(options.pop("transport", None))
     config = options.pop("config", None) or CERTIConfig(transport=transport, **options)
     return create_certi_backend(config)
 
@@ -32,8 +32,9 @@ def _certi_backend_factory(options: dict[str, Any]):
 def _certi_java_backend_factory(adapter: str, options: dict[str, Any]):
     from . import CERTIConfig
     from ..certi_java import create_certi_java_backend
+    from hla2010_rti_transport_common import coerce_transport_spec
 
-    transport = _coerce_transport_spec(options.pop("transport", None))
+    transport = coerce_transport_spec(options.pop("transport", None))
     config = options.pop("config", None) or CERTIConfig(transport=transport, **options)
     return create_certi_java_backend(adapter, config)
 

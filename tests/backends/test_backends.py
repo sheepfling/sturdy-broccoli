@@ -1,6 +1,12 @@
-from hla2010.runtime_api import FederateAmbassador
-from hla2010.backends import RecordingBackend, make_rti_ambassador
-from hla2010.backends.base import DelegatingRTIAmbassador, lower_camel_to_snake, snake_to_lower_camel
+from hla2010.spec import FederateAmbassadorSpec
+from hla2010_rti_backend_common import (
+    DelegatingRTIAmbassador,
+    Invocation,
+    RecordingBackend,
+    lower_camel_to_snake,
+    make_rti_ambassador,
+    snake_to_lower_camel,
+)
 from hla2010_rti_java_common import java_parameter_names, resolve_java_arguments
 from hla2010.enums import CallbackModel
 from hla2010.raw_api import API_METADATA
@@ -28,7 +34,7 @@ def test_connect_adapts_python_federate_ambassador():
         def adapt_federate_ambassador(self, ambassador):
             return ("adapted", ambassador)
 
-    federate = FederateAmbassador()
+    federate = FederateAmbassadorSpec()
     backend = Backend()
     rti = make_rti_ambassador(backend)
     rti.connect(federate, CallbackModel.HLA_EVOKED)
@@ -38,8 +44,6 @@ def test_connect_adapts_python_federate_ambassador():
 
 def test_keyword_resolution_uses_java_overload_metadata():
     overloads = tuple(API_METADATA["RTIambassador"]["destroyFederationExecution"])
-    from hla2010.backends.base import Invocation
-
     invocation = Invocation(
         method_name="destroyFederationExecution",
         args=(),

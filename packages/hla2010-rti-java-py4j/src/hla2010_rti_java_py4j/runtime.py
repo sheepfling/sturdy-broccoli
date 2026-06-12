@@ -5,8 +5,9 @@ from dataclasses import dataclass, field
 from typing import Any, Mapping
 
 from hla2010.fom import module_uri
-from hla2010.backends.base import CALLBACK_METHOD_NAMES, BackendUnavailableError
-from hla2010_rti_java_common import JavaBridge, PythonFederateAmbassadorDispatcher
+from hla2010_rti_java_common import CALLBACK_METHOD_NAMES, BackendUnavailableError
+from hla2010.types import RangeBounds
+from hla2010_rti_java_common.java_common import JavaBridge, PythonFederateAmbassadorDispatcher
 
 
 @dataclass(frozen=True)
@@ -34,17 +35,170 @@ class Py4JFederateAmbassadorProxy:
         return self._dispatcher._invoke_callback(method_name, *args)
 
 
-def _make_py4j_callback(method_name: str):
-    def _callback(self: Py4JFederateAmbassadorProxy, *args: Any) -> Any:
-        return self._invoke(method_name, *args)
+    def connectionLost(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("connectionLost", *args)
 
-    _callback.__name__ = method_name
-    _callback.__qualname__ = f"Py4JFederateAmbassadorProxy.{method_name}"
-    return _callback
+    def reportFederationExecutions(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("reportFederationExecutions", *args)
 
+    def synchronizationPointRegistrationSucceeded(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("synchronizationPointRegistrationSucceeded", *args)
 
-for _callback_name in CALLBACK_METHOD_NAMES:
-    setattr(Py4JFederateAmbassadorProxy, _callback_name, _make_py4j_callback(_callback_name))
+    def synchronizationPointRegistrationFailed(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("synchronizationPointRegistrationFailed", *args)
+
+    def announceSynchronizationPoint(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("announceSynchronizationPoint", *args)
+
+    def federationSynchronized(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("federationSynchronized", *args)
+
+    def initiateFederateSave(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("initiateFederateSave", *args)
+
+    def federationSaved(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("federationSaved", *args)
+
+    def federationNotSaved(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("federationNotSaved", *args)
+
+    def federationSaveStatusResponse(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("federationSaveStatusResponse", *args)
+
+    def requestFederationRestoreSucceeded(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("requestFederationRestoreSucceeded", *args)
+
+    def requestFederationRestoreFailed(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("requestFederationRestoreFailed", *args)
+
+    def federationRestoreBegun(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("federationRestoreBegun", *args)
+
+    def initiateFederateRestore(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("initiateFederateRestore", *args)
+
+    def federationRestored(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("federationRestored", *args)
+
+    def federationNotRestored(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("federationNotRestored", *args)
+
+    def federationRestoreStatusResponse(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("federationRestoreStatusResponse", *args)
+
+    def startRegistrationForObjectClass(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("startRegistrationForObjectClass", *args)
+
+    def stopRegistrationForObjectClass(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("stopRegistrationForObjectClass", *args)
+
+    def turnInteractionsOn(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("turnInteractionsOn", *args)
+
+    def turnInteractionsOff(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("turnInteractionsOff", *args)
+
+    def objectInstanceNameReservationSucceeded(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("objectInstanceNameReservationSucceeded", *args)
+
+    def objectInstanceNameReservationFailed(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("objectInstanceNameReservationFailed", *args)
+
+    def multipleObjectInstanceNameReservationSucceeded(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("multipleObjectInstanceNameReservationSucceeded", *args)
+
+    def multipleObjectInstanceNameReservationFailed(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("multipleObjectInstanceNameReservationFailed", *args)
+
+    def discoverObjectInstance(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("discoverObjectInstance", *args)
+
+    def hasProducingFederate(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("hasProducingFederate", *args)
+
+    def hasSentRegions(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("hasSentRegions", *args)
+
+    def getProducingFederate(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("getProducingFederate", *args)
+
+    def getSentRegions(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("getSentRegions", *args)
+
+    def reflectAttributeValues(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("reflectAttributeValues", *args)
+
+    def receiveInteraction(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("receiveInteraction", *args)
+
+    def removeObjectInstance(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("removeObjectInstance", *args)
+
+    def attributesInScope(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("attributesInScope", *args)
+
+    def attributesOutOfScope(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("attributesOutOfScope", *args)
+
+    def provideAttributeValueUpdate(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("provideAttributeValueUpdate", *args)
+
+    def turnUpdatesOnForObjectInstance(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("turnUpdatesOnForObjectInstance", *args)
+
+    def turnUpdatesOffForObjectInstance(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("turnUpdatesOffForObjectInstance", *args)
+
+    def confirmAttributeTransportationTypeChange(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("confirmAttributeTransportationTypeChange", *args)
+
+    def reportAttributeTransportationType(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("reportAttributeTransportationType", *args)
+
+    def confirmInteractionTransportationTypeChange(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("confirmInteractionTransportationTypeChange", *args)
+
+    def reportInteractionTransportationType(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("reportInteractionTransportationType", *args)
+
+    def requestAttributeOwnershipAssumption(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("requestAttributeOwnershipAssumption", *args)
+
+    def requestDivestitureConfirmation(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("requestDivestitureConfirmation", *args)
+
+    def attributeOwnershipAcquisitionNotification(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("attributeOwnershipAcquisitionNotification", *args)
+
+    def attributeOwnershipUnavailable(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("attributeOwnershipUnavailable", *args)
+
+    def requestAttributeOwnershipRelease(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("requestAttributeOwnershipRelease", *args)
+
+    def confirmAttributeOwnershipAcquisitionCancellation(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("confirmAttributeOwnershipAcquisitionCancellation", *args)
+
+    def informAttributeOwnership(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("informAttributeOwnership", *args)
+
+    def attributeIsNotOwned(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("attributeIsNotOwned", *args)
+
+    def attributeIsOwnedByRTI(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("attributeIsOwnedByRTI", *args)
+
+    def timeRegulationEnabled(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("timeRegulationEnabled", *args)
+
+    def timeConstrainedEnabled(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("timeConstrainedEnabled", *args)
+
+    def timeAdvanceGrant(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("timeAdvanceGrant", *args)
+
+    def requestRetraction(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke("requestRetraction", *args)
 
 
 class Py4JBridge(JavaBridge):
@@ -214,6 +368,12 @@ class Py4JBridge(JavaBridge):
         except Exception:
             return value
         return value
+
+    def range_bounds(self, value: RangeBounds) -> Any:
+        try:
+            return self.gateway.jvm.hla.rti1516e.RangeBounds(int(value.lower_bound), int(value.upper_bound))
+        except Exception:
+            return value
 
     def full_class_name(self, obj: Any) -> str | None:
         if obj is None:

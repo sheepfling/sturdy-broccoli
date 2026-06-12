@@ -4,23 +4,27 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import site
 import sys
+import tomllib
 from pathlib import Path
 
-
-ROOT_DIR = Path(__file__).resolve().parents[1]
-
-
-def _bootstrap_workspace_imports() -> None:
-    for source_root in (ROOT_DIR / "src", *sorted((ROOT_DIR / "packages").glob("*/src"))):
-        if source_root.is_dir():
-            site.addsitedir(str(source_root))
+DEFAULT_PROJECT_ROOT = Path.cwd()
+SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
+ROOT_DIR = DEFAULT_PROJECT_ROOT
 
 
-_bootstrap_workspace_imports()
+def _bootstrap_source_checkout() -> None:
+    pyproject = tomllib.loads((SCRIPT_REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    source_roots = pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]
+    for root in reversed(source_roots):
+        source_path = str(SCRIPT_REPO_ROOT / root)
+        if source_path not in sys.path:
+            sys.path.insert(0, source_path)
 
-from hla2010.backends.base import BackendUnavailableError
+
+_bootstrap_source_checkout()
+
+from hla2010_rti_backend_common import BackendUnavailableError
 from hla2010_rti_certi.real_rti_certi import (
     discover_certi_runtime,
     discover_certi_smoke_fom,
@@ -146,9 +150,19 @@ def _require_marker(record: dict[str, object], label: str) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Check whether the local CERTI runtime is runnable.")
+    parser.add_argument(
+        "--project-root",
+        type=Path,
+        default=DEFAULT_PROJECT_ROOT,
+        help="Repository root used for default local-state paths.",
+    )
     parser.add_argument("--json", action="store_true", help="emit machine-readable JSON")
     parser.add_argument("--json-file", type=Path, help="write machine-readable JSON to this file")
     args = parser.parse_args()
+
+    global ROOT_DIR, LOCAL_STATE_ROOT
+    ROOT_DIR = args.project_root.resolve()
+    LOCAL_STATE_ROOT = Path(os.environ.get("HLA2010_LOCAL_STATE_ROOT", str(ROOT_DIR / ".local")))
 
     runtime_profiles = _runtime_profiles()
     checks: list[dict[str, object]] = [

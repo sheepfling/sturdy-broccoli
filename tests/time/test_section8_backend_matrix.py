@@ -6,15 +6,20 @@ import uuid
 
 import pytest
 
-from hla2010.backends.grpc_transport.python_server import start_python_grpc_server
+from hla2010_rti_transport_grpc.python_server import start_python_grpc_server
 from hla2010.enums import OrderType
-from hla2010.rti import create_rti_ambassador
-from hla2010_verification_harness.section8_matrix import (
+from hla2010_rti_runtime_common import create_rti_ambassador
+from hla2010_verification_harness import (
+    run_section8_available_and_flush_case,
     run_section8_available_and_retraction_case,
+    run_section8_duplicate_enable_rejection_case,
+    run_section8_early_timestamp_send_case,
     run_section8_order_override_case,
     run_section8_ordering_and_query_case,
+    run_section8_time_bound_query_case,
     run_section8_request_retraction_case,
     run_section8_state_services_case,
+    run_section8_tar_galt_boundary_case,
     section8_matrix_config,
 )
 from hla2010.types import TimeQueryReturn
@@ -89,6 +94,39 @@ def test_section8_backend_matrix_state_services(backend_pair, time_factory_name:
 
 @pytest.mark.parametrize("backend_pair", [_case_param(case) for case in BACKEND_CASES], indirect=True)
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_section8_backend_matrix_logical_time_query(backend_pair, time_factory_name: str):
+    backend_id, left, right = backend_pair
+    config = section8_matrix_config(f"section8-logical-time-{backend_id}-{uuid.uuid4().hex[:8]}", time_factory_name)
+    summary = run_section8_state_services_case(left, right, config=config)
+
+    assert summary["publisher_initial_time"].value == 0 or summary["publisher_initial_time"].value == 0.0
+    assert summary["subscriber_initial_time"].value == 0 or summary["subscriber_initial_time"].value == 0.0
+
+
+@pytest.mark.parametrize("backend_pair", [_case_param(case) for case in BACKEND_CASES], indirect=True)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_section8_backend_matrix_state_toggle_services(backend_pair, time_factory_name: str):
+    backend_id, left, right = backend_pair
+    config = section8_matrix_config(f"section8-state-toggles-{backend_id}-{uuid.uuid4().hex[:8]}", time_factory_name)
+    summary = run_section8_state_services_case(left, right, config=config)
+
+    assert summary["initial_lookahead"] == config.lookahead
+    assert summary["modified_lookahead"] == config.modified_lookahead
+
+
+@pytest.mark.parametrize("backend_pair", [_case_param(case) for case in BACKEND_CASES], indirect=True)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_section8_backend_matrix_time_bound_queries(backend_pair, time_factory_name: str):
+    backend_id, left, right = backend_pair
+    config = section8_matrix_config(f"section8-time-queries-{backend_id}-{uuid.uuid4().hex[:8]}", time_factory_name)
+    summary = run_section8_time_bound_query_case(left, right, config=config)
+
+    assert isinstance(summary["initial_galt"], TimeQueryReturn)
+    assert isinstance(summary["initial_lits"], TimeQueryReturn)
+
+
+@pytest.mark.parametrize("backend_pair", [_case_param(case) for case in BACKEND_CASES], indirect=True)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_section8_backend_matrix_ordering_and_queries(backend_pair, time_factory_name: str):
     backend_id, left, right = backend_pair
     config = section8_matrix_config(f"section8-order-{backend_id}-{uuid.uuid4().hex[:8]}", time_factory_name)
@@ -107,6 +145,31 @@ def test_section8_backend_matrix_ordering_and_queries(backend_pair, time_factory
     assert summary["second_receive"].args[3] is OrderType.TIMESTAMP
     assert summary["second_receive"].args[5] == config.first_timestamp
     assert summary["second_grant"].args[0] == config.first_timestamp
+
+
+@pytest.mark.parametrize("backend_pair", [_case_param(case) for case in BACKEND_CASES], indirect=True)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_section8_backend_matrix_available_and_flush_services(backend_pair, time_factory_name: str):
+    backend_id, left, right = backend_pair
+    config = section8_matrix_config(f"section8-available-flush-{backend_id}-{uuid.uuid4().hex[:8]}", time_factory_name)
+    summary = run_section8_available_and_flush_case(left, right, config=config)
+
+    assert summary["available_grant"] is not None
+    assert summary["flush_grant"] is not None
+    assert summary["flushed_receive"] is not None
+
+
+@pytest.mark.parametrize("backend_pair", [_case_param(case) for case in BACKEND_CASES], indirect=True)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_section8_backend_matrix_early_timestamp_send_rejection(backend_pair, time_factory_name: str):
+    backend_id, left, right = backend_pair
+    config = section8_matrix_config(f"section8-early-send-{backend_id}-{uuid.uuid4().hex[:8]}", time_factory_name)
+    summary = run_section8_early_timestamp_send_case(left, right, config=config)
+
+    assert summary["publisher_initial_lookahead"] == config.lookahead
+    assert summary["modified_lookahead"] == config.modified_lookahead
+    assert summary["update_error"] is not None
+    assert summary["interaction_error"] is not None
 
 
 @pytest.mark.parametrize("backend_pair", [_case_param(case) for case in BACKEND_CASES], indirect=True)
@@ -151,3 +214,27 @@ def test_section8_backend_matrix_request_retraction_callback(backend_pair, time_
     assert summary["received"].args[3] is OrderType.TIMESTAMP
     assert summary["request_retraction"] is not None
     assert summary["request_retraction"].args[0] == summary["sent"].handle
+
+
+@pytest.mark.parametrize("backend_pair", [_case_param(case) for case in BACKEND_CASES], indirect=True)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_section8_backend_matrix_duplicate_enable_rejection(backend_pair, time_factory_name: str):
+    backend_id, left, right = backend_pair
+    config = section8_matrix_config(f"section8-duplicate-enable-{backend_id}-{uuid.uuid4().hex[:8]}", time_factory_name)
+    summary = run_section8_duplicate_enable_rejection_case(left, right, config=config)
+
+    assert summary["regulation_error"] is not None
+    assert summary["constrained_error"] is not None
+    assert summary["final_regulation_callback_count"] == summary["initial_regulation_callback_count"]
+    assert summary["final_constrained_callback_count"] == summary["initial_constrained_callback_count"]
+
+
+@pytest.mark.parametrize("backend_pair", [_case_param(case) for case in BACKEND_CASES], indirect=True)
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_section8_backend_matrix_tar_galt_boundary(backend_pair, time_factory_name: str):
+    backend_id, left, right = backend_pair
+    config = section8_matrix_config(f"section8-tar-galt-{backend_id}-{uuid.uuid4().hex[:8]}", time_factory_name)
+    summary = run_section8_tar_galt_boundary_case(left, right, config=config)
+
+    assert summary["equal_galt"].time == config.receiver_window_time
+    assert summary["grant"] is None

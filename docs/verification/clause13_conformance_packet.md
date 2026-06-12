@@ -1,4 +1,4 @@
-# Clause 13 Conformance Packet v0.12.0
+# Clause 13 Conformance Packet v0.13.0
 
 This packet does not claim certification. It packages current repo evidence so that IEEE 1516.1-2010 Clause 13 federate and RTI conformance claims are explicitly backed by reviewable artifacts.
 

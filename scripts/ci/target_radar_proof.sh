@@ -3,6 +3,11 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 
+# shellcheck source=lib/shell.sh
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "$0"
+PYTHON_BIN="$(hla2010_shell_python_bin)"
+
 if [[ -f "$ROOT_DIR/.venv/bin/activate" ]]; then
   # shellcheck disable=SC1091
   source "$ROOT_DIR/.venv/bin/activate"
@@ -12,15 +17,16 @@ cd "$ROOT_DIR"
 
 case "${1:-}" in
   help|-h|--help)
-    python3 scripts/run_target_radar_proof.py --help
+    "$PYTHON_BIN" scripts/run_target_radar_proof.py --help
     exit 0
     ;;
 esac
 
-echo "running target/radar proof packet"
+hla2010_shell_log "running target/radar proof packet"
+hla2010_shell_log "python: $PYTHON_BIN"
 
 if [[ "$#" -eq 0 ]]; then
-  python3 scripts/run_target_radar_proof.py --backend python --proof-backend python
+  "$PYTHON_BIN" scripts/run_target_radar_proof.py --backend python --proof-backend python
 else
-  python3 scripts/run_target_radar_proof.py "$@"
+  "$PYTHON_BIN" scripts/run_target_radar_proof.py "$@"
 fi

@@ -15,9 +15,9 @@ If you need the explicit variable and marker checklist for those runners, use
 
 The key split is simple:
 
-- `./scripts/ci/repo_green.sh`: repo-green, vendor preflight mandatory, blocked
+- `./tools/python verify`: repo-green, vendor preflight mandatory, blocked
   vendor runtime prerequisites skip cleanly
-- `./scripts/ci/vendor_green.sh ...`: vendor-green, vendor preflight mandatory,
+- `./tools/vendor-green ...`: vendor-green, vendor preflight mandatory,
   blocked prerequisites fail immediately
 
 ## Supported Execution Surfaces
@@ -55,9 +55,9 @@ runner provisioning contract.
 Use this for the default full verification lane:
 
 ```bash
-./scripts/bootstrap_profile.sh python
+./tools/bootstrap python
 source .venv/bin/activate
-./scripts/ci/repo_green.sh
+./tools/python verify
 ```
 
 Expected behavior:
@@ -76,22 +76,26 @@ start:
 ### CERTI vendor-green
 
 ```bash
-./scripts/bootstrap_profile.sh python
+./tools/bootstrap python
 source .venv/bin/activate
 
 ./tools/certi-easy preflight
 ./tools/certi-easy install
-./scripts/ci/vendor_green.sh certi
-./scripts/ci/vendor_green.sh certi-compare
+./tools/certi-easy verify-best-effort
+./tools/vendor-green certi
+./tools/vendor-green certi-compare
 ```
 
 Use `./tools/certi-easy smoke compare` when you want the top-level operator route for
 patched-vs-upstream attribution.
+Use `./tools/certi-easy verify-best-effort` when you want the normalized
+preflight/runtime-status/parity artifacts without treating blocked local
+loopback prerequisites as a hard command failure.
 
 ### Pitch vendor-green
 
 ```bash
-./scripts/bootstrap_profile.sh python
+./tools/bootstrap python
 source .venv/bin/activate
 
 ./tools/pitch preflight
@@ -100,12 +104,21 @@ source .venv/bin/activate
 ./tools/pitch verify
 ```
 
+For local or sandboxed environments where you still want the normalized
+preflight/runtime-status/parity artifacts but do not want blocked Docker or
+loopback prerequisites to fail the command, use:
+
+```bash
+./tools/pitch smoke-best-effort
+./tools/pitch verify-best-effort
+```
+
 Underlying shared strict profiles:
 
 ```bash
-./scripts/ci/vendor_green.sh pitch-smoke
-./scripts/ci/vendor_green.sh pitch-verify
-./scripts/ci/vendor_green.sh pitch
+./tools/vendor-green pitch-smoke
+./tools/vendor-green pitch-verify
+./tools/vendor-green pitch
 ```
 
 ## Required State
@@ -160,10 +173,10 @@ Use the validator directly when you are bringing up or repairing dedicated
 vendor runners:
 
 ```bash
-python3 scripts/ci/check_vendor_runtime_ci_state.py --profile certi --json
-python3 scripts/ci/check_vendor_runtime_ci_state.py --profile pitch --json
-python3 scripts/ci/check_vendor_runtime_ci_state.py --profile matrix --json
-python3 scripts/ci/check_vendor_runtime_ci_state.py --profile vendor-edge --json
+./tools/vendor-state ci-state --profile certi --json
+./tools/vendor-state ci-state --profile pitch --json
+./tools/vendor-state ci-state --profile matrix --json
+./tools/vendor-state ci-state --profile vendor-edge --json
 ```
 
 Profiles:
@@ -183,7 +196,7 @@ alongside the existing preflight, runtime-status, and parity artifacts.
 
 The strict wrapper now also defends itself when it runs under CI:
 
-- `./scripts/ci/vendor_green.sh ...` auto-runs `check_vendor_runtime_ci_state.py`
+- `./tools/vendor-green ...` auto-runs `check_vendor_runtime_ci_state.py`
   for the profile it needs before it tries the real runtime lane
 - if the dedicated runner contract is broken, the wrapper fails before it
   touches the vendor runtime delegate path
@@ -232,10 +245,10 @@ evidence, use the repeated-run harness on the dedicated runner:
 ./tools/certi-easy ddm-review 5
 ```
 
-Underlying shared wrapper:
+Canonical repeated-run operator wrapper:
 
 ```bash
-./scripts/ci/vendor_probe_review.sh <profile> 5
+./tools/vendor-probe-review <profile> 5
 ```
 
 Under CI, the repeated-run path now validates the dedicated runner contract
@@ -259,7 +272,7 @@ To compare those repeated-run results against the repo’s current documented
 conformance stance, generate the promotion-review artifact:
 
 ```bash
-python3 scripts/ci/write_vendor_probe_promotion_review.py
+./tools/vendor-probe-review promotion-review
 ```
 
 Artifacts:
@@ -293,15 +306,15 @@ mkdir -p analysis/preflight_artifacts
 Or let the vendor-green path emit the same files automatically:
 
 ```bash
-./scripts/ci/vendor_green.sh matrix
+./tools/vendor-green matrix
 ```
 
 After the artifacts exist, classify them explicitly:
 
 ```bash
-python3 scripts/classify_vendor_runtime.py --lane repo-green --json
-python3 scripts/classify_vendor_runtime.py --lane vendor-green --vendor certi --json
-python3 scripts/classify_vendor_runtime.py --lane vendor-green --vendor pitch --json
+./tools/vendor-state classify --lane repo-green --json
+./tools/vendor-state classify --lane vendor-green --vendor certi --json
+./tools/vendor-state classify --lane vendor-green --vendor pitch --json
 ```
 
 Use that output to separate:
@@ -338,7 +351,7 @@ The green-lane wrappers also emit these report directories automatically:
 - `analysis/vendor_runtime_status/...`
 - `analysis/vendor_parity_artifacts/...`
 
-So a normal `./scripts/ci/repo_green.sh` or `./scripts/ci/vendor_green.sh ...`
+So a normal `./tools/python verify` or `./tools/vendor-green ...`
 run now leaves behind both the raw preflight JSON and a normalized status view.
 The supported top-level operator routes such as `./tools/certi-easy ...` and
 `./tools/pitch ...` are expected to leave behind the same diagnostic bundle through
@@ -349,8 +362,8 @@ runtime from running.
 
 The repo workflows use the same split:
 
-- `repo-green` job -> `./scripts/ci/repo_green.sh`
-- vendor runtime jobs -> `./scripts/ci/vendor_green.sh ...`
+- `repo-green` job -> `./tools/python verify`
+- vendor runtime jobs -> `./tools/vendor-green ...`
 
 Those jobs also upload:
 
@@ -359,9 +372,9 @@ Those jobs also upload:
 - `analysis/vendor_runtime_status/`
 - `analysis/vendor_parity_artifacts/`
 
-That is the supported contract. Treat
-`./scripts/ci/vendor_runtime_smoke.sh ...` as the shared implementation behind
-the vendor-green lane, not the preferred top-level job interface.
+That is the supported contract. Treat the shared vendor runtime smoke delegate
+as the implementation behind the vendor-green lane, not the preferred
+top-level job interface.
 
 ## What This Does Not Solve
 

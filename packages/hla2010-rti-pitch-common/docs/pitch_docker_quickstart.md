@@ -71,6 +71,17 @@ That dispatches to the strict shared vendor lane for the Pitch smoke slice.
 
 That dispatches to the strict shared vendor lane for the Pitch verify slice.
 
+If you want the same operator route to emit the normalized preflight/runtime
+artifacts without failing just because local Docker or loopback prerequisites
+are blocked, use:
+
+```bash
+./tools/pitch verify-best-effort
+```
+
+That keeps the strict `./tools/pitch verify` contract intact while giving local
+development and sandboxed environments a report-only path.
+
 ## Day-to-day commands
 
 ```bash
@@ -79,8 +90,12 @@ That dispatches to the strict shared vendor lane for the Pitch verify slice.
 ./tools/pitch stop
 ./tools/pitch restart
 ./tools/pitch doctor
+./tools/pitch smoke-best-effort
+./tools/pitch verify-best-effort
 ./tools/pitch save-restore
 ./tools/pitch save-restore-probe
+./tools/pitch lost-federate
+./tools/pitch lost-federate-probe
 ./tools/pitch ddm
 ./tools/pitch ddm-probe
 ./tools/pitch all
@@ -97,8 +112,17 @@ repo-local Pitch defaults:
 ./tools/pitch all
 ```
 
-Use `./scripts/ci/vendor_green.sh ...` only when you specifically need the
-shared CI wrapper surface.
+Use `./tools/vendor-green ...` when you specifically need the strict shared
+vendor-green surface.
+
+For lost-federate investigation, the prepared Pitch user-home now accepts
+additional vendor-specific overrides through:
+- `HLA2010_PITCH_LRC_EXTRA_SETTINGS`
+- `HLA2010_PITCH_FEDPRO_EXTRA_SETTINGS`
+
+Pass newline- or semicolon-separated `key=value` entries when you need to try
+session-resume or peer-drop policy settings without editing runtime files by
+hand before `./tools/pitch lost-federate-probe`.
 
 ## Dedicated CI Runner Contract
 
@@ -116,8 +140,8 @@ Required runtime marker:
 Validate that runner state directly with:
 
 ```bash
-python3 scripts/ci/check_vendor_runtime_ci_state.py --profile pitch --json
-python3 scripts/ci/check_vendor_runtime_ci_state.py --profile matrix --json
+./tools/vendor-state ci-state --profile pitch --json
+./tools/vendor-state ci-state --profile matrix --json
 ```
 
 Those checks emit:
@@ -141,5 +165,5 @@ Common causes:
 - the Pitch runtime bundle is missing from `third_party/pitch/PITCH-prti1516e-manual`
 - another process is already bound to `8989` or `15164`
 
-The implementation shim remains `./scripts/pitch_docker_easy.sh`, but the
-supported operator path is `./tools/pitch`.
+The implementation shim remains under `scripts/`, but the supported operator
+path is `./tools/pitch`.

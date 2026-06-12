@@ -2,15 +2,29 @@
 from __future__ import annotations
 
 import re
+import sys
 import tomllib
 from collections import defaultdict
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path.cwd()
 PACKAGES_DIR = REPO_ROOT / "packages"
 OUTPUT_PATH = REPO_ROOT / "docs/package_dependency_tree.md"
 INTERNAL_PREFIX = "hla2010-"
 DEP_NAME_RE = re.compile(r"^([A-Za-z0-9_.-]+)")
+
+
+def _bootstrap_source_checkout() -> None:
+    pyproject = tomllib.loads((SCRIPT_REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    source_roots = pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]
+    for root in reversed(source_roots):
+        source_path = str(SCRIPT_REPO_ROOT / root)
+        if source_path not in sys.path:
+            sys.path.insert(0, source_path)
+
+
+_bootstrap_source_checkout()
 
 
 def parse_dep_name(spec: str) -> str:
@@ -149,7 +163,7 @@ This page is generated from the `project.dependencies` fields in
 Regenerate it with:
 
 ```bash
-python3 scripts/generate_package_dependency_tree.py
+./tools/package-deps generate
 ```
 
 ## Summary
@@ -170,6 +184,7 @@ python3 scripts/generate_package_dependency_tree.py
 
 {table}
 """
+    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(content)
     print(f"wrote {OUTPUT_PATH}")
     return 0

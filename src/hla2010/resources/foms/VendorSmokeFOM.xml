@@ -24,6 +24,9 @@
           <updateType>Conditional</updateType>
           <ownership>DivestAcquire</ownership>
           <sharing>PublishSubscribe</sharing>
+          <dimensions>
+            <dimension>HLAdefaultRoutingSpace</dimension>
+          </dimensions>
           <transportation>HLAreliable</transportation>
           <order>Receive</order>
         </attribute>
@@ -36,6 +39,9 @@
       <interactionClass>
         <name>SmokeInteraction</name>
         <sharing>PublishSubscribe</sharing>
+        <dimensions>
+          <dimension>HLAdefaultRoutingSpace</dimension>
+        </dimensions>
         <transportation>HLAreliable</transportation>
         <order>Receive</order>
         <parameter>
@@ -46,7 +52,16 @@
       </interactionClass>
     </interactionClass>
   </interactions>
-  <dimensions/>
+  <dimensions>
+    <dimension>
+      <name>HLAdefaultRoutingSpace</name>
+      <dataType>HLAinteger64BE</dataType>
+      <upperBound>2147483647</upperBound>
+      <normalization>None</normalization>
+      <value>Excluded</value>
+      <semantics>Default routing dimension for vendor smoke DDM probes.</semantics>
+    </dimension>
+  </dimensions>
   <time>
     <timeStamp>
       <dataType>SmokeIntegerTime</dataType>

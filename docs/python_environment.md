@@ -23,7 +23,7 @@ Optional later:
 From the repository root:
 
 ```bash
-./scripts/bootstrap_profile.sh python
+./tools/bootstrap python
 source .venv/bin/activate
 python examples/target_radar_simulation.py --backend python --steps 5
 ```
@@ -33,7 +33,7 @@ That is the shortest supported path to a working local Python setup.
 If you want to check the machine and workspace before bootstrapping, run:
 
 ```bash
-./scripts/bootstrap_profile.sh doctor
+./tools/bootstrap doctor
 ```
 
 That verifies Python, `.venv`, workspace imports, and optional backend
@@ -44,22 +44,22 @@ prerequisites without trying to install anything.
 There are two normal entrypoints:
 
 ```bash
-./scripts/bootstrap_profile.sh python
-./scripts/bootstrap_python.sh
+./tools/bootstrap python
+HLA2010_BOOTSTRAP_EXTRAS=qa ./tools/bootstrap python
 ```
 
 They are related, but not identical:
 
-- `./scripts/bootstrap_profile.sh python` is the operator-first entrypoint.
+- `./tools/bootstrap python` is the shortest supported bootstrap entrypoint.
   It defaults to the lean `test` extras.
-- `./scripts/bootstrap_python.sh` is the direct Python bootstrap entrypoint.
-  It defaults to the broader `qa` extras.
+- `HLA2010_BOOTSTRAP_EXTRAS=qa ./tools/bootstrap python` is the direct way to
+  request broader Python extras.
 
 Both commands:
 
 - create or refresh the repo-local virtual environment
-- install the workspace in editable mode
-- install the selected extras from the root `pyproject.toml`
+- install the split workspace packages in editable mode
+- add the selected helper dependencies without installing the repo root as a distribution
 
 ## Where The Virtual Environment Lives
 
@@ -80,7 +80,7 @@ Pick the smallest thing that matches your work.
 ### 1. Basic Python development
 
 ```bash
-./scripts/bootstrap_profile.sh python
+./tools/bootstrap python
 ```
 
 This gives you:
@@ -91,7 +91,7 @@ This gives you:
 ### 2. Full local QA flow
 
 ```bash
-HLA2010_BOOTSTRAP_EXTRAS=qa ./scripts/bootstrap_python.sh
+HLA2010_BOOTSTRAP_EXTRAS=qa ./tools/bootstrap python
 ```
 
 This adds:
@@ -99,40 +99,44 @@ This adds:
 - pytest
 - Ruff
 - Pyright
+- the JPype and Py4J bridge helper dependencies needed by the repo-green split-package suite
+- the JPype/Py4J/Portico split package set used by repo-level verification
 
 ### 3. Java bridge work
 
 JPype:
 
 ```bash
-HLA2010_BOOTSTRAP_EXTRAS=jpype ./scripts/bootstrap_python.sh
+HLA2010_BOOTSTRAP_EXTRAS=jpype ./tools/bootstrap python
 ```
 
 Py4J:
 
 ```bash
-HLA2010_BOOTSTRAP_EXTRAS=py4j ./scripts/bootstrap_python.sh
+HLA2010_BOOTSTRAP_EXTRAS=py4j ./tools/bootstrap python
 ```
 
 Both:
 
 ```bash
-HLA2010_BOOTSTRAP_EXTRAS=java ./scripts/bootstrap_python.sh
+HLA2010_BOOTSTRAP_EXTRAS=java ./tools/bootstrap python
 ```
 
 If you need both bridge dependencies and QA tooling, install them after the
-bootstrap:
+bootstrap. The `qa` bootstrap already installs the repo-green bridge package
+set; use the manual command only when you want to add the helper dependencies
+to an already-bootstrapped environment without reinstalling split packages:
 
 ```bash
 source .venv/bin/activate
-python -m pip install --no-build-isolation -e ".[qa,java]"
+python -m pip install --no-build-isolation ruff pyright jpype1 py4j
 ```
 
 ## Install Order
 
 Use this order unless you have a specific reason not to.
 
-0. Optionally run `./scripts/bootstrap_profile.sh doctor`.
+0. Optionally run `./tools/bootstrap doctor`.
 1. Bootstrap Python first.
 2. Activate `.venv`.
 3. Run a pure-Python example or smoke test.
@@ -150,8 +154,9 @@ After the Python environment is up:
 source .venv/bin/activate
 python examples/backend_recording.py
 python examples/target_radar_simulation.py --backend python --steps 5
-python scripts/run_two_federate_suite.py --target-radar-steps 3
-./scripts/ci/test.sh
+./tools/two-federate --target-radar-steps 3
+./tools/python verify
+./tools/test
 ```
 
 If those commands work, the base environment is healthy.
@@ -165,6 +170,7 @@ Once the Python path is working:
 ```bash
 ./tools/certi-easy preflight
 ./tools/certi-easy install
+./tools/certi-easy verify-best-effort
 ./tools/certi-easy smoke compare
 ```
 
@@ -175,9 +181,15 @@ Once the Python path is working:
 ./tools/pitch install
 ./tools/pitch smoke
 ./tools/pitch verify
+./tools/pitch verify-best-effort
+./tools/vendor-green matrix
 ```
 
 Do not start with CERTI or Pitch before the Python bootstrap succeeds.
+
+Use `./tools/pitch verify-best-effort` when you need the normalized Pitch
+preflight/runtime artifacts on a local or sandboxed machine that cannot satisfy
+the strict Docker and loopback prerequisites for `./tools/pitch verify`.
 
 For real runtime proof on an unrestricted local terminal or a dedicated CI
 runner, use [vendor_runtime_runner_guide.md](vendor_runtime_runner_guide.md).
@@ -186,23 +198,24 @@ runner, use [vendor_runtime_runner_guide.md](vendor_runtime_runner_guide.md).
 
 The setup-relevant parts of this repo are:
 
-- `src/hla2010/`: root Python package and compatibility facades
+- `src/hla2010/`: root Python package, abstract/core API, and the temporary split-package facade `hla2010.rti`
 - `hla2010/`: narrow shim area for plugin-facing glue
 - `packages/*/src/`: package-owned backend, FOM, and support implementations
 - `examples/`: runnable entrypoints
-- `scripts/`: bootstrap, CI, and operator wrappers
+- `tools/`: human-facing vendor/runtime operator entrypoints
+- `scripts/`: bootstrap, CI, and implementation wrappers
 - `tests/`: pytest coverage
 
-The root `pyproject.toml` installs the workspace across those package roots in
-editable mode.
+The bootstrap scripts install the split workspace package set across those
+package roots in editable mode.
 
 ## If You Are An Agent
 
 Use this sequence:
 
 ```bash
-./scripts/bootstrap_profile.sh doctor
-./scripts/bootstrap_profile.sh python
+./tools/bootstrap doctor
+./tools/bootstrap python
 source .venv/bin/activate
 python examples/backend_recording.py
 ```

@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/rti-options"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/rti-options [generate|help]
+
+Canonical RTI options matrix maintenance flow:
+  ./tools/rti-options generate
+
+This is the human-facing wrapper over `scripts/update_rti_options_matrix.py`.
+EOF
+}
+
+python_bin="$(hla2010_shell_python_bin)"
+
+case "${1:-generate}" in
+  help|-h|--help)
+    usage
+    ;;
+  generate)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/update_rti_options_matrix.py" "$@"
+    ;;
+  *)
+    echo "error: unknown subcommand: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

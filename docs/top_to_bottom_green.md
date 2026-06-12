@@ -35,8 +35,8 @@ Required outcome:
 Canonical commands:
 
 ```bash
-./scripts/bootstrap_profile.sh doctor
-./scripts/bootstrap_profile.sh python
+./tools/bootstrap doctor
+./tools/bootstrap python
 source .venv/bin/activate
 python examples/backend_recording.py
 python examples/target_radar_simulation.py --backend python --steps 5
@@ -56,7 +56,7 @@ Required outcome:
 Canonical command:
 
 ```bash
-./scripts/ci/repo_green.sh
+./tools/python verify
 ```
 
 Repo-green is the standard answer to "does the repo work here?"
@@ -75,10 +75,10 @@ Required outcome:
 Canonical commands:
 
 ```bash
-./scripts/ci/vendor_green.sh certi
-./scripts/ci/vendor_green.sh certi-compare
-./scripts/ci/vendor_green.sh pitch
-./scripts/ci/vendor_green.sh matrix
+./tools/vendor-green certi
+./tools/vendor-green certi-compare
+./tools/vendor-green pitch
+./tools/vendor-green matrix
 ```
 
 Vendor-green is not expected to pass on every machine. It is expected to be
@@ -102,6 +102,11 @@ true:
 1. the real-runtime lane passes on a provisioned host, or
 2. the repo clearly reports that the environment is blocked and emits the
    expected artifacts and next-step guidance
+
+Best-effort operator examples:
+
+- `./tools/certi-easy verify-best-effort`
+- `./tools/pitch verify-best-effort`
 
 That second case is still "working" for repo-green. It is not "green" for
 vendor-green.

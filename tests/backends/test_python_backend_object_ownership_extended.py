@@ -4,7 +4,7 @@ import pytest
 
 from hla2010 import mom as hla_mom
 from tests.backends.python_backend_extended_support import *
-from hla2010.runtime_api import RTIambassador, FederateAmbassador
+from hla2010.spec import RTIambassadorSpec, FederateAmbassadorSpec
 from hla2010.exceptions import *
 from hla2010.handles import *
 from hla2010.raw_api import API_METADATA
@@ -1777,7 +1777,7 @@ def test_clause_5_service_and_callback_signature_metadata_matches_source_binding
     }
 
     for method_name, (service, expected_params) in rti_checks.items():
-        assert hasattr(RTIambassador, method_name)
+        assert hasattr(RTIambassadorSpec, method_name)
         java_records = [
             record for record in API_METADATA["RTIambassador"][method_name]
             if record["language"] == "java"
@@ -1787,7 +1787,7 @@ def test_clause_5_service_and_callback_signature_metadata_matches_source_binding
         assert [record["params"] for record in java_records] == expected_params
 
     for method_name, (service, expected_params) in federate_checks.items():
-        assert hasattr(FederateAmbassador, method_name)
+        assert hasattr(FederateAmbassadorSpec, method_name)
         java_records = [
             record for record in API_METADATA["FederateAmbassador"][method_name]
             if record["language"] == "java"
@@ -1935,7 +1935,7 @@ def test_clause_6_service_and_callback_signature_metadata_matches_source_binding
     }
 
     for method_name, (service, expected_returns, expected_params) in rti_checks.items():
-        assert hasattr(RTIambassador, method_name)
+        assert hasattr(RTIambassadorSpec, method_name)
         java_records = [
             record for record in API_METADATA["RTIambassador"][method_name]
             if record["language"] == "java"
@@ -1945,7 +1945,7 @@ def test_clause_6_service_and_callback_signature_metadata_matches_source_binding
         assert [record["params"] for record in java_records] == expected_params
 
     for method_name, (service, expected_params) in federate_checks.items():
-        assert hasattr(FederateAmbassador, method_name)
+        assert hasattr(FederateAmbassadorSpec, method_name)
         java_records = [
             record for record in API_METADATA["FederateAmbassador"][method_name]
             if record["language"] == "java"
@@ -2053,7 +2053,7 @@ def test_clause_7_service_and_callback_signature_metadata_matches_source_binding
     }
 
     for method_name, (service, expected_returns, expected_params) in rti_checks.items():
-        assert hasattr(RTIambassador, method_name)
+        assert hasattr(RTIambassadorSpec, method_name)
         java_records = [
             record for record in API_METADATA["RTIambassador"][method_name]
             if record["language"] == "java"
@@ -2063,7 +2063,7 @@ def test_clause_7_service_and_callback_signature_metadata_matches_source_binding
         assert [record["params"] for record in java_records] == expected_params
 
     for method_name, (service, expected_params) in federate_checks.items():
-        assert hasattr(FederateAmbassador, method_name)
+        assert hasattr(FederateAmbassadorSpec, method_name)
         java_records = [
             record for record in API_METADATA["FederateAmbassador"][method_name]
             if record["language"] == "java"
@@ -2111,7 +2111,7 @@ def test_clause_8_service_and_callback_signature_metadata_matches_source_binding
     }
 
     for method_name, (service, expected_returns, expected_params) in rti_checks.items():
-        assert hasattr(RTIambassador, method_name)
+        assert hasattr(RTIambassadorSpec, method_name)
         java_records = [
             record for record in API_METADATA["RTIambassador"][method_name]
             if record["language"] == "java"
@@ -2121,7 +2121,7 @@ def test_clause_8_service_and_callback_signature_metadata_matches_source_binding
         assert [record["params"] for record in java_records] == expected_params
 
     for method_name, (service, expected_params) in federate_checks.items():
-        assert hasattr(FederateAmbassador, method_name)
+        assert hasattr(FederateAmbassadorSpec, method_name)
         java_records = [
             record for record in API_METADATA["FederateAmbassador"][method_name]
             if record["language"] == "java"
@@ -2206,7 +2206,7 @@ def test_clause_9_service_signature_metadata_matches_source_bindings():
     }
 
     for method_name, (service, expected_returns, expected_params) in rti_checks.items():
-        assert hasattr(RTIambassador, method_name)
+        assert hasattr(RTIambassadorSpec, method_name)
         java_records = [
             record for record in API_METADATA["RTIambassador"][method_name]
             if record["language"] == "java"
@@ -2413,7 +2413,7 @@ def test_clause_10_service_signature_metadata_matches_source_bindings():
     }
 
     for method_name, (service, expected_returns, expected_params) in rti_checks.items():
-        assert hasattr(RTIambassador, method_name)
+        assert hasattr(RTIambassadorSpec, method_name)
         java_records = [
             record for record in API_METADATA["RTIambassador"][method_name]
             if record["language"] == "java"

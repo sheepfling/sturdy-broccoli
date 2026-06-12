@@ -3,8 +3,12 @@ from __future__ import annotations
 
 from typing import Any
 
-from hla2010.backends.base import BackendInfo, BackendUnavailableError
-from hla2010.rti import RTIBackendPlugin, _reset_py4j_callback_client
+from hla2010_rti_java_common import (
+    BackendInfo,
+    BackendUnavailableError,
+    RTIBackendPlugin,
+    reset_py4j_callback_client,
+)
 
 from .factory import create_py4j_backend
 from .runtime import Py4JConfig
@@ -30,17 +34,19 @@ def _pitch_py4j_backend_factory(options: dict[str, Any]):
     options.setdefault("connect_local_settings_designator", pitch_fedpro_local_settings_designator())
     if gateway is None:
         launch_port = int(options.pop("launch_gateway_port", 0))
-        port = launch_pitch_py4j_gateway(
+        port, gateway_process = launch_pitch_py4j_gateway(
             pitch_home=options.pop("pitch_home", None),
             port=launch_port,
             die_on_exit=bool(options.pop("die_on_exit", True)),
+            return_proc=True,
         )
         gateway = JavaGateway(
             gateway_parameters=GatewayParameters(port=port, auto_convert=True),
             callback_server_parameters=CallbackServerParameters(port=options.pop("callback_port", 0)),
         )
+        setattr(gateway, "_hla2010_gateway_process", gateway_process)
         gateway.start_callback_server()
-        _reset_py4j_callback_client(gateway)
+        reset_py4j_callback_client(gateway)
         options.setdefault("shutdown_gateway_on_close", True)
     config = options.pop("config", None) or Py4JConfig(gateway=gateway, **options)
     return create_py4j_backend(config)

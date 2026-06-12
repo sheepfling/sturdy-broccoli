@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from typing import Any, Mapping, cast
 
 from hla2010.exceptions import InvalidInteractionClassHandle, InvalidObjectClassHandle
 from hla2010.handles import AttributeHandle, InteractionClassHandle, ObjectClassHandle, RegionHandle
@@ -12,13 +12,16 @@ from .state import RTI_FEDERATE_HANDLE, FederateState, ObjectInstance
 class PythonRTISubscriptionMixin:
     """Object/interaction subscription matching and region overlap helpers."""
 
-    def _object_matches_subscription(self, instance_class: ObjectClassHandle, subscribed_class: ObjectClassHandle) -> bool:
+    def _object_matches_subscription(self, actual_class: object, subscribed_class: object) -> bool:
+        instance_class = cast(ObjectClassHandle, actual_class)
+        subscribed_class = cast(ObjectClassHandle, subscribed_class)
         try:
             return self.engine.object_class_is_a(instance_class, subscribed_class)
         except InvalidObjectClassHandle:
             return instance_class == subscribed_class
 
-    def _interaction_matches_subscription(self, interaction_class: InteractionClassHandle, subscribed_class: InteractionClassHandle) -> bool:
+    def _interaction_matches_subscription(self, actual_class: InteractionClassHandle, subscribed_class: InteractionClassHandle) -> bool:
+        interaction_class = actual_class
         try:
             return self.engine.interaction_class_is_a(interaction_class, subscribed_class)
         except InvalidInteractionClassHandle:
@@ -279,13 +282,14 @@ class PythonRTISubscriptionMixin:
 
     def _attribute_subscription_intersection(
         self,
-        subscriber: FederateState,
-        object_class: ObjectClassHandle,
+        federate: FederateState,
+        object_class: object,
         attributes: Mapping[AttributeHandle, bytes],
         instance: ObjectInstance | None = None,
         sent_regions_by_attribute: Mapping[AttributeHandle, set[RegionHandle]] | None = None,
     ) -> dict[AttributeHandle, bytes]:
-        subscribed = self._subscribed_attributes_for(subscriber, object_class)
+        subscriber = federate
+        subscribed = self._subscribed_attributes_for(subscriber, cast(ObjectClassHandle, object_class))
         if not subscribed:
             return {}
         known_class = None

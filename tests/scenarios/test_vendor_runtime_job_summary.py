@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
+import sys
 from pathlib import Path
 
 from hla2010_repo_internal.verification.vendor_runtime_job_summary import (
@@ -119,7 +121,7 @@ def test_build_vendor_runtime_job_summary_renders_blocked_reason_and_next_steps(
     assert "analysis/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json" in rendered
 
 
-def test_job_summary_script_writes_output_file(tmp_path: Path) -> None:
+def test_job_summary_script_bootstraps_source_checkout_and_writes_output_file(tmp_path: Path) -> None:
     status_dir = tmp_path / "runtime-status"
     _write_status(
         status_dir / "repo_green" / "vendor_runtime_status_summary.json",
@@ -144,7 +146,7 @@ def test_job_summary_script_writes_output_file(tmp_path: Path) -> None:
 
     result = subprocess.run(
         [
-            "python3",
+            sys.executable,
             "scripts/ci/write_vendor_runtime_job_summary.py",
             "--status-dir",
             str(status_dir),
@@ -157,6 +159,7 @@ def test_job_summary_script_writes_output_file(tmp_path: Path) -> None:
         capture_output=True,
         text=True,
         check=False,
+        env={"PATH": os.environ.get("PATH", "")},
     )
 
     assert result.returncode == 0

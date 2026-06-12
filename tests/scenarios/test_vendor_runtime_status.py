@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
+import sys
 from pathlib import Path
 
 from hla2010_repo_internal.verification.vendor_runtime_status import build_vendor_runtime_status, write_vendor_runtime_status
@@ -154,7 +156,7 @@ def test_script_returns_nonzero_for_vendor_green_blocked_environment(tmp_path: P
 
     result = subprocess.run(
         [
-            "python3",
+            sys.executable,
             "scripts/classify_vendor_runtime.py",
             "--artifact-dir",
             str(artifact_dir),
@@ -170,6 +172,7 @@ def test_script_returns_nonzero_for_vendor_green_blocked_environment(tmp_path: P
         capture_output=True,
         text=True,
         check=False,
+        env=os.environ.copy(),
     )
 
     assert result.returncode == 1

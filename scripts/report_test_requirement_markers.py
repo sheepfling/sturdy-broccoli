@@ -6,7 +6,7 @@ import csv
 import sys
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path.cwd()
 DEFAULT_PATHS = [
     REPO_ROOT / "tests" / "backends" / "test_python_backend_federation_extended.py",
     REPO_ROOT / "tests" / "backends" / "test_python_backend_object_ownership_extended.py",

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/vendor-edge"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/vendor-edge [time-query|negotiated-ownership|save-restore|ddm|all|help]
+
+Canonical vendor edge matrix flow:
+  ./tools/vendor-edge negotiated-ownership
+  ./tools/vendor-edge all
+
+This is the human-facing wrapper over `./scripts/ci/vendor_edge_matrix.sh`.
+EOF
+}
+
+case "${1:-help}" in
+  help|-h|--help)
+    usage
+    ;;
+  *)
+    exec bash "$ROOT_DIR/scripts/ci/vendor_edge_matrix.sh" "$@"
+    ;;
+esac

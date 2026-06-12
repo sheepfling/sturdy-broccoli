@@ -3,12 +3,12 @@ from __future__ import annotations
 import pytest
 
 from hla2010 import mom as hla_mom
-from hla2010.ambassadors import RecordingFederateAmbassador
+from hla2010_rti_backend_common import RecordingFederateAmbassador
 from hla2010_rti_python import InMemoryRTIEngine, PythonRTIConfig
 from hla2010_rti_python.state import MOM_FEDERATE_CLASS, MOM_FEDERATION_CLASS, RTI_FEDERATE_HANDLE
 from hla2010.enums import CallbackModel, OrderType
 from hla2010.exceptions import InteractionClassNotPublished, InteractionParameterNotDefined, InvalidRegionContext
-from hla2010.rti import create_rti_ambassador
+from hla2010_rti_runtime_common import create_rti_ambassador
 
 
 def _joined(name: str, *, config: PythonRTIConfig | None = None):

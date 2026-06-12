@@ -6,12 +6,12 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from hla2010.exceptions import CallNotAllowedFromWithinCallback, ObjectInstanceNameNotReserved, RTIexception
-from hla2010.runtime_api import FederateAmbassador
+from hla2010.spec import FederateAmbassadorSpec
 from hla2010.time import HLAinteger64Time
 
 
 @dataclass
-class DemoFederate(FederateAmbassador):
+class DemoFederate(FederateAmbassadorSpec):
     events: list[tuple[str, Any]] = field(default_factory=list)
 
     def discover_object_instance(self, the_object, the_object_class, object_name, *extra):

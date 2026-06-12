@@ -7,25 +7,24 @@ from threading import Thread
 
 import pytest
 
-from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.runtime_api import FederateAmbassador
-from hla2010.backends.base import make_rti_ambassador
+from hla2010_rti_backend_common import RecordingFederateAmbassador
+from hla2010.spec import FederateAmbassadorSpec
+from hla2010_rti_backend_common import make_rti_ambassador
 from hla2010_rti_python import InMemoryRTIEngine
-from hla2010.backends.transport import TransportRequest
+from hla2010_rti_transport_common.transport import TransportRequest
 from hla2010.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveFailureReason, SaveStatus
-from hla2010.rti import create_backend, create_rti_ambassador
-from hla2010_verification_harness.scenario_exchange import (
+from hla2010_rti_runtime_common import create_backend, create_rti_ambassador
+from hla2010_verification_harness import (
+    NegotiatedOwnershipScenarioConfig,
+    OwnershipScenarioConfig,
+    SynchronizationScenarioConfig,
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
     run_two_federate_exchange_scenario,
-)
-from hla2010_verification_harness.scenario_ownership import (
-    NegotiatedOwnershipScenarioConfig,
-    OwnershipScenarioConfig,
     run_attribute_ownership_scenario,
     run_negotiated_attribute_ownership_scenario,
+    run_synchronization_scenario,
 )
-from hla2010_verification_harness.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 from hla2010_rti_transport_rest import RestTransport, RestTransportConfig
 from hla2010_rti_transport_rest.rest_transport_host import start_python_rest_server
@@ -117,7 +116,7 @@ def test_rest_transport_registers_with_backend_factory():
         rti = make_rti_ambassador(backend)
 
         assert rti.getHLAversion() == "HLA 1516.1-2010"
-        rti.connect(FederateAmbassador(), CallbackModel.HLA_EVOKED)
+        rti.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
         assert _RestHandler.requests[0]["command"] == "GET_HLA_VERSION"
         assert _RestHandler.requests[1]["command"] == "CONNECT"
         assert _RestHandler.requests[1]["metadata"] == {"fields": {}}

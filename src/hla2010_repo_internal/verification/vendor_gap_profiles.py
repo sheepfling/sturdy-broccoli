@@ -17,6 +17,9 @@ class VendorGapProfile:
     docs_ref: str
     recommended_operator_route: str
     next_steps: tuple[str, ...]
+    operator_state: str | None = None
+    blocker_summary: str | None = None
+    operator_artifact_refs: tuple[str, ...] = ()
 
 
 _PROFILES: dict[str, VendorGapProfile] = {
@@ -95,6 +98,28 @@ _PROFILES: dict[str, VendorGapProfile] = {
             "./tools/pitch negotiated-review 5",
         ),
     ),
+    "pitch-lost-federate": VendorGapProfile(
+        profile="pitch-lost-federate",
+        vendor="pitch",
+        area="lost_federate",
+        classification="known-gap",
+        status="backend-split",
+        summary="Pitch real-runtime lost-federate parity remains blocked: both bridge routes now have executable probe paths, but the current fault injectors still fail to produce observer-visible lost-federate evidence, and JPype shows session auto-resume instead of stable loss.",
+        docs_ref="packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+        recommended_operator_route="./tools/pitch lost-federate",
+        next_steps=(
+            "./tools/pitch preflight",
+            "./tools/pitch lost-federate-probe",
+            "./tools/pitch lost-federate-review 5",
+        ),
+        operator_state="environment-blocked",
+        blocker_summary="The canonical ./tools/pitch lost-federate-probe lane is currently blocked on this surface because Docker is unreachable and the required CRC/FedPro loopback ports are not permitted.",
+        operator_artifact_refs=(
+            "analysis/preflight_artifacts/pitch-preflight.json",
+            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
+            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
+        ),
+    ),
 }
 
 
@@ -122,6 +147,9 @@ def write_vendor_gap_profile(output_dir: Path | str, profile: str) -> Path:
                 "docs_ref": payload.docs_ref,
                 "recommended_operator_route": payload.recommended_operator_route,
                 "next_steps": list(payload.next_steps),
+                "operator_state": payload.operator_state,
+                "blocker_summary": payload.blocker_summary,
+                "operator_artifact_refs": list(payload.operator_artifact_refs),
             },
             indent=2,
             sort_keys=True,

@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/bootstrap [python|certi|pitch|all|doctor|help]
+
+Canonical bootstrap operator flow:
+  ./tools/bootstrap python
+  ./tools/bootstrap doctor
+  HLA2010_BOOTSTRAP_EXTRAS=qa ./tools/bootstrap python
+  HLA2010_BOOTSTRAP_EXTRAS=java ./tools/bootstrap python
+  ./tools/bootstrap python plan
+  ./tools/bootstrap python plan-json
+
+This is the human-facing wrapper over the repo bootstrap scripts.
+EOF
+}
+
+case "${1:-python}" in
+  help|-h|--help)
+    usage
+    ;;
+  python|certi|pitch|all|doctor)
+    exec bash "$ROOT_DIR/scripts/bootstrap_profile.sh" "$@"
+    ;;
+  *)
+    echo "error: unknown bootstrap profile: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

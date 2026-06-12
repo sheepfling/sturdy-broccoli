@@ -78,6 +78,25 @@ pitch_user_home="$("$ROOT_DIR/scripts/setup_pitch_state.sh")"
 pidfile="$pitch_user_home/.hla2010_pitch_crc.pid"
 common_settings="$pitch_user_home/prti1516e/prti_common.settings"
 
+resolve_install4j_user_home() {
+  local real_home="$1"
+  case "$real_home" in
+    *" "*)
+      local link_root="${TMPDIR:-/private/tmp}/hla2010-pitch-user-home-links"
+      mkdir -p "$link_root"
+      local digest
+      digest="$(printf '%s' "$real_home" | shasum | awk '{print $1}')"
+      local alias_path="$link_root/$digest"
+      rm -f "$alias_path"
+      ln -s "$real_home" "$alias_path"
+      printf '%s\n' "$alias_path"
+      ;;
+    *)
+      printf '%s\n' "$real_home"
+      ;;
+  esac
+}
+
 hla2010_shell_log "Pitch runtime: $pitch_home"
 hla2010_shell_log "Pitch user home: $pitch_user_home"
 hla2010_shell_log "Pitch launcher mode: $launcher_mode"
@@ -138,11 +157,12 @@ case "$launcher_mode" in
     if [[ ! -x "$install4j_launcher" ]]; then
       hla2010_shell_die "install4j launcher not found at $install4j_launcher"
     fi
+    install4j_user_home="$(resolve_install4j_user_home "$pitch_user_home")"
     install4j_args=()
     for arg in "${jvm_args[@]}"; do
       install4j_args+=("-J$arg")
     done
-    exec env HOME="$pitch_user_home" \
+    exec env HOME="$install4j_user_home" \
       INSTALL4J_JAVA_HOME_OVERRIDE="${pitch_java_home:-$(cd "$(dirname "$java_bin")/.." && pwd)}" \
       "$install4j_launcher" \
       "${install4j_args[@]}" \

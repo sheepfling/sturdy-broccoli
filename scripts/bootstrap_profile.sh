@@ -25,8 +25,11 @@ EOF
 
 bootstrap_python_profile() {
   local extras="${HLA2010_BOOTSTRAP_EXTRAS:-test}"
-  hla2010_shell_log "bootstrap python extras=${extras}"
-  HLA2010_BOOTSTRAP_EXTRAS="$extras" "$ROOT_DIR/scripts/bootstrap_python.sh"
+  local subcommand="${2:-}"
+  if [[ "$subcommand" != "plan" && "$subcommand" != "plan-json" && "$subcommand" != "help" && "$subcommand" != "-h" && "$subcommand" != "--help" ]]; then
+    hla2010_shell_log "bootstrap python extras=${extras}"
+  fi
+  HLA2010_BOOTSTRAP_EXTRAS="$extras" "$ROOT_DIR/scripts/bootstrap_python.sh" "${@:2}"
 }
 
 bootstrap_certi_profile() {
@@ -41,7 +44,7 @@ bootstrap_pitch_profile() {
 
 case "${1:-python}" in
   python)
-    bootstrap_python_profile
+    bootstrap_python_profile "$@"
     ;;
   certi)
     bootstrap_python_profile
@@ -57,10 +60,10 @@ case "${1:-python}" in
     bootstrap_pitch_profile
     ;;
   doctor)
-    hla2010_shell_log "bootstrap doctor"
+    hla2010_shell_log "bootstrap doctor" >&2
     trap - ERR
     set +e
-    "$ROOT_DIR/scripts/doctor.py" "${@:2}"
+    "$(hla2010_shell_python_bin)" "$ROOT_DIR/scripts/doctor.py" "${@:2}"
     doctor_status=$?
     exit "$doctor_status"
     ;;

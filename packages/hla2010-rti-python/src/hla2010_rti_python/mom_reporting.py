@@ -9,8 +9,8 @@ from typing import Any, Mapping, Sequence
 
 from hla2010 import mom as hla_mom
 from hla2010.enums import OrderType
-from hla2010.service_reporting import ServiceReportRecord
 from hla2010.spec_refs import method_reference
+from .service_reporting import ServiceReportRecord
 from .state import CallbackEvent, FederateState, FederationState, SupplementalReceiveInfo
 
 
@@ -346,4 +346,4 @@ class PythonRTIMomReportingMixin:
 
 
 from hla2010.handles import ParameterHandle  # noqa: E402
-from hla2010 import mom_catalog as mom_table  # noqa: E402
+from . import mom_catalog as mom_table  # noqa: E402

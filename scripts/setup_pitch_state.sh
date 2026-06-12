@@ -54,6 +54,27 @@ upsert_setting() {
   fi
 }
 
+apply_extra_settings() {
+  local settings_file="$1"
+  local raw_settings="$2"
+  local normalized
+  local entry
+  local key
+  local value
+
+  normalized="${raw_settings//;/$'\n'}"
+  while IFS= read -r entry; do
+    entry="${entry#"${entry%%[![:space:]]*}"}"
+    entry="${entry%"${entry##*[![:space:]]}"}"
+    [[ -z "$entry" || "$entry" == \#* || "$entry" != *=* ]] && continue
+    key="${entry%%=*}"
+    value="${entry#*=}"
+    key="${key%"${key##*[![:space:]]}"}"
+    [[ -z "$key" ]] && continue
+    upsert_setting "$settings_file" "$key" "$value"
+  done <<< "$normalized"
+}
+
 common_settings="$runtime_state_dir/prti_common.settings"
 if [[ -f "$common_settings" ]]; then
   if grep -Eq '^[[:space:]]*accepted[[:space:]]*=' "$common_settings"; then
@@ -68,12 +89,39 @@ fi
 crc_settings="$runtime_state_dir/prti1516eCRC.settings"
 upsert_setting "$crc_settings" "CRC.requireWebViewPassPhrase" "false"
 upsert_setting "$crc_settings" "CRC.webViewPassPhrase" ""
+if [[ -n "${HLA2010_PITCH_CRC_HEARTBEAT_ENABLE:-}" ]]; then
+  upsert_setting "$crc_settings" "CRC.heartbeat.enable" "${HLA2010_PITCH_CRC_HEARTBEAT_ENABLE}"
+fi
+if [[ -n "${HLA2010_PITCH_CRC_HEARTBEAT_INTERVAL:-}" ]]; then
+  upsert_setting "$crc_settings" "CRC.heartbeat.interval" "${HLA2010_PITCH_CRC_HEARTBEAT_INTERVAL}"
+fi
+if [[ -n "${HLA2010_PITCH_CRC_HEARTBEAT_ACTION:-}" ]]; then
+  upsert_setting "$crc_settings" "CRC.heartbeat.action" "${HLA2010_PITCH_CRC_HEARTBEAT_ACTION}"
+fi
+
+fedpro_settings="$runtime_state_dir/FedProServer.properties"
+if [[ -n "${HLA2010_PITCH_FEDPRO_TIMEOUT_HEART_SECONDS:-}" ]]; then
+  upsert_setting "$fedpro_settings" "timeout-heart-seconds" "${HLA2010_PITCH_FEDPRO_TIMEOUT_HEART_SECONDS}"
+fi
+if [[ -n "${HLA2010_PITCH_FEDPRO_TIMEOUT_PURGE_SECONDS:-}" ]]; then
+  upsert_setting "$fedpro_settings" "timeout-purge-seconds" "${HLA2010_PITCH_FEDPRO_TIMEOUT_PURGE_SECONDS}"
+fi
+if [[ -n "${HLA2010_PITCH_FEDPRO_EXTRA_SETTINGS:-}" ]]; then
+  apply_extra_settings "$fedpro_settings" "${HLA2010_PITCH_FEDPRO_EXTRA_SETTINGS}"
+fi
+
+lrc_settings="$runtime_state_dir/prti1516eLRC.settings"
+if [[ -n "${HLA2010_PITCH_LRC_PEER_HEARTBEAT_INTERVAL_MILLIS:-}" ]]; then
+  upsert_setting "$lrc_settings" "se.pitch.prti1516e.peerHeartbeatIntervalMillis" "${HLA2010_PITCH_LRC_PEER_HEARTBEAT_INTERVAL_MILLIS}"
+fi
+if [[ -n "${HLA2010_PITCH_LRC_EXTRA_SETTINGS:-}" ]]; then
+  apply_extra_settings "$lrc_settings" "${HLA2010_PITCH_LRC_EXTRA_SETTINGS}"
+fi
 
 if [[ "${HLA2010_PITCH_CRC_MODE:-local}" == "docker" ]]; then
   log_err "configuring Pitch user home for Docker mode"
   upsert_setting "$crc_settings" "CRC.skipConnectivityCheck" "true"
 
-  lrc_settings="$runtime_state_dir/prti1516eLRC.settings"
   upsert_setting "$lrc_settings" "LRC.TCP.advertise.mode" "User"
   upsert_setting "$lrc_settings" "LRC.TCP.advertise.address" "${HLA2010_PITCH_LRC_ADVERTISE_ADDRESS:-host.docker.internal}"
   upsert_setting "$lrc_settings" "LRC.TCP.port-range.start" "${HLA2010_PITCH_LRC_TCP_PORT_START:-6010}"

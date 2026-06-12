@@ -24,7 +24,7 @@ from hla2010.handles import (
     RegionHandle,
     TransportationTypeHandle,
 )
-from hla2010.backends.base import BackendConversionError
+from .base import BackendConversionError
 
 HANDLE_TYPES: tuple[type[Handle], ...] = (
     AttributeHandle,

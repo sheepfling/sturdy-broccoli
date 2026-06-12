@@ -9,19 +9,19 @@ from typing import Any
 PROMOTION_MIN_REPEAT_COUNT = 5
 
 PROFILE_OPERATOR_COMMANDS: dict[str, str] = {
-    "certi-compare": "./certi-easy smoke compare",
-    "certi-save-restore": "./certi-easy save-restore",
-    "certi-save-restore-probe": "./certi-easy save-restore-probe",
-    "certi-ddm": "./certi-easy ddm",
-    "certi-ddm-probe": "./certi-easy ddm-probe",
-    "pitch": "./pitch smoke",
-    "pitch-smoke": "./pitch smoke",
-    "pitch-save-restore": "./pitch save-restore",
-    "pitch-save-restore-probe": "./pitch save-restore-probe",
-    "pitch-ddm": "./pitch ddm",
-    "pitch-ddm-probe": "./pitch ddm-probe",
-    "pitch-negotiated": "./pitch negotiated",
-    "pitch-negotiated-probe": "./pitch negotiated-probe",
+    "certi-compare": "./tools/certi-easy smoke compare",
+    "certi-save-restore": "./tools/certi-easy save-restore",
+    "certi-save-restore-probe": "./tools/certi-easy save-restore-probe",
+    "certi-ddm": "./tools/certi-easy ddm",
+    "certi-ddm-probe": "./tools/certi-easy ddm-probe",
+    "pitch": "./tools/pitch smoke",
+    "pitch-smoke": "./tools/pitch smoke",
+    "pitch-save-restore": "./tools/pitch save-restore",
+    "pitch-save-restore-probe": "./tools/pitch save-restore-probe",
+    "pitch-ddm": "./tools/pitch ddm",
+    "pitch-ddm-probe": "./tools/pitch ddm-probe",
+    "pitch-negotiated": "./tools/pitch negotiated",
+    "pitch-negotiated-probe": "./tools/pitch negotiated-probe",
 }
 
 

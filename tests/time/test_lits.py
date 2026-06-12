@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from hla2010.time import HLAinteger64Time
-from hla2010.time_management import compute_lits, queued_tso_messages
+from hla2010_rti_backend_common.time_management import compute_lits, queued_tso_messages
 
 from tests.time._time_algorithm_support import DummyMessage, federation, regulating_federate, target_federate
 
@@ -54,4 +54,3 @@ def test_lits_queue_filtering_ignores_retracted_delivered_and_wrong_recipient_me
 
     assert [message.sequence for message in queued] == [4]
     assert compute_lits(fed, target).time == HLAinteger64Time(4)
-

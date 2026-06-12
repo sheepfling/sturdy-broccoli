@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from hla2010.time import HLAinteger64Interval, HLAinteger64Time, HLAinteger64TimeFactory
-from hla2010.time_management import TimeAdvanceRequestState, TAR
+from hla2010_rti_backend_common.time_management import TimeAdvanceRequestState, TAR
 
 
 @dataclass
@@ -60,4 +60,3 @@ def target_federate(*, time_constrained_enabled: bool = True) -> DummyFederate:
 
 def federation(*pairs: tuple[str, DummyFederate]) -> DummyFederation:
     return DummyFederation(federates={name: federate for name, federate in pairs})
-

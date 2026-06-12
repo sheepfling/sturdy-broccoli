@@ -7,9 +7,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin
 from urllib.request import Request, urlopen
 
-from hla2010.backends.base import BackendUnavailableError
-from hla2010.backends.transport import RTITransport, TransportRequest, TransportResponse
-from hla2010.rti import register_transport_factory
+from hla2010_rti_backend_common import BackendUnavailableError
+from hla2010_rti_transport_common import RTITransport, TransportRequest, TransportResponse, register_transport_factory
 from .client import RestTransportClientAdapter
 from .rest_transport_host import (
     CERTIRestServer,

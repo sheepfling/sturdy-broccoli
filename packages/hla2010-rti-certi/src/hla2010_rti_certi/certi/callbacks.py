@@ -3,7 +3,13 @@ from __future__ import annotations
 
 from typing import Any
 
-from hla2010.enums import RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
+from hla2010.enums import (
+    RestoreFailureReason,
+    RestoreStatus,
+    SaveFailureReason,
+    SaveStatus,
+    SynchronizationPointFailureReason,
+)
 from hla2010.exceptions import RTIinternalError
 from hla2010.handles import (
     AttributeHandle,
@@ -93,6 +99,12 @@ def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_
         return
     if kind == "REQUEST_RETRACTION":
         getattr(ambassador, "requestRetraction")(MessageRetractionHandle(int(parts[1])))
+        return
+    if kind == "SYNC_POINT_REGISTRATION_SUCCEEDED":
+        getattr(ambassador, "synchronizationPointRegistrationSucceeded")(parts[1])
+        return
+    if kind == "SYNC_POINT_REGISTRATION_FAILED":
+        getattr(ambassador, "synchronizationPointRegistrationFailed")(parts[1], SynchronizationPointFailureReason[parts[2]])
         return
     if kind == "ANNOUNCE_SYNC_POINT":
         getattr(ambassador, "announceSynchronizationPoint")(parts[1], decode_bytes(parts[2]))

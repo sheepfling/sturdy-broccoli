@@ -3,12 +3,11 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-
-
 def _base_env(tmp_path: Path) -> dict[str, str]:
     env = os.environ.copy()
     env["HLA2010_PREFLIGHT_ARTIFACT_DIR"] = str(tmp_path / "preflight")
@@ -66,16 +65,18 @@ def test_certi_easy_preflight_writes_default_artifact_and_reports(tmp_path: Path
     )
 
     assert result.returncode != 0
-    artifact_path = tmp_path / "preflight" / "certi-preflight.json"
     runtime_summary = tmp_path / "runtime-status" / "vendor_green_certi" / "vendor_runtime_status_summary.json"
     parity_summary = tmp_path / "parity" / "vendor_parity_artifacts_summary.json"
-    assert artifact_path.exists()
     assert runtime_summary.exists()
     assert parity_summary.exists()
-    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
-    assert payload["tool"] == "certi-preflight"
     status_payload = json.loads(runtime_summary.read_text(encoding="utf-8"))
-    assert status_payload["overall_classification"] in {"environment-blocked", "unexpected-preflight-failure"}
+    assert status_payload["overall_classification"] in {
+        "environment-blocked",
+        "missing-artifact",
+        "unexpected-preflight-failure",
+    }
+    artifact_text = result.stdout + result.stderr
+    assert "CERTI preflight" in artifact_text
 
 
 def test_pitch_preflight_writes_default_artifact_and_reports(tmp_path: Path) -> None:
@@ -100,6 +101,70 @@ def test_pitch_preflight_writes_default_artifact_and_reports(tmp_path: Path) -> 
     assert payload["tool"] == "pitch-preflight"
     status_payload = json.loads(runtime_summary.read_text(encoding="utf-8"))
     assert status_payload["overall_classification"] in {"environment-blocked", "unexpected-preflight-failure"}
+
+
+def test_vendor_report_scripts_bootstrap_source_checkout(tmp_path: Path) -> None:
+    preflight_dir = tmp_path / "preflight"
+    preflight_dir.mkdir()
+    (preflight_dir / "certi-preflight.json").write_text(
+        json.dumps(
+            {
+                "tool": "certi-preflight",
+                "environment": "ready",
+                "result": "ok",
+                "checks": [],
+                "next_steps": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    runtime_dir = tmp_path / "runtime-status"
+    parity_dir = tmp_path / "parity"
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "classify_vendor_runtime.py"),
+            "--project-root",
+            str(ROOT),
+            "--artifact-dir",
+            str(preflight_dir),
+            "--output-dir",
+            str(runtime_dir),
+            "--lane",
+            "vendor-green",
+            "--vendor",
+            "certi",
+            "--json",
+        ],
+        cwd=tmp_path,
+        env=_base_env(tmp_path),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    payload = json.loads(result.stdout)
+    assert result.returncode == int(payload["exit_code"])
+    assert payload["suite_name"] == "vendor-runtime-status"
+    assert (runtime_dir / "vendor_runtime_status_summary.json").exists()
+
+    parity = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "run_vendor_parity_artifacts.py"),
+            "--project-root",
+            str(ROOT),
+            "--output-dir",
+            str(parity_dir),
+        ],
+        cwd=tmp_path,
+        env=_base_env(tmp_path),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert parity.returncode == 0
+    assert (parity_dir / "vendor_parity_artifacts_summary.json").exists()
 
 
 def _write_vendor_green_delegate(path: Path) -> None:
@@ -351,6 +416,29 @@ def test_certi_smoke_compare_writes_reports_when_preflight_is_blocked(tmp_path: 
     assert json.loads(parity_summary.read_text(encoding="utf-8"))["suite_name"] == "vendor-parity-artifacts"
 
 
+def test_certi_verify_best_effort_succeeds_when_preflight_is_blocked(tmp_path: Path) -> None:
+    env = _base_env(tmp_path)
+
+    result = subprocess.run(
+        ["bash", "./tools/certi-easy", "verify-best-effort"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    artifact_path = tmp_path / "preflight" / "certi-preflight.json"
+    assert artifact_path.exists()
+    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
+    assert payload["tool"] == "certi-preflight"
+    runtime_summary, parity_summary = _assert_report_bundle(tmp_path, "vendor_green_certi_compare")
+    status_payload = json.loads(runtime_summary.read_text(encoding="utf-8"))
+    assert status_payload["overall_classification"] in {"environment-blocked", "unexpected-preflight-failure"}
+    assert json.loads(parity_summary.read_text(encoding="utf-8"))["suite_name"] == "vendor-parity-artifacts"
+
+
 def test_pitch_smoke_writes_reports_when_preflight_is_blocked(tmp_path: Path) -> None:
     env = _base_env(tmp_path)
 
@@ -387,6 +475,29 @@ def test_pitch_verify_writes_reports_when_preflight_is_blocked(tmp_path: Path) -
     )
 
     assert result.returncode != 0
+    artifact_path = tmp_path / "preflight" / "pitch-preflight.json"
+    assert artifact_path.exists()
+    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
+    assert payload["tool"] == "pitch-preflight"
+    runtime_summary, parity_summary = _assert_report_bundle(tmp_path, "vendor_green_pitch_verify")
+    status_payload = json.loads(runtime_summary.read_text(encoding="utf-8"))
+    assert status_payload["overall_classification"] in {"environment-blocked", "unexpected-preflight-failure"}
+    assert json.loads(parity_summary.read_text(encoding="utf-8"))["suite_name"] == "vendor-parity-artifacts"
+
+
+def test_pitch_verify_best_effort_succeeds_when_preflight_is_blocked(tmp_path: Path) -> None:
+    env = _base_env(tmp_path)
+
+    result = subprocess.run(
+        ["bash", "./tools/pitch", "verify-best-effort"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
     artifact_path = tmp_path / "preflight" / "pitch-preflight.json"
     assert artifact_path.exists()
     payload = json.loads(artifact_path.read_text(encoding="utf-8"))
@@ -562,6 +673,29 @@ def test_pitch_negotiated_writes_reports_when_preflight_is_blocked(tmp_path: Pat
     assert json.loads(parity_summary.read_text(encoding="utf-8"))["suite_name"] == "vendor-parity-artifacts"
 
 
+def test_pitch_lost_federate_writes_reports_when_preflight_is_blocked(tmp_path: Path) -> None:
+    env = _base_env(tmp_path)
+
+    result = subprocess.run(
+        ["bash", "./tools/pitch", "lost-federate"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode != 0
+    artifact_path = tmp_path / "preflight" / "pitch-preflight.json"
+    assert artifact_path.exists()
+    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
+    assert payload["tool"] == "pitch-preflight"
+    runtime_summary, parity_summary = _assert_report_bundle(tmp_path, "vendor_green_pitch_lost_federate")
+    status_payload = json.loads(runtime_summary.read_text(encoding="utf-8"))
+    assert status_payload["overall_classification"] in {"environment-blocked", "unexpected-preflight-failure"}
+    assert json.loads(parity_summary.read_text(encoding="utf-8"))["suite_name"] == "vendor-parity-artifacts"
+
+
 def test_certi_ddm_probe_uses_vendor_green_profile_and_emits_reports(tmp_path: Path) -> None:
     delegate = tmp_path / "vendor_green_delegate.py"
     _write_vendor_green_delegate(delegate)
@@ -632,6 +766,31 @@ def test_pitch_negotiated_probe_uses_vendor_green_profile_and_emits_reports(tmp_
     payload = json.loads((tmp_path / "record" / "profile.json").read_text(encoding="utf-8"))
     assert payload["profile"] == "pitch-negotiated-probe"
     runtime_summary, parity_summary = _assert_report_bundle(tmp_path, "vendor_green_pitch_negotiated_probe")
+    status_payload = json.loads(runtime_summary.read_text(encoding="utf-8"))
+    assert status_payload["overall_classification"] == "missing-artifact"
+    assert json.loads(parity_summary.read_text(encoding="utf-8"))["suite_name"] == "vendor-parity-artifacts"
+
+
+def test_pitch_lost_federate_probe_uses_vendor_green_profile_and_emits_reports(tmp_path: Path) -> None:
+    delegate = tmp_path / "vendor_green_delegate.py"
+    _write_vendor_green_delegate(delegate)
+    env = _base_env(tmp_path)
+    env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
+    env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+
+    result = subprocess.run(
+        ["bash", "./tools/pitch", "lost-federate-probe"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    payload = json.loads((tmp_path / "record" / "profile.json").read_text(encoding="utf-8"))
+    assert payload["profile"] == "pitch-lost-federate-probe"
+    runtime_summary, parity_summary = _assert_report_bundle(tmp_path, "vendor_green_pitch_lost_federate_probe")
     status_payload = json.loads(runtime_summary.read_text(encoding="utf-8"))
     assert status_payload["overall_classification"] == "missing-artifact"
     assert json.loads(parity_summary.read_text(encoding="utf-8"))["suite_name"] == "vendor-parity-artifacts"

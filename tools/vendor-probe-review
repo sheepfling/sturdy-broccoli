@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/vendor-probe-review"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/vendor-probe-review [promotion-review|help|<profile> [repeat-count]]
+
+Canonical repeated vendor probe review flow:
+  ./tools/vendor-probe-review pitch-negotiated-probe 5
+  ./tools/vendor-probe-review certi-ddm-probe 3
+  ./tools/vendor-probe-review promotion-review
+
+This is the human-facing wrapper over `./scripts/ci/vendor_probe_review.sh`
+and `scripts/ci/write_vendor_probe_promotion_review.py`.
+EOF
+}
+
+python_bin="$(hla2010_shell_python_bin)"
+
+case "${1:-help}" in
+  help|-h|--help)
+    usage
+    ;;
+  promotion-review)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/ci/write_vendor_probe_promotion_review.py" "$@"
+    ;;
+  *)
+    exec bash "$ROOT_DIR/scripts/ci/vendor_probe_review.sh" "$@"
+    ;;
+esac

@@ -1,6 +1,6 @@
 import pytest
 
-from hla2010.runtime_api import FederateAmbassador
+from hla2010.spec import FederateAmbassadorSpec
 from hla2010_rti_python import InMemoryRTIEngine, rti_ambassador
 from hla2010.encoding import HLAunicodeString
 from hla2010.enums import CallbackModel, OrderType, ResignAction
@@ -8,7 +8,7 @@ from hla2010.exceptions import CouldNotDecode
 from hla2010.handles import ObjectInstanceHandle
 
 
-class Receiver(FederateAmbassador):
+class Receiver(FederateAmbassadorSpec):
     def __init__(self):
         self.discoveries = []
         self.reflections = []

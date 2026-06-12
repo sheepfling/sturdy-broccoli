@@ -26,6 +26,7 @@ usage() {
 Usage:
   ./tools/certi-easy install
   ./tools/certi-easy preflight [--json] [--json-file FILE]
+  ./tools/certi-easy verify-best-effort
   ./tools/certi-easy doctor
   ./tools/certi-easy paths
   ./tools/certi-easy build [patched|upstream|all]
@@ -42,6 +43,7 @@ Usage:
 What these mean:
   install   bootstrap Python, build patched CERTI, clone/build pristine upstream CERTI
   doctor    show where everything lives and whether real CERTI smoke can run here
+  verify-best-effort run the compare CERTI lane and treat blocked local preflight as report-only
   build     rebuild one or both CERTI variants
   run       launch rtig or rtia for patched or upstream CERTI
   smoke     run the supported real-runtime smoke/matrix profile
@@ -56,6 +58,7 @@ What these mean:
 Simple path:
   ./tools/certi-easy install
   ./tools/certi-easy preflight [--json] [--json-file FILE]
+  ./tools/certi-easy verify-best-effort
   ./tools/certi-easy doctor
   ./tools/certi-easy smoke compare
 EOF
@@ -280,6 +283,18 @@ run_smoke() {
   esac
 }
 
+run_best_effort_certi_profile() {
+  local profile="$1"
+  local status=0
+  if "$ROOT_DIR/scripts/ci/vendor_runtime_smoke.sh" "$profile"; then
+    status=0
+  else
+    status=$?
+  fi
+  emit_certi_runtime_reports "$profile"
+  return "$status"
+}
+
 COMMAND="${1:-help}"
 case "$COMMAND" in
   help|-h|--help)
@@ -331,6 +346,15 @@ case "$COMMAND" in
       smoke_status=$?
     fi
     exit "$smoke_status"
+    ;;
+  verify-best-effort)
+    verify_best_effort_status=0
+    if run_best_effort_certi_profile certi-compare; then
+      verify_best_effort_status=0
+    else
+      verify_best_effort_status=$?
+    fi
+    exit "$verify_best_effort_status"
     ;;
   save-restore)
     save_restore_status=0

@@ -8,8 +8,8 @@ from typing import Any, Mapping
 
 from hla2010_rti_transport_common.hosted_server import HostedRTICommandProcessor
 
-from hla2010.backends.transport import TransportRequest
-from hla2010.rti import create_rti_ambassador
+from hla2010_rti_transport_common import TransportRequest
+from hla2010_rti_runtime_common import create_rti_ambassador
 
 from .client import RestTransportClientAdapter
 

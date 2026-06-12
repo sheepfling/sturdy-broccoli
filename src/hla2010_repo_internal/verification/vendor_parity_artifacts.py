@@ -49,8 +49,8 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "vendor_family": "shared",
         "profile": "shared",
         "artifact_kind": "script",
-        "role": "edge matrix entrypoint",
-        "path": "scripts/ci/vendor_edge_matrix.sh",
+        "role": "edge matrix operator wrapper",
+        "path": "tools/vendor-edge",
         "required": True,
         "note": "Highest-value vendor edge slice wrapper.",
     },
@@ -85,8 +85,8 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "vendor_family": "shared",
         "profile": "shared",
         "artifact_kind": "script",
-        "role": "preflight classifier",
-        "path": "scripts/classify_vendor_runtime.py",
+        "role": "preflight classifier wrapper",
+        "path": "tools/vendor-state",
         "required": True,
         "note": "Machine-readable readiness classifier over vendor preflight artifacts.",
     },
@@ -103,8 +103,8 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "vendor_family": "shared",
         "profile": "shared",
         "artifact_kind": "script",
-        "role": "promotion review entrypoint",
-        "path": "scripts/ci/write_vendor_probe_promotion_review.py",
+        "role": "promotion review operator wrapper",
+        "path": "tools/vendor-probe-review",
         "required": True,
         "note": "Promotion-review artifact writer over repeated-run vendor probe evidence.",
     },
@@ -172,6 +172,15 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "note": "Optional repeated-run stability summary for the Pitch negotiated-ownership probe.",
     },
     {
+        "vendor_family": "pitch",
+        "profile": "pitch-lost-federate-probe",
+        "artifact_kind": "stability-summary",
+        "role": "probe stability summary",
+        "path": "analysis/vendor_probe_stability/pitch-lost-federate-probe/vendor_probe_stability_summary.json",
+        "required": False,
+        "note": "Optional repeated-run stability summary for the Pitch lost-federate probe.",
+    },
+    {
         "vendor_family": "shared",
         "profile": "shared",
         "artifact_kind": "promotion-review",
@@ -224,6 +233,15 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
         "path": "analysis/vendor_gap_profiles/pitch-negotiated.json",
         "required": False,
         "note": "Optional machine-readable Pitch negotiated-ownership known-gap profile.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-lost-federate",
+        "artifact_kind": "gap-profile",
+        "role": "known gap profile",
+        "path": "analysis/vendor_gap_profiles/pitch-lost-federate.json",
+        "required": False,
+        "note": "Optional machine-readable Pitch lost-federate known-gap profile.",
     },
     {
         "vendor_family": "certi",
@@ -342,19 +360,19 @@ _PROFILE_COMMANDS: tuple[dict[str, str], ...] = (
     {
         "vendor_family": "shared",
         "profile": "shared",
-        "command": "python3 scripts/classify_vendor_runtime.py --lane repo-green --json",
+        "command": "./tools/vendor-state classify --lane repo-green --json",
         "purpose": "Classify whether blocked vendor prerequisites are acceptable for the repo-green lane.",
     },
     {
         "vendor_family": "shared",
         "profile": "shared",
-        "command": "python3 scripts/classify_vendor_runtime.py --lane vendor-green --vendor certi --json",
+        "command": "./tools/vendor-state classify --lane vendor-green --vendor certi --json",
         "purpose": "Classify strict CERTI vendor-green readiness from preflight artifacts.",
     },
     {
         "vendor_family": "shared",
         "profile": "shared",
-        "command": "python3 scripts/classify_vendor_runtime.py --lane vendor-green --vendor pitch --json",
+        "command": "./tools/vendor-state classify --lane vendor-green --vendor pitch --json",
         "purpose": "Classify strict Pitch vendor-green readiness from preflight artifacts.",
     },
     {
@@ -418,9 +436,21 @@ _PROFILE_COMMANDS: tuple[dict[str, str], ...] = (
         "purpose": "Run the current narrow executable Pitch negotiated-ownership runtime probe after preflight.",
     },
     {
+        "vendor_family": "pitch",
+        "profile": "pitch-lost-federate",
+        "command": "./tools/pitch lost-federate",
+        "purpose": "Emit the current explicit Pitch lost-federate known-gap status after preflight.",
+    },
+    {
+        "vendor_family": "pitch",
+        "profile": "pitch-lost-federate-probe",
+        "command": "./tools/pitch lost-federate-probe",
+        "purpose": "Run the current narrow executable Pitch lost-federate runtime probe after preflight.",
+    },
+    {
         "vendor_family": "shared",
         "profile": "shared",
-        "command": "./scripts/ci/vendor_edge_matrix.sh all",
+        "command": "./tools/vendor-edge all",
         "purpose": "Run the highest-value vendor edge packet refresh.",
     },
     {
@@ -456,7 +486,13 @@ _PROFILE_COMMANDS: tuple[dict[str, str], ...] = (
     {
         "vendor_family": "shared",
         "profile": "shared",
-        "command": "python3 scripts/ci/write_vendor_probe_promotion_review.py",
+        "command": "./tools/pitch lost-federate-review 5",
+        "purpose": "Run repeated stability evidence plus promotion/parity refresh for the Pitch lost-federate probe.",
+    },
+    {
+        "vendor_family": "shared",
+        "profile": "shared",
+        "command": "./tools/vendor-probe-review promotion-review",
         "purpose": "Write the promotion-review artifact over repeated-run vendor probe evidence.",
     },
     {
@@ -479,6 +515,7 @@ def _profile_evidence_tier(profile: str) -> str:
         "pitch-save-restore",
         "pitch-ddm",
         "pitch-negotiated",
+        "pitch-lost-federate",
     }:
         return "known-gap"
     if profile in {
@@ -571,6 +608,10 @@ def _load_gap_profile(path: Path) -> dict[str, Any] | None:
         "recommended_operator_route": data.get("recommended_operator_route")
         or (None if defaults is None else defaults.recommended_operator_route),
         "next_steps": data.get("next_steps") or ([] if defaults is None else list(defaults.next_steps)),
+        "operator_state": data.get("operator_state") or (None if defaults is None else defaults.operator_state),
+        "blocker_summary": data.get("blocker_summary") or (None if defaults is None else defaults.blocker_summary),
+        "operator_artifact_refs": data.get("operator_artifact_refs")
+        or ([] if defaults is None else list(defaults.operator_artifact_refs)),
     }
 
 
@@ -652,6 +693,7 @@ def _build_summary(rows: tuple[VendorParityArtifactRow, ...]) -> dict[str, Any]:
         "pitch-save-restore": _load_gap_profile(gap_profile_dir / "pitch-save-restore.json"),
         "pitch-ddm": _load_gap_profile(gap_profile_dir / "pitch-ddm.json"),
         "pitch-negotiated": _load_gap_profile(gap_profile_dir / "pitch-negotiated.json"),
+        "pitch-lost-federate": _load_gap_profile(gap_profile_dir / "pitch-lost-federate.json"),
     }
     probe_stability_dir = REPO_ROOT / "analysis" / "vendor_probe_stability"
     probe_stability = {
@@ -669,6 +711,9 @@ def _build_summary(rows: tuple[VendorParityArtifactRow, ...]) -> dict[str, Any]:
         ),
         "pitch-negotiated-probe": _load_probe_stability_summary(
             probe_stability_dir / "pitch-negotiated-probe" / "vendor_probe_stability_summary.json"
+        ),
+        "pitch-lost-federate-probe": _load_probe_stability_summary(
+            probe_stability_dir / "pitch-lost-federate-probe" / "vendor_probe_stability_summary.json"
         ),
     }
     probe_promotion_review = _load_probe_promotion_review(
@@ -818,10 +863,18 @@ def _write_markdown(path: Path, summary: dict[str, Any], paths: VendorParityArti
                 f"- `{profile_name}`: classification `{profile.get('classification')}`, status `{profile.get('status')}`, "
                 f"file `{profile.get('path')}`"
             )
+            if profile.get("operator_state"):
+                lines.append(f"  - operator-state: `{profile.get('operator_state')}`")
+            if profile.get("blocker_summary"):
+                lines.append(f"  - blocker: {profile.get('blocker_summary')}")
             next_steps = profile.get("next_steps") or []
             if next_steps:
                 for step in next_steps:
                     lines.append(f"  - next: `{step}`")
+            artifact_refs = profile.get("operator_artifact_refs") or []
+            if artifact_refs:
+                for ref in artifact_refs:
+                    lines.append(f"  - artifact: `{ref}`")
     lines.extend(
         [
             "",

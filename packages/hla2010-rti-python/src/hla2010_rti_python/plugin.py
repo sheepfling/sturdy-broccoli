@@ -3,8 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from hla2010.backends.base import BackendInfo
-from hla2010.rti import RTIBackendPlugin
+from hla2010_rti_backend_common import BackendInfo, RTIBackendPlugin
 
 from . import PythonRTIConfig, create_python_backend
 

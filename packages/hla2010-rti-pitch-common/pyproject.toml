@@ -8,7 +8,7 @@ version = "0.13.0"
 description = "Shared Pitch runtime discovery and launch helpers for hla2010 RTI plugins"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["hla2010-spec==0.13.0", "hla2010-rti-runtime-common==0.13.0"]
+dependencies = ["hla2010-spec==0.13.0", "hla2010-rti-java-common==0.13.0", "hla2010-rti-runtime-common==0.13.0"]
 
 [project.optional-dependencies]
 test = ["pytest"]

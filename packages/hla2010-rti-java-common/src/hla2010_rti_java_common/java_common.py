@@ -16,7 +16,7 @@ from typing import Any, Iterable, Mapping, Protocol, Sequence, cast
 from hla2010 import enums as hla_enums
 from hla2010 import exceptions as hla_exceptions
 from hla2010 import handles as hla_handles
-from hla2010.backends.base import (
+from hla2010_rti_backend_common import (
     CALLBACK_METHOD_NAMES,
     BackendConversionError,
     BackendInfo,
@@ -43,8 +43,9 @@ from hla2010_rti_backend_common.invocation import (
 from hla2010.exceptions import FederateInternalError, RTIexception, RTIinternalError
 from hla2010.fom import module_uri
 from hla2010.raw_api import API_METADATA
-from hla2010.runtime_api import FederateAmbassador
+from hla2010.spec import FederateAmbassadorSpec
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
+from hla2010.types import FederationExecutionInformation, RangeBounds
 
 _PYTHON_ENUM_BY_JAVA_SIMPLE_NAME: dict[str, type[Enum]] = {
     name: value
@@ -176,6 +177,10 @@ class JavaBridge(ABC):
         """
         return value
 
+    def range_bounds(self, value: RangeBounds) -> Any:
+        """Convert Python RangeBounds to a Java RangeBounds-like object."""
+        return value
+
     def java_map_items(self, value: Any) -> Sequence[tuple[Any, Any]] | None:
         """Return Java Map items, or ``None`` when ``value`` is not map-like."""
         if isinstance(value, CollectionsMapping):
@@ -206,6 +211,22 @@ class JavaBridge(ABC):
             except Exception:
                 return None
         return None
+
+    def public_field(self, obj: Any, field_name: str) -> Any | None:
+        """Return a public Java field value when the bridge exposes one."""
+        get_field = getattr(obj, "_get_field", None)
+        if callable(get_field):
+            try:
+                found, value = cast(tuple[bool, Any], get_field(field_name))
+                if found:
+                    return value
+            except Exception:
+                pass
+        try:
+            value = getattr(obj, field_name)
+        except Exception:
+            return None
+        return None if callable(value) else value
 
     def full_class_name(self, obj: Any) -> str | None:
         """Best-effort Java fully qualified class name."""
@@ -319,6 +340,8 @@ class JavaValueConverter(ValueConverter):
             return self.bridge.new_map([(self.to_backend(k), self.to_backend(v)) for k, v in value.items()])
         if isinstance(value, (HLAinteger64Time, HLAinteger64Interval, HLAfloat64Time, HLAfloat64Interval)):
             return self.bridge.logical_time(value, rti_ambassador=self.rti_ambassador)
+        if isinstance(value, RangeBounds):
+            return self.bridge.range_bounds(value)
         return super().to_backend(value)
 
     def to_backend_enum(self, value: Enum) -> Any:
@@ -376,6 +399,16 @@ class JavaValueConverter(ValueConverter):
                 set_type, item_type_name = _PY_HANDLE_SET_BY_JAVA_TYPE[expected]
                 return set_type(self.from_backend(item, expected_type_name=item_type_name) for item in collection_values)
 
+        if expected == "FederationExecutionInformationSet":
+            collection_values = self.bridge.java_collection_values(value)
+            if collection_values is None and isinstance(value, (list, tuple, set, frozenset)):
+                collection_values = list(value)
+            if collection_values is not None:
+                return {
+                    self.from_backend(item, expected_type_name="FederationExecutionInformation")
+                    for item in collection_values
+                }
+
         if simple_name in _PYTHON_ENUM_BY_JAVA_SIMPLE_NAME:
             member_name = self.bridge.enum_member_name(value)
             if member_name:
@@ -388,6 +421,18 @@ class JavaValueConverter(ValueConverter):
         logical_time = self._from_backend_logical_time(value, simple_name=simple_name)
         if logical_time is not None:
             return logical_time
+
+        range_bounds = self._from_backend_range_bounds(value, expected_type_name=expected, simple_name=simple_name)
+        if range_bounds is not None:
+            return range_bounds
+
+        federation_execution_info = self._from_backend_federation_execution_information(
+            value,
+            expected_type_name=expected,
+            simple_name=simple_name,
+        )
+        if federation_execution_info is not None:
+            return federation_execution_info
 
         map_items = self.bridge.java_map_items(value)
         if map_items is not None:
@@ -429,6 +474,43 @@ class JavaValueConverter(ValueConverter):
         if "HLAfloat64Interval" in class_text:
             return HLAfloat64Interval(float(raw))
         return None
+
+    def _from_backend_range_bounds(
+        self,
+        value: Any,
+        *,
+        expected_type_name: str | None,
+        simple_name: str | None,
+    ) -> RangeBounds | None:
+        class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
+        if "RangeBounds" not in class_text:
+            return None
+
+        lower = _maybe_call_noarg(value, "getLowerBound", "lowerBound", "lower", "getLower")
+        upper = _maybe_call_noarg(value, "getUpperBound", "upperBound", "upper", "getUpper")
+        if lower is None or upper is None:
+            return None
+        return RangeBounds(int(lower), int(upper))
+
+    def _from_backend_federation_execution_information(
+        self,
+        value: Any,
+        *,
+        expected_type_name: str | None,
+        simple_name: str | None,
+    ) -> FederationExecutionInformation | None:
+        class_text = " ".join(filter(None, [expected_type_name, simple_name, self.bridge.full_class_name(value)]))
+        if "FederationExecutionInformation" not in class_text:
+            return None
+
+        federation_name = self.bridge.public_field(value, "federationExecutionName")
+        logical_time_name = self.bridge.public_field(value, "logicalTimeImplementationName")
+        if federation_name is None:
+            return None
+        return FederationExecutionInformation(
+            federation_execution_name=str(federation_name),
+            logical_time_implementation_name=str(logical_time_name) if logical_time_name is not None else None,
+        )
 
 
 _PY_HANDLE_SET_BY_JAVA_TYPE = {
@@ -485,7 +567,7 @@ def expected_java_callback_parameter_types(method_name: str, arg_count: int | No
 class PythonFederateAmbassadorDispatcher:
     """Dispatch Java FederateAmbassador callbacks to a Python ambassador."""
 
-    def __init__(self, ambassador: FederateAmbassador, converter: JavaValueConverter):
+    def __init__(self, ambassador: FederateAmbassadorSpec, converter: JavaValueConverter):
         self.ambassador = ambassador
         self.converter = converter
 
@@ -507,20 +589,170 @@ class PythonFederateAmbassadorDispatcher:
             raise FederateInternalError(f"Python FederateAmbassador.{method_name} failed: {exc}", cause=exc) from exc
 
 
-# Add concrete methods for every HLA callback.  Py4J's callback server is happier
-# with real attributes than with __getattr__ generated callables, and JPype can
-# consume the same dispatcher instance.
-def _make_callback_dispatcher(method_name: str):
-    def _callback(self: PythonFederateAmbassadorDispatcher, *args: Any) -> Any:
-        return self._invoke_callback(method_name, *args)
+    def connectionLost(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("connectionLost", *args)
 
-    _callback.__name__ = method_name
-    _callback.__qualname__ = f"PythonFederateAmbassadorDispatcher.{method_name}"
-    return _callback
+    def reportFederationExecutions(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("reportFederationExecutions", *args)
 
+    def synchronizationPointRegistrationSucceeded(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("synchronizationPointRegistrationSucceeded", *args)
 
-for _callback_name in CALLBACK_METHOD_NAMES:
-    setattr(PythonFederateAmbassadorDispatcher, _callback_name, _make_callback_dispatcher(_callback_name))
+    def synchronizationPointRegistrationFailed(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("synchronizationPointRegistrationFailed", *args)
+
+    def announceSynchronizationPoint(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("announceSynchronizationPoint", *args)
+
+    def federationSynchronized(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("federationSynchronized", *args)
+
+    def initiateFederateSave(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("initiateFederateSave", *args)
+
+    def federationSaved(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("federationSaved", *args)
+
+    def federationNotSaved(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("federationNotSaved", *args)
+
+    def federationSaveStatusResponse(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("federationSaveStatusResponse", *args)
+
+    def requestFederationRestoreSucceeded(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("requestFederationRestoreSucceeded", *args)
+
+    def requestFederationRestoreFailed(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("requestFederationRestoreFailed", *args)
+
+    def federationRestoreBegun(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("federationRestoreBegun", *args)
+
+    def initiateFederateRestore(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("initiateFederateRestore", *args)
+
+    def federationRestored(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("federationRestored", *args)
+
+    def federationNotRestored(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("federationNotRestored", *args)
+
+    def federationRestoreStatusResponse(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("federationRestoreStatusResponse", *args)
+
+    def startRegistrationForObjectClass(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("startRegistrationForObjectClass", *args)
+
+    def stopRegistrationForObjectClass(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("stopRegistrationForObjectClass", *args)
+
+    def turnInteractionsOn(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("turnInteractionsOn", *args)
+
+    def turnInteractionsOff(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("turnInteractionsOff", *args)
+
+    def objectInstanceNameReservationSucceeded(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("objectInstanceNameReservationSucceeded", *args)
+
+    def objectInstanceNameReservationFailed(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("objectInstanceNameReservationFailed", *args)
+
+    def multipleObjectInstanceNameReservationSucceeded(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("multipleObjectInstanceNameReservationSucceeded", *args)
+
+    def multipleObjectInstanceNameReservationFailed(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("multipleObjectInstanceNameReservationFailed", *args)
+
+    def discoverObjectInstance(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("discoverObjectInstance", *args)
+
+    def hasProducingFederate(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("hasProducingFederate", *args)
+
+    def hasSentRegions(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("hasSentRegions", *args)
+
+    def getProducingFederate(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("getProducingFederate", *args)
+
+    def getSentRegions(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("getSentRegions", *args)
+
+    def reflectAttributeValues(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("reflectAttributeValues", *args)
+
+    def receiveInteraction(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("receiveInteraction", *args)
+
+    def removeObjectInstance(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("removeObjectInstance", *args)
+
+    def attributesInScope(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("attributesInScope", *args)
+
+    def attributesOutOfScope(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("attributesOutOfScope", *args)
+
+    def provideAttributeValueUpdate(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("provideAttributeValueUpdate", *args)
+
+    def turnUpdatesOnForObjectInstance(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("turnUpdatesOnForObjectInstance", *args)
+
+    def turnUpdatesOffForObjectInstance(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("turnUpdatesOffForObjectInstance", *args)
+
+    def confirmAttributeTransportationTypeChange(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("confirmAttributeTransportationTypeChange", *args)
+
+    def reportAttributeTransportationType(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("reportAttributeTransportationType", *args)
+
+    def confirmInteractionTransportationTypeChange(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("confirmInteractionTransportationTypeChange", *args)
+
+    def reportInteractionTransportationType(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("reportInteractionTransportationType", *args)
+
+    def requestAttributeOwnershipAssumption(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("requestAttributeOwnershipAssumption", *args)
+
+    def requestDivestitureConfirmation(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("requestDivestitureConfirmation", *args)
+
+    def attributeOwnershipAcquisitionNotification(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("attributeOwnershipAcquisitionNotification", *args)
+
+    def attributeOwnershipUnavailable(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("attributeOwnershipUnavailable", *args)
+
+    def requestAttributeOwnershipRelease(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("requestAttributeOwnershipRelease", *args)
+
+    def confirmAttributeOwnershipAcquisitionCancellation(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("confirmAttributeOwnershipAcquisitionCancellation", *args)
+
+    def informAttributeOwnership(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("informAttributeOwnership", *args)
+
+    def attributeIsNotOwned(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("attributeIsNotOwned", *args)
+
+    def attributeIsOwnedByRTI(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("attributeIsOwnedByRTI", *args)
+
+    def timeRegulationEnabled(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("timeRegulationEnabled", *args)
+
+    def timeConstrainedEnabled(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("timeConstrainedEnabled", *args)
+
+    def timeAdvanceGrant(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("timeAdvanceGrant", *args)
+
+    def requestRetraction(self, *args: Any) -> Any:  # noqa: N802
+        return self._invoke_callback("requestRetraction", *args)
 
 
 class JavaRTIBackend(RTIBackend):
@@ -541,7 +773,7 @@ class JavaRTIBackend(RTIBackend):
         self.converter.rti_ambassador = java_rti_ambassador
         self.info = info or BackendInfo(name=bridge.name, kind="java")
         self.connect_local_settings_designator = connect_local_settings_designator
-        self._connected_ambassador_proxies: list[tuple[FederateAmbassador, PythonFederateAmbassadorDispatcher, Any]] = []
+        self._connected_ambassador_proxies: list[tuple[FederateAmbassadorSpec, PythonFederateAmbassadorDispatcher, Any]] = []
 
     def invoke(self, invocation: Invocation) -> Any:
         if (
@@ -561,7 +793,7 @@ class JavaRTIBackend(RTIBackend):
         result = self.bridge.call(self.java_rti_ambassador, invocation.method_name, *backend_args)
         return self.converter.from_backend(result, expected_type_name=expected_java_return_type(invocation))
 
-    def adapt_federate_ambassador(self, ambassador: FederateAmbassador) -> Any:
+    def adapt_federate_ambassador(self, ambassador: FederateAmbassadorSpec) -> Any:
         dispatcher = PythonFederateAmbassadorDispatcher(ambassador, self.converter)
         proxy = self.bridge.create_federate_proxy(dispatcher)
         # JPype and Py4J callback objects need a live Python-side reference or

@@ -1,10 +1,11 @@
 """Factory helpers for Java-shaped shim backends."""
 from __future__ import annotations
 
-from hla2010.backends.base import BackendInfo, make_rti_ambassador
-from hla2010_rti_java_common import JavaRTIBackend
+from hla2010_rti_backend_common import BackendInfo, make_rti_ambassador
+from .java_common import JavaRTIBackend
 from .java_shim_backend import InProcessJavaRTIShim, ShimJavaBridge
-from .java_shim_kernel import SharedInProcessJavaRTIShim, SharedJavaShimKernel
+from .java_shim_kernel import SharedJavaShimKernel
+from .java_shim_runtime import SharedInProcessJavaRTIShim
 
 
 def create_java_shim_backend(profile: str = "jpype") -> JavaRTIBackend:

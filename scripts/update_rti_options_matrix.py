@@ -1,20 +1,35 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import sys
+import tomllib
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path.cwd()
 DOC = ROOT / "docs" / "rti_options_and_test_matrix.md"
 
 START = "<!-- GENERATED_BACKEND_ALIASES_START -->"
 END = "<!-- GENERATED_BACKEND_ALIASES_END -->"
 
 
+def _bootstrap_source_checkout() -> None:
+    pyproject = tomllib.loads((SCRIPT_REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    source_roots = pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]
+    for root in reversed(source_roots):
+        source_path = str(SCRIPT_REPO_ROOT / root)
+        if source_path not in sys.path:
+            sys.path.insert(0, source_path)
+
+
+_bootstrap_source_checkout()
+
+
 def _extract_alias_sets() -> list[tuple[str, list[str]]]:
-    from hla2010 import rti
+    from hla2010_rti_runtime_common.factory import iter_rti_backend_plugins
 
     groups: list[tuple[str, list[str]]] = []
-    for plugin in rti.iter_rti_backend_plugins():
+    for plugin in iter_rti_backend_plugins():
         aliases = sorted({plugin.name, *plugin.aliases})
         alias_values = sorted(aliases)
         key = _classify(alias_values)

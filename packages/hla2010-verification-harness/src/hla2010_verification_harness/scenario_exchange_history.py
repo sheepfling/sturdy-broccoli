@@ -1,13 +1,11 @@
 """History assertions and incremental rounds for exchange scenarios."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Mapping
+from typing import Any, Mapping
 
 from hla2010.enums import OrderType
 from .scenario_support import advance_time_beyond, order_value, wait_for_callback_count_pair
-
-if TYPE_CHECKING:
-    from .scenario_exchange import ExchangeRoundConfig, TwoFederateExchangeConfig
+from .scenario_exchange_types import ExchangeRoundConfig, TwoFederateExchangeConfig
 
 
 def assert_two_federate_exchange_callback_history(
@@ -15,7 +13,7 @@ def assert_two_federate_exchange_callback_history(
     *,
     publisher_federate: Any,
     subscriber_federate: Any,
-    config: "TwoFederateExchangeConfig",
+    config: TwoFederateExchangeConfig,
     require_timed_delivery: bool = True,
 ) -> dict[str, Any]:
     discovers = subscriber_federate.callbacks_named("discoverObjectInstance")
@@ -81,7 +79,7 @@ def run_exchange_round(
     *,
     summary: Mapping[str, Any],
     subscriber_federate: Any,
-    config: "ExchangeRoundConfig",
+    config: ExchangeRoundConfig,
 ) -> dict[str, Any]:
     baseline_reflects = len(subscriber_federate.callbacks_named("reflectAttributeValues"))
     baseline_interactions = len(subscriber_federate.callbacks_named("receiveInteraction"))

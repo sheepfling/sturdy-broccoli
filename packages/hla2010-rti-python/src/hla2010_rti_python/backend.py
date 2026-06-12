@@ -1,19 +1,27 @@
 """Concrete in-memory Python RTI backend implementation."""
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Mapping
 
-from hla2010 import time_management as tm
+from hla2010 import mom as hla_mom
+from hla2010.enums import ResignAction
 from hla2010.exceptions import (
     FederateNotExecutionMember,
     NotConnected,
     RTIexception,
 )
 from hla2010.fom import FOMCatalog, FOMResolver
-from hla2010.service_reporting import ServiceReportSink
+from hla2010.handles import (
+    AttributeHandle,
+    InteractionClassHandle,
+    ObjectInstanceHandle,
+    RegionHandle,
+    TransportationTypeHandle,
+)
 from hla2010.time import LogicalTimeFactory
-from hla2010.backends.base import BackendInfo, Invocation, RTIBackend, UnsupportedBackendService
+from hla2010_rti_backend_common import BackendInfo, Invocation, RTIBackend, UnsupportedBackendService
 from hla2010_rti_backend_common import resolve_java_arguments
+from hla2010_rti_backend_common import time_management as tm
 from .callbacks import PythonRTICallbacksMixin
 from .ddm import PythonRTIDdmMixin
 from .declaration import PythonRTIDeclarationMixin
@@ -25,6 +33,7 @@ from .object import PythonRTIObjectMixin
 from .ownership import PythonRTIOwnershipMixin
 from .reporting import PythonRTIServiceReportFiles
 from .save_restore import PythonRTISaveRestoreMixin
+from .service_reporting import ServiceReportSink
 from .state import (
     MOM_TEXT_ENCODING,
     FederateState,
@@ -36,7 +45,9 @@ from .state import (
 )
 from .subscriptions import PythonRTISubscriptionMixin
 from .support import PythonRTISupportMixin
+from .support_lookup import PythonRTISupportLookupMixin
 from .time import PythonRTITimeMixin
+from .time_queue_grants import PythonRTITimeQueueGrantMixin
 
 
 def _enum_name(value: Any) -> str:
@@ -149,13 +160,76 @@ class PythonRTIBackend(
     def close(self) -> None:
         try:
             if self.state.connected and self.state.handle is not None:
-                from hla2010.enums import ResignAction
-
                 self._svc_resignFederationExecution(ResignAction.NO_ACTION)
             if self.state.connected:
                 self._svc_disconnect()
         except Exception:
             pass
+
+    def force_federate_loss(self, federate_handle: Any, fault_description: str = "simulated federate fault") -> None:
+        """Test-only helper that injects a non-orderly federate loss into the active federation."""
+
+        federation = self._require_joined()
+        target = federation.federates.get(federate_handle)
+        if target is None or target.handle is None:
+            raise FederateNotExecutionMember(repr(federate_handle))
+
+        lost_handle = target.handle
+        lost_name = target.name or self._federate_name(target)
+        automatic_resign = target.automatic_resign_directive
+        action_name = self._enum_name(automatic_resign)
+
+        if target.ambassador is not None:
+            self._deliver(target, "connectionLost", fault_description)
+
+        self._send_mom_report(
+            federation,
+            f"{hla_mom.MOM_FEDERATE_INTERACTION_ROOT}.HLAreport.HLAreportFederateLost",
+            {
+                "HLAfederate": lost_handle,
+                "HLAfederateName": lost_name,
+                "HLAtimeStamp": target.current_time,
+                "HLAfaultDescription": fault_description,
+            },
+        )
+
+        if action_name in {
+            "DELETE_OBJECTS",
+            "DELETE_OBJECTS_THEN_DIVEST",
+            "CANCEL_THEN_DELETE_THEN_DIVEST",
+        }:
+            to_remove = [obj for obj in federation.objects.values() if obj.owner == lost_handle]
+            for obj in to_remove:
+                self._remove_object_with_producer(
+                    federation,
+                    obj,
+                    b"lost",
+                    producing_federate=lost_handle,
+                )
+
+        self._remove_federate_from_synchronization_points(federation, lost_handle)
+        mom_handle = federation.mom_federate_objects.pop(lost_handle, None)
+        if mom_handle is not None:
+            mom_instance = federation.objects.pop(mom_handle, None)
+            if mom_instance is not None:
+                federation.object_names.pop(mom_instance.name, None)
+        federation.federates.pop(lost_handle, None)
+        self._process_time_advances(federation)
+        self._refresh_all_mom_objects(federation, notify=True)
+
+        target.last_reporting_handle = lost_handle
+        target.last_reporting_name = lost_name
+        target.last_reporting_federation = federation
+        target.handle = None
+        target.name = None
+        target.federate_type = None
+        target.federation = None
+        target.published_objects.clear()
+        target.subscribed_objects.clear()
+        target.registration_interest_classes.clear()
+        target.published_interactions.clear()
+        target.subscribed_interactions.clear()
+        target.interaction_interest_classes.clear()
 
     def _enum_name(self, value: Any) -> str:
         return _enum_name(value)
@@ -198,6 +272,48 @@ class PythonRTIBackend(
 
     def _scheduled_save_time_reached(self, fed: FederateState, save_time: Any, *, next_grant_time: Any | None = None) -> bool:
         return tm.scheduled_save_time_reached(fed, save_time, next_grant_time=next_grant_time)
+
+    def _object_matches_subscription(self, actual_class: object, subscribed_class: object) -> bool:
+        return PythonRTISubscriptionMixin._object_matches_subscription(self, actual_class, subscribed_class)
+
+    def _interaction_matches_subscription(
+        self,
+        actual_class: InteractionClassHandle,
+        subscribed_class: InteractionClassHandle,
+    ) -> bool:
+        return PythonRTISubscriptionMixin._interaction_matches_subscription(self, actual_class, subscribed_class)
+
+    def _attribute_subscription_intersection(
+        self,
+        federate: FederateState,
+        object_class: object,
+        attributes: Mapping[AttributeHandle, bytes],
+        instance: Any | None = None,
+        sent_regions_by_attribute: Mapping[AttributeHandle, set[RegionHandle]] | None = None,
+    ) -> dict[AttributeHandle, bytes]:
+        return PythonRTISubscriptionMixin._attribute_subscription_intersection(
+            self,
+            federate,
+            object_class,
+            attributes,
+            instance=instance,
+            sent_regions_by_attribute=sent_regions_by_attribute,
+        )
+
+    def _transportation_handle_by_name(self, name: str) -> TransportationTypeHandle | None:
+        return PythonRTISupportLookupMixin._transportation_handle_by_name(self, name)
+
+    def _find_object(self, theObject: ObjectInstanceHandle):
+        return PythonRTISupportLookupMixin._find_object(self, theObject)
+
+    def _process_time_advances(self, federation: FederationState) -> None:
+        PythonRTITimeQueueGrantMixin._process_time_advances(self, federation)
+
+    def _compute_galt(self, federation: FederationState, federate: FederateState) -> Any:
+        return PythonRTITimeQueueGrantMixin._compute_galt(self, federation, federate)
+
+    def _compute_lits(self, federation: FederationState, federate: FederateState) -> Any:
+        return PythonRTITimeQueueGrantMixin._compute_lits(self, federation, federate)
 
 __all__ = [
     "PythonRTIBackend",

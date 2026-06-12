@@ -1,12 +1,13 @@
 """Pair construction helpers for the two-federate verification suite."""
 from __future__ import annotations
 
+from importlib import import_module
 from typing import Any
 
-from hla2010.ambassadors import RecordingFederateAmbassador
 from hla2010.enums import ResignAction
 from hla2010.handles import ObjectClassHandle, ObjectInstanceHandle
-from hla2010.rti import create_python_pair, create_rti_ambassador
+from hla2010_rti_backend_common import RecordingFederateAmbassador
+from hla2010_rti_runtime_common import create_rti_ambassador
 from hla2010_verification_harness.two_federate_suite_timeline import TimelineRecorder
 
 
@@ -49,7 +50,7 @@ class SuiteRecordingFederateAmbassador(RecordingFederateAmbassador):
 
 
 def _python_pair():
-    return create_python_pair()
+    return import_module("hla2010_rti_python").create_python_pair()
 
 
 def _cleanup_pair(*rtis: Any, federation_name: str) -> None:
@@ -83,7 +84,7 @@ def _make_python_pair(
 ) -> tuple[Any, Any, SuiteRecordingFederateAmbassador, SuiteRecordingFederateAmbassador]:
     left_fed = SuiteRecordingFederateAmbassador(profile=profile, scenario=scenario, role="left", timeline=timeline)
     right_fed = SuiteRecordingFederateAmbassador(profile=profile, scenario=scenario, role="right", timeline=timeline)
-    left_rti, right_rti = create_python_pair()
+    left_rti, right_rti = _python_pair()
     return (
         left_rti,
         right_rti,

@@ -9,7 +9,7 @@ profiles for currently unpromoted slices like save/restore or DDM.
 Generate the packet with:
 
 ```bash
-python3 scripts/run_vendor_parity_artifacts.py
+./tools/vendor-parity
 ```
 
 Default output:
@@ -54,6 +54,6 @@ Typical sequence:
 ```bash
 ./tools/certi-easy preflight --json-file analysis/preflight_artifacts/certi-preflight.json
 ./tools/pitch preflight --json-file analysis/preflight_artifacts/pitch-preflight.json
-./scripts/ci/vendor_edge_matrix.sh all
-python3 scripts/run_vendor_parity_artifacts.py
+./tools/vendor-edge all
+./tools/vendor-parity
 ```

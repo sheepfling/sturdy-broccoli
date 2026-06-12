@@ -2,20 +2,24 @@
 from __future__ import annotations
 
 import argparse
+import sys
+import tomllib
 from pathlib import Path
-import site
+
+SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path.cwd()
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+def _bootstrap_source_checkout() -> None:
+    pyproject = tomllib.loads((SCRIPT_REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    source_roots = pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]
+    for root in reversed(source_roots):
+        source_path = str(SCRIPT_REPO_ROOT / root)
+        if source_path not in sys.path:
+            sys.path.insert(0, source_path)
 
 
-def _bootstrap_workspace_imports() -> None:
-    for source_root in (PROJECT_ROOT / "src", *sorted((PROJECT_ROOT / "packages").glob("*/src"))):
-        if source_root.is_dir():
-            site.addsitedir(str(source_root))
-
-
-_bootstrap_workspace_imports()
+_bootstrap_source_checkout()
 
 from hla2010_repo_internal.verification.workspace_two_federate_suite import write_workspace_two_federate_suite_artifacts
 

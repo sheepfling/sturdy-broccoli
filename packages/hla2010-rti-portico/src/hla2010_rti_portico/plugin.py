@@ -3,8 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from hla2010.backends.base import BackendInfo, BackendUnavailableError
-from hla2010.rti import RTIBackendPlugin
+from hla2010_rti_java_common import BackendInfo, BackendUnavailableError, RTIBackendPlugin
 
 
 def _discover_portico_runtime() -> BackendInfo | None:

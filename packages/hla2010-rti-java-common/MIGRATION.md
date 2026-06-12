@@ -4,11 +4,12 @@ Implementation moved into:
 
 - `hla2010_rti_java_common.java_common`
 
-Compatibility facades retained:
+Removed root compatibility facades:
 
 - `hla2010.backends.java_common`
 
 Remaining cleanup:
 
-- Keep the compatibility facade until downstream users can migrate directly to
-  `hla2010_rti_java_common` and `hla2010_rti_backend_common`.
+- Keep downstream callers on the canonical
+  `hla2010_rti_java_common` and `hla2010_rti_backend_common` imports; the
+  removed root facade must not be reintroduced.

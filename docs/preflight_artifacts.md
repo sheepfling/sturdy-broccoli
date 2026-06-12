@@ -3,11 +3,10 @@
 The `./tools/certi-easy preflight` and `./tools/pitch preflight` commands can emit either
 human-readable output or machine-readable JSON.
 
-The CI/operator wrapper `./scripts/ci/vendor_runtime_smoke.sh` now emits the
-same standard JSON files by default under `analysis/preflight_artifacts/`
-before it decides whether a vendor profile should run or skip. Use
-`./scripts/ci/vendor_green.sh` when blocked prerequisites should fail the run
-instead of short-circuiting cleanly.
+The shared vendor runtime smoke delegate now emits the same standard JSON
+files by default under `analysis/preflight_artifacts/` before it decides
+whether a vendor profile should run or skip. Use `./tools/vendor-green` when
+blocked prerequisites should fail the run instead of short-circuiting cleanly.
 
 Those persisted files are now also the cross-command proof that preflight
 already succeeded for direct real-runtime pytest diagnostics. The wrapper path
@@ -160,9 +159,9 @@ Use the shared classifier when you want the repo to distinguish:
 Examples:
 
 ```bash
-python3 scripts/classify_vendor_runtime.py --lane repo-green --json
-python3 scripts/classify_vendor_runtime.py --lane vendor-green --vendor certi --json
-python3 scripts/classify_vendor_runtime.py --lane vendor-green --vendor pitch --json
+./tools/vendor-state classify --lane repo-green --json
+./tools/vendor-state classify --lane vendor-green --vendor certi --json
+./tools/vendor-state classify --lane vendor-green --vendor pitch --json
 ```
 
 By default the script reads:
@@ -198,8 +197,8 @@ next step is:
 For dedicated vendor CI runners, pair that with:
 
 ```bash
-python3 scripts/ci/check_vendor_runtime_ci_state.py --profile certi --json
-python3 scripts/ci/check_vendor_runtime_ci_state.py --profile pitch --json
+./tools/vendor-state ci-state --profile certi --json
+./tools/vendor-state ci-state --profile pitch --json
 ```
 
 Those dedicated-runner artifacts live under:

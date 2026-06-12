@@ -29,6 +29,8 @@ Profiles:
 - pitch-ddm-probe
 - pitch-negotiated
 - pitch-negotiated-probe
+- pitch-lost-federate
+- pitch-lost-federate-probe
 - matrix
 - all
 EOF
@@ -66,7 +68,7 @@ ensure_python_test_env() {
 
   if [[ "$VENDOR_AUTO_BOOTSTRAP_PYTHON" != "1" ]]; then
     hla2010_shell_die \
-      "python test environment is missing at $VENV_DIR; set HLA2010_VENDOR_AUTO_BOOTSTRAP_PYTHON=1 or run ./scripts/bootstrap_python.sh"
+      "python test environment is missing at $VENV_DIR; set HLA2010_VENDOR_AUTO_BOOTSTRAP_PYTHON=1 or run ./tools/bootstrap python"
   fi
 
   hla2010_shell_warn "python test environment missing at $VENV_DIR; bootstrapping repo virtualenv"
@@ -383,7 +385,9 @@ case "$PROFILE" in
     export HLA2010_PITCH_CRC_MODE="${HLA2010_PITCH_CRC_MODE:-docker}"
     export HLA2010_PITCH_DOCKER_BUILD="${HLA2010_PITCH_DOCKER_BUILD:-0}"
     if [[ "$PROFILE" == "pitch-smoke" || "$PROFILE" == "pitch" ]]; then
-      run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'pitch'
+      # Pitch smoke is the promoted overlap only. Save/restore and DDM remain
+      # explicit gap/probe routes, not part of the default smoke contract.
+      run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'pitch_java_real_lifecycle_smoke or pitch_java_real_exchange_smoke'
     fi
     if [[ "$PROFILE" == "pitch-verify" || "$PROFILE" == "pitch" ]]; then
       run_pytest -q tests/vendors/test_pitch_real_backend_matrix.py
@@ -482,6 +486,43 @@ case "$PROFILE" in
     export HLA2010_PITCH_DOCKER_BUILD="${HLA2010_PITCH_DOCKER_BUILD:-0}"
     run_pytest -q tests/vendors/test_pitch_real_backend_matrix.py -k 'pitch_negotiated_divesting_offer_probe or pitch_release_request_owned_attribute_probe'
     ;;
+  pitch-lost-federate)
+    hla2010_shell_log "vendor runtime profile: pitch lost federate"
+    if guard_vendor_preflight pitch; then
+      :
+    else
+      case "$?" in
+        2) exit 0 ;;
+        *) exit $? ;;
+      esac
+    fi
+    emit_known_gap_profile "pitch-lost-federate"
+    hla2010_shell_warn "Pitch real-runtime lost-federate parity remains blocked at the family level; use the JPype/Py4J probe route to gather promotion evidence"
+    exit 3
+    ;;
+  pitch-lost-federate-probe)
+    hla2010_shell_log "vendor runtime profile: pitch lost federate probe"
+    if guard_vendor_preflight pitch; then
+      :
+    else
+      case "$?" in
+        2) exit 0 ;;
+        *) exit $? ;;
+      esac
+    fi
+    export HLA2010_PITCH_HOME="${HLA2010_PITCH_HOME:-$(default_pitch_home)}"
+    test -n "${HLA2010_PITCH_HOME:-}" || { echo "Pitch runtime bundle is required"; exit 1; }
+    export HLA2010_PITCH_CRC_HEARTBEAT_ENABLE="${HLA2010_PITCH_CRC_HEARTBEAT_ENABLE:-true}"
+    export HLA2010_PITCH_CRC_HEARTBEAT_INTERVAL="${HLA2010_PITCH_CRC_HEARTBEAT_INTERVAL:-1}"
+    export HLA2010_PITCH_CRC_HEARTBEAT_ACTION="${HLA2010_PITCH_CRC_HEARTBEAT_ACTION:-resign}"
+    export HLA2010_PITCH_LRC_PEER_HEARTBEAT_INTERVAL_MILLIS="${HLA2010_PITCH_LRC_PEER_HEARTBEAT_INTERVAL_MILLIS:-1000}"
+    export HLA2010_PITCH_FEDPRO_TIMEOUT_HEART_SECONDS="${HLA2010_PITCH_FEDPRO_TIMEOUT_HEART_SECONDS:-5}"
+    export HLA2010_PITCH_FEDPRO_TIMEOUT_PURGE_SECONDS="${HLA2010_PITCH_FEDPRO_TIMEOUT_PURGE_SECONDS:-15}"
+    export HLA2010_PITCH_USER_HOME="${HLA2010_PITCH_USER_HOME:-$("$ROOT_DIR/scripts/setup_pitch_state.sh")}"
+    export HLA2010_PITCH_CRC_MODE="${HLA2010_PITCH_CRC_MODE:-docker}"
+    export HLA2010_PITCH_DOCKER_BUILD="${HLA2010_PITCH_DOCKER_BUILD:-0}"
+    run_pytest -q tests/vendors/test_pitch_real_backend_matrix.py -k 'pitch_backend_lost_federate_mom_matrix'
+    ;;
   matrix)
     hla2010_shell_log "vendor runtime smoke: matrix"
     "$0" certi
@@ -524,7 +565,7 @@ case "$PROFILE" in
     fi
     ;;
   *)
-    echo "usage: $0 [certi|certi-patched|certi-upstream|certi-compare|certi-save-restore|certi-save-restore-probe|certi-ddm|certi-ddm-probe|pitch|pitch-smoke|pitch-verify|pitch-save-restore|pitch-save-restore-probe|pitch-ddm|pitch-ddm-probe|pitch-negotiated|pitch-negotiated-probe|matrix|all]" >&2
+    echo "usage: $0 [certi|certi-patched|certi-upstream|certi-compare|certi-save-restore|certi-save-restore-probe|certi-ddm|certi-ddm-probe|pitch|pitch-smoke|pitch-verify|pitch-save-restore|pitch-save-restore-probe|pitch-ddm|pitch-ddm-probe|pitch-negotiated|pitch-negotiated-probe|pitch-lost-federate|pitch-lost-federate-probe|matrix|all]" >&2
     exit 2
     ;;
 esac

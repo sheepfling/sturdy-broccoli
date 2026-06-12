@@ -1,9 +1,9 @@
 """Factory helpers for Java-profile CERTI backends."""
 from __future__ import annotations
 
-from hla2010.backends.base import BackendInfo
+from hla2010_rti_java_common import BackendInfo
 from hla2010_rti_certi.certi import CERTIConfig
-from hla2010_rti_java_common import JavaRTIBackend
+from hla2010_rti_java_common.java_common import JavaRTIBackend
 from hla2010_rti_java_common.java_shim_backend import ShimJavaBridge
 from .adapter import CERTIJavaRTIShim
 from .runtime import CERTIJavaValueConverter

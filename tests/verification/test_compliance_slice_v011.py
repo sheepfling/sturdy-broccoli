@@ -6,18 +6,24 @@ from pathlib import Path
 import pytest
 
 from hla2010 import mom as hla_mom
-from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.backends.python import InMemoryRTIEngine, PythonRTIConfig
-from hla2010.backends.python.state import CallbackEvent
+from hla2010_rti_backend_common import RecordingFederateAmbassador
 from hla2010.enums import CallbackModel, OrderType, ResignAction
 from hla2010.exceptions import FederateServiceInvocationsAreBeingReportedViaMOM
-from hla2010.rti import create_rti_ambassador
 from hla2010.types import RangeBounds
+from hla2010_rti_python import InMemoryRTIEngine, PythonRTIConfig
+from hla2010_rti_python.state import CallbackEvent
+from hla2010_rti_runtime_common import create_rti_ambassador
 from hla2010_verification_harness import (
     NegotiatedOwnershipScenarioConfig,
     ReleaseRequestOwnershipScenarioConfig,
+    SaveRestoreScenarioConfig,
     run_negotiated_attribute_ownership_scenario,
     run_release_request_ownership_scenario,
+    run_restore_callback_policy_scenario,
+    run_restore_federate_local_state_scenario,
+    run_restore_object_state_scenario,
+    run_scheduled_save_restore_time_state_scenario,
+    run_restore_transient_state_scenario,
 )
 
 
@@ -141,379 +147,481 @@ def test_mom_service_action_can_drive_time_management_service():
 
 
 def test_scheduled_save_waits_for_time_and_restore_reinstates_time_state():
-    _engine, (r1, r2), (f1, f2) = _joined("scheduled-save-restore-v011", n=2)
-    factory = r1.get_time_factory()
-    r1.enable_time_constrained()
-    r2.enable_time_constrained()
-    _drain(r1, r2)
+    engine = InMemoryRTIEngine()
+    r1 = _rti(engine)
+    r2 = _rti(engine)
+    f1 = RecordingFederateAmbassador()
+    f2 = RecordingFederateAmbassador()
+    summary = run_scheduled_save_restore_time_state_scenario(
+        r1,
+        r2,
+        config=SaveRestoreScenarioConfig(
+            federation_name="scheduled-save-restore-v011",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+            leader_name="fed-0",
+            wing_name="fed-1",
+            federate_type="SaveRestoreFederate",
+            save_name="SAVE-AT-5",
+        ),
+        leader_federate=f1,
+        wing_federate=f2,
+        save_time=5.0,
+        post_save_time=8.0,
+    )
 
-    r1.request_federation_save("SAVE-AT-5", factory.make_time(5.0))
-    _drain(r1, r2)
-    assert f1.last_callback("initiateFederateSave") is None
-    assert f2.last_callback("initiateFederateSave") is None
-
-    r1.time_advance_request_available(factory.make_time(5.0))
-    r2.time_advance_request_available(factory.make_time(5.0))
-    _drain(r1, r2)
-    assert f1.last_callback("initiateFederateSave").args[0] == "SAVE-AT-5"
-    assert f2.last_callback("initiateFederateSave").args[0] == "SAVE-AT-5"
-
-    r1.federate_save_begun()
-    r2.federate_save_begun()
-    r1.federate_save_complete()
-    r2.federate_save_complete()
-    _drain(r1, r2)
-    assert f1.last_callback("federationSaved") is not None
-
-    r1.time_advance_request_available(factory.make_time(8.0))
-    r2.time_advance_request_available(factory.make_time(8.0))
-    _drain(r1, r2)
-    assert r1.query_logical_time() == factory.make_time(8.0)
-    assert r2.query_logical_time() == factory.make_time(8.0)
-
-    r1.request_federation_restore("SAVE-AT-5")
-    _drain(r1, r2)
-    r1.federate_restore_complete()
-    r2.federate_restore_complete()
-    _drain(r1, r2)
-    assert r1.query_logical_time() == factory.make_time(5.0)
-    assert r2.query_logical_time() == factory.make_time(5.0)
+    assert summary["leader_initiate_save"].args[0] == "SAVE-AT-5"
+    assert summary["wing_initiate_save"].args[0] == "SAVE-AT-5"
+    assert summary["leader_saved"] is not None
+    assert summary["restored_leader_time"].value == 5.0
+    assert summary["restored_wing_time"].value == 5.0
 
 
 def test_restore_reinstates_saved_object_values_names_and_ownership_state():
-    _engine, (owner, acquirer), (_owner_fed, _acquirer_fed) = _joined("restore-object-state-v011", n=2)
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    engine = InMemoryRTIEngine()
+    owner = _rti(engine)
+    acquirer = _rti(engine)
 
-    owner.publish_object_class_attributes(cls, {attr})
-    acquirer.publish_object_class_attributes(cls, {attr})
-    obj = owner.register_object_instance(cls, "Restore-State-Object")
-    owner.update_attribute_values(obj, {attr: b"saved-value"}, b"saved")
-    _drain(owner, acquirer)
+    def setup_saved_state(left, right, context):
+        cls = left.get_object_class_handle("HLAobjectRoot.Target")
+        attr = left.get_attribute_handle(cls, "Position")
+        left.publish_object_class_attributes(cls, {attr})
+        right.publish_object_class_attributes(cls, {attr})
+        obj = left.register_object_instance(cls, "Restore-State-Object")
+        left.update_attribute_values(obj, {attr: b"saved-value"}, b"saved")
+        _drain(left, right)
+        left.unconditional_attribute_ownership_divestiture(obj, {attr})
+        right.attribute_ownership_acquisition_if_available(obj, {attr})
+        _drain(left, right)
+        assert right.is_attribute_owned_by_federate(obj, attr) is True
+        context.update({"object_instance": obj, "attribute": attr})
 
-    owner.unconditional_attribute_ownership_divestiture(obj, {attr})
-    acquirer.attribute_ownership_acquisition_if_available(obj, {attr})
-    _drain(owner, acquirer)
-    assert acquirer.is_attribute_owned_by_federate(obj, attr) is True
+    def mutate_post_save_state(left, right, context):
+        obj = context["object_instance"]
+        attr = context["attribute"]
+        right.unconditional_attribute_ownership_divestiture(obj, {attr})
+        left.attribute_ownership_acquisition_if_available(obj, {attr})
+        _drain(left, right)
+        assert left.is_attribute_owned_by_federate(obj, attr) is True
+        left.update_attribute_values(obj, {attr: b"mutated-value"}, b"mutated")
+        _drain(left, right)
 
-    owner.request_federation_save("SAVE-OBJECT-STATE")
-    _drain(owner, acquirer)
-    owner.federate_save_begun()
-    acquirer.federate_save_begun()
-    owner.federate_save_complete()
-    acquirer.federate_save_complete()
-    _drain(owner, acquirer)
+    def assert_restored_state(left, right, context):
+        obj = context["object_instance"]
+        attr = context["attribute"]
+        restored = left.backend.state.federation.objects[obj]
+        assert restored.name == "Restore-State-Object"
+        assert left.backend.state.federation.object_names["Restore-State-Object"] == obj
+        assert restored.attributes[attr] == b"saved-value"
+        assert restored.attribute_owners[attr] == right.backend.state.handle
+        assert right.is_attribute_owned_by_federate(obj, attr) is True
 
-    acquirer.unconditional_attribute_ownership_divestiture(obj, {attr})
-    owner.attribute_ownership_acquisition_if_available(obj, {attr})
-    _drain(owner, acquirer)
-    assert owner.is_attribute_owned_by_federate(obj, attr) is True
-    owner.update_attribute_values(obj, {attr: b"mutated-value"}, b"mutated")
-    _drain(owner, acquirer)
+    summary = run_restore_object_state_scenario(
+        owner,
+        acquirer,
+        config=SaveRestoreScenarioConfig(
+            federation_name="restore-object-state-v011",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+            leader_name="fed-0",
+            wing_name="fed-1",
+            federate_type="SaveRestoreFederate",
+            save_name="SAVE-OBJECT-STATE",
+        ),
+        leader_federate=RecordingFederateAmbassador(),
+        wing_federate=RecordingFederateAmbassador(),
+        setup_saved_state=setup_saved_state,
+        mutate_post_save_state=mutate_post_save_state,
+        assert_restored_state=assert_restored_state,
+    )
 
-    owner.request_federation_restore("SAVE-OBJECT-STATE")
-    _drain(owner, acquirer)
-    owner.federate_restore_complete()
-    acquirer.federate_restore_complete()
-    _drain(owner, acquirer)
-
-    restored = owner.backend.state.federation.objects[obj]
-    assert restored.name == "Restore-State-Object"
-    assert owner.backend.state.federation.object_names["Restore-State-Object"] == obj
-    assert restored.attributes[attr] == b"saved-value"
-    assert restored.attribute_owners[attr] == acquirer.backend.state.handle
-    assert acquirer.is_attribute_owned_by_federate(obj, attr) is True
+    assert summary["leader_restore_succeeded"].args == ("SAVE-OBJECT-STATE",)
 
 
 def test_restore_reinstates_saved_federate_runtime_flags_and_lookahead_state():
-    _engine, (r1, r2), (_f1, _f2) = _joined("restore-runtime-flags-v011", n=2)
-    factory = r1.get_time_factory()
+    engine = InMemoryRTIEngine()
+    r1 = _rti(engine)
+    r2 = _rti(engine)
 
-    r1.enable_time_regulation(factory.make_interval(2.0))
-    r1.enable_asynchronous_delivery()
-    r2.enable_time_constrained()
-    _drain(r1, r2)
+    def setup_saved_state(left, right, context):
+        factory = left.get_time_factory()
+        left.enable_time_regulation(factory.make_interval(2.0))
+        left.enable_asynchronous_delivery()
+        right.enable_time_constrained()
+        _drain(left, right)
+        context["factory"] = factory
 
-    r1.request_federation_save("SAVE-RUNTIME-FLAGS")
-    _drain(r1, r2)
-    r1.federate_save_begun()
-    r2.federate_save_begun()
-    r1.federate_save_complete()
-    r2.federate_save_complete()
-    _drain(r1, r2)
+    def mutate_post_save_state(left, right, context):
+        factory = context["factory"]
+        left.modify_lookahead(factory.make_interval(5.0))
+        left.disable_asynchronous_delivery()
+        left.disable_time_regulation()
+        right.disable_time_constrained()
+        assert left.backend.state.lookahead == factory.make_interval(5.0)
+        assert left.backend.state.asynchronous_delivery_enabled is False
+        assert left.backend.state.time_regulation_enabled is False
+        assert right.backend.state.time_constrained_enabled is False
 
-    r1.modify_lookahead(factory.make_interval(5.0))
-    r1.disable_asynchronous_delivery()
-    r1.disable_time_regulation()
-    r2.disable_time_constrained()
-    assert r1.backend.state.lookahead == factory.make_interval(5.0)
-    assert r1.backend.state.asynchronous_delivery_enabled is False
-    assert r1.backend.state.time_regulation_enabled is False
-    assert r2.backend.state.time_constrained_enabled is False
+    def assert_restored_state(left, right, context):
+        factory = context["factory"]
+        assert left.backend.state.lookahead == factory.make_interval(2.0)
+        assert left.backend.state.asynchronous_delivery_enabled is True
+        assert left.backend.state.time_regulation_enabled is True
+        assert right.backend.state.time_constrained_enabled is True
 
-    r1.request_federation_restore("SAVE-RUNTIME-FLAGS")
-    _drain(r1, r2)
-    r1.federate_restore_complete()
-    r2.federate_restore_complete()
-    _drain(r1, r2)
+    summary = run_restore_federate_local_state_scenario(
+        r1,
+        r2,
+        config=SaveRestoreScenarioConfig(
+            federation_name="restore-runtime-flags-v011",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+            leader_name="fed-0",
+            wing_name="fed-1",
+            federate_type="SaveRestoreFederate",
+            save_name="SAVE-RUNTIME-FLAGS",
+        ),
+        leader_federate=RecordingFederateAmbassador(),
+        wing_federate=RecordingFederateAmbassador(),
+        setup_saved_state=setup_saved_state,
+        mutate_post_save_state=mutate_post_save_state,
+        assert_restored_state=assert_restored_state,
+    )
 
-    assert r1.backend.state.lookahead == factory.make_interval(2.0)
-    assert r1.backend.state.asynchronous_delivery_enabled is True
-    assert r1.backend.state.time_regulation_enabled is True
-    assert r2.backend.state.time_constrained_enabled is True
+    assert summary["leader_restore_succeeded"].args == ("SAVE-RUNTIME-FLAGS",)
 
 
 def test_restore_reinstates_saved_federate_policy_reporting_and_conveyance_switches():
-    _engine, (r1, r2), (_f1, _f2) = _joined("restore-switch-state-v011", n=2)
+    engine = InMemoryRTIEngine()
+    r1 = _rti(engine)
+    r2 = _rti(engine)
 
-    r1.set_automatic_resign_directive(ResignAction.DELETE_OBJECTS)
-    r1.enable_object_class_relevance_advisory_switch()
-    r1.enable_attribute_relevance_advisory_switch()
-    r1.enable_attribute_scope_advisory_switch()
-    r1.enable_interaction_relevance_advisory_switch()
+    def setup_saved_state(left, right, _context):
+        left.set_automatic_resign_directive(ResignAction.DELETE_OBJECTS)
+        left.enable_object_class_relevance_advisory_switch()
+        left.enable_attribute_relevance_advisory_switch()
+        left.enable_attribute_scope_advisory_switch()
+        left.enable_interaction_relevance_advisory_switch()
 
-    adjust = r1.get_interaction_class_handle(
-        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches"
-    )
-    set_service_reporting = r1.get_interaction_class_handle(
-        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
-    )
-    set_exception_reporting = r1.get_interaction_class_handle(
-        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetExceptionReporting"
-    )
-    federate_param = r1.get_parameter_handle(adjust, "HLAfederate")
-    convey_pf_param = r1.get_parameter_handle(adjust, "HLAconveyProducingFederate")
-    convey_regions_param = r1.get_parameter_handle(adjust, "HLAconveyRegionDesignatorSets")
-    service_reporting_fed = r1.get_parameter_handle(set_service_reporting, "HLAfederate")
-    service_reporting_param = r1.get_parameter_handle(set_service_reporting, "HLAreportingState")
-    exception_reporting_fed = r1.get_parameter_handle(set_exception_reporting, "HLAfederate")
-    exception_reporting_param = r1.get_parameter_handle(set_exception_reporting, "HLAreportingState")
-    r1.send_interaction(
-        adjust,
-        {
-            federate_param: r1.backend.state.handle.encode(),
-            convey_pf_param: hla_mom.encode_bool(False),
-            convey_regions_param: hla_mom.encode_bool(True),
-        },
-        b"save-switches",
-    )
-    r1.send_interaction(
-        set_service_reporting,
-        {
-            service_reporting_fed: r1.backend.state.handle.encode(),
-            service_reporting_param: hla_mom.encode_bool(True),
-        },
-        b"save-service-reporting",
-    )
-    r1.send_interaction(
-        set_exception_reporting,
-        {
-            exception_reporting_fed: r1.backend.state.handle.encode(),
-            exception_reporting_param: hla_mom.encode_bool(False),
-        },
-        b"save-exception-reporting",
-    )
-    _drain(r1, r2)
+        adjust = left.get_interaction_class_handle(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches"
+        )
+        set_service_reporting = left.get_interaction_class_handle(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
+        )
+        set_exception_reporting = left.get_interaction_class_handle(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetExceptionReporting"
+        )
+        federate_param = left.get_parameter_handle(adjust, "HLAfederate")
+        convey_pf_param = left.get_parameter_handle(adjust, "HLAconveyProducingFederate")
+        convey_regions_param = left.get_parameter_handle(adjust, "HLAconveyRegionDesignatorSets")
+        service_reporting_fed = left.get_parameter_handle(set_service_reporting, "HLAfederate")
+        service_reporting_param = left.get_parameter_handle(set_service_reporting, "HLAreportingState")
+        exception_reporting_fed = left.get_parameter_handle(set_exception_reporting, "HLAfederate")
+        exception_reporting_param = left.get_parameter_handle(set_exception_reporting, "HLAreportingState")
+        left.send_interaction(
+            adjust,
+            {
+                federate_param: left.backend.state.handle.encode(),
+                convey_pf_param: hla_mom.encode_bool(False),
+                convey_regions_param: hla_mom.encode_bool(True),
+            },
+            b"save-switches",
+        )
+        left.send_interaction(
+            set_service_reporting,
+            {
+                service_reporting_fed: left.backend.state.handle.encode(),
+                service_reporting_param: hla_mom.encode_bool(True),
+            },
+            b"save-service-reporting",
+        )
+        left.send_interaction(
+            set_exception_reporting,
+            {
+                exception_reporting_fed: left.backend.state.handle.encode(),
+                exception_reporting_param: hla_mom.encode_bool(False),
+            },
+            b"save-exception-reporting",
+        )
+        _drain(left, right)
 
-    r1.request_federation_save("SAVE-SWITCH-STATE")
-    _drain(r1, r2)
-    r1.federate_save_begun()
-    r2.federate_save_begun()
-    r1.federate_save_complete()
-    r2.federate_save_complete()
-    _drain(r1, r2)
+    def mutate_post_save_state(left, right, _context):
+        adjust = left.get_interaction_class_handle(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches"
+        )
+        set_service_reporting = left.get_interaction_class_handle(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
+        )
+        set_exception_reporting = left.get_interaction_class_handle(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetExceptionReporting"
+        )
+        federate_param = left.get_parameter_handle(adjust, "HLAfederate")
+        convey_pf_param = left.get_parameter_handle(adjust, "HLAconveyProducingFederate")
+        convey_regions_param = left.get_parameter_handle(adjust, "HLAconveyRegionDesignatorSets")
+        service_reporting_fed = left.get_parameter_handle(set_service_reporting, "HLAfederate")
+        service_reporting_param = left.get_parameter_handle(set_service_reporting, "HLAreportingState")
+        exception_reporting_fed = left.get_parameter_handle(set_exception_reporting, "HLAfederate")
+        exception_reporting_param = left.get_parameter_handle(set_exception_reporting, "HLAreportingState")
+        left.set_automatic_resign_directive(ResignAction.NO_ACTION)
+        left.disable_object_class_relevance_advisory_switch()
+        left.disable_attribute_relevance_advisory_switch()
+        left.disable_attribute_scope_advisory_switch()
+        left.disable_interaction_relevance_advisory_switch()
+        left.send_interaction(
+            adjust,
+            {
+                federate_param: left.backend.state.handle.encode(),
+                convey_pf_param: hla_mom.encode_bool(True),
+                convey_regions_param: hla_mom.encode_bool(False),
+            },
+            b"mutate-switches",
+        )
+        left.send_interaction(
+            set_service_reporting,
+            {
+                service_reporting_fed: left.backend.state.handle.encode(),
+                service_reporting_param: hla_mom.encode_bool(False),
+            },
+            b"mutate-service-reporting",
+        )
+        left.send_interaction(
+            set_exception_reporting,
+            {
+                exception_reporting_fed: left.backend.state.handle.encode(),
+                exception_reporting_param: hla_mom.encode_bool(True),
+            },
+            b"mutate-exception-reporting",
+        )
+        _drain(left, right)
 
-    r1.set_automatic_resign_directive(ResignAction.NO_ACTION)
-    r1.disable_object_class_relevance_advisory_switch()
-    r1.disable_attribute_relevance_advisory_switch()
-    r1.disable_attribute_scope_advisory_switch()
-    r1.disable_interaction_relevance_advisory_switch()
-    r1.send_interaction(
-        adjust,
-        {
-            federate_param: r1.backend.state.handle.encode(),
-            convey_pf_param: hla_mom.encode_bool(True),
-            convey_regions_param: hla_mom.encode_bool(False),
-        },
-        b"mutate-switches",
-    )
-    r1.send_interaction(
-        set_service_reporting,
-        {
-            service_reporting_fed: r1.backend.state.handle.encode(),
-            service_reporting_param: hla_mom.encode_bool(False),
-        },
-        b"mutate-service-reporting",
-    )
-    r1.send_interaction(
-        set_exception_reporting,
-        {
-            exception_reporting_fed: r1.backend.state.handle.encode(),
-            exception_reporting_param: hla_mom.encode_bool(True),
-        },
-        b"mutate-exception-reporting",
-    )
-    _drain(r1, r2)
+    def assert_restored_state(left, _right, _context):
+        assert left.get_automatic_resign_directive() is ResignAction.DELETE_OBJECTS
+        assert left.backend.state.object_class_relevance_advisory is True
+        assert left.backend.state.attribute_relevance_advisory is True
+        assert left.backend.state.attribute_scope_advisory is True
+        assert left.backend.state.interaction_relevance_advisory is True
+        assert left.backend.state.convey_producing_federate is False
+        assert left.backend.state.convey_region_designator_sets is True
+        assert left.backend.state.service_reporting is True
+        assert left.backend.state.exception_reporting is False
 
-    r1.request_federation_restore("SAVE-SWITCH-STATE")
-    _drain(r1, r2)
-    r1.federate_restore_complete()
-    r2.federate_restore_complete()
-    _drain(r1, r2)
+    summary = run_restore_federate_local_state_scenario(
+        r1,
+        r2,
+        config=SaveRestoreScenarioConfig(
+            federation_name="restore-switch-state-v011",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            leader_name="fed-0",
+            wing_name="fed-1",
+            federate_type="SaveRestoreFederate",
+            save_name="SAVE-SWITCH-STATE",
+        ),
+        leader_federate=RecordingFederateAmbassador(),
+        wing_federate=RecordingFederateAmbassador(),
+        setup_saved_state=setup_saved_state,
+        mutate_post_save_state=mutate_post_save_state,
+        assert_restored_state=assert_restored_state,
+    )
 
-    assert r1.get_automatic_resign_directive() is ResignAction.DELETE_OBJECTS
-    assert r1.backend.state.object_class_relevance_advisory is True
-    assert r1.backend.state.attribute_relevance_advisory is True
-    assert r1.backend.state.attribute_scope_advisory is True
-    assert r1.backend.state.interaction_relevance_advisory is True
-    assert r1.backend.state.convey_producing_federate is False
-    assert r1.backend.state.convey_region_designator_sets is True
-    assert r1.backend.state.service_reporting is True
-    assert r1.backend.state.exception_reporting is False
+    assert summary["leader_restore_succeeded"].args == ("SAVE-SWITCH-STATE",)
 
 
 def test_restore_reinstates_saved_attribute_and_interaction_order_overrides():
-    _engine, (r1, r2), (_f1, _f2) = _joined("restore-order-overrides-v011", n=2)
-    cls = r1.get_object_class_handle("HLAobjectRoot.Target")
-    attr = r1.get_attribute_handle(cls, "Position")
-    interaction = r1.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    engine = InMemoryRTIEngine()
+    r1 = _rti(engine)
+    r2 = _rti(engine)
 
-    r1.publish_object_class_attributes(cls, {attr})
-    obj = r1.register_object_instance(cls, "Restore-Order-Overrides")
-    _drain(r1, r2)
+    def setup_saved_state(left, right, context):
+        cls = left.get_object_class_handle("HLAobjectRoot.Target")
+        attr = left.get_attribute_handle(cls, "Position")
+        interaction = left.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+        left.publish_object_class_attributes(cls, {attr})
+        obj = left.register_object_instance(cls, "Restore-Order-Overrides")
+        _drain(left, right)
+        left.change_attribute_order_type(obj, {attr}, OrderType.TIMESTAMP)
+        left.change_interaction_order_type(interaction, OrderType.TIMESTAMP)
+        assert left.backend.state.attribute_order_overrides[(obj, attr)] is OrderType.TIMESTAMP
+        assert left.backend.state.interaction_order_overrides[interaction] is OrderType.TIMESTAMP
+        context.update({"object_instance": obj, "attribute": attr, "interaction": interaction})
 
-    r1.change_attribute_order_type(obj, {attr}, OrderType.TIMESTAMP)
-    r1.change_interaction_order_type(interaction, OrderType.TIMESTAMP)
-    assert r1.backend.state.attribute_order_overrides[(obj, attr)] is OrderType.TIMESTAMP
-    assert r1.backend.state.interaction_order_overrides[interaction] is OrderType.TIMESTAMP
+    def mutate_post_save_state(left, _right, context):
+        obj = context["object_instance"]
+        attr = context["attribute"]
+        interaction = context["interaction"]
+        left.change_attribute_order_type(obj, {attr}, OrderType.RECEIVE)
+        left.change_interaction_order_type(interaction, OrderType.RECEIVE)
+        assert left.backend.state.attribute_order_overrides[(obj, attr)] is OrderType.RECEIVE
+        assert left.backend.state.interaction_order_overrides[interaction] is OrderType.RECEIVE
 
-    r1.request_federation_save("SAVE-ORDER-OVERRIDES")
-    _drain(r1, r2)
-    r1.federate_save_begun()
-    r2.federate_save_begun()
-    r1.federate_save_complete()
-    r2.federate_save_complete()
-    _drain(r1, r2)
+    def assert_restored_state(left, _right, context):
+        obj = context["object_instance"]
+        attr = context["attribute"]
+        interaction = context["interaction"]
+        assert left.backend.state.attribute_order_overrides[(obj, attr)] is OrderType.TIMESTAMP
+        assert left.backend.state.interaction_order_overrides[interaction] is OrderType.TIMESTAMP
 
-    r1.change_attribute_order_type(obj, {attr}, OrderType.RECEIVE)
-    r1.change_interaction_order_type(interaction, OrderType.RECEIVE)
-    assert r1.backend.state.attribute_order_overrides[(obj, attr)] is OrderType.RECEIVE
-    assert r1.backend.state.interaction_order_overrides[interaction] is OrderType.RECEIVE
+    summary = run_restore_federate_local_state_scenario(
+        r1,
+        r2,
+        config=SaveRestoreScenarioConfig(
+            federation_name="restore-order-overrides-v011",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+            leader_name="fed-0",
+            wing_name="fed-1",
+            federate_type="SaveRestoreFederate",
+            save_name="SAVE-ORDER-OVERRIDES",
+        ),
+        leader_federate=RecordingFederateAmbassador(),
+        wing_federate=RecordingFederateAmbassador(),
+        setup_saved_state=setup_saved_state,
+        mutate_post_save_state=mutate_post_save_state,
+        assert_restored_state=assert_restored_state,
+    )
 
-    r1.request_federation_restore("SAVE-ORDER-OVERRIDES")
-    _drain(r1, r2)
-    r1.federate_restore_complete()
-    r2.federate_restore_complete()
-    _drain(r1, r2)
-
-    assert r1.backend.state.attribute_order_overrides[(obj, attr)] is OrderType.TIMESTAMP
-    assert r1.backend.state.interaction_order_overrides[interaction] is OrderType.TIMESTAMP
+    assert summary["leader_restore_succeeded"].args == ("SAVE-ORDER-OVERRIDES",)
 
 
 def test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides():
-    _engine, (r1, r2), (_f1, _f2) = _joined("restore-transport-overrides-v011", n=2)
-    cls = r1.get_object_class_handle("HLAobjectRoot.Target")
-    attr = r1.get_attribute_handle(cls, "Position")
-    interaction = r1.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    best_effort = r1.backend.engine.transportation_best_effort
+    engine = InMemoryRTIEngine()
+    r1 = _rti(engine)
+    r2 = _rti(engine)
 
-    r1.publish_object_class_attributes(cls, {attr})
-    r1.publish_interaction_class(interaction)
-    obj = r1.register_object_instance(cls, "Restore-Transport-Overrides")
-    _drain(r1, r2)
+    def setup_saved_state(left, right, context):
+        cls = left.get_object_class_handle("HLAobjectRoot.Target")
+        attr = left.get_attribute_handle(cls, "Position")
+        interaction = left.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+        best_effort = left.backend.engine.transportation_best_effort
+        left.publish_object_class_attributes(cls, {attr})
+        left.publish_interaction_class(interaction)
+        obj = left.register_object_instance(cls, "Restore-Transport-Overrides")
+        _drain(left, right)
+        left.request_attribute_transportation_type_change(obj, {attr}, best_effort)
+        left.request_interaction_transportation_type_change(interaction, best_effort)
+        _drain(left, right)
+        assert left.backend.state.attribute_transportation_overrides[(obj, attr)] == best_effort
+        assert left.backend.state.interaction_transportation_overrides[interaction] == best_effort
+        context.update({"object_instance": obj, "attribute": attr, "interaction": interaction, "best_effort": best_effort})
 
-    r1.request_attribute_transportation_type_change(obj, {attr}, best_effort)
-    r1.request_interaction_transportation_type_change(interaction, best_effort)
-    _drain(r1, r2)
-    assert r1.backend.state.attribute_transportation_overrides[(obj, attr)] == best_effort
-    assert r1.backend.state.interaction_transportation_overrides[interaction] == best_effort
+    def mutate_post_save_state(left, _right, _context):
+        left.backend.state.attribute_transportation_overrides.clear()
+        left.backend.state.interaction_transportation_overrides.clear()
+        assert not left.backend.state.attribute_transportation_overrides
+        assert not left.backend.state.interaction_transportation_overrides
 
-    r1.request_federation_save("SAVE-TRANSPORT-OVERRIDES")
-    _drain(r1, r2)
-    r1.federate_save_begun()
-    r2.federate_save_begun()
-    r1.federate_save_complete()
-    r2.federate_save_complete()
-    _drain(r1, r2)
+    def assert_restored_state(left, _right, context):
+        obj = context["object_instance"]
+        attr = context["attribute"]
+        interaction = context["interaction"]
+        best_effort = context["best_effort"]
+        assert left.backend.state.attribute_transportation_overrides[(obj, attr)] == best_effort
+        assert left.backend.state.interaction_transportation_overrides[interaction] == best_effort
 
-    r1.backend.state.attribute_transportation_overrides.clear()
-    r1.backend.state.interaction_transportation_overrides.clear()
-    assert not r1.backend.state.attribute_transportation_overrides
-    assert not r1.backend.state.interaction_transportation_overrides
+    summary = run_restore_federate_local_state_scenario(
+        r1,
+        r2,
+        config=SaveRestoreScenarioConfig(
+            federation_name="restore-transport-overrides-v011",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+            leader_name="fed-0",
+            wing_name="fed-1",
+            federate_type="SaveRestoreFederate",
+            save_name="SAVE-TRANSPORT-OVERRIDES",
+        ),
+        leader_federate=RecordingFederateAmbassador(),
+        wing_federate=RecordingFederateAmbassador(),
+        setup_saved_state=setup_saved_state,
+        mutate_post_save_state=mutate_post_save_state,
+        assert_restored_state=assert_restored_state,
+    )
 
-    r1.request_federation_restore("SAVE-TRANSPORT-OVERRIDES")
-    _drain(r1, r2)
-    r1.federate_restore_complete()
-    r2.federate_restore_complete()
-    _drain(r1, r2)
-
-    assert r1.backend.state.attribute_transportation_overrides[(obj, attr)] == best_effort
-    assert r1.backend.state.interaction_transportation_overrides[interaction] == best_effort
+    assert summary["leader_restore_succeeded"].args == ("SAVE-TRANSPORT-OVERRIDES",)
 
 
 def test_restore_treats_callback_enablement_as_runtime_policy_not_saved_state():
-    _engine, (r1, r2), (_f1, _f2) = _joined("restore-callback-policy-v011", n=2)
+    engine = InMemoryRTIEngine()
+    r1 = _rti(engine)
+    r2 = _rti(engine)
 
-    r1.disable_callbacks()
-    assert r1.backend.state.callbacks_enabled is False
+    def setup_saved_state(_left, right, _context):
+        assert right.backend.state.callbacks_enabled is True
 
-    r1.request_federation_save("SAVE-CALLBACK-POLICY")
-    _drain(r1, r2)
-    r1.federate_save_begun()
-    r2.federate_save_begun()
-    r1.federate_save_complete()
-    r2.federate_save_complete()
-    _drain(r1, r2)
+    def mutate_post_save_state(_left, right, _context):
+        right.disable_callbacks()
+        assert right.backend.state.callbacks_enabled is False
 
-    r1.enable_callbacks()
-    assert r1.backend.state.callbacks_enabled is True
+    def assert_restored_state(_left, right, _context):
+        assert right.backend.state.callbacks_enabled is False
 
-    r1.request_federation_restore("SAVE-CALLBACK-POLICY")
-    _drain(r1, r2)
-    r1.federate_restore_complete()
-    r2.federate_restore_complete()
-    _drain(r1, r2)
+    summary = run_restore_callback_policy_scenario(
+        r1,
+        r2,
+        config=SaveRestoreScenarioConfig(
+            federation_name="restore-callback-policy-v011",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            leader_name="fed-0",
+            wing_name="fed-1",
+            federate_type="SaveRestoreFederate",
+            save_name="SAVE-CALLBACK-POLICY",
+        ),
+        leader_federate=RecordingFederateAmbassador(),
+        wing_federate=RecordingFederateAmbassador(),
+        setup_saved_state=setup_saved_state,
+        mutate_post_save_state=mutate_post_save_state,
+        assert_restored_state=assert_restored_state,
+    )
 
-    assert r1.backend.state.callbacks_enabled is True
+    assert summary["leader_restore_begun"] is not None
 
 
 def test_restore_discards_pre_restore_callback_queue_and_retraction_bookkeeping():
-    _engine, (sender, receiver), (_sender_fed, _receiver_fed) = _joined("restore-transient-state-v011", n=2)
-    factory = sender.get_time_factory()
-    interaction = sender.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    track_id = sender.get_parameter_handle(interaction, "TrackId")
+    engine = InMemoryRTIEngine()
+    sender = _rti(engine)
+    receiver = _rti(engine)
 
-    receiver.disable_callbacks()
-    receiver.backend.state.queue.append(CallbackEvent("sentinelCallback", (b"stale",)))
-    sender.enable_time_regulation(factory.make_interval(1.0))
-    receiver.enable_time_constrained()
-    sender.publish_interaction_class(interaction)
-    receiver.subscribe_interaction_class(interaction)
-    _drain(sender, receiver)
+    def setup_saved_state(left, right, context):
+        factory = left.get_time_factory()
+        interaction = left.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+        track_id = left.get_parameter_handle(interaction, "TrackId")
+        left.enable_time_regulation(factory.make_interval(1.0))
+        right.enable_time_constrained()
+        left.publish_interaction_class(interaction)
+        right.subscribe_interaction_class(interaction)
+        _drain(left, right)
+        context.update({"factory": factory, "interaction": interaction, "track_id": track_id})
 
-    retraction = sender.send_interaction(interaction, {track_id: b"queued"}, b"queued", factory.make_time(5.0))
-    assert retraction is not None
-    assert receiver.backend.state.retraction_messages
-    assert sender.backend.state.retractable_messages.get(retraction.handle) is True
+    def mutate_post_save_state(left, right, context):
+        interaction = context["interaction"]
+        track_id = context["track_id"]
+        factory = context["factory"]
+        right.backend.state.queue.append(CallbackEvent("reflectAttributeValues", (b"stale",)))
+        retraction = left.send_interaction(interaction, {track_id: b"queued"}, b"queued", factory.make_time(5.0))
+        assert retraction is not None
+        assert right.backend.state.retraction_messages
+        assert left.backend.state.retractable_messages.get(retraction.handle) is True
 
-    sender.request_federation_save("SAVE-TRANSIENT-STATE")
-    _drain(sender, receiver)
-    sender.federate_save_begun()
-    receiver.federate_save_begun()
-    sender.federate_save_complete()
-    receiver.federate_save_complete()
-    _drain(sender, receiver)
+    def assert_restored_state(left, right, _context):
+        assert all(event.method_name != "reflectAttributeValues" for event in right.backend.state.queue)
+        assert not right.backend.state.retraction_messages
+        assert not right.backend.state.delivered_retraction_messages
+        assert not left.backend.state.retractable_messages
 
-    sender.request_federation_restore("SAVE-TRANSIENT-STATE")
-    _drain(sender, receiver)
-    sender.federate_restore_complete()
-    receiver.federate_restore_complete()
-    _drain(sender, receiver)
+    summary = run_restore_transient_state_scenario(
+        sender,
+        receiver,
+        config=SaveRestoreScenarioConfig(
+            federation_name="restore-transient-state-v011",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+            leader_name="fed-0",
+            wing_name="fed-1",
+            federate_type="SaveRestoreFederate",
+            save_name="SAVE-TRANSIENT-STATE",
+        ),
+        leader_federate=RecordingFederateAmbassador(),
+        wing_federate=RecordingFederateAmbassador(),
+        setup_saved_state=setup_saved_state,
+        mutate_post_save_state=mutate_post_save_state,
+        assert_restored_state=assert_restored_state,
+    )
 
-    assert all(event.method_name != "sentinelCallback" for event in receiver.backend.state.queue)
-    assert not receiver.backend.state.retraction_messages
-    assert not receiver.backend.state.delivered_retraction_messages
-    assert not sender.backend.state.retractable_messages
+    assert summary["leader_restore_succeeded"].args == ("SAVE-TRANSIENT-STATE",)
 
 
 def test_ddm_region_filtering_applies_before_timestamp_order_delivery():

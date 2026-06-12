@@ -2,8 +2,14 @@ from __future__ import annotations
 
 import csv
 import json
+import os
+import subprocess
+from pathlib import Path
 
 from hla2010_repo_internal.verification.target_radar_proof import write_target_radar_proof_artifacts
+
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_target_radar_proof_artifacts_are_generated(tmp_path):
@@ -44,7 +50,7 @@ def test_target_radar_proof_artifacts_are_generated(tmp_path):
     assert "Truth trajectory PNG" in report_text
     assert "RCS exchange PNG" in report_text
     assert "## Track Reports" in report_text
-    assert "./scripts/ci/target_radar_proof.sh" in report_text
+    assert "./tools/target-radar proof" in report_text
 
     assert paths.overview_png.exists() and paths.overview_png.stat().st_size > 0
     assert paths.timeline_png.exists() and paths.timeline_png.stat().st_size > 0
@@ -62,3 +68,32 @@ def test_target_radar_proof_artifacts_are_generated(tmp_path):
     trajectory_svg = paths.trajectory_svg.read_text()
     assert "<svg" in trajectory_svg
     assert "Truth Trajectory vs Track Reports" in trajectory_svg
+
+
+def test_target_radar_proof_ci_wrapper_bootstraps_source_checkout(tmp_path):
+    env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
+    output_dir = tmp_path / "analysis" / "target_radar_proof"
+    result = subprocess.run(
+        [
+            "bash",
+            str(ROOT / "scripts" / "ci" / "target_radar_proof.sh"),
+            "--backend",
+            "python",
+            "--proof-backend",
+            "python",
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=tmp_path,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    summary_path = output_dir / "target_radar_proof_summary.json"
+    assert summary_path.exists()
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    assert summary["suite_name"] == "target-radar-proof"
+    assert summary["backend_matrix"]["passed"] == 1

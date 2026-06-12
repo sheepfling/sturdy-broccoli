@@ -8,7 +8,7 @@ from collections.abc import Mapping as CollectionsMapping
 from dataclasses import dataclass
 from typing import Any, Mapping
 
-from hla2010.backends.base import BackendConversionError, Invocation, lower_camel_to_snake
+from .base import BackendConversionError, Invocation, lower_camel_to_snake
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 
 from .conversion import clean_java_type_name

@@ -30,7 +30,7 @@ These jobs rely on dedicated real-runtime state:
 All of them now validate their state with:
 
 ```bash
-python3 scripts/ci/check_vendor_runtime_ci_state.py --profile ...
+./tools/vendor-state ci-state --profile ...
 ```
 
 If that validator fails, treat it as runner provisioning drift, not as a
@@ -124,14 +124,14 @@ Upstream build root:
 Patched-only runner:
 
 ```bash
-python3 scripts/ci/check_vendor_runtime_ci_state.py --profile certi --json
+./tools/vendor-state ci-state --profile certi --json
 ```
 
 Matrix / vendor-edge runner:
 
 ```bash
-python3 scripts/ci/check_vendor_runtime_ci_state.py --profile matrix --json
-python3 scripts/ci/check_vendor_runtime_ci_state.py --profile vendor-edge --json
+./tools/vendor-state ci-state --profile matrix --json
+./tools/vendor-state ci-state --profile vendor-edge --json
 ```
 
 ### Operational Expectation
@@ -159,13 +159,13 @@ the runner for the Docker-backed Pitch path.
 Pitch-only runner:
 
 ```bash
-python3 scripts/ci/check_vendor_runtime_ci_state.py --profile pitch --json
+./tools/vendor-state ci-state --profile pitch --json
 ```
 
 Shared matrix runner:
 
 ```bash
-python3 scripts/ci/check_vendor_runtime_ci_state.py --profile matrix --json
+./tools/vendor-state ci-state --profile matrix --json
 ```
 
 ### Operational Expectation
@@ -225,7 +225,7 @@ separate again from actual vendor/runtime conformance failures.
 
 1. Set the GitHub runner variables.
 2. Confirm the required marker paths exist on the runner host.
-3. Run `python3 scripts/ci/check_vendor_runtime_ci_state.py --profile ... --json`.
+3. Run `./tools/vendor-state ci-state --profile ... --json`.
 4. Run the matching preflight command:
    - `./tools/certi-easy preflight`
    - `./tools/pitch preflight`

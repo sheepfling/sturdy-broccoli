@@ -1,9 +1,14 @@
 from __future__ import annotations
 
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 from hla2010_repo_internal.verification.vendor_probe_promotion_review import write_vendor_probe_promotion_review
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def _write_stability(
@@ -116,3 +121,26 @@ def test_vendor_probe_promotion_review_reports_candidates(tmp_path: Path) -> Non
                 path.unlink(missing_ok=True)
             else:
                 path.write_text(original, encoding="utf-8")
+
+
+def test_vendor_probe_promotion_review_script_bootstraps_source_checkout(tmp_path: Path) -> None:
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/ci/write_vendor_probe_promotion_review.py",
+            "--output-dir",
+            str(tmp_path / "review"),
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        env={"PATH": os.environ.get("PATH", "")},
+    )
+
+    assert result.returncode == 0, result.stderr
+    summary_path = tmp_path / "review" / "vendor_probe_promotion_review_summary.json"
+    assert summary_path.exists()
+    payload = json.loads(summary_path.read_text(encoding="utf-8"))
+    assert payload["suite_name"] == "vendor-probe-promotion-review"
+    assert "profiles" in payload

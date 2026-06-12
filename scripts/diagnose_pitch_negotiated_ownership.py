@@ -5,15 +5,29 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+import tomllib
 import traceback
 import uuid
 from pathlib import Path
 
-from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.backends.base import BackendUnavailableError
+SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def _bootstrap_source_checkout() -> None:
+    pyproject = tomllib.loads((SCRIPT_REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    source_roots = pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]
+    for root in reversed(source_roots):
+        source_path = str(SCRIPT_REPO_ROOT / root)
+        if source_path not in sys.path:
+            sys.path.insert(0, source_path)
+
+
+_bootstrap_source_checkout()
+
+from hla2010_rti_backend_common import BackendUnavailableError, RecordingFederateAmbassador
 from hla2010.enums import ResignAction
-from hla2010.rti import create_rti_ambassador
-from hla2010_verification_harness.scenario_ownership import (
+from hla2010_rti_runtime_common import create_rti_ambassador
+from hla2010_verification_harness import (
     NegotiatedOwnershipScenarioConfig,
     ReleaseRequestOwnershipScenarioConfig,
     probe_negotiated_attribute_ownership_offer,

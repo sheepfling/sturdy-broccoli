@@ -3,20 +3,24 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
+import tomllib
 from pathlib import Path
-import site
+
+SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path.cwd()
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+def _bootstrap_source_checkout() -> None:
+    pyproject = tomllib.loads((SCRIPT_REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    source_roots = pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]
+    for root in reversed(source_roots):
+        source_path = str(SCRIPT_REPO_ROOT / root)
+        if source_path not in sys.path:
+            sys.path.insert(0, source_path)
 
 
-def _bootstrap_workspace_imports() -> None:
-    for source_root in (PROJECT_ROOT / "src", *sorted((PROJECT_ROOT / "packages").glob("*/src"))):
-        if source_root.is_dir():
-            site.addsitedir(str(source_root))
-
-
-_bootstrap_workspace_imports()
+_bootstrap_source_checkout()
 
 from hla2010_repo_internal.verification.vendor_runtime_status import write_vendor_runtime_status
 
@@ -24,13 +28,17 @@ from hla2010_repo_internal.verification.vendor_runtime_status import write_vendo
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Classify vendor runtime preflight artifacts for repo-green or vendor-green lanes.")
     parser.add_argument(
+        "--project-root",
+        type=Path,
+        default=PROJECT_ROOT,
+        help="Repository root used for default analysis artifact locations.",
+    )
+    parser.add_argument(
         "--artifact-dir",
-        default=str(PROJECT_ROOT / "analysis" / "preflight_artifacts"),
         help="Directory containing certi-preflight.json and/or pitch-preflight.json",
     )
     parser.add_argument(
         "--output-dir",
-        default=str(PROJECT_ROOT / "analysis" / "vendor_runtime_status"),
         help="Directory for generated summary artifacts",
     )
     parser.add_argument(
@@ -53,10 +61,13 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
+    project_root = args.project_root.resolve()
+    artifact_dir = args.artifact_dir or str(project_root / "analysis" / "preflight_artifacts")
+    output_dir = args.output_dir or str(project_root / "analysis" / "vendor_runtime_status")
     vendors = tuple(args.vendors or ("certi", "pitch"))
     paths = write_vendor_runtime_status(
-        args.output_dir,
-        artifact_dir=args.artifact_dir,
+        output_dir,
+        artifact_dir=artifact_dir,
         lane=args.lane,
         vendors=vendors,
     )

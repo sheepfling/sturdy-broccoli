@@ -3,8 +3,7 @@ from __future__ import annotations
 import pytest
 
 from hla2010 import mom as hla_mom
-from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.backends.python import InMemoryRTIEngine, PythonRTIConfig
+from hla2010_rti_backend_common import RecordingFederateAmbassador
 from hla2010.enums import CallbackModel
 from hla2010.exceptions import RTIexception
 from hla2010.exceptions import (
@@ -13,13 +12,14 @@ from hla2010.exceptions import (
     TimeConstrainedAlreadyEnabled,
     TimeRegulationIsNotEnabled,
 )
-from hla2010.mom_negative_testing import (
+from hla2010_repo_internal.mom_negative_testing import (
     build_mom_negative_parameter_map,
     build_mom_negative_test_cases,
     default_mom_model,
     mom_negative_case_report,
 )
-from hla2010.rti import create_rti_ambassador
+from hla2010_rti_python import InMemoryRTIEngine, PythonRTIConfig
+from hla2010_rti_runtime_common import create_rti_ambassador
 
 
 MOM_MODEL = default_mom_model()

@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from hla2010.time import HLAinteger64Time
-from hla2010.time_management import FQR, NMR, NMRA, TAR, TARA, TimeAdvanceRequestState, compute_grant_decision
+from hla2010_rti_backend_common.time_management import FQR, NMR, NMRA, TAR, TARA, TimeAdvanceRequestState, compute_grant_decision
 
 from tests.time._time_algorithm_support import DummyFederate, DummyMessage, federation, regulating_federate, target_federate
 
@@ -96,4 +96,3 @@ def test_grant_decision_fqr_delivers_only_through_computed_grant_boundary():
     assert decision.can_grant is True
     assert decision.grant_time == HLAinteger64Time(5)
     assert [message.sequence for message in decision.deliverable_messages] == [1]
-

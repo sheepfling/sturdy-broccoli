@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from hla2010.rti import RTIBackendPlugin
+from hla2010_rti_backend_common import RTIBackendPlugin
 
 
 class _TransportStub:
@@ -12,12 +12,21 @@ class _TransportStub:
 
 
 def test_split_certi_package_exports_backend_surface():
-    from hla2010_rti_certi import CERTIBackend, CERTIConfig, CERTITransport
+    from hla2010_rti_certi import (
+        CERTIBackend,
+        CERTIConfig,
+        CERTITransport,
+        prepare_certi_two_federate_profile,
+    )
     from hla2010_rti_certi.certi import CERTIBackend as PackageBackend
     from hla2010_rti_certi.certi.transport import CERTITransport as PackageTransport
+    from hla2010_rti_certi.testing_policy import (
+        prepare_certi_two_federate_profile as prepare_profile_from_module,
+    )
 
     assert CERTIBackend is PackageBackend
     assert CERTITransport is PackageTransport
+    assert prepare_certi_two_federate_profile is prepare_profile_from_module
     assert CERTIBackend(CERTIConfig()).info.name == "CERTI"
 
 

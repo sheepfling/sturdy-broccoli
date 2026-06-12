@@ -10,9 +10,9 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 
-from hla2010.backends.transport import RTITransport as CERTITransportProtocol
-from hla2010.backends.transport import SubprocessLineTransport, TransportRequest, TransportResponse
-from hla2010.backends.transport import TransportError as CERTITransportError
+from hla2010_rti_transport_common import RTITransport as CERTITransportProtocol
+from hla2010_rti_transport_common import SubprocessLineTransport, TransportRequest, TransportResponse
+from hla2010_rti_transport_common import TransportError as CERTITransportError
 
 
 @dataclass

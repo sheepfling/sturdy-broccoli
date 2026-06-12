@@ -7,8 +7,7 @@ The top level is intentionally split by ownership:
 
 ## Top-Level Areas
 
-- `src/hla2010/`: core API layer and compatibility facades.
-- `hla2010/`: narrow plugin-facing shim area.
+- `src/hla2010/`: abstract/core API surface plus the one documented temporary split-package workspace facade `hla2010.rti`.
 - `packages/*/src/`: package-owned backend and support implementation roots.
 - `examples/`: runnable example entrypoints and thin scenario scripts.
 - `scripts/`: implementation helpers, CI wrappers, setup flows, and generated-artifact entrypoints.
@@ -26,7 +25,9 @@ The top level is intentionally split by ownership:
 
 ## Practical Guidance
 
-- Keep core API code, shared abstractions, and compatibility facades in `src/hla2010/`.
+- Keep abstract/core API code and only the documented workspace-stable shims in `src/hla2010/`.
+- The remaining documented root compatibility facade into split packages is `hla2010.rti`, and it should be treated as temporary.
+- Package-owned implementation should prefer `hla2010_rti_runtime_common` over `hla2010.rti` when it needs backend discovery or ambassador-factory helpers.
 - Keep concrete backend and support implementations in their owning `packages/<name>/src/` trees.
 - Keep runnable examples thin and repo-local under `examples/`.
 - Keep human-facing operator entrypoints in `tools/`.
@@ -35,13 +36,13 @@ The top level is intentionally split by ownership:
 - Keep generated compliance, proof, preflight, and matrix outputs under `analysis/` rather than scattered top-level report directories.
 - Keep vendor runtime/build state out of the repo root and under `.local/`.
 - Keep the `tools/` directory narrow and operator-facing; do not let it become a second implementation tree.
-- The backend-alias matrix generator has already been promoted into `scripts/update_rti_options_matrix.py` because CI and operator flows treat it as a supported entrypoint.
+- The backend-alias matrix generator has already been promoted into `./tools/rti-options generate` because CI and operator flows treat it as a supported entrypoint.
 
 ## Setup First
 
 Before you touch vendor runtimes or bridge profiles, set up Python first:
 
-1. run `./scripts/bootstrap_profile.sh python`
+1. run `./tools/bootstrap python`
 2. activate `.venv`
 3. run a pure-Python smoke command
 4. only then add JPype, Py4J, CERTI, or Pitch paths

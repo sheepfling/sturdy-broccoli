@@ -12,8 +12,10 @@ Compatibility facades retained:
 - `hla2010_rti_pitch_jpype.runtime`
 - `hla2010_rti_pitch_jpype.adapter`
 - `hla2010_rti_pitch_jpype.factory`
+
+Removed root compatibility facades:
+
 - `hla2010.backends.jpype`
-- `hla2010.backends.java_plugins.jpype_plugin`
 
 Remaining cleanup:
 

@@ -6,6 +6,14 @@ from tests.vendors.certi_real_backend_matrix_support import (
     _normalized_exchange_profile,
     _require_real_rti_smoke,
 )
+from hla2010_verification_harness import (
+    SupportServicesScenarioConfig,
+    SynchronizationScenarioConfig,
+    assert_two_federate_exchange_callback_history,
+    run_support_factory_and_decode_scenario,
+    run_synchronization_scenario,
+    run_two_federate_exchange_scenario,
+)
 from tests.vendors.runtime_support import assert_all_terminated, cleanup_federation, close_all, reserve_udp_pair, terminate_all
 
 @pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
@@ -127,6 +135,65 @@ def test_certi_backend_synchronization_matrix(kind: str):
         )
     finally:
         close_all(wing, leader)
+        terminate_all(rtig)
+        assert_all_terminated(rtig)
+
+
+def test_certi_backend_support_factory_and_decode_matrix():
+    _require_real_rti_smoke()
+    try:
+        rtig = launch_certi_rtig(verbose=0)
+        smoke_fom = discover_certi_smoke_fom()
+    except BackendUnavailableError as exc:
+        pytest.skip(str(exc))
+
+    federation_name = f"certi-support-{uuid.uuid4().hex[:8]}"
+    federate = RecordingFederateAmbassador()
+    rti = None
+    try:
+        with reserve_udp_pair() as lease:
+            (udp_port,) = lease.ports[:1]
+        rti = create_rti_ambassador("certi", launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=udp_port)
+
+        config = SupportServicesScenarioConfig(
+            federation_name=federation_name,
+            fom_modules=(smoke_fom,),
+            logical_time_implementation_name="HLAinteger64Time",
+            federate_name="Support",
+            federate_type="SupportFederate",
+            object_class_name="TestObjectClassR",
+            attribute_name="DataR",
+            interaction_class_name="MsgR",
+            parameter_name="MsgDataR",
+            object_instance_name=f"certi-support-{uuid.uuid4().hex[:8]}",
+            include_decode_support=False,
+            include_factory_support=False,
+            include_order_support=False,
+            include_transport_support=False,
+        )
+        summary = run_support_factory_and_decode_scenario(
+            rti,
+            config=config,
+            federate=federate,
+        )
+
+        assert summary["lookup_summary"]["federate_name"] == config.federate_name
+        assert summary["lookup_summary"]["object_class_name"] == config.object_class_name
+        assert summary["lookup_summary"]["attribute_name"] == config.attribute_name
+        assert summary["lookup_summary"]["interaction_class_name"] == config.interaction_class_name
+        assert summary["lookup_summary"]["parameter_name"] == config.parameter_name
+        assert summary["lookup_summary"]["object_instance_name"] == config.object_instance_name
+        assert summary["lookup_summary"]["object_instance_handle"] == summary["object_instance"]
+        assert summary["lookup_summary"]["known_object_class"] == summary["object_class"]
+
+        cleanup_federation(
+            federation_name,
+            destroyer=rti,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            disconnect_rtis=(rti,),
+        )
+    finally:
+        close_all(rti)
         terminate_all(rtig)
         assert_all_terminated(rtig)
 

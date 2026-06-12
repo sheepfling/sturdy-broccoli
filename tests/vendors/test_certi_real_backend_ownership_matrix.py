@@ -1,6 +1,11 @@
 # ruff: noqa: F401,F403
 
 from tests.vendors.certi_real_backend_matrix_support import *
+from hla2010_verification_harness import (
+    OwnershipScenarioConfig,
+    run_attribute_ownership_scenario,
+    run_negotiated_attribute_ownership_scenario,
+)
 from tests.vendors.runtime_support import assert_all_terminated, cleanup_federation, close_all, reserve_udp_pair, terminate_all
 
 @pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
@@ -52,6 +57,7 @@ def test_certi_backend_ownership_matrix(kind: str):
         assert summary["acquirer_attribute"] in acquired.args[1]
         assert informed.args[0] == summary["object_instance"]
         assert informed.args[1] == summary["owner_attribute"]
+        assert summary["informed_federate_name"] == config.acquirer_name
 
         cleanup_federation(
             federation_name,

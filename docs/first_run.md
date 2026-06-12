@@ -24,8 +24,8 @@ Get all of these working in order:
 From the repository root:
 
 ```bash
-./scripts/bootstrap_profile.sh doctor
-./scripts/bootstrap_profile.sh python
+./tools/bootstrap doctor
+./tools/bootstrap python
 source .venv/bin/activate
 python -m pip install --no-build-isolation -e packages/hla2010-spec -e packages/hla2010-rti-backend-common -e packages/hla2010-rti-python -e packages/hla2010-verification-harness -e packages/hla2010-fom-target-radar
 python examples/backend_recording.py
@@ -36,7 +36,7 @@ If those commands succeed, your base environment is working.
 
 ## What This Does
 
-- `./scripts/bootstrap_profile.sh python`
+- `./tools/bootstrap python`
   creates or refreshes the repo-local virtual environment
 - `source .venv/bin/activate`
   activates the repo-managed Python environment

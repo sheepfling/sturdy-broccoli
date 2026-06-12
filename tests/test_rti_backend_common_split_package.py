@@ -1,15 +1,17 @@
 from __future__ import annotations
 
 
-def test_split_backend_common_package_exports_conversion_surface():
-    from hla2010.backends.conversion import NativeHandleRegistry as OldNativeHandleRegistry
-    from hla2010.backends.conversion import ValueConverter as OldValueConverter
-    from hla2010.backends.conversion import clean_java_type_name as old_clean_java_type_name
+def test_split_backend_common_package_root_re_exports_conversion_surface():
     from hla2010_rti_backend_common import NativeHandleRegistry, ValueConverter, clean_java_type_name
+    from hla2010_rti_backend_common.conversion import (
+        NativeHandleRegistry as NativeHandleRegistryFromModule,
+    )
+    from hla2010_rti_backend_common.conversion import ValueConverter as ValueConverterFromModule
+    from hla2010_rti_backend_common.conversion import clean_java_type_name as clean_java_type_name_from_module
 
-    assert OldNativeHandleRegistry is NativeHandleRegistry
-    assert OldValueConverter is ValueConverter
-    assert old_clean_java_type_name is clean_java_type_name
+    assert NativeHandleRegistryFromModule is NativeHandleRegistry
+    assert ValueConverterFromModule is ValueConverter
+    assert clean_java_type_name_from_module is clean_java_type_name
 
 
 def test_split_java_common_package_imports_backend_common_from_new_package():

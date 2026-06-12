@@ -1,7 +1,7 @@
 """Adapter classes for Py4J-backed Java RTI backends."""
 from __future__ import annotations
 
-from hla2010_rti_java_common import JavaRTIBackend
+from hla2010_rti_java_common.java_common import JavaRTIBackend
 from .runtime import Py4JFederateAmbassadorProxy
 
 

@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from hla2010.ambassadors import RecordingFederateAmbassador
+from hla2010_rti_backend_common import RecordingFederateAmbassador
 from hla2010_rti_python import InMemoryRTIEngine, PythonRTIConfig
 from hla2010.enums import CallbackModel, OrderType
 from hla2010.exceptions import InTimeAdvancingState, MessageCanNoLongerBeRetracted
 from hla2010.handles import ObjectInstanceHandle
-from hla2010.rti import create_rti_ambassador
+from hla2010_rti_runtime_common import create_rti_ambassador
 from hla2010.types import MessageRetractionReturn, TimeQueryReturn
 
 
@@ -43,7 +43,7 @@ def test_standard_mim_is_loaded_first_and_mom_names_are_discoverable():
     manager.join_federation_execution("manager", "manager-type", "mim-discovery-fed")
 
     summary = manager.backend.current_fom_summary()
-    assert summary["mim"] == "HLAstandardMIM"
+    assert summary["mim"] == "Standard MOM and Initialization Module (MIM) for HLA IEEE 1516-2010"
     assert summary["mim_uri"].endswith("HLAstandardMIM.xml")
     assert summary["module_uris"][-1].endswith("TargetRadarFOMmodule.xml")
 

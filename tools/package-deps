@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/package-deps"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/package-deps [generate|help]
+
+Canonical package dependency tree flow:
+  ./tools/package-deps generate
+
+This is the human-facing wrapper over `scripts/generate_package_dependency_tree.py`.
+EOF
+}
+
+python_bin="$(hla2010_shell_python_bin)"
+
+case "${1:-generate}" in
+  help|-h|--help)
+    usage
+    ;;
+  generate)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/generate_package_dependency_tree.py" "$@"
+    ;;
+  *)
+    echo "error: unknown subcommand: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

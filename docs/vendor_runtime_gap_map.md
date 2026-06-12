@@ -18,8 +18,8 @@ next action is:
 These are the parts that should now be treated as standard repo behavior:
 
 - vendor preflight runs before vendor smoke
-- `./scripts/ci/repo_green.sh` is the repo-green lane
-- `./scripts/ci/vendor_green.sh ...` is the strict vendor-green lane
+- `./tools/python verify` is the repo-green lane
+- `./tools/vendor-green ...` is the strict vendor-green lane
 - vendor runtime tests use centralized cleanup helpers
 - the CERTI runtime matrix no longer depends on widespread hard-coded UDP ports
 - the Pitch real-runtime matrix now shares the same cleanup discipline

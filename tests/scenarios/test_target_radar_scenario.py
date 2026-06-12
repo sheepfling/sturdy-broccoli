@@ -2,10 +2,10 @@ import math
 
 import pytest
 
-from hla2010.backends.base import make_rti_ambassador
+from hla2010_rti_backend_common import make_rti_ambassador
+from hla2010_fom_target_radar.scenarios import run_target_radar_scenario
 from hla2010_rti_python import InMemoryRTIEngine
-from hla2010.rti import create_rti_ambassador
-from hla2010.scenarios.target_radar import run_target_radar_scenario
+from hla2010_rti_runtime_common import create_rti_ambassador
 from hla2010_rti_java_common.java_shim_factory import create_shared_java_shim_backend
 from hla2010_rti_java_common.java_shim_kernel import SharedJavaShimKernel
 

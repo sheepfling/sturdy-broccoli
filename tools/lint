@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/lint
+
+Canonical local lint flow:
+  ./tools/lint
+
+This is the human-facing wrapper over `./scripts/ci/lint.sh`.
+EOF
+}
+
+case "${1:-run}" in
+  help|-h|--help)
+    usage
+    ;;
+  run)
+    shift
+    exec bash "$ROOT_DIR/scripts/ci/lint.sh" "$@"
+    ;;
+  *)
+    echo "error: unknown subcommand: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

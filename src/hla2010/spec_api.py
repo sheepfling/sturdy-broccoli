@@ -4,4 +4,10 @@ New code should import from :mod:`hla2010.spec`.
 """
 from __future__ import annotations
 
-from ._spec_impl import *  # noqa: F401,F403
+from ._spec_impl import FederateAmbassadorSpec, RTIambassadorSpec, lower_camel_to_snake
+
+__all__ = [
+    "FederateAmbassadorSpec",
+    "RTIambassadorSpec",
+    "lower_camel_to_snake",
+]

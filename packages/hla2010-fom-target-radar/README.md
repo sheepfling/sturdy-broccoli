@@ -12,18 +12,24 @@ This package now owns:
 - target/radar-owned two-federate suite artifact formatting
 - target/radar-owned two-federate vendor profile policy
 
-The workspace root package at `src/hla2010/` keeps compatibility facades for
-older imports such as `hla2010.scenarios.target_radar`, but new code should
-import the canonical implementation from `hla2010_fom_target_radar`.
+Import the canonical implementation from `hla2010_fom_target_radar`; the old
+root-level `hla2010.scenarios.target_radar` compatibility path has been
+removed.
 
 This package depends on `hla2010-spec` and may optionally be combined with
 backend plugin packages for runnable examples, but it does not own RTI backend
 implementations.
+Import the canonical implementation from `hla2010_fom_target_radar`.
+Split-package guard coverage lives in
+`tests/test_fom_target_radar_split_package.py`.
+
+The human operator surface for Target/Radar stays `./tools/target-radar`; this
+package does not add a package-local command.
 
 For setup, bootstrap the repo root first:
 
 ```bash
-./scripts/bootstrap_profile.sh python
+./tools/bootstrap python
 source .venv/bin/activate
 ```
 

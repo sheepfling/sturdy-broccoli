@@ -9,7 +9,7 @@ implementation outright.
 Before you work in any package subtree, bootstrap the workspace Python
 environment from the repo root:
 
-1. `./scripts/bootstrap_profile.sh python`
+1. `./tools/bootstrap python`
 2. `source .venv/bin/activate`
 3. run a pure-Python smoke path
 
@@ -19,8 +19,9 @@ The canonical environment and install-order guide is
 ## Reference
 
 Architecturally, `hla2010-spec` is the one installable root. The
-`src/hla2010/` tree is the workspace facade used for stable imports,
-compatibility re-exports, and plugin routing.
+`src/hla2010/` tree is the workspace facade used for stable imports, abstract
+core API ownership, and only documented temporary compatibility routing.
+The remaining workspace facade is `hla2010.rti`.
 
 The target dependency direction is:
 

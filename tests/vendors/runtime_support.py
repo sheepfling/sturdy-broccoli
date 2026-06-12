@@ -99,9 +99,11 @@ def isolated_vendor_runtime_test_state(root: Path | str) -> Iterator[VendorRunti
     pitch_user_home.mkdir(parents=True, exist_ok=True)
     home.mkdir(parents=True, exist_ok=True)
 
+    original_home = os.environ.get("HOME")
     previous: dict[str, str | None] = {
         name: os.environ.get(name)
         for name in (
+            "DOCKER_CONFIG",
             "HLA2010_LOCAL_STATE_ROOT",
             "HLA2010_PITCH_USER_HOME",
             "HOME",
@@ -110,6 +112,10 @@ def isolated_vendor_runtime_test_state(root: Path | str) -> Iterator[VendorRunti
     os.environ["HLA2010_LOCAL_STATE_ROOT"] = str(local_state_root)
     os.environ["HLA2010_PITCH_USER_HOME"] = str(pitch_user_home)
     os.environ["HOME"] = str(home)
+    if previous["DOCKER_CONFIG"] is None and original_home is not None:
+        docker_config = Path(original_home) / ".docker"
+        if docker_config.exists():
+            os.environ["DOCKER_CONFIG"] = str(docker_config)
     try:
         yield VendorRuntimeTestState(
             root=state_root,

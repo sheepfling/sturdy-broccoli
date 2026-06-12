@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from typing import Any
 
 from .java_shim_types import (
     JavaAttributeHandle,
@@ -12,13 +12,10 @@ from .java_shim_types import (
     JavaObjectInstanceHandle,
 )
 
-if TYPE_CHECKING:
-    from .java_shim_runtime import SharedInProcessJavaRTIShim
-
 
 @dataclass
 class SharedJavaPendingAcquisition:
-    requester: "SharedInProcessJavaRTIShim"
+    requester: Any
     tag: JavaByteArray
 
 
@@ -27,7 +24,7 @@ class SharedJavaObjectRecord:
     handle: JavaObjectInstanceHandle
     class_handle: JavaObjectClassHandle
     name: str
-    owner: "SharedInProcessJavaRTIShim"
+    owner: Any
     attributes: dict[JavaAttributeHandle, JavaByteArray] = field(default_factory=dict)
     attribute_owners: dict[JavaAttributeHandle, JavaFederateHandle | None] = field(default_factory=dict)
     pending_acquisitions: dict[JavaAttributeHandle, SharedJavaPendingAcquisition] = field(default_factory=dict)
@@ -47,7 +44,7 @@ class SharedJavaSynchronizationPoint:
 class SharedJavaFederationRecord:
     name: str
     logical_time_name: str = "HLAinteger64Time"
-    federates_by_handle: dict[JavaFederateHandle, "SharedInProcessJavaRTIShim"] = field(default_factory=dict)
+    federates_by_handle: dict[JavaFederateHandle, Any] = field(default_factory=dict)
     federate_names: dict[str, JavaFederateHandle] = field(default_factory=dict)
     objects: dict[JavaObjectInstanceHandle, SharedJavaObjectRecord] = field(default_factory=dict)
     object_names: dict[str, JavaObjectInstanceHandle] = field(default_factory=dict)

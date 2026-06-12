@@ -15,7 +15,7 @@ Use it when you need to decide:
 If you just want to run the certified Pitch path in the least painful way, use:
 
 ```bash
-./scripts/bootstrap_profile.sh pitch
+./tools/bootstrap pitch
 ./tools/pitch all
 ```
 
@@ -71,7 +71,7 @@ Use them when you need to answer:
 
 ### Install
 
-`./scripts/bootstrap_profile.sh pitch`
+`./tools/bootstrap pitch`
 
 What it does:
 
@@ -185,6 +185,7 @@ Pitch is currently not promoted for:
 
 - negotiated ownership
 - save/restore
+- lost-federate handling
 - DDM
 - target/radar
 
@@ -214,6 +215,25 @@ If you want the current narrow executable save/restore probe instead, use:
 ```
 
 Treat that as a deeper runtime probe, not as a promoted stable parity slice yet.
+
+For the current explicit operator result on the lost-federate gap, use:
+
+```bash
+./tools/pitch lost-federate
+```
+
+If you want the current narrow executable lost-federate probe instead, use:
+
+```bash
+./tools/pitch lost-federate-probe
+```
+
+Treat that as a backend-split runtime probe: `pitch-py4j` has a fault-injection
+path, while `pitch-jpype` still lacks an isolated per-federate loss trigger.
+If you need to experiment with vendor-specific loss detection or session-resume
+keys, set `HLA2010_PITCH_LRC_EXTRA_SETTINGS` or
+`HLA2010_PITCH_FEDPRO_EXTRA_SETTINGS` to newline- or semicolon-separated
+`key=value` entries before launching the probe.
 
 For the current explicit operator result on the DDM gap, use:
 
@@ -273,7 +293,7 @@ Use the supported operator path first:
 ./tools/pitch verify
 ```
 
-Use `./scripts/ci/vendor_green.sh pitch` only when you are debugging the shared
+Use `./tools/vendor-green pitch` only when you are debugging the shared
 CI wrapper behavior itself.
 
 Or inspect the negotiated ownership diagnostics:
@@ -285,7 +305,7 @@ Or inspect the negotiated ownership diagnostics:
 If you are a junior or just want Pitch working, use:
 
 ```bash
-./scripts/bootstrap_profile.sh pitch
+./tools/bootstrap pitch
 ./tools/pitch all
 ```
 

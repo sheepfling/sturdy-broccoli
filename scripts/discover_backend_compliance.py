@@ -3,22 +3,33 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
+import tomllib
 from pathlib import Path
-import site
+
+DEFAULT_PROJECT_ROOT = Path.cwd()
+SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
+GENERATOR_SCRIPT = Path(__file__).resolve().with_name("generate_compliance_artifacts.py")
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+def _bootstrap_source_checkout() -> None:
+    pyproject = tomllib.loads((SCRIPT_REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    source_roots = pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]
+    for root in reversed(source_roots):
+        source_path = str(SCRIPT_REPO_ROOT / root)
+        if source_path not in sys.path:
+            sys.path.insert(0, source_path)
 
 
-def _bootstrap_workspace_imports() -> None:
-    for source_root in (REPO_ROOT / "src", *sorted((REPO_ROOT / "packages").glob("*/src"))):
-        if source_root.is_dir():
-            site.addsitedir(str(source_root))
+_bootstrap_source_checkout()
 
 
-_bootstrap_workspace_imports()
+def _bootstrapped_env() -> dict[str, str]:
+    env = dict(os.environ)
+    env["PYTHONPATH"] = os.pathsep.join(sys.path)
+    return env
 
 from hla2010_repo_internal.verification.backend_compliance_discovery import (
     build_discovery_payload,
@@ -35,14 +46,26 @@ def main() -> int:
     parser.add_argument("--show-backlog", action="store_true", help="Show ranked vendor discovery backlog rows after the backend summary.")
     parser.add_argument("--priority", help="Filter backlog rows by priority label or current status.")
     parser.add_argument("--section", help="Filter backlog rows by section root, section ref, or requirement id.")
+    parser.add_argument("--project-root", type=Path, default=DEFAULT_PROJECT_ROOT, help="Repository root for generated compliance artifacts.")
     parser.add_argument("--format", choices=("text", "json"), default="text", help="Output format.")
     args = parser.parse_args()
+    project_root = args.project_root.resolve()
 
     if args.refresh:
-        subprocess.run([sys.executable, "scripts/generate_compliance_artifacts.py"], cwd=REPO_ROOT, check=True)
+        subprocess.run(
+            [
+                sys.executable,
+                str(GENERATOR_SCRIPT),
+                "--project-root",
+                str(project_root),
+            ],
+            cwd=project_root,
+            env=_bootstrapped_env(),
+            check=True,
+        )
 
     payload = build_discovery_payload(
-        REPO_ROOT,
+        project_root,
         backend_filter=args.backend,
         section_filter=args.section,
         priority_filter=args.priority,

@@ -2,8 +2,14 @@ from __future__ import annotations
 
 import csv
 import json
+import os
+import subprocess
+from pathlib import Path
 
 from hla2010_repo_internal.verification.target_radar_backend_matrix import write_target_radar_backend_matrix_artifacts
+
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_target_radar_backend_matrix_artifacts_are_generated(tmp_path):
@@ -34,7 +40,35 @@ def test_target_radar_backend_matrix_artifacts_are_generated(tmp_path):
     assert "Target/Radar Backend Matrix" in report_text
     assert "How To Re-run" in report_text
     assert "java-shim-jpype" in report_text
+    assert "./tools/target-radar matrix" in report_text
 
     svg_text = paths.summary_svg.read_text()
     assert "<svg" in svg_text
     assert "Target/Radar Backend Matrix" in svg_text
+
+
+def test_target_radar_backend_matrix_ci_wrapper_bootstraps_source_checkout(tmp_path):
+    env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
+    output_dir = tmp_path / "analysis" / "target_radar_backend_matrix"
+    result = subprocess.run(
+        [
+            "bash",
+            str(ROOT / "scripts" / "ci" / "target_radar_backend_matrix.sh"),
+            "--backend",
+            "python",
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=tmp_path,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    summary_path = output_dir / "target_radar_backend_matrix_summary.json"
+    assert summary_path.exists()
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    assert summary["suite_name"] == "target-radar-backend-matrix"
+    assert summary["passed"] == 1

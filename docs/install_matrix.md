@@ -9,34 +9,34 @@ Start with the base Python environment first. Then add only what you need.
 
 ## Install Order
 
-1. `./scripts/bootstrap_profile.sh python`
+1. `./tools/bootstrap python`
 2. `source .venv/bin/activate`
-3. run a pure-Python smoke path
+3. run a pure-Python smoke path or `./tools/python verify`
 4. add bridge extras if needed
 5. add vendor runtimes only after that
 
-You can prepend `./scripts/bootstrap_profile.sh doctor` before that sequence when you want a
+You can prepend `./tools/bootstrap doctor` before that sequence when you want a
 machine/workspace readiness check.
 
 ## Base Paths
 
 | Goal | Command | Notes |
 | --- | --- | --- |
-| Lean local setup | `./scripts/bootstrap_profile.sh python` | Default operator path. Installs the workspace with lean `test` extras. |
-| Broader local QA | `HLA2010_BOOTSTRAP_EXTRAS=qa ./scripts/bootstrap_python.sh` | Adds Ruff and Pyright. |
-| Manual combined install after activation | `python -m pip install --no-build-isolation -e ".[qa,java]"` | Use when you need both QA and Java bridge extras together. |
+| Lean local setup | `./tools/bootstrap python` | Default bootstrap path. Installs the core split workspace with lean `test` extras. |
+| Broader local QA | `HLA2010_BOOTSTRAP_EXTRAS=qa ./tools/bootstrap python` | Adds Ruff, Pyright, and the bridge package set used by repo-green verification. |
+| Manual combined install after activation | `python -m pip install --no-build-isolation ruff pyright jpype1 py4j` | Use when you need both QA and Java bridge helper dependencies together without installing the repo root. |
 
 ## Backend Family Matrix
 
 | Backend family | What you need | How to install or enable it | Start here |
 | --- | --- | --- | --- |
-| Pure Python | Python only | `./scripts/bootstrap_profile.sh python` | `python examples/target_radar_simulation.py --backend python --steps 5` |
-| Java shim | Python only for local shim tests | `./scripts/bootstrap_profile.sh python` | `python examples/java_shim_federate.py` |
-| JPype bridge | `jpype1` | `HLA2010_BOOTSTRAP_EXTRAS=jpype ./scripts/bootstrap_python.sh` | `python examples/jpype_java_rti.py` |
-| Py4J bridge | `py4j` | `HLA2010_BOOTSTRAP_EXTRAS=py4j ./scripts/bootstrap_python.sh` | `python examples/py4j_java_rti.py` |
-| JPype + Py4J | both bridge deps | `HLA2010_BOOTSTRAP_EXTRAS=java ./scripts/bootstrap_python.sh` | bridge-specific examples or tests |
-| CERTI | working base Python plus local CERTI runtime | bootstrap Python first, then `./tools/certi-easy preflight` | `./tools/certi-easy smoke compare` |
-| Pitch | working base Python plus local Pitch runtime or Docker flow | bootstrap Python first, then `./tools/pitch preflight` | `./tools/pitch smoke` |
+| Pure Python | Python only | `./tools/bootstrap python` | `./tools/python verify` |
+| Java shim | Python only for local shim tests | `./tools/bootstrap python` | `python examples/java_shim_federate.py` |
+| JPype bridge | `jpype1` | `HLA2010_BOOTSTRAP_EXTRAS=jpype ./tools/bootstrap python` | `python examples/jpype_java_rti.py` |
+| Py4J bridge | `py4j` | `HLA2010_BOOTSTRAP_EXTRAS=py4j ./tools/bootstrap python` | `python examples/py4j_java_rti.py` |
+| JPype + Py4J | both bridge deps | `HLA2010_BOOTSTRAP_EXTRAS=java ./tools/bootstrap python` | bridge-specific examples or tests |
+| CERTI | working base Python plus local CERTI runtime | bootstrap Python first, then `./tools/certi-easy preflight` | `./tools/certi-easy verify-best-effort` |
+| Pitch | working base Python plus local Pitch runtime or Docker flow | bootstrap Python first, then `./tools/pitch preflight` | `./tools/pitch verify-best-effort` |
 | Portico | working base Python plus a Portico runtime and a Java bridge path | bootstrap Python first, then add `jpype` or `py4j` extras | route-specific tests |
 | REST / gRPC transport | working base Python | bootstrap Python first | transport tests and discovery scripts |
 
@@ -46,6 +46,8 @@ machine/workspace readiness check.
 - If you only need to read or modify the API surface, do not install vendor runtimes.
 - If you need Java-backed routes, install bridge extras before touching vendor runtimes.
 - If you need CERTI or Pitch, treat them as a second phase after Python setup, not as the starting point.
+- When you need the strict real-runtime matrix lane after vendor preflight, use `./tools/vendor-green ...`.
+- When you need local or sandbox-friendly vendor diagnostics first, use the `*-best-effort` top-level routes before moving on to the strict vendor-green lane.
 
 ## Related Docs
 

@@ -11,7 +11,7 @@ Canonical public entrypoints include:
 
 - `hla2010.spec`
 - `hla2010.runtime_api`
-- `hla2010.rti`
+- `hla2010.rti` only as a temporary workspace compatibility facade
 
 This package owns the abstract API, spec-facing support modules, and backend
 registry contract. It must not depend on concrete backend families, vendor

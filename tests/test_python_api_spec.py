@@ -5,7 +5,8 @@ import inspect
 import hla2010
 import hla2010.spec as hla_spec
 import hla2010.rti as rti_module
-from hla2010.backends.base import RecordingBackend, make_rti_ambassador
+from hla2010_rti_backend_common import RecordingBackend, make_rti_ambassador
+import hla2010_rti_runtime_common.factory as runtime_factory
 from hla2010.rti import available_backend_plugins, create_rti_ambassador, discover_rti_backends, iter_rti_backend_plugins
 from hla2010.spec import FederateAmbassadorSpec, RTIambassadorSpec, lower_camel_to_snake
 
@@ -62,6 +63,24 @@ def test_runtime_backend_listing_is_deduplicated_and_probeable():
     assert probed["python"].info.kind == "python/in-memory"
 
 
+def test_root_rti_facade_stays_narrow():
+    assert sorted(rti_module.__all__) == [
+        "available_backend_plugins",
+        "create_backend",
+        "create_rti_ambassador",
+        "discover_rti_backends",
+        "iter_rti_backend_plugins",
+        "register_backend_plugin",
+    ]
+    assert not hasattr(rti_module, "RTIBackendPlugin")
+    assert not hasattr(rti_module, "RTIBackendSpec")
+    assert not hasattr(rti_module, "RTITransportSpec")
+    assert not hasattr(rti_module, "RTIBackendDiscovery")
+    assert not hasattr(rti_module, "BACKEND_ENTRY_POINT_GROUP")
+    assert not hasattr(rti_module, "register_backend_factory")
+    assert not hasattr(rti_module, "register_transport_factory")
+
+
 def test_backend_entry_point_loader_skips_unimportable_optional_plugins(monkeypatch):
     class _BrokenEntryPoint:
         name = "broken"
@@ -74,9 +93,9 @@ def test_backend_entry_point_loader_skips_unimportable_optional_plugins(monkeypa
             assert group == "hla2010.rti_backends"
             return (_BrokenEntryPoint(),)
 
-    monkeypatch.setattr(rti_module.metadata, "entry_points", lambda: _EntryPoints())
+    monkeypatch.setattr(runtime_factory.metadata, "entry_points", lambda: _EntryPoints())
 
-    assert rti_module._iter_entry_point_backend_plugins() == []
+    assert runtime_factory._iter_entry_point_backend_plugins() == []
 
 
 def test_top_level_package_defaults_to_the_clean_spec_layer():

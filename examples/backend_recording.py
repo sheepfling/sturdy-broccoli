@@ -3,12 +3,12 @@
 Run with:
     PYTHONPATH=. python examples/backend_recording.py
 """
-from hla2010.backends import RecordingBackend, make_rti_ambassador
+from hla2010_rti_backend_common import RecordingBackend, make_rti_ambassador
 from hla2010.enums import CallbackModel
-from hla2010.runtime_api import FederateAmbassador
+from hla2010.spec import FederateAmbassadorSpec
 
 
-class MyFederate(FederateAmbassador):
+class MyFederate(FederateAmbassadorSpec):
     def time_advance_grant(self, time):
         print("time advance grant", time)
 

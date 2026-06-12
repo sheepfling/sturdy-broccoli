@@ -4,10 +4,10 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 from hla2010 import mom as hla_mom
-from hla2010 import mom_catalog as mom_table
 from hla2010.enums import OrderType
 from hla2010.fom import FOMModule
 from hla2010.handles import AttributeHandle, InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle, ParameterHandle
+from . import mom_catalog as mom_table
 from .mom_actions import PythonRTIMomActionsMixin
 from .mom_reporting import PythonRTIMomReportingMixin
 from .state import (
@@ -39,7 +39,7 @@ def _handle_value(value: Any) -> str:
 
 
 def _time_value(value: Any) -> float | int:
-    from hla2010 import time_management as tm
+    from hla2010_rti_backend_common import time_management as tm
 
     return tm.time_value(value)
 

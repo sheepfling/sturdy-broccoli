@@ -5,17 +5,13 @@ from dataclasses import dataclass
 
 import pytest
 
-from hla2010.backends.grpc_transport.python_server import start_python_grpc_server
-from hla2010.exceptions import InvalidLogicalTime
-from hla2010.rti import create_rti_ambassador
+from hla2010_rti_transport_grpc.python_server import start_python_grpc_server
+from hla2010_rti_runtime_common import create_rti_ambassador
 from hla2010_verification_harness.section8_matrix import (
-    cleanup_section8_pair,
-    connect_section8_pair,
-    drain_callbacks,
+    run_section8_early_timestamp_send_case,
     run_section8_state_services_case,
     section8_matrix_config,
 )
-from hla2010.time import HLAfloat64Time, HLAinteger64Time
 from hla2010_rti_python import InMemoryRTIEngine
 from hla2010_rti_transport_rest.rest_transport_host import start_python_rest_server
 
@@ -87,42 +83,9 @@ def test_lookahead_backend_matrix_state_services(backend_pair, time_factory_name
 def test_lookahead_backend_matrix_blocks_early_timestamped_send(backend_pair, time_factory_name: str):
     backend_id, left, right = backend_pair
     config = section8_matrix_config(f"lookahead-window-{backend_id}-{time_factory_name}", time_factory_name)
-    _publisher_fed, _subscriber_fed = connect_section8_pair(left, right, config=config)
-    try:
-        object_class = left.get_object_class_handle(config.object_class_name)
-        attribute = left.get_attribute_handle(object_class, config.attribute_name)
-        interaction = left.get_interaction_class_handle(config.order_interaction_class_name)
-        parameter = left.get_parameter_handle(interaction, config.order_parameter_name)
+    summary = run_section8_early_timestamp_send_case(left, right, config=config)
 
-        left.publish_object_class_attributes(object_class, {attribute})
-        right.subscribe_object_class_attributes(object_class, {attribute})
-        left.publish_interaction_class(interaction)
-        right.subscribe_interaction_class(interaction)
-
-        left.enable_time_regulation(config.lookahead)
-        right.enable_time_constrained()
-        drain_callbacks(left, right)
-
-        assert left.query_lookahead() == config.lookahead
-        left.modify_lookahead(config.modified_lookahead)
-        assert left.query_lookahead() == config.modified_lookahead
-
-        instance = left.register_object_instance(object_class, config.object_instance_name)
-        zero_time = HLAinteger64Time(0) if time_factory_name == "HLAinteger64Time" else HLAfloat64Time(0.0)
-
-        with pytest.raises(InvalidLogicalTime):
-            left.update_attribute_values(
-                instance,
-                {attribute: config.first_payload},
-                config.first_tag,
-                zero_time,
-            )
-        with pytest.raises(InvalidLogicalTime):
-            left.send_interaction(
-                interaction,
-                {parameter: config.second_payload},
-                config.second_tag,
-                zero_time,
-            )
-    finally:
-        cleanup_section8_pair(left, right, config.federation_name)
+    assert summary["publisher_initial_lookahead"] == config.lookahead
+    assert summary["modified_lookahead"] == config.modified_lookahead
+    assert summary["update_error"] is not None
+    assert summary["interaction_error"] is not None

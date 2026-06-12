@@ -7,12 +7,12 @@ Run from the project root:
 from __future__ import annotations
 
 from hla2010.enums import CallbackModel, ResignAction
-from hla2010.rti import create_rti_ambassador
-from hla2010.runtime_api import FederateAmbassador
-from hla2010.scenarios import target_radar_fom_path
+from hla2010.spec import FederateAmbassadorSpec
+from hla2010_fom_target_radar.scenarios import target_radar_fom_path
+from hla2010_rti_runtime_common import create_rti_ambassador
 
 
-class PrinterFederate(FederateAmbassador):
+class PrinterFederate(FederateAmbassadorSpec):
     def time_advance_grant(self, logical_time):
         print(f"time advance grant: {logical_time}")
 

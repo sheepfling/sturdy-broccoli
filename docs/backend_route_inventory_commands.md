@@ -14,6 +14,7 @@ These are the commands that exercise the current backend routes.
 ```bash
 ./tools/certi-easy preflight
 ./tools/certi-easy smoke compare
+./tools/certi-easy verify-best-effort
 ```
 
 ### Pitch
@@ -21,6 +22,8 @@ These are the commands that exercise the current backend routes.
 ```bash
 ./tools/pitch preflight
 ./tools/pitch smoke
+./tools/pitch smoke-best-effort
+./tools/pitch verify-best-effort
 ```
 
 Simplest operator path:
@@ -29,13 +32,14 @@ Simplest operator path:
 ./tools/pitch install
 ./tools/pitch start
 ./tools/pitch smoke
+./tools/pitch verify-best-effort
 ```
 
 ### Green lanes
 
 ```bash
-./scripts/ci/repo_green.sh
-./scripts/ci/vendor_green.sh matrix
+./tools/python verify
+./tools/vendor-green matrix
 ```
 
 Quickstart:

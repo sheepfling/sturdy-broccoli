@@ -11,18 +11,40 @@ Start here:
 - [../docs/python_environment.md](../docs/python_environment.md): Python bootstrap, `.venv`, extras, and install order
 - [../docs/documentation_hierarchy.md](../docs/documentation_hierarchy.md): canonical doc hierarchy
 - [../java_shims/README.md](../java_shims/README.md): Java bridge verification-fixture contract
-- `python3 scripts/ci/check_doc_links.py`: canonical Markdown link and navigation check
+- `./tools/lint`: canonical local lint and doc-link verification flow
 
-Primary operator entrypoints:
+The `scripts/` tree is implementation and CI plumbing, not the primary
+human-facing operator surface.
 
-- `./scripts/bootstrap_profile.sh` profile-based setup for `python`, `certi`, `pitch`, or `all`
-- `./scripts/bootstrap_profile.sh doctor` workspace setup and prerequisite check
-- `./tools/certi-easy` canonical CERTI install, doctor, build, run, smoke, and compare flow
-- `./tools/pitch` canonical Pitch Docker-backed install, start, smoke, verify, and support flow
+Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
+
+- `./tools/bootstrap` canonical workspace bootstrap and doctor flow
+- `./tools/python` canonical Python / repo-green verification flow
+- `./tools/certi-easy` canonical CERTI install, doctor, build, run, smoke/compare, and best-effort verify flow
+- `./tools/pitch` canonical Pitch Docker-backed install, start, strict smoke/verify, best-effort smoke/verify, and support flow
+- `./tools/vendor-green` canonical strict vendor-runtime verification flow
+- `./tools/vendor-state` canonical vendor preflight classification and CI-state flow
+- `./tools/vendor-parity` canonical backend parity artifact flow
+- `./tools/compliance` canonical compliance packet generation and backend-discovery flow
+- `./tools/vendor-probe-review` canonical repeated-run probe review and promotion-review artifact flow
+- `./tools/vendor-edge` canonical vendor edge matrix flow
+- `./tools/rti-options` canonical generated RTI route/options matrix flow
+- `./tools/fom-overview` canonical merged FOM/MIM overview artifact flow
+- `./tools/package-deps` canonical split-package dependency tree flow
+- `./tools/section8-gate` canonical Section 8 backend-matrix gate
+- `./tools/target-radar` canonical target/radar proof and backend-matrix artifact flow
+- `./tools/lint` canonical local lint, link, and generated-doc hygiene flow
+- `./tools/two-federate` canonical generic two-federate artifact flow
+- `./tools/test` canonical direct pytest wrapper
+
+Repo setup entrypoints that still live under `scripts/`:
+
+- `scripts/bootstrap_profile.sh` profile-based setup implementation behind `./tools/bootstrap`
+- `scripts/bootstrap_python.sh` split-package bootstrap implementation called by `./tools/bootstrap python`
 
 Normal setup order:
 
-1. `./scripts/bootstrap_profile.sh python`
+1. `./tools/bootstrap python`
 2. `source .venv/bin/activate`
 3. run a pure-Python smoke path
 4. only then move on to CERTI, Pitch, JPype, or Py4J work
@@ -32,6 +54,16 @@ installs the split packages in editable mode, starting with
 `packages/hla2010-spec`. Do not use root `pip install -e .` and do not add
 workspace source roots through `.pth` or `sys.path` injection.
 
+Python scripts assume the split packages are already importable. Run
+`./tools/bootstrap python` or install the package roots in editable mode
+before invoking Python scripts directly; scripts do not mutate `sys.path` or
+bootstrap imports themselves. If you run a script without that environment, it
+should fail plainly with a normal import error.
+
+Repo-aware Python scripts use the current working directory as the default
+project root. Run them from the repository root, or pass `--project-root PATH`
+for scripts that read or write repository artifacts from another directory.
+
 Operator guide links:
 
 - [../packages/hla2010-rti-certi/docs/certi_section8_runbook.md](../packages/hla2010-rti-certi/docs/certi_section8_runbook.md): CERTI operator runbook
@@ -39,20 +71,23 @@ Operator guide links:
 - [../docs/preflight_artifacts.md](../docs/preflight_artifacts.md): JSON preflight artifacts and inspection examples
 - `./tools/certi-easy preflight [--json] [--json-file FILE]`: CERTI readiness check before install or smoke
 - `./tools/pitch preflight [--json] [--json-file FILE]`: Pitch Docker readiness check before install or run
-- `python3 scripts/classify_vendor_runtime.py --lane repo-green|vendor-green [--vendor certi|pitch] [--json]`: classify preflight artifacts into ready vs blocked vs broken states
-- `python3 scripts/ci/write_vendor_runtime_job_summary.py`: render the normalized vendor runtime status into GitHub-job-friendly Markdown
-- `python3 scripts/ci/check_vendor_runtime_ci_state.py --profile ...`: validate dedicated CI runtime env/path state before vendor-green execution
-- `python3 scripts/check_vendor_runner_template_drift.py`: verify the runner provisioning template, validator profiles, and workflow env contracts stay aligned
-- `./scripts/ci/vendor_runtime_smoke.sh ...`: CI/operator smoke wrapper that now runs mandatory vendor preflight first, writes standard JSON artifacts under `analysis/preflight_artifacts/`, and can still classify/skip blocked vendor runs even when the repo virtualenv has not been activated yet
-- `./scripts/ci/repo_green.sh`: explicit repo-green wrapper around the default full verification lane
-- `./scripts/ci/vendor_green.sh ...`: strict vendor-runtime gate for dedicated real-runtime runners; under CI it now self-validates the dedicated runner contract before trying the runtime lane
-- `./scripts/ci/vendor_probe_stability.sh ...`: repeated probe harness; under CI it now validates the dedicated runner contract once before collecting repeated-run evidence and disables redundant per-attempt revalidation inside the loop
+- `./tools/vendor-state classify --lane repo-green|vendor-green [--vendor certi|pitch] [--json]`: classify preflight artifacts into ready vs blocked vs broken states
+- `./tools/vendor-state ci-state --profile ...`: validate dedicated CI runtime env/path state before vendor-green execution
+- `scripts/ci/write_vendor_runtime_job_summary.py`: CI helper that renders normalized vendor runtime status into GitHub-job-friendly Markdown
+- `scripts/check_vendor_runner_template_drift.py`: CI helper that verifies the runner provisioning template, validator profiles, and workflow env contracts stay aligned
+- `scripts/ci/vendor_runtime_smoke.sh`: implementation wrapper behind the vendor-runtime lane; it runs mandatory vendor preflight first, writes standard JSON artifacts under `analysis/preflight_artifacts/`, and can still classify/skip blocked vendor runs even when the repo virtualenv has not been activated yet
+- `./tools/python verify`: canonical Python / repo-green wrapper around the default full verification lane
+- `./tools/vendor-green [profile]`: strict vendor-runtime gate for dedicated real-runtime runners; under CI it self-validates the dedicated runner contract before trying the runtime lane
+- `scripts/ci/vendor_probe_stability.sh`: repeated probe implementation used by the promotion-review flow; under CI it validates the dedicated runner contract once before collecting repeated-run evidence and disables redundant per-attempt revalidation inside the loop
+- `./tools/vendor-probe-review <profile> [repeat-count]`: canonical repeated-run probe review wrapper over the promotion path
+- `./tools/vendor-probe-review promotion-review`: canonical promotion-review artifact generator
+- `./tools/vendor-edge [time-query|negotiated-ownership|save-restore|ddm|all]`: canonical high-value vendor edge packet refresh
 
 CI lane rule:
 
-- use `./scripts/ci/repo_green.sh` for the default repo-green lane
-- use `./scripts/ci/vendor_green.sh ...` for dedicated real-runtime runners
-- treat `./scripts/ci/vendor_runtime_smoke.sh ...` as the shared implementation
+- use `./tools/python verify` for the default repo-green lane
+- use `./tools/vendor-green [profile]` for dedicated real-runtime runners
+- treat `scripts/ci/vendor_runtime_smoke.sh` as the shared implementation
   behind the vendor-green lane, not as the preferred top-level CI contract
 
 Copy-paste preflight artifact flow:
@@ -74,7 +109,7 @@ reports even when no explicit `--json-file` is provided.
 The vendor smoke wrapper writes the same JSON artifacts by default before it
 decides whether to run or skip a vendor profile.
 
-Implementation shims still exist:
+Compatibility aliases that remain for implementation and migration support:
 
 - `./scripts/certi_easy.sh`
 - `./scripts/pitch_docker_easy.sh`
@@ -127,6 +162,17 @@ When `generate_compliance_artifacts.py` finishes, the best operator entrypoints 
 - `analysis/compliance/verification_traceability.csv`: flat clause-to-asset traceability
 - `analysis/compliance/requirements_ledger.csv`: requirement-level pass/partial/fail ledger
 - `analysis/compliance/requirements_matrix_2010.csv`: whole-spec matrix spanning section areas, service rows, and verification slices
+- `analysis/compliance/python_requirement_disposition.md`: generated Python backend requirement disposition packet
+- `analysis/compliance/certi_requirement_disposition.md`: generated aggregate CERTI family requirement disposition packet
+- `analysis/compliance/certi-native_requirement_disposition.md`: generated explicit CERTI native-runtime requirement disposition packet
+- `analysis/compliance/certi-jpype_requirement_disposition.md`: generated explicit CERTI JPype-profile requirement disposition packet
+- `analysis/compliance/certi-py4j_requirement_disposition.md`: generated explicit CERTI Py4J-profile requirement disposition packet
+- `analysis/compliance/pitch_requirement_disposition.md`: generated aggregate Pitch family requirement disposition packet
+- `analysis/compliance/pitch-jpype_requirement_disposition.md`: generated explicit Pitch JPype-profile requirement disposition packet
+- `analysis/compliance/pitch-py4j_requirement_disposition.md`: generated explicit Pitch Py4J-profile requirement disposition packet
+- `analysis/compliance/portico_requirement_disposition.md`: generated aggregate Portico family requirement disposition packet
+- `analysis/compliance/portico-jpype_requirement_disposition.md`: generated explicit Portico JPype-profile requirement disposition packet
+- `analysis/compliance/portico-py4j_requirement_disposition.md`: generated explicit Portico Py4J-profile requirement disposition packet
 - `analysis/compliance/extracted_requirements_clause5_6.md`: Clause 5/6 packet split into broad-spec and supported-subset rows
 - `analysis/compliance/extracted_requirements_clause7_9.md`: Clause 7/9 packet split into broad-spec and supported-subset rows
 - `analysis/compliance/supported_subset_policy.md`: explicit supported-subset policy statements for defended partial rows
@@ -135,11 +181,14 @@ When `generate_compliance_artifacts.py` finishes, the best operator entrypoints 
 For the shortest “what do we know about backend compliance right now?” path:
 
 ```bash
-./scripts/bootstrap_profile.sh python
+./tools/bootstrap python
 source .venv/bin/activate
-python3 scripts/generate_compliance_artifacts.py
-python3 scripts/discover_backend_compliance.py --show-backlog
+./tools/compliance generate
+./tools/compliance discover --show-backlog
 ```
+
+From outside the repository, pass `--project-root /path/to/hla-2010` to these
+commands.
 
 Use `--backend BACKEND_ID_OR_FAMILY`, `--section SECTION`, or `--priority PRIORITY` to narrow the backlog view, and `--format json` for machine-readable output.
 

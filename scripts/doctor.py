@@ -8,14 +8,28 @@ import os
 import shutil
 import subprocess
 import sys
+import tomllib
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path.cwd()
 LOCAL_STATE_ROOT = Path(
     os.environ.get("HLA2010_LOCAL_STATE_ROOT", str(REPO_ROOT / ".local"))
 )
 MIN_PYTHON = (3, 10)
+
+
+def _bootstrap_source_checkout() -> None:
+    pyproject = tomllib.loads((SCRIPT_REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    source_roots = pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]
+    for root in reversed(source_roots):
+        source_path = str(SCRIPT_REPO_ROOT / root)
+        if source_path not in sys.path:
+            sys.path.insert(0, source_path)
+
+
+_bootstrap_source_checkout()
 
 
 def local_state_path(*parts: str) -> Path:
@@ -141,9 +155,9 @@ def check_venv() -> Check:
     repo_venv = REPO_ROOT / ".venv"
     venv_python = repo_venv / "bin/python"
     if not repo_venv.exists():
-        return Check("venv", "fail", ".venv missing", "run ./scripts/bootstrap_profile.sh python")
+        return Check("venv", "fail", ".venv missing", "run ./tools/bootstrap python")
     if not venv_python.exists():
-        return Check("venv", "fail", ".venv exists but has no python", "rerun ./scripts/bootstrap_profile.sh python")
+        return Check("venv", "fail", ".venv exists but has no python", "rerun ./tools/bootstrap python")
     detail = str(repo_venv)
     if repo_venv.is_symlink():
         detail = f"{repo_venv} -> {repo_venv.resolve()}"
@@ -170,7 +184,7 @@ def check_workspace_imports(venv_python: Path) -> Check:
             "workspace_imports",
             "fail",
             "workspace packages are not importable in .venv",
-            f"missing: {', '.join(missing)}; rerun ./scripts/bootstrap_profile.sh python",
+            f"missing: {', '.join(missing)}; rerun ./tools/bootstrap python",
         )
     return Check("workspace_imports", "ok", "workspace packages import from .venv", str(probe.get("executable", venv_python)))
 
@@ -199,7 +213,7 @@ def check_qa_tools(venv_python: Path) -> Check:
         "qa_tools",
         "warn",
         "optional QA tools are incomplete",
-        "missing: " + ", ".join(missing) + "; add HLA2010_BOOTSTRAP_EXTRAS=qa ./scripts/bootstrap_python.sh",
+        "missing: " + ", ".join(missing) + "; add HLA2010_BOOTSTRAP_EXTRAS=qa ./tools/bootstrap python",
     )
 
 
@@ -221,7 +235,7 @@ def check_java_bridge_extras(venv_python: Path) -> Check:
     summary = "bridge extras are partial" if present else "bridge extras are not installed"
     detail = f"present: {', '.join(present) if present else 'none'}; missing: {', '.join(missing)}"
     if missing == ["jpype1", "py4j"]:
-        detail += "; add HLA2010_BOOTSTRAP_EXTRAS=java ./scripts/bootstrap_python.sh if needed"
+        detail += "; add HLA2010_BOOTSTRAP_EXTRAS=java ./tools/bootstrap python if needed"
     return Check("java_bridge_extras", "warn", summary, detail)
 
 
@@ -237,7 +251,7 @@ def check_certi_state() -> Check:
             built.append("upstream")
         return Check("certi", "ok", "CERTI install artifacts present", ", ".join(built))
     if source_dir.exists():
-        return Check("certi", "warn", "CERTI source tree present but install artifacts missing", "run ./tools/certi-easy preflight or ./scripts/bootstrap_profile.sh certi when needed")
+        return Check("certi", "warn", "CERTI source tree present but install artifacts missing", "run ./tools/certi-easy preflight or ./tools/bootstrap certi when needed")
     return Check("certi", "warn", "CERTI runtime not prepared", "optional; use only for real CERTI paths")
 
 
@@ -267,14 +281,14 @@ def next_steps(checks: list[Check]) -> list[str]:
         steps.append(f"install or select Python >= {format_version_info(MIN_PYTHON)}")
         return steps
     if by_name["venv"].status == "fail" or by_name["workspace_imports"].status == "fail":
-        steps.append("./scripts/bootstrap_profile.sh python")
+        steps.append("./tools/bootstrap python")
         steps.append("source .venv/bin/activate")
         return steps
     steps.append("source .venv/bin/activate")
     if by_name["qa_tools"].status != "ok":
-        steps.append("HLA2010_BOOTSTRAP_EXTRAS=qa ./scripts/bootstrap_python.sh")
+        steps.append("HLA2010_BOOTSTRAP_EXTRAS=qa ./tools/bootstrap python")
     if by_name["java_bridge_extras"].status != "ok":
-        steps.append("HLA2010_BOOTSTRAP_EXTRAS=java ./scripts/bootstrap_python.sh")
+        steps.append("HLA2010_BOOTSTRAP_EXTRAS=java ./tools/bootstrap python")
     if by_name["certi"].status != "ok":
         steps.append("./tools/certi-easy preflight")
     if by_name["pitch"].status != "ok":

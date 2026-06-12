@@ -1,7 +1,7 @@
 import pytest
 from pathlib import Path
 
-from hla2010.ambassadors import RecordingFederateAmbassador
+from hla2010_rti_backend_common import RecordingFederateAmbassador
 from hla2010_rti_python import InMemoryRTIEngine, rti_ambassador
 from hla2010.enums import CallbackModel
 from hla2010.enums import OrderType, ResignAction, ServiceGroup

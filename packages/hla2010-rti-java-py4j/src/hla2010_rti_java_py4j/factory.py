@@ -1,7 +1,7 @@
 """Factory helpers for Py4J-backed Java RTI backends."""
 from __future__ import annotations
 
-from hla2010.backends.base import BackendInfo, make_rti_ambassador
+from hla2010_rti_java_common import BackendInfo, make_rti_ambassador
 from .adapter import Py4JRTIBackend
 from .runtime import Py4JBridge, Py4JConfig
 

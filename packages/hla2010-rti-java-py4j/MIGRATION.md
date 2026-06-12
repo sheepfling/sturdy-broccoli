@@ -12,8 +12,10 @@ Compatibility facades retained:
 - `hla2010_rti_pitch_py4j.runtime`
 - `hla2010_rti_pitch_py4j.adapter`
 - `hla2010_rti_pitch_py4j.factory`
+
+Removed root compatibility facades:
+
 - `hla2010.backends.py4j`
-- `hla2010.backends.java_plugins.py4j_plugin`
 
 Remaining cleanup:
 

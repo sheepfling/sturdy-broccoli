@@ -4,7 +4,7 @@ from __future__ import annotations
 from collections import deque
 from typing import Any, Sequence, cast
 
-from hla2010.transport_codecs import (
+from .transport_codecs import (
     decode_bytes,
     decode_handle_set,
     decode_handle_value_map,
@@ -14,9 +14,15 @@ from hla2010.transport_codecs import (
     handle_value_map_spec,
 )
 
-from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.backends.transport import TransportRequest, TransportResponse
-from hla2010.enums import CallbackModel, OrderType, ResignAction, RestoreFailureReason, SaveFailureReason
+from .transport import TransportRequest, TransportResponse
+from hla2010.enums import (
+    CallbackModel,
+    OrderType,
+    ResignAction,
+    RestoreFailureReason,
+    SaveFailureReason,
+    SynchronizationPointFailureReason,
+)
 from hla2010.handles import (
     AttributeHandle,
     AttributeHandleSet,
@@ -32,6 +38,7 @@ from hla2010.handles import (
 )
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 from hla2010.types import FederateHandleSaveStatusPair, FederateRestoreStatus
+from hla2010_rti_backend_common import RecordingFederateAmbassador
 
 
 def _logical_time_name(value: Any) -> str:
@@ -119,6 +126,11 @@ def _encode_callback_payload(method_name: str, args: tuple[Any, ...]) -> tuple[s
         return ("TIME_ADVANCE_GRANT", _logical_time_name(args[0]), _logical_scalar(args[0]))
     if method_name == "requestRetraction":
         return ("REQUEST_RETRACTION", str(int(args[0].value)))
+    if method_name == "synchronizationPointRegistrationSucceeded":
+        return ("SYNC_POINT_REGISTRATION_SUCCEEDED", str(args[0]))
+    if method_name == "synchronizationPointRegistrationFailed":
+        reason = args[1].name if isinstance(args[1], SynchronizationPointFailureReason) else str(args[1])
+        return ("SYNC_POINT_REGISTRATION_FAILED", str(args[0]), reason)
     if method_name == "announceSynchronizationPoint":
         return ("ANNOUNCE_SYNC_POINT", str(args[0]), encode_bytes(args[1]))
     if method_name == "federationSynchronized":

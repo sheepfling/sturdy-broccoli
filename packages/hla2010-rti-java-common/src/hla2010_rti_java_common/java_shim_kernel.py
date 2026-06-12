@@ -8,7 +8,6 @@ from .java_shim_records import (
 )
 from typing import Callable, TypeVar
 
-from .java_shim_runtime import SharedInProcessJavaRTIShim
 from .java_shim_types import (
     JavaAttributeHandle,
     JavaDimensionHandle,
@@ -50,7 +49,6 @@ class SharedJavaShimKernel:
 
 
 __all__ = [
-    "SharedInProcessJavaRTIShim",
     "SharedJavaFederationRecord",
     "SharedJavaObjectRecord",
     "SharedJavaShimKernel",

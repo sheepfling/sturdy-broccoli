@@ -29,6 +29,9 @@ jobs:
           - name: pitch-negotiated-probe
             command: ./tools/pitch negotiated-probe
             ci_profile: pitch
+          - name: pitch-lost-federate-probe
+            command: ./tools/pitch lost-federate-probe
+            ci_profile: pitch
     env:
       HLA2010_ENABLE_REAL_RTI_SMOKE: "1"
       HLA2010_CERTI_PATCHED_PREFIX: ${{ vars.HLA2010_CERTI_PATCHED_PREFIX }}

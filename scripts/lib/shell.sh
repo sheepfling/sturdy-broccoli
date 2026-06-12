@@ -38,6 +38,31 @@ hla2010_shell_python_bin() {
   hla2010_shell_die "python3 or python not found"
 }
 
+hla2010_shell_workspace_pythonpath() {
+  [[ -n "${ROOT_DIR:-}" ]] || hla2010_shell_die "ROOT_DIR is required to build the workspace pythonpath"
+  local python_bin
+  python_bin="$(hla2010_shell_python_bin)"
+  "$python_bin" - "$ROOT_DIR" <<'PY'
+import os
+import sys
+import tomllib
+from pathlib import Path
+
+root = Path(sys.argv[1])
+pyproject = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
+source_roots = pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]
+print(os.pathsep.join(str(root / rel) for rel in source_roots))
+PY
+}
+
+hla2010_shell_run_workspace_python() {
+  local python_bin="$1"
+  shift
+  local workspace_pythonpath
+  workspace_pythonpath="$(hla2010_shell_workspace_pythonpath)"
+  PYTHONPATH="${workspace_pythonpath}${PYTHONPATH:+:$PYTHONPATH}" "$python_bin" "$@"
+}
+
 hla2010_shell_docker_host_gateway_arg() {
   case "$(uname -s)" in
     Linux)

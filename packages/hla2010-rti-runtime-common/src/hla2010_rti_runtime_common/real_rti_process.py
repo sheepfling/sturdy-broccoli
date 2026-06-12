@@ -2,11 +2,13 @@
 from __future__ import annotations
 
 import socket
+import shutil
 import subprocess
 import time
 from dataclasses import dataclass, field
+from pathlib import Path
 
-from hla2010.backends.base import BackendUnavailableError
+from hla2010_rti_backend_common import BackendUnavailableError
 
 
 def _loopback_remediation(host: str, port: int | None = None) -> str:
@@ -25,6 +27,7 @@ class RuntimeProcess:
     host: str | None = None
     tcp_port: int | None = None
     children: tuple[subprocess.Popen[str], ...] = ()
+    cleanup_paths: tuple[Path, ...] = ()
 
     def poll(self) -> int | None:
         return self.process.poll()
@@ -41,6 +44,8 @@ class RuntimeProcess:
                 except subprocess.TimeoutExpired:
                     process.kill()
                     process.wait(timeout=timeout)
+        for path in self.cleanup_paths:
+            shutil.rmtree(path, ignore_errors=True)
 
 
 def reserve_tcp_port(host: str = "127.0.0.1") -> int:

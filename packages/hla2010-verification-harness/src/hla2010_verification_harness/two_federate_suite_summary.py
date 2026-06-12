@@ -7,7 +7,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping
 
-from hla2010.ambassadors import CallbackRecord
+from hla2010_rti_backend_common import CallbackRecord
 
 
 def _jsonable(value: Any) -> Any:
@@ -28,7 +28,10 @@ def _jsonable(value: Any) -> Any:
             "reference": value.reference.label if value.reference else None,
         }
     if hasattr(value, "as_dict") and callable(value.as_dict):
-        return _jsonable(value.as_dict())
+        try:
+            return _jsonable(value.as_dict())
+        except Exception:
+            pass
     if hasattr(value, "__dataclass_fields__"):
         return {key: _jsonable(item) for key, item in asdict(value).items()}
     if isinstance(value, Mapping):
@@ -40,6 +43,10 @@ def _jsonable(value: Any) -> Any:
     if hasattr(value, "value"):
         return {"type": type(value).__name__, "value": _jsonable(value.value)}
     return repr(value)
+
+
+def jsonable(value: Any) -> Any:
+    return _jsonable(value)
 
 
 def _callback_rows(role: str, records: list[CallbackRecord], *, profile: str = "python", scenario: str = "") -> list[dict[str, Any]]:
@@ -96,4 +103,5 @@ __all__ = [
     "_callback_rows",
     "_jsonable",
     "_profile_summary_rows",
+    "jsonable",
 ]

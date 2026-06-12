@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/compliance"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/compliance [generate|discover|help] [args...]
+
+Canonical compliance operator flow:
+  ./tools/compliance generate
+  ./tools/compliance discover --show-backlog
+
+This is the human-facing wrapper over the generated compliance packet and
+backend-discovery tooling under `scripts/`.
+EOF
+}
+
+python_bin="$(hla2010_shell_python_bin)"
+
+case "${1:-help}" in
+  help|-h|--help)
+    usage
+    ;;
+  generate)
+    shift
+    exec "$python_bin" "$ROOT_DIR/scripts/generate_compliance_artifacts.py" "$@"
+    ;;
+  discover)
+    shift
+    exec "$python_bin" "$ROOT_DIR/scripts/discover_backend_compliance.py" "$@"
+    ;;
+  *)
+    echo "error: unknown subcommand: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

@@ -20,8 +20,10 @@ It separates three concerns that are easy to blur together:
 3. transport surface
 
 The Python federate should only need to care about the backend name passed to
-`create_rti_ambassador(...)`. Everything below that line is repo/runtime
-plumbing.
+`hla2010_rti_runtime_common.create_rti_ambassador(...)`. Everything below that
+line is repo/runtime plumbing. The temporary root workspace facade
+`hla2010.rti` exposes the same helper during migration, but package-owned and
+new public examples should prefer the split runtime package directly.
 
 For the exhaustive route list, including named CERTI baselines and remote
 transport-hosted variants, see
@@ -45,12 +47,12 @@ Example:
   - transport surface: usually none explicit from the caller, but internally the
     CERTI helper can also be hosted behind `grpc` or `rest`
 
-- `create_rti_ambassador("certi", transport={"kind": "grpc", ...})`
+- `hla2010_rti_runtime_common.create_rti_ambassador("certi", transport={"kind": "grpc", ...})`
   - RTI runtime: `CERTI`
   - Python/Java interaction: none exposed to the caller
   - transport surface: `grpc`
 
-- `create_rti_ambassador("python")`
+- `hla2010_rti_runtime_common.create_rti_ambassador("python")`
   - RTI runtime: in-memory Python reference RTI
   - Python/Java interaction: none
   - transport surface: none
@@ -107,7 +109,7 @@ These are the backend names currently recognized by
 [rti.py](../src/hla2010/rti.py).
 
 This section is generated from `create_backend(...)` by
-[update_rti_options_matrix.py](../scripts/update_rti_options_matrix.py).
+[`./tools/rti-options generate`](../tools/rti-options).
 
 <!-- GENERATED_BACKEND_ALIASES_START -->
 
@@ -224,7 +226,7 @@ Current CERTI qualifier:
 
 - [tests/vendors/README.md](../tests/vendors/README.md)
 - [test_real_vendor_runtime_smoke.py](../tests/vendors/test_real_vendor_runtime_smoke.py)
-- [vendor_runtime_smoke.sh](../scripts/ci/vendor_runtime_smoke.sh)
+- [`./tools/vendor-green`](../tools/vendor-green)
 
 ### CERTI behind transport surfaces
 
@@ -291,5 +293,5 @@ If backend aliases change in
 rerun:
 
 ```bash
-    python3 scripts/update_rti_options_matrix.py
+    ./tools/rti-options generate
 ```

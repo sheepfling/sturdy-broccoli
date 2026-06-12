@@ -5,18 +5,20 @@ import uuid
 
 import pytest
 
-from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.backends.base import BackendUnavailableError
-from hla2010.backends.grpc_transport import start_certi_grpc_server
+from hla2010_rti_backend_common import RecordingFederateAmbassador
+from hla2010_rti_backend_common import BackendUnavailableError
+from hla2010_rti_transport_grpc import start_certi_grpc_server
 from hla2010.enums import OrderType, ResignAction
-from hla2010.rti import create_rti_ambassador
-from hla2010_verification_harness.scenario_exchange import (
+from hla2010_rti_runtime_common import create_rti_ambassador
+from hla2010_verification_harness import (
+    OwnershipScenarioConfig,
+    SynchronizationScenarioConfig,
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
     run_two_federate_exchange_scenario,
+    run_attribute_ownership_scenario,
+    run_synchronization_scenario,
 )
-from hla2010_verification_harness.scenario_ownership import OwnershipScenarioConfig, run_attribute_ownership_scenario
-from hla2010_verification_harness.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time
 from hla2010_rti_certi.real_rti_certi import discover_certi_smoke_fom, launch_certi_rtig
 from tests.vendors.runtime_support import cleanup_federation, close_all, require_vendor_preflight, reserve_udp_pair, terminate_all

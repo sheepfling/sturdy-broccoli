@@ -10,8 +10,8 @@ environment exists. Do not do that.
 From the repository root:
 
 ```bash
-./scripts/bootstrap_profile.sh doctor
-./scripts/bootstrap_profile.sh python
+./tools/bootstrap doctor
+./tools/bootstrap python
 source .venv/bin/activate
 python examples/backend_recording.py
 ```
@@ -40,19 +40,20 @@ Do not assume:
 - `hla2010/` is a narrow shim area
 - `packages/*/src/` owns split backend and support implementations
 - `examples/` contains runnable entrypoints
-- `scripts/` contains operator and CI entrypoints
+- `tools/` contains the human-facing vendor/runtime entrypoints
+- `scripts/` contains bootstrap, CI, and implementation entrypoints
 
 ## Safe Starting Commands
 
 Use these before anything vendor-specific:
 
 ```bash
-./scripts/bootstrap_profile.sh doctor
-./scripts/bootstrap_profile.sh python
+./tools/bootstrap doctor
+./tools/bootstrap python
 source .venv/bin/activate
 python examples/backend_recording.py
 python examples/target_radar_simulation.py --backend python --steps 5
-./scripts/ci/test.sh
+./tools/test
 ```
 
 ## Escalation Order
@@ -67,11 +68,12 @@ Use this order:
 
 ## When To Install Extras
 
-- Need JPype: `HLA2010_BOOTSTRAP_EXTRAS=jpype ./scripts/bootstrap_python.sh`
-- Need Py4J: `HLA2010_BOOTSTRAP_EXTRAS=py4j ./scripts/bootstrap_python.sh`
-- Need both: `HLA2010_BOOTSTRAP_EXTRAS=java ./scripts/bootstrap_python.sh`
+- Need JPype: `HLA2010_BOOTSTRAP_EXTRAS=jpype ./tools/bootstrap python`
+- Need Py4J: `HLA2010_BOOTSTRAP_EXTRAS=py4j ./tools/bootstrap python`
+- Need both: `HLA2010_BOOTSTRAP_EXTRAS=java ./tools/bootstrap python`
+- Need the full repo-green split workspace: `HLA2010_BOOTSTRAP_EXTRAS=qa ./tools/bootstrap python`
 - Need QA plus Java extras after activation:
-  `python -m pip install --no-build-isolation -e ".[qa,java]"`
+  `python -m pip install --no-build-isolation ruff pyright jpype1 py4j`
 
 ## Where To Send Humans
 

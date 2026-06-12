@@ -6,9 +6,9 @@ Reserved for deterministic checks that are specific to the HLA 2010 workspace.
 
 Fastest human-friendly starting points:
 
-- `./scripts/ci/test.sh`: default pytest wrapper once `.venv` is active
+- `./tools/test`: default pytest wrapper once `.venv` is active
 - `python examples/backend_recording.py`: simplest runtime smoke before wider test work
-- `python3 scripts/run_two_federate_suite.py`: first artifact-producing two-federate flow
+- `source .venv/bin/activate && ./tools/two-federate`: first artifact-producing two-federate flow
 
 Do not start with vendor/runtime-dependent suites unless the base Python path is
 already working.

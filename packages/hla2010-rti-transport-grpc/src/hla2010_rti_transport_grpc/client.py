@@ -4,8 +4,8 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any, Mapping, cast
 
-from hla2010.backends.transport import TransportError, TransportRequest, TransportResponse
-from . import rti_transport_pb2 as pb2
+from hla2010_rti_transport_common import TransportError, TransportRequest, TransportResponse
+import hla2010_rti_transport_grpc.rti_transport_pb2 as pb2
 
 _pb2 = cast(Any, pb2)
 

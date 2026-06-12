@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Callable, Mapping
 
-from hla2010.backends.base import BackendUnavailableError
+from hla2010_rti_backend_common import BackendUnavailableError
 
 RuntimeProfileLauncher = Callable[[], Any]
 

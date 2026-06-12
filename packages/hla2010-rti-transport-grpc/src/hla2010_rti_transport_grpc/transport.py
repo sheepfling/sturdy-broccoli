@@ -4,10 +4,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Sequence, cast
 
-from hla2010.backends.base import BackendUnavailableError
-from hla2010.backends.transport import RTITransport, TransportError, TransportRequest, TransportResponse
-from hla2010.rti import register_transport_factory
-from . import rti_transport_pb2_grpc as pb2_grpc
+from hla2010_rti_backend_common import BackendUnavailableError
+from hla2010_rti_transport_common import RTITransport, TransportError, TransportRequest, TransportResponse, register_transport_factory
+import hla2010_rti_transport_grpc.rti_transport_pb2_grpc as pb2_grpc
 from .client import GrpcTransportClientAdapter
 
 try:  # pragma: no cover - import guarded for optional dependency

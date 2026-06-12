@@ -8,14 +8,29 @@ import socket
 import subprocess
 import sys
 import time
+import tomllib
 from pathlib import Path
+
+SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def _bootstrap_source_checkout() -> None:
+    pyproject = tomllib.loads((SCRIPT_REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    source_roots = pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]
+    for root in reversed(source_roots):
+        source_path = str(SCRIPT_REPO_ROOT / root)
+        if source_path not in sys.path:
+            sys.path.insert(0, source_path)
+
+
+_bootstrap_source_checkout()
 
 from hla2010_rti_pitch_common.real_rti_pitch import (
     discover_pitch_runtime,
     prepare_pitch_user_home,
 )
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = SCRIPT_REPO_ROOT
 
 
 def _wait_for_port(host: str, port: int, timeout: float) -> bool:

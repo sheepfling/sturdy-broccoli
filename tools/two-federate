@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/two-federate"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/two-federate [run|help] [args...]
+
+Canonical two-federate artifact flow:
+  ./tools/two-federate
+  ./tools/two-federate --target-radar-steps 6
+  ./tools/two-federate --output-dir analysis/my_two_federate_suite
+
+This is the human-facing wrapper over `scripts/run_two_federate_suite.py`.
+EOF
+}
+
+python_bin="$(hla2010_shell_python_bin)"
+
+case "${1:-run}" in
+  help|-h|--help)
+    usage
+    ;;
+  run)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/run_two_federate_suite.py" "$@"
+    ;;
+  --*)
+    "$python_bin" "$ROOT_DIR/scripts/run_two_federate_suite.py" "$@"
+    ;;
+  *)
+    echo "error: unknown subcommand: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from hla2010.backends.base import BackendUnavailableError
+from hla2010_rti_java_common import BackendUnavailableError
 from hla2010_rti_runtime_common import RuntimeProcess, reserve_tcp_port, wait_for_tcp_listener
 
 

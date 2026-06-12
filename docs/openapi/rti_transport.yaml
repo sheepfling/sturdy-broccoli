@@ -5,7 +5,8 @@ info:
   description: >
     Typed transport envelope for backend adapters. This schema is intentionally
     narrow so generated clients can map directly to the transport request and
-    response shapes used by hla2010.backends.transport and the REST transport.
+    response shapes used by hla2010_rti_transport_common.transport and the
+    REST transport.
 servers:
   - url: http://localhost
 paths:

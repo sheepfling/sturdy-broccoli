@@ -34,14 +34,14 @@ show_hint "platform" "$(uname -s -r -m)"
 
 if [[ ! -x "$VENV_PYTHON" ]]; then
   show_hint "python env" "blocked: missing .venv"
-  show_hint "next step" "./scripts/bootstrap_profile.sh certi or ./tools/certi-easy install"
+  show_hint "next step" "./tools/bootstrap certi or ./tools/certi-easy install"
   show_hint "result" "not ready; bootstrap Python first"
   exit 1
 fi
 
 show_hint "python env" "ok: $VENV_PYTHON"
 
-if "$VENV_PYTHON" "$ROOT_DIR/scripts/check_certi_preflight.py" "$@"; then
+if hla2010_shell_run_workspace_python "$VENV_PYTHON" "$ROOT_DIR/scripts/check_certi_preflight.py" "$@"; then
   exit 0
 fi
 

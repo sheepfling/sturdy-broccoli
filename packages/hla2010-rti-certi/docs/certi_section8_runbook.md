@@ -68,9 +68,9 @@ installed paths printed first so you can see what it is about to use.
 The lower-level scripts still exist, but they are for targeted debugging and
 matrix work:
 
-- `scripts/rebuild_certi.sh`
-- `scripts/rebuild_certi_upstream.sh`
-- `scripts/ci/vendor_runtime_smoke.sh`
+- `./tools/certi-easy build patched`
+- `./tools/certi-easy build upstream`
+- `./tools/vendor-green certi-patched`
 
 Use those when you are drilling into one baseline or one clause family.
 
@@ -139,8 +139,8 @@ Required markers:
 You can validate that runner state directly with:
 
 ```bash
-python3 scripts/ci/check_vendor_runtime_ci_state.py --profile certi --json
-python3 scripts/ci/check_vendor_runtime_ci_state.py --profile matrix --json
+./tools/vendor-state ci-state --profile certi --json
+./tools/vendor-state ci-state --profile matrix --json
 ```
 
 Even without `--json-file`, `./tools/certi-easy preflight` now persists the default
@@ -171,7 +171,7 @@ matrices instead of the easy path:
 python3 -m pytest -q tests/time/test_section8_backend_matrix.py
 python3 -m pytest -q tests/vendors/test_certi_real_backend_matrix.py
 python3 -m pytest -q tests/vendors/test_certi_real_backend_ownership_matrix.py
-./scripts/ci/section8_backend_matrix_gate.sh
+./tools/section8-gate
 ```
 
 Those are not the first commands a junior should start with, and they are not

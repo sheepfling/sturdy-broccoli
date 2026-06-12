@@ -5,24 +5,25 @@ import uuid
 
 import pytest
 
-from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.backends.base import BackendUnavailableError, make_rti_ambassador
+from hla2010_rti_backend_common import RecordingFederateAmbassador
+from hla2010_rti_backend_common import BackendUnavailableError, make_rti_ambassador
 from hla2010.enums import ResignAction
-from hla2010.rti import create_rti_ambassador
+from hla2010_rti_runtime_common import create_rti_ambassador
 from hla2010_rti_java_common.java_shim_factory import create_shared_java_shim_backend
 from hla2010_rti_java_common.java_shim_kernel import SharedJavaShimKernel
-from hla2010_verification_harness.scenario_exchange import (
-    TwoFederateExchangeConfig,
-    assert_two_federate_exchange_callback_history,
-    run_two_federate_exchange_scenario,
-)
-from hla2010_verification_harness.scenario_ownership import (
+from hla2010_verification_harness import (
     NegotiatedOwnershipScenarioConfig,
     OwnershipScenarioConfig,
+    SupportServicesScenarioConfig,
+    SynchronizationScenarioConfig,
+    TwoFederateExchangeConfig,
+    assert_two_federate_exchange_callback_history,
+    run_support_factory_and_decode_scenario,
+    run_two_federate_exchange_scenario,
     run_attribute_ownership_scenario,
     run_negotiated_attribute_ownership_scenario,
+    run_synchronization_scenario,
 )
-from hla2010_verification_harness.scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 from hla2010_rti_certi.real_rti_certi import discover_certi_smoke_fom, launch_certi_rtig
 from tests.vendors.runtime_support import cleanup_federation, close_all, require_vendor_preflight, terminate_all, udp_port_pair
@@ -185,6 +186,49 @@ def test_inprocess_java_shim_synchronization_scenario(profile: str):
 
 
 @pytest.mark.parametrize("profile", ["jpype", "py4j"])
+def test_inprocess_java_shim_support_factory_and_decode_scenario(profile: str):
+    kernel = SharedJavaShimKernel()
+    rti = make_rti_ambassador(create_shared_java_shim_backend(profile, kernel))
+    federate = RecordingFederateAmbassador()
+    config = SupportServicesScenarioConfig(
+        federation_name=f"java-support-{profile}-{uuid.uuid4().hex[:8]}",
+        fom_modules=(),
+        logical_time_implementation_name="HLAinteger64Time",
+        object_class_name="HLAobjectRoot.DemoObject",
+        attribute_name="Payload",
+        interaction_class_name="HLAinteractionRoot.DemoInteraction",
+        parameter_name="Message",
+        object_instance_name=f"java-support-{profile}-Object-1",
+        include_decode_support=False,
+        include_factory_support=False,
+        include_order_support=False,
+        include_transport_support=False,
+    )
+    try:
+        summary = run_support_factory_and_decode_scenario(
+            rti,
+            config=config,
+            federate=federate,
+        )
+        assert summary["lookup_summary"]["federate_name"] == config.federate_name
+        assert summary["lookup_summary"]["object_class_name"] == config.object_class_name
+        assert summary["lookup_summary"]["attribute_name"] == config.attribute_name
+        assert summary["lookup_summary"]["interaction_class_name"] == config.interaction_class_name
+        assert summary["lookup_summary"]["parameter_name"] == config.parameter_name
+        assert summary["lookup_summary"]["object_instance_name"] == config.object_instance_name
+        assert summary["lookup_summary"]["object_instance_handle"] == summary["object_instance"]
+        assert summary["lookup_summary"]["known_object_class"] == summary["object_class"]
+        cleanup_federation(
+            config.federation_name,
+            destroyer=rti,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            disconnect_rtis=(rti,),
+        )
+    finally:
+        close_all(rti)
+
+
+@pytest.mark.parametrize("profile", ["jpype", "py4j"])
 def test_inprocess_java_shim_ownership_scenario(profile: str):
     kernel = SharedJavaShimKernel()
     owner = make_rti_ambassador(create_shared_java_shim_backend(profile, kernel))
@@ -207,7 +251,7 @@ def test_inprocess_java_shim_ownership_scenario(profile: str):
             acquirer_federate=acquirer_fed,
         )
         assert summary["acquired"].args[0] == summary["object_instance"]
-        assert owner.get_federate_name(summary["informed"].args[2]) == config.acquirer_name
+        assert summary["informed_federate_name"] == config.acquirer_name
         cleanup_federation(
             config.federation_name,
             destroyer=owner,

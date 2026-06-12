@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from hla2010.rti import RTIBackendPlugin
+from hla2010_rti_backend_common.plugin_api import RTIBackendPlugin
 
 
 def _java_shim_backend_factory(adapter: str, options: dict[str, Any]):

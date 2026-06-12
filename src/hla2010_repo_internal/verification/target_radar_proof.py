@@ -189,7 +189,7 @@ def _write_markdown(path: Path, summary: Mapping[str, Any], paths: TargetRadarPr
             "",
             "## Re-run",
             "",
-            "`./scripts/ci/target_radar_proof.sh`",
+            "`./tools/target-radar proof`",
         ]
     )
     path.write_text("\n".join(lines) + "\n")

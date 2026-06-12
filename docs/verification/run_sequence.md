@@ -17,7 +17,7 @@ Use it when you want the whole lifecycle in one order:
 Canonical command:
 
 ```bash
-./scripts/ci/full_sequence.sh
+./tools/python verify
 ```
 
 Canonical order of the underlying steps:

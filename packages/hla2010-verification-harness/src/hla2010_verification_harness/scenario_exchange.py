@@ -1,13 +1,11 @@
 """Two-federate exchange scenario root."""
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from typing import Any
 
-from hla2010.backends.base import UnsupportedBackendService
 from hla2010.enums import CallbackModel, OrderType
 from hla2010.handles import FederateHandle
-from hla2010.time import HLAinteger64Interval, HLAinteger64Time
+from hla2010_rti_backend_common import UnsupportedBackendService
 from .scenario_support import (
     drain_callbacks_pair,
     order_value,
@@ -19,6 +17,7 @@ from .scenario_exchange_history import (
     assert_two_federate_exchange_callback_history,
     run_exchange_round,
 )
+from .scenario_exchange_types import ExchangeRoundConfig, TwoFederateExchangeConfig
 
 
 def _try_set_timestamp_order(
@@ -39,45 +38,6 @@ def _try_set_timestamp_order(
         publisher_interaction,
         OrderType.TIMESTAMP,
     )
-
-
-@dataclass(frozen=True)
-class TwoFederateExchangeConfig:
-    federation_name: str = "VendorExchangeFederation"
-    fom_modules: tuple[Any, ...] = field(default_factory=tuple)
-    logical_time_implementation_name: str | None = None
-    publisher_name: str = "Publisher"
-    subscriber_name: str = "Subscriber"
-    federate_type: str = "SmokeFederate"
-    object_class_name: str = "HLAobjectRoot.DemoObject"
-    attribute_name: str = "Payload"
-    interaction_class_name: str = "HLAinteractionRoot.DemoInteraction"
-    parameter_name: str = "Message"
-    object_instance_name: str = "DemoObject-1"
-    attribute_payload: bytes = b"attribute-bytes"
-    attribute_tag: bytes = b"update-tag"
-    interaction_payload: bytes = b"hello"
-    interaction_tag: bytes = b"interaction-tag"
-    enable_time_management: bool = False
-    lookahead: Any = HLAinteger64Interval(1)
-    advance_time: Any = HLAinteger64Time(10)
-    timestamped_attribute_payload: bytes = b"attribute-tso"
-    timestamped_attribute_tag: bytes = b"update-tso"
-    timestamped_attribute_time: Any = HLAinteger64Time(5)
-    timestamped_interaction_payload: bytes = b"hello-tso"
-    timestamped_interaction_tag: bytes = b"interaction-tso"
-    timestamped_interaction_time: Any = HLAinteger64Time(6)
-    delete_tag: bytes = b"delete-tag"
-
-
-@dataclass(frozen=True)
-class ExchangeRoundConfig:
-    attribute_payload: bytes
-    attribute_tag: bytes
-    interaction_payload: bytes
-    interaction_tag: bytes
-    attribute_time: Any | None = None
-    interaction_time: Any | None = None
 
 
 def run_two_federate_exchange_scenario(
@@ -143,7 +103,7 @@ def run_two_federate_exchange_scenario(
     )
     discover = discovers[-1] if len(discovers) > discover_baseline else None
     assert discover is not None
-    discovered_object, discovered_class, discovered_name = discover.args
+    discovered_object, discovered_class, discovered_name = discover.args[:3]
     assert discovered_class == subscriber_class
     assert discovered_name == config.object_instance_name
     assert subscriber_rti.get_object_instance_handle(config.object_instance_name) == discovered_object

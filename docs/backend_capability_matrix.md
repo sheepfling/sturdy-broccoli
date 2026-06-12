@@ -69,7 +69,7 @@ Primary anchors:
 
 - [vendor_parity_artifacts.md](vendor_parity_artifacts.md)
 - [test_vendor_parity_artifacts.py](../tests/scenarios/test_vendor_parity_artifacts.py)
-- [run_vendor_parity_artifacts.py](../scripts/run_vendor_parity_artifacts.py)
+- [`./tools/vendor-parity`](../tools/vendor-parity)
 
 ## Notes
 

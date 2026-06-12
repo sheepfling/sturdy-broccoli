@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+import hla2010.fom as fom_module
 from hla2010.encoding import HLAboolean, HLAfixedArray, HLAfixedRecord, HLAinteger32BE
 from hla2010.exceptions import CouldNotDecode
 from hla2010.fom import (
@@ -116,6 +117,18 @@ def test_parse_standard_mim_xml_exposes_mim_content_and_merge_summary():
     assert "HLAreliable" in catalog.transportation_names
     assert "HLAbestEffort" in catalog.transportation_names
     assert "Vec3Float64BE" in catalog.datatype_names
+
+
+def test_schema_validation_requires_lxml_only_when_invoked(monkeypatch) -> None:
+    monkeypatch.setattr(fom_module, "LET", None)
+    fom_module._xml_schema.cache_clear()
+
+    try:
+        assert parse_fom_xml(TARGET_RADAR_FOM).name == "Target Radar FOM Module"
+        with pytest.raises(FOMResolutionError, match="optional 'lxml' dependency"):
+            validate_fom_xml_schema(TARGET_RADAR_FOM, profile="dif")
+    finally:
+        fom_module._xml_schema.cache_clear()
 
 
 def test_parse_fom_xml_requires_and_preserves_model_identification_metadata(tmp_path: Path):

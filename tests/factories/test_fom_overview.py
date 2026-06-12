@@ -2,10 +2,9 @@ from __future__ import annotations
 
 import json
 import subprocess
-import sys
 from pathlib import Path
 
-from hla2010.fom_overview import build_fom_overview, write_fom_overview, write_fom_overview_html
+from hla2010_repo_internal.fom_overview import build_fom_overview, write_fom_overview, write_fom_overview_html
 
 
 def test_generate_fom_overview_writes_merged_target_radar_summary(tmp_path):
@@ -18,8 +17,7 @@ def test_generate_fom_overview_writes_merged_target_radar_summary(tmp_path):
     output_dir = tmp_path / "fom-overview"
     subprocess.run(
         [
-            sys.executable,
-            "scripts/generate_fom_overview.py",
+            "tools/fom-overview",
             "TargetRadarFOMmodule.xml",
             "--output-dir",
             str(output_dir),

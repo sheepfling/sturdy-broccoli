@@ -5,14 +5,14 @@ from concurrent import futures
 import grpc
 import pytest
 
-from hla2010.runtime_api import FederateAmbassador
-from hla2010.backends.base import make_rti_ambassador
-from hla2010.backends.grpc_transport import GrpcTransport, GrpcTransportConfig
-from hla2010.backends.grpc_transport import rti_transport_pb2 as pb2
-from hla2010.backends.grpc_transport import rti_transport_pb2_grpc as pb2_grpc
-from hla2010.backends.transport import TransportRequest
+from hla2010.spec import FederateAmbassadorSpec
+from hla2010_rti_backend_common import make_rti_ambassador
+from hla2010_rti_transport_grpc import GrpcTransport, GrpcTransportConfig
+from hla2010_rti_transport_grpc import rti_transport_pb2 as pb2
+from hla2010_rti_transport_grpc import rti_transport_pb2_grpc as pb2_grpc
+from hla2010_rti_transport_common.transport import TransportRequest
 from hla2010.enums import CallbackModel
-from hla2010.rti import create_backend
+from hla2010_rti_runtime_common import create_backend
 
 pytestmark = pytest.mark.requires_loopback_server
 
@@ -70,7 +70,7 @@ def test_grpc_transport_registers_with_backend_factory():
         rti = make_rti_ambassador(backend)
 
         assert rti.getHLAversion() == "HLA 1516.1-2010"
-        rti.connect(FederateAmbassador(), CallbackModel.HLA_EVOKED)
+        rti.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
         assert _GrpcServicer.requests[0].command == "GET_HLA_VERSION"
         assert _GrpcServicer.requests[1].command == "CONNECT"
     finally:

@@ -11,12 +11,8 @@ The stricter package dependency rules live in
 
 ## Facades
 
-- `hla2010/rti.py`: top-level backend and transport selection facade.
-- `hla2010/backends/python/`: compatibility facades for the split pure-Python backend.
-- `hla2010/backends/conversion.py`: compatibility facade for split backend conversion support.
-- `hla2010/backends/java_common.py`: compatibility facade for split shared Java RTI support.
-- `hla2010/real_rti_process.py`: compatibility facade for split runtime process helpers.
-- `hla2010/real_rti_certi.py`, `hla2010/real_rti_pitch.py`, `hla2010/real_rti_portico.py`: compatibility facades for split vendor runtime packages.
+- `hla2010/rti.py`: temporary top-level backend discovery and ambassador-creation compatibility facade.
+- `hla2010/runtime_api.py` and `hla2010/api.py`: root runtime-facing compatibility layer over the clean spec contracts.
 
 These facade modules are workspace-stable import paths. They are not counted as
 package-owned implementation roots for packages marked `implementation-moved`.
@@ -65,8 +61,6 @@ This layer contains reusable backend mechanics that should not be duplicated acr
 
 The testing package mirrors the same structure where feasible:
 
-- compatibility facade: `scenarios.py`
-- root compatibility facades: `scenario_basic.py`, `scenario_exchange.py`, `scenario_exchange_history.py`, `scenario_sync.py`, `scenario_ownership.py`, `scenario_support.py`
 - canonical generic scenario bodies: `packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_*.py`
 - Java-shaped shim support: `packages/hla2010-rti-java-common/src/hla2010_rti_java_common/java_shim_*.py`
 - repo-internal target/radar suite coordinator: `src/hla2010_repo_internal/verification/two_federate_suite_runner.py`
@@ -80,14 +74,14 @@ installable package dependencies.
 ## Factories And Registries
 
 - `packages/hla2010-rti-python/src/hla2010_rti_python/factory.py`: pure-Python backend constructors.
-- `hla2010/rti.py`: `register_backend_factory(...)` and `register_transport_factory(...)`.
+- `hla2010/rti.py`: workspace-facing backend discovery and ambassador-construction helpers.
 - `packages/hla2010-rti-certi/src/hla2010_rti_certi/certi/plugin.py`: CERTI backend plugin descriptors.
 
 The rule is that new backend kinds or transport kinds should register themselves instead of extending a central switchboard.
 
 ## Optional Transport And Runtime Adapters
 
-- `hla2010/backends/transport.py`: typed transport request/response boundary.
+- `packages/hla2010-rti-transport-common/src/hla2010_rti_transport_common/transport.py`: typed transport request/response boundary.
 - `packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/conversion.py`: shared backend conversion and native-handle policy.
 - `packages/hla2010-rti-java-common/src/hla2010_rti_java_common/java_common.py`: shared Java bridge-independent adapter policy.
 - `packages/hla2010-rti-runtime-common/src/hla2010_rti_runtime_common/real_rti_process.py`: shared vendor runtime-process lifecycle and loopback TCP policy.
@@ -103,7 +97,10 @@ The rule is that new backend kinds or transport kinds should register themselves
 
 The development goal is that a federate written against `hla2010` runs against the same ambassador API whether the backend is pure Python, CERTI-backed, JPype-backed, or Py4J-backed. REST and gRPC are transport options underneath that backend-neutral surface, not separate application APIs.
 
-The legacy root transport modules now remain only as compatibility facades over the dedicated transport packages.
+The remaining documented root facade is intentionally narrow: `hla2010.rti`
+stays as a temporary root-facing backend discovery and ambassador-creation
+compatibility surface, while shared adapter primitives and plugin contracts
+live only in `hla2010_rti_backend_common`.
 
 ### Transport Artifact Policy
 

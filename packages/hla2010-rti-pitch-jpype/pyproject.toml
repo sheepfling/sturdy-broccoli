@@ -8,7 +8,7 @@ version = "0.13.0"
 description = "Pitch Java RTI JPype backend plugin for hla2010-spec"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["hla2010-spec==0.13.0", "hla2010-rti-java-jpype==0.13.0", "hla2010-rti-pitch-common==0.13.0"]
+dependencies = ["hla2010-spec==0.13.0", "hla2010-rti-java-common==0.13.0", "hla2010-rti-java-jpype==0.13.0", "hla2010-rti-pitch-common==0.13.0"]
 
 [project.optional-dependencies]
 test = ["pytest"]

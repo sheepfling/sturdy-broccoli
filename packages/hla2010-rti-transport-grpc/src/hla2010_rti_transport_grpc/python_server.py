@@ -8,9 +8,9 @@ from typing import Any, Mapping
 from hla2010_rti_transport_common.hosted_server import HostedRTICommandProcessor
 
 from hla2010.exceptions import RTIexception
-from hla2010.rti import create_rti_ambassador
+from hla2010_rti_runtime_common import create_rti_ambassador
 
-from . import rti_transport_pb2_grpc as pb2_grpc
+import hla2010_rti_transport_grpc.rti_transport_pb2_grpc as pb2_grpc
 from .client import GrpcTransportClientAdapter
 
 try:  # pragma: no cover - import guarded for optional dependency

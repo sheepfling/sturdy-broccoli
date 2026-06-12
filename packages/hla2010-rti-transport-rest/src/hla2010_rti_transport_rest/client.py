@@ -7,7 +7,7 @@ from dataclasses import asdict, is_dataclass
 from enum import Enum
 from typing import Any, Mapping, cast
 
-from hla2010.backends.transport import TransportError, TransportRequest, TransportResponse
+from hla2010_rti_transport_common import TransportError, TransportRequest, TransportResponse
 
 
 class RestTransportClientAdapter:

@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import importlib
 from pathlib import Path
 
-from hla2010.rti import RTIBackendPlugin
+from hla2010_rti_backend_common import RTIBackendPlugin
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -12,33 +13,26 @@ PYTHON_RTI_SRC = ROOT / "packages" / "hla2010-rti-python" / "src"
 def test_split_python_rti_package_exports_backend_surface():
     assert PYTHON_RTI_SRC.exists()
     import hla2010_rti_python
-    from hla2010.backends.python import InMemoryRTIEngine as OldEngine
-    from hla2010.backends.python import PythonRTIBackend as OldBackend
-    from hla2010.backends.python import PythonRTIConfig as OldConfig
 
     backend = hla2010_rti_python.create_python_backend()
     assert backend.info.kind == "python/in-memory"
     assert hla2010_rti_python.rti_ambassador().backend_info.name == "python-inmemory-rti"
-    assert hla2010_rti_python.InMemoryRTIEngine is OldEngine
-    assert hla2010_rti_python.PythonRTIBackend is OldBackend
-    assert hla2010_rti_python.PythonRTIConfig is OldConfig
+    assert hla2010_rti_python.prepare_python_two_federate_profile().__class__.__name__ == "InMemoryRTIEngine"
 
 
-def test_legacy_python_backend_modules_are_compatibility_facades():
-    from hla2010.backends.python.backend import PythonRTIBackend as OldBackend
-    from hla2010.backends.python.engine import InMemoryRTIEngine as OldEngine
-    from hla2010.backends.python.factory import create_python_backend as old_create_backend
-    from hla2010.backends.python.state import MOM_FEDERATE_CLASS, PythonRTIConfig as OldConfig
-    from hla2010_rti_python.backend import PythonRTIBackend
-    from hla2010_rti_python.engine import InMemoryRTIEngine
-    from hla2010_rti_python.factory import create_python_backend
-    from hla2010_rti_python.state import PythonRTIConfig
-
-    assert OldBackend is PythonRTIBackend
-    assert OldEngine is InMemoryRTIEngine
-    assert OldConfig is PythonRTIConfig
-    assert old_create_backend is create_python_backend
-    assert MOM_FEDERATE_CLASS == "HLAobjectRoot.HLAmanager.HLAfederate"
+def test_legacy_python_backend_modules_are_removed():
+    for module_name in (
+        "hla2010.backends.python",
+        "hla2010.backends.python.backend",
+        "hla2010.backends.python.engine",
+        "hla2010.backends.python.factory",
+        "hla2010.backends.python.state",
+    ):
+        try:
+            importlib.import_module(module_name)
+        except ModuleNotFoundError:
+            continue
+        raise AssertionError(f"legacy compatibility module still imports: {module_name}")
 
 
 def test_split_python_rti_package_submodules_are_public():
@@ -46,10 +40,12 @@ def test_split_python_rti_package_submodules_are_public():
     from hla2010_rti_python.engine import InMemoryRTIEngine
     from hla2010_rti_python.factory import create_python_backend
     from hla2010_rti_python.state import PythonRTIConfig
+    from hla2010_rti_python.testing_policy import prepare_python_two_federate_profile
 
     backend = create_python_backend(engine=InMemoryRTIEngine(), config=PythonRTIConfig())
     assert isinstance(backend, PythonRTIBackend)
     assert backend.info.kind == "python/in-memory"
+    assert isinstance(prepare_python_two_federate_profile(), InMemoryRTIEngine)
 
 
 def test_split_python_rti_package_plugin_descriptor_creates_backend():

@@ -10,8 +10,8 @@ spec without reading the full workspace layout first.
 - package-owned implementations: `packages/*/src/...`
 
 The installable root owns the abstract API surface and spec-facing support
-modules. The workspace facade keeps stable imports and compatibility routing
-across the split packages.
+modules. The workspace facade keeps stable imports and only narrow documented
+temporary compatibility routing across the split packages.
 
 ## Canonical Files
 
@@ -22,7 +22,7 @@ across the split packages.
 - [`../src/hla2010/spec_inventory.py`](../src/hla2010/spec_inventory.py): plain-text method inventory used by the spec layer
 - [`../src/hla2010/spec_sources.py`](../src/hla2010/spec_sources.py): readable Java/C++ source locations surfaced in docstrings
 - [`../src/hla2010/spec_refs.py`](../src/hla2010/spec_refs.py): clause and service references used for traceability
-- [`../src/hla2010/rti.py`](../src/hla2010/rti.py): backend registry and convenience constructors
+- [`../src/hla2010/rti.py`](../src/hla2010/rti.py): temporary backend-discovery and ambassador-factory compatibility facade over the split runtime-common package
 
 ## Import Table
 
@@ -56,6 +56,7 @@ from hla2010.runtime_api import RTIambassador, FederateAmbassador
 - `src/hla2010/spec/__init__.py` exposes the abstract base classes and prototypes.
 - `src/hla2010/runtime_api.py` keeps the runtime adapters working without forcing callers onto raw source-derived names.
 - `src/hla2010/api.py` remains as a compatibility shim for older imports.
+- `src/hla2010/rti.py` remains only as a temporary documented compatibility facade for backend discovery, backend selection, and ambassador creation while backend contracts and runtime internals live in split packages.
 - `src/hla2010/spec_inventory.py`, `src/hla2010/spec_sources.py`, and `src/hla2010/spec_refs.py` keep source mappings readable rather than hiding them in opaque blobs.
 
 That keeps the spec-like surface clean while still preserving the source

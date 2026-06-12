@@ -1,14 +1,13 @@
 from __future__ import annotations
 
-from hla2010.runtime_api import FederateAmbassador
-from hla2010.backends.base import make_rti_ambassador
+from hla2010.spec import FederateAmbassadorSpec
+from hla2010_rti_backend_common import make_rti_ambassador
 from hla2010_rti_certi import CERTIBackend, CERTIConfig
 from hla2010_rti_certi.certi.service_adapter import CERTIBackend as PackageCERTIBackend
 from hla2010_rti_certi.certi.transport import CERTITransport, CERTITransportProtocol
-from hla2010.backends.transport import RTITransport
-from hla2010.backends.transport import TransportRequest, TransportResponse
+from hla2010_rti_transport_common.transport import RTITransport, TransportRequest, TransportResponse
 from hla2010.enums import CallbackModel
-from hla2010.rti import RTITransportSpec, create_backend, register_transport_factory
+from hla2010_rti_runtime_common import RTITransportSpec, create_backend, register_transport_factory
 
 
 class FakeTransport(RTITransport):
@@ -39,7 +38,7 @@ def test_certi_backend_can_run_against_an_injected_transport():
     assert transport.started is True
     assert rti.getHLAversion() == "HLA 1516.1-2010"
 
-    rti.connect(FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    rti.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
     assert transport.requests[0][0] == "GET_HLA_VERSION"
     assert transport.requests[1][0] == "CONNECT"
     assert transport.requests[1][1] == (CallbackModel.HLA_EVOKED.name, "")

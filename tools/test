@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/test [pytest-args...]
+
+Canonical local pytest wrapper:
+  ./tools/test
+  ./tools/test tests/test_operator_surface_policy.py
+
+This is the human-facing wrapper over `./scripts/ci/test.sh`.
+EOF
+}
+
+case "${1:-}" in
+  help|-h|--help)
+    usage
+    ;;
+  *)
+    exec bash "$ROOT_DIR/scripts/ci/test.sh" "$@"
+    ;;
+esac

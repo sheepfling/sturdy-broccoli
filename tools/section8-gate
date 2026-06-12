@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/section8-gate"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/section8-gate [args...]
+
+Canonical Section 8 backend-matrix gate:
+  ./tools/section8-gate
+
+This is the human-facing wrapper over `./scripts/ci/section8_backend_matrix_gate.sh`.
+EOF
+}
+
+case "${1:-run}" in
+  help|-h|--help)
+    usage
+    ;;
+  run)
+    shift
+    exec bash "$ROOT_DIR/scripts/ci/section8_backend_matrix_gate.sh" "$@"
+    ;;
+  *)
+    exec bash "$ROOT_DIR/scripts/ci/section8_backend_matrix_gate.sh" "$@"
+    ;;
+esac

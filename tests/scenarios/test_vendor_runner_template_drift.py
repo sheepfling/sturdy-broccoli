@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
+import sys
 from pathlib import Path
 
 import yaml
@@ -33,10 +35,10 @@ def test_write_vendor_runner_template_drift_emits_artifacts(tmp_path: Path) -> N
     assert "certi" in report
 
 
-def test_drift_script_prints_json(tmp_path: Path) -> None:
+def test_drift_script_bootstraps_source_checkout_and_prints_json(tmp_path: Path) -> None:
     result = subprocess.run(
         [
-            "python3",
+            sys.executable,
             "scripts/check_vendor_runner_template_drift.py",
             "--output-dir",
             str(tmp_path / "out"),
@@ -46,6 +48,7 @@ def test_drift_script_prints_json(tmp_path: Path) -> None:
         capture_output=True,
         text=True,
         check=False,
+        env={"PATH": os.environ.get("PATH", "")},
     )
 
     assert result.returncode == 0
@@ -65,6 +68,7 @@ def test_vendor_runtime_smoke_workflow_fans_out_explicit_probe_profiles() -> Non
         {"name": "pitch-save-restore-probe", "command": "./tools/pitch save-restore-probe", "ci_profile": "pitch"},
         {"name": "pitch-ddm-probe", "command": "./tools/pitch ddm-probe", "ci_profile": "pitch"},
         {"name": "pitch-negotiated-probe", "command": "./tools/pitch negotiated-probe", "ci_profile": "pitch"},
+        {"name": "pitch-lost-federate-probe", "command": "./tools/pitch lost-federate-probe", "ci_profile": "pitch"},
     ]
     steps = job["steps"]
     validate_step = next(step for step in steps if step.get("name") == "Validate vendor smoke runtime state")
@@ -91,6 +95,7 @@ def test_ci_workflow_has_repeated_probe_stability_job() -> None:
         {"name": "pitch-save-restore-probe", "command": "./tools/pitch save-restore-review 5"},
         {"name": "pitch-ddm-probe", "command": "./tools/pitch ddm-review 5"},
         {"name": "pitch-negotiated-probe", "command": "./tools/pitch negotiated-review 5"},
+        {"name": "pitch-lost-federate-probe", "command": "./tools/pitch lost-federate-review 5"},
     ]
     steps = job["steps"]
     run_step = next(step for step in steps if step.get("name") == "Run vendor probe review profile")

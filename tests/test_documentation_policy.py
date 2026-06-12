@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -30,27 +31,27 @@ EXPECTED_HEADINGS = {
 }
 EXPECTED_PATHS = {
     ROOT / "README.md": (
-        ROOT / "scripts/bootstrap_profile.sh",
-        ROOT / "scripts/bootstrap_python.sh",
+        ROOT / "tools/bootstrap",
         ROOT / "examples/target_radar_simulation.py",
         ROOT / "examples/backend_recording.py",
-        ROOT / "scripts/ci/test.sh",
+        ROOT / "tools/test",
     ),
     ROOT / "docs/first_run.md": (
-        ROOT / "scripts/bootstrap_profile.sh",
+        ROOT / "tools/bootstrap",
         ROOT / "examples/backend_recording.py",
         ROOT / "examples/target_radar_simulation.py",
     ),
     ROOT / "docs/python_environment.md": (
-        ROOT / "scripts/bootstrap_profile.sh",
-        ROOT / "scripts/bootstrap_python.sh",
+        ROOT / "tools/bootstrap",
         ROOT / "examples/target_radar_simulation.py",
-        ROOT / "scripts/run_two_federate_suite.py",
-        ROOT / "scripts/ci/test.sh",
+        ROOT / "tools/two-federate",
+        ROOT / "tools/test",
+        ROOT / "tools/python",
         ROOT / "tools/certi-easy",
         ROOT / "tools/pitch",
     ),
     ROOT / "docs/two_federate_quickstart.md": (
+        ROOT / "tools/two-federate",
         ROOT / "scripts/run_two_federate_suite.py",
         ROOT / "src/hla2010_repo_internal/verification/two_federate_suite_runner.py",
     ),
@@ -65,6 +66,18 @@ def test_markdown_links_are_valid() -> None:
     result = subprocess.run(
         [sys.executable, "scripts/ci/check_doc_links.py"],
         cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout or result.stderr
+
+
+def test_markdown_links_checker_bootstraps_from_outside_repo(tmp_path: Path) -> None:
+    result = subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "ci" / "check_doc_links.py")],
+        cwd=tmp_path,
+        env={"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")},
         capture_output=True,
         text=True,
         check=False,
@@ -103,7 +116,19 @@ def test_python_api_spec_matches_split_package_reality() -> None:
     assert "installable root: `hla2010-spec`" in text
     assert "workspace facade: `src/hla2010/`" in text
     assert "package-owned implementations: `packages/*/src/...`" in text
+    assert "temporary compatibility routing" in text
+    assert "temporary backend-discovery and ambassador-factory compatibility facade" in text
     assert "../src/hla2010/spec/__init__.py" in text
     assert "../packages/hla2010-spec/README.md" in text
     assert "../hla2010/spec/" not in text
     assert "hla2010.testing" not in text
+
+
+def test_repo_overview_docs_describe_root_namespace_as_core_plus_temporary_facades() -> None:
+    readme = _read(ROOT / "README.md")
+    packages_readme = _read(ROOT / "packages" / "README.md")
+
+    assert "`src/hla2010/` is the root Python package for the abstract/core API plus the one documented temporary compatibility facade `hla2010.rti`" in readme
+    assert "`hla2010/` is a narrow top-level shim area for plugin-facing glue" not in readme
+    assert "src/hla2010/          core API layer plus the temporary compatibility facade hla2010.rti" in readme
+    assert "`src/hla2010/` tree is the workspace facade used for stable imports, abstract\ncore API ownership, and only documented temporary compatibility routing." in packages_readme

@@ -46,7 +46,7 @@ Default discovery order:
 The normal local rebuild path is:
 
 ```bash
-./scripts/rebuild_certi.sh
+./tools/certi-easy build patched
 ```
 
 That script builds from `CERTI/` by default. Since `CERTI/` is vendored source
@@ -86,8 +86,8 @@ The current upstream GitHub baseline was cloned from
 Use these as the standard operator commands for CERTI evidence:
 
 ```bash
-./scripts/rebuild_certi.sh
-./scripts/rebuild_certi_upstream.sh
+./tools/certi-easy build patched
+./tools/certi-easy build upstream
 ./tools/certi-easy smoke patched
 ./tools/certi-easy smoke upstream
 ./tools/certi-easy smoke compare

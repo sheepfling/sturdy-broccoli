@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 from hla2010_repo_internal.verification.vendor_runtime_ci_state import (
@@ -97,10 +98,10 @@ def test_write_vendor_runtime_ci_state_emits_artifacts(monkeypatch, tmp_path: Pa
     assert "pitch-home" in report
 
 
-def test_ci_state_script_returns_nonzero_for_missing_runtime_state(tmp_path: Path) -> None:
+def test_ci_state_script_bootstraps_source_checkout_and_returns_nonzero_for_missing_runtime_state(tmp_path: Path) -> None:
     result = subprocess.run(
         [
-            "python3",
+            sys.executable,
             "scripts/ci/check_vendor_runtime_ci_state.py",
             "--profile",
             "all",
@@ -120,10 +121,10 @@ def test_ci_state_script_returns_nonzero_for_missing_runtime_state(tmp_path: Pat
     assert payload["classification"] == "invalid-runtime-state"
 
 
-def test_ci_state_script_writes_profile_specific_output_directory(tmp_path: Path) -> None:
+def test_ci_state_script_bootstraps_source_checkout_and_writes_profile_specific_output_directory(tmp_path: Path) -> None:
     result = subprocess.run(
         [
-            "python3",
+            sys.executable,
             "scripts/ci/check_vendor_runtime_ci_state.py",
             "--profile",
             "vendor-edge",

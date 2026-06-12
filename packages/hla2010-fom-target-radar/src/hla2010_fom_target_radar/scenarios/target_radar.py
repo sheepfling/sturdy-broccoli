@@ -14,13 +14,13 @@ from __future__ import annotations
 import math
 import struct
 from dataclasses import dataclass, field
+from importlib import import_module
 from typing import Any, Callable, Iterable, Mapping, Protocol
 
-from hla2010.runtime_api import FederateAmbassador
 from hla2010.enums import CallbackModel, ResignAction
 from hla2010.exceptions import FederatesCurrentlyJoined, FederationExecutionAlreadyExists, FederationExecutionDoesNotExist, RTIexception
 from hla2010.handles import AttributeHandle, InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle, ParameterHandle
-from hla2010.rti import create_python_pair, create_rti_ambassador
+from hla2010.spec import FederateAmbassadorSpec
 from hla2010.time import HLAinteger64Time
 
 TARGET_CLASS = "HLAobjectRoot.Target"
@@ -169,7 +169,7 @@ def _safe_payload(value: Any) -> Any:
     return repr(value)
 
 
-class TargetFederate(FederateAmbassador):
+class TargetFederate(FederateAmbassadorSpec):
     """Federate that owns one moving target object."""
 
     def __init__(
@@ -265,7 +265,7 @@ class RadarContact:
     rcs_square_meters: float | None = None
 
 
-class RadarFederate(FederateAmbassador):
+class RadarFederate(FederateAmbassadorSpec):
     """Federate that tracks targets and produces track data."""
 
     def __init__(self, *, name: str = "Radar-1", origin: Vec3 = Vec3(0.0, 0.0, 0.0)) -> None:
@@ -423,7 +423,7 @@ class RadarFederate(FederateAmbassador):
 def create_python_target_radar_pair() -> tuple[Any, Any]:
     """Create target/radar RTI ambassadors sharing one Python in-memory engine."""
 
-    return create_python_pair()
+    return import_module("hla2010_rti_python").create_python_pair()
 
 
 def _python_pair_factory() -> RtiFactory:

@@ -2,20 +2,24 @@
 from __future__ import annotations
 
 import argparse
+import sys
+import tomllib
 from pathlib import Path
-import site
+
+SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path.cwd()
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+def _bootstrap_source_checkout() -> None:
+    pyproject = tomllib.loads((SCRIPT_REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    source_roots = pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]
+    for root in reversed(source_roots):
+        source_path = str(SCRIPT_REPO_ROOT / root)
+        if source_path not in sys.path:
+            sys.path.insert(0, source_path)
 
 
-def _bootstrap_workspace_imports() -> None:
-    for source_root in (PROJECT_ROOT / "src", *sorted((PROJECT_ROOT / "packages").glob("*/src"))):
-        if source_root.is_dir():
-            site.addsitedir(str(source_root))
-
-
-_bootstrap_workspace_imports()
+_bootstrap_source_checkout()
 
 from hla2010_repo_internal.verification.vendor_parity_artifacts import write_vendor_parity_artifacts
 
@@ -23,13 +27,20 @@ from hla2010_repo_internal.verification.vendor_parity_artifacts import write_ven
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Write the harmonized vendor parity artifact packet.")
     parser.add_argument(
+        "--project-root",
+        type=Path,
+        default=PROJECT_ROOT,
+        help="Repository root used for default analysis artifact locations.",
+    )
+    parser.add_argument(
         "--output-dir",
-        default=str(PROJECT_ROOT / "analysis" / "vendor_parity_artifacts"),
         help="Directory for generated artifacts",
     )
     args = parser.parse_args(argv)
+    project_root = args.project_root.resolve()
+    output_dir = args.output_dir or str(project_root / "analysis" / "vendor_parity_artifacts")
 
-    paths = write_vendor_parity_artifacts(args.output_dir)
+    paths = write_vendor_parity_artifacts(output_dir)
     print(paths.summary_json)
     print(paths.artifact_manifest_csv)
     print(paths.report_markdown)

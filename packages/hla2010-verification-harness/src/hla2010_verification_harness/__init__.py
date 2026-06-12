@@ -1,18 +1,112 @@
 """Shared verification harness helpers for HLA workspace tests and packets."""
 
+from .startup import (
+    FederationStartupConfig,
+    achieve_startup_sync_point,
+    connect_create_join,
+    register_startup_sync_point,
+    synchronize_ready_to_run,
+)
 from .scenario_basic import run_basic_federate_scenario
-from .scenario_exchange import ExchangeRoundConfig, TwoFederateExchangeConfig, run_two_federate_exchange_scenario
+from .scenario_connection_lost import run_connection_lost_callback_scenario
+from .scenario_declaration import (
+    DeclarationManagementScenarioConfig,
+    run_declaration_invalid_attribute_publication_scenario,
+    run_declaration_management_scenario,
+    run_declaration_unpublish_rejection_scenario,
+    run_time_managed_declaration_independence_scenario,
+)
+from .scenario_discovery_class import (
+    DiscoveryClassScenarioConfig,
+    run_discovery_class_scenario,
+    write_hierarchy_fom,
+)
+from .scenario_discovery_metadata import run_discovery_metadata_callback_scenario
+from .scenario_ddm_object_regions import (
+    DdmDeclarationGatingScenarioConfig,
+    DdmObjectRegionLifecycleScenarioConfig,
+    run_ddm_declaration_gating_scenario,
+    run_ddm_object_region_lifecycle_scenario,
+)
+from .scenario_ddm_passive_regions import (
+    DdmPassiveRegionScenarioConfig,
+    run_ddm_passive_region_subscription_scenario,
+)
+from .scenario_exchange import run_two_federate_exchange_scenario
+from .scenario_exchange_types import ExchangeRoundConfig, TwoFederateExchangeConfig
 from .scenario_exchange_history import assert_two_federate_exchange_callback_history, run_exchange_round
+from .scenario_federation_lifecycle import (
+    FederationLifecycleScenarioConfig,
+    run_fom_integrity_negative_scenario,
+    run_fom_module_visibility_scenario,
+    run_multi_module_fom_visibility_scenario,
+    run_federation_lifecycle_negative_scenario,
+    run_federation_lifecycle_scenario,
+    run_federation_listing_scenario,
+    run_multi_participation_scenario,
+)
+from .scenario_join import JoinScenarioConfig, run_join_precondition_scenario
+from .scenario_local_delete import LocalDeleteScenarioConfig, run_local_delete_scenario
+from .scenario_lost_federate import (
+    ExternalLostFederateVictimSession,
+    LostFederateScenarioConfig,
+    run_external_lost_federate_observer_scenario,
+    run_lost_federate_mom_scenario,
+)
+from .scenario_name_reservation import NameReservationScenarioConfig, run_name_reservation_scenario
+from .scenario_request_attribute_value_update import (
+    RequestAttributeValueUpdateScenarioConfig,
+    run_request_attribute_value_update_routing_scenario,
+    run_request_attribute_value_update_scenario,
+)
+from .scenario_resign import (
+    ResignScenarioConfig,
+    run_disconnect_mom_cleanup_scenario,
+    run_resign_mom_cleanup_scenario,
+    run_resign_precondition_scenario,
+)
+from .scenario_save_restore import (
+    run_abort_save_exception_scenario,
+    run_restore_callback_policy_scenario,
+    run_restore_abort_exception_scenario,
+    run_restore_federate_local_state_scenario,
+    run_restore_object_state_scenario,
+    run_restore_request_precondition_scenario,
+    run_restore_participant_exception_scenario,
+    run_restore_round_trip_scenario,
+    run_resigned_federate_callback_silence_scenario,
+    SaveRestoreScenarioConfig,
+    run_save_participant_exception_scenario,
+    run_save_request_precondition_scenario,
+    run_restore_status_exception_scenario,
+    run_restore_abort_scenario,
+    run_restore_failure_scenario,
+    run_restore_request_failure_scenario,
+    run_scheduled_save_restore_time_state_scenario,
+    run_restore_transient_state_scenario,
+    run_save_abort_scenario,
+    run_save_failure_scenario,
+    run_save_restore_queued_callback_scenario,
+    run_save_status_exception_scenario,
+    run_save_restore_scenario,
+)
+from .scenario_support_services import SupportServicesScenarioConfig, run_support_factory_and_decode_scenario
 from .scenario_ownership import (
     NegotiatedOwnershipScenarioConfig,
+    NonOwnerUpdateScenarioConfig,
     OwnershipScenarioConfig,
     ReleaseRequestOwnershipScenarioConfig,
     probe_negotiated_attribute_ownership_offer,
     run_attribute_ownership_scenario,
+    run_attribute_ownership_query_callback_scenario,
+    run_attribute_ownership_unavailable_scenario,
     run_confirm_divestiture_negotiated_scenario,
+    run_non_owner_update_rejection_scenario,
     run_negotiated_attribute_ownership_scenario,
     run_release_request_ownership_scenario,
 )
+from .scenario_object_scope import ObjectScopeScenarioConfig, run_object_scope_relevance_scenario
+from .scenario_orphan_object import OrphanObjectScenarioConfig, run_orphan_object_lifecycle_scenario
 from .scenario_support import (
     DemoFederate,
     advance_time_beyond,
@@ -26,8 +120,37 @@ from .scenario_support import (
     wait_for_callback_count,
     wait_for_callback_count_pair,
 )
-from .section8_matrix import Section8MatrixConfig, run_section8_request_retraction_case, section8_matrix_config
-from .scenario_sync import SynchronizationScenarioConfig, run_synchronization_scenario
+from .section8_matrix import (
+    Section8MatrixConfig,
+    run_section8_available_and_flush_case,
+    run_section8_available_and_retraction_case,
+    run_section8_duplicate_enable_rejection_case,
+    run_section8_early_timestamp_send_case,
+    run_section8_order_override_case,
+    run_section8_ordering_and_query_case,
+    run_section8_request_retraction_case,
+    run_section8_state_services_case,
+    run_section8_tar_galt_boundary_case,
+    run_section8_time_bound_query_case,
+    section8_matrix_config,
+)
+from .scenario_sync import (
+    run_failed_federate_synchronization_scenario,
+    run_multiple_synchronization_points_scenario,
+    SynchronizationScenarioConfig,
+    run_late_join_synchronization_scenario,
+    run_synchronization_registration_failure_scenario,
+    run_synchronization_scenario,
+)
+from .scenario_transportation_type import (
+    TransportationTypeScenarioConfig,
+    run_transportation_type_rejection_scenario,
+    run_transportation_type_restore_persistence_scenario,
+    run_transportation_type_scenario,
+)
+from .scenario_timed_delete import TimedDeleteScenarioConfig, run_timed_delete_scenario
+from .scenario_update_rate import UpdateRateScenarioConfig, run_update_rate_scenario, write_update_rate_fom
+from .scenario_update_advisory import run_update_advisory_callback_scenario
 from .two_federate_suite_pairs import (
     SuiteRecordingFederateAmbassador,
     _cleanup_pair,
@@ -42,8 +165,8 @@ from .two_federate_suite_configs import (
     _sync_config,
 )
 from .two_federate_suite_runner import TwoFederateSuiteHooks, run_two_federate_suite_for_pair_factory
-from .two_federate_suite_scenarios import run_suite_ddm_scenario, run_suite_save_restore_scenario
-from .two_federate_suite_summary import _callback_rows, _jsonable, _profile_summary_rows
+from .two_federate_suite_scenarios import decode_handle_value_map, run_suite_ddm_scenario, run_suite_save_restore_scenario
+from .two_federate_suite_summary import _callback_rows, _jsonable, _profile_summary_rows, jsonable
 from .two_federate_suite_timeline import TimelineEvent, TimelineRecorder
 from .two_federate_suite_types import SuitePaths
 from .two_federate_suite_writers import (
@@ -61,12 +184,33 @@ __all__ = [
     "TimelineRecorder",
     "TwoFederateSuiteHooks",
     "DemoFederate",
+    "DeclarationManagementScenarioConfig",
+    "DdmDeclarationGatingScenarioConfig",
+    "DdmObjectRegionLifecycleScenarioConfig",
+    "DdmPassiveRegionScenarioConfig",
+    "DiscoveryClassScenarioConfig",
     "ExchangeRoundConfig",
+    "FederationLifecycleScenarioConfig",
+    "JoinScenarioConfig",
+    "LocalDeleteScenarioConfig",
+    "ExternalLostFederateVictimSession",
+    "LostFederateScenarioConfig",
+    "NameReservationScenarioConfig",
     "NegotiatedOwnershipScenarioConfig",
+    "NonOwnerUpdateScenarioConfig",
+    "ObjectScopeScenarioConfig",
+    "OrphanObjectScenarioConfig",
     "OwnershipScenarioConfig",
     "ReleaseRequestOwnershipScenarioConfig",
+    "ResignScenarioConfig",
+    "RequestAttributeValueUpdateScenarioConfig",
+    "SaveRestoreScenarioConfig",
+    "SupportServicesScenarioConfig",
     "Section8MatrixConfig",
     "SynchronizationScenarioConfig",
+    "TimedDeleteScenarioConfig",
+    "UpdateRateScenarioConfig",
+    "TransportationTypeScenarioConfig",
     "TwoFederateExchangeConfig",
     "_exchange_config",
     "_callback_rows",
@@ -81,22 +225,98 @@ __all__ = [
     "_sync_config",
     "advance_time_beyond",
     "assert_two_federate_exchange_callback_history",
+    "decode_handle_value_map",
     "drain_callbacks",
     "drain_callbacks_pair",
+    "jsonable",
+    "run_fom_integrity_negative_scenario",
     "order_value",
     "probe_negotiated_attribute_ownership_offer",
     "register_named_object_instance",
     "run_attribute_ownership_scenario",
+    "run_attribute_ownership_query_callback_scenario",
+    "run_attribute_ownership_unavailable_scenario",
     "run_basic_federate_scenario",
+    "run_connection_lost_callback_scenario",
+    "run_declaration_invalid_attribute_publication_scenario",
+    "run_declaration_management_scenario",
+    "run_declaration_unpublish_rejection_scenario",
+    "run_time_managed_declaration_independence_scenario",
+    "run_ddm_declaration_gating_scenario",
+    "run_ddm_object_region_lifecycle_scenario",
+    "run_ddm_passive_region_subscription_scenario",
+    "run_discovery_class_scenario",
+    "run_discovery_metadata_callback_scenario",
     "run_confirm_divestiture_negotiated_scenario",
     "run_exchange_round",
+    "run_fom_module_visibility_scenario",
+    "run_multi_module_fom_visibility_scenario",
+    "run_federation_lifecycle_negative_scenario",
+    "run_federation_lifecycle_scenario",
+    "run_federation_listing_scenario",
+    "run_multi_participation_scenario",
+    "run_join_precondition_scenario",
+    "run_local_delete_scenario",
+    "run_external_lost_federate_observer_scenario",
+    "run_failed_federate_synchronization_scenario",
+    "run_lost_federate_mom_scenario",
+    "run_multiple_synchronization_points_scenario",
+    "run_name_reservation_scenario",
+    "run_non_owner_update_rejection_scenario",
+    "run_object_scope_relevance_scenario",
+    "run_orphan_object_lifecycle_scenario",
     "run_negotiated_attribute_ownership_scenario",
     "run_release_request_ownership_scenario",
+    "run_request_attribute_value_update_routing_scenario",
+    "run_request_attribute_value_update_scenario",
+    "run_disconnect_mom_cleanup_scenario",
+    "run_resign_mom_cleanup_scenario",
+    "run_resign_precondition_scenario",
+    "run_resigned_federate_callback_silence_scenario",
+    "run_abort_save_exception_scenario",
+    "run_restore_callback_policy_scenario",
+    "run_restore_abort_exception_scenario",
+    "run_restore_federate_local_state_scenario",
+    "run_restore_object_state_scenario",
+    "run_restore_request_precondition_scenario",
+    "run_restore_participant_exception_scenario",
+    "run_restore_round_trip_scenario",
+    "run_restore_status_exception_scenario",
+    "run_restore_abort_scenario",
+    "run_restore_failure_scenario",
+    "run_restore_request_failure_scenario",
+    "run_scheduled_save_restore_time_state_scenario",
+    "run_restore_transient_state_scenario",
+    "run_save_participant_exception_scenario",
+    "run_save_request_precondition_scenario",
+    "run_save_abort_scenario",
+    "run_save_failure_scenario",
+    "run_save_restore_queued_callback_scenario",
+    "run_save_status_exception_scenario",
+    "run_save_restore_scenario",
+    "run_support_factory_and_decode_scenario",
+    "run_section8_available_and_flush_case",
+    "run_section8_available_and_retraction_case",
+    "run_section8_duplicate_enable_rejection_case",
+    "run_section8_early_timestamp_send_case",
+    "run_section8_order_override_case",
+    "run_section8_ordering_and_query_case",
+    "run_section8_state_services_case",
+    "run_section8_tar_galt_boundary_case",
+    "run_section8_time_bound_query_case",
     "run_suite_ddm_scenario",
     "run_suite_save_restore_scenario",
+    "run_late_join_synchronization_scenario",
+    "run_synchronization_registration_failure_scenario",
     "run_synchronization_scenario",
+    "run_timed_delete_scenario",
+    "run_transportation_type_rejection_scenario",
+    "run_transportation_type_restore_persistence_scenario",
+    "run_transportation_type_scenario",
     "run_two_federate_exchange_scenario",
     "run_two_federate_suite_for_pair_factory",
+    "run_update_rate_scenario",
+    "run_update_advisory_callback_scenario",
     "run_section8_request_retraction_case",
     "safe_evoke_callback",
     "safe_evoke_multiple_callbacks",
@@ -104,6 +324,8 @@ __all__ = [
     "wait_for_callback",
     "wait_for_callback_count",
     "wait_for_callback_count_pair",
+    "write_hierarchy_fom",
+    "write_update_rate_fom",
     "_write_callbacks_csv",
     "_write_json",
     "_write_markdown",

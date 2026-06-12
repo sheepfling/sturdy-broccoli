@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections import deque
 from typing import Any, Callable, Deque, Iterable, Mapping
 
-from hla2010_rti_java_common import JavaBridge
+from .java_common import JavaBridge
 from .java_shim_types import (
     JavaAttributeHandle,
     JavaByteArray,
@@ -18,6 +18,7 @@ from .java_shim_types import (
     JavaObjectClassHandle,
     JavaObjectInstanceHandle,
     JavaParameterHandle,
+    JavaRangeBounds,
     JavaRegionHandle,
     JavaTransportationTypeHandle,
     make_java_time,
@@ -320,6 +321,9 @@ class ShimJavaBridge(JavaBridge):
 
     def new_map(self, items: Iterable[tuple[Any, Any]]) -> dict[Any, Any]:
         return dict(items)
+
+    def range_bounds(self, value: Any) -> JavaRangeBounds:
+        return JavaRangeBounds(value.lower_bound, value.upper_bound)
 
     def simple_class_name(self, obj: Any) -> str | None:
         if isinstance(obj, JavaLikeObject):

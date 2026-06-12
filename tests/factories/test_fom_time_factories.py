@@ -1,11 +1,11 @@
-from hla2010.runtime_api import FederateAmbassador
-from hla2010.backends.base import Invocation
+from hla2010.spec import FederateAmbassadorSpec
+from hla2010_rti_backend_common import Invocation
 from hla2010_rti_java_common import JavaBridge, JavaValueConverter, resolve_java_invocation
+from hla2010_fom_target_radar.scenarios import target_radar_fom_path
 from hla2010.enums import CallbackModel, ResignAction
 from hla2010.handles import AttributeHandle, AttributeHandleSet, AttributeHandleValueMap, DimensionHandleSet
 from hla2010.raw_api import API_METADATA
-from hla2010.rti import create_rti_ambassador
-from hla2010.scenarios import target_radar_fom_path
+from hla2010_rti_runtime_common import create_rti_ambassador
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time
 
 TARGET_RADAR_FOM = target_radar_fom_path()
@@ -13,7 +13,7 @@ TARGET_RADAR_FOM = target_radar_fom_path()
 
 def test_python_rti_resolves_fom_path_and_uses_requested_time_factory():
     rti = create_rti_ambassador("python")
-    rti.connect(FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    rti.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
     rti.create_federation_execution("fom-time-fed", TARGET_RADAR_FOM, "HLAfloat64Time")
     rti.join_federation_execution("tester", "test", "fom-time-fed")
 
@@ -45,7 +45,7 @@ def test_python_rti_resolves_fom_path_and_uses_requested_time_factory():
 
 def test_python_rti_exposes_handle_set_and_map_factories():
     rti = create_rti_ambassador("python")
-    rti.connect(FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    rti.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
     rti.create_federation_execution("factory-fed", "TargetRadarFOMmodule.xml")
     rti.join_federation_execution("tester", "test", "factory-fed")
 

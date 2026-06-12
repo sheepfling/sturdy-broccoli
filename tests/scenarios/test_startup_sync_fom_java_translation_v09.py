@@ -2,16 +2,27 @@ from __future__ import annotations
 
 import pytest
 
-from hla2010.ambassadors import RecordingFederateAmbassador
+from hla2010_rti_backend_common import RecordingFederateAmbassador
 from hla2010_rti_java_common import JavaValueConverter
 from hla2010_rti_python import InMemoryRTIEngine, PythonRTIConfig
 from hla2010.enums import CallbackModel
 from hla2010.exceptions import NameNotFound
 from hla2010.handles import AttributeHandle, AttributeHandleValueMap, FederateHandleSet, ObjectInstanceHandle
-from hla2010.rti import create_rti_ambassador
-from hla2010.startup import FederationStartupConfig, connect_create_join, drain_callbacks, synchronize_ready_to_run
+from hla2010_rti_runtime_common import create_rti_ambassador
+from hla2010.types import RangeBounds
+from hla2010_verification_harness import (
+    SynchronizationScenarioConfig,
+    run_failed_federate_synchronization_scenario,
+    run_late_join_synchronization_scenario,
+)
+from hla2010_verification_harness.startup import (
+    FederationStartupConfig,
+    connect_create_join,
+    drain_callbacks,
+    synchronize_ready_to_run,
+)
 from hla2010_rti_java_common.java_shim_backend import ShimJavaBridge
-from hla2010_rti_java_common.java_shim_types import JavaByteArray, JavaLikeObject
+from hla2010_rti_java_common.java_shim_types import JavaByteArray, JavaLikeObject, JavaRangeBounds
 
 
 def _python_rti(engine: InMemoryRTIEngine, *, config: PythonRTIConfig | None = None):
@@ -21,37 +32,29 @@ def _python_rti(engine: InMemoryRTIEngine, *, config: PythonRTIConfig | None = N
 def test_whole_federation_synchronization_announces_late_joiner_before_completion():
     engine = InMemoryRTIEngine()
     r1, r2, r3 = (_python_rti(engine) for _ in range(3))
-    f1, f2, f3 = RecordingFederateAmbassador(), RecordingFederateAmbassador(), RecordingFederateAmbassador()
+    summary = run_late_join_synchronization_scenario(
+        r1,
+        r2,
+        r3,
+        config=SynchronizationScenarioConfig(
+            federation_name="late-sync-fed",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+            leader_name="Leader",
+            wing_name="Wing",
+            late_name="Late",
+            federate_type="Participant",
+            label="ReadyToRun",
+            tag=b"startup",
+        ),
+        leader_federate=RecordingFederateAmbassador(),
+        wing_federate=RecordingFederateAmbassador(),
+        late_federate=RecordingFederateAmbassador(),
+    )
 
-    r1.connect(f1, CallbackModel.HLA_EVOKED)
-    r2.connect(f2, CallbackModel.HLA_EVOKED)
-    r3.connect(f3, CallbackModel.HLA_EVOKED)
-    r1.create_federation_execution("late-sync-fed", "TargetRadarFOMmodule.xml")
-    r1.join_federation_execution("Leader", "Control", "late-sync-fed")
-    r2.join_federation_execution("Wing", "Participant", "late-sync-fed")
-
-    r1.register_federation_synchronization_point("ReadyToRun", b"startup")
-    drain_callbacks([r1, r2])
-    assert f1.callbacks_named("announceSynchronizationPoint")
-    assert f2.callbacks_named("announceSynchronizationPoint")
-
-    # Join before the original synchronization set has completed.  For a whole-
-    # federation synchronization point, the RTI must announce it to the late
-    # joiner and include that federate in the completion condition.
-    r3.join_federation_execution("Late", "Participant", "late-sync-fed")
-    drain_callbacks([r1, r2, r3])
-    assert f3.callbacks_named("announceSynchronizationPoint")
-
-    r1.synchronization_point_achieved("ReadyToRun")
-    r2.synchronization_point_achieved("ReadyToRun")
-    drain_callbacks([r1, r2, r3])
-    assert not f1.callbacks_named("federationSynchronized")
-
-    r3.synchronization_point_achieved("ReadyToRun")
-    drain_callbacks([r1, r2, r3])
-    assert f1.callbacks_named("federationSynchronized")
-    assert f2.callbacks_named("federationSynchronized")
-    assert f3.callbacks_named("federationSynchronized")
+    assert summary["late_announce"].args[:2] == ("ReadyToRun", b"startup")
+    assert summary["leader_sync"].args[0] == "ReadyToRun"
+    assert summary["wing_sync"].args[0] == "ReadyToRun"
+    assert summary["late_sync"].args[0] == "ReadyToRun"
 
 
 def test_strict_fom_loading_discovers_bundled_fom_and_rejects_unknown_names():
@@ -133,27 +136,28 @@ def test_java_converter_recognizes_vendor_handle_impl_names_and_typed_maps_sets(
 def test_synchronization_reports_failed_federates_and_removes_completed_point():
     engine = InMemoryRTIEngine()
     r1, r2 = _python_rti(engine), _python_rti(engine)
-    f1, f2 = RecordingFederateAmbassador(), RecordingFederateAmbassador()
+    summary = run_failed_federate_synchronization_scenario(
+        r1,
+        r2,
+        config=SynchronizationScenarioConfig(
+            federation_name="failed-sync-fed",
+            fom_modules=("TargetRadarFOMmodule.xml",),
+            leader_name="One",
+            wing_name="Two",
+            federate_type="Participant",
+            label="PreRun",
+            tag=b"startup",
+        ),
+        leader_federate=RecordingFederateAmbassador(),
+        wing_federate=RecordingFederateAmbassador(),
+        leader_success=True,
+        wing_success=False,
+    )
 
-    r1.connect(f1, CallbackModel.HLA_EVOKED)
-    r2.connect(f2, CallbackModel.HLA_EVOKED)
-    r1.create_federation_execution("failed-sync-fed", "TargetRadarFOMmodule.xml")
-    h1 = r1.join_federation_execution("One", "Participant", "failed-sync-fed")
-    h2 = r2.join_federation_execution("Two", "Participant", "failed-sync-fed")
-
-    r1.register_federation_synchronization_point("PreRun", b"startup")
-    drain_callbacks([r1, r2])
-    r1.synchronization_point_achieved("PreRun", True)
-    r2.synchronization_point_achieved("PreRun", False)
-    drain_callbacks([r1, r2])
-
-    sync1 = f1.last_callback("federationSynchronized")
-    sync2 = f2.last_callback("federationSynchronized")
-    assert sync1 is not None and sync2 is not None
-    assert sync1.args[0] == "PreRun"
+    sync1 = summary["leader_sync"]
     assert isinstance(sync1.args[1], FederateHandleSet)
-    assert h2 in sync1.args[1]
-    assert h1 not in sync1.args[1]
+    assert summary["wing_handle"] in sync1.args[1]
+    assert summary["leader_handle"] not in sync1.args[1]
     assert "PreRun" not in engine.federations["failed-sync-fed"].synchronization_points
 
 
@@ -217,3 +221,14 @@ def test_java_callback_dispatcher_uses_callback_metadata_for_typed_failed_set():
     assert record.args[0] == "ReadyToRun"
     assert isinstance(record.args[1], FederateHandleSet)
     assert len(record.args[1]) == 1
+
+
+def test_java_converter_round_trips_range_bounds():
+    converter = JavaValueConverter(ShimJavaBridge("jpype"))
+
+    native = converter.to_backend(RangeBounds(10, 20))
+    assert isinstance(native, JavaRangeBounds)
+    assert native.getLowerBound() == 10
+    assert native.getUpperBound() == 20
+
+    assert converter.from_backend(native, expected_type_name="RangeBounds") == RangeBounds(10, 20)

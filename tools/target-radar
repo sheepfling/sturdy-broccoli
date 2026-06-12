@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/target-radar"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/target-radar [matrix|proof|help] [args...]
+
+Canonical target/radar operator flows:
+  ./tools/target-radar matrix
+  ./tools/target-radar proof
+  ./tools/target-radar proof --backend python --proof-backend python
+
+This is the human-facing wrapper over the target/radar backend matrix and proof
+artifact generators under `scripts/`.
+EOF
+}
+
+python_bin="$(hla2010_shell_python_bin)"
+
+case "${1:-help}" in
+  help|-h|--help)
+    usage
+    ;;
+  matrix)
+    shift
+    if [[ "$#" -eq 0 ]]; then
+      "$python_bin" "$ROOT_DIR/scripts/run_target_radar_backend_matrix.py" --backend python
+    else
+      "$python_bin" "$ROOT_DIR/scripts/run_target_radar_backend_matrix.py" "$@"
+    fi
+    ;;
+  proof)
+    shift
+    if [[ "$#" -eq 0 ]]; then
+      "$python_bin" "$ROOT_DIR/scripts/run_target_radar_proof.py" --backend python --proof-backend python
+    else
+      "$python_bin" "$ROOT_DIR/scripts/run_target_radar_proof.py" "$@"
+    fi
+    ;;
+  *)
+    echo "error: unknown subcommand: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

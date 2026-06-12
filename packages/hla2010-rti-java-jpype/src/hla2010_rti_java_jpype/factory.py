@@ -1,7 +1,7 @@
 """Factory helpers for JPype-backed Java RTI backends."""
 from __future__ import annotations
 
-from hla2010.backends.base import BackendInfo, make_rti_ambassador
+from hla2010_rti_java_common import BackendInfo, make_rti_ambassador
 from .adapter import JPypeRTIBackend
 from .runtime import JPypeBridge, JPypeConfig
 

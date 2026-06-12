@@ -22,6 +22,7 @@ Keep verification docs in this order:
 ## Primary Entry Points
 
 - [../../requirements/README.md](../../requirements/README.md): seeded requirement sources and ID registry
+- [requirements_structure_packet.md](requirements_structure_packet.md): current packet explaining the requirements layout, bridge strategy, and pinned harmonization state
 - [requirements_hierarchy.md](requirements_hierarchy.md): L1/L2/L3 capability-feature-requirement hierarchy with test anchors
 - [callback_model_compliance.md](callback_model_compliance.md): callback delivery behavior, compliance boundary, and test evidence
 - [time_model_compliance.md](time_model_compliance.md): GALT, LITS, lookahead, and time-advance compliance proof

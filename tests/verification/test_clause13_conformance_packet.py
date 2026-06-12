@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 import hla2010
-from hla2010.clause13_conformance import (
+from hla2010_repo_internal.verification.clause13_conformance import (
     build_clause13_conformance_packet,
     write_clause13_conformance_packet_json,
     write_clause13_conformance_packet_markdown,
@@ -68,3 +71,16 @@ def test_clause13_conformance_markdown_is_committed():
     assert text.startswith(f"# Clause 13 Conformance Packet v{hla2010.__version__}")
     assert "## Federate conformance" in text
     assert "## RTI conformance" in text
+
+
+def test_clause13_generator_script_bootstraps_source_checkout():
+    result = subprocess.run(
+        [sys.executable, "scripts/generate_clause13_conformance_packet.py"],
+        cwd=REPO_ROOT,
+        env={"PATH": os.environ.get("PATH", "")},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr

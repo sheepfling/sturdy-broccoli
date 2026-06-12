@@ -344,6 +344,8 @@ jobs:
             command: ./tools/pitch ddm-review 5
           - name: pitch-negotiated-probe
             command: ./tools/pitch negotiated-review 5
+          - name: pitch-lost-federate-probe
+            command: ./tools/pitch lost-federate-review 5
     env:
       HLA2010_ENABLE_REAL_RTI_SMOKE: "1"
       HLA2010_CERTI_PATCHED_PREFIX: ${{ vars.HLA2010_CERTI_PATCHED_PREFIX }}

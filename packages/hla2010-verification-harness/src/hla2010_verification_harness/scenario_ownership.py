@@ -8,8 +8,12 @@ from typing import Any
 
 from hla2010.enums import CallbackModel
 from hla2010.exceptions import RTIexception
-from hla2010.handles import FederateHandle
+from hla2010.handles import AttributeHandle, FederateHandle, ObjectInstanceHandle
 from .scenario_support import drain_callbacks_pair, register_named_object_instance, wait_for_callback
+
+
+def _handle_value(value: Any) -> Any:
+    return getattr(value, "value", value)
 
 
 @dataclass(frozen=True)
@@ -55,6 +59,21 @@ class ReleaseRequestOwnershipScenarioConfig:
     request_tag: bytes = b"acquire-request"
     confirm_tag: bytes = b"confirm-tag"
     owner_action: Literal["deny", "confirm", "ifwanted"] = "ifwanted"
+
+
+@dataclass(frozen=True)
+class NonOwnerUpdateScenarioConfig:
+    federation_name: str = "JavaProfileNonOwnerUpdateFederation"
+    fom_modules: tuple[Any, ...] = field(default_factory=tuple)
+    logical_time_implementation_name: str | None = None
+    owner_name: str = "Owner"
+    observer_name: str = "Observer"
+    federate_type: str = "Participant"
+    object_class_name: str = "HLAobjectRoot.DemoObject"
+    attribute_name: str = "Payload"
+    object_instance_name: str = "NonOwnerUpdateObject-1"
+    illegal_payload: bytes = b"illegal-update"
+    illegal_tag: bytes = b"illegal-tag"
 
 
 def probe_negotiated_attribute_ownership_offer(
@@ -153,6 +172,7 @@ def run_attribute_ownership_scenario(
     assert informed.args[0] == object_instance
     assert informed.args[1] == owner_attr
     assert isinstance(informed.args[2], FederateHandle)
+    informed_federate_name = owner_rti.get_federate_name(informed.args[2])
     return {
         "owner_handle": owner_handle,
         "acquirer_handle": acquirer_handle,
@@ -165,6 +185,127 @@ def run_attribute_ownership_scenario(
         "not_owned": not_owned,
         "acquired": acquired,
         "informed": informed,
+        "informed_federate_name": informed_federate_name,
+    }
+
+
+def run_attribute_ownership_unavailable_scenario(
+    owner_rti: Any, acquirer_rti: Any, *, config: OwnershipScenarioConfig, owner_federate: Any, acquirer_federate: Any
+) -> dict[str, Any]:
+    owner_rti.connect(owner_federate, CallbackModel.HLA_EVOKED)
+    acquirer_rti.connect(acquirer_federate, CallbackModel.HLA_EVOKED)
+    owner_rti.create_federation_execution(config.federation_name, list(config.fom_modules), config.logical_time_implementation_name)
+    owner_handle = owner_rti.join_federation_execution(config.owner_name, config.federate_type, config.federation_name)
+    acquirer_handle = acquirer_rti.join_federation_execution(config.acquirer_name, config.federate_type, config.federation_name)
+    owner_class = owner_rti.get_object_class_handle(config.object_class_name)
+    acquirer_class = acquirer_rti.get_object_class_handle(config.object_class_name)
+    owner_attr = owner_rti.get_attribute_handle(owner_class, config.attribute_name)
+    acquirer_attr = acquirer_rti.get_attribute_handle(acquirer_class, config.attribute_name)
+    owner_rti.publish_object_class_attributes(owner_class, {owner_attr})
+    acquirer_rti.publish_object_class_attributes(acquirer_class, {acquirer_attr})
+    object_instance = register_named_object_instance(owner_rti, owner_federate, owner_class, config.object_instance_name)
+    assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attr)
+    acquirer_rti.attribute_ownership_acquisition_if_available(object_instance, {acquirer_attr})
+    drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
+    unavailable = wait_for_callback(acquirer_rti, acquirer_federate, "attributeOwnershipUnavailable", loops=120)
+    assert unavailable is not None
+    assert unavailable.args[0] == object_instance
+    assert acquirer_attr in unavailable.args[1]
+    assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attr)
+    assert not acquirer_rti.is_attribute_owned_by_federate(object_instance, acquirer_attr)
+    release = owner_federate.last_callback("requestAttributeOwnershipRelease")
+    assert release is None
+    return {
+        "owner_handle": owner_handle,
+        "acquirer_handle": acquirer_handle,
+        "object_instance": object_instance,
+        "owner_attribute": owner_attr,
+        "acquirer_attribute": acquirer_attr,
+        "unavailable": unavailable,
+    }
+
+
+def run_non_owner_update_rejection_scenario(
+    owner_rti: Any, observer_rti: Any, *, config: NonOwnerUpdateScenarioConfig, owner_federate: Any, observer_federate: Any
+) -> dict[str, Any]:
+    owner_rti.connect(owner_federate, CallbackModel.HLA_EVOKED)
+    observer_rti.connect(observer_federate, CallbackModel.HLA_EVOKED)
+    owner_rti.create_federation_execution(config.federation_name, list(config.fom_modules), config.logical_time_implementation_name)
+    owner_handle = owner_rti.join_federation_execution(config.owner_name, config.federate_type, config.federation_name)
+    observer_handle = observer_rti.join_federation_execution(config.observer_name, config.federate_type, config.federation_name)
+    owner_class = owner_rti.get_object_class_handle(config.object_class_name)
+    observer_class = observer_rti.get_object_class_handle(config.object_class_name)
+    owner_attr = owner_rti.get_attribute_handle(owner_class, config.attribute_name)
+    observer_attr = observer_rti.get_attribute_handle(observer_class, config.attribute_name)
+    owner_rti.publish_object_class_attributes(owner_class, {owner_attr})
+    observer_rti.subscribe_object_class_attributes(observer_class, {observer_attr})
+    object_instance = register_named_object_instance(owner_rti, owner_federate, owner_class, config.object_instance_name)
+    discover = wait_for_callback(observer_rti, observer_federate, "discoverObjectInstance")
+    assert discover is not None
+    observer_object = observer_rti.get_object_instance_handle(config.object_instance_name)
+
+    failure: RTIexception | None = None
+    try:
+        observer_rti.update_attribute_values(
+            observer_object,
+            {observer_attr: config.illegal_payload},
+            config.illegal_tag,
+        )
+    except RTIexception as exc:
+        failure = exc
+    assert failure is not None
+    assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attr)
+    assert not observer_rti.is_attribute_owned_by_federate(observer_object, observer_attr)
+
+    return {
+        "owner_handle": owner_handle,
+        "observer_handle": observer_handle,
+        "object_instance": object_instance,
+        "observer_object_instance": observer_object,
+        "owner_attribute": owner_attr,
+        "observer_attribute": observer_attr,
+        "failure": failure,
+        "failure_type": type(failure).__name__,
+    }
+
+
+def run_attribute_ownership_query_callback_scenario(
+    invoke_inform_attribute_ownership_callback: Any,
+    invoke_attribute_is_not_owned_callback: Any,
+    invoke_attribute_is_owned_by_rti_callback: Any,
+    *,
+    federate: Any,
+    object_handle: ObjectInstanceHandle | None = None,
+    attribute_handle: AttributeHandle | None = None,
+    owner_handle: FederateHandle | None = None,
+) -> dict[str, Any]:
+    object_handle = object_handle or ObjectInstanceHandle(606)
+    attribute_handle = attribute_handle or AttributeHandle(707)
+    owner_handle = owner_handle or FederateHandle(808)
+
+    invoke_inform_attribute_ownership_callback(object_handle, attribute_handle, owner_handle)
+    invoke_attribute_is_not_owned_callback(object_handle, attribute_handle)
+    invoke_attribute_is_owned_by_rti_callback(object_handle, attribute_handle)
+
+    inform_record = federate.last_callback("informAttributeOwnership")
+    not_owned_record = federate.last_callback("attributeIsNotOwned")
+    rti_owned_record = federate.last_callback("attributeIsOwnedByRTI")
+
+    assert inform_record is not None
+    assert not_owned_record is not None
+    assert rti_owned_record is not None
+
+    assert len(inform_record.args) == 3
+    assert len(not_owned_record.args) == 2
+    assert len(rti_owned_record.args) == 2
+
+    return {
+        "object_handle": object_handle,
+        "attribute_handle": attribute_handle,
+        "owner_handle": owner_handle,
+        "inform_record": inform_record,
+        "not_owned_record": not_owned_record,
+        "rti_owned_record": rti_owned_record,
     }
 
 
@@ -396,10 +537,14 @@ def run_release_request_ownership_scenario(
 __all__ = [
     "run_confirm_divestiture_negotiated_scenario",
     "NegotiatedOwnershipScenarioConfig",
+    "NonOwnerUpdateScenarioConfig",
     "OwnershipScenarioConfig",
     "ReleaseRequestOwnershipScenarioConfig",
     "probe_negotiated_attribute_ownership_offer",
     "run_attribute_ownership_scenario",
+    "run_attribute_ownership_query_callback_scenario",
+    "run_attribute_ownership_unavailable_scenario",
+    "run_non_owner_update_rejection_scenario",
     "run_negotiated_attribute_ownership_scenario",
     "run_release_request_ownership_scenario",
 ]

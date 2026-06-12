@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 
@@ -138,6 +139,45 @@ def test_vendor_probe_stability_reports_failure_when_any_attempt_fails(tmp_path:
     assert payload["stable"] is False
     assert payload["promotion_readiness"] == "unstable"
     assert payload["attempts"][1]["exit_code"] == 7
+
+
+def test_vendor_probe_stability_script_bootstraps_source_checkout(tmp_path: Path) -> None:
+    attempts_file = tmp_path / "attempts.csv"
+    attempts_file.write_text(
+        "iteration,exit_code,duration_seconds\n"
+        "1,0,2\n"
+        "2,0,3\n"
+        "3,0,4\n",
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/ci/write_vendor_probe_stability.py",
+            "--profile",
+            "pitch-negotiated-probe",
+            "--repeat-count",
+            "3",
+            "--attempts-file",
+            str(attempts_file),
+            "--output-dir",
+            str(tmp_path / "stability"),
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        env={"PATH": os.environ.get("PATH", "")},
+    )
+
+    assert result.returncode == 0, result.stderr
+    summary_path = tmp_path / "stability" / "vendor_probe_stability_summary.json"
+    assert summary_path.exists()
+    payload = json.loads(summary_path.read_text(encoding="utf-8"))
+    assert payload["profile"] == "pitch-negotiated-probe"
+    assert payload["command"] == "./tools/pitch negotiated-probe"
+    assert payload["success_count"] == 3
 
 
 def test_vendor_probe_stability_ci_validation_blocks_attempt_loop_on_invalid_runtime_state(tmp_path: Path) -> None:

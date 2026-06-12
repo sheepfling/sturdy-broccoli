@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Sequence
 
-from hla2010.backends.base import BackendUnavailableError
-from hla2010.java_runtime import discover_java_tool, ensure_java_home
+from hla2010_rti_java_common import BackendUnavailableError
+from hla2010_rti_java_common.java_runtime import discover_java_tool, ensure_java_home
 
 if TYPE_CHECKING:
     from hla2010_rti_java_jpype import JPypeConfig

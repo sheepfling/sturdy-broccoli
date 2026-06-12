@@ -18,8 +18,8 @@ from hla2010.handles import (
     ParameterHandle,
 )
 from hla2010.types import MessageRetractionReturn, TimeQueryReturn
-from hla2010.backends.base import BackendInfo, BackendUnavailableError, Invocation, RTIBackend, UnsupportedBackendService
-from hla2010.backends.transport import RTITransport, SubprocessLineTransport, TransportError, TransportRequest
+from hla2010_rti_java_common import BackendInfo, BackendUnavailableError, Invocation, RTIBackend, UnsupportedBackendService
+from hla2010_rti_transport_common import RTITransport, SubprocessLineTransport, TransportError, TransportRequest
 from hla2010_rti_certi.real_rti_certi import CERTIRuntime, RuntimeProcess, discover_certi_runtime, launch_certi_rtig
 from .callbacks import dispatch_helper_callback
 from .codecs import (

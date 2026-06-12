@@ -27,7 +27,10 @@ from urllib.parse import quote, unquote, urlparse, urlunparse
 
 from .exceptions import CouldNotDecode
 
-from lxml import etree as LET
+try:
+    from lxml import etree as LET
+except ModuleNotFoundError:  # pragma: no cover - exercised via lazy runtime paths
+    LET = None
 
 
 class FOMResolutionError(ValueError):
@@ -498,15 +501,12 @@ def _bundled_standard_mim_path() -> Path:
 def standard_mim_module() -> FOMModule:
     """Return the built-in standard MIM/MOM development catalog.
 
-    The implementation is delegated to :mod:`hla2010.mom` to keep the Annex G /
-    Clause 11 MOM names centralized.  The local catalog exposes the standard
-    MOM object classes, interaction classes, attributes, parameters, and default
-    dimensions needed by the pure Python RTI.
+    The bundled Annex G MIM XML is the source of truth for the standard MOM
+    object classes, interaction classes, attributes, and parameters.
     """
 
-    from .mom import create_standard_mim_module
-
-    return create_standard_mim_module()
+    path = _bundled_standard_mim_path()
+    return parse_fom_xml(path, source=_STANDARD_MIM_NAME, uri=_path_to_file_uri(path))
 
 def normalize_module_uri(source: Any, *, base_paths: Iterable[str | os.PathLike[str]] = ()) -> tuple[str, Path | None]:
     """Normalize a FOM/MIM source into ``(uri, local_path_or_none)``.
@@ -1284,18 +1284,29 @@ def _validate_datatype_references(
             require_valid(alternative.data_type, f"Variant record alternative {name}.{alternative.enumerator or '<unnamed>'}")
 
 
+def _require_lxml() -> Any:
+    if LET is None:
+        raise FOMResolutionError(
+            "Schema validation requires the optional 'lxml' dependency, which is not installed",
+            kind="read",
+        )
+    return LET
+
+
 @lru_cache(maxsize=2)
-def _xml_schema(profile: str) -> LET.XMLSchema:
+def _xml_schema(profile: str) -> Any:
     normalized = str(profile).strip().lower()
     if normalized not in {"dif", "omt"}:
         raise ValueError(f"Unsupported XML schema profile {profile!r}")
     filename = "IEEE1516-OMT-2010.xsd" if normalized == "omt" else "IEEE1516-DIF-2010.xsd"
     schema_path = Path("CERTI/xml/ieee1516-2010/1516_2-2010") / filename
-    return LET.XMLSchema(LET.parse(str(schema_path)))
+    lxml_etree = _require_lxml()
+    return lxml_etree.XMLSchema(lxml_etree.parse(str(schema_path)))
 
 
 def validate_fom_xml_schema(path: str | os.PathLike[str], *, profile: str = "dif") -> None:
-    document = LET.parse(str(path))
+    lxml_etree = _require_lxml()
+    document = lxml_etree.parse(str(path))
     schema = _xml_schema(profile)
     if not schema.validate(document):
         error = schema.error_log.last_error

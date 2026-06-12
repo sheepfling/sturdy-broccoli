@@ -6,7 +6,7 @@ It gives you:
 
 - a dependency-free in-memory Python RTI for fast local development
 - Java bridge profiles through JPype and Py4J
-- repo-local CERTI and Pitch operator flows
+- repo-local CERTI and Pitch operator flows through `tools/`
 - transport-hosted gRPC and REST routes
 - example federates, scenario runners, verification harnesses, and repo-local evidence tooling
 
@@ -15,8 +15,7 @@ backend and the Target/Radar example.
 
 The repo is organized as a monorepo workspace:
 
-- `src/hla2010/` is the root Python package and compatibility layer
-- `hla2010/` is a narrow top-level shim area for plugin-facing glue
+- `src/hla2010/` is the root Python package for the abstract/core API plus the one documented temporary compatibility facade `hla2010.rti`
 - `packages/*/src/` holds package-owned backend, FOM, and support implementations
 - `tools/` is the canonical home for human-facing operator entrypoints
 - `examples/`, `scripts/`, `tests/`, and `docs/` stay repo-local
@@ -26,7 +25,7 @@ The repo is organized as a monorepo workspace:
 1. Bootstrap the Python environment:
 
 ```bash
-./scripts/bootstrap_profile.sh python
+./tools/bootstrap python
 source .venv/bin/activate
 ```
 
@@ -37,7 +36,7 @@ If you want the broader local QA environment instead of the lean operator
 bootstrap, use:
 
 ```bash
-./scripts/bootstrap_python.sh
+HLA2010_BOOTSTRAP_EXTRAS=qa ./tools/bootstrap python
 source .venv/bin/activate
 ```
 
@@ -50,7 +49,7 @@ If you want the shortest single walkthrough, use
 If you want an executable setup check first, run:
 
 ```bash
-./scripts/bootstrap_profile.sh doctor
+./tools/bootstrap doctor
 ```
 
 2. Run the simplest scenario:
@@ -68,10 +67,10 @@ python examples/backend_recording.py
 4. Run the default test wrapper:
 
 ```bash
-./scripts/ci/test.sh
+./tools/test
 ```
 
-If you need the vendor flows, the repo also includes:
+If you need the vendor flows, use the `tools/` operator surface:
 
 ```bash
 ./tools/certi-easy preflight
@@ -83,22 +82,17 @@ If you need the vendor flows, the repo also includes:
 ./tools/pitch smoke
 ./tools/pitch verify
 
-./scripts/ci/repo_green.sh
-./scripts/ci/vendor_green.sh matrix
+./tools/python verify
+./tools/vendor-green matrix
 ```
 
 ## What This Repo Is For
 
 The main import surface is `hla2010`, with the clean contract at
-`hla2010.spec`. The `src/hla2010/` tree is the stable API layer plus
-compatibility facades while backend ownership moves into separate installable
-distributions. In practice:
-
-- the backend-neutral RTI surface
-- compatibility exports for split backend families
-- shared abstractions used across backend packages
-- scenario support for synchronization, ownership, time, and MOM/MIM work
-- backend-neutral types, contracts, and adapter-facing abstractions
+`hla2010.spec`. The `src/hla2010/` tree is intended to stay limited to the
+abstract/core API, backend-neutral types and contracts, FOM/MOM helpers, and
+the one documented temporary split-package facade `hla2010.rti` while package
+ownership finishes moving into separate installable distributions.
 
 Concrete backend implementations now live in package-owned source trees such as:
 
@@ -183,15 +177,14 @@ For the current route inventory and support status, read:
 If you only need the shortest "what works right now?" answer, use:
 
 ```bash
-python3 scripts/generate_compliance_artifacts.py
-python3 scripts/discover_backend_compliance.py --show-backlog
+./tools/compliance generate
+./tools/compliance discover --show-backlog
 ```
 
 ## Repository Layout
 
 ```text
-src/hla2010/          core API layer and compatibility facades
-hla2010/              narrow plugin-facing shim area
+src/hla2010/          core API layer plus the temporary compatibility facade hla2010.rti
 src/hla2010_repo_internal/ verification/proof/report helpers kept out of public API
 packages/*/src/       package-owned backend and support implementation roots
 examples/             runnable example federates and scenario entrypoints

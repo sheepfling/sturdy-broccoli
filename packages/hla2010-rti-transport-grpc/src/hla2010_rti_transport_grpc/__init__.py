@@ -9,7 +9,9 @@ from .python_server import (
     start_certi_grpc_server,
     start_python_grpc_server,
 )
-from . import rti_transport_pb2, rti_transport_pb2_grpc
+import hla2010_rti_transport_grpc.rti_transport_pb2 as rti_transport_pb2
+import hla2010_rti_transport_grpc.rti_transport_pb2_grpc as rti_transport_pb2_grpc
+from .rti_transport_pb2 import DESCRIPTOR as RTI_TRANSPORT_PROTO_DESCRIPTOR
 from .transport import GrpcTransport, GrpcTransportConfig, create_grpc_transport
 
 __all__ = [
@@ -19,6 +21,7 @@ __all__ = [
     "GrpcTransportConfig",
     "PythonRTIGrpcServer",
     "PythonRTIGrpcServerConfig",
+    "RTI_TRANSPORT_PROTO_DESCRIPTOR",
     "create_grpc_transport",
     "rti_transport_pb2",
     "rti_transport_pb2_grpc",

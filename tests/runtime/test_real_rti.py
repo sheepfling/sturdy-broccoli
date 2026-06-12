@@ -3,6 +3,8 @@ import subprocess
 from pathlib import Path
 
 import hla2010_rti_pitch_common.real_rti_pitch as pitch_runtime_module
+import pytest
+from hla2010_rti_backend_common import BackendUnavailableError
 from hla2010_rti_certi.real_rti_certi import (
     discover_certi_runtime,
     discover_certi_runtime_profile,
@@ -232,6 +234,198 @@ def test_launch_pitch_runtime_honors_docker_crc_mode_env(tmp_path, monkeypatch):
     assert any(command[0].endswith("scripts/run_pitch_docker_crc.sh") for command in commands)
     assert any(env.get("HLA2010_PITCH_CRC_MODE") == "docker" for env in captured["envs"])
     assert runtime.name == "pitch-docker"
+
+
+def test_launch_pitch_runtime_honors_listener_and_boot_timeout_env(tmp_path, monkeypatch):
+    home = tmp_path / "pitch-install"
+    (home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin").mkdir(parents=True)
+    (home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin" / "java").write_text("")
+    (home / "lib").mkdir()
+    (home / "lib" / "prtifull.jar").write_text("")
+
+    monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
+    monkeypatch.setenv("HLA2010_PITCH_FEDPRO_LISTENER_TIMEOUT_SECONDS", "21.5")
+    monkeypatch.setenv("HLA2010_PITCH_CRC_LISTENER_TIMEOUT_SECONDS", "46.5")
+    monkeypatch.setenv("HLA2010_PITCH_PROCESS_BOOT_TIMEOUT_SECONDS", "11.5")
+
+    class FakeProcess:
+        returncode = None
+
+        def poll(self):
+            return None
+
+        def terminate(self):
+            self.returncode = 0
+
+        def wait(self, timeout=None):
+            self.returncode = 0
+
+        def kill(self):
+            self.returncode = -9
+
+    boot_calls: list[tuple[object, float]] = []
+    listener_calls: list[tuple[str, int, float]] = []
+
+    def fake_popen(command, **kwargs):
+        return FakeProcess()
+
+    def fake_wait_for_process_boot(process, *, timeout):
+        boot_calls.append((process, timeout))
+
+    def fake_wait_for_tcp_listener(host, port, *, timeout):
+        listener_calls.append((host, port, timeout))
+
+    monkeypatch.setattr(pitch_runtime_module.subprocess, "Popen", fake_popen)
+
+    runtime = launch_pitch_runtime(
+        _wait_for_process_boot=fake_wait_for_process_boot,
+        _wait_for_tcp_listener=fake_wait_for_tcp_listener,
+    )
+    runtime.terminate()
+
+    assert boot_calls
+    assert all(timeout == 11.5 for _, timeout in boot_calls)
+    assert ("127.0.0.1", 15164, 21.5) in listener_calls
+    assert ("127.0.0.1", 8989, 46.5) in listener_calls
+
+
+def test_launch_pitch_runtime_retries_with_isolated_user_home_and_cleans_it_up(tmp_path, monkeypatch):
+    home = tmp_path / "pitch-install"
+    local_state = tmp_path / "local-state"
+    (home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin").mkdir(parents=True)
+    (home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin" / "java").write_text("")
+    (home / "lib").mkdir()
+    (home / "lib" / "prtifull.jar").write_text("")
+    monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
+    monkeypatch.setenv("HLA2010_LOCAL_STATE_ROOT", str(local_state))
+    monkeypatch.setenv("HLA2010_PITCH_STARTUP_RETRIES", "1")
+    monkeypatch.setenv("HLA2010_PITCH_LAUNCHER_FALLBACKS", "raw,install4j")
+    launcher = home / "bin" / "pRTI cmdline"
+    launcher.parent.mkdir(parents=True, exist_ok=True)
+    launcher.write_text("", encoding="utf-8")
+    launcher.chmod(0o755)
+
+    popen_calls: list[tuple[list[str], dict[str, str]]] = []
+
+    class FakeProcess:
+        def __init__(self, label: str):
+            self.label = label
+            self.returncode = None
+
+        def poll(self):
+            return self.returncode
+
+        def terminate(self):
+            self.returncode = 0
+
+        def wait(self, timeout=None):
+            self.returncode = 0
+
+        def kill(self):
+            self.returncode = -9
+
+        def communicate(self, timeout=None):
+            self.returncode = 0
+            return (f"{self.label}-stdout\n", f"{self.label}-stderr\n")
+
+    def fake_popen(command, **kwargs):
+        popen_calls.append((list(command), dict(kwargs["env"])))
+        return FakeProcess(Path(command[0]).name if command else "process")
+
+    listener_attempt = {"count": 0}
+
+    def fake_wait_for_process_boot(process, *, timeout):
+        return None
+
+    def fake_wait_for_tcp_listener(host, port, *, timeout):
+        if port == 8989:
+            listener_attempt["count"] += 1
+            if listener_attempt["count"] == 1:
+                raise BackendUnavailableError("Timed out waiting for listener on 127.0.0.1:8989")
+        return None
+
+    monkeypatch.setattr(pitch_runtime_module.subprocess, "Popen", fake_popen)
+
+    runtime = launch_pitch_runtime(
+        _wait_for_process_boot=fake_wait_for_process_boot,
+        _wait_for_tcp_listener=fake_wait_for_tcp_listener,
+    )
+
+    assert listener_attempt["count"] == 2
+    launch_envs = [
+        env
+        for command, env in popen_calls
+        if command
+        and (
+            command[0].endswith("run_pitch_local.sh")
+            or command[-1] == "se.pitch.fedpro.server.hla.FedProServerApp"
+        )
+    ]
+    assert len(launch_envs) == 4
+    first_user_home = launch_envs[0]["HLA2010_PITCH_USER_HOME"]
+    second_user_home = launch_envs[2]["HLA2010_PITCH_USER_HOME"]
+    assert first_user_home != second_user_home
+    assert "runtime-homes" in second_user_home
+    assert launch_envs[0]["HLA2010_PITCH_LAUNCHER_MODE"] == "raw"
+    assert launch_envs[2]["HLA2010_PITCH_LAUNCHER_MODE"] == "install4j"
+    cleanup_path = Path(second_user_home)
+    assert cleanup_path.exists()
+    assert runtime.cleanup_paths == (cleanup_path,)
+
+    runtime.terminate()
+    assert not cleanup_path.exists()
+
+
+def test_launch_pitch_runtime_reports_attempt_diagnostics_on_exhausted_retries(tmp_path, monkeypatch):
+    home = tmp_path / "pitch-install"
+    (home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin").mkdir(parents=True)
+    (home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin" / "java").write_text("")
+    (home / "lib").mkdir()
+    (home / "lib" / "prtifull.jar").write_text("")
+    monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
+    monkeypatch.setenv("HLA2010_PITCH_STARTUP_RETRIES", "0")
+
+    class FakeProcess:
+        returncode = None
+
+        def poll(self):
+            return self.returncode
+
+        def terminate(self):
+            self.returncode = 0
+
+        def wait(self, timeout=None):
+            self.returncode = 0
+
+        def kill(self):
+            self.returncode = -9
+
+        def communicate(self, timeout=None):
+            self.returncode = 0
+            return ("crc-stdout\n", "crc-stderr\n")
+
+    def fake_popen(command, **kwargs):
+        return FakeProcess()
+
+    def fake_wait_for_process_boot(process, *, timeout):
+        return None
+
+    def fake_wait_for_tcp_listener(host, port, *, timeout):
+        raise BackendUnavailableError("Timed out waiting for listener on 127.0.0.1:8989")
+
+    monkeypatch.setattr(pitch_runtime_module.subprocess, "Popen", fake_popen)
+
+    with pytest.raises(BackendUnavailableError) as excinfo:
+        launch_pitch_runtime(
+            _wait_for_process_boot=fake_wait_for_process_boot,
+            _wait_for_tcp_listener=fake_wait_for_tcp_listener,
+        )
+
+    text = str(excinfo.value)
+    assert "Timed out waiting for listener on 127.0.0.1:8989" in text
+    assert "pitch crc attempt 1 (raw) diagnostics:" in text
+    assert "stdout tail:" in text
+    assert "stderr tail:" in text
 
 
 def test_discover_certi_runtime_from_env(tmp_path, monkeypatch):
@@ -540,3 +734,88 @@ def test_prepare_pitch_user_home_normalizes_docker_crc_and_lrc_networking(tmp_pa
     assert "LRC.UDP.port-range.start=5010\n" in lrc_settings
     assert "LRC.UDP.port-range.end=5099\n" in lrc_settings
     assert "LRC.skipConnectivityCheck=true\n" in lrc_settings
+
+
+def test_prepare_pitch_user_home_applies_loss_detection_overrides(tmp_path, monkeypatch):
+    home = tmp_path / "pitch-install"
+    java_bin = home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin"
+    java_bin.mkdir(parents=True)
+    (java_bin / "java").write_text("")
+    lib = home / "lib"
+    lib.mkdir()
+    (lib / "prtifull.jar").write_text("")
+
+    bundled_user_home = home / "user.home" / "prti1516e"
+    bundled_user_home.mkdir(parents=True)
+    (bundled_user_home / "prti1516eCRC.settings").write_text(
+        "CRC.heartbeat.enable=false\nCRC.heartbeat.interval=15\nCRC.heartbeat.action=ignore\n",
+    )
+    (bundled_user_home / "FedProServer.properties").write_text(
+        "timeout-heart-seconds = 180\ntimeout-purge-seconds = 600\n",
+    )
+
+    monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
+    monkeypatch.setenv("HLA2010_PITCH_CRC_HEARTBEAT_ENABLE", "true")
+    monkeypatch.setenv("HLA2010_PITCH_CRC_HEARTBEAT_INTERVAL", "1")
+    monkeypatch.setenv("HLA2010_PITCH_CRC_HEARTBEAT_ACTION", "drop")
+    monkeypatch.setenv("HLA2010_PITCH_LRC_PEER_HEARTBEAT_INTERVAL_MILLIS", "1000")
+    monkeypatch.setenv("HLA2010_PITCH_FEDPRO_TIMEOUT_HEART_SECONDS", "5")
+    monkeypatch.setenv("HLA2010_PITCH_FEDPRO_TIMEOUT_PURGE_SECONDS", "15")
+    monkeypatch.setattr(pitch_runtime_module, "list_pitch_licenses", lambda *_args, **_kwargs: ())
+
+    runtime = discover_pitch_runtime()
+    prepared = prepare_pitch_user_home(runtime, user_home=tmp_path / "pitch-user-home-work")
+
+    crc_settings = (prepared / "prti1516e" / "prti1516eCRC.settings").read_text()
+    lrc_settings = (prepared / "prti1516e" / "prti1516eLRC.settings").read_text()
+    fedpro_settings = (prepared / "prti1516e" / "FedProServer.properties").read_text()
+
+    assert "CRC.heartbeat.enable=true\n" in crc_settings
+    assert "CRC.heartbeat.interval=1\n" in crc_settings
+    assert "CRC.heartbeat.action=drop\n" in crc_settings
+    assert "se.pitch.prti1516e.peerHeartbeatIntervalMillis=1000\n" in lrc_settings
+    assert "timeout-heart-seconds=5\n" in fedpro_settings
+    assert "timeout-purge-seconds=15\n" in fedpro_settings
+
+
+def test_prepare_pitch_user_home_applies_extra_lrc_and_fedpro_settings(tmp_path, monkeypatch):
+    home = tmp_path / "pitch-install"
+    java_bin = home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin"
+    java_bin.mkdir(parents=True)
+    (java_bin / "java").write_text("")
+    lib = home / "lib"
+    lib.mkdir()
+    (lib / "prtifull.jar").write_text("")
+
+    bundled_user_home = home / "user.home" / "prti1516e"
+    bundled_user_home.mkdir(parents=True)
+    (bundled_user_home / "prti1516eLRC.settings").write_text(
+        "existing=value\nse.pitch.prti1516e.peerHeartbeatIntervalMillis=5000\n",
+    )
+    (bundled_user_home / "FedProServer.properties").write_text(
+        "timeout-heart-seconds = 180\nrecover-session=true\n",
+    )
+
+    monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
+    monkeypatch.setenv(
+        "HLA2010_PITCH_LRC_EXTRA_SETTINGS",
+        "se.pitch.prti1516e.peerHeartbeatIntervalMillis=750\nse.pitch.prti1516e.sessionResume=false",
+    )
+    monkeypatch.setenv(
+        "HLA2010_PITCH_FEDPRO_EXTRA_SETTINGS",
+        "recover-session=false;peer-drop-policy=abort",
+    )
+    monkeypatch.setattr(pitch_runtime_module, "list_pitch_licenses", lambda *_args, **_kwargs: ())
+
+    runtime = discover_pitch_runtime()
+    prepared = prepare_pitch_user_home(runtime, user_home=tmp_path / "pitch-user-home-work")
+
+    lrc_settings = (prepared / "prti1516e" / "prti1516eLRC.settings").read_text()
+    fedpro_settings = (prepared / "prti1516e" / "FedProServer.properties").read_text()
+
+    assert "existing=value\n" in lrc_settings
+    assert "se.pitch.prti1516e.peerHeartbeatIntervalMillis=750\n" in lrc_settings
+    assert "se.pitch.prti1516e.sessionResume=false\n" in lrc_settings
+    assert "timeout-heart-seconds = 180\n" in fedpro_settings
+    assert "recover-session=false\n" in fedpro_settings
+    assert "peer-drop-policy=abort\n" in fedpro_settings

@@ -1,20 +1,42 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import socket
 import subprocess
 import sys
 import time
+import tomllib
 from pathlib import Path
+
+SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def _bootstrap_source_checkout() -> None:
+    pyproject = tomllib.loads((SCRIPT_REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    source_roots = pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]
+    for root in reversed(source_roots):
+        source_path = str(SCRIPT_REPO_ROOT / root)
+        if source_path not in sys.path:
+            sys.path.insert(0, source_path)
+
+
+_bootstrap_source_checkout()
 
 from hla2010_rti_pitch_common.real_rti_pitch import (
     discover_pitch_runtime,
     prepare_pitch_user_home,
 )
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = SCRIPT_REPO_ROOT
+
+
+def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Reproduce the Pitch Docker CRC startup path.")
+    parser.add_argument("--pitch-home", type=Path, default=None)
+    return parser.parse_args(argv)
 
 
 def _wait_for_port(host: str, port: int, timeout: float) -> bool:
@@ -28,8 +50,9 @@ def _wait_for_port(host: str, port: int, timeout: float) -> bool:
     return False
 
 
-def main() -> int:
-    runtime = discover_pitch_runtime()
+def main(argv: list[str] | None = None) -> int:
+    args = _parse_args(argv)
+    runtime = discover_pitch_runtime(args.pitch_home)
     user_home = prepare_pitch_user_home(runtime)
     docker_info = subprocess.run(["docker", "info"], capture_output=True, text=True)
     result: dict[str, object] = {

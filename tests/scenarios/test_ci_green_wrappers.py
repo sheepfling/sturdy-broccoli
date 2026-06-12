@@ -24,6 +24,22 @@ def test_repo_green_help_describes_repo_green_lane() -> None:
     assert "./scripts/ci/vendor_green.sh" in result.stdout
 
 
+def test_tools_python_help_describes_repo_green_operator_lane() -> None:
+    result = subprocess.run(
+        ["bash", "tools/python", "--help"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    assert "./tools/python verify" in result.stdout
+    assert "./scripts/ci/repo_green.sh" in result.stdout
+    assert "./tools/certi-easy" in result.stdout
+    assert "./tools/pitch" in result.stdout
+
+
 def test_vendor_green_help_describes_strict_vendor_lane() -> None:
     result = subprocess.run(
         ["bash", "scripts/ci/vendor_green.sh", "--help"],
@@ -37,6 +53,19 @@ def test_vendor_green_help_describes_strict_vendor_lane() -> None:
     assert "vendor-green" in result.stdout
     assert "HLA2010_VENDOR_PREFLIGHT_STRICT=1" in result.stdout
     assert "./scripts/ci/repo_green.sh" in result.stdout
+
+
+def test_check_generated_docs_shell_bootstraps_source_checkout(tmp_path: Path) -> None:
+    result = subprocess.run(
+        ["bash", str(ROOT / "scripts" / "ci" / "check_generated_docs.sh")],
+        cwd=tmp_path,
+        env={"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout or result.stderr
 
 
 def _write_delegate_script(path: Path, *, payloads: dict[str, dict[str, object]], exit_code: int) -> None:
@@ -115,6 +144,96 @@ def test_repo_green_emits_runtime_status_and_parity_reports(tmp_path: Path) -> N
     report_text = report_path.read_text(encoding="utf-8")
     assert "# Vendor Runtime Status" in report_text
     assert "repo-green" in report_text
+
+
+def test_tools_python_verify_delegates_to_repo_green_and_emits_reports(tmp_path: Path) -> None:
+    delegate = tmp_path / "repo_delegate.py"
+    _write_delegate_script(
+        delegate,
+        payloads={
+            "certi-preflight.json": {
+                "tool": "certi-preflight",
+                "environment": "loopback-blocked",
+                "result": "real CERTI will skip",
+                "exit_code": 1,
+            },
+            "pitch-preflight.json": {
+                "tool": "pitch-preflight",
+                "environment": "docker-blocked",
+                "result": "Pitch runtime is not ready",
+                "exit_code": 1,
+            },
+        },
+        exit_code=0,
+    )
+    env = os.environ.copy()
+    env["HLA2010_REPO_GREEN_DELEGATE"] = str(delegate)
+    env["HLA2010_PREFLIGHT_ARTIFACT_DIR"] = str(tmp_path / "preflight")
+    env["HLA2010_VENDOR_RUNTIME_STATUS_DIR"] = str(tmp_path / "runtime-status")
+    env["HLA2010_VENDOR_PARITY_ARTIFACT_DIR"] = str(tmp_path / "parity")
+
+    result = subprocess.run(
+        ["bash", "tools/python", "verify"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    runtime_summary = tmp_path / "runtime-status" / "repo_green" / "vendor_runtime_status_summary.json"
+    parity_summary = tmp_path / "parity" / "vendor_parity_artifacts_summary.json"
+    assert runtime_summary.exists()
+    assert parity_summary.exists()
+    runtime_payload = json.loads(runtime_summary.read_text(encoding="utf-8"))
+    assert runtime_payload["overall_classification"] == "repo-green"
+    assert runtime_payload["lane"] == "repo-green"
+
+
+def test_tools_python_verify_is_reachable_from_outside_repo(tmp_path: Path) -> None:
+    delegate = tmp_path / "repo_delegate.py"
+    _write_delegate_script(
+        delegate,
+        payloads={
+            "certi-preflight.json": {
+                "tool": "certi-preflight",
+                "environment": "loopback-blocked",
+                "result": "real CERTI will skip",
+                "exit_code": 1,
+            },
+            "pitch-preflight.json": {
+                "tool": "pitch-preflight",
+                "environment": "docker-blocked",
+                "result": "Pitch runtime is not ready",
+                "exit_code": 1,
+            },
+        },
+        exit_code=0,
+    )
+    env = os.environ.copy()
+    env["HLA2010_REPO_GREEN_DELEGATE"] = str(delegate)
+    env["HLA2010_PREFLIGHT_ARTIFACT_DIR"] = str(tmp_path / "preflight")
+    env["HLA2010_VENDOR_RUNTIME_STATUS_DIR"] = str(tmp_path / "runtime-status")
+    env["HLA2010_VENDOR_PARITY_ARTIFACT_DIR"] = str(tmp_path / "parity")
+
+    result = subprocess.run(
+        ["bash", str(ROOT / "tools" / "python"), "verify"],
+        cwd=tmp_path,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    runtime_summary = tmp_path / "runtime-status" / "repo_green" / "vendor_runtime_status_summary.json"
+    parity_summary = tmp_path / "parity" / "vendor_parity_artifacts_summary.json"
+    assert runtime_summary.exists()
+    assert parity_summary.exists()
+    runtime_payload = json.loads(runtime_summary.read_text(encoding="utf-8"))
+    assert runtime_payload["overall_classification"] == "repo-green"
+    assert runtime_payload["lane"] == "repo-green"
 
 
 def test_vendor_green_emits_runtime_status_and_preserves_delegate_failure(tmp_path: Path) -> None:

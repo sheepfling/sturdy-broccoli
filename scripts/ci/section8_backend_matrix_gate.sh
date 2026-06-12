@@ -3,6 +3,11 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 
+# shellcheck source=lib/shell.sh
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "$0"
+PYTHON_BIN="$(hla2010_shell_python_bin)"
+
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   cat <<'EOF'
 section8_backend_matrix_gate.sh: run the cross-backend Section 8 matrix.
@@ -20,8 +25,8 @@ fi
 
 cd "$ROOT_DIR"
 
-python3 -m pytest -q tests/time/test_section8_backend_matrix.py "$@"
-python3 scripts/generate_compliance_artifacts.py
+hla2010_shell_run_workspace_python "$PYTHON_BIN" -m pytest -q tests/time/test_section8_backend_matrix.py "$@"
+hla2010_shell_run_workspace_python "$PYTHON_BIN" scripts/generate_compliance_artifacts.py
 
 printf '%s\n' "updated analysis/compliance/section8_backend_matrix.json"
 printf '%s\n' "updated analysis/compliance/section8_backend_matrix.md"

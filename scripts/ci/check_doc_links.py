@@ -7,7 +7,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[2]
+SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[2]
+ROOT = SCRIPT_REPO_ROOT
 DOC_GLOBS = (
     "README.md",
     "docs/**/*.md",

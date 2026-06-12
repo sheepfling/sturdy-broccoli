@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from hla2010.time import HLAinteger64Time
-from hla2010.time_management import TSOMessage, TSOMessageQueue
+from hla2010_rti_backend_common.time_management import TSOMessage, TSOMessageQueue
 
 from tests.time._time_algorithm_support import DummyFederate
 
@@ -77,4 +77,3 @@ def test_tso_queue_supports_exclusive_boundaries_and_earliest_only_groups():
 
     assert [message.sequence for message in first] == [1]
     assert [message.sequence for message in equal] == [2, 3]
-

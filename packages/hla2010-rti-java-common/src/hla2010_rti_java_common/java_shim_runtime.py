@@ -504,6 +504,9 @@ class SharedInProcessJavaRTIShim:
     def getFederateHandle(self, theName: str) -> JavaFederateHandle:
         return self._federation().federate_names[str(theName)]
 
+    def normalizeFederateHandle(self, theHandle: JavaFederateHandle) -> JavaFederateHandle:
+        return theHandle
+
     def getObjectClassHandle(self, theName: str) -> JavaObjectClassHandle:
         if theName not in self.kernel.object_classes:
             handle = self.kernel.alloc(JavaObjectClassHandle)

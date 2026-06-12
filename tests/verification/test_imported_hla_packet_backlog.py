@@ -1,9 +1,15 @@
 from __future__ import annotations
 
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 
-from hla2010.requirements_backlog import write_imported_hla_backlog
+from hla2010_repo_internal.requirements_backlog import write_imported_hla_backlog
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_imported_hla_backlog_is_generated_with_expected_families(tmp_path: Path):
@@ -38,3 +44,27 @@ def test_imported_hla_backlog_is_generated_with_expected_families(tmp_path: Path
     ]
     assert payload["total_open_rows"] >= 1
     assert any(family["family"] == "Transports" and family["open_row_count"] >= 1 for family in payload["families"])
+
+
+def test_imported_hla_backlog_script_bootstraps_source_checkout(tmp_path: Path):
+    markdown_path = tmp_path / "imported_requirements_backlog_v1_0.md"
+    json_path = tmp_path / "imported_requirements_backlog_v1_0.json"
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/generate_imported_packet_backlog.py",
+            "--markdown",
+            str(markdown_path),
+            "--json",
+            str(json_path),
+        ],
+        cwd=REPO_ROOT,
+        env={"PATH": os.environ.get("PATH", "")},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert markdown_path.exists()
+    assert json_path.exists()

@@ -5,7 +5,8 @@ Use this when you want the fastest path to the repo's two-federate example.
 ## Run It
 
 ```bash
-python3 scripts/run_two_federate_suite.py
+source .venv/bin/activate
+./tools/two-federate
 ```
 
 That command:
@@ -13,19 +14,23 @@ That command:
 - runs the composite two-federate suite
 - writes artifacts under `analysis/two_federate_suite/`
 - exercises the pair-based scenario flow used by the verification packet
+- delegates into the shared runner at
+  `src/hla2010_repo_internal/verification/two_federate_suite_runner.py`
 
 If you want a smaller or custom artifact set, the script also accepts:
 
 ```bash
-python3 scripts/run_two_federate_suite.py --output-dir analysis/my_two_federate_suite
-python3 scripts/run_two_federate_suite.py --target-radar-steps 6
+source .venv/bin/activate
+./tools/two-federate --output-dir analysis/my_two_federate_suite
+source .venv/bin/activate
+./tools/two-federate --target-radar-steps 6
 ```
 
 ## What To Read Next
 
 If you are helping someone understand the example, start here:
 
-- [`scripts/run_two_federate_suite.py`](../scripts/run_two_federate_suite.py)
+- [`./tools/two-federate`](../tools/two-federate)
 - [`src/hla2010_repo_internal/verification/two_federate_suite_runner.py`](../src/hla2010_repo_internal/verification/two_federate_suite_runner.py)
 
 If you want the broader verification context, use:
@@ -46,3 +51,10 @@ This is the best entry point when you want to:
 1. [`verification/run_sequence.md`](verification/run_sequence.md)
 2. [`local_verification_commands.md`](local_verification_commands.md)
 3. [`../README.md`](../README.md)
+
+## Historical / Provenance
+
+The operator wrapper is implemented by
+[`scripts/run_two_federate_suite.py`](../scripts/run_two_federate_suite.py),
+which in turn uses the shared repo-internal runner at
+[`src/hla2010_repo_internal/verification/two_federate_suite_runner.py`](../src/hla2010_repo_internal/verification/two_federate_suite_runner.py).

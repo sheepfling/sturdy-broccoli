@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from hla2010.ambassadors import RecordingFederateAmbassador
+from hla2010_rti_backend_common import RecordingFederateAmbassador
 from hla2010.enums import CallbackModel
 from hla2010.handles import MessageRetractionHandle
 from hla2010.types import TimeQueryReturn

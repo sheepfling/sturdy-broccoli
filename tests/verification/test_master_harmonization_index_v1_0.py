@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import csv
+import os
+import subprocess
+import sys
 from collections import Counter
 from pathlib import Path
 
-from hla2010.requirements_packet import load_imported_hla_packet
+from hla2010_repo_internal.requirements_packet import load_imported_hla_packet
 from scripts.generate_master_harmonization_index import FIELDNAMES, build_index_rows
 
 
@@ -13,6 +16,7 @@ INDEX_PATH = (
     / "requirements"
     / "hla_1516_master_harmonization_index_v1_0.csv"
 )
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def _read_rows() -> list[dict[str, str]]:
@@ -257,3 +261,16 @@ def test_master_harmonization_index_covers_every_imported_master_requirement():
     )
     assert by_id["HLA1516.1-MIM-PARAM-001"]["harmonization_status"] == "mapped"
     assert by_id["HLA1516.1-FM-4_3-RTIAPI-001-MOM"]["harmonization_status"] == "mapped"
+
+
+def test_master_harmonization_index_script_bootstraps_source_checkout():
+    result = subprocess.run(
+        [sys.executable, "scripts/generate_master_harmonization_index.py"],
+        cwd=REPO_ROOT,
+        env={"PATH": os.environ.get("PATH", "")},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr

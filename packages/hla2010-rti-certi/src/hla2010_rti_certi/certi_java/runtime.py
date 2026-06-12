@@ -15,7 +15,7 @@ from hla2010.handles import (
     TransportationTypeHandle,
 )
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from hla2010_rti_java_common import JavaValueConverter
+from hla2010_rti_java_common.java_common import JavaValueConverter
 from hla2010_rti_java_common.java_shim_types import (
     JavaAttributeHandle,
     JavaByteArray,

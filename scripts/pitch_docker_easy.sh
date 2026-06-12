@@ -222,6 +222,28 @@ verify_pitch_docker() {
   "$ROOT_DIR/scripts/ci/vendor_green.sh" pitch-verify
 }
 
+run_best_effort_pitch_profile() {
+  local profile="$1"
+  local status=0
+  if "$ROOT_DIR/scripts/ci/vendor_runtime_smoke.sh" "$profile"; then
+    status=0
+  else
+    status=$?
+  fi
+  "$ROOT_DIR/scripts/ci/emit_vendor_runtime_reports.sh" vendor-green "$profile" || true
+  return "$status"
+}
+
+smoke_pitch_docker_best_effort() {
+  hla2010_shell_log "running Pitch smoke (best-effort)"
+  run_best_effort_pitch_profile pitch-smoke
+}
+
+verify_pitch_docker_best_effort() {
+  hla2010_shell_log "running Pitch verify (best-effort)"
+  run_best_effort_pitch_profile pitch-verify
+}
+
 doctor_pitch_docker() {
   local preflight_json
   local python_bin
@@ -280,14 +302,16 @@ PY
 usage() {
   local script_name="./tools/pitch"
   cat <<EOF
-usage: $script_name [preflight|install|start|stop|restart|status|logs|smoke|verify|all|doctor]
+usage: $script_name [preflight|install|start|stop|restart|status|logs|smoke|smoke-best-effort|verify|verify-best-effort|all|doctor]
 
 Simple Pitch Docker workflow:
   $script_name preflight [--json] # check Docker and Pitch runtime prerequisites
   $script_name install   # discover runtime, seed user.home, build the image
   $script_name start     # start CRC + FedPro in Docker and wait for ports
   $script_name smoke     # run the real Pitch smoke test
+  $script_name smoke-best-effort # run Pitch smoke and treat blocked local preflight as report-only
   $script_name verify    # run the full real Pitch backend matrix
+  $script_name verify-best-effort # run Pitch verify and treat blocked local preflight as report-only
   $script_name save-restore # report the current real Pitch save/restore gap profile
   $script_name save-restore-probe # run the current narrow real Pitch save/restore probe
   $script_name save-restore-review [repeat-count] # run repeated review for the real Pitch save/restore probe
@@ -297,6 +321,11 @@ Simple Pitch Docker workflow:
   $script_name negotiated # report the current real Pitch negotiated-ownership gap profile
   $script_name negotiated-probe # run the current narrow real Pitch negotiated-ownership probe
   $script_name negotiated-review [repeat-count] # run repeated review for the real Pitch negotiated-ownership probe
+  $script_name lost-federate # report the current real Pitch lost-federate gap profile
+  $script_name lost-federate-probe # run the current narrow real Pitch lost-federate probe
+  $script_name lost-federate-review [repeat-count] # run repeated review for the real Pitch lost-federate probe
+  $script_name crc-macos-repro [args...] # run the macOS CRC startup reproducer
+  $script_name crc-docker-repro # run the Docker CRC startup reproducer
   $script_name all       # install, then smoke, then verify
   $script_name logs      # show container logs
   $script_name stop      # stop and remove the container
@@ -339,8 +368,14 @@ case "${1:-start}" in
   smoke)
     smoke_pitch_docker
     ;;
+  smoke-best-effort)
+    smoke_pitch_docker_best_effort
+    ;;
   verify)
     verify_pitch_docker
+    ;;
+  verify-best-effort)
+    verify_pitch_docker_best_effort
     ;;
   save-restore)
     "$ROOT_DIR/scripts/ci/vendor_green.sh" pitch-save-restore
@@ -368,6 +403,23 @@ case "${1:-start}" in
     ;;
   negotiated-review)
     bash "$ROOT_DIR/scripts/ci/vendor_probe_review.sh" pitch-negotiated-probe "${2:-5}"
+    ;;
+  lost-federate)
+    "$ROOT_DIR/scripts/ci/vendor_green.sh" pitch-lost-federate
+    ;;
+  lost-federate-probe)
+    "$ROOT_DIR/scripts/ci/vendor_green.sh" pitch-lost-federate-probe
+    ;;
+  lost-federate-review)
+    bash "$ROOT_DIR/scripts/ci/vendor_probe_review.sh" pitch-lost-federate-probe "${2:-5}"
+    ;;
+  crc-macos-repro)
+    shift
+    exec "$(hla2010_shell_python_bin)" "$ROOT_DIR/scripts/repro_pitch_crc_macos.py" "$@"
+    ;;
+  crc-docker-repro)
+    shift
+    exec "$(hla2010_shell_python_bin)" "$ROOT_DIR/scripts/repro_pitch_crc_docker.py" "$@"
     ;;
   all)
     install_pitch_docker

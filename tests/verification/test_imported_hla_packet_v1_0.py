@@ -4,7 +4,7 @@ import csv
 import hashlib
 from pathlib import Path
 
-from hla2010.requirements_packet import KNOWN_PACKET_PARENT_GAPS, load_imported_hla_packet
+from hla2010_repo_internal.requirements_packet import KNOWN_PACKET_PARENT_GAPS, load_imported_hla_packet
 
 IMPORT_ROOT = Path(__file__).resolve().parents[2] / "requirements" / "imports" / "hla_1516_requirements_codebase_packet_v1_0"
 LATEST_ROOT = IMPORT_ROOT / "latest"

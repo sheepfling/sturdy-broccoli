@@ -19,7 +19,7 @@ ci_state_profile() {
     certi|certi-patched|certi-upstream|certi-compare|certi-save-restore|certi-save-restore-probe|certi-ddm|certi-ddm-probe)
       printf '%s\n' certi
       ;;
-    pitch|pitch-smoke|pitch-verify|pitch-save-restore|pitch-save-restore-probe|pitch-ddm|pitch-ddm-probe|pitch-negotiated|pitch-negotiated-probe)
+    pitch|pitch-smoke|pitch-verify|pitch-save-restore|pitch-save-restore-probe|pitch-ddm|pitch-ddm-probe|pitch-negotiated|pitch-negotiated-probe|pitch-lost-federate|pitch-lost-federate-probe)
       printf '%s\n' pitch
       ;;
     matrix)
@@ -79,6 +79,8 @@ render_operator_command() {
     pitch-ddm-probe) echo "./tools/pitch ddm-probe" ;;
     pitch-negotiated) echo "./tools/pitch negotiated" ;;
     pitch-negotiated-probe) echo "./tools/pitch negotiated-probe" ;;
+    pitch-lost-federate) echo "./tools/pitch lost-federate" ;;
+    pitch-lost-federate-probe) echo "./tools/pitch lost-federate-probe" ;;
     *) echo "$VENDOR_GREEN_CMD $1" ;;
   esac
 }
@@ -130,7 +132,7 @@ while [[ "$iteration" -le "$REPEAT_COUNT" ]]; do
   iteration=$((iteration + 1))
 done
 
-python3 "$ROOT_DIR/scripts/ci/write_vendor_probe_stability.py" \
+"$(hla2010_shell_python_bin)" "$ROOT_DIR/scripts/ci/write_vendor_probe_stability.py" \
   --profile "$PROFILE" \
   --repeat-count "$REPEAT_COUNT" \
   --command "$(render_operator_command "$PROFILE")" \

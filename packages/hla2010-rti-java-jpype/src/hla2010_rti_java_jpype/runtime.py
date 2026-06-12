@@ -5,9 +5,10 @@ from dataclasses import dataclass, field
 from typing import Any, Sequence
 
 from hla2010.fom import module_uri
-from hla2010.java_runtime import ensure_java_home
-from hla2010.backends.base import BackendUnavailableError
-from hla2010_rti_java_common import JavaBridge, PythonFederateAmbassadorDispatcher
+from hla2010.types import RangeBounds
+from hla2010_rti_java_common import BackendUnavailableError
+from hla2010_rti_java_common.java_common import JavaBridge, PythonFederateAmbassadorDispatcher
+from hla2010_rti_java_common.java_runtime import ensure_java_home
 
 
 @dataclass(frozen=True)
@@ -174,6 +175,12 @@ class JPypeBridge(JavaBridge):
         except Exception:
             return value
         return value
+
+    def range_bounds(self, value: RangeBounds) -> Any:
+        try:
+            return self.JClass("hla.rti1516e.RangeBounds")(int(value.lower_bound), int(value.upper_bound))
+        except Exception:
+            return value
 
     def full_class_name(self, obj: Any) -> str | None:
         if obj is None:

@@ -35,6 +35,14 @@ def _require_local_socket_permissions() -> None:
         probe.close()
 
 
+def _isolate_preflight_confirmation(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
+    artifact_dir = tmp_path / "empty-preflight"
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+    monkeypatch.setenv("HLA2010_PREFLIGHT_ARTIFACT_DIR", str(artifact_dir))
+    monkeypatch.setenv("HLA2010_PREFLIGHT_MAX_AGE_SECONDS", "43200")
+    return artifact_dir
+
+
 @dataclass
 class _FakeRTI:
     calls: list[tuple[str, object]] = field(default_factory=list)
@@ -88,6 +96,32 @@ def test_isolated_vendor_runtime_test_state_scopes_environment(tmp_path) -> None
         assert "HLA2010_PITCH_USER_HOME" not in os.environ
     else:
         assert os.environ["HLA2010_PITCH_USER_HOME"] == original_pitch_user_home
+
+
+def test_isolated_vendor_runtime_test_state_preserves_implicit_docker_config(tmp_path, monkeypatch) -> None:
+    original_home = tmp_path / "original-home"
+    docker_config = original_home / ".docker"
+    docker_config.mkdir(parents=True)
+    monkeypatch.setenv("HOME", str(original_home))
+    monkeypatch.delenv("DOCKER_CONFIG", raising=False)
+
+    with isolated_vendor_runtime_test_state(tmp_path / "runtime-state"):
+        assert Path(os.environ["HOME"]) != original_home
+        assert Path(os.environ["DOCKER_CONFIG"]) == docker_config
+
+    assert "DOCKER_CONFIG" not in os.environ
+
+
+def test_isolated_vendor_runtime_test_state_keeps_explicit_docker_config(tmp_path, monkeypatch) -> None:
+    explicit_docker_config = tmp_path / "explicit-docker-config"
+    original_home = tmp_path / "original-home"
+    (original_home / ".docker").mkdir(parents=True)
+    explicit_docker_config.mkdir()
+    monkeypatch.setenv("HOME", str(original_home))
+    monkeypatch.setenv("DOCKER_CONFIG", str(explicit_docker_config))
+
+    with isolated_vendor_runtime_test_state(tmp_path / "runtime-state"):
+        assert Path(os.environ["DOCKER_CONFIG"]) == explicit_docker_config
 
 
 def test_cleanup_federation_runs_best_effort_sequence() -> None:
@@ -214,7 +248,10 @@ def test_assert_all_terminated_checks_every_resource() -> None:
     assert calls == ["left", "right"]
 
 
-def test_require_vendor_preflight_skips_when_flag_is_missing(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_require_vendor_preflight_skips_when_flag_is_missing(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    _isolate_preflight_confirmation(monkeypatch, tmp_path)
     monkeypatch.delenv("HLA2010_CERTI_PREFLIGHT_OK", raising=False)
 
     with pytest.raises(pytest.skip.Exception, match="certi preflight not confirmed"):

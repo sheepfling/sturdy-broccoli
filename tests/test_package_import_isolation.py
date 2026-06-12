@@ -21,22 +21,25 @@ PACKAGES = ROOT / "packages"
 CORE_ONLY = {"hla2010"}
 BACKEND_COMMON = CORE_ONLY | {"hla2010_rti_backend_common"}
 JAVA_COMMON = CORE_ONLY | {"hla2010_rti_java_common"}
+RUNTIME_COMMON = CORE_ONLY | {"hla2010_rti_backend_common", "hla2010_rti_transport_common"}
+VERIFICATION_COMMON = CORE_ONLY | {"hla2010_rti_backend_common", "hla2010_rti_runtime_common"}
 
 PACKAGE_IMPORT_ALLOWLISTS: dict[str, set[str]] = {
     "hla2010_rti_java_common": CORE_ONLY,
     "hla2010_rti_python": BACKEND_COMMON,
-    "hla2010_verification_harness": CORE_ONLY,
-    "hla2010_rti_transport_common": CORE_ONLY,
+    "hla2010_verification_harness": VERIFICATION_COMMON,
+    "hla2010_rti_runtime_common": RUNTIME_COMMON,
+    "hla2010_rti_transport_common": BACKEND_COMMON,
     "hla2010_rti_java_jpype": JAVA_COMMON,
     "hla2010_rti_java_py4j": JAVA_COMMON,
-    "hla2010_rti_certi": JAVA_COMMON,
-    "hla2010_rti_pitch_common": CORE_ONLY,
+    "hla2010_rti_certi": JAVA_COMMON | {"hla2010_rti_runtime_common", "hla2010_rti_transport_common"},
+    "hla2010_rti_pitch_common": JAVA_COMMON | {"hla2010_rti_runtime_common"},
     "hla2010_rti_pitch_jpype": JAVA_COMMON | {"hla2010_rti_java_jpype", "hla2010_rti_pitch_common"},
     "hla2010_rti_pitch_py4j": JAVA_COMMON | {"hla2010_rti_java_py4j", "hla2010_rti_pitch_common"},
     "hla2010_rti_portico": JAVA_COMMON | {"hla2010_rti_java_jpype", "hla2010_rti_java_py4j"},
-    "hla2010_rti_transport_grpc": CORE_ONLY | {"hla2010_rti_transport_common"},
-    "hla2010_rti_transport_rest": CORE_ONLY | {"hla2010_rti_transport_common"},
-    "hla2010_fom_target_radar": CORE_ONLY | {"hla2010_verification_harness"},
+    "hla2010_rti_transport_grpc": CORE_ONLY | {"hla2010_rti_transport_common", "hla2010_rti_runtime_common"},
+    "hla2010_rti_transport_rest": CORE_ONLY | {"hla2010_rti_transport_common", "hla2010_rti_runtime_common"},
+    "hla2010_fom_target_radar": CORE_ONLY | {"hla2010_verification_harness", "hla2010_rti_runtime_common"},
 }
 
 FORBIDDEN_IMPORT_PREFIXES = (
@@ -65,10 +68,10 @@ def _iter_imported_modules(path: Path) -> list[str]:
     return modules
 
 
-def _scan_package_source(package_name: str) -> list[tuple[Path, str]]:
-    split = _load_pyproject(package_name)["tool"]["hla2010"]["package-split"]  # type: ignore[index]
+def _scan_package_source(package_dir_name: str, package_import_root: str) -> list[tuple[Path, str]]:
+    split = _load_pyproject(package_dir_name)["tool"]["hla2010"]["package-split"]  # type: ignore[index]
     source_roots = split["source_roots"]  # type: ignore[index]
-    allowed_roots = PACKAGE_IMPORT_ALLOWLISTS[package_name]
+    allowed_roots = PACKAGE_IMPORT_ALLOWLISTS[package_import_root]
     issues: list[tuple[Path, str]] = []
     seen_paths: set[Path] = set()
     for source_root in source_roots:
@@ -88,7 +91,7 @@ def _scan_package_source(package_name: str) -> list[tuple[Path, str]]:
                     issues.append((path, f"forbidden import of {module_name!r}"))
                     continue
                 root = _import_root(module_name)
-                if root in PACKAGE_IMPORT_ALLOWLISTS and root not in allowed_roots and root != package_name:
+                if root in PACKAGE_IMPORT_ALLOWLISTS and root not in allowed_roots and root != package_import_root:
                     issues.append((path, f"import of sibling package root {root!r} is not allowed"))
     return issues
 
@@ -102,11 +105,9 @@ def test_installable_package_roots_do_not_cross_import_outside_their_allowlist()
         pyproject = package_dir / "pyproject.toml"
         if not pyproject.exists():
             continue
-        data = _load_pyproject(package_dir.name)
-        project = data["project"]  # type: ignore[index]
-        package_name = project["name"]  # type: ignore[index]
-        if package_name not in PACKAGE_IMPORT_ALLOWLISTS:
+        package_import_root = package_dir.name.replace("-", "_")
+        if package_import_root not in PACKAGE_IMPORT_ALLOWLISTS:
             continue
-        issues.extend(_scan_package_source(package_dir.name))
+        issues.extend(_scan_package_source(package_dir.name, package_import_root))
 
     assert not issues, "\n".join(f"{path}: {message}" for path, message in issues)
