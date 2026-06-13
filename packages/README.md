@@ -89,8 +89,59 @@ Suggested move order:
 15. `hla2010-fom-target-radar`
 16. trim `hla2010-spec` to the final core surface
 
+## Ownership Cards
+
+Use these cards when you want to know where a human should safely start
+editing.
+
+### `hla2010-spec`
+
+- Purpose: public spec surface, runtime facade, shared HLA value types, FOM helpers
+- Edit here for: public RTI methods, callback contracts, shared exceptions, FOM parsing and merge behavior
+- Do not edit here for: concrete backend behavior, vendor runtime launch code, transport adapters
+- First files: `packages/hla2010-spec/src/hla2010/spec/__init__.py`, `packages/hla2010-spec/src/hla2010/runtime_api.py`, `packages/hla2010-spec/src/hla2010/fom.py`
+- Quick tests: `python3 -m pytest tests/test_python_api_spec.py tests/factories/test_fom_omt_parsing.py -q`
+- Package README: [`hla2010-spec/README.md`](hla2010-spec/README.md)
+
+### `hla2010-rti-python`
+
+- Purpose: primary in-memory reference RTI backend
+- Edit here for: RTI service implementation, backend state changes, callback delivery, Python-first scenario behavior
+- Do not edit here for: public spec contract changes, vendor runtime discovery, Java bridge behavior
+- First files: `packages/hla2010-rti-python/src/hla2010_rti_python/backend.py`, `packages/hla2010-rti-python/src/hla2010_rti_python/service_registry.py`, `packages/hla2010-rti-python/src/hla2010_rti_python/time_public_services.py`
+- Quick tests: `python3 -m pytest tests/backends/test_python_rti_service_registry.py tests/test_python_api_spec.py -q`
+- Package README: [`hla2010-rti-python/README.md`](hla2010-rti-python/README.md)
+
+### `hla2010-rti-backend-common`
+
+- Purpose: shared backend-neutral adapter and conversion support
+- Edit here for: behavior shared by more than one backend family, common invocation helpers, backend-neutral time/helper policy
+- Do not edit here for: one backend's local service logic or vendor-specific runtime concerns
+- First files: `packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/base.py`, `packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/plugin_api.py`
+- Quick tests: `python3 -m pytest tests/architecture/test_runtime_adapter_no_magic.py tests/test_package_boundary.py -q`
+- Package README: [`hla2010-rti-backend-common/README.md`](hla2010-rti-backend-common/README.md)
+
+### `hla2010-rti-runtime-common`
+
+- Purpose: backend factory selection, plugin discovery, runtime-process helpers
+- Edit here for: RTI factory selection flow, backend instantiation helpers, shared process lifecycle support
+- Do not edit here for: concrete RTI service semantics or public spec methods
+- First files: `packages/hla2010-rti-runtime-common/src/hla2010_rti_runtime_common/factory.py`, `packages/hla2010-rti-runtime-common/src/hla2010_rti_runtime_common/__init__.py`
+- Quick tests: `python3 -m pytest tests/test_package_boundary.py tests/test_rti_runtime_common_split_package.py -q`
+- Package README: [`hla2010-rti-runtime-common/README.md`](hla2010-rti-runtime-common/README.md)
+
+### `hla2010-fom-*`
+
+- Purpose: package-owned FOM resources and reusable scenario helpers
+- Edit here for: new FOM XML, federate helpers, scenario logic, reusable package-backed examples
+- Do not edit here for: backend internals, root namespace facades, vendor launch logic
+- First files: `packages/hla2010-fom-minimal-demo/README.md`, `packages/hla2010-fom-target-radar/README.md`, `docs/create_federate_and_fom.md`
+- Quick path: `./tools/new-fom-package your-demo`
+- Quick tests: `python3 -m pytest tests/examples/test_minimal_fom_demo.py tests/examples/test_new_fom_package_scaffold.py -q`
+
 ## Read Next
 
 1. [`../docs/package_dependency_tree.md`](../docs/package_dependency_tree.md)
 2. [`../docs/package_layout.md`](../docs/package_layout.md)
-3. [`../docs/import_boundary_rules.md`](../docs/import_boundary_rules.md)
+3. [`../docs/create_federate_and_fom.md`](../docs/create_federate_and_fom.md)
+4. [`../docs/import_boundary_rules.md`](../docs/import_boundary_rules.md)

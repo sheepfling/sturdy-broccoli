@@ -12,6 +12,45 @@ from .state import ObjectInstance
 class PythonRTIObjectMixin(PythonRTIObjectDeliveryMixin):
     """HLA object naming/registration services plus delivery helpers."""
 
+    def register_object_instance(
+        self,
+        theClass: ObjectClassHandle,
+        theObjectName: str | None = None,
+        *unused: Any,
+    ) -> ObjectInstanceHandle:
+        federation = self._require_joined()
+        self._ensure_no_save_or_restore_in_progress(federation)
+        self.engine.object_class_for_handle(theClass)
+        if theObjectName is None:
+            theObjectName = f"Object-{self.engine._next_values[ObjectInstanceHandle]}"
+        with self.engine._lock:
+            if str(theObjectName) in federation.object_names:
+                raise ObjectInstanceNameInUse(str(theObjectName))
+            reserved_by = federation.reserved_object_names.get(str(theObjectName))
+            if reserved_by is not None and reserved_by != self.state.handle:
+                raise ObjectInstanceNameInUse(str(theObjectName))
+            handle = self.engine._alloc(ObjectInstanceHandle)
+            assert self.state.handle is not None
+            instance = ObjectInstance(
+                handle=handle,
+                class_handle=theClass,
+                name=str(theObjectName),
+                owner=self.state.handle,
+            )
+            federation.objects[handle] = instance
+            federation.object_names[str(theObjectName)] = handle
+            federation.reserved_object_names.pop(str(theObjectName), None)
+            self.state.known_object_classes[handle] = theClass
+            self.state.known_object_names[str(theObjectName)] = handle
+            self.state.locally_deleted_objects.discard(handle)
+            for federate in list(federation.federates.values()):
+                if federate is self.state:
+                    continue
+                if self._ensure_known_object(federate, instance) is not None:
+                    if not self._subscriber_has_region_scoped_object_interest(federate, instance):
+                        self._reconcile_object_attribute_scope(federate, instance)
+            return handle
+
     def _svc_reserveObjectInstanceName(self, theObjectInstanceName: str) -> None:
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
@@ -64,35 +103,4 @@ class PythonRTIObjectMixin(PythonRTIObjectDeliveryMixin):
         theObjectName: str | None = None,
         *unused: Any,
     ) -> ObjectInstanceHandle:
-        federation = self._require_joined()
-        self._ensure_no_save_or_restore_in_progress(federation)
-        self.engine.object_class_for_handle(theClass)
-        if theObjectName is None:
-            theObjectName = f"Object-{self.engine._next_values[ObjectInstanceHandle]}"
-        with self.engine._lock:
-            if str(theObjectName) in federation.object_names:
-                raise ObjectInstanceNameInUse(str(theObjectName))
-            reserved_by = federation.reserved_object_names.get(str(theObjectName))
-            if reserved_by is not None and reserved_by != self.state.handle:
-                raise ObjectInstanceNameInUse(str(theObjectName))
-            handle = self.engine._alloc(ObjectInstanceHandle)
-            assert self.state.handle is not None
-            instance = ObjectInstance(
-                handle=handle,
-                class_handle=theClass,
-                name=str(theObjectName),
-                owner=self.state.handle,
-            )
-            federation.objects[handle] = instance
-            federation.object_names[str(theObjectName)] = handle
-            federation.reserved_object_names.pop(str(theObjectName), None)
-            self.state.known_object_classes[handle] = theClass
-            self.state.known_object_names[str(theObjectName)] = handle
-            self.state.locally_deleted_objects.discard(handle)
-            for federate in list(federation.federates.values()):
-                if federate is self.state:
-                    continue
-                if self._ensure_known_object(federate, instance) is not None:
-                    if not self._subscriber_has_region_scoped_object_interest(federate, instance):
-                        self._reconcile_object_attribute_scope(federate, instance)
-            return handle
+        return self.register_object_instance(theClass, theObjectName, *unused)

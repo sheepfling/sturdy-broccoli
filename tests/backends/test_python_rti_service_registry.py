@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import csv
-import importlib
 import inspect
 import json
 import subprocess
@@ -12,6 +11,7 @@ from hla2010_rti_backend_common import Invocation
 from hla2010_rti_python.backend import PythonRTIBackend
 from hla2010_rti_python.service_registry import (
     PYTHON_RTI_NON_RTI_SERVICE_REASONS,
+    PYTHON_RTI_SERVICE_HANDLERS,
     PYTHON_RTI_SERVICE_REGISTRY,
 )
 
@@ -33,39 +33,18 @@ def _map_rows() -> list[dict[str, str]]:
     return rows  # type: ignore[return-value]
 
 
-def _resolve_callable(dotted_path: str):
-    parts = dotted_path.split(".")
-    for index in range(len(parts), 0, -1):
-        module_name = ".".join(parts[:index])
-        try:
-            module = importlib.import_module(module_name)
-        except ModuleNotFoundError:
-            continue
-        target = module
-        for part in parts[index:]:
-            target = getattr(target, part)
-        return target
-    raise AssertionError(f"could not resolve callable {dotted_path}")
-
-
 def test_every_rti_method_has_a_registry_entry() -> None:
     assert set(PYTHON_RTI_SERVICE_REGISTRY) == set(API_METADATA["RTIambassador"])
 
 
-def test_every_registry_entry_resolves_to_a_real_callable() -> None:
-    for method_name, dotted_path in PYTHON_RTI_SERVICE_REGISTRY.items():
-        target = _resolve_callable(dotted_path)
+def test_every_registry_entry_has_a_direct_callable_handler() -> None:
+    for method_name in PYTHON_RTI_SERVICE_REGISTRY:
+        target = PYTHON_RTI_SERVICE_HANDLERS[method_name]
         assert callable(target), method_name
 
 
 def test_every_python_backend_service_function_has_a_registry_entry() -> None:
-    implemented = {
-        name.removeprefix("_svc_")
-        for name in dir(PythonRTIBackend)
-        if name.startswith("_svc_") and callable(getattr(PythonRTIBackend, name))
-    }
-    covered = set(PYTHON_RTI_SERVICE_REGISTRY) | set(PYTHON_RTI_NON_RTI_SERVICE_REASONS)
-    assert implemented == covered
+    assert set(PYTHON_RTI_SERVICE_HANDLERS) == set(PYTHON_RTI_SERVICE_REGISTRY)
     for method_name, reason in PYTHON_RTI_NON_RTI_SERVICE_REASONS.items():
         assert reason == "federate callback delivery helper", method_name
 
@@ -83,15 +62,30 @@ def test_every_service_has_at_least_one_requirement_row() -> None:
 def test_python_backend_invoke_uses_registry_backed_service_lookup() -> None:
     source = inspect.getsource(PythonRTIBackend.invoke)
     assert "PYTHON_RTI_SERVICE_HANDLERS.get" in source
+    assert "_resolve_service_callable" not in source
     assert 'getattr(self, f"_svc_{invocation.method_name}"' not in source
 
 
-def test_python_backend_invoke_routes_through_resolved_registry_handler() -> None:
+def test_python_backend_internal_service_calls_use_semantic_service_names() -> None:
+    source = inspect.getsource(PythonRTIBackend.call_service)
+    assert "self._service_handler(method_name)" in source
+    assert "_svc_" not in source
+
+
+def test_python_backend_invoke_routes_through_direct_registry_handler() -> None:
     backend = PythonRTIBackend()
 
     result = backend.invoke(Invocation(method_name="getHLAversion", args=(), kwargs={}, overloads=()))
 
-    assert result == "HLA 1516.1-2010"
+    assert result == "HLA 1516-2010 Python in-memory RTI subset"
+
+
+def test_python_backend_call_service_routes_through_direct_registry_handler() -> None:
+    backend = PythonRTIBackend()
+
+    result = backend.call_service("getHLAversion")
+
+    assert result == "HLA 1516-2010 Python in-memory RTI subset"
 
 
 def test_generated_python_rti_service_map_is_current() -> None:
@@ -126,7 +120,7 @@ def test_generated_service_map_rows_match_registry() -> None:
     for method_name, dotted_path in PYTHON_RTI_SERVICE_REGISTRY.items():
         row = by_method[method_name]
         assert row["implementation_symbol"] == dotted_path
-        target = _resolve_callable(dotted_path)
+        target = PYTHON_RTI_SERVICE_HANDLERS[method_name]
         source_file = inspect.getsourcefile(target)
         assert source_file is not None
         assert row["implementation_module"] == Path(source_file).resolve().relative_to(ROOT).as_posix()

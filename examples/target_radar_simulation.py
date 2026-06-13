@@ -14,7 +14,14 @@ from hla2010_fom_target_radar.scenarios import make_target_radar_factory, run_ta
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--backend", choices=["python", "java-shim-jpype", "java-shim-py4j", "jpype", "py4j"], default="python")
+    parser.add_argument(
+        "--backend",
+        default="python",
+        help=(
+            "RTI factory name or alias such as python, in-memory, java-shim-jpype, "
+            "java-shim-py4j, jpype, or py4j."
+        ),
+    )
     parser.add_argument("--steps", type=int, default=5)
     parser.add_argument("--dt", type=float, default=1.0)
     parser.add_argument("--federation-name", default="TargetRadarFederation")

@@ -1591,15 +1591,15 @@ def test_turn_updates_on_and_off_callbacks_follow_object_instance_relevance():
 def test_turn_updates_object_instance_callbacks_validate_state_arguments_and_wrap_callback_failures():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.backend._svc_turnUpdatesOnForObjectInstance(ObjectInstanceHandle(999), {AttributeHandle(1)})
+        rti.backend.turn_updates_on_for_object_instance(ObjectInstanceHandle(999), {AttributeHandle(1)})
     with pytest.raises(NotConnected):
-        rti.backend._svc_turnUpdatesOffForObjectInstance(ObjectInstanceHandle(999), {AttributeHandle(1)})
+        rti.backend.turn_updates_off_for_object_instance(ObjectInstanceHandle(999), {AttributeHandle(1)})
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.backend._svc_turnUpdatesOnForObjectInstance(ObjectInstanceHandle(999), {AttributeHandle(1)})
+        rti.backend.turn_updates_on_for_object_instance(ObjectInstanceHandle(999), {AttributeHandle(1)})
     with pytest.raises(FederateNotExecutionMember):
-        rti.backend._svc_turnUpdatesOffForObjectInstance(ObjectInstanceHandle(999), {AttributeHandle(1)})
+        rti.backend.turn_updates_off_for_object_instance(ObjectInstanceHandle(999), {AttributeHandle(1)})
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("om-turn-updates-negative-fed")
@@ -1611,22 +1611,22 @@ def test_turn_updates_object_instance_callbacks_validate_state_arguments_and_wra
     obj = owner.register_object_instance(cls, "Turn-Updates-Negative")
 
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.backend._svc_turnUpdatesOnForObjectInstance(ObjectInstanceHandle(999), {attr})
+        owner.backend.turn_updates_on_for_object_instance(ObjectInstanceHandle(999), {attr})
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.backend._svc_turnUpdatesOffForObjectInstance(ObjectInstanceHandle(999), {attr})
+        owner.backend.turn_updates_off_for_object_instance(ObjectInstanceHandle(999), {attr})
     with pytest.raises(AttributeNotDefined):
-        owner.backend._svc_turnUpdatesOnForObjectInstance(obj, {bad_attr})
+        owner.backend.turn_updates_on_for_object_instance(obj, {bad_attr})
     with pytest.raises(AttributeNotDefined):
-        owner.backend._svc_turnUpdatesOffForObjectInstance(obj, {bad_attr})
+        owner.backend.turn_updates_off_for_object_instance(obj, {bad_attr})
     with pytest.raises(InvalidUpdateRateDesignator):
-        owner.backend._svc_turnUpdatesOnForObjectInstance(obj, {attr}, "MissingRate")
+        owner.backend.turn_updates_on_for_object_instance(obj, {attr}, "MissingRate")
 
     owner.request_federation_save("TURN-UPDATES-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.backend._svc_turnUpdatesOnForObjectInstance(obj, {attr})
+        owner.backend.turn_updates_on_for_object_instance(obj, {attr})
     with pytest.raises(SaveInProgress):
-        owner.backend._svc_turnUpdatesOffForObjectInstance(obj, {attr})
+        owner.backend.turn_updates_off_for_object_instance(obj, {attr})
 
     owner.federate_save_begun()
     observer.federate_save_begun()
@@ -1637,9 +1637,9 @@ def test_turn_updates_object_instance_callbacks_validate_state_arguments_and_wra
     owner.request_federation_restore("TURN-UPDATES-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.backend._svc_turnUpdatesOnForObjectInstance(obj, {attr})
+        owner.backend.turn_updates_on_for_object_instance(obj, {attr})
     with pytest.raises(RestoreInProgress):
-        owner.backend._svc_turnUpdatesOffForObjectInstance(obj, {attr})
+        owner.backend.turn_updates_off_for_object_instance(obj, {attr})
     owner.abort_federation_restore()
     drain(owner, observer)
 
@@ -1660,9 +1660,9 @@ def test_turn_updates_object_instance_callbacks_validate_state_arguments_and_wra
     fail_obj = failing.register_object_instance(fail_cls, "Turn-Updates-Failing")
 
     with pytest.raises(FederateInternalError):
-        failing.backend._svc_turnUpdatesOnForObjectInstance(fail_obj, {fail_attr})
+        failing.backend.turn_updates_on_for_object_instance(fail_obj, {fail_attr})
     with pytest.raises(FederateInternalError):
-        failing.backend._svc_turnUpdatesOffForObjectInstance(fail_obj, {fail_attr})
+        failing.backend.turn_updates_off_for_object_instance(fail_obj, {fail_attr})
 
     failing.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     failing.destroy_federation_execution("om-turn-updates-failing-fed")
@@ -1674,11 +1674,11 @@ def test_turn_updates_object_instance_callbacks_validate_state_arguments_and_wra
 def test_provide_attribute_value_update_callback_validates_state_arguments_and_wraps_callback_failures():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.backend._svc_provideAttributeValueUpdate(ObjectInstanceHandle(999), {AttributeHandle(1)}, b"tag")
+        rti.backend.provide_attribute_value_update(ObjectInstanceHandle(999), {AttributeHandle(1)}, b"tag")
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.backend._svc_provideAttributeValueUpdate(ObjectInstanceHandle(999), {AttributeHandle(1)}, b"tag")
+        rti.backend.provide_attribute_value_update(ObjectInstanceHandle(999), {AttributeHandle(1)}, b"tag")
     rti.disconnect()
 
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("om-provide-avu-negative-fed")
@@ -1690,14 +1690,14 @@ def test_provide_attribute_value_update_callback_validates_state_arguments_and_w
     obj = owner.register_object_instance(cls, "Provide-AVU-Negative")
 
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.backend._svc_provideAttributeValueUpdate(ObjectInstanceHandle(999), {attr}, b"tag")
+        owner.backend.provide_attribute_value_update(ObjectInstanceHandle(999), {attr}, b"tag")
     with pytest.raises(AttributeNotDefined):
-        owner.backend._svc_provideAttributeValueUpdate(obj, {bad_attr}, b"tag")
+        owner.backend.provide_attribute_value_update(obj, {bad_attr}, b"tag")
 
     owner.request_federation_save("PROVIDE-AVU-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.backend._svc_provideAttributeValueUpdate(obj, {attr}, b"tag")
+        owner.backend.provide_attribute_value_update(obj, {attr}, b"tag")
 
     owner.federate_save_begun()
     observer.federate_save_begun()
@@ -1708,12 +1708,12 @@ def test_provide_attribute_value_update_callback_validates_state_arguments_and_w
     owner.request_federation_restore("PROVIDE-AVU-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.backend._svc_provideAttributeValueUpdate(obj, {attr}, b"tag")
+        owner.backend.provide_attribute_value_update(obj, {attr}, b"tag")
     owner.abort_federation_restore()
     drain(owner, observer)
 
     owner_fed.clear()
-    owner.backend._svc_provideAttributeValueUpdate(obj, {attr}, b"tag")
+    owner.backend.provide_attribute_value_update(obj, {attr}, b"tag")
     drain(owner, observer)
     provide = owner_fed.last_callback("provideAttributeValueUpdate")
     assert provide is not None
@@ -1733,7 +1733,7 @@ def test_provide_attribute_value_update_callback_validates_state_arguments_and_w
     fail_obj = failing.register_object_instance(fail_cls, "Provide-AVU-Failing")
 
     with pytest.raises(FederateInternalError):
-        failing.backend._svc_provideAttributeValueUpdate(fail_obj, {fail_attr}, b"tag")
+        failing.backend.provide_attribute_value_update(fail_obj, {fail_attr}, b"tag")
 
     failing.resign_federation_execution(ResignAction.DELETE_OBJECTS)
     failing.destroy_federation_execution("om-provide-avu-failing-fed")

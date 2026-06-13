@@ -22,6 +22,16 @@ Guard coverage for this boundary lives in
 `tests/test_package_split_scaffolds.py`, `tests/test_root_facade_policy.py`,
 `tests/test_namespace_policy.py`, and `tests/test_python_api_spec.py`.
 
+## Ownership Card
+
+- Edit here for: public RTI method surface, callback contracts, shared exceptions, FOM parsing and merge behavior
+- Do not edit here for: Python RTI service logic, vendor bridge behavior, transport wiring
+- First files to open:
+  `src/hla2010/spec/__init__.py`, `src/hla2010/runtime_api.py`,
+  `src/hla2010/fom.py`, `src/hla2010/ambassadors.py`
+- Quick tests:
+  `python3 -m pytest tests/test_python_api_spec.py tests/factories/test_fom_omt_parsing.py -q`
+
 If you want the user-facing package map, read
 [`../../docs/package_layout.md`](../../docs/package_layout.md) and
 [`../../docs/python_api_spec.md`](../../docs/python_api_spec.md).

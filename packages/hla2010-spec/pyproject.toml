@@ -23,7 +23,7 @@ include = ["hla2010*"]
 exclude = ["hla2010.testing*", "hla2010_repo_internal*"]
 
 [tool.setuptools.package-data]
-hla2010 = ["resources/foms/*.xml"]
+hla2010 = ["resources/*.json", "resources/foms/*.xml"]
 
 [tool.hla2010.package-split]
 status = "implementation-owned"

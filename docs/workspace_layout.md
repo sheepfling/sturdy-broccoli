@@ -5,6 +5,24 @@ The top level is intentionally split by ownership:
 
 `package -> entrypoints -> generated evidence -> local runtime state -> vendor trees -> provenance`
 
+Use this page for:
+
+- the purpose of the top-level repo directories
+- where human-facing entrypoints live versus implementation helpers
+- where generated evidence, vendor trees, and local runtime state belong
+
+Do not use this page for:
+
+- installable package-family ownership
+- import-boundary rules between package families
+- detailed backend route inventory
+
+Those belong to:
+
+- [`package_layout.md`](package_layout.md)
+- [`import_boundary_rules.md`](import_boundary_rules.md)
+- [`backend_route_inventory.md`](backend_route_inventory.md)
+
 ## Top-Level Areas
 
 - `packages/hla2010-spec/src/hla2010/`: abstract/core API surface plus the one documented temporary split-package workspace facade `hla2010.rti`.
@@ -37,6 +55,10 @@ The top level is intentionally split by ownership:
 - Keep vendor runtime/build state out of the repo root and under `.local/`.
 - Keep the `tools/` directory narrow and operator-facing; do not let it become a second implementation tree.
 - The backend-alias matrix generator has already been promoted into `./tools/rti-options generate` because CI and operator flows treat it as a supported entrypoint.
+
+If you are trying to decide which installable package family owns a change,
+stop here and use [`../packages/README.md`](../packages/README.md) or
+[`package_layout.md`](package_layout.md) instead.
 
 ## Setup First
 

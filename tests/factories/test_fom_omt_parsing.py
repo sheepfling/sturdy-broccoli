@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from importlib import resources
 from pathlib import Path
 
 import pytest
@@ -25,7 +26,7 @@ from hla2010.fom import (
 )
 
 
-RESOURCE_ROOT = Path(__file__).resolve().parents[2] / "src" / "hla2010" / "resources" / "foms"
+RESOURCE_ROOT = Path(str(resources.files("hla2010").joinpath("resources", "foms")))
 VENDOR_SMOKE_FOM = str((RESOURCE_ROOT / "VendorSmokeFOM.xml").resolve())
 TARGET_RADAR_FOM = str((RESOURCE_ROOT / "TargetRadarFOMmodule.xml").resolve())
 STANDARD_MIM_FOM = str((RESOURCE_ROOT / "HLAstandardMIM.xml").resolve())
@@ -2180,6 +2181,6 @@ def test_1516_2_hierarchy_doc_declares_omt_lexicon_and_conformance_boundary():
     assert "merge validation" in text
     assert "parse/serialize round-trip validation" in text
     assert "serviceUtilization" in text
-RESOURCE_ROOT = Path(__file__).resolve().parents[2] / "src" / "hla2010" / "resources" / "foms"
+RESOURCE_ROOT = Path(str(resources.files("hla2010").joinpath("resources", "foms")))
 VENDOR_SMOKE_FOM = str((RESOURCE_ROOT / "VendorSmokeFOM.xml").resolve())
 TARGET_RADAR_FOM = str((RESOURCE_ROOT / "TargetRadarFOMmodule.xml").resolve())

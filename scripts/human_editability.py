@@ -17,8 +17,115 @@ ROOT = Path(__file__).resolve().parents[1]
 INVENTORY_PATH = ROOT / "analysis" / "human_editability" / "smell_inventory.json"
 LEDGER_PATH = ROOT / "analysis" / "compliance" / "requirements_ledger.csv"
 TRACEABILITY_PATH = ROOT / "requirements" / "traceability_matrix.csv"
+REQUIREMENTS_SURFACE_MANIFEST_PATH = ROOT / "requirements" / "surface_manifest.json"
 SMELL_DOC_PATH = ROOT / "docs" / "plans" / "human_editability_smell_inventory.md"
 PYTHON_RTI_SERVICE_MAP_JSON_PATH = ROOT / "analysis" / "traceability" / "python_rti_service_map.json"
+FRONT_DOORS: dict[str, dict[str, Any]] = {
+    "spec": {
+        "title": "Spec front door",
+        "doc": ROOT / "docs" / "spec_reading_map.md",
+        "goal": "Find the abstract/public HLA interfaces and spec metadata source.",
+        "files": (
+            ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "spec" / "__init__.py",
+            ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "runtime_api.py",
+            ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "ambassadors.py",
+            ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "spec_inventory.py",
+            ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "spec_refs.py",
+            ROOT / "specs" / "hla2010_api.json",
+        ),
+    },
+    "fom": {
+        "title": "FOM front door",
+        "doc": ROOT / "docs" / "fom_reading_map.md",
+        "goal": "Find the parsing, merge, datatype-validation, and serialization edit surface for FOM behavior.",
+        "files": (
+            ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "fom.py",
+            ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "_fom_parsing.py",
+            ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "_fom_merge.py",
+            ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "_fom_datatypes.py",
+            ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "_fom_serialization.py",
+            ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "_fom_models.py",
+            ROOT / "tests" / "factories" / "test_fom_omt_parsing.py",
+        ),
+    },
+    "python-rti": {
+        "title": "Python RTI front door",
+        "doc": ROOT / "docs" / "python_rti_reading_map.md",
+        "goal": "Find the main Python RTI edit loop and the exact service implementation surface.",
+        "files": (
+            ROOT / "docs" / "python_rti_backend.md",
+            ROOT / "packages" / "hla2010-rti-python" / "src" / "hla2010_rti_python" / "backend.py",
+            ROOT / "packages" / "hla2010-rti-python" / "src" / "hla2010_rti_python" / "service_registry.py",
+            ROOT / "analysis" / "traceability" / "python_rti_service_map.md",
+            ROOT / "packages" / "hla2010-rti-python" / "src" / "hla2010_rti_python" / "time_public_services.py",
+            ROOT / "packages" / "hla2010-rti-python" / "src" / "hla2010_rti_python" / "state.py",
+        ),
+    },
+    "python-rti-service": {
+        "title": "Python RTI service-edit front door",
+        "doc": ROOT / "docs" / "python_rti_edit_one_service.md",
+        "goal": "Change one Python RTI service end to end without reading the whole backend family first.",
+        "files": (
+            ROOT / "docs" / "python_rti_edit_one_service.md",
+            ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "runtime_api.py",
+            ROOT / "packages" / "hla2010-rti-python" / "src" / "hla2010_rti_python" / "backend.py",
+            ROOT / "packages" / "hla2010-rti-python" / "src" / "hla2010_rti_python" / "service_registry.py",
+            ROOT / "packages" / "hla2010-rti-python" / "src" / "hla2010_rti_python" / "support_lookup.py",
+            ROOT / "packages" / "hla2010-rti-python" / "src" / "hla2010_rti_python" / "time_public_services.py",
+            ROOT / "tests" / "backends" / "test_python_rti_service_registry.py",
+            ROOT / "analysis" / "traceability" / "python_rti_service_map.md",
+        ),
+    },
+    "rti-factories": {
+        "title": "RTI factory front door",
+        "doc": ROOT / "docs" / "rti_factory_reading_map.md",
+        "goal": "List installed RTI factories, inspect selectable names, choose one, and instantiate it cleanly.",
+        "files": (
+            ROOT / "tools" / "rti-factories",
+            ROOT / "scripts" / "rti_factories.py",
+            ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "rti.py",
+            ROOT / "packages" / "hla2010-rti-runtime-common" / "src" / "hla2010_rti_runtime_common" / "factory.py",
+            ROOT / "packages" / "hla2010-rti-backend-common" / "src" / "hla2010_rti_backend_common" / "plugin_api.py",
+            ROOT / "packages" / "hla2010-rti-python" / "src" / "hla2010_rti_python" / "plugin.py",
+        ),
+    },
+    "requirements": {
+        "title": "Requirements front door",
+        "doc": ROOT / "docs" / "requirements_trace_one_method.md",
+        "goal": "Trace one method first, then edit the active mapping row only if the trace shows the requirement or evidence is wrong.",
+        "files": (
+            ROOT / "docs" / "requirements_trace_one_method.md",
+            ROOT / "docs" / "requirements_edit_one_row.md",
+            ROOT / "requirements" / "README.md",
+            ROOT / "requirements" / "surface_manifest.json",
+            ROOT / "requirements" / "traceability_matrix.csv",
+            ROOT / "packages" / "hla2010-rti-python" / "src" / "hla2010_rti_python" / "support_lookup.py",
+            ROOT / "packages" / "hla2010-rti-python" / "src" / "hla2010_rti_python" / "time_public_services.py",
+            ROOT / "tests" / "scenarios" / "test_support_services_backend_matrix.py",
+            ROOT / "tests" / "time" / "test_mom_mim_time_v10.py",
+            ROOT / "docs" / "requirements_traceability.md",
+            ROOT / "analysis" / "compliance" / "requirements_ledger.csv",
+            ROOT / "analysis" / "traceability" / "service_trace_index.md",
+            ROOT / "scripts" / "validate_traceability_paths.py",
+            ROOT / "src" / "hla2010_repo_internal" / "traceability.py",
+        ),
+    },
+    "requirements-trace": {
+        "title": "Requirements front door",
+        "doc": ROOT / "docs" / "requirements_trace_one_method.md",
+        "goal": "Trace one method from requirement row to implementation and test evidence without reading the whole artifact stack first.",
+        "files": (
+            ROOT / "docs" / "requirements_trace_one_method.md",
+            ROOT / "docs" / "requirements_edit_one_row.md",
+            ROOT / "requirements" / "traceability_matrix.csv",
+            ROOT / "packages" / "hla2010-rti-python" / "src" / "hla2010_rti_python" / "support_lookup.py",
+            ROOT / "packages" / "hla2010-rti-python" / "src" / "hla2010_rti_python" / "time_public_services.py",
+            ROOT / "tests" / "scenarios" / "test_support_services_backend_matrix.py",
+            ROOT / "tests" / "time" / "test_mom_mim_time_v10.py",
+            ROOT / "analysis" / "traceability" / "service_trace_index.md",
+        ),
+    },
+}
 
 
 def _load_inventory() -> dict[str, Any]:
@@ -40,6 +147,49 @@ def _inventory_checks() -> list[dict[str, Any]]:
     if not isinstance(checks, list):
         raise ValueError("smell inventory must contain a 'checks' list")
     return checks
+
+
+def _load_requirements_surface_manifest() -> dict[str, Any]:
+    return json.loads(REQUIREMENTS_SURFACE_MANIFEST_PATH.read_text(encoding="utf-8"))
+
+
+def _validate_requirements_surface_manifest() -> list[str]:
+    errors: list[str] = []
+    data = _load_requirements_surface_manifest()
+    if data.get("version") != 1:
+        errors.append("requirements surface manifest version must be 1")
+
+    required_keys = (
+        "active_authored",
+        "generated",
+        "reference_provenance",
+        "packet_entrypoints",
+    )
+    seen: dict[str, str] = {}
+    for key in required_keys:
+        entries = data.get(key)
+        if not isinstance(entries, list) or not all(isinstance(item, str) for item in entries):
+            errors.append(f"requirements surface manifest {key!r} must be a list of strings")
+            continue
+        if not entries:
+            errors.append(f"requirements surface manifest {key!r} must not be empty")
+            continue
+        for rel_path in entries:
+            path = ROOT / rel_path
+            if not path.exists():
+                errors.append(f"requirements surface manifest missing path: {rel_path}")
+            prior = seen.get(rel_path)
+            if prior is not None:
+                errors.append(
+                    f"requirements surface manifest path {rel_path} appears in both {prior} and {key}"
+                )
+            else:
+                seen[rel_path] = key
+
+    active_authored = data.get("active_authored", [])
+    if "requirements/traceability_matrix.csv" not in active_authored:
+        errors.append("requirements surface manifest must include requirements/traceability_matrix.csv as active_authored")
+    return errors
 
 
 def _validate_inventory() -> list[str]:
@@ -98,6 +248,7 @@ def cmd_inventory(_: argparse.Namespace) -> int:
 
 def cmd_check(_: argparse.Namespace) -> int:
     errors = _validate_inventory()
+    errors.extend(_validate_requirements_surface_manifest())
     if errors:
         print("Human editability check failed")
         for error in errors:
@@ -117,10 +268,59 @@ def cmd_check(_: argparse.Namespace) -> int:
     open_checks = [check for check in checks if check.get("status") == "open"]
     print("Human editability check passed")
     print(f"inventory: {INVENTORY_PATH.relative_to(ROOT).as_posix()}")
+    print(f"requirements_surfaces: {REQUIREMENTS_SURFACE_MANIFEST_PATH.relative_to(ROOT).as_posix()}")
+    print("requirements_surface_validation: passed")
     print("traceability_validation: passed")
     print(f"remaining_open_smells: {len(open_checks)}")
     for check in open_checks:
         print(_format_open_smell(check))
+    return 0
+
+
+def _print_front_door(name: str) -> None:
+    front_door = FRONT_DOORS[name]
+    print(f"{front_door['title']}:")
+    print(f"goal: {front_door['goal']}")
+    doc_path = Path(front_door["doc"])
+    print(f"doc: {doc_path.relative_to(ROOT).as_posix()}")
+    print("read in order:")
+    for index, path in enumerate(front_door["files"], start=1):
+        rel = Path(path).relative_to(ROOT).as_posix()
+        print(f"  {index}. {rel}")
+    print("")
+
+
+def cmd_front_doors(args: argparse.Namespace) -> int:
+    topic = args.topic
+    ordered_topics = ("spec", "fom", "python-rti", "python-rti-service", "rti-factories", "requirements")
+    print("Human editability front doors")
+    print(f"onboarding: {(ROOT / 'docs' / 'onboarding.md').relative_to(ROOT).as_posix()}")
+    print("")
+    if topic == "all":
+        for name in ordered_topics:
+            _print_front_door(name)
+        return 0
+    alias = "requirements" if topic == "requirements-trace" else topic
+    _print_front_door(alias)
+    return 0
+
+
+def _print_surface_group(title: str, entries: list[str]) -> None:
+    print(f"{title}:")
+    for entry in entries:
+        print(f"  - {entry}")
+    print("")
+
+
+def cmd_requirements_surfaces(_: argparse.Namespace) -> int:
+    data = _load_requirements_surface_manifest()
+    print("Human editability requirements surfaces")
+    print(f"manifest: {REQUIREMENTS_SURFACE_MANIFEST_PATH.relative_to(ROOT).as_posix()}")
+    print("")
+    _print_surface_group("Active authored", list(data["active_authored"]))
+    _print_surface_group("Generated", list(data["generated"]))
+    _print_surface_group("Reference / provenance", list(data["reference_provenance"]))
+    _print_surface_group("Packet entrypoints", list(data["packet_entrypoints"]))
     return 0
 
 
@@ -146,6 +346,8 @@ def _traceability_matches(query: str) -> list[dict[str, str]]:
     matches: list[dict[str, str]] = []
     for row in _load_csv(TRACEABILITY_PATH):
         haystacks = (
+            row.get("source_document", ""),
+            row.get("clause", ""),
             row.get("current_artifact_id", ""),
             row.get("canonical_topic", ""),
             row.get("implementation_refs", ""),
@@ -154,6 +356,54 @@ def _traceability_matches(query: str) -> list[dict[str, str]]:
         if any(normalized in value.casefold() for value in haystacks if value):
             matches.append(row)
     return matches
+
+
+def _traceability_requirement_rows(requirement_id: str) -> list[dict[str, str]]:
+    normalized = requirement_id.casefold()
+    return [
+        row
+        for row in _load_csv(TRACEABILITY_PATH)
+        if row.get("requirement_id", "").casefold() == normalized
+        or row.get("current_artifact_id", "").casefold() == normalized
+    ]
+
+
+def _service_trace_index_rows() -> list[dict[str, Any]]:
+    if not SERVICE_TRACE_INDEX_JSON_PATH.exists():
+        return []
+    payload = json.loads(SERVICE_TRACE_INDEX_JSON_PATH.read_text(encoding="utf-8"))
+    rows = payload.get("rows", [])
+    return rows if isinstance(rows, list) else []
+
+
+def _ledger_requirement_rows(requirement_id: str) -> list[dict[str, str]]:
+    normalized = requirement_id.casefold()
+    ledger_rows = [
+        row
+        for row in _load_csv(LEDGER_PATH)
+        if row.get("requirement_id", "").casefold() == normalized
+    ]
+    if ledger_rows:
+        return ledger_rows
+    indexed_rows = [
+        row
+        for row in _service_trace_index_rows()
+        if isinstance(row, dict) and str(row.get("requirement_id", "")).casefold() == normalized
+    ]
+    return [{str(key): str(value) for key, value in row.items()} for row in indexed_rows]
+
+
+def _print_active_requirement_row(row: dict[str, str]) -> None:
+    print(f"requirement_id: {row.get('requirement_id', '')}")
+    print(f"source_document: {row.get('source_document', '')}")
+    print(f"clause: {row.get('clause', '')}")
+    print(f"canonical_topic: {row.get('canonical_topic', '')}")
+    print(f"current_artifact_id: {row.get('current_artifact_id', '')}")
+    print(f"implementation_refs: {row.get('implementation_refs', '') or '-'}")
+    print(f"test_refs: {row.get('test_refs', '') or '-'}")
+    print(f"artifact_refs: {row.get('artifact_refs', '') or '-'}")
+    print(f"status: {row.get('status', '')}")
+    print(f"notes: {row.get('notes', '') or '-'}")
 
 
 def _python_rti_service_map_match(method_name: str, python_name: str) -> dict[str, str] | None:
@@ -264,6 +514,72 @@ def cmd_trace(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_requirement(args: argparse.Namespace) -> int:
+    requirement_id = args.requirement_id
+    traceability_rows = _traceability_requirement_rows(requirement_id)
+    ledger_rows = _ledger_requirement_rows(requirement_id)
+    if not traceability_rows and ledger_rows:
+        first = ledger_rows[0]
+        for candidate in (
+            first.get("method", ""),
+            first.get("hla_method", ""),
+            first.get("python_name", ""),
+            first.get("title", "").removesuffix(" service"),
+            first.get("section", ""),
+        ):
+            if candidate:
+                traceability_rows = _traceability_matches(candidate)
+                if traceability_rows:
+                    break
+    if not traceability_rows and not ledger_rows:
+        print(
+            f"error: no human-editability requirement rows found for {requirement_id!r}",
+            file=sys.stderr,
+        )
+        return 2
+
+    print(f"Human editability requirement for {requirement_id}")
+    print(f"active_authored_surface: {TRACEABILITY_PATH.relative_to(ROOT).as_posix()}")
+    print(f"generated_ledger: {LEDGER_PATH.relative_to(ROOT).as_posix()}")
+    print(f"generated_trace_index: {SERVICE_TRACE_INDEX_JSON_PATH.relative_to(ROOT).as_posix()}")
+    print("")
+    if traceability_rows:
+        print("Active requirement row:")
+        for row in traceability_rows:
+            _print_active_requirement_row(row)
+            print("")
+    if ledger_rows:
+        print("Generated trace row:")
+        for row in ledger_rows:
+            if "method" in row:
+                _print_trace_row(row)
+            else:
+                service_map_row = _python_rti_service_map_match(row.get("hla_method", ""), row.get("python_name", ""))
+                implementation_refs = row.get("implementation_ref", "")
+                if service_map_row is not None:
+                    implementation_refs = "; ".join(
+                        part
+                        for part in (
+                            service_map_row.get("implementation_symbol", ""),
+                            service_map_row.get("implementation_module", ""),
+                        )
+                        if part
+                    )
+                print(f"requirement_id: {row.get('requirement_id', '')}")
+                print(f"section: {row.get('section', '')}")
+                print(f"service_group: {row.get('service_group', '')}")
+                print(f"hla_method: {row.get('hla_method', '')}")
+                print(f"python_name: {row.get('python_name', '')}")
+                print(f"implementation_refs: {implementation_refs}")
+                print(f"positive_test_refs: {row.get('test_refs', '') or '-'}")
+                print("negative_test_refs: -")
+                print(f"artifact_refs: {row.get('artifact_refs', '') or '-'}")
+                print(f"status: {row.get('status', '')}")
+                print("verification_asset_id: -")
+            print("")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="./tools/human-editability",
@@ -277,9 +593,35 @@ def build_parser() -> argparse.ArgumentParser:
     check_parser = subparsers.add_parser("check", help="validate the smell inventory and print remaining open smells")
     check_parser.set_defaults(func=cmd_check)
 
+    front_doors_parser = subparsers.add_parser(
+        "front-doors",
+        help="print the smallest practical reading/editing surfaces for spec, fom, python-rti, python-rti-service, rti-factories, requirements, and requirements-trace work",
+    )
+    front_doors_parser.add_argument(
+        "topic",
+        nargs="?",
+        choices=("all", "spec", "fom", "python-rti", "python-rti-service", "rti-factories", "requirements", "requirements-trace"),
+        default="all",
+        help="which contributor surface to print",
+    )
+    front_doors_parser.set_defaults(func=cmd_front_doors)
+
+    requirements_surfaces_parser = subparsers.add_parser(
+        "requirements-surfaces",
+        help="print the single-source classification of active, generated, and reference requirement surfaces",
+    )
+    requirements_surfaces_parser.set_defaults(func=cmd_requirements_surfaces)
+
     trace_parser = subparsers.add_parser("trace", help="print the current ledger-backed trace for a service or method")
     trace_parser.add_argument("method", help="HLA method, Python method, or requirement id")
     trace_parser.set_defaults(func=cmd_trace)
+
+    requirement_parser = subparsers.add_parser(
+        "requirement",
+        help="print one active requirement row plus its generated trace view by requirement id",
+    )
+    requirement_parser.add_argument("requirement_id", help="Requirement id such as REQ-RTI-TM-8_8-timeAdvanceRequest")
+    requirement_parser.set_defaults(func=cmd_requirement)
     return parser
 
 

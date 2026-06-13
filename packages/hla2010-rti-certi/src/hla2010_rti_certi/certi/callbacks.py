@@ -11,6 +11,7 @@ from hla2010.enums import (
     SynchronizationPointFailureReason,
 )
 from hla2010.exceptions import RTIinternalError
+from hla2010.ambassadors import invoke_federate_callback
 from hla2010.handles import (
     AttributeHandle,
     AttributeHandleSet,
@@ -41,10 +42,18 @@ def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_
 
     kind = parts[0]
     if kind == "DISCOVER":
-        getattr(ambassador, "discoverObjectInstance")(ObjectInstanceHandle(int(parts[1])), ObjectClassHandle(int(parts[2])), parts[3])
+        invoke_federate_callback(
+            ambassador,
+            "discoverObjectInstance",
+            ObjectInstanceHandle(int(parts[1])),
+            ObjectClassHandle(int(parts[2])),
+            parts[3],
+        )
         return
     if kind == "REFLECT":
-        getattr(ambassador, "reflectAttributeValues")(
+        invoke_federate_callback(
+            ambassador,
+            "reflectAttributeValues",
             ObjectInstanceHandle(int(parts[1])),
             decode_handle_value_map(parts[2], AttributeHandle, AttributeHandleValueMap),
             decode_bytes(parts[3]),
@@ -54,7 +63,9 @@ def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_
         return
     if kind == "REFLECT_TSO":
         time_type = logical_time_hint or parts[6]
-        getattr(ambassador, "reflectAttributeValues")(
+        invoke_federate_callback(
+            ambassador,
+            "reflectAttributeValues",
             ObjectInstanceHandle(int(parts[1])),
             decode_handle_value_map(parts[2], AttributeHandle, AttributeHandleValueMap),
             decode_bytes(parts[3]),
@@ -65,7 +76,9 @@ def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_
         )
         return
     if kind == "INTERACTION":
-        getattr(ambassador, "receiveInteraction")(
+        invoke_federate_callback(
+            ambassador,
+            "receiveInteraction",
             InteractionClassHandle(int(parts[1])),
             decode_handle_value_map(parts[2], ParameterHandle, ParameterHandleValueMap),
             decode_bytes(parts[3]),
@@ -75,7 +88,9 @@ def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_
         return
     if kind == "INTERACTION_TSO":
         time_type = logical_time_hint or parts[6]
-        getattr(ambassador, "receiveInteraction")(
+        invoke_federate_callback(
+            ambassador,
+            "receiveInteraction",
             InteractionClassHandle(int(parts[1])),
             decode_handle_value_map(parts[2], ParameterHandle, ParameterHandleValueMap),
             decode_bytes(parts[3]),
@@ -87,43 +102,75 @@ def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_
         return
     if kind == "TIME_REGULATION_ENABLED":
         time_type = logical_time_hint or parts[1]
-        getattr(ambassador, "timeRegulationEnabled")(decode_logical_time(time_type, parts[2]))
+        invoke_federate_callback(
+            ambassador,
+            "timeRegulationEnabled",
+            decode_logical_time(time_type, parts[2]),
+        )
         return
     if kind == "TIME_CONSTRAINED_ENABLED":
         time_type = logical_time_hint or parts[1]
-        getattr(ambassador, "timeConstrainedEnabled")(decode_logical_time(time_type, parts[2]))
+        invoke_federate_callback(
+            ambassador,
+            "timeConstrainedEnabled",
+            decode_logical_time(time_type, parts[2]),
+        )
         return
     if kind == "TIME_ADVANCE_GRANT":
         time_type = logical_time_hint or parts[1]
-        getattr(ambassador, "timeAdvanceGrant")(decode_logical_time(time_type, parts[2]))
+        invoke_federate_callback(
+            ambassador,
+            "timeAdvanceGrant",
+            decode_logical_time(time_type, parts[2]),
+        )
         return
     if kind == "REQUEST_RETRACTION":
-        getattr(ambassador, "requestRetraction")(MessageRetractionHandle(int(parts[1])))
+        invoke_federate_callback(ambassador, "requestRetraction", MessageRetractionHandle(int(parts[1])))
         return
     if kind == "SYNC_POINT_REGISTRATION_SUCCEEDED":
-        getattr(ambassador, "synchronizationPointRegistrationSucceeded")(parts[1])
+        invoke_federate_callback(ambassador, "synchronizationPointRegistrationSucceeded", parts[1])
         return
     if kind == "SYNC_POINT_REGISTRATION_FAILED":
-        getattr(ambassador, "synchronizationPointRegistrationFailed")(parts[1], SynchronizationPointFailureReason[parts[2]])
+        invoke_federate_callback(
+            ambassador,
+            "synchronizationPointRegistrationFailed",
+            parts[1],
+            SynchronizationPointFailureReason[parts[2]],
+        )
         return
     if kind == "ANNOUNCE_SYNC_POINT":
-        getattr(ambassador, "announceSynchronizationPoint")(parts[1], decode_bytes(parts[2]))
+        invoke_federate_callback(
+            ambassador,
+            "announceSynchronizationPoint",
+            parts[1],
+            decode_bytes(parts[2]),
+        )
         return
     if kind == "FEDERATION_SYNCHRONIZED":
-        getattr(ambassador, "federationSynchronized")(parts[1], decode_handle_set(parts[2], FederateHandle, FederateHandleSet))
+        invoke_federate_callback(
+            ambassador,
+            "federationSynchronized",
+            parts[1],
+            decode_handle_set(parts[2], FederateHandle, FederateHandleSet),
+        )
         return
     if kind == "INITIATE_FEDERATE_SAVE":
-        getattr(ambassador, "initiateFederateSave")(parts[1])
+        invoke_federate_callback(ambassador, "initiateFederateSave", parts[1])
         return
     if kind == "INITIATE_FEDERATE_SAVE_AT":
         time_type = logical_time_hint or parts[2]
-        getattr(ambassador, "initiateFederateSave")(parts[1], decode_logical_time(time_type, parts[3]))
+        invoke_federate_callback(
+            ambassador,
+            "initiateFederateSave",
+            parts[1],
+            decode_logical_time(time_type, parts[3]),
+        )
         return
     if kind == "FEDERATION_SAVED":
-        getattr(ambassador, "federationSaved")()
+        invoke_federate_callback(ambassador, "federationSaved")
         return
     if kind == "FEDERATION_NOT_SAVED":
-        getattr(ambassador, "federationNotSaved")(SaveFailureReason[parts[1]])
+        invoke_federate_callback(ambassador, "federationNotSaved", SaveFailureReason[parts[1]])
         return
     if kind == "FEDERATION_SAVE_STATUS_RESPONSE":
         payload = []
@@ -131,25 +178,31 @@ def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_
             for item in parts[1].split(";"):
                 handle_raw, status_raw = item.split(":", 1)
                 payload.append(FederateHandleSaveStatusPair(FederateHandle(int(handle_raw)), SaveStatus[status_raw]))
-        getattr(ambassador, "federationSaveStatusResponse")(payload)
+        invoke_federate_callback(ambassador, "federationSaveStatusResponse", payload)
         return
     if kind == "REQUEST_FEDERATION_RESTORE_SUCCEEDED":
-        getattr(ambassador, "requestFederationRestoreSucceeded")(parts[1])
+        invoke_federate_callback(ambassador, "requestFederationRestoreSucceeded", parts[1])
         return
     if kind == "REQUEST_FEDERATION_RESTORE_FAILED":
-        getattr(ambassador, "requestFederationRestoreFailed")(parts[1])
+        invoke_federate_callback(ambassador, "requestFederationRestoreFailed", parts[1])
         return
     if kind == "FEDERATION_RESTORE_BEGUN":
-        getattr(ambassador, "federationRestoreBegun")()
+        invoke_federate_callback(ambassador, "federationRestoreBegun")
         return
     if kind == "INITIATE_FEDERATE_RESTORE":
-        getattr(ambassador, "initiateFederateRestore")(parts[1], parts[2], FederateHandle(int(parts[3])))
+        invoke_federate_callback(
+            ambassador,
+            "initiateFederateRestore",
+            parts[1],
+            parts[2],
+            FederateHandle(int(parts[3])),
+        )
         return
     if kind == "FEDERATION_RESTORED":
-        getattr(ambassador, "federationRestored")()
+        invoke_federate_callback(ambassador, "federationRestored")
         return
     if kind == "FEDERATION_NOT_RESTORED":
-        getattr(ambassador, "federationNotRestored")(RestoreFailureReason[parts[1]])
+        invoke_federate_callback(ambassador, "federationNotRestored", RestoreFailureReason[parts[1]])
         return
     if kind == "FEDERATION_RESTORE_STATUS_RESPONSE":
         payload = []
@@ -163,53 +216,72 @@ def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_
                         RestoreStatus[status_raw],
                     )
                 )
-        getattr(ambassador, "federationRestoreStatusResponse")(payload)
+        invoke_federate_callback(ambassador, "federationRestoreStatusResponse", payload)
         return
     if kind == "OWNERSHIP_ACQUIRED":
-        getattr(ambassador, "attributeOwnershipAcquisitionNotification")(
+        invoke_federate_callback(
+            ambassador,
+            "attributeOwnershipAcquisitionNotification",
             ObjectInstanceHandle(int(parts[1])),
             decode_handle_set(parts[2], AttributeHandle, AttributeHandleSet),
             decode_bytes(parts[3]),
         )
         return
     if kind == "REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION":
-        getattr(ambassador, "requestAttributeOwnershipAssumption")(
+        invoke_federate_callback(
+            ambassador,
+            "requestAttributeOwnershipAssumption",
             ObjectInstanceHandle(int(parts[1])),
             decode_handle_set(parts[2], AttributeHandle, AttributeHandleSet),
             decode_bytes(parts[3]),
         )
         return
     if kind == "INFORM_ATTRIBUTE_OWNERSHIP":
-        getattr(ambassador, "informAttributeOwnership")(
+        invoke_federate_callback(
+            ambassador,
+            "informAttributeOwnership",
             ObjectInstanceHandle(int(parts[1])),
             AttributeHandle(int(parts[2])),
             FederateHandle(int(parts[3])),
         )
         return
     if kind == "ATTRIBUTE_IS_NOT_OWNED":
-        getattr(ambassador, "attributeIsNotOwned")(ObjectInstanceHandle(int(parts[1])), AttributeHandle(int(parts[2])))
+        invoke_federate_callback(
+            ambassador,
+            "attributeIsNotOwned",
+            ObjectInstanceHandle(int(parts[1])),
+            AttributeHandle(int(parts[2])),
+        )
         return
     if kind == "ATTRIBUTE_OWNERSHIP_UNAVAILABLE":
-        getattr(ambassador, "attributeOwnershipUnavailable")(
+        invoke_federate_callback(
+            ambassador,
+            "attributeOwnershipUnavailable",
             ObjectInstanceHandle(int(parts[1])),
             decode_handle_set(parts[2], AttributeHandle, AttributeHandleSet),
         )
         return
     if kind == "REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE":
-        getattr(ambassador, "requestAttributeOwnershipRelease")(
+        invoke_federate_callback(
+            ambassador,
+            "requestAttributeOwnershipRelease",
             ObjectInstanceHandle(int(parts[1])),
             decode_handle_set(parts[2], AttributeHandle, AttributeHandleSet),
             decode_bytes(parts[3]),
         )
         return
     if kind == "REQUEST_DIVESTITURE_CONFIRMATION":
-        getattr(ambassador, "requestDivestitureConfirmation")(
+        invoke_federate_callback(
+            ambassador,
+            "requestDivestitureConfirmation",
             ObjectInstanceHandle(int(parts[1])),
             decode_handle_set(parts[2], AttributeHandle, AttributeHandleSet),
         )
         return
     if kind == "CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION":
-        getattr(ambassador, "confirmAttributeOwnershipAcquisitionCancellation")(
+        invoke_federate_callback(
+            ambassador,
+            "confirmAttributeOwnershipAcquisitionCancellation",
             ObjectInstanceHandle(int(parts[1])),
             decode_handle_set(parts[2], AttributeHandle, AttributeHandleSet),
         )

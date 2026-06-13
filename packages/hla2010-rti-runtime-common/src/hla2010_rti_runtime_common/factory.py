@@ -1,6 +1,7 @@
 """Shared RTI backend registry and ambassador factory helpers."""
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from importlib import metadata
 from typing import Any, Mapping
 
@@ -12,6 +13,54 @@ from hla2010_rti_transport_common import register_transport_factory
 _BACKEND_FACTORIES: dict[str, Any] = {}
 _BACKEND_PLUGINS: dict[str, RTIBackendPlugin] = {}
 _BACKEND_PLUGINS_LOADED = False
+
+
+@dataclass(frozen=True)
+class RTIAmbassadorFactory:
+    """Human-facing installed RTI factory descriptor."""
+
+    name: str
+    aliases: tuple[str, ...]
+    selectable_names: tuple[str, ...]
+    family: str
+    description: str
+    probe_supported: bool
+    _plugin: RTIBackendPlugin = field(repr=False, compare=False)
+
+    def create_backend(self, **options: Any) -> Any:
+        """Instantiate the backend implementation behind this factory."""
+
+        return create_backend(self.name, **options)
+
+    def create_rti_ambassador(self, **options: Any) -> DelegatingRTIAmbassador:
+        """Instantiate a backend-neutral RTI ambassador from this factory."""
+
+        return create_rti_ambassador(self.name, **options)
+
+    def discover(self) -> RTIBackendDiscovery:
+        """Probe this installed factory when it exposes runtime discovery."""
+
+        available: bool | None = None
+        info: Any = None
+        error: str | None = None
+        if self._plugin.discover is not None:
+            try:
+                info = self._plugin.discover()
+                available = info is not None
+            except Exception as exc:
+                available = False
+                error = str(exc)
+        return RTIBackendDiscovery(
+            name=self.name,
+            aliases=self.aliases,
+            family=self.family,
+            description=self.description,
+            selectable_names=self.selectable_names,
+            probe_supported=self.probe_supported,
+            available=available,
+            info=info,
+            error=error,
+        )
 
 
 def _normalize_kind(kind: str) -> str:
@@ -79,30 +128,56 @@ def iter_rti_backend_plugins() -> tuple[RTIBackendPlugin, ...]:
     return tuple(unique[name] for name in sorted(unique))
 
 
+def _selectable_names_for_plugin(plugin: RTIBackendPlugin) -> tuple[str, ...]:
+    names = {_normalize_kind(plugin.name), *(_normalize_kind(alias) for alias in plugin.aliases)}
+    return tuple(sorted(names))
+
+
+def iter_rti_factories() -> tuple[RTIAmbassadorFactory, ...]:
+    """Return installed RTI ambassador factories with human-facing metadata."""
+
+    rows: list[RTIAmbassadorFactory] = []
+    for plugin in iter_rti_backend_plugins():
+        rows.append(
+            RTIAmbassadorFactory(
+                name=plugin.name,
+                aliases=plugin.aliases,
+                selectable_names=_selectable_names_for_plugin(plugin),
+                family=plugin.family,
+                description=plugin.description,
+                probe_supported=plugin.discover is not None,
+                _plugin=plugin,
+            )
+        )
+    return tuple(rows)
+
+
+def get_rti_factory(name: str) -> RTIAmbassadorFactory:
+    """Resolve one installed RTI ambassador factory by canonical name or alias."""
+
+    normalized = _normalize_kind(name)
+    for factory in iter_rti_factories():
+        if normalized in factory.selectable_names:
+            return factory
+    raise ValueError(f"Unknown RTI factory name: {name!r}")
+
+
 def discover_rti_backends(*, probe: bool = False) -> tuple[RTIBackendDiscovery, ...]:
     """Return installed RTI backend descriptors, optionally probing runtimes."""
 
     rows: list[RTIBackendDiscovery] = []
-    for plugin in iter_rti_backend_plugins():
-        available: bool | None = None
-        info: Any = None
-        error: str | None = None
-        if probe and plugin.discover is not None:
-            try:
-                info = plugin.discover()
-                available = info is not None
-            except Exception as exc:
-                available = False
-                error = str(exc)
+    for factory in iter_rti_factories():
+        if probe:
+            rows.append(factory.discover())
+            continue
         rows.append(
             RTIBackendDiscovery(
-                name=plugin.name,
-                aliases=plugin.aliases,
-                family=plugin.family,
-                description=plugin.description,
-                available=available,
-                info=info,
-                error=error,
+                name=factory.name,
+                aliases=factory.aliases,
+                family=factory.family,
+                description=factory.description,
+                selectable_names=factory.selectable_names,
+                probe_supported=factory.probe_supported,
             )
         )
     return tuple(rows)
@@ -138,6 +213,7 @@ def create_rti_ambassador(kind: str | RTIBackendSpec = "python", **options: Any)
 
 __all__ = [
     "BACKEND_ENTRY_POINT_GROUP",
+    "RTIAmbassadorFactory",
     "RTIBackendDiscovery",
     "RTIBackendPlugin",
     "RTIBackendSpec",
@@ -146,7 +222,9 @@ __all__ = [
     "create_backend",
     "create_rti_ambassador",
     "discover_rti_backends",
+    "get_rti_factory",
     "iter_rti_backend_plugins",
+    "iter_rti_factories",
     "register_backend_factory",
     "register_backend_plugin",
     "register_transport_factory",

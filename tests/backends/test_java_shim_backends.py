@@ -1,9 +1,15 @@
 import pytest
 
+from hla2010_rti_backend_common import RecordingFederateAmbassador
 from hla2010_rti_backend_common import make_rti_ambassador
 from hla2010.exceptions import FederationExecutionDoesNotExist
-from hla2010_rti_java_common.java_shim_factory import create_java_shim_backend
+from hla2010.handles import AttributeHandle, DimensionHandle, InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle, ParameterHandle, RegionHandle
+from hla2010.enums import CallbackModel, OrderType, ResignAction
+from hla2010.time import HLAfloat64Interval, HLAfloat64Time
+from hla2010_rti_java_common.java_shim_factory import create_java_shim_backend, create_shared_java_shim_backend
+from hla2010_rti_java_common.java_shim_kernel import SharedJavaShimKernel
 from hla2010_verification_harness import run_basic_federate_scenario
+from hla2010_verification_harness.scenario_support import drain_callbacks_pair
 
 
 @pytest.mark.parametrize("profile", ["jpype", "py4j"])
@@ -43,3 +49,104 @@ def test_java_like_exceptions_translate_to_python_rti_exceptions():
         rti.destroy_federation_execution("missing")
     rti.disconnect()
     rti.close()
+
+
+@pytest.mark.parametrize("profile", ["jpype", "py4j"])
+def test_shared_java_bridge_profile_round_trips_basic_objects_and_callbacks(profile: str) -> None:
+    kernel = SharedJavaShimKernel()
+    publisher = make_rti_ambassador(create_shared_java_shim_backend(profile, kernel))
+    subscriber = make_rti_ambassador(create_shared_java_shim_backend(profile, kernel))
+    publisher_fed = RecordingFederateAmbassador()
+    subscriber_fed = RecordingFederateAmbassador()
+    federation_name = f"java-roundtrip-{profile}"
+    try:
+        publisher.connect(publisher_fed, CallbackModel.HLA_EVOKED)
+        subscriber.connect(subscriber_fed, CallbackModel.HLA_EVOKED)
+        publisher.create_federation_execution(federation_name, "DemoFOMmodule.xml", "HLAfloat64Time")
+        publisher_handle = publisher.join_federation_execution("publisher", "demo", federation_name)
+        subscriber_handle = subscriber.join_federation_execution("subscriber", "demo", federation_name)
+
+        assert publisher.backend_info.kind == f"java/{profile}/shared-shim"
+        assert subscriber.backend_info.kind == f"java/{profile}/shared-shim"
+        assert publisher.get_federate_name(publisher_handle) == "publisher"
+        assert subscriber.get_federate_name(subscriber_handle) == "subscriber"
+
+        publisher_object_class = publisher.get_object_class_handle("HLAobjectRoot.DemoObject")
+        publisher_attribute = publisher.get_attribute_handle(publisher_object_class, "Payload")
+        publisher_interaction = publisher.get_interaction_class_handle("HLAinteractionRoot.DemoInteraction")
+        publisher_parameter = publisher.get_parameter_handle(publisher_interaction, "Message")
+        publisher_dimension = publisher.get_dimension_handle("RoutingSpace")
+        region = publisher.create_region({publisher_dimension})
+
+        subscriber_object_class = subscriber.get_object_class_handle("HLAobjectRoot.DemoObject")
+        subscriber_attribute = subscriber.get_attribute_handle(subscriber_object_class, "Payload")
+        subscriber_interaction = subscriber.get_interaction_class_handle("HLAinteractionRoot.DemoInteraction")
+        subscriber_parameter = subscriber.get_parameter_handle(subscriber_interaction, "Message")
+
+        assert isinstance(publisher_object_class, ObjectClassHandle)
+        assert isinstance(publisher_attribute, AttributeHandle)
+        assert isinstance(publisher_interaction, InteractionClassHandle)
+        assert isinstance(publisher_parameter, ParameterHandle)
+        assert isinstance(publisher_dimension, DimensionHandle)
+        assert isinstance(region, RegionHandle)
+        assert subscriber_object_class == publisher_object_class
+        assert subscriber_attribute == publisher_attribute
+        assert subscriber_interaction == publisher_interaction
+        assert subscriber_parameter == publisher_parameter
+
+        publisher.publish_object_class_attributes(publisher_object_class, {publisher_attribute})
+        subscriber.subscribe_object_class_attributes(subscriber_object_class, {subscriber_attribute})
+        publisher.publish_interaction_class(publisher_interaction)
+        subscriber.subscribe_interaction_class(subscriber_interaction)
+
+        obj = publisher.register_object_instance(publisher_object_class, f"{profile}-Object-1")
+        assert isinstance(obj, ObjectInstanceHandle)
+        drain_callbacks_pair(publisher, subscriber)
+
+        discover = subscriber_fed.last_callback("discoverObjectInstance")
+        subscriber_obj = subscriber.get_object_instance_handle(f"{profile}-Object-1")
+        assert discover is not None
+        assert discover.args == (subscriber_obj, subscriber_object_class, f"{profile}-Object-1")
+
+        publisher.enable_time_regulation(HLAfloat64Interval(1.0))
+        subscriber.enable_time_regulation(HLAfloat64Interval(1.0))
+        publisher.enable_time_constrained()
+        subscriber.enable_time_constrained()
+        drain_callbacks_pair(publisher, subscriber)
+
+        publisher.time_advance_request(HLAfloat64Time(2.0))
+        subscriber.time_advance_request(HLAfloat64Time(2.0))
+        drain_callbacks_pair(publisher, subscriber)
+        assert publisher_fed.last_callback("timeRegulationEnabled").args == (HLAfloat64Time(0.0),)
+        assert subscriber_fed.last_callback("timeRegulationEnabled").args == (HLAfloat64Time(0.0),)
+        assert publisher_fed.last_callback("timeConstrainedEnabled").args == (HLAfloat64Time(0.0),)
+        assert subscriber_fed.last_callback("timeConstrainedEnabled").args == (HLAfloat64Time(0.0),)
+        assert publisher_fed.last_callback("timeAdvanceGrant").args == (HLAfloat64Time(2.0),)
+        assert subscriber_fed.last_callback("timeAdvanceGrant").args == (HLAfloat64Time(2.0),)
+
+        publisher.update_attribute_values(obj, {publisher_attribute: b"route-bytes"}, b"route-tag")
+        publisher.send_interaction(publisher_interaction, {publisher_parameter: b"route-hello"}, b"interaction-tag")
+        drain_callbacks_pair(publisher, subscriber)
+
+        reflect = subscriber_fed.last_callback("reflectAttributeValues")
+        receive = subscriber_fed.last_callback("receiveInteraction")
+        assert reflect is not None
+        assert receive is not None
+        assert reflect.args[0] == subscriber_obj
+        assert reflect.args[1] == {subscriber_attribute: b"route-bytes"}
+        assert reflect.args[2] == b"route-tag"
+        assert reflect.args[3] is OrderType.RECEIVE
+        assert receive.args[0] == subscriber_interaction
+        assert receive.args[1] == {subscriber_parameter: b"route-hello"}
+        assert receive.args[2] == b"interaction-tag"
+        assert receive.args[3] is OrderType.RECEIVE
+
+        publisher.delete_region(region)
+        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
+        publisher.destroy_federation_execution(federation_name)
+        subscriber.disconnect()
+        publisher.disconnect()
+    finally:
+        subscriber.close()
+        publisher.close()

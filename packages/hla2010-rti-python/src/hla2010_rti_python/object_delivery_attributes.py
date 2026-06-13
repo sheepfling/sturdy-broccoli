@@ -26,6 +26,64 @@ from .state import CallbackEvent, ObjectInstance, SupplementalReflectInfo
 class PythonRTIObjectAttributeDeliveryMixin(PythonRTIObjectTransportMixin):
     """Attribute update, request, and provide services."""
 
+    def provide_attribute_value_update(
+        self,
+        theObject: ObjectInstanceHandle,
+        theAttributes: Iterable[AttributeHandle],
+        userSuppliedTag: bytes = b"",
+    ) -> None:
+        federation, instance = self._find_object(theObject)
+        self._ensure_no_save_or_restore_in_progress(federation)
+        attrs = set(theAttributes)
+        tag = bytes(userSuppliedTag)
+        for attribute in attrs:
+            self.engine.attribute_name(instance.class_handle, attribute)
+        self._deliver(self.state, "provideAttributeValueUpdate", instance.handle, attrs, tag)
+
+    def request_attribute_value_update(
+        self,
+        target: Any,
+        attributes: Iterable[AttributeHandle],
+        userSuppliedTag: bytes = b"",
+    ) -> None:
+        federation = self._require_joined()
+        self._ensure_no_save_or_restore_in_progress(federation)
+        attrs = set(attributes)
+        tag = bytes(userSuppliedTag)
+        self._validate_user_supplied_tag(federation, "requestUpdateTag", tag)
+
+        def deliver(instance: ObjectInstance) -> None:
+            if self._is_mom_object_instance(federation, instance):
+                self._deliver_mom_attribute_update(instance, attrs, tag)
+                return
+            owner_handle = instance.owner
+            owner = federation.federates.get(owner_handle) if owner_handle is not None else None
+            if owner is not None:
+                owner_backend = getattr(owner, "backend", None)
+                if owner_backend is not None:
+                    owner_backend.provide_attribute_value_update(instance.handle, attrs, tag)
+
+        if isinstance(target, ObjectInstanceHandle):
+            try:
+                instance = federation.objects[target]
+            except KeyError as exc:
+                raise ObjectInstanceNotKnown(repr(target)) from exc
+            for attribute in attrs:
+                self.engine.attribute_name(instance.class_handle, attribute)
+            deliver(instance)
+            return
+
+        if isinstance(target, ObjectClassHandle):
+            self.engine.object_class_for_handle(target)
+            for attribute in attrs:
+                self.engine.attribute_name(target, attribute)
+            for instance in list(federation.objects.values()):
+                if self._object_matches_subscription(instance.class_handle, target):
+                    deliver(instance)
+            return
+
+        raise ObjectInstanceNotKnown(repr(target))
+
     def _svc_updateAttributeValues(
         self,
         theObject: ObjectInstanceHandle,
@@ -160,43 +218,7 @@ class PythonRTIObjectAttributeDeliveryMixin(PythonRTIObjectTransportMixin):
         attributes: Iterable[AttributeHandle],
         userSuppliedTag: bytes = b"",
     ) -> None:
-        federation = self._require_joined()
-        self._ensure_no_save_or_restore_in_progress(federation)
-        attrs = set(attributes)
-        tag = bytes(userSuppliedTag)
-        self._validate_user_supplied_tag(federation, "requestUpdateTag", tag)
-
-        def deliver(instance: ObjectInstance) -> None:
-            if self._is_mom_object_instance(federation, instance):
-                self._deliver_mom_attribute_update(instance, attrs, tag)
-                return
-            owner_handle = instance.owner
-            owner = federation.federates.get(owner_handle) if owner_handle is not None else None
-            if owner is not None:
-                owner_backend = getattr(owner, "backend", None)
-                if owner_backend is not None:
-                    owner_backend._svc_provideAttributeValueUpdate(instance.handle, attrs, tag)
-
-        if isinstance(target, ObjectInstanceHandle):
-            try:
-                instance = federation.objects[target]
-            except KeyError as exc:
-                raise ObjectInstanceNotKnown(repr(target)) from exc
-            for attribute in attrs:
-                self.engine.attribute_name(instance.class_handle, attribute)
-            deliver(instance)
-            return
-
-        if isinstance(target, ObjectClassHandle):
-            self.engine.object_class_for_handle(target)
-            for attribute in attrs:
-                self.engine.attribute_name(target, attribute)
-            for instance in list(federation.objects.values()):
-                if self._object_matches_subscription(instance.class_handle, target):
-                    deliver(instance)
-            return
-
-        raise ObjectInstanceNotKnown(repr(target))
+        self.request_attribute_value_update(target, attributes, userSuppliedTag)
 
     def _svc_provideAttributeValueUpdate(
         self,
@@ -204,10 +226,4 @@ class PythonRTIObjectAttributeDeliveryMixin(PythonRTIObjectTransportMixin):
         theAttributes: Iterable[AttributeHandle],
         userSuppliedTag: bytes = b"",
     ) -> None:
-        federation, instance = self._find_object(theObject)
-        self._ensure_no_save_or_restore_in_progress(federation)
-        attrs = set(theAttributes)
-        tag = bytes(userSuppliedTag)
-        for attribute in attrs:
-            self.engine.attribute_name(instance.class_handle, attribute)
-        self._deliver(self.state, "provideAttributeValueUpdate", instance.handle, attrs, tag)
+        self.provide_attribute_value_update(theObject, theAttributes, userSuppliedTag)

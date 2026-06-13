@@ -29,6 +29,17 @@ package does not add a package-local command.
 Backend implementation layout, service registry, and trace commands are
 documented in [`../../docs/python_rti_backend.md`](../../docs/python_rti_backend.md).
 
+## Ownership Card
+
+- Edit here for: concrete Python RTI service behavior, backend-local helpers, callback delivery, stateful backend semantics
+- Do not edit here for: public spec signatures, vendor runtime discovery, Java bridge mechanics
+- First files to open:
+  `src/hla2010_rti_python/backend.py`,
+  `src/hla2010_rti_python/service_registry.py`,
+  `src/hla2010_rti_python/time_public_services.py`
+- Quick tests:
+  `python3 -m pytest tests/backends/test_python_rti_service_registry.py tests/test_python_api_spec.py -q`
+
 Package-owned verification policy helpers live in
 `src/hla2010_rti_python/testing_policy.py`.
 Package-owned split-package and matrix guard coverage lives in

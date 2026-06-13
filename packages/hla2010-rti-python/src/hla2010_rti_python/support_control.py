@@ -52,10 +52,10 @@ class PythonRTISupportControlMixin(PythonRTISupportLookupMixin):
         raise InvalidOrderName(str(orderName))
 
     def _svc_getTransportationType(self, transportationName: str | None = None):
-        return self._svc_getTransportationTypeHandle(transportationName)
+        return self.get_transportation_type_handle(transportationName)
 
     def _svc_getTransportationName(self, transportationType):
-        return self._svc_getTransportationTypeName(transportationType)
+        return self.get_transportation_type_name(transportationType)
 
     def _svc_getAutomaticResignDirective(self):
         self._require_joined()

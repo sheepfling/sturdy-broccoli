@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from importlib import resources
 from pathlib import Path
 
 import pytest
@@ -24,7 +25,7 @@ from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interva
 
 pytestmark = pytest.mark.requires_loopback_server
 
-RESOURCE_ROOT = Path(__file__).resolve().parents[2] / "src" / "hla2010" / "resources" / "foms"
+RESOURCE_ROOT = Path(str(resources.files("hla2010").joinpath("resources", "foms")))
 VENDOR_SMOKE_FOM = str((RESOURCE_ROOT / "VendorSmokeFOM.xml").resolve())
 
 

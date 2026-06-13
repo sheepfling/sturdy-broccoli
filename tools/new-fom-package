@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/new-fom-package"
+
+exec "$(hla2010_shell_python_bin)" "$ROOT_DIR/scripts/new_fom_package.py" "$@"

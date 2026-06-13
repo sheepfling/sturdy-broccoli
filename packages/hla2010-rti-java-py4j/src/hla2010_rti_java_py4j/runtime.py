@@ -7,7 +7,25 @@ from typing import Any, Mapping
 from hla2010.fom import module_uri
 from hla2010_rti_java_common import CALLBACK_METHOD_NAMES, BackendUnavailableError
 from hla2010.types import RangeBounds
-from hla2010_rti_java_common.java_common import JavaBridge, PythonFederateAmbassadorDispatcher
+from hla2010_rti_java_common.java_common import (
+    JavaBridge,
+    PythonFederateAmbassadorDispatcher,
+    append_java_collection_value,
+    convert_python_logical_time_with_factory,
+    create_java_factory_collection,
+    invoke_java_enum_constant,
+    invoke_java_rti_method,
+    invoke_java_time_factory,
+    java_handle_set_factory_method,
+    java_handle_value_map_factory_method,
+    java_hla_enum_simple_name,
+    java_runtime_full_class_name,
+    java_runtime_simple_class_name,
+    py4j_exception_class_name,
+    py4j_exception_message,
+    python_logical_time_shim_spec,
+    put_java_map_entry,
+)
 
 
 @dataclass(frozen=True)
@@ -226,16 +244,40 @@ class Py4JBridge(JavaBridge):
         self.owns_gateway = True
 
     def call(self, obj: Any, method_name: str, *args: Any) -> Any:
-        return getattr(obj, method_name)(*args)
+        return invoke_java_rti_method(obj, method_name, *args)
 
     def create_federate_proxy(self, dispatcher: PythonFederateAmbassadorDispatcher) -> Any:
         return Py4JFederateAmbassadorProxy(dispatcher)
 
     def enum_constant(self, enum_class_name: str, member_name: str) -> Any:
-        current = self.gateway.jvm
-        for part in enum_class_name.split("."):
-            current = getattr(current, part)
-        return getattr(current, member_name)
+        simple_name = java_hla_enum_simple_name(enum_class_name)
+        enum_class = self._hla_enum_class(simple_name)
+        return invoke_java_enum_constant(enum_class, member_name)
+
+    def _hla_enum_class(self, simple_name: str) -> Any:
+        match simple_name:
+            case "CallbackModel":
+                return self.gateway.jvm.hla.rti1516e.CallbackModel
+            case "OrderType":
+                return self.gateway.jvm.hla.rti1516e.OrderType
+            case "ResignAction":
+                return self.gateway.jvm.hla.rti1516e.ResignAction
+            case "RestoreFailureReason":
+                return self.gateway.jvm.hla.rti1516e.RestoreFailureReason
+            case "RestoreStatus":
+                return self.gateway.jvm.hla.rti1516e.RestoreStatus
+            case "SaveFailureReason":
+                return self.gateway.jvm.hla.rti1516e.SaveFailureReason
+            case "SaveStatus":
+                return self.gateway.jvm.hla.rti1516e.SaveStatus
+            case "ServiceGroup":
+                return self.gateway.jvm.hla.rti1516e.ServiceGroup
+            case "SynchronizationPointFailureReason":
+                return self.gateway.jvm.hla.rti1516e.SynchronizationPointFailureReason
+            case "TransportationType":
+                return self.gateway.jvm.hla.rti1516e.TransportationType
+            case _:
+                raise AttributeError(simple_name)
 
     def byte_array(self, data: bytes) -> Any:
         try:
@@ -284,26 +326,19 @@ class Py4JBridge(JavaBridge):
         *,
         capacity: int | None = None,
     ) -> Any:
-        factory = getattr(rti_ambassador, factory_method)()
-        collection = factory.create(len(values)) if capacity is not None else factory.create()
+        collection = create_java_factory_collection(
+            rti_ambassador,
+            factory_method,
+            capacity=len(values) if capacity is not None else None,
+        )
         for value in values:
-            add = getattr(collection, "add", None)
-            if callable(add):
-                add(value)
-            else:
-                collection.append(value)
+            append_java_collection_value(collection, value)
         return collection
 
     def new_handle_set(self, type_name: str, values: list[Any] | tuple[Any, ...], *, rti_ambassador: Any | None = None) -> Any:
-        methods = {
-            "AttributeHandleSet": "getAttributeHandleSetFactory",
-            "DimensionHandleSet": "getDimensionHandleSetFactory",
-            "FederateHandleSet": "getFederateHandleSetFactory",
-            "RegionHandleSet": "getRegionHandleSetFactory",
-        }
-        if rti_ambassador is not None and type_name in methods:
+        if rti_ambassador is not None:
             try:
-                return self._factory_collection(rti_ambassador, methods[type_name], values)
+                return self._factory_collection(rti_ambassador, java_handle_set_factory_method(type_name), values)
             except Exception:
                 pass
         return self.new_set(values)
@@ -315,16 +350,15 @@ class Py4JBridge(JavaBridge):
         *,
         rti_ambassador: Any | None = None,
     ) -> Any:
-        methods = {
-            "AttributeHandleValueMap": "getAttributeHandleValueMapFactory",
-            "ParameterHandleValueMap": "getParameterHandleValueMapFactory",
-        }
-        if rti_ambassador is not None and type_name in methods:
+        if rti_ambassador is not None:
             try:
-                factory = getattr(rti_ambassador, methods[type_name])()
-                java_map = factory.create(len(items))
+                java_map = create_java_factory_collection(
+                    rti_ambassador,
+                    java_handle_value_map_factory_method(type_name),
+                    capacity=len(items),
+                )
                 for key, value in items:
-                    java_map.put(key, value)
+                    put_java_map_entry(java_map, key, value)
                 return java_map
             except Exception:
                 pass
@@ -340,31 +374,21 @@ class Py4JBridge(JavaBridge):
 
     def logical_time(self, value: Any, *, rti_ambassador: Any | None = None) -> Any:
         try:
-            from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-
             if rti_ambassador is not None:
                 try:
-                    factory = rti_ambassador.getTimeFactory()
-                    if isinstance(value, (HLAinteger64Time, HLAfloat64Time)) and hasattr(factory, "makeTime"):
-                        raw = int(value.value) if isinstance(value, HLAinteger64Time) else float(value.value)
-                        return factory.makeTime(raw)
-                    if isinstance(value, (HLAinteger64Interval, HLAfloat64Interval)) and hasattr(factory, "makeInterval"):
-                        raw = int(value.value) if isinstance(value, HLAinteger64Interval) else float(value.value)
-                        return factory.makeInterval(raw)
-                    if isinstance(value, (HLAinteger64Interval, HLAfloat64Interval)) and getattr(value, "is_zero")():
-                        return factory.makeZero()
-                    if isinstance(value, (HLAinteger64Interval, HLAfloat64Interval)) and getattr(value, "is_epsilon")():
-                        return factory.makeEpsilon()
+                    return convert_python_logical_time_with_factory(invoke_java_time_factory(rti_ambassador), value)
                 except Exception:
                     pass
-            if isinstance(value, HLAinteger64Time):
-                return self.gateway.jvm.hla.rti1516e.HLAinteger64Time(int(value.value))
-            if isinstance(value, HLAinteger64Interval):
-                return self.gateway.jvm.hla.rti1516e.HLAinteger64Interval(int(value.value))
-            if isinstance(value, HLAfloat64Time):
-                return self.gateway.jvm.hla.rti1516e.HLAfloat64Time(float(value.value))
-            if isinstance(value, HLAfloat64Interval):
-                return self.gateway.jvm.hla.rti1516e.HLAfloat64Interval(float(value.value))
+            class_name, raw = python_logical_time_shim_spec(value)
+            match class_name:
+                case "HLAinteger64Time":
+                    return self.gateway.jvm.hla.rti1516e.HLAinteger64Time(raw)
+                case "HLAinteger64Interval":
+                    return self.gateway.jvm.hla.rti1516e.HLAinteger64Interval(raw)
+                case "HLAfloat64Time":
+                    return self.gateway.jvm.hla.rti1516e.HLAfloat64Time(raw)
+                case "HLAfloat64Interval":
+                    return self.gateway.jvm.hla.rti1516e.HLAfloat64Interval(raw)
         except Exception:
             return value
         return value
@@ -376,44 +400,16 @@ class Py4JBridge(JavaBridge):
             return value
 
     def full_class_name(self, obj: Any) -> str | None:
-        if obj is None:
-            return None
-        get_class = getattr(obj, "getClass", None)
-        if callable(get_class):
-            try:
-                return str(get_class().getName())
-            except Exception:
-                pass
-        return super().full_class_name(obj)
+        return java_runtime_full_class_name(obj) if obj is not None else None
 
     def simple_class_name(self, obj: Any) -> str | None:
-        if obj is None:
-            return None
-        get_class = getattr(obj, "getClass", None)
-        if callable(get_class):
-            try:
-                return str(get_class().getSimpleName())
-            except Exception:
-                pass
-        return super().simple_class_name(obj)
+        return java_runtime_simple_class_name(obj) if obj is not None else None
 
     def exception_class_name(self, exc: BaseException) -> str | None:
-        java_exception = getattr(exc, "java_exception", None)
-        if java_exception is not None:
-            try:
-                return str(java_exception.getClass().getSimpleName())
-            except Exception:
-                pass
-        return super().exception_class_name(exc)
+        return py4j_exception_class_name(exc) or super().exception_class_name(exc)
 
     def exception_message(self, exc: BaseException) -> str:
-        java_exception = getattr(exc, "java_exception", None)
-        if java_exception is not None:
-            try:
-                return str(java_exception.getMessage())
-            except Exception:
-                pass
-        return str(exc)
+        return py4j_exception_message(exc) or str(exc)
 
     def close(self) -> None:
         if not self.config.shutdown_gateway_on_close:

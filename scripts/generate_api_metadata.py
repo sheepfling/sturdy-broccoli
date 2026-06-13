@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_PATH = ROOT / "specs" / "hla2010_api.json"
 RAW_API_PATH = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "raw_api.py"
+API_METADATA_RESOURCE_PATH = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "resources" / "api_metadata.json"
 SPEC_INVENTORY_PATH = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "spec_inventory.py"
 SPEC_REFS_PATH = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "spec_refs.py"
 SPEC_SOURCES_PATH = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "spec_sources.py"
@@ -16,6 +17,10 @@ SPEC_SOURCES_PATH = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "sp
 GENERATED_HEADER = """# Generated from specs/hla2010_api.json.
 # Do not edit by hand. Run ./tools/spec-api generate.
 """
+
+
+def _format_python(value: object) -> str:
+    return pprint.pformat(value, indent=4, sort_dicts=True, width=120)
 
 
 def _load_source() -> dict[str, object]:
@@ -36,10 +41,6 @@ def _interfaces(data: dict[str, object]) -> dict[str, dict[str, dict[str, object
                 raise ValueError(f"{interface_name}.{method_name} metadata must be an object")
             normalized[interface_name][method_name] = metadata
     return normalized
-
-
-def _format_python(value: object) -> str:
-    return pprint.pformat(value, indent=4, sort_dicts=True, width=120)
 
 
 def _method_names(interfaces: dict[str, dict[str, dict[str, object]]], interface_name: str) -> list[str]:
@@ -74,67 +75,39 @@ def _api_metadata_payload(interfaces: dict[str, dict[str, dict[str, object]]]) -
 
 
 def _render_raw_api(interfaces: dict[str, dict[str, dict[str, object]]]) -> str:
-    payload = _api_metadata_payload(interfaces)
-    rti_names = _method_names(interfaces, "RTIambassador")
-    fed_names = _method_names(interfaces, "FederateAmbassador")
     parts = [
         GENERATED_HEADER.rstrip(),
-        '"""Source-derived raw API surface for HLA IEEE 1516.1-2010.',
+        '"""Source-derived metadata surface for HLA IEEE 1516.1-2010.',
         "",
-        "Method names intentionally preserve the Java/C++ lowerCamelCase spelling.  The",
-        "methods accept ``*args``/``**kwargs`` because Java and C++ overloads do not map",
-        "1:1 onto a single Python signature.  See ``API_METADATA`` for overload records.",
+        "This module intentionally exposes only the generated overload/source metadata.",
+        "Contributor-facing interface reading should start with ``hla2010.spec`` and",
+        "``hla2010.runtime_api`` instead of this compatibility metadata module.",
         "",
         '"""',
         "",
         "from __future__ import annotations",
         "",
-        "from abc import ABC, abstractmethod",
-        "from typing import Any",
+        "import json",
+        "from importlib import resources",
         "",
-        f"API_METADATA = {_format_python(payload)}",
         "",
-        "class RTIambassador(ABC):",
-        '    """Abstract RTI ambassador interface. RTI adapters implement these methods."""',
+        "def _load_api_metadata() -> dict[str, dict[str, list[dict[str, object]]]]:",
+        '    text = resources.files("hla2010").joinpath("resources/api_metadata.json").read_text(encoding="utf-8")',
+        "    payload = json.loads(text)",
+        "    return payload",
+        "",
+        "",
+        "API_METADATA = _load_api_metadata()",
+        "",
+        '__all__ = ["API_METADATA"]',
         "",
     ]
-    for name in rti_names:
-        count = len(payload["RTIambassador"][name])
-        parts.extend(
-            [
-                "    @abstractmethod",
-                f"    def {name}(self, *args: Any, **kwargs: Any) -> Any:",
-                f'        """{name}; {count} source overload(s). See API_METADATA."""',
-                "        raise NotImplementedError",
-                "",
-            ]
-        )
-    parts.extend(
-        [
-            "class FederateAmbassador:",
-            '    """No-op federate callback base preserving source method names."""',
-            "",
-        ]
-    )
-    for name in fed_names:
-        count = len(payload["FederateAmbassador"][name])
-        parts.extend(
-            [
-                f"    def {name}(self, *args: Any, **kwargs: Any) -> Any:",
-                f'        """{name}; {count} source overload(s). Override in a federate."""',
-                "        return None",
-                "",
-            ]
-        )
-    parts.extend(
-        [
-            "RTIAmbassador = RTIambassador",
-            "NullFederateAmbassador = FederateAmbassador",
-            '__all__ = ["API_METADATA", "RTIambassador", "RTIAmbassador", "FederateAmbassador", "NullFederateAmbassador"]',
-            "",
-        ]
-    )
     return "\n".join(parts)
+
+
+def _render_api_metadata_resource(interfaces: dict[str, dict[str, dict[str, object]]]) -> str:
+    payload = _api_metadata_payload(interfaces)
+    return json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=True) + "\n"
 
 
 def _render_spec_inventory(interfaces: dict[str, dict[str, dict[str, object]]]) -> str:
@@ -331,6 +304,7 @@ def _expected_outputs() -> dict[Path, str]:
     interfaces = _interfaces(data)
     return {
         RAW_API_PATH: _render_raw_api(interfaces),
+        API_METADATA_RESOURCE_PATH: _render_api_metadata_resource(interfaces),
         SPEC_INVENTORY_PATH: _render_spec_inventory(interfaces),
         SPEC_REFS_PATH: _render_spec_refs(interfaces),
         SPEC_SOURCES_PATH: _render_spec_sources(),

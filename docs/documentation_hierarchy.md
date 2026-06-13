@@ -23,9 +23,10 @@ The intended reading order for a new contributor is:
 - [README.md](../README.md): install, bootstrap, smoke, and operator commands
 - [docs/onboarding.md](onboarding.md): one opinionated onboarding map for the current repo
 - [docs/first_run.md](first_run.md): shortest path from fresh checkout to a working pure-Python example
-- [docs/python_rti_backend.md](python_rti_backend.md): contributor-facing Python RTI backend guide
+- [docs/python_rti_edit_one_service.md](python_rti_edit_one_service.md): shortest maintainer lane for changing one Python RTI service
 - [docs/create_federate_and_fom.md](create_federate_and_fom.md): minimal package-backed new FOM and federate path
-- [docs/requirements_traceability.md](requirements_traceability.md): requirement-to-implementation walk-through
+- [docs/requirements_trace_one_method.md](requirements_trace_one_method.md): primary requirement-to-code trace lane
+- [../packages/README.md](../packages/README.md): package ownership cards for the main edit families
 - [docs/java_backends_quickstart.md](java_backends_quickstart.md): secondary Java route quickstart after Python RTI
 - [docs/networked_rti_python.md](networked_rti_python.md): hosted Python RTI and Target/Radar extension path
 - [docs/python_environment.md](python_environment.md): Python environment setup and install order
@@ -36,9 +37,12 @@ The intended reading order for a new contributor is:
 ### Reference
 
 - [docs/README.md](README.md): documentation map and doc-family index
+- [docs/python_rti_backend.md](python_rti_backend.md): broad Python RTI backend mental model and package layout
+- [docs/requirements_traceability.md](requirements_traceability.md): broad traceability model and full-chain examples after the primary trace lane
 - [docs/package_dependency_tree.md](package_dependency_tree.md): machine-derived installable package dependency tree
 - [docs/architecture.md](architecture.md): package and module structure
-- [docs/package_layout.md](package_layout.md): source-tree layout and import discipline
+- [docs/package_layout.md](package_layout.md): installable package-family roles and import discipline
+- [docs/workspace_layout.md](workspace_layout.md): top-level workspace area ownership split
 - [docs/python_api_spec.md](python_api_spec.md): supported HLA-facing import surface
 - [docs/import_boundary_rules.md](import_boundary_rules.md): package-family dependency rules and transport/backend separation
 - [docs/backend_route_inventory.md](backend_route_inventory.md): runtime/bridge/transport route inventory

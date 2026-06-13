@@ -3,9 +3,26 @@
 """Stable Python RTI service registry.
 
 Maps each HLA RTI method name to the concrete `_svc_*` implementation symbol
-resolved from `PythonRTIBackend`.
+and explicit callable resolved from the Python RTI mixins.
 """
 from __future__ import annotations
+
+from .callbacks import PythonRTICallbacksMixin
+from .ddm_services import PythonRTIDdmServicesMixin
+from .declaration import PythonRTIDeclarationMixin
+from .federation_creation import PythonRTIFederationCreationMixin
+from .federation_membership import PythonRTIFederationMembershipMixin
+from .federation_sync import PythonRTIFederationSyncMixin
+from .object import PythonRTIObjectMixin
+from .object_delivery_attributes import PythonRTIObjectAttributeDeliveryMixin
+from .object_delivery_control import PythonRTIObjectDeliveryControlMixin
+from .object_delivery_interactions import PythonRTIObjectInteractionDeliveryMixin
+from .ownership_services import PythonRTIOwnershipServicesMixin
+from .save_restore_services import PythonRTISaveRestoreServicesMixin
+from .support_control import PythonRTISupportControlMixin
+from .support_factories import PythonRTISupportFactoriesMixin
+from .support_lookup import PythonRTISupportLookupMixin
+from .time_public_services import PythonRTITimePublicServicesMixin
 
 PYTHON_RTI_SERVICE_REGISTRY: dict[str, str] = {
   "abortFederationRestore": "hla2010_rti_python.save_restore_services.PythonRTISaveRestoreServicesMixin._svc_abortFederationRestore",
@@ -172,6 +189,171 @@ PYTHON_RTI_SERVICE_REGISTRY: dict[str, str] = {
   "updateAttributeValues": "hla2010_rti_python.object_delivery_attributes.PythonRTIObjectAttributeDeliveryMixin._svc_updateAttributeValues"
 }
 
+PYTHON_RTI_SERVICE_HANDLERS: dict[str, object] = {
+  "abortFederationRestore": PythonRTISaveRestoreServicesMixin._svc_abortFederationRestore,
+  "abortFederationSave": PythonRTISaveRestoreServicesMixin._svc_abortFederationSave,
+  "associateRegionsForUpdates": PythonRTIDdmServicesMixin._svc_associateRegionsForUpdates,
+  "attributeOwnershipAcquisition": PythonRTIOwnershipServicesMixin._svc_attributeOwnershipAcquisition,
+  "attributeOwnershipAcquisitionIfAvailable": PythonRTIOwnershipServicesMixin._svc_attributeOwnershipAcquisitionIfAvailable,
+  "attributeOwnershipDivestitureIfWanted": PythonRTIOwnershipServicesMixin._svc_attributeOwnershipDivestitureIfWanted,
+  "attributeOwnershipReleaseDenied": PythonRTIOwnershipServicesMixin._svc_attributeOwnershipReleaseDenied,
+  "cancelAttributeOwnershipAcquisition": PythonRTIOwnershipServicesMixin._svc_cancelAttributeOwnershipAcquisition,
+  "cancelNegotiatedAttributeOwnershipDivestiture": PythonRTIOwnershipServicesMixin._svc_cancelNegotiatedAttributeOwnershipDivestiture,
+  "changeAttributeOrderType": PythonRTITimePublicServicesMixin._svc_changeAttributeOrderType,
+  "changeInteractionOrderType": PythonRTITimePublicServicesMixin._svc_changeInteractionOrderType,
+  "commitRegionModifications": PythonRTIDdmServicesMixin._svc_commitRegionModifications,
+  "confirmDivestiture": PythonRTIOwnershipServicesMixin._svc_confirmDivestiture,
+  "connect": PythonRTIFederationCreationMixin._svc_connect,
+  "createFederationExecution": PythonRTIFederationCreationMixin._svc_createFederationExecution,
+  "createFederationExecutionWithMIM": PythonRTIFederationCreationMixin._svc_createFederationExecutionWithMIM,
+  "createRegion": PythonRTIDdmServicesMixin._svc_createRegion,
+  "decodeAttributeHandle": PythonRTISupportFactoriesMixin._svc_decodeAttributeHandle,
+  "decodeDimensionHandle": PythonRTISupportFactoriesMixin._svc_decodeDimensionHandle,
+  "decodeFederateHandle": PythonRTISupportFactoriesMixin._svc_decodeFederateHandle,
+  "decodeInteractionClassHandle": PythonRTISupportFactoriesMixin._svc_decodeInteractionClassHandle,
+  "decodeMessageRetractionHandle": PythonRTISupportFactoriesMixin._svc_decodeMessageRetractionHandle,
+  "decodeObjectClassHandle": PythonRTISupportFactoriesMixin._svc_decodeObjectClassHandle,
+  "decodeObjectInstanceHandle": PythonRTISupportFactoriesMixin._svc_decodeObjectInstanceHandle,
+  "decodeParameterHandle": PythonRTISupportFactoriesMixin._svc_decodeParameterHandle,
+  "decodeRegionHandle": PythonRTISupportFactoriesMixin._svc_decodeRegionHandle,
+  "deleteObjectInstance": PythonRTIObjectDeliveryControlMixin._svc_deleteObjectInstance,
+  "deleteRegion": PythonRTIDdmServicesMixin._svc_deleteRegion,
+  "destroyFederationExecution": PythonRTIFederationCreationMixin._svc_destroyFederationExecution,
+  "disableAsynchronousDelivery": PythonRTICallbacksMixin._svc_disableAsynchronousDelivery,
+  "disableAttributeRelevanceAdvisorySwitch": PythonRTISupportControlMixin._svc_disableAttributeRelevanceAdvisorySwitch,
+  "disableAttributeScopeAdvisorySwitch": PythonRTISupportControlMixin._svc_disableAttributeScopeAdvisorySwitch,
+  "disableCallbacks": PythonRTICallbacksMixin._svc_disableCallbacks,
+  "disableInteractionRelevanceAdvisorySwitch": PythonRTISupportControlMixin._svc_disableInteractionRelevanceAdvisorySwitch,
+  "disableObjectClassRelevanceAdvisorySwitch": PythonRTISupportControlMixin._svc_disableObjectClassRelevanceAdvisorySwitch,
+  "disableTimeConstrained": PythonRTITimePublicServicesMixin._svc_disableTimeConstrained,
+  "disableTimeRegulation": PythonRTITimePublicServicesMixin._svc_disableTimeRegulation,
+  "disconnect": PythonRTIFederationCreationMixin._svc_disconnect,
+  "enableAsynchronousDelivery": PythonRTICallbacksMixin._svc_enableAsynchronousDelivery,
+  "enableAttributeRelevanceAdvisorySwitch": PythonRTISupportControlMixin._svc_enableAttributeRelevanceAdvisorySwitch,
+  "enableAttributeScopeAdvisorySwitch": PythonRTISupportControlMixin._svc_enableAttributeScopeAdvisorySwitch,
+  "enableCallbacks": PythonRTICallbacksMixin._svc_enableCallbacks,
+  "enableInteractionRelevanceAdvisorySwitch": PythonRTISupportControlMixin._svc_enableInteractionRelevanceAdvisorySwitch,
+  "enableObjectClassRelevanceAdvisorySwitch": PythonRTISupportControlMixin._svc_enableObjectClassRelevanceAdvisorySwitch,
+  "enableTimeConstrained": PythonRTITimePublicServicesMixin._svc_enableTimeConstrained,
+  "enableTimeRegulation": PythonRTITimePublicServicesMixin._svc_enableTimeRegulation,
+  "evokeCallback": PythonRTICallbacksMixin._svc_evokeCallback,
+  "evokeMultipleCallbacks": PythonRTICallbacksMixin._svc_evokeMultipleCallbacks,
+  "federateRestoreComplete": PythonRTISaveRestoreServicesMixin._svc_federateRestoreComplete,
+  "federateRestoreNotComplete": PythonRTISaveRestoreServicesMixin._svc_federateRestoreNotComplete,
+  "federateSaveBegun": PythonRTISaveRestoreServicesMixin._svc_federateSaveBegun,
+  "federateSaveComplete": PythonRTISaveRestoreServicesMixin._svc_federateSaveComplete,
+  "federateSaveNotComplete": PythonRTISaveRestoreServicesMixin._svc_federateSaveNotComplete,
+  "flushQueueRequest": PythonRTITimePublicServicesMixin._svc_flushQueueRequest,
+  "getAttributeHandle": PythonRTISupportLookupMixin._svc_getAttributeHandle,
+  "getAttributeHandleFactory": PythonRTISupportFactoriesMixin._svc_getAttributeHandleFactory,
+  "getAttributeHandleSetFactory": PythonRTISupportFactoriesMixin._svc_getAttributeHandleSetFactory,
+  "getAttributeHandleValueMapFactory": PythonRTISupportFactoriesMixin._svc_getAttributeHandleValueMapFactory,
+  "getAttributeName": PythonRTISupportLookupMixin._svc_getAttributeName,
+  "getAttributeSetRegionSetPairListFactory": PythonRTISupportFactoriesMixin._svc_getAttributeSetRegionSetPairListFactory,
+  "getAutomaticResignDirective": PythonRTISupportControlMixin._svc_getAutomaticResignDirective,
+  "getAvailableDimensionsForClassAttribute": PythonRTISupportControlMixin._svc_getAvailableDimensionsForClassAttribute,
+  "getAvailableDimensionsForInteractionClass": PythonRTISupportControlMixin._svc_getAvailableDimensionsForInteractionClass,
+  "getDimensionHandle": PythonRTISupportLookupMixin._svc_getDimensionHandle,
+  "getDimensionHandleFactory": PythonRTISupportFactoriesMixin._svc_getDimensionHandleFactory,
+  "getDimensionHandleSet": PythonRTISupportLookupMixin._svc_getDimensionHandleSet,
+  "getDimensionHandleSetFactory": PythonRTISupportFactoriesMixin._svc_getDimensionHandleSetFactory,
+  "getDimensionName": PythonRTISupportLookupMixin._svc_getDimensionName,
+  "getDimensionUpperBound": PythonRTIDdmServicesMixin._svc_getDimensionUpperBound,
+  "getFederateHandle": PythonRTISupportLookupMixin._svc_getFederateHandle,
+  "getFederateHandleFactory": PythonRTISupportFactoriesMixin._svc_getFederateHandleFactory,
+  "getFederateHandleSetFactory": PythonRTISupportFactoriesMixin._svc_getFederateHandleSetFactory,
+  "getFederateName": PythonRTISupportLookupMixin._svc_getFederateName,
+  "getHLAversion": PythonRTISupportLookupMixin._svc_getHLAversion,
+  "getInteractionClassHandle": PythonRTISupportLookupMixin._svc_getInteractionClassHandle,
+  "getInteractionClassHandleFactory": PythonRTISupportFactoriesMixin._svc_getInteractionClassHandleFactory,
+  "getInteractionClassName": PythonRTISupportLookupMixin._svc_getInteractionClassName,
+  "getKnownObjectClassHandle": PythonRTISupportLookupMixin._svc_getKnownObjectClassHandle,
+  "getObjectClassHandle": PythonRTISupportLookupMixin._svc_getObjectClassHandle,
+  "getObjectClassHandleFactory": PythonRTISupportFactoriesMixin._svc_getObjectClassHandleFactory,
+  "getObjectClassName": PythonRTISupportLookupMixin._svc_getObjectClassName,
+  "getObjectInstanceHandle": PythonRTISupportLookupMixin._svc_getObjectInstanceHandle,
+  "getObjectInstanceHandleFactory": PythonRTISupportFactoriesMixin._svc_getObjectInstanceHandleFactory,
+  "getObjectInstanceName": PythonRTISupportLookupMixin._svc_getObjectInstanceName,
+  "getOrderName": PythonRTISupportControlMixin._svc_getOrderName,
+  "getOrderType": PythonRTISupportControlMixin._svc_getOrderType,
+  "getParameterHandle": PythonRTISupportLookupMixin._svc_getParameterHandle,
+  "getParameterHandleFactory": PythonRTISupportFactoriesMixin._svc_getParameterHandleFactory,
+  "getParameterHandleValueMapFactory": PythonRTISupportFactoriesMixin._svc_getParameterHandleValueMapFactory,
+  "getParameterName": PythonRTISupportLookupMixin._svc_getParameterName,
+  "getRangeBounds": PythonRTIDdmServicesMixin._svc_getRangeBounds,
+  "getRegionHandleSetFactory": PythonRTISupportFactoriesMixin._svc_getRegionHandleSetFactory,
+  "getTimeFactory": PythonRTISupportLookupMixin._svc_getTimeFactory,
+  "getTransportationName": PythonRTISupportControlMixin._svc_getTransportationName,
+  "getTransportationType": PythonRTISupportControlMixin._svc_getTransportationType,
+  "getTransportationTypeHandle": PythonRTISupportLookupMixin._svc_getTransportationTypeHandle,
+  "getTransportationTypeHandleFactory": PythonRTISupportFactoriesMixin._svc_getTransportationTypeHandleFactory,
+  "getTransportationTypeName": PythonRTISupportLookupMixin._svc_getTransportationTypeName,
+  "getUpdateRateValue": PythonRTISupportControlMixin._svc_getUpdateRateValue,
+  "getUpdateRateValueForAttribute": PythonRTISupportControlMixin._svc_getUpdateRateValueForAttribute,
+  "isAttributeOwnedByFederate": PythonRTIOwnershipServicesMixin._svc_isAttributeOwnedByFederate,
+  "joinFederationExecution": PythonRTIFederationMembershipMixin._svc_joinFederationExecution,
+  "listFederationExecutions": PythonRTIFederationCreationMixin._svc_listFederationExecutions,
+  "localDeleteObjectInstance": PythonRTIObjectDeliveryControlMixin._svc_localDeleteObjectInstance,
+  "modifyLookahead": PythonRTITimePublicServicesMixin._svc_modifyLookahead,
+  "negotiatedAttributeOwnershipDivestiture": PythonRTIOwnershipServicesMixin._svc_negotiatedAttributeOwnershipDivestiture,
+  "nextMessageRequest": PythonRTITimePublicServicesMixin._svc_nextMessageRequest,
+  "nextMessageRequestAvailable": PythonRTITimePublicServicesMixin._svc_nextMessageRequestAvailable,
+  "normalizeFederateHandle": PythonRTISupportControlMixin._svc_normalizeFederateHandle,
+  "normalizeServiceGroup": PythonRTISupportControlMixin._svc_normalizeServiceGroup,
+  "publishInteractionClass": PythonRTIDeclarationMixin._svc_publishInteractionClass,
+  "publishObjectClassAttributes": PythonRTIDeclarationMixin._svc_publishObjectClassAttributes,
+  "queryAttributeOwnership": PythonRTIOwnershipServicesMixin._svc_queryAttributeOwnership,
+  "queryAttributeTransportationType": PythonRTIObjectDeliveryControlMixin._svc_queryAttributeTransportationType,
+  "queryFederationRestoreStatus": PythonRTISaveRestoreServicesMixin._svc_queryFederationRestoreStatus,
+  "queryFederationSaveStatus": PythonRTISaveRestoreServicesMixin._svc_queryFederationSaveStatus,
+  "queryGALT": PythonRTITimePublicServicesMixin._svc_queryGALT,
+  "queryInteractionTransportationType": PythonRTIObjectDeliveryControlMixin._svc_queryInteractionTransportationType,
+  "queryLITS": PythonRTITimePublicServicesMixin._svc_queryLITS,
+  "queryLogicalTime": PythonRTITimePublicServicesMixin._svc_queryLogicalTime,
+  "queryLookahead": PythonRTITimePublicServicesMixin._svc_queryLookahead,
+  "registerFederationSynchronizationPoint": PythonRTIFederationSyncMixin._svc_registerFederationSynchronizationPoint,
+  "registerObjectInstance": PythonRTIObjectMixin._svc_registerObjectInstance,
+  "registerObjectInstanceWithRegions": PythonRTIDdmServicesMixin._svc_registerObjectInstanceWithRegions,
+  "releaseMultipleObjectInstanceName": PythonRTIObjectMixin._svc_releaseMultipleObjectInstanceName,
+  "releaseObjectInstanceName": PythonRTIObjectMixin._svc_releaseObjectInstanceName,
+  "requestAttributeTransportationTypeChange": PythonRTIObjectDeliveryControlMixin._svc_requestAttributeTransportationTypeChange,
+  "requestAttributeValueUpdate": PythonRTIObjectAttributeDeliveryMixin._svc_requestAttributeValueUpdate,
+  "requestAttributeValueUpdateWithRegions": PythonRTIDdmServicesMixin._svc_requestAttributeValueUpdateWithRegions,
+  "requestFederationRestore": PythonRTISaveRestoreServicesMixin._svc_requestFederationRestore,
+  "requestFederationSave": PythonRTISaveRestoreServicesMixin._svc_requestFederationSave,
+  "requestInteractionTransportationTypeChange": PythonRTIObjectDeliveryControlMixin._svc_requestInteractionTransportationTypeChange,
+  "reserveMultipleObjectInstanceName": PythonRTIObjectMixin._svc_reserveMultipleObjectInstanceName,
+  "reserveObjectInstanceName": PythonRTIObjectMixin._svc_reserveObjectInstanceName,
+  "resignFederationExecution": PythonRTIFederationMembershipMixin._svc_resignFederationExecution,
+  "retract": PythonRTITimePublicServicesMixin._svc_retract,
+  "sendInteraction": PythonRTIObjectInteractionDeliveryMixin._svc_sendInteraction,
+  "sendInteractionWithRegions": PythonRTIDdmServicesMixin._svc_sendInteractionWithRegions,
+  "setAutomaticResignDirective": PythonRTISupportControlMixin._svc_setAutomaticResignDirective,
+  "setRangeBounds": PythonRTIDdmServicesMixin._svc_setRangeBounds,
+  "subscribeInteractionClass": PythonRTIDeclarationMixin._svc_subscribeInteractionClass,
+  "subscribeInteractionClassPassively": PythonRTIDeclarationMixin._svc_subscribeInteractionClassPassively,
+  "subscribeInteractionClassPassivelyWithRegions": PythonRTIDdmServicesMixin._svc_subscribeInteractionClassPassivelyWithRegions,
+  "subscribeInteractionClassWithRegions": PythonRTIDdmServicesMixin._svc_subscribeInteractionClassWithRegions,
+  "subscribeObjectClassAttributes": PythonRTIDeclarationMixin._svc_subscribeObjectClassAttributes,
+  "subscribeObjectClassAttributesPassively": PythonRTIDeclarationMixin._svc_subscribeObjectClassAttributesPassively,
+  "subscribeObjectClassAttributesPassivelyWithRegions": PythonRTIDdmServicesMixin._svc_subscribeObjectClassAttributesPassivelyWithRegions,
+  "subscribeObjectClassAttributesWithRegions": PythonRTIDdmServicesMixin._svc_subscribeObjectClassAttributesWithRegions,
+  "synchronizationPointAchieved": PythonRTIFederationSyncMixin._svc_synchronizationPointAchieved,
+  "timeAdvanceRequest": PythonRTITimePublicServicesMixin._svc_timeAdvanceRequest,
+  "timeAdvanceRequestAvailable": PythonRTITimePublicServicesMixin._svc_timeAdvanceRequestAvailable,
+  "unassociateRegionsForUpdates": PythonRTIDdmServicesMixin._svc_unassociateRegionsForUpdates,
+  "unconditionalAttributeOwnershipDivestiture": PythonRTIOwnershipServicesMixin._svc_unconditionalAttributeOwnershipDivestiture,
+  "unpublishInteractionClass": PythonRTIDeclarationMixin._svc_unpublishInteractionClass,
+  "unpublishObjectClass": PythonRTIDeclarationMixin._svc_unpublishObjectClass,
+  "unpublishObjectClassAttributes": PythonRTIDeclarationMixin._svc_unpublishObjectClassAttributes,
+  "unsubscribeInteractionClass": PythonRTIDeclarationMixin._svc_unsubscribeInteractionClass,
+  "unsubscribeInteractionClassWithRegions": PythonRTIDdmServicesMixin._svc_unsubscribeInteractionClassWithRegions,
+  "unsubscribeObjectClass": PythonRTIDeclarationMixin._svc_unsubscribeObjectClass,
+  "unsubscribeObjectClassAttributes": PythonRTIDeclarationMixin._svc_unsubscribeObjectClassAttributes,
+  "unsubscribeObjectClassAttributesWithRegions": PythonRTIDdmServicesMixin._svc_unsubscribeObjectClassAttributesWithRegions,
+  "updateAttributeValues": PythonRTIObjectAttributeDeliveryMixin._svc_updateAttributeValues,
+}
+
 PYTHON_RTI_NON_RTI_SERVICE_REASONS: dict[str, str] = {
   "provideAttributeValueUpdate": "federate callback delivery helper",
   "startRegistrationForObjectClass": "federate callback delivery helper",
@@ -182,4 +364,4 @@ PYTHON_RTI_NON_RTI_SERVICE_REASONS: dict[str, str] = {
   "turnUpdatesOnForObjectInstance": "federate callback delivery helper"
 }
 
-__all__ = ["PYTHON_RTI_NON_RTI_SERVICE_REASONS", "PYTHON_RTI_SERVICE_REGISTRY"]
+__all__ = ["PYTHON_RTI_NON_RTI_SERVICE_REASONS", "PYTHON_RTI_SERVICE_HANDLERS", "PYTHON_RTI_SERVICE_REGISTRY"]

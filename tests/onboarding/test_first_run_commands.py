@@ -18,8 +18,9 @@ def test_first_run_doc_uses_canonical_bootstrap_path() -> None:
     assert "./tools/bootstrap doctor" in text
     assert "./tools/bootstrap python" in text
     assert "source .venv/bin/activate" in text
-    assert "python examples/backend_recording.py" in text
-    assert "python examples/target_radar_simulation.py --backend python --steps 5" in text
+    assert "./tools/rti-factories show in-memory --probe" in text
+    assert "./tools/examples backend-recording" in text
+    assert "./tools/examples target-radar --backend in-memory --steps 5" in text
     assert "python -m pip install --no-build-isolation" not in text
     assert "do not use `pip install -e .`" in text
     assert "manual `pip install -e ...` recovery commands" in text
@@ -38,7 +39,10 @@ def test_first_run_doc_references_expected_output_artifact() -> None:
 def test_first_run_commands_exist() -> None:
     expected_paths = (
         ROOT / "tools" / "bootstrap",
+        ROOT / "tools" / "examples",
+        ROOT / "tools" / "rti-factories",
         ROOT / "examples" / "backend_recording.py",
+        ROOT / "examples" / "rti_factory_selection.py",
         ROOT / "examples" / "target_radar_simulation.py",
         EXPECTED_OUTPUT,
     )

@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any, Sequence, cast
 
 from hla2010.enums import CallbackModel, OrderType, ResignAction
-from hla2010.exceptions import RTIexception, RTIinternalError
+from hla2010.exceptions import RTIexception, RTIinternalError, resolve_rti_exception_type
 from hla2010.handles import (
     AttributeHandle,
     AttributeHandleSet,
@@ -538,10 +538,7 @@ class CERTIBackend(RTIBackend):
         except TransportError as exc:
             exc_name = exc.code if exc.code else "RTIinternalError"
             message = exc.message or exc_name
-            exc_type = getattr(__import__("hla2010.exceptions", fromlist=[exc_name]), exc_name, RTIexception)
-            if isinstance(exc_type, type) and issubclass(exc_type, RTIexception):
-                raise exc_type(message)
-            raise RTIinternalError(message)
+            raise resolve_rti_exception_type(exc_name)(message)
 
     def close(self) -> None:
         self._python_federate_ambassador = None

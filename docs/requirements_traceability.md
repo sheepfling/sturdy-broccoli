@@ -2,6 +2,31 @@
 
 This repo treats traceability as an executable product, not a prose claim.
 
+If you only need to trace one method end to end, start with
+[`requirements_trace_one_method.md`](requirements_trace_one_method.md).
+
+If you only need to fix one missed or wrong active mapping row, start with
+[`requirements_edit_one_row.md`](requirements_edit_one_row.md).
+
+Use this page for:
+
+- the broader traceability model
+- the meaning of generated trace artifacts
+- the requirement -> implementation -> test -> artifact chain
+
+Do not use this page for:
+
+- the shortest one-method trace workflow
+- the shortest one-row authoring loop
+- deciding which requirement files are active versus generated versus reference
+
+Those narrower lanes already live in:
+
+- [`requirements_trace_one_method.md`](requirements_trace_one_method.md)
+- [`requirements_edit_one_row.md`](requirements_edit_one_row.md)
+- [`requirements_authoring_map.md`](requirements_authoring_map.md)
+- [`../requirements/README.md`](../requirements/README.md)
+
 Use these operator commands first:
 
 ```bash
@@ -11,28 +36,45 @@ Use these operator commands first:
 ./tools/human-editability trace timeAdvanceRequest
 ```
 
-Primary sources:
-
-- `requirements/traceability_matrix.csv`
-- `analysis/compliance/requirements_ledger.csv`
-- `analysis/traceability/service_trace_index.csv`
-- `analysis/traceability/service_trace_index.md`
-- `analysis/traceability/service_trace_index.json`
-
-## How To Read A Trace
+## Trace Model
 
 For each service, trace in this order:
 
-1. Requirement row
-2. IEEE section
-3. Python public method
-4. Python RTI backend service or callback surface
-5. Test evidence
-6. Generated artifact evidence
+1. requirement row
+2. IEEE clause
+3. public method
+4. backend service or callback surface
+5. focused test evidence
+6. generated artifact evidence
 
-The `./tools/human-editability trace <method>` command prints the same chain from the generated index when it exists, and falls back to the requirements ledger otherwise.
+The `./tools/human-editability trace <MethodName>` command prints the same
+chain from the generated service trace index when it exists and falls back to
+the requirements ledger otherwise.
 
-## Service Walkthroughs
+For the shortest maintainer path, use:
+
+```bash
+./tools/human-editability front-doors requirements-trace
+./tools/human-editability trace getHLAversion
+```
+
+That lane owns the concrete "trace one method" workflow.
+
+## Primary Surfaces
+
+Traceability depends on a small set of surfaces:
+
+- active authored: `requirements/traceability_matrix.csv`
+- generated ledger: `analysis/compliance/requirements_ledger.csv`
+- generated service trace index:
+  `analysis/traceability/service_trace_index.csv`,
+  `analysis/traceability/service_trace_index.md`,
+  `analysis/traceability/service_trace_index.json`
+
+Treat the generated ledger and trace indexes as outputs. The normal human edit
+surface for active mapping work is `requirements/traceability_matrix.csv`.
+
+## Full-Chain Walkthroughs
 
 ### createFederationExecution
 
@@ -41,20 +83,9 @@ The `./tools/human-editability trace <method>` command prints the same chain fro
 - Python public method: `createFederationExecution` / `create_federation_execution`
 - Backend service: `hla2010_rti_python.backend.PythonRTIBackend._svc_createFederationExecution`
 - Implementation file: `packages/hla2010-rti-python/src/hla2010_rti_python/backend.py`
-- Test evidence: `tests/scenarios/test_federation_lifecycle_backend_matrix.py`, `tests/scenarios/test_federation_management_backend_matrix.py`, `tests/factories/test_fom_time_factories.py`, `tests/scenarios/test_startup_sync_fom_java_translation_v09.py`
+- Test evidence: `tests/scenarios/test_federation_lifecycle_backend_matrix.py`, `tests/scenarios/test_federation_management_backend_matrix.py`, `tests/factories/test_fom_time_factories.py`
 - Artifact evidence: `analysis/compliance/service_conformance.json`
 - Trace command: `./tools/human-editability trace createFederationExecution`
-
-### joinFederationExecution
-
-- Requirement row: `REQ-RTI-FM-4_9-joinFederationExecution`
-- Spec reference: `1516.1-2010 §4.9`
-- Python public method: `joinFederationExecution` / `join_federation_execution`
-- Backend service: `hla2010_rti_python.backend.PythonRTIBackend._svc_joinFederationExecution`
-- Implementation file: `packages/hla2010-rti-python/src/hla2010_rti_python/backend.py`
-- Test evidence: `tests/scenarios/test_federation_lifecycle_backend_matrix.py`, `tests/scenarios/test_federation_management_backend_matrix.py`, `tests/scenarios/test_startup_sync_fom_java_translation_v09.py`
-- Artifact evidence: `analysis/compliance/service_conformance.json`
-- Trace command: `./tools/human-editability trace joinFederationExecution`
 
 ### timeAdvanceRequest
 
@@ -74,31 +105,9 @@ The `./tools/human-editability trace <method>` command prints the same chain fro
 - Python public method: `reflectAttributeValues` / `reflect_attribute_values`
 - Callback surface: `RecordingFederateAmbassador callback + snake_case alias`
 - Implementation file: `packages/hla2010-spec/src/hla2010/ambassadors.py`
-- Test evidence: `tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix`, `tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix`, `tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix`, `tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix`
+- Test evidence: `tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix`, `tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix`
 - Artifact evidence: `analysis/compliance/service_conformance.json`
 - Trace command: `./tools/human-editability trace reflectAttributeValues`
-
-### requestAttributeValueUpdate
-
-- Requirement row: `REQ-RTI-OM-6_19-requestAttributeValueUpdate`
-- Spec reference: `1516.1-2010 §6.19`
-- Python public method: `requestAttributeValueUpdate` / `request_attribute_value_update`
-- Backend service: `hla2010_rti_python.backend.PythonRTIBackend._svc_requestAttributeValueUpdate`
-- Implementation file: `packages/hla2010-rti-python/src/hla2010_rti_python/backend.py`
-- Test evidence: `tests/scenarios/test_object_management_backend_matrix.py`, `tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix`, `tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_routing_matrix`, `tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix`, `tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_routing_matrix`
-- Artifact evidence: `analysis/compliance/service_conformance.json`
-- Trace command: `./tools/human-editability trace requestAttributeValueUpdate`
-
-### timeAdvanceGrant
-
-- Requirement row: `REQ-FED-TM-8_13-timeAdvanceGrant`
-- Spec reference: `1516.1-2010 §8.13`
-- Python public method: `timeAdvanceGrant` / `time_advance_grant`
-- Callback surface: `RecordingFederateAmbassador callback + snake_case alias`
-- Implementation file: `packages/hla2010-spec/src/hla2010/ambassadors.py`
-- Test evidence: `tests/verification/test_spec_traceability_and_extended_python_rti.py`
-- Artifact evidence: `analysis/compliance/service_conformance.json`
-- Trace command: `./tools/human-editability trace timeAdvanceGrant`
 
 ## Generated Artifacts
 
@@ -130,3 +139,10 @@ The enforcement entrypoint is:
 ```bash
 python3 scripts/validate_traceability_paths.py check
 ```
+
+## Read Next
+
+1. [`requirements_trace_one_method.md`](requirements_trace_one_method.md)
+2. [`requirements_edit_one_row.md`](requirements_edit_one_row.md)
+3. [`requirements_authoring_map.md`](requirements_authoring_map.md)
+4. [`../requirements/README.md`](../requirements/README.md)

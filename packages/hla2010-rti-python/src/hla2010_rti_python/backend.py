@@ -1,7 +1,6 @@
 """Concrete in-memory Python RTI backend implementation."""
 from __future__ import annotations
 
-import importlib
 from typing import Any, Mapping
 
 from hla2010 import mom as hla_mom
@@ -34,7 +33,7 @@ from .object import PythonRTIObjectMixin
 from .ownership import PythonRTIOwnershipMixin
 from .reporting import PythonRTIServiceReportFiles
 from .save_restore import PythonRTISaveRestoreMixin
-from .service_registry import PYTHON_RTI_SERVICE_REGISTRY
+from .service_registry import PYTHON_RTI_SERVICE_HANDLERS
 from .service_reporting import ServiceReportSink
 from .state import (
     MOM_TEXT_ENCODING,
@@ -78,27 +77,6 @@ def _as_mom_bytes(value: Any) -> bytes:
 
 def _handle_value(value: Any) -> str:
     return str(getattr(value, "value", value))
-
-
-def _resolve_service_callable(dotted_path: str) -> Any:
-    parts = dotted_path.split(".")
-    for index in range(len(parts), 0, -1):
-        module_name = ".".join(parts[:index])
-        try:
-            module = importlib.import_module(module_name)
-        except ModuleNotFoundError:
-            continue
-        target = module
-        for part in parts[index:]:
-            target = getattr(target, part)
-        return target
-    raise RuntimeError(f"could not resolve Python RTI service callable {dotted_path!r}")
-
-
-PYTHON_RTI_SERVICE_HANDLERS: dict[str, Any] = {
-    method_name: _resolve_service_callable(dotted_path)
-    for method_name, dotted_path in PYTHON_RTI_SERVICE_REGISTRY.items()
-}
 
 
 class PythonRTIBackend(
@@ -151,6 +129,46 @@ class PythonRTIBackend(
             details={"engine": self.engine.name, "backend_id": self.state.backend_id},
         )
 
+    def _service_handler(self, method_name: str) -> Any:
+        service = PYTHON_RTI_SERVICE_HANDLERS.get(method_name)
+        if service is None:
+            raise UnsupportedBackendService(f"Python in-memory RTI does not yet implement {method_name}")
+        return service
+
+    def call_service(self, method_name: str, *args: Any) -> Any:
+        service = self._service_handler(method_name)
+        return service(self, *args)
+
+    def get_hla_version(self) -> str:
+        return super().get_hla_version()
+
+    def provide_attribute_value_update(
+        self,
+        theObject: ObjectInstanceHandle,
+        theAttributes: Any,
+        userSuppliedTag: bytes = b"",
+    ) -> None:
+        super().provide_attribute_value_update(theObject, theAttributes, userSuppliedTag)
+
+    def turn_updates_on_for_object_instance(
+        self,
+        theObject: ObjectInstanceHandle,
+        theAttributes: Any,
+        updateRateDesignator: str | None = None,
+    ) -> None:
+        super().turn_updates_on_for_object_instance(
+            theObject,
+            theAttributes,
+            updateRateDesignator,
+        )
+
+    def turn_updates_off_for_object_instance(
+        self,
+        theObject: ObjectInstanceHandle,
+        theAttributes: Any,
+    ) -> None:
+        super().turn_updates_off_for_object_instance(theObject, theAttributes)
+
     def invoke(self, invocation: Invocation) -> Any:
         service = PYTHON_RTI_SERVICE_HANDLERS.get(invocation.method_name)
         if service is None:
@@ -183,9 +201,9 @@ class PythonRTIBackend(
     def close(self) -> None:
         try:
             if self.state.connected and self.state.handle is not None:
-                self._svc_resignFederationExecution(ResignAction.NO_ACTION)
+                self.call_service("resignFederationExecution", ResignAction.NO_ACTION)
             if self.state.connected:
-                self._svc_disconnect()
+                self.call_service("disconnect")
         except Exception:
             pass
 

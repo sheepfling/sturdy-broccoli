@@ -12,8 +12,9 @@ Prove all of these in order:
 
 1. the repo-local Python environment is bootstrapped
 2. the editable split workspace packages are installed
-3. the pure-Python RTI path runs
-4. the Target/Radar scenario runs
+3. the installed RTI factory list is visible
+4. the pure-Python RTI path runs
+5. the Target/Radar scenario runs
 
 ## Prerequisites
 
@@ -29,8 +30,9 @@ Run these commands from the repository root:
 ./tools/bootstrap doctor
 ./tools/bootstrap python
 source .venv/bin/activate
-python examples/backend_recording.py
-python examples/target_radar_simulation.py --backend python --steps 5
+./tools/rti-factories show in-memory --probe
+./tools/examples backend-recording
+./tools/examples target-radar --backend in-memory --steps 5
 ```
 
 `./tools/bootstrap python` is the canonical bootstrap step. It creates or
@@ -39,9 +41,13 @@ editable mode. The repository root is tooling-only and is not installed as a
 package, so do not use `pip install -e .` and do not add a separate manual
 editable-install step here.
 
+`./tools/rti-factories show in-memory --probe` is the shortest backend-choice
+checkpoint. It proves that the default development route resolves to the pure
+Python RTI factory before you start running larger examples.
+
 ## Expected Output
 
-`python examples/backend_recording.py` should print the lightweight backend
+`./tools/examples backend-recording` should print the lightweight backend
 smoke shape:
 
 ```text
@@ -49,9 +55,27 @@ HLA 1516.1-2010
 connect CallbackModel.HLA_EVOKED
 ```
 
-`python examples/target_radar_simulation.py --backend python --steps 5` should
+`./tools/examples target-radar --backend in-memory --steps 5` should
 print a summary line plus five track rows. A representative sample lives at
 [`examples/target_radar_python_expected_output.txt`](examples/target_radar_python_expected_output.txt).
+
+The wrapper commands above run these underlying example scripts through the
+workspace Python environment:
+
+- [`../examples/backend_recording.py`](../examples/backend_recording.py)
+- [`../examples/rti_factory_selection.py`](../examples/rti_factory_selection.py)
+- [`../examples/target_radar_simulation.py`](../examples/target_radar_simulation.py)
+
+`./tools/rti-factories show in-memory --probe` should report:
+
+- selected factory name `python`
+- selectable names that include `in-memory`
+- probe `available: true`
+- backend kind `python/in-memory`
+
+`./tools/examples target-radar --backend in-memory --steps 5` and
+`python examples/target_radar_simulation.py --backend python --steps 5`
+should both land on the same pure Python RTI route.
 
 ## What Worked
 
@@ -59,6 +83,7 @@ If the commands succeed:
 
 - `.venv` exists and is usable
 - the split packages import from the bootstrapped environment
+- the default `python` / `in-memory` factory selection resolves cleanly
 - the pure-Python RTI backend works
 - the packaged Target/Radar FOM and scenario helpers work
 
@@ -66,6 +91,7 @@ If the commands succeed:
 
 - `./tools/test`
 - `./tools/two-federate`
+- `./tools/examples rti-factory-selection --name in-memory --probe`
 - [`python_environment.md`](python_environment.md)
 - [`two_federate_quickstart.md`](two_federate_quickstart.md)
 

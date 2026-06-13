@@ -8,6 +8,46 @@ Use it when you want:
 - a dependency-free backend for new services and scenarios
 - the first verification lane for a new federate or FOM package
 
+Use this page for:
+
+- the backend ownership and dispatch model
+- the package location and service-domain layout
+- the broad Python RTI mental model
+
+Do not use this page for:
+
+- the shortest service-edit workflow
+- the shortest backend-selection walkthrough
+
+Those narrower lanes already live in:
+
+- [`python_rti_edit_one_service.md`](python_rti_edit_one_service.md)
+- [`rti_factory_reading_map.md`](rti_factory_reading_map.md)
+
+If you are not sure which backend name to instantiate first, start with
+[`rti_factory_reading_map.md`](rti_factory_reading_map.md) and run:
+
+```bash
+./tools/rti-factories list
+./tools/rti-factories show in-memory --probe
+./tools/rti-factories instantiate in-memory --probe
+./tools/examples rti-factory-selection --name in-memory --probe
+```
+
+That is the canonical “choose backend first” path before you start reading or
+editing Python RTI service code.
+
+If you want the smallest runnable code example for that selection flow, use:
+
+```bash
+source .venv/bin/activate
+./tools/examples rti-factory-selection --name in-memory --probe
+```
+
+If your goal is to change one Python RTI service rather than study the whole
+backend, stop here and use
+[`python_rti_edit_one_service.md`](python_rti_edit_one_service.md).
+
 ## Package Location
 
 The backend lives in:
@@ -28,14 +68,14 @@ The generated contributor-facing service maps live in:
 
 `DelegatingRTIAmbassador` forwards each HLA method into `PythonRTIBackend.invoke()`.
 
-`PythonRTIBackend.invoke()` then resolves:
-
-- `_svc_<HLA method name>`
+`PythonRTIBackend.invoke()` then resolves the owning callable through the
+generated service registry rather than name-sniffing with `getattr(...)`.
 
 Example:
 
 - `timeAdvanceRequest`
 - `PythonRTIBackend.invoke()`
+- `PYTHON_RTI_SERVICE_REGISTRY["timeAdvanceRequest"]`
 - `PythonRTITimePublicServicesMixin._svc_timeAdvanceRequest`
 - `packages/hla2010-rti-python/src/hla2010_rti_python/time_public_services.py`
 
@@ -72,7 +112,18 @@ Use:
 That trace path now prints the exact implementation symbol and file from the
 generated Python RTI service map.
 
-## How To Add A Service
+## Service-Edit Lane
+
+The shortest maintainer path is:
+
+```bash
+./tools/human-editability front-doors python-rti-service
+./tools/human-editability trace getHLAversion
+```
+
+That lane owns the concrete "change one service" workflow.
+
+## When You Add Or Move A Service
 
 1. Add or update the `_svc_<MethodName>` implementation in the right domain mixin.
 2. Regenerate the registry and service maps.
@@ -106,6 +157,8 @@ Direct Python RTI path:
 ```bash
 ./tools/bootstrap python
 source .venv/bin/activate
+./tools/rti-factories show in-memory --probe
+./tools/examples target-radar --backend in-memory --steps 5
 python examples/target_radar_simulation.py --backend python --steps 5
 ```
 
@@ -131,3 +184,9 @@ Start with:
 ./tools/human-editability trace requestAttributeValueUpdate
 ./tools/human-editability trace timeAdvanceRequest
 ```
+
+## Read Next
+
+1. [python_rti_edit_one_service.md](python_rti_edit_one_service.md)
+2. [python_rti_reading_map.md](python_rti_reading_map.md)
+3. [rti_factory_reading_map.md](rti_factory_reading_map.md)

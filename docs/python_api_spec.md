@@ -66,6 +66,7 @@ from hla2010.runtime_api import RTIambassador, FederateAmbassador
 - `packages/hla2010-spec/src/hla2010/runtime_api.py` keeps the runtime adapters working without forcing callers onto raw source-derived names.
 - `packages/hla2010-spec/src/hla2010/api.py` remains as a compatibility shim for older imports.
 - `packages/hla2010-spec/src/hla2010/rti.py` remains only as a temporary documented compatibility facade for backend discovery, backend selection, and ambassador creation while backend contracts and runtime internals live in split packages.
+- For human-friendly backend selection, prefer `iter_rti_factories()` to list installed factories and `get_rti_factory(name)` to resolve one by canonical name or alias before calling `factory.create_rti_ambassador(...)`.
 - `packages/hla2010-spec/src/hla2010/spec_inventory.py`, `packages/hla2010-spec/src/hla2010/spec_sources.py`, and `packages/hla2010-spec/src/hla2010/spec_refs.py` keep source mappings readable rather than hiding them in opaque blobs.
 
 That keeps the spec-like surface clean while still preserving the source

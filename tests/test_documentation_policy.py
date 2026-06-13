@@ -12,6 +12,12 @@ KEY_PUBLIC_DOCS = (
     ROOT / "docs/README.md",
     ROOT / "docs/onboarding.md",
     ROOT / "docs/first_run.md",
+    ROOT / "docs/spec_reading_map.md",
+    ROOT / "docs/fom_reading_map.md",
+    ROOT / "docs/python_rti_reading_map.md",
+    ROOT / "docs/python_rti_edit_one_service.md",
+    ROOT / "docs/requirements_trace_one_method.md",
+    ROOT / "docs/requirements_authoring_map.md",
     ROOT / "docs/python_environment.md",
     ROOT / "docs/two_federate_quickstart.md",
     ROOT / "packages/README.md",
@@ -26,6 +32,13 @@ EXPECTED_HEADINGS = {
     ROOT / "docs/README.md": ("## Start Here", "## Historical / Provenance", "## Read Next"),
     ROOT / "docs/onboarding.md": ("## What This Path Assumes", "## What This Path Avoids", "## Read Next"),
     ROOT / "docs/first_run.md": ("## Read Next",),
+    ROOT / "docs/spec_reading_map.md": ("## Why These Files", "## What To Ignore First", "## Read Next"),
+    ROOT / "docs/fom_reading_map.md": ("## Why These Files", "## Edit Here For", "## Read Next"),
+    ROOT / "docs/python_rti_reading_map.md": ("## Why These Files", "## Edit Loop", "## Read Next"),
+    ROOT / "docs/python_rti_edit_one_service.md": ("## Recommended First Example", "## Edit Loop", "## Read Next"),
+    ROOT / "docs/requirements_trace_one_method.md": ("## Recommended First Example", "## Trace Loop", "## Read Next"),
+    ROOT / "docs/requirements_authoring_map.md": ("## Why These Files", "## Authoring Loop", "## Read Next"),
+    ROOT / "docs/requirements_edit_one_row.md": ("## Active Vs Generated Vs Reference", "## One-Row Edit Loop", "## Read Next"),
     ROOT / "docs/python_environment.md": ("## Read Next",),
     ROOT / "docs/two_federate_quickstart.md": ("## Read Next",),
     ROOT / "packages/README.md": ("## Start Here", "## Read Next"),
@@ -40,15 +53,80 @@ EXPECTED_PATHS = {
     ),
     ROOT / "docs/onboarding.md": (
         ROOT / "docs/first_run.md",
-        ROOT / "docs/python_rti_backend.md",
+        ROOT / "docs/python_rti_edit_one_service.md",
         ROOT / "docs/create_federate_and_fom.md",
-        ROOT / "docs/requirements_traceability.md",
+        ROOT / "docs/requirements_trace_one_method.md",
+        ROOT / "packages/README.md",
         ROOT / "docs/java_backends_quickstart.md",
         ROOT / "docs/verification/run_sequence.md",
+        ROOT / "docs/spec_reading_map.md",
+        ROOT / "docs/python_rti_reading_map.md",
+        ROOT / "docs/requirements_edit_one_row.md",
+        ROOT / "docs/requirements_traceability.md",
+    ),
+    ROOT / "docs/spec_reading_map.md": (
+        ROOT / "packages/hla2010-spec/src/hla2010/spec/__init__.py",
+        ROOT / "packages/hla2010-spec/src/hla2010/runtime_api.py",
+        ROOT / "packages/hla2010-spec/src/hla2010/ambassadors.py",
+        ROOT / "specs/hla2010_api.json",
+    ),
+    ROOT / "docs/fom_reading_map.md": (
+        ROOT / "packages/hla2010-spec/src/hla2010/fom.py",
+        ROOT / "packages/hla2010-spec/src/hla2010/_fom_parsing.py",
+        ROOT / "packages/hla2010-spec/src/hla2010/_fom_merge.py",
+        ROOT / "packages/hla2010-spec/src/hla2010/_fom_datatypes.py",
+        ROOT / "packages/hla2010-spec/src/hla2010/_fom_serialization.py",
+        ROOT / "packages/hla2010-spec/src/hla2010/_fom_models.py",
+        ROOT / "tests/factories/test_fom_omt_parsing.py",
+    ),
+    ROOT / "docs/python_rti_reading_map.md": (
+        ROOT / "docs/python_rti_backend.md",
+        ROOT / "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py",
+        ROOT / "packages/hla2010-rti-python/src/hla2010_rti_python/service_registry.py",
+        ROOT / "analysis/traceability/python_rti_service_map.md",
+    ),
+    ROOT / "docs/python_rti_edit_one_service.md": (
+        ROOT / "tools/human-editability",
+        ROOT / "docs/python_rti_backend.md",
+        ROOT / "packages/hla2010-spec/src/hla2010/runtime_api.py",
+        ROOT / "packages/hla2010-rti-python/src/hla2010_rti_python/service_registry.py",
+        ROOT / "packages/hla2010-rti-python/src/hla2010_rti_python/support_lookup.py",
+        ROOT / "packages/hla2010-rti-python/src/hla2010_rti_python/time_public_services.py",
+        ROOT / "tests/backends/test_python_rti_service_registry.py",
+    ),
+    ROOT / "docs/requirements_trace_one_method.md": (
+        ROOT / "tools/human-editability",
+        ROOT / "docs/requirements_traceability.md",
+        ROOT / "requirements/traceability_matrix.csv",
+        ROOT / "packages/hla2010-rti-python/src/hla2010_rti_python/support_lookup.py",
+        ROOT / "packages/hla2010-rti-python/src/hla2010_rti_python/time_public_services.py",
+        ROOT / "tests/scenarios/test_support_services_backend_matrix.py",
+        ROOT / "tests/time/test_mom_mim_time_v10.py",
+    ),
+    ROOT / "docs/requirements_authoring_map.md": (
+        ROOT / "docs/requirements_edit_one_row.md",
+        ROOT / "requirements/README.md",
+        ROOT / "requirements/surface_manifest.json",
+        ROOT / "docs/requirements_traceability.md",
+        ROOT / "requirements/traceability_matrix.csv",
+        ROOT / "analysis/compliance/requirements_ledger.csv",
+        ROOT / "scripts/validate_traceability_paths.py",
+    ),
+    ROOT / "docs/requirements_edit_one_row.md": (
+        ROOT / "requirements/README.md",
+        ROOT / "requirements/surface_manifest.json",
+        ROOT / "requirements/traceability_matrix.csv",
+        ROOT / "analysis/compliance/requirements_ledger.csv",
+        ROOT / "analysis/traceability/service_trace_index.md",
+        ROOT / "packages/hla2010-rti-python/src/hla2010_rti_python/support_lookup.py",
+        ROOT / "tests/scenarios/test_support_services_backend_matrix.py",
     ),
     ROOT / "docs/first_run.md": (
         ROOT / "tools/bootstrap",
+        ROOT / "tools/examples",
+        ROOT / "tools/rti-factories",
         ROOT / "examples/backend_recording.py",
+        ROOT / "examples/rti_factory_selection.py",
         ROOT / "examples/target_radar_simulation.py",
     ),
     ROOT / "docs/python_environment.md": (
@@ -61,6 +139,7 @@ EXPECTED_PATHS = {
         ROOT / "tools/pitch",
     ),
     ROOT / "docs/two_federate_quickstart.md": (
+        ROOT / "tools/rti-factories",
         ROOT / "tools/two-federate",
         ROOT / "scripts/run_two_federate_suite.py",
         ROOT / "src/hla2010_repo_internal/verification/two_federate_suite_runner.py",
@@ -132,13 +211,125 @@ def test_key_newcomer_docs_reference_existing_paths() -> None:
 def test_onboarding_doc_is_the_canonical_opinionated_map() -> None:
     text = _read(ROOT / "docs" / "onboarding.md")
     assert "1. [First Run](first_run.md)" in text
-    assert "2. [Python RTI Backend](python_rti_backend.md)" in text
+    assert "2. [Edit One Python RTI Service](python_rti_edit_one_service.md)" in text
     assert "3. [Create A Federate And FOM](create_federate_and_fom.md)" in text
-    assert "4. [Requirements Traceability](requirements_traceability.md)" in text
-    assert "5. [Java Backends Later](java_backends_quickstart.md)" in text
-    assert "6. [Full Verification](verification/run_sequence.md)" in text
+    assert "4. [Trace One Method](requirements_trace_one_method.md)" in text
+    assert "5. [Package Ownership Map](../packages/README.md)" in text
+    assert "6. [Java Backends Later](java_backends_quickstart.md)" in text
+    assert "7. [Full Verification](verification/run_sequence.md)" in text
+    assert "8. [Spec Reading Map](spec_reading_map.md)" in text
+    assert "9. [Python RTI Reading Map](python_rti_reading_map.md)" in text
+    assert "10. [Requirements Details Later](requirements_traceability.md)" in text
+    assert "[requirements_edit_one_row.md](requirements_edit_one_row.md)" in text
+    assert "authoring map is secondary reading" in text
+    assert "requirements_authoring_map.md" not in text
     assert "docs/evidence/" not in text
     assert "reference/archive_index.md" not in text
+
+
+def test_reading_maps_define_small_human_front_doors() -> None:
+    spec_text = _read(ROOT / "docs" / "spec_reading_map.md")
+    assert "packages/hla2010-spec/src/hla2010/raw_api.py" in spec_text
+    assert "packages/hla2010-spec/src/hla2010/_spec_impl.py" in spec_text
+    assert "packages/hla2010-spec/src/hla2010/fom.py" in spec_text
+
+    fom_text = _read(ROOT / "docs" / "fom_reading_map.md")
+    assert "_fom_parsing.py" in fom_text
+    assert "_fom_merge.py" in fom_text
+    assert "_fom_datatypes.py" in fom_text
+    assert "_fom_serialization.py" in fom_text
+    assert "_fom_models.py" in fom_text
+    assert "human-editability front-doors fom" in fom_text
+
+    python_rti_text = _read(ROOT / "docs" / "python_rti_reading_map.md")
+    assert "service_registry.py" in python_rti_text
+    assert "human-editability trace <MethodName>" in python_rti_text
+    assert "rti_factory_reading_map.md" in python_rti_text
+    assert "./tools/rti-factories show in-memory --probe" in python_rti_text
+    assert "./tools/human-editability front-doors python-rti-service" in python_rti_text
+
+    python_rti_service_text = _read(ROOT / "docs" / "python_rti_edit_one_service.md")
+    assert "./tools/human-editability trace getHLAversion" in python_rti_service_text
+    assert "timeAdvanceRequest" in python_rti_service_text
+    assert "support_lookup.py" in python_rti_service_text
+    assert "service_registry.py" in python_rti_service_text
+
+    requirements_trace_text = _read(ROOT / "docs" / "requirements_trace_one_method.md")
+    assert "./tools/human-editability trace getHLAversion" in requirements_trace_text
+    assert "./tools/human-editability trace timeAdvanceRequest" in requirements_trace_text
+    assert "support_lookup.py" in requirements_trace_text
+    assert "test_support_services_backend_matrix.py" in requirements_trace_text
+
+    requirements_edit_text = _read(ROOT / "docs" / "requirements_edit_one_row.md")
+    assert "requirements/traceability_matrix.csv" in requirements_edit_text
+    assert "requirements/surface_manifest.json" in requirements_edit_text
+    assert "./tools/human-editability requirements-surfaces" in requirements_edit_text
+    assert "analysis/compliance/requirements_ledger.csv" in requirements_edit_text
+    assert "Active Vs Generated Vs Reference" in requirements_edit_text
+    assert "./tools/human-editability requirement REQ-RTI-TM-8_8-timeAdvanceRequest" in requirements_edit_text
+    assert "./tools/human-editability check" in requirements_edit_text
+    assert "./tools/human-editability generate-trace-index" in requirements_edit_text
+
+    rti_factory_text = _read(ROOT / "docs" / "rti_factory_reading_map.md")
+    assert "./tools/rti-factories list" in rti_factory_text
+    assert "./tools/rti-factories instantiate in-memory --probe" in rti_factory_text
+    assert "examples/rti_factory_selection.py" in rti_factory_text
+    assert "./tools/examples rti-factory-selection --name in-memory --probe" in rti_factory_text
+    assert "iter_rti_factories()" in rti_factory_text
+    assert "get_rti_factory(name)" in rti_factory_text
+    assert "human-editability front-doors rti-factories" in rti_factory_text
+    assert "python_rti_reading_map.md" in rti_factory_text
+
+    python_rti_backend_text = _read(ROOT / "docs" / "python_rti_backend.md")
+    assert "rti_factory_reading_map.md" in python_rti_backend_text
+    assert "python_rti_edit_one_service.md" in python_rti_backend_text
+    assert "./tools/rti-factories list" in python_rti_backend_text
+    assert "./tools/rti-factories show in-memory --probe" in python_rti_backend_text
+    assert "./tools/rti-factories instantiate in-memory --probe" in python_rti_backend_text
+    assert "./tools/examples target-radar --backend in-memory --steps 5" in python_rti_backend_text
+    assert "./tools/examples rti-factory-selection --name in-memory --probe" in python_rti_backend_text
+    assert "source .venv/bin/activate" in python_rti_backend_text
+
+    requirements_text = _read(ROOT / "docs" / "requirements_authoring_map.md")
+    assert "requirements_edit_one_row.md" in requirements_text
+    assert "requirements/README.md" in requirements_text
+    assert "active authored requirement input" in requirements_text
+    assert "requirements_trace_one_method.md" in requirements_text
+    assert "./tools/human-editability requirement <RequirementId>" in requirements_text
+    assert "Do not start by editing generated files under `analysis/compliance/`" in requirements_text
+    assert "./tools/human-editability check" in requirements_text
+
+    create_fom_text = _read(ROOT / "docs" / "create_federate_and_fom.md")
+    assert "./tools/examples minimal-fom-demo --backend in-memory" in create_fom_text
+    assert "python examples/minimal_fom_demo.py --backend python" in create_fom_text
+
+
+def test_requirements_docs_keep_distinct_roles() -> None:
+    traceability_text = _read(ROOT / "docs" / "requirements_traceability.md")
+    authoring_text = _read(ROOT / "docs" / "requirements_authoring_map.md")
+    edit_text = _read(ROOT / "docs" / "requirements_edit_one_row.md")
+    requirements_readme = _read(ROOT / "requirements" / "README.md")
+
+    assert "Use this page for:\n\n- the broader traceability model" in traceability_text
+    assert "Use this page for the ordered reading path." in authoring_text
+    assert '"We missed one requirement row, or one mapping is wrong. What do I edit?"' in edit_text
+    assert "Use this page for requirement-surface classification." in requirements_readme
+
+    assert "generated service trace index" in traceability_text
+    assert "Read these files in order:" in authoring_text
+    assert "## One-Row Edit Loop" in edit_text
+    assert "## Surface Types" in requirements_readme
+
+    assert "Use this page for requirement-surface classification." not in traceability_text
+    assert "Use this page for the ordered reading path." not in edit_text
+    assert "Read these files in order:" not in requirements_readme
+
+
+def test_python_rti_backend_doc_matches_registry_backed_dispatch_reality() -> None:
+    text = _read(ROOT / "docs" / "python_rti_backend.md")
+    assert "generated service registry" in text
+    assert "PYTHON_RTI_SERVICE_REGISTRY" in text
+    assert "`getattr(...)`" in text
 
 
 def test_repo_does_not_keep_duplicate_markdown_copies() -> None:

@@ -11,6 +11,58 @@ from .state import FederateState
 class PythonRTIDeclarationMixin:
     """HLA publication, subscription, and advisory declaration services."""
 
+    def subscribe_object_class_attributes(
+        self,
+        theClass: ObjectClassHandle,
+        attributeList: Iterable[AttributeHandle],
+        *unused: Any,
+    ) -> None:
+        federation = self._require_joined()
+        self._ensure_no_save_or_restore_in_progress(federation)
+        attrs = self._validate_object_class_attributes(theClass, attributeList)
+        explicit_update_rate, explicit_designator = self._resolve_update_rate_designator(federation, *unused)
+        self.state.subscribed_objects.setdefault(theClass, set()).update(attrs)
+        rate_map = self.state.subscribed_object_update_rates.setdefault(theClass, {})
+        designator_map = self.state.subscribed_object_update_rate_designators.setdefault(theClass, {})
+        for attr in attrs:
+            resolved_rate = explicit_update_rate
+            resolved_designator = explicit_designator
+            if resolved_rate is None:
+                resolved_rate = self._default_update_rate_for_attribute(federation, theClass, attr)
+                resolved_designator = self._default_update_rate_designator_for_attribute(federation, theClass, attr)
+            if resolved_rate is None:
+                rate_map.pop(attr, None)
+                designator_map.pop(attr, None)
+            else:
+                rate_map[attr] = resolved_rate
+                if resolved_designator is None:
+                    designator_map.pop(attr, None)
+                else:
+                    designator_map[attr] = resolved_designator
+        if not rate_map:
+            self.state.subscribed_object_update_rates.pop(theClass, None)
+        if not designator_map:
+            self.state.subscribed_object_update_rate_designators.pop(theClass, None)
+        self._discover_existing_objects(self.state, theClass)
+        self._reconcile_scope_for_all_known_objects(self.state)
+        self._reconcile_registration_interest_for_all_publishers()
+
+    def subscribe_interaction_class(
+        self,
+        theClass: InteractionClassHandle,
+        *unused: Any,
+    ) -> None:
+        del unused
+        federation = self._require_joined()
+        self._ensure_no_save_or_restore_in_progress(federation)
+        self.engine.interaction_for_handle(theClass)
+        if self.state.service_reporting and self._is_service_invocation_report_handle(theClass):
+            raise FederateServiceInvocationsAreBeingReportedViaMOM(
+                "Disable MOM service reporting before subscribing to HLAreportServiceInvocation"
+            )
+        self.state.subscribed_interactions.add(theClass)
+        self._reconcile_interaction_interest_for_all_publishers()
+
     def _current_registration_interest_classes(self, publisher: FederateState) -> set[ObjectClassHandle]:
         federation = publisher.federation
         if federation is None:
@@ -178,38 +230,10 @@ class PythonRTIDeclarationMixin:
         self._reconcile_update_interest_for_owned_objects(self.state, theClass)
 
     def _svc_subscribeObjectClassAttributes(self, theClass: ObjectClassHandle, attributeList: Iterable[AttributeHandle], *unused: Any) -> None:
-        federation = self._require_joined()
-        self._ensure_no_save_or_restore_in_progress(federation)
-        attrs = self._validate_object_class_attributes(theClass, attributeList)
-        explicit_update_rate, explicit_designator = self._resolve_update_rate_designator(federation, *unused)
-        self.state.subscribed_objects.setdefault(theClass, set()).update(attrs)
-        rate_map = self.state.subscribed_object_update_rates.setdefault(theClass, {})
-        designator_map = self.state.subscribed_object_update_rate_designators.setdefault(theClass, {})
-        for attr in attrs:
-            resolved_rate = explicit_update_rate
-            resolved_designator = explicit_designator
-            if resolved_rate is None:
-                resolved_rate = self._default_update_rate_for_attribute(federation, theClass, attr)
-                resolved_designator = self._default_update_rate_designator_for_attribute(federation, theClass, attr)
-            if resolved_rate is None:
-                rate_map.pop(attr, None)
-                designator_map.pop(attr, None)
-            else:
-                rate_map[attr] = resolved_rate
-                if resolved_designator is None:
-                    designator_map.pop(attr, None)
-                else:
-                    designator_map[attr] = resolved_designator
-        if not rate_map:
-            self.state.subscribed_object_update_rates.pop(theClass, None)
-        if not designator_map:
-            self.state.subscribed_object_update_rate_designators.pop(theClass, None)
-        self._discover_existing_objects(self.state, theClass)
-        self._reconcile_scope_for_all_known_objects(self.state)
-        self._reconcile_registration_interest_for_all_publishers()
+        self.subscribe_object_class_attributes(theClass, attributeList, *unused)
 
     def _svc_subscribeObjectClassAttributesPassively(self, theClass: ObjectClassHandle, attributeList: Iterable[AttributeHandle], *unused: Any) -> None:
-        self._svc_subscribeObjectClassAttributes(theClass, attributeList, *unused)
+        self.subscribe_object_class_attributes(theClass, attributeList, *unused)
 
     def _svc_unsubscribeObjectClass(self, theClass: ObjectClassHandle) -> None:
         federation = self._require_joined()
@@ -269,18 +293,10 @@ class PythonRTIDeclarationMixin:
         return any(self._is_service_invocation_report_handle(handle) for handle in federate.subscribed_interactions)
 
     def _svc_subscribeInteractionClass(self, theClass: InteractionClassHandle, *unused: Any) -> None:
-        federation = self._require_joined()
-        self._ensure_no_save_or_restore_in_progress(federation)
-        self.engine.interaction_for_handle(theClass)
-        if self.state.service_reporting and self._is_service_invocation_report_handle(theClass):
-            raise FederateServiceInvocationsAreBeingReportedViaMOM(
-                "Disable MOM service reporting before subscribing to HLAreportServiceInvocation"
-            )
-        self.state.subscribed_interactions.add(theClass)
-        self._reconcile_interaction_interest_for_all_publishers()
+        self.subscribe_interaction_class(theClass, *unused)
 
     def _svc_subscribeInteractionClassPassively(self, theClass: InteractionClassHandle, *unused: Any) -> None:
-        self._svc_subscribeInteractionClass(theClass, *unused)
+        self.subscribe_interaction_class(theClass, *unused)
 
     def _svc_unsubscribeInteractionClass(self, theClass: InteractionClassHandle) -> None:
         federation = self._require_joined()

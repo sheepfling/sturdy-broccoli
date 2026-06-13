@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 from hla2010.spec import FederateAmbassadorSpec
+from hla2010.exceptions import FederationExecutionDoesNotExist, RTIinternalError
 from hla2010_rti_backend_common import make_rti_ambassador
 from hla2010_rti_certi import CERTIBackend, CERTIConfig
 from hla2010_rti_certi.certi.service_adapter import CERTIBackend as PackageCERTIBackend
 from hla2010_rti_certi.certi.transport import CERTITransport, CERTITransportProtocol
-from hla2010_rti_transport_common.transport import RTITransport, TransportRequest, TransportResponse
+from hla2010_rti_transport_common.transport import RTITransport, TransportError, TransportRequest, TransportResponse
 from hla2010.enums import CallbackModel
 from hla2010_rti_runtime_common import RTITransportSpec, create_backend, register_transport_factory
+import pytest
 
 
 class FakeTransport(RTITransport):
@@ -27,6 +29,18 @@ class FakeTransport(RTITransport):
 
     def close(self) -> None:
         self.closed = True
+
+
+class ErrorTransport(RTITransport):
+    def __init__(self, code: str, message: str):
+        self.code = code
+        self.message = message
+
+    def start(self) -> "ErrorTransport":
+        return self
+
+    def request(self, request: TransportRequest):
+        raise TransportError(self.code, self.message)
 
 
 def test_certi_backend_can_run_against_an_injected_transport():
@@ -76,3 +90,17 @@ def test_transport_registry_can_route_future_wire_kinds():
 
     backend = create_backend("certi", transport={"kind": "test-grpc-wire"})
     assert backend.config.transport is transport
+
+
+def test_certi_transport_errors_map_to_explicit_hla_exception_types():
+    backend = CERTIBackend(CERTIConfig(transport=ErrorTransport("FederationExecutionDoesNotExist", "missing")))
+
+    with pytest.raises(FederationExecutionDoesNotExist, match="missing"):
+        backend.start().helper_request("DESTROY", "missing")
+
+
+def test_certi_transport_errors_fall_back_to_internal_error_for_unknown_codes():
+    backend = CERTIBackend(CERTIConfig(transport=ErrorTransport("UnknownWireError", "bad-wire")))
+
+    with pytest.raises(RTIinternalError, match="bad-wire"):
+        backend.start().helper_request("DESTROY", "missing")

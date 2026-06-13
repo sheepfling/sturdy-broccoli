@@ -13,7 +13,14 @@ from hla2010_fom_minimal_demo.scenarios import (
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--backend", choices=["python", "java-shim-jpype", "java-shim-py4j", "jpype", "py4j"], default="python")
+    parser.add_argument(
+        "--backend",
+        default="python",
+        help=(
+            "RTI factory name or alias such as python, in-memory, java-shim-jpype, "
+            "java-shim-py4j, jpype, or py4j."
+        ),
+    )
     parser.add_argument("--federation-name", default="MinimalDemoFederation")
     parser.add_argument("--object-message", default="hello-object")
     parser.add_argument("--interaction-message", default="hello-interaction")

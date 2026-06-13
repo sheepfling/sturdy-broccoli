@@ -14,7 +14,6 @@ from enum import Enum
 from typing import Any, Iterable, Mapping, Protocol, Sequence, cast
 
 from hla2010 import enums as hla_enums
-from hla2010 import exceptions as hla_exceptions
 from hla2010 import handles as hla_handles
 from hla2010_rti_backend_common import (
     CALLBACK_METHOD_NAMES,
@@ -40,7 +39,12 @@ from hla2010_rti_backend_common.invocation import (
     _JAVA_HANDLE_SET_TYPES,
     _JAVA_HANDLE_VALUE_MAP_TYPES,
 )
-from hla2010.exceptions import FederateInternalError, RTIexception, RTIinternalError
+from hla2010.exceptions import (
+    FederateInternalError,
+    RTIexception,
+    RTIinternalError,
+    resolve_rti_exception_type,
+)
 from hla2010.fom import module_uri
 from hla2010.raw_api import API_METADATA
 from hla2010.ambassadors import invoke_federate_callback
@@ -65,6 +69,589 @@ class _JavaIterator(Protocol):
     def hasNext(self) -> bool: ...
 
     def next(self) -> Any: ...
+
+
+def invoke_java_rti_method(target: Any, method_name: str, *args: Any) -> Any:
+    """Invoke a Java RTI ambassador method through an explicit service registry."""
+
+    match method_name:
+        case "abortFederationRestore":
+            return target.abortFederationRestore(*args)
+        case "abortFederationSave":
+            return target.abortFederationSave(*args)
+        case "associateRegionsForUpdates":
+            return target.associateRegionsForUpdates(*args)
+        case "attributeOwnershipAcquisition":
+            return target.attributeOwnershipAcquisition(*args)
+        case "attributeOwnershipAcquisitionIfAvailable":
+            return target.attributeOwnershipAcquisitionIfAvailable(*args)
+        case "attributeOwnershipDivestitureIfWanted":
+            return target.attributeOwnershipDivestitureIfWanted(*args)
+        case "attributeOwnershipReleaseDenied":
+            return target.attributeOwnershipReleaseDenied(*args)
+        case "cancelAttributeOwnershipAcquisition":
+            return target.cancelAttributeOwnershipAcquisition(*args)
+        case "cancelNegotiatedAttributeOwnershipDivestiture":
+            return target.cancelNegotiatedAttributeOwnershipDivestiture(*args)
+        case "changeAttributeOrderType":
+            return target.changeAttributeOrderType(*args)
+        case "changeInteractionOrderType":
+            return target.changeInteractionOrderType(*args)
+        case "commitRegionModifications":
+            return target.commitRegionModifications(*args)
+        case "confirmDivestiture":
+            return target.confirmDivestiture(*args)
+        case "connect":
+            return target.connect(*args)
+        case "createFederationExecution":
+            return target.createFederationExecution(*args)
+        case "createFederationExecutionWithMIM":
+            return target.createFederationExecutionWithMIM(*args)
+        case "createRegion":
+            return target.createRegion(*args)
+        case "decodeAttributeHandle":
+            return target.decodeAttributeHandle(*args)
+        case "decodeDimensionHandle":
+            return target.decodeDimensionHandle(*args)
+        case "decodeFederateHandle":
+            return target.decodeFederateHandle(*args)
+        case "decodeInteractionClassHandle":
+            return target.decodeInteractionClassHandle(*args)
+        case "decodeMessageRetractionHandle":
+            return target.decodeMessageRetractionHandle(*args)
+        case "decodeObjectClassHandle":
+            return target.decodeObjectClassHandle(*args)
+        case "decodeObjectInstanceHandle":
+            return target.decodeObjectInstanceHandle(*args)
+        case "decodeParameterHandle":
+            return target.decodeParameterHandle(*args)
+        case "decodeRegionHandle":
+            return target.decodeRegionHandle(*args)
+        case "deleteObjectInstance":
+            return target.deleteObjectInstance(*args)
+        case "deleteRegion":
+            return target.deleteRegion(*args)
+        case "destroyFederationExecution":
+            return target.destroyFederationExecution(*args)
+        case "disableAsynchronousDelivery":
+            return target.disableAsynchronousDelivery(*args)
+        case "disableAttributeRelevanceAdvisorySwitch":
+            return target.disableAttributeRelevanceAdvisorySwitch(*args)
+        case "disableAttributeScopeAdvisorySwitch":
+            return target.disableAttributeScopeAdvisorySwitch(*args)
+        case "disableCallbacks":
+            return target.disableCallbacks(*args)
+        case "disableInteractionRelevanceAdvisorySwitch":
+            return target.disableInteractionRelevanceAdvisorySwitch(*args)
+        case "disableObjectClassRelevanceAdvisorySwitch":
+            return target.disableObjectClassRelevanceAdvisorySwitch(*args)
+        case "disableTimeConstrained":
+            return target.disableTimeConstrained(*args)
+        case "disableTimeRegulation":
+            return target.disableTimeRegulation(*args)
+        case "disconnect":
+            return target.disconnect(*args)
+        case "enableAsynchronousDelivery":
+            return target.enableAsynchronousDelivery(*args)
+        case "enableAttributeRelevanceAdvisorySwitch":
+            return target.enableAttributeRelevanceAdvisorySwitch(*args)
+        case "enableAttributeScopeAdvisorySwitch":
+            return target.enableAttributeScopeAdvisorySwitch(*args)
+        case "enableCallbacks":
+            return target.enableCallbacks(*args)
+        case "enableInteractionRelevanceAdvisorySwitch":
+            return target.enableInteractionRelevanceAdvisorySwitch(*args)
+        case "enableObjectClassRelevanceAdvisorySwitch":
+            return target.enableObjectClassRelevanceAdvisorySwitch(*args)
+        case "enableTimeConstrained":
+            return target.enableTimeConstrained(*args)
+        case "enableTimeRegulation":
+            return target.enableTimeRegulation(*args)
+        case "evokeCallback":
+            return target.evokeCallback(*args)
+        case "evokeMultipleCallbacks":
+            return target.evokeMultipleCallbacks(*args)
+        case "federateRestoreComplete":
+            return target.federateRestoreComplete(*args)
+        case "federateRestoreNotComplete":
+            return target.federateRestoreNotComplete(*args)
+        case "federateSaveBegun":
+            return target.federateSaveBegun(*args)
+        case "federateSaveComplete":
+            return target.federateSaveComplete(*args)
+        case "federateSaveNotComplete":
+            return target.federateSaveNotComplete(*args)
+        case "flushQueueRequest":
+            return target.flushQueueRequest(*args)
+        case "getAttributeHandle":
+            return target.getAttributeHandle(*args)
+        case "getAttributeHandleFactory":
+            return target.getAttributeHandleFactory(*args)
+        case "getAttributeHandleSetFactory":
+            return target.getAttributeHandleSetFactory(*args)
+        case "getAttributeHandleValueMapFactory":
+            return target.getAttributeHandleValueMapFactory(*args)
+        case "getAttributeName":
+            return target.getAttributeName(*args)
+        case "getAttributeSetRegionSetPairListFactory":
+            return target.getAttributeSetRegionSetPairListFactory(*args)
+        case "getAutomaticResignDirective":
+            return target.getAutomaticResignDirective(*args)
+        case "getAvailableDimensionsForClassAttribute":
+            return target.getAvailableDimensionsForClassAttribute(*args)
+        case "getAvailableDimensionsForInteractionClass":
+            return target.getAvailableDimensionsForInteractionClass(*args)
+        case "getDimensionHandle":
+            return target.getDimensionHandle(*args)
+        case "getDimensionHandleFactory":
+            return target.getDimensionHandleFactory(*args)
+        case "getDimensionHandleSet":
+            return target.getDimensionHandleSet(*args)
+        case "getDimensionHandleSetFactory":
+            return target.getDimensionHandleSetFactory(*args)
+        case "getDimensionName":
+            return target.getDimensionName(*args)
+        case "getDimensionUpperBound":
+            return target.getDimensionUpperBound(*args)
+        case "getFederateHandle":
+            return target.getFederateHandle(*args)
+        case "getFederateHandleFactory":
+            return target.getFederateHandleFactory(*args)
+        case "getFederateHandleSetFactory":
+            return target.getFederateHandleSetFactory(*args)
+        case "getFederateName":
+            return target.getFederateName(*args)
+        case "getHLAversion":
+            return target.getHLAversion(*args)
+        case "getInteractionClassHandle":
+            return target.getInteractionClassHandle(*args)
+        case "getInteractionClassHandleFactory":
+            return target.getInteractionClassHandleFactory(*args)
+        case "getInteractionClassName":
+            return target.getInteractionClassName(*args)
+        case "getKnownObjectClassHandle":
+            return target.getKnownObjectClassHandle(*args)
+        case "getObjectClassHandle":
+            return target.getObjectClassHandle(*args)
+        case "getObjectClassHandleFactory":
+            return target.getObjectClassHandleFactory(*args)
+        case "getObjectClassName":
+            return target.getObjectClassName(*args)
+        case "getObjectInstanceHandle":
+            return target.getObjectInstanceHandle(*args)
+        case "getObjectInstanceHandleFactory":
+            return target.getObjectInstanceHandleFactory(*args)
+        case "getObjectInstanceName":
+            return target.getObjectInstanceName(*args)
+        case "getOrderName":
+            return target.getOrderName(*args)
+        case "getOrderType":
+            return target.getOrderType(*args)
+        case "getParameterHandle":
+            return target.getParameterHandle(*args)
+        case "getParameterHandleFactory":
+            return target.getParameterHandleFactory(*args)
+        case "getParameterHandleValueMapFactory":
+            return target.getParameterHandleValueMapFactory(*args)
+        case "getParameterName":
+            return target.getParameterName(*args)
+        case "getRangeBounds":
+            return target.getRangeBounds(*args)
+        case "getRegionHandleSetFactory":
+            return target.getRegionHandleSetFactory(*args)
+        case "getTimeFactory":
+            return target.getTimeFactory(*args)
+        case "getTransportationName":
+            return target.getTransportationName(*args)
+        case "getTransportationType":
+            return target.getTransportationType(*args)
+        case "getTransportationTypeHandle":
+            return target.getTransportationTypeHandle(*args)
+        case "getTransportationTypeHandleFactory":
+            return target.getTransportationTypeHandleFactory(*args)
+        case "getTransportationTypeName":
+            return target.getTransportationTypeName(*args)
+        case "getUpdateRateValue":
+            return target.getUpdateRateValue(*args)
+        case "getUpdateRateValueForAttribute":
+            return target.getUpdateRateValueForAttribute(*args)
+        case "isAttributeOwnedByFederate":
+            return target.isAttributeOwnedByFederate(*args)
+        case "joinFederationExecution":
+            return target.joinFederationExecution(*args)
+        case "listFederationExecutions":
+            return target.listFederationExecutions(*args)
+        case "localDeleteObjectInstance":
+            return target.localDeleteObjectInstance(*args)
+        case "modifyLookahead":
+            return target.modifyLookahead(*args)
+        case "negotiatedAttributeOwnershipDivestiture":
+            return target.negotiatedAttributeOwnershipDivestiture(*args)
+        case "nextMessageRequest":
+            return target.nextMessageRequest(*args)
+        case "nextMessageRequestAvailable":
+            return target.nextMessageRequestAvailable(*args)
+        case "normalizeFederateHandle":
+            return target.normalizeFederateHandle(*args)
+        case "normalizeServiceGroup":
+            return target.normalizeServiceGroup(*args)
+        case "publishInteractionClass":
+            return target.publishInteractionClass(*args)
+        case "publishObjectClassAttributes":
+            return target.publishObjectClassAttributes(*args)
+        case "queryAttributeOwnership":
+            return target.queryAttributeOwnership(*args)
+        case "queryAttributeTransportationType":
+            return target.queryAttributeTransportationType(*args)
+        case "queryFederationRestoreStatus":
+            return target.queryFederationRestoreStatus(*args)
+        case "queryFederationSaveStatus":
+            return target.queryFederationSaveStatus(*args)
+        case "queryGALT":
+            return target.queryGALT(*args)
+        case "queryInteractionTransportationType":
+            return target.queryInteractionTransportationType(*args)
+        case "queryLITS":
+            return target.queryLITS(*args)
+        case "queryLogicalTime":
+            return target.queryLogicalTime(*args)
+        case "queryLookahead":
+            return target.queryLookahead(*args)
+        case "registerFederationSynchronizationPoint":
+            return target.registerFederationSynchronizationPoint(*args)
+        case "registerObjectInstance":
+            return target.registerObjectInstance(*args)
+        case "registerObjectInstanceWithRegions":
+            return target.registerObjectInstanceWithRegions(*args)
+        case "releaseMultipleObjectInstanceName":
+            return target.releaseMultipleObjectInstanceName(*args)
+        case "releaseObjectInstanceName":
+            return target.releaseObjectInstanceName(*args)
+        case "requestAttributeTransportationTypeChange":
+            return target.requestAttributeTransportationTypeChange(*args)
+        case "requestAttributeValueUpdate":
+            return target.requestAttributeValueUpdate(*args)
+        case "requestAttributeValueUpdateWithRegions":
+            return target.requestAttributeValueUpdateWithRegions(*args)
+        case "requestFederationRestore":
+            return target.requestFederationRestore(*args)
+        case "requestFederationSave":
+            return target.requestFederationSave(*args)
+        case "requestInteractionTransportationTypeChange":
+            return target.requestInteractionTransportationTypeChange(*args)
+        case "reserveMultipleObjectInstanceName":
+            return target.reserveMultipleObjectInstanceName(*args)
+        case "reserveObjectInstanceName":
+            return target.reserveObjectInstanceName(*args)
+        case "resignFederationExecution":
+            return target.resignFederationExecution(*args)
+        case "retract":
+            return target.retract(*args)
+        case "sendInteraction":
+            return target.sendInteraction(*args)
+        case "sendInteractionWithRegions":
+            return target.sendInteractionWithRegions(*args)
+        case "setAutomaticResignDirective":
+            return target.setAutomaticResignDirective(*args)
+        case "setRangeBounds":
+            return target.setRangeBounds(*args)
+        case "subscribeInteractionClass":
+            return target.subscribeInteractionClass(*args)
+        case "subscribeInteractionClassPassively":
+            return target.subscribeInteractionClassPassively(*args)
+        case "subscribeInteractionClassPassivelyWithRegions":
+            return target.subscribeInteractionClassPassivelyWithRegions(*args)
+        case "subscribeInteractionClassWithRegions":
+            return target.subscribeInteractionClassWithRegions(*args)
+        case "subscribeObjectClassAttributes":
+            return target.subscribeObjectClassAttributes(*args)
+        case "subscribeObjectClassAttributesPassively":
+            return target.subscribeObjectClassAttributesPassively(*args)
+        case "subscribeObjectClassAttributesPassivelyWithRegions":
+            return target.subscribeObjectClassAttributesPassivelyWithRegions(*args)
+        case "subscribeObjectClassAttributesWithRegions":
+            return target.subscribeObjectClassAttributesWithRegions(*args)
+        case "synchronizationPointAchieved":
+            return target.synchronizationPointAchieved(*args)
+        case "timeAdvanceRequest":
+            return target.timeAdvanceRequest(*args)
+        case "timeAdvanceRequestAvailable":
+            return target.timeAdvanceRequestAvailable(*args)
+        case "unassociateRegionsForUpdates":
+            return target.unassociateRegionsForUpdates(*args)
+        case "unconditionalAttributeOwnershipDivestiture":
+            return target.unconditionalAttributeOwnershipDivestiture(*args)
+        case "unpublishInteractionClass":
+            return target.unpublishInteractionClass(*args)
+        case "unpublishObjectClass":
+            return target.unpublishObjectClass(*args)
+        case "unpublishObjectClassAttributes":
+            return target.unpublishObjectClassAttributes(*args)
+        case "unsubscribeInteractionClass":
+            return target.unsubscribeInteractionClass(*args)
+        case "unsubscribeInteractionClassWithRegions":
+            return target.unsubscribeInteractionClassWithRegions(*args)
+        case "unsubscribeObjectClass":
+            return target.unsubscribeObjectClass(*args)
+        case "unsubscribeObjectClassAttributes":
+            return target.unsubscribeObjectClassAttributes(*args)
+        case "unsubscribeObjectClassAttributesWithRegions":
+            return target.unsubscribeObjectClassAttributesWithRegions(*args)
+        case "updateAttributeValues":
+            return target.updateAttributeValues(*args)
+        case _:
+            raise AttributeError(method_name)
+
+
+def java_hla_enum_simple_name(enum_class_name: str) -> str:
+    """Resolve a supported HLA Java enum class name to its simple name."""
+
+    match enum_class_name:
+        case "hla.rti1516e.CallbackModel":
+            return "CallbackModel"
+        case "hla.rti1516e.OrderType":
+            return "OrderType"
+        case "hla.rti1516e.ResignAction":
+            return "ResignAction"
+        case "hla.rti1516e.RestoreFailureReason":
+            return "RestoreFailureReason"
+        case "hla.rti1516e.RestoreStatus":
+            return "RestoreStatus"
+        case "hla.rti1516e.SaveFailureReason":
+            return "SaveFailureReason"
+        case "hla.rti1516e.SaveStatus":
+            return "SaveStatus"
+        case "hla.rti1516e.ServiceGroup":
+            return "ServiceGroup"
+        case "hla.rti1516e.SynchronizationPointFailureReason":
+            return "SynchronizationPointFailureReason"
+        case "hla.rti1516e.TransportationType":
+            return "TransportationType"
+        case _:
+            raise AttributeError(enum_class_name)
+
+
+def invoke_java_enum_constant(enum_class: Any, member_name: str) -> Any:
+    """Resolve a Java enum constant through the enum class's explicit valueOf API."""
+
+    value_of = getattr(enum_class, "valueOf", None)
+    if callable(value_of):
+        return value_of(member_name)
+    raise AttributeError(member_name)
+
+
+def java_handle_set_factory_method(type_name: str) -> str:
+    """Resolve a supported Java handle-set type to its RTI factory method."""
+
+    match type_name:
+        case "AttributeHandleSet":
+            return "getAttributeHandleSetFactory"
+        case "DimensionHandleSet":
+            return "getDimensionHandleSetFactory"
+        case "FederateHandleSet":
+            return "getFederateHandleSetFactory"
+        case "RegionHandleSet":
+            return "getRegionHandleSetFactory"
+        case _:
+            raise AttributeError(type_name)
+
+
+def java_handle_value_map_factory_method(type_name: str) -> str:
+    """Resolve a supported Java handle-value-map type to its RTI factory method."""
+
+    match type_name:
+        case "AttributeHandleValueMap":
+            return "getAttributeHandleValueMapFactory"
+        case "ParameterHandleValueMap":
+            return "getParameterHandleValueMapFactory"
+        case _:
+            raise AttributeError(type_name)
+
+
+def invoke_java_factory_method(rti_ambassador: Any, factory_method_name: str) -> Any:
+    """Invoke a supported Java RTI factory accessor through an explicit registry."""
+
+    match factory_method_name:
+        case "getAttributeHandleSetFactory":
+            return rti_ambassador.getAttributeHandleSetFactory()
+        case "getDimensionHandleSetFactory":
+            return rti_ambassador.getDimensionHandleSetFactory()
+        case "getFederateHandleSetFactory":
+            return rti_ambassador.getFederateHandleSetFactory()
+        case "getRegionHandleSetFactory":
+            return rti_ambassador.getRegionHandleSetFactory()
+        case "getAttributeHandleValueMapFactory":
+            return rti_ambassador.getAttributeHandleValueMapFactory()
+        case "getParameterHandleValueMapFactory":
+            return rti_ambassador.getParameterHandleValueMapFactory()
+        case "getAttributeSetRegionSetPairListFactory":
+            return rti_ambassador.getAttributeSetRegionSetPairListFactory()
+        case "getTimeFactory":
+            return rti_ambassador.getTimeFactory()
+        case _:
+            raise AttributeError(factory_method_name)
+
+
+def create_java_factory_collection(rti_ambassador: Any, factory_method_name: str, *, capacity: int | None = None) -> Any:
+    """Create a Java vendor-owned collection using an explicit RTI factory method."""
+
+    factory = invoke_java_factory_method(rti_ambassador, factory_method_name)
+    return factory.create(capacity) if capacity is not None else factory.create()
+
+
+def append_java_collection_value(collection: Any, value: Any) -> None:
+    """Append one value to a Java collection via its explicit add API."""
+
+    collection.add(value)
+
+
+def put_java_map_entry(mapping: Any, key: Any, value: Any) -> None:
+    """Insert one entry into a Java map via its explicit put API."""
+
+    mapping.put(key, value)
+
+
+def invoke_java_time_factory(rti_ambassador: Any) -> Any:
+    """Resolve the Java RTI logical-time factory through the explicit factory seam."""
+
+    return invoke_java_factory_method(rti_ambassador, "getTimeFactory")
+
+
+def convert_python_logical_time_with_factory(factory: Any, value: Any) -> Any:
+    """Convert a Python logical-time object using an explicit Java time factory."""
+
+    if isinstance(value, HLAinteger64Time):
+        return factory.makeTime(int(value.value))
+    if isinstance(value, HLAfloat64Time):
+        return factory.makeTime(float(value.value))
+    if isinstance(value, HLAinteger64Interval):
+        if value.is_zero():
+            return factory.makeZero()
+        if value.is_epsilon():
+            return factory.makeEpsilon()
+        return factory.makeInterval(int(value.value))
+    if isinstance(value, HLAfloat64Interval):
+        if value.is_zero():
+            return factory.makeZero()
+        if value.is_epsilon():
+            return factory.makeEpsilon()
+        return factory.makeInterval(float(value.value))
+    raise TypeError(type(value).__name__)
+
+
+def python_logical_time_shim_spec(value: Any) -> tuple[str, int | float]:
+    """Describe the explicit Java shim constructor for a Python logical-time object."""
+
+    if isinstance(value, HLAinteger64Time):
+        return ("HLAinteger64Time", int(value.value))
+    if isinstance(value, HLAinteger64Interval):
+        return ("HLAinteger64Interval", int(value.value))
+    if isinstance(value, HLAfloat64Time):
+        return ("HLAfloat64Time", float(value.value))
+    if isinstance(value, HLAfloat64Interval):
+        return ("HLAfloat64Interval", float(value.value))
+    raise TypeError(type(value).__name__)
+
+
+def java_runtime_get_class(obj: Any) -> Any | None:
+    """Best-effort access to a Java-like object's runtime class info."""
+
+    get_class = getattr(obj, "getClass", None)
+    if callable(get_class):
+        try:
+            return get_class()
+        except Exception:
+            return None
+    return None
+
+
+def java_runtime_full_class_name(obj: Any) -> str | None:
+    """Resolve a Java-like object's fully qualified class name."""
+
+    class_info = java_runtime_get_class(obj)
+    if class_info is None:
+        return None
+    get_name = getattr(class_info, "getName", None)
+    if callable(get_name):
+        try:
+            return str(get_name())
+        except Exception:
+            return None
+    return None
+
+
+def java_runtime_simple_class_name(obj: Any) -> str | None:
+    """Resolve a Java-like object's simple class name."""
+
+    class_info = java_runtime_get_class(obj)
+    if class_info is None:
+        return None
+    get_simple_name = getattr(class_info, "getSimpleName", None)
+    if callable(get_simple_name):
+        try:
+            return str(get_simple_name())
+        except Exception:
+            return None
+    return None
+
+
+def python_runtime_simple_class_name(obj: Any) -> str | None:
+    """Resolve a normal Python object's simple class name."""
+
+    cls = getattr(obj, "__class__", None)
+    name = getattr(cls, "__name__", None)
+    return str(name) if name is not None else None
+
+
+def java_runtime_public_field(obj: Any, field_name: str) -> Any | None:
+    """Resolve a Java-like public field through explicit supported access paths."""
+
+    get_field = getattr(obj, "_get_field", None)
+    if callable(get_field):
+        try:
+            found, value = cast(tuple[bool, Any], get_field(field_name))
+            if found:
+                return value
+        except Exception:
+            pass
+    try:
+        value = getattr(obj, field_name)
+    except Exception:
+        return None
+    return None if callable(value) else value
+
+
+def jpype_exception_class_name(exc: BaseException) -> str | None:
+    """Resolve a JPype exception's Java simple class name when available."""
+
+    name = java_runtime_simple_class_name(exc)
+    if name is not None:
+        return name
+    java_class = getattr(exc, "javaClass", None)
+    if java_class is not None:
+        return str(java_class).split(".")[-1]
+    return None
+
+
+def py4j_exception_class_name(exc: BaseException) -> str | None:
+    """Resolve a Py4J exception's Java simple class name when available."""
+
+    java_exception = getattr(exc, "java_exception", None)
+    if java_exception is not None:
+        return java_runtime_simple_class_name(java_exception)
+    return None
+
+
+def py4j_exception_message(exc: BaseException) -> str | None:
+    """Resolve a Py4J exception's Java message when available."""
+
+    java_exception = getattr(exc, "java_exception", None)
+    if java_exception is None:
+        return None
+    try:
+        return str(java_exception.getMessage())
+    except Exception:
+        return None
 
 
 class JavaBridge(ABC):
@@ -215,43 +802,18 @@ class JavaBridge(ABC):
 
     def public_field(self, obj: Any, field_name: str) -> Any | None:
         """Return a public Java field value when the bridge exposes one."""
-        get_field = getattr(obj, "_get_field", None)
-        if callable(get_field):
-            try:
-                found, value = cast(tuple[bool, Any], get_field(field_name))
-                if found:
-                    return value
-            except Exception:
-                pass
-        try:
-            value = getattr(obj, field_name)
-        except Exception:
-            return None
-        return None if callable(value) else value
+        return java_runtime_public_field(obj, field_name)
 
     def full_class_name(self, obj: Any) -> str | None:
         """Best-effort Java fully qualified class name."""
-        get_class = getattr(obj, "getClass", None)
-        if callable(get_class):
-            try:
-                class_info = cast(Any, get_class())
-                get_name = getattr(class_info, "getName", None)
-                if callable(get_name):
-                    return str(get_name())
-            except Exception:
-                pass
-        return None
+        return java_runtime_full_class_name(obj)
 
     def simple_class_name(self, obj: Any) -> str | None:
         """Best-effort Java simple class name for return-value conversion."""
-        cls = getattr(obj, "__class__", None)
-        name = getattr(cls, "__name__", None)
-        return name
+        return python_runtime_simple_class_name(obj)
 
     def exception_class_name(self, exc: BaseException) -> str | None:
-        cls = getattr(exc, "__class__", None)
-        name = getattr(cls, "__name__", None)
-        return name
+        return python_runtime_simple_class_name(exc)
 
     def exception_message(self, exc: BaseException) -> str:
         return str(exc)
@@ -932,8 +1494,8 @@ class JavaRTIBackend(RTIBackend):
         simple_name = self.bridge.exception_class_name(exc)
         if simple_name:
             simple_name = simple_name.split(".")[-1].split("$")[-1]
-            py_exc_type = getattr(hla_exceptions, simple_name, None)
-            if isinstance(py_exc_type, type) and issubclass(py_exc_type, RTIexception):
+            py_exc_type = resolve_rti_exception_type(simple_name)
+            if py_exc_type is not RTIinternalError or simple_name == "RTIinternalError":
                 return py_exc_type(self.bridge.exception_message(exc), cause=exc)
 
         return RTIinternalError(
@@ -949,8 +1511,28 @@ __all__ = [
     "PythonFederateAmbassadorDispatcher",
     "expected_java_callback_parameter_types",
     "expected_java_return_type",
+    "append_java_collection_value",
+    "convert_python_logical_time_with_factory",
+    "create_java_factory_collection",
+    "invoke_java_enum_constant",
+    "invoke_java_factory_method",
+    "invoke_java_rti_method",
+    "invoke_java_time_factory",
+    "java_runtime_full_class_name",
+    "java_runtime_get_class",
+    "java_runtime_public_field",
+    "java_runtime_simple_class_name",
+    "java_handle_set_factory_method",
+    "java_handle_value_map_factory_method",
+    "java_hla_enum_simple_name",
     "java_parameter_names",
     "java_parameter_types",
+    "jpype_exception_class_name",
+    "py4j_exception_class_name",
+    "py4j_exception_message",
+    "python_runtime_simple_class_name",
+    "python_logical_time_shim_spec",
+    "put_java_map_entry",
     "resolve_java_arguments",
     "resolve_java_invocation",
     "ResolvedJavaInvocation",

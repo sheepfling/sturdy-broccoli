@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections import deque
 from typing import Any, Callable, Deque, Iterable, Mapping
 
-from .java_common import JavaBridge, invoke_java_federate_proxy_callback
+from .java_common import JavaBridge, invoke_java_federate_proxy_callback, invoke_java_rti_method
 from .java_shim_types import (
     JavaAttributeHandle,
     JavaByteArray,
@@ -297,7 +297,7 @@ class ShimJavaBridge(JavaBridge):
         self.name = f"{profile}-shim"
 
     def call(self, obj: Any, method_name: str, *args: Any) -> Any:
-        return getattr(obj, method_name)(*args)
+        return invoke_java_rti_method(obj, method_name, *args)
 
     def create_federate_proxy(self, dispatcher: Any) -> Any:
         return dispatcher

@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/examples"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/examples [backend-recording|rti-factory-selection|target-radar|minimal-fom-demo|help] [args...]
+
+Canonical workspace-backed example flows:
+  ./tools/examples backend-recording
+  ./tools/examples rti-factory-selection --name in-memory --probe
+  ./tools/examples target-radar --backend in-memory --steps 5
+  ./tools/examples minimal-fom-demo --backend in-memory
+
+This is the human-facing wrapper over the example scripts under `examples/`.
+It always runs them through the workspace Python environment.
+EOF
+}
+
+python_bin="$(hla2010_shell_python_bin)"
+
+case "${1:-help}" in
+  help|-h|--help)
+    usage
+    ;;
+  backend-recording)
+    shift
+    hla2010_shell_run_workspace_python "$python_bin" "$ROOT_DIR/examples/backend_recording.py" "$@"
+    ;;
+  rti-factory-selection)
+    shift
+    hla2010_shell_run_workspace_python "$python_bin" "$ROOT_DIR/examples/rti_factory_selection.py" "$@"
+    ;;
+  target-radar)
+    shift
+    hla2010_shell_run_workspace_python "$python_bin" "$ROOT_DIR/examples/target_radar_simulation.py" "$@"
+    ;;
+  minimal-fom-demo)
+    shift
+    hla2010_shell_run_workspace_python "$python_bin" "$ROOT_DIR/examples/minimal_fom_demo.py" "$@"
+    ;;
+  *)
+    echo "error: unknown example entrypoint: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

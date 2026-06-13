@@ -671,7 +671,7 @@ retaining the source lowerCamelCase API.
 """
 from __future__ import annotations
 from typing import Any
-from .raw_api import RTIambassador as RawRTIambassador, FederateAmbassador as RawFederateAmbassador
+from ._spec_impl import RTIambassadorSpec as RawRTIambassador, FederateAmbassadorSpec as RawFederateAmbassador
 
 class RTIambassador(RawRTIambassador):
     """Concrete subclass point for Python RTI adapters with explicit snake_case aliases."""

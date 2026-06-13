@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/rti-factories"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/rti-factories [list|show NAME [--probe]|instantiate NAME [--probe]|help]
+
+Canonical RTI factory flow:
+  ./tools/rti-factories list
+  ./tools/rti-factories show python
+  ./tools/rti-factories show in-memory --probe
+  ./tools/rti-factories instantiate in-memory --probe
+
+This is the human-facing wrapper over `scripts/rti_factories.py`.
+EOF
+}
+
+python_bin="$(hla2010_shell_python_bin)"
+
+case "${1:-list}" in
+  help|-h|--help)
+    usage
+    ;;
+  list|show|instantiate)
+    subcommand="$1"
+    shift
+    hla2010_shell_run_workspace_python "$python_bin" "$ROOT_DIR/scripts/rti_factories.py" "$subcommand" "$@"
+    ;;
+  *)
+    echo "error: unknown subcommand: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

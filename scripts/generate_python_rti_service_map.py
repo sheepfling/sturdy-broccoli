@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import csv
+import importlib
 import json
 import inspect
 from pathlib import Path
@@ -30,6 +32,36 @@ def _load_ledger_rows() -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
+def _load_existing_registry_mapping() -> dict[str, str]:
+    module = ast.parse(REGISTRY_PATH.read_text(encoding="utf-8"), filename=str(REGISTRY_PATH))
+    for node in module.body:
+        if not isinstance(node, ast.AnnAssign):
+            continue
+        if not isinstance(node.target, ast.Name):
+            continue
+        if node.target.id != "PYTHON_RTI_SERVICE_REGISTRY":
+            continue
+        value = ast.literal_eval(node.value)
+        assert isinstance(value, dict)
+        return {str(key): str(symbol) for key, symbol in value.items()}
+    raise RuntimeError("could not locate PYTHON_RTI_SERVICE_REGISTRY in service_registry.py")
+
+
+def _resolve_callable(dotted_path: str) -> Any:
+    parts = dotted_path.split(".")
+    for index in range(len(parts), 0, -1):
+        module_name = ".".join(parts[:index])
+        try:
+            module = importlib.import_module(module_name)
+        except ModuleNotFoundError:
+            continue
+        target = module
+        for part in parts[index:]:
+            target = getattr(target, part)
+        return target
+    raise RuntimeError(f"could not resolve callable {dotted_path!r}")
+
+
 def _split_refs(value: str) -> list[str]:
     return [part.strip() for part in value.split(";") if part.strip()]
 
@@ -37,25 +69,24 @@ def _split_refs(value: str) -> list[str]:
 def _build_registry_rows() -> list[dict[str, str]]:
     import sys
 
-    sys.path[:0] = [
-        str(ROOT / "src"),
+    for source_path in (
+        str(ROOT / "packages" / "hla2010-spec" / "src"),
         str(ROOT / "packages" / "hla2010-rti-python" / "src"),
         str(ROOT / "packages" / "hla2010-rti-backend-common" / "src"),
-    ]
-
-    from hla2010_rti_python.backend import PythonRTIBackend
+    ):
+        if source_path not in sys.path:
+            sys.path.insert(0, source_path)
 
     specs = _load_specs()
+    registry_mapping = _load_existing_registry_mapping()
     ledger_rows = _load_ledger_rows()
     ledger_by_method = {
         row["method"]: row for row in ledger_rows if row.get("interface") == "RTIambassador" and row.get("method")
     }
     rows: list[dict[str, str]] = []
     for method_name in sorted(specs["interfaces"]["RTIambassador"]):
-        service = getattr(PythonRTIBackend, f"_svc_{method_name}")
-        module_name = service.__module__
-        qualname = service.__qualname__
-        implementation_symbol = f"{module_name}.{qualname}"
+        implementation_symbol = registry_mapping[method_name]
+        service = _resolve_callable(implementation_symbol)
         source_file = inspect.getsourcefile(service)
         if source_file is None:
             raise RuntimeError(f"could not resolve source file for {method_name}")
@@ -80,6 +111,13 @@ def _build_registry_rows() -> list[dict[str, str]]:
 
 def _registry_content(rows: list[dict[str, str]]) -> str:
     mapping = {row["hla_method"]: row["implementation_symbol"] for row in rows}
+    import_targets: dict[str, set[str]] = {}
+    handler_targets: dict[str, str] = {}
+    for method_name, dotted_path in mapping.items():
+        module_name, class_name, attr_name = dotted_path.rsplit(".", 2)
+        package_module = module_name.split("hla2010_rti_python.", 1)[1]
+        import_targets.setdefault(package_module, set()).add(class_name)
+        handler_targets[method_name] = f"{class_name}.{attr_name}"
     callback_helpers = {
         "provideAttributeValueUpdate": "federate callback delivery helper",
         "startRegistrationForObjectClass": "federate callback delivery helper",
@@ -94,17 +132,34 @@ def _registry_content(rows: list[dict[str, str]]) -> str:
         '"""Stable Python RTI service registry.',
         "",
         "Maps each HLA RTI method name to the concrete `_svc_*` implementation symbol",
-        "resolved from `PythonRTIBackend`.",
+        "and explicit callable resolved from the Python RTI mixins.",
         '"""',
         "from __future__ import annotations",
         "",
-        f"PYTHON_RTI_SERVICE_REGISTRY: dict[str, str] = {json.dumps(mapping, indent=2, sort_keys=True).replace('null', 'None')}",
-        "",
-        f"PYTHON_RTI_NON_RTI_SERVICE_REASONS: dict[str, str] = {json.dumps(callback_helpers, indent=2, sort_keys=True).replace('null', 'None')}",
-        "",
-        '__all__ = ["PYTHON_RTI_NON_RTI_SERVICE_REASONS", "PYTHON_RTI_SERVICE_REGISTRY"]',
-        "",
     ]
+    for module_name in sorted(import_targets):
+        class_names = ", ".join(sorted(import_targets[module_name]))
+        lines.append(f"from .{module_name} import {class_names}")
+    lines.extend(
+        [
+            "",
+            f"PYTHON_RTI_SERVICE_REGISTRY: dict[str, str] = {json.dumps(mapping, indent=2, sort_keys=True).replace('null', 'None')}",
+            "",
+            "PYTHON_RTI_SERVICE_HANDLERS: dict[str, object] = {",
+        ]
+    )
+    for method_name in sorted(handler_targets):
+        lines.append(f'  "{method_name}": {handler_targets[method_name]},')
+    lines.extend(
+        [
+            "}",
+            "",
+            f"PYTHON_RTI_NON_RTI_SERVICE_REASONS: dict[str, str] = {json.dumps(callback_helpers, indent=2, sort_keys=True).replace('null', 'None')}",
+            "",
+            '__all__ = ["PYTHON_RTI_NON_RTI_SERVICE_REASONS", "PYTHON_RTI_SERVICE_HANDLERS", "PYTHON_RTI_SERVICE_REGISTRY"]',
+            "",
+        ]
+    )
     return "\n".join(lines)
 
 

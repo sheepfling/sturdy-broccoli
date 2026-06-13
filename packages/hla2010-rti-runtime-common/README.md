@@ -17,3 +17,13 @@ It does not own human operator entrypoints; those live under `./tools/`.
 Boundary and import-isolation guard coverage lives in
 `tests/test_rti_runtime_common_split_package.py` and
 `tests/test_package_boundary.py`.
+
+## Ownership Card
+
+- Edit here for: backend factory selection, plugin discovery, shared process lifecycle support
+- Do not edit here for: concrete RTI service semantics, public spec method definitions
+- First files to open:
+  `src/hla2010_rti_runtime_common/factory.py`,
+  `src/hla2010_rti_runtime_common/__init__.py`
+- Quick tests:
+  `python3 -m pytest tests/test_package_boundary.py tests/test_rti_runtime_common_split_package.py -q`

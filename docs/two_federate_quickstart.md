@@ -2,6 +2,14 @@
 
 Use this when you want the fastest path to the repo's two-federate example.
 
+This quick start assumes the default `python` / `in-memory` RTI factory path is
+already the intended route. If you want to verify that selection first, run:
+
+```bash
+source .venv/bin/activate
+./tools/rti-factories show in-memory --probe
+```
+
 ## Run It
 
 ```bash
@@ -13,6 +21,7 @@ That command:
 
 - runs the composite two-federate suite
 - writes artifacts under `analysis/two_federate_suite/`
+- uses the pure Python RTI factory path for the default local route
 - exercises the pair-based scenario flow used by the verification packet
 - delegates into the shared runner at
   `src/hla2010_repo_internal/verification/two_federate_suite_runner.py`
@@ -30,6 +39,7 @@ source .venv/bin/activate
 
 If you are helping someone understand the example, start here:
 
+- [`./tools/rti-factories show in-memory --probe`](../tools/rti-factories)
 - [`./tools/two-federate`](../tools/two-federate)
 - [`src/hla2010_repo_internal/verification/two_federate_suite_runner.py`](../src/hla2010_repo_internal/verification/two_federate_suite_runner.py)
 
@@ -50,7 +60,8 @@ This is the best entry point when you want to:
 
 1. [`verification/run_sequence.md`](verification/run_sequence.md)
 2. [`local_verification_commands.md`](local_verification_commands.md)
-3. [`../README.md`](../README.md)
+3. [`rti_factory_reading_map.md`](rti_factory_reading_map.md)
+4. [`../README.md`](../README.md)
 
 ## Historical / Provenance
 

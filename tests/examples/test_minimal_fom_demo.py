@@ -74,3 +74,16 @@ def test_minimal_demo_example_script_runs() -> None:
     assert "backend=python/in-memory,python/in-memory" in result.stdout
     assert "object name=Publisher-1 message=hello-object" in result.stdout
     assert "interaction sender=Publisher-1 message=hello-interaction" in result.stdout
+
+
+def test_minimal_demo_example_accepts_in_memory_factory_alias() -> None:
+    python_bin = ROOT / ".venv" / "bin" / "python"
+    result = subprocess.run(
+        [str(python_bin), "examples/minimal_fom_demo.py", "--backend", "in-memory"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.splitlines()[0].startswith("backend=python/in-memory,python/in-memory")

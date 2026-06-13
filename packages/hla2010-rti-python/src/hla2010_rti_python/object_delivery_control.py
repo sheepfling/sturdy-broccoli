@@ -32,6 +32,33 @@ if TYPE_CHECKING:
 class PythonRTIObjectDeliveryControlMixin(PythonRTIObjectInteractionDeliveryMixin):
     """Object deletion, update-control, and transport query/change services."""
 
+    def turn_updates_on_for_object_instance(
+        self,
+        theObject: ObjectInstanceHandle,
+        theAttributes: Iterable[AttributeHandle],
+        updateRateDesignator: str | None = None,
+    ) -> None:
+        federation, instance, attrs = self._validate_turn_updates_object_attributes(
+            theObject, theAttributes
+        )
+        designator = self._validate_turn_updates_designator(federation, updateRateDesignator)
+        if designator is None:
+            self._deliver(self.state, "turnUpdatesOnForObjectInstance", instance.handle, attrs)
+            return
+        self._deliver(
+            self.state, "turnUpdatesOnForObjectInstance", instance.handle, attrs, designator
+        )
+
+    def turn_updates_off_for_object_instance(
+        self,
+        theObject: ObjectInstanceHandle,
+        theAttributes: Iterable[AttributeHandle],
+    ) -> None:
+        _federation, instance, attrs = self._validate_turn_updates_object_attributes(
+            theObject, theAttributes
+        )
+        self._deliver(self.state, "turnUpdatesOffForObjectInstance", instance.handle, attrs)
+
     def _remove_object_with_producer(
         self,
         federation: "FederationState",
@@ -199,26 +226,18 @@ class PythonRTIObjectDeliveryControlMixin(PythonRTIObjectInteractionDeliveryMixi
         theAttributes: Iterable[AttributeHandle],
         updateRateDesignator: str | None = None,
     ) -> None:
-        federation, instance, attrs = self._validate_turn_updates_object_attributes(
-            theObject, theAttributes
+        self.turn_updates_on_for_object_instance(
+            theObject,
+            theAttributes,
+            updateRateDesignator,
         )
-        designator = self._validate_turn_updates_designator(federation, updateRateDesignator)
-        if designator is None:
-            self._deliver(self.state, "turnUpdatesOnForObjectInstance", instance.handle, attrs)
-        else:
-            self._deliver(
-                self.state, "turnUpdatesOnForObjectInstance", instance.handle, attrs, designator
-            )
 
     def _svc_turnUpdatesOffForObjectInstance(
         self,
         theObject: ObjectInstanceHandle,
         theAttributes: Iterable[AttributeHandle],
     ) -> None:
-        _federation, instance, attrs = self._validate_turn_updates_object_attributes(
-            theObject, theAttributes
-        )
-        self._deliver(self.state, "turnUpdatesOffForObjectInstance", instance.handle, attrs)
+        self.turn_updates_off_for_object_instance(theObject, theAttributes)
 
     def _svc_requestAttributeTransportationTypeChange(
         self,

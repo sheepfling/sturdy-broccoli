@@ -44,6 +44,8 @@ class RTIBackendDiscovery:
     aliases: tuple[str, ...]
     family: str
     description: str
+    selectable_names: tuple[str, ...] = ()
+    probe_supported: bool = False
     available: bool | None = None
     info: Any = None
     error: str | None = None

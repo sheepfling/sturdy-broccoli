@@ -3,7 +3,7 @@
 This repository is an unofficial IEEE 1516.1-2010 HLA workspace centered on a
 clean Python spec surface plus pluggable RTI backends.
 
-The supported front door is:
+The supported runtime front door is:
 
 - `hla2010.spec` for the clean interface contract
 - `hla2010.runtime_api` for the Pythonic convenience layer
@@ -14,14 +14,20 @@ The supported front door is:
 If you want the shortest path to "something runs", start with the pure Python
 backend and the Target/Radar example.
 
-The repo is organized as a monorepo workspace:
+This root `README` is for:
 
-- `packages/hla2010-spec/src/hla2010/` is the package-owned root Python package for the abstract/core API plus the documented temporary compatibility facade `hla2010.rti`
-- `packages/*/src/` holds package-owned backend, FOM, transport, and support implementations
-- `tools/` is the canonical home for human-facing operator entrypoints
-- `examples/`, `scripts/`, `tests/`, and `docs/` stay repo-local
+- what the repo is for
+- the shortest run/edit/scaffold/trace path
+- the canonical operator entrypoints
+
+It is not the full architecture catalog, backend inventory, or package-family
+map. Those live under `docs/` and `packages/`.
+
+`packages/hla2010-spec/src/hla2010/` is the package-owned root Python package for the abstract/core API plus the documented temporary compatibility facade `hla2010.rti`
 
 ## Start Here
+
+Use this task-first path:
 
 1. Bootstrap the Python environment:
 
@@ -59,23 +65,70 @@ If you want an executable setup check first, run:
 ./tools/bootstrap doctor
 ```
 
-2. Run the simplest scenario:
+2. Run one working Python path:
 
 ```bash
 python examples/target_radar_simulation.py --backend python --steps 5
 ```
 
-3. Run the backend smoke example:
+If you want the workspace-backed wrapper instead of calling the example
+directly, use:
+
+```bash
+./tools/examples target-radar --backend in-memory --steps 5
+```
+
+3. Edit one Python RTI service:
+
+Start with:
+
+```bash
+./tools/human-editability front-doors python-rti-service
+./tools/human-editability trace getHLAversion
+```
+
+That is the shortest maintainer lane for changing one concrete backend service.
+
+4. Scaffold one package-owned FOM and federate example:
+
+```bash
+./tools/new-fom-package your-demo
+```
+
+5. Trace one method from requirement row to implementation and proof:
+
+```bash
+./tools/human-editability front-doors requirements-trace
+./tools/human-editability trace getHLAversion
+```
+
+6. Run the backend smoke example:
 
 ```bash
 python examples/backend_recording.py
 ```
 
-4. Run the default test wrapper:
+Or through the wrapper:
+
+```bash
+./tools/examples backend-recording
+```
+
+7. Run the default test wrapper:
 
 ```bash
 ./tools/test
 ```
+
+## Concrete Lanes
+
+These are the primary newcomer lanes:
+
+- run something: [`docs/first_run.md`](docs/first_run.md)
+- edit one service: [`docs/python_rti_edit_one_service.md`](docs/python_rti_edit_one_service.md)
+- create one FOM package: [`docs/create_federate_and_fom.md`](docs/create_federate_and_fom.md)
+- trace one method: [`docs/requirements_trace_one_method.md`](docs/requirements_trace_one_method.md)
+- understand ownership: [`packages/README.md`](packages/README.md)
 
 If you need the vendor flows, use the `tools/` operator surface:
 
@@ -123,62 +176,14 @@ The repo is intended to make it easy to:
 - validate behavior against local, bridged, and real vendor runtimes
 - generate the evidence needed to understand what is supported today
 
-## Example Federates
+For the shortest deeper maps after this page:
 
-The `examples/` directory is the fastest way to see the API in action.
-
-Good starting points:
-
-- `examples/target_radar_simulation.py` - backend-neutral Target/Radar scenario runner
-- `examples/target_radar.py` - JSON-formatted Target/Radar scenario output
-- `examples/backend_recording.py` - tiny backend abstraction smoke example
-- `examples/minimal_federate.py` - minimal callback skeleton
-- `examples/java_shim_federate.py` - Java-bridge demo through the repo verification shim or a real bridge
-- `examples/jpype_java_rti.py` - JPype vendor-RTI skeleton
-- `examples/py4j_java_rti.py` - Py4J vendor-RTI skeleton
-- `examples/fom_time_factories.py` - FOM/time factory example
-
-For the Target/Radar example, the bundled FOM lives at:
-
-- `packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/resources/foms/TargetRadarFOMmodule.xml`
-
-The `examples/` tree is for runnable entrypoints and thin example-only assets.
-Reusable runtime assets belong under their owning package roots. For
-Target/Radar that canonical owner is `hla2010-fom-target-radar`.
-
-## Two-Federate Starter
-
-If you want a focused starting note for the two-federate example, use
-[`docs/two_federate_quickstart.md`](docs/two_federate_quickstart.md).
-
-## Backend Surface
-
-This workspace has a lot more than just the pure Python RTI.
-
-Current backend names include:
-
-- `python`, `in-memory`, `python-in-memory`
-- `jpype`, `py4j`
-- `pitch-jpype`, `pitch-py4j`
-- `certi`, `certi-jpype`, `certi-py4j`
-- `portico`, `portico-jpype`, `portico-py4j`
-- transport surfaces under `grpc`, `rest`, and `http-json`
-
-The important part is that these are not all the same level of maturity:
-
-- `python` is the strongest local reference path
-- the Java shims are repo verification backends, not part of the public runtime surface
-- CERTI and Pitch are real vendor paths with their own launch and smoke flows
-- Portico wiring exists, but local evidence depends on installed runtime
-- `grpc` and `rest` are transport surfaces, not separate RTI families
-
-For the current route inventory and support status, read:
-
-- [`docs/backend_route_inventory.md`](docs/backend_route_inventory.md)
-- [`docs/backend_capability_matrix.md`](docs/backend_capability_matrix.md)
-- [`docs/backend_conformance_matrix.md`](docs/backend_conformance_matrix.md)
-- [`docs/rti_options_and_test_matrix.md`](docs/rti_options_and_test_matrix.md)
-- [`docs/networked_rti_python.md`](docs/networked_rti_python.md)
+- examples and first run: [`docs/first_run.md`](docs/first_run.md)
+- package ownership: [`packages/README.md`](packages/README.md)
+- workspace areas: [`docs/workspace_layout.md`](docs/workspace_layout.md)
+- package-family boundaries: [`docs/package_layout.md`](docs/package_layout.md)
+- backend maturity and routes: [`docs/backend_route_inventory.md`](docs/backend_route_inventory.md)
+- full docs index: [`docs/README.md`](docs/README.md)
 
 If you only need the shortest "what works right now?" answer, use:
 
@@ -187,30 +192,15 @@ If you only need the shortest "what works right now?" answer, use:
 ./tools/compliance discover --show-backlog
 ```
 
-## Repository Layout
-
-```text
-packages/hla2010-spec/src/hla2010/ core API layer plus the documented temporary compatibility facade hla2010.rti
-src/hla2010_repo_internal/ verification/proof/report helpers kept out of public API
-packages/*/src/       package-owned backend and support implementation roots
-examples/             runnable example federates and scenario entrypoints
-tests/                pytest coverage and smoke tests
-tools/                human-facing operator entrypoints
-scripts/              implementation helpers, CI wrappers, and plumbing
-docs/                 route inventories, runbooks, and verification docs
-packages/             installable workspace packages and migration metadata
-specs/ieee-1516-2010/  retained IEEE reference PDFs and source ZIPs
-CERTI/                vendored CERTI source tree
-java_shims/           Java shim source for bridge validation
-analysis/             generated compliance and verification artifacts
-```
-
 ## Read Next
 
-1. [`docs/first_run.md`](docs/first_run.md) for the shortest new-machine-to-first-example path
-2. [`docs/python_environment.md`](docs/python_environment.md) for environment setup and install order
-3. [`docs/two_federate_quickstart.md`](docs/two_federate_quickstart.md) for the first artifact-producing two-federate flow
-4. [`docs/README.md`](docs/README.md) for the full documentation map
+1. [`docs/onboarding.md`](docs/onboarding.md) for the canonical run/edit/scaffold/trace onboarding path
+2. [`docs/first_run.md`](docs/first_run.md) for the shortest new-machine-to-first-example path
+3. [`docs/python_rti_edit_one_service.md`](docs/python_rti_edit_one_service.md) for the shortest maintainer service-edit lane
+4. [`docs/create_federate_and_fom.md`](docs/create_federate_and_fom.md) for the package-backed FOM/federate path
+5. [`docs/requirements_trace_one_method.md`](docs/requirements_trace_one_method.md) for the shortest requirement-to-code trace lane
+6. [`packages/README.md`](packages/README.md) for package ownership cards
+7. [`docs/README.md`](docs/README.md) for the full documentation map
 
 ## Reference
 

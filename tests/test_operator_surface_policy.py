@@ -72,6 +72,9 @@ def test_tools_readme_declares_canonical_operator_surface() -> None:
     assert "./tools/compliance" in text
     assert "./tools/fom-overview" in text
     assert "./tools/human-editability" in text
+    assert "./tools/examples" in text
+    assert "./tools/new-fom-package" in text
+    assert "./tools/rti-factories" in text
     assert "./tools/spec-api" in text
     assert "./tools/package-deps" in text
     assert "./tools/section8-gate" in text
@@ -79,6 +82,10 @@ def test_tools_readme_declares_canonical_operator_surface() -> None:
     assert "./tools/lint" in text
     assert "./tools/two-federate" in text
     assert "./tools/test" in text
+    assert "./tools/human-editability front-doors" in text
+    assert "./tools/human-editability front-doors python-rti" in text
+    assert "./tools/human-editability front-doors python-rti-service" in text
+    assert "./tools/human-editability front-doors requirements-trace" in text
 
 
 def test_tools_readme_inventory_matches_actual_top_level_tool_wrappers() -> None:
@@ -109,6 +116,9 @@ def test_scripts_readme_declares_implementation_boundary() -> None:
     assert "./tools/section8-gate" in text
     assert "./tools/target-radar" in text
     assert "./tools/human-editability" in text
+    assert "contributor front-door" in text
+    assert "./tools/examples" in text
+    assert "./tools/rti-factories" in text
     assert "./tools/spec-api" in text
     assert "./scripts/certi_easy.sh" in text
     assert "./scripts/pitch_docker_easy.sh" in text
@@ -155,6 +165,7 @@ def test_backend_compliance_doc_uses_tools_surface() -> None:
 def test_two_federate_quickstart_uses_tools_surface() -> None:
     text = _primary_text(ROOT / "docs" / "two_federate_quickstart.md")
     assert "./tools/two-federate" in text
+    assert "./tools/rti-factories show in-memory --probe" in text
     assert "python3 scripts/run_two_federate_suite.py" not in text
     assert "../scripts/run_two_federate_suite.py" not in text
 

@@ -215,7 +215,7 @@ class PythonRTIMomMixin(PythonRTIMomActionsMixin, PythonRTIMomReportingMixin):
             "HLAfederatesInFederation": ",".join(
                 sorted(f.name or _handle_value(h) for h, f in federation.federates.items())
             ),
-            "HLARTIversion": self._svc_getHLAversion(),
+            "HLARTIversion": self.get_hla_version(),
             "HLAMIMdesignator": (
                 federation.mim_module.uri
                 if federation.mim_module
@@ -258,7 +258,7 @@ class PythonRTIMomMixin(PythonRTIMomActionsMixin, PythonRTIMomReportingMixin):
             "HLAfederateName": federate.name or "",
             "HLAfederateType": federate.federate_type or "",
             "HLAfederateHost": "local-python",
-            "HLARTIversion": self._svc_getHLAversion(),
+            "HLARTIversion": self.get_hla_version(),
             "HLAFOMmoduleDesignatorList": self._fom_module_designator_list(federation),
             "HLAtimeConstrained": str(federate.time_constrained_enabled).lower(),
             "HLAtimeRegulating": str(federate.time_regulation_enabled).lower(),

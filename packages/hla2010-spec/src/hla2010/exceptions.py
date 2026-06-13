@@ -457,3 +457,17 @@ __all__ = [
     "UnknownName",
     "UnsupportedCallbackModel",
 ]
+
+
+RTI_EXCEPTION_TYPES: dict[str, type[RTIexception]] = {
+    name: exc_type
+    for name in __all__
+    for exc_type in (globals().get(name),)
+    if isinstance(exc_type, type) and issubclass(exc_type, RTIexception)
+}
+
+
+def resolve_rti_exception_type(name: str) -> type[RTIexception]:
+    """Resolve a public HLA exception name to its concrete Python type."""
+
+    return RTI_EXCEPTION_TYPES.get(name, RTIinternalError)

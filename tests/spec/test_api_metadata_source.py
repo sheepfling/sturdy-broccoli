@@ -12,6 +12,7 @@ from hla2010.spec_refs import METHOD_REFERENCES
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE_PATH = ROOT / "specs" / "hla2010_api.json"
 RAW_API_PATH = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "raw_api.py"
+API_METADATA_RESOURCE_PATH = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "resources" / "api_metadata.json"
 SPEC_INVENTORY_PATH = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "spec_inventory.py"
 SPEC_REFS_PATH = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "spec_refs.py"
 SPEC_SOURCES_PATH = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "spec_sources.py"
@@ -98,3 +99,19 @@ def test_raw_api_no_longer_uses_base64_metadata_blob() -> None:
     text = RAW_API_PATH.read_text(encoding="utf-8")
     assert "base64.b64decode" not in text
     assert "import base64" not in text
+
+
+def test_generated_api_metadata_resource_matches_source() -> None:
+    interfaces = _interfaces()
+    payload = json.loads(API_METADATA_RESOURCE_PATH.read_text(encoding="utf-8"))
+    for interface_name, methods in interfaces.items():
+        assert set(payload[interface_name]) == set(methods)
+        for method_name, metadata in methods.items():
+            assert payload[interface_name][method_name] == metadata["overloads"]
+
+
+def test_raw_api_is_a_thin_metadata_loader() -> None:
+    text = RAW_API_PATH.read_text(encoding="utf-8")
+    assert 'resources.files("hla2010").joinpath("resources/api_metadata.json")' in text
+    assert "API_METADATA = {" not in text
+    assert len(text.splitlines()) < 1200

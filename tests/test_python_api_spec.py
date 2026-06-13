@@ -1,13 +1,22 @@
 from __future__ import annotations
 
 import inspect
+import json
+import subprocess
 
 import hla2010
 import hla2010.spec as hla_spec
 import hla2010.rti as rti_module
 from hla2010_rti_backend_common import RecordingBackend, make_rti_ambassador
 import hla2010_rti_runtime_common.factory as runtime_factory
-from hla2010.rti import available_backend_plugins, create_rti_ambassador, discover_rti_backends, iter_rti_backend_plugins
+from hla2010.rti import (
+    available_backend_plugins,
+    create_rti_ambassador,
+    discover_rti_backends,
+    get_rti_factory,
+    iter_rti_backend_plugins,
+    iter_rti_factories,
+)
 from hla2010.spec import FederateAmbassadorSpec, RTIambassadorSpec, lower_camel_to_snake
 
 
@@ -57,10 +66,70 @@ def test_runtime_backend_listing_is_deduplicated_and_probeable():
     registered = {row.name: row for row in discover_rti_backends()}
     assert registered["python"].available is None
     assert registered["python"].family == "python-reference"
+    assert "in-memory" in registered["python"].selectable_names
+    assert registered["python"].probe_supported is True
 
     probed = {row.name: row for row in discover_rti_backends(probe=True)}
     assert probed["python"].available is True
     assert probed["python"].info.kind == "python/in-memory"
+
+
+def test_runtime_factories_are_listable_selectable_and_instantiable():
+    factories = iter_rti_factories()
+    names = {factory.name for factory in factories}
+    assert "python" in names
+    assert "certi" in names
+    assert "pitch-jpype" in names
+    assert len(factories) == len(names)
+
+    python_factory = get_rti_factory("in-memory")
+    assert python_factory.name == "python"
+    assert "python" in python_factory.selectable_names
+    assert "in-memory" in python_factory.selectable_names
+    assert python_factory.probe_supported is True
+
+    rti = python_factory.create_rti_ambassador()
+    assert rti.backend_info.kind == "python/in-memory"
+
+    probe = python_factory.discover()
+    assert probe.name == "python"
+    assert probe.available is True
+    assert probe.info.kind == "python/in-memory"
+
+
+def test_rti_factory_tool_lists_and_shows_installed_factories():
+    listed = subprocess.run(
+        ["bash", "./tools/rti-factories", "list"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert "Installed RTI factories" in listed.stdout
+    assert "- python [python-reference]" in listed.stdout
+    assert "selectable_names:" in listed.stdout
+    assert "in-memory" in listed.stdout
+
+    shown = subprocess.run(
+        ["bash", "./tools/rti-factories", "show", "in-memory", "--probe"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    payload = json.loads(shown.stdout)
+    assert payload["name"] == "python"
+    assert "in-memory" in payload["selectable_names"]
+    assert payload["probe"]["available"] is True
+
+    instantiated = subprocess.run(
+        ["bash", "./tools/rti-factories", "instantiate", "in-memory", "--probe"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    instantiated_payload = json.loads(instantiated.stdout)
+    assert instantiated_payload["name"] == "python"
+    assert instantiated_payload["backend_info"]["kind"] == "python/in-memory"
+    assert instantiated_payload["probe"]["available"] is True
 
 
 def test_root_rti_facade_stays_narrow():
@@ -69,7 +138,9 @@ def test_root_rti_facade_stays_narrow():
         "create_backend",
         "create_rti_ambassador",
         "discover_rti_backends",
+        "get_rti_factory",
         "iter_rti_backend_plugins",
+        "iter_rti_factories",
         "register_backend_plugin",
     ]
     assert not hasattr(rti_module, "RTIBackendPlugin")

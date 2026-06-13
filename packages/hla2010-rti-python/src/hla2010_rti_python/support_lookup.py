@@ -58,6 +58,34 @@ else:
 class PythonRTISupportLookupMixin(_SupportLookupMixinBase):
     """Name, handle, and instance lookup services."""
 
+    def get_hla_version(self) -> str:
+        return "HLA 1516-2010 Python in-memory RTI subset"
+
+    def get_transportation_type_handle(
+        self,
+        transportationType: str | None = None,
+    ) -> TransportationTypeHandle:
+        federation = self._require_joined()
+        if transportationType in (None, ""):
+            return self.engine.transportation_reliable
+        normalized = str(transportationType)
+        handle = self._transportation_handle_by_name(normalized)
+        if handle is None:
+            raise InvalidTransportationName(normalized)
+        if (
+            federation.fom_catalog.transportation_names
+            and normalized not in federation.fom_catalog.transportation_names
+        ):
+            raise InvalidTransportationName(normalized)
+        return handle
+
+    def get_transportation_type_name(self, theHandle: TransportationTypeHandle) -> str:
+        self._require_joined()
+        name = self._transportation_name_by_handle(theHandle)
+        if name is None:
+            raise InvalidTransportationType(repr(theHandle))
+        return name
+
     def _transportation_handle_by_name(self, name: str) -> TransportationTypeHandle | None:
         normalized = str(name).strip()
         if normalized == "HLAreliable":
@@ -205,29 +233,13 @@ class PythonRTISupportLookupMixin(_SupportLookupMixinBase):
         self,
         transportationType: str | None = None,
     ) -> TransportationTypeHandle:
-        federation = self._require_joined()
-        if transportationType in (None, ""):
-            return self.engine.transportation_reliable
-        normalized = str(transportationType)
-        handle = self._transportation_handle_by_name(normalized)
-        if handle is None:
-            raise InvalidTransportationName(normalized)
-        if (
-            federation.fom_catalog.transportation_names
-            and normalized not in federation.fom_catalog.transportation_names
-        ):
-            raise InvalidTransportationName(normalized)
-        return handle
+        return self.get_transportation_type_handle(transportationType)
 
     def _svc_getTransportationTypeName(self, theHandle: TransportationTypeHandle) -> str:
-        self._require_joined()
-        name = self._transportation_name_by_handle(theHandle)
-        if name is None:
-            raise InvalidTransportationType(repr(theHandle))
-        return name
+        return self.get_transportation_type_name(theHandle)
 
     def _svc_getHLAversion(self) -> str:
-        return "HLA 1516-2010 Python in-memory RTI subset"
+        return self.get_hla_version()
 
     def _svc_getTimeFactory(self):
         self._require_joined()

@@ -75,28 +75,7 @@ def _parse_create_federation_args(
 class PythonRTIFederationCreationMixin:
     """Connection and federation creation/destruction services."""
 
-    def _svc_connect(
-        self,
-        federateReference: FederateAmbassadorSpec,
-        callbackModel: CallbackModel,
-        localSettingsDesignator: str | None = None,
-    ) -> None:
-        if self.state.connected:
-            raise AlreadyConnected("RTI ambassador is already connected")
-        self.state.ambassador = federateReference
-        self.state.callback_model = callbackModel
-        self.state.local_settings_designator = localSettingsDesignator
-        self.state.connected = True
-
-    def _svc_disconnect(self) -> None:
-        self._require_connected()
-        if self.state.handle is not None:
-            raise FederateIsExecutionMember("Resign before disconnecting")
-        self.state.connected = False
-        self.state.ambassador = None
-        self.state.queue.clear()
-
-    def _svc_createFederationExecution(
+    def create_federation_execution(
         self,
         federationExecutionName: str,
         *fomModules: Any,
@@ -150,12 +129,40 @@ class PythonRTIFederationCreationMixin:
             self.engine.federations[str(federationExecutionName)] = federation
             self._ensure_mom_federation_object(federation)
 
+    def _svc_connect(
+        self,
+        federateReference: FederateAmbassadorSpec,
+        callbackModel: CallbackModel,
+        localSettingsDesignator: str | None = None,
+    ) -> None:
+        if self.state.connected:
+            raise AlreadyConnected("RTI ambassador is already connected")
+        self.state.ambassador = federateReference
+        self.state.callback_model = callbackModel
+        self.state.local_settings_designator = localSettingsDesignator
+        self.state.connected = True
+
+    def _svc_disconnect(self) -> None:
+        self._require_connected()
+        if self.state.handle is not None:
+            raise FederateIsExecutionMember("Resign before disconnecting")
+        self.state.connected = False
+        self.state.ambassador = None
+        self.state.queue.clear()
+
+    def _svc_createFederationExecution(
+        self,
+        federationExecutionName: str,
+        *fomModules: Any,
+    ) -> None:
+        self.create_federation_execution(federationExecutionName, *fomModules)
+
     def _svc_createFederationExecutionWithMIM(
         self,
         federationExecutionName: str,
         *fomModules: Any,
     ) -> None:
-        self._svc_createFederationExecution(federationExecutionName, *fomModules)
+        self.create_federation_execution(federationExecutionName, *fomModules)
 
     def _svc_destroyFederationExecution(self, federationExecutionName: str) -> None:
         self._require_connected()

@@ -6,7 +6,9 @@ from hla2010_rti_runtime_common import (
     create_backend,
     create_rti_ambassador,
     discover_rti_backends,
+    get_rti_factory,
     iter_rti_backend_plugins,
+    iter_rti_factories,
     register_backend_plugin,
 )
 
@@ -15,6 +17,8 @@ __all__ = [
     "create_backend",
     "create_rti_ambassador",
     "discover_rti_backends",
+    "get_rti_factory",
     "iter_rti_backend_plugins",
+    "iter_rti_factories",
     "register_backend_plugin",
 ]

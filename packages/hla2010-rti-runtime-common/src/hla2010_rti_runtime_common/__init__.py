@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from .factory import (
     BACKEND_ENTRY_POINT_GROUP,
+    RTIAmbassadorFactory,
     RTIBackendDiscovery,
     RTIBackendPlugin,
     RTIBackendSpec,
@@ -11,7 +12,9 @@ from .factory import (
     create_backend,
     create_rti_ambassador,
     discover_rti_backends,
+    get_rti_factory,
     iter_rti_backend_plugins,
+    iter_rti_factories,
     register_backend_factory,
     register_backend_plugin,
     register_transport_factory,
@@ -20,6 +23,7 @@ from .real_rti_process import RuntimeProcess, reserve_tcp_port, wait_for_process
 
 __all__ = [
     "BACKEND_ENTRY_POINT_GROUP",
+    "RTIAmbassadorFactory",
     "RTIBackendDiscovery",
     "RTIBackendPlugin",
     "RTIBackendSpec",
@@ -29,7 +33,9 @@ __all__ = [
     "create_backend",
     "create_rti_ambassador",
     "discover_rti_backends",
+    "get_rti_factory",
     "iter_rti_backend_plugins",
+    "iter_rti_factories",
     "register_backend_factory",
     "register_backend_plugin",
     "register_transport_factory",

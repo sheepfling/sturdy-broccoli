@@ -98,7 +98,7 @@ class PythonRTIDdmServicesMixin(PythonRTIDdmRegionMixin):
             for attr in attr_set:
                 self.engine.attribute_name(theClass, attr)
                 region_map.setdefault(attr, set()).update(region_set)
-        self._svc_subscribeObjectClassAttributes(theClass, attrs, *unused)
+        self.subscribe_object_class_attributes(theClass, attrs, *unused)
         self._reconcile_scope_for_all_known_objects(self.state)
 
     def _svc_subscribeObjectClassAttributesPassivelyWithRegions(
@@ -107,9 +107,7 @@ class PythonRTIDdmServicesMixin(PythonRTIDdmRegionMixin):
         attributesAndRegions: Iterable[Any],
         *unused: Any,
     ) -> None:
-        self._svc_subscribeObjectClassAttributesWithRegions(
-            theClass, attributesAndRegions, *unused
-        )
+        self._svc_subscribeObjectClassAttributesWithRegions(theClass, attributesAndRegions, *unused)
 
     def _svc_unsubscribeObjectClassAttributesWithRegions(
         self,
@@ -150,7 +148,7 @@ class PythonRTIDdmServicesMixin(PythonRTIDdmRegionMixin):
             if region not in self.state.regions:
                 raise InvalidRegion(repr(region))
         self.state.interaction_region_subscriptions.setdefault(theClass, set()).update(region_set)
-        self._svc_subscribeInteractionClass(theClass, *unused)
+        self.subscribe_interaction_class(theClass, *unused)
 
     def _svc_subscribeInteractionClassPassivelyWithRegions(
         self,
@@ -187,7 +185,7 @@ class PythonRTIDdmServicesMixin(PythonRTIDdmRegionMixin):
         federation = self._require_joined()
         self._ensure_no_save_or_restore_in_progress(federation)
         self._reject_mom_object_class_for_ddm(theClass)
-        handle = self._svc_registerObjectInstance(theClass, theObjectName)
+        handle = self.register_object_instance(theClass, theObjectName)
         _fed, instance = self._find_object(handle)
         region_map = self.state.update_regions.setdefault(handle, {})
         for attrs, regions in self._attribute_region_pairs(attributesAndRegions):
@@ -358,7 +356,7 @@ class PythonRTIDdmServicesMixin(PythonRTIDdmRegionMixin):
                 )
         else:
             self._reject_mom_object_class_for_ddm(target)
-        self._svc_requestAttributeValueUpdate(
+        self.request_attribute_value_update(
             target,
             self._attributes_from_region_pairs(attributesAndRegions),
             userSuppliedTag,

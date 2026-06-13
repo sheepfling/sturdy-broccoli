@@ -15,14 +15,34 @@ If you only need the shortest on-ramp:
 
 ## Start Here
 
-- [onboarding.md](onboarding.md): canonical onboarding map for the current repo
-- [../README.md](../README.md): install, bootstrap, smoke, and operator commands
-- [first_run.md](first_run.md): shortest path from fresh checkout to a working pure-Python example
-- [networked_rti_python.md](networked_rti_python.md): hosted Python RTI over gRPC, with concrete entrypoints and usage shape
+Use this page as the documentation tree index, not as a second onboarding
+guide.
+
+Primary entrypoints:
+
+- [../README.md](../README.md): repo purpose, bootstrap, first commands, and operator entrypoints
+- [onboarding.md](onboarding.md): canonical ordered run/edit/scaffold/trace path
+- [first_run.md](first_run.md): shortest path from fresh checkout to one working pure-Python example
+
+Concrete contributor lanes:
+
+- [python_rti_edit_one_service.md](python_rti_edit_one_service.md): edit one Python RTI service
+- [create_federate_and_fom.md](create_federate_and_fom.md): create one package-backed FOM and federate
+- [requirements_trace_one_method.md](requirements_trace_one_method.md): trace one method from requirement row to code and proof
+- [../packages/README.md](../packages/README.md): package ownership cards for the main edit families
+
+Reading maps and setup notes:
+
 - [python_environment.md](python_environment.md): Python bootstrap, `.venv`, extras, and install order
-- [python_rti_backend.md](python_rti_backend.md): contributor-facing Python RTI backend map
-- [create_federate_and_fom.md](create_federate_and_fom.md): minimal package-backed new FOM and federate workflow
-- [requirements_traceability.md](requirements_traceability.md): requirement -> implementation -> test -> artifact walkthrough
+- [networked_rti_python.md](networked_rti_python.md): hosted Python RTI over gRPC
+- [python_rti_backend.md](python_rti_backend.md): broader Python RTI backend map
+- [spec_reading_map.md](spec_reading_map.md): smallest practical reading path for the abstract/public spec surface
+- [fom_reading_map.md](fom_reading_map.md): smallest practical reading path for FOM parsing and merge behavior
+- [python_rti_reading_map.md](python_rti_reading_map.md): smallest practical reading path for Python RTI edits
+- [rti_factory_reading_map.md](rti_factory_reading_map.md): installed RTI factory listing, selection, and introspection
+- [requirements_edit_one_row.md](requirements_edit_one_row.md): use only when the traced active row itself is wrong
+- [requirements_traceability.md](requirements_traceability.md): broader requirement -> implementation -> test -> artifact model
+- [requirements_authoring_map.md](requirements_authoring_map.md): secondary ordered reading path for broader traceability maintenance
 - [two_federate_quickstart.md](two_federate_quickstart.md): first stop for the composite two-federate example
 - [install_matrix.md](install_matrix.md): extras, backend families, and dependency order
 - [agent_runbook.md](agent_runbook.md): start-here sequence for agents and automation
@@ -88,6 +108,7 @@ historical evidence. They are not the primary onboarding path.
 Planning:
 
 - [plans/README.md](plans/README.md): plan index
+- [plans/human_editability_reassessment_2026_06.md](plans/human_editability_reassessment_2026_06.md): current assessment of remaining human editability pain points after the guardrail work
 - [plans/imported_requirements_backlog_v1_0.md](plans/imported_requirements_backlog_v1_0.md): generated requirement-driven implementation queues
 - [plans/requirements_finish_line.md](plans/requirements_finish_line.md): handoff note for finishing remaining requirement rows without overclaiming
 - [development_next_steps.md](development_next_steps.md): current next-step backlog
@@ -95,7 +116,8 @@ Planning:
 
 ## Read Next
 
-1. [first_run.md](first_run.md)
-2. [onboarding.md](onboarding.md)
-3. [python_environment.md](python_environment.md)
-4. [two_federate_quickstart.md](two_federate_quickstart.md)
+1. [onboarding.md](onboarding.md)
+2. [first_run.md](first_run.md)
+3. [python_rti_edit_one_service.md](python_rti_edit_one_service.md)
+4. [create_federate_and_fom.md](create_federate_and_fom.md)
+5. [requirements_trace_one_method.md](requirements_trace_one_method.md)

@@ -3,9 +3,24 @@
 This is the supported path for adding a new package-owned FOM and a new
 federate workflow without touching RTI backend internals.
 
+Start with the scaffold command:
+
+```bash
+./tools/new-fom-package your-demo
+```
+
+That creates the repo-native starter shape under:
+
+- `packages/hla2010-fom-your-demo/`
+- `examples/your_demo_demo.py`
+- `tests/examples/test_your_demo_demo.py`
+
+Use the scaffold first. Use the rest of this document to understand and refine
+what it generated.
+
 ## 1. Where New FOM Packages Belong
 
-Create a split package under `packages/`:
+The scaffold creates a split package under `packages/`:
 
 ```text
 packages/hla2010-fom-your-demo/
@@ -107,8 +122,13 @@ Bootstrap the workspace, then run the package-backed example:
 ```bash
 ./tools/bootstrap python
 source .venv/bin/activate
+./tools/examples minimal-fom-demo --backend in-memory
 python examples/minimal_fom_demo.py --backend python
 ```
+
+For the main development route in this repo, `in-memory` and `python` both
+resolve to the same pure Python RTI factory. Use `in-memory` when you want the
+example CLI to mirror the factory-selection flow from `./tools/rti-factories`.
 
 The scenario helper entrypoints are:
 

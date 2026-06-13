@@ -23,8 +23,8 @@ Use it as the baseline for `./tools/human-editability inventory` and
 
 - `packages/hla2010-spec/src/hla2010/`: abstract or core API plus the
   documented temporary `hla2010.rti` root facade
-- `packages/hla2010-spec`: installable core spec package, still sourcing code
-  from the shared `src/` root
+- `packages/hla2010-spec`: installable core spec package with package-owned
+  code under `packages/hla2010-spec/src/hla2010/`
 - `packages/hla2010-rti-backend-common`: shared runtime and backend support
 - `packages/hla2010-rti-python`: pure Python RTI backend
 - `packages/hla2010-rti-transport-*`: transport implementations

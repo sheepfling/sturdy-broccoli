@@ -158,6 +158,12 @@ def test_removed_root_compatibility_files_stay_absent() -> None:
 def test_live_root_python_surface_stays_narrow() -> None:
     expected = {
         "__init__.py",
+        "_fom_datatypes.py",
+        "_fom_errors.py",
+        "_fom_merge.py",
+        "_fom_models.py",
+        "_fom_parsing.py",
+        "_fom_serialization.py",
         "_spec_impl.py",
         "ambassadors.py",
         "api.py",
