@@ -43,6 +43,7 @@ from hla2010_rti_backend_common.invocation import (
 from hla2010.exceptions import FederateInternalError, RTIexception, RTIinternalError
 from hla2010.fom import module_uri
 from hla2010.raw_api import API_METADATA
+from hla2010.ambassadors import invoke_federate_callback
 from hla2010.spec import FederateAmbassadorSpec
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 from hla2010.types import FederationExecutionInformation, RangeBounds
@@ -254,6 +255,124 @@ class JavaBridge(ABC):
 
     def exception_message(self, exc: BaseException) -> str:
         return str(exc)
+
+
+def invoke_java_federate_proxy_callback(proxy: Any, method_name: str, *args: Any) -> Any:
+    """Invoke a Java-style FederateAmbassador proxy callback explicitly."""
+
+    match method_name:
+        case "announceSynchronizationPoint":
+            return proxy.announceSynchronizationPoint(*args)
+        case "attributeIsNotOwned":
+            return proxy.attributeIsNotOwned(*args)
+        case "attributeIsOwnedByRTI":
+            return proxy.attributeIsOwnedByRTI(*args)
+        case "attributeOwnershipAcquisitionNotification":
+            return proxy.attributeOwnershipAcquisitionNotification(*args)
+        case "attributeOwnershipUnavailable":
+            return proxy.attributeOwnershipUnavailable(*args)
+        case "attributesInScope":
+            return proxy.attributesInScope(*args)
+        case "attributesOutOfScope":
+            return proxy.attributesOutOfScope(*args)
+        case "confirmAttributeOwnershipAcquisitionCancellation":
+            return proxy.confirmAttributeOwnershipAcquisitionCancellation(*args)
+        case "confirmAttributeTransportationTypeChange":
+            return proxy.confirmAttributeTransportationTypeChange(*args)
+        case "confirmInteractionTransportationTypeChange":
+            return proxy.confirmInteractionTransportationTypeChange(*args)
+        case "connectionLost":
+            return proxy.connectionLost(*args)
+        case "discoverObjectInstance":
+            return proxy.discoverObjectInstance(*args)
+        case "federationNotRestored":
+            return proxy.federationNotRestored(*args)
+        case "federationNotSaved":
+            return proxy.federationNotSaved(*args)
+        case "federationRestoreBegun":
+            return proxy.federationRestoreBegun(*args)
+        case "federationRestoreStatusResponse":
+            return proxy.federationRestoreStatusResponse(*args)
+        case "federationRestored":
+            return proxy.federationRestored(*args)
+        case "federationSaveStatusResponse":
+            return proxy.federationSaveStatusResponse(*args)
+        case "federationSaved":
+            return proxy.federationSaved(*args)
+        case "federationSynchronized":
+            return proxy.federationSynchronized(*args)
+        case "getProducingFederate":
+            return proxy.getProducingFederate(*args)
+        case "getSentRegions":
+            return proxy.getSentRegions(*args)
+        case "hasProducingFederate":
+            return proxy.hasProducingFederate(*args)
+        case "hasSentRegions":
+            return proxy.hasSentRegions(*args)
+        case "informAttributeOwnership":
+            return proxy.informAttributeOwnership(*args)
+        case "initiateFederateRestore":
+            return proxy.initiateFederateRestore(*args)
+        case "initiateFederateSave":
+            return proxy.initiateFederateSave(*args)
+        case "multipleObjectInstanceNameReservationFailed":
+            return proxy.multipleObjectInstanceNameReservationFailed(*args)
+        case "multipleObjectInstanceNameReservationSucceeded":
+            return proxy.multipleObjectInstanceNameReservationSucceeded(*args)
+        case "objectInstanceNameReservationFailed":
+            return proxy.objectInstanceNameReservationFailed(*args)
+        case "objectInstanceNameReservationSucceeded":
+            return proxy.objectInstanceNameReservationSucceeded(*args)
+        case "provideAttributeValueUpdate":
+            return proxy.provideAttributeValueUpdate(*args)
+        case "receiveInteraction":
+            return proxy.receiveInteraction(*args)
+        case "reflectAttributeValues":
+            return proxy.reflectAttributeValues(*args)
+        case "removeObjectInstance":
+            return proxy.removeObjectInstance(*args)
+        case "reportAttributeTransportationType":
+            return proxy.reportAttributeTransportationType(*args)
+        case "reportFederationExecutions":
+            return proxy.reportFederationExecutions(*args)
+        case "reportInteractionTransportationType":
+            return proxy.reportInteractionTransportationType(*args)
+        case "requestAttributeOwnershipAssumption":
+            return proxy.requestAttributeOwnershipAssumption(*args)
+        case "requestAttributeOwnershipRelease":
+            return proxy.requestAttributeOwnershipRelease(*args)
+        case "requestDivestitureConfirmation":
+            return proxy.requestDivestitureConfirmation(*args)
+        case "requestFederationRestoreFailed":
+            return proxy.requestFederationRestoreFailed(*args)
+        case "requestFederationRestoreSucceeded":
+            return proxy.requestFederationRestoreSucceeded(*args)
+        case "requestRetraction":
+            return proxy.requestRetraction(*args)
+        case "startRegistrationForObjectClass":
+            return proxy.startRegistrationForObjectClass(*args)
+        case "stopRegistrationForObjectClass":
+            return proxy.stopRegistrationForObjectClass(*args)
+        case "synchronizationPointRegistrationFailed":
+            return proxy.synchronizationPointRegistrationFailed(*args)
+        case "synchronizationPointRegistrationSucceeded":
+            return proxy.synchronizationPointRegistrationSucceeded(*args)
+        case "timeAdvanceGrant":
+            return proxy.timeAdvanceGrant(*args)
+        case "timeConstrainedEnabled":
+            return proxy.timeConstrainedEnabled(*args)
+        case "timeRegulationEnabled":
+            return proxy.timeRegulationEnabled(*args)
+        case "turnInteractionsOff":
+            return proxy.turnInteractionsOff(*args)
+        case "turnInteractionsOn":
+            return proxy.turnInteractionsOn(*args)
+        case "turnUpdatesOffForObjectInstance":
+            return proxy.turnUpdatesOffForObjectInstance(*args)
+        case "turnUpdatesOnForObjectInstance":
+            return proxy.turnUpdatesOnForObjectInstance(*args)
+        case _:
+            raise AttributeError(method_name)
 
 
 def _maybe_call_noarg(obj: Any, *names: str) -> Any:
@@ -581,7 +700,7 @@ class PythonFederateAmbassadorDispatcher:
                 )
                 for idx, arg in enumerate(backend_args)
             )
-            result = getattr(self.ambassador, method_name)(*py_args)
+            result = invoke_federate_callback(self.ambassador, method_name, *py_args)
             return self.converter.to_backend(result) if result is not None else None
         except FederateInternalError:
             raise

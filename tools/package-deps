@@ -7,10 +7,11 @@ hla2010_shell_init "tools/package-deps"
 
 usage() {
   cat <<'EOF'
-usage: ./tools/package-deps [generate|help]
+usage: ./tools/package-deps [generate|check|help]
 
 Canonical package dependency tree flow:
   ./tools/package-deps generate
+  ./tools/package-deps check
 
 This is the human-facing wrapper over `scripts/generate_package_dependency_tree.py`.
 EOF
@@ -22,9 +23,10 @@ case "${1:-generate}" in
   help|-h|--help)
     usage
     ;;
-  generate)
+  generate|check)
+    subcommand="$1"
     shift
-    "$python_bin" "$ROOT_DIR/scripts/generate_package_dependency_tree.py" "$@"
+    "$python_bin" "$ROOT_DIR/scripts/generate_package_dependency_tree.py" "$subcommand" "$@"
     ;;
   *)
     echo "error: unknown subcommand: $1" >&2

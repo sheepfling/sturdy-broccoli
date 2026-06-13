@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://standards.ieee.org/IEEE1516-2010 http://standards.ieee.org/downloads/1516/1516.2-2010/IEEE1516-DIF-2010.xsd">
+  <modelIdentification>
+    <name>Minimal Demo FOM Module</name>
+    <type>FOM</type>
+    <version>0.1</version>
+    <modificationDate>2026-06-12</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <purpose>Minimal package-owned FOM for a publisher/subscriber tutorial.</purpose>
+    <applicationDomain>HLA API onboarding and package scaffolding</applicationDomain>
+    <description>Defines HLAobjectRoot.DemoObject and HLAinteractionRoot.DemoAnnouncement for the minimal FOM tutorial and example.</description>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>DemoObject</name>
+        <sharing>PublishSubscribe</sharing>
+        <semantics>Minimal object used by the publisher federate.</semantics>
+        <attribute><name>Message</name><dataType>HLAunicodeString</dataType><updateType>Conditional</updateType><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Payload carried by the object update.</semantics></attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>DemoAnnouncement</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <semantics>Minimal interaction sent by the publisher federate.</semantics>
+        <parameter><name>Sender</name><dataType>HLAunicodeString</dataType><semantics>Sending federate name.</semantics></parameter>
+        <parameter><name>Message</name><dataType>HLAunicodeString</dataType><semantics>Interaction payload.</semantics></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <time>
+    <timeStamp><dataType>HLAfloat64BE</dataType><semantics>Scenario time in seconds.</semantics></timeStamp>
+    <lookahead><dataType>HLAfloat64BE</dataType><semantics>Scenario lookahead in seconds.</semantics></lookahead>
+  </time>
+  <tags>
+    <updateReflectTag><dataType>HLAunicodeString</dataType><semantics>Update tag.</semantics></updateReflectTag>
+    <sendReceiveTag><dataType>HLAunicodeString</dataType><semantics>Interaction tag.</semantics></sendReceiveTag>
+  </tags>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable><semantics>Reliable delivery.</semantics></transportation>
+  </transportations>
+</objectModel>

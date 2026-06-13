@@ -1,5 +1,5 @@
 {
-  "all_public_row_count": 225,
+  "all_public_row_count": 224,
   "package_exported_row_count": 0,
   "rows": [
     {
@@ -1432,13 +1432,6 @@
     },
     {
       "class_name": "NullFederateAmbassador",
-      "exported_via_package": false,
-      "mapping_status": "adapted",
-      "module": "hla2010.runtime_api",
-      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
-    },
-    {
-      "class_name": "PythonicRTIAmbassadorMixin",
       "exported_via_package": false,
       "mapping_status": "adapted",
       "module": "hla2010.runtime_api",

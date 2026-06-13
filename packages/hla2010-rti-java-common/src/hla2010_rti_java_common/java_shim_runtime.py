@@ -10,6 +10,7 @@ from .java_shim_records import (
     SharedJavaPendingAcquisition,
     SharedJavaSynchronizationPoint,
 )
+from .java_common import invoke_java_federate_proxy_callback
 from .java_shim_types import (
     JavaAttributeHandle,
     JavaByteArray,
@@ -72,7 +73,7 @@ class SharedInProcessJavaRTIShim:
 
     def _queue_callback(self, method_name: str, *args: Any) -> None:
         def callback() -> None:
-            getattr(self.federate, method_name)(*args)
+            invoke_java_federate_proxy_callback(self.federate, method_name, *args)
 
         self._queue.append(callback)
 

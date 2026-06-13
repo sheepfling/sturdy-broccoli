@@ -19,3 +19,4 @@ Current plans:
 - [PLN-003_requirements_authoring_plan.md](PLN-003_requirements_authoring_plan.md)
 - [imported_requirements_backlog_v1_0.md](imported_requirements_backlog_v1_0.md): generated repo-native work queues from the harmonized requirements ledgers
 - [requirements_finish_line.md](requirements_finish_line.md): the handoff note for finishing remaining requirement rows without overclaiming
+- [human_editability_traceability_finish_line.md](human_editability_traceability_finish_line.md): the concrete finish-line plan for human editability, traceability, and anti-regression guards

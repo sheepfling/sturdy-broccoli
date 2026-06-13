@@ -187,6 +187,41 @@ def test_package_deps_top_level_wrapper_bootstraps_source_checkout(tmp_path: Pat
     assert "`hla2010-spec` is the single true root package." in doc_path.read_text(encoding="utf-8")
 
 
+def test_package_deps_top_level_wrapper_check_bootstraps_source_checkout(tmp_path: Path) -> None:
+    env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
+    packages_dir = tmp_path / "packages"
+    packages_dir.mkdir(parents=True, exist_ok=True)
+    for package_dir in (ROOT / "packages").iterdir():
+        if not package_dir.is_dir():
+            continue
+        target = packages_dir / package_dir.name
+        target.mkdir(parents=True, exist_ok=True)
+        (target / "pyproject.toml").write_text(
+            (package_dir / "pyproject.toml").read_text(encoding="utf-8"),
+            encoding="utf-8",
+        )
+    generate = subprocess.run(
+        ["bash", str(ROOT / "tools" / "package-deps"), "generate"],
+        cwd=tmp_path,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert generate.returncode == 0, generate.stderr
+
+    check = subprocess.run(
+        ["bash", str(ROOT / "tools" / "package-deps"), "check"],
+        cwd=tmp_path,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert check.returncode == 0, check.stderr
+    assert "package dependency tree artifacts are current" in check.stdout
+
+
 def test_compliance_top_level_wrapper_generate_bootstraps_workspace_pythonpath(tmp_path: Path) -> None:
     env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
     result = subprocess.run(

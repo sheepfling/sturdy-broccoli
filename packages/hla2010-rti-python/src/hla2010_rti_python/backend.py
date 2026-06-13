@@ -1,6 +1,7 @@
 """Concrete in-memory Python RTI backend implementation."""
 from __future__ import annotations
 
+import importlib
 from typing import Any, Mapping
 
 from hla2010 import mom as hla_mom
@@ -33,6 +34,7 @@ from .object import PythonRTIObjectMixin
 from .ownership import PythonRTIOwnershipMixin
 from .reporting import PythonRTIServiceReportFiles
 from .save_restore import PythonRTISaveRestoreMixin
+from .service_registry import PYTHON_RTI_SERVICE_REGISTRY
 from .service_reporting import ServiceReportSink
 from .state import (
     MOM_TEXT_ENCODING,
@@ -76,6 +78,27 @@ def _as_mom_bytes(value: Any) -> bytes:
 
 def _handle_value(value: Any) -> str:
     return str(getattr(value, "value", value))
+
+
+def _resolve_service_callable(dotted_path: str) -> Any:
+    parts = dotted_path.split(".")
+    for index in range(len(parts), 0, -1):
+        module_name = ".".join(parts[:index])
+        try:
+            module = importlib.import_module(module_name)
+        except ModuleNotFoundError:
+            continue
+        target = module
+        for part in parts[index:]:
+            target = getattr(target, part)
+        return target
+    raise RuntimeError(f"could not resolve Python RTI service callable {dotted_path!r}")
+
+
+PYTHON_RTI_SERVICE_HANDLERS: dict[str, Any] = {
+    method_name: _resolve_service_callable(dotted_path)
+    for method_name, dotted_path in PYTHON_RTI_SERVICE_REGISTRY.items()
+}
 
 
 class PythonRTIBackend(
@@ -129,7 +152,7 @@ class PythonRTIBackend(
         )
 
     def invoke(self, invocation: Invocation) -> Any:
-        service = getattr(self, f"_svc_{invocation.method_name}", None)
+        service = PYTHON_RTI_SERVICE_HANDLERS.get(invocation.method_name)
         if service is None:
             raise UnsupportedBackendService(f"Python in-memory RTI does not yet implement {invocation.method_name}")
         if invocation.method_name == "queryInteractionTransportationType" and len(invocation.args) == 1 and not invocation.kwargs:
@@ -137,7 +160,7 @@ class PythonRTIBackend(
         else:
             args = resolve_java_arguments(invocation)
         try:
-            result = service(*args)
+            result = service(self, *args)
         except RTIexception as exc:
             self._report_service_invocation(invocation.method_name, success=False, exception_name=exc.__class__.__name__, args=args)
             raise

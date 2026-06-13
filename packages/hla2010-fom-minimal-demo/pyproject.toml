@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla2010-fom-minimal-demo"
+version = "0.13.0"
+description = "Minimal packaged FOM and two-federate scenario helpers for hla2010-spec"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "hla2010-spec==0.13.0",
+  "hla2010-rti-runtime-common==0.13.0",
+]
+
+[project.optional-dependencies]
+python-rti = ["hla2010-rti-python==0.13.0"]
+test = ["pytest"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["hla2010_fom_minimal_demo*"]
+
+[tool.setuptools.package-data]
+hla2010_fom_minimal_demo = ["resources/foms/*.xml"]
+
+[tool.hla2010.package-split]
+status = "implementation-owned"
+role = "fom-example"
+source_roots = [
+  "packages/hla2010-fom-minimal-demo/src/hla2010_fom_minimal_demo",
+]

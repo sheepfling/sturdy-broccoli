@@ -18,6 +18,124 @@ def lower_camel_to_snake(name: str) -> str:
     return s2.lower()
 
 
+def invoke_federate_callback(ambassador: FederateAmbassador, method_name: str, *args: Any, **kwargs: Any) -> Any:
+    """Invoke a FederateAmbassador callback through an explicit method registry."""
+
+    match method_name:
+        case "announceSynchronizationPoint":
+            return ambassador.announceSynchronizationPoint(*args, **kwargs)
+        case "attributeIsNotOwned":
+            return ambassador.attributeIsNotOwned(*args, **kwargs)
+        case "attributeIsOwnedByRTI":
+            return ambassador.attributeIsOwnedByRTI(*args, **kwargs)
+        case "attributeOwnershipAcquisitionNotification":
+            return ambassador.attributeOwnershipAcquisitionNotification(*args, **kwargs)
+        case "attributeOwnershipUnavailable":
+            return ambassador.attributeOwnershipUnavailable(*args, **kwargs)
+        case "attributesInScope":
+            return ambassador.attributesInScope(*args, **kwargs)
+        case "attributesOutOfScope":
+            return ambassador.attributesOutOfScope(*args, **kwargs)
+        case "confirmAttributeOwnershipAcquisitionCancellation":
+            return ambassador.confirmAttributeOwnershipAcquisitionCancellation(*args, **kwargs)
+        case "confirmAttributeTransportationTypeChange":
+            return ambassador.confirmAttributeTransportationTypeChange(*args, **kwargs)
+        case "confirmInteractionTransportationTypeChange":
+            return ambassador.confirmInteractionTransportationTypeChange(*args, **kwargs)
+        case "connectionLost":
+            return ambassador.connectionLost(*args, **kwargs)
+        case "discoverObjectInstance":
+            return ambassador.discoverObjectInstance(*args, **kwargs)
+        case "federationNotRestored":
+            return ambassador.federationNotRestored(*args, **kwargs)
+        case "federationNotSaved":
+            return ambassador.federationNotSaved(*args, **kwargs)
+        case "federationRestoreBegun":
+            return ambassador.federationRestoreBegun(*args, **kwargs)
+        case "federationRestoreStatusResponse":
+            return ambassador.federationRestoreStatusResponse(*args, **kwargs)
+        case "federationRestored":
+            return ambassador.federationRestored(*args, **kwargs)
+        case "federationSaveStatusResponse":
+            return ambassador.federationSaveStatusResponse(*args, **kwargs)
+        case "federationSaved":
+            return ambassador.federationSaved(*args, **kwargs)
+        case "federationSynchronized":
+            return ambassador.federationSynchronized(*args, **kwargs)
+        case "getProducingFederate":
+            return ambassador.getProducingFederate(*args, **kwargs)
+        case "getSentRegions":
+            return ambassador.getSentRegions(*args, **kwargs)
+        case "hasProducingFederate":
+            return ambassador.hasProducingFederate(*args, **kwargs)
+        case "hasSentRegions":
+            return ambassador.hasSentRegions(*args, **kwargs)
+        case "informAttributeOwnership":
+            return ambassador.informAttributeOwnership(*args, **kwargs)
+        case "initiateFederateRestore":
+            return ambassador.initiateFederateRestore(*args, **kwargs)
+        case "initiateFederateSave":
+            return ambassador.initiateFederateSave(*args, **kwargs)
+        case "multipleObjectInstanceNameReservationFailed":
+            return ambassador.multipleObjectInstanceNameReservationFailed(*args, **kwargs)
+        case "multipleObjectInstanceNameReservationSucceeded":
+            return ambassador.multipleObjectInstanceNameReservationSucceeded(*args, **kwargs)
+        case "objectInstanceNameReservationFailed":
+            return ambassador.objectInstanceNameReservationFailed(*args, **kwargs)
+        case "objectInstanceNameReservationSucceeded":
+            return ambassador.objectInstanceNameReservationSucceeded(*args, **kwargs)
+        case "provideAttributeValueUpdate":
+            return ambassador.provideAttributeValueUpdate(*args, **kwargs)
+        case "receiveInteraction":
+            return ambassador.receiveInteraction(*args, **kwargs)
+        case "reflectAttributeValues":
+            return ambassador.reflectAttributeValues(*args, **kwargs)
+        case "removeObjectInstance":
+            return ambassador.removeObjectInstance(*args, **kwargs)
+        case "reportAttributeTransportationType":
+            return ambassador.reportAttributeTransportationType(*args, **kwargs)
+        case "reportFederationExecutions":
+            return ambassador.reportFederationExecutions(*args, **kwargs)
+        case "reportInteractionTransportationType":
+            return ambassador.reportInteractionTransportationType(*args, **kwargs)
+        case "requestAttributeOwnershipAssumption":
+            return ambassador.requestAttributeOwnershipAssumption(*args, **kwargs)
+        case "requestAttributeOwnershipRelease":
+            return ambassador.requestAttributeOwnershipRelease(*args, **kwargs)
+        case "requestDivestitureConfirmation":
+            return ambassador.requestDivestitureConfirmation(*args, **kwargs)
+        case "requestFederationRestoreFailed":
+            return ambassador.requestFederationRestoreFailed(*args, **kwargs)
+        case "requestFederationRestoreSucceeded":
+            return ambassador.requestFederationRestoreSucceeded(*args, **kwargs)
+        case "requestRetraction":
+            return ambassador.requestRetraction(*args, **kwargs)
+        case "startRegistrationForObjectClass":
+            return ambassador.startRegistrationForObjectClass(*args, **kwargs)
+        case "stopRegistrationForObjectClass":
+            return ambassador.stopRegistrationForObjectClass(*args, **kwargs)
+        case "synchronizationPointRegistrationFailed":
+            return ambassador.synchronizationPointRegistrationFailed(*args, **kwargs)
+        case "synchronizationPointRegistrationSucceeded":
+            return ambassador.synchronizationPointRegistrationSucceeded(*args, **kwargs)
+        case "timeAdvanceGrant":
+            return ambassador.timeAdvanceGrant(*args, **kwargs)
+        case "timeConstrainedEnabled":
+            return ambassador.timeConstrainedEnabled(*args, **kwargs)
+        case "timeRegulationEnabled":
+            return ambassador.timeRegulationEnabled(*args, **kwargs)
+        case "turnInteractionsOff":
+            return ambassador.turnInteractionsOff(*args, **kwargs)
+        case "turnInteractionsOn":
+            return ambassador.turnInteractionsOn(*args, **kwargs)
+        case "turnUpdatesOffForObjectInstance":
+            return ambassador.turnUpdatesOffForObjectInstance(*args, **kwargs)
+        case "turnUpdatesOnForObjectInstance":
+            return ambassador.turnUpdatesOnForObjectInstance(*args, **kwargs)
+        case _:
+            raise AttributeError(method_name)
+
+
 class NullFederateAmbassador(FederateAmbassador):
     """No-op FederateAmbassador implementation for tests and simple clients."""
 
@@ -410,7 +528,7 @@ class FederateAmbassadorMultiplexer(FederateAmbassador):
 
     def dispatch(self, method_name: str, *args: Any, **kwargs: Any) -> None:
         for ambassador in list(self.ambassadors):
-            getattr(ambassador, method_name)(*args, **kwargs)
+            invoke_federate_callback(ambassador, method_name, *args, **kwargs)
 
     def connectionLost(self, *args: Any, **kwargs: Any) -> None:  # noqa: N802
         self.dispatch("connectionLost", *args, **kwargs)

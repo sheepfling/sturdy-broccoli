@@ -8,7 +8,6 @@ from __future__ import annotations
 from .runtime_api import (
     FederateAmbassador,
     NullFederateAmbassador,
-    PythonicRTIAmbassadorMixin,
     RTIAmbassador,
     RTIambassador,
 )
@@ -16,7 +15,6 @@ from .runtime_api import (
 __all__ = [
     "FederateAmbassador",
     "NullFederateAmbassador",
-    "PythonicRTIAmbassadorMixin",
     "RTIAmbassador",
     "RTIambassador",
 ]

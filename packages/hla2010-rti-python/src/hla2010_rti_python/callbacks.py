@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from hla2010.ambassadors import invoke_federate_callback
 from hla2010.enums import CallbackModel
 from hla2010.exceptions import (
     AsynchronousDeliveryAlreadyDisabled,
@@ -29,7 +30,7 @@ class PythonRTICallbacksMixin:
             raise CallNotAllowedFromWithinCallback("Nested callback invocation is not allowed")
         try:
             target.in_callback = True
-            getattr(target.ambassador, method_name)(*args)
+            invoke_federate_callback(target.ambassador, method_name, *args)
             self.delivered_callback_count += 1
             target.callback_counts[method_name] = target.callback_counts.get(method_name, 0) + 1
             target.recent_callbacks.append(method_name)

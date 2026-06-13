@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections import deque
 from typing import Any, Callable, Deque, Iterable, Mapping
 
-from .java_common import JavaBridge
+from .java_common import JavaBridge, invoke_java_federate_proxy_callback
 from .java_shim_types import (
     JavaAttributeHandle,
     JavaByteArray,
@@ -67,7 +67,7 @@ class InProcessJavaRTIShim:
 
     def _queue_callback(self, method_name: str, *args: Any) -> None:
         def callback() -> None:
-            getattr(self.federate, method_name)(*args)
+            invoke_java_federate_proxy_callback(self.federate, method_name, *args)
 
         self._queue.append(callback)
 

@@ -6,6 +6,7 @@ from hla2010 import mom as hla_mom
 from hla2010_rti_backend_common import RecordingFederateAmbassador
 from hla2010.exceptions import ObjectInstanceNotKnown
 from hla2010.handles import AttributeHandle, FederateHandle, InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle, ParameterHandle
+from hla2010.ambassadors import invoke_federate_callback
 from hla2010.time import HLAinteger64Time
 from hla2010_verification_harness import (
     ExternalLostFederateVictimSession,
@@ -63,7 +64,7 @@ class _FakeObserverRTI:
         if not self.queue:
             return False
         method_name, args = self.queue.pop(0)
-        getattr(self.federate, method_name)(*args)
+        invoke_federate_callback(self.federate, method_name, *args)
         return bool(self.queue)
 
     def request_attribute_value_update(self, object_instance, attributes, tag):

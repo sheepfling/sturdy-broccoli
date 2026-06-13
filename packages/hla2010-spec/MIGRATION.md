@@ -5,7 +5,7 @@ surface.
 
 Canonical implementation remains in:
 
-- `src/hla2010/`
+- `packages/hla2010-spec/src/hla2010/`
 
 Canonical public entrypoints include:
 

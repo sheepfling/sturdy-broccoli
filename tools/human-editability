@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/human-editability"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/human-editability [check|inventory|generate-trace-index|generate-python-rti-map|trace METHOD|help]
+
+Canonical human-editability flow:
+  ./tools/human-editability inventory
+  ./tools/human-editability check
+  ./tools/human-editability generate-trace-index
+  ./tools/human-editability generate-python-rti-map
+  ./tools/human-editability trace createFederationExecution
+  ./tools/human-editability trace timeAdvanceRequest
+
+This is the human-facing wrapper over `scripts/human_editability.py`.
+EOF
+}
+
+python_bin="$(hla2010_shell_python_bin)"
+
+case "${1:-check}" in
+  help|-h|--help)
+    usage
+    ;;
+  generate-trace-index)
+    shift
+    hla2010_shell_run_workspace_python "$python_bin" "$ROOT_DIR/scripts/validate_traceability_paths.py" generate "$@"
+    ;;
+  generate-python-rti-map)
+    shift
+    hla2010_shell_run_workspace_python "$python_bin" "$ROOT_DIR/scripts/generate_python_rti_service_map.py" generate "$@"
+    ;;
+  check|inventory|trace)
+    subcommand="$1"
+    shift
+    hla2010_shell_run_workspace_python "$python_bin" "$ROOT_DIR/scripts/human_editability.py" "$subcommand" "$@"
+    ;;
+  *)
+    echo "error: unknown subcommand: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

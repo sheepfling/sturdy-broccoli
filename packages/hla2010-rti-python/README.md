@@ -26,6 +26,9 @@ Use `./tools/python verify` for the repo-green verification lane.
 The human operator surface for this backend stays `./tools/python`; this
 package does not add a package-local command.
 
+Backend implementation layout, service registry, and trace commands are
+documented in [`../../docs/python_rti_backend.md`](../../docs/python_rti_backend.md).
+
 Package-owned verification policy helpers live in
 `src/hla2010_rti_python/testing_policy.py`.
 Package-owned split-package and matrix guard coverage lives in

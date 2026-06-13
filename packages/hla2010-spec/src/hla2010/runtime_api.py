@@ -4,8 +4,8 @@ from __future__ import annotations
 from ._spec_impl import FederateAmbassadorSpec, RTIambassadorSpec
 
 
-class PythonicRTIAmbassadorMixin(RTIambassadorSpec):
-    """Mixin that forwards snake_case RTI service names to source names."""
+class RTIambassador(RTIambassadorSpec):
+    """Concrete subclass point for Python RTI adapters with explicit snake_case aliases."""
 
     def create_federation_execution(self, *args: object, **kwargs: object) -> object:
         """Forward the Pythonic alias `create_federation_execution` to `createFederationExecution`."""
@@ -642,12 +642,6 @@ class PythonicRTIAmbassadorMixin(RTIambassadorSpec):
     def decode_region_handle(self, *args: object, **kwargs: object) -> object:
         """Forward the Pythonic alias `decode_region_handle` to `decodeRegionHandle`."""
         return self.decodeRegionHandle(*args, **kwargs)
-
-
-class RTIambassador(PythonicRTIAmbassadorMixin):
-    """Concrete subclass point for Python RTI adapters."""
-
-
 RTIAmbassador = RTIambassador
 
 
@@ -660,7 +654,6 @@ NullFederateAmbassador = FederateAmbassador
 __all__ = [
     "FederateAmbassador",
     "NullFederateAmbassador",
-    "PythonicRTIAmbassadorMixin",
     "RTIAmbassador",
     "RTIambassador",
 ]

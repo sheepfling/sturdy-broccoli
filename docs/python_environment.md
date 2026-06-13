@@ -198,7 +198,7 @@ runner, use [vendor_runtime_runner_guide.md](vendor_runtime_runner_guide.md).
 
 The setup-relevant parts of this repo are:
 
-- `src/hla2010/`: root Python package, abstract/core API, and the temporary split-package facade `hla2010.rti`
+- `packages/hla2010-spec/src/hla2010/`: root Python package, abstract/core API, and the temporary split-package facade `hla2010.rti`
 - `hla2010/`: narrow shim area for plugin-facing glue
 - `packages/*/src/`: package-owned backend, FOM, and support implementations
 - `examples/`: runnable entrypoints

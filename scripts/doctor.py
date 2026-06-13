@@ -116,7 +116,7 @@ print(json.dumps(payload))
 def check_repo_root() -> Check:
     required = [
         REPO_ROOT / "pyproject.toml",
-        REPO_ROOT / "src/hla2010",
+        REPO_ROOT / "packages/hla2010-spec/src/hla2010",
         REPO_ROOT / "scripts/bootstrap_python.sh",
     ]
     missing = [str(path.relative_to(REPO_ROOT)) for path in required if not path.exists()]

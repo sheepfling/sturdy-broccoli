@@ -39,6 +39,7 @@ INTERNAL_PACKAGE_SOURCE_ROOTS = {
     "hla2010-rti-portico": ROOT / "packages/hla2010-rti-portico/src",
     "hla2010-verification-harness": ROOT / "packages/hla2010-verification-harness/src",
     "hla2010-fom-target-radar": ROOT / "packages/hla2010-fom-target-radar/src",
+    "hla2010-fom-minimal-demo": ROOT / "packages/hla2010-fom-minimal-demo/src",
 }
 LIGHTWEIGHT_SPLIT_PACKAGE_IMPORT_SPECS = {
     "hla2010_rti_python": {
@@ -163,6 +164,17 @@ LIGHTWEIGHT_SPLIT_PACKAGE_IMPORT_SPECS = {
         ),
         "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_", "hla2010_rti_portico"),
     },
+    "hla2010_fom_minimal_demo": {
+        "manifest_name": "hla2010-fom-minimal-demo",
+        "source_roots": (
+            ROOT / "src",
+            ROOT / "packages/hla2010-rti-backend-common/src",
+            ROOT / "packages/hla2010-rti-transport-common/src",
+            ROOT / "packages/hla2010-rti-runtime-common/src",
+            ROOT / "packages/hla2010-fom-minimal-demo/src",
+        ),
+        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_", "hla2010_rti_portico"),
+    },
 }
 BACKEND_SPLIT_PACKAGE_IMPORT_SPECS = {
     "hla2010_rti_python": {
@@ -264,6 +276,7 @@ INTERNAL_IMPORT_ROOT_TO_PACKAGE = {
     "hla2010_rti_portico": "hla2010-rti-portico",
     "hla2010_verification_harness": "hla2010-verification-harness",
     "hla2010_fom_target_radar": "hla2010-fom-target-radar",
+    "hla2010_fom_minimal_demo": "hla2010-fom-minimal-demo",
 }
 
 
@@ -372,6 +385,7 @@ def test_non_spec_split_package_manifests_publish_only_their_owned_namespace() -
         "hla2010-rti-transport-grpc": "hla2010_rti_transport_grpc",
         "hla2010-rti-transport-rest": "hla2010_rti_transport_rest",
         "hla2010-fom-target-radar": "hla2010_fom_target_radar",
+        "hla2010-fom-minimal-demo": "hla2010_fom_minimal_demo",
         "hla2010-verification-harness": "hla2010_verification_harness",
     }
 
@@ -398,6 +412,7 @@ def test_split_package_python_namespaces_do_not_overlap() -> None:
         "hla2010-rti-transport-grpc": ("packages/hla2010-rti-transport-grpc/src", "hla2010_rti_transport_grpc*"),
         "hla2010-rti-transport-rest": ("packages/hla2010-rti-transport-rest/src", "hla2010_rti_transport_rest*"),
         "hla2010-fom-target-radar": ("packages/hla2010-fom-target-radar/src", "hla2010_fom_target_radar*"),
+        "hla2010-fom-minimal-demo": ("packages/hla2010-fom-minimal-demo/src", "hla2010_fom_minimal_demo*"),
         "hla2010-verification-harness": ("packages/hla2010-verification-harness/src", "hla2010_verification_harness*"),
     }
 
@@ -470,6 +485,7 @@ def test_transitional_mega_package_includes_split_python_rti_package():
     grpc_transport_packages = set(find_packages(where="packages/hla2010-rti-transport-grpc/src", include=["hla2010_rti_transport_grpc*"]))
     rest_transport_packages = set(find_packages(where="packages/hla2010-rti-transport-rest/src", include=["hla2010_rti_transport_rest*"]))
     target_radar_packages = set(find_packages(where="packages/hla2010-fom-target-radar/src", include=["hla2010_fom_target_radar*"]))
+    minimal_demo_packages = set(find_packages(where="packages/hla2010-fom-minimal-demo/src", include=["hla2010_fom_minimal_demo*"]))
     verification_harness_packages = set(find_packages(where="packages/hla2010-verification-harness/src", include=["hla2010_verification_harness*"]))
 
     assert "hla2010_rti_python" in python_packages
@@ -490,6 +506,9 @@ def test_transitional_mega_package_includes_split_python_rti_package():
     assert "hla2010_fom_target_radar" in target_radar_packages
     assert "hla2010_fom_target_radar.scenarios" in target_radar_packages
     assert "hla2010_fom_target_radar.testing" not in target_radar_packages
+    assert "hla2010_fom_minimal_demo" in minimal_demo_packages
+    assert "hla2010_fom_minimal_demo.scenarios" in minimal_demo_packages
+    assert "hla2010_fom_minimal_demo.testing" not in minimal_demo_packages
     assert "hla2010_verification_harness" in verification_harness_packages
 
 

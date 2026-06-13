@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 KEY_PUBLIC_DOCS = (
     ROOT / "README.md",
     ROOT / "docs/README.md",
+    ROOT / "docs/onboarding.md",
     ROOT / "docs/first_run.md",
     ROOT / "docs/python_environment.md",
     ROOT / "docs/two_federate_quickstart.md",
@@ -23,6 +24,7 @@ BANNED_PRIMARY_REFS = (
 EXPECTED_HEADINGS = {
     ROOT / "README.md": ("## Start Here", "## Read Next"),
     ROOT / "docs/README.md": ("## Start Here", "## Historical / Provenance", "## Read Next"),
+    ROOT / "docs/onboarding.md": ("## What This Path Assumes", "## What This Path Avoids", "## Read Next"),
     ROOT / "docs/first_run.md": ("## Read Next",),
     ROOT / "docs/python_environment.md": ("## Read Next",),
     ROOT / "docs/two_federate_quickstart.md": ("## Read Next",),
@@ -35,6 +37,14 @@ EXPECTED_PATHS = {
         ROOT / "examples/target_radar_simulation.py",
         ROOT / "examples/backend_recording.py",
         ROOT / "tools/test",
+    ),
+    ROOT / "docs/onboarding.md": (
+        ROOT / "docs/first_run.md",
+        ROOT / "docs/python_rti_backend.md",
+        ROOT / "docs/create_federate_and_fom.md",
+        ROOT / "docs/requirements_traceability.md",
+        ROOT / "docs/java_backends_quickstart.md",
+        ROOT / "docs/verification/run_sequence.md",
     ),
     ROOT / "docs/first_run.md": (
         ROOT / "tools/bootstrap",
@@ -105,9 +115,30 @@ def test_key_newcomer_docs_reference_existing_paths() -> None:
     for path, expected_paths in EXPECTED_PATHS.items():
         text = _read(path)
         for expected_path in expected_paths:
-            rel = expected_path.relative_to(ROOT).as_posix()
-            assert rel in text, f"{path.relative_to(ROOT)} no longer references {rel}"
-            assert expected_path.exists(), rel
+            repo_rel = expected_path.relative_to(ROOT).as_posix()
+            doc_rel = expected_path.relative_to(ROOT).as_posix()
+            if path.parent != ROOT:
+                doc_rel = expected_path.relative_to(ROOT).as_posix()
+                doc_rel = Path(
+                    os.path.relpath(expected_path, start=path.parent)
+                ).as_posix()
+            assert repo_rel in text or doc_rel in text, (
+                f"{path.relative_to(ROOT)} no longer references {repo_rel} "
+                f"or {doc_rel}"
+            )
+            assert expected_path.exists(), repo_rel
+
+
+def test_onboarding_doc_is_the_canonical_opinionated_map() -> None:
+    text = _read(ROOT / "docs" / "onboarding.md")
+    assert "1. [First Run](first_run.md)" in text
+    assert "2. [Python RTI Backend](python_rti_backend.md)" in text
+    assert "3. [Create A Federate And FOM](create_federate_and_fom.md)" in text
+    assert "4. [Requirements Traceability](requirements_traceability.md)" in text
+    assert "5. [Java Backends Later](java_backends_quickstart.md)" in text
+    assert "6. [Full Verification](verification/run_sequence.md)" in text
+    assert "docs/evidence/" not in text
+    assert "reference/archive_index.md" not in text
 
 
 def test_repo_does_not_keep_duplicate_markdown_copies() -> None:
@@ -123,11 +154,11 @@ def test_python_api_spec_matches_split_package_reality() -> None:
     path = ROOT / "docs/python_api_spec.md"
     text = _read(path)
     assert "installable root: `hla2010-spec`" in text
-    assert "workspace facade: `src/hla2010/`" in text
+    assert "spec source root: `packages/hla2010-spec/src/hla2010/`" in text
     assert "package-owned implementations: `packages/*/src/...`" in text
     assert "temporary compatibility routing" in text
     assert "temporary backend-discovery and ambassador-factory compatibility facade" in text
-    assert "../src/hla2010/spec/__init__.py" in text
+    assert "../packages/hla2010-spec/src/hla2010/spec/__init__.py" in text
     assert "../packages/hla2010-spec/README.md" in text
     assert "../hla2010/spec/" not in text
     assert "hla2010.testing" not in text
@@ -137,6 +168,6 @@ def test_repo_overview_docs_describe_root_namespace_as_core_plus_temporary_facad
     readme = _read(ROOT / "README.md")
     packages_readme = _read(ROOT / "packages" / "README.md")
 
-    assert "`src/hla2010/` is the root Python package for the abstract/core API plus the documented temporary compatibility facade `hla2010.rti`" in readme
+    assert "`packages/hla2010-spec/src/hla2010/` is the package-owned root Python package for the abstract/core API plus the documented temporary compatibility facade `hla2010.rti`" in readme
     assert "`hla2010/` is a narrow top-level shim area for plugin-facing glue" not in readme
-    assert "`src/hla2010/` tree is the workspace facade used for stable imports, abstract\ncore API ownership, and only documented temporary compatibility routing." in packages_readme
+    assert "`packages/hla2010-spec/src/hla2010/` tree is the package-owned spec source root used for stable imports, abstract\ncore API ownership, and only documented temporary compatibility routing." in packages_readme

@@ -70,6 +70,7 @@ EXPECTED_PACKAGES = {
     "hla2010-rti-transport-grpc": {"role": "transport", "entry_points": set(), "status": "implementation-moved"},
     "hla2010-rti-transport-rest": {"role": "transport", "entry_points": set(), "status": "implementation-moved"},
     "hla2010-fom-target-radar": {"role": "fom-example", "entry_points": set(), "status": "implementation-moved"},
+    "hla2010-fom-minimal-demo": {"role": "fom-example", "entry_points": set(), "status": "implementation-owned"},
     "hla2010-verification-harness": {"role": "verification-harness", "entry_points": set(), "status": "implementation-moved"},
 }
 INTERNAL_PACKAGE_VERSION = "0.13.0"
@@ -111,7 +112,7 @@ def _declared_internal_dependency_names(package_name: str) -> set[str]:
 
 
 def _live_root_python_files() -> set[str]:
-    root = ROOT / "src" / "hla2010"
+    root = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010"
     return {
         path.relative_to(root).as_posix()
         for path in root.rglob("*.py")
@@ -141,8 +142,8 @@ def test_split_package_source_roots_resolve_to_real_package_owned_paths() -> Non
         split = _load_project(package_name)["tool"]["hla2010"]["package-split"]
         source_roots = split["source_roots"]
         if package_name == "hla2010-spec":
-            assert source_roots == ["src/hla2010"]
-            assert (ROOT / "src" / "hla2010").is_dir()
+            assert source_roots == ["packages/hla2010-spec/src/hla2010"]
+            assert (ROOT / "packages" / "hla2010-spec" / "src" / "hla2010").is_dir()
             continue
 
         expected_prefix = f"packages/{package_name}/src/"
@@ -174,7 +175,7 @@ def test_split_package_source_roots_use_single_owned_directory_root() -> None:
         assert len(source_roots) == 1, package_name
         source_root = source_roots[0]
         if package_name == "hla2010-spec":
-            assert source_root == "src/hla2010"
+            assert source_root == "packages/hla2010-spec/src/hla2010"
             continue
         expected_import_roots = _package_import_roots(package_name)
         assert len(expected_import_roots) == 1, package_name
@@ -272,13 +273,13 @@ def test_split_packages_do_not_publish_package_local_cli_entrypoints() -> None:
 
 def test_hla2010_spec_manifest_owns_exact_root_package_tree() -> None:
     split = _load_project("hla2010-spec")["tool"]["hla2010"]["package-split"]
-    assert split["source_roots"] == ["src/hla2010"]
+    assert split["source_roots"] == ["packages/hla2010-spec/src/hla2010"]
 
     package_dir = _load_project("hla2010-spec")["tool"]["setuptools"]["package-dir"]
-    assert package_dir == {"": "../../src"}
+    assert package_dir == {"": "src"}
 
     package_find = _load_project("hla2010-spec")["tool"]["setuptools"]["packages"]["find"]
-    assert package_find["where"] == ["../../src"]
+    assert package_find["where"] == ["src"]
     assert package_find["include"] == ["hla2010*"]
     assert "hla2010_repo_internal*" in package_find["exclude"]
 
@@ -517,6 +518,12 @@ def test_package_root_readmes_describe_canonical_import_and_operator_boundary() 
             "`./tools/target-radar`",
             "package-local command",
         ),
+        "hla2010-fom-minimal-demo": (
+            "`hla2010_fom_minimal_demo`",
+            "`tests/examples/test_minimal_fom_demo.py`",
+            "`examples/minimal_fom_demo.py`",
+            "package-local command",
+        ),
         "hla2010-verification-harness": (
             "`hla2010_verification_harness`",
             "`tests/test_verification_harness_split_package.py`",
@@ -692,10 +699,12 @@ def test_verification_and_fom_packages_own_explicit_docs_and_split_test_surfaces
     expected_docs = {
         "hla2010-verification-harness": PACKAGES / "hla2010-verification-harness" / "docs" / "README.md",
         "hla2010-fom-target-radar": PACKAGES / "hla2010-fom-target-radar" / "docs" / "README.md",
+        "hla2010-fom-minimal-demo": PACKAGES / "hla2010-fom-minimal-demo" / "docs" / "README.md",
     }
     expected_test_surfaces = {
         "hla2010-verification-harness": {ROOT / "tests" / "test_verification_harness_split_package.py"},
         "hla2010-fom-target-radar": {ROOT / "tests" / "test_fom_target_radar_split_package.py"},
+        "hla2010-fom-minimal-demo": {ROOT / "tests" / "examples" / "test_minimal_fom_demo.py"},
     }
 
     for package_name, path in expected_docs.items():
@@ -722,6 +731,13 @@ def test_verification_and_fom_doc_indexes_describe_owned_non_backend_surfaces() 
             "example/FOM support reused by repo-internal proof",
             "does not own RTI backend implementations",
             "tests/test_fom_target_radar_split_package.py",
+        ),
+        "hla2010-fom-minimal-demo": (
+            "concrete minimal-demo example FOM",
+            "resources.foms",
+            "create-federate-and-FOM tutorial",
+            "does not own RTI backend implementations",
+            "tests/examples/test_minimal_fom_demo.py",
         ),
     }
 
@@ -934,17 +950,24 @@ def test_transport_packages_depend_only_on_spec_and_transport_common():
 
 def test_leaf_packages_depend_only_on_spec_and_verification_harness():
     target_radar_dependencies = set(_load_project("hla2010-fom-target-radar")["project"].get("dependencies", ()))
+    minimal_demo_dependencies = set(_load_project("hla2010-fom-minimal-demo")["project"].get("dependencies", ()))
     assert target_radar_dependencies == {
         "hla2010-spec==0.13.0",
         "hla2010-rti-runtime-common==0.13.0",
         "hla2010-verification-harness==0.13.0",
+    }
+    assert minimal_demo_dependencies == {
+        "hla2010-spec==0.13.0",
+        "hla2010-rti-runtime-common==0.13.0",
     }
 
 
 def test_root_pyproject_declares_workspace_package_roots():
     root_project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
     pytest_roots = root_project["tool"]["pytest"]["ini_options"]["pythonpath"]
-    expected_roots = {"src"} | {f"packages/{package_name}/src" for package_name in EXPECTED_PACKAGES if package_name != "hla2010-spec"}
+    expected_roots = {"src", "packages/hla2010-spec/src"} | {
+        f"packages/{package_name}/src" for package_name in EXPECTED_PACKAGES if package_name != "hla2010-spec"
+    }
 
     assert pytest_roots[0] == "src"
     assert set(pytest_roots) == expected_roots

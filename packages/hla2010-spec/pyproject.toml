@@ -15,10 +15,10 @@ typecheck = ["pyright>=1.1.408"]
 test = ["pytest"]
 
 [tool.setuptools.package-dir]
-"" = "../../src"
+"" = "src"
 
 [tool.setuptools.packages.find]
-where = ["../../src"]
+where = ["src"]
 include = ["hla2010*"]
 exclude = ["hla2010.testing*", "hla2010_repo_internal*"]
 
@@ -29,5 +29,5 @@ hla2010 = ["resources/foms/*.xml"]
 status = "implementation-owned"
 role = "core-spec"
 source_roots = [
-  "src/hla2010",
+  "packages/hla2010-spec/src/hla2010",
 ]

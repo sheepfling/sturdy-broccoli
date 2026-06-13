@@ -16,7 +16,7 @@ backend and the Target/Radar example.
 
 The repo is organized as a monorepo workspace:
 
-- `src/hla2010/` is the root Python package for the abstract/core API plus the documented temporary compatibility facade `hla2010.rti`
+- `packages/hla2010-spec/src/hla2010/` is the package-owned root Python package for the abstract/core API plus the documented temporary compatibility facade `hla2010.rti`
 - `packages/*/src/` holds package-owned backend, FOM, transport, and support implementations
 - `tools/` is the canonical home for human-facing operator entrypoints
 - `examples/`, `scripts/`, `tests/`, and `docs/` stay repo-local
@@ -96,7 +96,7 @@ If you need the vendor flows, use the `tools/` operator surface:
 ## What This Repo Is For
 
 The main import surface is `hla2010`, with the clean contract at
-`hla2010.spec`. The `src/hla2010/` tree stays limited to the abstract/core API,
+`hla2010.spec`. The `packages/hla2010-spec/src/hla2010/` tree stays limited to the abstract/core API,
 backend-neutral types and contracts, FOM/MOM helpers, and the one documented
 temporary split-package facade `hla2010.rti`.
 
@@ -190,7 +190,7 @@ If you only need the shortest "what works right now?" answer, use:
 ## Repository Layout
 
 ```text
-src/hla2010/          core API layer plus the documented temporary compatibility facade hla2010.rti
+packages/hla2010-spec/src/hla2010/ core API layer plus the documented temporary compatibility facade hla2010.rti
 src/hla2010_repo_internal/ verification/proof/report helpers kept out of public API
 packages/*/src/       package-owned backend and support implementation roots
 examples/             runnable example federates and scenario entrypoints

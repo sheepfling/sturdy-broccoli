@@ -15,23 +15,23 @@ If you only need the supported import ladder, use:
 ## Package Reality
 
 - installable root: `hla2010-spec`
-- workspace facade: `src/hla2010/`
+- spec source root: `packages/hla2010-spec/src/hla2010/`
 - package-owned implementations: `packages/*/src/...`
 
 The installable root owns the abstract API surface and spec-facing support
-modules. The workspace facade keeps stable imports and only narrow documented
+modules. The package-owned spec source root keeps stable imports and only narrow documented
 temporary compatibility routing across the split packages.
 
 ## Canonical Files
 
 - [`../packages/hla2010-spec/README.md`](../packages/hla2010-spec/README.md): installable root package role
-- [`../src/hla2010/spec/__init__.py`](../src/hla2010/spec/__init__.py): clean abstract/prototype spec surface
-- [`../src/hla2010/runtime_api.py`](../src/hla2010/runtime_api.py): runtime-facing convenience facade
-- [`../src/hla2010/api.py`](../src/hla2010/api.py): compatibility shim that re-exports the runtime layer
-- [`../src/hla2010/spec_inventory.py`](../src/hla2010/spec_inventory.py): plain-text method inventory used by the spec layer
-- [`../src/hla2010/spec_sources.py`](../src/hla2010/spec_sources.py): readable Java/C++ source locations surfaced in docstrings
-- [`../src/hla2010/spec_refs.py`](../src/hla2010/spec_refs.py): clause and service references used for traceability
-- [`../src/hla2010/rti.py`](../src/hla2010/rti.py): temporary backend-discovery and ambassador-factory compatibility facade over the split runtime-common package
+- [`../packages/hla2010-spec/src/hla2010/spec/__init__.py`](../packages/hla2010-spec/src/hla2010/spec/__init__.py): clean abstract/prototype spec surface
+- [`../packages/hla2010-spec/src/hla2010/runtime_api.py`](../packages/hla2010-spec/src/hla2010/runtime_api.py): runtime-facing convenience facade
+- [`../packages/hla2010-spec/src/hla2010/api.py`](../packages/hla2010-spec/src/hla2010/api.py): compatibility shim that re-exports the runtime layer
+- [`../packages/hla2010-spec/src/hla2010/spec_inventory.py`](../packages/hla2010-spec/src/hla2010/spec_inventory.py): plain-text method inventory used by the spec layer
+- [`../packages/hla2010-spec/src/hla2010/spec_sources.py`](../packages/hla2010-spec/src/hla2010/spec_sources.py): readable Java/C++ source locations surfaced in docstrings
+- [`../packages/hla2010-spec/src/hla2010/spec_refs.py`](../packages/hla2010-spec/src/hla2010/spec_refs.py): clause and service references used for traceability
+- [`../packages/hla2010-spec/src/hla2010/rti.py`](../packages/hla2010-spec/src/hla2010/rti.py): temporary backend-discovery and ambassador-factory compatibility facade over the split runtime-common package
 
 ## Import Table
 
@@ -62,11 +62,11 @@ from hla2010.runtime_api import RTIambassador, FederateAmbassador
 ## Why This Split Exists
 
 - `hla2010-spec` is the installable root package for the clean spec surface.
-- `src/hla2010/spec/__init__.py` exposes the abstract base classes and prototypes.
-- `src/hla2010/runtime_api.py` keeps the runtime adapters working without forcing callers onto raw source-derived names.
-- `src/hla2010/api.py` remains as a compatibility shim for older imports.
-- `src/hla2010/rti.py` remains only as a temporary documented compatibility facade for backend discovery, backend selection, and ambassador creation while backend contracts and runtime internals live in split packages.
-- `src/hla2010/spec_inventory.py`, `src/hla2010/spec_sources.py`, and `src/hla2010/spec_refs.py` keep source mappings readable rather than hiding them in opaque blobs.
+- `packages/hla2010-spec/src/hla2010/spec/__init__.py` exposes the abstract base classes and prototypes.
+- `packages/hla2010-spec/src/hla2010/runtime_api.py` keeps the runtime adapters working without forcing callers onto raw source-derived names.
+- `packages/hla2010-spec/src/hla2010/api.py` remains as a compatibility shim for older imports.
+- `packages/hla2010-spec/src/hla2010/rti.py` remains only as a temporary documented compatibility facade for backend discovery, backend selection, and ambassador creation while backend contracts and runtime internals live in split packages.
+- `packages/hla2010-spec/src/hla2010/spec_inventory.py`, `packages/hla2010-spec/src/hla2010/spec_sources.py`, and `packages/hla2010-spec/src/hla2010/spec_refs.py` keep source mappings readable rather than hiding them in opaque blobs.
 
 That keeps the spec-like surface clean while still preserving the source
 mapping needed for traceability.

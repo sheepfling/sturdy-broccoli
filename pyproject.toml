@@ -1,11 +1,12 @@
 # Root pyproject is intentionally tooling-only. Installable distributions live
-# under packages/*, with packages/hla2010-spec owning src/hla2010.
+# under packages/*, with packages/hla2010-spec owning packages/hla2010-spec/src/hla2010.
 
 [tool.pytest.ini_options]
 # Pytest mirrors the workspace package roots so source-checkout runs resolve the
 # same split packages that editable installs expose.
 pythonpath = [
   "src",
+  "packages/hla2010-spec/src",
   "packages/hla2010-rti-python/src",
   "packages/hla2010-rti-certi/src",
   "packages/hla2010-rti-backend-common/src",
@@ -21,6 +22,7 @@ pythonpath = [
   "packages/hla2010-rti-transport-grpc/src",
   "packages/hla2010-rti-transport-rest/src",
   "packages/hla2010-fom-target-radar/src",
+  "packages/hla2010-fom-minimal-demo/src",
   "packages/hla2010-verification-harness/src",
 ]
 testpaths = ["tests"]

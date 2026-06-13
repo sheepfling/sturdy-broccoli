@@ -279,7 +279,7 @@
       "evidence_refs": [],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516-RULE-001",
-      "notes": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. verification_method=requirements skeleton; This rule row now names the lifecycle/state-transition scope directly.; Architectural rule scope is now stated explicitly in the authored framework rules catalog",
+      "notes": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. verification_method=requirements skeleton; This rule row now names the lifecycle/state-transition scope directly.; Supported boundary: architectural rule scope is stated explicitly in the authored framework rules catalog",
       "requirement_id": "HLA1516-RULE-001",
       "runtime_disposition": "classification-required",
       "runtime_status": "",
@@ -292,7 +292,7 @@
       "evidence_refs": [],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516-FW-001",
-      "notes": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. verification_method=shall; requirements skeleton; Top-level framework scope is now stated explicitly in the authored framework rules catalog",
+      "notes": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. verification_method=shall; requirements skeleton; Supported boundary: top-level framework scope is stated explicitly in the authored framework rules catalog",
       "requirement_id": "HLA1516-FW-001",
       "runtime_disposition": "classification-required",
       "runtime_status": "",
@@ -318,7 +318,7 @@
       "evidence_refs": [],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516-TIME-001",
-      "notes": "verification_method=hla2010/time_management.py; partial",
+      "notes": "verification_method=packages/hla2010-rti-python/src/hla2010_rti_python/time_public_services.py; partial",
       "requirement_id": "HLA1516-TIME-001",
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
@@ -5910,10 +5910,10 @@
       "clause_root": "5",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "src/hla2010/fom.py::parse_fom_xml",
+        "packages/hla2010-spec/src/hla2010/fom.py::parse_fom_xml",
         "tests/factories/test_fom_omt_parsing.py",
         "analysis/compliance/verification_assets.json",
-        "src/hla2010/fom.py::merge_fom_modules"
+        "packages/hla2010-spec/src/hla2010/fom.py::merge_fom_modules"
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-DM-5.1.1-001",
@@ -5928,7 +5928,7 @@
       "clause_root": "5",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "src/hla2010/fom.py::parse_fom_xml",
+        "packages/hla2010-spec/src/hla2010/fom.py::parse_fom_xml",
         "tests/factories/test_fom_omt_parsing.py",
         "analysis/compliance/verification_assets.json"
       ],
@@ -5945,7 +5945,7 @@
       "clause_root": "5",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "src/hla2010/fom.py::parse_fom_xml",
+        "packages/hla2010-spec/src/hla2010/fom.py::parse_fom_xml",
         "tests/factories/test_fom_omt_parsing.py",
         "analysis/compliance/verification_assets.json"
       ],
@@ -7037,7 +7037,7 @@
       "evidence_refs": [],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-OM-001",
-      "notes": "verification_method= and interaction delivery behavior; hla2010/backends/python/backend.py",
+      "notes": "verification_method= and interaction delivery behavior; packages/hla2010-rti-python/src/hla2010_rti_python/backend.py",
       "requirement_id": "HLA1516.1-OM-001",
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
@@ -8674,7 +8674,7 @@
       "evidence_refs": [],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-OWN-001",
-      "notes": "verification_method= and release-request flows; hla2010/backends/python/backend.py; Ownership family seed now linked to the focused Clause 7 extraction tranche",
+      "notes": "verification_method= and release-request flows; packages/hla2010-rti-python/src/hla2010_rti_python/backend.py; Ownership family seed now linked to the focused Clause 7 extraction tranche",
       "requirement_id": "HLA1516.1-OWN-001",
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
@@ -11494,7 +11494,7 @@
       "evidence_refs": [],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-SUP-001",
-      "notes": "verification_method= and related support operations; hla2010/backends/python/support.py; Support-services family seed now linked to the focused Clause 10 extraction tranche",
+      "notes": "verification_method= and related support operations; packages/hla2010-rti-python/src/hla2010_rti_python/support.py; Support-services family seed now linked to the focused Clause 10 extraction tranche",
       "requirement_id": "HLA1516.1-SUP-001",
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
@@ -11820,7 +11820,7 @@
       "evidence_refs": [],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-MOM-001",
-      "notes": "verification_method= and service-reporting state; hla2010/backends/python/mom_actions.py; Connects the standards-family row to the focused MOM observer slice",
+      "notes": "verification_method= and service-reporting state; packages/hla2010-rti-python/src/hla2010_rti_python/mom_actions.py; Connects the standards-family row to the focused MOM observer slice",
       "requirement_id": "HLA1516.1-MOM-001",
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
@@ -12288,7 +12288,7 @@
       "evidence_refs": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -12307,7 +12307,7 @@
       "evidence_refs": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -12326,7 +12326,7 @@
       "evidence_refs": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -12345,7 +12345,7 @@
       "evidence_refs": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -12364,7 +12364,7 @@
       "evidence_refs": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -12383,7 +12383,7 @@
       "evidence_refs": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -12402,7 +12402,7 @@
       "evidence_refs": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -12421,7 +12421,7 @@
       "evidence_refs": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -12440,7 +12440,7 @@
       "evidence_refs": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -14510,7 +14510,7 @@
       "clause_root": "4",
       "document": "multi-section",
       "evidence_refs": [
-        "src/hla2010/fom.py::parse_fom_xml",
+        "packages/hla2010-spec/src/hla2010/fom.py::parse_fom_xml",
         "tests/factories/test_fom_omt_parsing.py",
         "analysis/compliance/verification_assets.json"
       ],

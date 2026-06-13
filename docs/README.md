@@ -9,16 +9,20 @@ This tree uses one simple parallel pattern:
 If you only need the shortest on-ramp:
 
 1. read [`../README.md`](../README.md)
-2. read [`first_run.md`](first_run.md)
-3. read [`networked_rti_python.md`](networked_rti_python.md) if you need a hosted Python RTI route
-4. read [`../packages/hla2010-fom-target-radar/README.md`](../packages/hla2010-fom-target-radar/README.md) if you are extending the Target/Radar example
+2. read [`onboarding.md`](onboarding.md)
+3. read [`first_run.md`](first_run.md)
+4. read [`networked_rti_python.md`](networked_rti_python.md) if you need a hosted Python RTI route
 
 ## Start Here
 
+- [onboarding.md](onboarding.md): canonical onboarding map for the current repo
 - [../README.md](../README.md): install, bootstrap, smoke, and operator commands
 - [first_run.md](first_run.md): shortest path from fresh checkout to a working pure-Python example
 - [networked_rti_python.md](networked_rti_python.md): hosted Python RTI over gRPC, with concrete entrypoints and usage shape
 - [python_environment.md](python_environment.md): Python bootstrap, `.venv`, extras, and install order
+- [python_rti_backend.md](python_rti_backend.md): contributor-facing Python RTI backend map
+- [create_federate_and_fom.md](create_federate_and_fom.md): minimal package-backed new FOM and federate workflow
+- [requirements_traceability.md](requirements_traceability.md): requirement -> implementation -> test -> artifact walkthrough
 - [two_federate_quickstart.md](two_federate_quickstart.md): first stop for the composite two-federate example
 - [install_matrix.md](install_matrix.md): extras, backend families, and dependency order
 - [agent_runbook.md](agent_runbook.md): start-here sequence for agents and automation
@@ -92,6 +96,6 @@ Planning:
 ## Read Next
 
 1. [first_run.md](first_run.md)
-2. [python_environment.md](python_environment.md)
-3. [two_federate_quickstart.md](two_federate_quickstart.md)
-4. [package_dependency_tree.md](package_dependency_tree.md)
+2. [onboarding.md](onboarding.md)
+3. [python_environment.md](python_environment.md)
+4. [two_federate_quickstart.md](two_federate_quickstart.md)

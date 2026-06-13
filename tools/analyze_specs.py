@@ -665,15 +665,16 @@ def make_api_py(java_methods: list[Method], cpp_methods: list[Method]) -> str:
     fed_names = sorted(set(meta.get('FederateAmbassador',{})))
     body = f'''"""Pythonic convenience layer for the HLA 1516.1-2010 API scaffold.
 
-This layer adds snake_case aliases while retaining the source lowerCamelCase API.
+This layer exposes explicit runtime facade classes with snake_case aliases while
+retaining the source lowerCamelCase API.
 
 """
 from __future__ import annotations
 from typing import Any
 from .raw_api import RTIambassador as RawRTIambassador, FederateAmbassador as RawFederateAmbassador
 
-class PythonicRTIAmbassadorMixin:
-    """Mixin that forwards snake_case service names to lowerCamelCase services."""
+class RTIambassador(RawRTIambassador):
+    """Concrete subclass point for Python RTI adapters with explicit snake_case aliases."""
 
 '''
     used = set()
@@ -686,12 +687,7 @@ class PythonicRTIAmbassadorMixin:
             f"    def {snake}(self, *args: Any, **kwargs: Any) -> Any:\n"
             f"        return self.{name}(*args, **kwargs)\n\n"
         )
-    body += (
-        "class RTIambassador(PythonicRTIAmbassadorMixin, RawRTIambassador):\n"
-        '    """Subclass point for Python RTI adapters."""\n'
-        "    pass\n\n"
-        "RTIAmbassador = RTIambassador\n\n"
-    )
+    body += "RTIAmbassador = RTIambassador\n\n"
     body += (
         "class FederateAmbassador(RawFederateAmbassador):\n"
         '    """Federate callback base with snake_case hooks.\n\n'
@@ -717,7 +713,7 @@ class PythonicRTIAmbassadorMixin:
     body += (
         "NullFederateAmbassador = FederateAmbassador\n"
         "__all__ = ['RTIambassador', 'RTIAmbassador', 'FederateAmbassador', "
-        "'NullFederateAmbassador', 'PythonicRTIAmbassadorMixin']\n"
+        "'NullFederateAmbassador']\n"
     )
     return body
 

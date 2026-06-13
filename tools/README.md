@@ -15,6 +15,8 @@ Use:
 - `./tools/rti-options`
 - `./tools/compliance`
 - `./tools/fom-overview`
+- `./tools/human-editability`
+- `./tools/spec-api`
 - `./tools/package-deps`
 - `./tools/section8-gate`
 - `./tools/target-radar`

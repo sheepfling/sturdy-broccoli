@@ -57,6 +57,7 @@ def test_bootstrap_python_plan_for_test_is_lean_core_workspace() -> None:
         "packages/hla2010-rti-transport-rest",
         "packages/hla2010-verification-harness",
         "packages/hla2010-fom-target-radar",
+        "packages/hla2010-fom-minimal-demo",
     ]
 
 
@@ -104,7 +105,7 @@ def test_bootstrap_python_plan_for_qa_matches_repo_green_workspace() -> None:
 
     assert payload["profile"] == "full-java"
     assert payload["helper_deps"] == ["pytest", "ruff", "pyright", "jpype1", "py4j"]
-    assert len(payload["workspace_packages"]) == 17
+    assert len(payload["workspace_packages"]) == 18
     for package in (
         "packages/hla2010-rti-java-jpype",
         "packages/hla2010-rti-java-py4j",

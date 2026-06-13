@@ -71,6 +71,8 @@ def test_tools_readme_declares_canonical_operator_surface() -> None:
     assert "./tools/rti-options" in text
     assert "./tools/compliance" in text
     assert "./tools/fom-overview" in text
+    assert "./tools/human-editability" in text
+    assert "./tools/spec-api" in text
     assert "./tools/package-deps" in text
     assert "./tools/section8-gate" in text
     assert "./tools/target-radar" in text
@@ -106,6 +108,8 @@ def test_scripts_readme_declares_implementation_boundary() -> None:
     assert "./tools/vendor-edge" in text
     assert "./tools/section8-gate" in text
     assert "./tools/target-radar" in text
+    assert "./tools/human-editability" in text
+    assert "./tools/spec-api" in text
     assert "./scripts/certi_easy.sh" in text
     assert "./scripts/pitch_docker_easy.sh" in text
     assert "python3 scripts/ci/check_doc_links.py" not in text
@@ -313,7 +317,9 @@ def test_public_setup_docs_keep_root_install_policy_explicit() -> None:
 
     assert "repository root is tooling-only" in package_layout
     assert "Do not use `pip install -e .`" in package_layout
-    assert "tooling-only and is not installed as a package" in first_run
+    assert "tooling-only and is not installed as a\npackage" in first_run
+    assert "do not use `pip install -e .`" in first_run
+    assert "python -m pip install --no-build-isolation" not in first_run
     assert "without installing the repo root as a distribution" in python_environment
     assert "Do not use root `pip install -e .`" in scripts_readme
 

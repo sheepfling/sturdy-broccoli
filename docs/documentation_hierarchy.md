@@ -13,14 +13,20 @@ backend vocabulary.
 The intended reading order for a new contributor is:
 
 1. repo front door
-2. first working example
-3. environment and package map
-4. deeper backend or verification reference
+2. onboarding map
+3. first working example
+4. environment and package map
+5. deeper backend or verification reference
 
 ### Start Here
 
 - [README.md](../README.md): install, bootstrap, smoke, and operator commands
+- [docs/onboarding.md](onboarding.md): one opinionated onboarding map for the current repo
 - [docs/first_run.md](first_run.md): shortest path from fresh checkout to a working pure-Python example
+- [docs/python_rti_backend.md](python_rti_backend.md): contributor-facing Python RTI backend guide
+- [docs/create_federate_and_fom.md](create_federate_and_fom.md): minimal package-backed new FOM and federate path
+- [docs/requirements_traceability.md](requirements_traceability.md): requirement-to-implementation walk-through
+- [docs/java_backends_quickstart.md](java_backends_quickstart.md): secondary Java route quickstart after Python RTI
 - [docs/networked_rti_python.md](networked_rti_python.md): hosted Python RTI and Target/Radar extension path
 - [docs/python_environment.md](python_environment.md): Python environment setup and install order
 - [docs/two_federate_quickstart.md](two_federate_quickstart.md): first artifact-producing two-federate example
@@ -131,7 +137,7 @@ The root [README.md](../README.md) should stay the shortest path to that flow.
 
 ## Read Next
 
-1. [first_run.md](first_run.md)
-2. [python_environment.md](python_environment.md)
-3. [two_federate_quickstart.md](two_federate_quickstart.md)
+1. [onboarding.md](onboarding.md)
+2. [first_run.md](first_run.md)
+3. [python_environment.md](python_environment.md)
 4. [README.md](README.md)

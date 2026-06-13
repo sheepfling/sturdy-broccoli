@@ -15,6 +15,7 @@ import math
 import struct
 from dataclasses import dataclass, field
 from importlib import import_module
+from importlib import resources
 from typing import Any, Callable, Iterable, Mapping, Protocol
 
 from hla2010.enums import CallbackModel, ResignAction
@@ -455,6 +456,16 @@ def _drain_callbacks(*rtis: Any, cycles: int = 8) -> None:
             rti.evoke_multiple_callbacks(0.0, 0.1)
 
 
+def _default_target_radar_fom_modules() -> list[str]:
+    return [
+        str(
+            resources.files("hla2010_fom_target_radar.resources.foms").joinpath(
+                "TargetRadarFOMmodule.xml"
+            )
+        )
+    ]
+
+
 def run_target_radar_scenario(
     rti_factory: RtiFactory | None = None,
     *,
@@ -486,7 +497,10 @@ def run_target_radar_scenario(
     radar_rti.connect(radar, CallbackModel.HLA_EVOKED)
 
     try:
-        target_rti.create_federation_execution(federation_name, list(fom_modules or ["TargetRadarFOMmodule.xml"]))
+        target_rti.create_federation_execution(
+            federation_name,
+            list(fom_modules) if fom_modules else _default_target_radar_fom_modules(),
+        )
     except FederationExecutionAlreadyExists:
         pass
 

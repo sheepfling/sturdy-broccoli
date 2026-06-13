@@ -1,65 +1,18 @@
 from __future__ import annotations
 
-import tomllib
 from pathlib import Path
+
+from hla2010_repo_internal.package_graph import internal_dependencies, load_package_graph, load_package_manifests
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGES = ROOT / "packages"
-
-ALLOWED_INTERNAL_DEPENDENCIES: dict[str, set[str]] = {
-    "hla2010-spec": set(),
-    "hla2010-rti-backend-common": {"hla2010-spec"},
-    "hla2010-rti-java-common": {"hla2010-spec", "hla2010-rti-backend-common"},
-    "hla2010-rti-python": {"hla2010-spec", "hla2010-rti-backend-common"},
-    "hla2010-rti-runtime-common": {"hla2010-spec", "hla2010-rti-backend-common", "hla2010-rti-transport-common"},
-    "hla2010-rti-certi": {"hla2010-spec", "hla2010-rti-java-common", "hla2010-rti-runtime-common", "hla2010-rti-transport-common"},
-    "hla2010-rti-java-jpype": {"hla2010-spec", "hla2010-rti-java-common"},
-    "hla2010-rti-java-py4j": {"hla2010-spec", "hla2010-rti-java-common"},
-    "hla2010-rti-pitch-common": {"hla2010-spec", "hla2010-rti-java-common", "hla2010-rti-runtime-common"},
-    "hla2010-rti-pitch-jpype": {
-        "hla2010-spec",
-        "hla2010-rti-java-common",
-        "hla2010-rti-java-jpype",
-        "hla2010-rti-pitch-common",
-    },
-    "hla2010-rti-pitch-py4j": {
-        "hla2010-spec",
-        "hla2010-rti-java-common",
-        "hla2010-rti-java-py4j",
-        "hla2010-rti-pitch-common",
-    },
-    "hla2010-rti-portico": {"hla2010-spec", "hla2010-rti-java-common", "hla2010-rti-java-jpype", "hla2010-rti-java-py4j"},
-    "hla2010-rti-transport-common": {"hla2010-spec", "hla2010-rti-backend-common"},
-    "hla2010-rti-transport-grpc": {
-        "hla2010-spec",
-        "hla2010-rti-backend-common",
-        "hla2010-rti-transport-common",
-        "hla2010-rti-runtime-common",
-    },
-    "hla2010-rti-transport-rest": {
-        "hla2010-spec",
-        "hla2010-rti-backend-common",
-        "hla2010-rti-transport-common",
-        "hla2010-rti-runtime-common",
-    },
-    "hla2010-verification-harness": {"hla2010-spec", "hla2010-rti-backend-common", "hla2010-rti-runtime-common"},
-    "hla2010-fom-target-radar": {"hla2010-spec", "hla2010-verification-harness", "hla2010-rti-runtime-common"},
-}
-
-
-def _internal_dependencies(package_name: str) -> set[str]:
-    pyproject = PACKAGES / package_name / "pyproject.toml"
-    data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
-    deps = data["project"].get("dependencies", [])
-    internal = set()
-    for dep in deps:
-        dep_name = str(dep).split("==", 1)[0]
-        if dep_name in ALLOWED_INTERNAL_DEPENDENCIES:
-            internal.add(dep_name)
-    return internal
 
 
 def test_package_dependency_metadata_matches_allowed_internal_graph() -> None:
-    for package_name, expected in ALLOWED_INTERNAL_DEPENDENCIES.items():
-        assert _internal_dependencies(package_name) == expected
+    graph = load_package_graph(ROOT / "packages" / "package_graph.yaml")
+    manifests = load_package_manifests(ROOT / "packages")
+    internal_names = set(manifests)
+    assert set(graph) == set(manifests)
+    for package_name in sorted(graph):
+        expected = sorted(str(name) for name in graph[package_name].get("may_depend_on", []))
+        assert internal_dependencies(manifests[package_name], internal_names) == expected

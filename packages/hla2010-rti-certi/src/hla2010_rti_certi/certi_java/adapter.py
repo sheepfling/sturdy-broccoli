@@ -6,6 +6,7 @@ from typing import Any
 
 from hla2010.spec import FederateAmbassadorSpec
 from hla2010_rti_java_common import make_rti_ambassador
+from hla2010_rti_java_common.java_common import invoke_java_federate_proxy_callback
 from hla2010_rti_certi.certi import CERTIConfig, create_certi_backend
 from .runtime import from_java_like, to_java_like
 
@@ -17,8 +18,11 @@ class _CERTIJavaFederateAdapter(FederateAmbassadorSpec):
         self._java_proxy = java_proxy
 
     def _forward_callback(self, method_name: str, *args: Any) -> Any:
-        callback = getattr(self._java_proxy, method_name)
-        return callback(*(to_java_like(arg) for arg in args))
+        return invoke_java_federate_proxy_callback(
+            self._java_proxy,
+            method_name,
+            *(to_java_like(arg) for arg in args),
+        )
 
 
     def connectionLost(self, *args: Any) -> Any:  # noqa: N802
@@ -363,17 +367,491 @@ class CERTIJavaRTIShim:
         self._rti = make_rti_ambassador(create_certi_backend(self.config))
         self._java_proxy = None
 
-    def __getattr__(self, name: str):
-        target = getattr(self._rti, name, None)
-        if target is None:
-            raise AttributeError(name)
+    def _forward_service(self, method_name: str, *args: Any) -> Any:
+        target = getattr(self._rti, method_name)
+        py_args = tuple(from_java_like(arg) for arg in args)
+        result = target(*py_args)
+        return to_java_like(result)
 
-        def _invoke(*args: Any) -> Any:
-            py_args = tuple(from_java_like(arg) for arg in args)
-            result = target(*py_args)
-            return to_java_like(result)
+    def abortFederationRestore(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("abortFederationRestore", *args)
 
-        return _invoke
+    def abortFederationSave(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("abortFederationSave", *args)
+
+    def associateRegionsForUpdates(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("associateRegionsForUpdates", *args)
+
+    def attributeOwnershipAcquisition(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("attributeOwnershipAcquisition", *args)
+
+    def attributeOwnershipAcquisitionIfAvailable(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("attributeOwnershipAcquisitionIfAvailable", *args)
+
+    def attributeOwnershipDivestitureIfWanted(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("attributeOwnershipDivestitureIfWanted", *args)
+
+    def attributeOwnershipReleaseDenied(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("attributeOwnershipReleaseDenied", *args)
+
+    def cancelAttributeOwnershipAcquisition(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("cancelAttributeOwnershipAcquisition", *args)
+
+    def cancelNegotiatedAttributeOwnershipDivestiture(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("cancelNegotiatedAttributeOwnershipDivestiture", *args)
+
+    def changeAttributeOrderType(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("changeAttributeOrderType", *args)
+
+    def changeInteractionOrderType(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("changeInteractionOrderType", *args)
+
+    def commitRegionModifications(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("commitRegionModifications", *args)
+
+    def confirmDivestiture(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("confirmDivestiture", *args)
+
+    def createFederationExecution(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("createFederationExecution", *args)
+
+    def createFederationExecutionWithMIM(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("createFederationExecutionWithMIM", *args)
+
+    def createRegion(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("createRegion", *args)
+
+    def decodeAttributeHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("decodeAttributeHandle", *args)
+
+    def decodeDimensionHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("decodeDimensionHandle", *args)
+
+    def decodeFederateHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("decodeFederateHandle", *args)
+
+    def decodeInteractionClassHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("decodeInteractionClassHandle", *args)
+
+    def decodeMessageRetractionHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("decodeMessageRetractionHandle", *args)
+
+    def decodeObjectClassHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("decodeObjectClassHandle", *args)
+
+    def decodeObjectInstanceHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("decodeObjectInstanceHandle", *args)
+
+    def decodeParameterHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("decodeParameterHandle", *args)
+
+    def decodeRegionHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("decodeRegionHandle", *args)
+
+    def deleteObjectInstance(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("deleteObjectInstance", *args)
+
+    def deleteRegion(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("deleteRegion", *args)
+
+    def destroyFederationExecution(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("destroyFederationExecution", *args)
+
+    def disableAsynchronousDelivery(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("disableAsynchronousDelivery", *args)
+
+    def disableAttributeRelevanceAdvisorySwitch(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("disableAttributeRelevanceAdvisorySwitch", *args)
+
+    def disableAttributeScopeAdvisorySwitch(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("disableAttributeScopeAdvisorySwitch", *args)
+
+    def disableCallbacks(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("disableCallbacks", *args)
+
+    def disableInteractionRelevanceAdvisorySwitch(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("disableInteractionRelevanceAdvisorySwitch", *args)
+
+    def disableObjectClassRelevanceAdvisorySwitch(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("disableObjectClassRelevanceAdvisorySwitch", *args)
+
+    def disableTimeConstrained(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("disableTimeConstrained", *args)
+
+    def disableTimeRegulation(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("disableTimeRegulation", *args)
+
+    def disconnect(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("disconnect", *args)
+
+    def enableAsynchronousDelivery(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("enableAsynchronousDelivery", *args)
+
+    def enableAttributeRelevanceAdvisorySwitch(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("enableAttributeRelevanceAdvisorySwitch", *args)
+
+    def enableAttributeScopeAdvisorySwitch(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("enableAttributeScopeAdvisorySwitch", *args)
+
+    def enableCallbacks(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("enableCallbacks", *args)
+
+    def enableInteractionRelevanceAdvisorySwitch(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("enableInteractionRelevanceAdvisorySwitch", *args)
+
+    def enableObjectClassRelevanceAdvisorySwitch(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("enableObjectClassRelevanceAdvisorySwitch", *args)
+
+    def enableTimeConstrained(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("enableTimeConstrained", *args)
+
+    def enableTimeRegulation(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("enableTimeRegulation", *args)
+
+    def evokeCallback(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("evokeCallback", *args)
+
+    def evokeMultipleCallbacks(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("evokeMultipleCallbacks", *args)
+
+    def federateRestoreComplete(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("federateRestoreComplete", *args)
+
+    def federateRestoreNotComplete(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("federateRestoreNotComplete", *args)
+
+    def federateSaveBegun(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("federateSaveBegun", *args)
+
+    def federateSaveComplete(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("federateSaveComplete", *args)
+
+    def federateSaveNotComplete(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("federateSaveNotComplete", *args)
+
+    def flushQueueRequest(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("flushQueueRequest", *args)
+
+    def getAttributeHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getAttributeHandle", *args)
+
+    def getAttributeHandleFactory(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getAttributeHandleFactory", *args)
+
+    def getAttributeHandleSetFactory(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getAttributeHandleSetFactory", *args)
+
+    def getAttributeHandleValueMapFactory(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getAttributeHandleValueMapFactory", *args)
+
+    def getAttributeName(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getAttributeName", *args)
+
+    def getAttributeSetRegionSetPairListFactory(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getAttributeSetRegionSetPairListFactory", *args)
+
+    def getAutomaticResignDirective(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getAutomaticResignDirective", *args)
+
+    def getAvailableDimensionsForClassAttribute(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getAvailableDimensionsForClassAttribute", *args)
+
+    def getAvailableDimensionsForInteractionClass(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getAvailableDimensionsForInteractionClass", *args)
+
+    def getDimensionHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getDimensionHandle", *args)
+
+    def getDimensionHandleFactory(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getDimensionHandleFactory", *args)
+
+    def getDimensionHandleSet(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getDimensionHandleSet", *args)
+
+    def getDimensionHandleSetFactory(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getDimensionHandleSetFactory", *args)
+
+    def getDimensionName(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getDimensionName", *args)
+
+    def getDimensionUpperBound(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getDimensionUpperBound", *args)
+
+    def getFederateHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getFederateHandle", *args)
+
+    def getFederateHandleFactory(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getFederateHandleFactory", *args)
+
+    def getFederateHandleSetFactory(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getFederateHandleSetFactory", *args)
+
+    def getFederateName(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getFederateName", *args)
+
+    def getInteractionClassHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getInteractionClassHandle", *args)
+
+    def getInteractionClassHandleFactory(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getInteractionClassHandleFactory", *args)
+
+    def getInteractionClassName(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getInteractionClassName", *args)
+
+    def getKnownObjectClassHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getKnownObjectClassHandle", *args)
+
+    def getObjectClassHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getObjectClassHandle", *args)
+
+    def getObjectClassHandleFactory(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getObjectClassHandleFactory", *args)
+
+    def getObjectClassName(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getObjectClassName", *args)
+
+    def getObjectInstanceHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getObjectInstanceHandle", *args)
+
+    def getObjectInstanceHandleFactory(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getObjectInstanceHandleFactory", *args)
+
+    def getObjectInstanceName(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getObjectInstanceName", *args)
+
+    def getOrderName(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getOrderName", *args)
+
+    def getOrderType(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getOrderType", *args)
+
+    def getParameterHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getParameterHandle", *args)
+
+    def getParameterHandleFactory(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getParameterHandleFactory", *args)
+
+    def getParameterHandleValueMapFactory(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getParameterHandleValueMapFactory", *args)
+
+    def getParameterName(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getParameterName", *args)
+
+    def getRangeBounds(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getRangeBounds", *args)
+
+    def getRegionHandleSetFactory(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getRegionHandleSetFactory", *args)
+
+    def getTimeFactory(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getTimeFactory", *args)
+
+    def getTransportationName(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getTransportationName", *args)
+
+    def getTransportationType(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getTransportationType", *args)
+
+    def getTransportationTypeHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getTransportationTypeHandle", *args)
+
+    def getTransportationTypeHandleFactory(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getTransportationTypeHandleFactory", *args)
+
+    def getTransportationTypeName(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getTransportationTypeName", *args)
+
+    def getUpdateRateValue(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getUpdateRateValue", *args)
+
+    def getUpdateRateValueForAttribute(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("getUpdateRateValueForAttribute", *args)
+
+    def isAttributeOwnedByFederate(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("isAttributeOwnedByFederate", *args)
+
+    def joinFederationExecution(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("joinFederationExecution", *args)
+
+    def listFederationExecutions(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("listFederationExecutions", *args)
+
+    def localDeleteObjectInstance(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("localDeleteObjectInstance", *args)
+
+    def modifyLookahead(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("modifyLookahead", *args)
+
+    def negotiatedAttributeOwnershipDivestiture(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("negotiatedAttributeOwnershipDivestiture", *args)
+
+    def nextMessageRequest(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("nextMessageRequest", *args)
+
+    def nextMessageRequestAvailable(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("nextMessageRequestAvailable", *args)
+
+    def normalizeFederateHandle(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("normalizeFederateHandle", *args)
+
+    def normalizeServiceGroup(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("normalizeServiceGroup", *args)
+
+    def publishInteractionClass(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("publishInteractionClass", *args)
+
+    def publishObjectClassAttributes(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("publishObjectClassAttributes", *args)
+
+    def queryAttributeOwnership(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("queryAttributeOwnership", *args)
+
+    def queryAttributeTransportationType(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("queryAttributeTransportationType", *args)
+
+    def queryFederationRestoreStatus(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("queryFederationRestoreStatus", *args)
+
+    def queryFederationSaveStatus(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("queryFederationSaveStatus", *args)
+
+    def queryGALT(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("queryGALT", *args)
+
+    def queryInteractionTransportationType(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("queryInteractionTransportationType", *args)
+
+    def queryLITS(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("queryLITS", *args)
+
+    def queryLogicalTime(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("queryLogicalTime", *args)
+
+    def queryLookahead(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("queryLookahead", *args)
+
+    def registerFederationSynchronizationPoint(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("registerFederationSynchronizationPoint", *args)
+
+    def registerObjectInstance(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("registerObjectInstance", *args)
+
+    def registerObjectInstanceWithRegions(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("registerObjectInstanceWithRegions", *args)
+
+    def releaseMultipleObjectInstanceName(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("releaseMultipleObjectInstanceName", *args)
+
+    def releaseObjectInstanceName(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("releaseObjectInstanceName", *args)
+
+    def requestAttributeTransportationTypeChange(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("requestAttributeTransportationTypeChange", *args)
+
+    def requestAttributeValueUpdate(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("requestAttributeValueUpdate", *args)
+
+    def requestAttributeValueUpdateWithRegions(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("requestAttributeValueUpdateWithRegions", *args)
+
+    def requestFederationRestore(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("requestFederationRestore", *args)
+
+    def requestFederationSave(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("requestFederationSave", *args)
+
+    def requestInteractionTransportationTypeChange(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("requestInteractionTransportationTypeChange", *args)
+
+    def reserveMultipleObjectInstanceName(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("reserveMultipleObjectInstanceName", *args)
+
+    def reserveObjectInstanceName(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("reserveObjectInstanceName", *args)
+
+    def resignFederationExecution(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("resignFederationExecution", *args)
+
+    def retract(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("retract", *args)
+
+    def sendInteraction(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("sendInteraction", *args)
+
+    def sendInteractionWithRegions(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("sendInteractionWithRegions", *args)
+
+    def setAutomaticResignDirective(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("setAutomaticResignDirective", *args)
+
+    def setRangeBounds(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("setRangeBounds", *args)
+
+    def subscribeInteractionClass(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("subscribeInteractionClass", *args)
+
+    def subscribeInteractionClassPassively(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("subscribeInteractionClassPassively", *args)
+
+    def subscribeInteractionClassPassivelyWithRegions(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("subscribeInteractionClassPassivelyWithRegions", *args)
+
+    def subscribeInteractionClassWithRegions(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("subscribeInteractionClassWithRegions", *args)
+
+    def subscribeObjectClassAttributes(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("subscribeObjectClassAttributes", *args)
+
+    def subscribeObjectClassAttributesPassively(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("subscribeObjectClassAttributesPassively", *args)
+
+    def subscribeObjectClassAttributesPassivelyWithRegions(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("subscribeObjectClassAttributesPassivelyWithRegions", *args)
+
+    def subscribeObjectClassAttributesWithRegions(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("subscribeObjectClassAttributesWithRegions", *args)
+
+    def synchronizationPointAchieved(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("synchronizationPointAchieved", *args)
+
+    def timeAdvanceRequest(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("timeAdvanceRequest", *args)
+
+    def timeAdvanceRequestAvailable(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("timeAdvanceRequestAvailable", *args)
+
+    def unassociateRegionsForUpdates(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("unassociateRegionsForUpdates", *args)
+
+    def unconditionalAttributeOwnershipDivestiture(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("unconditionalAttributeOwnershipDivestiture", *args)
+
+    def unpublishInteractionClass(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("unpublishInteractionClass", *args)
+
+    def unpublishObjectClass(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("unpublishObjectClass", *args)
+
+    def unpublishObjectClassAttributes(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("unpublishObjectClassAttributes", *args)
+
+    def unsubscribeInteractionClass(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("unsubscribeInteractionClass", *args)
+
+    def unsubscribeInteractionClassWithRegions(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("unsubscribeInteractionClassWithRegions", *args)
+
+    def unsubscribeObjectClass(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("unsubscribeObjectClass", *args)
+
+    def unsubscribeObjectClassAttributes(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("unsubscribeObjectClassAttributes", *args)
+
+    def unsubscribeObjectClassAttributesWithRegions(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("unsubscribeObjectClassAttributesWithRegions", *args)
+
+    def updateAttributeValues(self, *args: Any) -> Any:  # noqa: N802
+        return self._forward_service("updateAttributeValues", *args)
 
     def connect(self, federateReference: Any, callbackModel: Any, localSettingsDesignator: str | None = None) -> None:
         self._java_proxy = federateReference

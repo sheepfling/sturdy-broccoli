@@ -31,11 +31,53 @@ class _RecordingProxy:
     def __init__(self) -> None:
         self.calls: list[tuple[str, tuple[object, ...]]] = []
 
-    def __getattr__(self, name: str):
-        def _record(*args: object) -> None:
-            self.calls.append((name, args))
+    def _record(self, name: str, *args: object) -> None:
+        self.calls.append((name, args))
 
-        return _record
+    def discoverObjectInstance(self, *args: object) -> None:  # noqa: N802
+        self._record("discoverObjectInstance", *args)
+
+    def reflectAttributeValues(self, *args: object) -> None:  # noqa: N802
+        self._record("reflectAttributeValues", *args)
+
+    def receiveInteraction(self, *args: object) -> None:  # noqa: N802
+        self._record("receiveInteraction", *args)
+
+    def timeAdvanceGrant(self, *args: object) -> None:  # noqa: N802
+        self._record("timeAdvanceGrant", *args)
+
+    def removeObjectInstance(self, *args: object) -> None:  # noqa: N802
+        self._record("removeObjectInstance", *args)
+
+    def requestAttributeOwnershipAssumption(self, *args: object) -> None:  # noqa: N802
+        self._record("requestAttributeOwnershipAssumption", *args)
+
+    def attributeOwnershipAcquisitionNotification(self, *args: object) -> None:  # noqa: N802
+        self._record("attributeOwnershipAcquisitionNotification", *args)
+
+    def attributeOwnershipUnavailable(self, *args: object) -> None:  # noqa: N802
+        self._record("attributeOwnershipUnavailable", *args)
+
+    def requestAttributeOwnershipRelease(self, *args: object) -> None:  # noqa: N802
+        self._record("requestAttributeOwnershipRelease", *args)
+
+    def requestDivestitureConfirmation(self, *args: object) -> None:  # noqa: N802
+        self._record("requestDivestitureConfirmation", *args)
+
+    def confirmAttributeOwnershipAcquisitionCancellation(self, *args: object) -> None:  # noqa: N802
+        self._record("confirmAttributeOwnershipAcquisitionCancellation", *args)
+
+    def attributeIsNotOwned(self, *args: object) -> None:  # noqa: N802
+        self._record("attributeIsNotOwned", *args)
+
+    def informAttributeOwnership(self, *args: object) -> None:  # noqa: N802
+        self._record("informAttributeOwnership", *args)
+
+    def announceSynchronizationPoint(self, *args: object) -> None:  # noqa: N802
+        self._record("announceSynchronizationPoint", *args)
+
+    def federationSynchronized(self, *args: object) -> None:  # noqa: N802
+        self._record("federationSynchronized", *args)
 
 
 @pytest.mark.parametrize("profile", ["jpype", "py4j"])

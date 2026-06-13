@@ -94,7 +94,6 @@ FORBIDDEN_PACKAGE_ROOT_FACADE_IMPORTS = (
 FORBIDDEN_RUNTIME_CLASS_INJECTION_PATTERNS = (
     "setattr(RTIambassadorSpec",
     "setattr(FederateAmbassadorSpec",
-    "setattr(PythonicRTIAmbassadorMixin",
     "setattr(DelegatingRTIAmbassador",
     "setattr(RecordingFederateAmbassador",
     "setattr(FederateAmbassadorMultiplexer",
@@ -110,6 +109,40 @@ FORBIDDEN_PACKAGE_REPO_ROOT_PATTERNS = (
     "Path(__file__).resolve().parents",
     "Path(__file__).resolve().parent.parent",
 )
+ALLOWLISTED_SELF_LOCATING_SCRIPTS = {
+    "scripts/check_certi_preflight.py",
+    "scripts/check_vendor_runner_template_drift.py",
+    "scripts/ci/check_doc_links.py",
+    "scripts/ci/check_vendor_runtime_ci_state.py",
+    "scripts/ci/write_vendor_probe_promotion_review.py",
+    "scripts/ci/write_vendor_probe_stability.py",
+    "scripts/ci/write_vendor_runtime_job_summary.py",
+    "scripts/classify_vendor_runtime.py",
+    "scripts/diagnose_pitch_exchange.py",
+    "scripts/diagnose_pitch_negotiated_ownership.py",
+    "scripts/discover_backend_compliance.py",
+    "scripts/doctor.py",
+    "scripts/generate_api_metadata.py",
+    "scripts/generate_clause13_conformance_packet.py",
+    "scripts/generate_compliance_artifacts.py",
+    "scripts/generate_fom_overview.py",
+    "scripts/generate_imported_packet_backlog.py",
+    "scripts/generate_imported_packet_requirements_docs.py",
+    "scripts/generate_master_harmonization_index.py",
+    "scripts/generate_package_dependency_tree.py",
+    "scripts/generate_python_rti_service_map.py",
+    "scripts/generate_runtime_method_index.py",
+    "scripts/human_editability.py",
+    "scripts/repro_pitch_crc_docker.py",
+    "scripts/repro_pitch_crc_macos.py",
+    "scripts/run_target_radar_backend_matrix.py",
+    "scripts/run_target_radar_proof.py",
+    "scripts/run_two_federate_suite.py",
+    "scripts/run_vendor_parity_artifacts.py",
+    "scripts/update_rti_options_matrix.py",
+    "scripts/validate_package_graph.py",
+    "scripts/write_vendor_gap_profile.py",
+}
 
 
 def _iter_python_files() -> list[Path]:
@@ -308,16 +341,26 @@ def test_installable_package_code_does_not_depend_on_root_backend_or_transport_f
     assert not violations, "\n".join(violations)
 
 
-def test_scripts_do_not_sniff_repo_root_from_file_paths() -> None:
+def test_repo_aware_scripts_that_self_locate_are_explicitly_allowlisted() -> None:
+    actual: set[str] = set()
+    for path in _iter_script_python_files():
+        if _should_skip(path):
+            continue
+        rel = path.relative_to(ROOT).as_posix()
+        text = path.read_text(encoding="utf-8")
+        if any(pattern in text for pattern in FORBIDDEN_PACKAGE_REPO_ROOT_PATTERNS):
+            actual.add(rel)
+    assert actual == ALLOWLISTED_SELF_LOCATING_SCRIPTS
+
+
+def test_non_allowlisted_scripts_do_not_sniff_repo_root_from_file_paths() -> None:
     violations: list[str] = []
     for path in _iter_script_python_files():
         if _should_skip(path):
             continue
         rel = path.relative_to(ROOT).as_posix()
-        # The canonical operator scripts intentionally self-locate the checkout
-        # so they can bootstrap from a clean outside-checkout invocation.
-        # Their behavior is covered by direct wrapper tests instead.
-        continue
+        if rel in ALLOWLISTED_SELF_LOCATING_SCRIPTS:
+            continue
         for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
             stripped = line.strip()
             if any(pattern in stripped for pattern in FORBIDDEN_PACKAGE_REPO_ROOT_PATTERNS):
@@ -517,7 +560,7 @@ def test_core_package_contains_no_root_verification_or_work_packet_facades() -> 
 
 
 def test_root_hla2010_package_stays_split_package_free_except_for_hla2010_rti() -> None:
-    root_package = ROOT / "src/hla2010"
+    root_package = ROOT / "packages/hla2010-spec/src/hla2010"
     violations: list[str] = []
     allowed_rti_import = "hla2010_rti_runtime_common"
     forbidden_prefixes = (
@@ -536,7 +579,7 @@ def test_root_hla2010_package_stays_split_package_free_except_for_hla2010_rti() 
             elif isinstance(node, ast.ImportFrom) and node.module:
                 imported_modules.append(node.module)
         forbidden = [name for name in imported_modules if name.startswith(forbidden_prefixes)]
-        if rel == "src/hla2010/rti.py":
+        if rel == "packages/hla2010-spec/src/hla2010/rti.py":
             unexpected = [name for name in forbidden if name != allowed_rti_import]
             if unexpected:
                 violations.append(f"{rel}: unexpected split-package import(s): {', '.join(sorted(unexpected))}")

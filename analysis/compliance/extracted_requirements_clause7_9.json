@@ -16,9 +16,9 @@
       "certi_runtime_status": "",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ddm.py",
-        "hla2010/backends/python/subscriptions.py",
-        "hla2010/backends/python/object_delivery.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
+        "packages/hla2010-rti-python/src/hla2010_rti_python/subscriptions.py",
+        "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -54,8 +54,8 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ddm.py",
-        "hla2010/backends/python/subscriptions.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
+        "packages/hla2010-rti-python/src/hla2010_rti_python/subscriptions.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -94,8 +94,8 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ddm.py",
-        "hla2010/backends/python/support.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
+        "packages/hla2010-rti-python/src/hla2010_rti_python/support.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -134,9 +134,9 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ddm.py",
-        "hla2010/backends/python/subscriptions.py",
-        "hla2010/backends/python/object_delivery.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
+        "packages/hla2010-rti-python/src/hla2010_rti_python/subscriptions.py",
+        "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -175,8 +175,8 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ddm.py",
-        "hla2010/backends/python/declaration.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
+        "packages/hla2010-rti-python/src/hla2010_rti_python/declaration.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -218,8 +218,8 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ddm.py",
-        "hla2010/backends/python/declaration.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
+        "packages/hla2010-rti-python/src/hla2010_rti_python/declaration.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -260,9 +260,9 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ddm.py",
-        "hla2010/backends/python/object_delivery.py",
-        "hla2010/backends/python/subscriptions.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
+        "packages/hla2010-rti-python/src/hla2010_rti_python/object_delivery.py",
+        "packages/hla2010-rti-python/src/hla2010_rti_python/subscriptions.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -300,8 +300,8 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ddm.py",
-        "hla2010/backends/python/subscriptions.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
+        "packages/hla2010-rti-python/src/hla2010_rti_python/subscriptions.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -343,7 +343,7 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ddm.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -386,7 +386,7 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ddm.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -424,7 +424,7 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ddm.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -465,7 +465,7 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ddm.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -507,7 +507,7 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ddm.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -549,7 +549,7 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ddm.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -591,8 +591,8 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ddm.py",
-        "hla2010/backends/python/declaration.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
+        "packages/hla2010-rti-python/src/hla2010_rti_python/declaration.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -634,8 +634,8 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ddm.py",
-        "hla2010/backends/python/declaration.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
+        "packages/hla2010-rti-python/src/hla2010_rti_python/declaration.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -677,8 +677,8 @@
       "certi_runtime_status": "",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ownership.py",
-        "hla2010/backends/python/object.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py",
+        "packages/hla2010-rti-python/src/hla2010_rti_python/object.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -687,7 +687,7 @@
       "linked_methods": [],
       "matrix_id": "HLA1516.1-OWN-001",
       "negative_test_refs": [],
-      "notes": "verification_method= and release-request flows; hla2010/backends/python/backend.py; Ownership family seed now linked to the focused Clause 7 extraction tranche",
+      "notes": "verification_method= and release-request flows; packages/hla2010-rti-python/src/hla2010_rti_python/backend.py; Ownership family seed now linked to the focused Clause 7 extraction tranche",
       "pitch_runtime_status": "",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py"
@@ -716,8 +716,8 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ownership.py",
-        "hla2010/backends/python/state.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py",
+        "packages/hla2010-rti-python/src/hla2010_rti_python/state.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -758,7 +758,7 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ownership.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -799,8 +799,8 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/object.py",
-        "hla2010/backends/python/ownership.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/object.py",
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -841,7 +841,7 @@
       "certi_runtime_status": "partial",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ownership.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -883,7 +883,7 @@
       "certi_runtime_status": "yes",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ownership.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -931,7 +931,7 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ownership.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -973,7 +973,7 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ownership.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1015,7 +1015,7 @@
       "certi_runtime_status": "yes",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ownership.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1056,15 +1056,15 @@
     {
       "artifact_refs": [
         "docs/backend_conformance_matrix.md",
-        "docs/certi_negotiated_ownership_findings.md",
-        "docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",
         "docs/rti_options_and_test_matrix.md",
+        "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md",
+        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "partial",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ownership.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1110,7 +1110,7 @@
       "certi_runtime_status": "partial",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ownership.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1158,7 +1158,7 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ownership.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1199,7 +1199,7 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ownership.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1240,7 +1240,7 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ownership.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1322,7 +1322,7 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ownership.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1363,7 +1363,7 @@
       "certi_runtime_status": "yes",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "hla2010/backends/python/ownership.py"
+        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [

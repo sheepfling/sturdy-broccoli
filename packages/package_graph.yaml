@@ -1,0 +1,202 @@
+{
+  "packages": {
+    "hla2010-spec": {
+      "import_root": "hla2010",
+      "layer": 0,
+      "role": "core-spec",
+      "may_depend_on": []
+    },
+    "hla2010-rti-backend-common": {
+      "import_root": "hla2010_rti_backend_common",
+      "layer": 1,
+      "role": "backend-support",
+      "may_depend_on": [
+        "hla2010-spec"
+      ]
+    },
+    "hla2010-rti-java-common": {
+      "import_root": "hla2010_rti_java_common",
+      "layer": 2,
+      "role": "java-support",
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-rti-backend-common"
+      ]
+    },
+    "hla2010-rti-python": {
+      "import_root": "hla2010_rti_python",
+      "layer": 2,
+      "role": "rti-backend",
+      "backend_names": [
+        "python"
+      ],
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-rti-backend-common"
+      ]
+    },
+    "hla2010-rti-transport-common": {
+      "import_root": "hla2010_rti_transport_common",
+      "layer": 2,
+      "role": "transport-support",
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-rti-backend-common"
+      ]
+    },
+    "hla2010-rti-java-jpype": {
+      "import_root": "hla2010_rti_java_jpype",
+      "layer": 3,
+      "role": "java-bridge",
+      "backend_names": [
+        "jpype"
+      ],
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-rti-java-common"
+      ]
+    },
+    "hla2010-rti-java-py4j": {
+      "import_root": "hla2010_rti_java_py4j",
+      "layer": 3,
+      "role": "java-bridge",
+      "backend_names": [
+        "py4j"
+      ],
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-rti-java-common"
+      ]
+    },
+    "hla2010-rti-runtime-common": {
+      "import_root": "hla2010_rti_runtime_common",
+      "layer": 3,
+      "role": "runtime-support",
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-rti-backend-common",
+        "hla2010-rti-transport-common"
+      ]
+    },
+    "hla2010-rti-certi": {
+      "import_root": "hla2010_rti_certi",
+      "layer": 4,
+      "role": "rti-backend",
+      "backend_names": [
+        "certi",
+        "certi-jpype",
+        "certi-py4j"
+      ],
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-rti-java-common",
+        "hla2010-rti-runtime-common",
+        "hla2010-rti-transport-common"
+      ]
+    },
+    "hla2010-rti-pitch-common": {
+      "import_root": "hla2010_rti_pitch_common",
+      "layer": 4,
+      "role": "runtime-common",
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-rti-java-common",
+        "hla2010-rti-runtime-common"
+      ]
+    },
+    "hla2010-rti-portico": {
+      "import_root": "hla2010_rti_portico",
+      "layer": 4,
+      "role": "rti-backend",
+      "backend_names": [
+        "portico-jpype",
+        "portico-py4j"
+      ],
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-rti-java-common",
+        "hla2010-rti-java-jpype",
+        "hla2010-rti-java-py4j"
+      ]
+    },
+    "hla2010-rti-transport-grpc": {
+      "import_root": "hla2010_rti_transport_grpc",
+      "layer": 4,
+      "role": "transport",
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-rti-backend-common",
+        "hla2010-rti-transport-common",
+        "hla2010-rti-runtime-common"
+      ]
+    },
+    "hla2010-rti-transport-rest": {
+      "import_root": "hla2010_rti_transport_rest",
+      "layer": 4,
+      "role": "transport",
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-rti-backend-common",
+        "hla2010-rti-transport-common",
+        "hla2010-rti-runtime-common"
+      ]
+    },
+    "hla2010-verification-harness": {
+      "import_root": "hla2010_verification_harness",
+      "layer": 4,
+      "role": "verification-harness",
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-rti-backend-common",
+        "hla2010-rti-runtime-common"
+      ]
+    },
+    "hla2010-fom-target-radar": {
+      "import_root": "hla2010_fom_target_radar",
+      "layer": 5,
+      "role": "fom-example",
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-verification-harness",
+        "hla2010-rti-runtime-common"
+      ]
+    },
+    "hla2010-fom-minimal-demo": {
+      "import_root": "hla2010_fom_minimal_demo",
+      "layer": 5,
+      "role": "fom-example",
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-rti-runtime-common"
+      ]
+    },
+    "hla2010-rti-pitch-jpype": {
+      "import_root": "hla2010_rti_pitch_jpype",
+      "layer": 5,
+      "role": "rti-backend",
+      "backend_names": [
+        "pitch-jpype"
+      ],
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-rti-java-common",
+        "hla2010-rti-java-jpype",
+        "hla2010-rti-pitch-common"
+      ]
+    },
+    "hla2010-rti-pitch-py4j": {
+      "import_root": "hla2010_rti_pitch_py4j",
+      "layer": 5,
+      "role": "rti-backend",
+      "backend_names": [
+        "pitch-py4j"
+      ],
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-rti-java-common",
+        "hla2010-rti-java-py4j",
+        "hla2010-rti-pitch-common"
+      ]
+    }
+  }
+}

@@ -4,48 +4,18 @@ import ast
 import tomllib
 from pathlib import Path
 
+from hla2010_repo_internal.package_graph import load_package_graph, package_import_allowlists
+
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGES = ROOT / "packages"
-
-# Installable package families are allowed to depend on a small, explicit set
-# of sibling package roots. This keeps the split packages honest while still
-# allowing the transitional spec/runtime facade under `hla2010`.
-#
-# The architectural rule is:
-# - backend families depend on core plus narrow support packages
-# - transports depend on core plus narrow transport support packages
-# - FOM and verification packages depend only on the shared runtime surface
-#
-# See docs/import_boundary_rules.md for the prose version of the same rules.
-CORE_ONLY = {"hla2010"}
-BACKEND_COMMON = CORE_ONLY | {"hla2010_rti_backend_common"}
-JAVA_COMMON = CORE_ONLY | {"hla2010_rti_java_common"}
-RUNTIME_COMMON = CORE_ONLY | {"hla2010_rti_backend_common", "hla2010_rti_transport_common"}
-VERIFICATION_COMMON = CORE_ONLY | {"hla2010_rti_backend_common", "hla2010_rti_runtime_common"}
-
-PACKAGE_IMPORT_ALLOWLISTS: dict[str, set[str]] = {
-    "hla2010_rti_java_common": CORE_ONLY,
-    "hla2010_rti_python": BACKEND_COMMON,
-    "hla2010_verification_harness": VERIFICATION_COMMON,
-    "hla2010_rti_runtime_common": RUNTIME_COMMON,
-    "hla2010_rti_transport_common": BACKEND_COMMON,
-    "hla2010_rti_java_jpype": JAVA_COMMON,
-    "hla2010_rti_java_py4j": JAVA_COMMON,
-    "hla2010_rti_certi": JAVA_COMMON | {"hla2010_rti_runtime_common", "hla2010_rti_transport_common"},
-    "hla2010_rti_pitch_common": JAVA_COMMON | {"hla2010_rti_runtime_common"},
-    "hla2010_rti_pitch_jpype": JAVA_COMMON | {"hla2010_rti_java_jpype", "hla2010_rti_pitch_common"},
-    "hla2010_rti_pitch_py4j": JAVA_COMMON | {"hla2010_rti_java_py4j", "hla2010_rti_pitch_common"},
-    "hla2010_rti_portico": JAVA_COMMON | {"hla2010_rti_java_jpype", "hla2010_rti_java_py4j"},
-    "hla2010_rti_transport_grpc": CORE_ONLY | {"hla2010_rti_transport_common", "hla2010_rti_runtime_common"},
-    "hla2010_rti_transport_rest": CORE_ONLY | {"hla2010_rti_transport_common", "hla2010_rti_runtime_common"},
-    "hla2010_fom_target_radar": CORE_ONLY | {"hla2010_verification_harness", "hla2010_rti_runtime_common"},
-}
+PACKAGE_IMPORT_ALLOWLISTS = package_import_allowlists(load_package_graph(ROOT / "packages" / "package_graph.yaml"))
 
 FORBIDDEN_IMPORT_PREFIXES = (
     "hla2010.testing",
     "hla2010_repo_internal",
     "hla2010_fom_target_radar.testing",
+    "hla2010_fom_minimal_demo.testing",
 )
 
 

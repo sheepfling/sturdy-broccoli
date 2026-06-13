@@ -1,6 +1,6 @@
 # Public Class Inventory
 
-- all public module classes: 225
+- all public module classes: 224
 - package-exported classes: 0
 
 | Module | Class | Exported via `hla2010` | Mapping status | Rationale |
@@ -210,7 +210,6 @@
 | hla2010.raw_api | RTIambassador | no | close-1to1 | Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs. |
 | hla2010.runtime_api | FederateAmbassador | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
 | hla2010.runtime_api | NullFederateAmbassador | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla2010.runtime_api | PythonicRTIAmbassadorMixin | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
 | hla2010.runtime_api | RTIAmbassador | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
 | hla2010.runtime_api | RTIambassador | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
 | hla2010.time | HLAfloat64Interval | no | close-1to1 | Logical time, interval, and factory classes intentionally mirror the HLA logical-time families. |

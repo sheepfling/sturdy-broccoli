@@ -30,7 +30,9 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `./tools/vendor-edge` canonical vendor edge matrix flow
 - `./tools/rti-options` canonical generated RTI route/options matrix flow
 - `./tools/fom-overview` canonical merged FOM/MIM overview artifact flow
-- `./tools/package-deps` canonical split-package dependency tree flow
+- `./tools/human-editability` canonical human-editability inventory, check, and early trace lookup flow
+- `./tools/spec-api` canonical spec metadata generate and check flow
+- `./tools/package-deps` canonical split-package dependency tree generate/check flow
 - `./tools/section8-gate` canonical Section 8 backend-matrix gate
 - `./tools/target-radar` canonical target/radar proof and backend-matrix artifact flow
 - `./tools/lint` canonical local lint, link, and generated-doc hygiene flow

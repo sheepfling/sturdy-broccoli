@@ -17,6 +17,7 @@ CORE_WORKSPACE_PACKAGES=(
   "packages/hla2010-rti-transport-rest"
   "packages/hla2010-verification-harness"
   "packages/hla2010-fom-target-radar"
+  "packages/hla2010-fom-minimal-demo"
 )
 JPYPE_WORKSPACE_PACKAGES=(
   "packages/hla2010-rti-java-jpype"
@@ -189,3 +190,29 @@ for package_dir in "${workspace_packages[@]}"; do
   editable_args+=("-e" "$ROOT_DIR/$package_dir")
 done
 python -m pip install --no-build-isolation "${editable_args[@]}"
+
+workspace_pythonpath="$("$ROOT_DIR/.venv/bin/python" - "$ROOT_DIR" <<'PY'
+import tomllib
+from pathlib import Path
+import sys
+
+root = Path(sys.argv[1])
+pyproject = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
+for rel in pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]:
+    print(root / rel)
+PY
+)"
+
+site_packages_dir="$("$ROOT_DIR/.venv/bin/python" - <<'PY'
+import site
+
+for path in site.getsitepackages():
+    if path.endswith("site-packages"):
+        print(path)
+        break
+PY
+)"
+
+workspace_pth="$site_packages_dir/hla2010_workspace_roots.pth"
+printf '%s\n' "$workspace_pythonpath" > "$workspace_pth"
+hla2010_shell_log "wrote workspace roots file $workspace_pth"

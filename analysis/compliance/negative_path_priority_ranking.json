@@ -1274,8 +1274,8 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
       ],
@@ -1295,8 +1295,8 @@
       "negative_test_refs": [],
       "positive_test_refs": [
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
       ],

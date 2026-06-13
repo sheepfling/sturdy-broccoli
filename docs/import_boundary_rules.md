@@ -4,15 +4,15 @@ This repository now uses a strict layered package model.
 
 The installable root is `hla2010-spec`.
 
-The workspace facade is `src/hla2010/`.
+The package-owned spec source root is `packages/hla2010-spec/src/hla2010/`.
 
 Those are not the same thing:
 
 - `hla2010-spec` owns the architectural root surface
-- `src/hla2010/` owns the abstract/core API plus only the documented workspace
+- `packages/hla2010-spec/src/hla2010/` owns the abstract/core API plus only the documented root
   compatibility facade: `hla2010.rti`
 
-Do not treat `src/hla2010/` as a second conceptual root.
+Do not treat `packages/hla2010-spec/src/hla2010/` as a second conceptual root.
 Do not add new root facades unless they are temporary, documented, and backed
 by a migration reason.
 
@@ -142,7 +142,7 @@ Examples:
 
 The same rule applies to `hla2010.rti`: it is a temporary documented root
 compatibility facade for backend discovery and ambassador creation, not a
-place to move package-owned backend logic back into `src/hla2010/`.
+place to move package-owned backend logic back into `packages/hla2010-spec/src/hla2010/`.
 Package-owned code should import runtime factory helpers from
 `hla2010_rti_runtime_common` directly rather than through `hla2010.rti`.
 Do not import plugin contract types, backend registry internals, low-level
@@ -169,8 +169,8 @@ must not be reintroduced.
 For packages marked `implementation-moved`, the declared
 `tool.hla2010.package-split.source_roots` must point only at files under that
 package's own `packages/<name>/src/...` tree. Compatibility facades under
-`src/hla2010/` are workspace migration surface, not package-owned
-implementation.
+`packages/hla2010-spec/src/hla2010/` are package-owned spec surface, not
+workspace-only implementation overflow for concrete backends.
 
 ## Enforcement
 

@@ -36,7 +36,7 @@ Do not assume:
 
 ## Repo Mental Model
 
-- `src/hla2010/` is the main Python package root
+- `packages/hla2010-spec/src/hla2010/` is the main Python package root
 - `hla2010/` is a narrow shim area
 - `packages/*/src/` owns split backend and support implementations
 - `examples/` contains runnable entrypoints

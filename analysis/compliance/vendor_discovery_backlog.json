@@ -4879,7 +4879,7 @@
       "evidence_tests": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -4903,7 +4903,7 @@
       "evidence_tests": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -4927,7 +4927,7 @@
       "evidence_tests": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -4951,7 +4951,7 @@
       "evidence_tests": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -4975,7 +4975,7 @@
       "evidence_tests": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -4999,7 +4999,7 @@
       "evidence_tests": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -5023,7 +5023,7 @@
       "evidence_tests": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -5047,7 +5047,7 @@
       "evidence_tests": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -5071,7 +5071,7 @@
       "evidence_tests": [
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
@@ -8551,7 +8551,7 @@
       "evidence_tests": [],
       "priority": "P4",
       "priority_rank": 4,
-      "rationale": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. verification_method=requirements skeleton; This rule row now names the lifecycle/state-transition scope directly.; Architectural rule scope is now stated explicitly in the authored framework rules catalog",
+      "rationale": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. verification_method=requirements skeleton; This rule row now names the lifecycle/state-transition scope directly.; Supported boundary: architectural rule scope is stated explicitly in the authored framework rules catalog",
       "recommended_next_action": "classify backend applicability/disposition",
       "requirement_id": "HLA1516-RULE-001",
       "row_kind": "pitch-requirement-disposition-row",
@@ -8569,7 +8569,7 @@
       "evidence_tests": [],
       "priority": "P4",
       "priority_rank": 4,
-      "rationale": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. verification_method=shall; requirements skeleton; Top-level framework scope is now stated explicitly in the authored framework rules catalog",
+      "rationale": "Pitch runtime disposition is explicitly generated as classification-required because the current evidence does not yet justify a narrower verified, blocked, vendor-divergent, not-applicable, or not-yet-tested outcome. verification_method=shall; requirements skeleton; Supported boundary: top-level framework scope is stated explicitly in the authored framework rules catalog",
       "recommended_next_action": "classify backend applicability/disposition",
       "requirement_id": "HLA1516-FW-001",
       "row_kind": "pitch-requirement-disposition-row",
@@ -10095,8 +10095,8 @@
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
         "tests/time/test_mom_mim_time_v10.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
@@ -10123,7 +10123,7 @@
       "evidence_tests": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix",
         "tests/scenarios/test_target_radar_scenario.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix"
@@ -10154,7 +10154,7 @@
         "tests/scenarios/test_object_management_backend_matrix.py",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_request_attribute_value_update_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
@@ -10180,8 +10180,8 @@
       "evidence_tests": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
         "tests/time/test_mom_mim_time_v10.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
@@ -10228,8 +10228,8 @@
       "evidence_tests": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
         "tests/time/test_mom_mim_time_v10.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
@@ -10253,7 +10253,7 @@
       "current_status": "defended-partial",
       "evidence_tests": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/time/test_mom_mim_time_v10.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],
@@ -10277,8 +10277,8 @@
       "evidence_tests": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
         "tests/time/test_mom_mim_time_v10.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
@@ -10325,8 +10325,8 @@
       "evidence_tests": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
         "tests/time/test_mom_mim_time_v10.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
@@ -10350,7 +10350,7 @@
       "current_status": "defended-partial",
       "evidence_tests": [
         "tests/backends/test_python_backend_time_ddm_extended.py",
-        "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/time/test_mom_mim_time_v10.py",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
       ],

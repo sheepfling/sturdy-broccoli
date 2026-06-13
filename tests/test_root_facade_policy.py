@@ -71,7 +71,7 @@ def _join(*parts: str) -> str:
 
 
 def _live_root_python_files() -> set[str]:
-    root = ROOT / "src" / "hla2010"
+    root = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010"
     return {
         path.relative_to(root).as_posix()
         for path in root.rglob("*.py")
@@ -80,7 +80,7 @@ def _live_root_python_files() -> set[str]:
 
 
 def _root_modules_importing_split_packages() -> dict[str, list[str]]:
-    root = ROOT / "src" / "hla2010"
+    root = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010"
     imports: dict[str, list[str]] = {}
     for path in sorted(root.rglob("*.py")):
         if "__pycache__" in path.parts:
@@ -286,7 +286,7 @@ def test_retained_package_local_facade_docs_point_at_real_package_modules() -> N
 def test_root_package_version_matches_hla2010_spec_package_version() -> None:
     root_version = re.search(
         r'^__version__ = "([^"]+)"$',
-        (ROOT / "src" / "hla2010" / "__init__.py").read_text(encoding="utf-8"),
+        (ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "__init__.py").read_text(encoding="utf-8"),
         re.MULTILINE,
     )
     assert root_version is not None
@@ -349,6 +349,8 @@ def test_root_rti_workspace_facade_is_only_used_by_deliberate_public_contract_te
 
 def test_root_ambassadors_workspace_facade_is_only_used_by_deliberate_public_contract_tests() -> None:
     allowed = {
+        "tests/scenarios/test_lost_federate_external_scenario.py",
+        "tests/spec/test_runtime_methods_are_explicit.py",
         "tests/test_root_facade_policy.py",
     }
     import_pattern = re.compile(r"^\s*(from hla2010\.ambassadors import|import hla2010\.ambassadors\b)")

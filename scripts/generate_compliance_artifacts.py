@@ -1504,7 +1504,7 @@ _PITCH_REQUIREMENT_EVIDENCE: dict[str, tuple[str, tuple[str, ...], str]] = {
     "REQ-OMT-PARSE-001": (
         "not-applicable",
         (
-            "src/hla2010/fom.py::parse_fom_xml",
+            "packages/hla2010-spec/src/hla2010/fom.py::parse_fom_xml",
             "tests/factories/test_fom_omt_parsing.py",
             "analysis/compliance/verification_assets.json",
         ),
@@ -2257,7 +2257,7 @@ _PITCH_REQUIREMENT_EVIDENCE["HLA1516.1-DM-5.1.1-001"] = (
     "not-applicable",
     _PITCH_REQUIREMENT_EVIDENCE["REQ-OMT-PARSE-001"][1]
     + (
-        "src/hla2010/fom.py::merge_fom_modules",
+        "packages/hla2010-spec/src/hla2010/fom.py::merge_fom_modules",
         "tests/factories/test_fom_omt_parsing.py",
         "analysis/compliance/verification_assets.json",
     ),
@@ -2292,7 +2292,7 @@ _PITCH_REQUIREMENT_EVIDENCE["REQ-RTI-PLM-12_2-decodeAttributeHandle"] = (
     "not-yet-tested",
     _SCENARIO_EVIDENCE_REGISTRY["support-factory-decode"]
     + (
-        "src/hla2010/handles.py::Handle.decode",
+        "packages/hla2010-spec/src/hla2010/handles.py::Handle.decode",
         "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py",
     ),

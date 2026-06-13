@@ -12,10 +12,10 @@ For the machine-derived installable package dependency graph, use
 This is a monorepo workspace with multiple installable package roots. The
 repository root is tooling-only: it keeps pytest, Ruff, and Pyright
 configuration, but it is not a Python distribution. The architectural root is
-`hla2010-spec`, whose package manifest owns `src/hla2010/`. Concrete backend,
+`hla2010-spec`, whose package manifest owns `packages/hla2010-spec/src/hla2010/`. Concrete backend,
 transport, FOM, and support implementations live in package-owned directories
 under `packages/*/src`.
-Within `src/hla2010/`, `hla2010.rti` remains only as the documented temporary
+Within `packages/hla2010-spec/src/hla2010/`, `hla2010.rti` remains only as the documented temporary
 workspace facade into split packages. Everything else in that tree should stay
 abstract/core API rather than backend implementation.
 
@@ -23,9 +23,9 @@ abstract/core API rather than backend implementation.
 
 If you are trying to find the supported HLA entry points, start here:
 
-- `src/hla2010/spec/`: clean abstract spec surface
-- `src/hla2010/runtime_api.py`: Pythonic runtime convenience layer
-- `src/hla2010/rti.py`: temporary workspace facade for backend discovery and ambassador creation only
+- `packages/hla2010-spec/src/hla2010/spec/`: clean abstract spec surface
+- `packages/hla2010-spec/src/hla2010/runtime_api.py`: Pythonic runtime convenience layer
+- `packages/hla2010-spec/src/hla2010/rti.py`: temporary root facade for backend discovery and ambassador creation only
 - `packages/hla2010-rti-python/src/hla2010_rti_python/`: in-memory Python RTI backend
 - `packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc/`: hosted gRPC transport surface
 - `packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/scenarios/`: Target/Radar scenario and FOM entrypoints
@@ -36,18 +36,18 @@ packages directly, starting with `packages/hla2010-spec`, or use
 
 For packages whose split status is `implementation-moved`, the owning package's
 `pyproject.toml` should declare only package-owned `source_roots`. For
-`hla2010-spec`, `src/hla2010/` is the owned implementation root.
+`hla2010-spec`, `packages/hla2010-spec/src/hla2010/` is the owned implementation root.
 
 ## Core API
 
-- `src/hla2010/spec/`: standalone clean Python spec package.
-- `src/hla2010/spec_inventory.py`: plain-text method-name inventory used by the clean spec layer.
-- `src/hla2010/spec_sources.py`: readable Java/C++ source references used in the clean spec docstrings.
-- `src/hla2010/runtime_api.py`: explicit runtime-facing Pythonic convenience layer over the spec contract.
-- `src/hla2010/api.py`: compatibility shim that re-exports the runtime layer.
-- `src/hla2010/_spec_impl.py`: internal implementation module behind `hla2010.spec`.
-- `src/hla2010/handles.py`, `src/hla2010/types.py`, `src/hla2010/enums.py`, `src/hla2010/time.py`: shared HLA value types.
-- `src/hla2010/raw_api.py`: source-derived API scaffold.
+- `packages/hla2010-spec/src/hla2010/spec/`: standalone clean Python spec package.
+- `packages/hla2010-spec/src/hla2010/spec_inventory.py`: plain-text method-name inventory used by the clean spec layer.
+- `packages/hla2010-spec/src/hla2010/spec_sources.py`: readable Java/C++ source references used in the clean spec docstrings.
+- `packages/hla2010-spec/src/hla2010/runtime_api.py`: explicit runtime-facing Pythonic convenience layer over the spec contract.
+- `packages/hla2010-spec/src/hla2010/api.py`: compatibility shim that re-exports the runtime layer.
+- `packages/hla2010-spec/src/hla2010/_spec_impl.py`: internal implementation module behind `hla2010.spec`.
+- `packages/hla2010-spec/src/hla2010/handles.py`, `packages/hla2010-spec/src/hla2010/types.py`, `packages/hla2010-spec/src/hla2010/enums.py`, `packages/hla2010-spec/src/hla2010/time.py`: shared HLA value types.
+- `packages/hla2010-spec/src/hla2010/raw_api.py`: source-derived API scaffold.
 
 ## Backend Abstractions
 
@@ -87,7 +87,7 @@ Import `hla2010_rti_transport_grpc` directly.
 
 ## Backend Factories
 
-- `src/hla2010/rti.py`: temporary workspace compatibility facade that re-exports only backend discovery, backend selection, and ambassador-factory helpers from the split runtime-common package.
+- `packages/hla2010-spec/src/hla2010/rti.py`: temporary workspace compatibility facade that re-exports only backend discovery, backend selection, and ambassador-factory helpers from the split runtime-common package.
 - `packages/hla2010-rti-python/src/hla2010_rti_python/factory.py`: pure-Python backend factories.
 - `packages/hla2010-rti-python/src/hla2010_rti_python/plugin.py`: pure-Python backend plugin descriptor.
 - `packages/hla2010-rti-certi/src/hla2010_rti_certi/certi/plugin.py`: CERTI backend plugin descriptors.
@@ -171,7 +171,7 @@ discovery and ambassador creation over that split package surface.
 Package-owned code should import runtime factory helpers from
 `hla2010_rti_runtime_common` directly; registry, transport, and private helper
 access must stay in the owning split packages instead of flowing back through
-`src/hla2010/`.
+`packages/hla2010-spec/src/hla2010/`.
 
 Backend base implementation now lives in
 `hla2010_rti_backend_common.base`, and the package root

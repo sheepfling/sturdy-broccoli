@@ -1,0 +1,6 @@
+backend=python/in-memory,python/in-memory federation=TargetRadarFederation tracks=5
+ TRK-001 target=Target-1   t=  1.0 pos=( 10250.0,  1030.0, 2000.0) range=  10494.0 bearing=  0.100 rcs= 12.50
+ TRK-002 target=Target-1   t=  2.0 pos=( 10500.0,  1060.0, 2000.0) range=  10741.2 bearing=  0.101 rcs= 12.50
+ TRK-003 target=Target-1   t=  3.0 pos=( 10750.0,  1090.0, 2000.0) range=  10988.7 bearing=  0.101 rcs= 12.50
+ TRK-004 target=Target-1   t=  4.0 pos=( 11000.0,  1120.0, 2000.0) range=  11236.3 bearing=  0.101 rcs= 12.50
+ TRK-005 target=Target-1   t=  5.0 pos=( 11250.0,  1150.0, 2000.0) range=  11484.1 bearing=  0.102 rcs= 12.50

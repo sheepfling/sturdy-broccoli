@@ -1,3 +1,5 @@
+# Generated from specs/hla2010_api.json.
+# Do not edit by hand. Run ./tools/spec-api generate.
 """Readable source references for the HLA 1516.1-2010 Python work.
 
 This module keeps the Java and C++ source locations in ordinary Python strings
@@ -9,16 +11,12 @@ from functools import lru_cache
 
 from .raw_api import API_METADATA
 
-_LANGUAGE_LABELS = {
-    "cpp": "C++",
-    "java": "Java",
-}
+_LANGUAGE_LABELS = {"cpp": "C++", "java": "Java"}
 
 
 @lru_cache(maxsize=None)
 def method_source_summary(method_name: str) -> str | None:
     """Return a human-readable summary of Java and C++ source locations."""
-
     entries: list[str] = []
     seen: set[str] = set()
     for class_name in ("RTIambassador", "FederateAmbassador"):

@@ -19,7 +19,7 @@ The canonical environment and install-order guide is
 ## Reference
 
 Architecturally, `hla2010-spec` is the one installable root. The
-`src/hla2010/` tree is the workspace facade used for stable imports, abstract
+`packages/hla2010-spec/src/hla2010/` tree is the package-owned spec source root used for stable imports, abstract
 core API ownership, and only documented temporary compatibility routing.
 The remaining workspace facade is `hla2010.rti`.
 
