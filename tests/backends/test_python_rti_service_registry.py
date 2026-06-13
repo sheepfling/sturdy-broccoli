@@ -8,6 +8,7 @@ import subprocess
 from pathlib import Path
 
 from hla2010.raw_api import API_METADATA
+from hla2010_rti_backend_common import Invocation
 from hla2010_rti_python.backend import PythonRTIBackend
 from hla2010_rti_python.service_registry import (
     PYTHON_RTI_NON_RTI_SERVICE_REASONS,
@@ -77,6 +78,20 @@ def test_every_service_has_at_least_one_requirement_row() -> None:
     }
     for method_name in PYTHON_RTI_SERVICE_REGISTRY:
         assert method_name in rows_by_method, method_name
+
+
+def test_python_backend_invoke_uses_registry_backed_service_lookup() -> None:
+    source = inspect.getsource(PythonRTIBackend.invoke)
+    assert "PYTHON_RTI_SERVICE_HANDLERS.get" in source
+    assert 'getattr(self, f"_svc_{invocation.method_name}"' not in source
+
+
+def test_python_backend_invoke_routes_through_resolved_registry_handler() -> None:
+    backend = PythonRTIBackend()
+
+    result = backend.invoke(Invocation(method_name="getHLAversion", args=(), kwargs={}, overloads=()))
+
+    assert result == "HLA 1516.1-2010"
 
 
 def test_generated_python_rti_service_map_is_current() -> None:
