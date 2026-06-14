@@ -1,0 +1,148 @@
+{
+  "allowed_dispositions": [
+    "verified",
+    "blocked",
+    "vendor-divergent",
+    "not-applicable",
+    "classification-required",
+    "not-yet-tested"
+  ],
+  "disposition_fields_by_artifact": {
+    "python_requirement_disposition.json": ["runtime_disposition"],
+    "certi_requirement_disposition.json": ["runtime_disposition"],
+    "certi-native_requirement_disposition.json": ["runtime_disposition"],
+    "certi-jpype_requirement_disposition.json": ["runtime_disposition"],
+    "certi-py4j_requirement_disposition.json": ["runtime_disposition"],
+    "portico_requirement_disposition.json": ["runtime_disposition"],
+    "pitch-jpype_requirement_disposition.json": ["runtime_disposition"],
+    "pitch-py4j_requirement_disposition.json": ["runtime_disposition"],
+    "portico-jpype_requirement_disposition.json": ["runtime_disposition"],
+    "portico-py4j_requirement_disposition.json": ["runtime_disposition"],
+    "pitch_requirement_disposition.json": [
+      "pitch_disposition",
+      "pitch_jpype_disposition",
+      "pitch_py4j_disposition"
+    ]
+  },
+  "markdown_intro_fragments_by_artifact": {
+    "python_requirement_disposition.md": [
+      "# Python Requirement Disposition",
+      "every row has an explicit generated `python` disposition.",
+      "## Summary"
+    ],
+    "certi_requirement_disposition.md": [
+      "# CERTI Requirement Disposition",
+      "every row has an explicit generated `certi` disposition.",
+      "## Summary"
+    ],
+    "certi-native_requirement_disposition.md": [
+      "# certi-native Requirement Disposition",
+      "every row has an explicit generated `certi-native` disposition.",
+      "inherits the CERTI family-level requirement disposition"
+    ],
+    "certi-jpype_requirement_disposition.md": [
+      "# certi-jpype Requirement Disposition",
+      "every row has an explicit generated `certi-jpype` disposition.",
+      "inherits the CERTI family-level requirement disposition"
+    ],
+    "certi-py4j_requirement_disposition.md": [
+      "# certi-py4j Requirement Disposition",
+      "every row has an explicit generated `certi-py4j` disposition.",
+      "inherits the CERTI family-level requirement disposition"
+    ],
+    "pitch_requirement_disposition.md": [
+      "# Pitch Requirement Disposition",
+      "every row has an explicit generated `pitch` disposition.",
+      "## Profile Summary"
+    ],
+    "pitch-jpype_requirement_disposition.md": [
+      "# pitch-jpype Requirement Disposition",
+      "every row has an explicit generated `pitch-jpype` disposition.",
+      "inherits the Pitch family-level requirement disposition",
+      "## Summary"
+    ],
+    "pitch-py4j_requirement_disposition.md": [
+      "# pitch-py4j Requirement Disposition",
+      "every row has an explicit generated `pitch-py4j` disposition.",
+      "inherits the Pitch family-level requirement disposition",
+      "## Summary"
+    ],
+    "portico_requirement_disposition.md": [
+      "# Portico Requirement Disposition",
+      "every row has an explicit generated `portico` disposition.",
+      "classification-required` until"
+    ],
+    "portico-jpype_requirement_disposition.md": [
+      "# portico-jpype Requirement Disposition",
+      "every row has an explicit generated `portico-jpype` disposition.",
+      "inherits the Portico family-level requirement disposition"
+    ],
+    "portico-py4j_requirement_disposition.md": [
+      "# portico-py4j Requirement Disposition",
+      "every row has an explicit generated `portico-py4j` disposition.",
+      "inherits the Portico family-level requirement disposition"
+    ]
+  },
+  "backend_doc_prefixes_by_artifact": {
+    "python_requirement_disposition.json": [],
+    "certi_requirement_disposition.json": ["packages/hla2010-rti-certi/docs/"],
+    "certi-native_requirement_disposition.json": ["packages/hla2010-rti-certi/docs/"],
+    "certi-jpype_requirement_disposition.json": ["packages/hla2010-rti-certi/docs/"],
+    "certi-py4j_requirement_disposition.json": ["packages/hla2010-rti-certi/docs/"],
+    "portico_requirement_disposition.json": [],
+    "pitch-jpype_requirement_disposition.json": ["packages/hla2010-rti-pitch-common/docs/"],
+    "pitch-py4j_requirement_disposition.json": ["packages/hla2010-rti-pitch-common/docs/"],
+    "portico-jpype_requirement_disposition.json": [],
+    "portico-py4j_requirement_disposition.json": [],
+    "pitch_requirement_disposition.json": ["packages/hla2010-rti-pitch-common/docs/"]
+  },
+  "profile_inheritance_artifacts": {
+    "certi_requirement_disposition.json": {
+      "profiles": [
+        "certi-native_requirement_disposition.json",
+        "certi-jpype_requirement_disposition.json",
+        "certi-py4j_requirement_disposition.json"
+      ],
+      "family_disposition_field": "runtime_disposition",
+      "family_evidence_field": "evidence_refs"
+    },
+    "pitch_requirement_disposition.json": {
+      "profiles": [
+        "pitch-jpype_requirement_disposition.json",
+        "pitch-py4j_requirement_disposition.json"
+      ],
+      "family_disposition_field_by_profile": {
+        "pitch-jpype_requirement_disposition.json": "pitch_jpype_disposition",
+        "pitch-py4j_requirement_disposition.json": "pitch_py4j_disposition"
+      },
+      "family_evidence_field_by_profile": {
+        "pitch-jpype_requirement_disposition.json": "pitch_jpype_evidence_refs",
+        "pitch-py4j_requirement_disposition.json": "pitch_py4j_evidence_refs"
+      }
+    },
+    "portico_requirement_disposition.json": {
+      "profiles": [
+        "portico-jpype_requirement_disposition.json",
+        "portico-py4j_requirement_disposition.json"
+      ],
+      "family_disposition_field": "runtime_disposition",
+      "family_evidence_field": "evidence_refs"
+    }
+  },
+  "expected_source_artifacts": {
+    "python_requirement_disposition.json": "analysis/compliance/requirements_matrix_2010.json",
+    "certi_requirement_disposition.json": "analysis/compliance/requirements_matrix_2010.json",
+    "certi-native_requirement_disposition.json": "analysis/compliance/certi_requirement_disposition.json",
+    "certi-jpype_requirement_disposition.json": "analysis/compliance/certi_requirement_disposition.json",
+    "certi-py4j_requirement_disposition.json": "analysis/compliance/certi_requirement_disposition.json",
+    "pitch_requirement_disposition.json": "analysis/compliance/requirements_matrix_2010.json",
+    "pitch-jpype_requirement_disposition.json": "analysis/compliance/pitch_requirement_disposition.json",
+    "pitch-py4j_requirement_disposition.json": "analysis/compliance/pitch_requirement_disposition.json",
+    "portico_requirement_disposition.json": "analysis/compliance/requirements_matrix_2010.json",
+    "portico-jpype_requirement_disposition.json": "analysis/compliance/portico_requirement_disposition.json",
+    "portico-py4j_requirement_disposition.json": "analysis/compliance/portico_requirement_disposition.json"
+  },
+  "summary_disposition_field_by_artifact": {
+    "pitch_requirement_disposition.json": "pitch_disposition"
+  }
+}

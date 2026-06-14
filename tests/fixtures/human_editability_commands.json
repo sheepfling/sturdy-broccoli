@@ -1,0 +1,391 @@
+{
+  "commands": [
+    {
+      "id": "check",
+      "argv": ["bash", "./tools/human-editability", "check"],
+      "must_contain": [
+        "Human editability check passed",
+        "requirements_source: requirements/source_of_truth.json",
+        "remaining_open_smells: 0"
+      ],
+      "must_not_contain": [
+        "SMELL-SPEC-SOURCE-ROOT-EXCEPTION"
+      ]
+    },
+    {
+      "id": "trace",
+      "argv": [
+        "bash",
+        "./tools/human-editability",
+        "trace",
+        {
+          "trace_example": {
+            "id": "time_management",
+            "field": "method_name"
+          }
+        }
+      ],
+      "must_contain": [
+        {
+          "trace_example": {
+            "id": "time_management",
+            "field": "requirement_id"
+          }
+        },
+        {
+          "trace_example": {
+            "id": "time_management",
+            "field": "method_name"
+          }
+        }
+      ]
+    },
+    {
+      "id": "trace_summary",
+      "argv": [
+        "bash",
+        "./tools/human-editability",
+        "trace-summary",
+        {
+          "trace_example": {
+            "id": "time_management",
+            "field": "method_name"
+          }
+        }
+      ],
+      "must_contain": [
+        {
+          "trace_example": {
+            "id": "time_management",
+            "field": "method_name"
+          }
+        },
+        "workflow: trace first -> edit active row only if needed -> regenerate outputs",
+        {
+          "trace_example": {
+            "id": "time_management",
+            "field": "requirement_id"
+          }
+        },
+        "implementation_file: packages/hla2010-rti-python/src/hla2010_rti_python/time_public_services.py",
+        "positive_test_ref: tests/time/test_mom_mim_time_v10.py"
+      ]
+    },
+    {
+      "id": "requirement",
+      "argv": [
+        "bash",
+        "./tools/human-editability",
+        "requirement",
+        "REQ-RTI-TM-8_8-timeAdvanceRequest"
+      ],
+      "must_contain": [
+        "Human editability requirement for REQ-RTI-TM-8_8-timeAdvanceRequest",
+        "Active requirement row:",
+        "Generated trace row:",
+        "traceability_matrix.csv"
+      ]
+    },
+    {
+      "id": "front_doors_all",
+      "argv": ["bash", "./tools/human-editability", "front-doors"],
+      "must_contain": [
+        "Human editability front doors",
+        "Spec front door:",
+        "Python RTI front door:",
+        "Python RTI service-edit front door:",
+        "RTI factory front door:",
+        "Requirements front door:",
+        "docs/spec_reading_map.md",
+        "docs/python_rti_reading_map.md",
+        "docs/python_rti_edit_one_service.md",
+        "docs/rti_factory_reading_map.md",
+        "docs/requirements_trace_one_method.md",
+        "docs/requirements_edit_one_row.md",
+        "requirements/surface_manifest.json"
+      ]
+    },
+    {
+      "id": "front_doors_python_rti",
+      "argv": ["bash", "./tools/human-editability", "front-doors", "python-rti"],
+      "must_contain": [
+        "Python RTI front door:",
+        "service_registry.py",
+        "time_public_services.py"
+      ],
+      "must_not_contain": [
+        "Requirements front door:"
+      ]
+    },
+    {
+      "id": "front_doors_python_rti_service",
+      "argv": ["bash", "./tools/human-editability", "front-doors", "python-rti-service"],
+      "must_contain": [
+        "Python RTI service-edit front door:",
+        "docs/python_rti_edit_one_service.md",
+        "support_lookup.py",
+        "test_python_rti_service_registry.py"
+      ],
+      "must_not_contain": [
+        "Requirements front door:"
+      ]
+    },
+    {
+      "id": "front_doors_requirements_trace",
+      "argv": ["bash", "./tools/human-editability", "front-doors", "requirements-trace"],
+      "must_contain": [
+        "Requirements front door:",
+        "docs/requirements_trace_one_method.md",
+        "docs/requirements_edit_one_row.md",
+        "support_lookup.py",
+        "test_support_services_backend_matrix.py"
+      ],
+      "must_not_contain": [
+        "Python RTI front door:"
+      ]
+    },
+    {
+      "id": "front_doors_rti_factories",
+      "argv": ["bash", "./tools/human-editability", "front-doors", "rti-factories"],
+      "must_contain": [
+        "RTI factory front door:",
+        "tools/rti-factories",
+        "scripts/rti_factories.py"
+      ],
+      "must_not_contain": [
+        "Python RTI front door:"
+      ]
+    },
+    {
+      "id": "requirements_crud",
+      "argv": ["bash", "./tools/human-editability", "requirements-crud"],
+      "must_contain": [
+        "Human editability requirements CRUD",
+        "doc: docs/requirements_crud.md",
+        "edit_surface: requirements/active_service_rows.csv",
+        "CREATE: add one missing active requirement row",
+        "READ: see one requirement row and its proof without guessing",
+        "UPDATE: change one existing active requirement row",
+        "DELETE: remove one wrong or obsolete active requirement row",
+        "./tools/human-editability requirements-create <RequirementIdOrArtifactId>",
+        "./tools/human-editability requirements-read <MethodNameOrRequirementId>",
+        "./tools/human-editability requirements-update <RequirementId>",
+        "./tools/human-editability requirements-delete <RequirementId>"
+      ]
+    },
+    {
+      "id": "requirements_create",
+      "argv": ["bash", "./tools/human-editability", "requirements-create", "HLA1516.1-TM-8.8-001"],
+      "must_contain": [
+        "Human editability requirements create",
+        "goal: add one missing active requirement row",
+        "edit_surface: requirements/active_service_rows.csv",
+        "Human editability requirement template",
+        "input: HLA1516.1-TM-8.8-001"
+      ]
+    },
+    {
+      "id": "requirements_read_method",
+      "argv": ["bash", "./tools/human-editability", "requirements-read", "timeAdvanceRequest"],
+      "must_contain": [
+        "Human editability requirements read",
+        "mode: trace-summary",
+        "Human editability trace summary for timeAdvanceRequest"
+      ]
+    },
+    {
+      "id": "requirements_update",
+      "argv": ["bash", "./tools/human-editability", "requirements-update", "REQ-RTI-TM-8_8-timeAdvanceRequest"],
+      "must_contain": [
+        "Human editability requirements update",
+        "goal: change one existing active requirement row",
+        "Human editability requirement for REQ-RTI-TM-8_8-timeAdvanceRequest",
+        "Next steps:",
+        "Edit requirements/active_service_rows.csv."
+      ]
+    },
+    {
+      "id": "requirements_delete",
+      "argv": ["bash", "./tools/human-editability", "requirements-delete", "REQ-RTI-TM-8_8-timeAdvanceRequest"],
+      "must_contain": [
+        "Human editability requirements delete",
+        "goal: remove one wrong or obsolete active requirement row",
+        "Human editability requirement for REQ-RTI-TM-8_8-timeAdvanceRequest",
+        "Delete steps:",
+        "Remove the row from requirements/active_service_rows.csv."
+      ]
+    },
+    {
+      "id": "requirements_flow",
+      "argv": ["bash", "./tools/human-editability", "requirements-flow"],
+      "must_contain": [
+        "Human editability requirements flow",
+        "goal: trace one method first, then edit only the active mapping row if the trace is wrong",
+        "docs/requirements_trace_one_method.md",
+        "requirements/active_service_rows.csv",
+        "requirements/family_seed_rows.csv",
+        "requirements/traceability_matrix.csv",
+        "./tools/human-editability requirements-create HLA1516.1-TM-8.8-001",
+        "./tools/human-editability requirements-read timeAdvanceRequest",
+        "./tools/human-editability requirements-update REQ-RTI-TM-8_8-timeAdvanceRequest",
+        "./tools/human-editability requirements-delete REQ-RTI-TM-8_8-timeAdvanceRequest",
+        "./tools/human-editability requirements-source",
+        "./tools/human-editability requirements-lanes",
+        "./tools/human-editability requirements-active",
+        "requirements/source_of_truth.json",
+        "requirements/surface_manifest.json",
+        "generated_registry: requirements/requirement_id_registry.yaml",
+        "analysis/compliance/requirements_ledger.csv",
+        "analysis/traceability/service_trace_index.md",
+        "analysis/traceability/requirements_authoring_index.md",
+        "analysis/traceability/active_service_requirements_index.md",
+        "./tools/human-editability generate-requirements-source"
+      ]
+    },
+    {
+      "id": "requirements_source",
+      "argv": ["bash", "./tools/human-editability", "requirements-source"],
+      "must_contain": [
+        "Human editability requirements source of truth",
+        "source: requirements/source_of_truth.json",
+        "generated_manifest: requirements/surface_manifest.json",
+        "generated_merge: requirements/traceability_matrix.csv",
+        "generated_registry: requirements/requirement_id_registry.yaml",
+        "normal_authoring_lane: active_service",
+        "./tools/human-editability requirements-crud",
+        "./tools/human-editability requirements-create <RequirementIdOrArtifactId>",
+        "./tools/human-editability requirements-read <MethodNameOrRequirementId>",
+        "requirements/active_service_rows.csv",
+        "requirements/family_seed_rows.csv",
+        "field_order: requirement_id, source_document, clause, canonical_topic, current_artifact_id, implementation_refs, test_refs, artifact_refs, status, notes",
+        "./tools/human-editability requirements-flow",
+        "family_seed_rule:"
+      ]
+    },
+    {
+      "id": "requirements_lanes",
+      "argv": ["bash", "./tools/human-editability", "requirements-lanes"],
+      "must_contain": [
+        "Human editability requirements lanes",
+        "active_authored_surface: requirements/active_service_rows.csv",
+        "family_seed_surface: requirements/family_seed_rows.csv",
+        "generated_merge: requirements/traceability_matrix.csv",
+        "normal_authoring_lane: active_service",
+        "active_service_count: 309",
+        "family_seed_count: 8",
+        "HLA1516.1-FM-001: Clause 4 [seeded] -> seeded status",
+        "HLA1516-FW-001: Framework concepts [partial] -> framework or architectural family row",
+        "Leave family_seed rows alone unless you are doing deliberate clause-family harmonization"
+      ]
+    },
+    {
+      "id": "requirement_template_requirement_id",
+      "argv": [
+        "bash",
+        "./tools/human-editability",
+        "requirement-template",
+        "HLA1516.1-TM-8.8-001"
+      ],
+      "must_contain": [
+        "Human editability requirement template",
+        "active_authored_surface: requirements/active_service_rows.csv",
+        "generated_merge: requirements/traceability_matrix.csv",
+        "registry_source: requirements/source_of_truth.json",
+        "generated_registry: requirements/requirement_id_registry.yaml",
+        "input: HLA1516.1-TM-8.8-001",
+        "registry_action: no registry edit needed; HLA1516.1/TM already exists",
+        "requirement_id,source_document,clause,canonical_topic,current_artifact_id,implementation_refs,test_refs,artifact_refs,status,notes",
+        "HLA1516.1-TM-8.8-001,IEEE 1516.1-2010 (2010 edition),8.8,<canonical_topic>,<current_artifact_id>,<implementation_refs>,<test_refs>,<artifact_refs>,planned,<notes>",
+        "Run ./tools/human-editability requirement <RequirementId>"
+      ]
+    },
+    {
+      "id": "requirement_template_artifact_id",
+      "argv": [
+        "bash",
+        "./tools/human-editability",
+        "requirement-template",
+        "REQ-RTI-TM-8_8-timeAdvanceRequest"
+      ],
+      "must_contain": [
+        "Human editability requirement template",
+        "active_authored_surface: requirements/active_service_rows.csv",
+        "registry_source: requirements/source_of_truth.json",
+        "generated_registry: requirements/requirement_id_registry.yaml",
+        "input: REQ-RTI-TM-8_8-timeAdvanceRequest",
+        "registry_action: artifact id detected; keep this in current_artifact_id and use a standards-row requirement_id",
+        "<requirement_id>,<source_document>,<clause>,<canonical_topic>,REQ-RTI-TM-8_8-timeAdvanceRequest,<implementation_refs>,<test_refs>,<artifact_refs>,planned,<notes>"
+      ]
+    },
+    {
+      "id": "requirements_active",
+      "argv": ["bash", "./tools/human-editability", "requirements-active"],
+      "must_contain": [
+        "Human editability active service requirements",
+        "active_authored_surface: requirements/active_service_rows.csv",
+        "generated_merge: requirements/traceability_matrix.csv",
+        "generated_index: analysis/traceability/active_service_requirements_index.json",
+        "match_count: 309",
+        "requirement_id: HLA1516.1-FM-4.2-001",
+        "canonical_topic: Connect service",
+        "normal_use: search here first before opening requirements/active_service_rows.csv"
+      ]
+    },
+    {
+      "id": "requirements_active_query",
+      "argv": [
+        "bash",
+        "./tools/human-editability",
+        "requirements-active",
+        {
+          "trace_example": {
+            "id": "time_management",
+            "field": "method_name"
+          }
+        }
+      ],
+      "must_contain": [
+        "Human editability active service requirements",
+        {
+          "trace_example": {
+            "id": "time_management",
+            "field": "method_name"
+          }
+        },
+        "match_count: 3",
+        "requirement_id: HLA1516.1-TM-8.8-001",
+        "canonical_topic: Time Advance Request"
+      ]
+    },
+    {
+      "id": "requirements_surfaces",
+      "argv": ["bash", "./tools/human-editability", "requirements-surfaces"],
+      "must_contain": [
+        "Human editability requirements surfaces",
+        "source_of_truth: requirements/source_of_truth.json",
+        "generated_manifest: requirements/surface_manifest.json",
+        "normal_flow: trace one method -> edit one row only if needed -> validate -> regenerate outputs",
+        "Active authored:",
+        "Generated:",
+        "Reference / provenance:",
+        "count: 33",
+        "see_all: ./tools/human-editability requirements-surfaces --verbose",
+        "requirements/active_service_rows.csv",
+        "requirements/traceability_matrix.csv"
+      ],
+      "must_not_contain": [
+        "requirements/reference/hla1516_1_clause_4_fm_service_decomposition.csv"
+      ]
+    },
+    {
+      "id": "requirements_surfaces_verbose",
+      "argv": ["bash", "./tools/human-editability", "requirements-surfaces", "--verbose"],
+      "must_contain": [
+        "Human editability requirements surfaces",
+        "Reference / provenance:",
+        "requirements/reference/hla1516_1_clause_4_fm_service_decomposition.csv",
+        "requirements/reference/hla_1516_master_harmonization_index_v1_0.csv"
+      ]
+    }
+  ]
+}

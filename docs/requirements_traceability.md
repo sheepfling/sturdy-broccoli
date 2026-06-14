@@ -2,39 +2,30 @@
 
 This repo treats traceability as an executable product, not a prose claim.
 
-If you only need to trace one method end to end, start with
-[`requirements_trace_one_method.md`](requirements_trace_one_method.md).
+Use this page for the broad model:
 
-If you only need to fix one missed or wrong active mapping row, start with
-[`requirements_edit_one_row.md`](requirements_edit_one_row.md).
+- what the generated service trace index means
+- how requirement -> implementation -> test -> artifact chains are expected to look
+- what validation rules keep the mapping honest
 
-Use this page for:
-
-- the broader traceability model
-- the meaning of generated trace artifacts
-- the requirement -> implementation -> test -> artifact chain
-
-Do not use this page for:
-
-- the shortest one-method trace workflow
-- the shortest one-row authoring loop
-- deciding which requirement files are active versus generated versus reference
-
-Those narrower lanes already live in:
+Do not start here if you only need one narrow task. Use:
 
 - [`requirements_trace_one_method.md`](requirements_trace_one_method.md)
 - [`requirements_edit_one_row.md`](requirements_edit_one_row.md)
-- [`requirements_authoring_map.md`](requirements_authoring_map.md)
 - [`../requirements/README.md`](../requirements/README.md)
 
 Use these operator commands first:
 
+<!-- GENERATED:TRACEABILITY_OPERATOR_COMMANDS:START -->
 ```bash
 ./tools/human-editability check
 ./tools/human-editability generate-trace-index
+./tools/human-editability trace-summary createFederationExecution
+./tools/human-editability trace-summary timeAdvanceRequest
 ./tools/human-editability trace createFederationExecution
 ./tools/human-editability trace timeAdvanceRequest
 ```
+<!-- GENERATED:TRACEABILITY_OPERATOR_COMMANDS:END -->
 
 ## Trace Model
 
@@ -47,39 +38,32 @@ For each service, trace in this order:
 5. focused test evidence
 6. generated artifact evidence
 
-The `./tools/human-editability trace <MethodName>` command prints the same
-chain from the generated service trace index when it exists and falls back to
-the requirements ledger otherwise.
-
-For the shortest maintainer path, use:
-
-```bash
-./tools/human-editability front-doors requirements-trace
-./tools/human-editability trace getHLAversion
-```
-
-That lane owns the concrete "trace one method" workflow.
+The `./tools/human-editability trace <MethodName>` command prints that chain
+from the generated service trace index when it exists and falls back to the
+requirements ledger otherwise.
 
 ## Primary Surfaces
 
 Traceability depends on a small set of surfaces:
 
-- active authored: `requirements/traceability_matrix.csv`
+<!-- GENERATED:TRACEABILITY_PRIMARY_SURFACES:START -->
+- active authored: `requirements/active_service_rows.csv` is the normal human edit surface
+- generated compatibility merge: `requirements/traceability_matrix.csv`
 - generated ledger: `analysis/compliance/requirements_ledger.csv`
-- generated service trace index:
-  `analysis/traceability/service_trace_index.csv`,
-  `analysis/traceability/service_trace_index.md`,
-  `analysis/traceability/service_trace_index.json`
+- generated service trace index: `analysis/traceability/service_trace_index.csv`, `analysis/traceability/service_trace_index.md`, `analysis/traceability/service_trace_index.json`
+<!-- GENERATED:TRACEABILITY_PRIMARY_SURFACES:END -->
 
-Treat the generated ledger and trace indexes as outputs. The normal human edit
-surface for active mapping work is `requirements/traceability_matrix.csv`.
+<!-- GENERATED:TRACEABILITY_EDIT_RULE:START -->
+- Treat `requirements/active_service_rows.csv` as the normal human edit surface.
+- Treat `requirements/traceability_matrix.csv`, the ledger, and the trace indexes as generated outputs.
+<!-- GENERATED:TRACEABILITY_EDIT_RULE:END -->
 
 ## Full-Chain Walkthroughs
 
 ### createFederationExecution
 
 - Requirement row: `REQ-RTI-FM-4_5-createFederationExecution`
-- Spec reference: `1516.1-2010 §4.5`
+- Spec reference: `IEEE 1516.1-2010 §4.5`
 - Python public method: `createFederationExecution` / `create_federation_execution`
 - Backend service: `hla2010_rti_python.backend.PythonRTIBackend._svc_createFederationExecution`
 - Implementation file: `packages/hla2010-rti-python/src/hla2010_rti_python/backend.py`
@@ -90,7 +74,7 @@ surface for active mapping work is `requirements/traceability_matrix.csv`.
 ### timeAdvanceRequest
 
 - Requirement row: `REQ-RTI-TM-8_8-timeAdvanceRequest`
-- Spec reference: `1516.1-2010 §8.8`
+- Spec reference: `IEEE 1516.1-2010 §8.8`
 - Python public method: `timeAdvanceRequest` / `time_advance_request`
 - Backend service: `hla2010_rti_python.backend.PythonRTIBackend._svc_timeAdvanceRequest`
 - Implementation file: `packages/hla2010-rti-python/src/hla2010_rti_python/backend.py`
@@ -101,7 +85,7 @@ surface for active mapping work is `requirements/traceability_matrix.csv`.
 ### reflectAttributeValues
 
 - Requirement row: `REQ-FED-OM-6_11-reflectAttributeValues`
-- Spec reference: `1516.1-2010 §6.11`
+- Spec reference: `IEEE 1516.1-2010 §6.11`
 - Python public method: `reflectAttributeValues` / `reflect_attribute_values`
 - Callback surface: `RecordingFederateAmbassador callback + snake_case alias`
 - Implementation file: `packages/hla2010-spec/src/hla2010/ambassadors.py`
@@ -144,5 +128,5 @@ python3 scripts/validate_traceability_paths.py check
 
 1. [`requirements_trace_one_method.md`](requirements_trace_one_method.md)
 2. [`requirements_edit_one_row.md`](requirements_edit_one_row.md)
-3. [`requirements_authoring_map.md`](requirements_authoring_map.md)
-4. [`../requirements/README.md`](../requirements/README.md)
+3. [`../requirements/README.md`](../requirements/README.md)
+4. [`requirements_authoring_map.md`](requirements_authoring_map.md)

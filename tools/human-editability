@@ -7,13 +7,26 @@ hla2010_shell_init "tools/human-editability"
 
 usage() {
   cat <<'EOF'
-usage: ./tools/human-editability [check|inventory|front-doors [TOPIC]|requirements-surfaces|generate-trace-index|generate-python-rti-map|trace METHOD|requirement REQUIREMENT_ID|help]
+usage: ./tools/human-editability [check|inventory|front-doors [TOPIC]|requirements-crud|requirements-create [ROW_ID]|requirements-read TARGET|requirements-update REQUIREMENT_ID|requirements-delete REQUIREMENT_ID|requirements-flow|requirements-surfaces [--verbose]|requirements-source|requirements-lanes|requirements-active [QUERY]|requirement-template [ROW_ID]|generate-trace-index|generate-requirements-authoring-index|generate-active-service-index|generate-requirements-source|generate-python-rti-map|trace-summary METHOD|trace METHOD|requirement REQUIREMENT_ID|help]
 
 Canonical human-editability flow:
   ./tools/human-editability inventory
   ./tools/human-editability check
   ./tools/human-editability front-doors
+  ./tools/human-editability requirements-crud
+  ./tools/human-editability requirements-create HLA1516.1-TM-8.8-001
+  ./tools/human-editability requirements-read timeAdvanceRequest
+  ./tools/human-editability requirements-update REQ-RTI-TM-8_8-timeAdvanceRequest
+  ./tools/human-editability requirements-delete REQ-RTI-TM-8_8-timeAdvanceRequest
+  ./tools/human-editability requirements-flow
   ./tools/human-editability requirements-surfaces
+  ./tools/human-editability requirements-surfaces --verbose
+  ./tools/human-editability requirements-source
+  ./tools/human-editability requirements-lanes
+  ./tools/human-editability requirements-active
+  ./tools/human-editability requirements-active timeAdvanceRequest
+  ./tools/human-editability requirement-template HLA1516.1-TM-8.8-001
+  ./tools/human-editability requirement-template REQ-RTI-TM-8_8-timeAdvanceRequest
   ./tools/human-editability front-doors python-rti
   ./tools/human-editability front-doors python-rti-service
   ./tools/human-editability front-doors requirements
@@ -21,6 +34,8 @@ Canonical human-editability flow:
   ./tools/human-editability front-doors rti-factories
   ./tools/human-editability generate-trace-index
   ./tools/human-editability generate-python-rti-map
+  ./tools/human-editability trace-summary createFederationExecution
+  ./tools/human-editability trace-summary timeAdvanceRequest
   ./tools/human-editability trace createFederationExecution
   ./tools/human-editability trace timeAdvanceRequest
   ./tools/human-editability requirement REQ-RTI-TM-8_8-timeAdvanceRequest
@@ -39,11 +54,23 @@ case "${1:-check}" in
     shift
     hla2010_shell_run_workspace_python "$python_bin" "$ROOT_DIR/scripts/validate_traceability_paths.py" generate "$@"
     ;;
+  generate-requirements-authoring-index)
+    shift
+    hla2010_shell_run_workspace_python "$python_bin" -c "from hla2010_repo_internal.traceability import write_requirements_authoring_index; write_requirements_authoring_index()"
+    ;;
+  generate-active-service-index)
+    shift
+    hla2010_shell_run_workspace_python "$python_bin" -c "from hla2010_repo_internal.traceability import write_active_service_index; write_active_service_index()"
+    ;;
+  generate-requirements-source)
+    shift
+    hla2010_shell_run_workspace_python "$python_bin" -c "from hla2010_repo_internal.requirements_source import write_requirements_generated_views; write_requirements_generated_views()"
+    ;;
   generate-python-rti-map)
     shift
     hla2010_shell_run_workspace_python "$python_bin" "$ROOT_DIR/scripts/generate_python_rti_service_map.py" generate "$@"
     ;;
-  check|inventory|front-doors|requirements-surfaces|trace|requirement)
+  check|inventory|front-doors|requirements-crud|requirements-create|requirements-read|requirements-update|requirements-delete|requirements-flow|requirements-surfaces|requirements-source|requirements-lanes|requirements-active|requirement-template|trace-summary|trace|requirement)
     subcommand="$1"
     shift
     hla2010_shell_run_workspace_python "$python_bin" "$ROOT_DIR/scripts/human_editability.py" "$subcommand" "$@"

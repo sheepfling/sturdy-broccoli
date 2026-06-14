@@ -1,0 +1,145 @@
+{
+  "key_public_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/onboarding.md",
+    "docs/first_run.md",
+    "docs/spec_reading_map.md",
+    "docs/fom_reading_map.md",
+    "docs/python_rti_reading_map.md",
+    "docs/python_rti_edit_one_service.md",
+    "docs/requirements_trace_one_method.md",
+    "docs/requirements_authoring_map.md",
+    "docs/python_environment.md",
+    "docs/two_federate_quickstart.md",
+    "packages/README.md",
+    "tests/README.md"
+  ],
+  "banned_primary_refs": [
+    "docs/evidence/",
+    "docs/reference/archive_index.md"
+  ],
+  "expected_headings": {
+    "README.md": ["## Start Here", "## Read Next"],
+    "docs/README.md": ["## Start Here", "## Historical / Provenance", "## Read Next"],
+    "docs/onboarding.md": ["## What This Path Assumes", "## What This Path Avoids", "## Read Next"],
+    "docs/first_run.md": ["## Read Next"],
+    "docs/spec_reading_map.md": ["## Why These Files", "## What To Ignore First", "## Read Next"],
+    "docs/fom_reading_map.md": ["## Why These Files", "## Edit Here For", "## Read Next"],
+    "docs/python_rti_reading_map.md": ["## Why These Files", "## Edit Loop", "## Read Next"],
+    "docs/python_rti_edit_one_service.md": ["## Recommended First Example", "## Edit Loop", "## Read Next"],
+    "docs/requirements_trace_one_method.md": ["## Recommended First Example", "## Trace Loop", "## Read Next"],
+    "docs/requirements_authoring_map.md": ["## Why These Files", "## Authoring Loop", "## Read Next"],
+    "docs/requirements_edit_one_row.md": ["## Active Vs Generated Vs Reference", "## One-Row Edit Loop", "## Read Next"],
+    "docs/python_environment.md": ["## Read Next"],
+    "docs/two_federate_quickstart.md": ["## Read Next"],
+    "packages/README.md": ["## Start Here", "## Read Next"],
+    "tests/README.md": ["## Start Here", "## Read Next"]
+  },
+  "expected_paths": {
+    "README.md": [
+      "tools/bootstrap",
+      "examples/target_radar_simulation.py",
+      "examples/backend_recording.py",
+      "tools/test"
+    ],
+    "docs/onboarding.md": [
+      "docs/first_run.md",
+      "docs/python_rti_edit_one_service.md",
+      "docs/create_federate_and_fom.md",
+      "docs/requirements_trace_one_method.md",
+      "packages/README.md",
+      "docs/java_backends_quickstart.md",
+      "docs/verification/run_sequence.md",
+      "docs/spec_reading_map.md",
+      "docs/python_rti_reading_map.md",
+      "docs/requirements_edit_one_row.md",
+      "docs/requirements_traceability.md"
+    ],
+    "docs/spec_reading_map.md": [
+      "packages/hla2010-spec/src/hla2010/spec/__init__.py",
+      "packages/hla2010-spec/src/hla2010/runtime_api.py",
+      "packages/hla2010-spec/src/hla2010/ambassadors.py",
+      "specs/hla2010_api.json"
+    ],
+    "docs/fom_reading_map.md": [
+      "packages/hla2010-spec/src/hla2010/fom.py",
+      "packages/hla2010-spec/src/hla2010/_fom_parsing.py",
+      "packages/hla2010-spec/src/hla2010/_fom_merge.py",
+      "packages/hla2010-spec/src/hla2010/_fom_datatypes.py",
+      "packages/hla2010-spec/src/hla2010/_fom_serialization.py",
+      "packages/hla2010-spec/src/hla2010/_fom_models.py",
+      "tests/factories/test_fom_omt_parsing.py"
+    ],
+    "docs/python_rti_reading_map.md": [
+      "docs/python_rti_backend.md",
+      "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py",
+      "packages/hla2010-rti-python/src/hla2010_rti_python/service_registry.py",
+      "analysis/traceability/python_rti_service_map.md"
+    ],
+    "docs/python_rti_edit_one_service.md": [
+      "tools/human-editability",
+      "docs/python_rti_backend.md",
+      "packages/hla2010-spec/src/hla2010/runtime_api.py",
+      "packages/hla2010-rti-python/src/hla2010_rti_python/service_registry.py",
+      "packages/hla2010-rti-python/src/hla2010_rti_python/support_lookup.py",
+      "packages/hla2010-rti-python/src/hla2010_rti_python/time_public_services.py",
+      "tests/backends/test_python_rti_service_registry.py"
+    ],
+    "docs/requirements_trace_one_method.md": [
+      "tools/human-editability",
+      "requirements/README.md",
+      "requirements/source_of_truth.json",
+      "docs/requirements_traceability.md",
+      "requirements/active_service_rows.csv",
+      "requirements/traceability_matrix.csv",
+      "packages/hla2010-rti-python/src/hla2010_rti_python/support_lookup.py",
+      "packages/hla2010-rti-python/src/hla2010_rti_python/time_public_services.py",
+      "tests/scenarios/test_support_services_backend_matrix.py",
+      "tests/time/test_mom_mim_time_v10.py"
+    ],
+    "docs/requirements_authoring_map.md": [
+      "docs/requirements_edit_one_row.md",
+      "requirements/README.md",
+      "requirements/source_of_truth.json",
+      "requirements/active_service_rows.csv",
+      "requirements/surface_manifest.json",
+      "docs/requirements_traceability.md",
+      "requirements/traceability_matrix.csv"
+    ],
+    "docs/requirements_edit_one_row.md": [
+      "requirements/README.md",
+      "requirements/source_of_truth.json",
+      "requirements/surface_manifest.json",
+      "requirements/active_service_rows.csv",
+      "requirements/traceability_matrix.csv",
+      "analysis/compliance/requirements_ledger.csv",
+      "analysis/traceability/service_trace_index.md",
+      "packages/hla2010-rti-python/src/hla2010_rti_python/support_lookup.py",
+      "tests/scenarios/test_support_services_backend_matrix.py"
+    ],
+    "docs/first_run.md": [
+      "tools/bootstrap",
+      "tools/examples",
+      "tools/rti-factories",
+      "examples/backend_recording.py",
+      "examples/rti_factory_selection.py",
+      "examples/target_radar_simulation.py"
+    ],
+    "docs/python_environment.md": [
+      "tools/bootstrap",
+      "examples/target_radar_simulation.py",
+      "tools/two-federate",
+      "tools/test",
+      "tools/python",
+      "tools/certi-easy",
+      "tools/pitch"
+    ],
+    "docs/two_federate_quickstart.md": [
+      "tools/rti-factories",
+      "tools/two-federate",
+      "scripts/run_two_federate_suite.py",
+      "src/hla2010_repo_internal/verification/two_federate_suite_runner.py"
+    ]
+  }
+}

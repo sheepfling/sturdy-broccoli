@@ -1,0 +1,29 @@
+{
+  "quickstart_contains": [
+    "Start with the Python RTI first.",
+    "./tools/bootstrap python",
+    "python examples/target_radar_simulation.py --backend python --steps 5",
+    "[install_matrix.md](install_matrix.md)",
+    "[backend_route_inventory.md](backend_route_inventory.md)",
+    "[backend_decision_tree.md](backend_decision_tree.md)",
+    "JPype backend requested, but jpype is not installed",
+    "Py4J backend requested, but py4j is not installed"
+  ],
+  "decision_tree_contains": [
+    "If you are unsure, use `python`."
+  ],
+  "bridge_prerequisite_tokens": [
+    "classpath",
+    "gateway",
+    "not installed"
+  ],
+  "jpype_readme_contains": [
+    "from hla2010_rti_java_jpype import JPypeConfig, rti_ambassador"
+  ],
+  "py4j_readme_contains": [
+    "from hla2010_rti_java_py4j import Py4JConfig, rti_ambassador"
+  ],
+  "bridge_readme_absent": [
+    "hla2010.rti"
+  ]
+}

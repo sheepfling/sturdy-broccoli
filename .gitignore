@@ -1,6 +1,7 @@
 # Python
 .DS_Store
 ._*
+*.icloud
 Thumbs.db
 *.orig
 *.rej
@@ -58,3 +59,6 @@ CERTI-upstream-build
 CERTI-upstream-install
 pitch-user-home
 archives
+
+# Narrow Finder/iCloud duplicate scripts
+scripts/ci/* 2.sh

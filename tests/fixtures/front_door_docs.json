@@ -1,0 +1,280 @@
+{
+  "contains_cases": [
+    {
+      "id": "onboarding",
+      "path": "docs/onboarding.md",
+      "must_contain": [
+        "[First Run](first_run.md)",
+        "[Edit One Python RTI Service](python_rti_edit_one_service.md)",
+        "[Create A Federate And FOM](create_federate_and_fom.md)",
+        "[Requirements CRUD](requirements_crud.md)",
+        "[Trace One Method](requirements_trace_one_method.md)",
+        "[Package Ownership Map](../packages/README.md)",
+        "[Java Backends Later](java_backends_quickstart.md)",
+        "[Full Verification](verification/run_sequence.md)",
+        "[Spec Reading Map](spec_reading_map.md)",
+        "[Python RTI Reading Map](python_rti_reading_map.md)",
+        "[Requirements Details Later](requirements_traceability.md)",
+        "[requirements_edit_one_row.md](requirements_edit_one_row.md)",
+        "authoring map is secondary reading"
+      ],
+      "must_not_contain": [
+        "requirements_authoring_map.md",
+        "docs/evidence/",
+        "reference/archive_index.md"
+      ]
+    },
+    {
+      "id": "spec_reading_map",
+      "path": "docs/spec_reading_map.md",
+      "must_contain": [
+        "packages/hla2010-spec/src/hla2010/raw_api.py",
+        "packages/hla2010-spec/src/hla2010/_spec_impl.py",
+        "packages/hla2010-spec/src/hla2010/fom.py"
+      ]
+    },
+    {
+      "id": "fom_reading_map",
+      "path": "docs/fom_reading_map.md",
+      "must_contain": [
+        "_fom_parsing.py",
+        "_fom_merge.py",
+        "_fom_datatypes.py",
+        "_fom_serialization.py",
+        "_fom_models.py",
+        "human-editability front-doors fom"
+      ]
+    },
+    {
+      "id": "python_rti_reading_map",
+      "path": "docs/python_rti_reading_map.md",
+      "must_contain": [
+        "service_registry.py",
+        "human-editability trace <MethodName>",
+        "rti_factory_reading_map.md",
+        "./tools/rti-factories show in-memory --probe",
+        "./tools/human-editability front-doors python-rti-service"
+      ]
+    },
+    {
+      "id": "python_rti_edit_one_service",
+      "path": "docs/python_rti_edit_one_service.md",
+      "must_contain": [
+        {
+          "trace_example": {
+            "id": "support_lookup",
+            "field": "commands",
+            "index": 1
+          }
+        },
+        {
+          "trace_example": {
+            "id": "time_management",
+            "field": "commands",
+            "index": 1
+          }
+        },
+        "support_lookup.py",
+        "service_registry.py"
+      ]
+    },
+    {
+      "id": "requirements_crud",
+      "path": "docs/requirements_crud.md",
+      "must_contain": [
+        "./tools/human-editability requirements-crud",
+        "./tools/human-editability requirements-create <RequirementIdOrArtifactId>",
+        "./tools/human-editability requirements-read <MethodNameOrRequirementId>",
+        "./tools/human-editability requirements-update <RequirementId>",
+        "./tools/human-editability requirements-delete <RequirementId>",
+        "## Create",
+        "## Read",
+        "## Update",
+        "## Delete",
+        "requirements/active_service_rows.csv",
+        "./tools/human-editability check",
+        "./tools/human-editability generate-requirements-source",
+        "./tools/human-editability generate-trace-index"
+      ]
+    },
+    {
+      "id": "requirements_trace_one_method",
+      "path": "docs/requirements_trace_one_method.md",
+      "must_contain": [
+        {
+          "doc_projection": {
+            "id": "trace_intro_commands",
+            "index": 0
+          }
+        },
+        {
+          "doc_projection": {
+            "id": "trace_intro_commands",
+            "index": 1
+          }
+        },
+        {
+          "trace_example": {
+            "id": "time_management",
+            "field": "commands",
+            "index": 0
+          }
+        },
+        {
+          "doc_projection": {
+            "id": "trace_intro_commands",
+            "index": 2
+          }
+        },
+        {
+          "trace_example": {
+            "id": "time_management",
+            "field": "commands",
+            "index": 1
+          }
+        },
+        "./tools/human-editability requirements-lanes",
+        {
+          "doc_projection": {
+            "id": "trace_loop_commands",
+            "index": 3
+          }
+        },
+        {
+          "doc_projection": {
+            "id": "trace_loop_commands",
+            "index": 4
+          }
+        },
+        {
+          "trace_example": {
+            "id": "support_lookup",
+            "field": "open_paths",
+            "index": 0
+          }
+        },
+        "test_support_services_backend_matrix.py"
+      ]
+    },
+    {
+      "id": "requirements_edit_one_row",
+      "path": "docs/requirements_edit_one_row.md",
+      "must_contain": [
+        "./tools/human-editability requirements-read REQ-RTI-TM-8_8-timeAdvanceRequest",
+        "./tools/human-editability requirements-update REQ-RTI-TM-8_8-timeAdvanceRequest",
+        "requirements/active_service_rows.csv",
+        "requirements/source_of_truth.json",
+        "requirements/surface_manifest.json",
+        "./tools/human-editability requirements-surfaces",
+        "./tools/human-editability requirements-read timeAdvanceRequest",
+        "./tools/human-editability requirements-create HLA1516.1-TM-8.8-001",
+        "./tools/human-editability requirements-create REQ-RTI-TM-8_8-timeAdvanceRequest",
+        "./tools/human-editability requirements-update REQ-RTI-TM-8_8-timeAdvanceRequest",
+        "./tools/human-editability requirements-delete REQ-RTI-TM-8_8-timeAdvanceRequest",
+        "analysis/compliance/requirements_ledger.csv",
+        "Active Vs Generated Vs Reference",
+        "./tools/human-editability requirements-read <MethodNameOrRequirementId>",
+        "./tools/human-editability check",
+        "./tools/human-editability generate-trace-index"
+      ]
+    },
+    {
+      "id": "rti_factory_reading_map",
+      "path": "docs/rti_factory_reading_map.md",
+      "must_contain": [
+        "./tools/rti-factories list",
+        "./tools/rti-factories instantiate in-memory --probe",
+        "examples/rti_factory_selection.py",
+        "./tools/examples rti-factory-selection --name in-memory --probe",
+        "iter_rti_factories()",
+        "get_rti_factory(name)",
+        "human-editability front-doors rti-factories",
+        "python_rti_reading_map.md"
+      ]
+    },
+    {
+      "id": "python_rti_backend",
+      "path": "docs/python_rti_backend.md",
+      "must_contain": [
+        "rti_factory_reading_map.md",
+        "python_rti_edit_one_service.md",
+        "./tools/rti-factories list",
+        "./tools/rti-factories show in-memory --probe",
+        "./tools/rti-factories instantiate in-memory --probe",
+        "./tools/examples target-radar --backend in-memory --steps 5",
+        "./tools/examples rti-factory-selection --name in-memory --probe",
+        "source .venv/bin/activate"
+      ]
+    },
+    {
+      "id": "requirements_authoring_map",
+      "path": "docs/requirements_authoring_map.md",
+      "must_contain": [
+        "thin compatibility map",
+        "./tools/human-editability requirements-flow",
+        "requirements_edit_one_row.md",
+        "requirements/README.md",
+        "requirements/source_of_truth.json",
+        "requirements/active_service_rows.csv",
+        "requirements_trace_one_method.md",
+        "./tools/human-editability requirement <RequirementId>",
+        "./tools/human-editability trace-summary <MethodName>",
+        "./tools/human-editability check"
+      ]
+    },
+    {
+      "id": "create_federate_and_fom",
+      "path": "docs/create_federate_and_fom.md",
+      "must_contain": [
+        "./tools/examples minimal-fom-demo --backend in-memory",
+        "python examples/minimal_fom_demo.py --backend python"
+      ]
+    }
+  ],
+  "requirements_role_cases": [
+    {
+      "id": "requirements_traceability",
+      "path": "docs/requirements_traceability.md",
+      "must_contain": [
+        "## Trace Model",
+        "generated service trace index",
+        "## Full-Chain Walkthroughs"
+      ],
+      "must_not_contain": [
+        "Use this page for requirement-surface classification."
+      ]
+    },
+    {
+      "id": "requirements_authoring_map_role",
+      "path": "docs/requirements_authoring_map.md",
+      "must_contain": [
+        "thin compatibility map",
+        "You should usually start with:",
+        "## Authoring Loop"
+      ]
+    },
+    {
+      "id": "requirements_edit_one_row_role",
+      "path": "docs/requirements_edit_one_row.md",
+      "must_contain": [
+        "\"We missed one requirement row, or one mapping is wrong. What do I edit?\"",
+        "## One-Row Edit Loop"
+      ],
+      "must_not_contain": [
+        "thin compatibility map"
+      ]
+    },
+    {
+      "id": "requirements_readme_role",
+      "path": "requirements/README.md",
+      "must_contain": [
+        "Use this page for requirement-surface classification.",
+        "## Surface Types",
+        "requirements_crud.md"
+      ],
+      "must_not_contain": [
+        "Read these files in order:"
+      ]
+    }
+  ]
+}

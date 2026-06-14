@@ -1,0 +1,81 @@
+{
+  "single_path_cases": [
+    {
+      "id": "tools_readme_surface",
+      "path": "tools/README.md",
+      "must_contain": [
+        "canonical home for human-facing operator entrypoints",
+        "./tools/bootstrap",
+        "./tools/python",
+        "./tools/certi-easy",
+        "./tools/pitch",
+        "./tools/vendor-green",
+        "./tools/vendor-state",
+        "./tools/vendor-parity",
+        "./tools/vendor-probe-review",
+        "./tools/vendor-edge",
+        "./tools/rti-options",
+        "./tools/compliance",
+        "./tools/fom-overview",
+        "./tools/human-editability",
+        "./tools/examples",
+        "./tools/new-fom-package",
+        "./tools/rti-factories",
+        "./tools/spec-api",
+        "./tools/package-deps",
+        "./tools/section8-gate",
+        "./tools/target-radar",
+        "./tools/lint",
+        "./tools/two-federate",
+        "./tools/test",
+        "./tools/human-editability front-doors",
+        "./tools/human-editability front-doors python-rti",
+        "./tools/human-editability front-doors python-rti-service",
+        "./tools/human-editability front-doors requirements-trace"
+      ]
+    },
+    {
+      "id": "scripts_readme_boundary",
+      "path": "scripts/README.md",
+      "must_contain": [
+        "implementation and CI plumbing, not the primary",
+        "human-facing operator surface",
+        "Compatibility aliases that remain for implementation and migration support",
+        "./tools/lint",
+        "./tools/compliance",
+        "./tools/vendor-state classify",
+        "./tools/vendor-state ci-state",
+        "./tools/vendor-green [profile]",
+        "./tools/vendor-probe-review",
+        "./tools/vendor-edge",
+        "./tools/section8-gate",
+        "./tools/target-radar",
+        "./tools/human-editability",
+        "contributor front-door",
+        "./tools/examples",
+        "./tools/rti-factories",
+        "./tools/spec-api",
+        "./scripts/certi_easy.sh",
+        "./scripts/pitch_docker_easy.sh",
+        "analysis/compliance/python_requirement_disposition.md",
+        "analysis/compliance/certi_requirement_disposition.md",
+        "analysis/compliance/certi-native_requirement_disposition.md",
+        "analysis/compliance/certi-jpype_requirement_disposition.md",
+        "analysis/compliance/certi-py4j_requirement_disposition.md",
+        "analysis/compliance/pitch_requirement_disposition.md",
+        "analysis/compliance/pitch-jpype_requirement_disposition.md",
+        "analysis/compliance/pitch-py4j_requirement_disposition.md",
+        "analysis/compliance/portico_requirement_disposition.md",
+        "analysis/compliance/portico-jpype_requirement_disposition.md",
+        "analysis/compliance/portico-py4j_requirement_disposition.md"
+      ],
+      "must_not_contain": [
+        "python3 scripts/ci/check_doc_links.py",
+        "python3 scripts/classify_vendor_runtime.py",
+        "python3 scripts/ci/check_vendor_runtime_ci_state.py",
+        "./scripts/ci/vendor_green.sh",
+        "./scripts/ci/vendor_runtime_smoke.sh"
+      ]
+    }
+  ]
+}

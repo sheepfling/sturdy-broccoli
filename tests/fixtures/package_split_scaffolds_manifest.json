@@ -1,0 +1,406 @@
+{
+  "root_surface": [
+    "__init__.py",
+    "_fom_datatypes.py",
+    "_fom_errors.py",
+    "_fom_merge.py",
+    "_fom_models.py",
+    "_fom_parsing.py",
+    "_fom_serialization.py",
+    "_spec_impl.py",
+    "ambassadors.py",
+    "api.py",
+    "encoding.py",
+    "enums.py",
+    "exceptions.py",
+    "fom.py",
+    "handles.py",
+    "mom.py",
+    "raw_api.py",
+    "rti.py",
+    "runtime_api.py",
+    "spec/__init__.py",
+    "spec_api.py",
+    "spec_inventory.py",
+    "spec_refs.py",
+    "spec_sources.py",
+    "time.py",
+    "types.py"
+  ],
+  "docs_exist": [
+    "hla2010-spec",
+    "hla2010-rti-python",
+    "hla2010-rti-certi",
+    "hla2010-rti-backend-common",
+    "hla2010-rti-java-common",
+    "hla2010-rti-runtime-common",
+    "hla2010-rti-transport-common",
+    "hla2010-rti-java-jpype",
+    "hla2010-rti-java-py4j",
+    "hla2010-rti-pitch-common",
+    "hla2010-rti-pitch-jpype",
+    "hla2010-rti-pitch-py4j",
+    "hla2010-rti-portico",
+    "hla2010-rti-transport-grpc",
+    "hla2010-rti-transport-rest",
+    "hla2010-fom-target-radar",
+    "hla2010-fom-minimal-demo",
+    "hla2010-verification-harness"
+  ],
+  "policy_modules": {
+    "hla2010-rti-python": "packages/hla2010-rti-python/src/hla2010_rti_python/testing_policy.py",
+    "hla2010-rti-certi": "packages/hla2010-rti-certi/src/hla2010_rti_certi/testing_policy.py",
+    "hla2010-rti-pitch-common": "packages/hla2010-rti-pitch-common/src/hla2010_rti_pitch_common/testing_policy.py",
+    "hla2010-rti-portico": "packages/hla2010-rti-portico/src/hla2010_rti_portico/testing_policy.py"
+  },
+  "test_surfaces": {
+    "hla2010-spec": [
+      "tests/test_package_split_scaffolds.py",
+      "tests/test_root_facade_policy.py",
+      "tests/test_namespace_policy.py",
+      "tests/test_python_api_spec.py"
+    ],
+    "hla2010-rti-python": [
+      "tests/test_rti_python_split_package.py"
+    ],
+    "hla2010-rti-certi": [
+      "tests/test_rti_certi_split_package.py"
+    ],
+    "hla2010-rti-backend-common": [
+      "tests/test_rti_backend_common_split_package.py"
+    ],
+    "hla2010-rti-java-common": [
+      "tests/test_rti_java_common_split_package.py",
+      "tests/test_rti_java_runtime_split_package.py"
+    ],
+    "hla2010-rti-runtime-common": [
+      "tests/test_rti_runtime_common_split_package.py"
+    ],
+    "hla2010-rti-transport-common": [
+      "tests/test_rti_transport_common_split_package.py"
+    ],
+    "hla2010-rti-java-jpype": [
+      "tests/test_rti_java_plugin_split_packages.py"
+    ],
+    "hla2010-rti-java-py4j": [
+      "tests/test_rti_java_plugin_split_packages.py"
+    ],
+    "hla2010-rti-pitch-common": [
+      "tests/test_rti_pitch_common_split_package.py"
+    ],
+    "hla2010-rti-pitch-jpype": [
+      "tests/test_rti_pitch_split_packages.py"
+    ],
+    "hla2010-rti-pitch-py4j": [
+      "tests/test_rti_pitch_split_packages.py"
+    ],
+    "hla2010-rti-portico": [
+      "tests/test_rti_portico_split_package.py",
+      "tests/vendors/test_portico_real_backend_matrix.py"
+    ],
+    "hla2010-rti-transport-grpc": [
+      "tests/test_rti_transport_grpc_split_package.py"
+    ],
+    "hla2010-rti-transport-rest": [
+      "tests/test_rti_transport_rest_split_package.py"
+    ],
+    "hla2010-fom-target-radar": [
+      "tests/test_fom_target_radar_split_package.py"
+    ],
+    "hla2010-fom-minimal-demo": [
+      "tests/examples/test_minimal_fom_demo.py"
+    ],
+    "hla2010-verification-harness": [
+      "tests/test_verification_harness_split_package.py"
+    ]
+  },
+  "docs_readme_fragments": {
+    "hla2010-rti-python": [
+      "Package-owned notes",
+      "testing_policy.py",
+      "./tools/python verify",
+      "thin wrappers",
+      "tests/test_rti_python_split_package.py",
+      "tests/test_python_matrix_policy.py"
+    ],
+    "hla2010-rti-certi": [
+      "This package owns:",
+      "testing_policy.py",
+      "./tools/certi-easy",
+      "plugin code",
+      "tests/test_rti_certi_split_package.py",
+      "tests/vendors/test_certi_real_backend_exchange_matrix.py",
+      "tests/vendors/test_certi_real_backend_ownership_matrix.py",
+      "tests/vendors/test_certi_real_backend_time_matrix.py"
+    ],
+    "hla2010-rti-pitch-common": [
+      "This package owns:",
+      "testing_policy.py",
+      "./tools/pitch",
+      "runtime discovery and launch policy",
+      "pitch_clause4_lost_federate_gap_2026-06-11.md",
+      "tests/test_rti_pitch_split_packages.py",
+      "tests/vendors/test_pitch_real_backend_matrix.py"
+    ],
+    "hla2010-rti-pitch-jpype": [
+      "src/hla2010_rti_pitch_jpype/",
+      "hla2010_rti_pitch_common.testing_policy",
+      "./tools/pitch",
+      "plugin descriptor",
+      "tests/test_rti_pitch_split_packages.py",
+      "tests/vendors/test_pitch_real_backend_matrix.py"
+    ],
+    "hla2010-rti-pitch-py4j": [
+      "src/hla2010_rti_pitch_py4j/",
+      "hla2010_rti_pitch_common.testing_policy",
+      "./tools/pitch",
+      "plugin descriptor",
+      "tests/test_rti_pitch_split_packages.py",
+      "tests/vendors/test_pitch_real_backend_matrix.py"
+    ],
+    "hla2010-rti-portico": [
+      "This package owns:",
+      "testing_policy.py",
+      "./tools/vendor-green",
+      "runtime discovery and plugin code",
+      "tests/test_rti_portico_split_package.py",
+      "tests/vendors/test_portico_real_backend_matrix.py"
+    ],
+    "hla2010-rti-transport-common": [
+      "This package owns backend-neutral transport primitives",
+      "hla2010_rti_transport_common.transport",
+      "hla2010_rti_transport_common.transport_registry",
+      "not a backend, operator entrypoint",
+      "tests/test_rti_transport_common_split_package.py",
+      "tests/test_package_boundary.py"
+    ],
+    "hla2010-rti-transport-grpc": [
+      "installable gRPC transport implementation",
+      "hla2010_rti_transport_grpc.transport",
+      "python_server",
+      "Human operator entrypoints remain in `./tools/`",
+      "tests/test_rti_transport_grpc_split_package.py",
+      "tests/test_package_boundary.py",
+      "tests/test_backend_wrapper_policy.py"
+    ],
+    "hla2010-rti-transport-rest": [
+      "installable REST/HTTP JSON transport implementation",
+      "hla2010_rti_transport_rest.client",
+      "rest_transport_host",
+      "Human operator entrypoints remain in `./tools/`",
+      "tests/test_rti_transport_rest_split_package.py",
+      "tests/test_package_boundary.py"
+    ],
+    "hla2010-rti-backend-common": [
+      "backend-neutral support code",
+      "hla2010_rti_backend_common.plugin_api",
+      "not itself a backend or operator entrypoint",
+      "tests/test_rti_backend_common_split_package.py",
+      "tests/test_package_boundary.py"
+    ],
+    "hla2010-rti-java-common": [
+      "bridge-independent Java support code",
+      "hla2010_rti_java_common.java_common",
+      "not a vendor backend or operator",
+      "tests/test_rti_java_common_split_package.py",
+      "tests/test_rti_java_runtime_split_package.py",
+      "tests/test_package_boundary.py"
+    ],
+    "hla2010-rti-runtime-common": [
+      "shared vendor-runtime process and backend-discovery helpers",
+      "hla2010_rti_runtime_common.factory",
+      "not a backend implementation or operator",
+      "tests/test_rti_runtime_common_split_package.py",
+      "tests/test_package_boundary.py"
+    ],
+    "hla2010-rti-java-jpype": [
+      "installable generic JPype Java bridge",
+      "hla2010_rti_java_jpype.runtime",
+      "factory` and `.plugin",
+      "not a vendor-specific RTI package or",
+      "operator entrypoint",
+      "tests/test_rti_java_plugin_split_packages.py",
+      "tests/test_package_boundary.py"
+    ],
+    "hla2010-rti-java-py4j": [
+      "installable generic Py4J Java bridge",
+      "hla2010_rti_java_py4j.runtime",
+      "factory` and `.plugin",
+      "not a vendor-specific RTI package or",
+      "operator entrypoint",
+      "tests/test_rti_java_plugin_split_packages.py",
+      "tests/test_package_boundary.py"
+    ],
+    "hla2010-verification-harness": [
+      "backend-neutral shared verification scenarios",
+      "scenario_*",
+      "backend wrapper tests and compliance artifacts",
+      "does not own vendor runtime policy",
+      "tests/test_verification_harness_split_package.py",
+      "tests/test_backend_wrapper_policy.py"
+    ],
+    "hla2010-fom-target-radar": [
+      "concrete Target/Radar example FOM",
+      "resources.foms",
+      "example/FOM support reused by repo-internal proof",
+      "does not own RTI backend implementations",
+      "tests/test_fom_target_radar_split_package.py"
+    ],
+    "hla2010-fom-minimal-demo": [
+      "concrete minimal-demo example FOM",
+      "resources.foms",
+      "create-federate-and-FOM tutorial",
+      "does not own RTI backend implementations",
+      "tests/examples/test_minimal_fom_demo.py"
+    ],
+    "hla2010-spec": [
+      "abstract HLA 2010 spec and core API surface",
+      "`hla2010.rti`",
+      "temporary root facade",
+      "tests/test_package_split_scaffolds.py",
+      "tests/test_root_facade_policy.py",
+      "tests/test_namespace_policy.py",
+      "tests/test_python_api_spec.py",
+      "must not own concrete RTI backend implementations"
+    ]
+  },
+  "package_readme_fragments": {
+    "hla2010-spec": [
+      "canonical runtime namespace from `hla2010`",
+      "`hla2010.rti`",
+      "`tests/test_package_split_scaffolds.py`",
+      "`tests/test_root_facade_policy.py`",
+      "`tests/test_namespace_policy.py`",
+      "`tests/test_python_api_spec.py`",
+      "does not own human operator entrypoints",
+      "`./tools/`"
+    ],
+    "hla2010-rti-python": [
+      "`src/hla2010_rti_python/`",
+      "`src/hla2010_rti_python/testing_policy.py`",
+      "`tests/test_rti_python_split_package.py`",
+      "`tests/test_python_matrix_policy.py`",
+      "`./tools/python`",
+      "package-local command"
+    ],
+    "hla2010-rti-certi": [
+      "`hla2010_rti_certi`",
+      "`src/hla2010_rti_certi/testing_policy.py`",
+      "`tests/test_rti_certi_split_package.py`",
+      "`tests/vendors/test_certi_real_backend_exchange_matrix.py`",
+      "`tests/vendors/test_certi_real_backend_ownership_matrix.py`",
+      "`tests/vendors/test_certi_real_backend_time_matrix.py`",
+      "`./tools/certi-easy`",
+      "package-local command"
+    ],
+    "hla2010-rti-backend-common": [
+      "`hla2010_rti_backend_common`",
+      "`tests/test_rti_backend_common_split_package.py`",
+      "`tests/test_package_boundary.py`",
+      "does not own human operator entrypoints",
+      "`./tools/`"
+    ],
+    "hla2010-rti-java-common": [
+      "`hla2010_rti_java_common`",
+      "`tests/test_rti_java_common_split_package.py`",
+      "`tests/test_rti_java_runtime_split_package.py`",
+      "`tests/test_package_boundary.py`",
+      "does not own human operator entrypoints",
+      "`./tools/`"
+    ],
+    "hla2010-rti-runtime-common": [
+      "`hla2010_rti_runtime_common`",
+      "`tests/test_rti_runtime_common_split_package.py`",
+      "`tests/test_package_boundary.py`",
+      "does not own human operator entrypoints",
+      "`./tools/`"
+    ],
+    "hla2010-rti-transport-common": [
+      "`hla2010_rti_transport_common`",
+      "`tests/test_rti_transport_common_split_package.py`",
+      "`tests/test_package_boundary.py`",
+      "does not own human operator entrypoints",
+      "`./tools/`"
+    ],
+    "hla2010-rti-java-jpype": [
+      "`hla2010_rti_java_jpype`",
+      "`tests/test_rti_java_plugin_split_packages.py`",
+      "`tests/test_package_boundary.py`",
+      "does not own human operator entrypoints",
+      "`./tools/`"
+    ],
+    "hla2010-rti-java-py4j": [
+      "`hla2010_rti_java_py4j`",
+      "`tests/test_rti_java_plugin_split_packages.py`",
+      "`tests/test_package_boundary.py`",
+      "does not own human operator entrypoints",
+      "`./tools/`"
+    ],
+    "hla2010-rti-pitch-common": [
+      "`hla2010_rti_pitch_common`",
+      "`src/hla2010_rti_pitch_common/testing_policy.py`",
+      "`tests/test_rti_pitch_split_packages.py`",
+      "`tests/vendors/test_pitch_real_backend_matrix.py`",
+      "`./tools/pitch`",
+      "package-local command"
+    ],
+    "hla2010-rti-pitch-jpype": [
+      "`hla2010_rti_pitch_jpype`",
+      "`hla2010_rti_pitch_common.testing_policy`",
+      "`tests/test_rti_pitch_split_packages.py`",
+      "`tests/vendors/test_pitch_real_backend_matrix.py`",
+      "`./tools/pitch`",
+      "package-local command"
+    ],
+    "hla2010-rti-pitch-py4j": [
+      "`hla2010_rti_pitch_py4j`",
+      "`hla2010_rti_pitch_common.testing_policy`",
+      "`tests/test_rti_pitch_split_packages.py`",
+      "`tests/vendors/test_pitch_real_backend_matrix.py`",
+      "`./tools/pitch`",
+      "package-local command"
+    ],
+    "hla2010-rti-portico": [
+      "`hla2010_rti_portico`",
+      "`src/hla2010_rti_portico/testing_policy.py`",
+      "`tests/test_rti_portico_split_package.py`",
+      "`tests/vendors/test_portico_real_backend_matrix.py`",
+      "`./tools/vendor-green`",
+      "package-local command"
+    ],
+    "hla2010-rti-transport-grpc": [
+      "`hla2010_rti_transport_grpc`",
+      "`tests/test_rti_transport_grpc_split_package.py`",
+      "`tests/test_package_boundary.py`",
+      "`tests/test_backend_wrapper_policy.py`",
+      "does not own human operator entrypoints",
+      "`./tools/`"
+    ],
+    "hla2010-rti-transport-rest": [
+      "`hla2010_rti_transport_rest`",
+      "`tests/test_rti_transport_rest_split_package.py`",
+      "`tests/test_package_boundary.py`",
+      "does not own human operator entrypoints",
+      "`./tools/`"
+    ],
+    "hla2010-fom-target-radar": [
+      "`hla2010_fom_target_radar`",
+      "`tests/test_fom_target_radar_split_package.py`",
+      "`./tools/target-radar`",
+      "package-local command"
+    ],
+    "hla2010-fom-minimal-demo": [
+      "`hla2010_fom_minimal_demo`",
+      "`tests/examples/test_minimal_fom_demo.py`",
+      "`examples/minimal_fom_demo.py`",
+      "package-local command"
+    ],
+    "hla2010-verification-harness": [
+      "`hla2010_verification_harness`",
+      "`tests/test_verification_harness_split_package.py`",
+      "`tests/test_backend_wrapper_policy.py`",
+      "does not own human operator entrypoints",
+      "`./tools/`"
+    ]
+  }
+}

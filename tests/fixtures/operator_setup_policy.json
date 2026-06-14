@@ -1,0 +1,99 @@
+{
+  "normalized_cases": [
+    {
+      "id": "package_layout_root_install_policy",
+      "path": "docs/package_layout.md",
+      "must_contain": [
+        "repository root is tooling-only",
+        "Do not use `pip install -e .`"
+      ]
+    },
+    {
+      "id": "first_run_root_install_policy",
+      "path": "docs/first_run.md",
+      "must_contain": [
+        "tooling-only and is not installed as a package",
+        "do not use `pip install -e .`"
+      ],
+      "must_not_contain": [
+        "python -m pip install --no-build-isolation"
+      ]
+    },
+    {
+      "id": "python_environment_root_distribution_policy",
+      "path": "docs/python_environment.md",
+      "must_contain": [
+        "without installing the repo root as a distribution"
+      ]
+    },
+    {
+      "id": "scripts_readme_root_install_policy",
+      "path": "scripts/README.md",
+      "must_contain": [
+        "Do not use root `pip install -e .`"
+      ]
+    }
+  ],
+  "primary_text_multi_path_cases": [
+    {
+      "id": "legacy_script_vendor_aliases",
+      "paths": [
+        "README.md",
+        "docs/README.md",
+        "docs/python_environment.md",
+        "docs/install_matrix.md",
+        "docs/agent_runbook.md",
+        "docs/top_to_bottom_green.md"
+      ],
+      "must_not_contain": [
+        "./scripts/certi_easy.sh",
+        "./scripts/pitch_docker_easy.sh"
+      ]
+    },
+    {
+      "id": "legacy_vendor_green_surface",
+      "paths": [
+        "README.md",
+        "docs/local_verification_commands.md",
+        "docs/top_to_bottom_green.md",
+        "docs/backend_route_inventory_commands.md",
+        "docs/vendor_runtime_runner_guide.md"
+      ],
+      "must_not_contain": [
+        "./scripts/ci/vendor_green.sh"
+      ]
+    },
+    {
+      "id": "bootstrap_surface",
+      "paths": [
+        "packages/README.md",
+        "packages/hla2010-rti-python/README.md",
+        "packages/hla2010-rti-certi/README.md",
+        "packages/hla2010-fom-target-radar/README.md",
+        "packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md",
+        "docs/vendor_runtime_runner_guide.md"
+      ],
+      "must_contain": [
+        "./tools/bootstrap"
+      ],
+      "must_not_contain": [
+        "./scripts/bootstrap_profile.sh"
+      ]
+    },
+    {
+      "id": "repo_green_surface",
+      "paths": [
+        "docs/backend_route_inventory_commands.md",
+        "docs/vendor_runtime_gap_map.md",
+        "docs/vendor_runtime_runner_guide.md"
+      ],
+      "must_contain": [
+        "./tools/python verify",
+        "./tools/vendor-green"
+      ],
+      "must_not_contain": [
+        "./scripts/ci/repo_green.sh"
+      ]
+    }
+  ]
+}

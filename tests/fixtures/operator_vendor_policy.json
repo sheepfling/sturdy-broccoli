@@ -1,0 +1,98 @@
+{
+  "bootstrap_flow_paths": [
+    "README.md",
+    "docs/python_environment.md",
+    "docs/install_matrix.md",
+    "docs/top_to_bottom_green.md"
+  ],
+  "vendor_green_paths": [
+    "README.md",
+    "docs/local_verification_commands.md",
+    "docs/top_to_bottom_green.md",
+    "docs/backend_route_inventory_commands.md",
+    "docs/vendor_runtime_runner_guide.md"
+  ],
+  "vendor_state_paths": [
+    "docs/preflight_artifacts.md",
+    "docs/vendor_runtime_runner_guide.md",
+    "docs/vendor_runner_provisioning.md",
+    "packages/hla2010-rti-certi/docs/certi_section8_runbook.md",
+    "packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md"
+  ],
+  "pitch_no_script_paths": [
+    "packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md",
+    "packages/hla2010-rti-pitch-common/docs/pitch_crc_macos_vendor_bug.md"
+  ],
+  "pitch_lost_federate_paths": [
+    "packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md",
+    "packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md"
+  ],
+  "special_vendor_cases": [
+    {
+      "id": "vendor_runtime_runner_guide_probe_review",
+      "path": "docs/vendor_runtime_runner_guide.md",
+      "must_contain": [
+        "./tools/vendor-probe-review <profile> 5",
+        "./tools/vendor-probe-review promotion-review"
+      ],
+      "must_not_contain": [
+        "./scripts/ci/vendor_probe_review.sh <profile> 5",
+        "python3 scripts/ci/write_vendor_probe_promotion_review.py"
+      ]
+    },
+    {
+      "id": "backend_capability_matrix",
+      "path": "docs/backend_capability_matrix.md",
+      "must_contain": [
+        "./tools/vendor-parity"
+      ],
+      "must_not_contain": [
+        "../scripts/run_vendor_parity_artifacts.py"
+      ]
+    },
+    {
+      "id": "rti_options_vendor_green",
+      "path": "docs/rti_options_and_test_matrix.md",
+      "must_contain": [
+        "./tools/vendor-green"
+      ],
+      "must_not_contain": [
+        "../scripts/ci/vendor_runtime_smoke.sh"
+      ]
+    },
+    {
+      "id": "pitch_crc_vendor_bug",
+      "path": "packages/hla2010-rti-pitch-common/docs/pitch_crc_macos_vendor_bug.md",
+      "must_contain": [
+        "./tools/pitch crc-macos-repro",
+        "./tools/pitch crc-docker-repro"
+      ],
+      "must_not_contain": [
+        "python3 scripts/repro_pitch_crc_macos.py",
+        "python3 scripts/repro_pitch_crc_docker.py"
+      ]
+    },
+    {
+      "id": "certi_runtime_limitations",
+      "path": "packages/hla2010-rti-certi/docs/certi_runtime_limitations.md",
+      "must_contain": [
+        "./tools/certi-easy build patched",
+        "./tools/certi-easy build upstream"
+      ],
+      "must_not_contain": [
+        "./scripts/rebuild_certi.sh",
+        "./scripts/rebuild_certi_upstream.sh"
+      ]
+    },
+    {
+      "id": "certi_section8_runbook",
+      "path": "packages/hla2010-rti-certi/docs/certi_section8_runbook.md",
+      "must_contain": [
+        "./tools/section8-gate"
+      ],
+      "must_not_contain": [
+        "./scripts/ci/section8_backend_matrix_gate.sh"
+      ]
+    }
+  ]
+}

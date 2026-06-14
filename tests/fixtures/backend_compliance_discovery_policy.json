@@ -1,0 +1,37 @@
+{
+  "portico_backend_ids": [
+    "portico",
+    "portico-jpype",
+    "portico-py4j"
+  ],
+  "family": "vendor-portico-java-bridge",
+  "matrices_present": [
+    "requirement-disposition"
+  ],
+  "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74",
+  "classification_status": "classification-required",
+  "recommended_next_action": "classify backend applicability/disposition",
+  "row_kind": "synthetic-requirement-disposition-backlog-row",
+  "scope": "generated-backend-disposition",
+  "filtered_backend": "portico-jpype",
+  "catalog_text_fragments": [
+    "portico-jpype (vendor-portico-java-bridge)",
+    "matrices: requirement-disposition",
+    "classification-required="
+  ],
+  "backlog_text_fragments": [
+    "Vendor discovery backlog:",
+    "P4 portico-jpype",
+    "classification-required",
+    "classify backend applicability/disposition"
+  ],
+  "committed_markdown_required_fragments": [
+    "classify backend applicability/disposition",
+    "| P4 | portico | vendor-portico-java-bridge |",
+    "| P4 | portico-jpype | vendor-portico-java-bridge |",
+    "| P4 | portico-py4j | vendor-portico-java-bridge |"
+  ],
+  "committed_markdown_forbidden_fragments": [
+    "classify Pitch applicability/disposition"
+  ]
+}
