@@ -1,0 +1,739 @@
+{
+  "version": 1,
+  "normal_authoring_lane": "active_service",
+  "active_authored": [
+    "requirements/active_service_rows.csv",
+    "requirements/family_seed_rows.csv",
+    "requirements/source_of_truth.json"
+  ],
+  "generated": [
+    "requirements/requirement_id_registry.yaml",
+    "requirements/traceability_matrix.csv",
+    "analysis/compliance/requirements_ledger.csv",
+    "analysis/traceability/service_trace_index.csv",
+    "analysis/traceability/service_trace_index.md",
+    "analysis/traceability/service_trace_index.json",
+    "analysis/traceability/requirements_authoring_index.csv",
+    "analysis/traceability/requirements_authoring_index.md",
+    "analysis/traceability/requirements_authoring_index.json",
+    "analysis/traceability/active_service_requirements_index.csv",
+    "analysis/traceability/active_service_requirements_index.md",
+    "analysis/traceability/active_service_requirements_index.json",
+    "requirements/surface_manifest.json"
+  ],
+  "reference_provenance": [
+    "requirements/reference/hla1516_framework_rules.csv",
+    "requirements/reference/hla1516_framework_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_clause_12_save_restore.csv",
+    "requirements/reference/hla1516_1_federate_interface.csv",
+    "requirements/reference/hla1516_1_priority_clauses_4_8_11.csv",
+    "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv",
+    "requirements/reference/hla1516_1_clause_4_fm_service_decomposition.csv",
+    "requirements/reference/hla1516_1_fm_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_1_clause_5_declaration_management.csv",
+    "requirements/reference/hla1516_1_clause_5_dm_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_1_dm_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_1_clause_6_object_management.csv",
+    "requirements/reference/hla1516_1_clause_6_om_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_1_om_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_1_clause_7_own_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_1_own_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_1_clause_8_tm_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_1_tm_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_1_clause_9_ddm_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_1_ddm_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_1_clause_10_sup_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_1_clause_11_mom_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_1_mom_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_1_sup_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_1_api_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_1_conf_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_xml_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_2_omt.csv",
+    "requirements/reference/hla1516_2_omt_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_2_omt_xml_detailed_reconciliation.csv",
+    "requirements/reference/hla1516_2_priority_omt.csv",
+    "requirements/reference/hla_1516_master_harmonization_index_v1_0.csv",
+    "requirements/reference/hla_1516_packet_hookup_status_v1_0.csv"
+  ],
+  "packet_entrypoints": [
+    "requirements/latest",
+    "requirements/catalogs",
+    "requirements/history",
+    "requirements/dashboards",
+    "requirements/manifests",
+    "requirements/imports"
+  ],
+  "canonical_docs": [
+    "docs/requirements_crud.md",
+    "docs/requirements_trace_one_method.md",
+    "docs/requirements_edit_one_row.md",
+    "requirements/README.md",
+    "docs/requirements_traceability.md"
+  ],
+  "canonical_commands": [
+    "./tools/human-editability requirements-crud",
+    "./tools/human-editability requirements-create <RequirementIdOrArtifactId>",
+    "./tools/human-editability requirements-read <MethodNameOrRequirementId>",
+    "./tools/human-editability requirements-update <RequirementId>",
+    "./tools/human-editability requirements-delete <RequirementId>",
+    "./tools/human-editability requirements-flow",
+    "./tools/human-editability requirements-lanes",
+    "./tools/human-editability requirements-active [QUERY]",
+    "./tools/human-editability requirement-template <RequirementIdOrArtifactId>",
+    "./tools/human-editability check",
+    "./tools/human-editability generate-trace-index",
+    "./tools/human-editability generate-requirements-authoring-index",
+    "./tools/human-editability generate-active-service-index",
+    "./tools/human-editability generate-requirements-source"
+  ],
+  "doc_projections": {
+    "readme_start_here": [
+      "../docs/requirements_crud.md",
+      "run ./tools/human-editability requirements-crud",
+      "run ./tools/human-editability requirements-read <MethodNameOrRequirementId>",
+      "run ./tools/human-editability requirements-create <RequirementIdOrArtifactId>",
+      "../docs/requirements_trace_one_method.md",
+      "../docs/requirements_edit_one_row.md",
+      "active_service_rows.csv",
+      "source_of_truth.json",
+      "surface_manifest.json",
+      "traceability_matrix.csv"
+    ],
+    "normal_edit_loop": [
+      "run ./tools/human-editability requirements-read <MethodNameOrRequirementId>",
+      "run ./tools/human-editability requirements-create <RequirementIdOrArtifactId> if you are adding a row",
+      "run ./tools/human-editability requirements-update <RequirementId> if you are changing a row",
+      "run ./tools/human-editability requirements-delete <RequirementId> if you are removing a row",
+      "edit active_service_rows.csv only if the trace shows the active mapping is wrong",
+      "edit family_seed_rows.csv only for deliberate clause-family harmonization",
+      "edit source_of_truth.json only if you truly need a new source or prefix family",
+      "run ./tools/human-editability check",
+      "run ./tools/human-editability generate-requirements-source",
+      "run ./tools/human-editability generate-trace-index",
+      "run ./tools/human-editability generate-requirements-authoring-index",
+      "run ./tools/human-editability generate-active-service-index",
+      "run ./tools/human-editability requirements-read <MethodNameOrRequirementId> again"
+    ],
+    "operator_surface_commands": [
+      "./tools/human-editability requirements-crud",
+      "./tools/human-editability requirements-create HLA1516.1-TM-8.8-001",
+      "./tools/human-editability requirements-read timeAdvanceRequest",
+      "./tools/human-editability requirements-update REQ-RTI-TM-8_8-timeAdvanceRequest",
+      "./tools/human-editability requirements-delete REQ-RTI-TM-8_8-timeAdvanceRequest",
+      "./tools/human-editability requirements-flow",
+      "./tools/human-editability requirements-surfaces",
+      "./tools/human-editability requirements-surfaces --verbose",
+      "./tools/human-editability requirements-source",
+      "./tools/human-editability requirements-lanes",
+      "./tools/human-editability requirements-active"
+    ],
+    "edit_one_row_discovery_commands": [
+      "./tools/human-editability requirements-read timeAdvanceRequest",
+      "./tools/human-editability requirements-create HLA1516.1-TM-8.8-001",
+      "./tools/human-editability requirements-create REQ-RTI-TM-8_8-timeAdvanceRequest",
+      "./tools/human-editability requirements-update REQ-RTI-TM-8_8-timeAdvanceRequest",
+      "./tools/human-editability requirements-delete REQ-RTI-TM-8_8-timeAdvanceRequest"
+    ],
+    "edit_one_row_loop": [
+      "Run ./tools/human-editability requirements-read <MethodNameOrRequirementId>.",
+      "If you are adding a row, run ./tools/human-editability requirements-create <RequirementIdOrArtifactId>.",
+      "If you are changing a row, run ./tools/human-editability requirements-update <RequirementId>.",
+      "If you are removing a row, run ./tools/human-editability requirements-delete <RequirementId>.",
+      "Find the row in requirements/active_service_rows.csv.",
+      "Fix the implementation, test, artifact, status, or note fields.",
+      "Run ./tools/human-editability requirements-surfaces only when you truly need the broader surface map.",
+      "Run ./tools/human-editability check.",
+      "Run ./tools/human-editability generate-requirements-source.",
+      "Run ./tools/human-editability generate-trace-index.",
+      "Run ./tools/human-editability generate-requirements-authoring-index.",
+      "Run ./tools/human-editability generate-active-service-index.",
+      "Run ./tools/human-editability requirements-read <MethodNameOrRequirementId>.",
+      "Confirm the trace lands on the expected implementation and evidence."
+    ],
+    "trace_loop_commands": [
+      "./tools/human-editability trace-summary getHLAversion",
+      "./tools/human-editability trace getHLAversion",
+      "./tools/human-editability requirements-lanes",
+      "./tools/human-editability requirements-active timeAdvanceRequest",
+      "./tools/human-editability requirement-template REQ-RTI-SUP-10_25-getHLAversion",
+      "./tools/human-editability check",
+      "./tools/human-editability generate-requirements-source",
+      "./tools/human-editability generate-trace-index",
+      "./tools/human-editability trace-summary getHLAversion",
+      "./tools/human-editability trace getHLAversion"
+    ],
+    "traceability_operator_commands": [
+      "./tools/human-editability check",
+      "./tools/human-editability generate-trace-index",
+      "./tools/human-editability trace-summary createFederationExecution",
+      "./tools/human-editability trace-summary timeAdvanceRequest",
+      "./tools/human-editability trace createFederationExecution",
+      "./tools/human-editability trace timeAdvanceRequest"
+    ],
+    "traceability_primary_surfaces": [
+      "active authored: `requirements/active_service_rows.csv` is the normal human edit surface",
+      "generated compatibility merge: `requirements/traceability_matrix.csv`",
+      "generated ledger: `analysis/compliance/requirements_ledger.csv`",
+      "generated service trace index: `analysis/traceability/service_trace_index.csv`, `analysis/traceability/service_trace_index.md`, `analysis/traceability/service_trace_index.json`"
+    ],
+    "traceability_edit_rule": [
+      "Treat `requirements/active_service_rows.csv` as the normal human edit surface.",
+      "Treat `requirements/traceability_matrix.csv`, the ledger, and the trace indexes as generated outputs."
+    ],
+    "authoring_map_loop": [
+      "Print the compact lane with ./tools/human-editability requirements-flow.",
+      "Trace the method first with ./tools/human-editability trace-summary <MethodName>.",
+      "If the active mapping row is wrong, edit requirements/active_service_rows.csv.",
+      "If the row is missing, print a template first with ./tools/human-editability requirement-template <RequirementIdOrArtifactId>.",
+      "Run ./tools/human-editability requirement <RequirementId>.",
+      "Run ./tools/human-editability check.",
+      "Run ./tools/human-editability generate-requirements-source.",
+      "Run ./tools/human-editability generate-trace-index.",
+      "Run ./tools/human-editability trace-summary <MethodName> again."
+    ],
+    "trace_intro_commands": [
+      "./tools/human-editability requirements-flow",
+      "./tools/human-editability trace-summary getHLAversion",
+      "./tools/human-editability trace getHLAversion"
+    ],
+    "trace_stateful_commands": [
+      "./tools/human-editability trace-summary timeAdvanceRequest",
+      "./tools/human-editability trace timeAdvanceRequest"
+    ],
+    "crud_doc_actions": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ]
+  },
+  "crud_actions": [
+    {
+      "action": "create",
+      "goal": "add one missing active requirement row",
+      "commands": [
+        "./tools/human-editability requirements-create <RequirementIdOrArtifactId>",
+        "./tools/human-editability check",
+        "./tools/human-editability generate-requirements-source",
+        "./tools/human-editability generate-trace-index"
+      ],
+      "edit_surface": "requirements/active_service_rows.csv",
+      "notes": [
+        "Use a standards-row id in requirement_id.",
+        "Put REQ-* artifact ids in current_artifact_id."
+      ]
+    },
+    {
+      "action": "read",
+      "goal": "see one requirement row and its proof without guessing",
+      "commands": [
+        "./tools/human-editability requirements-read <MethodNameOrRequirementId>",
+        "./tools/human-editability trace-summary <MethodName>",
+        "./tools/human-editability requirement <RequirementId>"
+      ],
+      "edit_surface": "none",
+      "notes": [
+        "Start with trace-summary when you know a method.",
+        "Start with requirement when you already know the requirement id."
+      ]
+    },
+    {
+      "action": "update",
+      "goal": "change one existing active requirement row",
+      "commands": [
+        "./tools/human-editability requirements-update <RequirementId>",
+        "./tools/human-editability check",
+        "./tools/human-editability generate-requirements-source",
+        "./tools/human-editability generate-trace-index"
+      ],
+      "edit_surface": "requirements/active_service_rows.csv",
+      "notes": [
+        "Edit family_seed rows only for deliberate clause-family harmonization.",
+        "Mapped rows need test_refs or artifact_refs."
+      ]
+    },
+    {
+      "action": "delete",
+      "goal": "remove one wrong or obsolete active requirement row",
+      "commands": [
+        "./tools/human-editability requirements-delete <RequirementId>",
+        "./tools/human-editability check",
+        "./tools/human-editability generate-requirements-source",
+        "./tools/human-editability generate-trace-index"
+      ],
+      "edit_surface": "requirements/active_service_rows.csv",
+      "notes": [
+        "Delete the row from active_service_rows.csv, not from generated outputs.",
+        "Re-run trace-summary afterward to confirm the requirement is really gone or remapped."
+      ]
+    }
+  ],
+  "trace_examples": [
+    {
+      "id": "support_lookup",
+      "title": "Recommended First Example",
+      "method_name": "getHLAversion",
+      "requirement_id": "REQ-RTI-SUP-10_25-getHLAversion",
+      "lead": "Start with `getHLAversion`.",
+      "why": [
+        "resolves to one clear requirement row",
+        "lands on one plain Python RTI implementation file",
+        "has direct focused tests",
+        "does not require time-management context first"
+      ],
+      "commands": [
+        "./tools/human-editability trace-summary getHLAversion",
+        "./tools/human-editability trace getHLAversion"
+      ],
+      "open_paths": [
+        "packages/hla2010-rti-python/src/hla2010_rti_python/support_lookup.py",
+        "tests/scenarios/test_support_services_backend_matrix.py",
+        "requirements/active_service_rows.csv"
+      ]
+    },
+    {
+      "id": "time_management",
+      "title": "Stateful Example",
+      "method_name": "timeAdvanceRequest",
+      "requirement_id": "REQ-RTI-TM-8_8-timeAdvanceRequest",
+      "lead": "After that, use `timeAdvanceRequest`.",
+      "commands": [
+        "./tools/human-editability trace-summary timeAdvanceRequest",
+        "./tools/human-editability trace timeAdvanceRequest"
+      ],
+      "open_paths": [
+        "packages/hla2010-rti-python/src/hla2010_rti_python/time_public_services.py",
+        "tests/time/test_mom_mim_time_v10.py",
+        "requirements/active_service_rows.csv"
+      ]
+    }
+  ],
+  "operator_projections": {
+    "requirements_flow_sections": [
+      {
+        "title": "Trace one method",
+        "items": [
+          {
+            "kind": "doc",
+            "value": "docs/requirements_trace_one_method.md"
+          },
+          {
+            "kind": "command",
+            "value": "./tools/human-editability trace-summary getHLAversion"
+          },
+          {
+            "kind": "command",
+            "value": "./tools/human-editability trace-summary timeAdvanceRequest"
+          }
+        ]
+      },
+      {
+        "title": "Edit one active row only if needed",
+        "items": [
+          {
+            "kind": "doc",
+            "value": "docs/requirements_edit_one_row.md"
+          },
+          {
+            "kind": "crud_doc",
+            "value": "docs/requirements_crud.md"
+          },
+          {
+            "kind": "active_authored_surface",
+            "value": "requirements/active_service_rows.csv"
+          },
+          {
+            "kind": "family_seed_surface",
+            "value": "requirements/family_seed_rows.csv"
+          },
+          {
+            "kind": "create",
+            "value": "./tools/human-editability requirements-create HLA1516.1-TM-8.8-001"
+          },
+          {
+            "kind": "read",
+            "value": "./tools/human-editability requirements-read timeAdvanceRequest"
+          },
+          {
+            "kind": "update",
+            "value": "./tools/human-editability requirements-update REQ-RTI-TM-8_8-timeAdvanceRequest"
+          },
+          {
+            "kind": "delete",
+            "value": "./tools/human-editability requirements-delete REQ-RTI-TM-8_8-timeAdvanceRequest"
+          },
+          {
+            "kind": "source_summary",
+            "value": "./tools/human-editability requirements-source"
+          },
+          {
+            "kind": "lane_summary",
+            "value": "./tools/human-editability requirements-lanes"
+          },
+          {
+            "kind": "active_index",
+            "value": "./tools/human-editability requirements-active"
+          },
+          {
+            "kind": "canonical_source",
+            "value": "requirements/source_of_truth.json"
+          },
+          {
+            "kind": "registry_source",
+            "value": "requirements/source_of_truth.json"
+          },
+          {
+            "kind": "generated_manifest",
+            "value": "requirements/surface_manifest.json"
+          },
+          {
+            "kind": "generated_merge",
+            "value": "requirements/traceability_matrix.csv"
+          },
+          {
+            "kind": "generated_registry",
+            "value": "requirements/requirement_id_registry.yaml"
+          }
+        ]
+      },
+      {
+        "title": "Validate and regenerate outputs",
+        "items": [
+          {
+            "kind": "command",
+            "value": "./tools/human-editability check"
+          },
+          {
+            "kind": "command",
+            "value": "./tools/human-editability generate-trace-index"
+          },
+          {
+            "kind": "command",
+            "value": "./tools/human-editability generate-requirements-authoring-index"
+          },
+          {
+            "kind": "command",
+            "value": "./tools/human-editability generate-active-service-index"
+          },
+          {
+            "kind": "command",
+            "value": "./tools/human-editability generate-requirements-source"
+          },
+          {
+            "kind": "generated_output",
+            "value": "analysis/compliance/requirements_ledger.csv"
+          },
+          {
+            "kind": "generated_output",
+            "value": "analysis/traceability/service_trace_index.md"
+          },
+          {
+            "kind": "generated_output",
+            "value": "analysis/traceability/requirements_authoring_index.md"
+          },
+          {
+            "kind": "generated_output",
+            "value": "analysis/traceability/active_service_requirements_index.md"
+          },
+          {
+            "kind": "generated_output",
+            "value": "requirements/traceability_matrix.csv"
+          }
+        ]
+      },
+      {
+        "title": "Read the broader model only if still needed",
+        "items": [
+          {
+            "kind": "doc",
+            "value": "requirements/README.md"
+          },
+          {
+            "kind": "doc",
+            "value": "docs/requirements_traceability.md"
+          },
+          {
+            "kind": "compatibility_doc",
+            "value": "docs/requirements_authoring_map.md"
+          }
+        ]
+      }
+    ],
+    "requirements_source_sections": [
+      {
+        "title": "Canonical CRUD command",
+        "values": [
+          "./tools/human-editability requirements-crud"
+        ]
+      },
+      {
+        "title": "Active authored",
+        "source_key": "active_authored"
+      },
+      {
+        "title": "Canonical docs",
+        "source_key": "canonical_docs"
+      },
+      {
+        "title": "Canonical commands",
+        "source_key": "canonical_commands"
+      }
+    ]
+  },
+  "policies": {
+    "id_registry_edit_rule": "Edit requirements/source_of_truth.json only for a new source or prefix family; requirements/requirement_id_registry.yaml is generated compatibility output.",
+    "mapped_rule": "A mapped row must include at least one test_refs or artifact_refs entry.",
+    "partial_rule": "A partial row must state the supported boundary explicitly in notes.",
+    "family_seed_rule": "Normal contributors should edit active_service rows first and leave family_seed rows alone unless doing deliberate clause-family harmonization."
+  },
+  "traceability_row_schema": {
+    "field_order": [
+      "requirement_id",
+      "source_document",
+      "clause",
+      "canonical_topic",
+      "current_artifact_id",
+      "implementation_refs",
+      "test_refs",
+      "artifact_refs",
+      "status",
+      "notes"
+    ],
+    "important_columns": [
+      "requirement_id",
+      "clause",
+      "canonical_topic",
+      "current_artifact_id",
+      "implementation_refs",
+      "test_refs",
+      "artifact_refs",
+      "status",
+      "notes"
+    ],
+    "status_rules": [
+      {
+        "status": "planned",
+        "meaning": "normal starting state for a newly added row"
+      },
+      {
+        "status": "seeded",
+        "meaning": "family or bridge seed row, not the normal one-method path"
+      },
+      {
+        "status": "mapped",
+        "meaning": "must include at least one test_refs or artifact_refs entry"
+      },
+      {
+        "status": "partial",
+        "meaning": "notes must explicitly state the supported boundary"
+      }
+    ]
+  },
+  "requirement_id_registry": {
+    "version": "0.13.0",
+    "description": "Stable requirement namespace registry for the Python HLA workstream. The current repo is populated with the 2010 editions, but the registry is structured so later editions can be added without changing parser code.",
+    "active_bindings": {
+      "framework_rules": "HLA1516-2010",
+      "federate_interface": "HLA1516.1-2010",
+      "omt": "HLA1516.2-2010"
+    },
+    "specs": [
+      {
+        "spec_id": "HLA1516-2010",
+        "legacy_requirement_prefix": "HLA1516",
+        "document_title": "IEEE 1516-2010 (2010 edition)",
+        "edition_year": 2010,
+        "purpose": "HLA framework and architectural rules"
+      },
+      {
+        "spec_id": "HLA1516.1-2010",
+        "legacy_requirement_prefix": "HLA1516.1",
+        "document_title": "IEEE 1516.1-2010 (2010 edition)",
+        "edition_year": 2010,
+        "purpose": "Federate interface and RTI behavior"
+      },
+      {
+        "spec_id": "HLA1516.2-2010",
+        "legacy_requirement_prefix": "HLA1516.2",
+        "document_title": "IEEE 1516.2-2010 (2010 edition)",
+        "edition_year": 2010,
+        "purpose": "Object Model Template and XML/model rules"
+      }
+    ],
+    "sources": [
+      {
+        "source_id": "HLA1516",
+        "title": "IEEE 1516-2010 (2010 edition)",
+        "purpose": "HLA framework and architectural rules",
+        "prefixes": [
+          {
+            "prefix": "FW",
+            "meaning": "Framework concepts"
+          },
+          {
+            "prefix": "RULE",
+            "meaning": "Federation and federate rules"
+          },
+          {
+            "prefix": "OBJ",
+            "meaning": "Object model concepts"
+          },
+          {
+            "prefix": "TIME",
+            "meaning": "Time concept rules"
+          }
+        ]
+      },
+      {
+        "source_id": "HLA1516.1",
+        "title": "IEEE 1516.1-2010 (2010 edition)",
+        "purpose": "Federate interface and RTI behavior",
+        "prefixes": [
+          {
+            "prefix": "FM",
+            "meaning": "Federation Management"
+          },
+          {
+            "prefix": "DM",
+            "meaning": "Declaration Management"
+          },
+          {
+            "prefix": "OM",
+            "meaning": "Object Management"
+          },
+          {
+            "prefix": "OWN",
+            "meaning": "Ownership Management"
+          },
+          {
+            "prefix": "TM",
+            "meaning": "Time Management"
+          },
+          {
+            "prefix": "DDM",
+            "meaning": "Data Distribution Management"
+          },
+          {
+            "prefix": "SUP",
+            "meaning": "Support Services"
+          },
+          {
+            "prefix": "MOM",
+            "meaning": "Management Object Model behavior"
+          },
+          {
+            "prefix": "MIM",
+            "meaning": "Management Information Model definitions"
+          }
+        ]
+      },
+      {
+        "source_id": "HLA1516.2",
+        "title": "IEEE 1516.2-2010 (2010 edition)",
+        "purpose": "Object Model Template and XML/model rules",
+        "prefixes": [
+          {
+            "prefix": "ID",
+            "meaning": "Object model identification"
+          },
+          {
+            "prefix": "OMID",
+            "meaning": "Object model identification"
+          },
+          {
+            "prefix": "OC",
+            "meaning": "Object class structure"
+          },
+          {
+            "prefix": "OCS",
+            "meaning": "Object class structure"
+          },
+          {
+            "prefix": "IC",
+            "meaning": "Interaction class structure"
+          },
+          {
+            "prefix": "ICS",
+            "meaning": "Interaction class structure"
+          },
+          {
+            "prefix": "ATTR",
+            "meaning": "Attribute tables"
+          },
+          {
+            "prefix": "PARAM",
+            "meaning": "Parameter tables"
+          },
+          {
+            "prefix": "DIM",
+            "meaning": "Dimension tables"
+          },
+          {
+            "prefix": "TIME",
+            "meaning": "Time representation tables"
+          },
+          {
+            "prefix": "TAG",
+            "meaning": "User-supplied tag tables"
+          },
+          {
+            "prefix": "SYNC",
+            "meaning": "Synchronization point tables"
+          },
+          {
+            "prefix": "TRANS",
+            "meaning": "Transportation type tables"
+          },
+          {
+            "prefix": "URATE",
+            "meaning": "Update rate tables"
+          },
+          {
+            "prefix": "SWITCH",
+            "meaning": "Switches tables"
+          },
+          {
+            "prefix": "DT",
+            "meaning": "Datatype and time representation tables"
+          },
+          {
+            "prefix": "NOTE",
+            "meaning": "Notes tables"
+          },
+          {
+            "prefix": "MERGE",
+            "meaning": "FOM/SOM module merging rules"
+          },
+          {
+            "prefix": "XML",
+            "meaning": "XML interchange and schema rules"
+          },
+          {
+            "prefix": "MIM",
+            "meaning": "Standard MIM representation"
+          },
+          {
+            "prefix": "OMT",
+            "meaning": "Cross-cutting OMT parsing and merge behavior"
+          }
+        ]
+      }
+    ],
+    "id_format": {
+      "pattern": "[spec-edition]-[prefix]-[number]",
+      "legacy_pattern": "[legacy-standard]-[prefix]-[number]",
+      "examples": [
+        "HLA1516-2010-RULE-001",
+        "HLA1516.1-2010-FM-001",
+        "HLA1516.1-2025-TM-001",
+        "HLA1516.2-2025-OMT-001",
+        "HLA1516-RULE-001",
+        "HLA1516.1-FM-001",
+        "HLA1516.1-TM-001",
+        "HLA1516.2-OC-001",
+        "HLA1516.2-OMT-001"
+      ]
+    }
+  }
+}

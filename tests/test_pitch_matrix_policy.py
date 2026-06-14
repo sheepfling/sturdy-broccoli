@@ -5,8 +5,19 @@ import json
 import re
 from pathlib import Path
 
+from conftest import REPO_ROOT, load_compliance_json, load_compliance_text
+from tests.compliance_row_models import RequirementDispositionRow, VendorBacklogRow
+from tests.requirement_label_helpers import (
+    federate_interface_document_title,
+    federate_interface_section_ref,
+    framework_document_title,
+    omt_document_title,
+)
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = REPO_ROOT
+FEDERATE_INTERFACE_DOCUMENT = federate_interface_document_title()
+FRAMEWORK_DOCUMENT = framework_document_title()
+OMT_DOCUMENT = omt_document_title()
 PITCH_MATRIX_PATH = ROOT / "tests" / "vendors" / "test_pitch_real_backend_matrix.py"
 PITCH_TRANSPORT_DIVERGENCE_NOTE = (
     "packages/hla2010-rti-pitch-common/docs/evidence/"
@@ -108,6 +119,14 @@ CLAUSE9_TARGET_FUNCTIONS = {
     "test_pitch_backend_ddm_object_region_lifecycle_matrix": "run_ddm_object_region_lifecycle_scenario",
     "test_pitch_backend_ddm_passive_region_subscription_matrix": "run_ddm_passive_region_subscription_scenario",
 }
+PITCH_PROFILE_MARKDOWN_CASES = (
+    ("pitch-jpype_requirement_disposition.md", "pitch-jpype"),
+    ("pitch-py4j_requirement_disposition.md", "pitch-py4j"),
+)
+PITCH_PROFILE_INHERITANCE_CASES = (
+    ("pitch-jpype_requirement_disposition.json", "pitch_jpype_disposition", "pitch_jpype_evidence_refs"),
+    ("pitch-py4j_requirement_disposition.json", "pitch_py4j_disposition", "pitch_py4j_evidence_refs"),
+)
 DIRECT_BACKEND_CALL_RE = re.compile(
     r"\b(?:leader|wing|federate|observer|publisher|subscriber|sender|receiver|r1|r2)\.[A-Za-z_][A-Za-z0-9_]*\("
 )
@@ -151,92 +170,139 @@ def _scenario_entrypoints(source: str) -> list[str]:
     return SCENARIO_ENTRYPOINT_RE.findall(source)
 
 
+def _load_requirement_rows(filename: str) -> list[RequirementDispositionRow]:
+    payload = load_compliance_json(filename)
+    return [RequirementDispositionRow.from_mapping(row) for row in payload["rows"]]
+
+
+def _load_vendor_backlog_rows(filename: str) -> list[VendorBacklogRow]:
+    payload = load_compliance_json(filename)
+    return [VendorBacklogRow.from_mapping(row) for row in payload["rows"]]
+
+
 def _clause6_pitch_compliance_wrapper_refs() -> set[str]:
-    payload = json.loads((ROOT / "analysis" / "compliance" / "pitch_requirement_disposition.json").read_text(encoding="utf-8"))
     return {
         ref.split("::", 1)[1]
-        for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "6"
-        for ref in row["evidence_refs"]
+        for row in _load_requirement_rows("pitch_requirement_disposition.json")
+        if row.document == FEDERATE_INTERFACE_DOCUMENT and row.clause_root == "6"
+        for ref in row.evidence_refs
         if ref.startswith("tests/vendors/test_pitch_real_backend_matrix.py::")
     }
 
 
-def _clause6_pitch_vendor_divergent_rows() -> list[dict[str, object]]:
-    payload = json.loads((ROOT / "analysis" / "compliance" / "pitch_requirement_disposition.json").read_text(encoding="utf-8"))
+def _clause6_pitch_vendor_divergent_rows() -> list[RequirementDispositionRow]:
     return [
         row
-        for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010"
-        and row.get("clause_root") == "6"
-        and row.get("pitch_disposition") == "vendor-divergent"
+        for row in _load_requirement_rows("pitch_requirement_disposition.json")
+        if row.document == FEDERATE_INTERFACE_DOCUMENT
+        and row.clause_root == "6"
+        and row.pitch_disposition == "vendor-divergent"
     ]
 
 
-def _clause7_pitch_vendor_divergent_rows() -> list[dict[str, object]]:
-    payload = json.loads((ROOT / "analysis" / "compliance" / "pitch_requirement_disposition.json").read_text(encoding="utf-8"))
+def _clause7_pitch_vendor_divergent_rows() -> list[RequirementDispositionRow]:
     return [
         row
-        for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010"
-        and row.get("clause_root") == "7"
-        and row.get("pitch_disposition") == "vendor-divergent"
+        for row in _load_requirement_rows("pitch_requirement_disposition.json")
+        if row.document == FEDERATE_INTERFACE_DOCUMENT
+        and row.clause_root == "7"
+        and row.pitch_disposition == "vendor-divergent"
     ]
 
 
-def _clause8_pitch_vendor_divergent_rows() -> list[dict[str, object]]:
-    payload = json.loads((ROOT / "analysis" / "compliance" / "pitch_requirement_disposition.json").read_text(encoding="utf-8"))
+def _clause8_pitch_vendor_divergent_rows() -> list[RequirementDispositionRow]:
     return [
         row
-        for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010"
-        and row.get("clause_root") == "8"
-        and row.get("pitch_disposition") == "vendor-divergent"
+        for row in _load_requirement_rows("pitch_requirement_disposition.json")
+        if row.document == FEDERATE_INTERFACE_DOCUMENT
+        and row.clause_root == "8"
+        and row.pitch_disposition == "vendor-divergent"
     ]
 
 
-def _pitch_classification_required_rows() -> list[dict[str, object]]:
-    payload = json.loads((ROOT / "analysis" / "compliance" / "pitch_requirement_disposition.json").read_text(encoding="utf-8"))
+def _pitch_classification_required_rows() -> list[RequirementDispositionRow]:
     return [
         row
-        for row in payload["rows"]
-        if row.get("pitch_disposition") == "classification-required"
+        for row in _load_requirement_rows("pitch_requirement_disposition.json")
+        if row.pitch_disposition == "classification-required"
     ]
 
 
-def _pitch_backlog_classification_required_rows() -> list[dict[str, object]]:
-    payload = json.loads((ROOT / "analysis" / "compliance" / "vendor_discovery_backlog.json").read_text(encoding="utf-8"))
+def _pitch_backlog_classification_required_rows() -> list[VendorBacklogRow]:
     return [
         row
-        for row in payload["rows"]
-        if row.get("backend_id") == "pitch-requirements" and row.get("current_status") == "classification-required"
+        for row in _load_vendor_backlog_rows("vendor_discovery_backlog.json")
+        if row.backend_id == "pitch-requirements" and row.current_status == "classification-required"
     ]
 
 
-def _pitch_rows(filename: str) -> list[dict[str, object]]:
-    payload = json.loads((ROOT / "analysis" / "compliance" / filename).read_text(encoding="utf-8"))
+def _pitch_rows(filename: str) -> list[RequirementDispositionRow]:
     return [
         row
-        for row in payload["rows"]
-        if row.get("document") in {"IEEE 1516.1-2010", "IEEE 1516-2010", "IEEE 1516.2-2010", "multi-section"}
+        for row in _load_requirement_rows(filename)
+        if row.document in {FEDERATE_INTERFACE_DOCUMENT, FRAMEWORK_DOCUMENT, OMT_DOCUMENT, "multi-section"}
     ]
 
 
-def _pitch_clause_rows(filename: str, clause_root: str) -> list[dict[str, object]]:
+def _pitch_clause_rows(filename: str, clause_root: str) -> list[RequirementDispositionRow]:
     return [
         row
         for row in _pitch_rows(filename)
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == clause_root
+        if row.document == FEDERATE_INTERFACE_DOCUMENT and row.clause_root == clause_root
     ]
 
 
+def _assert_wrapper_functions_follow_policy(
+    target_functions: dict[str, str],
+    *,
+    shared_runner_check,
+    direct_call_pattern: re.Pattern[str],
+) -> None:
+    sources = _pitch_matrix_function_sources()
+    assert set(target_functions).issubset(sources)
+
+    for function_name, runner_name in target_functions.items():
+        source = sources[function_name]
+        assert shared_runner_check(source, runner_name), function_name
+        assert not direct_call_pattern.search(source), function_name
+
+
+def _assert_pitch_profile_inheritance(
+    family_filename: str,
+    profile_filename: str,
+    disposition_field: str,
+    evidence_field: str,
+) -> None:
+    family_rows = _pitch_rows(family_filename)
+    assert family_rows
+    family_index = {row.requirement_id: row for row in family_rows}
+
+    profile_rows = _pitch_rows(profile_filename)
+    assert {row.requirement_id for row in profile_rows} == set(family_index), profile_filename
+
+    for row in profile_rows:
+        requirement_id = row.requirement_id
+        family_row = family_index[requirement_id]
+        assert row.runtime_disposition == family_row.disposition_for(disposition_field), (
+            profile_filename,
+            requirement_id,
+        )
+        assert row.evidence_refs == family_row.evidence_refs_for(evidence_field), (
+            profile_filename,
+            requirement_id,
+        )
+        assert row.notes == family_row.notes, (
+            profile_filename,
+            requirement_id,
+        )
+
+
 def _clause4_pitch_compliance_wrapper_refs() -> set[str]:
-    payload = json.loads((ROOT / "analysis" / "compliance" / "pitch_requirement_disposition.json").read_text(encoding="utf-8"))
     return {
         ref.split("::", 1)[1]
-        for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "4"
-        for ref in row["evidence_refs"]
+        for row in _load_requirement_rows("pitch_requirement_disposition.json")
+        if row.document == "IEEE 1516.1-2010 (2010 edition)" and row.clause_root == "4"
+        for ref in row.evidence_refs
         if ref.startswith("tests/vendors/test_pitch_real_backend_matrix.py::")
     }
 
@@ -248,14 +314,13 @@ def _uses_shared_runner(source: str, runner_name: str) -> bool:
 
 
 def test_clause4_pitch_backend_matrix_functions_stay_shared_harness_wrappers() -> None:
-    sources = _pitch_matrix_function_sources()
-    assert set(TARGET_FUNCTIONS).issubset(sources)
-
-    for function_name, runner_name in TARGET_FUNCTIONS.items():
-        source = sources[function_name]
-        assert f"{runner_name}(" in source, function_name
-        assert _scenario_entrypoints(source) == [runner_name], function_name
-        assert not DIRECT_BACKEND_CALL_RE.search(source), function_name
+    _assert_wrapper_functions_follow_policy(
+        TARGET_FUNCTIONS,
+        shared_runner_check=lambda source, runner_name: (
+            f"{runner_name}(" in source and _scenario_entrypoints(source) == [runner_name]
+        ),
+        direct_call_pattern=DIRECT_BACKEND_CALL_RE,
+    )
 
 
 def test_clause4_pitch_compliance_wrappers_are_all_guarded_by_policy() -> None:
@@ -270,49 +335,25 @@ def test_pitch_classification_required_rows_do_not_claim_blank_dispositions() ->
     assert rows
 
     for row in rows:
-        note = str(row.get("notes", ""))
-        assert "explicitly generated as classification-required" in note
-        assert "disposition is blank" not in note
+        assert "explicitly generated as classification-required" in row.notes
+        assert "disposition is blank" not in row.notes
 
 
 def test_generated_pitch_profile_requirement_disposition_markdown_keeps_inheritance_note_explicit() -> None:
-    for filename, profile in (
-        ("pitch-jpype_requirement_disposition.md", "pitch-jpype"),
-        ("pitch-py4j_requirement_disposition.md", "pitch-py4j"),
-    ):
-        text = (ROOT / "analysis" / "compliance" / filename).read_text(encoding="utf-8")
+    for filename, profile in PITCH_PROFILE_MARKDOWN_CASES:
+        text = load_compliance_text(filename)
         assert f"every row has an explicit generated `{profile}` disposition." in text
         assert "inherits the Pitch family-level requirement disposition" in text
 
 
 def test_pitch_profile_requirement_disposition_artifacts_inherit_family_rows() -> None:
-    family_rows = _pitch_rows("pitch_requirement_disposition.json")
-    assert family_rows
-
-    family_index = {str(row["requirement_id"]): row for row in family_rows}
-
-    for filename, disposition_field, evidence_field in (
-        ("pitch-jpype_requirement_disposition.json", "pitch_jpype_disposition", "pitch_jpype_evidence_refs"),
-        ("pitch-py4j_requirement_disposition.json", "pitch_py4j_disposition", "pitch_py4j_evidence_refs"),
-    ):
-        profile_rows = _pitch_rows(filename)
-        assert {str(row["requirement_id"]) for row in profile_rows} == set(family_index), filename
-
-        for row in profile_rows:
-            requirement_id = str(row["requirement_id"])
-            family_row = family_index[requirement_id]
-            assert row.get("runtime_disposition") == family_row.get(disposition_field), (
-                filename,
-                requirement_id,
-            )
-            assert tuple(row.get("evidence_refs", ())) == tuple(family_row.get(evidence_field, ())), (
-                filename,
-                requirement_id,
-            )
-            assert str(row.get("notes", "")) == str(family_row.get("notes", "")), (
-                filename,
-                requirement_id,
-            )
+    for filename, disposition_field, evidence_field in PITCH_PROFILE_INHERITANCE_CASES:
+        _assert_pitch_profile_inheritance(
+            "pitch_requirement_disposition.json",
+            filename,
+            disposition_field,
+            evidence_field,
+        )
 
 
 def test_pitch_tranche_clauses_4_6_7_8_9_have_no_not_yet_tested_rows_in_family_or_profiles() -> None:
@@ -323,14 +364,14 @@ def test_pitch_tranche_clauses_4_6_7_8_9_have_no_not_yet_tested_rows_in_family_o
         clause_rows = [
             row
             for row in family_rows
-            if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == clause_root
+            if row.document == "IEEE 1516.1-2010 (2010 edition)" and row.clause_root == clause_root
         ]
         assert clause_rows, clause_root
         for disposition_key in ("pitch_disposition", "pitch_jpype_disposition", "pitch_py4j_disposition"):
             assert not {
-                str(row["requirement_id"])
+                row.requirement_id
                 for row in clause_rows
-                if row.get(disposition_key) == "not-yet-tested"
+                if row.disposition_for(disposition_key) == "not-yet-tested"
             }, (clause_root, disposition_key)
 
     for filename in ("pitch-jpype_requirement_disposition.json", "pitch-py4j_requirement_disposition.json"):
@@ -338,9 +379,9 @@ def test_pitch_tranche_clauses_4_6_7_8_9_have_no_not_yet_tested_rows_in_family_o
             clause_rows = _pitch_clause_rows(filename, clause_root)
             assert clause_rows, (filename, clause_root)
             assert not {
-                str(row["requirement_id"])
+                row.requirement_id
                 for row in clause_rows
-                if row.get("runtime_disposition") == "not-yet-tested"
+                if row.runtime_disposition == "not-yet-tested"
             }, (filename, clause_root)
 
 
@@ -349,20 +390,18 @@ def test_pitch_vendor_backlog_classification_required_rows_track_explicit_state(
     assert rows
 
     for row in rows:
-        rationale = str(row.get("rationale", ""))
-        assert "explicitly generated as classification-required" in rationale
-        assert "disposition is blank" not in rationale
+        assert "explicitly generated as classification-required" in row.rationale
+        assert "disposition is blank" not in row.rationale
 
 
 def test_clause6_pitch_backend_matrix_functions_stay_shared_harness_wrappers() -> None:
-    sources = _pitch_matrix_function_sources()
-    assert set(CLAUSE6_TARGET_FUNCTIONS).issubset(sources)
-
-    for function_name, runner_name in CLAUSE6_TARGET_FUNCTIONS.items():
-        source = sources[function_name]
-        assert f"{runner_name}(" in source, function_name
-        assert _scenario_entrypoints(source) == [runner_name], function_name
-        assert not DIRECT_BACKEND_CALL_RE.search(source), function_name
+    _assert_wrapper_functions_follow_policy(
+        CLAUSE6_TARGET_FUNCTIONS,
+        shared_runner_check=lambda source, runner_name: (
+            f"{runner_name}(" in source and _scenario_entrypoints(source) == [runner_name]
+        ),
+        direct_call_pattern=DIRECT_BACKEND_CALL_RE,
+    )
 
 
 def test_clause6_pitch_compliance_wrappers_are_all_guarded_by_policy() -> None:
@@ -387,10 +426,10 @@ def test_clause6_pitch_vendor_divergent_rows_stay_explicit_transport_subset_poli
         "HLA1516.1-OM-6.29-001",
         "HLA1516.1-OM-6.30-001",
     }
-    assert {str(row["requirement_id"]) for row in rows} == expected_ids
+    assert {row.requirement_id for row in rows} == expected_ids
 
     for row in rows:
-        refs = set(row["evidence_refs"])
+        refs = set(row.evidence_refs)
         assert PITCH_TRANSPORT_DIVERGENCE_NOTE in refs
         assert (
             "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
@@ -411,8 +450,8 @@ def test_clause6_pitch_vendor_divergent_rows_stay_explicit_transport_subset_poli
         "HLA1516.1-OM-6.27-001",
     }
     for row in rows:
-        refs = set(row["evidence_refs"])
-        if str(row["requirement_id"]) in restore_subset_ids:
+        refs = set(row.evidence_refs)
+        if row.requirement_id in restore_subset_ids:
             assert (
                 "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
                 "scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario"
@@ -443,7 +482,7 @@ def test_clause7_pitch_vendor_divergent_rows_stay_explicit_negotiated_ownership_
         "HLA1516.1-OWN-7.10-001",
         "HLA1516.1-OWN-7.11-001",
     }
-    assert {str(row["requirement_id"]) for row in rows} == expected_ids
+    assert {row.requirement_id for row in rows} == expected_ids
 
     offer_probe_ids = {
         "REQ-RTI-OWN-7_3-negotiatedAttributeOwnershipDivestiture",
@@ -456,9 +495,9 @@ def test_clause7_pitch_vendor_divergent_rows_stay_explicit_negotiated_ownership_
     full_negotiated_ids = expected_ids - offer_probe_ids
 
     for row in rows:
-        refs = set(row["evidence_refs"])
+        refs = set(row.evidence_refs)
         assert PITCH_NEGOTIATED_OWNERSHIP_VENDOR_BUG_NOTE in refs
-        if str(row["requirement_id"]) in offer_probe_ids:
+        if row.requirement_id in offer_probe_ids:
             assert (
                 "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
                 "scenario_ownership.py::probe_negotiated_attribute_ownership_offer"
@@ -472,7 +511,7 @@ def test_clause7_pitch_vendor_divergent_rows_stay_explicit_negotiated_ownership_
                 "test_pitch_negotiated_divesting_offer_probe"
             ) in refs
         else:
-            assert str(row["requirement_id"]) in full_negotiated_ids
+            assert row.requirement_id in full_negotiated_ids
             assert (
                 "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
                 "scenario_ownership.py::run_negotiated_attribute_ownership_scenario"
@@ -488,14 +527,13 @@ def test_clause7_pitch_vendor_divergent_rows_stay_explicit_negotiated_ownership_
 
 
 def test_clause7_pitch_backend_matrix_functions_stay_shared_harness_wrappers() -> None:
-    sources = _pitch_matrix_function_sources()
-    assert set(CLAUSE7_TARGET_FUNCTIONS).issubset(sources)
-
-    for function_name, runner_name in CLAUSE7_TARGET_FUNCTIONS.items():
-        source = sources[function_name]
-        assert f"{runner_name}(" in source, function_name
-        assert _scenario_entrypoints(source) == [runner_name], function_name
-        assert not CLAUSE7_DIRECT_BACKEND_CALL_RE.search(source), function_name
+    _assert_wrapper_functions_follow_policy(
+        CLAUSE7_TARGET_FUNCTIONS,
+        shared_runner_check=lambda source, runner_name: (
+            f"{runner_name}(" in source and _scenario_entrypoints(source) == [runner_name]
+        ),
+        direct_call_pattern=CLAUSE7_DIRECT_BACKEND_CALL_RE,
+    )
 
 
 def test_clause8_pitch_vendor_divergent_rows_stay_explicit_shared_harness_policy() -> None:
@@ -522,7 +560,7 @@ def test_clause8_pitch_vendor_divergent_rows_stay_explicit_shared_harness_policy
         "HLA1516.1-TM-8.10-001",
         "HLA1516.1-TM-8.21-001",
     }
-    assert {str(row["requirement_id"]) for row in rows} == expected_ids
+    assert {row.requirement_id for row in rows} == expected_ids
 
     ordering_and_query_ids = {
         "REQ-RTI-TM-8_10-nextMessageRequest",
@@ -550,8 +588,8 @@ def test_clause8_pitch_vendor_divergent_rows_stay_explicit_shared_harness_policy
     }
 
     for row in rows:
-        requirement_id = str(row["requirement_id"])
-        refs = set(row["evidence_refs"])
+        requirement_id = row.requirement_id
+        refs = set(row.evidence_refs)
         assert PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_NOTE in refs
         if requirement_id in ordering_and_query_ids:
             assert (
@@ -622,23 +660,19 @@ def test_clause8_pitch_vendor_divergent_rows_stay_explicit_shared_harness_policy
 
 
 def test_clause8_pitch_backend_matrix_functions_stay_shared_harness_wrappers() -> None:
-    sources = _pitch_matrix_function_sources()
-    assert set(CLAUSE8_TARGET_FUNCTIONS).issubset(sources)
-
-    for function_name, runner_name in CLAUSE8_TARGET_FUNCTIONS.items():
-        source = sources[function_name]
-        assert _uses_shared_runner(source, runner_name), function_name
-        assert not DIRECT_BACKEND_CALL_RE.search(source), function_name
+    _assert_wrapper_functions_follow_policy(
+        CLAUSE8_TARGET_FUNCTIONS,
+        shared_runner_check=_uses_shared_runner,
+        direct_call_pattern=DIRECT_BACKEND_CALL_RE,
+    )
 
 
 def test_clause9_pitch_backend_matrix_functions_stay_shared_harness_wrappers() -> None:
-    sources = _pitch_matrix_function_sources()
-    assert set(CLAUSE9_TARGET_FUNCTIONS).issubset(sources)
-
-    for function_name, runner_name in CLAUSE9_TARGET_FUNCTIONS.items():
-        source = sources[function_name]
-        assert _scenario_entrypoints(source) == [runner_name], function_name
-        assert not DIRECT_BACKEND_CALL_RE.search(source), function_name
+    _assert_wrapper_functions_follow_policy(
+        CLAUSE9_TARGET_FUNCTIONS,
+        shared_runner_check=lambda source, runner_name: _scenario_entrypoints(source) == [runner_name],
+        direct_call_pattern=DIRECT_BACKEND_CALL_RE,
+    )
 
 
 def test_clause4_pitch_lost_federate_wrapper_stays_shared_harness_driven() -> None:
@@ -659,22 +693,21 @@ def test_clause4_pitch_lost_federate_wrapper_stays_shared_harness_driven() -> No
 
 
 def test_clause4_pitch_lost_federate_rows_keep_family_and_profile_blocked_evidence_explicit() -> None:
-    payload = json.loads((ROOT / "analysis" / "compliance" / "pitch_requirement_disposition.json").read_text(encoding="utf-8"))
     rows = {
-        str(row["requirement_id"]): row
-        for row in payload["rows"]
-        if str(row.get("requirement_id")) in {"HLA1516.1-FM-4.1.5-001", "HLA1516.1-FM-4.1.5-002"}
+        row.requirement_id: row
+        for row in _load_requirement_rows("pitch_requirement_disposition.json")
+        if row.requirement_id in {"HLA1516.1-FM-4.1.5-001", "HLA1516.1-FM-4.1.5-002"}
     }
     assert set(rows) == {"HLA1516.1-FM-4.1.5-001", "HLA1516.1-FM-4.1.5-002"}
 
     for requirement_id, row in rows.items():
-        assert row.get("pitch_disposition") == "blocked", requirement_id
-        assert row.get("pitch_jpype_disposition") == "blocked", requirement_id
-        assert row.get("pitch_py4j_disposition") == "blocked", requirement_id
+        assert row.pitch_disposition == "blocked", requirement_id
+        assert row.pitch_jpype_disposition == "blocked", requirement_id
+        assert row.pitch_py4j_disposition == "blocked", requirement_id
 
-        family_refs = set(row.get("evidence_refs", ()))
-        jpype_refs = set(row.get("pitch_jpype_evidence_refs", ()))
-        py4j_refs = set(row.get("pitch_py4j_evidence_refs", ()))
+        family_refs = set(row.evidence_refs)
+        jpype_refs = set(row.pitch_jpype_evidence_refs)
+        py4j_refs = set(row.pitch_py4j_evidence_refs)
 
         assert PITCH_LOST_FEDERATE_GAP_NOTE in family_refs
         assert "analysis/preflight_artifacts/pitch-preflight.json" in family_refs
@@ -732,12 +765,11 @@ def test_clause4_pitch_lost_federate_rows_keep_family_and_profile_blocked_eviden
 
 
 def test_clause4_pitch_lost_federate_rows_keep_exact_backlog_frontier_shape() -> None:
-    payload = json.loads((ROOT / "analysis" / "compliance" / "vendor_discovery_backlog.json").read_text(encoding="utf-8"))
     target_ids = {"HLA1516.1-FM-4.1.5-001", "HLA1516.1-FM-4.1.5-002"}
 
-    rows_by_requirement: dict[str, list[dict[str, object]]] = {}
-    for row in payload["rows"]:
-        requirement_id = str(row.get("requirement_id", ""))
+    rows_by_requirement: dict[str, list[VendorBacklogRow]] = {}
+    for row in _load_vendor_backlog_rows("vendor_discovery_backlog.json"):
+        requirement_id = row.requirement_id
         if requirement_id in target_ids:
             rows_by_requirement.setdefault(requirement_id, []).append(row)
 
@@ -752,21 +784,21 @@ def test_clause4_pitch_lost_federate_rows_keep_exact_backlog_frontier_shape() ->
     for requirement_id, rows in rows_by_requirement.items():
         assert {
             (
-                str(row.get("backend_id", "")),
-                str(row.get("current_status", "")),
-                str(row.get("row_kind", "")),
+                row.backend_id,
+                row.current_status,
+                row.row_kind,
             )
             for row in rows
         } == expected_surface, requirement_id
 
         for row in rows:
-            assert str(row.get("priority", "")) == "P2", requirement_id
+            assert row.priority == "P2", requirement_id
             assert (
-                str(row.get("recommended_next_action", ""))
+                row.recommended_next_action
                 == "unblock capability or document the hard backend limitation"
             ), requirement_id
             assert (
-                str(row.get("source_artifact", "")) == "analysis/compliance/pitch_requirement_disposition.json"
+                row.source_artifact == "analysis/compliance/pitch_requirement_disposition.json"
             ), requirement_id
 
 
@@ -782,23 +814,23 @@ def test_clause4_pitch_family_and_profiles_keep_exact_residual_frontier() -> Non
     }
 
     family_rows = {
-        str(row.get("requirement_id") or row.get("matrix_id")): str(row.get("pitch_disposition"))
+        row.identifier: row.pitch_disposition
         for row in _pitch_clause_rows("pitch_requirement_disposition.json", "4")
-        if row.get("pitch_disposition") != "verified"
+        if row.pitch_disposition != "verified"
     }
     assert family_rows == expected
 
     for filename in ("pitch-jpype_requirement_disposition.json", "pitch-py4j_requirement_disposition.json"):
         profile_rows = {
-            str(row.get("requirement_id") or row.get("matrix_id")): str(row.get("runtime_disposition"))
+            row.identifier: row.runtime_disposition
             for row in _pitch_clause_rows(filename, "4")
-            if row.get("runtime_disposition") != "verified"
+            if row.runtime_disposition != "verified"
         }
         assert profile_rows == expected, filename
 
 
 def test_clause4_pitch_family_and_profiles_keep_exact_summary_counts() -> None:
-    payload = json.loads((ROOT / "analysis" / "compliance" / "pitch_requirement_disposition.json").read_text(encoding="utf-8"))
+    payload = load_compliance_json("pitch_requirement_disposition.json")
 
     expected = {
         "blocked": 2,
@@ -807,9 +839,10 @@ def test_clause4_pitch_family_and_profiles_keep_exact_summary_counts() -> None:
         "vendor-divergent": 3,
         "verified": 274,
     }
-    assert payload["summary"]["clause_summary"]["IEEE 1516.1-2010 §4"] == expected
-    assert payload["summary"]["profile_clause_summary"]["pitch-jpype"]["IEEE 1516.1-2010 §4"] == expected
-    assert payload["summary"]["profile_clause_summary"]["pitch-py4j"]["IEEE 1516.1-2010 §4"] == expected
+    section_ref = federate_interface_section_ref("4")
+    assert payload["summary"]["clause_summary"][section_ref] == expected
+    assert payload["summary"]["profile_clause_summary"]["pitch-jpype"][section_ref] == expected
+    assert payload["summary"]["profile_clause_summary"]["pitch-py4j"][section_ref] == expected
 
 
 def test_clause4_pitch_family_and_profile_evidence_stays_on_allowed_surfaces() -> None:
@@ -825,17 +858,17 @@ def test_clause4_pitch_family_and_profile_evidence_stays_on_allowed_surfaces() -
 
     for row in _pitch_clause_rows("pitch_requirement_disposition.json", "4"):
         for field in ("evidence_refs", "pitch_jpype_evidence_refs", "pitch_py4j_evidence_refs"):
-            refs = tuple(str(ref) for ref in row.get(field, ()))
+            refs = row.evidence_refs_for(field)
             assert all(ref.startswith(allowed_prefixes) for ref in refs), (
-                str(row.get("requirement_id") or row.get("matrix_id")),
+                row.identifier,
                 field,
                 refs,
             )
             assert not any(ref.startswith("tests/backends/") for ref in refs), (
-                str(row.get("requirement_id") or row.get("matrix_id")),
+                row.identifier,
                 field,
             )
             assert not any(ref.startswith("tests/verification/") for ref in refs), (
-                str(row.get("requirement_id") or row.get("matrix_id")),
+                row.identifier,
                 field,
             )

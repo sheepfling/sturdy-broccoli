@@ -6,6 +6,12 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Iterable
 
+from hla2010_repo_internal.requirements_source import (
+    load_source_of_truth,
+    match_requirement_spec_prefix,
+    requirement_document_title_for_alias,
+)
+
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC_SOURCE_ROOT = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010"
@@ -14,11 +20,18 @@ REQUIREMENTS_LEDGER_PATH = ROOT / "analysis" / "compliance" / "requirements_ledg
 SERVICE_TRACE_INDEX_CSV_PATH = ROOT / "analysis" / "traceability" / "service_trace_index.csv"
 SERVICE_TRACE_INDEX_JSON_PATH = ROOT / "analysis" / "traceability" / "service_trace_index.json"
 SERVICE_TRACE_INDEX_MD_PATH = ROOT / "analysis" / "traceability" / "service_trace_index.md"
+REQUIREMENTS_AUTHORING_INDEX_CSV_PATH = ROOT / "analysis" / "traceability" / "requirements_authoring_index.csv"
+REQUIREMENTS_AUTHORING_INDEX_JSON_PATH = ROOT / "analysis" / "traceability" / "requirements_authoring_index.json"
+REQUIREMENTS_AUTHORING_INDEX_MD_PATH = ROOT / "analysis" / "traceability" / "requirements_authoring_index.md"
+ACTIVE_SERVICE_INDEX_CSV_PATH = ROOT / "analysis" / "traceability" / "active_service_requirements_index.csv"
+ACTIVE_SERVICE_INDEX_JSON_PATH = ROOT / "analysis" / "traceability" / "active_service_requirements_index.json"
+ACTIVE_SERVICE_INDEX_MD_PATH = ROOT / "analysis" / "traceability" / "active_service_requirements_index.md"
 
 FORBIDDEN_STALE_PATH_PREFIXES = (
     "hla2010/backends/python/",
     "src/hla2010/backends/",
 )
+FAMILY_SEED_CLAUSES = frozenset({"Framework concepts", "Federation and federate rules"})
 
 
 @dataclass(frozen=True)
@@ -48,6 +61,24 @@ class ServiceTraceIndexRow:
         return asdict(self)
 
 
+@dataclass(frozen=True)
+class RequirementsAuthoringIndexRow:
+    requirement_id: str
+    lane: str
+    lane_reason: str
+    source_document: str
+    clause: str
+    canonical_topic: str
+    current_artifact_id: str
+    status: str
+    implementation_refs: str
+    test_refs: str
+    artifact_refs: str
+
+    def as_dict(self) -> dict[str, str]:
+        return asdict(self)
+
+
 def load_csv_rows(path: Path) -> list[dict[str, str]]:
     with path.open(encoding="utf-8", newline="") as handle:
         return list(csv.DictReader(handle))
@@ -72,11 +103,12 @@ def _file_anchor_exists(ref: str) -> bool:
         return False
     if not anchor:
         return True
+    normalized_anchor = anchor.split("[", 1)[0]
     base_path = ROOT / file_ref
     if not base_path.exists() and file_ref.startswith("hla2010/"):
         base_path = SPEC_SOURCE_ROOT / file_ref.removeprefix("hla2010/")
     text = base_path.read_text(encoding="utf-8")
-    return f"def {anchor}(" in text or anchor in text
+    return f"def {normalized_anchor}(" in text or anchor in text or normalized_anchor in text
 
 
 def _explicit_marker(ref: str) -> bool:
@@ -172,8 +204,34 @@ def validate_traceability_matrix() -> list[TraceValidationError]:
     rows = load_csv_rows(TRACEABILITY_MATRIX_PATH)
     errors: list[TraceValidationError] = []
     source = TRACEABILITY_MATRIX_PATH.relative_to(ROOT).as_posix()
+    source_of_truth = load_source_of_truth()
     for row in rows:
         row_id = row["requirement_id"]
+        match = match_requirement_spec_prefix(row_id, source_of_truth)
+        if match is None:
+            errors.append(
+                TraceValidationError(
+                    source=source,
+                    row_id=row_id,
+                    field="requirement_id",
+                    ref=row_id,
+                    message="requirement_id does not resolve to a registered spec prefix",
+                )
+            )
+        else:
+            alias, _ = match
+            expected_document = requirement_document_title_for_alias(alias, source_of_truth)
+            actual_document = row.get("source_document", "")
+            if actual_document != expected_document:
+                errors.append(
+                    TraceValidationError(
+                        source=source,
+                        row_id=row_id,
+                        field="source_document",
+                        ref=actual_document,
+                        message=f"source_document must be {expected_document!r}",
+                    )
+                )
         implementation_refs = split_refs(row.get("implementation_refs", ""))
         test_refs = split_refs(row.get("test_refs", ""))
         artifact_refs = split_refs(row.get("artifact_refs", ""))
@@ -283,6 +341,200 @@ def validate_active_traceability() -> list[TraceValidationError]:
     return [*validate_traceability_matrix(), *validate_requirements_ledger()]
 
 
+def classify_traceability_row(row: dict[str, str]) -> tuple[str, str]:
+    clause = str(row.get("clause", "")).strip()
+    status = str(row.get("status", "")).strip()
+    if status == "seeded":
+        return "family_seed", "seeded status"
+    if clause.startswith("Clause "):
+        return "family_seed", "broad clause family row"
+    if clause in FAMILY_SEED_CLAUSES:
+        return "family_seed", "framework or architectural family row"
+    return "active_service", "service-level or implementation-driving row"
+
+
+def build_requirements_authoring_index_rows() -> list[RequirementsAuthoringIndexRow]:
+    rows: list[RequirementsAuthoringIndexRow] = []
+    for row in load_csv_rows(TRACEABILITY_MATRIX_PATH):
+        lane, lane_reason = classify_traceability_row(row)
+        rows.append(
+            RequirementsAuthoringIndexRow(
+                requirement_id=row["requirement_id"],
+                lane=lane,
+                lane_reason=lane_reason,
+                source_document=row["source_document"],
+                clause=row["clause"],
+                canonical_topic=row["canonical_topic"],
+                current_artifact_id=row["current_artifact_id"],
+                status=row["status"],
+                implementation_refs=row["implementation_refs"],
+                test_refs=row["test_refs"],
+                artifact_refs=row["artifact_refs"],
+            )
+        )
+    return rows
+
+
+def write_requirements_authoring_index() -> tuple[Path, Path, Path]:
+    REQUIREMENTS_AUTHORING_INDEX_CSV_PATH.parent.mkdir(parents=True, exist_ok=True)
+    rows = build_requirements_authoring_index_rows()
+    fieldnames = [
+        "requirement_id",
+        "lane",
+        "lane_reason",
+        "source_document",
+        "clause",
+        "canonical_topic",
+        "current_artifact_id",
+        "status",
+        "implementation_refs",
+        "test_refs",
+        "artifact_refs",
+    ]
+    with REQUIREMENTS_AUTHORING_INDEX_CSV_PATH.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(row.as_dict())
+
+    lane_counts: dict[str, int] = {}
+    for row in rows:
+        lane_counts[row.lane] = lane_counts.get(row.lane, 0) + 1
+    payload = {
+        "source": TRACEABILITY_MATRIX_PATH.relative_to(ROOT).as_posix(),
+        "row_count": len(rows),
+        "lane_counts": lane_counts,
+        "rows": [row.as_dict() for row in rows],
+    }
+    REQUIREMENTS_AUTHORING_INDEX_JSON_PATH.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    active_rows = [row for row in rows if row.lane == "active_service"]
+    family_rows = [row for row in rows if row.lane == "family_seed"]
+    lines = [
+        "# Requirements Authoring Index",
+        "",
+        f"Generated from `{TRACEABILITY_MATRIX_PATH.relative_to(ROOT).as_posix()}`.",
+        "",
+        "## Lane Summary",
+        "",
+        f"- `active_service`: {len(active_rows)} rows",
+        f"- `family_seed`: {len(family_rows)} rows",
+        "",
+        "Normal contributors should start with `active_service` rows.",
+        "",
+        "## Family Seed Rows",
+        "",
+        "| requirement_id | clause | status | lane_reason | canonical_topic |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for row in family_rows:
+        lines.append(
+            f"| `{row.requirement_id}` | `{row.clause}` | `{row.status}` | `{row.lane_reason}` | {row.canonical_topic} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Active Service Examples",
+            "",
+            "| requirement_id | clause | current_artifact_id | status | canonical_topic |",
+            "| --- | --- | --- | --- | --- |",
+        ]
+    )
+    for row in active_rows[:25]:
+        lines.append(
+            f"| `{row.requirement_id}` | `{row.clause}` | `{row.current_artifact_id or '-'}` | `{row.status}` | {row.canonical_topic} |"
+        )
+    REQUIREMENTS_AUTHORING_INDEX_MD_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return (
+        REQUIREMENTS_AUTHORING_INDEX_CSV_PATH,
+        REQUIREMENTS_AUTHORING_INDEX_JSON_PATH,
+        REQUIREMENTS_AUTHORING_INDEX_MD_PATH,
+    )
+
+
+def write_active_service_index() -> tuple[Path, Path, Path]:
+    ACTIVE_SERVICE_INDEX_CSV_PATH.parent.mkdir(parents=True, exist_ok=True)
+    rows = [row for row in build_requirements_authoring_index_rows() if row.lane == "active_service"]
+    fieldnames = [
+        "requirement_id",
+        "source_document",
+        "clause",
+        "canonical_topic",
+        "current_artifact_id",
+        "status",
+        "implementation_refs",
+        "test_refs",
+        "artifact_refs",
+    ]
+    with ACTIVE_SERVICE_INDEX_CSV_PATH.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(
+                {
+                    "requirement_id": row.requirement_id,
+                    "source_document": row.source_document,
+                    "clause": row.clause,
+                    "canonical_topic": row.canonical_topic,
+                    "current_artifact_id": row.current_artifact_id,
+                    "status": row.status,
+                    "implementation_refs": row.implementation_refs,
+                    "test_refs": row.test_refs,
+                    "artifact_refs": row.artifact_refs,
+                }
+            )
+
+    payload = {
+        "source": TRACEABILITY_MATRIX_PATH.relative_to(ROOT).as_posix(),
+        "row_count": len(rows),
+        "lane": "active_service",
+        "rows": [
+            {
+                "requirement_id": row.requirement_id,
+                "source_document": row.source_document,
+                "clause": row.clause,
+                "canonical_topic": row.canonical_topic,
+                "current_artifact_id": row.current_artifact_id,
+                "status": row.status,
+                "implementation_refs": row.implementation_refs,
+                "test_refs": row.test_refs,
+                "artifact_refs": row.artifact_refs,
+            }
+            for row in rows
+        ],
+    }
+    ACTIVE_SERVICE_INDEX_JSON_PATH.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    lines = [
+        "# Active Service Requirements Index",
+        "",
+        f"Generated from `{TRACEABILITY_MATRIX_PATH.relative_to(ROOT).as_posix()}`.",
+        "",
+        "This is the normal contributor authoring lane. Family and seed rows are intentionally excluded.",
+        "",
+        f"- row_count: {len(rows)}",
+        "",
+        "| requirement_id | clause | canonical_topic | current_artifact_id | status |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for row in rows:
+        lines.append(
+            f"| `{row.requirement_id}` | `{row.clause}` | {row.canonical_topic} | `{row.current_artifact_id or '-'}` | `{row.status}` |"
+        )
+    ACTIVE_SERVICE_INDEX_MD_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return (
+        ACTIVE_SERVICE_INDEX_CSV_PATH,
+        ACTIVE_SERVICE_INDEX_JSON_PATH,
+        ACTIVE_SERVICE_INDEX_MD_PATH,
+    )
+
+
 def build_service_trace_index_rows() -> list[ServiceTraceIndexRow]:
     rows: list[ServiceTraceIndexRow] = []
     for row in load_csv_rows(REQUIREMENTS_LEDGER_PATH):
@@ -355,18 +607,30 @@ def write_service_trace_index() -> tuple[Path, Path, Path]:
 
 
 __all__ = [
+    "ACTIVE_SERVICE_INDEX_CSV_PATH",
+    "ACTIVE_SERVICE_INDEX_JSON_PATH",
+    "ACTIVE_SERVICE_INDEX_MD_PATH",
+    "FAMILY_SEED_CLAUSES",
     "FORBIDDEN_STALE_PATH_PREFIXES",
+    "REQUIREMENTS_AUTHORING_INDEX_CSV_PATH",
+    "REQUIREMENTS_AUTHORING_INDEX_JSON_PATH",
+    "REQUIREMENTS_AUTHORING_INDEX_MD_PATH",
     "REQUIREMENTS_LEDGER_PATH",
+    "RequirementsAuthoringIndexRow",
     "SERVICE_TRACE_INDEX_CSV_PATH",
     "SERVICE_TRACE_INDEX_JSON_PATH",
     "SERVICE_TRACE_INDEX_MD_PATH",
     "TRACEABILITY_MATRIX_PATH",
     "TraceValidationError",
+    "build_requirements_authoring_index_rows",
     "build_service_trace_index_rows",
+    "classify_traceability_row",
     "load_csv_rows",
     "split_refs",
     "validate_active_traceability",
     "validate_requirements_ledger",
     "validate_traceability_matrix",
+    "write_active_service_index",
+    "write_requirements_authoring_index",
     "write_service_trace_index",
 ]

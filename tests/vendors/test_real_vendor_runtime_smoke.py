@@ -24,6 +24,7 @@ from hla2010_verification_harness import (
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 from hla2010_rti_certi.real_rti_certi import discover_certi_smoke_fom, launch_certi_rtig
 from hla2010_rti_pitch_common.real_rti_pitch import launch_pitch_runtime
+from tests.requirement_label_helpers import framework_document_title
 from tests.vendors.runtime_support import (
     cleanup_federation,
     isolated_vendor_runtime_test_state,
@@ -31,6 +32,8 @@ from tests.vendors.runtime_support import (
     reserve_udp_pair,
     shutdown_runtime_resources,
 )
+
+EXPECTED_HLA_VERSION = framework_document_title()
 
 
 def _require_real_rti_smoke(vendor: str) -> None:
@@ -63,7 +66,7 @@ def test_pitch_java_real_lifecycle_smoke(kind: str):
         try:
             fed = RecordingFederateAmbassador()
             rti = create_rti_ambassador(kind)
-            assert rti.getHLAversion() == "IEEE 1516-2010"
+            assert rti.getHLAversion() == EXPECTED_HLA_VERSION
             summary = run_federation_lifecycle_scenario(
                 rti,
                 config=FederationLifecycleScenarioConfig(
@@ -96,7 +99,7 @@ def test_certi_real_lifecycle_smoke():
         except BackendUnavailableError as exc:
             pytest.skip(str(exc))
         try:
-            assert rti.getHLAversion() == "IEEE 1516-2010"
+            assert rti.getHLAversion() == EXPECTED_HLA_VERSION
             summary = run_federation_lifecycle_scenario(
                 rti,
                 config=FederationLifecycleScenarioConfig(
@@ -305,7 +308,7 @@ def test_certi_java_profile_real_lifecycle_smoke(kind: str):
         with reserve_udp_pair() as lease:
             (rti_udp_port, _) = lease.ports
         rti = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=rti_udp_port)
-        assert rti.getHLAversion() == "IEEE 1516-2010"
+        assert rti.getHLAversion() == EXPECTED_HLA_VERSION
         summary = run_federation_lifecycle_scenario(
             rti,
             config=FederationLifecycleScenarioConfig(

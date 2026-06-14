@@ -5,12 +5,27 @@ import json
 import re
 from pathlib import Path
 
+from conftest import REPO_ROOT, load_compliance_json, load_compliance_text
+from tests.compliance_row_models import RequirementDispositionRow
+from tests.requirement_label_helpers import federate_interface_document_title, framework_document_title
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = REPO_ROOT
+FEDERATE_INTERFACE_DOCUMENT = federate_interface_document_title()
+FRAMEWORK_DOCUMENT = framework_document_title()
 CERTI_NEGOTIATED_OWNERSHIP_FINDINGS = "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md"
 SCENARIO_ENTRYPOINT_RE = re.compile(r"\b((?:run|probe)_[A-Za-z0-9_]+)\(")
 DIRECT_BACKEND_CALL_RE = re.compile(
     r"\b(?:leader|wing|owner|acquirer|publisher|subscriber|sender|receiver|left|right|regulator|constrained|rti)\.[A-Za-z_][A-Za-z0-9_]*\("
+)
+CERTI_PROFILE_MARKDOWN_CASES = (
+    ("certi-native_requirement_disposition.md", "certi-native"),
+    ("certi-jpype_requirement_disposition.md", "certi-jpype"),
+    ("certi-py4j_requirement_disposition.md", "certi-py4j"),
+)
+CERTI_PROFILE_JSON_CASES = (
+    "certi-native_requirement_disposition.json",
+    "certi-jpype_requirement_disposition.json",
+    "certi-py4j_requirement_disposition.json",
 )
 
 FILE_FUNCTIONS: dict[Path, dict[str, str]] = {
@@ -62,34 +77,73 @@ def _uses_shared_runner(source: str, runner_name: str) -> bool:
     return "_run_certi_section8_pair(" in source and source.count(runner_name) == 1
 
 
-def _clause7_certi_vendor_divergent_rows() -> list[dict[str, object]]:
-    payload = json.loads((ROOT / "analysis" / "compliance" / "certi_requirement_disposition.json").read_text(encoding="utf-8"))
+def _certi_requirement_rows(filename: str) -> list[RequirementDispositionRow]:
+    payload = load_compliance_json(filename)
+    return [RequirementDispositionRow.from_mapping(row) for row in payload["rows"]]
+
+
+def _clause7_certi_vendor_divergent_rows() -> list[RequirementDispositionRow]:
     return [
         row
-        for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010"
-        and row.get("clause_root") == "7"
-        and row.get("runtime_disposition") == "vendor-divergent"
+        for row in _certi_requirement_rows("certi_requirement_disposition.json")
+        if row.document == FEDERATE_INTERFACE_DOCUMENT
+        and row.clause_root == "7"
+        and row.runtime_disposition == "vendor-divergent"
     ]
 
 
-def _certi_rows(filename: str) -> list[dict[str, object]]:
-    payload = json.loads((ROOT / "analysis" / "compliance" / filename).read_text(encoding="utf-8"))
+def _certi_rows(filename: str) -> list[RequirementDispositionRow]:
     return [
         row
-        for row in payload["rows"]
-        if row.get("document") in {"IEEE 1516.1-2010", "IEEE 1516-2010"}
+        for row in _certi_requirement_rows(filename)
+        if row.document in {FEDERATE_INTERFACE_DOCUMENT, FRAMEWORK_DOCUMENT}
     ]
 
 
-def test_certi_matrix_wrappers_stay_shared_harness_driven() -> None:
-    for path, expected_functions in FILE_FUNCTIONS.items():
+def _assert_matrix_wrappers_follow_policy(
+    *,
+    file_functions: dict[Path, dict[str, str]],
+    direct_call_pattern: re.Pattern[str],
+) -> None:
+    for path, expected_functions in file_functions.items():
         sources = _function_sources(path)
         assert set(expected_functions).issubset(sources), path
         for function_name, runner_name in expected_functions.items():
             source = sources[function_name]
             assert _uses_shared_runner(source, runner_name), function_name
-            assert not DIRECT_BACKEND_CALL_RE.search(source), function_name
+            assert not direct_call_pattern.search(source), function_name
+
+
+def _assert_profile_rows_inherit_family_rows(family_filename: str, profile_filename: str) -> None:
+    family_rows = _certi_rows(family_filename)
+    assert family_rows
+    family_index = {row.requirement_id: row for row in family_rows}
+
+    profile_rows = _certi_rows(profile_filename)
+    assert {row.requirement_id for row in profile_rows} == set(family_index), profile_filename
+
+    for row in profile_rows:
+        requirement_id = row.requirement_id
+        family_row = family_index[requirement_id]
+        assert row.runtime_disposition == family_row.runtime_disposition, (
+            profile_filename,
+            requirement_id,
+        )
+        assert row.evidence_refs == family_row.evidence_refs, (
+            profile_filename,
+            requirement_id,
+        )
+        assert row.notes == family_row.notes, (
+            profile_filename,
+            requirement_id,
+        )
+
+
+def test_certi_matrix_wrappers_stay_shared_harness_driven() -> None:
+    _assert_matrix_wrappers_follow_policy(
+        file_functions=FILE_FUNCTIONS,
+        direct_call_pattern=DIRECT_BACKEND_CALL_RE,
+    )
 
 
 def test_certi_clause7_vendor_divergent_rows_stay_explicit_negotiated_ownership_policy() -> None:
@@ -106,12 +160,12 @@ def test_certi_clause7_vendor_divergent_rows_stay_explicit_negotiated_ownership_
         "HLA1516.1-OWN-7.10-001",
         "REQ-FED-OWN-7_10-attributeOwnershipUnavailable",
     }
-    assert {str(row["requirement_id"]) for row in rows} == expected_ids
+    assert {row.requirement_id for row in rows} == expected_ids
 
     explicit_negotiated_ids = expected_ids - {"REQ-FED-OWN-7_10-attributeOwnershipUnavailable"}
     for row in rows:
-        requirement_id = str(row["requirement_id"])
-        refs = set(row.get("evidence_refs", []))
+        requirement_id = row.requirement_id
+        refs = set(row.evidence_refs)
         if requirement_id in explicit_negotiated_ids:
             assert CERTI_NEGOTIATED_OWNERSHIP_FINDINGS in refs
             assert (
@@ -128,42 +182,12 @@ def test_certi_clause7_vendor_divergent_rows_stay_explicit_negotiated_ownership_
 
 
 def test_generated_certi_profile_requirement_disposition_markdown_keeps_inheritance_note_explicit() -> None:
-    for filename, profile in (
-        ("certi-native_requirement_disposition.md", "certi-native"),
-        ("certi-jpype_requirement_disposition.md", "certi-jpype"),
-        ("certi-py4j_requirement_disposition.md", "certi-py4j"),
-    ):
-        text = (ROOT / "analysis" / "compliance" / filename).read_text(encoding="utf-8")
+    for filename, profile in CERTI_PROFILE_MARKDOWN_CASES:
+        text = load_compliance_text(filename)
         assert f"every row has an explicit generated `{profile}` disposition." in text
         assert "inherits the CERTI family-level requirement disposition" in text
 
 
 def test_certi_profile_requirement_disposition_artifacts_currently_inherit_family_rows() -> None:
-    family_rows = _certi_rows("certi_requirement_disposition.json")
-    assert family_rows
-
-    family_index = {str(row["requirement_id"]): row for row in family_rows}
-
-    for filename in (
-        "certi-native_requirement_disposition.json",
-        "certi-jpype_requirement_disposition.json",
-        "certi-py4j_requirement_disposition.json",
-    ):
-        profile_rows = _certi_rows(filename)
-        assert {str(row["requirement_id"]) for row in profile_rows} == set(family_index), filename
-
-        for row in profile_rows:
-            requirement_id = str(row["requirement_id"])
-            family_row = family_index[requirement_id]
-            assert row.get("runtime_disposition") == family_row.get("runtime_disposition"), (
-                filename,
-                requirement_id,
-            )
-            assert tuple(row.get("evidence_refs", ())) == tuple(family_row.get("evidence_refs", ())), (
-                filename,
-                requirement_id,
-            )
-            assert str(row.get("notes", "")) == str(family_row.get("notes", "")), (
-                filename,
-                requirement_id,
-            )
+    for filename in CERTI_PROFILE_JSON_CASES:
+        _assert_profile_rows_inherit_family_rows("certi_requirement_disposition.json", filename)

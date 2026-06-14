@@ -5,8 +5,13 @@ import json
 import re
 from pathlib import Path
 
+from conftest import REPO_ROOT, load_compliance_json, load_compliance_text
+from tests.compliance_row_models import RequirementDispositionRow
+from tests.requirement_label_helpers import federate_interface_document_title, framework_document_title
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = REPO_ROOT
+FEDERATE_INTERFACE_DOCUMENT = federate_interface_document_title()
+FRAMEWORK_DOCUMENT = framework_document_title()
 PORTICO_POLICY_DOC = ROOT / "packages" / "hla2010-rti-portico" / "docs" / "portico_requirement_disposition_policy.md"
 PORTICO_MATRIX_PATH = ROOT / "tests" / "vendors" / "test_portico_real_backend_matrix.py"
 SCENARIO_ENTRYPOINT_RE = re.compile(r"\b((?:run|probe)_[A-Za-z0-9_]+)\(")
@@ -17,6 +22,14 @@ TARGET_FUNCTIONS = {
     "test_portico_backend_exchange_matrix": "run_two_federate_exchange_scenario",
     "test_portico_backend_synchronization_matrix": "run_synchronization_scenario",
 }
+PORTICO_PROFILE_MARKDOWN_CASES = (
+    ("portico-jpype_requirement_disposition.md", "portico-jpype"),
+    ("portico-py4j_requirement_disposition.md", "portico-py4j"),
+)
+PORTICO_PROFILE_JSON_CASES = (
+    "portico-jpype_requirement_disposition.json",
+    "portico-py4j_requirement_disposition.json",
+)
 PORTICO_EXPLICIT_CLAUSE4_REQUIREMENT_IDS = {
     "REQ-RTI-FM-4_2-connect": (
         "scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
@@ -79,12 +92,15 @@ PORTICO_EXPLICIT_CLAUSE6_REQUIREMENT_IDS = {
 }
 
 
-def _load_rows(filename: str) -> list[dict[str, object]]:
-    payload = json.loads((ROOT / "analysis" / "compliance" / filename).read_text(encoding="utf-8"))
+def _load_rows(filename: str) -> list[RequirementDispositionRow]:
+    payload = load_compliance_json(filename)
     return [
-        row
-        for row in payload["rows"]
-        if row.get("document") in {"IEEE 1516.1-2010", "IEEE 1516-2010"}
+        typed_row
+        for typed_row in (
+            RequirementDispositionRow.from_mapping(row)
+            for row in payload["rows"]
+        )
+        if typed_row.document in {FEDERATE_INTERFACE_DOCUMENT, FRAMEWORK_DOCUMENT}
     ]
 
 
@@ -102,6 +118,44 @@ def _portico_matrix_function_sources() -> dict[str, str]:
 
 def _scenario_entrypoints(source: str) -> list[str]:
     return SCENARIO_ENTRYPOINT_RE.findall(source)
+
+
+def _assert_portico_matrix_wrappers_follow_policy() -> None:
+    sources = _portico_matrix_function_sources()
+    assert set(TARGET_FUNCTIONS).issubset(sources)
+
+    for function_name, runner_name in TARGET_FUNCTIONS.items():
+        source = sources[function_name]
+        assert _scenario_entrypoints(source) == [runner_name], function_name
+        assert not DIRECT_BACKEND_CALL_RE.search(source), function_name
+
+
+def _assert_portico_profile_rows_inherit_family_rows(
+    family_rows: dict[str, RequirementDispositionRow],
+    profile_filename: str,
+    requirement_ids: set[str],
+) -> None:
+    profile_rows = {
+        row.requirement_id: row
+        for row in _load_rows(profile_filename)
+        if row.requirement_id in requirement_ids
+    }
+    assert set(profile_rows) == requirement_ids, profile_filename
+
+    for requirement_id, family_row in family_rows.items():
+        profile_row = profile_rows[requirement_id]
+        assert profile_row.runtime_disposition == family_row.runtime_disposition, (
+            profile_filename,
+            requirement_id,
+        )
+        assert profile_row.evidence_refs == family_row.evidence_refs, (
+            profile_filename,
+            requirement_id,
+        )
+        assert profile_row.notes == family_row.notes, (
+            profile_filename,
+            requirement_id,
+        )
 
 
 def test_portico_package_docs_keep_requirement_disposition_boundary_explicit() -> None:
@@ -127,7 +181,7 @@ def test_portico_requirement_disposition_policy_doc_states_promotion_rule() -> N
 
 
 def test_generated_portico_requirement_disposition_markdown_keeps_current_boundary_explicit() -> None:
-    text = (ROOT / "analysis" / "compliance" / "portico_requirement_disposition.md").read_text(encoding="utf-8")
+    text = load_compliance_text("portico_requirement_disposition.md")
 
     assert "every row has an explicit generated `portico` disposition." in text
     assert "no promoted package-owned real-runtime requirement evidence" in text
@@ -135,11 +189,8 @@ def test_generated_portico_requirement_disposition_markdown_keeps_current_bounda
 
 
 def test_generated_portico_profile_requirement_dispositions_keep_inheritance_note_explicit() -> None:
-    for filename, profile in (
-        ("portico-jpype_requirement_disposition.md", "portico-jpype"),
-        ("portico-py4j_requirement_disposition.md", "portico-py4j"),
-    ):
-        text = (ROOT / "analysis" / "compliance" / filename).read_text(encoding="utf-8")
+    for filename, profile in PORTICO_PROFILE_MARKDOWN_CASES:
+        text = load_compliance_text(filename)
         assert f"every row has an explicit generated `{profile}` disposition." in text
         assert "inherits the Portico family-level requirement disposition" in text
         assert "no profile-specific requirement evidence is generated yet" in text
@@ -152,123 +203,77 @@ def test_portico_family_artifacts_do_not_fall_back_to_not_yet_tested() -> None:
         "portico-py4j_requirement_disposition.json",
     ):
         rows = _load_rows(filename)
-        dispositions = {str(row.get("runtime_disposition", "")).strip() for row in rows}
+        dispositions = {row.runtime_disposition for row in rows}
         assert "not-yet-tested" not in dispositions, filename
 
 
 def test_portico_matrix_wrappers_stay_shared_harness_driven() -> None:
-    sources = _portico_matrix_function_sources()
-    assert set(TARGET_FUNCTIONS).issubset(sources)
-
-    for function_name, runner_name in TARGET_FUNCTIONS.items():
-        source = sources[function_name]
-        assert _scenario_entrypoints(source) == [runner_name], function_name
-        assert not DIRECT_BACKEND_CALL_RE.search(source), function_name
+    _assert_portico_matrix_wrappers_follow_policy()
 
 
 def test_portico_clause4_first_wrapper_tranche_stays_explicit_but_unpromoted() -> None:
     rows = {
-        str(row["requirement_id"]): row
+        row.requirement_id: row
         for row in _load_rows("portico_requirement_disposition.json")
-        if str(row.get("requirement_id")) in PORTICO_EXPLICIT_CLAUSE4_REQUIREMENT_IDS
+        if row.requirement_id in PORTICO_EXPLICIT_CLAUSE4_REQUIREMENT_IDS
     }
     assert set(rows) == set(PORTICO_EXPLICIT_CLAUSE4_REQUIREMENT_IDS)
 
     for requirement_id, expected_refs in PORTICO_EXPLICIT_CLAUSE4_REQUIREMENT_IDS.items():
         row = rows[requirement_id]
-        assert row.get("runtime_disposition") == "classification-required"
-        refs = set(row.get("evidence_refs", ()))
+        assert row.runtime_disposition == "classification-required"
+        refs = set(row.evidence_refs)
         for fragment in expected_refs:
             assert any(fragment in ref for ref in refs), (requirement_id, fragment, refs)
-        note = str(row.get("notes", ""))
-        assert "Portico now has an optional real-runtime thin wrapper" in note
-        assert "classification-required" in note
+        assert "Portico now has an optional real-runtime thin wrapper" in row.notes
+        assert "classification-required" in row.notes
 
 
 def test_portico_profile_clause4_first_wrapper_tranche_inherits_family_evidence() -> None:
     family_rows = {
-        str(row["requirement_id"]): row
+        row.requirement_id: row
         for row in _load_rows("portico_requirement_disposition.json")
-        if str(row.get("requirement_id")) in PORTICO_EXPLICIT_CLAUSE4_REQUIREMENT_IDS
+        if row.requirement_id in PORTICO_EXPLICIT_CLAUSE4_REQUIREMENT_IDS
     }
     assert set(family_rows) == set(PORTICO_EXPLICIT_CLAUSE4_REQUIREMENT_IDS)
 
-    for filename in (
-        "portico-jpype_requirement_disposition.json",
-        "portico-py4j_requirement_disposition.json",
-    ):
-        profile_rows = {
-            str(row["requirement_id"]): row
-            for row in _load_rows(filename)
-            if str(row.get("requirement_id")) in PORTICO_EXPLICIT_CLAUSE4_REQUIREMENT_IDS
-        }
-        assert set(profile_rows) == set(PORTICO_EXPLICIT_CLAUSE4_REQUIREMENT_IDS), filename
-
-        for requirement_id, family_row in family_rows.items():
-            profile_row = profile_rows[requirement_id]
-            assert profile_row.get("runtime_disposition") == family_row.get("runtime_disposition"), (
-                filename,
-                requirement_id,
-            )
-            assert tuple(profile_row.get("evidence_refs", ())) == tuple(family_row.get("evidence_refs", ())), (
-                filename,
-                requirement_id,
-            )
-            assert str(profile_row.get("notes", "")) == str(family_row.get("notes", "")), (
-                filename,
-                requirement_id,
-            )
+    for filename in PORTICO_PROFILE_JSON_CASES:
+        _assert_portico_profile_rows_inherit_family_rows(
+            family_rows,
+            filename,
+            set(PORTICO_EXPLICIT_CLAUSE4_REQUIREMENT_IDS),
+        )
 
 
 def test_portico_clause6_first_wrapper_tranche_stays_explicit_but_unpromoted() -> None:
     rows = {
-        str(row["requirement_id"]): row
+        row.requirement_id: row
         for row in _load_rows("portico_requirement_disposition.json")
-        if str(row.get("requirement_id")) in PORTICO_EXPLICIT_CLAUSE6_REQUIREMENT_IDS
+        if row.requirement_id in PORTICO_EXPLICIT_CLAUSE6_REQUIREMENT_IDS
     }
     assert set(rows) == set(PORTICO_EXPLICIT_CLAUSE6_REQUIREMENT_IDS)
 
     for requirement_id, expected_refs in PORTICO_EXPLICIT_CLAUSE6_REQUIREMENT_IDS.items():
         row = rows[requirement_id]
-        assert row.get("runtime_disposition") == "classification-required"
-        refs = set(row.get("evidence_refs", ()))
+        assert row.runtime_disposition == "classification-required"
+        refs = set(row.evidence_refs)
         for fragment in expected_refs:
             assert any(fragment in ref for ref in refs), (requirement_id, fragment, refs)
-        note = str(row.get("notes", ""))
-        assert "Portico now has an optional real-runtime thin wrapper" in note
-        assert "classification-required" in note
+        assert "Portico now has an optional real-runtime thin wrapper" in row.notes
+        assert "classification-required" in row.notes
 
 
 def test_portico_profile_clause6_first_wrapper_tranche_inherits_family_evidence() -> None:
     family_rows = {
-        str(row["requirement_id"]): row
+        row.requirement_id: row
         for row in _load_rows("portico_requirement_disposition.json")
-        if str(row.get("requirement_id")) in PORTICO_EXPLICIT_CLAUSE6_REQUIREMENT_IDS
+        if row.requirement_id in PORTICO_EXPLICIT_CLAUSE6_REQUIREMENT_IDS
     }
     assert set(family_rows) == set(PORTICO_EXPLICIT_CLAUSE6_REQUIREMENT_IDS)
 
-    for filename in (
-        "portico-jpype_requirement_disposition.json",
-        "portico-py4j_requirement_disposition.json",
-    ):
-        profile_rows = {
-            str(row["requirement_id"]): row
-            for row in _load_rows(filename)
-            if str(row.get("requirement_id")) in PORTICO_EXPLICIT_CLAUSE6_REQUIREMENT_IDS
-        }
-        assert set(profile_rows) == set(PORTICO_EXPLICIT_CLAUSE6_REQUIREMENT_IDS), filename
-
-        for requirement_id, family_row in family_rows.items():
-            profile_row = profile_rows[requirement_id]
-            assert profile_row.get("runtime_disposition") == family_row.get("runtime_disposition"), (
-                filename,
-                requirement_id,
-            )
-            assert tuple(profile_row.get("evidence_refs", ())) == tuple(family_row.get("evidence_refs", ())), (
-                filename,
-                requirement_id,
-            )
-            assert str(profile_row.get("notes", "")) == str(family_row.get("notes", "")), (
-                filename,
-                requirement_id,
-            )
+    for filename in PORTICO_PROFILE_JSON_CASES:
+        _assert_portico_profile_rows_inherit_family_rows(
+            family_rows,
+            filename,
+            set(PORTICO_EXPLICIT_CLAUSE6_REQUIREMENT_IDS),
+        )

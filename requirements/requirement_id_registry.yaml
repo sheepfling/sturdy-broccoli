@@ -1,11 +1,32 @@
 version: 0.13.0
 description: >
-  Stable requirement namespace registry for the Python HLA 1516-2010 workstream.
-  The three standards are treated as independent requirement sources.
+  Stable requirement namespace registry for the Python HLA workstream. The current repo is populated with the 2010 editions, but the registry is structured so later editions can be added without changing parser code.
+
+active_bindings:
+  framework_rules: HLA1516-2010
+  federate_interface: HLA1516.1-2010
+  omt: HLA1516.2-2010
+
+specs:
+  - spec_id: HLA1516-2010
+    legacy_requirement_prefix: HLA1516
+    document_title: IEEE 1516-2010 (2010 edition)
+    edition_year: 2010
+    purpose: HLA framework and architectural rules
+  - spec_id: HLA1516.1-2010
+    legacy_requirement_prefix: HLA1516.1
+    document_title: IEEE 1516.1-2010 (2010 edition)
+    edition_year: 2010
+    purpose: Federate interface and RTI behavior
+  - spec_id: HLA1516.2-2010
+    legacy_requirement_prefix: HLA1516.2
+    document_title: IEEE 1516.2-2010 (2010 edition)
+    edition_year: 2010
+    purpose: Object Model Template and XML/model rules
 
 sources:
   - source_id: HLA1516
-    title: IEEE 1516-2010
+    title: IEEE 1516-2010 (2010 edition)
     purpose: HLA framework and architectural rules
     prefixes:
       - prefix: FW
@@ -17,7 +38,7 @@ sources:
       - prefix: TIME
         meaning: Time concept rules
   - source_id: HLA1516.1
-    title: IEEE 1516.1-2010
+    title: IEEE 1516.1-2010 (2010 edition)
     purpose: Federate interface and RTI behavior
     prefixes:
       - prefix: FM
@@ -39,7 +60,7 @@ sources:
       - prefix: MIM
         meaning: Management Information Model definitions
   - source_id: HLA1516.2
-    title: IEEE 1516.2-2010
+    title: IEEE 1516.2-2010 (2010 edition)
     purpose: Object Model Template and XML/model rules
     prefixes:
       - prefix: ID
@@ -86,8 +107,12 @@ sources:
         meaning: Cross-cutting OMT parsing and merge behavior
 
 id_format:
-  pattern: "[standard]-[prefix]-[number]"
+  pattern: "[spec-edition]-[prefix]-[number]"
   examples:
+    - HLA1516-2010-RULE-001
+    - HLA1516.1-2010-FM-001
+    - HLA1516.1-2025-TM-001
+    - HLA1516.2-2025-OMT-001
     - HLA1516-RULE-001
     - HLA1516.1-FM-001
     - HLA1516.1-TM-001
