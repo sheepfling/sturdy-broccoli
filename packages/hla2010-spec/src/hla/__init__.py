@@ -78,6 +78,10 @@ def select_edition(name: str = DEFAULT_EDITION) -> ModuleType:
         module = importlib.import_module(f"{edition_module.__name__}.{submodule_name}")
         sys.modules[f"{__name__}.{submodule_name}"] = module
         globals()[submodule_name] = module
+    try:
+        importlib.import_module("hla2010_rti_runtime_common").set_selected_backend_edition(edition_key)
+    except ModuleNotFoundError:
+        pass
     _SELECTED_EDITION = edition_key
     return edition_module
 

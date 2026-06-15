@@ -12,6 +12,7 @@ import hla2010.spec as hla_spec
 import hla2010.rti as rti_module
 from hla2010_rti_backend_common import RecordingBackend, make_rti_ambassador
 import hla2010_rti_runtime_common.factory as runtime_factory
+from hla2010_rti_runtime_common import selected_backend_edition, set_selected_backend_edition
 from hla2010.rti import (
     available_backend_plugins,
     create_rti_ambassador,
@@ -78,6 +79,8 @@ def test_runtime_backend_listing_is_deduplicated_and_probeable():
     assert probed["python"].available is True
     assert probed["python"].supported_editions == ("2010",)
     assert probed["python"].info.kind == "python/in-memory"
+    assert iter_rti_backend_plugins(edition="2025") == ()
+    assert discover_rti_backends(edition="2025") == ()
 
 
 def test_runtime_factories_are_listable_selectable_and_instantiable():
@@ -104,6 +107,27 @@ def test_runtime_factories_are_listable_selectable_and_instantiable():
     assert probe.info.kind == "python/in-memory"
 
 
+def test_runtime_factory_selection_is_edition_aware():
+    assert selected_backend_edition() == "2010"
+    assert set_selected_backend_edition("ed2010") == "2010"
+    assert selected_backend_edition() == "2010"
+    assert iter_rti_factories(edition="2025") == ()
+
+    try:
+        get_rti_factory("python", edition="2025")
+    except ValueError as exc:
+        assert "edition '2025'" in str(exc)
+    else:
+        raise AssertionError("expected an edition-aware factory lookup failure")
+
+    try:
+        create_rti_ambassador("python", edition="2025")
+    except ValueError as exc:
+        assert "edition '2025'" in str(exc)
+    else:
+        raise AssertionError("expected an edition-aware ambassador creation failure")
+
+
 def test_rti_factory_tool_lists_and_shows_installed_factories():
     listed = subprocess.run(
         ["bash", "./tools/rti-factories", "list"],
@@ -112,6 +136,7 @@ def test_rti_factory_tool_lists_and_shows_installed_factories():
         text=True,
     )
     assert "Installed RTI factories" in listed.stdout
+    assert "selected_backend_edition: 2010" in listed.stdout
     assert "- python [python-reference]" in listed.stdout
     assert "supported_editions: 2010" in listed.stdout
     assert "selectable_names:" in listed.stdout
@@ -126,6 +151,7 @@ def test_rti_factory_tool_lists_and_shows_installed_factories():
     payload = json.loads(shown.stdout)
     assert payload["name"] == "python"
     assert payload["supported_editions"] == ["2010"]
+    assert payload["selected_backend_edition"] == "2010"
     assert "in-memory" in payload["selectable_names"]
     assert payload["probe"]["available"] is True
 
@@ -138,6 +164,7 @@ def test_rti_factory_tool_lists_and_shows_installed_factories():
     instantiated_payload = json.loads(instantiated.stdout)
     assert instantiated_payload["name"] == "python"
     assert instantiated_payload["supported_editions"] == ["2010"]
+    assert instantiated_payload["selected_backend_edition"] == "2010"
     assert instantiated_payload["backend_info"]["kind"] == "python/in-memory"
     assert instantiated_payload["probe"]["available"] is True
 
@@ -207,6 +234,7 @@ def test_neutral_namespace_routes_to_explicit_2010_surface() -> None:
     assert hla.DEFAULT_EDITION == "2010"
     assert hla.available_editions() == ("2010",)
     assert hla.selected_edition() == "2010"
+    assert selected_backend_edition() == "2010"
     assert hla.get_edition("2010") is hla_ed2010
     assert hla.get_edition("ed2010") is hla_ed2010
     assert hla.select_edition("2010") is hla_ed2010

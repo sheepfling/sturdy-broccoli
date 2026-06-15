@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib
+import re
 from dataclasses import dataclass, field
 from importlib import metadata
 from typing import Any, Mapping
@@ -19,6 +20,7 @@ from hla2010_rti_transport_common import register_transport_factory
 _BACKEND_FACTORIES: dict[str, Any] = {}
 _BACKEND_PLUGINS: dict[str, RTIBackendPlugin] = {}
 _BACKEND_PLUGINS_LOADED = False
+_SELECTED_BACKEND_EDITION = "2010"
 _SOURCE_CHECKOUT_PLUGIN_MODULES: tuple[str, ...] = (
     "hla2010_rti_python.plugin",
     "hla2010_rti_java_jpype.plugin",
@@ -82,6 +84,39 @@ class RTIAmbassadorFactory:
 
 def _normalize_kind(kind: str) -> str:
     return kind.strip().lower().replace("_", "-")
+
+
+def _normalize_edition_name(edition: str) -> str:
+    normalized = edition.strip().lower().replace("_", "-")
+    if normalized.isdigit():
+        return normalized
+    if normalized.startswith("ed") and normalized[2:].isdigit():
+        return normalized[2:]
+    match = re.search(r"(19|20)\d{2}", normalized)
+    if match is not None:
+        return match.group(0)
+    raise ValueError(f"Unsupported RTI backend edition selection: {edition!r}")
+
+
+def selected_backend_edition() -> str:
+    """Return the active RTI backend edition selection."""
+
+    return _SELECTED_BACKEND_EDITION
+
+
+def set_selected_backend_edition(edition: str) -> str:
+    """Set the active RTI backend edition selection and return the normalized key."""
+
+    global _SELECTED_BACKEND_EDITION
+    _SELECTED_BACKEND_EDITION = _normalize_edition_name(edition)
+    return _SELECTED_BACKEND_EDITION
+
+
+def _edition_matches(plugin: RTIBackendPlugin, edition: str | None) -> bool:
+    if edition is None:
+        return True
+    normalized = _normalize_edition_name(edition)
+    return normalized in {str(item).strip() for item in plugin.supported_editions}
 
 
 def register_backend_factory(kind: str, factory: Any, *, aliases: tuple[str, ...] = ()) -> None:
@@ -159,12 +194,14 @@ def available_backend_plugins() -> Mapping[str, RTIBackendPlugin]:
     return dict(_BACKEND_PLUGINS)
 
 
-def iter_rti_backend_plugins() -> tuple[RTIBackendPlugin, ...]:
+def iter_rti_backend_plugins(*, edition: str | None = None) -> tuple[RTIBackendPlugin, ...]:
     """Return unique installed RTI backend plugins sorted by plugin name."""
 
     _load_backend_plugins()
     unique: dict[str, RTIBackendPlugin] = {}
     for plugin in _BACKEND_PLUGINS.values():
+        if not _edition_matches(plugin, edition):
+            continue
         unique[_normalize_kind(plugin.name)] = plugin
     return tuple(unique[name] for name in sorted(unique))
 
@@ -174,11 +211,11 @@ def _selectable_names_for_plugin(plugin: RTIBackendPlugin) -> tuple[str, ...]:
     return tuple(sorted(names))
 
 
-def iter_rti_factories() -> tuple[RTIAmbassadorFactory, ...]:
+def iter_rti_factories(*, edition: str | None = None) -> tuple[RTIAmbassadorFactory, ...]:
     """Return installed RTI ambassador factories with human-facing metadata."""
 
     rows: list[RTIAmbassadorFactory] = []
-    for plugin in iter_rti_backend_plugins():
+    for plugin in iter_rti_backend_plugins(edition=edition):
         rows.append(
             RTIAmbassadorFactory(
                 name=plugin.name,
@@ -194,21 +231,26 @@ def iter_rti_factories() -> tuple[RTIAmbassadorFactory, ...]:
     return tuple(rows)
 
 
-def get_rti_factory(name: str) -> RTIAmbassadorFactory:
+def get_rti_factory(name: str, *, edition: str | None = None) -> RTIAmbassadorFactory:
     """Resolve one installed RTI ambassador factory by canonical name or alias."""
 
     normalized = _normalize_kind(name)
-    for factory in iter_rti_factories():
+    resolved_edition = selected_backend_edition() if edition is None else _normalize_edition_name(edition)
+    for factory in iter_rti_factories(edition=resolved_edition):
         if normalized in factory.selectable_names:
             return factory
+    all_factories = iter_rti_factories()
+    if any(normalized in factory.selectable_names for factory in all_factories):
+        raise ValueError(f"RTI factory {name!r} is not available for edition {resolved_edition!r}")
     raise ValueError(f"Unknown RTI factory name: {name!r}")
 
 
-def discover_rti_backends(*, probe: bool = False) -> tuple[RTIBackendDiscovery, ...]:
+def discover_rti_backends(*, probe: bool = False, edition: str | None = None) -> tuple[RTIBackendDiscovery, ...]:
     """Return installed RTI backend descriptors, optionally probing runtimes."""
 
     rows: list[RTIBackendDiscovery] = []
-    for factory in iter_rti_factories():
+    resolved_edition = selected_backend_edition() if edition is None else _normalize_edition_name(edition)
+    for factory in iter_rti_factories(edition=resolved_edition):
         if probe:
             rows.append(factory.discover())
             continue
@@ -226,7 +268,12 @@ def discover_rti_backends(*, probe: bool = False) -> tuple[RTIBackendDiscovery, 
     return tuple(rows)
 
 
-def create_backend(kind: str | RTIBackendSpec = "python", **options: Any):
+def create_backend(
+    kind: str | RTIBackendSpec = "python",
+    *,
+    edition: str | None = None,
+    **options: Any,
+):
     """Create a backend by registered name."""
 
     if isinstance(kind, RTIBackendSpec):
@@ -242,16 +289,25 @@ def create_backend(kind: str | RTIBackendSpec = "python", **options: Any):
 
     _load_backend_plugins()
     normalized = _normalize_kind(kind)
+    resolved_edition = selected_backend_edition() if edition is None else _normalize_edition_name(edition)
+    plugin = _BACKEND_PLUGINS.get(normalized)
+    if plugin is not None and not _edition_matches(plugin, resolved_edition):
+        raise ValueError(f"RTI backend kind {kind!r} is not available for edition {resolved_edition!r}")
     factory = _BACKEND_FACTORIES.get(normalized)
     if factory is None:
         raise ValueError(f"Unknown RTI backend kind: {kind!r}")
     return factory(dict(options))
 
 
-def create_rti_ambassador(kind: str | RTIBackendSpec = "python", **options: Any) -> DelegatingRTIAmbassador:
+def create_rti_ambassador(
+    kind: str | RTIBackendSpec = "python",
+    *,
+    edition: str | None = None,
+    **options: Any,
+) -> DelegatingRTIAmbassador:
     """Create a backend-neutral RTI ambassador."""
 
-    return make_rti_ambassador(create_backend(kind, **options))
+    return make_rti_ambassador(create_backend(kind, edition=edition, **options))
 
 
 __all__ = [
@@ -271,4 +327,6 @@ __all__ = [
     "register_backend_factory",
     "register_backend_plugin",
     "register_transport_factory",
+    "selected_backend_edition",
+    "set_selected_backend_edition",
 ]

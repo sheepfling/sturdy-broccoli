@@ -5,7 +5,11 @@ import json
 from dataclasses import asdict, is_dataclass
 from typing import Any
 
-from hla2010_rti_runtime_common import get_rti_factory, iter_rti_factories
+from hla2010_rti_runtime_common import (
+    get_rti_factory,
+    iter_rti_factories,
+    selected_backend_edition,
+)
 
 
 def _serialize_probe_info(value: Any) -> Any:
@@ -34,7 +38,8 @@ def _serialize_probe_info(value: Any) -> Any:
 
 def cmd_list(_: argparse.Namespace) -> int:
     print("Installed RTI factories")
-    for factory in iter_rti_factories():
+    print(f"selected_backend_edition: {selected_backend_edition()}")
+    for factory in iter_rti_factories(edition=_.edition):
         aliases = ", ".join(factory.aliases) if factory.aliases else "-"
         selectable = ", ".join(factory.selectable_names)
         editions = ", ".join(factory.supported_editions)
@@ -49,7 +54,7 @@ def cmd_list(_: argparse.Namespace) -> int:
 
 
 def cmd_show(args: argparse.Namespace) -> int:
-    factory = get_rti_factory(args.name)
+    factory = get_rti_factory(args.name, edition=args.edition)
     probe = factory.discover() if args.probe else None
     payload = {
         "name": factory.name,
@@ -57,6 +62,7 @@ def cmd_show(args: argparse.Namespace) -> int:
         "aliases": list(factory.aliases),
         "supported_editions": list(factory.supported_editions),
         "selectable_names": list(factory.selectable_names),
+        "selected_backend_edition": selected_backend_edition(),
         "probe_supported": factory.probe_supported,
         "description": factory.description,
     }
@@ -70,14 +76,15 @@ def cmd_show(args: argparse.Namespace) -> int:
 
 
 def cmd_instantiate(args: argparse.Namespace) -> int:
-    factory = get_rti_factory(args.name)
-    ambassador = factory.create_rti_ambassador()
+    factory = get_rti_factory(args.name, edition=args.edition)
+    ambassador = factory.create_rti_ambassador(edition=args.edition)
     payload = {
         "name": factory.name,
         "aliases": list(factory.aliases),
         "supported_editions": list(factory.supported_editions),
         "selectable_names": list(factory.selectable_names),
         "family": factory.family,
+        "selected_backend_edition": selected_backend_edition(),
         "backend_info": {
             "name": ambassador.backend_info.name,
             "kind": ambassador.backend_info.kind,
@@ -103,10 +110,18 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     list_parser = subparsers.add_parser("list", help="List installed RTI factories.")
+    list_parser.add_argument(
+        "--edition",
+        help="Filter factories to one edition key such as 2010.",
+    )
     list_parser.set_defaults(func=cmd_list)
 
     show_parser = subparsers.add_parser("show", help="Describe one RTI factory by canonical name or alias.")
     show_parser.add_argument("name", help="Canonical factory name or alias such as python, in-memory, or certi.")
+    show_parser.add_argument(
+        "--edition",
+        help="Resolve the factory against one edition key such as 2010.",
+    )
     show_parser.add_argument("--probe", action="store_true", help="Run backend discovery/probe for the selected factory.")
     show_parser.set_defaults(func=cmd_show)
 
@@ -117,6 +132,10 @@ def build_parser() -> argparse.ArgumentParser:
     instantiate_parser.add_argument(
         "name",
         help="Canonical factory name or alias such as python, in-memory, or certi.",
+    )
+    instantiate_parser.add_argument(
+        "--edition",
+        help="Resolve and instantiate the factory against one edition key such as 2010.",
     )
     instantiate_parser.add_argument(
         "--probe",

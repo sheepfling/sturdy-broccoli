@@ -18,6 +18,8 @@ from .factory import (
     register_backend_factory,
     register_backend_plugin,
     register_transport_factory,
+    selected_backend_edition,
+    set_selected_backend_edition,
 )
 from .real_rti_process import RuntimeProcess, reserve_tcp_port, wait_for_process_boot, wait_for_tcp_listener
 
@@ -40,6 +42,8 @@ __all__ = [
     "register_backend_plugin",
     "register_transport_factory",
     "reserve_tcp_port",
+    "selected_backend_edition",
+    "set_selected_backend_edition",
     "wait_for_process_boot",
     "wait_for_tcp_listener",
 ]
