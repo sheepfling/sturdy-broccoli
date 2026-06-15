@@ -242,6 +242,7 @@ These are kept for audit and provenance, not for onboarding:
 
 - [`docs/source_documents.md`](docs/source_documents.md)
 - [`docs/reference/README.md`](docs/reference/README.md)
+- [`docs/reference/hla_interface_contracts.md`](docs/reference/hla_interface_contracts.md) for the generated interface-contract snapshot
 - [`docs/evidence/README.md`](docs/evidence/README.md)
 
 The repository intentionally keeps generated artifacts out of version control when they can be reproduced from source.

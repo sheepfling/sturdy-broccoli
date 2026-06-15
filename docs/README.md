@@ -87,6 +87,7 @@ historical evidence. They are not the primary onboarding path.
 - [verification/verification_plan.md](verification/verification_plan.md): layered verification plan
 - [verification/validation_plan.md](verification/validation_plan.md): layered validation plan
 - [supported_subset_policy.md](supported_subset_policy.md): explicit broad-spec versus supported-subset policy statements for defended partial compliance rows
+- [reference/hla_interface_contracts.md](reference/hla_interface_contracts.md): generated interface-contract snapshot
 
 Planning:
 
