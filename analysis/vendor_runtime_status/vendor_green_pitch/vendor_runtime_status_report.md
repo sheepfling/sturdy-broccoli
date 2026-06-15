@@ -3,13 +3,13 @@
 - lane: `vendor-green`
 - overall classification: `environment-blocked`
 - exit code: `1`
-- artifact dir: `<tmp>/pytest-of-rick/pytest-2003/test_vendor_green_fails_strict0/preflight`
+- artifact dir: `<tmp>/pytest-of-rick/pytest-2006/test_vendor_green_fails_strict0/preflight`
 
 ## Vendors
 
 | Vendor | Classification | Environment | Exit | Blocked Reason | Artifact | Note |
 | --- | --- | --- | ---: | --- | --- | --- |
-| pitch | environment-blocked | docker-blocked | 1 | docker | <tmp>/pytest-of-rick/pytest-2003/test_vendor_green_fails_strict0/preflight/pitch-preflight.json | host/runtime prerequisites are blocked on this surface |
+| pitch | environment-blocked | docker-blocked | 1 | docker | <tmp>/pytest-of-rick/pytest-2006/test_vendor_green_fails_strict0/preflight/pitch-preflight.json | host/runtime prerequisites are blocked on this surface |
 
 Blocked checks for `pitch`:
 - `docker`: blocked: Docker CLI exists but the daemon is not reachable

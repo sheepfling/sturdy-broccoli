@@ -1,5 +1,5 @@
 {
-  "artifact_dir": "<tmp>/pytest-of-rick/pytest-2003/test_vendor_green_fails_strict0/preflight",
+  "artifact_dir": "<tmp>/pytest-of-rick/pytest-2006/test_vendor_green_fails_strict0/preflight",
   "blocked_vendors": [
     "pitch"
   ],
@@ -18,7 +18,7 @@
   "vendors": [
     {
       "actionable": false,
-      "artifact_path": "<tmp>/pytest-of-rick/pytest-2003/test_vendor_green_fails_strict0/preflight/pitch-preflight.json",
+      "artifact_path": "<tmp>/pytest-of-rick/pytest-2006/test_vendor_green_fails_strict0/preflight/pitch-preflight.json",
       "blocked_checks": [
         {
           "detail": "blocked: Docker CLI exists but the daemon is not reachable",
