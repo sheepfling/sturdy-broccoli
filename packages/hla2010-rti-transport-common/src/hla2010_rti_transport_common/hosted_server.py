@@ -27,6 +27,7 @@ from hla2010.handles import (
     AttributeHandle,
     AttributeHandleSet,
     AttributeHandleValueMap,
+    DimensionHandle,
     FederateHandle,
     FederateHandleSet,
     InteractionClassHandle,
@@ -35,9 +36,11 @@ from hla2010.handles import (
     ObjectInstanceHandle,
     ParameterHandle,
     ParameterHandleValueMap,
+    RegionHandle,
+    RegionHandleSet,
 )
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from hla2010.types import FederateHandleSaveStatusPair, FederateRestoreStatus
+from hla2010.types import AttributeRegionAssociation, FederateHandleSaveStatusPair, FederateRestoreStatus, RangeBounds
 from hla2010_rti_backend_common import RecordingFederateAmbassador
 
 
@@ -78,6 +81,36 @@ def _decode_logical_interval(type_name: str, raw: Any) -> Any:
     if type_name == "HLAfloat64Interval":
         return HLAfloat64Interval(float(raw))
     raise ValueError(f"Unsupported logical interval type: {type_name}")
+
+
+def _region_set_spec(values: Sequence[Any]) -> str:
+    return ",".join(str(int(value.value)) for value in values)
+
+
+def _decode_region_set(spec: str) -> RegionHandleSet:
+    return decode_handle_set(spec, RegionHandle, RegionHandleSet)
+
+
+def _attribute_region_association_spec(values: Sequence[AttributeRegionAssociation]) -> str:
+    parts: list[str] = []
+    for value in values:
+        parts.append(f"{handle_set_spec(value.attributes)}@{_region_set_spec(tuple(value.regions))}")
+    return ";".join(parts)
+
+
+def _decode_attribute_region_associations(spec: str) -> list[AttributeRegionAssociation]:
+    if not spec:
+        return []
+    result: list[AttributeRegionAssociation] = []
+    for entry in spec.split(";"):
+        attributes_raw, regions_raw = entry.split("@", 1)
+        result.append(
+            AttributeRegionAssociation(
+                decode_handle_set(attributes_raw, AttributeHandle, AttributeHandleSet),
+                _decode_region_set(regions_raw),
+            )
+        )
+    return result
 
 
 class _CallbackQueueAmbassador(RecordingFederateAmbassador):
@@ -126,6 +159,16 @@ def _encode_callback_payload(method_name: str, args: tuple[Any, ...]) -> tuple[s
         return ("TIME_ADVANCE_GRANT", _logical_time_name(args[0]), _logical_scalar(args[0]))
     if method_name == "requestRetraction":
         return ("REQUEST_RETRACTION", str(int(args[0].value)))
+    if method_name == "startRegistrationForObjectClass":
+        return ("START_REGISTRATION_FOR_OBJECT_CLASS", str(int(args[0].value)))
+    if method_name == "stopRegistrationForObjectClass":
+        return ("STOP_REGISTRATION_FOR_OBJECT_CLASS", str(int(args[0].value)))
+    if method_name == "turnInteractionsOn":
+        return ("TURN_INTERACTIONS_ON", str(int(args[0].value)))
+    if method_name == "turnInteractionsOff":
+        return ("TURN_INTERACTIONS_OFF", str(int(args[0].value)))
+    if method_name == "removeObjectInstance":
+        return ("REMOVE_OBJECT_INSTANCE", str(int(args[0].value)), encode_bytes(args[1]))
     if method_name == "synchronizationPointRegistrationSucceeded":
         return ("SYNC_POINT_REGISTRATION_SUCCEEDED", str(args[0]))
     if method_name == "synchronizationPointRegistrationFailed":
@@ -285,8 +328,17 @@ class HostedRTICommandProcessor:
         if command == "GET_ATTRIBUTE_HANDLE":
             handle = self.rti.get_attribute_handle(ObjectClassHandle(int(fields[0])), str(fields[1]))
             return TransportResponse(fields=(str(int(handle.value)),))
+        if command == "GET_DIMENSION_HANDLE":
+            handle = self.rti.get_dimension_handle(str(fields[0]))
+            return TransportResponse(fields=(str(int(handle.value)),))
         if command == "PUBLISH_OBJECT_CLASS_ATTRIBUTES":
             self.rti.publish_object_class_attributes(
+                ObjectClassHandle(int(fields[0])),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+            )
+            return TransportResponse()
+        if command == "UNPUBLISH_OBJECT_CLASS_ATTRIBUTES":
+            self.rti.unpublish_object_class_attributes(
                 ObjectClassHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
@@ -297,6 +349,42 @@ class HostedRTICommandProcessor:
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
+        if command == "UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES":
+            self.rti.unsubscribe_object_class_attributes(
+                ObjectClassHandle(int(fields[0])),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+            )
+            return TransportResponse()
+        if command == "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS":
+            self.rti.subscribe_object_class_attributes_with_regions(
+                ObjectClassHandle(int(fields[0])),
+                _decode_attribute_region_associations(str(fields[1])),
+            )
+            return TransportResponse()
+        if command == "UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS":
+            self.rti.unsubscribe_object_class_attributes_with_regions(
+                ObjectClassHandle(int(fields[0])),
+                _decode_attribute_region_associations(str(fields[1])),
+            )
+            return TransportResponse()
+        if command == "CREATE_REGION":
+            handle = self.rti.create_region(
+                decode_handle_set(str(fields[0]), DimensionHandle, set),
+            )
+            return TransportResponse(fields=(str(int(handle.value)),))
+        if command == "SET_RANGE_BOUNDS":
+            self.rti.set_range_bounds(
+                RegionHandle(int(fields[0])),
+                DimensionHandle(int(fields[1])),
+                RangeBounds(int(fields[2]), int(fields[3])),
+            )
+            return TransportResponse()
+        if command == "COMMIT_REGION_MODIFICATIONS":
+            self.rti.commit_region_modifications(_decode_region_set(str(fields[0])))
+            return TransportResponse()
+        if command == "DELETE_REGION":
+            self.rti.delete_region(RegionHandle(int(fields[0])))
+            return TransportResponse()
         if command == "REGISTER_OBJECT_INSTANCE":
             if not fields:
                 raise ValueError("REGISTER_OBJECT_INSTANCE requires an object class handle")
@@ -305,6 +393,31 @@ class HostedRTICommandProcessor:
             else:
                 handle = self.rti.register_object_instance(ObjectClassHandle(int(fields[0])))
             return TransportResponse(fields=(str(int(handle.value)),))
+        if command == "REGISTER_OBJECT_INSTANCE_WITH_REGIONS":
+            if len(fields) >= 3 and fields[2]:
+                handle = self.rti.register_object_instance_with_regions(
+                    ObjectClassHandle(int(fields[0])),
+                    _decode_attribute_region_associations(str(fields[1])),
+                    str(fields[2]),
+                )
+            else:
+                handle = self.rti.register_object_instance_with_regions(
+                    ObjectClassHandle(int(fields[0])),
+                    _decode_attribute_region_associations(str(fields[1])),
+                )
+            return TransportResponse(fields=(str(int(handle.value)),))
+        if command == "ASSOCIATE_REGIONS_FOR_UPDATES":
+            self.rti.associate_regions_for_updates(
+                ObjectInstanceHandle(int(fields[0])),
+                _decode_attribute_region_associations(str(fields[1])),
+            )
+            return TransportResponse()
+        if command == "UNASSOCIATE_REGIONS_FOR_UPDATES":
+            self.rti.unassociate_regions_for_updates(
+                ObjectInstanceHandle(int(fields[0])),
+                _decode_attribute_region_associations(str(fields[1])),
+            )
+            return TransportResponse()
         if command == "GET_OBJECT_INSTANCE_HANDLE":
             handle = self.rti.get_object_instance_handle(str(fields[0]))
             return TransportResponse(fields=(str(int(handle.value)),))
@@ -339,8 +452,26 @@ class HostedRTICommandProcessor:
         if command == "PUBLISH_INTERACTION_CLASS":
             self.rti.publish_interaction_class(InteractionClassHandle(int(fields[0])))
             return TransportResponse()
+        if command == "UNPUBLISH_INTERACTION_CLASS":
+            self.rti.unpublish_interaction_class(InteractionClassHandle(int(fields[0])))
+            return TransportResponse()
         if command == "SUBSCRIBE_INTERACTION_CLASS":
             self.rti.subscribe_interaction_class(InteractionClassHandle(int(fields[0])))
+            return TransportResponse()
+        if command == "UNSUBSCRIBE_INTERACTION_CLASS":
+            self.rti.unsubscribe_interaction_class(InteractionClassHandle(int(fields[0])))
+            return TransportResponse()
+        if command == "SUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS":
+            self.rti.subscribe_interaction_class_with_regions(
+                InteractionClassHandle(int(fields[0])),
+                _decode_region_set(str(fields[1])),
+            )
+            return TransportResponse()
+        if command == "UNSUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS":
+            self.rti.unsubscribe_interaction_class_with_regions(
+                InteractionClassHandle(int(fields[0])),
+                _decode_region_set(str(fields[1])),
+            )
             return TransportResponse()
         if command == "SEND_INTERACTION":
             self.rti.send_interaction(
@@ -349,16 +480,45 @@ class HostedRTICommandProcessor:
                 decode_bytes(str(fields[2])),
             )
             return TransportResponse()
-        if command == "SEND_INTERACTION_TIMESTAMP":
-            handle = self.rti.send_interaction(
+        if command == "SEND_INTERACTION_WITH_REGIONS":
+            self.rti.send_interaction_with_regions(
                 InteractionClassHandle(int(fields[0])),
                 decode_handle_value_map(str(fields[1]), ParameterHandle, ParameterHandleValueMap),
-                decode_bytes(str(fields[2])),
-                _decode_logical_time(str(fields[3]), fields[4]),
+                _decode_region_set(str(fields[2])),
+                decode_bytes(str(fields[3])),
             )
-            if handle is None:
-                return TransportResponse()
-            return TransportResponse(fields=(str(int(handle.handle.value)),))
+            return TransportResponse()
+        if command == "SEND_INTERACTION_TIMESTAMP":
+        handle = self.rti.send_interaction(
+            InteractionClassHandle(int(fields[0])),
+            decode_handle_value_map(str(fields[1]), ParameterHandle, ParameterHandleValueMap),
+            decode_bytes(str(fields[2])),
+            _decode_logical_time(str(fields[3]), fields[4]),
+        )
+        if handle is None:
+            return TransportResponse()
+        return TransportResponse(fields=(str(int(handle.handle.value)),))
+        if command == "REQUEST_ATTRIBUTE_VALUE_UPDATE_OBJECT":
+            self.rti.request_attribute_value_update(
+                ObjectInstanceHandle(int(fields[0])),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+                decode_bytes(str(fields[2])),
+            )
+            return TransportResponse()
+        if command == "REQUEST_ATTRIBUTE_VALUE_UPDATE_CLASS":
+            self.rti.request_attribute_value_update(
+                ObjectClassHandle(int(fields[0])),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+                decode_bytes(str(fields[2])),
+            )
+            return TransportResponse()
+        if command == "REQUEST_ATTRIBUTE_VALUE_UPDATE_WITH_REGIONS":
+            self.rti.request_attribute_value_update_with_regions(
+                ObjectInstanceHandle(int(fields[0])),
+                _decode_attribute_region_associations(str(fields[1])),
+                decode_bytes(str(fields[2])),
+            )
+            return TransportResponse()
         if command == "ENABLE_TIME_REGULATION":
             self.rti.enable_time_regulation(_decode_logical_interval(str(fields[0]), fields[1]))
             return TransportResponse()

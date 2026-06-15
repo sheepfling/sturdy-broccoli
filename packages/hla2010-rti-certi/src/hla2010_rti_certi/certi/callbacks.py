@@ -35,6 +35,10 @@ from .runtime import decode_logical_time
 from hla2010.types import FederateHandleSaveStatusPair, FederateRestoreStatus
 
 
+def invoke_federate_callback(ambassador: Any, method_name: str, *args: Any) -> None:
+    getattr(ambassador, method_name)(*args)
+
+
 def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_hint: str | None = None) -> None:
     if ambassador is None or not parts:
         return
@@ -98,7 +102,53 @@ def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_
         getattr(ambassador, "timeAdvanceGrant")(decode_logical_time(time_type, parts[2]))
         return
     if kind == "REQUEST_RETRACTION":
-        getattr(ambassador, "requestRetraction")(MessageRetractionHandle(int(parts[1])))
+        invoke_federate_callback(ambassador, "requestRetraction", MessageRetractionHandle(int(parts[1])))
+        return
+    if kind == "START_REGISTRATION_FOR_OBJECT_CLASS":
+        invoke_federate_callback(
+            ambassador,
+            "startRegistrationForObjectClass",
+            ObjectClassHandle(int(parts[1])),
+        )
+        return
+    if kind == "STOP_REGISTRATION_FOR_OBJECT_CLASS":
+        invoke_federate_callback(
+            ambassador,
+            "stopRegistrationForObjectClass",
+            ObjectClassHandle(int(parts[1])),
+        )
+        return
+    if kind == "TURN_INTERACTIONS_ON":
+        invoke_federate_callback(
+            ambassador,
+            "turnInteractionsOn",
+            InteractionClassHandle(int(parts[1])),
+        )
+        return
+    if kind == "TURN_INTERACTIONS_OFF":
+        invoke_federate_callback(
+            ambassador,
+            "turnInteractionsOff",
+            InteractionClassHandle(int(parts[1])),
+        )
+        return
+    if kind == "REMOVE_OBJECT_INSTANCE":
+        if len(parts) >= 5:
+            invoke_federate_callback(
+                ambassador,
+                "removeObjectInstance",
+                ObjectInstanceHandle(int(parts[1])),
+                decode_bytes(parts[2]),
+                decode_order(parts[3]),
+                TransportationTypeHandle(int(parts[4])),
+            )
+            return
+            invoke_federate_callback(
+                ambassador,
+                "removeObjectInstance",
+                ObjectInstanceHandle(int(parts[1])),
+                decode_bytes(parts[2]),
+            )
         return
     if kind == "SYNC_POINT_REGISTRATION_SUCCEEDED":
         getattr(ambassador, "synchronizationPointRegistrationSucceeded")(parts[1])
