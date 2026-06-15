@@ -18,6 +18,10 @@ from tests.typed_json_models import VendorRunnerTemplateDriftOutput
 
 
 ROOT = Path(__file__).resolve().parents[2]
+CERTI_RUNTIME_JOB_IF = "${{ vars.HLA2010_CERTI_PATCHED_PREFIX != '' && vars.HLA2010_CERTI_PATCHED_BUILD_ROOT != '' }}"
+PITCH_RUNTIME_JOB_IF = "${{ vars.HLA2010_PITCH_HOME != '' && vars.HLA2010_PITCH_USER_HOME != '' }}"
+FULL_VENDOR_RUNTIME_JOB_IF = "${{ vars.HLA2010_CERTI_PATCHED_PREFIX != '' && vars.HLA2010_CERTI_PATCHED_BUILD_ROOT != '' && vars.HLA2010_CERTI_UPSTREAM_PREFIX != '' && vars.HLA2010_CERTI_UPSTREAM_BUILD_ROOT != '' && vars.HLA2010_PITCH_HOME != '' && vars.HLA2010_PITCH_USER_HOME != '' }}"
+VENDOR_SMOKE_JOB_IF = "${{ vars.HLA2010_CERTI_PATCHED_PREFIX != '' && vars.HLA2010_CERTI_PATCHED_BUILD_ROOT != '' && vars.HLA2010_PITCH_HOME != '' && vars.HLA2010_PITCH_USER_HOME != '' }}"
 
 
 def test_vendor_runner_template_matches_validator_and_workflows() -> None:
@@ -64,6 +68,7 @@ def test_vendor_runtime_smoke_workflow_fans_out_explicit_probe_profiles() -> Non
     payload = yaml.safe_load(workflow_path.read_text(encoding="utf-8"))
 
     job = payload["jobs"]["vendor-runtime-smoke"]
+    assert job["if"] == VENDOR_SMOKE_JOB_IF
     assert job["strategy"]["matrix"]["include"] == [
         {"name": "all", "command": "./scripts/ci/vendor_green.sh all", "ci_profile": "all"},
         {"name": "certi-save-restore-probe", "command": "./tools/certi-easy save-restore-probe", "ci_profile": "certi"},
@@ -91,7 +96,12 @@ def test_ci_workflow_has_repeated_probe_stability_job() -> None:
     workflow_path = ROOT / ".github" / "workflows" / "ci.yml"
     payload = yaml.safe_load(workflow_path.read_text(encoding="utf-8"))
 
+    assert payload["jobs"]["certi-runtime-required"]["if"] == CERTI_RUNTIME_JOB_IF
+    assert payload["jobs"]["pitch-runtime-required"]["if"] == PITCH_RUNTIME_JOB_IF
+    assert payload["jobs"]["real-profile-matrix-required"]["if"] == FULL_VENDOR_RUNTIME_JOB_IF
+    assert payload["jobs"]["vendor-edge-matrix-required"]["if"] == FULL_VENDOR_RUNTIME_JOB_IF
     job = payload["jobs"]["vendor-probe-stability-required"]
+    assert job["if"] == FULL_VENDOR_RUNTIME_JOB_IF
     assert job["strategy"]["matrix"]["include"] == [
         {"name": "certi-save-restore-probe", "command": "./tools/certi-easy save-restore-review 5"},
         {"name": "certi-ddm-probe", "command": "./tools/certi-easy ddm-review 5"},

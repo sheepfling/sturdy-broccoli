@@ -5,6 +5,7 @@ on:
 
 jobs:
   vendor-runtime-smoke:
+    if: ${{ vars.HLA2010_CERTI_PATCHED_PREFIX != '' && vars.HLA2010_CERTI_PATCHED_BUILD_ROOT != '' && vars.HLA2010_PITCH_HOME != '' && vars.HLA2010_PITCH_USER_HOME != '' }}
     runs-on: macos-latest
     strategy:
       fail-fast: false

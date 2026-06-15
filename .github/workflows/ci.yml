@@ -145,6 +145,7 @@ jobs:
           retention-days: 14
 
   certi-runtime-required:
+    if: ${{ vars.HLA2010_CERTI_PATCHED_PREFIX != '' && vars.HLA2010_CERTI_PATCHED_BUILD_ROOT != '' }}
     runs-on: macos-latest
     env:
       HLA2010_ENABLE_REAL_RTI_SMOKE: "1"
@@ -189,6 +190,7 @@ jobs:
           retention-days: 14
 
   pitch-runtime-required:
+    if: ${{ vars.HLA2010_PITCH_HOME != '' && vars.HLA2010_PITCH_USER_HOME != '' }}
     runs-on: macos-latest
     env:
       HLA2010_ENABLE_REAL_RTI_SMOKE: "1"
@@ -231,6 +233,7 @@ jobs:
           retention-days: 14
 
   real-profile-matrix-required:
+    if: ${{ vars.HLA2010_CERTI_PATCHED_PREFIX != '' && vars.HLA2010_CERTI_PATCHED_BUILD_ROOT != '' && vars.HLA2010_CERTI_UPSTREAM_PREFIX != '' && vars.HLA2010_CERTI_UPSTREAM_BUILD_ROOT != '' && vars.HLA2010_PITCH_HOME != '' && vars.HLA2010_PITCH_USER_HOME != '' }}
     runs-on: macos-latest
     env:
       HLA2010_ENABLE_REAL_RTI_SMOKE: "1"
@@ -279,6 +282,7 @@ jobs:
           retention-days: 14
 
   vendor-edge-matrix-required:
+    if: ${{ vars.HLA2010_CERTI_PATCHED_PREFIX != '' && vars.HLA2010_CERTI_PATCHED_BUILD_ROOT != '' && vars.HLA2010_CERTI_UPSTREAM_PREFIX != '' && vars.HLA2010_CERTI_UPSTREAM_BUILD_ROOT != '' && vars.HLA2010_PITCH_HOME != '' && vars.HLA2010_PITCH_USER_HOME != '' }}
     runs-on: macos-latest
     strategy:
       fail-fast: false
@@ -329,6 +333,7 @@ jobs:
           retention-days: 14
 
   vendor-probe-stability-required:
+    if: ${{ vars.HLA2010_CERTI_PATCHED_PREFIX != '' && vars.HLA2010_CERTI_PATCHED_BUILD_ROOT != '' && vars.HLA2010_CERTI_UPSTREAM_PREFIX != '' && vars.HLA2010_CERTI_UPSTREAM_BUILD_ROOT != '' && vars.HLA2010_PITCH_HOME != '' && vars.HLA2010_PITCH_USER_HOME != '' }}
     runs-on: macos-latest
     strategy:
       fail-fast: false
