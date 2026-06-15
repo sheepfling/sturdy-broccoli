@@ -1,10 +1,11 @@
 # Package Layout
 
-This page is the installable package-family map for the repo.
+This page is the canonical human-readable package hierarchy for the repo.
 
 Use this page for:
 
 - installable package-family roles
+- the package hierarchy at a glance
 - package-owned source roots
 - dependency direction between package families
 - deciding where backend, transport, verification, and leaf-package code belongs
@@ -29,6 +30,12 @@ For the stricter rule table about what may import what, use
 For the machine-derived installable package dependency graph, use
 [`package_dependency_tree.md`](package_dependency_tree.md).
 
+Use the three package docs this way:
+
+- [`package_layout.md`](package_layout.md): canonical human package hierarchy
+- [`package_dependency_tree.md`](package_dependency_tree.md): generated dependency evidence from package metadata
+- [`import_boundary_rules.md`](import_boundary_rules.md): architectural guardrails and forbidden dependency directions
+
 ## Front Door
 
 The repository root is tooling-only. The installable package root is
@@ -38,6 +45,9 @@ The repository root is tooling-only. The installable package root is
 - `packages/hla2010-spec/src/hla2010/` owns the public spec surface, shared HLA
   value types, FOM/MOM helpers needed by federates, and the temporary
   workspace facade `hla2010.rti`.
+- `packages/hla2010-spec/src/hla/` owns the neutral edition-qualified umbrella
+  namespace, with `hla.editions.ed2010` routing to the current 2010-edition
+  surface.
 - Concrete backend, transport, vendor, verification, and scenario
   implementations live in package-owned `packages/<name>/src/...` trees.
 
@@ -47,6 +57,53 @@ set.
 
 For packages whose split status is `implementation-moved`, the owning
 `pyproject.toml` should declare only package-owned `source_roots`.
+
+## Hierarchy At A Glance
+
+Read the package tree from top to bottom:
+
+```text
+hla2010-spec
+  -> shared support packages
+    -> backend families and transport families
+      -> verification and FOM/scenario leaf packages
+```
+
+That means:
+
+- `hla2010-spec` is the only architectural root package
+- shared support packages are the only place for cross-backend reusable helpers
+- backend packages own HLA service semantics for one backend family
+- transport packages own wire protocols and hosted adapters, not backend semantics
+- verification and FOM packages sit at the leaves and consume the lower layers
+
+## How To Read Package Names
+
+The package names are deliberate:
+
+- `hla2010-spec`: abstract/public HLA 2010 surface
+- `hla2010-rti-*`: RTI/runtime/backend/transport families
+- `hla2010-verification-*`: backend-neutral verification packages
+- `hla2010-fom-*`: concrete FOM resources and scenario packages
+
+Within `hla2010-rti-*`:
+
+- `*-backend-common`: backend-neutral adapter and plugin contract support
+- `*-runtime-common`: backend discovery and runtime process helpers
+- `*-transport-common`: transport-neutral hosted request helpers
+- `*-java-common`: Java bridge support shared by Java-backed backends
+- vendor packages such as `pitch-*`, `portico`, and `certi` own vendor/runtime specifics
+
+## Family Summary
+
+| Family | Purpose | May depend on | Must not own |
+| --- | --- | --- | --- |
+| `hla2010-spec` | abstract/public spec, shared HLA types, FOM/MOM helpers, narrow `hla2010.rti` facade | no internal packages | concrete backend logic, vendor runtime launch, hosted transport code |
+| shared support | reusable backend-neutral helpers | `hla2010-spec` plus lower shared layers only | one backend family’s service semantics |
+| backend families | one backend’s RTI behavior | `hla2010-spec` plus approved shared support | protocol ownership, generic cross-backend helpers |
+| transport families | one transport/wire family | `hla2010-spec` plus approved shared support | backend semantics |
+| verification harness | backend-neutral shared scenarios and proof helpers | `hla2010-spec`, backend/runtime support | vendor-owned runtime behavior |
+| FOM/scenario leaves | concrete resources, example helpers, reusable scenarios | `hla2010-spec`, verification/runtime helpers approved for leaves | concrete backend or vendor runtime code |
 
 ## Package Families
 
@@ -134,10 +191,7 @@ them, but reusable logic should not live under `examples/`.
 The intended direction is:
 
 ```text
-hla2010-spec
-  <- shared support packages
-  <- backend or transport families
-  <- verification or leaf packages
+hla2010-spec -> shared support -> backend or transport families -> verification or leaf packages
 ```
 
 More concretely:
@@ -162,6 +216,10 @@ Rules that must stay true:
 - leaf packages must not depend directly on concrete backend or vendor packages
 - Python and Java backend families stay separated except through approved shared
   support packages
+
+If you need the exact package-by-package dependency graph from current metadata,
+use [`package_dependency_tree.md`](package_dependency_tree.md). This page is
+the human ownership map; the generated tree is the machine-checked evidence.
 
 Import isolation for installable `packages/*` trees is enforced by
 [`tests/test_package_import_isolation.py`](../tests/test_package_import_isolation.py).

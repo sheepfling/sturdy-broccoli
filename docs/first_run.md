@@ -83,6 +83,7 @@ If the commands succeed:
 
 - `.venv` exists and is usable
 - the split packages import from the bootstrapped environment
+- the neutral edition-qualified namespace `hla.editions.ed2010` imports
 - the default `python` / `in-memory` factory selection resolves cleanly
 - the pure-Python RTI backend works
 - the packaged Target/Radar FOM and scenario helpers work

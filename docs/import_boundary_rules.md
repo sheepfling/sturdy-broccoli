@@ -2,6 +2,11 @@
 
 This repository now uses a strict layered package model.
 
+This page is the architectural guardrail companion to:
+
+- [`package_layout.md`](package_layout.md): canonical human package hierarchy
+- [`package_dependency_tree.md`](package_dependency_tree.md): generated dependency evidence from package metadata
+
 The installable root is `hla2010-spec`.
 
 The package-owned spec source root is `packages/hla2010-spec/src/hla2010/`.
@@ -27,6 +32,10 @@ Those are not the same thing. A backend is `python`, `certi`, `jpype`, or
 The practical rule is:
 
 `hla2010-spec -> shared support -> backend family or transport -> leaf package`
+
+Use [`package_layout.md`](package_layout.md) when the question is “where should
+this code live?” Use this page when the question is “is this dependency
+direction allowed?”
 
 Not:
 

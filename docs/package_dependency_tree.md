@@ -4,6 +4,11 @@ This page is generated from the machine-readable package graph at
 `packages/package_graph.yaml` and validated against the direct dependency
 metadata in `packages/*/pyproject.toml`.
 
+Use it as the evidence view, not the primary human ownership guide.
+
+- For the canonical human package hierarchy, read [`package_layout.md`](package_layout.md).
+- For the import/dependency guardrails, read [`import_boundary_rules.md`](import_boundary_rules.md).
+
 Regenerate it with:
 
 ```bash

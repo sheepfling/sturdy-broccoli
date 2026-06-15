@@ -3,10 +3,17 @@
 This repository is an unofficial IEEE 1516.1-2010 (2010 edition) HLA workspace centered on a
 clean Python spec surface plus pluggable RTI backends.
 
-The supported runtime front door is:
+The neutral namespace path is:
+
+- `hla.editions.ed2010` for the explicit 2010-edition surface
+
+The 2010 compatibility namespace remains:
 
 - `hla2010.spec` for the clean interface contract
 - `hla2010.runtime_api` for the Pythonic convenience layer
+
+The supported backend and scenario surfaces are:
+
 - `hla2010_rti_python` for the local in-memory RTI backend
 - `hla2010_rti_transport_grpc` for networked transport-hosted RTI routes
 - `hla2010_fom_target_radar.scenarios` for the Target/Radar example package
@@ -23,7 +30,10 @@ This root `README` owns only three jobs:
 It is not the full architecture catalog, backend inventory, or package-family
 map. Those live under `docs/` and `packages/`.
 
-`packages/hla2010-spec/src/hla2010/` is the package-owned root Python package for the abstract/core API plus the documented temporary compatibility facade `hla2010.rti`
+`packages/hla2010-spec/src/hla2010/` is the package-owned 2010 compatibility
+package for the abstract/core API plus the documented temporary compatibility
+facade `hla2010.rti`. `packages/hla2010-spec/src/hla/` owns the neutral
+edition-qualified umbrella namespace.
 
 ## Start Here
 
@@ -153,10 +163,12 @@ If you need vendor flows, stay on the `tools/` operator surface:
 
 ## What This Repo Is For
 
-The main import surface is `hla2010`, with the clean contract at
-`hla2010.spec`. The `packages/hla2010-spec/src/hla2010/` tree stays limited to
-the abstract/core API, backend-neutral types and contracts, FOM/MOM helpers,
-and the one documented temporary split-package facade `hla2010.rti`.
+The neutral import surface is `hla.editions.ed2010`, with the clean contract
+available at `hla.editions.ed2010.spec`. The legacy `hla2010` import surface
+remains the 2010 compatibility namespace. The
+`packages/hla2010-spec/src/hla2010/` tree stays limited to the abstract/core
+API, backend-neutral types and contracts, FOM/MOM helpers, and the one
+documented temporary split-package facade `hla2010.rti`.
 
 Concrete backend implementations now live in package-owned source trees such as:
 
@@ -168,7 +180,8 @@ Concrete backend implementations now live in package-owned source trees such as:
 
 Namespace policy:
 
-- `hla2010` is the supported runtime namespace
+- `hla.editions.ed2010` is the neutral edition-qualified runtime namespace
+- `hla2010` is the supported 2010 compatibility runtime namespace
 - `hla2010_verification_harness` is the only supported public verification namespace
 - `hla2010_fom_target_radar.scenarios` is public scenario/FOM surface
 - `hla2010.testing` is not public API and is intentionally removed

@@ -99,6 +99,8 @@ def test_first_run_examples_import_after_bootstrap(tmp_path: Path) -> None:
             str(fresh_root / ".venv" / "bin" / "python"),
             "-c",
             (
+                "import hla;"
+                "import hla.editions.ed2010;"
                 "import hla2010;"
                 "import hla2010.spec;"
                 "import hla2010_rti_backend_common;"

@@ -419,7 +419,8 @@
       "may_depend_on": [],
       "role": "core-spec",
       "source_roots": [
-        "packages/hla2010-spec/src/hla2010"
+        "packages/hla2010-spec/src/hla2010",
+        "packages/hla2010-spec/src/hla"
       ]
     },
     "hla2010-verification-harness": {

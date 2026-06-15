@@ -53,9 +53,9 @@ Reading maps and setup notes:
 
 - [documentation_hierarchy.md](documentation_hierarchy.md): canonical doc flow and hierarchy
 - [workspace_layout.md](workspace_layout.md): top-level workspace areas and ownership split
-- [package_layout.md](package_layout.md): package ownership map and front-door package roles
-- [package_dependency_tree.md](package_dependency_tree.md): machine-derived installable package dependency tree
-- [import_boundary_rules.md](import_boundary_rules.md): package-family import rules and transport-versus-backend boundaries
+- [package_layout.md](package_layout.md): canonical human package hierarchy, family roles, and ownership map
+- [package_dependency_tree.md](package_dependency_tree.md): machine-derived installable package dependency tree and layer evidence
+- [import_boundary_rules.md](import_boundary_rules.md): package-family dependency guardrails and transport-versus-backend boundaries
 - [python_api_spec.md](python_api_spec.md): clean Python spec package and runtime facade split
 - [callback_model_guide.md](callback_model_guide.md): evoked vs immediate callback behavior, tests, and implementation entry points
 - [verification/run_sequence.md](verification/run_sequence.md): full verification sequence and run order

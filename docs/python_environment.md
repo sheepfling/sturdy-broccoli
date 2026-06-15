@@ -39,6 +39,9 @@ If you want to check the machine and workspace before bootstrapping, run:
 That verifies Python, `.venv`, workspace imports, and optional backend
 prerequisites without trying to install anything.
 
+The bootstrapped workspace should import both the neutral edition-qualified
+surface `hla.editions.ed2010` and the 2010 compatibility namespace `hla2010`.
+
 ## What The Bootstrap Commands Do
 
 There are two normal entrypoints:

@@ -2,8 +2,14 @@
 
 Clean IEEE 1516.1-2010 Python spec package.
 
-This package is the public front door for the canonical runtime namespace from `hla2010` and the abstract HLA interface surface:
+This package is the public front door for the neutral edition-qualified
+namespace `hla.editions.ed2010` and the 2010 compatibility namespace
+`hla2010`.
 
+Primary imports:
+
+- `hla.editions.ed2010.spec` for the explicit 2010-edition contract layer
+- `hla.editions.ed2010.rti` for the explicit 2010-edition runtime facade
 - `hla2010.spec` for the clean contract layer
 - `hla2010.runtime_api` for the Pythonic runtime convenience layer
 - `hla2010.rti` only as the temporary workspace compatibility facade for

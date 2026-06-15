@@ -42,10 +42,10 @@ The intended reading order for a new contributor is:
 - [docs/requirements_traceability.md](requirements_traceability.md): broad traceability model and full-chain examples after the primary trace lane
 - [docs/package_dependency_tree.md](package_dependency_tree.md): machine-derived installable package dependency tree
 - [docs/architecture.md](architecture.md): package and module structure
-- [docs/package_layout.md](package_layout.md): installable package-family roles and import discipline
+- [docs/package_layout.md](package_layout.md): canonical human package hierarchy, family roles, and edit ownership
 - [docs/workspace_layout.md](workspace_layout.md): top-level workspace area ownership split
 - [docs/python_api_spec.md](python_api_spec.md): supported HLA-facing import surface
-- [docs/import_boundary_rules.md](import_boundary_rules.md): package-family dependency rules and transport/backend separation
+- [docs/import_boundary_rules.md](import_boundary_rules.md): package-family dependency guardrails and transport/backend separation
 - [docs/backend_route_inventory.md](backend_route_inventory.md): runtime/bridge/transport route inventory
 - [docs/backend_route_inventory_routes.md](backend_route_inventory_routes.md): backend route table
 - [docs/backend_route_inventory_baselines.md](backend_route_inventory_baselines.md): CERTI baseline attribution
