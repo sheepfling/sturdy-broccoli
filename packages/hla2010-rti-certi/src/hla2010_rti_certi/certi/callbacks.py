@@ -124,8 +124,35 @@ def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_
             decode_logical_time(time_type, parts[2]),
         )
         return
+    if kind == "PROVIDE_ATTRIBUTE_VALUE_UPDATE":
+        invoke_federate_callback(
+            ambassador,
+            "provideAttributeValueUpdate",
+            ObjectInstanceHandle(int(parts[1])),
+            decode_handle_set(parts[2], AttributeHandle, AttributeHandleSet),
+            decode_bytes(parts[3]),
+        )
+        return
     if kind == "REQUEST_RETRACTION":
         invoke_federate_callback(ambassador, "requestRetraction", MessageRetractionHandle(int(parts[1])))
+        return
+    if kind == "REMOVE_OBJECT_INSTANCE":
+        if len(parts) >= 5:
+            invoke_federate_callback(
+                ambassador,
+                "removeObjectInstance",
+                ObjectInstanceHandle(int(parts[1])),
+                decode_bytes(parts[2]),
+                decode_order(parts[3]),
+                TransportationTypeHandle(int(parts[4])),
+            )
+            return
+        invoke_federate_callback(
+            ambassador,
+            "removeObjectInstance",
+            ObjectInstanceHandle(int(parts[1])),
+            decode_bytes(parts[2]),
+        )
         return
     if kind == "SYNC_POINT_REGISTRATION_SUCCEEDED":
         invoke_federate_callback(ambassador, "synchronizationPointRegistrationSucceeded", parts[1])

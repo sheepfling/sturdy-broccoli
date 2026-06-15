@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 from hla2010_repo_internal.verification.vendor_probe_promotion_review import write_vendor_probe_promotion_review
+from tests.typed_json_models import VendorProbePromotionReviewSummary
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -94,20 +95,21 @@ def test_vendor_probe_promotion_review_reports_candidates(tmp_path: Path) -> Non
     )
     try:
         paths = write_vendor_probe_promotion_review(tmp_path)
-        payload = json.loads(paths.summary_json.read_text(encoding="utf-8"))
-        assert payload["suite_name"] == "vendor-probe-promotion-review"
-        assert payload["candidate_count"] == 2
-        rows = {row["profile"]: row for row in payload["profiles"]}
-        assert rows["certi-save-restore-probe"]["review_decision"] == "candidate-review"
-        assert "docs/backend_conformance_matrix.md" in rows["certi-save-restore-probe"]["next_action"]
-        assert rows["certi-ddm-probe"]["review_decision"] == "candidate-review"
-        assert "docs/backend_conformance_matrix.md" in rows["certi-ddm-probe"]["next_action"]
-        assert rows["pitch-negotiated-probe"]["gap_status"] == "bridge-divergent"
-        assert rows["pitch-negotiated-probe"]["review_decision"] == "blocked-by-documented-gap"
-        assert "bridge-divergent" in rows["pitch-negotiated-probe"]["next_action"]
-        assert rows["pitch-save-restore-probe"]["review_decision"] == "needs-more-runs"
-        assert rows["pitch-save-restore-probe"]["next_action"] == "./tools/pitch save-restore-review 5"
-        assert rows["pitch-ddm-probe"]["review_decision"] == "needs-more-runs"
+        payload = VendorProbePromotionReviewSummary.from_mapping(
+            json.loads(paths.summary_json.read_text(encoding="utf-8"))
+        )
+        assert payload.suite_name == "vendor-probe-promotion-review"
+        assert payload.candidate_count == 2
+        assert payload.profile_row("certi-save-restore-probe").review_decision == "candidate-review"
+        assert "docs/backend_conformance_matrix.md" in payload.profile_row("certi-save-restore-probe").next_action
+        assert payload.profile_row("certi-ddm-probe").review_decision == "candidate-review"
+        assert "docs/backend_conformance_matrix.md" in payload.profile_row("certi-ddm-probe").next_action
+        assert payload.profile_row("pitch-negotiated-probe").gap_status == "bridge-divergent"
+        assert payload.profile_row("pitch-negotiated-probe").review_decision == "blocked-by-documented-gap"
+        assert "bridge-divergent" in payload.profile_row("pitch-negotiated-probe").next_action
+        assert payload.profile_row("pitch-save-restore-probe").review_decision == "needs-more-runs"
+        assert payload.profile_row("pitch-save-restore-probe").next_action == "./tools/pitch save-restore-review 5"
+        assert payload.profile_row("pitch-ddm-probe").review_decision == "needs-more-runs"
         report = paths.report_markdown.read_text(encoding="utf-8")
         assert "Vendor Probe Promotion Review" in report
         assert "candidate-review" in report
@@ -141,6 +143,6 @@ def test_vendor_probe_promotion_review_script_bootstraps_source_checkout(tmp_pat
     assert result.returncode == 0, result.stderr
     summary_path = tmp_path / "review" / "vendor_probe_promotion_review_summary.json"
     assert summary_path.exists()
-    payload = json.loads(summary_path.read_text(encoding="utf-8"))
-    assert payload["suite_name"] == "vendor-probe-promotion-review"
-    assert "profiles" in payload
+    payload = VendorProbePromotionReviewSummary.from_mapping(json.loads(summary_path.read_text(encoding="utf-8")))
+    assert payload.suite_name == "vendor-probe-promotion-review"
+    assert isinstance(payload.profiles, tuple)

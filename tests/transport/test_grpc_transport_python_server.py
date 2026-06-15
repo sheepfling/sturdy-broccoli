@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from hla2010_rti_backend_common import RecordingFederateAmbassador
+from hla2010_rti_backend_common import BackendUnavailableError
 from hla2010_rti_transport_grpc.python_server import start_python_grpc_server
 from hla2010_rti_python import InMemoryRTIEngine
 from hla2010.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveFailureReason, SaveStatus
@@ -36,6 +37,16 @@ def _start_grpc_pair():
     left = create_rti_ambassador("certi", transport={"kind": "grpc", "target": left_server.target})
     right = create_rti_ambassador("certi", transport={"kind": "grpc", "target": right_server.target})
     return left_server, right_server, left, right
+
+
+def test_grpc_transport_host_reports_loopback_unavailable(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setattr(
+        "hla2010_rti_transport_grpc.python_server.reserve_tcp_port",
+        lambda host="127.0.0.1": (_ for _ in ()).throw(BackendUnavailableError(f"Local socket bind is not permitted for {host}")),
+    )
+
+    with pytest.raises(BackendUnavailableError, match="Local socket bind is not permitted"):
+        start_python_grpc_server(engine=InMemoryRTIEngine())
 
 
 def _exchange_time_profile(time_factory_name: str) -> dict[str, object]:

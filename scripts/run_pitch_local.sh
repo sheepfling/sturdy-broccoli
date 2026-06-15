@@ -82,7 +82,7 @@ resolve_install4j_user_home() {
   local real_home="$1"
   case "$real_home" in
     *" "*)
-      local link_root="${TMPDIR:-/private/tmp}/hla2010-pitch-user-home-links"
+      local link_root="${TMPDIR:-/tmp}/hla2010-pitch-user-home-links"
       mkdir -p "$link_root"
       local digest
       digest="$(printf '%s' "$real_home" | shasum | awk '{print $1}')"

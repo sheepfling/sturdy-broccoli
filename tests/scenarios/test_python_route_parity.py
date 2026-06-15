@@ -11,14 +11,25 @@ from hla2010.enums import OrderType, ResignAction
 from hla2010.time import HLAinteger64Interval, HLAinteger64Time
 from hla2010_verification_harness import (
     FederationLifecycleScenarioConfig,
+    NegotiatedOwnershipScenarioConfig,
     OwnershipScenarioConfig,
+    ReleaseRequestOwnershipScenarioConfig,
+    SynchronizationScenarioConfig,
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
     run_attribute_ownership_scenario,
+    run_attribute_ownership_unavailable_scenario,
     run_federation_lifecycle_scenario,
+    run_failed_federate_synchronization_scenario,
+    run_late_join_synchronization_scenario,
+    run_multiple_synchronization_points_scenario,
+    run_negotiated_attribute_ownership_scenario,
+    run_release_request_ownership_scenario,
+    run_synchronization_registration_failure_scenario,
+    run_synchronization_scenario,
     run_two_federate_exchange_scenario,
 )
-from tests.scenarios.python_route_parity_support import python_route_params, python_rti_pair, python_single_rti
+from tests.scenarios.python_route_parity_support import python_route_params, python_rti_pair, python_rti_triple, python_single_rti
 from tests.vendors.runtime_support import cleanup_federation
 
 
@@ -158,3 +169,322 @@ def test_python_route_parity_ownership(route) -> None:
             disconnect_rtis=(pair.right, pair.left),
         )
 
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_synchronization(route) -> None:
+    with python_rti_pair(route) as pair:
+        config = SynchronizationScenarioConfig(
+            federation_name=f"python-sync-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SyncFederate",
+            label="ReadyToRun",
+            tag=b"startup",
+        )
+
+        summary = run_synchronization_scenario(
+            pair.left,
+            pair.right,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["leader_registration"].args == ("ReadyToRun",)
+        assert summary["leader_announce"].args[:2] == ("ReadyToRun", b"startup")
+        assert summary["wing_announce"].args[:2] == ("ReadyToRun", b"startup")
+        assert summary["leader_sync"].args[0] == "ReadyToRun"
+        assert summary["wing_sync"].args[0] == "ReadyToRun"
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_synchronization_registration_failure(route) -> None:
+    with python_rti_pair(route) as pair:
+        config = SynchronizationScenarioConfig(
+            federation_name=f"python-sync-failure-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SyncFederate",
+            label="ReadyToRun",
+            tag=b"startup",
+        )
+
+        summary = run_synchronization_registration_failure_scenario(
+            pair.left,
+            pair.right,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["registration_success"].args == ("ReadyToRun",)
+        assert summary["registration_failure"].args[0] == "ReadyToRun"
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_failed_federate_synchronization(route) -> None:
+    with python_rti_pair(route) as pair:
+        config = SynchronizationScenarioConfig(
+            federation_name=f"python-sync-failed-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SyncFederate",
+            label="PreRun",
+            tag=b"startup",
+        )
+
+        summary = run_failed_federate_synchronization_scenario(
+            pair.left,
+            pair.right,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+            leader_success=True,
+            wing_success=False,
+        )
+
+        assert summary["leader_sync"].args[0] == "PreRun"
+        assert summary["wing_handle"] in summary["leader_sync"].args[1]
+        assert summary["leader_handle"] not in summary["leader_sync"].args[1]
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_late_join_synchronization(route) -> None:
+    with python_rti_triple(route) as trio:
+        config = SynchronizationScenarioConfig(
+            federation_name=f"python-sync-late-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            late_name="Late",
+            federate_type="SyncFederate",
+            label="ReadyToRun",
+            tag=b"startup",
+        )
+
+        summary = run_late_join_synchronization_scenario(
+            trio.left,
+            trio.middle,
+            trio.right,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+            late_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["late_announce"].args[:2] == ("ReadyToRun", b"startup")
+        assert summary["leader_sync"].args[0] == "ReadyToRun"
+        assert summary["wing_sync"].args[0] == "ReadyToRun"
+        assert summary["late_sync"].args[0] == "ReadyToRun"
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_multiple_synchronization_points(route) -> None:
+    with python_rti_pair(route) as pair:
+        config = SynchronizationScenarioConfig(
+            federation_name=f"python-sync-multi-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SyncFederate",
+            label="ReadyToRun",
+            tag=b"startup",
+            second_label="PreRun",
+            second_tag=b"prerun",
+        )
+
+        summary = run_multiple_synchronization_points_scenario(
+            pair.left,
+            pair.right,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+        )
+
+        assert {record.args[0] for record in summary["leader_announces"]} == {"ReadyToRun", "PreRun"}
+        assert {record.args[0] for record in summary["wing_announces"]} == {"ReadyToRun", "PreRun"}
+        assert summary["first_sync_leader"].args[0] == "ReadyToRun"
+        assert summary["first_sync_wing"].args[0] == "ReadyToRun"
+        assert summary["second_sync_leader"].args[0] == "PreRun"
+        assert summary["second_sync_wing"].args[0] == "PreRun"
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_negotiated_ownership(route) -> None:
+    with python_rti_pair(route) as pair:
+        config = NegotiatedOwnershipScenarioConfig(
+            federation_name=f"python-negotiated-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            owner_name="Owner",
+            acquirer_name="Acquirer",
+            federate_type="OwnershipFederate",
+            object_class_name="HLAobjectRoot.SmokeObject",
+            attribute_name="Payload",
+            object_instance_name=f"python-negotiated-{uuid.uuid4().hex[:8]}",
+            assumption_tag=b"assume-offer",
+            request_tag=b"acquire-request",
+            cancel_tag=b"reacquire-request",
+        )
+
+        summary = run_negotiated_attribute_ownership_scenario(
+            pair.left,
+            pair.right,
+            config=config,
+            owner_federate=RecordingFederateAmbassador(),
+            acquirer_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["negotiated_divestiture_supported"] is True
+        assert summary["assumption"] is not None
+        assert summary["release"].args == (
+            summary["release_object_instance"],
+            {summary["owner_attribute"]},
+            b"reacquire-request",
+        )
+        assert summary["cancellation"].args == (
+            summary["release_acquirer_object_instance"],
+            {summary["acquirer_attribute"]},
+        )
+        assert summary["divested"] == {summary["owner_attribute"]}
+        assert summary["acquired"].args[0] == summary["release_acquirer_object_instance"]
+        assert summary["acquired"].args[1] == {summary["acquirer_attribute"]}
+        assert summary["informed"].args[0] == summary["release_object_instance"]
+        assert summary["informed"].args[1] == summary["owner_attribute"]
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=pair.left,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((pair.right, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(pair.right, pair.left),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_release_request_ownership(route) -> None:
+    with python_rti_pair(route) as pair:
+        config = ReleaseRequestOwnershipScenarioConfig(
+            federation_name=f"python-release-request-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            owner_name="Owner",
+            acquirer_name="Acquirer",
+            federate_type="OwnershipFederate",
+            object_class_name="HLAobjectRoot.SmokeObject",
+            attribute_name="Payload",
+            object_instance_name=f"python-release-{uuid.uuid4().hex[:8]}",
+            request_tag=b"acquire-request",
+            owner_action="ifwanted",
+        )
+
+        summary = run_release_request_ownership_scenario(
+            pair.left,
+            pair.right,
+            config=config,
+            owner_federate=RecordingFederateAmbassador(),
+            acquirer_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["release"].args == (
+            summary["object_instance"],
+            {summary["owner_attribute"]},
+            b"acquire-request",
+        )
+        assert summary["divested"] == {summary["owner_attribute"]}
+        assert summary["acquired"].args[0] == summary["acquirer_object_instance"]
+        assert summary["acquired"].args[1] == {summary["acquirer_attribute"]}
+        assert summary["informed"].args[0] == summary["object_instance"]
+        assert summary["informed"].args[1] == summary["owner_attribute"]
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=pair.left,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((pair.right, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(pair.right, pair.left),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_release_request_denied(route) -> None:
+    with python_rti_pair(route) as pair:
+        config = ReleaseRequestOwnershipScenarioConfig(
+            federation_name=f"python-release-denied-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            owner_name="Owner",
+            acquirer_name="Acquirer",
+            federate_type="OwnershipFederate",
+            object_class_name="HLAobjectRoot.SmokeObject",
+            attribute_name="Payload",
+            object_instance_name=f"python-release-denied-{uuid.uuid4().hex[:8]}",
+            request_tag=b"deny-request",
+            owner_action="deny",
+        )
+
+        summary = run_release_request_ownership_scenario(
+            pair.left,
+            pair.right,
+            config=config,
+            owner_federate=RecordingFederateAmbassador(),
+            acquirer_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["release"].args == (
+            summary["object_instance"],
+            {summary["owner_attribute"]},
+            b"deny-request",
+        )
+        assert summary["acquired"] is None
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=pair.left,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((pair.right, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(pair.right, pair.left),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_ownership_unavailable(route) -> None:
+    with python_rti_pair(route) as pair:
+        config = OwnershipScenarioConfig(
+            federation_name=f"python-ownership-unavailable-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            owner_name="Owner",
+            acquirer_name="Acquirer",
+            federate_type="OwnershipFederate",
+            object_class_name="HLAobjectRoot.SmokeObject",
+            attribute_name="Payload",
+            object_instance_name=f"python-unavailable-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_attribute_ownership_unavailable_scenario(
+            pair.left,
+            pair.right,
+            config=config,
+            owner_federate=RecordingFederateAmbassador(),
+            acquirer_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["unavailable"].args[0] == summary["object_instance"]
+        assert summary["acquirer_attribute"] in summary["unavailable"].args[1]
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=pair.left,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((pair.right, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(pair.right, pair.left),
+        )

@@ -194,5 +194,5 @@
     }
   ],
   "suite_name": "vendor-runner-template-drift",
-  "template_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/docs/vendor_runner_provisioning_template.yaml"
+  "template_path": "docs/vendor_runner_provisioning_template.yaml"
 }

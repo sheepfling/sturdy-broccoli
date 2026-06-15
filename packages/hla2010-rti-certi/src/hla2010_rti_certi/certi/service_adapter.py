@@ -270,6 +270,20 @@ class CERTIBackend(RTIBackend):
                     handle_value_map_spec(update_args[1]),
                     encode_bytes(update_args[2]),
                 )
+            case "deleteObjectInstance":
+                delete_args = cast(tuple[Any, Any], args[:2])
+                return self._request_value("DELETE_OBJECT_INSTANCE", delete_args[0].value, encode_bytes(delete_args[1]))
+            case "requestAttributeValueUpdate":
+                request_args = cast(tuple[Any, Any, Any], args[:3])
+                command = "REQUEST_ATTRIBUTE_VALUE_UPDATE_OBJECT"
+                if isinstance(request_args[0], ObjectClassHandle):
+                    command = "REQUEST_ATTRIBUTE_VALUE_UPDATE_CLASS"
+                return self._request_value(
+                    command,
+                    request_args[0].value,
+                    handle_set_spec(request_args[1]),
+                    encode_bytes(request_args[2]),
+                )
             case "changeAttributeOrderType":
                 change_args = cast(tuple[Any, Any, Any], args[:3])
                 return self._request_value(

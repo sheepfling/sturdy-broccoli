@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from hla2010_fom_target_radar.scenarios.target_radar import TrackReport, Vec3, run_target_radar_scenario
+from .path_rendering import jsonable as _portable_jsonable
 from .target_radar_backend_matrix import _make_backend_factory, run_target_radar_backend_matrix
 
 
@@ -32,25 +33,15 @@ class TargetRadarProofPaths:
 
 
 def _jsonable(value: Any) -> Any:
-    if isinstance(value, (str, int, float, bool)) or value is None:
-        return value
     if isinstance(value, bytes):
         return value.hex()
-    if isinstance(value, Path):
-        return str(value)
     if isinstance(value, Vec3):
         return {"x": value.x, "y": value.y, "z": value.z}
     if isinstance(value, TrackReport):
         return value.as_dict()
-    if isinstance(value, Mapping):
-        return {str(_jsonable(key)): _jsonable(item) for key, item in value.items()}
-    if isinstance(value, (list, tuple)):
-        return [_jsonable(item) for item in value]
     if hasattr(value, "as_dict") and callable(value.as_dict):
         return _jsonable(value.as_dict())
-    if hasattr(value, "__dataclass_fields__"):
-        return {key: _jsonable(getattr(value, key)) for key in value.__dataclass_fields__}
-    return repr(value)
+    return _portable_jsonable(value)
 
 
 def _target_truth_rows(result: Any) -> list[dict[str, Any]]:

@@ -4,16 +4,63 @@ import json
 import os
 import subprocess
 import tomllib
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Callable
+
+import pytest
+from tests.typed_json_models import (
+    BackendDiscoveryOutput,
+    BootstrapDoctorOutput,
+    BootstrapPlanOutput,
+    ComplianceArtifactOutput,
+    PitchReproOutput,
+    RecordedProfile,
+    VendorParityArtifactsSummary,
+    VendorProbePromotionReviewSummary,
+    VendorRuntimeStatusSummary,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+@dataclass(frozen=True)
+class PreflightCase:
+    name: str
+    command: tuple[str, ...]
+    cwd_factory: Callable[[Path], Path]
+    artifact: str
+    tool: str
+
+
+@dataclass(frozen=True)
+class DelegateProfileCase:
+    name: str
+    command: tuple[str, ...]
+    profile: str
+    env_factory: Callable[[Path], dict[str, str]]
+
+
+@dataclass(frozen=True)
+class VerifyRouteCase:
+    name: str
+    command: tuple[str, ...]
+    cwd_factory: Callable[[Path], Path]
+    returncode: int | str
+    artifact: str
+    tool: str
+    runtime_summary: str
 
 
 def _workspace_pythonpath() -> str:
     data = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
     roots = data["tool"]["pytest"]["ini_options"]["pythonpath"]
     return os.pathsep.join(str(ROOT / root) for root in roots)
+
+
+def _portable_path_env() -> str:
+    return os.environ.get("PATH", os.defpath)
 
 
 def _base_env(tmp_path: Path) -> dict[str, str]:
@@ -29,7 +76,7 @@ def _base_env(tmp_path: Path) -> dict[str, str]:
     env["HLA2010_CERTI_UPSTREAM_PREFIX"] = str(tmp_path / "missing-certi-upstream-prefix")
     env["HLA2010_CERTI_UPSTREAM_BUILD_ROOT"] = str(tmp_path / "missing-certi-upstream-build")
     env["HLA2010_PITCH_HOME"] = str(tmp_path / "missing-pitch-home")
-    env["PATH"] = "/usr/bin:/bin"
+    env["PATH"] = _portable_path_env()
     return env
 
 
@@ -60,6 +107,36 @@ def _make_fake_pitch_home(path: Path) -> Path:
     (path / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin").mkdir(parents=True, exist_ok=True)
     (path / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin" / "java").write_text("", encoding="utf-8")
     return path
+
+
+def _run_tool(
+    cwd: Path,
+    *args: str,
+    env: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["bash", *args],
+        cwd=cwd,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
+def _load_json(path: Path) -> dict[str, object]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _assert_preflight_artifact(tmp_path: Path, filename: str, tool_name: str) -> None:
+    artifact_path = tmp_path / "preflight" / filename
+    assert artifact_path.exists()
+    assert _load_json(artifact_path)["tool"] == tool_name
+
+
+def _assert_recorded_profile(tmp_path: Path, expected_profile: str) -> None:
+    payload = RecordedProfile.from_mapping(_load_json(tmp_path / "record" / "profile.json"))
+    assert payload.profile == expected_profile
 
 
 def test_root_vendor_wrappers_removed_and_tools_wrappers_present() -> None:
@@ -236,8 +313,8 @@ def test_compliance_top_level_wrapper_generate_bootstraps_workspace_pythonpath(t
     assert result.returncode == 0, result.stderr
     summary_path = tmp_path / "analysis" / "compliance" / "requirements_matrix_2010.json"
     assert summary_path.exists()
-    payload = json.loads(summary_path.read_text(encoding="utf-8"))
-    assert payload["summary"]["row_count"] > 0
+    payload = ComplianceArtifactOutput.from_mapping(json.loads(summary_path.read_text(encoding="utf-8")))
+    assert payload.summary.row_count is not None and payload.summary.row_count > 0
 
 
 def test_compliance_top_level_wrapper_discover_refresh_bootstraps_workspace_pythonpath(tmp_path: Path) -> None:
@@ -263,9 +340,9 @@ def test_compliance_top_level_wrapper_discover_refresh_bootstraps_workspace_pyth
     )
 
     assert result.returncode == 0, result.stderr
-    payload = json.loads(result.stdout)
-    assert payload["catalog"]["summary"]["backend_count"] == 1
-    assert payload["catalog"]["backends"][0]["backend_id"] == "pitch-jpype"
+    payload = BackendDiscoveryOutput.from_mapping(json.loads(result.stdout))
+    assert payload.catalog.summary.backend_count == 1
+    assert payload.catalog.backends[0].backend_id == "pitch-jpype"
     assert (tmp_path / "analysis" / "compliance" / "requirements_matrix_2010.json").exists()
 
 
@@ -329,9 +406,9 @@ def test_vendor_state_top_level_wrapper_classify_bootstraps_source_checkout(tmp_
     )
 
     assert result.stdout.strip(), result.stderr
-    payload = json.loads(result.stdout)
-    assert result.returncode == int(payload["exit_code"])
-    assert payload["suite_name"] == "vendor-runtime-status"
+    payload = VendorRuntimeStatusSummary.from_mapping(json.loads(result.stdout))
+    assert result.returncode == int(payload.exit_code or 0)
+    assert payload.suite_name == "vendor-runtime-status"
     assert (tmp_path / "runtime-status" / "vendor_runtime_status_summary.json").exists()
 
 
@@ -352,8 +429,8 @@ def test_vendor_parity_script_bootstraps_source_checkout(tmp_path: Path) -> None
     assert result.returncode == 0, result.stderr
     summary_path = tmp_path / "analysis" / "vendor_parity_artifacts" / "vendor_parity_artifacts_summary.json"
     assert summary_path.exists()
-    payload = json.loads(summary_path.read_text(encoding="utf-8"))
-    assert payload["suite_name"] == "vendor-parity-artifacts"
+    payload = VendorParityArtifactsSummary.from_mapping(json.loads(summary_path.read_text(encoding="utf-8")))
+    assert payload.suite_name == "vendor-parity-artifacts"
 
 
 def test_generate_compliance_artifacts_script_bootstraps_source_checkout(tmp_path: Path) -> None:
@@ -373,8 +450,8 @@ def test_generate_compliance_artifacts_script_bootstraps_source_checkout(tmp_pat
     assert result.returncode == 0, result.stderr
     summary_path = tmp_path / "analysis" / "compliance" / "requirements_matrix_2010.json"
     assert summary_path.exists()
-    payload = json.loads(summary_path.read_text(encoding="utf-8"))
-    assert payload["summary"]["row_count"] > 0
+    payload = ComplianceArtifactOutput.from_mapping(json.loads(summary_path.read_text(encoding="utf-8")))
+    assert payload.summary.row_count is not None and payload.summary.row_count > 0
 
 
 def test_discover_backend_compliance_script_bootstraps_source_checkout(tmp_path: Path) -> None:
@@ -411,8 +488,8 @@ def test_discover_backend_compliance_script_bootstraps_source_checkout(tmp_path:
     )
 
     assert result.returncode == 0, result.stderr
-    payload = json.loads(result.stdout)
-    assert payload["catalog"]["summary"]["backend_count"] == 1
+    payload = BackendDiscoveryOutput.from_mapping(json.loads(result.stdout))
+    assert payload.catalog.summary.backend_count == 1
 
 
 def test_discover_backend_compliance_script_refresh_bootstraps_source_checkout(tmp_path: Path) -> None:
@@ -437,8 +514,8 @@ def test_discover_backend_compliance_script_refresh_bootstraps_source_checkout(t
     )
 
     assert result.returncode == 0, result.stderr
-    payload = json.loads(result.stdout)
-    assert payload["catalog"]["summary"]["backend_count"] == 1
+    payload = BackendDiscoveryOutput.from_mapping(json.loads(result.stdout))
+    assert payload.catalog.summary.backend_count == 1
     assert (tmp_path / "analysis" / "compliance" / "requirements_matrix_2010.json").exists()
 
 
@@ -464,13 +541,13 @@ def test_discover_backend_compliance_surfaces_portico_disposition_only_profiles(
     )
 
     assert result.returncode == 0, result.stderr
-    payload = json.loads(result.stdout)
-    assert payload["catalog"]["summary"]["backend_count"] == 1
-    backend = payload["catalog"]["backends"][0]
-    assert backend["backend_id"] == "portico-jpype"
-    assert backend["backend_family"] == "vendor-portico-java-bridge"
-    assert backend["matrices_present"] == ["requirement-disposition"]
-    assert backend["status_counts"]["classification-required"] > 0
+    payload = BackendDiscoveryOutput.from_mapping(json.loads(result.stdout))
+    assert payload.catalog.summary.backend_count == 1
+    backend = payload.catalog.backends[0]
+    assert backend.backend_id == "portico-jpype"
+    assert backend.backend_family == "vendor-portico-java-bridge"
+    assert backend.matrices_present == ("requirement-disposition",)
+    assert backend.status_counts["not-applicable"] > 0
 
 
 def test_vendor_probe_review_promotion_review_bootstraps_source_checkout(tmp_path: Path) -> None:
@@ -493,8 +570,8 @@ def test_vendor_probe_review_promotion_review_bootstraps_source_checkout(tmp_pat
     assert result.returncode == 0, result.stderr
     summary_path = tmp_path / "promotion-review" / "vendor_probe_promotion_review_summary.json"
     assert summary_path.exists()
-    payload = json.loads(summary_path.read_text(encoding="utf-8"))
-    assert payload["suite_name"] == "vendor-probe-promotion-review"
+    payload = VendorProbePromotionReviewSummary.from_mapping(json.loads(summary_path.read_text(encoding="utf-8")))
+    assert payload.suite_name == "vendor-probe-promotion-review"
 
 
 def test_bootstrap_top_level_wrapper_prints_help() -> None:
@@ -524,11 +601,11 @@ def test_bootstrap_top_level_wrapper_forwards_python_plan_json() -> None:
     )
 
     assert result.returncode == 0, result.stderr
-    payload = json.loads(result.stdout)
-    assert payload["extras"] == "test"
-    assert payload["profile"] == "core"
-    assert "packages/hla2010-spec" in payload["workspace_packages"]
-    assert "packages/hla2010-rti-python" in payload["workspace_packages"]
+    payload = BootstrapPlanOutput.from_mapping(json.loads(result.stdout))
+    assert payload.extras == "test"
+    assert payload.profile == "core"
+    assert "packages/hla2010-spec" in payload.workspace_packages
+    assert "packages/hla2010-rti-python" in payload.workspace_packages
 
 
 def test_bootstrap_top_level_wrapper_doctor_bootstraps_source_checkout(tmp_path: Path) -> None:
@@ -543,11 +620,10 @@ def test_bootstrap_top_level_wrapper_doctor_bootstraps_source_checkout(tmp_path:
     )
 
     assert result.stdout.strip(), result.stderr
-    payload = json.loads(result.stdout)
-    checks = {row["name"]: row for row in payload["checks"]}
-    assert payload["repo_root"] == str(tmp_path)
-    assert checks["repo_root"]["status"] == "fail"
-    assert payload["summary"] in {"fail", "warn"}
+    payload = BootstrapDoctorOutput.from_mapping(json.loads(result.stdout))
+    assert payload.repo_root == str(tmp_path)
+    assert payload.check("repo_root").status == "fail"
+    assert payload.summary in {"fail", "warn"}
 
 
 def test_test_top_level_wrapper_prints_help() -> None:
@@ -695,22 +771,26 @@ def _make_certi_runnable_env(tmp_path: Path) -> dict[str, str]:
     return env
 
 
-def test_certi_easy_top_level_wrapper_runs_preflight(tmp_path: Path) -> None:
-    env = _base_env(tmp_path)
-    result = subprocess.run(
-        ["bash", "./tools/certi-easy", "preflight"],
-        cwd=ROOT,
-        env=env,
-        capture_output=True,
-        text=True,
-        check=False,
+PREFLIGHT_CASES = [
+    PreflightCase("certi_in_repo", ("./tools/certi-easy", "preflight"), lambda tmp_path: ROOT, "certi-preflight.json", "certi-preflight"),
+    PreflightCase("certi_outside_repo", (str(ROOT / "tools" / "certi-easy"), "preflight"), lambda tmp_path: tmp_path, "certi-preflight.json", "certi-preflight"),
+    PreflightCase("pitch_in_repo", ("./tools/pitch", "preflight"), lambda tmp_path: ROOT, "pitch-preflight.json", "pitch-preflight"),
+    PreflightCase("pitch_outside_repo", (str(ROOT / "tools" / "pitch"), "preflight"), lambda tmp_path: tmp_path, "pitch-preflight.json", "pitch-preflight"),
+]
+
+
+@pytest.mark.parametrize("case", PREFLIGHT_CASES, ids=lambda case: case.name)
+def test_vendor_wrapper_preflight_routes_emit_expected_artifacts(
+    tmp_path: Path, case: PreflightCase
+) -> None:
+    result = _run_tool(
+        case.cwd_factory(tmp_path),
+        *case.command,
+        env=_base_env(tmp_path),
     )
 
     assert result.returncode != 0
-    artifact_path = tmp_path / "preflight" / "certi-preflight.json"
-    assert artifact_path.exists()
-    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
-    assert payload["tool"] == "certi-preflight"
+    _assert_preflight_artifact(tmp_path, case.artifact, case.tool)
 
 
 def test_certi_easy_top_level_wrapper_help_lists_best_effort_verify() -> None:
@@ -724,60 +804,6 @@ def test_certi_easy_top_level_wrapper_help_lists_best_effort_verify() -> None:
 
     assert result.returncode == 0
     assert "./tools/certi-easy verify-best-effort" in result.stdout
-
-
-def test_certi_easy_top_level_wrapper_preflight_is_reachable_from_outside_repo(tmp_path: Path) -> None:
-    env = _base_env(tmp_path)
-    result = subprocess.run(
-        ["bash", str(ROOT / "tools" / "certi-easy"), "preflight"],
-        cwd=tmp_path,
-        env=env,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-
-    assert result.returncode != 0
-    artifact_path = tmp_path / "preflight" / "certi-preflight.json"
-    assert artifact_path.exists()
-    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
-    assert payload["tool"] == "certi-preflight"
-
-
-def test_pitch_top_level_wrapper_runs_preflight(tmp_path: Path) -> None:
-    env = _base_env(tmp_path)
-    result = subprocess.run(
-        ["bash", "./tools/pitch", "preflight"],
-        cwd=ROOT,
-        env=env,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-
-    assert result.returncode != 0
-    artifact_path = tmp_path / "preflight" / "pitch-preflight.json"
-    assert artifact_path.exists()
-    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
-    assert payload["tool"] == "pitch-preflight"
-
-
-def test_pitch_top_level_wrapper_preflight_is_reachable_from_outside_repo(tmp_path: Path) -> None:
-    env = _base_env(tmp_path)
-    result = subprocess.run(
-        ["bash", str(ROOT / "tools" / "pitch"), "preflight"],
-        cwd=tmp_path,
-        env=env,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-
-    assert result.returncode != 0
-    artifact_path = tmp_path / "preflight" / "pitch-preflight.json"
-    assert artifact_path.exists()
-    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
-    assert payload["tool"] == "pitch-preflight"
 
 
 def test_pitch_top_level_wrapper_help_lists_best_effort_routes() -> None:
@@ -815,10 +841,10 @@ def test_pitch_top_level_wrapper_crc_macos_repro_is_reachable_from_outside_repo(
     )
 
     assert result.returncode == 0, result.stderr
-    payload = json.loads(result.stdout)
-    assert payload["pitch_home"] == str(pitch_home)
-    assert payload["launcher_mode"] == "raw"
-    assert "opened_8989" in payload
+    payload = PitchReproOutput.from_mapping(json.loads(result.stdout))
+    assert payload.pitch_home == str(pitch_home)
+    assert payload.launcher_mode == "raw"
+    assert payload.has_key("opened_8989")
 
 
 def test_pitch_top_level_wrapper_crc_docker_repro_is_reachable_from_outside_repo(tmp_path: Path) -> None:
@@ -840,196 +866,58 @@ def test_pitch_top_level_wrapper_crc_docker_repro_is_reachable_from_outside_repo
     )
 
     assert result.returncode == 0, result.stderr
-    payload = json.loads(result.stdout)
-    assert payload["pitch_home"] == str(pitch_home)
-    assert "docker_info_exit_code" in payload
-    assert "opened_8989" in payload
+    payload = PitchReproOutput.from_mapping(json.loads(result.stdout))
+    assert payload.pitch_home == str(pitch_home)
+    assert payload.has_key("docker_info_exit_code")
+    assert payload.has_key("opened_8989")
 
 
-def test_certi_easy_top_level_wrapper_runs_smoke_compare(tmp_path: Path) -> None:
+DELEGATE_PROFILE_CASES = [
+    DelegateProfileCase("certi_smoke_compare", ("./tools/certi-easy", "smoke", "compare"), "certi-compare", _make_certi_runnable_env),
+    DelegateProfileCase("pitch_smoke", ("./tools/pitch", "smoke"), "pitch-smoke", _base_env),
+    DelegateProfileCase("certi_ddm", ("./tools/certi-easy", "ddm"), "certi-ddm", _base_env),
+    DelegateProfileCase("pitch_negotiated_probe", ("./tools/pitch", "negotiated-probe"), "pitch-negotiated-probe", _base_env),
+]
+
+
+@pytest.mark.parametrize("case", DELEGATE_PROFILE_CASES, ids=lambda case: case.name)
+def test_vendor_wrappers_route_delegate_profiles(
+    tmp_path: Path, case: DelegateProfileCase
+) -> None:
     delegate = tmp_path / "vendor_green_delegate.py"
     _write_vendor_green_delegate(delegate)
-    env = _make_certi_runnable_env(tmp_path)
+    env = case.env_factory(tmp_path)
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
 
-    result = subprocess.run(
-        ["bash", "./tools/certi-easy", "smoke", "compare"],
-        cwd=ROOT,
-        env=env,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+    result = _run_tool(ROOT, *case.command, env=env)
 
     assert result.returncode == 0
-    payload = json.loads((tmp_path / "record" / "profile.json").read_text(encoding="utf-8"))
-    assert payload["profile"] == "certi-compare"
+    _assert_recorded_profile(tmp_path, case.profile)
 
 
-def test_certi_easy_top_level_wrapper_runs_verify_best_effort(tmp_path: Path) -> None:
-    env = _base_env(tmp_path)
+BEST_EFFORT_AND_VERIFY_CASES = [
+    VerifyRouteCase("certi_verify_best_effort_in_repo", ("./tools/certi-easy", "verify-best-effort"), lambda tmp_path: ROOT, 0, "certi-preflight.json", "certi-preflight", "runtime-status/vendor_green_certi_compare/vendor_runtime_status_summary.json"),
+    VerifyRouteCase("certi_verify_best_effort_outside_repo", (str(ROOT / "tools" / "certi-easy"), "verify-best-effort"), lambda tmp_path: tmp_path, 0, "certi-preflight.json", "certi-preflight", "runtime-status/vendor_green_certi_compare/vendor_runtime_status_summary.json"),
+    VerifyRouteCase("pitch_verify_best_effort_in_repo", ("./tools/pitch", "verify-best-effort"), lambda tmp_path: ROOT, 0, "pitch-preflight.json", "pitch-preflight", "runtime-status/vendor_green_pitch_verify/vendor_runtime_status_summary.json"),
+    VerifyRouteCase("pitch_verify_best_effort_outside_repo", (str(ROOT / "tools" / "pitch"), "verify-best-effort"), lambda tmp_path: tmp_path, 0, "pitch-preflight.json", "pitch-preflight", "runtime-status/vendor_green_pitch_verify/vendor_runtime_status_summary.json"),
+    VerifyRouteCase("pitch_verify_outside_repo", (str(ROOT / "tools" / "pitch"), "verify"), lambda tmp_path: tmp_path, "nonzero", "pitch-preflight.json", "pitch-preflight", "runtime-status/vendor_green_pitch_verify/vendor_runtime_status_summary.json"),
+]
 
-    result = subprocess.run(
-        ["bash", "./tools/certi-easy", "verify-best-effort"],
-        cwd=ROOT,
-        env=env,
-        capture_output=True,
-        text=True,
-        check=False,
+
+@pytest.mark.parametrize("case", BEST_EFFORT_AND_VERIFY_CASES, ids=lambda case: case.name)
+def test_vendor_wrapper_verify_routes_emit_runtime_status(
+    tmp_path: Path, case: VerifyRouteCase
+) -> None:
+    result = _run_tool(
+        case.cwd_factory(tmp_path),
+        *case.command,
+        env=_base_env(tmp_path),
     )
 
-    assert result.returncode == 0
-    artifact_path = tmp_path / "preflight" / "certi-preflight.json"
-    assert artifact_path.exists()
-    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
-    assert payload["tool"] == "certi-preflight"
-    runtime_summary = tmp_path / "runtime-status" / "vendor_green_certi_compare" / "vendor_runtime_status_summary.json"
-    assert runtime_summary.exists()
-
-
-def test_certi_easy_top_level_wrapper_verify_best_effort_is_reachable_from_outside_repo(tmp_path: Path) -> None:
-    env = _base_env(tmp_path)
-
-    result = subprocess.run(
-        ["bash", str(ROOT / "tools" / "certi-easy"), "verify-best-effort"],
-        cwd=tmp_path,
-        env=env,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-
-    assert result.returncode == 0
-    artifact_path = tmp_path / "preflight" / "certi-preflight.json"
-    assert artifact_path.exists()
-    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
-    assert payload["tool"] == "certi-preflight"
-    runtime_summary = tmp_path / "runtime-status" / "vendor_green_certi_compare" / "vendor_runtime_status_summary.json"
-    assert runtime_summary.exists()
-
-
-def test_pitch_top_level_wrapper_runs_smoke(tmp_path: Path) -> None:
-    delegate = tmp_path / "vendor_green_delegate.py"
-    _write_vendor_green_delegate(delegate)
-    env = _base_env(tmp_path)
-    env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
-    env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
-
-    result = subprocess.run(
-        ["bash", "./tools/pitch", "smoke"],
-        cwd=ROOT,
-        env=env,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-
-    assert result.returncode == 0
-    payload = json.loads((tmp_path / "record" / "profile.json").read_text(encoding="utf-8"))
-    assert payload["profile"] == "pitch-smoke"
-
-
-def test_pitch_top_level_wrapper_runs_verify_best_effort(tmp_path: Path) -> None:
-    env = _base_env(tmp_path)
-
-    result = subprocess.run(
-        ["bash", "./tools/pitch", "verify-best-effort"],
-        cwd=ROOT,
-        env=env,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-
-    assert result.returncode == 0
-    artifact_path = tmp_path / "preflight" / "pitch-preflight.json"
-    assert artifact_path.exists()
-    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
-    assert payload["tool"] == "pitch-preflight"
-    runtime_summary = tmp_path / "runtime-status" / "vendor_green_pitch_verify" / "vendor_runtime_status_summary.json"
-    assert runtime_summary.exists()
-
-
-def test_pitch_top_level_wrapper_verify_best_effort_is_reachable_from_outside_repo(tmp_path: Path) -> None:
-    env = _base_env(tmp_path)
-
-    result = subprocess.run(
-        ["bash", str(ROOT / "tools" / "pitch"), "verify-best-effort"],
-        cwd=tmp_path,
-        env=env,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-
-    assert result.returncode == 0
-    artifact_path = tmp_path / "preflight" / "pitch-preflight.json"
-    assert artifact_path.exists()
-    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
-    assert payload["tool"] == "pitch-preflight"
-    runtime_summary = tmp_path / "runtime-status" / "vendor_green_pitch_verify" / "vendor_runtime_status_summary.json"
-    assert runtime_summary.exists()
-
-
-def test_pitch_top_level_wrapper_verify_is_reachable_from_outside_repo(tmp_path: Path) -> None:
-    env = _base_env(tmp_path)
-
-    result = subprocess.run(
-        ["bash", str(ROOT / "tools" / "pitch"), "verify"],
-        cwd=tmp_path,
-        env=env,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-
-    assert result.returncode != 0
-    artifact_path = tmp_path / "preflight" / "pitch-preflight.json"
-    assert artifact_path.exists()
-    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
-    assert payload["tool"] == "pitch-preflight"
-    runtime_summary = tmp_path / "runtime-status" / "vendor_green_pitch_verify" / "vendor_runtime_status_summary.json"
-    assert runtime_summary.exists()
-
-
-def test_certi_easy_top_level_wrapper_runs_known_gap_route(tmp_path: Path) -> None:
-    delegate = tmp_path / "vendor_green_delegate.py"
-    _write_vendor_green_delegate(delegate)
-    env = _base_env(tmp_path)
-    env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
-    env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
-
-    result = subprocess.run(
-        ["bash", "./tools/certi-easy", "ddm"],
-        cwd=ROOT,
-        env=env,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-
-    assert result.returncode == 0
-    payload = json.loads((tmp_path / "record" / "profile.json").read_text(encoding="utf-8"))
-    assert payload["profile"] == "certi-ddm"
-
-
-def test_pitch_top_level_wrapper_runs_probe_route(tmp_path: Path) -> None:
-    delegate = tmp_path / "vendor_green_delegate.py"
-    _write_vendor_green_delegate(delegate)
-    env = _base_env(tmp_path)
-    env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
-    env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
-
-    result = subprocess.run(
-        ["bash", "./tools/pitch", "negotiated-probe"],
-        cwd=ROOT,
-        env=env,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-
-    assert result.returncode == 0
-    payload = json.loads((tmp_path / "record" / "profile.json").read_text(encoding="utf-8"))
-    assert payload["profile"] == "pitch-negotiated-probe"
+    if case.returncode == "nonzero":
+        assert result.returncode != 0
+    else:
+        assert result.returncode == case.returncode
+    _assert_preflight_artifact(tmp_path, case.artifact, case.tool)
+    assert (tmp_path / case.runtime_summary).exists()

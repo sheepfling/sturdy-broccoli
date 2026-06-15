@@ -12,6 +12,7 @@ if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
 seed_suite.sh: run the default CI quality gate locally.
 Evidence:
 - lint.sh
+- check_generated_compliance_artifacts.sh
 - test.sh
 - target_radar_backend_matrix.sh
 EOF
@@ -37,6 +38,7 @@ run_stage() {
 }
 
 run_stage lint "$ROOT_DIR/scripts/ci/lint.sh"
+run_stage generated_compliance_artifacts "$ROOT_DIR/scripts/ci/check_generated_compliance_artifacts.sh"
 run_stage test "$ROOT_DIR/scripts/ci/test.sh" "$@"
 if [[ "${HLA2010_SKIP_TARGET_RADAR_BACKEND_MATRIX:-0}" != "1" ]]; then
   run_stage target_radar_backend_matrix "$ROOT_DIR/scripts/ci/target_radar_backend_matrix.sh"

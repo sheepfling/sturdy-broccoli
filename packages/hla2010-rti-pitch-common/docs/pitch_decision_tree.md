@@ -10,6 +10,9 @@ Use it when you need to decide:
 - whether to use `jpype`, `py4j`, or Docker
 - what the known compliance quirks are
 
+The command front door is still `./tools/pitch`. This page helps choose that
+lane; it is not a parallel operator surface.
+
 ## Default Recommendation
 
 If you just want to run the certified Pitch path in the least painful way, use:

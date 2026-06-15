@@ -5,6 +5,8 @@ import os
 import subprocess
 from pathlib import Path
 
+from tests.typed_json_models import LabeledRecordedCall
+
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -53,11 +55,14 @@ def test_vendor_probe_review_runs_stability_review_and_parity_refresh(tmp_path: 
     )
 
     assert result.returncode == 0
-    payload = json.loads((tmp_path / "record.json").read_text(encoding="utf-8"))
+    payload = [
+        LabeledRecordedCall.from_mapping(row)
+        for row in json.loads((tmp_path / "record.json").read_text(encoding="utf-8"))
+    ]
     assert payload == [
-        {"label": "stability", "argv": ["pitch-negotiated-probe", "5"]},
-        {"label": "promotion", "argv": []},
-        {"label": "parity", "argv": []},
+        LabeledRecordedCall(label="stability", argv=("pitch-negotiated-probe", "5")),
+        LabeledRecordedCall(label="promotion", argv=()),
+        LabeledRecordedCall(label="parity", argv=()),
     ]
 
 

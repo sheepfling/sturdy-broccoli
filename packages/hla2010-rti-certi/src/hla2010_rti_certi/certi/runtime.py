@@ -65,7 +65,7 @@ def decode_logical_time(type_name: str, raw: Any) -> Any:
     if type_name == "HLAinteger64Time":
         if str(raw).lower() in {"inf", "+inf", "-inf"}:
             return HLAfloat64Time(float(raw))
-        return HLAinteger64Time(int(raw))
+        return HLAinteger64Time(int(float(raw)))
     if type_name == "HLAfloat64Time":
         return HLAfloat64Time(float(raw))
     raise RTIinternalError(f"Unsupported logical time type from transport: {type_name}")

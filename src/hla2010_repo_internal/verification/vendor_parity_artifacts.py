@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from .path_rendering import jsonable as _portable_jsonable
 from .vendor_gap_profiles import get_vendor_gap_profile
 from .vendor_runtime_status import build_vendor_runtime_status
 
@@ -209,15 +210,6 @@ _ARTIFACT_SPECS: tuple[dict[str, Any], ...] = (
     },
     {
         "vendor_family": "pitch",
-        "profile": "pitch-save-restore",
-        "artifact_kind": "gap-profile",
-        "role": "known gap profile",
-        "path": "analysis/vendor_gap_profiles/pitch-save-restore.json",
-        "required": False,
-        "note": "Optional machine-readable Pitch save/restore known-gap profile.",
-    },
-    {
-        "vendor_family": "pitch",
         "profile": "pitch-ddm",
         "artifact_kind": "gap-profile",
         "role": "known gap profile",
@@ -401,12 +393,6 @@ _PROFILE_COMMANDS: tuple[dict[str, str], ...] = (
     },
     {
         "vendor_family": "pitch",
-        "profile": "pitch-save-restore",
-        "command": "./tools/pitch save-restore",
-        "purpose": "Emit the current explicit Pitch save/restore known-gap status after preflight.",
-    },
-    {
-        "vendor_family": "pitch",
         "profile": "pitch-save-restore-probe",
         "command": "./tools/pitch save-restore-probe",
         "purpose": "Run the current narrow executable Pitch save/restore runtime probe after preflight.",
@@ -512,7 +498,6 @@ def _profile_evidence_tier(profile: str) -> str:
     if profile in {
         "certi-save-restore",
         "certi-ddm",
-        "pitch-save-restore",
         "pitch-ddm",
         "pitch-negotiated",
         "pitch-lost-federate",
@@ -534,17 +519,7 @@ def _profile_evidence_tier(profile: str) -> str:
 
 
 def _jsonable(value: Any) -> Any:
-    if isinstance(value, (str, int, float, bool)) or value is None:
-        return value
-    if isinstance(value, Path):
-        return str(value)
-    if isinstance(value, dict):
-        return {str(key): _jsonable(item) for key, item in value.items()}
-    if isinstance(value, (list, tuple)):
-        return [_jsonable(item) for item in value]
-    if hasattr(value, "__dataclass_fields__"):
-        return {key: _jsonable(getattr(value, key)) for key in value.__dataclass_fields__}
-    return repr(value)
+    return _portable_jsonable(value)
 
 
 def _build_rows() -> tuple[VendorParityArtifactRow, ...]:
@@ -690,7 +665,7 @@ def _build_summary(rows: tuple[VendorParityArtifactRow, ...]) -> dict[str, Any]:
     gap_profiles = {
         "certi-save-restore": _load_gap_profile(gap_profile_dir / "certi-save-restore.json"),
         "certi-ddm": _load_gap_profile(gap_profile_dir / "certi-ddm.json"),
-        "pitch-save-restore": _load_gap_profile(gap_profile_dir / "pitch-save-restore.json"),
+        "pitch-save-restore": None,
         "pitch-ddm": _load_gap_profile(gap_profile_dir / "pitch-ddm.json"),
         "pitch-negotiated": _load_gap_profile(gap_profile_dir / "pitch-negotiated.json"),
         "pitch-lost-federate": _load_gap_profile(gap_profile_dir / "pitch-lost-federate.json"),

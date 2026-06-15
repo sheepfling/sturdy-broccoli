@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from .path_rendering import jsonable as _portable_jsonable
+
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 BLOCKED_ENVIRONMENTS = frozenset(
@@ -26,17 +28,7 @@ class VendorRuntimeStatusPaths:
 
 
 def _jsonable(value: Any) -> Any:
-    if isinstance(value, (str, int, float, bool)) or value is None:
-        return value
-    if isinstance(value, Path):
-        return str(value)
-    if isinstance(value, dict):
-        return {str(key): _jsonable(item) for key, item in value.items()}
-    if isinstance(value, (list, tuple)):
-        return [_jsonable(item) for item in value]
-    if hasattr(value, "__dataclass_fields__"):
-        return {key: _jsonable(getattr(value, key)) for key in value.__dataclass_fields__}
-    return repr(value)
+    return _portable_jsonable(value)
 
 
 def _artifact_path(artifact_dir: Path, vendor: str) -> Path:
@@ -166,7 +158,7 @@ def _classify_vendor(vendor: str, snapshot: dict[str, Any] | None, lane: str, ar
 
     return {
         "vendor": vendor,
-        "artifact_path": str(artifact_path),
+        "artifact_path": _jsonable(artifact_path),
         "present": snapshot is not None,
         "tool": None if snapshot is None else snapshot.get("tool"),
         "environment": environment,
@@ -219,7 +211,7 @@ def build_vendor_runtime_status(
     return {
         "suite_name": "vendor-runtime-status",
         "lane": lane,
-        "artifact_dir": str(artifact_path),
+        "artifact_dir": _jsonable(artifact_path),
         "vendors": [_jsonable(row) for row in vendor_rows],
         "overall_classification": overall_classification,
         "ready_vendors": [row["vendor"] for row in vendor_rows if row["classification"] == "ready"],

@@ -1,7 +1,7 @@
 """Concrete in-memory Python RTI backend implementation."""
 from __future__ import annotations
 
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping, cast
 
 from hla2010 import mom as hla_mom
 from hla2010.enums import ResignAction
@@ -114,7 +114,7 @@ class PythonRTIBackend(
             else self.engine.fom_resolver
         )
         self.state = federate_state or self.engine.new_federate_state()
-        setattr(self.state, "backend", self)
+        self.state.backend = self
         self.delivered_callback_count = 0
         self.service_report_sink = (
             ServiceReportSink(self.config.service_report_file, truncate=self.config.service_report_file_truncate)
@@ -173,6 +173,7 @@ class PythonRTIBackend(
         service = PYTHON_RTI_SERVICE_HANDLERS.get(invocation.method_name)
         if service is None:
             raise UnsupportedBackendService(f"Python in-memory RTI does not yet implement {invocation.method_name}")
+        service = cast(Callable[..., Any], service)
         if invocation.method_name == "queryInteractionTransportationType" and len(invocation.args) == 1 and not invocation.kwargs:
             args = invocation.args
         else:

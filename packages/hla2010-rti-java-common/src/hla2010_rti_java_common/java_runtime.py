@@ -23,18 +23,20 @@ def _candidate_java_homes() -> list[Path]:
     except Exception:
         pass
 
-    try:
-        completed = subprocess.run(
-            ["/usr/libexec/java_home"],
-            capture_output=True,
-            check=False,
-            text=True,
-        )
-        output = completed.stdout.strip()
-        if completed.returncode == 0 and output:
-            candidates.append(Path(output))
-    except Exception:
-        pass
+    java_home_helper = Path("/usr/libexec/java_home")
+    if os.name == "posix" and java_home_helper.exists():
+        try:
+            completed = subprocess.run(
+                [str(java_home_helper)],
+                capture_output=True,
+                check=False,
+                text=True,
+            )
+            output = completed.stdout.strip()
+            if completed.returncode == 0 and output:
+                candidates.append(Path(output))
+        except Exception:
+            pass
 
     deduped: list[Path] = []
     seen: set[Path] = set()

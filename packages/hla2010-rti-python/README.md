@@ -29,6 +29,17 @@ package does not add a package-local command.
 Backend implementation layout, service registry, and trace commands are
 documented in [`../../docs/python_rti_backend.md`](../../docs/python_rti_backend.md).
 
+## Start Here
+
+Use this package when the question is "what does the reference Python RTI do?"
+rather than "what should the public API look like?"
+
+Shortest path:
+
+1. open `src/hla2010_rti_python/service_registry.py` to find the concrete service owner
+2. open the matching `*_public_services.py` or backend helper module
+3. run the focused backend tests before widening out to matrix or scenario docs
+
 ## Ownership Card
 
 - Edit here for: concrete Python RTI service behavior, backend-local helpers, callback delivery, stateful backend semantics
@@ -55,6 +66,10 @@ source .venv/bin/activate
 
 Then use the full environment guide at
 [`../../docs/python_environment.md`](../../docs/python_environment.md).
-If you are extending the example story, read
-[`../../docs/networked_rti_python.md`](../../docs/networked_rti_python.md)
-and [`../../packages/hla2010-fom-target-radar/README.md`](../../packages/hla2010-fom-target-radar/README.md).
+
+## Read Next
+
+1. [`../../docs/python_rti_edit_one_service.md`](../../docs/python_rti_edit_one_service.md)
+2. [`../../docs/python_rti_reading_map.md`](../../docs/python_rti_reading_map.md)
+3. [`../../docs/python_rti_backend.md`](../../docs/python_rti_backend.md)
+4. [`../hla2010-fom-target-radar/README.md`](../hla2010-fom-target-radar/README.md)

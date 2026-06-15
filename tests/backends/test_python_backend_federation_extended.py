@@ -32,7 +32,7 @@ def test_spec_references_link_services_to_clause_numbers():
     assert method_reference("createFederationExecution").section == "4.5"
     assert method_reference("publishObjectClassAttributes").section == "5.2"
     assert method_reference("time_advance_grant").section == "8.13"
-    assert "IEEE 1516.1-2010 §6.10" in method_label("update_attribute_values")
+    assert "IEEE 1516.1-2010 (2010 edition) §6.10" in method_label("update_attribute_values")
 
 
 def test_recording_federate_ambassador_records_callback_references():

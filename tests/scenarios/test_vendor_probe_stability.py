@@ -6,6 +6,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from tests.typed_json_models import RecordedArgvCall, RecordedProfileExitCode, VendorProbeStabilitySummary
+
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -82,17 +84,17 @@ def test_vendor_probe_stability_reports_repeated_probe_success(tmp_path: Path) -
     assert result.returncode == 0
     summary_path = tmp_path / "stability" / "pitch-negotiated-probe" / "vendor_probe_stability_summary.json"
     report_path = tmp_path / "stability" / "pitch-negotiated-probe" / "vendor_probe_stability_report.md"
-    payload = json.loads(summary_path.read_text(encoding="utf-8"))
-    assert payload["profile"] == "pitch-negotiated-probe"
-    assert payload["evidence_tier"] == "probe"
-    assert payload["command"] == "./tools/pitch negotiated-probe"
-    assert payload["executor_command"] == f"{stub} pitch-negotiated-probe"
-    assert payload["repeat_count"] == 3
-    assert payload["success_count"] == 3
-    assert payload["failure_count"] == 0
-    assert payload["stable"] is True
-    assert payload["promotion_readiness"] == "needs-more-runs"
-    assert len(payload["attempts"]) == 3
+    payload = VendorProbeStabilitySummary.from_mapping(json.loads(summary_path.read_text(encoding="utf-8")))
+    assert payload.profile == "pitch-negotiated-probe"
+    assert payload.evidence_tier == "probe"
+    assert payload.command == "./tools/pitch negotiated-probe"
+    assert payload.executor_command == f"{stub} pitch-negotiated-probe"
+    assert payload.repeat_count == 3
+    assert payload.success_count == 3
+    assert payload.failure_count == 0
+    assert payload.stable is True
+    assert payload.promotion_readiness == "needs-more-runs"
+    assert len(payload.attempts) == 3
     report_text = report_path.read_text(encoding="utf-8")
     assert "Vendor Probe Stability" in report_text
     assert "`stable`: `True`" not in report_text
@@ -100,11 +102,14 @@ def test_vendor_probe_stability_reports_repeated_probe_success(tmp_path: Path) -
     assert "- command: `./tools/pitch negotiated-probe`" in report_text
     assert f"- executor command: `{stub} pitch-negotiated-probe`" in report_text
     assert "- promotion readiness: `needs-more-runs`" in report_text
-    records = json.loads((tmp_path / "record.json").read_text(encoding="utf-8"))
+    records = [
+        RecordedProfileExitCode.from_mapping(row)
+        for row in json.loads((tmp_path / "record.json").read_text(encoding="utf-8"))
+    ]
     assert records == [
-        {"profile": "pitch-negotiated-probe", "exit_code": 0},
-        {"profile": "pitch-negotiated-probe", "exit_code": 0},
-        {"profile": "pitch-negotiated-probe", "exit_code": 0},
+        RecordedProfileExitCode(profile="pitch-negotiated-probe", exit_code=0),
+        RecordedProfileExitCode(profile="pitch-negotiated-probe", exit_code=0),
+        RecordedProfileExitCode(profile="pitch-negotiated-probe", exit_code=0),
     ]
 
 
@@ -129,16 +134,16 @@ def test_vendor_probe_stability_reports_failure_when_any_attempt_fails(tmp_path:
 
     assert result.returncode == 1
     summary_path = tmp_path / "stability" / "certi-ddm-probe" / "vendor_probe_stability_summary.json"
-    payload = json.loads(summary_path.read_text(encoding="utf-8"))
-    assert payload["profile"] == "certi-ddm-probe"
-    assert payload["evidence_tier"] == "probe"
-    assert payload["command"] == "./tools/certi-easy ddm-probe"
-    assert payload["executor_command"] == f"{stub} certi-ddm-probe"
-    assert payload["success_count"] == 2
-    assert payload["failure_count"] == 1
-    assert payload["stable"] is False
-    assert payload["promotion_readiness"] == "unstable"
-    assert payload["attempts"][1]["exit_code"] == 7
+    payload = VendorProbeStabilitySummary.from_mapping(json.loads(summary_path.read_text(encoding="utf-8")))
+    assert payload.profile == "certi-ddm-probe"
+    assert payload.evidence_tier == "probe"
+    assert payload.command == "./tools/certi-easy ddm-probe"
+    assert payload.executor_command == f"{stub} certi-ddm-probe"
+    assert payload.success_count == 2
+    assert payload.failure_count == 1
+    assert payload.stable is False
+    assert payload.promotion_readiness == "unstable"
+    assert payload.attempts[1].exit_code == 7
 
 
 def test_vendor_probe_stability_script_bootstraps_source_checkout(tmp_path: Path) -> None:
@@ -174,10 +179,10 @@ def test_vendor_probe_stability_script_bootstraps_source_checkout(tmp_path: Path
     assert result.returncode == 0, result.stderr
     summary_path = tmp_path / "stability" / "vendor_probe_stability_summary.json"
     assert summary_path.exists()
-    payload = json.loads(summary_path.read_text(encoding="utf-8"))
-    assert payload["profile"] == "pitch-negotiated-probe"
-    assert payload["command"] == "./tools/pitch negotiated-probe"
-    assert payload["success_count"] == 3
+    payload = VendorProbeStabilitySummary.from_mapping(json.loads(summary_path.read_text(encoding="utf-8")))
+    assert payload.profile == "pitch-negotiated-probe"
+    assert payload.command == "./tools/pitch negotiated-probe"
+    assert payload.success_count == 3
 
 
 def test_vendor_probe_stability_ci_validation_blocks_attempt_loop_on_invalid_runtime_state(tmp_path: Path) -> None:
@@ -208,8 +213,11 @@ def test_vendor_probe_stability_ci_validation_blocks_attempt_loop_on_invalid_run
 
     assert result.returncode == 1
     assert not (tmp_path / "record.json").exists()
-    records = json.loads((tmp_path / "ci-state-record.json").read_text(encoding="utf-8"))
-    assert records == [{"argv": ["--profile", "pitch", "--output-dir", str(tmp_path / "runtime-ci-state")]}]
+    records = [
+        RecordedArgvCall.from_mapping(row)
+        for row in json.loads((tmp_path / "ci-state-record.json").read_text(encoding="utf-8"))
+    ]
+    assert records == [RecordedArgvCall(argv=("--profile", "pitch", "--output-dir", str(tmp_path / "runtime-ci-state")))]
 
 
 def test_vendor_probe_stability_ci_validation_runs_once_before_repeated_attempts(tmp_path: Path) -> None:
@@ -239,7 +247,13 @@ def test_vendor_probe_stability_ci_validation_runs_once_before_repeated_attempts
     )
 
     assert result.returncode == 0
-    records = json.loads((tmp_path / "ci-state-record.json").read_text(encoding="utf-8"))
-    assert records == [{"argv": ["--profile", "certi", "--output-dir", str(tmp_path / "runtime-ci-state")]}]
-    probe_records = json.loads((tmp_path / "record.json").read_text(encoding="utf-8"))
+    records = [
+        RecordedArgvCall.from_mapping(row)
+        for row in json.loads((tmp_path / "ci-state-record.json").read_text(encoding="utf-8"))
+    ]
+    assert records == [RecordedArgvCall(argv=("--profile", "certi", "--output-dir", str(tmp_path / "runtime-ci-state")))]
+    probe_records = [
+        RecordedProfileExitCode.from_mapping(row)
+        for row in json.loads((tmp_path / "record.json").read_text(encoding="utf-8"))
+    ]
     assert len(probe_records) == 3

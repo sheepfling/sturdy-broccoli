@@ -12,24 +12,25 @@ from hla2010_repo_internal.verification.vendor_runner_template_drift import (
     build_vendor_runner_template_drift,
     write_vendor_runner_template_drift,
 )
+from tests.typed_json_models import VendorRunnerTemplateDriftOutput
 
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_vendor_runner_template_matches_validator_and_workflows() -> None:
-    summary = build_vendor_runner_template_drift()
+    summary = VendorRunnerTemplateDriftOutput.from_mapping(build_vendor_runner_template_drift())
 
-    assert summary["exit_code"] == 0
-    assert all(row["ok"] for row in summary["profiles"])
+    assert summary.exit_code == 0
+    assert all(row.ok for row in summary.profiles)
 
 
 def test_write_vendor_runner_template_drift_emits_artifacts(tmp_path: Path) -> None:
     paths = write_vendor_runner_template_drift(tmp_path)
 
-    payload = json.loads(paths.summary_json.read_text(encoding="utf-8"))
-    assert payload["suite_name"] == "vendor-runner-template-drift"
-    assert payload["exit_code"] == 0
+    payload = VendorRunnerTemplateDriftOutput.from_mapping(json.loads(paths.summary_json.read_text(encoding="utf-8")))
+    assert payload.suite_name == "vendor-runner-template-drift"
+    assert payload.exit_code == 0
     report = paths.report_markdown.read_text(encoding="utf-8")
     assert "Vendor Runner Template Drift" in report
     assert "certi" in report
@@ -52,8 +53,8 @@ def test_drift_script_bootstraps_source_checkout_and_prints_json(tmp_path: Path)
     )
 
     assert result.returncode == 0
-    payload = json.loads(result.stdout)
-    assert payload["exit_code"] == 0
+    payload = VendorRunnerTemplateDriftOutput.from_mapping(json.loads(result.stdout))
+    assert payload.exit_code == 0
 
 
 def test_vendor_runtime_smoke_workflow_fans_out_explicit_probe_profiles() -> None:

@@ -130,7 +130,8 @@ def _select_vendor_row(
         candidate_tokens = _normalize_title_tokens(candidate_title)
         overlap = len(target_tokens & candidate_tokens)
         substring_bonus = int(candidate_title.lower() in target_title.lower() or target_title.lower() in candidate_title.lower())
-        return (overlap, substring_bonus, len(candidate_tokens))
+        # Prefer the more specific candidate when token overlap ties.
+        return (overlap, substring_bonus, -len(candidate_tokens))
 
     return dict(max(candidates, key=_score))
 

@@ -2,14 +2,34 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
 
 from hla2010_repo_internal.verification.vendor_runtime_status import build_vendor_runtime_status, write_vendor_runtime_status
+from tests.typed_json_models import VendorRuntimeStatusSummary
 
 
 ROOT = Path(__file__).resolve().parents[2]
+HOST_ABSOLUTE_PATH_RE = re.compile(r"(/Users/|/private/tmp|/private/var/folders/|/var/folders/)")
+
+
+def _assert_no_host_paths(text: str) -> None:
+    assert not HOST_ABSOLUTE_PATH_RE.search(text), text
+
+
+def _sample_certi_marker(tmp_path: Path) -> dict[str, str]:
+    return {
+        "active_prefix": str(tmp_path / "certi" / "bin" / "rtig"),
+        "active_build_root": str(tmp_path / "certi-build" / "libRTI" / "ieee1516-2010"),
+    }
+
+
+def _sample_pitch_marker(tmp_path: Path) -> dict[str, str]:
+    return {
+        "runtime_home": str(tmp_path / "pitch" / "lib" / "prtifull.jar"),
+    }
 
 
 def _write_payload(path: Path, *, tool: str, environment: str, result: str, exit_code: int) -> None:
@@ -29,14 +49,9 @@ def _write_payload(path: Path, *, tool: str, environment: str, result: str, exit
         ],
     }
     if tool == "certi-preflight":
-        payload["required_markers"] = {
-            "active_prefix": "/tmp/certi/bin/rtig",
-            "active_build_root": "/tmp/certi-build/libRTI/ieee1516-2010",
-        }
+        payload["required_markers"] = _sample_certi_marker(path.parent)
     else:
-        payload["required_markers"] = {
-            "runtime_home": "/tmp/pitch/lib/prtifull.jar",
-        }
+        payload["required_markers"] = _sample_pitch_marker(path.parent)
         payload["ports"] = {
             "crc": {
                 "host": "127.0.0.1",
@@ -76,13 +91,15 @@ def test_repo_green_treats_blocked_environment_as_nonfatal(tmp_path: Path) -> No
         exit_code=1,
     )
 
-    summary = build_vendor_runtime_status(artifact_dir=artifact_dir, lane="repo-green")
+    summary = VendorRuntimeStatusSummary.from_mapping(
+        build_vendor_runtime_status(artifact_dir=artifact_dir, lane="repo-green")
+    )
 
-    assert summary["overall_classification"] == "repo-green"
-    assert summary["exit_code"] == 0
-    assert sorted(summary["blocked_vendors"]) == ["certi", "pitch"]
-    assert summary["recommended_next_steps"]["certi"] == ["./tools/certi-easy preflight"]
-    assert summary["recommended_next_steps"]["pitch"] == ["./tools/pitch preflight"]
+    assert summary.overall_classification == "repo-green"
+    assert summary.exit_code == 0
+    assert sorted(summary.blocked_vendors) == ["certi", "pitch"]
+    assert summary.recommended_next_steps["certi"] == ("./tools/certi-easy preflight",)
+    assert summary.recommended_next_steps["pitch"] == ("./tools/pitch preflight",)
 
 
 def test_vendor_green_fails_when_environment_is_blocked(tmp_path: Path) -> None:
@@ -102,18 +119,20 @@ def test_vendor_green_fails_when_environment_is_blocked(tmp_path: Path) -> None:
         exit_code=1,
     )
 
-    summary = build_vendor_runtime_status(artifact_dir=artifact_dir, lane="vendor-green")
+    summary = VendorRuntimeStatusSummary.from_mapping(
+        build_vendor_runtime_status(artifact_dir=artifact_dir, lane="vendor-green")
+    )
 
-    assert summary["overall_classification"] == "environment-blocked"
-    assert summary["exit_code"] == 1
-    assert summary["ready_vendors"] == ["certi"]
-    assert summary["blocked_vendors"] == ["pitch"]
-    pitch_row = summary["vendors"][1]
-    assert pitch_row["blocked_reason"] == "docker"
-    assert pitch_row["blocked_checks"][0]["name"] == "docker"
-    assert pitch_row["required_markers"]["runtime_home"].endswith("/lib/prtifull.jar")
-    assert pitch_row["required_ports"]["crc"]["port"] == 8989
-    assert pitch_row["next_steps"] == ["./tools/pitch preflight"]
+    assert summary.overall_classification == "environment-blocked"
+    assert summary.exit_code == 1
+    assert summary.ready_vendors == ("certi",)
+    assert summary.blocked_vendors == ("pitch",)
+    pitch_row = summary.vendors[1]
+    assert pitch_row.blocked_reason == "docker"
+    assert pitch_row.blocked_checks[0].name == "docker"
+    assert pitch_row.required_markers["runtime_home"].endswith("/lib/prtifull.jar")
+    assert pitch_row.required_ports["crc"].port == 8989
+    assert pitch_row.next_steps == ("./tools/pitch preflight",)
 
 
 def test_write_vendor_runtime_status_emits_summary_and_report(tmp_path: Path) -> None:
@@ -133,15 +152,20 @@ def test_write_vendor_runtime_status_emits_summary_and_report(tmp_path: Path) ->
         vendors=("certi",),
     )
 
-    summary = json.loads(paths.summary_json.read_text(encoding="utf-8"))
-    assert summary["overall_classification"] == "vendor-green"
-    assert summary["ready_vendors"] == ["certi"]
+    summary = VendorRuntimeStatusSummary.from_mapping(json.loads(paths.summary_json.read_text(encoding="utf-8")))
+    assert summary.overall_classification == "vendor-green"
+    assert summary.ready_vendors == ("certi",)
+    assert summary.artifact_dir.startswith("<tmp>/")
+    assert summary.vendors[0].artifact_path.startswith("<tmp>/")
+    assert summary.vendors[0].required_markers["active_prefix"].startswith("<tmp>/")
     report_text = paths.report_markdown.read_text(encoding="utf-8")
     assert "Vendor Runtime Status" in report_text
     assert "vendor-green" in report_text
     assert "certi" in report_text
     assert "Blocked Reason" in report_text
     assert "Required markers for `certi`" in report_text
+    _assert_no_host_paths(paths.summary_json.read_text(encoding="utf-8"))
+    _assert_no_host_paths(report_text)
 
 
 def test_script_returns_nonzero_for_vendor_green_blocked_environment(tmp_path: Path) -> None:
@@ -176,9 +200,9 @@ def test_script_returns_nonzero_for_vendor_green_blocked_environment(tmp_path: P
     )
 
     assert result.returncode == 1
-    payload = json.loads(result.stdout)
-    assert payload["overall_classification"] == "environment-blocked"
-    assert payload["blocked_vendors"] == ["pitch"]
+    payload = VendorRuntimeStatusSummary.from_mapping(json.loads(result.stdout))
+    assert payload.overall_classification == "environment-blocked"
+    assert payload.blocked_vendors == ("pitch",)
 
 
 def test_unexpected_preflight_failure_is_reported_with_blocked_check_details(tmp_path: Path) -> None:
@@ -201,12 +225,14 @@ def test_unexpected_preflight_failure_is_reported_with_blocked_check_details(tmp
     payload["next_steps"] = ["./tools/certi-easy install", "./tools/certi-easy preflight"]
     (artifact_dir / "certi-preflight.json").write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
-    summary = build_vendor_runtime_status(artifact_dir=artifact_dir, lane="vendor-green", vendors=("certi",))
+    summary = VendorRuntimeStatusSummary.from_mapping(
+        build_vendor_runtime_status(artifact_dir=artifact_dir, lane="vendor-green", vendors=("certi",))
+    )
 
-    assert summary["overall_classification"] == "unexpected-preflight-failure"
-    assert summary["unexpected_failure_vendors"] == ["certi"]
-    vendor = summary["vendors"][0]
-    assert vendor["blocked_reason"] == "active_prefix"
-    assert vendor["blocked_checks"][0]["message"] == "active_prefix: blocked: active CERTI install prefix missing"
-    assert vendor["required_markers"]["active_build_root"].endswith("/libRTI/ieee1516-2010")
-    assert vendor["next_steps"] == ["./tools/certi-easy install", "./tools/certi-easy preflight"]
+    assert summary.overall_classification == "unexpected-preflight-failure"
+    assert summary.unexpected_failure_vendors == ("certi",)
+    vendor = summary.vendors[0]
+    assert vendor.blocked_reason == "active_prefix"
+    assert vendor.blocked_checks[0].message == "active_prefix: blocked: active CERTI install prefix missing"
+    assert vendor.required_markers["active_build_root"].endswith("/libRTI/ieee1516-2010")
+    assert vendor.next_steps == ("./tools/certi-easy install", "./tools/certi-easy preflight")

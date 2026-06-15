@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import csv
 import inspect
-import json
 import subprocess
+from io import StringIO
 from pathlib import Path
 
 from hla2010.raw_api import API_METADATA
@@ -14,23 +14,22 @@ from hla2010_rti_python.service_registry import (
     PYTHON_RTI_SERVICE_HANDLERS,
     PYTHON_RTI_SERVICE_REGISTRY,
 )
+from tests.conftest import REPO_ROOT, load_traceability_json, read_repo_text
+from tests.typed_json_models import PythonRtiServiceMapRow
 
 
-ROOT = Path(__file__).resolve().parents[2]
-LEDGER_PATH = ROOT / "analysis" / "compliance" / "requirements_ledger.csv"
-MAP_JSON_PATH = ROOT / "analysis" / "traceability" / "python_rti_service_map.json"
+ROOT = REPO_ROOT
 
 
 def _ledger_rows() -> list[dict[str, str]]:
-    with LEDGER_PATH.open(encoding="utf-8", newline="") as handle:
-        return list(csv.DictReader(handle))
+    return list(csv.DictReader(StringIO(read_repo_text("analysis/compliance/requirements_ledger.csv"))))
 
 
-def _map_rows() -> list[dict[str, str]]:
-    payload = json.loads(MAP_JSON_PATH.read_text(encoding="utf-8"))
+def _map_rows() -> list[PythonRtiServiceMapRow]:
+    payload = load_traceability_json("python_rti_service_map.json")
     rows = payload.get("rows", [])
     assert isinstance(rows, list)
-    return rows  # type: ignore[return-value]
+    return [PythonRtiServiceMapRow.from_mapping(row) for row in rows if isinstance(row, dict)]
 
 
 def test_every_rti_method_has_a_registry_entry() -> None:
@@ -115,12 +114,12 @@ def test_trace_command_uses_registry_backed_implementation_path() -> None:
 
 
 def test_generated_service_map_rows_match_registry() -> None:
-    by_method = {row["hla_method"]: row for row in _map_rows()}
+    by_method = {row.hla_method: row for row in _map_rows()}
     assert set(by_method) == set(PYTHON_RTI_SERVICE_REGISTRY)
     for method_name, dotted_path in PYTHON_RTI_SERVICE_REGISTRY.items():
         row = by_method[method_name]
-        assert row["implementation_symbol"] == dotted_path
+        assert row.implementation_symbol == dotted_path
         target = PYTHON_RTI_SERVICE_HANDLERS[method_name]
         source_file = inspect.getsourcefile(target)
         assert source_file is not None
-        assert row["implementation_module"] == Path(source_file).resolve().relative_to(ROOT).as_posix()
+        assert row.implementation_module == Path(source_file).resolve().relative_to(ROOT).as_posix()

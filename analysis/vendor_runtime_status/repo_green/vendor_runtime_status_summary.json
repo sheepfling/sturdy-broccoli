@@ -1,112 +1,86 @@
 {
-  "artifact_dir": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts",
-  "blocked_vendors": [
-    "certi",
-    "pitch"
-  ],
+  "artifact_dir": "analysis/preflight_artifacts",
+  "blocked_vendors": [],
   "exit_code": 0,
   "lane": "repo-green",
   "missing_vendors": [],
   "overall_classification": "repo-green",
-  "ready_vendors": [],
+  "ready_vendors": [
+    "certi",
+    "pitch"
+  ],
   "recommended_next_steps": {
     "certi": [
-      "fix the blocked prerequisite above",
-      "./tools/certi-easy preflight"
+      "./tools/certi-easy smoke compare",
+      "HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q tests/vendors/test_certi_real_backend_exchange_matrix.py tests/vendors/test_certi_real_backend_time_matrix.py tests/vendors/test_certi_real_backend_ownership_matrix.py"
     ],
     "pitch": [
-      "fix the blocked prerequisite(s) above and rerun"
+      "./tools/pitch install or ./tools/pitch all"
     ]
   },
   "suite_name": "vendor-runtime-status",
   "unexpected_failure_vendors": [],
   "vendors": [
     {
-      "actionable": false,
-      "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/certi-preflight.json",
-      "blocked_checks": [
-        {
-          "detail": null,
-          "message": "loopback_bind: blocked: Local socket bind is not permitted for 127.0.0.1. Run `./tools/certi-easy preflight` to verify local CERTI prerequisites. Real RTI smoke needs loopback TCP bind/connect permission for 127.0.0.1.",
-          "name": "loopback_bind",
-          "status": null
-        }
-      ],
-      "blocked_reason": "loopback_bind",
-      "classification": "environment-blocked",
-      "environment": "loopback-blocked",
-      "exit_code": 1,
+      "actionable": true,
+      "artifact_path": "analysis/preflight_artifacts/certi-preflight.json",
+      "blocked_checks": [],
+      "blocked_reason": null,
+      "classification": "ready",
+      "environment": "loopback-ok",
+      "exit_code": 0,
       "lane_ok": true,
       "next_steps": [
-        "fix the blocked prerequisite above",
-        "./tools/certi-easy preflight"
+        "./tools/certi-easy smoke compare",
+        "HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q tests/vendors/test_certi_real_backend_exchange_matrix.py tests/vendors/test_certi_real_backend_time_matrix.py tests/vendors/test_certi_real_backend_ownership_matrix.py"
       ],
-      "note": "host/runtime prerequisites are blocked on this surface",
+      "note": "vendor runtime prerequisites are ready",
       "present": true,
       "required_markers": {
-        "active_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
-        "active_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
-        "patched_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
-        "patched_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
-        "upstream_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/build/libRTI/ieee1516-2010",
-        "upstream_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/install/bin/rtig"
+        "active_build_root": "<repo>/.local/certi/patched/build/libRTI/ieee1516-2010",
+        "active_prefix": "<repo>/.local/certi/patched/install/bin/rtig",
+        "patched_build_root": "<repo>/.local/certi/patched/build/libRTI/ieee1516-2010",
+        "patched_prefix": "<repo>/.local/certi/patched/install/bin/rtig",
+        "upstream_build_root": "<repo>/.local/certi/upstream/build/libRTI/ieee1516-2010",
+        "upstream_prefix": "<repo>/.local/certi/upstream/install/bin/rtig"
       },
       "required_ports": {},
-      "result": "real CERTI will skip",
+      "result": "real CERTI runnable",
       "tool": "certi-preflight",
       "vendor": "certi"
     },
     {
-      "actionable": false,
-      "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/pitch-preflight.json",
-      "blocked_checks": [
-        {
-          "detail": "blocked: Docker CLI exists but the daemon is not reachable",
-          "message": null,
-          "name": "docker",
-          "status": "blocked"
-        },
-        {
-          "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 1] Operation not permitted",
-          "message": null,
-          "name": "crc_port",
-          "status": "blocked"
-        },
-        {
-          "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 1] Operation not permitted",
-          "message": null,
-          "name": "fedpro_port",
-          "status": "blocked"
-        }
-      ],
-      "blocked_reason": "docker",
-      "classification": "environment-blocked",
-      "environment": "docker-blocked",
-      "exit_code": 1,
+      "actionable": true,
+      "artifact_path": "analysis/preflight_artifacts/pitch-preflight.json",
+      "blocked_checks": [],
+      "blocked_reason": null,
+      "classification": "ready",
+      "environment": "ready",
+      "exit_code": 0,
       "lane_ok": true,
       "next_steps": [
-        "fix the blocked prerequisite(s) above and rerun"
+        "./tools/pitch install or ./tools/pitch all"
       ],
-      "note": "host/runtime prerequisites are blocked on this surface",
+      "note": "vendor runtime prerequisites are ready",
       "present": true,
       "required_markers": {
-        "runtime_home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
+        "runtime_home": "third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
       },
       "required_ports": {
         "crc": {
-          "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 1] Operation not permitted",
+          "detail": "ok: 127.0.0.1:8989 is available",
           "host": "127.0.0.1",
           "port": 8989,
-          "status": "blocked"
+          "status": "ok"
         },
         "fedpro": {
-          "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 1] Operation not permitted",
+          "detail": "ok: 127.0.0.1:15164 is available",
           "host": "127.0.0.1",
           "port": 15164,
-          "status": "blocked"
+          "status": "ok"
         }
       },
-      "result": "not ready; fix the blocked prerequisite(s) above and rerun",
+      "result": "ready to run ./tools/pitch install or ./tools/pitch all",
       "tool": "pitch-preflight",
       "vendor": "pitch"
     }

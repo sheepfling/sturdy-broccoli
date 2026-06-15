@@ -128,7 +128,13 @@ class RTIAmbassadorLike(Protocol):
     def evoke_multiple_callbacks(self, *args: Any, **kwargs: Any) -> Any: ...
 
 
-RtiFactory = Callable[[str], RTIAmbassadorLike]
+class RoleBasedRtiFactory(Protocol):
+    def make_rti(self, role: str) -> RTIAmbassadorLike: ...
+
+    def close(self) -> None: ...
+
+
+RtiFactory = Callable[[str], RTIAmbassadorLike] | RoleBasedRtiFactory
 
 
 def encode_vec3(value: Vec3) -> bytes:
@@ -440,11 +446,20 @@ def _python_pair_factory() -> RtiFactory:
 
 
 def _call_factory(factory: RtiFactory, role: str) -> RTIAmbassadorLike:
+    maker = getattr(factory, "make_rti", None)
+    if callable(maker):
+        return maker(role)
     try:
         return factory(role)
     except TypeError:
         # Backward-friendly for zero-argument factories.
         return factory()  # type: ignore[misc]
+
+
+def _close_factory(factory: RtiFactory) -> None:
+    close = getattr(factory, "close", None)
+    if callable(close):
+        close()
 
 
 def _drain_callbacks(*rtis: Any, cycles: int = 8) -> None:
@@ -564,6 +579,7 @@ def run_target_radar_scenario(
             close = getattr(rti, "close", None)
             if callable(close):
                 close()
+            _close_factory(rti_factory)
 
     return result
 

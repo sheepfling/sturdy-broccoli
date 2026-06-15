@@ -2,9 +2,41 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 from pathlib import Path
 
 from hla2010_repo_internal.verification.vendor_parity_artifacts import write_vendor_parity_artifacts
+from tests.typed_json_models import (
+    VendorGapProfile,
+    VendorParityArtifactsFullSummary,
+    VendorProbePromotionReviewSummary,
+    VendorRuntimeStatusSummary,
+)
+
+HOST_ABSOLUTE_PATH_RE = re.compile(r"(/Users/|/private/tmp|/private/var/folders/|/var/folders/)")
+
+
+def _assert_no_host_paths(text: str) -> None:
+    assert not HOST_ABSOLUTE_PATH_RE.search(text), text
+
+
+def _assert_manifest_contains(rows: list[dict[str, str]], field: str, values: tuple[str, ...]) -> None:
+    actual = {row[field] for row in rows}
+    for value in values:
+        assert value in actual
+
+
+def _sample_certi_marker(base: Path) -> dict[str, str]:
+    return {
+        "active_prefix": str(base / "certi" / "bin" / "rtig"),
+        "active_build_root": str(base / "certi-build" / "libRTI" / "ieee1516-2010"),
+    }
+
+
+def _sample_pitch_marker(base: Path) -> dict[str, str]:
+    return {
+        "runtime_home": str(base / "pitch" / "lib" / "prtifull.jar"),
+    }
 
 
 def _write_preflight(path: Path, *, tool: str, environment: str, result: str, exit_code: int) -> None:
@@ -15,14 +47,9 @@ def _write_preflight(path: Path, *, tool: str, environment: str, result: str, ex
         "exit_code": exit_code,
     }
     if tool == "certi-preflight":
-        payload["required_markers"] = {
-            "active_prefix": "/tmp/certi/bin/rtig",
-            "active_build_root": "/tmp/certi-build/libRTI/ieee1516-2010",
-        }
+        payload["required_markers"] = _sample_certi_marker(path.parent)
     else:
-        payload["required_markers"] = {
-            "runtime_home": "/tmp/pitch/lib/prtifull.jar",
-        }
+        payload["required_markers"] = _sample_pitch_marker(path.parent)
         payload["ports"] = {
             "crc": {
                 "host": "127.0.0.1",
@@ -235,125 +262,151 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
     try:
         paths = write_vendor_parity_artifacts(tmp_path)
 
-        summary = json.loads(paths.summary_json.read_text())
-        assert summary["suite_name"] == "vendor-parity-artifacts"
-        assert summary["artifact_count"] >= 10
-        assert summary["missing_required_count"] == 0
-        assert any(profile["vendor_family"] == "certi" for profile in summary["profiles"])
-        assert any(profile["vendor_family"] == "pitch" for profile in summary["profiles"])
-        assert any(profile["evidence_tier"] == "promoted" for profile in summary["profiles"])
-        assert any(profile["evidence_tier"] == "known-gap" for profile in summary["profiles"])
-        assert any(command["command"] == "./tools/certi-easy smoke compare" for command in summary["profile_commands"])
-        assert any(command["command"] == "./tools/pitch negotiated-probe" and command["evidence_tier"] == "probe" for command in summary["profile_commands"])
-        assert any(command["command"] == "./tools/pitch negotiated" and command["evidence_tier"] == "known-gap" for command in summary["profile_commands"])
-        assert any(command["command"] == "./tools/pitch lost-federate-probe" and command["evidence_tier"] == "probe" for command in summary["profile_commands"])
-        assert any(command["command"] == "./tools/pitch lost-federate" and command["evidence_tier"] == "known-gap" for command in summary["profile_commands"])
-        assert any(command["command"] == "./tools/vendor-state classify --lane repo-green --json" for command in summary["profile_commands"])
-        assert "certi" in summary["preflight"]
-        assert "pitch" in summary["preflight"]
-        assert summary["runtime_status"]["repo_green"]["overall_classification"] == "repo-green"
-        assert summary["runtime_status"]["vendor_green"]["certi"]["overall_classification"] == "environment-blocked"
-        assert summary["runtime_status"]["vendor_green"]["pitch"]["overall_classification"] == "environment-blocked"
-        assert summary["gap_profiles"]["certi-save-restore"]["classification"] == "known-gap"
-        assert summary["gap_profiles"]["certi-save-restore"]["next_steps"] == [
+        summary = VendorParityArtifactsFullSummary.from_mapping(json.loads(paths.summary_json.read_text()))
+        assert summary.suite_name == "vendor-parity-artifacts"
+        assert summary.artifact_count is not None and summary.artifact_count >= 10
+        assert summary.missing_required_count == 0
+        assert any(profile.vendor_family == "certi" for profile in summary.profiles)
+        assert any(profile.vendor_family == "pitch" for profile in summary.profiles)
+        assert any(profile.evidence_tier == "promoted" for profile in summary.profiles)
+        assert any(profile.evidence_tier == "known-gap" for profile in summary.profiles)
+        assert any(command.command == "./tools/certi-easy smoke compare" for command in summary.profile_commands)
+        assert any(command.command == "./tools/pitch negotiated-probe" and command.evidence_tier == "probe" for command in summary.profile_commands)
+        assert any(command.command == "./tools/pitch negotiated" and command.evidence_tier == "known-gap" for command in summary.profile_commands)
+        assert any(command.command == "./tools/pitch lost-federate-probe" and command.evidence_tier == "probe" for command in summary.profile_commands)
+        assert any(command.command == "./tools/pitch lost-federate" and command.evidence_tier == "known-gap" for command in summary.profile_commands)
+        assert any(command.command == "./tools/vendor-state classify --lane repo-green --json" for command in summary.profile_commands)
+        assert "certi" in summary.preflight
+        assert "pitch" in summary.preflight
+        repo_green = VendorRuntimeStatusSummary.from_mapping(summary.runtime_status["repo_green"])
+        vendor_green_certi = VendorRuntimeStatusSummary.from_mapping(summary.runtime_status["vendor_green"]["certi"])
+        vendor_green_pitch = VendorRuntimeStatusSummary.from_mapping(summary.runtime_status["vendor_green"]["pitch"])
+        assert repo_green.overall_classification == "repo-green"
+        assert vendor_green_certi.overall_classification == "environment-blocked"
+        assert vendor_green_pitch.overall_classification == "environment-blocked"
+        certi_gap = summary.gap_profiles["certi-save-restore"]
+        assert certi_gap is not None
+        assert certi_gap.classification == "known-gap"
+        assert certi_gap.next_steps == (
             "./tools/certi-easy preflight",
             "./tools/certi-easy save-restore-probe",
             "./tools/certi-easy save-restore-review 5",
-        ]
-        assert summary["gap_profiles"]["pitch-ddm"]["area"] == "ddm"
-        assert summary["gap_profiles"]["pitch-ddm"]["next_steps"] == [
+        )
+        pitch_ddm_gap = summary.gap_profiles["pitch-ddm"]
+        assert pitch_ddm_gap is not None
+        assert pitch_ddm_gap.area == "ddm"
+        assert pitch_ddm_gap.next_steps == (
             "./tools/pitch preflight",
             "./tools/pitch ddm-probe",
             "./tools/pitch ddm-review 5",
-        ]
-        assert summary["gap_profiles"]["pitch-negotiated"]["area"] == "negotiated_ownership"
-        assert summary["gap_profiles"]["pitch-negotiated"]["next_steps"] == [
+        )
+        pitch_negotiated_gap = summary.gap_profiles["pitch-negotiated"]
+        assert pitch_negotiated_gap is not None
+        assert pitch_negotiated_gap.area == "negotiated_ownership"
+        assert pitch_negotiated_gap.next_steps == (
             "./tools/pitch preflight",
             "./tools/pitch negotiated-probe",
             "./tools/pitch negotiated-review 5",
-        ]
-        assert summary["gap_profiles"]["pitch-lost-federate"]["area"] == "lost_federate"
-        assert summary["gap_profiles"]["pitch-lost-federate"]["operator_state"] == "environment-blocked"
-        assert "Docker is unreachable" in summary["gap_profiles"]["pitch-lost-federate"]["blocker_summary"]
-        assert summary["gap_profiles"]["pitch-lost-federate"]["operator_artifact_refs"] == [
+        )
+        lost_federate_gap = summary.gap_profiles["pitch-lost-federate"]
+        assert lost_federate_gap is not None
+        assert lost_federate_gap.area == "lost_federate"
+        assert lost_federate_gap.operator_state == "environment-blocked"
+        assert "Docker is unreachable" in lost_federate_gap.blocker_summary
+        assert lost_federate_gap.operator_artifact_refs == (
             "analysis/preflight_artifacts/pitch-preflight.json",
             "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
             "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
-        ]
-        assert summary["gap_profiles"]["pitch-lost-federate"]["next_steps"] == [
+        )
+        assert lost_federate_gap.next_steps == (
             "./tools/pitch preflight",
             "./tools/pitch lost-federate-probe",
             "./tools/pitch lost-federate-review 5",
-        ]
-        assert summary["gap_profiles"]["pitch-save-restore"] is None
-        assert summary["probe_stability"]["pitch-negotiated-probe"]["stable"] is True
-        assert summary["probe_stability"]["pitch-negotiated-probe"]["promotion_readiness"] == "candidate"
-        assert summary["probe_stability"]["pitch-negotiated-probe"]["attempt_count"] == 5
-        assert summary["probe_stability"]["pitch-lost-federate-probe"]["stable"] is False
-        assert summary["probe_stability"]["pitch-lost-federate-probe"]["promotion_readiness"] == "needs-investigation"
-        assert summary["probe_stability"]["pitch-lost-federate-probe"]["failure_count"] == 1
-        assert summary["probe_stability"]["certi-ddm-probe"]["promotion_readiness"] == "candidate"
-        assert summary["probe_stability"]["certi-ddm-probe"]["attempt_count"] == 5
-        assert summary["probe_promotion_review"]["candidate_count"] == 2
+        )
+        assert summary.gap_profiles["pitch-save-restore"] is None
+        pitch_neg_stability = summary.probe_stability["pitch-negotiated-probe"]
+        assert pitch_neg_stability is not None
+        assert pitch_neg_stability.stable is True
+        assert pitch_neg_stability.promotion_readiness == "candidate"
+        assert pitch_neg_stability.attempt_count == 5
+        pitch_lost_stability = summary.probe_stability["pitch-lost-federate-probe"]
+        assert pitch_lost_stability is not None
+        assert pitch_lost_stability.stable is False
+        assert pitch_lost_stability.promotion_readiness == "needs-investigation"
+        assert pitch_lost_stability.failure_count == 1
+        certi_ddm_stability = summary.probe_stability["certi-ddm-probe"]
+        assert certi_ddm_stability is not None
+        assert certi_ddm_stability.promotion_readiness == "candidate"
+        assert certi_ddm_stability.attempt_count == 5
+        assert summary.probe_promotion_review is not None
+        assert summary.probe_promotion_review.candidate_count == 2
 
         with paths.artifact_manifest_csv.open() as handle:
             rows = list(csv.DictReader(handle))
         assert rows
-        assert any(row["path"] == "tests/vendors/test_pitch_real_backend_matrix.py" for row in rows)
-        assert any(
-            row["path"] == "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md"
-            for row in rows
+        _assert_manifest_contains(
+            rows,
+            "path",
+            (
+                "tests/vendors/test_pitch_real_backend_matrix.py",
+                "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md",
+                "tools/vendor-state",
+                "analysis/vendor_probe_stability/certi-ddm-probe/vendor_probe_stability_summary.json",
+                "analysis/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json",
+                "analysis/vendor_probe_stability/pitch-lost-federate-probe/vendor_probe_stability_summary.json",
+                "analysis/vendor_gap_profiles/certi-save-restore.json",
+                "analysis/vendor_gap_profiles/pitch-lost-federate.json",
+            ),
         )
-        assert any(row["artifact_kind"] == "preflight" for row in rows)
-        assert any(row["path"] == "tools/vendor-state" for row in rows)
-        assert any(row["artifact_kind"] == "gap-profile" for row in rows)
-        assert any(row["artifact_kind"] == "stability-summary" for row in rows)
-        assert any(row["artifact_kind"] == "promotion-review" for row in rows)
-        assert any(row["evidence_tier"] == "promoted" for row in rows)
-        assert any(row["evidence_tier"] == "known-gap" for row in rows)
-        assert any(row["path"] == "analysis/vendor_probe_stability/certi-ddm-probe/vendor_probe_stability_summary.json" for row in rows)
-        assert any(row["path"] == "analysis/vendor_probe_stability/pitch-negotiated-probe/vendor_probe_stability_summary.json" for row in rows)
-        assert any(row["path"] == "analysis/vendor_probe_stability/pitch-lost-federate-probe/vendor_probe_stability_summary.json" for row in rows)
-        assert any(row["path"] == "analysis/vendor_gap_profiles/certi-save-restore.json" for row in rows)
-        assert any(row["path"] == "analysis/vendor_gap_profiles/pitch-lost-federate.json" for row in rows)
+        _assert_manifest_contains(
+            rows,
+            "artifact_kind",
+            ("preflight", "gap-profile", "stability-summary", "promotion-review"),
+        )
+        _assert_manifest_contains(rows, "evidence_tier", ("promoted", "known-gap"))
 
         report_text = paths.report_markdown.read_text()
-        assert "Vendor Parity Artifacts" in report_text
-        assert "## Profiles" in report_text
-        assert "## Commands" in report_text
-        assert "## Runtime Status" in report_text
-        assert "## Known Gaps" in report_text
-        assert "## Probe Stability" in report_text
-        assert "## Promotion Review" in report_text
-        assert "| Vendor | Profile | Tier | Indexed | Existing | Missing required | Kinds |" in report_text
-        assert "./tools/certi-easy smoke compare" in report_text
-        assert "./tools/pitch negotiated-probe` [probe]" in report_text
-        assert "./tools/pitch negotiated` [known-gap]" in report_text
-        assert "./tools/pitch negotiated-review 5" in report_text
-        assert "./tools/pitch lost-federate-probe` [probe]" in report_text
-        assert "./tools/pitch lost-federate` [known-gap]" in report_text
-        assert "./tools/pitch lost-federate-review 5" in report_text
-        assert "operator-state: `environment-blocked`" in report_text
-        assert "blocker: The canonical ./tools/pitch lost-federate-probe lane is currently blocked on this surface because Docker is unreachable" in report_text
-        assert "artifact: `analysis/preflight_artifacts/pitch-preflight.json`" in report_text
-        assert "next: `./tools/pitch ddm-review 5`" in report_text
-        assert "next: `./tools/pitch lost-federate-review 5`" in report_text
-        assert "./tools/vendor-probe-review promotion-review" in report_text
-        assert "pitch-negotiated-probe`: stable `True`" in report_text
-        assert "pitch-lost-federate-probe`: stable `False`" in report_text
-        assert "promotion `needs-investigation`" in report_text
-        assert "promotion `candidate`" in report_text
-        assert "decision `candidate-review`" in report_text
-        assert "next: compare certi-ddm-probe against docs/backend_conformance_matrix.md and promote only if clause-level parity is now defensible" in report_text
-        assert "next: resolve the documented bridge-divergent state before promotion; keep the lane at probe status" in report_text
-        assert "repo-green" in report_text
-        assert "./tools/pitch ddm" in report_text
-        assert "Required markers for `certi` in `repo-green`:" in report_text
-        assert "`active_build_root`: `/tmp/certi-build/libRTI/ieee1516-2010`" in report_text
-        assert "Required markers for `pitch` in `pitch vendor-green`:" in report_text
-        assert "`runtime_home`: `/tmp/pitch/lib/prtifull.jar`" in report_text
-        assert "Required ports for `pitch` in `pitch vendor-green`:" in report_text
-        assert "`crc`: `127.0.0.1:8989` [blocked]" in report_text
+        for fragment in (
+            "Vendor Parity Artifacts",
+            "## Profiles",
+            "## Commands",
+            "## Runtime Status",
+            "## Known Gaps",
+            "## Probe Stability",
+            "## Promotion Review",
+            "| Vendor | Profile | Tier | Indexed | Existing | Missing required | Kinds |",
+            "./tools/certi-easy smoke compare",
+            "./tools/pitch negotiated-probe` [probe]",
+            "./tools/pitch negotiated` [known-gap]",
+            "./tools/pitch negotiated-review 5",
+            "./tools/pitch lost-federate-probe` [probe]",
+            "./tools/pitch lost-federate` [known-gap]",
+            "./tools/pitch lost-federate-review 5",
+            "operator-state: `environment-blocked`",
+            "blocker: The canonical ./tools/pitch lost-federate-probe lane is currently blocked on this surface because Docker is unreachable",
+            "artifact: `analysis/preflight_artifacts/pitch-preflight.json`",
+            "next: `./tools/pitch ddm-review 5`",
+            "next: `./tools/pitch lost-federate-review 5`",
+            "./tools/vendor-probe-review promotion-review",
+            "pitch-negotiated-probe`: stable `True`",
+            "pitch-lost-federate-probe`: stable `False`",
+            "promotion `needs-investigation`",
+            "promotion `candidate`",
+            "decision `candidate-review`",
+            "next: compare certi-ddm-probe against docs/backend_conformance_matrix.md and promote only if clause-level parity is now defensible",
+            "next: resolve the documented bridge-divergent state before promotion; keep the lane at probe status",
+            "repo-green",
+            "./tools/pitch ddm",
+            "Required markers for `certi` in `repo-green`:",
+            "`active_build_root`: `analysis/preflight_artifacts/certi-build/libRTI/ieee1516-2010`",
+            "Required markers for `pitch` in `pitch vendor-green`:",
+            "`runtime_home`: `analysis/preflight_artifacts/pitch/lib/prtifull.jar`",
+            "Required ports for `pitch` in `pitch vendor-green`:",
+            "`crc`: `127.0.0.1:8989` [blocked]",
+        ):
+            assert fragment in report_text
+        _assert_no_host_paths(paths.summary_json.read_text(encoding="utf-8"))
+        _assert_no_host_paths(report_text)
     finally:
         if certi_original is None:
             certi_path.unlink(missing_ok=True)
@@ -401,23 +454,23 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
 
 
 def test_live_vendor_parity_summary_surfaces_pitch_lost_federate_gap_profile() -> None:
-    payload = json.loads(
+    payload = VendorParityArtifactsFullSummary.from_mapping(json.loads(
         (
             Path("analysis/vendor_parity_artifacts") / "vendor_parity_artifacts_summary.json"
         ).read_text(encoding="utf-8")
-    )
+    ))
 
-    gap_profile = payload["gap_profiles"]["pitch-lost-federate"]
+    gap_profile = payload.gap_profiles["pitch-lost-federate"]
     assert gap_profile is not None
-    assert gap_profile["profile"] == "pitch-lost-federate"
-    assert gap_profile["status"] == "backend-split"
-    assert gap_profile["operator_state"] == "environment-blocked"
-    assert "Docker is unreachable" in gap_profile["blocker_summary"]
-    assert gap_profile["operator_artifact_refs"] == [
+    assert gap_profile.profile == "pitch-lost-federate"
+    assert gap_profile.status == "backend-split"
+    assert gap_profile.operator_state == "environment-blocked"
+    assert "Docker is unreachable" in gap_profile.blocker_summary
+    assert gap_profile.operator_artifact_refs == (
         "analysis/preflight_artifacts/pitch-preflight.json",
         "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
         "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
-    ]
+    )
 
 
 def test_live_vendor_parity_report_surfaces_pitch_lost_federate_operator_blockers() -> None:

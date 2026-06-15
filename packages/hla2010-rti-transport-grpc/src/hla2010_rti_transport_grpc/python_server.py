@@ -8,7 +8,9 @@ from typing import Any, Mapping
 from hla2010_rti_transport_common.hosted_server import HostedRTICommandProcessor
 
 from hla2010.exceptions import RTIexception
+from hla2010_rti_backend_common import BackendUnavailableError
 from hla2010_rti_runtime_common import create_rti_ambassador
+from hla2010_rti_runtime_common.real_rti_process import reserve_tcp_port
 
 import hla2010_rti_transport_grpc.rti_transport_pb2_grpc as pb2_grpc
 from .client import GrpcTransportClientAdapter
@@ -68,7 +70,13 @@ class PythonRTIGrpcServer:
         )
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=config.max_workers))
         pb2_grpc.add_RTITransportServiceServicer_to_server(self.servicer, self.server)
-        self.port = self.server.add_insecure_port(f"{config.host}:{config.port}")
+        requested_port = int(config.port) if int(config.port) != 0 else reserve_tcp_port(config.host)
+        try:
+            self.port = self.server.add_insecure_port(f"{config.host}:{requested_port}")
+        except Exception as exc:
+            raise BackendUnavailableError(
+                f"Python gRPC host could not bind loopback listener on {config.host}:{requested_port}: {exc}"
+            ) from exc
         self.target = f"{config.host}:{self.port}"
         self._started = False
 
@@ -93,7 +101,13 @@ class CERTIRTIGrpcServer:
         self.servicer = _RTITransportServicer(create_rti_ambassador("certi", **dict(config.backend_options)))
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=config.max_workers))
         pb2_grpc.add_RTITransportServiceServicer_to_server(self.servicer, self.server)
-        self.port = self.server.add_insecure_port(f"{config.host}:{config.port}")
+        requested_port = int(config.port) if int(config.port) != 0 else reserve_tcp_port(config.host)
+        try:
+            self.port = self.server.add_insecure_port(f"{config.host}:{requested_port}")
+        except Exception as exc:
+            raise BackendUnavailableError(
+                f"CERTI gRPC host could not bind loopback listener on {config.host}:{requested_port}: {exc}"
+            ) from exc
         self.target = f"{config.host}:{self.port}"
         self._started = False
 

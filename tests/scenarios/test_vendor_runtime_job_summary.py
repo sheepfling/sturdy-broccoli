@@ -15,6 +15,14 @@ from hla2010_repo_internal.verification.vendor_runtime_job_summary import (
 ROOT = Path(__file__).resolve().parents[2]
 
 
+def _sample_pitch_marker(base: Path) -> str:
+    return str(base / "pitch" / "lib" / "prtifull.jar")
+
+
+def _sample_certi_marker(base: Path) -> str:
+    return str(base / "certi" / "bin" / "rtig")
+
+
 def _write_status(path: Path, *, lane: str, overall_classification: str, vendors: list[dict[str, object]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
@@ -35,6 +43,7 @@ def _write_status(path: Path, *, lane: str, overall_classification: str, vendors
 def test_build_vendor_runtime_job_summary_renders_blocked_reason_and_next_steps(tmp_path: Path) -> None:
     status_dir = tmp_path / "runtime-status"
     parity_dir = tmp_path / "parity"
+    pitch_marker = _sample_pitch_marker(tmp_path)
     _write_status(
         status_dir / "vendor_green_pitch" / "vendor_runtime_status_summary.json",
         lane="vendor-green",
@@ -48,7 +57,7 @@ def test_build_vendor_runtime_job_summary_renders_blocked_reason_and_next_steps(
                 "next_steps": ["./tools/pitch preflight", "./tools/pitch install"],
                 "blocked_checks": [{"name": "docker", "detail": "blocked: Docker CLI exists but the daemon is not reachable"}],
                 "required_markers": {
-                    "runtime_home": "/tmp/pitch/lib/prtifull.jar",
+                    "runtime_home": pitch_marker,
                 },
                 "required_ports": {
                     "crc": {"host": "127.0.0.1", "port": 8989, "status": "blocked"},
@@ -106,7 +115,7 @@ def test_build_vendor_runtime_job_summary_renders_blocked_reason_and_next_steps(
     assert "`./tools/pitch preflight`" in rendered
     assert "blocked: Docker CLI exists but the daemon is not reachable" in rendered
     assert "Required markers for `pitch`:" in rendered
-    assert "`runtime_home`: `/tmp/pitch/lib/prtifull.jar`" in rendered
+    assert f"`runtime_home`: `{pitch_marker}`" in rendered
     assert "Required ports for `pitch`:" in rendered
     assert "`crc`: `127.0.0.1:8989` [blocked]" in rendered
     assert "## Parity Packet" in rendered
@@ -123,6 +132,7 @@ def test_build_vendor_runtime_job_summary_renders_blocked_reason_and_next_steps(
 
 def test_job_summary_script_bootstraps_source_checkout_and_writes_output_file(tmp_path: Path) -> None:
     status_dir = tmp_path / "runtime-status"
+    certi_marker = _sample_certi_marker(tmp_path)
     _write_status(
         status_dir / "repo_green" / "vendor_runtime_status_summary.json",
         lane="repo-green",
@@ -136,7 +146,7 @@ def test_job_summary_script_bootstraps_source_checkout_and_writes_output_file(tm
                 "next_steps": [],
                 "blocked_checks": [],
                 "required_markers": {
-                    "active_prefix": "/tmp/certi/bin/rtig",
+                    "active_prefix": certi_marker,
                 },
                 "required_ports": {},
             }

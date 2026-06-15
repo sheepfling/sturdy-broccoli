@@ -1,2 +1,3 @@
 backend,status,reason,track_reports,first_range_m,last_range_m,range_delta_m,final_time_seconds,backend_kinds,track_ids
 python,passed,,4,10493.969696925944,11236.298322846364,742.3286259204197,4.0,"[""python/in-memory"", ""python/in-memory""]","[""TRK-001"", ""TRK-002"", ""TRK-003"", ""TRK-004""]"
+python-grpc,passed,,4,10493.969696925944,11236.298322846364,742.3286259204197,4.0,"[""native/certi"", ""native/certi""]","[""TRK-001"", ""TRK-002"", ""TRK-003"", ""TRK-004""]"

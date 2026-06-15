@@ -18,9 +18,8 @@ pitch,pitch-lost-federate-probe,probe,stability-summary,probe stability summary,
 shared,shared,shared,promotion-review,probe promotion review summary,analysis/vendor_probe_promotion_review/vendor_probe_promotion_review_summary.json,False,False,Optional promotion-review summary comparing repeated-run probe evidence against documented conformance stance.
 certi,certi-save-restore,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/certi-save-restore.json,False,False,Optional machine-readable CERTI save/restore known-gap profile.
 certi,certi-ddm,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/certi-ddm.json,False,False,Optional machine-readable CERTI DDM known-gap profile.
-pitch,pitch-save-restore,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/pitch-save-restore.json,False,False,Optional machine-readable Pitch save/restore known-gap profile.
-pitch,pitch-ddm,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/pitch-ddm.json,False,False,Optional machine-readable Pitch DDM known-gap profile.
-pitch,pitch-negotiated,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/pitch-negotiated.json,False,False,Optional machine-readable Pitch negotiated-ownership known-gap profile.
+pitch,pitch-ddm,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/pitch-ddm.json,False,True,Optional machine-readable Pitch DDM known-gap profile.
+pitch,pitch-negotiated,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/pitch-negotiated.json,False,True,Optional machine-readable Pitch negotiated-ownership known-gap profile.
 pitch,pitch-lost-federate,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/pitch-lost-federate.json,False,True,Optional machine-readable Pitch lost-federate known-gap profile.
 certi,certi-compare,promoted,test,exchange parity,tests/vendors/test_certi_real_backend_exchange_matrix.py,True,True,Real CERTI exchange scenario parity slice.
 certi,certi-compare,promoted,test,time parity,tests/vendors/test_certi_real_backend_time_matrix.py,True,True,Real CERTI time-management compare slice.

@@ -8,6 +8,7 @@ from typing import Any
 
 import yaml
 
+from .path_rendering import render_path
 from .vendor_runtime_ci_state import vendor_runtime_ci_profile_spec, vendor_runtime_ci_profiles
 
 
@@ -120,7 +121,7 @@ def build_vendor_runner_template_drift(
     overall_ok = all(bool(row["ok"]) for row in rows)
     return {
         "suite_name": "vendor-runner-template-drift",
-        "template_path": str(Path(template_path)),
+        "template_path": render_path(Path(template_path)),
         "profiles": rows,
         "exit_code": 0 if overall_ok else 1,
     }

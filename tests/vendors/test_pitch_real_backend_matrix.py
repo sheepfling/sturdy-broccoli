@@ -155,6 +155,9 @@ from hla2010.types import TimeQueryReturn
 from hla2010_rti_pitch_common.real_rti_pitch import launch_pitch_runtime
 from tests.vendors.runtime_support import cleanup_federation, require_vendor_preflight, shutdown_runtime_resources
 
+PITCH_KIND_CASES = ["pitch-jpype", "pitch-py4j"]
+PITCH_PROFILE_CASES = [("pitch-jpype", "jpype"), ("pitch-py4j", "py4j")]
+
 
 def _require_real_rti_smoke() -> None:
     if os.environ.get("HLA2010_ENABLE_REAL_RTI_SMOKE") != "1":
@@ -265,6 +268,82 @@ def _launch_pitch_jpype_lost_federate_session(config: LostFederateScenarioConfig
         induce_loss=_cleanup,
         cleanup=_cleanup,
         describe=_describe,
+    )
+
+
+def _pitch_dispatcher(profile: str) -> PythonFederateAmbassadorDispatcher:
+    return PythonFederateAmbassadorDispatcher(
+        RecordingFederateAmbassador(),
+        JavaValueConverter(ShimJavaBridge(profile)),
+    )
+
+
+def _assert_summary_exception_types(summary: dict[str, object], **expected: type[BaseException]) -> None:
+    for key, exception_type in expected.items():
+        assert isinstance(summary[key], exception_type)
+
+
+def _assert_declaration_summary(
+    summary: dict[str, object],
+    config: DeclarationManagementScenarioConfig,
+    *,
+    start_count: int,
+    stop_count: int,
+    turn_on_count: int = 2,
+    turn_off_count: int = 2,
+    second_stop_present: bool,
+) -> None:
+    assert [record.args for record in summary["start_records"]] == [
+        (summary["publisher_class"],),
+    ] * start_count
+    assert [record.args for record in summary["stop_records"]] == [
+        (summary["publisher_class"],),
+    ] * stop_count
+    assert [record.args for record in summary["turn_on_records"]] == [
+        (summary["publisher_interaction"],),
+    ] * turn_on_count
+    assert [record.args for record in summary["turn_off_records"]] == [
+        (summary["publisher_interaction"],),
+    ] * turn_off_count
+    assert (summary["second_stop_record"] is not None) is second_stop_present
+    assert summary["discover_record"].args[2] == config.object_instance_name
+    assert summary["reflect_record"].args[1] == {summary["subscriber_attribute"]: config.attribute_payload}
+    assert summary["interaction_record"].args[1] == {summary["subscriber_parameter"]: config.interaction_payload}
+
+
+def _cleanup_pitch_pair(
+    federation_name: str,
+    *,
+    destroyer,
+    peer,
+    destroyer_action: ResignAction,
+    peer_action: ResignAction = ResignAction.NO_ACTION,
+) -> None:
+    cleanup_federation(
+        federation_name,
+        destroyer=destroyer,
+        destroyer_resign_action=destroyer_action,
+        remaining_resignations=((peer, peer_action),),
+        disconnect_rtis=(peer, destroyer),
+    )
+
+
+def _cleanup_pitch_triple(
+    federation_name: str,
+    *,
+    destroyer,
+    middle,
+    final,
+    destroyer_action: ResignAction,
+    middle_action: ResignAction = ResignAction.NO_ACTION,
+    final_action: ResignAction = ResignAction.NO_ACTION,
+) -> None:
+    cleanup_federation(
+        federation_name,
+        destroyer=destroyer,
+        destroyer_resign_action=destroyer_action,
+        remaining_resignations=((middle, middle_action), (final, final_action)),
+        disconnect_rtis=(final, middle, destroyer),
     )
 
 
@@ -527,16 +606,10 @@ def _pitch_ddm_config(kind: str, name: str):
     }
 
 
-@pytest.mark.parametrize(
-    ("kind", "profile"),
-    [("pitch-jpype", "jpype"), ("pitch-py4j", "py4j")],
-)
+@pytest.mark.parametrize(("kind", "profile"), PITCH_PROFILE_CASES)
 def test_pitch_backend_connection_lost_callback_matrix(kind: str, profile: str):
-    federate = RecordingFederateAmbassador()
-    dispatcher = PythonFederateAmbassadorDispatcher(
-        federate,
-        JavaValueConverter(ShimJavaBridge(profile)),
-    )
+    dispatcher = _pitch_dispatcher(profile)
+    federate = dispatcher.ambassador
     summary = run_connection_lost_callback_scenario(
         dispatcher.connectionLost,
         federate=federate,
@@ -545,16 +618,10 @@ def test_pitch_backend_connection_lost_callback_matrix(kind: str, profile: str):
     assert summary["record"].args == (f"{kind} callback bridge loss",)
 
 
-@pytest.mark.parametrize(
-    ("kind", "profile"),
-    [("pitch-jpype", "jpype"), ("pitch-py4j", "py4j")],
-)
+@pytest.mark.parametrize(("kind", "profile"), PITCH_PROFILE_CASES)
 def test_pitch_backend_discovery_metadata_callback_matrix(kind: str, profile: str):
-    federate = RecordingFederateAmbassador()
-    dispatcher = PythonFederateAmbassadorDispatcher(
-        federate,
-        JavaValueConverter(ShimJavaBridge(profile)),
-    )
+    dispatcher = _pitch_dispatcher(profile)
+    federate = dispatcher.ambassador
     summary = run_discovery_metadata_callback_scenario(
         dispatcher.discoverObjectInstance,
         dispatcher.hasProducingFederate,
@@ -569,7 +636,7 @@ def test_pitch_backend_discovery_metadata_callback_matrix(kind: str, profile: st
     assert summary["has_regions_record"].args[1] == summary["get_regions_record"].args[1]
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_discovery_class_matrix(kind: str, tmp_path: Path):
     hierarchy_fom = write_hierarchy_fom(tmp_path / f"{kind}-hierarchy-fom.xml")
     config = _pitch_discovery_class_config(kind, hierarchy_fom)
@@ -583,25 +650,18 @@ def test_pitch_backend_discovery_class_matrix(kind: str, tmp_path: Path):
         )
         assert summary["discovery"].args[1] == summary["subscriber_class"]
         assert summary["reflection"].args[1] == {summary["subscriber_attribute"]: config.attribute_payload}
-        cleanup_federation(
+        _cleanup_pitch_pair(
             config.federation_name,
             destroyer=publisher,
-            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
-            remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
-            disconnect_rtis=(subscriber, publisher),
+            peer=subscriber,
+            destroyer_action=ResignAction.DELETE_OBJECTS,
         )
 
 
-@pytest.mark.parametrize(
-    ("kind", "profile"),
-    [("pitch-jpype", "jpype"), ("pitch-py4j", "py4j")],
-)
+@pytest.mark.parametrize(("kind", "profile"), PITCH_PROFILE_CASES)
 def test_pitch_attribute_ownership_query_callback_matrix(kind: str, profile: str):
-    federate = RecordingFederateAmbassador()
-    dispatcher = PythonFederateAmbassadorDispatcher(
-        federate,
-        JavaValueConverter(ShimJavaBridge(profile)),
-    )
+    dispatcher = _pitch_dispatcher(profile)
+    federate = dispatcher.ambassador
     summary = run_attribute_ownership_query_callback_scenario(
         dispatcher.informAttributeOwnership,
         dispatcher.attributeIsNotOwned,
@@ -613,7 +673,7 @@ def test_pitch_attribute_ownership_query_callback_matrix(kind: str, profile: str
     assert len(summary["rti_owned_record"].args) == 2
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_name_reservation_matrix(kind: str):
     config = _pitch_name_reservation_config(kind)
     with _pitch_runtime_case(kind, 2) as (owner, rival):
@@ -630,16 +690,15 @@ def test_pitch_backend_name_reservation_matrix(kind: str):
         assert summary["owner_multiple_reserved"].args[0] == set(config.multiple_names)
         assert summary["rival_multiple_reserved_failed"].args[0] == set(config.multiple_names)
         assert summary["rival_multiple_reserved"].args[0] == set(config.multiple_names)
-        cleanup_federation(
+        _cleanup_pitch_pair(
             config.federation_name,
             destroyer=owner,
-            destroyer_resign_action=ResignAction.NO_ACTION,
-            remaining_resignations=((rival, ResignAction.NO_ACTION),),
-            disconnect_rtis=(rival, owner),
+            peer=rival,
+            destroyer_action=ResignAction.NO_ACTION,
         )
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_declaration_management_matrix(kind: str):
     config = _pitch_declaration_config(kind, "declaration")
     with _pitch_runtime_case(kind, 2) as (publisher, subscriber):
@@ -650,38 +709,18 @@ def test_pitch_backend_declaration_management_matrix(kind: str):
             publisher_federate=RecordingFederateAmbassador(),
             subscriber_federate=RecordingFederateAmbassador(),
         )
-        assert [record.args for record in summary["start_records"]] == [
-            (summary["publisher_class"],),
-            (summary["publisher_class"],),
-        ]
-        assert [record.args for record in summary["stop_records"]] == [
-            (summary["publisher_class"],),
-            (summary["publisher_class"],),
-        ]
-        assert [record.args for record in summary["turn_on_records"]] == [
-            (summary["publisher_interaction"],),
-            (summary["publisher_interaction"],),
-        ]
-        assert [record.args for record in summary["turn_off_records"]] == [
-            (summary["publisher_interaction"],),
-            (summary["publisher_interaction"],),
-        ]
-        assert summary["second_stop_record"] is not None
-        assert summary["discover_record"].args[2] == config.object_instance_name
-        assert summary["reflect_record"].args[1] == {summary["subscriber_attribute"]: config.attribute_payload}
-        assert summary["interaction_record"].args[1] == {summary["subscriber_parameter"]: config.interaction_payload}
+        _assert_declaration_summary(summary, config, start_count=2, stop_count=2, second_stop_present=True)
         assert summary["suppressed_reflect_count"] == 1
         assert summary["suppressed_interaction_count"] == 1
-        cleanup_federation(
+        _cleanup_pitch_pair(
             config.federation_name,
             destroyer=publisher,
-            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
-            remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
-            disconnect_rtis=(subscriber, publisher),
+            peer=subscriber,
+            destroyer_action=ResignAction.DELETE_OBJECTS,
         )
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_declaration_management_overload_matrix(kind: str):
     config = _pitch_declaration_config(
         kind,
@@ -699,37 +738,18 @@ def test_pitch_backend_declaration_management_overload_matrix(kind: str):
             publisher_federate=RecordingFederateAmbassador(),
             subscriber_federate=RecordingFederateAmbassador(),
         )
-        assert [record.args for record in summary["start_records"]] == [
-            (summary["publisher_class"],),
-            (summary["publisher_class"],),
-        ]
-        assert [record.args for record in summary["stop_records"]] == [
-            (summary["publisher_class"],),
-        ]
-        assert [record.args for record in summary["turn_on_records"]] == [
-            (summary["publisher_interaction"],),
-            (summary["publisher_interaction"],),
-        ]
-        assert [record.args for record in summary["turn_off_records"]] == [
-            (summary["publisher_interaction"],),
-            (summary["publisher_interaction"],),
-        ]
-        assert summary["second_stop_record"] is None
-        assert summary["discover_record"].args[2] == config.object_instance_name
-        assert summary["reflect_record"].args[1] == {summary["subscriber_attribute"]: config.attribute_payload}
-        assert summary["interaction_record"].args[1] == {summary["subscriber_parameter"]: config.interaction_payload}
+        _assert_declaration_summary(summary, config, start_count=2, stop_count=1, second_stop_present=False)
         assert summary["suppressed_reflect_count"] == 1
         assert summary["suppressed_interaction_count"] == 1
-        cleanup_federation(
+        _cleanup_pitch_pair(
             config.federation_name,
             destroyer=publisher,
-            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
-            remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
-            disconnect_rtis=(subscriber, publisher),
+            peer=subscriber,
+            destroyer_action=ResignAction.DELETE_OBJECTS,
         )
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_declaration_invalid_attribute_publication_matrix(kind: str):
     config = _pitch_declaration_config(kind, "declaration-invalid-attr")
     with _pitch_runtime_case(kind, 1) as (publisher,):
@@ -747,7 +767,7 @@ def test_pitch_backend_declaration_invalid_attribute_publication_matrix(kind: st
         )
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_time_managed_declaration_independence_matrix(kind: str):
     config = _pitch_declaration_config(
         kind,
@@ -769,16 +789,15 @@ def test_pitch_backend_time_managed_declaration_independence_matrix(kind: str):
         assert summary["discover_record"].args[2] == config.object_instance_name
         assert summary["reflect_record"].args[1] == {summary["subscriber_attribute"]: config.attribute_payload}
         assert summary["interaction_record"].args[1] == {summary["subscriber_parameter"]: config.interaction_payload}
-        cleanup_federation(
+        _cleanup_pitch_pair(
             config.federation_name,
             destroyer=publisher,
-            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
-            remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
-            disconnect_rtis=(subscriber, publisher),
+            peer=subscriber,
+            destroyer_action=ResignAction.DELETE_OBJECTS,
         )
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_declaration_unpublish_rejection_matrix(kind: str):
     config = _pitch_declaration_config(kind, "declaration-unpublish")
     with _pitch_runtime_case(kind, 1) as (publisher,):
@@ -797,7 +816,7 @@ def test_pitch_backend_declaration_unpublish_rejection_matrix(kind: str):
         )
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_support_factory_and_decode_matrix(kind: str):
     config = _pitch_support_config(kind)
     with _pitch_runtime_case(kind, 1) as (rti,):
@@ -832,16 +851,10 @@ def test_pitch_backend_support_factory_and_decode_matrix(kind: str):
         )
 
 
-@pytest.mark.parametrize(
-    ("kind", "profile"),
-    [("pitch-jpype", "jpype"), ("pitch-py4j", "py4j")],
-)
+@pytest.mark.parametrize(("kind", "profile"), PITCH_PROFILE_CASES)
 def test_pitch_backend_update_advisory_callback_matrix(kind: str, profile: str):
-    federate = RecordingFederateAmbassador()
-    dispatcher = PythonFederateAmbassadorDispatcher(
-        federate,
-        JavaValueConverter(ShimJavaBridge(profile)),
-    )
+    dispatcher = _pitch_dispatcher(profile)
+    federate = dispatcher.ambassador
     summary = run_update_advisory_callback_scenario(
         dispatcher.attributesInScope,
         dispatcher.attributesOutOfScope,
@@ -855,7 +868,7 @@ def test_pitch_backend_update_advisory_callback_matrix(kind: str, profile: str):
     assert summary["turn_on_record"].args[2] == "HLAdefault"
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_object_scope_relevance_matrix(kind: str):
     config = _pitch_object_scope_config(kind, "object-scope")
     with _pitch_runtime_case(kind, 3) as (owner, acquirer, observer):
@@ -877,16 +890,16 @@ def test_pitch_backend_object_scope_relevance_matrix(kind: str):
         assert summary["initial_reflection"].args[0] == summary["object_instance"]
         assert summary["suppressed_reflection"] is None
         assert summary["acquired_reflection"].args[0] == summary["object_instance"]
-        cleanup_federation(
+        _cleanup_pitch_triple(
             config.federation_name,
             destroyer=owner,
-            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
-            remaining_resignations=((acquirer, ResignAction.NO_ACTION), (observer, ResignAction.NO_ACTION)),
-            disconnect_rtis=(observer, acquirer, owner),
+            middle=acquirer,
+            final=observer,
+            destroyer_action=ResignAction.DELETE_OBJECTS,
         )
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_transportation_type_matrix(kind: str):
     config = _pitch_transport_config(kind, "transport")
     with _pitch_runtime_case(kind, 2) as (owner, observer):
@@ -909,16 +922,15 @@ def test_pitch_backend_transportation_type_matrix(kind: str):
         )
         assert summary["confirm_interaction"].args == (summary["interaction"], summary["transport"])
         assert summary["report_interaction"].args[1:] == (summary["interaction"], summary["transport"])
-        cleanup_federation(
+        _cleanup_pitch_pair(
             config.federation_name,
             destroyer=owner,
-            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
-            remaining_resignations=((observer, ResignAction.NO_ACTION),),
-            disconnect_rtis=(observer, owner),
+            peer=observer,
+            destroyer_action=ResignAction.DELETE_OBJECTS,
         )
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_transportation_type_restore_persistence_matrix(kind: str):
     config = _pitch_transport_config(
         kind,
@@ -947,7 +959,7 @@ def test_pitch_backend_transportation_type_restore_persistence_matrix(kind: str)
         )
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_transportation_type_rejection_matrix(kind: str):
     config = _pitch_transport_config(kind, "transport-reject")
     with _pitch_runtime_case(kind, 2) as (owner, observer):
@@ -963,7 +975,7 @@ def test_pitch_backend_transportation_type_rejection_matrix(kind: str):
         assert summary["interaction"] is not None
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_update_rate_matrix(kind: str, tmp_path: Path):
     update_rate_fom = write_update_rate_fom(tmp_path / f"{kind}-update-rate-fom.xml")
     config = _pitch_update_rate_config(kind, update_rate_fom)
@@ -976,16 +988,15 @@ def test_pitch_backend_update_rate_matrix(kind: str, tmp_path: Path):
             subscriber_federate=RecordingFederateAmbassador(),
         )
         assert summary["values"] == [b"t1", b"t16"]
-        cleanup_federation(
+        _cleanup_pitch_pair(
             config.federation_name,
             destroyer=publisher,
-            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
-            remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
-            disconnect_rtis=(subscriber, publisher),
+            peer=subscriber,
+            destroyer_action=ResignAction.DELETE_OBJECTS,
         )
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_request_attribute_value_update_matrix(kind: str):
     config = _pitch_request_update_config(kind, "ravu", f"{kind}-ravu".encode())
     with _pitch_runtime_case(kind, 2) as (owner, requester):
@@ -1001,16 +1012,15 @@ def test_pitch_backend_request_attribute_value_update_matrix(kind: str):
             {summary["owner_attribute"]},
             config.request_tag,
         )
-        cleanup_federation(
+        _cleanup_pitch_pair(
             config.federation_name,
             destroyer=owner,
-            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
-            remaining_resignations=((requester, ResignAction.NO_ACTION),),
-            disconnect_rtis=(requester, owner),
+            peer=requester,
+            destroyer_action=ResignAction.DELETE_OBJECTS,
         )
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_request_attribute_value_update_routing_matrix(kind: str):
     config = _pitch_request_update_config(kind, "ravu-routing", b"object-only")
     with _pitch_runtime_case(kind, 3) as (owner_a, owner_b, requester):
@@ -1027,16 +1037,17 @@ def test_pitch_backend_request_attribute_value_update_routing_matrix(kind: str):
         assert summary["object_target_provide_b"] is None
         assert summary["class_target_provide_a"].args == (summary["object_a"], {summary["requester_attribute"]}, b"class-wide")
         assert summary["class_target_provide_b"].args == (summary["object_b"], {summary["requester_attribute"]}, b"class-wide")
-        cleanup_federation(
+        _cleanup_pitch_triple(
             config.federation_name,
             destroyer=owner_a,
-            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
-            remaining_resignations=((owner_b, ResignAction.DELETE_OBJECTS), (requester, ResignAction.NO_ACTION)),
-            disconnect_rtis=(requester, owner_b, owner_a),
+            middle=owner_b,
+            final=requester,
+            destroyer_action=ResignAction.DELETE_OBJECTS,
+            middle_action=ResignAction.DELETE_OBJECTS,
         )
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_orphan_object_lifecycle_matrix(kind: str):
     config = _pitch_orphan_config(kind)
     with _pitch_runtime_case(kind, 3) as (owner, observer, late):
@@ -1053,16 +1064,16 @@ def test_pitch_backend_orphan_object_lifecycle_matrix(kind: str):
         assert summary["observer_remove"] is None
         assert summary["late_remove"].args[0] == summary["object_instance"]
         assert summary["late_remove"].args[1] == config.delete_tag
-        cleanup_federation(
+        _cleanup_pitch_triple(
             config.federation_name,
             destroyer=owner,
-            destroyer_resign_action=ResignAction.NO_ACTION,
-            remaining_resignations=((observer, ResignAction.NO_ACTION), (late, ResignAction.NO_ACTION)),
-            disconnect_rtis=(late, observer, owner),
+            middle=observer,
+            final=late,
+            destroyer_action=ResignAction.NO_ACTION,
         )
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_timed_delete_matrix(kind: str):
     config = _pitch_timed_delete_config(kind)
     with _pitch_runtime_case(kind, 2) as (owner, observer):
@@ -1076,16 +1087,15 @@ def test_pitch_backend_timed_delete_matrix(kind: str):
         assert summary["remove_before_grant"] is None
         assert summary["remove_after_grant"].args[0] == summary["object_instance"]
         assert summary["remove_after_grant"].args[1] == config.delete_tag
-        cleanup_federation(
+        _cleanup_pitch_pair(
             config.federation_name,
             destroyer=owner,
-            destroyer_resign_action=ResignAction.NO_ACTION,
-            remaining_resignations=((observer, ResignAction.NO_ACTION),),
-            disconnect_rtis=(observer, owner),
+            peer=observer,
+            destroyer_action=ResignAction.NO_ACTION,
         )
 
 
-@pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
+@pytest.mark.parametrize("kind", PITCH_KIND_CASES)
 def test_pitch_backend_local_delete_matrix(kind: str):
     config = _pitch_local_delete_config(kind)
     with _pitch_runtime_case(kind, 2) as (owner, observer):
@@ -1099,12 +1109,11 @@ def test_pitch_backend_local_delete_matrix(kind: str):
         assert summary["discovery"].args[0] == summary["object_instance"]
         assert summary["reflection"].args[0] == summary["object_instance"]
         assert summary["reflection"].args[1] == {summary["observer_attribute"]: config.rediscover_payload}
-        cleanup_federation(
+        _cleanup_pitch_pair(
             config.federation_name,
             destroyer=owner,
-            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
-            remaining_resignations=((observer, ResignAction.NO_ACTION),),
-            disconnect_rtis=(observer, owner),
+            peer=observer,
+            destroyer_action=ResignAction.DELETE_OBJECTS,
         )
 
 
@@ -1375,9 +1384,12 @@ def test_pitch_backend_restore_abort_exception_matrix(kind: str):
             leader_federate=RecordingFederateAmbassador(),
             wing_federate=RecordingFederateAmbassador(),
         )
-        assert isinstance(summary["not_connected"], NotConnected)
-        assert isinstance(summary["not_joined"], FederateNotExecutionMember)
-        assert isinstance(summary["restore_not_in_progress"], RestoreNotInProgress)
+        _assert_summary_exception_types(
+            summary,
+            not_connected=NotConnected,
+            not_joined=FederateNotExecutionMember,
+            restore_not_in_progress=RestoreNotInProgress,
+        )
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -1387,8 +1399,7 @@ def test_pitch_backend_save_status_exception_matrix(kind: str):
             rti,
             federate=RecordingFederateAmbassador(),
         )
-        assert isinstance(summary["not_connected"], NotConnected)
-        assert isinstance(summary["not_joined"], FederateNotExecutionMember)
+        _assert_summary_exception_types(summary, not_connected=NotConnected, not_joined=FederateNotExecutionMember)
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -1398,8 +1409,7 @@ def test_pitch_backend_restore_status_exception_matrix(kind: str):
             rti,
             federate=RecordingFederateAmbassador(),
         )
-        assert isinstance(summary["not_connected"], NotConnected)
-        assert isinstance(summary["not_joined"], FederateNotExecutionMember)
+        _assert_summary_exception_types(summary, not_connected=NotConnected, not_joined=FederateNotExecutionMember)
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -1412,10 +1422,13 @@ def test_pitch_backend_save_request_precondition_matrix(kind: str):
             leader_federate=RecordingFederateAmbassador(),
             wing_federate=RecordingFederateAmbassador(),
         )
-        assert isinstance(summary["not_connected"], NotConnected)
-        assert isinstance(summary["not_joined"], FederateNotExecutionMember)
-        assert isinstance(summary["save_in_progress"], SaveInProgress)
-        assert isinstance(summary["restore_in_progress"], RestoreInProgress)
+        _assert_summary_exception_types(
+            summary,
+            not_connected=NotConnected,
+            not_joined=FederateNotExecutionMember,
+            save_in_progress=SaveInProgress,
+            restore_in_progress=RestoreInProgress,
+        )
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -1428,10 +1441,13 @@ def test_pitch_backend_restore_request_precondition_matrix(kind: str):
             leader_federate=RecordingFederateAmbassador(),
             wing_federate=RecordingFederateAmbassador(),
         )
-        assert isinstance(summary["not_connected"], NotConnected)
-        assert isinstance(summary["not_joined"], FederateNotExecutionMember)
-        assert isinstance(summary["save_in_progress"], SaveInProgress)
-        assert isinstance(summary["restore_in_progress"], RestoreInProgress)
+        _assert_summary_exception_types(
+            summary,
+            not_connected=NotConnected,
+            not_joined=FederateNotExecutionMember,
+            save_in_progress=SaveInProgress,
+            restore_in_progress=RestoreInProgress,
+        )
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -1444,12 +1460,15 @@ def test_pitch_backend_save_participant_exception_matrix(kind: str):
             leader_federate=RecordingFederateAmbassador(),
             wing_federate=RecordingFederateAmbassador(),
         )
-        assert isinstance(summary["begun_not_connected"], NotConnected)
-        assert isinstance(summary["complete_not_connected"], NotConnected)
-        assert isinstance(summary["not_complete_not_connected"], NotConnected)
-        assert isinstance(summary["begun_not_joined"], FederateNotExecutionMember)
-        assert isinstance(summary["complete_not_joined"], FederateNotExecutionMember)
-        assert isinstance(summary["not_complete_not_joined"], FederateNotExecutionMember)
+        _assert_summary_exception_types(
+            summary,
+            begun_not_connected=NotConnected,
+            complete_not_connected=NotConnected,
+            not_complete_not_connected=NotConnected,
+            begun_not_joined=FederateNotExecutionMember,
+            complete_not_joined=FederateNotExecutionMember,
+            not_complete_not_joined=FederateNotExecutionMember,
+        )
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -1459,8 +1478,7 @@ def test_pitch_backend_abort_save_exception_matrix(kind: str):
             rti,
             federate=RecordingFederateAmbassador(),
         )
-        assert isinstance(summary["not_connected"], NotConnected)
-        assert isinstance(summary["not_joined"], FederateNotExecutionMember)
+        _assert_summary_exception_types(summary, not_connected=NotConnected, not_joined=FederateNotExecutionMember)
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -1473,10 +1491,13 @@ def test_pitch_backend_restore_participant_exception_matrix(kind: str):
             leader_federate=RecordingFederateAmbassador(),
             wing_federate=RecordingFederateAmbassador(),
         )
-        assert isinstance(summary["complete_not_connected"], NotConnected)
-        assert isinstance(summary["not_complete_not_connected"], NotConnected)
-        assert isinstance(summary["complete_not_joined"], FederateNotExecutionMember)
-        assert isinstance(summary["not_complete_not_joined"], FederateNotExecutionMember)
+        _assert_summary_exception_types(
+            summary,
+            complete_not_connected=NotConnected,
+            not_complete_not_connected=NotConnected,
+            complete_not_joined=FederateNotExecutionMember,
+            not_complete_not_joined=FederateNotExecutionMember,
+        )
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
@@ -1602,12 +1623,15 @@ def test_pitch_backend_join_precondition_matrix(kind: str):
             wing_federate=RecordingFederateAmbassador(),
             late_federate=RecordingFederateAmbassador(),
         )
-        assert isinstance(summary["not_connected"], NotConnected)
-        assert isinstance(summary["missing_federation"], FederationExecutionDoesNotExist)
-        assert isinstance(summary["duplicate_name"], FederateNameAlreadyInUse)
-        assert isinstance(summary["already_joined"], FederateAlreadyExecutionMember)
-        assert isinstance(summary["save_in_progress"], SaveInProgress)
-        assert isinstance(summary["restore_in_progress"], RestoreInProgress)
+        _assert_summary_exception_types(
+            summary,
+            not_connected=NotConnected,
+            missing_federation=FederationExecutionDoesNotExist,
+            duplicate_name=FederateNameAlreadyInUse,
+            already_joined=FederateAlreadyExecutionMember,
+            save_in_progress=SaveInProgress,
+            restore_in_progress=RestoreInProgress,
+        )
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])

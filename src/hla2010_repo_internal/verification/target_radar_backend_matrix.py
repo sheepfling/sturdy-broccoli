@@ -13,6 +13,7 @@ from hla2010_fom_target_radar.scenarios.target_radar import run_target_radar_sce
 from hla2010_rti_backend_common import BackendUnavailableError, make_rti_ambassador
 from hla2010_rti_java_common.java_shim_factory import create_shared_java_shim_backend
 from hla2010_rti_java_common.java_shim_kernel import SharedJavaShimKernel
+from .path_rendering import jsonable as _portable_jsonable
 
 
 @dataclass(frozen=True)
@@ -39,21 +40,11 @@ class TargetRadarBackendResult:
 
 
 def _jsonable(value: Any) -> Any:
-    if isinstance(value, (str, int, float, bool)) or value is None:
-        return value
     if isinstance(value, bytes):
         return value.hex()
-    if isinstance(value, Path):
-        return str(value)
-    if isinstance(value, Mapping):
-        return {str(_jsonable(key)): _jsonable(item) for key, item in value.items()}
-    if isinstance(value, (list, tuple)):
-        return [_jsonable(item) for item in value]
     if hasattr(value, "as_dict") and callable(value.as_dict):
         return _jsonable(value.as_dict())
-    if hasattr(value, "__dataclass_fields__"):
-        return {key: _jsonable(getattr(value, key)) for key in value.__dataclass_fields__}
-    return repr(value)
+    return _portable_jsonable(value)
 
 
 def _target_radar_backend_options(backend_options_by_kind: Mapping[str, Mapping[str, Any]] | None, kind: str) -> dict[str, Any]:
@@ -163,7 +154,7 @@ def run_target_radar_backend_matrix(
     failed = sum(1 for item in results if item.status == "failed")
     summary = {
         "suite_name": "target-radar-backend-matrix",
-        "target_radar_fom": target_radar_fom_path(),
+        "target_radar_fom": _jsonable(target_radar_fom_path()),
         "steps": target_radar_steps,
         "dt": dt,
         "passed": passed,

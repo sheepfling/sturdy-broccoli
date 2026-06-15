@@ -34,6 +34,17 @@ Split-package guard coverage lives in
 The human operator surface for Target/Radar stays `./tools/target-radar`; this
 package does not add a package-local command.
 
+## Start Here
+
+Use this package when you want to extend the example itself without touching
+generic spec code or backend internals.
+
+Shortest path:
+
+1. open `src/hla2010_fom_target_radar/scenarios/`
+2. open the packaged FOM resource and scenario helpers together
+3. run the example or proof wrapper before changing backend-facing code
+
 For setup, bootstrap the repo root first:
 
 ```bash
@@ -57,3 +68,9 @@ from hla2010_fom_target_radar.scenarios import (
 The package-local docs page is
 [`docs/README.md`](docs/README.md), and the broader walkthrough is in
 [`../../docs/networked_rti_python.md`](../../docs/networked_rti_python.md).
+
+## Read Next
+
+1. [`../../docs/create_federate_and_fom.md`](../../docs/create_federate_and_fom.md)
+2. [`docs/README.md`](docs/README.md)
+3. [`../../docs/networked_rti_python.md`](../../docs/networked_rti_python.md)

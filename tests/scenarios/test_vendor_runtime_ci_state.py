@@ -12,6 +12,7 @@ from hla2010_repo_internal.verification.vendor_runtime_ci_state import (
     vendor_runtime_ci_profile_spec,
     write_vendor_runtime_ci_state,
 )
+from tests.typed_json_models import VendorRuntimeCiStateSummary
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -21,17 +22,17 @@ def test_certi_ci_state_requires_explicit_patched_paths(monkeypatch, tmp_path: P
     monkeypatch.setenv("HLA2010_CERTI_PATCHED_PREFIX", str(tmp_path / "patched-prefix"))
     monkeypatch.setenv("HLA2010_CERTI_PATCHED_BUILD_ROOT", str(tmp_path / "patched-build"))
 
-    summary = build_vendor_runtime_ci_state("certi")
+    summary = VendorRuntimeCiStateSummary.from_mapping(build_vendor_runtime_ci_state("certi"))
 
-    assert summary["classification"] == "invalid-runtime-state"
-    assert summary["required_vars"] == [
+    assert summary.classification == "invalid-runtime-state"
+    assert summary.required_vars == (
         "HLA2010_CERTI_PATCHED_PREFIX",
         "HLA2010_CERTI_PATCHED_BUILD_ROOT",
-    ]
-    assert summary["compatibility_vars"]["HLA2010_CERTI_PREFIX"] == "HLA2010_CERTI_PATCHED_PREFIX"
-    assert summary["checks"][0]["name"] == "certi-patched-prefix"
-    assert summary["checks"][0]["ok"] is False
-    assert "HLA2010_CERTI_PATCHED_PREFIX" in summary["checks"][0]["detail"]
+    )
+    assert summary.compatibility_vars["HLA2010_CERTI_PREFIX"] == "HLA2010_CERTI_PATCHED_PREFIX"
+    assert summary.checks[0].name == "certi-patched-prefix"
+    assert summary.checks[0].ok is False
+    assert "HLA2010_CERTI_PATCHED_PREFIX" in summary.checks[0].detail
 
 
 def test_ci_state_profile_inventory_matches_expected_profiles() -> None:
@@ -69,11 +70,11 @@ def test_matrix_ci_state_is_ready_when_all_required_markers_exist(monkeypatch, t
     monkeypatch.setenv("HLA2010_PITCH_HOME", str(pitch_home))
     monkeypatch.setenv("HLA2010_PITCH_USER_HOME", str(pitch_user_home))
 
-    summary = build_vendor_runtime_ci_state("matrix")
+    summary = VendorRuntimeCiStateSummary.from_mapping(build_vendor_runtime_ci_state("matrix"))
 
-    assert summary["classification"] == "ready"
-    assert summary["exit_code"] == 0
-    assert all(check["ok"] for check in summary["checks"])
+    assert summary.classification == "ready"
+    assert summary.exit_code == 0
+    assert all(check.ok for check in summary.checks)
 
 
 def test_write_vendor_runtime_ci_state_emits_artifacts(monkeypatch, tmp_path: Path) -> None:
@@ -87,10 +88,10 @@ def test_write_vendor_runtime_ci_state_emits_artifacts(monkeypatch, tmp_path: Pa
 
     paths = write_vendor_runtime_ci_state(tmp_path / "state", profile="pitch")
 
-    payload = json.loads(paths.summary_json.read_text(encoding="utf-8"))
-    assert payload["profile"] == "pitch"
-    assert payload["classification"] == "ready"
-    assert payload["required_markers"] == ["${HLA2010_PITCH_HOME}/lib/prtifull.jar"]
+    payload = VendorRuntimeCiStateSummary.from_mapping(json.loads(paths.summary_json.read_text(encoding="utf-8")))
+    assert payload.profile == "pitch"
+    assert payload.classification == "ready"
+    assert payload.required_markers == ("${HLA2010_PITCH_HOME}/lib/prtifull.jar",)
     report = paths.report_markdown.read_text(encoding="utf-8")
     assert "Vendor Runtime CI State" in report
     assert "## Contract" in report
@@ -117,8 +118,8 @@ def test_ci_state_script_bootstraps_source_checkout_and_returns_nonzero_for_miss
     )
 
     assert result.returncode == 1
-    payload = json.loads(result.stdout)
-    assert payload["classification"] == "invalid-runtime-state"
+    payload = VendorRuntimeCiStateSummary.from_mapping(json.loads(result.stdout))
+    assert payload.classification == "invalid-runtime-state"
 
 
 def test_ci_state_script_bootstraps_source_checkout_and_writes_profile_specific_output_directory(tmp_path: Path) -> None:
@@ -144,5 +145,5 @@ def test_ci_state_script_bootstraps_source_checkout_and_writes_profile_specific_
     report_path = tmp_path / "state" / "vendor_edge" / "vendor_runtime_ci_state_report.md"
     assert summary_path.exists()
     assert report_path.exists()
-    payload = json.loads(summary_path.read_text(encoding="utf-8"))
-    assert payload["profile"] == "vendor-edge"
+    payload = VendorRuntimeCiStateSummary.from_mapping(json.loads(summary_path.read_text(encoding="utf-8")))
+    assert payload.profile == "vendor-edge"

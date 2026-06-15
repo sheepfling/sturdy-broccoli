@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import json
+import re
+import tempfile
 from dataclasses import asdict
 from enum import Enum
 from pathlib import Path
@@ -10,15 +12,82 @@ from typing import Any, Mapping
 from hla2010_rti_backend_common import CallbackRecord
 
 
+_REPO_PATH_MARKERS = (
+    "analysis",
+    "docs",
+    "packages",
+    "requirements",
+    "scripts",
+    "specs",
+    "src",
+    "tests",
+)
+_TMPDIR = Path(tempfile.gettempdir()).resolve()
+_TMP_ROOTS = tuple(
+    dict.fromkeys(
+        [
+            _TMPDIR,
+            Path(tempfile.gettempdir()),
+            Path("/tmp"),
+            Path("/private/tmp"),
+            Path("/var/tmp"),
+        ]
+        + ([Path(f"/private{_TMPDIR}")] if str(_TMPDIR).startswith("/var/") else [])
+    )
+)
+_ABSOLUTE_PATH_RE = re.compile(r"(?P<path>(?:[A-Za-z]:[\\/]|/)[^\s`\"')\]]+)")
+
+
+def _maybe_repo_relative(path: Path) -> str | None:
+    parts = path.parts
+    for marker in _REPO_PATH_MARKERS:
+        if marker not in parts:
+            continue
+        index = parts.index(marker)
+        return Path(*parts[index:]).as_posix()
+    return None
+
+
+def _render_path(value: Path | str) -> str:
+    path = Path(value).expanduser()
+    if not path.is_absolute():
+        return path.as_posix()
+    try:
+        resolved = path.resolve()
+    except OSError:
+        resolved = path
+    repo_relative = _maybe_repo_relative(resolved)
+    if repo_relative is not None:
+        return repo_relative
+    for root in _TMP_ROOTS:
+        try:
+            return f"<tmp>/{resolved.relative_to(root).as_posix()}"
+        except ValueError:
+            continue
+    return resolved.as_posix()
+
+
+def _sanitize_text(value: str) -> str:
+    def _rewrite(match: re.Match[str]) -> str:
+        candidate = match.group("path")
+        if candidate.startswith("<repo>/") or candidate.startswith("<tmp>/"):
+            return candidate
+        return _render_path(candidate)
+
+    return _ABSOLUTE_PATH_RE.sub(_rewrite, value)
+
+
 def _jsonable(value: Any) -> Any:
-    if isinstance(value, (str, int, float, bool)) or value is None:
+    if isinstance(value, (int, float, bool)) or value is None:
         return value
+    if isinstance(value, str):
+        return _sanitize_text(value)
     if isinstance(value, bytes):
         return value.hex()
     if isinstance(value, Enum):
         return value.name
     if isinstance(value, Path):
-        return str(value)
+        return _render_path(value)
     if isinstance(value, CallbackRecord):
         return {
             "method_name": value.method_name,
@@ -42,7 +111,7 @@ def _jsonable(value: Any) -> Any:
         return sorted(_jsonable(item) for item in value)
     if hasattr(value, "value"):
         return {"type": type(value).__name__, "value": _jsonable(value.value)}
-    return repr(value)
+    return _sanitize_text(repr(value))
 
 
 def jsonable(value: Any) -> Any:

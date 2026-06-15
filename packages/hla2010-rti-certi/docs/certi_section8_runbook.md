@@ -6,6 +6,9 @@ Use it when you want the shortest path from a fresh checkout to a runnable
 pristine-vs-patched comparison, and when you need to understand the main
 runtime quirks without reading the deeper parity notes first.
 
+The command front door is still `./tools/certi-easy`. This page explains that
+lane; it is not a second command surface.
+
 ## The Short Version
 
 Run these commands first:

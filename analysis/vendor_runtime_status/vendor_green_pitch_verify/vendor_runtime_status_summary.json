@@ -1,5 +1,5 @@
 {
-  "artifact_dir": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts",
+  "artifact_dir": "analysis/preflight_artifacts",
   "blocked_vendors": [
     "pitch"
   ],
@@ -18,7 +18,7 @@
   "vendors": [
     {
       "actionable": false,
-      "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/pitch-preflight.json",
+      "artifact_path": "analysis/preflight_artifacts/pitch-preflight.json",
       "blocked_checks": [
         {
           "detail": "blocked: Docker CLI exists but the daemon is not reachable",
@@ -50,7 +50,7 @@
       "note": "host/runtime prerequisites are blocked on this surface",
       "present": true,
       "required_markers": {
-        "runtime_home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
+        "runtime_home": "third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
       },
       "required_ports": {
         "crc": {

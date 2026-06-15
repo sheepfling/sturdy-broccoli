@@ -192,6 +192,7 @@ class QueuedTimeMessage:
 @dataclass
 class FederateState:
     backend_id: int
+    backend: Any | None = None
     ambassador: Any | None = None
     callback_model: CallbackModel = CallbackModel.HLA_EVOKED
     connected: bool = False

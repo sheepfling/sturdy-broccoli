@@ -1,6 +1,6 @@
 # Vendor Runner Template Drift
 
-- template: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/docs/vendor_runner_provisioning_template.yaml`
+- template: `docs/vendor_runner_provisioning_template.yaml`
 - exit code: `0`
 
 | Profile | OK | Workflow Job | Reason |

@@ -28,7 +28,7 @@ case "${1:-help}" in
   matrix)
     shift
     if [[ "$#" -eq 0 ]]; then
-      "$python_bin" "$ROOT_DIR/scripts/run_target_radar_backend_matrix.py" --backend python
+      "$python_bin" "$ROOT_DIR/scripts/run_target_radar_backend_matrix.py" --backend python --backend python-grpc
     else
       "$python_bin" "$ROOT_DIR/scripts/run_target_radar_backend_matrix.py" "$@"
     fi

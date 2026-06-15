@@ -5,6 +5,8 @@ import os
 import subprocess
 from pathlib import Path
 
+from tests.typed_json_models import CertiPreflightOutput, PitchPreflightOutput
+
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -19,7 +21,7 @@ def _base_env(tmp_path: Path) -> dict[str, str]:
     env["HLA2010_CERTI_UPSTREAM_PREFIX"] = str(tmp_path / "missing-certi-upstream-prefix")
     env["HLA2010_CERTI_UPSTREAM_BUILD_ROOT"] = str(tmp_path / "missing-certi-upstream-build")
     env["HLA2010_PITCH_HOME"] = str(tmp_path / "missing-pitch-home")
-    env["PATH"] = "/usr/bin:/bin"
+    env["PATH"] = os.environ.get("PATH", os.defpath)
     return env
 
 
@@ -37,14 +39,13 @@ def test_vendor_runtime_smoke_writes_certi_preflight_and_skips_cleanly(tmp_path:
     assert result.returncode == 0
     artifact_path = tmp_path / "preflight" / "certi-preflight.json"
     assert artifact_path.exists()
-    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
-    assert payload["tool"] == "certi-preflight"
-    assert payload["exit_code"] == 1
-    assert "real CERTI will skip" in payload["result"]
-    assert "runtime_profiles" in payload
-    assert payload["runtime_profiles"]["active"]["prefix"]["path"]
-    assert payload["runtime_profiles"]["patched"]["prefix"]["marker"].endswith("bin/rtig")
-    assert payload["runtime_profiles"]["patched"]["source"]["marker"].endswith("Certi-Test-02.xml")
+    payload = CertiPreflightOutput.from_mapping(json.loads(artifact_path.read_text(encoding="utf-8")))
+    assert payload.tool == "certi-preflight"
+    assert payload.exit_code == 1
+    assert "real CERTI will skip" in payload.result
+    assert payload.runtime_profiles.active.prefix.path
+    assert payload.runtime_profiles.patched.prefix.marker.endswith("bin/rtig")
+    assert payload.runtime_profiles.patched.source.marker.endswith("Certi-Test-02.xml")
     assert "skipping runtime smoke for this vendor" in result.stderr
 
 
@@ -64,9 +65,9 @@ def test_vendor_runtime_smoke_skips_cleanly_without_repo_venv(tmp_path: Path) ->
     assert result.returncode == 0
     artifact_path = tmp_path / "preflight" / "certi-preflight.json"
     assert artifact_path.exists()
-    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
-    assert payload["tool"] == "certi-preflight"
-    assert payload["exit_code"] == 1
+    payload = CertiPreflightOutput.from_mapping(json.loads(artifact_path.read_text(encoding="utf-8")))
+    assert payload.tool == "certi-preflight"
+    assert payload.exit_code == 1
     assert "python test environment is missing" not in result.stderr
     assert "skipping runtime smoke for this vendor" in result.stderr
 
@@ -85,15 +86,15 @@ def test_vendor_runtime_smoke_writes_pitch_preflight_and_skips_cleanly(tmp_path:
     assert result.returncode == 0
     artifact_path = tmp_path / "preflight" / "pitch-preflight.json"
     assert artifact_path.exists()
-    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
-    assert payload["tool"] == "pitch-preflight"
-    assert payload["exit_code"] == 1
-    assert "not ready" in payload["result"]
-    assert payload["runtime"]["container_name"] == "hla2010-pitch-crc"
-    assert payload["ports"]["crc"]["port"] == 8989
-    assert payload["ports"]["fedpro"]["port"] == 15164
-    assert any(check["name"] == "crc_port" for check in payload["checks"])
-    assert any(check["name"] == "fedpro_port" for check in payload["checks"])
+    payload = PitchPreflightOutput.from_mapping(json.loads(artifact_path.read_text(encoding="utf-8")))
+    assert payload.tool == "pitch-preflight"
+    assert payload.exit_code == 1
+    assert "not ready" in payload.result
+    assert payload.runtime.container_name == "hla2010-pitch-crc"
+    assert payload.ports.crc.port == 8989
+    assert payload.ports.fedpro.port == 15164
+    assert any(check.name == "crc_port" for check in payload.checks)
+    assert any(check.name == "fedpro_port" for check in payload.checks)
     assert "skipping runtime smoke for this vendor" in result.stderr
 
 
@@ -111,7 +112,7 @@ def test_vendor_green_fails_strictly_when_pitch_preflight_is_blocked(tmp_path: P
     assert result.returncode != 0
     artifact_path = tmp_path / "preflight" / "pitch-preflight.json"
     assert artifact_path.exists()
-    payload = json.loads(artifact_path.read_text(encoding="utf-8"))
-    assert payload["tool"] == "pitch-preflight"
-    assert payload["exit_code"] == 1
+    payload = PitchPreflightOutput.from_mapping(json.loads(artifact_path.read_text(encoding="utf-8")))
+    assert payload.tool == "pitch-preflight"
+    assert payload.exit_code == 1
     assert "strict mode" in result.stderr

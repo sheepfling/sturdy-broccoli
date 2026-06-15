@@ -124,8 +124,17 @@ def _encode_callback_payload(method_name: str, args: tuple[Any, ...]) -> tuple[s
         return ("TIME_CONSTRAINED_ENABLED", _logical_time_name(args[0]), _logical_scalar(args[0]))
     if method_name == "timeAdvanceGrant":
         return ("TIME_ADVANCE_GRANT", _logical_time_name(args[0]), _logical_scalar(args[0]))
+    if method_name == "provideAttributeValueUpdate":
+        return (
+            "PROVIDE_ATTRIBUTE_VALUE_UPDATE",
+            str(int(args[0].value)),
+            handle_set_spec(args[1]),
+            encode_bytes(args[2]),
+        )
     if method_name == "requestRetraction":
         return ("REQUEST_RETRACTION", str(int(args[0].value)))
+    if method_name == "removeObjectInstance":
+        return ("REMOVE_OBJECT_INSTANCE", str(int(args[0].value)), encode_bytes(args[1]))
     if method_name == "synchronizationPointRegistrationSucceeded":
         return ("SYNC_POINT_REGISTRATION_SUCCEEDED", str(args[0]))
     if method_name == "synchronizationPointRegistrationFailed":
@@ -330,6 +339,12 @@ class HostedRTICommandProcessor:
             if handle is None:
                 return TransportResponse()
             return TransportResponse(fields=(str(int(handle.handle.value)),))
+        if command == "DELETE_OBJECT_INSTANCE":
+            self.rti.delete_object_instance(
+                ObjectInstanceHandle(int(fields[0])),
+                decode_bytes(str(fields[1])),
+            )
+            return TransportResponse()
         if command == "GET_INTERACTION_CLASS_HANDLE":
             handle = self.rti.get_interaction_class_handle(str(fields[0]))
             return TransportResponse(fields=(str(int(handle.value)),))
@@ -359,6 +374,20 @@ class HostedRTICommandProcessor:
             if handle is None:
                 return TransportResponse()
             return TransportResponse(fields=(str(int(handle.handle.value)),))
+        if command == "REQUEST_ATTRIBUTE_VALUE_UPDATE_OBJECT":
+            self.rti.request_attribute_value_update(
+                ObjectInstanceHandle(int(fields[0])),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+                decode_bytes(str(fields[2])),
+            )
+            return TransportResponse()
+        if command == "REQUEST_ATTRIBUTE_VALUE_UPDATE_CLASS":
+            self.rti.request_attribute_value_update(
+                ObjectClassHandle(int(fields[0])),
+                decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
+                decode_bytes(str(fields[2])),
+            )
+            return TransportResponse()
         if command == "ENABLE_TIME_REGULATION":
             self.rti.enable_time_regulation(_decode_logical_interval(str(fields[0]), fields[1]))
             return TransportResponse()
