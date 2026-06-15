@@ -54,7 +54,7 @@ EXPECTED_PACKAGES = {
     "hla2010-rti-python": PackageExpectation("rti-backend", frozenset({"python"}), "implementation-moved"),
     "hla2010-rti-certi": PackageExpectation(
         "rti-backend",
-        frozenset({"certi", "certi-jpype", "certi-py4j"}),
+        frozenset({"certi"}),
         "implementation-moved",
     ),
     "hla2010-rti-backend-common": PackageExpectation("backend-support", frozenset(), "implementation-moved"),
@@ -356,8 +356,6 @@ def test_package_split_pyprojects_have_expected_boundaries():
             assert entry_points["python"] == "hla2010_rti_python.plugin:plugin"
         if package_name == "hla2010-rti-certi":
             assert entry_points["certi"] == "hla2010_rti_certi.certi.plugin:plugin"
-            assert entry_points["certi-jpype"] == "hla2010_rti_certi.certi.plugin:certi_jpype_plugin"
-            assert entry_points["certi-py4j"] == "hla2010_rti_certi.certi.plugin:certi_py4j_plugin"
         if package_name == "hla2010-rti-java-jpype":
             assert entry_points["jpype"] == "hla2010_rti_java_jpype.plugin:plugin"
         if package_name == "hla2010-rti-java-py4j":
@@ -452,7 +450,7 @@ def test_vendor_java_backend_packages_depend_on_generic_bridge_packages():
     assert "hla2010-rti-transport-common==0.13.0" in python_dependencies
     assert "hla2010-rti-java-common==0.13.0" not in python_dependencies
     assert "hla2010-rti-backend-common==0.13.0" in certi_dependencies
-    assert "hla2010-rti-java-common==0.13.0" in certi_dependencies
+    assert "hla2010-rti-java-common==0.13.0" not in certi_dependencies
     assert "hla2010-rti-transport-common==0.13.0" in certi_dependencies
     assert "jpype1" not in pitch_jpype_dependencies
     assert "py4j" not in pitch_py4j_dependencies

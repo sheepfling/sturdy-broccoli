@@ -56,8 +56,6 @@ Primary sources:
 - `analysis/compliance/python_requirement_disposition.json`
 - `analysis/compliance/certi_requirement_disposition.json`
 - `analysis/compliance/certi-native_requirement_disposition.json`
-- `analysis/compliance/certi-jpype_requirement_disposition.json`
-- `analysis/compliance/certi-py4j_requirement_disposition.json`
 - `analysis/compliance/portico_requirement_disposition.json`
 - `analysis/compliance/portico-jpype_requirement_disposition.json`
 - `analysis/compliance/portico-py4j_requirement_disposition.json`
@@ -100,7 +98,7 @@ After the discovery summary:
 - Open `analysis/compliance/pitch_requirement_disposition.md` for aggregate Pitch family requirement dispositions and split-profile clause summaries.
 - Open `analysis/compliance/certi_requirement_disposition.md` for the aggregate CERTI family requirement disposition view.
 - Open `analysis/compliance/pitch-jpype_requirement_disposition.md` or `analysis/compliance/pitch-py4j_requirement_disposition.md` when you need backend-specific requirement rows for one Pitch bridge profile.
-- Open `analysis/compliance/certi-native_requirement_disposition.md`, `analysis/compliance/certi-jpype_requirement_disposition.md`, or `analysis/compliance/certi-py4j_requirement_disposition.md` when you need the generated explicit CERTI profile views.
+- Open `analysis/compliance/certi-native_requirement_disposition.md` when you need the generated explicit CERTI native-runtime profile view.
 - Open `analysis/compliance/portico_requirement_disposition.md`, `analysis/compliance/portico-jpype_requirement_disposition.md`, or `analysis/compliance/portico-py4j_requirement_disposition.md` when you need the generated explicit Portico requirement views; the JPype and Py4J profiles currently inherit the same family-level projection because Portico remains install-dependent and no profile-specific requirement evidence is generated yet.
 - Open `analysis/compliance/requirements_matrix_2010.csv` when you need clause and requirement rows with vendor notes merged into the spec catalog.
 - Open `analysis/compliance/vendor_discovery_backlog.md` when you want the ranked next vendor/backend discovery work across all current artifacts.
@@ -121,7 +119,7 @@ Recommended loop:
 Typical high-value backlog entries right now:
 
 - CERTI negotiated ownership divergence:
-  - use the backlog rows for `certi-native`, `certi-jpype`, and `certi-py4j`
+  - use the backlog row for `certi-native`
   - drill into `analysis/compliance/core_backend_matrix.md`
 - Pitch Section 8 query/time rows still `not-yet-matrixed`:
   - use `--backend pitch-jpype --section 8`
