@@ -1,0 +1,452 @@
+{
+  "package_count": 18,
+  "packages": {
+    "hla2010-fom-minimal-demo": {
+      "backend_names": [],
+      "declared_external_dependencies": [],
+      "declared_internal_dependencies": [
+        "hla2010-rti-runtime-common",
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_fom_minimal_demo",
+      "layer": 5,
+      "manifest_backend_names": [],
+      "manifest_role": "fom-example",
+      "manifest_status": "implementation-owned",
+      "may_depend_on": [
+        "hla2010-rti-runtime-common",
+        "hla2010-spec"
+      ],
+      "role": "fom-example",
+      "source_roots": [
+        "packages/hla2010-fom-minimal-demo/src/hla2010_fom_minimal_demo"
+      ]
+    },
+    "hla2010-fom-target-radar": {
+      "backend_names": [],
+      "declared_external_dependencies": [],
+      "declared_internal_dependencies": [
+        "hla2010-rti-backend-common",
+        "hla2010-rti-runtime-common",
+        "hla2010-spec",
+        "hla2010-verification-harness"
+      ],
+      "import_root": "hla2010_fom_target_radar",
+      "layer": 5,
+      "manifest_backend_names": [],
+      "manifest_role": "fom-example",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-rti-backend-common",
+        "hla2010-rti-runtime-common",
+        "hla2010-spec",
+        "hla2010-verification-harness"
+      ],
+      "role": "fom-example",
+      "source_roots": [
+        "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar"
+      ]
+    },
+    "hla2010-rti-backend-common": {
+      "backend_names": [],
+      "declared_external_dependencies": [],
+      "declared_internal_dependencies": [
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_rti_backend_common",
+      "layer": 1,
+      "manifest_backend_names": [],
+      "manifest_role": "backend-support",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-spec"
+      ],
+      "role": "backend-support",
+      "source_roots": [
+        "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common"
+      ]
+    },
+    "hla2010-rti-certi": {
+      "backend_names": [
+        "certi",
+        "certi-jpype",
+        "certi-py4j"
+      ],
+      "declared_external_dependencies": [],
+      "declared_internal_dependencies": [
+        "hla2010-rti-java-common",
+        "hla2010-rti-runtime-common",
+        "hla2010-rti-transport-common",
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_rti_certi",
+      "layer": 4,
+      "manifest_backend_names": [
+        "certi",
+        "certi-jpype",
+        "certi-py4j"
+      ],
+      "manifest_role": "rti-backend",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-rti-java-common",
+        "hla2010-rti-runtime-common",
+        "hla2010-rti-transport-common",
+        "hla2010-spec"
+      ],
+      "role": "rti-backend",
+      "source_roots": [
+        "packages/hla2010-rti-certi/src/hla2010_rti_certi"
+      ]
+    },
+    "hla2010-rti-java-common": {
+      "backend_names": [],
+      "declared_external_dependencies": [],
+      "declared_internal_dependencies": [
+        "hla2010-rti-backend-common",
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_rti_java_common",
+      "layer": 2,
+      "manifest_backend_names": [],
+      "manifest_role": "java-support",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-rti-backend-common",
+        "hla2010-rti-transport-common",
+        "hla2010-spec"
+      ],
+      "role": "java-support",
+      "source_roots": [
+        "packages/hla2010-rti-java-common/src/hla2010_rti_java_common"
+      ]
+    },
+    "hla2010-rti-java-jpype": {
+      "backend_names": [
+        "jpype"
+      ],
+      "declared_external_dependencies": [
+        "jpype1"
+      ],
+      "declared_internal_dependencies": [
+        "hla2010-rti-java-common",
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_rti_java_jpype",
+      "layer": 3,
+      "manifest_backend_names": [
+        "jpype"
+      ],
+      "manifest_role": "java-bridge",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-rti-java-common",
+        "hla2010-spec"
+      ],
+      "role": "java-bridge",
+      "source_roots": [
+        "packages/hla2010-rti-java-jpype/src/hla2010_rti_java_jpype"
+      ]
+    },
+    "hla2010-rti-java-py4j": {
+      "backend_names": [
+        "py4j"
+      ],
+      "declared_external_dependencies": [
+        "py4j"
+      ],
+      "declared_internal_dependencies": [
+        "hla2010-rti-java-common",
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_rti_java_py4j",
+      "layer": 3,
+      "manifest_backend_names": [
+        "py4j"
+      ],
+      "manifest_role": "java-bridge",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-rti-java-common",
+        "hla2010-spec"
+      ],
+      "role": "java-bridge",
+      "source_roots": [
+        "packages/hla2010-rti-java-py4j/src/hla2010_rti_java_py4j"
+      ]
+    },
+    "hla2010-rti-pitch-common": {
+      "backend_names": [],
+      "declared_external_dependencies": [],
+      "declared_internal_dependencies": [
+        "hla2010-rti-java-common",
+        "hla2010-rti-runtime-common",
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_rti_pitch_common",
+      "layer": 4,
+      "manifest_backend_names": [],
+      "manifest_role": "runtime-common",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-rti-java-common",
+        "hla2010-rti-runtime-common",
+        "hla2010-spec"
+      ],
+      "role": "runtime-common",
+      "source_roots": [
+        "packages/hla2010-rti-pitch-common/src/hla2010_rti_pitch_common"
+      ]
+    },
+    "hla2010-rti-pitch-jpype": {
+      "backend_names": [
+        "pitch-jpype"
+      ],
+      "declared_external_dependencies": [],
+      "declared_internal_dependencies": [
+        "hla2010-rti-java-common",
+        "hla2010-rti-java-jpype",
+        "hla2010-rti-pitch-common",
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_rti_pitch_jpype",
+      "layer": 5,
+      "manifest_backend_names": [
+        "pitch-jpype"
+      ],
+      "manifest_role": "rti-backend",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-rti-java-common",
+        "hla2010-rti-java-jpype",
+        "hla2010-rti-pitch-common",
+        "hla2010-spec"
+      ],
+      "role": "rti-backend",
+      "source_roots": [
+        "packages/hla2010-rti-pitch-jpype/src/hla2010_rti_pitch_jpype"
+      ]
+    },
+    "hla2010-rti-pitch-py4j": {
+      "backend_names": [
+        "pitch-py4j"
+      ],
+      "declared_external_dependencies": [],
+      "declared_internal_dependencies": [
+        "hla2010-rti-java-common",
+        "hla2010-rti-java-py4j",
+        "hla2010-rti-pitch-common",
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_rti_pitch_py4j",
+      "layer": 5,
+      "manifest_backend_names": [
+        "pitch-py4j"
+      ],
+      "manifest_role": "rti-backend",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-rti-java-common",
+        "hla2010-rti-java-py4j",
+        "hla2010-rti-pitch-common",
+        "hla2010-spec"
+      ],
+      "role": "rti-backend",
+      "source_roots": [
+        "packages/hla2010-rti-pitch-py4j/src/hla2010_rti_pitch_py4j"
+      ]
+    },
+    "hla2010-rti-portico": {
+      "backend_names": [
+        "portico-jpype",
+        "portico-py4j"
+      ],
+      "declared_external_dependencies": [],
+      "declared_internal_dependencies": [
+        "hla2010-rti-java-common",
+        "hla2010-rti-java-jpype",
+        "hla2010-rti-java-py4j",
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_rti_portico",
+      "layer": 4,
+      "manifest_backend_names": [
+        "portico-jpype",
+        "portico-py4j"
+      ],
+      "manifest_role": "rti-backend",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-rti-java-common",
+        "hla2010-rti-java-jpype",
+        "hla2010-rti-java-py4j",
+        "hla2010-spec"
+      ],
+      "role": "rti-backend",
+      "source_roots": [
+        "packages/hla2010-rti-portico/src/hla2010_rti_portico"
+      ]
+    },
+    "hla2010-rti-python": {
+      "backend_names": [
+        "python"
+      ],
+      "declared_external_dependencies": [],
+      "declared_internal_dependencies": [
+        "hla2010-rti-backend-common",
+        "hla2010-rti-transport-common",
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_rti_python",
+      "layer": 2,
+      "manifest_backend_names": [
+        "python"
+      ],
+      "manifest_role": "rti-backend",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-rti-backend-common",
+        "hla2010-spec"
+      ],
+      "role": "rti-backend",
+      "source_roots": [
+        "packages/hla2010-rti-python/src/hla2010_rti_python"
+      ]
+    },
+    "hla2010-rti-runtime-common": {
+      "backend_names": [],
+      "declared_external_dependencies": [],
+      "declared_internal_dependencies": [
+        "hla2010-rti-backend-common",
+        "hla2010-rti-transport-common",
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_rti_runtime_common",
+      "layer": 3,
+      "manifest_backend_names": [],
+      "manifest_role": "runtime-support",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-rti-backend-common",
+        "hla2010-rti-transport-common",
+        "hla2010-spec"
+      ],
+      "role": "runtime-support",
+      "source_roots": [
+        "packages/hla2010-rti-runtime-common/src/hla2010_rti_runtime_common"
+      ]
+    },
+    "hla2010-rti-transport-common": {
+      "backend_names": [],
+      "declared_external_dependencies": [],
+      "declared_internal_dependencies": [
+        "hla2010-rti-backend-common",
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_rti_transport_common",
+      "layer": 2,
+      "manifest_backend_names": [],
+      "manifest_role": "transport-support",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-rti-backend-common",
+        "hla2010-spec"
+      ],
+      "role": "transport-support",
+      "source_roots": [
+        "packages/hla2010-rti-transport-common/src/hla2010_rti_transport_common"
+      ]
+    },
+    "hla2010-rti-transport-grpc": {
+      "backend_names": [],
+      "declared_external_dependencies": [
+        "grpcio"
+      ],
+      "declared_internal_dependencies": [
+        "hla2010-rti-backend-common",
+        "hla2010-rti-runtime-common",
+        "hla2010-rti-transport-common",
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_rti_transport_grpc",
+      "layer": 4,
+      "manifest_backend_names": [],
+      "manifest_role": "transport",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-rti-backend-common",
+        "hla2010-rti-runtime-common",
+        "hla2010-rti-transport-common",
+        "hla2010-spec"
+      ],
+      "role": "transport",
+      "source_roots": [
+        "packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc"
+      ]
+    },
+    "hla2010-rti-transport-rest": {
+      "backend_names": [],
+      "declared_external_dependencies": [],
+      "declared_internal_dependencies": [
+        "hla2010-rti-backend-common",
+        "hla2010-rti-runtime-common",
+        "hla2010-rti-transport-common",
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_rti_transport_rest",
+      "layer": 4,
+      "manifest_backend_names": [],
+      "manifest_role": "transport",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-rti-backend-common",
+        "hla2010-rti-runtime-common",
+        "hla2010-rti-transport-common",
+        "hla2010-spec"
+      ],
+      "role": "transport",
+      "source_roots": [
+        "packages/hla2010-rti-transport-rest/src/hla2010_rti_transport_rest"
+      ]
+    },
+    "hla2010-spec": {
+      "backend_names": [],
+      "declared_external_dependencies": [],
+      "declared_internal_dependencies": [],
+      "import_root": "hla2010",
+      "layer": 0,
+      "manifest_backend_names": [],
+      "manifest_role": "core-spec",
+      "manifest_status": "implementation-owned",
+      "may_depend_on": [],
+      "role": "core-spec",
+      "source_roots": [
+        "packages/hla2010-spec/src/hla2010"
+      ]
+    },
+    "hla2010-verification-harness": {
+      "backend_names": [],
+      "declared_external_dependencies": [],
+      "declared_internal_dependencies": [
+        "hla2010-rti-backend-common",
+        "hla2010-rti-runtime-common",
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_verification_harness",
+      "layer": 4,
+      "manifest_backend_names": [],
+      "manifest_role": "verification-harness",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-rti-backend-common",
+        "hla2010-rti-runtime-common",
+        "hla2010-spec"
+      ],
+      "role": "verification-harness",
+      "source_roots": [
+        "packages/hla2010-verification-harness/src/hla2010_verification_harness"
+      ]
+    }
+  },
+  "source": "packages/package_graph.yaml"
+}

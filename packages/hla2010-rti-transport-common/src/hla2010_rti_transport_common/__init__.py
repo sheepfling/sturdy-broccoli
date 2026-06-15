@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from .transport import RTITransport, SubprocessLineTransport, TransportError, TransportRequest, TransportResponse
 from .transport_registry import RTITransportSpec, coerce_transport_spec, register_transport_factory
+from .hosted_backend import HostedRTIBackend, HostedRTIBackendConfig
 from .transport_codecs import (
     decode_bytes,
     decode_handle_set,
@@ -21,6 +22,8 @@ __all__ = [
     "TransportError",
     "TransportRequest",
     "TransportResponse",
+    "HostedRTIBackend",
+    "HostedRTIBackendConfig",
     "coerce_transport_spec",
     "decode_bytes",
     "decode_handle_set",

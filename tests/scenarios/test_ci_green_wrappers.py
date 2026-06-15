@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 from tests.typed_json_models import (
@@ -430,6 +431,49 @@ raise SystemExit(0)
         assert str(ROOT / "src") in pythonpath
         assert str(ROOT / "packages/hla2010-fom-target-radar/src") in pythonpath
         assert str(ROOT / "packages/hla2010-rti-transport-grpc/src") in pythonpath
+
+
+def test_tools_python_verify_routes_resolves_python_command_from_path(tmp_path: Path) -> None:
+    fake_bin_dir = tmp_path / "bin"
+    fake_bin_dir.mkdir()
+    fake_python = fake_bin_dir / "python3"
+    log_path = tmp_path / "calls.jsonl"
+    fake_python.write_text(
+        f"""#!{sys.executable}
+from __future__ import annotations
+
+import json
+import os
+import sys
+from pathlib import Path
+
+log_path = Path(os.environ["HLA2010_TEST_LOG_PATH"])
+argv = sys.argv[1:]
+log_path.parent.mkdir(parents=True, exist_ok=True)
+with log_path.open("a", encoding="utf-8") as handle:
+    handle.write(json.dumps({{"argv": argv, "pythonpath": os.environ.get("PYTHONPATH", "")}}) + "\\n")
+raise SystemExit(0)
+""",
+        encoding="utf-8",
+    )
+    fake_python.chmod(0o755)
+    env = os.environ.copy()
+    env["PATH"] = f"{fake_bin_dir}{os.pathsep}{env['PATH']}"
+    env["HLA2010_PYTHON_VERIFY_ROUTES_PYTHON"] = "python3"
+    env["HLA2010_TEST_LOG_PATH"] = str(log_path)
+
+    result = subprocess.run(
+        ["bash", "tools/python", "verify-routes"],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout or result.stderr
+    calls = [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
+    assert len(calls) == 5
 
 
 def test_tools_python_verify_routes_preflight_can_delegate(tmp_path: Path) -> None:

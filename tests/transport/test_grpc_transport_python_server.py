@@ -4,6 +4,7 @@ from importlib import resources
 from pathlib import Path
 
 import pytest
+pytest.importorskip("grpc")
 
 from hla2010_rti_backend_common import RecordingFederateAmbassador
 from hla2010_rti_backend_common import BackendUnavailableError
@@ -34,8 +35,8 @@ def _start_grpc_pair():
     engine = InMemoryRTIEngine()
     left_server = start_python_grpc_server(engine=engine)
     right_server = start_python_grpc_server(engine=engine)
-    left = create_rti_ambassador("certi", transport={"kind": "grpc", "target": left_server.target})
-    right = create_rti_ambassador("certi", transport={"kind": "grpc", "target": right_server.target})
+    left = create_rti_ambassador("python", transport={"kind": "grpc", "target": left_server.target})
+    right = create_rti_ambassador("python", transport={"kind": "grpc", "target": right_server.target})
     return left_server, right_server, left, right
 
 
@@ -75,6 +76,8 @@ def test_grpc_transport_can_host_python_rti_exchange_end_to_end(time_factory_nam
     publisher = subscriber = None
     try:
         publisher_server, subscriber_server, publisher, subscriber = _start_grpc_pair()
+        assert publisher.backend_info.kind == "python/hosted"
+        assert subscriber.backend_info.kind == "python/hosted"
 
         publisher_federate = RecordingFederateAmbassador()
         subscriber_federate = RecordingFederateAmbassador()

@@ -59,6 +59,15 @@ hla2010_shell_run_workspace_python() {
   local python_bin="$1"
   shift
   local workspace_pythonpath
+  if [[ "$python_bin" == */* ]]; then
+    if [[ ! -x "$python_bin" ]]; then
+      python_bin="$(hla2010_shell_python_bin)"
+    fi
+  elif hla2010_shell_have "$python_bin"; then
+    python_bin="$(command -v "$python_bin")"
+  else
+    python_bin="$(hla2010_shell_python_bin)"
+  fi
   workspace_pythonpath="$(hla2010_shell_workspace_pythonpath)"
   PYTHONPATH="${workspace_pythonpath}${PYTHONPATH:+:$PYTHONPATH}" "$python_bin" "$@"
 }

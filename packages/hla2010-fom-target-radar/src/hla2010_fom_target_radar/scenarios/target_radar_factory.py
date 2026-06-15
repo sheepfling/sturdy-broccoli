@@ -87,8 +87,8 @@ def make_target_radar_factory(
             if role not in pair_by_role:
                 pair_by_role.update(
                     {
-                        "target": create_rti_ambassador("certi", transport={"kind": "grpc", "target": target_server.target}),
-                        "radar": create_rti_ambassador("certi", transport={"kind": "grpc", "target": radar_server.target}),
+                        "target": create_rti_ambassador("python", transport={"kind": "grpc", "target": target_server.target}),
+                        "radar": create_rti_ambassador("python", transport={"kind": "grpc", "target": radar_server.target}),
                     }
                 )
                 references["open"] = len(pair_by_role)

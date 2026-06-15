@@ -430,6 +430,7 @@ def test_vendor_java_backend_packages_depend_on_generic_bridge_packages():
     assert "hla2010-rti-java-jpype==0.13.0" in portico_dependencies
     assert "hla2010-rti-java-py4j==0.13.0" in portico_dependencies
     assert "hla2010-rti-backend-common==0.13.0" in python_dependencies
+    assert "hla2010-rti-transport-common==0.13.0" in python_dependencies
     assert "hla2010-rti-java-common==0.13.0" not in python_dependencies
     assert "hla2010-rti-java-common==0.13.0" in certi_dependencies
     assert "hla2010-rti-transport-common==0.13.0" in certi_dependencies

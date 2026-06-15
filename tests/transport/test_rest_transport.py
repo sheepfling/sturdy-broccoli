@@ -133,8 +133,8 @@ def test_rest_transport_can_host_python_rti_exchange_end_to_end(time_factory_nam
     subscriber_server = start_python_rest_server(engine=engine)
     publisher = subscriber = None
     try:
-        publisher = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": publisher_server.base_url})
-        subscriber = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": subscriber_server.base_url})
+        publisher = create_rti_ambassador("python", transport={"kind": "rest", "base_url": publisher_server.base_url})
+        subscriber = create_rti_ambassador("python", transport={"kind": "rest", "base_url": subscriber_server.base_url})
         publisher_federate = RecordingFederateAmbassador()
         subscriber_federate = RecordingFederateAmbassador()
         config = TwoFederateExchangeConfig(
@@ -192,8 +192,8 @@ def test_rest_transport_polling_contract_drains_buffered_callbacks():
     subscriber_server = start_python_rest_server(engine=engine)
     publisher = subscriber = None
     try:
-        publisher = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": publisher_server.base_url})
-        subscriber = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": subscriber_server.base_url})
+        publisher = create_rti_ambassador("python", transport={"kind": "rest", "base_url": publisher_server.base_url})
+        subscriber = create_rti_ambassador("python", transport={"kind": "rest", "base_url": subscriber_server.base_url})
         publisher_federate = RecordingFederateAmbassador()
         subscriber_federate = RecordingFederateAmbassador()
         publisher.connect(publisher_federate, CallbackModel.HLA_EVOKED)
@@ -245,8 +245,8 @@ def test_rest_transport_can_host_python_rti_synchronization_end_to_end():
     wing_server = start_python_rest_server(engine=engine)
     leader = wing = None
     try:
-        leader = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": leader_server.base_url})
-        wing = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": wing_server.base_url})
+        leader = create_rti_ambassador("python", transport={"kind": "rest", "base_url": leader_server.base_url})
+        wing = create_rti_ambassador("python", transport={"kind": "rest", "base_url": wing_server.base_url})
         leader_federate = RecordingFederateAmbassador()
         wing_federate = RecordingFederateAmbassador()
         config = SynchronizationScenarioConfig(
@@ -291,8 +291,8 @@ def test_rest_transport_can_host_python_rti_fm_lifecycle_end_to_end():
     wing_server = start_python_rest_server(engine=engine)
     leader = wing = None
     try:
-        leader = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": leader_server.base_url})
-        wing = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": wing_server.base_url})
+        leader = create_rti_ambassador("python", transport={"kind": "rest", "base_url": leader_server.base_url})
+        wing = create_rti_ambassador("python", transport={"kind": "rest", "base_url": wing_server.base_url})
         leader_federate = RecordingFederateAmbassador()
         wing_federate = RecordingFederateAmbassador()
         federation_name = "RestHostedLifecycleFederation"
@@ -326,8 +326,8 @@ def test_rest_transport_can_host_python_rti_save_restore_end_to_end():
     wing_server = start_python_rest_server(engine=engine)
     leader = wing = None
     try:
-        leader = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": leader_server.base_url})
-        wing = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": wing_server.base_url})
+        leader = create_rti_ambassador("python", transport={"kind": "rest", "base_url": leader_server.base_url})
+        wing = create_rti_ambassador("python", transport={"kind": "rest", "base_url": wing_server.base_url})
         leader_federate = RecordingFederateAmbassador()
         wing_federate = RecordingFederateAmbassador()
         federation_name = "RestHostedSaveRestoreFederation"
@@ -422,8 +422,8 @@ def test_rest_transport_can_host_python_rti_ownership_end_to_end():
     acquirer_server = start_python_rest_server(engine=engine)
     owner = acquirer = None
     try:
-        owner = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": owner_server.base_url})
-        acquirer = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": acquirer_server.base_url})
+        owner = create_rti_ambassador("python", transport={"kind": "rest", "base_url": owner_server.base_url})
+        acquirer = create_rti_ambassador("python", transport={"kind": "rest", "base_url": acquirer_server.base_url})
         owner_federate = RecordingFederateAmbassador()
         acquirer_federate = RecordingFederateAmbassador()
         config = OwnershipScenarioConfig(
@@ -468,8 +468,8 @@ def test_rest_transport_can_host_python_rti_negotiated_ownership_end_to_end():
     acquirer_server = start_python_rest_server(engine=engine)
     owner = acquirer = None
     try:
-        owner = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": owner_server.base_url})
-        acquirer = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": acquirer_server.base_url})
+        owner = create_rti_ambassador("python", transport={"kind": "rest", "base_url": owner_server.base_url})
+        acquirer = create_rti_ambassador("python", transport={"kind": "rest", "base_url": acquirer_server.base_url})
         owner_federate = RecordingFederateAmbassador()
         acquirer_federate = RecordingFederateAmbassador()
         config = NegotiatedOwnershipScenarioConfig(

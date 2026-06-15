@@ -6,7 +6,6 @@ import uuid
 
 import pytest
 
-from hla2010_rti_transport_grpc.python_server import start_python_grpc_server
 from hla2010.enums import OrderType
 from hla2010_rti_runtime_common import create_rti_ambassador
 from hla2010_verification_harness import (
@@ -26,6 +25,11 @@ from hla2010.types import TimeQueryReturn
 from hla2010_rti_python import InMemoryRTIEngine
 from hla2010_rti_transport_rest.rest_transport_host import start_python_rest_server
 
+try:
+    from hla2010_rti_transport_grpc.python_server import start_python_grpc_server
+except ModuleNotFoundError:
+    start_python_grpc_server = None
+
 
 @dataclass(frozen=True)
 class BackendCase:
@@ -42,6 +46,8 @@ BACKEND_CASES = (
 
 def _case_param(case: BackendCase):
     marks = [pytest.mark.requires_loopback_server] if case.loopback_required else []
+    if case.id == "grpc-hosted-python" and start_python_grpc_server is None:
+        marks.append(pytest.mark.skip(reason="grpc-hosted-python backend requires grpcio"))
     return pytest.param(case, id=case.id, marks=marks)
 
 
@@ -61,18 +67,20 @@ def backend_pair(request):
             right_server = start_python_rest_server(engine=engine)
             stack.callback(right_server.close)
             stack.callback(left_server.close)
-            left = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": left_server.base_url})
-            right = create_rti_ambassador("certi", transport={"kind": "rest", "base_url": right_server.base_url})
+            left = create_rti_ambassador("python", transport={"kind": "rest", "base_url": left_server.base_url})
+            right = create_rti_ambassador("python", transport={"kind": "rest", "base_url": right_server.base_url})
             yield case.id, left, right
             return
         if case.id == "grpc-hosted-python":
+            if start_python_grpc_server is None:
+                pytest.skip("grpc-hosted-python backend requires grpcio")
             engine = InMemoryRTIEngine()
             left_server = start_python_grpc_server(engine=engine)
             right_server = start_python_grpc_server(engine=engine)
             stack.callback(right_server.close)
             stack.callback(left_server.close)
-            left = create_rti_ambassador("certi", transport={"kind": "grpc", "target": left_server.target})
-            right = create_rti_ambassador("certi", transport={"kind": "grpc", "target": right_server.target})
+            left = create_rti_ambassador("python", transport={"kind": "grpc", "target": left_server.target})
+            right = create_rti_ambassador("python", transport={"kind": "grpc", "target": right_server.target})
             yield case.id, left, right
             return
         raise AssertionError(f"unexpected backend case {case.id}")
