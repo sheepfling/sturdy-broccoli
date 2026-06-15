@@ -102,7 +102,7 @@ done
 build_helper_deps=("setuptools>=68" "wheel" "packaging>=24")
 helper_deps=()
 if [[ "$want_pytest" == "1" ]]; then
-  helper_deps+=("pytest" "py" "matplotlib" "fonttools" "kiwisolver" "grpcio" "protobuf")
+  helper_deps+=("pytest" "py" "matplotlib" "fonttools" "kiwisolver" "grpcio" "protobuf" "pyyaml")
 fi
 if [[ "$want_qa" == "1" ]]; then
   helper_deps+=("ruff" "pyright" "typing_extensions")

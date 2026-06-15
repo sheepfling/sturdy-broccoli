@@ -43,7 +43,7 @@ jobs:
           java-version: "21"
       - name: Run repo-green lane
         env:
-          HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
+          HLA2010_BOOTSTRAP_EXTRAS: qa
         run: bash ./scripts/ci/repo_green.sh
       - name: Publish repo-green runtime summary
         if: always()
@@ -70,6 +70,8 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install Python QA environment
+        env:
+          HLA2010_BOOTSTRAP_EXTRAS: qa
         run: ./scripts/ci/install_python.sh
       - name: Run seed suite
         run: ./scripts/ci/seed_suite.sh

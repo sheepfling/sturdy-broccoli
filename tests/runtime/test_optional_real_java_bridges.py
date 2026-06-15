@@ -9,7 +9,7 @@ import pytest
 from hla2010_rti_java_common import discover_java_tool
 from hla2010_verification_harness import run_basic_federate_scenario
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 BUILD_SCRIPT = PROJECT_ROOT / "java_shims" / "hla-rti1516e-shim" / "tools" / "build_java_shim.py"
 
 
