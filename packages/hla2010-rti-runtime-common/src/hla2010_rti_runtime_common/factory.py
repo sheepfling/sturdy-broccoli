@@ -1,6 +1,8 @@
 """Shared RTI backend registry and ambassador factory helpers."""
 from __future__ import annotations
 
+import importlib
+from dataclasses import dataclass, field
 from importlib import metadata
 from typing import Any, Mapping
 
@@ -12,6 +14,15 @@ from hla2010_rti_transport_common import register_transport_factory
 _BACKEND_FACTORIES: dict[str, Any] = {}
 _BACKEND_PLUGINS: dict[str, RTIBackendPlugin] = {}
 _BACKEND_PLUGINS_LOADED = False
+_SOURCE_CHECKOUT_PLUGIN_MODULES: tuple[str, ...] = (
+    "hla2010_rti_python.plugin",
+    "hla2010_rti_java_jpype.plugin",
+    "hla2010_rti_java_py4j.plugin",
+    "hla2010_rti_pitch_jpype.plugin",
+    "hla2010_rti_pitch_py4j.plugin",
+    "hla2010_rti_portico.plugin",
+    "hla2010_rti_certi.certi.plugin",
+)
 
 
 def _normalize_kind(kind: str) -> str:
@@ -38,7 +49,10 @@ def _load_backend_plugins() -> None:
     global _BACKEND_PLUGINS_LOADED
     if _BACKEND_PLUGINS_LOADED:
         return
-    for plugin in _iter_entry_point_backend_plugins():
+    loaded_plugins = _iter_entry_point_backend_plugins()
+    if not loaded_plugins:
+        loaded_plugins = _iter_source_checkout_backend_plugins()
+    for plugin in loaded_plugins:
         register_backend_plugin(plugin)
     _BACKEND_PLUGINS_LOADED = True
 
@@ -59,6 +73,22 @@ def _iter_entry_point_backend_plugins() -> list[RTIBackendPlugin]:
         if not isinstance(plugin, RTIBackendPlugin):
             raise TypeError(f"Backend entry point {entry_point.name!r} did not return RTIBackendPlugin")
         plugins.append(plugin)
+    return plugins
+
+
+def _iter_source_checkout_backend_plugins() -> list[RTIBackendPlugin]:
+    plugins: list[RTIBackendPlugin] = []
+    for module_name in _SOURCE_CHECKOUT_PLUGIN_MODULES:
+        try:
+            module = importlib.import_module(module_name)
+        except ModuleNotFoundError as exc:
+            if exc.name == module_name or module_name.startswith(f"{exc.name}."):
+                continue
+            raise
+        for plugin in getattr(module, "backend_plugins", lambda: ())():
+            if not isinstance(plugin, RTIBackendPlugin):
+                raise TypeError(f"Source checkout backend module {module_name!r} returned a non-plugin object")
+            plugins.append(plugin)
     return plugins
 
 
