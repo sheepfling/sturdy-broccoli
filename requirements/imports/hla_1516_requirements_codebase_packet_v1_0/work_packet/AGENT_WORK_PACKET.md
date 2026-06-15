@@ -1,8 +1,8 @@
-# HLA 1516-2010 Requirements Codebase Integration Work Packet
+# IEEE 1516-2010 (2010 edition) / IEEE 1516.1-2010 (2010 edition) / IEEE 1516.2-2010 (2010 edition) Requirements Codebase Integration Work Packet
 
 ## Objective
 
-Organize the HLA 1516 requirements artifacts into the codebase and connect them to implementation, tests, CI, and generated documentation.
+Organize the IEEE 1516-2010 (2010 edition), IEEE 1516.1-2010 (2010 edition), and IEEE 1516.2-2010 (2010 edition) requirements artifacts into the codebase and connect them to implementation, tests, CI, and generated documentation.
 
 This packet assumes the generated catalog is an engineering requirements baseline, not a certified legal/compliance extraction. The agent should preserve that caveat in repository docs and track peer-review status separately from implementation status.
 
@@ -64,7 +64,7 @@ Create a requirements schema contract and validation command. At minimum, valida
 - `test_id` is unique or intentionally many-to-one;
 - every verification `requirement_id` exists in the master catalog;
 - every P0/P1 requirement has a `verification_method`;
-- clause tracker rows exist for IEEE 1516, 1516.1, and 1516.2 major clauses;
+- clause tracker rows exist for IEEE 1516-2010 (2010 edition), IEEE 1516.1-2010 (2010 edition), and IEEE 1516.2-2010 (2010 edition) major clauses;
 - manifest checksums match committed artifacts.
 
 ### Phase 3 — Test traceability

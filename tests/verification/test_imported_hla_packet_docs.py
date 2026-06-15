@@ -23,7 +23,7 @@ def test_imported_hla_packet_markdown_views_are_generated_with_expected_families
     }
     assert "engineering baseline" in written["README.md"].read_text(encoding="utf-8")
     assert "Imported Packet Requirements By Standard" in written["by_standard.md"].read_text(encoding="utf-8")
-    assert "IEEE 1516.1-2010 Clause 4" in written["by_clause.md"].read_text(encoding="utf-8")
+    assert "IEEE 1516.1-2010 (2010 edition) Clause 4" in written["by_clause.md"].read_text(encoding="utf-8")
     assert "## CAP-FW" in written["by_capability.md"].read_text(encoding="utf-8")
     assert "By Service Group" in written["by_service_group.md"].read_text(encoding="utf-8")
 

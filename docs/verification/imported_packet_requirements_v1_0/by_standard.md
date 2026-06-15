@@ -2,7 +2,7 @@
 
 The imported v1.0 packet is an engineering baseline, not a certified paragraph-by-paragraph compliance extraction. Use these generated views for harmonization and review, not as a substitute for source-PDF peer review.
 
-## IEEE 1516-2010
+## IEEE 1516-2010 (2010 edition)
 
 - Requirement rows: 53
 - Clauses represented: 16
@@ -27,7 +27,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | Annex A | 1 | CAP-FW |
 | Annex B | 1 | CAP-FW |
 
-## IEEE 1516.1-2010
+## IEEE 1516.1-2010 (2010 edition)
 
 - Requirement rows: 3524
 - Clauses represented: 204
@@ -240,7 +240,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | Annex F | 1 | CAP-XML |
 | Annex G | 1 | CAP-MOM |
 
-## IEEE 1516.2-2010
+## IEEE 1516.2-2010 (2010 edition)
 
 - Requirement rows: 426
 - Clauses represented: 34

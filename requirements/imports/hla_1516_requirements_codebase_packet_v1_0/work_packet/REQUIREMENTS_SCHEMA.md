@@ -32,7 +32,7 @@ Required columns:
 Minimum validation rules:
 
 - `requirement_id` must be nonempty and unique.
-- `standard` should be one of IEEE 1516-2010, IEEE 1516.1-2010, IEEE 1516.2-2010, or a clearly documented artifact/binding source.
+- `standard` should be one of IEEE 1516-2010 (2010 edition), IEEE 1516.1-2010 (2010 edition), IEEE 1516.2-2010 (2010 edition), or a clearly documented artifact/binding source.
 - `priority` should be a bounded categorical value such as P0, P1, P2, P3.
 - `status` should be a bounded categorical value such as Draft, Reviewed, Implemented, Verified, Deferred, or Superseded.
 - `normative_keyword` should preserve shall/shall not/should/may/derived/artifact when known.

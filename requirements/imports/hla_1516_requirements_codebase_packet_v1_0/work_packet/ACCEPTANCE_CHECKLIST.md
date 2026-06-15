@@ -8,7 +8,7 @@
 - [ ] Requirements schema documented.
 - [ ] Requirements lint test validates required columns and unique IDs.
 - [ ] Verification matrix lint test validates all referenced `requirement_id` values exist.
-- [ ] Clause tracker lint test confirms all major IEEE 1516, 1516.1, and 1516.2 clauses are represented.
+- [ ] Clause tracker lint test confirms all major IEEE 1516-2010 (2010 edition), IEEE 1516.1-2010 (2010 edition), and IEEE 1516.2-2010 (2010 edition) clauses are represented.
 - [ ] Generated markdown documentation can be produced from the catalog.
 - [ ] Clause 4 and Clause 5 implementation tests include requirement IDs.
 - [ ] CI runs requirements linting before implementation tests.

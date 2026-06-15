@@ -178,9 +178,9 @@ def test_imported_hla_packet_master_csv_matches_schema_contract_and_known_source
     assert len(requirement_ids) == len(set(requirement_ids))
 
     assert {row.standard.strip() for row in rows} == {
-        "IEEE 1516-2010",
-        "IEEE 1516.1-2010",
-        "IEEE 1516.2-2010",
+        "IEEE 1516-2010 (2010 edition)",
+        "IEEE 1516.1-2010 (2010 edition)",
+        "IEEE 1516.2-2010 (2010 edition)",
     }
     assert {row.priority.strip() for row in rows} <= {"P0", "P1", "P2", "P3"}
     assert {row.status.strip() for row in rows} == {"Draft"}
@@ -200,7 +200,7 @@ def test_imported_hla_packet_master_csv_matches_schema_contract_and_known_source
         if row.priority.strip() in {"P0", "P1"}
     )
     assert packet.requirements_by_id["HLA1516-FW-FW_SCOPE-001"].feature == "FW-SCOPE"
-    assert packet.requirements_by_standard["IEEE 1516.1-2010"]
+    assert packet.requirements_by_standard["IEEE 1516.1-2010 (2010 edition)"]
     assert packet.requirements_by_clause["1.1"]
     assert packet.requirements_by_capability["CAP-FW"]
     assert packet.requirements_by_feature["FW-SCOPE"]
@@ -240,9 +240,9 @@ def test_imported_hla_packet_clause_tracker_covers_major_standard_areas():
     assert list(rows[0].__dataclass_fields__.keys()) == CLAUSE_TRACKER_COLUMNS
 
     assert {row.standard.strip() for row in rows} == {
-        "IEEE 1516-2010",
-        "IEEE 1516.1-2010",
-        "IEEE 1516.2-2010",
+        "IEEE 1516-2010 (2010 edition)",
+        "IEEE 1516.1-2010 (2010 edition)",
+        "IEEE 1516.2-2010 (2010 edition)",
     }
     assert {row.priority.strip() for row in rows} <= {"P0", "P1", "P2", "P3"}
     assert {row.normative_status.strip() for row in rows} <= {"normative", "informative"}
@@ -253,20 +253,20 @@ def test_imported_hla_packet_clause_tracker_covers_major_standard_areas():
 
     tracker_pairs = {(row.standard.strip(), row.clause.strip()) for row in rows}
     assert {
-        ("IEEE 1516-2010", "5"),
-        ("IEEE 1516-2010", "6"),
-        ("IEEE 1516.1-2010", "4"),
-        ("IEEE 1516.1-2010", "5"),
-        ("IEEE 1516.1-2010", "6"),
-        ("IEEE 1516.1-2010", "7"),
-        ("IEEE 1516.1-2010", "8"),
-        ("IEEE 1516.1-2010", "9"),
-        ("IEEE 1516.1-2010", "10"),
-        ("IEEE 1516.1-2010", "11"),
-        ("IEEE 1516.2-2010", "4"),
-        ("IEEE 1516.2-2010", "5"),
-        ("IEEE 1516.2-2010", "6"),
-        ("IEEE 1516.2-2010", "7"),
+        ("IEEE 1516-2010 (2010 edition)", "5"),
+        ("IEEE 1516-2010 (2010 edition)", "6"),
+        ("IEEE 1516.1-2010 (2010 edition)", "4"),
+        ("IEEE 1516.1-2010 (2010 edition)", "5"),
+        ("IEEE 1516.1-2010 (2010 edition)", "6"),
+        ("IEEE 1516.1-2010 (2010 edition)", "7"),
+        ("IEEE 1516.1-2010 (2010 edition)", "8"),
+        ("IEEE 1516.1-2010 (2010 edition)", "9"),
+        ("IEEE 1516.1-2010 (2010 edition)", "10"),
+        ("IEEE 1516.1-2010 (2010 edition)", "11"),
+        ("IEEE 1516.2-2010 (2010 edition)", "4"),
+        ("IEEE 1516.2-2010 (2010 edition)", "5"),
+        ("IEEE 1516.2-2010 (2010 edition)", "6"),
+        ("IEEE 1516.2-2010 (2010 edition)", "7"),
     } <= tracker_pairs
 
 
@@ -288,8 +288,8 @@ def test_imported_hla_packet_loader_covers_remaining_canonical_csv_families():
     assert len(packet.clause6_11_detailed_rows) == 1223
     assert len(packet.omt_xml_detailed_rows) == 1292
     assert packet.delta_rows[0].requirement_id.startswith("HLA")
-    assert packet.clauses5_11_detailed_rows[0].standard == "IEEE 1516.1-2010"
-    assert packet.omt_xml_detailed_rows[-1].standard == "IEEE 1516.2-2010"
+    assert packet.clauses5_11_detailed_rows[0].standard == "IEEE 1516.1-2010 (2010 edition)"
+    assert packet.omt_xml_detailed_rows[-1].standard == "IEEE 1516.2-2010 (2010 edition)"
 
     assert packet.cpp_api_rows
     assert list(packet.cpp_api_rows[0].__dataclass_fields__.keys()) == CPP_API_COLUMNS

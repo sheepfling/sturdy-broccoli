@@ -2,7 +2,7 @@
 
 The imported v1.0 packet is an engineering baseline, not a certified paragraph-by-paragraph compliance extraction. Use these generated views for harmonization and review, not as a substitute for source-PDF peer review.
 
-## IEEE 1516-2010 Clause 1.1
+## IEEE 1516-2010 (2010 edition) Clause 1.1
 
 - Requirement rows: 1
 - Source titles: Framework and Rules
@@ -12,7 +12,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|---|
 | HLA1516-FW-FW_SCOPE-001 | FW_RULE_DETAIL | FW-SCOPE | - | P1 |
 
-## IEEE 1516-2010 Clause 1.2
+## IEEE 1516-2010 (2010 edition) Clause 1.2
 
 - Requirement rows: 1
 - Source titles: Framework and Rules
@@ -22,7 +22,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|---|
 | HLA1516-FW-FW_PURPOSE-002 | FW_RULE_DETAIL | FW-PURPOSE | - | P1 |
 
-## IEEE 1516-2010 Clause 1.3
+## IEEE 1516-2010 (2010 edition) Clause 1.3
 
 - Requirement rows: 1
 - Source titles: Framework and Rules
@@ -32,7 +32,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|---|
 | HLA1516-FW-FW_HLA_COMPONENTS-003 | FW_RULE_DETAIL | FW-HLA-COMPONENTS | - | P0 |
 
-## IEEE 1516-2010 Clause 1.4
+## IEEE 1516-2010 (2010 edition) Clause 1.4
 
 - Requirement rows: 1
 - Source titles: Framework and Rules
@@ -42,7 +42,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|---|
 | HLA1516-FW-FW_OO_RELATIONSHIP-004 | FW_RULE_DETAIL | FW-OO-RELATIONSHIP | - | P1 |
 
-## IEEE 1516-2010 Clause 5.1
+## IEEE 1516-2010 (2010 edition) Clause 5.1
 
 - Requirement rows: 6
 - Source titles: Framework and Rules
@@ -57,7 +57,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516-FW-RULE_1_FOM-005 | FW_RULE_DETAIL | RULE-1-FOM | - | P0 |
 | HLA1516-RULE-001 | seed | FW-FOM | - | P0 |
 
-## IEEE 1516-2010 Clause 5.2
+## IEEE 1516-2010 (2010 edition) Clause 5.2
 
 - Requirement rows: 5
 - Source titles: Framework and Rules
@@ -71,7 +71,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516-FW-RULE_2_FEDERATE_STATE-006 | FW_RULE_DETAIL | RULE-2-FEDERATE-STATE | - | P0 |
 | HLA1516-RULE-002 | seed | FW-OBJECT-STATE | - | P0 |
 
-## IEEE 1516-2010 Clause 5.3
+## IEEE 1516-2010 (2010 edition) Clause 5.3
 
 - Requirement rows: 6
 - Source titles: Framework and Rules
@@ -86,7 +86,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516-FW-RULE_3_RTI_EXCHANGE-007 | FW_RULE_DETAIL | RULE-3-RTI-EXCHANGE | - | P0 |
 | HLA1516-RULE-003 | seed | FW-DATA-EXCHANGE | - | P0 |
 
-## IEEE 1516-2010 Clause 5.4
+## IEEE 1516-2010 (2010 edition) Clause 5.4
 
 - Requirement rows: 4
 - Source titles: Framework and Rules
@@ -99,7 +99,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516-FW-RULE_4_INTERFACE-008 | FW_RULE_DETAIL | RULE-4-INTERFACE | - | P0 |
 | HLA1516-RULE-004 | seed | FW-INTERFACE | - | P0 |
 
-## IEEE 1516-2010 Clause 5.5
+## IEEE 1516-2010 (2010 edition) Clause 5.5
 
 - Requirement rows: 4
 - Source titles: Framework and Rules
@@ -112,7 +112,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516-FW-RULE_5_OWNERSHIP-009 | FW_RULE_DETAIL | RULE-5-OWNERSHIP | - | P0 |
 | HLA1516-RULE-005 | seed | FW-OWNERSHIP | - | P0 |
 
-## IEEE 1516-2010 Clause 6.1
+## IEEE 1516-2010 (2010 edition) Clause 6.1
 
 - Requirement rows: 5
 - Source titles: Framework and Rules
@@ -126,7 +126,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516-FW-RULE_6_SOM-010 | FW_RULE_DETAIL | RULE-6-SOM | - | P1 |
 | HLA1516-RULE-006 | seed | FW-SOM | - | P0 |
 
-## IEEE 1516-2010 Clause 6.2
+## IEEE 1516-2010 (2010 edition) Clause 6.2
 
 - Requirement rows: 5
 - Source titles: Framework and Rules
@@ -140,7 +140,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516-FW-RULE_7_PUBLISH_SUBSCRIBE-011 | FW_RULE_DETAIL | RULE-7-PUBLISH-SUBSCRIBE | - | P0 |
 | HLA1516-RULE-007 | seed | FW-PUBSUB | - | P0 |
 
-## IEEE 1516-2010 Clause 6.3
+## IEEE 1516-2010 (2010 edition) Clause 6.3
 
 - Requirement rows: 4
 - Source titles: Framework and Rules
@@ -153,7 +153,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516-FW-RULE_8_OWNERSHIP-012 | FW_RULE_DETAIL | RULE-8-OWNERSHIP | - | P0 |
 | HLA1516-RULE-008 | seed | FW-OWNERSHIP-DYNAMIC | - | P0 |
 
-## IEEE 1516-2010 Clause 6.4
+## IEEE 1516-2010 (2010 edition) Clause 6.4
 
 - Requirement rows: 4
 - Source titles: Framework and Rules
@@ -166,7 +166,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516-FW-RULE_9_TIME-013 | FW_RULE_DETAIL | RULE-9-TIME | - | P0 |
 | HLA1516-RULE-009 | seed | FW-UPDATE-CONDITIONS | - | P0 |
 
-## IEEE 1516-2010 Clause 6.5
+## IEEE 1516-2010 (2010 edition) Clause 6.5
 
 - Requirement rows: 4
 - Source titles: Framework and Rules
@@ -179,7 +179,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516-FW-RULE_10_COMPLIANCE-014 | FW_RULE_DETAIL | RULE-10-COMPLIANCE | - | P1 |
 | HLA1516-RULE-010 | seed | FW-TIME | - | P0 |
 
-## IEEE 1516-2010 Clause Annex A
+## IEEE 1516-2010 (2010 edition) Clause Annex A
 
 - Requirement rows: 1
 - Source titles: Framework and Rules
@@ -189,7 +189,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|---|
 | HLA1516-FW-RATIONALE-015 | FW_RULE_DETAIL | RATIONALE | - | P2 |
 
-## IEEE 1516-2010 Clause Annex B
+## IEEE 1516-2010 (2010 edition) Clause Annex B
 
 - Requirement rows: 1
 - Source titles: Framework and Rules
@@ -199,7 +199,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|---|
 | HLA1516-FW-BIBLIOGRAPHY-016 | FW_RULE_DETAIL | BIBLIOGRAPHY | - | P2 |
 
-## IEEE 1516.1-2010 Clause 10.1
+## IEEE 1516.1-2010 (2010 edition) Clause 10.1
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -209,7 +209,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|---|
 | HLA1516.1-SUP-OVERVIEW-013 | seed | SUP-HANDLES | - | P1 |
 
-## IEEE 1516.1-2010 Clause 10.10
+## IEEE 1516.1-2010 (2010 edition) Clause 10.10
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -233,7 +233,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_10-RTIAPI-001-RET | RET | SUP-getObjectInstanceName | Get Object Instance Name | P1 |
 | HLA1516.1-SUP-10_10-RTIAPI-001-SIG | SIG | SUP-getObjectInstanceName | Get Object Instance Name | P1 |
 
-## IEEE 1516.1-2010 Clause 10.11
+## IEEE 1516.1-2010 (2010 edition) Clause 10.11
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -257,7 +257,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_11-RTIAPI-001-RET | RET | SUP-getAttributeHandle | Get Attribute Handle | P1 |
 | HLA1516.1-SUP-10_11-RTIAPI-001-SIG | SIG | SUP-getAttributeHandle | Get Attribute Handle | P1 |
 
-## IEEE 1516.1-2010 Clause 10.12
+## IEEE 1516.1-2010 (2010 edition) Clause 10.12
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -281,7 +281,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_12-RTIAPI-001-RET | RET | SUP-getAttributeName | Get Attribute Name | P1 |
 | HLA1516.1-SUP-10_12-RTIAPI-001-SIG | SIG | SUP-getAttributeName | Get Attribute Name | P1 |
 
-## IEEE 1516.1-2010 Clause 10.13
+## IEEE 1516.1-2010 (2010 edition) Clause 10.13
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -305,7 +305,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_13-RTIAPI-001-RET | RET | SUP-getUpdateRateValue | Get Update Rate Value | P1 |
 | HLA1516.1-SUP-10_13-RTIAPI-001-SIG | SIG | SUP-getUpdateRateValue | Get Update Rate Value | P1 |
 
-## IEEE 1516.1-2010 Clause 10.14
+## IEEE 1516.1-2010 (2010 edition) Clause 10.14
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -329,7 +329,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_14-RTIAPI-001-RET | RET | SUP-getUpdateRateValueForAttribute | Get Update Rate Value For Attribute | P1 |
 | HLA1516.1-SUP-10_14-RTIAPI-001-SIG | SIG | SUP-getUpdateRateValueForAttribute | Get Update Rate Value For Attribute | P1 |
 
-## IEEE 1516.1-2010 Clause 10.15
+## IEEE 1516.1-2010 (2010 edition) Clause 10.15
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -353,7 +353,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_15-RTIAPI-001-RET | RET | SUP-getInteractionClassHandle | Get Interaction Class Handle | P1 |
 | HLA1516.1-SUP-10_15-RTIAPI-001-SIG | SIG | SUP-getInteractionClassHandle | Get Interaction Class Handle | P1 |
 
-## IEEE 1516.1-2010 Clause 10.16
+## IEEE 1516.1-2010 (2010 edition) Clause 10.16
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -377,7 +377,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_16-RTIAPI-001-RET | RET | SUP-getInteractionClassName | Get Interaction Class Name | P1 |
 | HLA1516.1-SUP-10_16-RTIAPI-001-SIG | SIG | SUP-getInteractionClassName | Get Interaction Class Name | P1 |
 
-## IEEE 1516.1-2010 Clause 10.17
+## IEEE 1516.1-2010 (2010 edition) Clause 10.17
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -401,7 +401,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_17-RTIAPI-001-RET | RET | SUP-getParameterHandle | Get Parameter Handle | P1 |
 | HLA1516.1-SUP-10_17-RTIAPI-001-SIG | SIG | SUP-getParameterHandle | Get Parameter Handle | P1 |
 
-## IEEE 1516.1-2010 Clause 10.18
+## IEEE 1516.1-2010 (2010 edition) Clause 10.18
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -425,7 +425,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_18-RTIAPI-001-RET | RET | SUP-getParameterName | Get Parameter Name | P1 |
 | HLA1516.1-SUP-10_18-RTIAPI-001-SIG | SIG | SUP-getParameterName | Get Parameter Name | P1 |
 
-## IEEE 1516.1-2010 Clause 10.19
+## IEEE 1516.1-2010 (2010 edition) Clause 10.19
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -449,7 +449,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_19-RTIAPI-001-RET | RET | SUP-getOrderType | Get Order Type | P1 |
 | HLA1516.1-SUP-10_19-RTIAPI-001-SIG | SIG | SUP-getOrderType | Get Order Type | P1 |
 
-## IEEE 1516.1-2010 Clause 10.2
+## IEEE 1516.1-2010 (2010 edition) Clause 10.2
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -473,7 +473,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_2-RTIAPI-001-RET | RET | SUP-getAutomaticResignDirective | Get Automatic Resign Directive | P1 |
 | HLA1516.1-SUP-10_2-RTIAPI-001-SIG | SIG | SUP-getAutomaticResignDirective | Get Automatic Resign Directive | P1 |
 
-## IEEE 1516.1-2010 Clause 10.20
+## IEEE 1516.1-2010 (2010 edition) Clause 10.20
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -497,7 +497,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_20-RTIAPI-001-RET | RET | SUP-getOrderName | Get Order Name | P1 |
 | HLA1516.1-SUP-10_20-RTIAPI-001-SIG | SIG | SUP-getOrderName | Get Order Name | P1 |
 
-## IEEE 1516.1-2010 Clause 10.21
+## IEEE 1516.1-2010 (2010 edition) Clause 10.21
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -521,7 +521,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_21-RTIAPI-001-RET | RET | SUP-getTransportationTypeHandle | Get Transportation Type Handle | P1 |
 | HLA1516.1-SUP-10_21-RTIAPI-001-SIG | SIG | SUP-getTransportationTypeHandle | Get Transportation Type Handle | P1 |
 
-## IEEE 1516.1-2010 Clause 10.22
+## IEEE 1516.1-2010 (2010 edition) Clause 10.22
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -545,7 +545,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_22-RTIAPI-001-RET | RET | SUP-getTransportationTypeName | Get Transportation Type Name | P1 |
 | HLA1516.1-SUP-10_22-RTIAPI-001-SIG | SIG | SUP-getTransportationTypeName | Get Transportation Type Name | P1 |
 
-## IEEE 1516.1-2010 Clause 10.23
+## IEEE 1516.1-2010 (2010 edition) Clause 10.23
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -569,7 +569,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_23-RTIAPI-001-RET | RET | SUP-getAvailableDimensionsForClassAttribute | Get Available Dimensions For Class Attribute | P1 |
 | HLA1516.1-SUP-10_23-RTIAPI-001-SIG | SIG | SUP-getAvailableDimensionsForClassAttribute | Get Available Dimensions For Class Attribute | P1 |
 
-## IEEE 1516.1-2010 Clause 10.24
+## IEEE 1516.1-2010 (2010 edition) Clause 10.24
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -593,7 +593,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_24-RTIAPI-001-RET | RET | SUP-getAvailableDimensionsForInteractionClass | Get Available Dimensions For Interaction Class | P1 |
 | HLA1516.1-SUP-10_24-RTIAPI-001-SIG | SIG | SUP-getAvailableDimensionsForInteractionClass | Get Available Dimensions For Interaction Class | P1 |
 
-## IEEE 1516.1-2010 Clause 10.25
+## IEEE 1516.1-2010 (2010 edition) Clause 10.25
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -617,7 +617,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_25-RTIAPI-001-RET | RET | SUP-getDimensionHandle | Get Dimension Handle | P1 |
 | HLA1516.1-SUP-10_25-RTIAPI-001-SIG | SIG | SUP-getDimensionHandle | Get Dimension Handle | P1 |
 
-## IEEE 1516.1-2010 Clause 10.26
+## IEEE 1516.1-2010 (2010 edition) Clause 10.26
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -641,7 +641,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_26-RTIAPI-001-RET | RET | SUP-getDimensionName | Get Dimension Name | P1 |
 | HLA1516.1-SUP-10_26-RTIAPI-001-SIG | SIG | SUP-getDimensionName | Get Dimension Name | P1 |
 
-## IEEE 1516.1-2010 Clause 10.27
+## IEEE 1516.1-2010 (2010 edition) Clause 10.27
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -665,7 +665,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_27-RTIAPI-001-RET | RET | SUP-getDimensionUpperBound | Get Dimension Upper Bound | P1 |
 | HLA1516.1-SUP-10_27-RTIAPI-001-SIG | SIG | SUP-getDimensionUpperBound | Get Dimension Upper Bound | P1 |
 
-## IEEE 1516.1-2010 Clause 10.28
+## IEEE 1516.1-2010 (2010 edition) Clause 10.28
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -689,7 +689,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_28-RTIAPI-001-RET | RET | SUP-getDimensionHandleSet | Get Dimension Handle Set | P1 |
 | HLA1516.1-SUP-10_28-RTIAPI-001-SIG | SIG | SUP-getDimensionHandleSet | Get Dimension Handle Set | P1 |
 
-## IEEE 1516.1-2010 Clause 10.29
+## IEEE 1516.1-2010 (2010 edition) Clause 10.29
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -713,7 +713,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_29-RTIAPI-001-RET | RET | SUP-getRangeBounds | Get Range Bounds | P1 |
 | HLA1516.1-SUP-10_29-RTIAPI-001-SIG | SIG | SUP-getRangeBounds | Get Range Bounds | P1 |
 
-## IEEE 1516.1-2010 Clause 10.3
+## IEEE 1516.1-2010 (2010 edition) Clause 10.3
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -737,7 +737,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_3-SETAUTOMATICRESIGNDIRECTIVE-SVC-001 | SVC | SUP-SET_AUTOMATIC_RESIGN_DIRECTIVE | setAutomaticResignDirective | P1 |
 | HLA1516.1-SUP-10_3-SETAUTOMATICRESIGNDIRECTIVE-TEST-001 | TEST | SUP-SET_AUTOMATIC_RESIGN_DIRECTIVE | setAutomaticResignDirective | P1 |
 
-## IEEE 1516.1-2010 Clause 10.30
+## IEEE 1516.1-2010 (2010 edition) Clause 10.30
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -761,7 +761,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_30-SETRANGEBOUNDS-SVC-001 | SVC | SUP-SET_RANGE_BOUNDS | setRangeBounds | P1 |
 | HLA1516.1-SUP-10_30-SETRANGEBOUNDS-TEST-001 | TEST | SUP-SET_RANGE_BOUNDS | setRangeBounds | P1 |
 
-## IEEE 1516.1-2010 Clause 10.31
+## IEEE 1516.1-2010 (2010 edition) Clause 10.31
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -785,7 +785,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_31-RTIAPI-001-RET | RET | SUP-normalizeFederateHandle | Normalize Federate Handle | P1 |
 | HLA1516.1-SUP-10_31-RTIAPI-001-SIG | SIG | SUP-normalizeFederateHandle | Normalize Federate Handle | P1 |
 
-## IEEE 1516.1-2010 Clause 10.32
+## IEEE 1516.1-2010 (2010 edition) Clause 10.32
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -809,7 +809,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_32-RTIAPI-001-RET | RET | SUP-normalizeServiceGroup | Normalize Service Group | P1 |
 | HLA1516.1-SUP-10_32-RTIAPI-001-SIG | SIG | SUP-normalizeServiceGroup | Normalize Service Group | P1 |
 
-## IEEE 1516.1-2010 Clause 10.33
+## IEEE 1516.1-2010 (2010 edition) Clause 10.33
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -833,7 +833,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_33-RTIAPI-001-MOM | MOM_TRACE | SUP-enableObjectClassRelevanceAdvisorySwitch | Enable Object Class Relevance Advisory Switch | P1 |
 | HLA1516.1-SUP-10_33-RTIAPI-001-SIG | SIG | SUP-enableObjectClassRelevanceAdvisorySwitch | Enable Object Class Relevance Advisory Switch | P1 |
 
-## IEEE 1516.1-2010 Clause 10.34
+## IEEE 1516.1-2010 (2010 edition) Clause 10.34
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -857,7 +857,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_34-RTIAPI-001-MOM | MOM_TRACE | SUP-disableObjectClassRelevanceAdvisorySwitch | Disable Object Class Relevance Advisory Switch | P1 |
 | HLA1516.1-SUP-10_34-RTIAPI-001-SIG | SIG | SUP-disableObjectClassRelevanceAdvisorySwitch | Disable Object Class Relevance Advisory Switch | P1 |
 
-## IEEE 1516.1-2010 Clause 10.35
+## IEEE 1516.1-2010 (2010 edition) Clause 10.35
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -881,7 +881,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_35-RTIAPI-001-MOM | MOM_TRACE | SUP-enableAttributeRelevanceAdvisorySwitch | Enable Attribute Relevance Advisory Switch | P1 |
 | HLA1516.1-SUP-10_35-RTIAPI-001-SIG | SIG | SUP-enableAttributeRelevanceAdvisorySwitch | Enable Attribute Relevance Advisory Switch | P1 |
 
-## IEEE 1516.1-2010 Clause 10.36
+## IEEE 1516.1-2010 (2010 edition) Clause 10.36
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -905,7 +905,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_36-RTIAPI-001-MOM | MOM_TRACE | SUP-disableAttributeRelevanceAdvisorySwitch | Disable Attribute Relevance Advisory Switch | P1 |
 | HLA1516.1-SUP-10_36-RTIAPI-001-SIG | SIG | SUP-disableAttributeRelevanceAdvisorySwitch | Disable Attribute Relevance Advisory Switch | P1 |
 
-## IEEE 1516.1-2010 Clause 10.37
+## IEEE 1516.1-2010 (2010 edition) Clause 10.37
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -929,7 +929,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_37-RTIAPI-001-MOM | MOM_TRACE | SUP-enableAttributeScopeAdvisorySwitch | Enable Attribute Scope Advisory Switch | P1 |
 | HLA1516.1-SUP-10_37-RTIAPI-001-SIG | SIG | SUP-enableAttributeScopeAdvisorySwitch | Enable Attribute Scope Advisory Switch | P1 |
 
-## IEEE 1516.1-2010 Clause 10.38
+## IEEE 1516.1-2010 (2010 edition) Clause 10.38
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -953,7 +953,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_38-RTIAPI-001-MOM | MOM_TRACE | SUP-disableAttributeScopeAdvisorySwitch | Disable Attribute Scope Advisory Switch | P1 |
 | HLA1516.1-SUP-10_38-RTIAPI-001-SIG | SIG | SUP-disableAttributeScopeAdvisorySwitch | Disable Attribute Scope Advisory Switch | P1 |
 
-## IEEE 1516.1-2010 Clause 10.39
+## IEEE 1516.1-2010 (2010 edition) Clause 10.39
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -977,7 +977,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_39-RTIAPI-001-MOM | MOM_TRACE | SUP-enableInteractionRelevanceAdvisorySwitch | Enable Interaction Relevance Advisory Switch | P1 |
 | HLA1516.1-SUP-10_39-RTIAPI-001-SIG | SIG | SUP-enableInteractionRelevanceAdvisorySwitch | Enable Interaction Relevance Advisory Switch | P1 |
 
-## IEEE 1516.1-2010 Clause 10.4
+## IEEE 1516.1-2010 (2010 edition) Clause 10.4
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1001,7 +1001,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_4-RTIAPI-001-RET | RET | SUP-getFederateHandle | Get Federate Handle | P1 |
 | HLA1516.1-SUP-10_4-RTIAPI-001-SIG | SIG | SUP-getFederateHandle | Get Federate Handle | P1 |
 
-## IEEE 1516.1-2010 Clause 10.40
+## IEEE 1516.1-2010 (2010 edition) Clause 10.40
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1025,7 +1025,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_40-RTIAPI-001-MOM | MOM_TRACE | SUP-disableInteractionRelevanceAdvisorySwitch | Disable Interaction Relevance Advisory Switch | P1 |
 | HLA1516.1-SUP-10_40-RTIAPI-001-SIG | SIG | SUP-disableInteractionRelevanceAdvisorySwitch | Disable Interaction Relevance Advisory Switch | P1 |
 
-## IEEE 1516.1-2010 Clause 10.41
+## IEEE 1516.1-2010 (2010 edition) Clause 10.41
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1049,7 +1049,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_41-RTIAPI-001-RET | RET | SUP-evokeCallback | Evoke Callback | P1 |
 | HLA1516.1-SUP-10_41-RTIAPI-001-SIG | SIG | SUP-evokeCallback | Evoke Callback | P1 |
 
-## IEEE 1516.1-2010 Clause 10.42
+## IEEE 1516.1-2010 (2010 edition) Clause 10.42
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1073,7 +1073,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_42-RTIAPI-001-RET | RET | SUP-evokeMultipleCallbacks | Evoke Multiple Callbacks | P1 |
 | HLA1516.1-SUP-10_42-RTIAPI-001-SIG | SIG | SUP-evokeMultipleCallbacks | Evoke Multiple Callbacks | P1 |
 
-## IEEE 1516.1-2010 Clause 10.43
+## IEEE 1516.1-2010 (2010 edition) Clause 10.43
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1097,7 +1097,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_43-RTIAPI-001-MOM | MOM_TRACE | SUP-enableCallbacks | Enable Callbacks | P1 |
 | HLA1516.1-SUP-10_43-RTIAPI-001-SIG | SIG | SUP-enableCallbacks | Enable Callbacks | P1 |
 
-## IEEE 1516.1-2010 Clause 10.44
+## IEEE 1516.1-2010 (2010 edition) Clause 10.44
 
 - Requirement rows: 25
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1128,7 +1128,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 
 _Truncated to first 20 rows; full clause row count is 25._
 
-## IEEE 1516.1-2010 Clause 10.5
+## IEEE 1516.1-2010 (2010 edition) Clause 10.5
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1152,7 +1152,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-SUP-10_5-RTIAPI-001-RET | RET | SUP-getFederateName | Get Federate Name | P1 |
 | HLA1516.1-SUP-10_5-RTIAPI-001-SIG | SIG | SUP-getFederateName | Get Federate Name | P1 |
 
-## IEEE 1516.1-2010 Clause 10.6
+## IEEE 1516.1-2010 (2010 edition) Clause 10.6
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1176,7 +1176,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-SUP-10_6-RTIAPI-001-RET | RET | SUP-getObjectClassHandle | Get Object Class Handle | P1 |
 | HLA1516.1-SUP-10_6-RTIAPI-001-SIG | SIG | SUP-getObjectClassHandle | Get Object Class Handle | P1 |
 
-## IEEE 1516.1-2010 Clause 10.7
+## IEEE 1516.1-2010 (2010 edition) Clause 10.7
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1200,7 +1200,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-SUP-10_7-RTIAPI-001-RET | RET | SUP-getObjectClassName | Get Object Class Name | P1 |
 | HLA1516.1-SUP-10_7-RTIAPI-001-SIG | SIG | SUP-getObjectClassName | Get Object Class Name | P1 |
 
-## IEEE 1516.1-2010 Clause 10.8
+## IEEE 1516.1-2010 (2010 edition) Clause 10.8
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1224,7 +1224,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-SUP-10_8-RTIAPI-001-RET | RET | SUP-getKnownObjectClassHandle | Get Known Object Class Handle | P1 |
 | HLA1516.1-SUP-10_8-RTIAPI-001-SIG | SIG | SUP-getKnownObjectClassHandle | Get Known Object Class Handle | P1 |
 
-## IEEE 1516.1-2010 Clause 10.9
+## IEEE 1516.1-2010 (2010 edition) Clause 10.9
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1248,7 +1248,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-SUP-10_9-RTIAPI-001-RET | RET | SUP-getObjectInstanceHandle | Get Object Instance Handle | P1 |
 | HLA1516.1-SUP-10_9-RTIAPI-001-SIG | SIG | SUP-getObjectInstanceHandle | Get Object Instance Handle | P1 |
 
-## IEEE 1516.1-2010 Clause 11.1
+## IEEE 1516.1-2010 (2010 edition) Clause 11.1
 
 - Requirement rows: 4
 - Source titles: Federate Interface Specification
@@ -1261,7 +1261,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-MOM-11_1-OVW-003 | OVW | MOM-NONREVISION | - | P0 |
 | HLA1516.1-MOM-OVERVIEW-014 | seed | MOM-EXPOSURE | - | P0 |
 
-## IEEE 1516.1-2010 Clause 11.2
+## IEEE 1516.1-2010 (2010 edition) Clause 11.2
 
 - Requirement rows: 5
 - Source titles: Federate Interface Specification
@@ -1275,7 +1275,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-MOM-11_2-OBJ-007 | OBJ | MOM-ATTR-UPDATES | - | P0 |
 | HLA1516.1-MOM-OVERVIEW-015 | seed | MOM-OBJECTS | - | P0 |
 
-## IEEE 1516.1-2010 Clause 11.2.1
+## IEEE 1516.1-2010 (2010 edition) Clause 11.2.1
 
 - Requirement rows: 3
 - Source titles: Federate Interface Specification
@@ -1287,7 +1287,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-MOM-11_2_1-OBJ-009 | OBJ | MOM-NO-RTI-SUBSCRIBE-OBJ | - | P0 |
 | HLA1516.1-MOM-11_2_1-OBJ-010 | OBJ | MOM-NO-DIVEST | - | P0 |
 
-## IEEE 1516.1-2010 Clause 11.3
+## IEEE 1516.1-2010 (2010 edition) Clause 11.3
 
 - Requirement rows: 5
 - Source titles: Federate Interface Specification
@@ -1301,7 +1301,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-MOM-11_3-INT-014 | INT | MOM-SERVICE-INVOCATION | - | P1 |
 | HLA1516.1-MOM-OVERVIEW-016 | seed | MOM-INTERACTIONS | - | P0 |
 
-## IEEE 1516.1-2010 Clause 11.3.1
+## IEEE 1516.1-2010 (2010 edition) Clause 11.3.1
 
 - Requirement rows: 2
 - Source titles: Federate Interface Specification
@@ -1312,7 +1312,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-MOM-11_3_1-INT-015 | INT | MOM-LEAF-PUBLISH | - | P1 |
 | HLA1516.1-MOM-11_3_1-INT-016 | INT | MOM-IGNORE-EXT-PARAMS | - | P1 |
 
-## IEEE 1516.1-2010 Clause 11.4
+## IEEE 1516.1-2010 (2010 edition) Clause 11.4
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -1322,7 +1322,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 |---|---|---|---|---|
 | HLA1516.1-MOM-11_4-RTI-017 | RTI | MOM-RTI-CHARACTERISTICS | - | P1 |
 
-## IEEE 1516.1-2010 Clause 11.4.1
+## IEEE 1516.1-2010 (2010 edition) Clause 11.4.1
 
 - Requirement rows: 6
 - Source titles: Federate Interface Specification
@@ -1337,7 +1337,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-MOM-11_4_1-RTI-022 | RTI | MOM-NO-DDM | - | P1 |
 | HLA1516.1-MOM-11_4_1-RTI-023 | RTI | MOM-NO-ORDER-TRANSPORT-CHANGE | - | P1 |
 
-## IEEE 1516.1-2010 Clause 11.5
+## IEEE 1516.1-2010 (2010 edition) Clause 11.5
 
 - Requirement rows: 4
 - Source titles: Federate Interface Specification
@@ -1350,7 +1350,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-MOM-11_5-SRV-026 | SRV | MOM-EXCEPTION-REPORTS | - | P1 |
 | HLA1516.1-MOM-OVERVIEW-017 | seed | MOM-SERVICE-REPORTING | - | P0 |
 
-## IEEE 1516.1-2010 Clause 11.6
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6
 
 - Requirement rows: 289
 - Source titles: Federate Interface Specification, Standard MIM XML
@@ -1381,7 +1381,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 
 _Truncated to first 20 rows; full clause row count is 289._
 
-## IEEE 1516.1-2010 Clause 12.1
+## IEEE 1516.1-2010 (2010 edition) Clause 12.1
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -1391,7 +1391,7 @@ _Truncated to first 20 rows; full clause row count is 289._
 |---|---|---|---|---|
 | HLA1516.1-API_MAPPING_OVERVIEW-001 | CLAUSE12_13_DETAIL | API-MAPPING-OVERVIEW | - | P1 |
 
-## IEEE 1516.1-2010 Clause 12.10
+## IEEE 1516.1-2010 (2010 edition) Clause 12.10
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -1401,7 +1401,7 @@ _Truncated to first 20 rows; full clause row count is 289._
 |---|---|---|---|---|
 | HLA1516.1-API_REMOVE_METHODS-010 | CLAUSE12_13_DETAIL | API-REMOVE-METHODS | - | P0 |
 
-## IEEE 1516.1-2010 Clause 12.11
+## IEEE 1516.1-2010 (2010 edition) Clause 12.11
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -1411,7 +1411,7 @@ _Truncated to first 20 rows; full clause row count is 289._
 |---|---|---|---|---|
 | HLA1516.1-API_JAVA-011 | CLAUSE12_13_DETAIL | API-JAVA | - | P1 |
 
-## IEEE 1516.1-2010 Clause 12.12
+## IEEE 1516.1-2010 (2010 edition) Clause 12.12
 
 - Requirement rows: 80
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1442,7 +1442,7 @@ _Truncated to first 20 rows; full clause row count is 289._
 
 _Truncated to first 20 rows; full clause row count is 80._
 
-## IEEE 1516.1-2010 Clause 12.13
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13
 
 - Requirement rows: 309
 - Source titles: Federate Interface Specification, Web Services API WSDL
@@ -1473,7 +1473,7 @@ _Truncated to first 20 rows; full clause row count is 80._
 
 _Truncated to first 20 rows; full clause row count is 309._
 
-## IEEE 1516.1-2010 Clause 12.2
+## IEEE 1516.1-2010 (2010 edition) Clause 12.2
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -1483,7 +1483,7 @@ _Truncated to first 20 rows; full clause row count is 309._
 |---|---|---|---|---|
 | HLA1516.1-API_DESIGNATORS-002 | CLAUSE12_13_DETAIL | API-DESIGNATORS | - | P1 |
 
-## IEEE 1516.1-2010 Clause 12.3
+## IEEE 1516.1-2010 (2010 edition) Clause 12.3
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -1493,7 +1493,7 @@ _Truncated to first 20 rows; full clause row count is 309._
 |---|---|---|---|---|
 | HLA1516.1-API_LOGICAL_TIME-003 | CLAUSE12_13_DETAIL | API-LOGICAL-TIME | - | P0 |
 
-## IEEE 1516.1-2010 Clause 12.4
+## IEEE 1516.1-2010 (2010 edition) Clause 12.4
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -1503,7 +1503,7 @@ _Truncated to first 20 rows; full clause row count is 309._
 |---|---|---|---|---|
 | HLA1516.1-API_STANDARD_TIME_TYPES-004 | CLAUSE12_13_DETAIL | API-STANDARD-TIME-TYPES | - | P0 |
 
-## IEEE 1516.1-2010 Clause 12.5
+## IEEE 1516.1-2010 (2010 edition) Clause 12.5
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -1513,7 +1513,7 @@ _Truncated to first 20 rows; full clause row count is 309._
 |---|---|---|---|---|
 | HLA1516.1-API_CONNECT-005 | CLAUSE12_13_DETAIL | API-CONNECT | - | P0 |
 
-## IEEE 1516.1-2010 Clause 12.6
+## IEEE 1516.1-2010 (2010 edition) Clause 12.6
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -1523,7 +1523,7 @@ _Truncated to first 20 rows; full clause row count is 309._
 |---|---|---|---|---|
 | HLA1516.1-API_CONCURRENCY-006 | CLAUSE12_13_DETAIL | API-CONCURRENCY | - | P0 |
 
-## IEEE 1516.1-2010 Clause 12.7
+## IEEE 1516.1-2010 (2010 edition) Clause 12.7
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -1533,7 +1533,7 @@ _Truncated to first 20 rows; full clause row count is 309._
 |---|---|---|---|---|
 | HLA1516.1-API_DYNAMIC_LINK-007 | CLAUSE12_13_DETAIL | API-DYNAMIC-LINK | - | P2 |
 
-## IEEE 1516.1-2010 Clause 12.8
+## IEEE 1516.1-2010 (2010 edition) Clause 12.8
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -1543,7 +1543,7 @@ _Truncated to first 20 rows; full clause row count is 309._
 |---|---|---|---|---|
 | HLA1516.1-API_REFLECT_METHODS-008 | CLAUSE12_13_DETAIL | API-REFLECT-METHODS | - | P0 |
 
-## IEEE 1516.1-2010 Clause 12.9
+## IEEE 1516.1-2010 (2010 edition) Clause 12.9
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -1553,7 +1553,7 @@ _Truncated to first 20 rows; full clause row count is 309._
 |---|---|---|---|---|
 | HLA1516.1-API_RECEIVE_METHODS-009 | CLAUSE12_13_DETAIL | API-RECEIVE-METHODS | - | P0 |
 
-## IEEE 1516.1-2010 Clause 13.1
+## IEEE 1516.1-2010 (2010 edition) Clause 13.1
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -1563,7 +1563,7 @@ _Truncated to first 20 rows; full clause row count is 309._
 |---|---|---|---|---|
 | HLA1516.1-CONF_FEDERATE-014 | CLAUSE12_13_DETAIL | CONF-FEDERATE | - | P0 |
 
-## IEEE 1516.1-2010 Clause 13.2
+## IEEE 1516.1-2010 (2010 edition) Clause 13.2
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -1573,7 +1573,7 @@ _Truncated to first 20 rows; full clause row count is 309._
 |---|---|---|---|---|
 | HLA1516.1-CONF_RTI-015 | CLAUSE12_13_DETAIL | CONF-RTI | - | P0 |
 
-## IEEE 1516.1-2010 Clause 4.1
+## IEEE 1516.1-2010 (2010 edition) Clause 4.1
 
 - Requirement rows: 3
 - Source titles: Federate Interface Specification
@@ -1585,7 +1585,7 @@ _Truncated to first 20 rows; full clause row count is 309._
 | HLA1516.1-FM-OVERVIEW-002 | seed | FM-MODULES | - | P0 |
 | HLA1516.1-FM-OVERVIEW-003 | seed | FM-LOST | - | P0 |
 
-## IEEE 1516.1-2010 Clause 4.10
+## IEEE 1516.1-2010 (2010 edition) Clause 4.10
 
 - Requirement rows: 27
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1616,7 +1616,7 @@ _Truncated to first 20 rows; full clause row count is 309._
 
 _Truncated to first 20 rows; full clause row count is 27._
 
-## IEEE 1516.1-2010 Clause 4.11
+## IEEE 1516.1-2010 (2010 edition) Clause 4.11
 
 - Requirement rows: 30
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1647,7 +1647,7 @@ _Truncated to first 20 rows; full clause row count is 27._
 
 _Truncated to first 20 rows; full clause row count is 30._
 
-## IEEE 1516.1-2010 Clause 4.12
+## IEEE 1516.1-2010 (2010 edition) Clause 4.12
 
 - Requirement rows: 22
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1678,7 +1678,7 @@ _Truncated to first 20 rows; full clause row count is 30._
 
 _Truncated to first 20 rows; full clause row count is 22._
 
-## IEEE 1516.1-2010 Clause 4.13
+## IEEE 1516.1-2010 (2010 edition) Clause 4.13
 
 - Requirement rows: 16
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1703,7 +1703,7 @@ _Truncated to first 20 rows; full clause row count is 22._
 | HLA1516.1-FM-4_13-PRE-005 | PRE | FM-SYNCHRONIZATION | Announce Synchronization Point | P1 |
 | HLA1516.1-FM-4_13-SVC-001 | SVC | FM-SYNCHRONIZATION | Announce Synchronization Point | P1 |
 
-## IEEE 1516.1-2010 Clause 4.14
+## IEEE 1516.1-2010 (2010 edition) Clause 4.14
 
 - Requirement rows: 29
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1734,7 +1734,7 @@ _Truncated to first 20 rows; full clause row count is 22._
 
 _Truncated to first 20 rows; full clause row count is 29._
 
-## IEEE 1516.1-2010 Clause 4.15
+## IEEE 1516.1-2010 (2010 edition) Clause 4.15
 
 - Requirement rows: 19
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1762,7 +1762,7 @@ _Truncated to first 20 rows; full clause row count is 29._
 | HLA1516.1-FM-4_15-PRE-007 | PRE | FM-SYNCHRONIZATION | Federation Synchronized | P1 |
 | HLA1516.1-FM-4_15-SVC-001 | SVC | FM-SYNCHRONIZATION | Federation Synchronized | P1 |
 
-## IEEE 1516.1-2010 Clause 4.16
+## IEEE 1516.1-2010 (2010 edition) Clause 4.16
 
 - Requirement rows: 33
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1793,7 +1793,7 @@ _Truncated to first 20 rows; full clause row count is 29._
 
 _Truncated to first 20 rows; full clause row count is 33._
 
-## IEEE 1516.1-2010 Clause 4.17
+## IEEE 1516.1-2010 (2010 edition) Clause 4.17
 
 - Requirement rows: 20
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1822,7 +1822,7 @@ _Truncated to first 20 rows; full clause row count is 33._
 | HLA1516.1-FM-4_17-PRE-005 | PRE | FM-SAVE | Initiate Federate Save | P1 |
 | HLA1516.1-FM-4_17-SVC-001 | SVC | FM-SAVE | Initiate Federate Save | P1 |
 
-## IEEE 1516.1-2010 Clause 4.18
+## IEEE 1516.1-2010 (2010 edition) Clause 4.18
 
 - Requirement rows: 20
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1851,7 +1851,7 @@ _Truncated to first 20 rows; full clause row count is 33._
 | HLA1516.1-FM-4_18-RTIAPI-001-SIG | SIG | FM-federateSaveBegun | Federate Save Begun | P0 |
 | HLA1516.1-FM-4_18-SVC-001 | SVC | FM-SAVE | Federate Save Begun | P1 |
 
-## IEEE 1516.1-2010 Clause 4.19
+## IEEE 1516.1-2010 (2010 edition) Clause 4.19
 
 - Requirement rows: 27
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1882,7 +1882,7 @@ _Truncated to first 20 rows; full clause row count is 33._
 
 _Truncated to first 20 rows; full clause row count is 27._
 
-## IEEE 1516.1-2010 Clause 4.2
+## IEEE 1516.1-2010 (2010 edition) Clause 4.2
 
 - Requirement rows: 22
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1913,7 +1913,7 @@ _Truncated to first 20 rows; full clause row count is 27._
 
 _Truncated to first 20 rows; full clause row count is 22._
 
-## IEEE 1516.1-2010 Clause 4.20
+## IEEE 1516.1-2010 (2010 edition) Clause 4.20
 
 - Requirement rows: 20
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1942,7 +1942,7 @@ _Truncated to first 20 rows; full clause row count is 22._
 | HLA1516.1-FM-4_20-PRE-003 | PRE | FM-SAVE | Federation Saved | P1 |
 | HLA1516.1-FM-4_20-SVC-001 | SVC | FM-SAVE | Federation Saved | P1 |
 
-## IEEE 1516.1-2010 Clause 4.21
+## IEEE 1516.1-2010 (2010 edition) Clause 4.21
 
 - Requirement rows: 18
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1969,7 +1969,7 @@ _Truncated to first 20 rows; full clause row count is 22._
 | HLA1516.1-FM-4_21-RTIAPI-001-SIG | SIG | FM-abortFederationSave | Abort Federation Save | P0 |
 | HLA1516.1-FM-4_21-SVC-001 | SVC | FM-SAVE | Abort Federation Save | P1 |
 
-## IEEE 1516.1-2010 Clause 4.22
+## IEEE 1516.1-2010 (2010 edition) Clause 4.22
 
 - Requirement rows: 18
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -1996,7 +1996,7 @@ _Truncated to first 20 rows; full clause row count is 22._
 | HLA1516.1-FM-4_22-RTIAPI-001-SIG | SIG | FM-queryFederationSaveStatus | Query Federation Save Status | P0 |
 | HLA1516.1-FM-4_22-SVC-001 | SVC | FM-SAVE | Query Federation Save Status | P1 |
 
-## IEEE 1516.1-2010 Clause 4.23
+## IEEE 1516.1-2010 (2010 edition) Clause 4.23
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2020,7 +2020,7 @@ _Truncated to first 20 rows; full clause row count is 22._
 | HLA1516.1-FM-4_23-PRE-004 | PRE | FM-SAVE | Federation Save Status Response | P1 |
 | HLA1516.1-FM-4_23-SVC-001 | SVC | FM-SAVE | Federation Save Status Response | P1 |
 
-## IEEE 1516.1-2010 Clause 4.24
+## IEEE 1516.1-2010 (2010 edition) Clause 4.24
 
 - Requirement rows: 24
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2051,7 +2051,7 @@ _Truncated to first 20 rows; full clause row count is 22._
 
 _Truncated to first 20 rows; full clause row count is 24._
 
-## IEEE 1516.1-2010 Clause 4.25
+## IEEE 1516.1-2010 (2010 edition) Clause 4.25
 
 - Requirement rows: 23
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2082,7 +2082,7 @@ _Truncated to first 20 rows; full clause row count is 24._
 
 _Truncated to first 20 rows; full clause row count is 23._
 
-## IEEE 1516.1-2010 Clause 4.26
+## IEEE 1516.1-2010 (2010 edition) Clause 4.26
 
 - Requirement rows: 13
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2104,7 +2104,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-FM-4_26-PRE-004 | PRE | FM-RESTORE | Federation Restore Begun | P1 |
 | HLA1516.1-FM-4_26-SVC-001 | SVC | FM-RESTORE | Federation Restore Begun | P1 |
 
-## IEEE 1516.1-2010 Clause 4.27
+## IEEE 1516.1-2010 (2010 edition) Clause 4.27
 
 - Requirement rows: 17
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2130,7 +2130,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-FM-4_27-PRE-004 | PRE | FM-RESTORE | Initiate Federate Restore | P1 |
 | HLA1516.1-FM-4_27-SVC-001 | SVC | FM-RESTORE | Initiate Federate Restore | P1 |
 
-## IEEE 1516.1-2010 Clause 4.28
+## IEEE 1516.1-2010 (2010 edition) Clause 4.28
 
 - Requirement rows: 28
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2161,7 +2161,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 
 _Truncated to first 20 rows; full clause row count is 28._
 
-## IEEE 1516.1-2010 Clause 4.29
+## IEEE 1516.1-2010 (2010 edition) Clause 4.29
 
 - Requirement rows: 21
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2192,7 +2192,7 @@ _Truncated to first 20 rows; full clause row count is 28._
 
 _Truncated to first 20 rows; full clause row count is 21._
 
-## IEEE 1516.1-2010 Clause 4.3
+## IEEE 1516.1-2010 (2010 edition) Clause 4.3
 
 - Requirement rows: 14
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2215,7 +2215,7 @@ _Truncated to first 20 rows; full clause row count is 21._
 | HLA1516.1-FM-4_3-RTIAPI-001-SIG | SIG | FM-disconnect | Disconnect | P0 |
 | HLA1516.1-FM-4_3-SVC-001 | SVC | FM-LIFECYCLE | Disconnect | P0 |
 
-## IEEE 1516.1-2010 Clause 4.30
+## IEEE 1516.1-2010 (2010 edition) Clause 4.30
 
 - Requirement rows: 18
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2242,7 +2242,7 @@ _Truncated to first 20 rows; full clause row count is 21._
 | HLA1516.1-FM-4_30-RTIAPI-001-SIG | SIG | FM-abortFederationRestore | Abort Federation Restore | P0 |
 | HLA1516.1-FM-4_30-SVC-001 | SVC | FM-RESTORE | Abort Federation Restore | P1 |
 
-## IEEE 1516.1-2010 Clause 4.31
+## IEEE 1516.1-2010 (2010 edition) Clause 4.31
 
 - Requirement rows: 18
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2269,7 +2269,7 @@ _Truncated to first 20 rows; full clause row count is 21._
 | HLA1516.1-FM-4_31-RTIAPI-001-SIG | SIG | FM-queryFederationRestoreStatus | Query Federation Restore Status | P0 |
 | HLA1516.1-FM-4_31-SVC-001 | SVC | FM-RESTORE | Query Federation Restore Status | P1 |
 
-## IEEE 1516.1-2010 Clause 4.32
+## IEEE 1516.1-2010 (2010 edition) Clause 4.32
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2293,7 +2293,7 @@ _Truncated to first 20 rows; full clause row count is 21._
 | HLA1516.1-FM-4_32-PRE-004 | PRE | FM-RESTORE | Federation Restore Status Response | P1 |
 | HLA1516.1-FM-4_32-SVC-001 | SVC | FM-RESTORE | Federation Restore Status Response | P1 |
 
-## IEEE 1516.1-2010 Clause 4.4
+## IEEE 1516.1-2010 (2010 edition) Clause 4.4
 
 - Requirement rows: 12
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2314,7 +2314,7 @@ _Truncated to first 20 rows; full clause row count is 21._
 | HLA1516.1-FM-4_4-PRE-001 | PRE | FM-LIFECYCLE | Connection Lost | P1 |
 | HLA1516.1-FM-4_4-SVC-001 | SVC | FM-LIFECYCLE | Connection Lost | P1 |
 
-## IEEE 1516.1-2010 Clause 4.5
+## IEEE 1516.1-2010 (2010 edition) Clause 4.5
 
 - Requirement rows: 47
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2345,7 +2345,7 @@ _Truncated to first 20 rows; full clause row count is 21._
 
 _Truncated to first 20 rows; full clause row count is 47._
 
-## IEEE 1516.1-2010 Clause 4.6
+## IEEE 1516.1-2010 (2010 edition) Clause 4.6
 
 - Requirement rows: 18
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2372,7 +2372,7 @@ _Truncated to first 20 rows; full clause row count is 47._
 | HLA1516.1-FM-4_6-RTIAPI-001-SIG | SIG | FM-destroyFederationExecution | Destroy Federation Execution | P0 |
 | HLA1516.1-FM-4_6-SVC-001 | SVC | FM-LIFECYCLE | Destroy Federation Execution | P0 |
 
-## IEEE 1516.1-2010 Clause 4.7
+## IEEE 1516.1-2010 (2010 edition) Clause 4.7
 
 - Requirement rows: 11
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2392,7 +2392,7 @@ _Truncated to first 20 rows; full clause row count is 47._
 | HLA1516.1-FM-4_7-RTIAPI-001-SIG | SIG | FM-listFederationExecutions | List Federation Executions | P0 |
 | HLA1516.1-FM-4_7-SVC-001 | SVC | FM-LIFECYCLE | List Federation Executions | P1 |
 
-## IEEE 1516.1-2010 Clause 4.8
+## IEEE 1516.1-2010 (2010 edition) Clause 4.8
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2410,7 +2410,7 @@ _Truncated to first 20 rows; full clause row count is 47._
 | HLA1516.1-FM-4_8-FEDCB-001-SIG | CB_SIG | FM-reportFederationExecutions | Report Federation Executions | P0 |
 | HLA1516.1-FM-4_8-SVC-001 | SVC | FM-LIFECYCLE | Report Federation Executions | P1 |
 
-## IEEE 1516.1-2010 Clause 4.9
+## IEEE 1516.1-2010 (2010 edition) Clause 4.9
 
 - Requirement rows: 48
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2441,7 +2441,7 @@ _Truncated to first 20 rows; full clause row count is 47._
 
 _Truncated to first 20 rows; full clause row count is 48._
 
-## IEEE 1516.1-2010 Clause 5.1
+## IEEE 1516.1-2010 (2010 edition) Clause 5.1
 
 - Requirement rows: 2
 - Source titles: Federate Interface Specification
@@ -2452,7 +2452,7 @@ _Truncated to first 20 rows; full clause row count is 48._
 | HLA1516.1-DM-OVERVIEW-004 | seed | DM-PUBLICATION | - | P1 |
 | HLA1516.1-DM-OVERVIEW-005 | seed | DM-SUBSCRIPTION | - | P1 |
 
-## IEEE 1516.1-2010 Clause 5.10
+## IEEE 1516.1-2010 (2010 edition) Clause 5.10
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2470,7 +2470,7 @@ _Truncated to first 20 rows; full clause row count is 48._
 | HLA1516.1-DM-5_10-STARTREGISTRATIONFOROBJECTCLASS-CB_PAYLOAD-001 | CB_PAYLOAD | DM-START_REGISTRATION_FOR_OBJECT_CLASS | startRegistrationForObjectClass | P0 |
 | HLA1516.1-DM-5_10-STARTREGISTRATIONFOROBJECTCLASS-CB_SIG-001 | CB_SIG | DM-START_REGISTRATION_FOR_OBJECT_CLASS | startRegistrationForObjectClass | P0 |
 
-## IEEE 1516.1-2010 Clause 5.11
+## IEEE 1516.1-2010 (2010 edition) Clause 5.11
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2488,7 +2488,7 @@ _Truncated to first 20 rows; full clause row count is 48._
 | HLA1516.1-DM-5_11-STOPREGISTRATIONFOROBJECTCLASS-CB_PAYLOAD-001 | CB_PAYLOAD | DM-STOP_REGISTRATION_FOR_OBJECT_CLASS | stopRegistrationForObjectClass | P0 |
 | HLA1516.1-DM-5_11-STOPREGISTRATIONFOROBJECTCLASS-CB_SIG-001 | CB_SIG | DM-STOP_REGISTRATION_FOR_OBJECT_CLASS | stopRegistrationForObjectClass | P0 |
 
-## IEEE 1516.1-2010 Clause 5.12
+## IEEE 1516.1-2010 (2010 edition) Clause 5.12
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2506,7 +2506,7 @@ _Truncated to first 20 rows; full clause row count is 48._
 | HLA1516.1-DM-5_12-TURNINTERACTIONSON-CB_PAYLOAD-001 | CB_PAYLOAD | DM-TURN_INTERACTIONS_ON | turnInteractionsOn | P0 |
 | HLA1516.1-DM-5_12-TURNINTERACTIONSON-CB_SIG-001 | CB_SIG | DM-TURN_INTERACTIONS_ON | turnInteractionsOn | P0 |
 
-## IEEE 1516.1-2010 Clause 5.13
+## IEEE 1516.1-2010 (2010 edition) Clause 5.13
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2524,7 +2524,7 @@ _Truncated to first 20 rows; full clause row count is 48._
 | HLA1516.1-DM-5_13-TURNINTERACTIONSOFF-CB_PAYLOAD-001 | CB_PAYLOAD | DM-TURN_INTERACTIONS_OFF | turnInteractionsOff | P0 |
 | HLA1516.1-DM-5_13-TURNINTERACTIONSOFF-CB_SIG-001 | CB_SIG | DM-TURN_INTERACTIONS_OFF | turnInteractionsOff | P0 |
 
-## IEEE 1516.1-2010 Clause 5.2
+## IEEE 1516.1-2010 (2010 edition) Clause 5.2
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2548,7 +2548,7 @@ _Truncated to first 20 rows; full clause row count is 48._
 | HLA1516.1-DM-5_2-RTIAPI-001-MOM | MOM_TRACE | DM-publishObjectClassAttributes | Publish Object Class Attributes | P1 |
 | HLA1516.1-DM-5_2-RTIAPI-001-SIG | SIG | DM-publishObjectClassAttributes | Publish Object Class Attributes | P0 |
 
-## IEEE 1516.1-2010 Clause 5.3
+## IEEE 1516.1-2010 (2010 edition) Clause 5.3
 
 - Requirement rows: 29
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2579,7 +2579,7 @@ _Truncated to first 20 rows; full clause row count is 48._
 
 _Truncated to first 20 rows; full clause row count is 29._
 
-## IEEE 1516.1-2010 Clause 5.4
+## IEEE 1516.1-2010 (2010 edition) Clause 5.4
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2603,7 +2603,7 @@ _Truncated to first 20 rows; full clause row count is 29._
 | HLA1516.1-DM-5_4-RTIAPI-001-MOM | MOM_TRACE | DM-publishInteractionClass | Publish Interaction Class | P1 |
 | HLA1516.1-DM-5_4-RTIAPI-001-SIG | SIG | DM-publishInteractionClass | Publish Interaction Class | P0 |
 
-## IEEE 1516.1-2010 Clause 5.5
+## IEEE 1516.1-2010 (2010 edition) Clause 5.5
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2627,7 +2627,7 @@ _Truncated to first 20 rows; full clause row count is 29._
 | HLA1516.1-DM-5_5-UNPUBLISHINTERACTIONCLASS-SVC-001 | SVC | DM-UNPUBLISH_INTERACTION_CLASS | unpublishInteractionClass | P0 |
 | HLA1516.1-DM-5_5-UNPUBLISHINTERACTIONCLASS-TEST-001 | TEST | DM-UNPUBLISH_INTERACTION_CLASS | unpublishInteractionClass | P0 |
 
-## IEEE 1516.1-2010 Clause 5.6
+## IEEE 1516.1-2010 (2010 edition) Clause 5.6
 
 - Requirement rows: 42
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2658,7 +2658,7 @@ _Truncated to first 20 rows; full clause row count is 29._
 
 _Truncated to first 20 rows; full clause row count is 42._
 
-## IEEE 1516.1-2010 Clause 5.7
+## IEEE 1516.1-2010 (2010 edition) Clause 5.7
 
 - Requirement rows: 29
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2689,7 +2689,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 
 _Truncated to first 20 rows; full clause row count is 29._
 
-## IEEE 1516.1-2010 Clause 5.8
+## IEEE 1516.1-2010 (2010 edition) Clause 5.8
 
 - Requirement rows: 28
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2720,7 +2720,7 @@ _Truncated to first 20 rows; full clause row count is 29._
 
 _Truncated to first 20 rows; full clause row count is 28._
 
-## IEEE 1516.1-2010 Clause 5.9
+## IEEE 1516.1-2010 (2010 edition) Clause 5.9
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2744,7 +2744,7 @@ _Truncated to first 20 rows; full clause row count is 28._
 | HLA1516.1-DM-5_9-UNSUBSCRIBEINTERACTIONCLASS-SVC-001 | SVC | DM-UNSUBSCRIBE_INTERACTION_CLASS | unsubscribeInteractionClass | P0 |
 | HLA1516.1-DM-5_9-UNSUBSCRIBEINTERACTIONCLASS-TEST-001 | TEST | DM-UNSUBSCRIBE_INTERACTION_CLASS | unsubscribeInteractionClass | P0 |
 
-## IEEE 1516.1-2010 Clause 6.1
+## IEEE 1516.1-2010 (2010 edition) Clause 6.1
 
 - Requirement rows: 2
 - Source titles: Federate Interface Specification
@@ -2755,7 +2755,7 @@ _Truncated to first 20 rows; full clause row count is 28._
 | HLA1516.1-OM-OVERVIEW-006 | seed | OM-DISCOVERY | - | P0 |
 | HLA1516.1-OM-OVERVIEW-007 | seed | OM-SCOPE | - | P0 |
 
-## IEEE 1516.1-2010 Clause 6.10
+## IEEE 1516.1-2010 (2010 edition) Clause 6.10
 
 - Requirement rows: 23
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2786,7 +2786,7 @@ _Truncated to first 20 rows; full clause row count is 28._
 
 _Truncated to first 20 rows; full clause row count is 23._
 
-## IEEE 1516.1-2010 Clause 6.11
+## IEEE 1516.1-2010 (2010 edition) Clause 6.11
 
 - Requirement rows: 17
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2812,7 +2812,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB_PAYLOAD-001 | CB_PAYLOAD | OM-REFLECT_ATTRIBUTE_VALUES | reflectAttributeValues | P0 |
 | HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB_SIG-001 | CB_SIG | OM-REFLECT_ATTRIBUTE_VALUES | reflectAttributeValues | P0 |
 
-## IEEE 1516.1-2010 Clause 6.12
+## IEEE 1516.1-2010 (2010 edition) Clause 6.12
 
 - Requirement rows: 23
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2843,7 +2843,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 
 _Truncated to first 20 rows; full clause row count is 23._
 
-## IEEE 1516.1-2010 Clause 6.13
+## IEEE 1516.1-2010 (2010 edition) Clause 6.13
 
 - Requirement rows: 17
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2869,7 +2869,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB_PAYLOAD-001 | CB_PAYLOAD | OM-RECEIVE_INTERACTION | receiveInteraction | P0 |
 | HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB_SIG-001 | CB_SIG | OM-RECEIVE_INTERACTION | receiveInteraction | P0 |
 
-## IEEE 1516.1-2010 Clause 6.14
+## IEEE 1516.1-2010 (2010 edition) Clause 6.14
 
 - Requirement rows: 23
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2900,7 +2900,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 
 _Truncated to first 20 rows; full clause row count is 23._
 
-## IEEE 1516.1-2010 Clause 6.15
+## IEEE 1516.1-2010 (2010 edition) Clause 6.15
 
 - Requirement rows: 17
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2926,7 +2926,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_15-REMOVEOBJECTINSTANCE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-REMOVE_OBJECT_INSTANCE | removeObjectInstance | P0 |
 | HLA1516.1-OM-6_15-REMOVEOBJECTINSTANCE-CB_SIG-001 | CB_SIG | OM-REMOVE_OBJECT_INSTANCE | removeObjectInstance | P0 |
 
-## IEEE 1516.1-2010 Clause 6.16
+## IEEE 1516.1-2010 (2010 edition) Clause 6.16
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2950,7 +2950,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_16-RTIAPI-001-MOM | MOM_TRACE | OM-localDeleteObjectInstance | Local Delete Object Instance | P1 |
 | HLA1516.1-OM-6_16-RTIAPI-001-SIG | SIG | OM-localDeleteObjectInstance | Local Delete Object Instance | P0 |
 
-## IEEE 1516.1-2010 Clause 6.17
+## IEEE 1516.1-2010 (2010 edition) Clause 6.17
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2968,7 +2968,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_17-FEDCB-001-ORD | CB_ORD | OM-attributesInScope | Attributes In Scope | P0 |
 | HLA1516.1-OM-6_17-FEDCB-001-SIG | CB_SIG | OM-attributesInScope | Attributes In Scope | P0 |
 
-## IEEE 1516.1-2010 Clause 6.18
+## IEEE 1516.1-2010 (2010 edition) Clause 6.18
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -2986,7 +2986,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_18-FEDCB-001-ORD | CB_ORD | OM-attributesOutOfScope | Attributes Out Of Scope | P0 |
 | HLA1516.1-OM-6_18-FEDCB-001-SIG | CB_SIG | OM-attributesOutOfScope | Attributes Out Of Scope | P0 |
 
-## IEEE 1516.1-2010 Clause 6.19
+## IEEE 1516.1-2010 (2010 edition) Clause 6.19
 
 - Requirement rows: 23
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3017,7 +3017,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 
 _Truncated to first 20 rows; full clause row count is 23._
 
-## IEEE 1516.1-2010 Clause 6.2
+## IEEE 1516.1-2010 (2010 edition) Clause 6.2
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3041,7 +3041,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_2-RTIAPI-001-MOM | MOM_TRACE | OM-reserveObjectInstanceName | Reserve Object Instance Name | P1 |
 | HLA1516.1-OM-6_2-RTIAPI-001-SIG | SIG | OM-reserveObjectInstanceName | Reserve Object Instance Name | P0 |
 
-## IEEE 1516.1-2010 Clause 6.20
+## IEEE 1516.1-2010 (2010 edition) Clause 6.20
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3059,7 +3059,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_20-PROVIDEATTRIBUTEVALUEUPDATE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-PROVIDE_ATTRIBUTE_VALUE_UPDATE | provideAttributeValueUpdate | P0 |
 | HLA1516.1-OM-6_20-PROVIDEATTRIBUTEVALUEUPDATE-CB_SIG-001 | CB_SIG | OM-PROVIDE_ATTRIBUTE_VALUE_UPDATE | provideAttributeValueUpdate | P0 |
 
-## IEEE 1516.1-2010 Clause 6.21
+## IEEE 1516.1-2010 (2010 edition) Clause 6.21
 
 - Requirement rows: 13
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3081,7 +3081,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_21-TURNUPDATESONFOROBJECTINSTANCE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-TURN_UPDATES_ON_FOR_OBJECT_INSTANCE | turnUpdatesOnForObjectInstance | P0 |
 | HLA1516.1-OM-6_21-TURNUPDATESONFOROBJECTINSTANCE-CB_SIG-001 | CB_SIG | OM-TURN_UPDATES_ON_FOR_OBJECT_INSTANCE | turnUpdatesOnForObjectInstance | P0 |
 
-## IEEE 1516.1-2010 Clause 6.22
+## IEEE 1516.1-2010 (2010 edition) Clause 6.22
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3099,7 +3099,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_22-TURNUPDATESOFFFOROBJECTINSTANCE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-TURN_UPDATES_OFF_FOR_OBJECT_INSTANCE | turnUpdatesOffForObjectInstance | P0 |
 | HLA1516.1-OM-6_22-TURNUPDATESOFFFOROBJECTINSTANCE-CB_SIG-001 | CB_SIG | OM-TURN_UPDATES_OFF_FOR_OBJECT_INSTANCE | turnUpdatesOffForObjectInstance | P0 |
 
-## IEEE 1516.1-2010 Clause 6.23
+## IEEE 1516.1-2010 (2010 edition) Clause 6.23
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3123,7 +3123,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_23-RTIAPI-001-MOM | MOM_TRACE | OM-requestAttributeTransportationTypeChange | Request Attribute Transportation Type Change | P1 |
 | HLA1516.1-OM-6_23-RTIAPI-001-SIG | SIG | OM-requestAttributeTransportationTypeChange | Request Attribute Transportation Type Change | P0 |
 
-## IEEE 1516.1-2010 Clause 6.24
+## IEEE 1516.1-2010 (2010 edition) Clause 6.24
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3141,7 +3141,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_24-FEDCB-001-ORD | CB_ORD | OM-confirmAttributeTransportationTypeChange | Confirm Attribute Transportation Type Change | P0 |
 | HLA1516.1-OM-6_24-FEDCB-001-SIG | CB_SIG | OM-confirmAttributeTransportationTypeChange | Confirm Attribute Transportation Type Change | P0 |
 
-## IEEE 1516.1-2010 Clause 6.25
+## IEEE 1516.1-2010 (2010 edition) Clause 6.25
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3165,7 +3165,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_25-RTIAPI-001-MOM | MOM_TRACE | OM-queryAttributeTransportationType | Query Attribute Transportation Type | P1 |
 | HLA1516.1-OM-6_25-RTIAPI-001-SIG | SIG | OM-queryAttributeTransportationType | Query Attribute Transportation Type | P0 |
 
-## IEEE 1516.1-2010 Clause 6.26
+## IEEE 1516.1-2010 (2010 edition) Clause 6.26
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3183,7 +3183,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_26-REPORTATTRIBUTETRANSPORTATIONTYPE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-REPORT_ATTRIBUTE_TRANSPORTATION_TYPE | reportAttributeTransportationType | P0 |
 | HLA1516.1-OM-6_26-REPORTATTRIBUTETRANSPORTATIONTYPE-CB_SIG-001 | CB_SIG | OM-REPORT_ATTRIBUTE_TRANSPORTATION_TYPE | reportAttributeTransportationType | P0 |
 
-## IEEE 1516.1-2010 Clause 6.27
+## IEEE 1516.1-2010 (2010 edition) Clause 6.27
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3207,7 +3207,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_27-RTIAPI-001-MOM | MOM_TRACE | OM-requestInteractionTransportationTypeChange | Request Interaction Transportation Type Change | P1 |
 | HLA1516.1-OM-6_27-RTIAPI-001-SIG | SIG | OM-requestInteractionTransportationTypeChange | Request Interaction Transportation Type Change | P0 |
 
-## IEEE 1516.1-2010 Clause 6.28
+## IEEE 1516.1-2010 (2010 edition) Clause 6.28
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3225,7 +3225,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_28-FEDCB-001-ORD | CB_ORD | OM-confirmInteractionTransportationTypeChange | Confirm Interaction Transportation Type Change | P0 |
 | HLA1516.1-OM-6_28-FEDCB-001-SIG | CB_SIG | OM-confirmInteractionTransportationTypeChange | Confirm Interaction Transportation Type Change | P0 |
 
-## IEEE 1516.1-2010 Clause 6.29
+## IEEE 1516.1-2010 (2010 edition) Clause 6.29
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3249,7 +3249,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_29-RTIAPI-001-MOM | MOM_TRACE | OM-queryInteractionTransportationType | Query Interaction Transportation Type | P1 |
 | HLA1516.1-OM-6_29-RTIAPI-001-SIG | SIG | OM-queryInteractionTransportationType | Query Interaction Transportation Type | P0 |
 
-## IEEE 1516.1-2010 Clause 6.3
+## IEEE 1516.1-2010 (2010 edition) Clause 6.3
 
 - Requirement rows: 17
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3275,7 +3275,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_3-OBJECTINSTANCENAMERESERVATIONSUCCEEDED-CB_PAYLOAD-001 | CB_PAYLOAD | OM-OBJECT_INSTANCE_NAME_RESERVED | objectInstanceNameReservationSucceeded | P0 |
 | HLA1516.1-OM-6_3-OBJECTINSTANCENAMERESERVATIONSUCCEEDED-CB_SIG-001 | CB_SIG | OM-OBJECT_INSTANCE_NAME_RESERVED | objectInstanceNameReservationSucceeded | P0 |
 
-## IEEE 1516.1-2010 Clause 6.30
+## IEEE 1516.1-2010 (2010 edition) Clause 6.30
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3293,7 +3293,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_30-REPORTINTERACTIONTRANSPORTATIONTYPE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-REPORT_INTERACTION_TRANSPORTATION_TYPE | reportInteractionTransportationType | P0 |
 | HLA1516.1-OM-6_30-REPORTINTERACTIONTRANSPORTATIONTYPE-CB_SIG-001 | CB_SIG | OM-REPORT_INTERACTION_TRANSPORTATION_TYPE | reportInteractionTransportationType | P0 |
 
-## IEEE 1516.1-2010 Clause 6.4
+## IEEE 1516.1-2010 (2010 edition) Clause 6.4
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3317,7 +3317,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_4-RTIAPI-001-MOM | MOM_TRACE | OM-releaseObjectInstanceName | Release Object Instance Name | P1 |
 | HLA1516.1-OM-6_4-RTIAPI-001-SIG | SIG | OM-releaseObjectInstanceName | Release Object Instance Name | P0 |
 
-## IEEE 1516.1-2010 Clause 6.5
+## IEEE 1516.1-2010 (2010 edition) Clause 6.5
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3341,7 +3341,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_5-RTIAPI-001-MOM | MOM_TRACE | OM-reserveMultipleObjectInstanceName | Reserve Multiple Object Instance Names | P1 |
 | HLA1516.1-OM-6_5-RTIAPI-001-SIG | SIG | OM-reserveMultipleObjectInstanceName | Reserve Multiple Object Instance Names | P0 |
 
-## IEEE 1516.1-2010 Clause 6.6
+## IEEE 1516.1-2010 (2010 edition) Clause 6.6
 
 - Requirement rows: 17
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3367,7 +3367,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_6-MULTIPLEOBJECTINSTANCENAMERESERVATIONSUCCEEDED-CB_PAYLOAD-001 | CB_PAYLOAD | OM-MULTIPLE_OBJECT_INSTANCE_NAMES_RESERVED | multipleObjectInstanceNameReservationSucceeded | P0 |
 | HLA1516.1-OM-6_6-MULTIPLEOBJECTINSTANCENAMERESERVATIONSUCCEEDED-CB_SIG-001 | CB_SIG | OM-MULTIPLE_OBJECT_INSTANCE_NAMES_RESERVED | multipleObjectInstanceNameReservationSucceeded | P0 |
 
-## IEEE 1516.1-2010 Clause 6.7
+## IEEE 1516.1-2010 (2010 edition) Clause 6.7
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3391,7 +3391,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_7-RTIAPI-001-MOM | MOM_TRACE | OM-releaseMultipleObjectInstanceName | Release Multiple Object Instance Names | P1 |
 | HLA1516.1-OM-6_7-RTIAPI-001-SIG | SIG | OM-releaseMultipleObjectInstanceName | Release Multiple Object Instance Names | P0 |
 
-## IEEE 1516.1-2010 Clause 6.8
+## IEEE 1516.1-2010 (2010 edition) Clause 6.8
 
 - Requirement rows: 23
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3422,7 +3422,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 
 _Truncated to first 20 rows; full clause row count is 23._
 
-## IEEE 1516.1-2010 Clause 6.9
+## IEEE 1516.1-2010 (2010 edition) Clause 6.9
 
 - Requirement rows: 13
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3444,7 +3444,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OM-6_9-FEDCB-002-ORD | CB_ORD | OM-discoverObjectInstance | Discover Object Instance | P0 |
 | HLA1516.1-OM-6_9-FEDCB-002-SIG | CB_SIG | OM-discoverObjectInstance | Discover Object Instance | P0 |
 
-## IEEE 1516.1-2010 Clause 7.1
+## IEEE 1516.1-2010 (2010 edition) Clause 7.1
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -3454,7 +3454,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 |---|---|---|---|---|
 | HLA1516.1-OWN-OVERVIEW-008 | seed | OWN-EXCLUSIVE | - | P1 |
 
-## IEEE 1516.1-2010 Clause 7.10
+## IEEE 1516.1-2010 (2010 edition) Clause 7.10
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3472,7 +3472,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OWN-7_10-FEDCB-001-ORD | CB_ORD | OWN-attributeOwnershipUnavailable | Attribute Ownership Unavailable | P1 |
 | HLA1516.1-OWN-7_10-FEDCB-001-SIG | CB_SIG | OWN-attributeOwnershipUnavailable | Attribute Ownership Unavailable | P1 |
 
-## IEEE 1516.1-2010 Clause 7.11
+## IEEE 1516.1-2010 (2010 edition) Clause 7.11
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3490,7 +3490,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OWN-7_11-REQUESTATTRIBUTEOWNERSHIPRELEASE-CB_PAYLOAD-001 | CB_PAYLOAD | OWN-REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE | requestAttributeOwnershipRelease | P0 |
 | HLA1516.1-OWN-7_11-REQUESTATTRIBUTEOWNERSHIPRELEASE-CB_SIG-001 | CB_SIG | OWN-REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE | requestAttributeOwnershipRelease | P0 |
 
-## IEEE 1516.1-2010 Clause 7.12
+## IEEE 1516.1-2010 (2010 edition) Clause 7.12
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3514,7 +3514,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OWN-7_12-RTIAPI-001-MOM | MOM_TRACE | OWN-attributeOwnershipReleaseDenied | Attribute Ownership Release Denied | P1 |
 | HLA1516.1-OWN-7_12-RTIAPI-001-SIG | SIG | OWN-attributeOwnershipReleaseDenied | Attribute Ownership Release Denied | P1 |
 
-## IEEE 1516.1-2010 Clause 7.13
+## IEEE 1516.1-2010 (2010 edition) Clause 7.13
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3538,7 +3538,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OWN-7_13-RTIAPI-001-RET | RET | OWN-attributeOwnershipDivestitureIfWanted | Attribute Ownership Divestiture If Wanted | P1 |
 | HLA1516.1-OWN-7_13-RTIAPI-001-SIG | SIG | OWN-attributeOwnershipDivestitureIfWanted | Attribute Ownership Divestiture If Wanted | P1 |
 
-## IEEE 1516.1-2010 Clause 7.14
+## IEEE 1516.1-2010 (2010 edition) Clause 7.14
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3562,7 +3562,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OWN-7_14-RTIAPI-001-MOM | MOM_TRACE | OWN-cancelNegotiatedAttributeOwnershipDivestiture | Cancel Negotiated Attribute Ownership Divestiture | P1 |
 | HLA1516.1-OWN-7_14-RTIAPI-001-SIG | SIG | OWN-cancelNegotiatedAttributeOwnershipDivestiture | Cancel Negotiated Attribute Ownership Divestiture | P1 |
 
-## IEEE 1516.1-2010 Clause 7.15
+## IEEE 1516.1-2010 (2010 edition) Clause 7.15
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3586,7 +3586,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OWN-7_15-RTIAPI-001-MOM | MOM_TRACE | OWN-cancelAttributeOwnershipAcquisition | Cancel Attribute Ownership Acquisition | P1 |
 | HLA1516.1-OWN-7_15-RTIAPI-001-SIG | SIG | OWN-cancelAttributeOwnershipAcquisition | Cancel Attribute Ownership Acquisition | P1 |
 
-## IEEE 1516.1-2010 Clause 7.16
+## IEEE 1516.1-2010 (2010 edition) Clause 7.16
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3604,7 +3604,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OWN-7_16-FEDCB-001-ORD | CB_ORD | OWN-confirmAttributeOwnershipAcquisitionCancellation | Confirm Attribute Ownership Acquisition Cancellation | P1 |
 | HLA1516.1-OWN-7_16-FEDCB-001-SIG | CB_SIG | OWN-confirmAttributeOwnershipAcquisitionCancellation | Confirm Attribute Ownership Acquisition Cancellation | P1 |
 
-## IEEE 1516.1-2010 Clause 7.17
+## IEEE 1516.1-2010 (2010 edition) Clause 7.17
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3628,7 +3628,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-OWN-7_17-RTIAPI-001-MOM | MOM_TRACE | OWN-queryAttributeOwnership | Query Attribute Ownership | P1 |
 | HLA1516.1-OWN-7_17-RTIAPI-001-SIG | SIG | OWN-queryAttributeOwnership | Query Attribute Ownership | P1 |
 
-## IEEE 1516.1-2010 Clause 7.18
+## IEEE 1516.1-2010 (2010 edition) Clause 7.18
 
 - Requirement rows: 25
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3659,7 +3659,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 
 _Truncated to first 20 rows; full clause row count is 25._
 
-## IEEE 1516.1-2010 Clause 7.19
+## IEEE 1516.1-2010 (2010 edition) Clause 7.19
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3683,7 +3683,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-OWN-7_19-RTIAPI-001-RET | RET | OWN-isAttributeOwnedByFederate | Is Attribute Owned By Federate | P1 |
 | HLA1516.1-OWN-7_19-RTIAPI-001-SIG | SIG | OWN-isAttributeOwnedByFederate | Is Attribute Owned By Federate | P1 |
 
-## IEEE 1516.1-2010 Clause 7.2
+## IEEE 1516.1-2010 (2010 edition) Clause 7.2
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3707,7 +3707,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-OWN-7_2-UNCONDITIONALATTRIBUTEOWNERSHIPDIVESTITURE-SVC-001 | SVC | OWN-UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTIT | unconditionalAttributeOwnershipDivestiture | P0 |
 | HLA1516.1-OWN-7_2-UNCONDITIONALATTRIBUTEOWNERSHIPDIVESTITURE-TEST-001 | TEST | OWN-UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTIT | unconditionalAttributeOwnershipDivestiture | P0 |
 
-## IEEE 1516.1-2010 Clause 7.3
+## IEEE 1516.1-2010 (2010 edition) Clause 7.3
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3731,7 +3731,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-OWN-7_3-RTIAPI-001-MOM | MOM_TRACE | OWN-negotiatedAttributeOwnershipDivestiture | Negotiated Attribute Ownership Divestiture | P1 |
 | HLA1516.1-OWN-7_3-RTIAPI-001-SIG | SIG | OWN-negotiatedAttributeOwnershipDivestiture | Negotiated Attribute Ownership Divestiture | P1 |
 
-## IEEE 1516.1-2010 Clause 7.4
+## IEEE 1516.1-2010 (2010 edition) Clause 7.4
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3749,7 +3749,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-OWN-7_4-REQUESTATTRIBUTEOWNERSHIPASSUMPTION-CB_PAYLOAD-001 | CB_PAYLOAD | OWN-REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION | requestAttributeOwnershipAssumption | P0 |
 | HLA1516.1-OWN-7_4-REQUESTATTRIBUTEOWNERSHIPASSUMPTION-CB_SIG-001 | CB_SIG | OWN-REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION | requestAttributeOwnershipAssumption | P0 |
 
-## IEEE 1516.1-2010 Clause 7.5
+## IEEE 1516.1-2010 (2010 edition) Clause 7.5
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3767,7 +3767,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-OWN-7_5-REQUESTDIVESTITURECONFIRMATION-CB_PAYLOAD-001 | CB_PAYLOAD | OWN-REQUEST_DIVESTITURE_CONFIRMATION | requestDivestitureConfirmation | P0 |
 | HLA1516.1-OWN-7_5-REQUESTDIVESTITURECONFIRMATION-CB_SIG-001 | CB_SIG | OWN-REQUEST_DIVESTITURE_CONFIRMATION | requestDivestitureConfirmation | P0 |
 
-## IEEE 1516.1-2010 Clause 7.6
+## IEEE 1516.1-2010 (2010 edition) Clause 7.6
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3791,7 +3791,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-OWN-7_6-RTIAPI-001-MOM | MOM_TRACE | OWN-confirmDivestiture | Confirm Divestiture | P1 |
 | HLA1516.1-OWN-7_6-RTIAPI-001-SIG | SIG | OWN-confirmDivestiture | Confirm Divestiture | P1 |
 
-## IEEE 1516.1-2010 Clause 7.7
+## IEEE 1516.1-2010 (2010 edition) Clause 7.7
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3809,7 +3809,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-OWN-7_7-FEDCB-001-ORD | CB_ORD | OWN-attributeOwnershipAcquisitionNotification | Attribute Ownership Acquisition Notification | P1 |
 | HLA1516.1-OWN-7_7-FEDCB-001-SIG | CB_SIG | OWN-attributeOwnershipAcquisitionNotification | Attribute Ownership Acquisition Notification | P1 |
 
-## IEEE 1516.1-2010 Clause 7.8
+## IEEE 1516.1-2010 (2010 edition) Clause 7.8
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3833,7 +3833,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-OWN-7_8-RTIAPI-001-MOM | MOM_TRACE | OWN-attributeOwnershipAcquisition | Attribute Ownership Acquisition | P1 |
 | HLA1516.1-OWN-7_8-RTIAPI-001-SIG | SIG | OWN-attributeOwnershipAcquisition | Attribute Ownership Acquisition | P1 |
 
-## IEEE 1516.1-2010 Clause 7.9
+## IEEE 1516.1-2010 (2010 edition) Clause 7.9
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3857,7 +3857,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-OWN-7_9-RTIAPI-001-MOM | MOM_TRACE | OWN-attributeOwnershipAcquisitionIfAvailable | Attribute Ownership Acquisition If Available | P1 |
 | HLA1516.1-OWN-7_9-RTIAPI-001-SIG | SIG | OWN-attributeOwnershipAcquisitionIfAvailable | Attribute Ownership Acquisition If Available | P1 |
 
-## IEEE 1516.1-2010 Clause 8.1
+## IEEE 1516.1-2010 (2010 edition) Clause 8.1
 
 - Requirement rows: 3
 - Source titles: Federate Interface Specification
@@ -3869,7 +3869,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-OVERVIEW-010 | seed | TM-LOOKAHEAD | - | P0 |
 | HLA1516.1-TM-OVERVIEW-011 | seed | TM-GALT-LITS | - | P0 |
 
-## IEEE 1516.1-2010 Clause 8.10
+## IEEE 1516.1-2010 (2010 edition) Clause 8.10
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3893,7 +3893,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_10-RTIAPI-001-MOM | MOM_TRACE | TM-nextMessageRequest | Next Message Request | P1 |
 | HLA1516.1-TM-8_10-RTIAPI-001-SIG | SIG | TM-nextMessageRequest | Next Message Request | P0 |
 
-## IEEE 1516.1-2010 Clause 8.11
+## IEEE 1516.1-2010 (2010 edition) Clause 8.11
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3917,7 +3917,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_11-RTIAPI-001-MOM | MOM_TRACE | TM-nextMessageRequestAvailable | Next Message Request Available | P1 |
 | HLA1516.1-TM-8_11-RTIAPI-001-SIG | SIG | TM-nextMessageRequestAvailable | Next Message Request Available | P0 |
 
-## IEEE 1516.1-2010 Clause 8.12
+## IEEE 1516.1-2010 (2010 edition) Clause 8.12
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3941,7 +3941,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_12-RTIAPI-001-MOM | MOM_TRACE | TM-flushQueueRequest | Flush Queue Request | P1 |
 | HLA1516.1-TM-8_12-RTIAPI-001-SIG | SIG | TM-flushQueueRequest | Flush Queue Request | P0 |
 
-## IEEE 1516.1-2010 Clause 8.13
+## IEEE 1516.1-2010 (2010 edition) Clause 8.13
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3959,7 +3959,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_13-TIMEADVANCEGRANT-CB_PAYLOAD-001 | CB_PAYLOAD | TM-TIME_ADVANCE_GRANT | timeAdvanceGrant | P0 |
 | HLA1516.1-TM-8_13-TIMEADVANCEGRANT-CB_SIG-001 | CB_SIG | TM-TIME_ADVANCE_GRANT | timeAdvanceGrant | P0 |
 
-## IEEE 1516.1-2010 Clause 8.14
+## IEEE 1516.1-2010 (2010 edition) Clause 8.14
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -3983,7 +3983,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_14-RTIAPI-001-MOM | MOM_TRACE | TM-enableAsynchronousDelivery | Enable Asynchronous Delivery | P1 |
 | HLA1516.1-TM-8_14-RTIAPI-001-SIG | SIG | TM-enableAsynchronousDelivery | Enable Asynchronous Delivery | P0 |
 
-## IEEE 1516.1-2010 Clause 8.15
+## IEEE 1516.1-2010 (2010 edition) Clause 8.15
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4007,7 +4007,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_15-RTIAPI-001-MOM | MOM_TRACE | TM-disableAsynchronousDelivery | Disable Asynchronous Delivery | P1 |
 | HLA1516.1-TM-8_15-RTIAPI-001-SIG | SIG | TM-disableAsynchronousDelivery | Disable Asynchronous Delivery | P0 |
 
-## IEEE 1516.1-2010 Clause 8.16
+## IEEE 1516.1-2010 (2010 edition) Clause 8.16
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4031,7 +4031,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_16-RTIAPI-001-RET | RET | TM-queryGALT | Query GALT | P0 |
 | HLA1516.1-TM-8_16-RTIAPI-001-SIG | SIG | TM-queryGALT | Query GALT | P0 |
 
-## IEEE 1516.1-2010 Clause 8.17
+## IEEE 1516.1-2010 (2010 edition) Clause 8.17
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4055,7 +4055,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_17-RTIAPI-001-RET | RET | TM-queryLogicalTime | Query Logical Time | P0 |
 | HLA1516.1-TM-8_17-RTIAPI-001-SIG | SIG | TM-queryLogicalTime | Query Logical Time | P0 |
 
-## IEEE 1516.1-2010 Clause 8.18
+## IEEE 1516.1-2010 (2010 edition) Clause 8.18
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4079,7 +4079,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_18-RTIAPI-001-RET | RET | TM-queryLITS | Query LITS | P0 |
 | HLA1516.1-TM-8_18-RTIAPI-001-SIG | SIG | TM-queryLITS | Query LITS | P0 |
 
-## IEEE 1516.1-2010 Clause 8.19
+## IEEE 1516.1-2010 (2010 edition) Clause 8.19
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4103,7 +4103,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_19-RTIAPI-001-MOM | MOM_TRACE | TM-modifyLookahead | Modify Lookahead | P1 |
 | HLA1516.1-TM-8_19-RTIAPI-001-SIG | SIG | TM-modifyLookahead | Modify Lookahead | P0 |
 
-## IEEE 1516.1-2010 Clause 8.2
+## IEEE 1516.1-2010 (2010 edition) Clause 8.2
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4127,7 +4127,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_2-RTIAPI-001-MOM | MOM_TRACE | TM-enableTimeRegulation | Enable Time Regulation | P1 |
 | HLA1516.1-TM-8_2-RTIAPI-001-SIG | SIG | TM-enableTimeRegulation | Enable Time Regulation | P0 |
 
-## IEEE 1516.1-2010 Clause 8.20
+## IEEE 1516.1-2010 (2010 edition) Clause 8.20
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4151,7 +4151,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_20-RTIAPI-001-RET | RET | TM-queryLookahead | Query Lookahead | P0 |
 | HLA1516.1-TM-8_20-RTIAPI-001-SIG | SIG | TM-queryLookahead | Query Lookahead | P0 |
 
-## IEEE 1516.1-2010 Clause 8.21
+## IEEE 1516.1-2010 (2010 edition) Clause 8.21
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4175,7 +4175,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_21-RTIAPI-001-MOM | MOM_TRACE | TM-retract | Retract | P1 |
 | HLA1516.1-TM-8_21-RTIAPI-001-SIG | SIG | TM-retract | Retract | P0 |
 
-## IEEE 1516.1-2010 Clause 8.22
+## IEEE 1516.1-2010 (2010 edition) Clause 8.22
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4193,7 +4193,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_22-REQUESTRETRACTION-CB_PAYLOAD-001 | CB_PAYLOAD | TM-REQUEST_RETRACTION | requestRetraction | P0 |
 | HLA1516.1-TM-8_22-REQUESTRETRACTION-CB_SIG-001 | CB_SIG | TM-REQUEST_RETRACTION | requestRetraction | P0 |
 
-## IEEE 1516.1-2010 Clause 8.23
+## IEEE 1516.1-2010 (2010 edition) Clause 8.23
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4217,7 +4217,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_23-RTIAPI-001-MOM | MOM_TRACE | TM-changeAttributeOrderType | Change Attribute Order Type | P1 |
 | HLA1516.1-TM-8_23-RTIAPI-001-SIG | SIG | TM-changeAttributeOrderType | Change Attribute Order Type | P0 |
 
-## IEEE 1516.1-2010 Clause 8.24
+## IEEE 1516.1-2010 (2010 edition) Clause 8.24
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4241,7 +4241,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_24-RTIAPI-001-MOM | MOM_TRACE | TM-changeInteractionOrderType | Change Interaction Order Type | P1 |
 | HLA1516.1-TM-8_24-RTIAPI-001-SIG | SIG | TM-changeInteractionOrderType | Change Interaction Order Type | P0 |
 
-## IEEE 1516.1-2010 Clause 8.3
+## IEEE 1516.1-2010 (2010 edition) Clause 8.3
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4259,7 +4259,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_3-TIMEREGULATIONENABLED-CB_PAYLOAD-001 | CB_PAYLOAD | TM-TIME_REGULATION_ENABLED | timeRegulationEnabled | P0 |
 | HLA1516.1-TM-8_3-TIMEREGULATIONENABLED-CB_SIG-001 | CB_SIG | TM-TIME_REGULATION_ENABLED | timeRegulationEnabled | P0 |
 
-## IEEE 1516.1-2010 Clause 8.4
+## IEEE 1516.1-2010 (2010 edition) Clause 8.4
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4283,7 +4283,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_4-RTIAPI-001-MOM | MOM_TRACE | TM-disableTimeRegulation | Disable Time Regulation | P1 |
 | HLA1516.1-TM-8_4-RTIAPI-001-SIG | SIG | TM-disableTimeRegulation | Disable Time Regulation | P0 |
 
-## IEEE 1516.1-2010 Clause 8.5
+## IEEE 1516.1-2010 (2010 edition) Clause 8.5
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4307,7 +4307,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_5-RTIAPI-001-MOM | MOM_TRACE | TM-enableTimeConstrained | Enable Time Constrained | P1 |
 | HLA1516.1-TM-8_5-RTIAPI-001-SIG | SIG | TM-enableTimeConstrained | Enable Time Constrained | P0 |
 
-## IEEE 1516.1-2010 Clause 8.6
+## IEEE 1516.1-2010 (2010 edition) Clause 8.6
 
 - Requirement rows: 9
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4325,7 +4325,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_6-TIMECONSTRAINEDENABLED-CB_PAYLOAD-001 | CB_PAYLOAD | TM-TIME_CONSTRAINED_ENABLED | timeConstrainedEnabled | P0 |
 | HLA1516.1-TM-8_6-TIMECONSTRAINEDENABLED-CB_SIG-001 | CB_SIG | TM-TIME_CONSTRAINED_ENABLED | timeConstrainedEnabled | P0 |
 
-## IEEE 1516.1-2010 Clause 8.7
+## IEEE 1516.1-2010 (2010 edition) Clause 8.7
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4349,7 +4349,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_7-RTIAPI-001-MOM | MOM_TRACE | TM-disableTimeConstrained | Disable Time Constrained | P1 |
 | HLA1516.1-TM-8_7-RTIAPI-001-SIG | SIG | TM-disableTimeConstrained | Disable Time Constrained | P0 |
 
-## IEEE 1516.1-2010 Clause 8.8
+## IEEE 1516.1-2010 (2010 edition) Clause 8.8
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4373,7 +4373,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_8-TIMEADVANCEREQUEST-SVC-001 | SVC | TM-TIME_ADVANCE_REQUEST | timeAdvanceRequest | P0 |
 | HLA1516.1-TM-8_8-TIMEADVANCEREQUEST-TEST-001 | TEST | TM-TIME_ADVANCE_REQUEST | timeAdvanceRequest | P0 |
 
-## IEEE 1516.1-2010 Clause 8.9
+## IEEE 1516.1-2010 (2010 edition) Clause 8.9
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4397,7 +4397,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 | HLA1516.1-TM-8_9-TIMEADVANCEREQUESTAVAILABLE-SVC-001 | SVC | TM-TIME_ADVANCE_REQUEST_AVAILABLE | timeAdvanceRequestAvailable | P0 |
 | HLA1516.1-TM-8_9-TIMEADVANCEREQUESTAVAILABLE-TEST-001 | TEST | TM-TIME_ADVANCE_REQUEST_AVAILABLE | timeAdvanceRequestAvailable | P0 |
 
-## IEEE 1516.1-2010 Clause 9.1
+## IEEE 1516.1-2010 (2010 edition) Clause 9.1
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -4407,7 +4407,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 |---|---|---|---|---|
 | HLA1516.1-DDM-OVERVIEW-012 | seed | DDM-REGION-OVERLAP | - | P1 |
 
-## IEEE 1516.1-2010 Clause 9.10
+## IEEE 1516.1-2010 (2010 edition) Clause 9.10
 
 - Requirement rows: 28
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4438,7 +4438,7 @@ _Truncated to first 20 rows; full clause row count is 25._
 
 _Truncated to first 20 rows; full clause row count is 28._
 
-## IEEE 1516.1-2010 Clause 9.11
+## IEEE 1516.1-2010 (2010 edition) Clause 9.11
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4462,7 +4462,7 @@ _Truncated to first 20 rows; full clause row count is 28._
 | HLA1516.1-DDM-9_11-UNSUBSCRIBEINTERACTIONCLASSWITHREGIONS-SVC-001 | SVC | DDM-UNSUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS | unsubscribeInteractionClassWithRegions | P1 |
 | HLA1516.1-DDM-9_11-UNSUBSCRIBEINTERACTIONCLASSWITHREGIONS-TEST-001 | TEST | DDM-UNSUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS | unsubscribeInteractionClassWithRegions | P1 |
 
-## IEEE 1516.1-2010 Clause 9.12
+## IEEE 1516.1-2010 (2010 edition) Clause 9.12
 
 - Requirement rows: 23
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4493,7 +4493,7 @@ _Truncated to first 20 rows; full clause row count is 28._
 
 _Truncated to first 20 rows; full clause row count is 23._
 
-## IEEE 1516.1-2010 Clause 9.13
+## IEEE 1516.1-2010 (2010 edition) Clause 9.13
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4517,7 +4517,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-DDM-9_13-RTIAPI-001-MOM | MOM_TRACE | DDM-requestAttributeValueUpdateWithRegions | Request Attribute Value Update With Regions | P1 |
 | HLA1516.1-DDM-9_13-RTIAPI-001-SIG | SIG | DDM-requestAttributeValueUpdateWithRegions | Request Attribute Value Update With Regions | P1 |
 
-## IEEE 1516.1-2010 Clause 9.2
+## IEEE 1516.1-2010 (2010 edition) Clause 9.2
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4541,7 +4541,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-DDM-9_2-RTIAPI-001-RET | RET | DDM-createRegion | Create Region | P1 |
 | HLA1516.1-DDM-9_2-RTIAPI-001-SIG | SIG | DDM-createRegion | Create Region | P1 |
 
-## IEEE 1516.1-2010 Clause 9.3
+## IEEE 1516.1-2010 (2010 edition) Clause 9.3
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4565,7 +4565,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-DDM-9_3-RTIAPI-001-MOM | MOM_TRACE | DDM-commitRegionModifications | Commit Region Modifications | P1 |
 | HLA1516.1-DDM-9_3-RTIAPI-001-SIG | SIG | DDM-commitRegionModifications | Commit Region Modifications | P1 |
 
-## IEEE 1516.1-2010 Clause 9.4
+## IEEE 1516.1-2010 (2010 edition) Clause 9.4
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4589,7 +4589,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-DDM-9_4-RTIAPI-001-MOM | MOM_TRACE | DDM-deleteRegion | Delete Region | P1 |
 | HLA1516.1-DDM-9_4-RTIAPI-001-SIG | SIG | DDM-deleteRegion | Delete Region | P1 |
 
-## IEEE 1516.1-2010 Clause 9.5
+## IEEE 1516.1-2010 (2010 edition) Clause 9.5
 
 - Requirement rows: 23
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4620,7 +4620,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 
 _Truncated to first 20 rows; full clause row count is 23._
 
-## IEEE 1516.1-2010 Clause 9.6
+## IEEE 1516.1-2010 (2010 edition) Clause 9.6
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4644,7 +4644,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-DDM-9_6-RTIAPI-001-MOM | MOM_TRACE | DDM-associateRegionsForUpdates | Associate Regions For Updates | P1 |
 | HLA1516.1-DDM-9_6-RTIAPI-001-SIG | SIG | DDM-associateRegionsForUpdates | Associate Regions For Updates | P1 |
 
-## IEEE 1516.1-2010 Clause 9.7
+## IEEE 1516.1-2010 (2010 edition) Clause 9.7
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4668,7 +4668,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 | HLA1516.1-DDM-9_7-UNASSOCIATEREGIONSFORUPDATES-SVC-001 | SVC | DDM-UNASSOCIATE_REGIONS_FOR_UPDATES | unassociateRegionsForUpdates | P1 |
 | HLA1516.1-DDM-9_7-UNASSOCIATEREGIONSFORUPDATES-TEST-001 | TEST | DDM-UNASSOCIATE_REGIONS_FOR_UPDATES | unassociateRegionsForUpdates | P1 |
 
-## IEEE 1516.1-2010 Clause 9.8
+## IEEE 1516.1-2010 (2010 edition) Clause 9.8
 
 - Requirement rows: 42
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4699,7 +4699,7 @@ _Truncated to first 20 rows; full clause row count is 23._
 
 _Truncated to first 20 rows; full clause row count is 42._
 
-## IEEE 1516.1-2010 Clause 9.9
+## IEEE 1516.1-2010 (2010 edition) Clause 9.9
 
 - Requirement rows: 15
 - Source titles: C++ API Binding, Federate Interface Specification
@@ -4723,7 +4723,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.1-DDM-9_9-UNSUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-SVC-001 | SVC | DDM-UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_R | unsubscribeObjectClassAttributesWithRegions | P1 |
 | HLA1516.1-DDM-9_9-UNSUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-TEST-001 | TEST | DDM-UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_R | unsubscribeObjectClassAttributesWithRegions | P1 |
 
-## IEEE 1516.1-2010 Clause Annex B
+## IEEE 1516.1-2010 (2010 edition) Clause Annex B
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -4733,7 +4733,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.1-API_JAVA_NORMATIVE-016 | CLAUSE12_13_DETAIL | API-JAVA-NORMATIVE | - | P1 |
 
-## IEEE 1516.1-2010 Clause Annex C
+## IEEE 1516.1-2010 (2010 edition) Clause Annex C
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -4743,7 +4743,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.1-API_CPP_NORMATIVE-017 | CLAUSE12_13_DETAIL | API-CPP-NORMATIVE | - | P1 |
 
-## IEEE 1516.1-2010 Clause Annex D
+## IEEE 1516.1-2010 (2010 edition) Clause Annex D
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -4753,7 +4753,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.1-API_WS_NORMATIVE-018 | CLAUSE12_13_DETAIL | API-WS-NORMATIVE | - | P1 |
 
-## IEEE 1516.1-2010 Clause Annex F
+## IEEE 1516.1-2010 (2010 edition) Clause Annex F
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -4763,7 +4763,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.1-FDD_XSD_NORMATIVE-019 | CLAUSE12_13_DETAIL | FDD-XSD-NORMATIVE | - | P0 |
 
-## IEEE 1516.1-2010 Clause Annex G
+## IEEE 1516.1-2010 (2010 edition) Clause Annex G
 
 - Requirement rows: 1
 - Source titles: Federate Interface Specification
@@ -4773,7 +4773,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.1-MIM_NORMATIVE-020 | CLAUSE12_13_DETAIL | MIM-NORMATIVE | - | P0 |
 
-## IEEE 1516.2-2010 Clause 1.1
+## IEEE 1516.2-2010 (2010 edition) Clause 1.1
 
 - Requirement rows: 1
 - Source titles: Object Model Template Specification
@@ -4783,7 +4783,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.2-OMT-OMT_SCOPE-001 | OMT_CLAUSE_DETAIL | OMT-SCOPE | - | P1 |
 
-## IEEE 1516.2-2010 Clause 1.2
+## IEEE 1516.2-2010 (2010 edition) Clause 1.2
 
 - Requirement rows: 1
 - Source titles: Object Model Template Specification
@@ -4793,7 +4793,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.2-OMT-OMT_PURPOSE-002 | OMT_CLAUSE_DETAIL | OMT-PURPOSE | - | P0 |
 
-## IEEE 1516.2-2010 Clause 1.3
+## IEEE 1516.2-2010 (2010 edition) Clause 1.3
 
 - Requirement rows: 1
 - Source titles: Object Model Template Specification
@@ -4803,7 +4803,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.2-OMT-OMT_BACKGROUND-003 | OMT_CLAUSE_DETAIL | OMT-BACKGROUND | - | P2 |
 
-## IEEE 1516.2-2010 Clause 4
+## IEEE 1516.2-2010 (2010 edition) Clause 4
 
 - Requirement rows: 1
 - Source titles: Object Model Template Specification
@@ -4813,7 +4813,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.2-COMPONENTS-001 | seed | OMT-COMPONENTS | - | P1 |
 
-## IEEE 1516.2-2010 Clause 4.1
+## IEEE 1516.2-2010 (2010 edition) Clause 4.1
 
 - Requirement rows: 3
 - Source titles: Object Model Template Specification
@@ -4825,7 +4825,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-OMT-OMT_MODEL_ID-004 | OMT_CLAUSE_DETAIL | OMT-MODEL-ID | - | P0 |
 | HLA1516.2-TYPE-003 | seed | OMT-TYPE | - | P1 |
 
-## IEEE 1516.2-2010 Clause 4.10
+## IEEE 1516.2-2010 (2010 edition) Clause 4.10
 
 - Requirement rows: 2
 - Source titles: Object Model Template Specification
@@ -4836,7 +4836,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-OMT-OMT_TRANSPORTATION-013 | OMT_CLAUSE_DETAIL | OMT-TRANSPORTATION | - | P0 |
 | HLA1516.2-TRANSPORTATION-017 | seed | OMT-TRANSPORTATION | - | P1 |
 
-## IEEE 1516.2-2010 Clause 4.11
+## IEEE 1516.2-2010 (2010 edition) Clause 4.11
 
 - Requirement rows: 2
 - Source titles: Object Model Template Specification
@@ -4847,7 +4847,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-OMT-OMT_UPDATE_RATE-014 | OMT_CLAUSE_DETAIL | OMT-UPDATE-RATE | - | P1 |
 | HLA1516.2-UPDATE-RATE-018 | seed | OMT-UPDATE-RATE | - | P1 |
 
-## IEEE 1516.2-2010 Clause 4.12
+## IEEE 1516.2-2010 (2010 edition) Clause 4.12
 
 - Requirement rows: 2
 - Source titles: Object Model Template Specification
@@ -4858,7 +4858,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-OMT-OMT_SWITCHES-015 | OMT_CLAUSE_DETAIL | OMT-SWITCHES | - | P1 |
 | HLA1516.2-SWITCHES-019 | seed | OMT-SWITCHES | - | P1 |
 
-## IEEE 1516.2-2010 Clause 4.13
+## IEEE 1516.2-2010 (2010 edition) Clause 4.13
 
 - Requirement rows: 7
 - Source titles: Object Model Template Specification
@@ -4874,7 +4874,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-DATATYPES-VARIANT-025 | seed | OMT-DATATYPES-VARIANT | - | P0 |
 | HLA1516.2-OMT-OMT_DATATYPES-016 | OMT_CLAUSE_DETAIL | OMT-DATATYPES | - | P0 |
 
-## IEEE 1516.2-2010 Clause 4.14
+## IEEE 1516.2-2010 (2010 edition) Clause 4.14
 
 - Requirement rows: 2
 - Source titles: Object Model Template Specification
@@ -4885,7 +4885,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-NOTES-026 | seed | OMT-NOTES | - | P1 |
 | HLA1516.2-OMT-OMT_NOTES-017 | OMT_CLAUSE_DETAIL | OMT-NOTES | - | P2 |
 
-## IEEE 1516.2-2010 Clause 4.2
+## IEEE 1516.2-2010 (2010 edition) Clause 4.2
 
 - Requirement rows: 3
 - Source titles: Object Model Template Specification
@@ -4897,7 +4897,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-OBJECT-CLASSES-005 | seed | OMT-OBJECT-CLASSES | - | P0 |
 | HLA1516.2-OMT-OMT_OBJECT_CLASS_STRUCTURE-005 | OMT_CLAUSE_DETAIL | OMT-OBJECT-CLASS-STRUCTURE | - | P0 |
 
-## IEEE 1516.2-2010 Clause 4.3
+## IEEE 1516.2-2010 (2010 edition) Clause 4.3
 
 - Requirement rows: 3
 - Source titles: Object Model Template Specification
@@ -4909,7 +4909,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-INTERACTION-CLASSES-007 | seed | OMT-INTERACTION-CLASSES | - | P0 |
 | HLA1516.2-OMT-OMT_INTERACTION_CLASS_STRUCTURE-006 | OMT_CLAUSE_DETAIL | OMT-INTERACTION-CLASS-STRUCTURE | - | P0 |
 
-## IEEE 1516.2-2010 Clause 4.4
+## IEEE 1516.2-2010 (2010 edition) Clause 4.4
 
 - Requirement rows: 3
 - Source titles: Object Model Template Specification
@@ -4921,7 +4921,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-ATTRIBUTES-009 | seed | OMT-ATTRIBUTES | - | P0 |
 | HLA1516.2-OMT-OMT_ATTRIBUTE_TABLE-007 | OMT_CLAUSE_DETAIL | OMT-ATTRIBUTE-TABLE | - | P0 |
 
-## IEEE 1516.2-2010 Clause 4.5
+## IEEE 1516.2-2010 (2010 edition) Clause 4.5
 
 - Requirement rows: 3
 - Source titles: Object Model Template Specification
@@ -4933,7 +4933,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-PARAMETERS-010 | seed | OMT-PARAMETERS | - | P0 |
 | HLA1516.2-PARAMETERS-011 | seed | OMT-PARAMETERS | - | P0 |
 
-## IEEE 1516.2-2010 Clause 4.6
+## IEEE 1516.2-2010 (2010 edition) Clause 4.6
 
 - Requirement rows: 3
 - Source titles: Object Model Template Specification
@@ -4945,7 +4945,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-DIMENSIONS-013 | seed | OMT-DIMENSIONS | - | P1 |
 | HLA1516.2-OMT-OMT_DIMENSION_TABLE-009 | OMT_CLAUSE_DETAIL | OMT-DIMENSION-TABLE | - | P0 |
 
-## IEEE 1516.2-2010 Clause 4.7
+## IEEE 1516.2-2010 (2010 edition) Clause 4.7
 
 - Requirement rows: 2
 - Source titles: Object Model Template Specification
@@ -4956,7 +4956,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-OMT-OMT_TIME_REPRESENTATION-010 | OMT_CLAUSE_DETAIL | OMT-TIME-REPRESENTATION | - | P0 |
 | HLA1516.2-TIME-014 | seed | OMT-TIME | - | P1 |
 
-## IEEE 1516.2-2010 Clause 4.8
+## IEEE 1516.2-2010 (2010 edition) Clause 4.8
 
 - Requirement rows: 2
 - Source titles: Object Model Template Specification
@@ -4967,7 +4967,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-OMT-OMT_USER_TAG-011 | OMT_CLAUSE_DETAIL | OMT-USER-TAG | - | P1 |
 | HLA1516.2-TAGS-015 | seed | OMT-TAGS | - | P1 |
 
-## IEEE 1516.2-2010 Clause 4.9
+## IEEE 1516.2-2010 (2010 edition) Clause 4.9
 
 - Requirement rows: 2
 - Source titles: Object Model Template Specification
@@ -4978,7 +4978,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-OMT-OMT_SYNCHRONIZATION-012 | OMT_CLAUSE_DETAIL | OMT-SYNCHRONIZATION | - | P1 |
 | HLA1516.2-SYNC-016 | seed | OMT-SYNC | - | P1 |
 
-## IEEE 1516.2-2010 Clause 5
+## IEEE 1516.2-2010 (2010 edition) Clause 5
 
 - Requirement rows: 1
 - Source titles: Object Model Template Specification
@@ -4988,7 +4988,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.2-LEXICON-027 | seed | OMT-LEXICON | - | P1 |
 
-## IEEE 1516.2-2010 Clause 5.1
+## IEEE 1516.2-2010 (2010 edition) Clause 5.1
 
 - Requirement rows: 1
 - Source titles: Object Model Template Specification
@@ -4998,7 +4998,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.2-OMT-OMT_LEXICON_PURPOSE-018 | OMT_CLAUSE_DETAIL | OMT-LEXICON-PURPOSE | - | P1 |
 
-## IEEE 1516.2-2010 Clause 5.2
+## IEEE 1516.2-2010 (2010 edition) Clause 5.2
 
 - Requirement rows: 1
 - Source titles: Object Model Template Specification
@@ -5008,7 +5008,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.2-OMT-OMT_LEXICON_OBJECTS-019 | OMT_CLAUSE_DETAIL | OMT-LEXICON-OBJECTS | - | P1 |
 
-## IEEE 1516.2-2010 Clause 5.3
+## IEEE 1516.2-2010 (2010 edition) Clause 5.3
 
 - Requirement rows: 1
 - Source titles: Object Model Template Specification
@@ -5018,7 +5018,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.2-OMT-OMT_LEXICON_INTERACTIONS-020 | OMT_CLAUSE_DETAIL | OMT-LEXICON-INTERACTIONS | - | P1 |
 
-## IEEE 1516.2-2010 Clause 5.4
+## IEEE 1516.2-2010 (2010 edition) Clause 5.4
 
 - Requirement rows: 1
 - Source titles: Object Model Template Specification
@@ -5028,7 +5028,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.2-OMT-OMT_LEXICON_ATTRIBUTES-021 | OMT_CLAUSE_DETAIL | OMT-LEXICON-ATTRIBUTES | - | P1 |
 
-## IEEE 1516.2-2010 Clause 5.5
+## IEEE 1516.2-2010 (2010 edition) Clause 5.5
 
 - Requirement rows: 1
 - Source titles: Object Model Template Specification
@@ -5038,7 +5038,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.2-OMT-OMT_LEXICON_PARAMETERS-022 | OMT_CLAUSE_DETAIL | OMT-LEXICON-PARAMETERS | - | P1 |
 
-## IEEE 1516.2-2010 Clause 6
+## IEEE 1516.2-2010 (2010 edition) Clause 6
 
 - Requirement rows: 1
 - Source titles: Object Model Template Specification
@@ -5048,7 +5048,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.2-CONFORMANCE-028 | seed | OMT-CONFORMANCE | - | P1 |
 
-## IEEE 1516.2-2010 Clause 6.1
+## IEEE 1516.2-2010 (2010 edition) Clause 6.1
 
 - Requirement rows: 1
 - Source titles: Object Model Template Specification
@@ -5058,7 +5058,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.2-OMT-OMT_CONFORMANCE_LABELS-023 | OMT_CLAUSE_DETAIL | OMT-CONFORMANCE-LABELS | - | P1 |
 
-## IEEE 1516.2-2010 Clause 6.2
+## IEEE 1516.2-2010 (2010 edition) Clause 6.2
 
 - Requirement rows: 1
 - Source titles: Object Model Template Specification
@@ -5068,7 +5068,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.2-OMT-OMT_CONFORMANCE_VERIFICATION-024 | OMT_CLAUSE_DETAIL | OMT-CONFORMANCE-VERIFICATION | - | P0 |
 
-## IEEE 1516.2-2010 Clause 6.3
+## IEEE 1516.2-2010 (2010 edition) Clause 6.3
 
 - Requirement rows: 1
 - Source titles: Object Model Template Specification
@@ -5078,7 +5078,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 |---|---|---|---|---|
 | HLA1516.2-OMT-OMT_SERVICE_UTILIZATION-025 | OMT_CLAUSE_DETAIL | OMT-SERVICE-UTILIZATION | - | P1 |
 
-## IEEE 1516.2-2010 Clause 7
+## IEEE 1516.2-2010 (2010 edition) Clause 7
 
 - Requirement rows: 2
 - Source titles: Object Model Template Specification
@@ -5089,7 +5089,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-MERGE-029 | seed | OMT-MERGE | - | P1 |
 | HLA1516.2-OMT-OMT_MODULE_MERGING-026 | OMT_CLAUSE_DETAIL | OMT-MODULE-MERGING | - | P0 |
 
-## IEEE 1516.2-2010 Clause Annex B
+## IEEE 1516.2-2010 (2010 edition) Clause Annex B
 
 - Requirement rows: 2
 - Source titles: Object Model Template Specification
@@ -5100,7 +5100,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-NORMALIZATION-030 | seed | OMT-NORMALIZATION | - | P1 |
 | HLA1516.2-OMT-OMT_NORM_NORMALIZATION-027 | OMT_CLAUSE_DETAIL | OMT-NORM-NORMALIZATION | - | P1 |
 
-## IEEE 1516.2-2010 Clause Annex C
+## IEEE 1516.2-2010 (2010 edition) Clause Annex C
 
 - Requirement rows: 2
 - Source titles: Object Model Template Specification
@@ -5111,7 +5111,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-MERGE-PRINCIPLES-031 | seed | OMT-MERGE-PRINCIPLES | - | P1 |
 | HLA1516.2-OMT-OMT_NORM_MERGING_PRINCIPLES-028 | OMT_CLAUSE_DETAIL | OMT-NORM-MERGING-PRINCIPLES | - | P0 |
 
-## IEEE 1516.2-2010 Clause Annex D
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D
 
 - Requirement rows: 2
 - Source titles: Object Model Template Specification
@@ -5122,7 +5122,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 | HLA1516.2-OMT-OMT_DIF-029 | OMT_CLAUSE_DETAIL | OMT-DIF | - | P0 |
 | HLA1516.2-XML-DIF-032 | seed | XML-DIF | - | P1 |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F
 
 - Requirement rows: 363
 - Source titles: OMT XML Schema
@@ -5153,7 +5153,7 @@ _Truncated to first 20 rows; full clause row count is 42._
 
 _Truncated to first 20 rows; full clause row count is 363._
 
-## IEEE 1516.2-2010 Clause Annex E
+## IEEE 1516.2-2010 (2010 edition) Clause Annex E
 
 - Requirement rows: 2
 - Source titles: Object Model Template Specification

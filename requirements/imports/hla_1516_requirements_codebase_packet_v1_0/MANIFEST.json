@@ -14,45 +14,45 @@
       "source_path": "/mnt/data/hla_1516_requirements_master_v1_0.xlsx"
     },
     {
-      "bytes": 2885185,
+      "bytes": 2976640,
       "path": "requirements/latest/hla_1516_requirements_master_v1_0.csv",
-      "sha256": "a7ef2a7664336d1e6d1d9a7fd186e757399d12e31c2b6b02be451a80fef47245",
+      "sha256": "909fbfb9265a03b1b6048f017716875bb225ea94166dcb8ac461d1aeb1892f92",
       "source_path": "/mnt/data/hla_1516_requirements_master_v1_0.csv"
     },
     {
-      "bytes": 1130732,
+      "bytes": 1175072,
       "path": "requirements/latest/hla_1516_requirements_delta_v1_0.csv",
-      "sha256": "8920e5e0b4cae00aa1755c24c27e07c803fecda7a9f546fdc55f22e0a85401ee",
+      "sha256": "d8f98e014d6c1fd53d26e01a816ac94dbd188feb534e50c8cc5c90f021ec76d9",
       "source_path": "/mnt/data/hla_1516_requirements_delta_v1_0.csv"
     },
     {
-      "bytes": 1017507,
+      "bytes": 1055217,
       "path": "requirements/latest/hla_1516_clauses5_11_detailed_requirements_v1_0.csv",
-      "sha256": "aecbcfbb96475cabe9648dda1c6bcc770c22fc296081df6cab7da2b86b13f56d",
+      "sha256": "49e8d38271d5744ddadbf1a9a94b6bd6f14443e25fecc8063fe0e82a2a6b6763",
       "source_path": "/mnt/data/hla_1516_clauses5_11_detailed_requirements_v1_0.csv"
     },
     {
-      "bytes": 1098350,
+      "bytes": 1116695,
       "path": "requirements/latest/hla_1516_clause6_11_detailed_requirements_v1_0.csv",
-      "sha256": "27abd49a56303a6345a8b455bcc42a03a120e732c9be64b9fc56d5252a39a2c0",
+      "sha256": "5259b2d625c6e00f32822b83462a868b38afb3150363040135acaf9f717ee4f2",
       "source_path": "/mnt/data/hla_1516_clause6_11_detailed_requirements_v1_0.csv"
     },
     {
-      "bytes": 876079,
+      "bytes": 895459,
       "path": "requirements/latest/hla_1516_omt_xml_detailed_requirements_v1_0.csv",
-      "sha256": "935534e9a2589f422243967b6b764261b5c117f2feb39e91e2506390d446824c",
+      "sha256": "89cb80d70c64b0ee28c89830f482b0119115118da824037b6611d7eade5318b2",
       "source_path": "/mnt/data/hla_1516_omt_xml_detailed_requirements_v1_0.csv"
     },
     {
-      "bytes": 3788171,
+      "bytes": 3788261,
       "path": "requirements/latest/hla_1516_verification_matrix_v1_0.csv",
-      "sha256": "dbcdbf657965cf20e8baa8c6b9efc9352ecf57454b9061be74de0e0a90ccf50a",
+      "sha256": "40cbb67554900e433473c3d01f84f1ecdcbabb9990acb3438ce0f13b7b5c127f",
       "source_path": "/mnt/data/hla_1516_verification_matrix_v1_0.csv"
     },
     {
-      "bytes": 11837,
+      "bytes": 12512,
       "path": "requirements/latest/hla_1516_clause_tracker_v1_0.csv",
-      "sha256": "a598e3170b5833d5e3b51ccd6c1113ac5866dc9d0c7c4cac33d708c5f06e142c",
+      "sha256": "e5a800203c99f6c7f0a1873faa9ebc74ea321e781214b884b8e01ccad2623bb0",
       "source_path": "/mnt/data/hla_1516_clause_tracker_v1_0.csv"
     },
     {
@@ -110,9 +110,9 @@
       "source_path": "/mnt/data/hla_1516_requirements_master_v0_1.xlsx"
     },
     {
-      "bytes": 95087,
+      "bytes": 98492,
       "path": "requirements/history/hla_1516_requirements_master_v0_1.csv",
-      "sha256": "991f3e1bf46e7b4469e52f3232f00c05194172ae0425a28bac9ffdf84823e70f",
+      "sha256": "53cc0d1d0640c728ef4493be5e64abf63d64d3ae9b663222ab76b5d934825440",
       "source_path": "/mnt/data/hla_1516_requirements_master_v0_1.csv"
     },
     {
@@ -122,15 +122,15 @@
       "source_path": "/mnt/data/hla_1516_requirements_master_v0_2.xlsx"
     },
     {
-      "bytes": 429969,
+      "bytes": 439224,
       "path": "requirements/history/hla_1516_requirements_master_v0_2.csv",
-      "sha256": "11efb674e6e57a94c11cf7ed14e1aa2b48c2c9ae2aa0091715edee9c553631dc",
+      "sha256": "9dd1ccaed475e3189d066a1e53f9999d0e83e65bff95581f6364369414a67518",
       "source_path": "/mnt/data/hla_1516_requirements_master_v0_2.csv"
     },
     {
-      "bytes": 312630,
+      "bytes": 318480,
       "path": "requirements/history/hla_1516_clause4_detailed_requirements_v0_2.csv",
-      "sha256": "6a41195a4660250362408a3464390cbbae1eef419c85d6a9b63ad6d02067c6ff",
+      "sha256": "ca1dee8b66e286d702e7db8c8d6d4d79bb5e08b25eef90893fd279ad1416caa0",
       "source_path": "/mnt/data/hla_1516_clause4_detailed_requirements_v0_2.csv"
     },
     {
@@ -146,21 +146,21 @@
       "source_path": "/mnt/data/hla_1516_requirements_master_v0_3.xlsx"
     },
     {
-      "bytes": 1754761,
+      "bytes": 1801876,
       "path": "requirements/history/hla_1516_requirements_master_v0_3.csv",
-      "sha256": "907daa828cec44ddca5251fc78494f03816cc71e344e8f419de0c3c8918870a1",
+      "sha256": "6f304066739f54f7d3c8e528ab5e73e58c8287f9b8e3e1f851b2500130e0c3f0",
       "source_path": "/mnt/data/hla_1516_requirements_master_v0_3.csv"
     },
     {
-      "bytes": 1325100,
+      "bytes": 1362960,
       "path": "requirements/history/hla_1516_requirements_delta_v0_3.csv",
-      "sha256": "85e1258a0ca1a1f24c67e81d4ffb6ae287896b9f7bfc04f1552a7398ccaae047",
+      "sha256": "63d9f72ccec7d81e17762c781c27387c7a367ee7b72ca36926189e45da581a13",
       "source_path": "/mnt/data/hla_1516_requirements_delta_v0_3.csv"
     },
     {
-      "bytes": 2345284,
+      "bytes": 2345374,
       "path": "requirements/history/hla_1516_verification_matrix_v0_3.csv",
-      "sha256": "d306edd9da2b23915ce80926ae22e39013cab95189886f7a9bfa255f0dc4b469",
+      "sha256": "a58c890f022ec4d8b14315a33d00b9de9ffe97273933ea0ba71cc8ee615bc133",
       "source_path": "/mnt/data/hla_1516_verification_matrix_v0_3.csv"
     },
     {
@@ -176,27 +176,27 @@
       "source_path": "/mnt/data/hla_1516_requirements_master_v0_4.xlsx"
     },
     {
-      "bytes": 1947588,
+      "bytes": 2006433,
       "path": "requirements/history/hla_1516_requirements_master_v0_4.csv",
-      "sha256": "1648594f1bf3f2a630debe1740cdfd285558c589bd715c9a7a2d34d71d4bddf2",
+      "sha256": "7517792f65e55be272c5c9d00496365d14d5214857357a971cad062ebccba705",
       "source_path": "/mnt/data/hla_1516_requirements_master_v0_4.csv"
     },
     {
-      "bytes": 193135,
+      "bytes": 204865,
       "path": "requirements/history/hla_1516_clause5_detailed_requirements_v0_4.csv",
-      "sha256": "b5e986be1aad8ea11a37be742f8e8c7f87bd841673fe3c5d9f8aa39266ca7498",
+      "sha256": "29b8236de2ead8178bf727fe61f7195275a3b0d11e69d843300f6f9b40d1fe06",
       "source_path": "/mnt/data/hla_1516_clause5_detailed_requirements_v0_4.csv"
     },
     {
-      "bytes": 2680612,
+      "bytes": 2680702,
       "path": "requirements/history/hla_1516_verification_matrix_v0_4.csv",
-      "sha256": "8e7d3e20bbbd08294fda92ca2b83190c84bc55942c83a1cdebcd81954abfba2c",
+      "sha256": "0353acf982911c37a8b1f33b48c2bd5bcab7535a6a5e58a1161cbf9386fcea10",
       "source_path": "/mnt/data/hla_1516_verification_matrix_v0_4.csv"
     },
     {
-      "bytes": 4955,
+      "bytes": 5480,
       "path": "requirements/history/hla_1516_clause_tracker_v0_4.csv",
-      "sha256": "7c8dc1f68861041135fbfa87df295cc008d00307f4538b2bd90eb20ac4311626",
+      "sha256": "b56d8c318984a935484ec0cfb5c6c4bef3ef56e1bfdd40bd326c808173aa03ab",
       "source_path": "/mnt/data/hla_1516_clause_tracker_v0_4.csv"
     },
     {
@@ -206,15 +206,15 @@
       "source_path": "/mnt/data/hla_1516_requirements_dashboard_v0_4_preview.png"
     },
     {
-      "bytes": 11813,
+      "bytes": 11858,
       "path": "requirements/scripts/build_hla_v1_workbook.py",
-      "sha256": "b26d92a97239c8f920539069aebb9719de43ab05925203ca66ffbf8a54a9fe2e",
+      "sha256": "da475c8ba90381bd2055393be88476fa53c027d0d638705a9b4cd281578e5e92",
       "source_path": "/mnt/data/build_hla_v1_workbook.py"
     },
     {
-      "bytes": 10208,
+      "bytes": 10253,
       "path": "requirements/scripts/build_hla_v1_index_workbook.py",
-      "sha256": "fac161d8a5ec1a55e838335fa51cfe7fb0ab039d0948e3c355d2b3bc5c25dce7",
+      "sha256": "fc2edd5c83afd041205eeb23c5d3caa317f68bd34dec5a9565aed48b3278c947",
       "source_path": "/mnt/data/build_hla_v1_index_workbook.py"
     },
     {
@@ -248,15 +248,15 @@
       "source_path": "/mnt/data/1516.2-2010_downloads.zip"
     },
     {
-      "bytes": 1016,
+      "bytes": 1086,
       "path": "WORK_PACKET/ACCEPTANCE_CHECKLIST.md",
-      "sha256": "5023c1c72f7bbf3277b46b57b9b8a345a89639e7e4adbee10132bd5e2011b005",
+      "sha256": "bb208968d45557a64889b2fceef3ac16d767e84a4caebb713b14a7ef4360604c",
       "source_path": "/mnt/data/hla_1516_requirements_codebase_packet_v1_0/WORK_PACKET/ACCEPTANCE_CHECKLIST.md"
     },
     {
-      "bytes": 3868,
+      "bytes": 4113,
       "path": "WORK_PACKET/AGENT_WORK_PACKET.md",
-      "sha256": "d45a170627fc53256ecda08e312d110f6d5240e9753983f88ced395b8667b70c",
+      "sha256": "afac39e15e3340720e6fc1e8074ed73d2795492b265f46b5067df18fdb9829a2",
       "source_path": "/mnt/data/hla_1516_requirements_codebase_packet_v1_0/WORK_PACKET/AGENT_WORK_PACKET.md"
     },
     {
@@ -272,21 +272,21 @@
       "source_path": "/mnt/data/hla_1516_requirements_codebase_packet_v1_0/WORK_PACKET/REPO_PLACEMENT_PLAN.yaml"
     },
     {
-      "bytes": 1874,
+      "bytes": 1919,
       "path": "WORK_PACKET/REQUIREMENTS_SCHEMA.md",
-      "sha256": "b438a12baef8d644e3b9079a74b84d6e140a34d1630d6737bf49dff58c4b8509",
+      "sha256": "1fbf2639fab0def0d405e3fd20294db707e8047111b54da561f22b4dcee65b4b",
       "source_path": "/mnt/data/hla_1516_requirements_codebase_packet_v1_0/WORK_PACKET/REQUIREMENTS_SCHEMA.md"
     },
     {
-      "bytes": 13694,
+      "bytes": 13755,
       "path": "MANIFEST.json",
-      "sha256": "f67ed1e02bb19613fefbefb13a73cb78162695985fd6c38f0fb400261391f789",
+      "sha256": "5c44e8847cee461ae972a6c42181725e527b2b76acbe6ca0ed893b9faa482c9d",
       "source_path": "/mnt/data/hla_1516_requirements_codebase_packet_v1_0/MANIFEST.json"
     },
     {
-      "bytes": 1784,
+      "bytes": 2189,
       "path": "README.md",
-      "sha256": "77aaab48d465c0727a747236d02ad6a896fb80cdc0673553dc3f02df9cbaafc6",
+      "sha256": "f70f5acdb44213de1f6629e9fc2fa3052e0fb93ff8c59002c1c743943d45aa64",
       "source_path": "/mnt/data/hla_1516_requirements_codebase_packet_v1_0/README.md"
     }
   ],
@@ -300,5 +300,5 @@
   ],
   "packet_name": "hla_1516_requirements_codebase_packet_v1_0",
   "packet_version": "v1.0",
-  "purpose": "Package HLA 1516 requirements artifacts and provide a codebase integration work packet for an implementation agent."
+  "purpose": "Package IEEE 1516-2010 (2010 edition), IEEE 1516.1-2010 (2010 edition), and IEEE 1516.2-2010 (2010 edition) requirements artifacts and provide a codebase integration work packet for an implementation agent."
 }

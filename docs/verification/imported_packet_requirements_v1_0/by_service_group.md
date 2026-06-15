@@ -2,7 +2,7 @@
 
 The imported v1.0 packet is an engineering baseline, not a certified paragraph-by-paragraph compliance extraction. Use these generated views for harmonization and review, not as a substitute for source-PDF peer review.
 
-## IEEE 1516.1-2010 Clause 10.10 Get Object Instance Name
+## IEEE 1516.1-2010 (2010 edition) Clause 10.10 Get Object Instance Name
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -15,7 +15,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_10-RTIAPI-001-RET | RET | SUP-getObjectInstanceName | state/effect integration test |
 | HLA1516.1-SUP-10_10-RTIAPI-001-SIG | SIG | SUP-getObjectInstanceName | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.10 getObjectInstanceName
+## IEEE 1516.1-2010 (2010 edition) Clause 10.10 getObjectInstanceName
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -32,7 +32,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_10-GETOBJECTINSTANCENAME-SVC-001 | SVC | SUP-GET_OBJECT_INSTANCE_NAME | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_10-GETOBJECTINSTANCENAME-TEST-001 | TEST | SUP-GET_OBJECT_INSTANCE_NAME | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.11 Get Attribute Handle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.11 Get Attribute Handle
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -45,7 +45,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_11-RTIAPI-001-RET | RET | SUP-getAttributeHandle | state/effect integration test |
 | HLA1516.1-SUP-10_11-RTIAPI-001-SIG | SIG | SUP-getAttributeHandle | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.11 getAttributeHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.11 getAttributeHandle
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -62,7 +62,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_11-GETATTRIBUTEHANDLE-SVC-001 | SVC | SUP-GET_ATTRIBUTE_HANDLE | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_11-GETATTRIBUTEHANDLE-TEST-001 | TEST | SUP-GET_ATTRIBUTE_HANDLE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.12 Get Attribute Name
+## IEEE 1516.1-2010 (2010 edition) Clause 10.12 Get Attribute Name
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -75,7 +75,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_12-RTIAPI-001-RET | RET | SUP-getAttributeName | state/effect integration test |
 | HLA1516.1-SUP-10_12-RTIAPI-001-SIG | SIG | SUP-getAttributeName | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.12 getAttributeName
+## IEEE 1516.1-2010 (2010 edition) Clause 10.12 getAttributeName
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -92,7 +92,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_12-GETATTRIBUTENAME-SVC-001 | SVC | SUP-GET_ATTRIBUTE_NAME | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_12-GETATTRIBUTENAME-TEST-001 | TEST | SUP-GET_ATTRIBUTE_NAME | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.13 Get Update Rate Value
+## IEEE 1516.1-2010 (2010 edition) Clause 10.13 Get Update Rate Value
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -105,7 +105,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_13-RTIAPI-001-RET | RET | SUP-getUpdateRateValue | state/effect integration test |
 | HLA1516.1-SUP-10_13-RTIAPI-001-SIG | SIG | SUP-getUpdateRateValue | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.13 getUpdateRateValue
+## IEEE 1516.1-2010 (2010 edition) Clause 10.13 getUpdateRateValue
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -122,7 +122,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_13-GETUPDATERATEVALUE-SVC-001 | SVC | SUP-GET_UPDATE_RATE_VALUE | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_13-GETUPDATERATEVALUE-TEST-001 | TEST | SUP-GET_UPDATE_RATE_VALUE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.14 Get Update Rate Value For Attribute
+## IEEE 1516.1-2010 (2010 edition) Clause 10.14 Get Update Rate Value For Attribute
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -135,7 +135,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_14-RTIAPI-001-RET | RET | SUP-getUpdateRateValueForAttribute | state/effect integration test |
 | HLA1516.1-SUP-10_14-RTIAPI-001-SIG | SIG | SUP-getUpdateRateValueForAttribute | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.14 getUpdateRateValueForAttribute
+## IEEE 1516.1-2010 (2010 edition) Clause 10.14 getUpdateRateValueForAttribute
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -152,7 +152,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_14-GETUPDATERATEVALUEFORATTRIBUTE-SVC-001 | SVC | SUP-GET_UPDATE_RATE_VALUE_FOR_ATTRIBUTE | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_14-GETUPDATERATEVALUEFORATTRIBUTE-TEST-001 | TEST | SUP-GET_UPDATE_RATE_VALUE_FOR_ATTRIBUTE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.15 Get Interaction Class Handle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.15 Get Interaction Class Handle
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -165,7 +165,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_15-RTIAPI-001-RET | RET | SUP-getInteractionClassHandle | state/effect integration test |
 | HLA1516.1-SUP-10_15-RTIAPI-001-SIG | SIG | SUP-getInteractionClassHandle | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.15 getInteractionClassHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.15 getInteractionClassHandle
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -182,7 +182,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_15-GETINTERACTIONCLASSHANDLE-SVC-001 | SVC | SUP-GET_INTERACTION_CLASS_HANDLE | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_15-GETINTERACTIONCLASSHANDLE-TEST-001 | TEST | SUP-GET_INTERACTION_CLASS_HANDLE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.16 Get Interaction Class Name
+## IEEE 1516.1-2010 (2010 edition) Clause 10.16 Get Interaction Class Name
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -195,7 +195,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_16-RTIAPI-001-RET | RET | SUP-getInteractionClassName | state/effect integration test |
 | HLA1516.1-SUP-10_16-RTIAPI-001-SIG | SIG | SUP-getInteractionClassName | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.16 getInteractionClassName
+## IEEE 1516.1-2010 (2010 edition) Clause 10.16 getInteractionClassName
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -212,7 +212,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_16-GETINTERACTIONCLASSNAME-SVC-001 | SVC | SUP-GET_INTERACTION_CLASS_NAME | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_16-GETINTERACTIONCLASSNAME-TEST-001 | TEST | SUP-GET_INTERACTION_CLASS_NAME | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.17 Get Parameter Handle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.17 Get Parameter Handle
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -225,7 +225,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_17-RTIAPI-001-RET | RET | SUP-getParameterHandle | state/effect integration test |
 | HLA1516.1-SUP-10_17-RTIAPI-001-SIG | SIG | SUP-getParameterHandle | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.17 getParameterHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.17 getParameterHandle
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -242,7 +242,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_17-GETPARAMETERHANDLE-SVC-001 | SVC | SUP-GET_PARAMETER_HANDLE | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_17-GETPARAMETERHANDLE-TEST-001 | TEST | SUP-GET_PARAMETER_HANDLE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.18 Get Parameter Name
+## IEEE 1516.1-2010 (2010 edition) Clause 10.18 Get Parameter Name
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -255,7 +255,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_18-RTIAPI-001-RET | RET | SUP-getParameterName | state/effect integration test |
 | HLA1516.1-SUP-10_18-RTIAPI-001-SIG | SIG | SUP-getParameterName | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.18 getParameterName
+## IEEE 1516.1-2010 (2010 edition) Clause 10.18 getParameterName
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -272,7 +272,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_18-GETPARAMETERNAME-SVC-001 | SVC | SUP-GET_PARAMETER_NAME | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_18-GETPARAMETERNAME-TEST-001 | TEST | SUP-GET_PARAMETER_NAME | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.19 Get Order Type
+## IEEE 1516.1-2010 (2010 edition) Clause 10.19 Get Order Type
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -285,7 +285,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_19-RTIAPI-001-RET | RET | SUP-getOrderType | state/effect integration test |
 | HLA1516.1-SUP-10_19-RTIAPI-001-SIG | SIG | SUP-getOrderType | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.19 getOrderType
+## IEEE 1516.1-2010 (2010 edition) Clause 10.19 getOrderType
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -302,7 +302,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_19-GETORDERTYPE-SVC-001 | SVC | SUP-GET_ORDER_TYPE | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_19-GETORDERTYPE-TEST-001 | TEST | SUP-GET_ORDER_TYPE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.2 Get Automatic Resign Directive
+## IEEE 1516.1-2010 (2010 edition) Clause 10.2 Get Automatic Resign Directive
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -315,7 +315,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_2-RTIAPI-001-RET | RET | SUP-getAutomaticResignDirective | state/effect integration test |
 | HLA1516.1-SUP-10_2-RTIAPI-001-SIG | SIG | SUP-getAutomaticResignDirective | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.2 getAutomaticResignDirective
+## IEEE 1516.1-2010 (2010 edition) Clause 10.2 getAutomaticResignDirective
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -332,7 +332,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_2-GETAUTOMATICRESIGNDIRECTIVE-SVC-001 | SVC | SUP-GET_AUTOMATIC_RESIGN_DIRECTIVE | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_2-GETAUTOMATICRESIGNDIRECTIVE-TEST-001 | TEST | SUP-GET_AUTOMATIC_RESIGN_DIRECTIVE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.20 Get Order Name
+## IEEE 1516.1-2010 (2010 edition) Clause 10.20 Get Order Name
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -345,7 +345,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_20-RTIAPI-001-RET | RET | SUP-getOrderName | state/effect integration test |
 | HLA1516.1-SUP-10_20-RTIAPI-001-SIG | SIG | SUP-getOrderName | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.20 getOrderName
+## IEEE 1516.1-2010 (2010 edition) Clause 10.20 getOrderName
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -362,7 +362,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_20-GETORDERNAME-SVC-001 | SVC | SUP-GET_ORDER_NAME | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_20-GETORDERNAME-TEST-001 | TEST | SUP-GET_ORDER_NAME | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.21 Get Transportation Type Handle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.21 Get Transportation Type Handle
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -375,7 +375,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_21-RTIAPI-001-RET | RET | SUP-getTransportationTypeHandle | state/effect integration test |
 | HLA1516.1-SUP-10_21-RTIAPI-001-SIG | SIG | SUP-getTransportationTypeHandle | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.21 getTransportationType
+## IEEE 1516.1-2010 (2010 edition) Clause 10.21 getTransportationType
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -384,7 +384,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-10_21-GETTRANSPORTATIONTYPE-118 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 10.21 getTransportationTypeHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.21 getTransportationTypeHandle
 
 - Requirement rows: 8
 - Requirement types: ARG, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -400,7 +400,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_21-GETTRANSPORTATIONTYPEHANDLE-SVC-001 | SVC | SUP-GET_TRANSPORTATION_TYPE_HANDLE | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_21-GETTRANSPORTATIONTYPEHANDLE-TEST-001 | TEST | SUP-GET_TRANSPORTATION_TYPE_HANDLE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.22 Get Transportation Type Name
+## IEEE 1516.1-2010 (2010 edition) Clause 10.22 Get Transportation Type Name
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -413,7 +413,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_22-RTIAPI-001-RET | RET | SUP-getTransportationTypeName | state/effect integration test |
 | HLA1516.1-SUP-10_22-RTIAPI-001-SIG | SIG | SUP-getTransportationTypeName | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.22 getTransportationName
+## IEEE 1516.1-2010 (2010 edition) Clause 10.22 getTransportationName
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -422,7 +422,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-10_22-GETTRANSPORTATIONNAME-119 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 10.22 getTransportationTypeName
+## IEEE 1516.1-2010 (2010 edition) Clause 10.22 getTransportationTypeName
 
 - Requirement rows: 8
 - Requirement types: ARG, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -438,7 +438,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_22-GETTRANSPORTATIONTYPENAME-SVC-001 | SVC | SUP-GET_TRANSPORTATION_TYPE_NAME | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_22-GETTRANSPORTATIONTYPENAME-TEST-001 | TEST | SUP-GET_TRANSPORTATION_TYPE_NAME | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.23 Get Available Dimensions For Class Attribute
+## IEEE 1516.1-2010 (2010 edition) Clause 10.23 Get Available Dimensions For Class Attribute
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -451,7 +451,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_23-RTIAPI-001-RET | RET | SUP-getAvailableDimensionsForClassAttribute | state/effect integration test |
 | HLA1516.1-SUP-10_23-RTIAPI-001-SIG | SIG | SUP-getAvailableDimensionsForClassAttribute | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.23 getAvailableDimensionsForClassAttribute
+## IEEE 1516.1-2010 (2010 edition) Clause 10.23 getAvailableDimensionsForClassAttribute
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -468,7 +468,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_23-GETAVAILABLEDIMENSIONSFORCLASSATTRIBUTE-SVC-001 | SVC | SUP-GET_AVAILABLE_DIMENSIONS_FOR_CLASS_ATTRIBU | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_23-GETAVAILABLEDIMENSIONSFORCLASSATTRIBUTE-TEST-001 | TEST | SUP-GET_AVAILABLE_DIMENSIONS_FOR_CLASS_ATTRIBU | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.24 Get Available Dimensions For Interaction Class
+## IEEE 1516.1-2010 (2010 edition) Clause 10.24 Get Available Dimensions For Interaction Class
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -481,7 +481,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_24-RTIAPI-001-RET | RET | SUP-getAvailableDimensionsForInteractionClass | state/effect integration test |
 | HLA1516.1-SUP-10_24-RTIAPI-001-SIG | SIG | SUP-getAvailableDimensionsForInteractionClass | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.24 getAvailableDimensionsForInteractionClass
+## IEEE 1516.1-2010 (2010 edition) Clause 10.24 getAvailableDimensionsForInteractionClass
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -498,7 +498,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_24-GETAVAILABLEDIMENSIONSFORINTERACTIONCLASS-SVC-001 | SVC | SUP-GET_AVAILABLE_DIMENSIONS_FOR_INTERACTION_C | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_24-GETAVAILABLEDIMENSIONSFORINTERACTIONCLASS-TEST-001 | TEST | SUP-GET_AVAILABLE_DIMENSIONS_FOR_INTERACTION_C | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.25 Get Dimension Handle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.25 Get Dimension Handle
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -511,7 +511,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_25-RTIAPI-001-RET | RET | SUP-getDimensionHandle | state/effect integration test |
 | HLA1516.1-SUP-10_25-RTIAPI-001-SIG | SIG | SUP-getDimensionHandle | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.25 getDimensionHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.25 getDimensionHandle
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -528,7 +528,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_25-GETDIMENSIONHANDLE-SVC-001 | SVC | SUP-GET_DIMENSION_HANDLE | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_25-GETDIMENSIONHANDLE-TEST-001 | TEST | SUP-GET_DIMENSION_HANDLE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.26 Get Dimension Name
+## IEEE 1516.1-2010 (2010 edition) Clause 10.26 Get Dimension Name
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -541,7 +541,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_26-RTIAPI-001-RET | RET | SUP-getDimensionName | state/effect integration test |
 | HLA1516.1-SUP-10_26-RTIAPI-001-SIG | SIG | SUP-getDimensionName | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.26 getDimensionName
+## IEEE 1516.1-2010 (2010 edition) Clause 10.26 getDimensionName
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -558,7 +558,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_26-GETDIMENSIONNAME-SVC-001 | SVC | SUP-GET_DIMENSION_NAME | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_26-GETDIMENSIONNAME-TEST-001 | TEST | SUP-GET_DIMENSION_NAME | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.27 Get Dimension Upper Bound
+## IEEE 1516.1-2010 (2010 edition) Clause 10.27 Get Dimension Upper Bound
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -571,7 +571,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_27-RTIAPI-001-RET | RET | SUP-getDimensionUpperBound | state/effect integration test |
 | HLA1516.1-SUP-10_27-RTIAPI-001-SIG | SIG | SUP-getDimensionUpperBound | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.27 getDimensionUpperBound
+## IEEE 1516.1-2010 (2010 edition) Clause 10.27 getDimensionUpperBound
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -588,7 +588,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_27-GETDIMENSIONUPPERBOUND-SVC-001 | SVC | SUP-GET_DIMENSION_UPPER_BOUND | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_27-GETDIMENSIONUPPERBOUND-TEST-001 | TEST | SUP-GET_DIMENSION_UPPER_BOUND | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.28 Get Dimension Handle Set
+## IEEE 1516.1-2010 (2010 edition) Clause 10.28 Get Dimension Handle Set
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -601,7 +601,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_28-RTIAPI-001-RET | RET | SUP-getDimensionHandleSet | state/effect integration test |
 | HLA1516.1-SUP-10_28-RTIAPI-001-SIG | SIG | SUP-getDimensionHandleSet | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.28 getDimensionHandleSet
+## IEEE 1516.1-2010 (2010 edition) Clause 10.28 getDimensionHandleSet
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -618,7 +618,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_28-GETDIMENSIONHANDLESET-SVC-001 | SVC | SUP-GET_DIMENSION_HANDLE_SET | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_28-GETDIMENSIONHANDLESET-TEST-001 | TEST | SUP-GET_DIMENSION_HANDLE_SET | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.29 Get Range Bounds
+## IEEE 1516.1-2010 (2010 edition) Clause 10.29 Get Range Bounds
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -631,7 +631,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_29-RTIAPI-001-RET | RET | SUP-getRangeBounds | state/effect integration test |
 | HLA1516.1-SUP-10_29-RTIAPI-001-SIG | SIG | SUP-getRangeBounds | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.29 getRangeBounds
+## IEEE 1516.1-2010 (2010 edition) Clause 10.29 getRangeBounds
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -648,7 +648,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_29-GETRANGEBOUNDS-SVC-001 | SVC | SUP-GET_RANGE_BOUNDS | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_29-GETRANGEBOUNDS-TEST-001 | TEST | SUP-GET_RANGE_BOUNDS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.3 Set Automatic Resign Directive
+## IEEE 1516.1-2010 (2010 edition) Clause 10.3 Set Automatic Resign Directive
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -661,7 +661,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_3-RTIAPI-001-MOM | MOM_TRACE | SUP-setAutomaticResignDirective | MOM observer integration test |
 | HLA1516.1-SUP-10_3-RTIAPI-001-SIG | SIG | SUP-setAutomaticResignDirective | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.3 setAutomaticResignDirective
+## IEEE 1516.1-2010 (2010 edition) Clause 10.3 setAutomaticResignDirective
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -678,7 +678,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_3-SETAUTOMATICRESIGNDIRECTIVE-SVC-001 | SVC | SUP-SET_AUTOMATIC_RESIGN_DIRECTIVE | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_3-SETAUTOMATICRESIGNDIRECTIVE-TEST-001 | TEST | SUP-SET_AUTOMATIC_RESIGN_DIRECTIVE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.30 Set Range Bounds
+## IEEE 1516.1-2010 (2010 edition) Clause 10.30 Set Range Bounds
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -691,7 +691,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_30-RTIAPI-001-MOM | MOM_TRACE | SUP-setRangeBounds | MOM observer integration test |
 | HLA1516.1-SUP-10_30-RTIAPI-001-SIG | SIG | SUP-setRangeBounds | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.30 setRangeBounds
+## IEEE 1516.1-2010 (2010 edition) Clause 10.30 setRangeBounds
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -708,7 +708,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_30-SETRANGEBOUNDS-SVC-001 | SVC | SUP-SET_RANGE_BOUNDS | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_30-SETRANGEBOUNDS-TEST-001 | TEST | SUP-SET_RANGE_BOUNDS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.31 Normalize Federate Handle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.31 Normalize Federate Handle
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -721,7 +721,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_31-RTIAPI-001-RET | RET | SUP-normalizeFederateHandle | state/effect integration test |
 | HLA1516.1-SUP-10_31-RTIAPI-001-SIG | SIG | SUP-normalizeFederateHandle | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.31 normalizeFederateHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.31 normalizeFederateHandle
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -738,7 +738,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_31-NORMALIZEFEDERATEHANDLE-SVC-001 | SVC | SUP-NORMALIZE_FEDERATE_HANDLE | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_31-NORMALIZEFEDERATEHANDLE-TEST-001 | TEST | SUP-NORMALIZE_FEDERATE_HANDLE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.32 Normalize Service Group
+## IEEE 1516.1-2010 (2010 edition) Clause 10.32 Normalize Service Group
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -751,7 +751,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_32-RTIAPI-001-RET | RET | SUP-normalizeServiceGroup | state/effect integration test |
 | HLA1516.1-SUP-10_32-RTIAPI-001-SIG | SIG | SUP-normalizeServiceGroup | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.32 normalizeServiceGroup
+## IEEE 1516.1-2010 (2010 edition) Clause 10.32 normalizeServiceGroup
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -768,7 +768,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_32-NORMALIZESERVICEGROUP-SVC-001 | SVC | SUP-NORMALIZE_SERVICE_GROUP | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_32-NORMALIZESERVICEGROUP-TEST-001 | TEST | SUP-NORMALIZE_SERVICE_GROUP | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.33 Enable Object Class Relevance Advisory Switch
+## IEEE 1516.1-2010 (2010 edition) Clause 10.33 Enable Object Class Relevance Advisory Switch
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -781,7 +781,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_33-RTIAPI-001-MOM | MOM_TRACE | SUP-enableObjectClassRelevanceAdvisorySwitch | MOM observer integration test |
 | HLA1516.1-SUP-10_33-RTIAPI-001-SIG | SIG | SUP-enableObjectClassRelevanceAdvisorySwitch | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.33 enableObjectClassRelevanceAdvisorySwitch
+## IEEE 1516.1-2010 (2010 edition) Clause 10.33 enableObjectClassRelevanceAdvisorySwitch
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -798,7 +798,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_33-ENABLEOBJECTCLASSRELEVANCEADVISORYSWITCH-SVC-001 | SVC | SUP-ENABLE_OBJECT_CLASS_RELEVANCE_ADVISORY_SWI | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_33-ENABLEOBJECTCLASSRELEVANCEADVISORYSWITCH-TEST-001 | TEST | SUP-ENABLE_OBJECT_CLASS_RELEVANCE_ADVISORY_SWI | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.34 Disable Object Class Relevance Advisory Switch
+## IEEE 1516.1-2010 (2010 edition) Clause 10.34 Disable Object Class Relevance Advisory Switch
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -811,7 +811,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_34-RTIAPI-001-MOM | MOM_TRACE | SUP-disableObjectClassRelevanceAdvisorySwitch | MOM observer integration test |
 | HLA1516.1-SUP-10_34-RTIAPI-001-SIG | SIG | SUP-disableObjectClassRelevanceAdvisorySwitch | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.34 disableObjectClassRelevanceAdvisorySwitch
+## IEEE 1516.1-2010 (2010 edition) Clause 10.34 disableObjectClassRelevanceAdvisorySwitch
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -828,7 +828,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_34-DISABLEOBJECTCLASSRELEVANCEADVISORYSWITCH-SVC-001 | SVC | SUP-DISABLE_OBJECT_CLASS_RELEVANCE_ADVISORY_SW | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_34-DISABLEOBJECTCLASSRELEVANCEADVISORYSWITCH-TEST-001 | TEST | SUP-DISABLE_OBJECT_CLASS_RELEVANCE_ADVISORY_SW | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.35 Enable Attribute Relevance Advisory Switch
+## IEEE 1516.1-2010 (2010 edition) Clause 10.35 Enable Attribute Relevance Advisory Switch
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -841,7 +841,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_35-RTIAPI-001-MOM | MOM_TRACE | SUP-enableAttributeRelevanceAdvisorySwitch | MOM observer integration test |
 | HLA1516.1-SUP-10_35-RTIAPI-001-SIG | SIG | SUP-enableAttributeRelevanceAdvisorySwitch | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.35 enableAttributeRelevanceAdvisorySwitch
+## IEEE 1516.1-2010 (2010 edition) Clause 10.35 enableAttributeRelevanceAdvisorySwitch
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -858,7 +858,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_35-ENABLEATTRIBUTERELEVANCEADVISORYSWITCH-SVC-001 | SVC | SUP-ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_35-ENABLEATTRIBUTERELEVANCEADVISORYSWITCH-TEST-001 | TEST | SUP-ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.36 Disable Attribute Relevance Advisory Switch
+## IEEE 1516.1-2010 (2010 edition) Clause 10.36 Disable Attribute Relevance Advisory Switch
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -871,7 +871,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_36-RTIAPI-001-MOM | MOM_TRACE | SUP-disableAttributeRelevanceAdvisorySwitch | MOM observer integration test |
 | HLA1516.1-SUP-10_36-RTIAPI-001-SIG | SIG | SUP-disableAttributeRelevanceAdvisorySwitch | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.36 disableAttributeRelevanceAdvisorySwitch
+## IEEE 1516.1-2010 (2010 edition) Clause 10.36 disableAttributeRelevanceAdvisorySwitch
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -888,7 +888,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_36-DISABLEATTRIBUTERELEVANCEADVISORYSWITCH-SVC-001 | SVC | SUP-DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITC | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_36-DISABLEATTRIBUTERELEVANCEADVISORYSWITCH-TEST-001 | TEST | SUP-DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITC | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.37 Enable Attribute Scope Advisory Switch
+## IEEE 1516.1-2010 (2010 edition) Clause 10.37 Enable Attribute Scope Advisory Switch
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -901,7 +901,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_37-RTIAPI-001-MOM | MOM_TRACE | SUP-enableAttributeScopeAdvisorySwitch | MOM observer integration test |
 | HLA1516.1-SUP-10_37-RTIAPI-001-SIG | SIG | SUP-enableAttributeScopeAdvisorySwitch | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.37 enableAttributeScopeAdvisorySwitch
+## IEEE 1516.1-2010 (2010 edition) Clause 10.37 enableAttributeScopeAdvisorySwitch
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -918,7 +918,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_37-ENABLEATTRIBUTESCOPEADVISORYSWITCH-SVC-001 | SVC | SUP-ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_37-ENABLEATTRIBUTESCOPEADVISORYSWITCH-TEST-001 | TEST | SUP-ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.38 Disable Attribute Scope Advisory Switch
+## IEEE 1516.1-2010 (2010 edition) Clause 10.38 Disable Attribute Scope Advisory Switch
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -931,7 +931,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_38-RTIAPI-001-MOM | MOM_TRACE | SUP-disableAttributeScopeAdvisorySwitch | MOM observer integration test |
 | HLA1516.1-SUP-10_38-RTIAPI-001-SIG | SIG | SUP-disableAttributeScopeAdvisorySwitch | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.38 disableAttributeScopeAdvisorySwitch
+## IEEE 1516.1-2010 (2010 edition) Clause 10.38 disableAttributeScopeAdvisorySwitch
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -948,7 +948,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_38-DISABLEATTRIBUTESCOPEADVISORYSWITCH-SVC-001 | SVC | SUP-DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_38-DISABLEATTRIBUTESCOPEADVISORYSWITCH-TEST-001 | TEST | SUP-DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.39 Enable Interaction Relevance Advisory Switch
+## IEEE 1516.1-2010 (2010 edition) Clause 10.39 Enable Interaction Relevance Advisory Switch
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -961,7 +961,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_39-RTIAPI-001-MOM | MOM_TRACE | SUP-enableInteractionRelevanceAdvisorySwitch | MOM observer integration test |
 | HLA1516.1-SUP-10_39-RTIAPI-001-SIG | SIG | SUP-enableInteractionRelevanceAdvisorySwitch | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.39 enableInteractionRelevanceAdvisorySwitch
+## IEEE 1516.1-2010 (2010 edition) Clause 10.39 enableInteractionRelevanceAdvisorySwitch
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -978,7 +978,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_39-ENABLEINTERACTIONRELEVANCEADVISORYSWITCH-SVC-001 | SVC | SUP-ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWIT | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_39-ENABLEINTERACTIONRELEVANCEADVISORYSWITCH-TEST-001 | TEST | SUP-ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWIT | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.4 Get Federate Handle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.4 Get Federate Handle
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -991,7 +991,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_4-RTIAPI-001-RET | RET | SUP-getFederateHandle | state/effect integration test |
 | HLA1516.1-SUP-10_4-RTIAPI-001-SIG | SIG | SUP-getFederateHandle | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.4 getFederateHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.4 getFederateHandle
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -1008,7 +1008,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_4-GETFEDERATEHANDLE-SVC-001 | SVC | SUP-GET_FEDERATE_HANDLE | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_4-GETFEDERATEHANDLE-TEST-001 | TEST | SUP-GET_FEDERATE_HANDLE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.40 Disable Interaction Relevance Advisory Switch
+## IEEE 1516.1-2010 (2010 edition) Clause 10.40 Disable Interaction Relevance Advisory Switch
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -1021,7 +1021,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_40-RTIAPI-001-MOM | MOM_TRACE | SUP-disableInteractionRelevanceAdvisorySwitch | MOM observer integration test |
 | HLA1516.1-SUP-10_40-RTIAPI-001-SIG | SIG | SUP-disableInteractionRelevanceAdvisorySwitch | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.40 disableInteractionRelevanceAdvisorySwitch
+## IEEE 1516.1-2010 (2010 edition) Clause 10.40 disableInteractionRelevanceAdvisorySwitch
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -1038,7 +1038,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_40-DISABLEINTERACTIONRELEVANCEADVISORYSWITCH-SVC-001 | SVC | SUP-DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWI | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_40-DISABLEINTERACTIONRELEVANCEADVISORYSWITCH-TEST-001 | TEST | SUP-DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWI | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.41 Evoke Callback
+## IEEE 1516.1-2010 (2010 edition) Clause 10.41 Evoke Callback
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -1051,7 +1051,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_41-RTIAPI-001-RET | RET | SUP-evokeCallback | state/effect integration test |
 | HLA1516.1-SUP-10_41-RTIAPI-001-SIG | SIG | SUP-evokeCallback | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.41 evokeCallback
+## IEEE 1516.1-2010 (2010 edition) Clause 10.41 evokeCallback
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -1068,7 +1068,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_41-EVOKECALLBACK-SVC-001 | SVC | SUP-EVOKE_CALLBACK | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_41-EVOKECALLBACK-TEST-001 | TEST | SUP-EVOKE_CALLBACK | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.42 Evoke Multiple Callbacks
+## IEEE 1516.1-2010 (2010 edition) Clause 10.42 Evoke Multiple Callbacks
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -1081,7 +1081,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_42-RTIAPI-001-RET | RET | SUP-evokeMultipleCallbacks | state/effect integration test |
 | HLA1516.1-SUP-10_42-RTIAPI-001-SIG | SIG | SUP-evokeMultipleCallbacks | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.42 evokeMultipleCallbacks
+## IEEE 1516.1-2010 (2010 edition) Clause 10.42 evokeMultipleCallbacks
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -1098,7 +1098,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_42-EVOKEMULTIPLECALLBACKS-SVC-001 | SVC | SUP-EVOKE_MULTIPLE_CALLBACKS | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_42-EVOKEMULTIPLECALLBACKS-TEST-001 | TEST | SUP-EVOKE_MULTIPLE_CALLBACKS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.43 Enable Callbacks
+## IEEE 1516.1-2010 (2010 edition) Clause 10.43 Enable Callbacks
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -1111,7 +1111,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_43-RTIAPI-001-MOM | MOM_TRACE | SUP-enableCallbacks | MOM observer integration test |
 | HLA1516.1-SUP-10_43-RTIAPI-001-SIG | SIG | SUP-enableCallbacks | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.43 enableCallbacks
+## IEEE 1516.1-2010 (2010 edition) Clause 10.43 enableCallbacks
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -1128,7 +1128,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_43-ENABLECALLBACKS-SVC-001 | SVC | SUP-ENABLE_CALLBACKS | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_43-ENABLECALLBACKS-TEST-001 | TEST | SUP-ENABLE_CALLBACKS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.44 Disable Callbacks
+## IEEE 1516.1-2010 (2010 edition) Clause 10.44 Disable Callbacks
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -1141,7 +1141,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_44-RTIAPI-001-MOM | MOM_TRACE | SUP-disableCallbacks | MOM observer integration test |
 | HLA1516.1-SUP-10_44-RTIAPI-001-SIG | SIG | SUP-disableCallbacks | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.44 decodeAttributeHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.44 decodeAttributeHandle
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -1150,7 +1150,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-10_44-DECODEATTRIBUTEHANDLE-147 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 10.44 decodeDimensionHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.44 decodeDimensionHandle
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -1159,7 +1159,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-10_44-DECODEDIMENSIONHANDLE-149 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 10.44 decodeFederateHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.44 decodeFederateHandle
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -1168,7 +1168,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-10_44-DECODEFEDERATEHANDLE-143 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 10.44 decodeInteractionClassHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.44 decodeInteractionClassHandle
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -1177,7 +1177,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-10_44-DECODEINTERACTIONCLASSHANDLE-145 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 10.44 decodeMessageRetractionHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.44 decodeMessageRetractionHandle
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -1186,7 +1186,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-10_44-DECODEMESSAGERETRACTIONHANDLE-150 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 10.44 decodeObjectClassHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.44 decodeObjectClassHandle
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -1195,7 +1195,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-10_44-DECODEOBJECTCLASSHANDLE-144 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 10.44 decodeObjectInstanceHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.44 decodeObjectInstanceHandle
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -1204,7 +1204,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-10_44-DECODEOBJECTINSTANCEHANDLE-146 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 10.44 decodeParameterHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.44 decodeParameterHandle
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -1213,7 +1213,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-10_44-DECODEPARAMETERHANDLE-148 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 10.44 decodeRegionHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.44 decodeRegionHandle
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -1222,7 +1222,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-10_44-DECODEREGIONHANDLE-151 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 10.44 disableCallbacks
+## IEEE 1516.1-2010 (2010 edition) Clause 10.44 disableCallbacks
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -1239,7 +1239,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_44-DISABLECALLBACKS-SVC-001 | SVC | SUP-DISABLE_CALLBACKS | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_44-DISABLECALLBACKS-TEST-001 | TEST | SUP-DISABLE_CALLBACKS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.44 getTimeFactory
+## IEEE 1516.1-2010 (2010 edition) Clause 10.44 getTimeFactory
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -1248,7 +1248,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-10_44-GETTIMEFACTORY-142 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 10.5 Get Federate Name
+## IEEE 1516.1-2010 (2010 edition) Clause 10.5 Get Federate Name
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -1261,7 +1261,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_5-RTIAPI-001-RET | RET | SUP-getFederateName | state/effect integration test |
 | HLA1516.1-SUP-10_5-RTIAPI-001-SIG | SIG | SUP-getFederateName | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.5 getFederateName
+## IEEE 1516.1-2010 (2010 edition) Clause 10.5 getFederateName
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -1278,7 +1278,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_5-GETFEDERATENAME-SVC-001 | SVC | SUP-GET_FEDERATE_NAME | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_5-GETFEDERATENAME-TEST-001 | TEST | SUP-GET_FEDERATE_NAME | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.6 Get Object Class Handle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.6 Get Object Class Handle
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -1291,7 +1291,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_6-RTIAPI-001-RET | RET | SUP-getObjectClassHandle | state/effect integration test |
 | HLA1516.1-SUP-10_6-RTIAPI-001-SIG | SIG | SUP-getObjectClassHandle | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.6 getObjectClassHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.6 getObjectClassHandle
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -1308,7 +1308,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_6-GETOBJECTCLASSHANDLE-SVC-001 | SVC | SUP-GET_OBJECT_CLASS_HANDLE | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_6-GETOBJECTCLASSHANDLE-TEST-001 | TEST | SUP-GET_OBJECT_CLASS_HANDLE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.7 Get Object Class Name
+## IEEE 1516.1-2010 (2010 edition) Clause 10.7 Get Object Class Name
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -1321,7 +1321,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_7-RTIAPI-001-RET | RET | SUP-getObjectClassName | state/effect integration test |
 | HLA1516.1-SUP-10_7-RTIAPI-001-SIG | SIG | SUP-getObjectClassName | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.7 getObjectClassName
+## IEEE 1516.1-2010 (2010 edition) Clause 10.7 getObjectClassName
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -1338,7 +1338,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_7-GETOBJECTCLASSNAME-SVC-001 | SVC | SUP-GET_OBJECT_CLASS_NAME | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_7-GETOBJECTCLASSNAME-TEST-001 | TEST | SUP-GET_OBJECT_CLASS_NAME | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.8 Get Known Object Class Handle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.8 Get Known Object Class Handle
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -1351,7 +1351,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_8-RTIAPI-001-RET | RET | SUP-getKnownObjectClassHandle | state/effect integration test |
 | HLA1516.1-SUP-10_8-RTIAPI-001-SIG | SIG | SUP-getKnownObjectClassHandle | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.8 getKnownObjectClassHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.8 getKnownObjectClassHandle
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -1368,7 +1368,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_8-GETKNOWNOBJECTCLASSHANDLE-SVC-001 | SVC | SUP-GET_KNOWN_OBJECT_CLASS_HANDLE | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_8-GETKNOWNOBJECTCLASSHANDLE-TEST-001 | TEST | SUP-GET_KNOWN_OBJECT_CLASS_HANDLE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 10.9 Get Object Instance Handle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.9 Get Object Instance Handle
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -1381,7 +1381,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_9-RTIAPI-001-RET | RET | SUP-getObjectInstanceHandle | state/effect integration test |
 | HLA1516.1-SUP-10_9-RTIAPI-001-SIG | SIG | SUP-getObjectInstanceHandle | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 10.9 getObjectInstanceHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 10.9 getObjectInstanceHandle
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -1398,7 +1398,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-SUP-10_9-GETOBJECTINSTANCEHANDLE-SVC-001 | SVC | SUP-GET_OBJECT_INSTANCE_HANDLE | unit + integration + API conformance tests |
 | HLA1516.1-SUP-10_9-GETOBJECTINSTANCEHANDLE-TEST-001 | TEST | SUP-GET_OBJECT_INSTANCE_HANDLE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAASCIIchar
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAASCIIchar
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1407,7 +1407,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-014 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAASCIIstring
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAASCIIstring
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1416,7 +1416,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-033 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAFOMmoduleData
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAFOMmoduleData
 
 - Requirement rows: 2
 - Requirement types: MIM_PARAM
@@ -1426,7 +1426,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-052 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-100 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAFOMmoduleDesignatorList
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAFOMmoduleDesignatorList
 
 - Requirement rows: 2
 - Requirement types: MIM_ATTR
@@ -1436,7 +1436,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-ATTR-007 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 | HLA1516.1-MIM-ATTR-038 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAFOMmoduleIndicator
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAFOMmoduleIndicator
 
 - Requirement rows: 4
 - Requirement types: MIM_PARAM
@@ -1448,7 +1448,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-095 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-099 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAGALT
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAGALT
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -1457,7 +1457,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-015 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLALITS
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLALITS
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -1466,7 +1466,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-016 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAMIMdata
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAMIMdata
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -1475,7 +1475,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-101 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAMIMdesignator
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAMIMdesignator
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -1484,7 +1484,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-037 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAROlength
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAROlength
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -1493,7 +1493,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-017 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLARTIversion
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLARTIversion
 
 - Requirement rows: 2
 - Requirement types: MIM_ATTR
@@ -1503,7 +1503,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-ATTR-006 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 | HLA1516.1-MIM-ATTR-036 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLATSOlength
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLATSOlength
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -1512,7 +1512,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-018 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAactive
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAactive
 
 - Requirement rows: 3
 - Requirement types: MIM_PARAM
@@ -1523,7 +1523,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-065 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-069 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAadjust
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAadjust
 
 - Requirement rows: 2
 - Requirement types: MIM_INT
@@ -1533,7 +1533,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-INT-004 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 | HLA1516.1-MIM-INT-074 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAargumentList
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAargumentList
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1542,7 +1542,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-044 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAasynchronousDelivery
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAasynchronousDelivery
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -1551,7 +1551,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-010 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAattribute
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAattribute
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -1560,7 +1560,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-004 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAattributeList
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAattributeList
 
 - Requirement rows: 9
 - Requirement types: MIM_PARAM
@@ -1577,7 +1577,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-081 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-090 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAattributeState
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAattributeState
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -1586,7 +1586,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-005 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAautoProvide
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAautoProvide
 
 - Requirement rows: 2
 - Requirement types: MIM_ATTR, MIM_PARAM
@@ -1596,7 +1596,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-ATTR-045 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 | HLA1516.1-MIM-PARAM-094 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAboolean
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAboolean
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1605,7 +1605,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-024 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAbyte
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAbyte
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1614,7 +1614,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-016 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAchangeAttributeOrderType
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAchangeAttributeOrderType
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -1623,7 +1623,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-071 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAchangeInteractionOrderType
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAchangeInteractionOrderType
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -1632,7 +1632,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-072 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAconveyProducingFederate
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAconveyProducingFederate
 
 - Requirement rows: 2
 - Requirement types: MIM_ATTR, MIM_PARAM
@@ -1642,7 +1642,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-ATTR-033 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 | HLA1516.1-MIM-PARAM-009 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAconveyRegionDesignatorSets
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAconveyRegionDesignatorSets
 
 - Requirement rows: 2
 - Requirement types: MIM_ATTR, MIM_PARAM
@@ -1652,7 +1652,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-ATTR-032 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 | HLA1516.1-MIM-PARAM-008 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAcount
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAcount
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1661,7 +1661,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-017 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAcurrentFDD
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAcurrentFDD
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -1670,7 +1670,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-039 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAdeleteObjectInstance
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAdeleteObjectInstance
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -1679,7 +1679,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-054 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAdisableAsynchronousDelivery
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAdisableAsynchronousDelivery
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -1688,7 +1688,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-069 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAdisableTimeConstrained
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAdisableTimeConstrained
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -1697,7 +1697,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-062 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAdisableTimeRegulation
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAdisableTimeRegulation
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -1706,7 +1706,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-060 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAenableAsynchronousDelivery
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAenableAsynchronousDelivery
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -1715,7 +1715,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-068 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAenableTimeConstrained
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAenableTimeConstrained
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -1724,7 +1724,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-061 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAenableTimeRegulation
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAenableTimeRegulation
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -1733,7 +1733,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-059 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAexception
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAexception
 
 - Requirement rows: 3
 - Requirement types: MIM_PARAM
@@ -1744,7 +1744,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-043 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-046 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfaultDescription
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfaultDescription
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -1753,7 +1753,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-050 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfederate
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfederate
 
 - Requirement rows: 3
 - Requirement types: MIM_INT, MIM_OBJ, MIM_PARAM
@@ -1764,7 +1764,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-OBJ-003 | MIM_OBJ | MIM-OBJECT-CLASSES | MIM XML parse/static test + MOM integration test |
 | HLA1516.1-MIM-PARAM-001 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfederateHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfederateHandle
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -1773,7 +1773,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-002 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfederateHost
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfederateHost
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -1782,7 +1782,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-005 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfederateName
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfederateName
 
 - Requirement rows: 2
 - Requirement types: MIM_ATTR, MIM_PARAM
@@ -1792,7 +1792,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-ATTR-003 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 | HLA1516.1-MIM-PARAM-048 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfederateRestoreComplete
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfederateRestoreComplete
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -1801,7 +1801,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-045 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfederateSaveBegun
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfederateSaveBegun
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -1810,7 +1810,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-043 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfederateSaveComplete
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfederateSaveComplete
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -1819,7 +1819,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-044 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfederateState
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfederateState
 
 - Requirement rows: 2
 - Requirement types: MIM_ATTR, MIM_DT
@@ -1829,7 +1829,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-ATTR-011 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 | HLA1516.1-MIM-DT-025 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfederateType
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfederateType
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -1838,7 +1838,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-004 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfederatesInFederation
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfederatesInFederation
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -1847,7 +1847,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-035 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfederation
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfederation
 
 - Requirement rows: 2
 - Requirement types: MIM_INT, MIM_OBJ
@@ -1857,7 +1857,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-INT-073 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 | HLA1516.1-MIM-OBJ-004 | MIM_OBJ | MIM-OBJECT-CLASSES | MIM XML parse/static test + MOM integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfederationName
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfederationName
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -1866,7 +1866,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-034 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfloat32BE
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfloat32BE
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1875,7 +1875,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-004 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfloat32LE
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfloat32LE
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1884,7 +1884,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-010 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfloat64BE
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfloat64BE
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1893,7 +1893,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-005 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfloat64LE
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfloat64LE
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1902,7 +1902,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-011 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAfloat64Time
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAfloat64Time
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1911,7 +1911,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-023 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAflushQueueRequest
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAflushQueueRequest
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -1920,7 +1920,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-067 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAhandle
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAhandle
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1929,7 +1929,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-037 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAhandleList
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAhandleList
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1938,7 +1938,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-042 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAindex
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAindex
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1947,7 +1947,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-021 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAinteger16BE
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAinteger16BE
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1956,7 +1956,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-001 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAinteger16LE
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAinteger16LE
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1965,7 +1965,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-007 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAinteger32BE
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAinteger32BE
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1974,7 +1974,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-002 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAinteger32LE
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAinteger32LE
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1983,7 +1983,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-008 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAinteger64BE
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAinteger64BE
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -1992,7 +1992,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-003 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAinteger64LE
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAinteger64LE
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2001,7 +2001,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-009 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAinteger64Time
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAinteger64Time
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2010,7 +2010,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-022 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAinteractionClass
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAinteractionClass
 
 - Requirement rows: 6
 - Requirement types: MIM_PARAM
@@ -2024,7 +2024,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-078 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-092 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAinteractionClassList
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAinteractionClassList
 
 - Requirement rows: 2
 - Requirement types: MIM_PARAM
@@ -2034,7 +2034,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-015 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-021 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAinteractionCount
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAinteractionCount
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2043,7 +2043,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-052 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAinteractionCounts
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAinteractionCounts
 
 - Requirement rows: 3
 - Requirement types: MIM_DT, MIM_PARAM
@@ -2054,7 +2054,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-030 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-032 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAinteractionRoot
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAinteractionRoot
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2063,7 +2063,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-001 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAinteractionSubList
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAinteractionSubList
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2072,7 +2072,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-043 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAinteractionSubscription
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAinteractionSubscription
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2081,7 +2081,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-050 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAinteractionsReceived
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAinteractionsReceived
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -2090,7 +2090,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-021 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAinteractionsSent
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAinteractionsSent
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -2099,7 +2099,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-022 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAknownClass
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAknownClass
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -2108,7 +2108,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-036 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAlabel
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAlabel
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -2117,7 +2117,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-054 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAlastSaveName
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAlastSaveName
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -2126,7 +2126,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-041 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAlastSaveTime
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAlastSaveTime
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -2135,7 +2135,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-042 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAlocalDeleteObjectInstance
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAlocalDeleteObjectInstance
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2144,7 +2144,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-055 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAlogicalTime
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAlogicalTime
 
 - Requirement rows: 2
 - Requirement types: MIM_ATTR, MIM_DT
@@ -2154,7 +2154,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-ATTR-013 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 | HLA1516.1-MIM-DT-040 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAlookahead
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAlookahead
 
 - Requirement rows: 3
 - Requirement types: MIM_ATTR, MIM_PARAM
@@ -2165,7 +2165,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-082 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-088 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAmanager
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAmanager
 
 - Requirement rows: 2
 - Requirement types: MIM_INT, MIM_OBJ
@@ -2175,7 +2175,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-INT-002 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 | HLA1516.1-MIM-OBJ-002 | MIM_OBJ | MIM-OBJECT-CLASSES | MIM XML parse/static test + MOM integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAmaxUpdateRate
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAmaxUpdateRate
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -2184,7 +2184,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-019 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAmodifyAttributeState
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAmodifyAttributeState
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2193,7 +2193,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-006 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAmodifyLookahead
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAmodifyLookahead
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2202,7 +2202,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-070 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAmoduleDesignatorList
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAmoduleDesignatorList
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2211,7 +2211,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-049 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAmsec
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAmsec
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2220,7 +2220,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-019 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAnextMessageRequest
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAnextMessageRequest
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2229,7 +2229,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-065 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAnextMessageRequestAvailable
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAnextMessageRequestAvailable
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2238,7 +2238,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-066 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAnextSaveName
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAnextSaveName
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -2247,7 +2247,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-043 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAnextSaveTime
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAnextSaveTime
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -2256,7 +2256,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-044 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAnormalizedFederateHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAnormalizedFederateHandle
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2265,7 +2265,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-020 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAnormalizedServiceGroup
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAnormalizedServiceGroup
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2274,7 +2274,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-032 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAnumberOfClasses
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAnumberOfClasses
 
 - Requirement rows: 2
 - Requirement types: MIM_PARAM
@@ -2284,7 +2284,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-012 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-016 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAobjectClass
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAobjectClass
 
 - Requirement rows: 6
 - Requirement types: MIM_PARAM
@@ -2298,7 +2298,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-063 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-066 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAobjectClassBasedCount
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAobjectClassBasedCount
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2307,7 +2307,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-051 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAobjectClassBasedCounts
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAobjectClassBasedCounts
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2316,7 +2316,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-045 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAobjectInstance
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAobjectInstance
 
 - Requirement rows: 8
 - Requirement types: MIM_PARAM
@@ -2332,7 +2332,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-080 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-089 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAobjectInstanceCounts
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAobjectInstanceCounts
 
 - Requirement rows: 3
 - Requirement types: MIM_PARAM
@@ -2343,7 +2343,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-023 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-024 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAobjectInstancesDeleted
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAobjectInstancesDeleted
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -2352,7 +2352,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-026 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAobjectInstancesDiscovered
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAobjectInstancesDiscovered
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -2361,7 +2361,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-029 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAobjectInstancesReflected
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAobjectInstancesReflected
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -2370,7 +2370,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-025 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAobjectInstancesRegistered
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAobjectInstancesRegistered
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -2379,7 +2379,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-028 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAobjectInstancesRemoved
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAobjectInstancesRemoved
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -2388,7 +2388,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-027 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAobjectInstancesThatCanBeDeleted
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAobjectInstancesThatCanBeDeleted
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -2397,7 +2397,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-023 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAobjectInstancesUpdated
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAobjectInstancesUpdated
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -2406,7 +2406,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-024 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAobjectRoot
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAobjectRoot
 
 - Requirement rows: 1
 - Requirement types: MIM_OBJ
@@ -2415,7 +2415,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-OBJ-001 | MIM_OBJ | MIM-OBJECT-CLASSES | MIM XML parse/static test + MOM integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAoctet
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAoctet
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2424,7 +2424,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-013 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAoctetPairBE
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAoctetPairBE
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2433,7 +2433,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-006 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAoctetPairLE
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAoctetPairLE
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2442,7 +2442,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-012 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAopaqueData
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAopaqueData
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2451,7 +2451,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-035 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAorderType
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAorderType
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2460,7 +2460,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-029 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAownedInstanceAttributeList
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAownedInstanceAttributeList
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -2469,7 +2469,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-034 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAownership
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAownership
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2478,7 +2478,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-027 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAparameterError
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAparameterError
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -2487,7 +2487,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-047 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAprivilegeToDeleteObject
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAprivilegeToDeleteObject
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -2496,7 +2496,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-001 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLApublishInteractionClass
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLApublishInteractionClass
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2505,7 +2505,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-048 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLApublishObjectClassAttributes
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLApublishObjectClassAttributes
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2514,7 +2514,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-046 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreflectCounts
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreflectCounts
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -2523,7 +2523,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-028 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreflectionsReceived
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreflectionsReceived
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -2532,7 +2532,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-019 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAregisteredClass
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAregisteredClass
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -2541,7 +2541,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-035 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreport
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreport
 
 - Requirement rows: 2
 - Requirement types: MIM_INT
@@ -2551,7 +2551,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-INT-022 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 | HLA1516.1-MIM-INT-081 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportException
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportException
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2560,7 +2560,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-035 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportFOMmoduleData
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportFOMmoduleData
 
 - Requirement rows: 2
 - Requirement types: MIM_INT
@@ -2570,7 +2570,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-INT-039 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 | HLA1516.1-MIM-INT-084 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportFederateLost
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportFederateLost
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2579,7 +2579,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-038 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportInteractionPublication
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportInteractionPublication
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2588,7 +2588,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-024 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportInteractionSubscription
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportInteractionSubscription
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2597,7 +2597,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-026 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportInteractionsReceived
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportInteractionsReceived
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2606,7 +2606,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-033 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportInteractionsSent
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportInteractionsSent
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2615,7 +2615,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-032 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportMIMdata
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportMIMdata
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2624,7 +2624,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-085 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportMOMexception
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportMOMexception
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2633,7 +2633,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-037 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportObjectClassPublication
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportObjectClassPublication
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2642,7 +2642,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-023 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportObjectClassSubscription
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportObjectClassSubscription
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2651,7 +2651,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-025 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportObjectInstanceInformation
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportObjectInstanceInformation
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2660,7 +2660,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-034 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportObjectInstancesReflected
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportObjectInstancesReflected
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2669,7 +2669,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-029 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportObjectInstancesThatCanBeDeleted
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportObjectInstancesThatCanBeDeleted
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2678,7 +2678,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-027 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportObjectInstancesUpdated
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportObjectInstancesUpdated
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2687,7 +2687,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-028 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportPeriod
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportPeriod
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -2696,7 +2696,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-002 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportReflectionsReceived
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportReflectionsReceived
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2705,7 +2705,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-031 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportServiceInvocation
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportServiceInvocation
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2714,7 +2714,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-036 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportSynchronizationPointStatus
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportSynchronizationPointStatus
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2723,7 +2723,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-083 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportSynchronizationPoints
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportSynchronizationPoints
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2732,7 +2732,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-082 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportUpdatesSent
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportUpdatesSent
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2741,7 +2741,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-030 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreportingState
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreportingState
 
 - Requirement rows: 2
 - Requirement types: MIM_PARAM
@@ -2751,7 +2751,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-006 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-007 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequest
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequest
 
 - Requirement rows: 2
 - Requirement types: MIM_INT
@@ -2761,7 +2761,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-INT-010 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 | HLA1516.1-MIM-INT-076 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequestAttributeTransportationTypeChange
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequestAttributeTransportationTypeChange
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2770,7 +2770,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-056 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequestFOMmoduleData
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequestFOMmoduleData
 
 - Requirement rows: 2
 - Requirement types: MIM_INT
@@ -2780,7 +2780,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-INT-021 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 | HLA1516.1-MIM-INT-079 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequestInteractionTransportationTypeChange
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequestInteractionTransportationTypeChange
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2789,7 +2789,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-057 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequestInteractionsReceived
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequestInteractionsReceived
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2798,7 +2798,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-019 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequestInteractionsSent
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequestInteractionsSent
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2807,7 +2807,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-017 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequestMIMdata
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequestMIMdata
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2816,7 +2816,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-080 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequestObjectInstanceInformation
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequestObjectInstanceInformation
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2825,7 +2825,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-020 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequestObjectInstancesReflected
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequestObjectInstancesReflected
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2834,7 +2834,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-015 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequestObjectInstancesThatCanBeDeleted
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequestObjectInstancesThatCanBeDeleted
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2843,7 +2843,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-013 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequestObjectInstancesUpdated
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequestObjectInstancesUpdated
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2852,7 +2852,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-014 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequestPublications
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequestPublications
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2861,7 +2861,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-011 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequestReflectionsReceived
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequestReflectionsReceived
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2870,7 +2870,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-018 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequestSubscriptions
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequestSubscriptions
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2879,7 +2879,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-012 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequestSynchronizationPointStatus
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequestSynchronizationPointStatus
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2888,7 +2888,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-078 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequestSynchronizationPoints
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequestSynchronizationPoints
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2897,7 +2897,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-077 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLArequestUpdatesSent
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLArequestUpdatesSent
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2906,7 +2906,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-016 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAresignAction
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAresignAction
 
 - Requirement rows: 2
 - Requirement types: MIM_DT, MIM_PARAM
@@ -2916,7 +2916,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-DT-028 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 | HLA1516.1-MIM-PARAM-053 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAresignFederationExecution
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAresignFederationExecution
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2925,7 +2925,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-041 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAreturnedArguments
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAreturnedArguments
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -2934,7 +2934,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-042 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAseconds
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAseconds
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -2943,7 +2943,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-018 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsendOrder
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsendOrder
 
 - Requirement rows: 2
 - Requirement types: MIM_PARAM
@@ -2953,7 +2953,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-091 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-093 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAserialNumber
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAserialNumber
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -2962,7 +2962,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-044 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAservice
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAservice
 
 - Requirement rows: 4
 - Requirement types: MIM_INT, MIM_PARAM
@@ -2974,7 +2974,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-039 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-045 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsetExceptionReporting
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsetExceptionReporting
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2983,7 +2983,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-008 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsetServiceReporting
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsetServiceReporting
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -2992,7 +2992,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-007 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsetSwitches
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsetSwitches
 
 - Requirement rows: 2
 - Requirement types: MIM_INT
@@ -3002,7 +3002,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-INT-009 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 | HLA1516.1-MIM-INT-075 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsetTiming
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsetTiming
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -3011,7 +3011,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-005 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsubscribeInteractionClass
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsubscribeInteractionClass
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -3020,7 +3020,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-052 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsubscribeObjectClassAttributes
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsubscribeObjectClassAttributes
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -3029,7 +3029,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-050 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsuccessIndicator
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsuccessIndicator
 
 - Requirement rows: 3
 - Requirement types: MIM_PARAM
@@ -3040,7 +3040,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-055 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-056 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsuppliedArguments
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsuppliedArguments
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -3049,7 +3049,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-041 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAswitch
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAswitch
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -3058,7 +3058,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-030 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsyncPointFederates
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsyncPointFederates
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -3067,7 +3067,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-098 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsyncPointName
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsyncPointName
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -3076,7 +3076,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-097 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsyncPoints
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsyncPoints
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -3085,7 +3085,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-096 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsynchPointFederate
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsynchPointFederate
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -3094,7 +3094,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-053 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsynchPointFederateList
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsynchPointFederateList
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -3103,7 +3103,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-048 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsynchPointList
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsynchPointList
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -3112,7 +3112,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-047 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsynchPointStatus
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsynchPointStatus
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -3121,7 +3121,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-031 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAsynchronizationPointAchieved
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAsynchronizationPointAchieved
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -3130,7 +3130,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-042 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAtag
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAtag
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -3139,7 +3139,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-072 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAtimeAdvanceRequest
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAtimeAdvanceRequest
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -3148,7 +3148,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-063 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAtimeAdvanceRequestAvailable
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAtimeAdvanceRequestAvailable
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -3157,7 +3157,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-064 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAtimeAdvancingTime
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAtimeAdvancingTime
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -3166,7 +3166,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-031 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAtimeConstrained
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAtimeConstrained
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -3175,7 +3175,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-008 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAtimeGrantedTime
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAtimeGrantedTime
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -3184,7 +3184,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-030 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAtimeImplementationName
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAtimeImplementationName
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -3193,7 +3193,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-040 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAtimeInterval
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAtimeInterval
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -3202,7 +3202,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-041 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAtimeManagerState
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAtimeManagerState
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -3211,7 +3211,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-012 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAtimeRegulating
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAtimeRegulating
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -3220,7 +3220,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-009 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAtimeStamp
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAtimeStamp
 
 - Requirement rows: 7
 - Requirement types: MIM_PARAM
@@ -3235,7 +3235,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-086 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-087 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAtimeState
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAtimeState
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -3244,7 +3244,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-026 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAtoken
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAtoken
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -3253,7 +3253,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-036 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAtransportation
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAtransportation
 
 - Requirement rows: 6
 - Requirement types: MIM_PARAM
@@ -3267,7 +3267,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-MIM-PARAM-077 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 | HLA1516.1-MIM-PARAM-079 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAtransportationName
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAtransportationName
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -3276,7 +3276,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-038 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAunconditionalAttributeOwnershipDivestiture
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAunconditionalAttributeOwnershipDivestiture
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -3285,7 +3285,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-058 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAunicodeChar
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAunicodeChar
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -3294,7 +3294,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-015 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAunicodeString
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAunicodeString
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -3303,7 +3303,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-034 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAunpublishInteractionClass
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAunpublishInteractionClass
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -3312,7 +3312,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-049 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAunpublishObjectClassAttributes
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAunpublishObjectClassAttributes
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -3321,7 +3321,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-047 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAunsubscribeInteractionClass
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAunsubscribeInteractionClass
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -3330,7 +3330,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-053 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAunsubscribeObjectClassAttributes
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAunsubscribeObjectClassAttributes
 
 - Requirement rows: 1
 - Requirement types: MIM_INT
@@ -3339,7 +3339,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-INT-051 | MIM_INT | MIM-INTERACTION-CLASSES | MIM XML parse/static test + MOM interaction integration test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAupdateCounts
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAupdateCounts
 
 - Requirement rows: 1
 - Requirement types: MIM_PARAM
@@ -3348,7 +3348,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-PARAM-026 | MIM_PARAM | MIM-INTERACTION-PARAMETERS | MIM XML parse/static test + MOM interaction parameter test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAupdateRateName
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAupdateRateName
 
 - Requirement rows: 1
 - Requirement types: MIM_DT
@@ -3357,7 +3357,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-DT-039 | MIM_DT | MIM-DATATYPES | MIM XML parse/static test |
 
-## IEEE 1516.1-2010 Clause 11.6 HLAupdatesSent
+## IEEE 1516.1-2010 (2010 edition) Clause 11.6 HLAupdatesSent
 
 - Requirement rows: 1
 - Requirement types: MIM_ATTR
@@ -3366,7 +3366,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-MIM-ATTR-020 | MIM_ATTR | MIM-OBJECT-ATTRIBUTES | MIM XML parse/static test + MOM attribute reflection test |
 
-## IEEE 1516.1-2010 Clause 12.13 abortFederationRestore
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 abortFederationRestore
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3376,7 +3376,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-019 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-173 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 abortFederationSave
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 abortFederationSave
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3386,7 +3386,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-014 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-168 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 associateRegionsForUpdates
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 associateRegionsForUpdates
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3396,7 +3396,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-079 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-233 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 attributeOwnershipAcquisition
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 attributeOwnershipAcquisition
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3406,7 +3406,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-048 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-202 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 attributeOwnershipAcquisitionIfAvailable
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 attributeOwnershipAcquisitionIfAvailable
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3416,7 +3416,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-049 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-203 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 attributeOwnershipDivestitureIfWanted
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 attributeOwnershipDivestitureIfWanted
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3426,7 +3426,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-051 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-205 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 attributeOwnershipReleaseDenied
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 attributeOwnershipReleaseDenied
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3436,7 +3436,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-050 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-204 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 cancelAttributeOwnershipAcquisition
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 cancelAttributeOwnershipAcquisition
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3446,7 +3446,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-053 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-207 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 cancelNegotiatedAttributeOwnershipDivestiture
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 cancelNegotiatedAttributeOwnershipDivestiture
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3456,7 +3456,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-052 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-206 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 changeAttributeOrderType
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 changeAttributeOrderType
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3466,7 +3466,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-073 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-227 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 changeInteractionOrderType
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 changeInteractionOrderType
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3476,7 +3476,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-074 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-228 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 commitRegionModifications
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 commitRegionModifications
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3486,7 +3486,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-076 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-230 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 confirmDivestiture
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 confirmDivestiture
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3496,7 +3496,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-047 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-201 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 connect
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 connect
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3506,7 +3506,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-001 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-155 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 createFederationExecution
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 createFederationExecution
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3516,7 +3516,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-003 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-157 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 createRegion
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 createRegion
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3526,7 +3526,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-075 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-229 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 decodeAttributeHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 decodeAttributeHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3536,7 +3536,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-138 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-292 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 decodeDimensionHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 decodeDimensionHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3546,7 +3546,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-140 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-294 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 decodeFederateHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 decodeFederateHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3556,7 +3556,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-142 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-296 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 decodeHLAfloat64Time
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 decodeHLAfloat64Time
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3566,7 +3566,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-148 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-302 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 decodeHLAfloat64TimeInterval
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 decodeHLAfloat64TimeInterval
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3576,7 +3576,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-150 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-304 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 decodeHLAinteger64Time
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 decodeHLAinteger64Time
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3586,7 +3586,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-144 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-298 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 decodeHLAinteger64TimeInterval
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 decodeHLAinteger64TimeInterval
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3596,7 +3596,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-146 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-300 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 decodeInteractionClassHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 decodeInteractionClassHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3606,7 +3606,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-132 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-286 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 decodeObjectClassHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 decodeObjectClassHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3616,7 +3616,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-130 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-284 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 decodeObjectInstanceHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 decodeObjectInstanceHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3626,7 +3626,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-134 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-288 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 decodeParameterHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 decodeParameterHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3636,7 +3636,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-136 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-290 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 decreaseHLAfloat64TimeByEpsilon
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 decreaseHLAfloat64TimeByEpsilon
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3646,7 +3646,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-154 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-308 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 decreaseHLAinteger64TimeByEpsilon
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 decreaseHLAinteger64TimeByEpsilon
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3656,7 +3656,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-152 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-306 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 deleteObjectInstance
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 deleteObjectInstance
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3666,7 +3666,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-037 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-191 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 deleteRegion
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 deleteRegion
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3676,7 +3676,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-077 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-231 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 destroyFederationExecution
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 destroyFederationExecution
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3686,7 +3686,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-004 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-158 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 disableAsynchronousDelivery
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 disableAsynchronousDelivery
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3696,7 +3696,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-066 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-220 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 disableAttributeRelevanceAdvisorySwitch
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 disableAttributeRelevanceAdvisorySwitch
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3706,7 +3706,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-121 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-275 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 disableAttributeScopeAdvisorySwitch
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 disableAttributeScopeAdvisorySwitch
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3716,7 +3716,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-123 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-277 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 disableCallbacks
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 disableCallbacks
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3726,7 +3726,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-128 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-282 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 disableInteractionRelevanceAdvisorySwitch
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 disableInteractionRelevanceAdvisorySwitch
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3736,7 +3736,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-125 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-279 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 disableObjectClassRelevanceAdvisorySwitch
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 disableObjectClassRelevanceAdvisorySwitch
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3746,7 +3746,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-119 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-273 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 disableTimeConstrained
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 disableTimeConstrained
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3756,7 +3756,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-059 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-213 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 disableTimeRegulation
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 disableTimeRegulation
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3766,7 +3766,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-057 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-211 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 disconnect
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 disconnect
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3776,7 +3776,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-002 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-156 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 enableAsynchronousDelivery
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 enableAsynchronousDelivery
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3786,7 +3786,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-065 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-219 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 enableAttributeRelevanceAdvisorySwitch
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 enableAttributeRelevanceAdvisorySwitch
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3796,7 +3796,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-120 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-274 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 enableAttributeScopeAdvisorySwitch
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 enableAttributeScopeAdvisorySwitch
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3806,7 +3806,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-122 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-276 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 enableCallbacks
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 enableCallbacks
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3816,7 +3816,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-127 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-281 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 enableInteractionRelevanceAdvisorySwitch
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 enableInteractionRelevanceAdvisorySwitch
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3826,7 +3826,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-124 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-278 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 enableObjectClassRelevanceAdvisorySwitch
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 enableObjectClassRelevanceAdvisorySwitch
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3836,7 +3836,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-118 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-272 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 enableTimeConstrained
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 enableTimeConstrained
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3846,7 +3846,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-058 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-212 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 enableTimeRegulation
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 enableTimeRegulation
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3856,7 +3856,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-056 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-210 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 encodeAttributeHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 encodeAttributeHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3866,7 +3866,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-137 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-291 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 encodeDimensionHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 encodeDimensionHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3876,7 +3876,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-139 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-293 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 encodeFederateHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 encodeFederateHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3886,7 +3886,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-141 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-295 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 encodeHLAfloat64Time
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 encodeHLAfloat64Time
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3896,7 +3896,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-147 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-301 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 encodeHLAfloat64TimeInterval
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 encodeHLAfloat64TimeInterval
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3906,7 +3906,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-149 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-303 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 encodeHLAinteger64Time
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 encodeHLAinteger64Time
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3916,7 +3916,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-143 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-297 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 encodeHLAinteger64TimeInterval
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 encodeHLAinteger64TimeInterval
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3926,7 +3926,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-145 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-299 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 encodeInteractionClassHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 encodeInteractionClassHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3936,7 +3936,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-131 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-285 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 encodeObjectClassHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 encodeObjectClassHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3946,7 +3946,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-129 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-283 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 encodeObjectInstanceHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 encodeObjectInstanceHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3956,7 +3956,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-133 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-287 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 encodeParameterHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 encodeParameterHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3966,7 +3966,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-135 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-289 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 evokeMultipleCallbacks
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 evokeMultipleCallbacks
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3976,7 +3976,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-126 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-280 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 federateRestoreComplete
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 federateRestoreComplete
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3986,7 +3986,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-017 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-171 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 federateRestoreNotComplete
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 federateRestoreNotComplete
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -3996,7 +3996,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-018 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-172 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 federateSaveBegun
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 federateSaveBegun
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4006,7 +4006,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-011 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-165 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 federateSaveComplete
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 federateSaveComplete
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4016,7 +4016,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-012 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-166 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 federateSaveNotComplete
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 federateSaveNotComplete
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4026,7 +4026,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-013 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-167 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 flushQueueRequest
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 flushQueueRequest
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4036,7 +4036,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-064 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-218 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getAttributeHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getAttributeHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4046,7 +4046,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-096 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-250 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getAttributeName
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getAttributeName
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4056,7 +4056,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-097 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-251 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getAutomaticResignDirective
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getAutomaticResignDirective
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4066,7 +4066,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-087 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-241 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getAvailableDimensionsForClassAttribute
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getAvailableDimensionsForClassAttribute
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4076,7 +4076,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-108 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-262 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getAvailableDimensionsForInteractionClass
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getAvailableDimensionsForInteractionClass
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4086,7 +4086,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-109 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-263 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getDimensionHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getDimensionHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4096,7 +4096,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-110 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-264 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getDimensionHandleSet
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getDimensionHandleSet
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4106,7 +4106,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-113 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-267 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getDimensionName
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getDimensionName
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4116,7 +4116,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-111 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-265 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getDimensionUpperBound
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getDimensionUpperBound
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4126,7 +4126,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-112 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-266 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getFederateHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getFederateHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4136,7 +4136,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-089 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-243 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getFederateName
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getFederateName
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4146,7 +4146,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-090 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-244 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getInteractionClassHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getInteractionClassHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4156,7 +4156,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-100 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-254 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getInteractionClassName
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getInteractionClassName
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4166,7 +4166,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-101 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-255 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getKnownObjectClassHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getKnownObjectClassHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4176,7 +4176,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-093 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-247 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getObjectClassHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getObjectClassHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4186,7 +4186,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-091 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-245 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getObjectClassName
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getObjectClassName
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4196,7 +4196,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-092 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-246 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getObjectInstanceHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getObjectInstanceHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4206,7 +4206,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-094 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-248 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getObjectInstanceName
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getObjectInstanceName
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4216,7 +4216,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-095 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-249 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getOrderName
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getOrderName
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4226,7 +4226,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-105 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-259 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getOrderType
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getOrderType
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4236,7 +4236,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-104 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-258 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getParameterHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getParameterHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4246,7 +4246,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-102 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-256 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getParameterName
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getParameterName
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4256,7 +4256,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-103 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-257 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getRangeBounds
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getRangeBounds
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4266,7 +4266,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-114 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-268 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getTransportationTypeHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getTransportationTypeHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4276,7 +4276,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-106 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-260 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getTransportationTypeName
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getTransportationTypeName
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4286,7 +4286,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-107 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-261 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getUpdateRateValue
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getUpdateRateValue
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4296,7 +4296,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-098 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-252 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 getUpdateRateValueForAttribute
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 getUpdateRateValueForAttribute
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4306,7 +4306,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-099 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-253 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 increaseHLAfloat64TimeByEpsilon
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 increaseHLAfloat64TimeByEpsilon
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4316,7 +4316,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-153 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-307 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 increaseHLAinteger64TimeByEpsilon
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 increaseHLAinteger64TimeByEpsilon
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4326,7 +4326,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-151 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-305 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 isAttributeOwnedByFederate
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 isAttributeOwnedByFederate
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4336,7 +4336,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-055 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-209 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 joinFederationExecution
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 joinFederationExecution
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4346,7 +4346,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-006 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-160 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 listFederationExecutions
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 listFederationExecutions
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4356,7 +4356,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-005 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-159 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 localDeleteObjectInstance
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 localDeleteObjectInstance
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4366,7 +4366,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-038 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-192 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 modifyLookahead
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 modifyLookahead
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4376,7 +4376,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-070 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-224 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 negotiatedAttributeOwnershipDivestiture
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 negotiatedAttributeOwnershipDivestiture
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4386,7 +4386,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-046 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-200 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 nextMessageRequest
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 nextMessageRequest
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4396,7 +4396,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-062 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-216 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 nextMessageRequestAvailable
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 nextMessageRequestAvailable
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4406,7 +4406,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-063 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-217 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 normalizeFederateHandle
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 normalizeFederateHandle
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4416,7 +4416,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-116 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-270 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 normalizeServiceGroup
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 normalizeServiceGroup
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4426,7 +4426,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-117 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-271 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 publishInteractionClass
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 publishInteractionClass
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4436,7 +4436,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-023 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-177 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 publishObjectClassAttributes
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 publishObjectClassAttributes
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4446,7 +4446,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-021 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-175 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 queryAttributeOwnership
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 queryAttributeOwnership
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4456,7 +4456,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-054 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-208 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 queryAttributeTransportationType
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 queryAttributeTransportationType
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4466,7 +4466,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-042 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-196 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 queryFederationRestoreStatus
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 queryFederationRestoreStatus
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4476,7 +4476,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-020 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-174 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 queryFederationSaveStatus
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 queryFederationSaveStatus
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4486,7 +4486,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-015 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-169 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 queryGALT
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 queryGALT
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4496,7 +4496,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-067 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-221 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 queryInteractionTransportationType
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 queryInteractionTransportationType
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4506,7 +4506,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-044 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-198 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 queryLITS
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 queryLITS
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4516,7 +4516,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-069 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-223 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 queryLogicalTime
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 queryLogicalTime
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4526,7 +4526,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-068 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-222 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 queryLookahead
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 queryLookahead
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4536,7 +4536,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-071 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-225 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 registerFederationSynchronizationPoint
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 registerFederationSynchronizationPoint
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4546,7 +4546,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-008 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-162 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 registerObjectInstance
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 registerObjectInstance
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4556,7 +4556,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-034 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-188 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 registerObjectInstanceWithRegions
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 registerObjectInstanceWithRegions
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4566,7 +4566,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-078 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-232 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 releaseMultipleObjectInstanceName
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 releaseMultipleObjectInstanceName
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4576,7 +4576,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-033 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-187 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 releaseObjectInstanceName
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 releaseObjectInstanceName
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4586,7 +4586,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-031 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-185 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 requestAttributeTransportationTypeChange
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 requestAttributeTransportationTypeChange
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4596,7 +4596,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-041 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-195 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 requestAttributeValueUpdateWithRegions
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 requestAttributeValueUpdateWithRegions
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4606,7 +4606,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-086 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-240 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 requestFederationRestore
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 requestFederationRestore
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4616,7 +4616,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-016 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-170 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 requestFederationSave
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 requestFederationSave
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4626,7 +4626,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-010 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-164 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 requestInteractionTransportationTypeChange
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 requestInteractionTransportationTypeChange
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4636,7 +4636,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-043 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-197 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 requestObjectClassAttributeValueUpdate
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 requestObjectClassAttributeValueUpdate
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4646,7 +4646,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-040 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-194 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 requestObjectInstanceAttributeValueUpdate
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 requestObjectInstanceAttributeValueUpdate
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4656,7 +4656,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-039 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-193 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 reserveMultipleObjectInstanceName
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 reserveMultipleObjectInstanceName
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4666,7 +4666,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-032 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-186 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 reserveObjectInstanceName
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 reserveObjectInstanceName
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4676,7 +4676,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-030 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-184 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 resignFederationExecution
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 resignFederationExecution
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4686,7 +4686,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-007 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-161 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 retract
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 retract
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4696,7 +4696,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-072 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-226 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 sendInteraction
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 sendInteraction
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4706,7 +4706,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-036 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-190 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 sendInteractionWithRegions
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 sendInteractionWithRegions
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4716,7 +4716,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-085 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-239 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 setAutomaticResignDirective
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 setAutomaticResignDirective
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4726,7 +4726,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-088 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-242 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 setRangeBounds
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 setRangeBounds
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4736,7 +4736,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-115 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-269 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 subscribeInteractionClass
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 subscribeInteractionClass
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4746,7 +4746,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-028 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-182 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 subscribeInteractionClassWithRegions
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 subscribeInteractionClassWithRegions
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4756,7 +4756,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-083 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-237 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 subscribeObjectClassAttributes
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 subscribeObjectClassAttributes
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4766,7 +4766,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-025 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-179 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 subscribeObjectClassAttributesWithRegions
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 subscribeObjectClassAttributesWithRegions
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4776,7 +4776,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-081 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-235 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 synchronizationPointAchieved
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 synchronizationPointAchieved
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4786,7 +4786,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-009 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-163 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 timeAdvanceRequest
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 timeAdvanceRequest
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4796,7 +4796,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-060 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-214 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 timeAdvanceRequestAvailable
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 timeAdvanceRequestAvailable
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4806,7 +4806,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-061 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-215 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 unassociateRegionsForUpdates
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 unassociateRegionsForUpdates
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4816,7 +4816,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-080 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-234 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 unconditionalAttributeOwnershipDivestiture
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 unconditionalAttributeOwnershipDivestiture
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4826,7 +4826,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-045 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-199 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 unpublishInteractionClass
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 unpublishInteractionClass
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4836,7 +4836,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-024 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-178 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 unpublishObjectClassAttributes
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 unpublishObjectClassAttributes
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4846,7 +4846,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-022 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-176 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 unsubscribeInteractionClass
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 unsubscribeInteractionClass
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4856,7 +4856,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-029 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-183 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 unsubscribeInteractionClassWithRegions
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 unsubscribeInteractionClassWithRegions
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4866,7 +4866,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-084 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-238 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 unsubscribeObjectClass
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 unsubscribeObjectClass
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4876,7 +4876,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-026 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-180 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 unsubscribeObjectClassAttributes
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 unsubscribeObjectClassAttributes
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4886,7 +4886,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-027 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-181 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 unsubscribeObjectClassAttributesWithRegions
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 unsubscribeObjectClassAttributesWithRegions
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4896,7 +4896,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-082 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-236 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 12.13 updateAttributeValues
+## IEEE 1516.1-2010 (2010 edition) Clause 12.13 updateAttributeValues
 
 - Requirement rows: 2
 - Requirement types: WSDL_OP
@@ -4906,7 +4906,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-WSDL-OP-035 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 | HLA1516.1-WSDL-OP-189 | WSDL_OP | API-WSDL-OPERATIONS | WSDL static validation + service binding test |
 
-## IEEE 1516.1-2010 Clause 4.10 Resign Federation Execution
+## IEEE 1516.1-2010 (2010 edition) Clause 4.10 Resign Federation Execution
 
 - Requirement rows: 25
 - Requirement types: ARG, EFF, EXC, EXC_API, MOM, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -4939,7 +4939,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_10-RTIAPI-001-SIG | SIG | FM-resignFederationExecution | api signature/static test |
 | HLA1516.1-FM-4_10-SVC-001 | SVC | FM-LIFECYCLE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.10 resignFederationExecution
+## IEEE 1516.1-2010 (2010 edition) Clause 4.10 resignFederationExecution
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -4948,7 +4948,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_10-RESIGNFEDERATIONEXECUTION-010 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.11 Register Federation Synchronization Point
+## IEEE 1516.1-2010 (2010 edition) Clause 4.11 Register Federation Synchronization Point
 
 - Requirement rows: 28
 - Requirement types: ARG, EFF, EXC, EXC_API, MOM, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -4984,7 +4984,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_11-RTIAPI-002-SIG | SIG | FM-registerFederationSynchronizationPoint | api signature/static test |
 | HLA1516.1-FM-4_11-SVC-001 | SVC | FM-SYNCHRONIZATION | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.11 registerFederationSynchronizationPoint
+## IEEE 1516.1-2010 (2010 edition) Clause 4.11 registerFederationSynchronizationPoint
 
 - Requirement rows: 2
 - Requirement types: CPP_METHOD
@@ -4994,7 +4994,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-CPP-4_11-REGISTERFEDERATIONSYNCHRONIZATIONPOINT-011 | CPP_METHOD | API-CPP | C++ header static validation |
 | HLA1516.1-CPP-4_11-REGISTERFEDERATIONSYNCHRONIZATIONPOINT-012 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.12 Confirm Synchronization Point Registration
+## IEEE 1516.1-2010 (2010 edition) Clause 4.12 Confirm Synchronization Point Registration
 
 - Requirement rows: 19
 - Requirement types: ARG, CB, CB_ORD, CB_SIG, EFF, EXC, FED_CB, PRE, SVC
@@ -5021,7 +5021,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_12-PRE-005 | PRE | FM-SYNCHRONIZATION | unit + negative-path conformance test |
 | HLA1516.1-FM-4_12-SVC-001 | SVC | FM-SYNCHRONIZATION | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.12 synchronizationPointRegistrationFailed
+## IEEE 1516.1-2010 (2010 edition) Clause 4.12 synchronizationPointRegistrationFailed
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5030,7 +5030,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_12-SYNCHRONIZATIONPOINTREGISTRATIONFAILED-155 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.12 synchronizationPointRegistrationSucceeded
+## IEEE 1516.1-2010 (2010 edition) Clause 4.12 synchronizationPointRegistrationSucceeded
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5039,7 +5039,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_12-SYNCHRONIZATIONPOINTREGISTRATIONSUCCEEDE-154 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.13 Announce Synchronization Point
+## IEEE 1516.1-2010 (2010 edition) Clause 4.13 Announce Synchronization Point
 
 - Requirement rows: 14
 - Requirement types: ARG, CB, CB_ORD, CB_SIG, EFF, EXC, FED_CB, PRE, SVC
@@ -5061,7 +5061,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_13-PRE-005 | PRE | FM-SYNCHRONIZATION | unit + negative-path conformance test |
 | HLA1516.1-FM-4_13-SVC-001 | SVC | FM-SYNCHRONIZATION | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.13 announceSynchronizationPoint
+## IEEE 1516.1-2010 (2010 edition) Clause 4.13 announceSynchronizationPoint
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5070,7 +5070,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_13-ANNOUNCESYNCHRONIZATIONPOINT-156 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.14 Synchronization Point Achieved
+## IEEE 1516.1-2010 (2010 edition) Clause 4.14 Synchronization Point Achieved
 
 - Requirement rows: 27
 - Requirement types: ARG, EFF, EXC, EXC_API, MOM, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -5105,7 +5105,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_14-RTIAPI-002-SIG | SIG | FM-synchronizationPointAchieved | api signature/static test |
 | HLA1516.1-FM-4_14-SVC-001 | SVC | FM-SYNCHRONIZATION | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.14 synchronizationPointAchieved
+## IEEE 1516.1-2010 (2010 edition) Clause 4.14 synchronizationPointAchieved
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5114,7 +5114,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_14-SYNCHRONIZATIONPOINTACHIEVED-013 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.15 Federation Synchronized
+## IEEE 1516.1-2010 (2010 edition) Clause 4.15 Federation Synchronized
 
 - Requirement rows: 17
 - Requirement types: ARG, CB, CB_ORD, CB_SIG, EFF, EXC, FED_CB, MOM, PRE, SVC
@@ -5139,7 +5139,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_15-PRE-007 | PRE | FM-SYNCHRONIZATION | unit + negative-path conformance test |
 | HLA1516.1-FM-4_15-SVC-001 | SVC | FM-SYNCHRONIZATION | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.15 federationSynchronized
+## IEEE 1516.1-2010 (2010 edition) Clause 4.15 federationSynchronized
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5148,7 +5148,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_15-FEDERATIONSYNCHRONIZED-157 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.16 Request Federation Save
+## IEEE 1516.1-2010 (2010 edition) Clause 4.16 Request Federation Save
 
 - Requirement rows: 30
 - Requirement types: ARG, EFF, EXC, EXC_API, MOM, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -5186,7 +5186,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_16-RTIAPI-002-SIG | SIG | FM-requestFederationSave | api signature/static test |
 | HLA1516.1-FM-4_16-SVC-001 | SVC | FM-SAVE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.16 requestFederationSave
+## IEEE 1516.1-2010 (2010 edition) Clause 4.16 requestFederationSave
 
 - Requirement rows: 2
 - Requirement types: CPP_METHOD
@@ -5196,7 +5196,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-CPP-4_16-REQUESTFEDERATIONSAVE-014 | CPP_METHOD | API-CPP | C++ header static validation |
 | HLA1516.1-CPP-4_16-REQUESTFEDERATIONSAVE-015 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.17 Initiate Federate Save
+## IEEE 1516.1-2010 (2010 edition) Clause 4.17 Initiate Federate Save
 
 - Requirement rows: 17
 - Requirement types: ARG, CB, CB_ORD, CB_SIG, EFF, EXC, FED_CB, PRE, SVC
@@ -5221,7 +5221,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_17-PRE-005 | PRE | FM-SAVE | unit + negative-path conformance test |
 | HLA1516.1-FM-4_17-SVC-001 | SVC | FM-SAVE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.17 initiateFederateSave
+## IEEE 1516.1-2010 (2010 edition) Clause 4.17 initiateFederateSave
 
 - Requirement rows: 2
 - Requirement types: CPP_METHOD
@@ -5231,7 +5231,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-CPP-4_17-INITIATEFEDERATESAVE-158 | CPP_METHOD | API-CPP | C++ header static validation |
 | HLA1516.1-CPP-4_17-INITIATEFEDERATESAVE-159 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.18 Federate Save Begun
+## IEEE 1516.1-2010 (2010 edition) Clause 4.18 Federate Save Begun
 
 - Requirement rows: 18
 - Requirement types: EFF, EXC, EXC_API, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -5257,7 +5257,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_18-RTIAPI-001-SIG | SIG | FM-federateSaveBegun | api signature/static test |
 | HLA1516.1-FM-4_18-SVC-001 | SVC | FM-SAVE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.18 federateSaveBegun
+## IEEE 1516.1-2010 (2010 edition) Clause 4.18 federateSaveBegun
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5266,7 +5266,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_18-FEDERATESAVEBEGUN-016 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.19 Federate Save Complete
+## IEEE 1516.1-2010 (2010 edition) Clause 4.19 Federate Save Complete
 
 - Requirement rows: 24
 - Requirement types: ARG, EFF, EXC, EXC_API, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -5298,7 +5298,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_19-RTIAPI-001-SIG-DUP02 | SIG | FM-federateSaveNotComplete | api signature/static test |
 | HLA1516.1-FM-4_19-SVC-001 | SVC | FM-SAVE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.19 federateSaveComplete
+## IEEE 1516.1-2010 (2010 edition) Clause 4.19 federateSaveComplete
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5307,7 +5307,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_19-FEDERATESAVECOMPLETE-017 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.19 federateSaveNotComplete
+## IEEE 1516.1-2010 (2010 edition) Clause 4.19 federateSaveNotComplete
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5316,7 +5316,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_19-FEDERATESAVENOTCOMPLETE-018 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.2 Connect
+## IEEE 1516.1-2010 (2010 edition) Clause 4.2 Connect
 
 - Requirement rows: 20
 - Requirement types: ARG, EFF, EXC, EXC_API, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -5344,7 +5344,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_2-RTIAPI-002-SIG | SIG | FM-connect | api signature/static test |
 | HLA1516.1-FM-4_2-SVC-001 | SVC | FM-LIFECYCLE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.2 connect
+## IEEE 1516.1-2010 (2010 edition) Clause 4.2 connect
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5353,7 +5353,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_2-CONNECT-001 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.20 Federation Saved
+## IEEE 1516.1-2010 (2010 edition) Clause 4.20 Federation Saved
 
 - Requirement rows: 17
 - Requirement types: ARG, CB, CB_ORD, CB_SIG, EFF, EXC, FED_CB, MOM, PRE, SVC
@@ -5378,7 +5378,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_20-PRE-003 | PRE | FM-SAVE | unit + negative-path conformance test |
 | HLA1516.1-FM-4_20-SVC-001 | SVC | FM-SAVE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.20 federationNotSaved
+## IEEE 1516.1-2010 (2010 edition) Clause 4.20 federationNotSaved
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5387,7 +5387,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_20-FEDERATIONNOTSAVED-161 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.20 federationSaved
+## IEEE 1516.1-2010 (2010 edition) Clause 4.20 federationSaved
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5396,7 +5396,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_20-FEDERATIONSAVED-160 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.21 Abort Federation Save
+## IEEE 1516.1-2010 (2010 edition) Clause 4.21 Abort Federation Save
 
 - Requirement rows: 16
 - Requirement types: EFF, EXC, EXC_API, MOM, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -5420,7 +5420,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_21-RTIAPI-001-SIG | SIG | FM-abortFederationSave | api signature/static test |
 | HLA1516.1-FM-4_21-SVC-001 | SVC | FM-SAVE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.21 abortFederationSave
+## IEEE 1516.1-2010 (2010 edition) Clause 4.21 abortFederationSave
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5429,7 +5429,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_21-ABORTFEDERATIONSAVE-019 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.22 Query Federation Save Status
+## IEEE 1516.1-2010 (2010 edition) Clause 4.22 Query Federation Save Status
 
 - Requirement rows: 16
 - Requirement types: EFF, EXC, EXC_API, MOM, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -5453,7 +5453,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_22-RTIAPI-001-SIG | SIG | FM-queryFederationSaveStatus | api signature/static test |
 | HLA1516.1-FM-4_22-SVC-001 | SVC | FM-SAVE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.22 queryFederationSaveStatus
+## IEEE 1516.1-2010 (2010 edition) Clause 4.22 queryFederationSaveStatus
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5462,7 +5462,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_22-QUERYFEDERATIONSAVESTATUS-020 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.23 Federation Save Status Response
+## IEEE 1516.1-2010 (2010 edition) Clause 4.23 Federation Save Status Response
 
 - Requirement rows: 13
 - Requirement types: ARG, CB, CB_ORD, CB_SIG, EFF, EXC, FED_CB, MOM, PRE, SVC
@@ -5483,7 +5483,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_23-PRE-004 | PRE | FM-SAVE | unit + negative-path conformance test |
 | HLA1516.1-FM-4_23-SVC-001 | SVC | FM-SAVE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.23 federationSaveStatusResponse
+## IEEE 1516.1-2010 (2010 edition) Clause 4.23 federationSaveStatusResponse
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5492,7 +5492,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_23-FEDERATIONSAVESTATUSRESPONSE-162 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.24 Request Federation Restore
+## IEEE 1516.1-2010 (2010 edition) Clause 4.24 Request Federation Restore
 
 - Requirement rows: 22
 - Requirement types: ARG, EFF, EXC, EXC_API, MOM, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -5522,7 +5522,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_24-RTIAPI-001-SIG | SIG | FM-requestFederationRestore | api signature/static test |
 | HLA1516.1-FM-4_24-SVC-001 | SVC | FM-RESTORE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.24 requestFederationRestore
+## IEEE 1516.1-2010 (2010 edition) Clause 4.24 requestFederationRestore
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5531,7 +5531,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_24-REQUESTFEDERATIONRESTORE-021 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.25 Confirm Federation Restoration Request
+## IEEE 1516.1-2010 (2010 edition) Clause 4.25 Confirm Federation Restoration Request
 
 - Requirement rows: 20
 - Requirement types: ARG, CB, CB_ORD, CB_SIG, EFF, EXC, FED_CB, PRE, SVC
@@ -5559,7 +5559,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_25-PRE-005 | PRE | FM-RESTORE | unit + negative-path conformance test |
 | HLA1516.1-FM-4_25-SVC-001 | SVC | FM-RESTORE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.25 requestFederationRestoreFailed
+## IEEE 1516.1-2010 (2010 edition) Clause 4.25 requestFederationRestoreFailed
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5568,7 +5568,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_25-REQUESTFEDERATIONRESTOREFAILED-164 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.25 requestFederationRestoreSucceeded
+## IEEE 1516.1-2010 (2010 edition) Clause 4.25 requestFederationRestoreSucceeded
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5577,7 +5577,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_25-REQUESTFEDERATIONRESTORESUCCEEDED-163 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.26 Federation Restore Begun
+## IEEE 1516.1-2010 (2010 edition) Clause 4.26 Federation Restore Begun
 
 - Requirement rows: 11
 - Requirement types: CB, CB_ORD, CB_SIG, EFF, EXC, FED_CB, PRE, SVC
@@ -5596,7 +5596,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_26-PRE-004 | PRE | FM-RESTORE | unit + negative-path conformance test |
 | HLA1516.1-FM-4_26-SVC-001 | SVC | FM-RESTORE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.26 federationRestoreBegun
+## IEEE 1516.1-2010 (2010 edition) Clause 4.26 federationRestoreBegun
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5605,7 +5605,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_26-FEDERATIONRESTOREBEGUN-165 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.27 Initiate Federate Restore
+## IEEE 1516.1-2010 (2010 edition) Clause 4.27 Initiate Federate Restore
 
 - Requirement rows: 15
 - Requirement types: ARG, CB, CB_ORD, CB_SIG, EFF, EXC, FED_CB, PRE, SVC
@@ -5628,7 +5628,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_27-PRE-004 | PRE | FM-RESTORE | unit + negative-path conformance test |
 | HLA1516.1-FM-4_27-SVC-001 | SVC | FM-RESTORE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.27 initiateFederateRestore
+## IEEE 1516.1-2010 (2010 edition) Clause 4.27 initiateFederateRestore
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5637,7 +5637,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_27-INITIATEFEDERATERESTORE-166 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.28 Federate Restore Complete
+## IEEE 1516.1-2010 (2010 edition) Clause 4.28 Federate Restore Complete
 
 - Requirement rows: 25
 - Requirement types: ARG, EFF, EXC, EXC_API, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -5670,7 +5670,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_28-RTIAPI-001-SIG-DUP02 | SIG | FM-federateRestoreNotComplete | api signature/static test |
 | HLA1516.1-FM-4_28-SVC-001 | SVC | FM-RESTORE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.28 federateRestoreComplete
+## IEEE 1516.1-2010 (2010 edition) Clause 4.28 federateRestoreComplete
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5679,7 +5679,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_28-FEDERATERESTORECOMPLETE-022 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.28 federateRestoreNotComplete
+## IEEE 1516.1-2010 (2010 edition) Clause 4.28 federateRestoreNotComplete
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5688,7 +5688,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_28-FEDERATERESTORENOTCOMPLETE-023 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.29 Federation Restored
+## IEEE 1516.1-2010 (2010 edition) Clause 4.29 Federation Restored
 
 - Requirement rows: 18
 - Requirement types: ARG, CB, CB_ORD, CB_SIG, EFF, EXC, FED_CB, MOM, PRE, SVC
@@ -5714,7 +5714,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_29-PRE-004 | PRE | FM-RESTORE | unit + negative-path conformance test |
 | HLA1516.1-FM-4_29-SVC-001 | SVC | FM-RESTORE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.29 federationNotRestored
+## IEEE 1516.1-2010 (2010 edition) Clause 4.29 federationNotRestored
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5723,7 +5723,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_29-FEDERATIONNOTRESTORED-168 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.29 federationRestored
+## IEEE 1516.1-2010 (2010 edition) Clause 4.29 federationRestored
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5732,7 +5732,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_29-FEDERATIONRESTORED-167 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.3 Disconnect
+## IEEE 1516.1-2010 (2010 edition) Clause 4.3 Disconnect
 
 - Requirement rows: 12
 - Requirement types: EFF, EXC, EXC_API, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -5752,7 +5752,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_3-RTIAPI-001-SIG | SIG | FM-disconnect | api signature/static test |
 | HLA1516.1-FM-4_3-SVC-001 | SVC | FM-LIFECYCLE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.3 disconnect
+## IEEE 1516.1-2010 (2010 edition) Clause 4.3 disconnect
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5761,7 +5761,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_3-DISCONNECT-002 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.30 Abort Federation Restore
+## IEEE 1516.1-2010 (2010 edition) Clause 4.30 Abort Federation Restore
 
 - Requirement rows: 16
 - Requirement types: EFF, EXC, EXC_API, MOM, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -5785,7 +5785,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_30-RTIAPI-001-SIG | SIG | FM-abortFederationRestore | api signature/static test |
 | HLA1516.1-FM-4_30-SVC-001 | SVC | FM-RESTORE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.30 abortFederationRestore
+## IEEE 1516.1-2010 (2010 edition) Clause 4.30 abortFederationRestore
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5794,7 +5794,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_30-ABORTFEDERATIONRESTORE-024 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.31 Query Federation Restore Status
+## IEEE 1516.1-2010 (2010 edition) Clause 4.31 Query Federation Restore Status
 
 - Requirement rows: 16
 - Requirement types: EFF, EXC, EXC_API, MOM, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -5818,7 +5818,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_31-RTIAPI-001-SIG | SIG | FM-queryFederationRestoreStatus | api signature/static test |
 | HLA1516.1-FM-4_31-SVC-001 | SVC | FM-RESTORE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.31 queryFederationRestoreStatus
+## IEEE 1516.1-2010 (2010 edition) Clause 4.31 queryFederationRestoreStatus
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5827,7 +5827,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_31-QUERYFEDERATIONRESTORESTATUS-025 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.32 Federation Restore Status Response
+## IEEE 1516.1-2010 (2010 edition) Clause 4.32 Federation Restore Status Response
 
 - Requirement rows: 13
 - Requirement types: ARG, CB, CB_ORD, CB_SIG, EFF, EXC, FED_CB, MOM, PRE, SVC
@@ -5848,7 +5848,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_32-PRE-004 | PRE | FM-RESTORE | unit + negative-path conformance test |
 | HLA1516.1-FM-4_32-SVC-001 | SVC | FM-RESTORE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.32 federationRestoreStatusResponse
+## IEEE 1516.1-2010 (2010 edition) Clause 4.32 federationRestoreStatusResponse
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5857,7 +5857,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_32-FEDERATIONRESTORESTATUSRESPONSE-169 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.4 Connection Lost
+## IEEE 1516.1-2010 (2010 edition) Clause 4.4 Connection Lost
 
 - Requirement rows: 10
 - Requirement types: ARG, CB, CB_ORD, CB_SIG, EFF, EXC, FED_CB, MOM, PRE, SVC
@@ -5875,7 +5875,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_4-PRE-001 | PRE | FM-LIFECYCLE | unit + negative-path conformance test |
 | HLA1516.1-FM-4_4-SVC-001 | SVC | FM-LIFECYCLE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.4 connectionLost
+## IEEE 1516.1-2010 (2010 edition) Clause 4.4 connectionLost
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5884,7 +5884,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_4-CONNECTIONLOST-152 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.5 Create Federation Execution
+## IEEE 1516.1-2010 (2010 edition) Clause 4.5 Create Federation Execution
 
 - Requirement rows: 43
 - Requirement types: ARG, EFF, EXC, EXC_API, MOM, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -5935,7 +5935,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_5-RTIAPI-005-SIG | SIG | FM-createFederationExecution | api signature/static test |
 | HLA1516.1-FM-4_5-SVC-001 | SVC | FM-LIFECYCLE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.5 createFederationExecution
+## IEEE 1516.1-2010 (2010 edition) Clause 4.5 createFederationExecution
 
 - Requirement rows: 2
 - Requirement types: CPP_METHOD
@@ -5945,7 +5945,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-CPP-4_5-CREATEFEDERATIONEXECUTION-003 | CPP_METHOD | API-CPP | C++ header static validation |
 | HLA1516.1-CPP-4_5-CREATEFEDERATIONEXECUTION-004 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.5 createFederationExecutionWithMIM
+## IEEE 1516.1-2010 (2010 edition) Clause 4.5 createFederationExecutionWithMIM
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5954,7 +5954,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_5-CREATEFEDERATIONEXECUTIONWITHMIM-005 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.6 Destroy Federation Execution
+## IEEE 1516.1-2010 (2010 edition) Clause 4.6 Destroy Federation Execution
 
 - Requirement rows: 16
 - Requirement types: ARG, EFF, EXC, EXC_API, MOM, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -5978,7 +5978,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_6-RTIAPI-001-SIG | SIG | FM-destroyFederationExecution | api signature/static test |
 | HLA1516.1-FM-4_6-SVC-001 | SVC | FM-LIFECYCLE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.6 destroyFederationExecution
+## IEEE 1516.1-2010 (2010 edition) Clause 4.6 destroyFederationExecution
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -5987,7 +5987,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_6-DESTROYFEDERATIONEXECUTION-006 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.7 List Federation Executions
+## IEEE 1516.1-2010 (2010 edition) Clause 4.7 List Federation Executions
 
 - Requirement rows: 9
 - Requirement types: EFF, EXC, EXC_API, MOM_TRACE, PRE, RTI_API, SIG, SVC
@@ -6004,7 +6004,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_7-RTIAPI-001-SIG | SIG | FM-listFederationExecutions | api signature/static test |
 | HLA1516.1-FM-4_7-SVC-001 | SVC | FM-LIFECYCLE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.7 listFederationExecutions
+## IEEE 1516.1-2010 (2010 edition) Clause 4.7 listFederationExecutions
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -6013,7 +6013,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_7-LISTFEDERATIONEXECUTIONS-007 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.8 Report Federation Executions
+## IEEE 1516.1-2010 (2010 edition) Clause 4.8 Report Federation Executions
 
 - Requirement rows: 7
 - Requirement types: ARG, CB, CB_ORD, CB_SIG, EXC, FED_CB, SVC
@@ -6028,7 +6028,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_8-FEDCB-001-SIG | CB_SIG | FM-reportFederationExecutions | api signature/static test |
 | HLA1516.1-FM-4_8-SVC-001 | SVC | FM-LIFECYCLE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.8 reportFederationExecutions
+## IEEE 1516.1-2010 (2010 edition) Clause 4.8 reportFederationExecutions
 
 - Requirement rows: 1
 - Requirement types: CPP_METHOD
@@ -6037,7 +6037,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.1-CPP-4_8-REPORTFEDERATIONEXECUTIONS-153 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 4.9 Join Federation Execution
+## IEEE 1516.1-2010 (2010 edition) Clause 4.9 Join Federation Execution
 
 - Requirement rows: 45
 - Requirement types: ARG, EFF, EXC, EXC_API, MOM, MOM_TRACE, PRE, RET, RTI_API, SIG, SVC
@@ -6090,7 +6090,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-FM-4_9-RTIAPI-004-SIG | SIG | FM-joinFederationExecution | api signature/static test |
 | HLA1516.1-FM-4_9-SVC-001 | SVC | FM-LIFECYCLE | API conformance + integration test |
 
-## IEEE 1516.1-2010 Clause 4.9 joinFederationExecution
+## IEEE 1516.1-2010 (2010 edition) Clause 4.9 joinFederationExecution
 
 - Requirement rows: 2
 - Requirement types: CPP_METHOD
@@ -6100,7 +6100,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-CPP-4_9-JOINFEDERATIONEXECUTION-008 | CPP_METHOD | API-CPP | C++ header static validation |
 | HLA1516.1-CPP-4_9-JOINFEDERATIONEXECUTION-009 | CPP_METHOD | API-CPP | C++ header static validation |
 
-## IEEE 1516.1-2010 Clause 5.10 Start Registration For Object Class
+## IEEE 1516.1-2010 (2010 edition) Clause 5.10 Start Registration For Object Class
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -6111,7 +6111,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_10-FEDCB-001-ORD | CB_ORD | DM-startRegistrationForObjectClass | callback ordering/effect integration test |
 | HLA1516.1-DM-5_10-FEDCB-001-SIG | CB_SIG | DM-startRegistrationForObjectClass | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 5.10 startRegistrationForObjectClass
+## IEEE 1516.1-2010 (2010 edition) Clause 5.10 startRegistrationForObjectClass
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -6124,7 +6124,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_10-STARTREGISTRATIONFOROBJECTCLASS-CB_PAYLOAD-001 | CB_PAYLOAD | DM-START_REGISTRATION_FOR_OBJECT_CLASS | payload verification tests |
 | HLA1516.1-DM-5_10-STARTREGISTRATIONFOROBJECTCLASS-CB_SIG-001 | CB_SIG | DM-START_REGISTRATION_FOR_OBJECT_CLASS | API signature static test |
 
-## IEEE 1516.1-2010 Clause 5.11 Stop Registration For Object Class
+## IEEE 1516.1-2010 (2010 edition) Clause 5.11 Stop Registration For Object Class
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -6135,7 +6135,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_11-FEDCB-001-ORD | CB_ORD | DM-stopRegistrationForObjectClass | callback ordering/effect integration test |
 | HLA1516.1-DM-5_11-FEDCB-001-SIG | CB_SIG | DM-stopRegistrationForObjectClass | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 5.11 stopRegistrationForObjectClass
+## IEEE 1516.1-2010 (2010 edition) Clause 5.11 stopRegistrationForObjectClass
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -6148,7 +6148,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_11-STOPREGISTRATIONFOROBJECTCLASS-CB_PAYLOAD-001 | CB_PAYLOAD | DM-STOP_REGISTRATION_FOR_OBJECT_CLASS | payload verification tests |
 | HLA1516.1-DM-5_11-STOPREGISTRATIONFOROBJECTCLASS-CB_SIG-001 | CB_SIG | DM-STOP_REGISTRATION_FOR_OBJECT_CLASS | API signature static test |
 
-## IEEE 1516.1-2010 Clause 5.12 Turn Interactions On
+## IEEE 1516.1-2010 (2010 edition) Clause 5.12 Turn Interactions On
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -6159,7 +6159,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_12-FEDCB-001-ORD | CB_ORD | DM-turnInteractionsOn | callback ordering/effect integration test |
 | HLA1516.1-DM-5_12-FEDCB-001-SIG | CB_SIG | DM-turnInteractionsOn | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 5.12 turnInteractionsOn
+## IEEE 1516.1-2010 (2010 edition) Clause 5.12 turnInteractionsOn
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -6172,7 +6172,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_12-TURNINTERACTIONSON-CB_PAYLOAD-001 | CB_PAYLOAD | DM-TURN_INTERACTIONS_ON | payload verification tests |
 | HLA1516.1-DM-5_12-TURNINTERACTIONSON-CB_SIG-001 | CB_SIG | DM-TURN_INTERACTIONS_ON | API signature static test |
 
-## IEEE 1516.1-2010 Clause 5.13 Turn Interactions Off
+## IEEE 1516.1-2010 (2010 edition) Clause 5.13 Turn Interactions Off
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -6183,7 +6183,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_13-FEDCB-001-ORD | CB_ORD | DM-turnInteractionsOff | callback ordering/effect integration test |
 | HLA1516.1-DM-5_13-FEDCB-001-SIG | CB_SIG | DM-turnInteractionsOff | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 5.13 turnInteractionsOff
+## IEEE 1516.1-2010 (2010 edition) Clause 5.13 turnInteractionsOff
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -6196,7 +6196,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_13-TURNINTERACTIONSOFF-CB_PAYLOAD-001 | CB_PAYLOAD | DM-TURN_INTERACTIONS_OFF | payload verification tests |
 | HLA1516.1-DM-5_13-TURNINTERACTIONSOFF-CB_SIG-001 | CB_SIG | DM-TURN_INTERACTIONS_OFF | API signature static test |
 
-## IEEE 1516.1-2010 Clause 5.2 Publish Object Class Attributes
+## IEEE 1516.1-2010 (2010 edition) Clause 5.2 Publish Object Class Attributes
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -6209,7 +6209,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_2-RTIAPI-001-MOM | MOM_TRACE | DM-publishObjectClassAttributes | MOM observer integration test |
 | HLA1516.1-DM-5_2-RTIAPI-001-SIG | SIG | DM-publishObjectClassAttributes | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 5.2 publishObjectClassAttributes
+## IEEE 1516.1-2010 (2010 edition) Clause 5.2 publishObjectClassAttributes
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6226,7 +6226,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_2-PUBLISHOBJECTCLASSATTRIBUTES-SVC-001 | SVC | DM-PUBLISH_OBJECT_CLASS_ATTRIBUTES | unit + integration + API conformance tests |
 | HLA1516.1-DM-5_2-PUBLISHOBJECTCLASSATTRIBUTES-TEST-001 | TEST | DM-PUBLISH_OBJECT_CLASS_ATTRIBUTES | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 5.3 Unpublish Object Class Attributes
+## IEEE 1516.1-2010 (2010 edition) Clause 5.3 Unpublish Object Class Attributes
 
 - Requirement rows: 10
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -6244,7 +6244,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_3-RTIAPI-001-SIG | SIG | DM-unpublishObjectClass | api signature/static test |
 | HLA1516.1-DM-5_3-RTIAPI-001-SIG-DUP02 | SIG | DM-unpublishObjectClassAttributes | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 5.3 unpublishObjectClass
+## IEEE 1516.1-2010 (2010 edition) Clause 5.3 unpublishObjectClass
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6261,7 +6261,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_3-UNPUBLISHOBJECTCLASS-SVC-001 | SVC | DM-UNPUBLISH_OBJECT_CLASS_ATTRIBUTES | unit + integration + API conformance tests |
 | HLA1516.1-DM-5_3-UNPUBLISHOBJECTCLASS-TEST-001 | TEST | DM-UNPUBLISH_OBJECT_CLASS_ATTRIBUTES | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 5.3 unpublishObjectClassAttributes
+## IEEE 1516.1-2010 (2010 edition) Clause 5.3 unpublishObjectClassAttributes
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6278,7 +6278,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_3-UNPUBLISHOBJECTCLASSATTRIBUTES-SVC-001 | SVC | DM-UNPUBLISH_OBJECT_CLASS_ATTRIBUTES | unit + integration + API conformance tests |
 | HLA1516.1-DM-5_3-UNPUBLISHOBJECTCLASSATTRIBUTES-TEST-001 | TEST | DM-UNPUBLISH_OBJECT_CLASS_ATTRIBUTES | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 5.4 Publish Interaction Class
+## IEEE 1516.1-2010 (2010 edition) Clause 5.4 Publish Interaction Class
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -6291,7 +6291,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_4-RTIAPI-001-MOM | MOM_TRACE | DM-publishInteractionClass | MOM observer integration test |
 | HLA1516.1-DM-5_4-RTIAPI-001-SIG | SIG | DM-publishInteractionClass | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 5.4 publishInteractionClass
+## IEEE 1516.1-2010 (2010 edition) Clause 5.4 publishInteractionClass
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6308,7 +6308,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_4-PUBLISHINTERACTIONCLASS-SVC-001 | SVC | DM-PUBLISH_INTERACTION_CLASS | unit + integration + API conformance tests |
 | HLA1516.1-DM-5_4-PUBLISHINTERACTIONCLASS-TEST-001 | TEST | DM-PUBLISH_INTERACTION_CLASS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 5.5 Unpublish Interaction Class
+## IEEE 1516.1-2010 (2010 edition) Clause 5.5 Unpublish Interaction Class
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -6321,7 +6321,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_5-RTIAPI-001-MOM | MOM_TRACE | DM-unpublishInteractionClass | MOM observer integration test |
 | HLA1516.1-DM-5_5-RTIAPI-001-SIG | SIG | DM-unpublishInteractionClass | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 5.5 unpublishInteractionClass
+## IEEE 1516.1-2010 (2010 edition) Clause 5.5 unpublishInteractionClass
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6338,7 +6338,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_5-UNPUBLISHINTERACTIONCLASS-SVC-001 | SVC | DM-UNPUBLISH_INTERACTION_CLASS | unit + integration + API conformance tests |
 | HLA1516.1-DM-5_5-UNPUBLISHINTERACTIONCLASS-TEST-001 | TEST | DM-UNPUBLISH_INTERACTION_CLASS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 5.6 Subscribe Object Class Attributes
+## IEEE 1516.1-2010 (2010 edition) Clause 5.6 Subscribe Object Class Attributes
 
 - Requirement rows: 20
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -6366,7 +6366,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_6-RTIAPI-002-SIG | SIG | DM-subscribeObjectClassAttributes | api signature/static test |
 | HLA1516.1-DM-5_6-RTIAPI-002-SIG-DUP02 | SIG | DM-subscribeObjectClassAttributesPassively | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 5.6 subscribeObjectClassAttributes
+## IEEE 1516.1-2010 (2010 edition) Clause 5.6 subscribeObjectClassAttributes
 
 - Requirement rows: 11
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6385,7 +6385,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTES-SVC-001 | SVC | DM-SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES | unit + integration + API conformance tests |
 | HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTES-TEST-001 | TEST | DM-SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 5.6 subscribeObjectClassAttributesPassively
+## IEEE 1516.1-2010 (2010 edition) Clause 5.6 subscribeObjectClassAttributesPassively
 
 - Requirement rows: 10
 - Requirement types: ARG, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6403,7 +6403,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELY-SVC-001 | SVC | DM-SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES | unit + integration + API conformance tests |
 | HLA1516.1-DM-5_6-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELY-TEST-001 | TEST | DM-SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 5.7 Unsubscribe Object Class Attributes
+## IEEE 1516.1-2010 (2010 edition) Clause 5.7 Unsubscribe Object Class Attributes
 
 - Requirement rows: 10
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -6421,7 +6421,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_7-RTIAPI-001-SIG | SIG | DM-unsubscribeObjectClass | api signature/static test |
 | HLA1516.1-DM-5_7-RTIAPI-001-SIG-DUP02 | SIG | DM-unsubscribeObjectClassAttributes | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 5.7 unsubscribeObjectClass
+## IEEE 1516.1-2010 (2010 edition) Clause 5.7 unsubscribeObjectClass
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6438,7 +6438,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASS-SVC-001 | SVC | DM-UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES | unit + integration + API conformance tests |
 | HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASS-TEST-001 | TEST | DM-UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 5.7 unsubscribeObjectClassAttributes
+## IEEE 1516.1-2010 (2010 edition) Clause 5.7 unsubscribeObjectClassAttributes
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6455,7 +6455,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASSATTRIBUTES-SVC-001 | SVC | DM-UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES | unit + integration + API conformance tests |
 | HLA1516.1-DM-5_7-UNSUBSCRIBEOBJECTCLASSATTRIBUTES-TEST-001 | TEST | DM-UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 5.8 Subscribe Interaction Class
+## IEEE 1516.1-2010 (2010 edition) Clause 5.8 Subscribe Interaction Class
 
 - Requirement rows: 10
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -6473,7 +6473,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_8-RTIAPI-001-SIG | SIG | DM-subscribeInteractionClass | api signature/static test |
 | HLA1516.1-DM-5_8-RTIAPI-001-SIG-DUP02 | SIG | DM-subscribeInteractionClassPassively | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 5.8 subscribeInteractionClass
+## IEEE 1516.1-2010 (2010 edition) Clause 5.8 subscribeInteractionClass
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6490,7 +6490,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASS-SVC-001 | SVC | DM-SUBSCRIBE_INTERACTION_CLASS | unit + integration + API conformance tests |
 | HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASS-TEST-001 | TEST | DM-SUBSCRIBE_INTERACTION_CLASS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 5.8 subscribeInteractionClassPassively
+## IEEE 1516.1-2010 (2010 edition) Clause 5.8 subscribeInteractionClassPassively
 
 - Requirement rows: 8
 - Requirement types: ARG, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6506,7 +6506,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASSPASSIVELY-SVC-001 | SVC | DM-SUBSCRIBE_INTERACTION_CLASS | unit + integration + API conformance tests |
 | HLA1516.1-DM-5_8-SUBSCRIBEINTERACTIONCLASSPASSIVELY-TEST-001 | TEST | DM-SUBSCRIBE_INTERACTION_CLASS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 5.9 Unsubscribe Interaction Class
+## IEEE 1516.1-2010 (2010 edition) Clause 5.9 Unsubscribe Interaction Class
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -6519,7 +6519,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_9-RTIAPI-001-MOM | MOM_TRACE | DM-unsubscribeInteractionClass | MOM observer integration test |
 | HLA1516.1-DM-5_9-RTIAPI-001-SIG | SIG | DM-unsubscribeInteractionClass | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 5.9 unsubscribeInteractionClass
+## IEEE 1516.1-2010 (2010 edition) Clause 5.9 unsubscribeInteractionClass
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6536,7 +6536,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DM-5_9-UNSUBSCRIBEINTERACTIONCLASS-SVC-001 | SVC | DM-UNSUBSCRIBE_INTERACTION_CLASS | unit + integration + API conformance tests |
 | HLA1516.1-DM-5_9-UNSUBSCRIBEINTERACTIONCLASS-TEST-001 | TEST | DM-UNSUBSCRIBE_INTERACTION_CLASS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 6.10 Update Attribute Values
+## IEEE 1516.1-2010 (2010 edition) Clause 6.10 Update Attribute Values
 
 - Requirement rows: 10
 - Requirement types: EFF, EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -6554,7 +6554,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_10-RTIAPI-002-RET | RET | OM-updateAttributeValues | state/effect integration test |
 | HLA1516.1-OM-6_10-RTIAPI-002-SIG | SIG | OM-updateAttributeValues | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.10 updateAttributeValues
+## IEEE 1516.1-2010 (2010 edition) Clause 6.10 updateAttributeValues
 
 - Requirement rows: 12
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6574,7 +6574,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-SVC-001 | SVC | OM-UPDATE_ATTRIBUTE_VALUES | unit + integration + API conformance tests |
 | HLA1516.1-OM-6_10-UPDATEATTRIBUTEVALUES-TEST-001 | TEST | OM-UPDATE_ATTRIBUTE_VALUES | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 6.11 Reflect Attribute Values
+## IEEE 1516.1-2010 (2010 edition) Clause 6.11 Reflect Attribute Values
 
 - Requirement rows: 9
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -6591,7 +6591,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_11-FEDCB-003-ORD | CB_ORD | OM-reflectAttributeValues | callback ordering/effect integration test |
 | HLA1516.1-OM-6_11-FEDCB-003-SIG | CB_SIG | OM-reflectAttributeValues | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.11 reflectAttributeValues
+## IEEE 1516.1-2010 (2010 edition) Clause 6.11 reflectAttributeValues
 
 - Requirement rows: 7
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -6606,7 +6606,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB_PAYLOAD-001 | CB_PAYLOAD | OM-REFLECT_ATTRIBUTE_VALUES | payload verification tests |
 | HLA1516.1-OM-6_11-REFLECTATTRIBUTEVALUES-CB_SIG-001 | CB_SIG | OM-REFLECT_ATTRIBUTE_VALUES | API signature static test |
 
-## IEEE 1516.1-2010 Clause 6.12 Send Interaction
+## IEEE 1516.1-2010 (2010 edition) Clause 6.12 Send Interaction
 
 - Requirement rows: 10
 - Requirement types: EFF, EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -6624,7 +6624,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_12-RTIAPI-002-RET | RET | OM-sendInteraction | state/effect integration test |
 | HLA1516.1-OM-6_12-RTIAPI-002-SIG | SIG | OM-sendInteraction | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.12 sendInteraction
+## IEEE 1516.1-2010 (2010 edition) Clause 6.12 sendInteraction
 
 - Requirement rows: 12
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6644,7 +6644,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_12-SENDINTERACTION-SVC-001 | SVC | OM-SEND_INTERACTION | unit + integration + API conformance tests |
 | HLA1516.1-OM-6_12-SENDINTERACTION-TEST-001 | TEST | OM-SEND_INTERACTION | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 6.13 Receive Interaction
+## IEEE 1516.1-2010 (2010 edition) Clause 6.13 Receive Interaction
 
 - Requirement rows: 9
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -6661,7 +6661,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_13-FEDCB-003-ORD | CB_ORD | OM-receiveInteraction | callback ordering/effect integration test |
 | HLA1516.1-OM-6_13-FEDCB-003-SIG | CB_SIG | OM-receiveInteraction | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.13 receiveInteraction
+## IEEE 1516.1-2010 (2010 edition) Clause 6.13 receiveInteraction
 
 - Requirement rows: 7
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -6676,7 +6676,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB_PAYLOAD-001 | CB_PAYLOAD | OM-RECEIVE_INTERACTION | payload verification tests |
 | HLA1516.1-OM-6_13-RECEIVEINTERACTION-CB_SIG-001 | CB_SIG | OM-RECEIVE_INTERACTION | API signature static test |
 
-## IEEE 1516.1-2010 Clause 6.14 Delete Object Instance
+## IEEE 1516.1-2010 (2010 edition) Clause 6.14 Delete Object Instance
 
 - Requirement rows: 10
 - Requirement types: EFF, EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -6694,7 +6694,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_14-RTIAPI-002-RET | RET | OM-deleteObjectInstance | state/effect integration test |
 | HLA1516.1-OM-6_14-RTIAPI-002-SIG | SIG | OM-deleteObjectInstance | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.14 deleteObjectInstance
+## IEEE 1516.1-2010 (2010 edition) Clause 6.14 deleteObjectInstance
 
 - Requirement rows: 12
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6714,7 +6714,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-SVC-001 | SVC | OM-DELETE_OBJECT_INSTANCE | unit + integration + API conformance tests |
 | HLA1516.1-OM-6_14-DELETEOBJECTINSTANCE-TEST-001 | TEST | OM-DELETE_OBJECT_INSTANCE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 6.15 Remove Object Instance
+## IEEE 1516.1-2010 (2010 edition) Clause 6.15 Remove Object Instance
 
 - Requirement rows: 9
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -6731,7 +6731,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_15-FEDCB-003-ORD | CB_ORD | OM-removeObjectInstance | callback ordering/effect integration test |
 | HLA1516.1-OM-6_15-FEDCB-003-SIG | CB_SIG | OM-removeObjectInstance | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.15 removeObjectInstance
+## IEEE 1516.1-2010 (2010 edition) Clause 6.15 removeObjectInstance
 
 - Requirement rows: 7
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -6746,7 +6746,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_15-REMOVEOBJECTINSTANCE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-REMOVE_OBJECT_INSTANCE | payload verification tests |
 | HLA1516.1-OM-6_15-REMOVEOBJECTINSTANCE-CB_SIG-001 | CB_SIG | OM-REMOVE_OBJECT_INSTANCE | API signature static test |
 
-## IEEE 1516.1-2010 Clause 6.16 Local Delete Object Instance
+## IEEE 1516.1-2010 (2010 edition) Clause 6.16 Local Delete Object Instance
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -6759,7 +6759,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_16-RTIAPI-001-MOM | MOM_TRACE | OM-localDeleteObjectInstance | MOM observer integration test |
 | HLA1516.1-OM-6_16-RTIAPI-001-SIG | SIG | OM-localDeleteObjectInstance | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.16 localDeleteObjectInstance
+## IEEE 1516.1-2010 (2010 edition) Clause 6.16 localDeleteObjectInstance
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6776,7 +6776,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_16-LOCALDELETEOBJECTINSTANCE-SVC-001 | SVC | OM-LOCAL_DELETE_OBJECT_INSTANCE | unit + integration + API conformance tests |
 | HLA1516.1-OM-6_16-LOCALDELETEOBJECTINSTANCE-TEST-001 | TEST | OM-LOCAL_DELETE_OBJECT_INSTANCE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 6.17 Attributes In Scope
+## IEEE 1516.1-2010 (2010 edition) Clause 6.17 Attributes In Scope
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -6787,7 +6787,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_17-FEDCB-001-ORD | CB_ORD | OM-attributesInScope | callback ordering/effect integration test |
 | HLA1516.1-OM-6_17-FEDCB-001-SIG | CB_SIG | OM-attributesInScope | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.17 attributesInScope
+## IEEE 1516.1-2010 (2010 edition) Clause 6.17 attributesInScope
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -6800,7 +6800,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_17-ATTRIBUTESINSCOPE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-ATTRIBUTES_IN_SCOPE | payload verification tests |
 | HLA1516.1-OM-6_17-ATTRIBUTESINSCOPE-CB_SIG-001 | CB_SIG | OM-ATTRIBUTES_IN_SCOPE | API signature static test |
 
-## IEEE 1516.1-2010 Clause 6.18 Attributes Out Of Scope
+## IEEE 1516.1-2010 (2010 edition) Clause 6.18 Attributes Out Of Scope
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -6811,7 +6811,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_18-FEDCB-001-ORD | CB_ORD | OM-attributesOutOfScope | callback ordering/effect integration test |
 | HLA1516.1-OM-6_18-FEDCB-001-SIG | CB_SIG | OM-attributesOutOfScope | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.18 attributesOutOfScope
+## IEEE 1516.1-2010 (2010 edition) Clause 6.18 attributesOutOfScope
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -6824,7 +6824,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_18-ATTRIBUTESOUTOFSCOPE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-ATTRIBUTES_OUT_OF_SCOPE | payload verification tests |
 | HLA1516.1-OM-6_18-ATTRIBUTESOUTOFSCOPE-CB_SIG-001 | CB_SIG | OM-ATTRIBUTES_OUT_OF_SCOPE | API signature static test |
 
-## IEEE 1516.1-2010 Clause 6.19 Request Attribute Value Update
+## IEEE 1516.1-2010 (2010 edition) Clause 6.19 Request Attribute Value Update
 
 - Requirement rows: 10
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -6842,7 +6842,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_19-RTIAPI-002-MOM | MOM_TRACE | OM-requestAttributeValueUpdate | MOM observer integration test |
 | HLA1516.1-OM-6_19-RTIAPI-002-SIG | SIG | OM-requestAttributeValueUpdate | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.19 requestAttributeValueUpdate
+## IEEE 1516.1-2010 (2010 edition) Clause 6.19 requestAttributeValueUpdate
 
 - Requirement rows: 12
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6862,7 +6862,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_19-REQUESTATTRIBUTEVALUEUPDATE-SVC-001 | SVC | OM-REQUEST_ATTRIBUTE_VALUE_UPDATE | unit + integration + API conformance tests |
 | HLA1516.1-OM-6_19-REQUESTATTRIBUTEVALUEUPDATE-TEST-001 | TEST | OM-REQUEST_ATTRIBUTE_VALUE_UPDATE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 6.2 Reserve Object Instance Name
+## IEEE 1516.1-2010 (2010 edition) Clause 6.2 Reserve Object Instance Name
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -6875,7 +6875,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_2-RTIAPI-001-MOM | MOM_TRACE | OM-reserveObjectInstanceName | MOM observer integration test |
 | HLA1516.1-OM-6_2-RTIAPI-001-SIG | SIG | OM-reserveObjectInstanceName | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.2 reserveObjectInstanceName
+## IEEE 1516.1-2010 (2010 edition) Clause 6.2 reserveObjectInstanceName
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6892,7 +6892,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-SVC-001 | SVC | OM-RESERVE_OBJECT_INSTANCE_NAME | unit + integration + API conformance tests |
 | HLA1516.1-OM-6_2-RESERVEOBJECTINSTANCENAME-TEST-001 | TEST | OM-RESERVE_OBJECT_INSTANCE_NAME | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 6.20 Provide Attribute Value Update
+## IEEE 1516.1-2010 (2010 edition) Clause 6.20 Provide Attribute Value Update
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -6903,7 +6903,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_20-FEDCB-001-ORD | CB_ORD | OM-provideAttributeValueUpdate | callback ordering/effect integration test |
 | HLA1516.1-OM-6_20-FEDCB-001-SIG | CB_SIG | OM-provideAttributeValueUpdate | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.20 provideAttributeValueUpdate
+## IEEE 1516.1-2010 (2010 edition) Clause 6.20 provideAttributeValueUpdate
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -6916,7 +6916,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_20-PROVIDEATTRIBUTEVALUEUPDATE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-PROVIDE_ATTRIBUTE_VALUE_UPDATE | payload verification tests |
 | HLA1516.1-OM-6_20-PROVIDEATTRIBUTEVALUEUPDATE-CB_SIG-001 | CB_SIG | OM-PROVIDE_ATTRIBUTE_VALUE_UPDATE | API signature static test |
 
-## IEEE 1516.1-2010 Clause 6.21 Turn Updates On For Object Instance
+## IEEE 1516.1-2010 (2010 edition) Clause 6.21 Turn Updates On For Object Instance
 
 - Requirement rows: 6
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -6930,7 +6930,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_21-FEDCB-002-ORD | CB_ORD | OM-turnUpdatesOnForObjectInstance | callback ordering/effect integration test |
 | HLA1516.1-OM-6_21-FEDCB-002-SIG | CB_SIG | OM-turnUpdatesOnForObjectInstance | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.21 turnUpdatesOnForObjectInstance
+## IEEE 1516.1-2010 (2010 edition) Clause 6.21 turnUpdatesOnForObjectInstance
 
 - Requirement rows: 6
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -6944,7 +6944,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_21-TURNUPDATESONFOROBJECTINSTANCE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-TURN_UPDATES_ON_FOR_OBJECT_INSTANCE | payload verification tests |
 | HLA1516.1-OM-6_21-TURNUPDATESONFOROBJECTINSTANCE-CB_SIG-001 | CB_SIG | OM-TURN_UPDATES_ON_FOR_OBJECT_INSTANCE | API signature static test |
 
-## IEEE 1516.1-2010 Clause 6.22 Turn Updates Off For Object Instance
+## IEEE 1516.1-2010 (2010 edition) Clause 6.22 Turn Updates Off For Object Instance
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -6955,7 +6955,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_22-FEDCB-001-ORD | CB_ORD | OM-turnUpdatesOffForObjectInstance | callback ordering/effect integration test |
 | HLA1516.1-OM-6_22-FEDCB-001-SIG | CB_SIG | OM-turnUpdatesOffForObjectInstance | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.22 turnUpdatesOffForObjectInstance
+## IEEE 1516.1-2010 (2010 edition) Clause 6.22 turnUpdatesOffForObjectInstance
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -6968,7 +6968,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_22-TURNUPDATESOFFFOROBJECTINSTANCE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-TURN_UPDATES_OFF_FOR_OBJECT_INSTANCE | payload verification tests |
 | HLA1516.1-OM-6_22-TURNUPDATESOFFFOROBJECTINSTANCE-CB_SIG-001 | CB_SIG | OM-TURN_UPDATES_OFF_FOR_OBJECT_INSTANCE | API signature static test |
 
-## IEEE 1516.1-2010 Clause 6.23 Request Attribute Transportation Type Change
+## IEEE 1516.1-2010 (2010 edition) Clause 6.23 Request Attribute Transportation Type Change
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -6981,7 +6981,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_23-RTIAPI-001-MOM | MOM_TRACE | OM-requestAttributeTransportationTypeChange | MOM observer integration test |
 | HLA1516.1-OM-6_23-RTIAPI-001-SIG | SIG | OM-requestAttributeTransportationTypeChange | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.23 requestAttributeTransportationTypeChange
+## IEEE 1516.1-2010 (2010 edition) Clause 6.23 requestAttributeTransportationTypeChange
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -6998,7 +6998,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-SVC-001 | SVC | OM-REQUEST_ATTRIBUTE_TRANSPORTATION_TYPE_CHAN | unit + integration + API conformance tests |
 | HLA1516.1-OM-6_23-REQUESTATTRIBUTETRANSPORTATIONTYPECHANGE-TEST-001 | TEST | OM-REQUEST_ATTRIBUTE_TRANSPORTATION_TYPE_CHAN | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 6.24 Confirm Attribute Transportation Type Change
+## IEEE 1516.1-2010 (2010 edition) Clause 6.24 Confirm Attribute Transportation Type Change
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -7009,7 +7009,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_24-FEDCB-001-ORD | CB_ORD | OM-confirmAttributeTransportationTypeChange | callback ordering/effect integration test |
 | HLA1516.1-OM-6_24-FEDCB-001-SIG | CB_SIG | OM-confirmAttributeTransportationTypeChange | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.24 confirmAttributeTransportationTypeChange
+## IEEE 1516.1-2010 (2010 edition) Clause 6.24 confirmAttributeTransportationTypeChange
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7022,7 +7022,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_24-CONFIRMATTRIBUTETRANSPORTATIONTYPECHANGE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-CONFIRM_ATTRIBUTE_TRANSPORTATION_TYPE_CHAN | payload verification tests |
 | HLA1516.1-OM-6_24-CONFIRMATTRIBUTETRANSPORTATIONTYPECHANGE-CB_SIG-001 | CB_SIG | OM-CONFIRM_ATTRIBUTE_TRANSPORTATION_TYPE_CHAN | API signature static test |
 
-## IEEE 1516.1-2010 Clause 6.25 Query Attribute Transportation Type
+## IEEE 1516.1-2010 (2010 edition) Clause 6.25 Query Attribute Transportation Type
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7035,7 +7035,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_25-RTIAPI-001-MOM | MOM_TRACE | OM-queryAttributeTransportationType | MOM observer integration test |
 | HLA1516.1-OM-6_25-RTIAPI-001-SIG | SIG | OM-queryAttributeTransportationType | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.25 queryAttributeTransportationType
+## IEEE 1516.1-2010 (2010 edition) Clause 6.25 queryAttributeTransportationType
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7052,7 +7052,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-SVC-001 | SVC | OM-QUERY_ATTRIBUTE_TRANSPORTATION_TYPE | unit + integration + API conformance tests |
 | HLA1516.1-OM-6_25-QUERYATTRIBUTETRANSPORTATIONTYPE-TEST-001 | TEST | OM-QUERY_ATTRIBUTE_TRANSPORTATION_TYPE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 6.26 Report Attribute Transportation Type
+## IEEE 1516.1-2010 (2010 edition) Clause 6.26 Report Attribute Transportation Type
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -7063,7 +7063,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_26-FEDCB-001-ORD | CB_ORD | OM-reportAttributeTransportationType | callback ordering/effect integration test |
 | HLA1516.1-OM-6_26-FEDCB-001-SIG | CB_SIG | OM-reportAttributeTransportationType | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.26 reportAttributeTransportationType
+## IEEE 1516.1-2010 (2010 edition) Clause 6.26 reportAttributeTransportationType
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7076,7 +7076,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_26-REPORTATTRIBUTETRANSPORTATIONTYPE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-REPORT_ATTRIBUTE_TRANSPORTATION_TYPE | payload verification tests |
 | HLA1516.1-OM-6_26-REPORTATTRIBUTETRANSPORTATIONTYPE-CB_SIG-001 | CB_SIG | OM-REPORT_ATTRIBUTE_TRANSPORTATION_TYPE | API signature static test |
 
-## IEEE 1516.1-2010 Clause 6.27 Request Interaction Transportation Type Change
+## IEEE 1516.1-2010 (2010 edition) Clause 6.27 Request Interaction Transportation Type Change
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7089,7 +7089,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_27-RTIAPI-001-MOM | MOM_TRACE | OM-requestInteractionTransportationTypeChange | MOM observer integration test |
 | HLA1516.1-OM-6_27-RTIAPI-001-SIG | SIG | OM-requestInteractionTransportationTypeChange | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.27 requestInteractionTransportationTypeChange
+## IEEE 1516.1-2010 (2010 edition) Clause 6.27 requestInteractionTransportationTypeChange
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7106,7 +7106,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-SVC-001 | SVC | OM-REQUEST_INTERACTION_TRANSPORTATION_TYPE_CH | unit + integration + API conformance tests |
 | HLA1516.1-OM-6_27-REQUESTINTERACTIONTRANSPORTATIONTYPECHANGE-TEST-001 | TEST | OM-REQUEST_INTERACTION_TRANSPORTATION_TYPE_CH | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 6.28 Confirm Interaction Transportation Type Change
+## IEEE 1516.1-2010 (2010 edition) Clause 6.28 Confirm Interaction Transportation Type Change
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -7117,7 +7117,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_28-FEDCB-001-ORD | CB_ORD | OM-confirmInteractionTransportationTypeChange | callback ordering/effect integration test |
 | HLA1516.1-OM-6_28-FEDCB-001-SIG | CB_SIG | OM-confirmInteractionTransportationTypeChange | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.28 confirmInteractionTransportationTypeChange
+## IEEE 1516.1-2010 (2010 edition) Clause 6.28 confirmInteractionTransportationTypeChange
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7130,7 +7130,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_28-CONFIRMINTERACTIONTRANSPORTATIONTYPECHANGE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-CONFIRM_INTERACTION_TRANSPORTATION_TYPE_CH | payload verification tests |
 | HLA1516.1-OM-6_28-CONFIRMINTERACTIONTRANSPORTATIONTYPECHANGE-CB_SIG-001 | CB_SIG | OM-CONFIRM_INTERACTION_TRANSPORTATION_TYPE_CH | API signature static test |
 
-## IEEE 1516.1-2010 Clause 6.29 Query Interaction Transportation Type
+## IEEE 1516.1-2010 (2010 edition) Clause 6.29 Query Interaction Transportation Type
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7143,7 +7143,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_29-RTIAPI-001-MOM | MOM_TRACE | OM-queryInteractionTransportationType | MOM observer integration test |
 | HLA1516.1-OM-6_29-RTIAPI-001-SIG | SIG | OM-queryInteractionTransportationType | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.29 queryInteractionTransportationType
+## IEEE 1516.1-2010 (2010 edition) Clause 6.29 queryInteractionTransportationType
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7160,7 +7160,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-SVC-001 | SVC | OM-QUERY_INTERACTION_TRANSPORTATION_TYPE | unit + integration + API conformance tests |
 | HLA1516.1-OM-6_29-QUERYINTERACTIONTRANSPORTATIONTYPE-TEST-001 | TEST | OM-QUERY_INTERACTION_TRANSPORTATION_TYPE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 6.3 Object Instance Name Reserved
+## IEEE 1516.1-2010 (2010 edition) Clause 6.3 Object Instance Name Reserved
 
 - Requirement rows: 6
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -7174,7 +7174,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_3-FEDCB-001-SIG | CB_SIG | OM-objectInstanceNameReservationSucceeded | api signature/static test |
 | HLA1516.1-OM-6_3-FEDCB-001-SIG-DUP02 | CB_SIG | OM-objectInstanceNameReservationFailed | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.3 objectInstanceNameReservationFailed
+## IEEE 1516.1-2010 (2010 edition) Clause 6.3 objectInstanceNameReservationFailed
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7187,7 +7187,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_3-OBJECTINSTANCENAMERESERVATIONFAILED-CB_PAYLOAD-001 | CB_PAYLOAD | OM-OBJECT_INSTANCE_NAME_RESERVED | payload verification tests |
 | HLA1516.1-OM-6_3-OBJECTINSTANCENAMERESERVATIONFAILED-CB_SIG-001 | CB_SIG | OM-OBJECT_INSTANCE_NAME_RESERVED | API signature static test |
 
-## IEEE 1516.1-2010 Clause 6.3 objectInstanceNameReservationSucceeded
+## IEEE 1516.1-2010 (2010 edition) Clause 6.3 objectInstanceNameReservationSucceeded
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7200,7 +7200,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_3-OBJECTINSTANCENAMERESERVATIONSUCCEEDED-CB_PAYLOAD-001 | CB_PAYLOAD | OM-OBJECT_INSTANCE_NAME_RESERVED | payload verification tests |
 | HLA1516.1-OM-6_3-OBJECTINSTANCENAMERESERVATIONSUCCEEDED-CB_SIG-001 | CB_SIG | OM-OBJECT_INSTANCE_NAME_RESERVED | API signature static test |
 
-## IEEE 1516.1-2010 Clause 6.30 Report Interaction Transportation Type
+## IEEE 1516.1-2010 (2010 edition) Clause 6.30 Report Interaction Transportation Type
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -7211,7 +7211,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_30-FEDCB-001-ORD | CB_ORD | OM-reportInteractionTransportationType | callback ordering/effect integration test |
 | HLA1516.1-OM-6_30-FEDCB-001-SIG | CB_SIG | OM-reportInteractionTransportationType | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.30 reportInteractionTransportationType
+## IEEE 1516.1-2010 (2010 edition) Clause 6.30 reportInteractionTransportationType
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7224,7 +7224,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_30-REPORTINTERACTIONTRANSPORTATIONTYPE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-REPORT_INTERACTION_TRANSPORTATION_TYPE | payload verification tests |
 | HLA1516.1-OM-6_30-REPORTINTERACTIONTRANSPORTATIONTYPE-CB_SIG-001 | CB_SIG | OM-REPORT_INTERACTION_TRANSPORTATION_TYPE | API signature static test |
 
-## IEEE 1516.1-2010 Clause 6.4 Release Object Instance Name
+## IEEE 1516.1-2010 (2010 edition) Clause 6.4 Release Object Instance Name
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7237,7 +7237,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_4-RTIAPI-001-MOM | MOM_TRACE | OM-releaseObjectInstanceName | MOM observer integration test |
 | HLA1516.1-OM-6_4-RTIAPI-001-SIG | SIG | OM-releaseObjectInstanceName | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.4 releaseObjectInstanceName
+## IEEE 1516.1-2010 (2010 edition) Clause 6.4 releaseObjectInstanceName
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7254,7 +7254,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-SVC-001 | SVC | OM-RELEASE_OBJECT_INSTANCE_NAME | unit + integration + API conformance tests |
 | HLA1516.1-OM-6_4-RELEASEOBJECTINSTANCENAME-TEST-001 | TEST | OM-RELEASE_OBJECT_INSTANCE_NAME | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 6.5 Reserve Multiple Object Instance Names
+## IEEE 1516.1-2010 (2010 edition) Clause 6.5 Reserve Multiple Object Instance Names
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7267,7 +7267,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_5-RTIAPI-001-MOM | MOM_TRACE | OM-reserveMultipleObjectInstanceName | MOM observer integration test |
 | HLA1516.1-OM-6_5-RTIAPI-001-SIG | SIG | OM-reserveMultipleObjectInstanceName | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.5 reserveMultipleObjectInstanceName
+## IEEE 1516.1-2010 (2010 edition) Clause 6.5 reserveMultipleObjectInstanceName
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7284,7 +7284,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_5-RESERVEMULTIPLEOBJECTINSTANCENAME-SVC-001 | SVC | OM-RESERVE_MULTIPLE_OBJECT_INSTANCE_NAMES | unit + integration + API conformance tests |
 | HLA1516.1-OM-6_5-RESERVEMULTIPLEOBJECTINSTANCENAME-TEST-001 | TEST | OM-RESERVE_MULTIPLE_OBJECT_INSTANCE_NAMES | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 6.6 Multiple Object Instance Names Reserved
+## IEEE 1516.1-2010 (2010 edition) Clause 6.6 Multiple Object Instance Names Reserved
 
 - Requirement rows: 6
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -7298,7 +7298,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_6-FEDCB-001-SIG | CB_SIG | OM-multipleObjectInstanceNameReservationSucceeded | api signature/static test |
 | HLA1516.1-OM-6_6-FEDCB-001-SIG-DUP02 | CB_SIG | OM-multipleObjectInstanceNameReservationFailed | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.6 multipleObjectInstanceNameReservationFailed
+## IEEE 1516.1-2010 (2010 edition) Clause 6.6 multipleObjectInstanceNameReservationFailed
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7311,7 +7311,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_6-MULTIPLEOBJECTINSTANCENAMERESERVATIONFAILED-CB_PAYLOAD-001 | CB_PAYLOAD | OM-MULTIPLE_OBJECT_INSTANCE_NAMES_RESERVED | payload verification tests |
 | HLA1516.1-OM-6_6-MULTIPLEOBJECTINSTANCENAMERESERVATIONFAILED-CB_SIG-001 | CB_SIG | OM-MULTIPLE_OBJECT_INSTANCE_NAMES_RESERVED | API signature static test |
 
-## IEEE 1516.1-2010 Clause 6.6 multipleObjectInstanceNameReservationSucceeded
+## IEEE 1516.1-2010 (2010 edition) Clause 6.6 multipleObjectInstanceNameReservationSucceeded
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7324,7 +7324,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_6-MULTIPLEOBJECTINSTANCENAMERESERVATIONSUCCEEDED-CB_PAYLOAD-001 | CB_PAYLOAD | OM-MULTIPLE_OBJECT_INSTANCE_NAMES_RESERVED | payload verification tests |
 | HLA1516.1-OM-6_6-MULTIPLEOBJECTINSTANCENAMERESERVATIONSUCCEEDED-CB_SIG-001 | CB_SIG | OM-MULTIPLE_OBJECT_INSTANCE_NAMES_RESERVED | API signature static test |
 
-## IEEE 1516.1-2010 Clause 6.7 Release Multiple Object Instance Names
+## IEEE 1516.1-2010 (2010 edition) Clause 6.7 Release Multiple Object Instance Names
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7337,7 +7337,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_7-RTIAPI-001-MOM | MOM_TRACE | OM-releaseMultipleObjectInstanceName | MOM observer integration test |
 | HLA1516.1-OM-6_7-RTIAPI-001-SIG | SIG | OM-releaseMultipleObjectInstanceName | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.7 releaseMultipleObjectInstanceName
+## IEEE 1516.1-2010 (2010 edition) Clause 6.7 releaseMultipleObjectInstanceName
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7354,7 +7354,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_7-RELEASEMULTIPLEOBJECTINSTANCENAME-SVC-001 | SVC | OM-RELEASE_MULTIPLE_OBJECT_INSTANCE_NAMES | unit + integration + API conformance tests |
 | HLA1516.1-OM-6_7-RELEASEMULTIPLEOBJECTINSTANCENAME-TEST-001 | TEST | OM-RELEASE_MULTIPLE_OBJECT_INSTANCE_NAMES | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 6.8 Register Object Instance
+## IEEE 1516.1-2010 (2010 edition) Clause 6.8 Register Object Instance
 
 - Requirement rows: 10
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -7372,7 +7372,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_8-RTIAPI-002-RET | RET | OM-registerObjectInstance | state/effect integration test |
 | HLA1516.1-OM-6_8-RTIAPI-002-SIG | SIG | OM-registerObjectInstance | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.8 registerObjectInstance
+## IEEE 1516.1-2010 (2010 edition) Clause 6.8 registerObjectInstance
 
 - Requirement rows: 12
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7392,7 +7392,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-SVC-001 | SVC | OM-REGISTER_OBJECT_INSTANCE | unit + integration + API conformance tests |
 | HLA1516.1-OM-6_8-REGISTEROBJECTINSTANCE-TEST-001 | TEST | OM-REGISTER_OBJECT_INSTANCE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 6.9 Discover Object Instance
+## IEEE 1516.1-2010 (2010 edition) Clause 6.9 Discover Object Instance
 
 - Requirement rows: 6
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -7406,7 +7406,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_9-FEDCB-002-ORD | CB_ORD | OM-discoverObjectInstance | callback ordering/effect integration test |
 | HLA1516.1-OM-6_9-FEDCB-002-SIG | CB_SIG | OM-discoverObjectInstance | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 6.9 discoverObjectInstance
+## IEEE 1516.1-2010 (2010 edition) Clause 6.9 discoverObjectInstance
 
 - Requirement rows: 6
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7420,7 +7420,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OM-6_9-DISCOVEROBJECTINSTANCE-CB_PAYLOAD-001 | CB_PAYLOAD | OM-DISCOVER_OBJECT_INSTANCE | payload verification tests |
 | HLA1516.1-OM-6_9-DISCOVEROBJECTINSTANCE-CB_SIG-001 | CB_SIG | OM-DISCOVER_OBJECT_INSTANCE | API signature static test |
 
-## IEEE 1516.1-2010 Clause 7.10 Attribute Ownership Unavailable
+## IEEE 1516.1-2010 (2010 edition) Clause 7.10 Attribute Ownership Unavailable
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -7431,7 +7431,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_10-FEDCB-001-ORD | CB_ORD | OWN-attributeOwnershipUnavailable | callback ordering/effect integration test |
 | HLA1516.1-OWN-7_10-FEDCB-001-SIG | CB_SIG | OWN-attributeOwnershipUnavailable | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.10 attributeOwnershipUnavailable
+## IEEE 1516.1-2010 (2010 edition) Clause 7.10 attributeOwnershipUnavailable
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7444,7 +7444,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_10-ATTRIBUTEOWNERSHIPUNAVAILABLE-CB_PAYLOAD-001 | CB_PAYLOAD | OWN-ATTRIBUTE_OWNERSHIP_UNAVAILABLE | payload verification tests |
 | HLA1516.1-OWN-7_10-ATTRIBUTEOWNERSHIPUNAVAILABLE-CB_SIG-001 | CB_SIG | OWN-ATTRIBUTE_OWNERSHIP_UNAVAILABLE | API signature static test |
 
-## IEEE 1516.1-2010 Clause 7.11 Request Attribute Ownership Release
+## IEEE 1516.1-2010 (2010 edition) Clause 7.11 Request Attribute Ownership Release
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -7455,7 +7455,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_11-FEDCB-001-ORD | CB_ORD | OWN-requestAttributeOwnershipRelease | callback ordering/effect integration test |
 | HLA1516.1-OWN-7_11-FEDCB-001-SIG | CB_SIG | OWN-requestAttributeOwnershipRelease | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.11 requestAttributeOwnershipRelease
+## IEEE 1516.1-2010 (2010 edition) Clause 7.11 requestAttributeOwnershipRelease
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7468,7 +7468,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_11-REQUESTATTRIBUTEOWNERSHIPRELEASE-CB_PAYLOAD-001 | CB_PAYLOAD | OWN-REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE | payload verification tests |
 | HLA1516.1-OWN-7_11-REQUESTATTRIBUTEOWNERSHIPRELEASE-CB_SIG-001 | CB_SIG | OWN-REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE | API signature static test |
 
-## IEEE 1516.1-2010 Clause 7.12 Attribute Ownership Release Denied
+## IEEE 1516.1-2010 (2010 edition) Clause 7.12 Attribute Ownership Release Denied
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7481,7 +7481,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_12-RTIAPI-001-MOM | MOM_TRACE | OWN-attributeOwnershipReleaseDenied | MOM observer integration test |
 | HLA1516.1-OWN-7_12-RTIAPI-001-SIG | SIG | OWN-attributeOwnershipReleaseDenied | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.12 attributeOwnershipReleaseDenied
+## IEEE 1516.1-2010 (2010 edition) Clause 7.12 attributeOwnershipReleaseDenied
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7498,7 +7498,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_12-ATTRIBUTEOWNERSHIPRELEASEDENIED-SVC-001 | SVC | OWN-ATTRIBUTE_OWNERSHIP_RELEASE_DENIED | unit + integration + API conformance tests |
 | HLA1516.1-OWN-7_12-ATTRIBUTEOWNERSHIPRELEASEDENIED-TEST-001 | TEST | OWN-ATTRIBUTE_OWNERSHIP_RELEASE_DENIED | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 7.13 Attribute Ownership Divestiture If Wanted
+## IEEE 1516.1-2010 (2010 edition) Clause 7.13 Attribute Ownership Divestiture If Wanted
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -7511,7 +7511,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_13-RTIAPI-001-RET | RET | OWN-attributeOwnershipDivestitureIfWanted | state/effect integration test |
 | HLA1516.1-OWN-7_13-RTIAPI-001-SIG | SIG | OWN-attributeOwnershipDivestitureIfWanted | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.13 attributeOwnershipDivestitureIfWanted
+## IEEE 1516.1-2010 (2010 edition) Clause 7.13 attributeOwnershipDivestitureIfWanted
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7528,7 +7528,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_13-ATTRIBUTEOWNERSHIPDIVESTITUREIFWANTED-SVC-001 | SVC | OWN-ATTRIBUTE_OWNERSHIP_DIVESTITURE_IF_WANTED | unit + integration + API conformance tests |
 | HLA1516.1-OWN-7_13-ATTRIBUTEOWNERSHIPDIVESTITUREIFWANTED-TEST-001 | TEST | OWN-ATTRIBUTE_OWNERSHIP_DIVESTITURE_IF_WANTED | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 7.14 Cancel Negotiated Attribute Ownership Divestiture
+## IEEE 1516.1-2010 (2010 edition) Clause 7.14 Cancel Negotiated Attribute Ownership Divestiture
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7541,7 +7541,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_14-RTIAPI-001-MOM | MOM_TRACE | OWN-cancelNegotiatedAttributeOwnershipDivestiture | MOM observer integration test |
 | HLA1516.1-OWN-7_14-RTIAPI-001-SIG | SIG | OWN-cancelNegotiatedAttributeOwnershipDivestiture | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.14 cancelNegotiatedAttributeOwnershipDivestiture
+## IEEE 1516.1-2010 (2010 edition) Clause 7.14 cancelNegotiatedAttributeOwnershipDivestiture
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7558,7 +7558,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_14-CANCELNEGOTIATEDATTRIBUTEOWNERSHIPDIVESTITURE-SVC-001 | SVC | OWN-CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVE | unit + integration + API conformance tests |
 | HLA1516.1-OWN-7_14-CANCELNEGOTIATEDATTRIBUTEOWNERSHIPDIVESTITURE-TEST-001 | TEST | OWN-CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 7.15 Cancel Attribute Ownership Acquisition
+## IEEE 1516.1-2010 (2010 edition) Clause 7.15 Cancel Attribute Ownership Acquisition
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7571,7 +7571,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_15-RTIAPI-001-MOM | MOM_TRACE | OWN-cancelAttributeOwnershipAcquisition | MOM observer integration test |
 | HLA1516.1-OWN-7_15-RTIAPI-001-SIG | SIG | OWN-cancelAttributeOwnershipAcquisition | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.15 cancelAttributeOwnershipAcquisition
+## IEEE 1516.1-2010 (2010 edition) Clause 7.15 cancelAttributeOwnershipAcquisition
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7588,7 +7588,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_15-CANCELATTRIBUTEOWNERSHIPACQUISITION-SVC-001 | SVC | OWN-CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION | unit + integration + API conformance tests |
 | HLA1516.1-OWN-7_15-CANCELATTRIBUTEOWNERSHIPACQUISITION-TEST-001 | TEST | OWN-CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 7.16 Confirm Attribute Ownership Acquisition Cancellation
+## IEEE 1516.1-2010 (2010 edition) Clause 7.16 Confirm Attribute Ownership Acquisition Cancellation
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -7599,7 +7599,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_16-FEDCB-001-ORD | CB_ORD | OWN-confirmAttributeOwnershipAcquisitionCancellation | callback ordering/effect integration test |
 | HLA1516.1-OWN-7_16-FEDCB-001-SIG | CB_SIG | OWN-confirmAttributeOwnershipAcquisitionCancellation | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.16 confirmAttributeOwnershipAcquisitionCancellation
+## IEEE 1516.1-2010 (2010 edition) Clause 7.16 confirmAttributeOwnershipAcquisitionCancellation
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7612,7 +7612,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_16-CONFIRMATTRIBUTEOWNERSHIPACQUISITIONCANCELLATION-CB_PAYLOAD-001 | CB_PAYLOAD | OWN-CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CA | payload verification tests |
 | HLA1516.1-OWN-7_16-CONFIRMATTRIBUTEOWNERSHIPACQUISITIONCANCELLATION-CB_SIG-001 | CB_SIG | OWN-CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CA | API signature static test |
 
-## IEEE 1516.1-2010 Clause 7.17 Query Attribute Ownership
+## IEEE 1516.1-2010 (2010 edition) Clause 7.17 Query Attribute Ownership
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7625,7 +7625,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_17-RTIAPI-001-MOM | MOM_TRACE | OWN-queryAttributeOwnership | MOM observer integration test |
 | HLA1516.1-OWN-7_17-RTIAPI-001-SIG | SIG | OWN-queryAttributeOwnership | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.17 queryAttributeOwnership
+## IEEE 1516.1-2010 (2010 edition) Clause 7.17 queryAttributeOwnership
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7642,7 +7642,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_17-QUERYATTRIBUTEOWNERSHIP-SVC-001 | SVC | OWN-QUERY_ATTRIBUTE_OWNERSHIP | unit + integration + API conformance tests |
 | HLA1516.1-OWN-7_17-QUERYATTRIBUTEOWNERSHIP-TEST-001 | TEST | OWN-QUERY_ATTRIBUTE_OWNERSHIP | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 7.18 Inform Attribute Ownership
+## IEEE 1516.1-2010 (2010 edition) Clause 7.18 Inform Attribute Ownership
 
 - Requirement rows: 9
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -7659,7 +7659,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_18-FEDCB-001-SIG-DUP02 | CB_SIG | OWN-attributeIsNotOwned | api signature/static test |
 | HLA1516.1-OWN-7_18-FEDCB-001-SIG-DUP03 | CB_SIG | OWN-attributeIsOwnedByRTI | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.18 attributeIsNotOwned
+## IEEE 1516.1-2010 (2010 edition) Clause 7.18 attributeIsNotOwned
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7672,7 +7672,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_18-ATTRIBUTEISNOTOWNED-CB_PAYLOAD-001 | CB_PAYLOAD | OWN-INFORM_ATTRIBUTE_OWNERSHIP | payload verification tests |
 | HLA1516.1-OWN-7_18-ATTRIBUTEISNOTOWNED-CB_SIG-001 | CB_SIG | OWN-INFORM_ATTRIBUTE_OWNERSHIP | API signature static test |
 
-## IEEE 1516.1-2010 Clause 7.18 attributeIsOwnedByRTI
+## IEEE 1516.1-2010 (2010 edition) Clause 7.18 attributeIsOwnedByRTI
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7685,7 +7685,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_18-ATTRIBUTEISOWNEDBYRTI-CB_PAYLOAD-001 | CB_PAYLOAD | OWN-INFORM_ATTRIBUTE_OWNERSHIP | payload verification tests |
 | HLA1516.1-OWN-7_18-ATTRIBUTEISOWNEDBYRTI-CB_SIG-001 | CB_SIG | OWN-INFORM_ATTRIBUTE_OWNERSHIP | API signature static test |
 
-## IEEE 1516.1-2010 Clause 7.18 informAttributeOwnership
+## IEEE 1516.1-2010 (2010 edition) Clause 7.18 informAttributeOwnership
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7698,7 +7698,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_18-INFORMATTRIBUTEOWNERSHIP-CB_PAYLOAD-001 | CB_PAYLOAD | OWN-INFORM_ATTRIBUTE_OWNERSHIP | payload verification tests |
 | HLA1516.1-OWN-7_18-INFORMATTRIBUTEOWNERSHIP-CB_SIG-001 | CB_SIG | OWN-INFORM_ATTRIBUTE_OWNERSHIP | API signature static test |
 
-## IEEE 1516.1-2010 Clause 7.19 Is Attribute Owned By Federate
+## IEEE 1516.1-2010 (2010 edition) Clause 7.19 Is Attribute Owned By Federate
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -7711,7 +7711,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_19-RTIAPI-001-RET | RET | OWN-isAttributeOwnedByFederate | state/effect integration test |
 | HLA1516.1-OWN-7_19-RTIAPI-001-SIG | SIG | OWN-isAttributeOwnedByFederate | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.19 isAttributeOwnedByFederate
+## IEEE 1516.1-2010 (2010 edition) Clause 7.19 isAttributeOwnedByFederate
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7728,7 +7728,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_19-ISATTRIBUTEOWNEDBYFEDERATE-SVC-001 | SVC | OWN-IS_ATTRIBUTE_OWNED_BY_FEDERATE | unit + integration + API conformance tests |
 | HLA1516.1-OWN-7_19-ISATTRIBUTEOWNEDBYFEDERATE-TEST-001 | TEST | OWN-IS_ATTRIBUTE_OWNED_BY_FEDERATE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 7.2 Unconditional Attribute Ownership Divestiture
+## IEEE 1516.1-2010 (2010 edition) Clause 7.2 Unconditional Attribute Ownership Divestiture
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7741,7 +7741,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_2-RTIAPI-001-MOM | MOM_TRACE | OWN-unconditionalAttributeOwnershipDivestiture | MOM observer integration test |
 | HLA1516.1-OWN-7_2-RTIAPI-001-SIG | SIG | OWN-unconditionalAttributeOwnershipDivestiture | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.2 unconditionalAttributeOwnershipDivestiture
+## IEEE 1516.1-2010 (2010 edition) Clause 7.2 unconditionalAttributeOwnershipDivestiture
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7758,7 +7758,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_2-UNCONDITIONALATTRIBUTEOWNERSHIPDIVESTITURE-SVC-001 | SVC | OWN-UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTIT | unit + integration + API conformance tests |
 | HLA1516.1-OWN-7_2-UNCONDITIONALATTRIBUTEOWNERSHIPDIVESTITURE-TEST-001 | TEST | OWN-UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTIT | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 7.3 Negotiated Attribute Ownership Divestiture
+## IEEE 1516.1-2010 (2010 edition) Clause 7.3 Negotiated Attribute Ownership Divestiture
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7771,7 +7771,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_3-RTIAPI-001-MOM | MOM_TRACE | OWN-negotiatedAttributeOwnershipDivestiture | MOM observer integration test |
 | HLA1516.1-OWN-7_3-RTIAPI-001-SIG | SIG | OWN-negotiatedAttributeOwnershipDivestiture | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.3 negotiatedAttributeOwnershipDivestiture
+## IEEE 1516.1-2010 (2010 edition) Clause 7.3 negotiatedAttributeOwnershipDivestiture
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7788,7 +7788,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_3-NEGOTIATEDATTRIBUTEOWNERSHIPDIVESTITURE-SVC-001 | SVC | OWN-NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE | unit + integration + API conformance tests |
 | HLA1516.1-OWN-7_3-NEGOTIATEDATTRIBUTEOWNERSHIPDIVESTITURE-TEST-001 | TEST | OWN-NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 7.4 Request Attribute Ownership Assumption
+## IEEE 1516.1-2010 (2010 edition) Clause 7.4 Request Attribute Ownership Assumption
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -7799,7 +7799,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_4-FEDCB-001-ORD | CB_ORD | OWN-requestAttributeOwnershipAssumption | callback ordering/effect integration test |
 | HLA1516.1-OWN-7_4-FEDCB-001-SIG | CB_SIG | OWN-requestAttributeOwnershipAssumption | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.4 requestAttributeOwnershipAssumption
+## IEEE 1516.1-2010 (2010 edition) Clause 7.4 requestAttributeOwnershipAssumption
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7812,7 +7812,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_4-REQUESTATTRIBUTEOWNERSHIPASSUMPTION-CB_PAYLOAD-001 | CB_PAYLOAD | OWN-REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION | payload verification tests |
 | HLA1516.1-OWN-7_4-REQUESTATTRIBUTEOWNERSHIPASSUMPTION-CB_SIG-001 | CB_SIG | OWN-REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION | API signature static test |
 
-## IEEE 1516.1-2010 Clause 7.5 Request Divestiture Confirmation
+## IEEE 1516.1-2010 (2010 edition) Clause 7.5 Request Divestiture Confirmation
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -7823,7 +7823,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_5-FEDCB-001-ORD | CB_ORD | OWN-requestDivestitureConfirmation | callback ordering/effect integration test |
 | HLA1516.1-OWN-7_5-FEDCB-001-SIG | CB_SIG | OWN-requestDivestitureConfirmation | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.5 requestDivestitureConfirmation
+## IEEE 1516.1-2010 (2010 edition) Clause 7.5 requestDivestitureConfirmation
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7836,7 +7836,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_5-REQUESTDIVESTITURECONFIRMATION-CB_PAYLOAD-001 | CB_PAYLOAD | OWN-REQUEST_DIVESTITURE_CONFIRMATION | payload verification tests |
 | HLA1516.1-OWN-7_5-REQUESTDIVESTITURECONFIRMATION-CB_SIG-001 | CB_SIG | OWN-REQUEST_DIVESTITURE_CONFIRMATION | API signature static test |
 
-## IEEE 1516.1-2010 Clause 7.6 Confirm Divestiture
+## IEEE 1516.1-2010 (2010 edition) Clause 7.6 Confirm Divestiture
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7849,7 +7849,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_6-RTIAPI-001-MOM | MOM_TRACE | OWN-confirmDivestiture | MOM observer integration test |
 | HLA1516.1-OWN-7_6-RTIAPI-001-SIG | SIG | OWN-confirmDivestiture | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.6 confirmDivestiture
+## IEEE 1516.1-2010 (2010 edition) Clause 7.6 confirmDivestiture
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7866,7 +7866,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_6-CONFIRMDIVESTITURE-SVC-001 | SVC | OWN-CONFIRM_DIVESTITURE | unit + integration + API conformance tests |
 | HLA1516.1-OWN-7_6-CONFIRMDIVESTITURE-TEST-001 | TEST | OWN-CONFIRM_DIVESTITURE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 7.7 Attribute Ownership Acquisition Notification
+## IEEE 1516.1-2010 (2010 edition) Clause 7.7 Attribute Ownership Acquisition Notification
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -7877,7 +7877,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_7-FEDCB-001-ORD | CB_ORD | OWN-attributeOwnershipAcquisitionNotification | callback ordering/effect integration test |
 | HLA1516.1-OWN-7_7-FEDCB-001-SIG | CB_SIG | OWN-attributeOwnershipAcquisitionNotification | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.7 attributeOwnershipAcquisitionNotification
+## IEEE 1516.1-2010 (2010 edition) Clause 7.7 attributeOwnershipAcquisitionNotification
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -7890,7 +7890,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_7-ATTRIBUTEOWNERSHIPACQUISITIONNOTIFICATION-CB_PAYLOAD-001 | CB_PAYLOAD | OWN-ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATI | payload verification tests |
 | HLA1516.1-OWN-7_7-ATTRIBUTEOWNERSHIPACQUISITIONNOTIFICATION-CB_SIG-001 | CB_SIG | OWN-ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATI | API signature static test |
 
-## IEEE 1516.1-2010 Clause 7.8 Attribute Ownership Acquisition
+## IEEE 1516.1-2010 (2010 edition) Clause 7.8 Attribute Ownership Acquisition
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7903,7 +7903,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_8-RTIAPI-001-MOM | MOM_TRACE | OWN-attributeOwnershipAcquisition | MOM observer integration test |
 | HLA1516.1-OWN-7_8-RTIAPI-001-SIG | SIG | OWN-attributeOwnershipAcquisition | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.8 attributeOwnershipAcquisition
+## IEEE 1516.1-2010 (2010 edition) Clause 7.8 attributeOwnershipAcquisition
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7920,7 +7920,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_8-ATTRIBUTEOWNERSHIPACQUISITION-SVC-001 | SVC | OWN-ATTRIBUTE_OWNERSHIP_ACQUISITION | unit + integration + API conformance tests |
 | HLA1516.1-OWN-7_8-ATTRIBUTEOWNERSHIPACQUISITION-TEST-001 | TEST | OWN-ATTRIBUTE_OWNERSHIP_ACQUISITION | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 7.9 Attribute Ownership Acquisition If Available
+## IEEE 1516.1-2010 (2010 edition) Clause 7.9 Attribute Ownership Acquisition If Available
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7933,7 +7933,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_9-RTIAPI-001-MOM | MOM_TRACE | OWN-attributeOwnershipAcquisitionIfAvailable | MOM observer integration test |
 | HLA1516.1-OWN-7_9-RTIAPI-001-SIG | SIG | OWN-attributeOwnershipAcquisitionIfAvailable | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 7.9 attributeOwnershipAcquisitionIfAvailable
+## IEEE 1516.1-2010 (2010 edition) Clause 7.9 attributeOwnershipAcquisitionIfAvailable
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7950,7 +7950,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-OWN-7_9-ATTRIBUTEOWNERSHIPACQUISITIONIFAVAILABLE-SVC-001 | SVC | OWN-ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILAB | unit + integration + API conformance tests |
 | HLA1516.1-OWN-7_9-ATTRIBUTEOWNERSHIPACQUISITIONIFAVAILABLE-TEST-001 | TEST | OWN-ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILAB | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.10 Next Message Request
+## IEEE 1516.1-2010 (2010 edition) Clause 8.10 Next Message Request
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7963,7 +7963,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_10-RTIAPI-001-MOM | MOM_TRACE | TM-nextMessageRequest | MOM observer integration test |
 | HLA1516.1-TM-8_10-RTIAPI-001-SIG | SIG | TM-nextMessageRequest | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.10 nextMessageRequest
+## IEEE 1516.1-2010 (2010 edition) Clause 8.10 nextMessageRequest
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -7980,7 +7980,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_10-NEXTMESSAGEREQUEST-SVC-001 | SVC | TM-NEXT_MESSAGE_REQUEST | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_10-NEXTMESSAGEREQUEST-TEST-001 | TEST | TM-NEXT_MESSAGE_REQUEST | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.11 Next Message Request Available
+## IEEE 1516.1-2010 (2010 edition) Clause 8.11 Next Message Request Available
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -7993,7 +7993,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_11-RTIAPI-001-MOM | MOM_TRACE | TM-nextMessageRequestAvailable | MOM observer integration test |
 | HLA1516.1-TM-8_11-RTIAPI-001-SIG | SIG | TM-nextMessageRequestAvailable | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.11 nextMessageRequestAvailable
+## IEEE 1516.1-2010 (2010 edition) Clause 8.11 nextMessageRequestAvailable
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8010,7 +8010,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_11-NEXTMESSAGEREQUESTAVAILABLE-SVC-001 | SVC | TM-NEXT_MESSAGE_REQUEST_AVAILABLE | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_11-NEXTMESSAGEREQUESTAVAILABLE-TEST-001 | TEST | TM-NEXT_MESSAGE_REQUEST_AVAILABLE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.12 Flush Queue Request
+## IEEE 1516.1-2010 (2010 edition) Clause 8.12 Flush Queue Request
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8023,7 +8023,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_12-RTIAPI-001-MOM | MOM_TRACE | TM-flushQueueRequest | MOM observer integration test |
 | HLA1516.1-TM-8_12-RTIAPI-001-SIG | SIG | TM-flushQueueRequest | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.12 flushQueueRequest
+## IEEE 1516.1-2010 (2010 edition) Clause 8.12 flushQueueRequest
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8040,7 +8040,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_12-FLUSHQUEUEREQUEST-SVC-001 | SVC | TM-FLUSH_QUEUE_REQUEST | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_12-FLUSHQUEUEREQUEST-TEST-001 | TEST | TM-FLUSH_QUEUE_REQUEST | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.13 Time Advance Grant
+## IEEE 1516.1-2010 (2010 edition) Clause 8.13 Time Advance Grant
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -8051,7 +8051,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_13-FEDCB-001-ORD | CB_ORD | TM-timeAdvanceGrant | callback ordering/effect integration test |
 | HLA1516.1-TM-8_13-FEDCB-001-SIG | CB_SIG | TM-timeAdvanceGrant | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.13 timeAdvanceGrant
+## IEEE 1516.1-2010 (2010 edition) Clause 8.13 timeAdvanceGrant
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -8064,7 +8064,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_13-TIMEADVANCEGRANT-CB_PAYLOAD-001 | CB_PAYLOAD | TM-TIME_ADVANCE_GRANT | payload verification tests |
 | HLA1516.1-TM-8_13-TIMEADVANCEGRANT-CB_SIG-001 | CB_SIG | TM-TIME_ADVANCE_GRANT | API signature static test |
 
-## IEEE 1516.1-2010 Clause 8.14 Enable Asynchronous Delivery
+## IEEE 1516.1-2010 (2010 edition) Clause 8.14 Enable Asynchronous Delivery
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8077,7 +8077,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_14-RTIAPI-001-MOM | MOM_TRACE | TM-enableAsynchronousDelivery | MOM observer integration test |
 | HLA1516.1-TM-8_14-RTIAPI-001-SIG | SIG | TM-enableAsynchronousDelivery | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.14 enableAsynchronousDelivery
+## IEEE 1516.1-2010 (2010 edition) Clause 8.14 enableAsynchronousDelivery
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8094,7 +8094,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_14-ENABLEASYNCHRONOUSDELIVERY-SVC-001 | SVC | TM-ENABLE_ASYNCHRONOUS_DELIVERY | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_14-ENABLEASYNCHRONOUSDELIVERY-TEST-001 | TEST | TM-ENABLE_ASYNCHRONOUS_DELIVERY | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.15 Disable Asynchronous Delivery
+## IEEE 1516.1-2010 (2010 edition) Clause 8.15 Disable Asynchronous Delivery
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8107,7 +8107,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_15-RTIAPI-001-MOM | MOM_TRACE | TM-disableAsynchronousDelivery | MOM observer integration test |
 | HLA1516.1-TM-8_15-RTIAPI-001-SIG | SIG | TM-disableAsynchronousDelivery | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.15 disableAsynchronousDelivery
+## IEEE 1516.1-2010 (2010 edition) Clause 8.15 disableAsynchronousDelivery
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8124,7 +8124,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_15-DISABLEASYNCHRONOUSDELIVERY-SVC-001 | SVC | TM-DISABLE_ASYNCHRONOUS_DELIVERY | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_15-DISABLEASYNCHRONOUSDELIVERY-TEST-001 | TEST | TM-DISABLE_ASYNCHRONOUS_DELIVERY | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.16 Query GALT
+## IEEE 1516.1-2010 (2010 edition) Clause 8.16 Query GALT
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -8137,7 +8137,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_16-RTIAPI-001-RET | RET | TM-queryGALT | state/effect integration test |
 | HLA1516.1-TM-8_16-RTIAPI-001-SIG | SIG | TM-queryGALT | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.16 queryGALT
+## IEEE 1516.1-2010 (2010 edition) Clause 8.16 queryGALT
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8154,7 +8154,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_16-QUERYGALT-SVC-001 | SVC | TM-QUERY_GALT | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_16-QUERYGALT-TEST-001 | TEST | TM-QUERY_GALT | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.17 Query Logical Time
+## IEEE 1516.1-2010 (2010 edition) Clause 8.17 Query Logical Time
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -8167,7 +8167,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_17-RTIAPI-001-RET | RET | TM-queryLogicalTime | state/effect integration test |
 | HLA1516.1-TM-8_17-RTIAPI-001-SIG | SIG | TM-queryLogicalTime | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.17 queryLogicalTime
+## IEEE 1516.1-2010 (2010 edition) Clause 8.17 queryLogicalTime
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8184,7 +8184,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_17-QUERYLOGICALTIME-SVC-001 | SVC | TM-QUERY_LOGICAL_TIME | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_17-QUERYLOGICALTIME-TEST-001 | TEST | TM-QUERY_LOGICAL_TIME | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.18 Query LITS
+## IEEE 1516.1-2010 (2010 edition) Clause 8.18 Query LITS
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -8197,7 +8197,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_18-RTIAPI-001-RET | RET | TM-queryLITS | state/effect integration test |
 | HLA1516.1-TM-8_18-RTIAPI-001-SIG | SIG | TM-queryLITS | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.18 queryLITS
+## IEEE 1516.1-2010 (2010 edition) Clause 8.18 queryLITS
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8214,7 +8214,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_18-QUERYLITS-SVC-001 | SVC | TM-QUERY_LITS | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_18-QUERYLITS-TEST-001 | TEST | TM-QUERY_LITS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.19 Modify Lookahead
+## IEEE 1516.1-2010 (2010 edition) Clause 8.19 Modify Lookahead
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8227,7 +8227,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_19-RTIAPI-001-MOM | MOM_TRACE | TM-modifyLookahead | MOM observer integration test |
 | HLA1516.1-TM-8_19-RTIAPI-001-SIG | SIG | TM-modifyLookahead | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.19 modifyLookahead
+## IEEE 1516.1-2010 (2010 edition) Clause 8.19 modifyLookahead
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8244,7 +8244,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_19-MODIFYLOOKAHEAD-SVC-001 | SVC | TM-MODIFY_LOOKAHEAD | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_19-MODIFYLOOKAHEAD-TEST-001 | TEST | TM-MODIFY_LOOKAHEAD | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.2 Enable Time Regulation
+## IEEE 1516.1-2010 (2010 edition) Clause 8.2 Enable Time Regulation
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8257,7 +8257,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_2-RTIAPI-001-MOM | MOM_TRACE | TM-enableTimeRegulation | MOM observer integration test |
 | HLA1516.1-TM-8_2-RTIAPI-001-SIG | SIG | TM-enableTimeRegulation | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.2 enableTimeRegulation
+## IEEE 1516.1-2010 (2010 edition) Clause 8.2 enableTimeRegulation
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8274,7 +8274,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_2-ENABLETIMEREGULATION-SVC-001 | SVC | TM-ENABLE_TIME_REGULATION | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_2-ENABLETIMEREGULATION-TEST-001 | TEST | TM-ENABLE_TIME_REGULATION | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.20 Query Lookahead
+## IEEE 1516.1-2010 (2010 edition) Clause 8.20 Query Lookahead
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -8287,7 +8287,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_20-RTIAPI-001-RET | RET | TM-queryLookahead | state/effect integration test |
 | HLA1516.1-TM-8_20-RTIAPI-001-SIG | SIG | TM-queryLookahead | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.20 queryLookahead
+## IEEE 1516.1-2010 (2010 edition) Clause 8.20 queryLookahead
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8304,7 +8304,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_20-QUERYLOOKAHEAD-SVC-001 | SVC | TM-QUERY_LOOKAHEAD | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_20-QUERYLOOKAHEAD-TEST-001 | TEST | TM-QUERY_LOOKAHEAD | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.21 Retract
+## IEEE 1516.1-2010 (2010 edition) Clause 8.21 Retract
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8317,7 +8317,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_21-RTIAPI-001-MOM | MOM_TRACE | TM-retract | MOM observer integration test |
 | HLA1516.1-TM-8_21-RTIAPI-001-SIG | SIG | TM-retract | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.21 retract
+## IEEE 1516.1-2010 (2010 edition) Clause 8.21 retract
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8334,7 +8334,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_21-RETRACT-SVC-001 | SVC | TM-RETRACT | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_21-RETRACT-TEST-001 | TEST | TM-RETRACT | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.22 Request Retraction
+## IEEE 1516.1-2010 (2010 edition) Clause 8.22 Request Retraction
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -8345,7 +8345,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_22-FEDCB-001-ORD | CB_ORD | TM-requestRetraction | callback ordering/effect integration test |
 | HLA1516.1-TM-8_22-FEDCB-001-SIG | CB_SIG | TM-requestRetraction | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.22 requestRetraction
+## IEEE 1516.1-2010 (2010 edition) Clause 8.22 requestRetraction
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -8358,7 +8358,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_22-REQUESTRETRACTION-CB_PAYLOAD-001 | CB_PAYLOAD | TM-REQUEST_RETRACTION | payload verification tests |
 | HLA1516.1-TM-8_22-REQUESTRETRACTION-CB_SIG-001 | CB_SIG | TM-REQUEST_RETRACTION | API signature static test |
 
-## IEEE 1516.1-2010 Clause 8.23 Change Attribute Order Type
+## IEEE 1516.1-2010 (2010 edition) Clause 8.23 Change Attribute Order Type
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8371,7 +8371,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_23-RTIAPI-001-MOM | MOM_TRACE | TM-changeAttributeOrderType | MOM observer integration test |
 | HLA1516.1-TM-8_23-RTIAPI-001-SIG | SIG | TM-changeAttributeOrderType | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.23 changeAttributeOrderType
+## IEEE 1516.1-2010 (2010 edition) Clause 8.23 changeAttributeOrderType
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8388,7 +8388,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_23-CHANGEATTRIBUTEORDERTYPE-SVC-001 | SVC | TM-CHANGE_ATTRIBUTE_ORDER_TYPE | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_23-CHANGEATTRIBUTEORDERTYPE-TEST-001 | TEST | TM-CHANGE_ATTRIBUTE_ORDER_TYPE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.24 Change Interaction Order Type
+## IEEE 1516.1-2010 (2010 edition) Clause 8.24 Change Interaction Order Type
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8401,7 +8401,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_24-RTIAPI-001-MOM | MOM_TRACE | TM-changeInteractionOrderType | MOM observer integration test |
 | HLA1516.1-TM-8_24-RTIAPI-001-SIG | SIG | TM-changeInteractionOrderType | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.24 changeInteractionOrderType
+## IEEE 1516.1-2010 (2010 edition) Clause 8.24 changeInteractionOrderType
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8418,7 +8418,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_24-CHANGEINTERACTIONORDERTYPE-SVC-001 | SVC | TM-CHANGE_INTERACTION_ORDER_TYPE | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_24-CHANGEINTERACTIONORDERTYPE-TEST-001 | TEST | TM-CHANGE_INTERACTION_ORDER_TYPE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.3 Time Regulation Enabled
+## IEEE 1516.1-2010 (2010 edition) Clause 8.3 Time Regulation Enabled
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -8429,7 +8429,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_3-FEDCB-001-ORD | CB_ORD | TM-timeRegulationEnabled | callback ordering/effect integration test |
 | HLA1516.1-TM-8_3-FEDCB-001-SIG | CB_SIG | TM-timeRegulationEnabled | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.3 timeRegulationEnabled
+## IEEE 1516.1-2010 (2010 edition) Clause 8.3 timeRegulationEnabled
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -8442,7 +8442,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_3-TIMEREGULATIONENABLED-CB_PAYLOAD-001 | CB_PAYLOAD | TM-TIME_REGULATION_ENABLED | payload verification tests |
 | HLA1516.1-TM-8_3-TIMEREGULATIONENABLED-CB_SIG-001 | CB_SIG | TM-TIME_REGULATION_ENABLED | API signature static test |
 
-## IEEE 1516.1-2010 Clause 8.4 Disable Time Regulation
+## IEEE 1516.1-2010 (2010 edition) Clause 8.4 Disable Time Regulation
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8455,7 +8455,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_4-RTIAPI-001-MOM | MOM_TRACE | TM-disableTimeRegulation | MOM observer integration test |
 | HLA1516.1-TM-8_4-RTIAPI-001-SIG | SIG | TM-disableTimeRegulation | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.4 disableTimeRegulation
+## IEEE 1516.1-2010 (2010 edition) Clause 8.4 disableTimeRegulation
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8472,7 +8472,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_4-DISABLETIMEREGULATION-SVC-001 | SVC | TM-DISABLE_TIME_REGULATION | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_4-DISABLETIMEREGULATION-TEST-001 | TEST | TM-DISABLE_TIME_REGULATION | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.5 Enable Time Constrained
+## IEEE 1516.1-2010 (2010 edition) Clause 8.5 Enable Time Constrained
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8485,7 +8485,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_5-RTIAPI-001-MOM | MOM_TRACE | TM-enableTimeConstrained | MOM observer integration test |
 | HLA1516.1-TM-8_5-RTIAPI-001-SIG | SIG | TM-enableTimeConstrained | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.5 enableTimeConstrained
+## IEEE 1516.1-2010 (2010 edition) Clause 8.5 enableTimeConstrained
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8502,7 +8502,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_5-ENABLETIMECONSTRAINED-SVC-001 | SVC | TM-ENABLE_TIME_CONSTRAINED | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_5-ENABLETIMECONSTRAINED-TEST-001 | TEST | TM-ENABLE_TIME_CONSTRAINED | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.6 Time Constrained Enabled
+## IEEE 1516.1-2010 (2010 edition) Clause 8.6 Time Constrained Enabled
 
 - Requirement rows: 3
 - Requirement types: CB_ORD, CB_SIG, FED_CB
@@ -8513,7 +8513,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_6-FEDCB-001-ORD | CB_ORD | TM-timeConstrainedEnabled | callback ordering/effect integration test |
 | HLA1516.1-TM-8_6-FEDCB-001-SIG | CB_SIG | TM-timeConstrainedEnabled | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.6 timeConstrainedEnabled
+## IEEE 1516.1-2010 (2010 edition) Clause 8.6 timeConstrainedEnabled
 
 - Requirement rows: 5
 - Requirement types: CB, CB_ORDER, CB_PAYLOAD, CB_SIG, CPP_METHOD
@@ -8526,7 +8526,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_6-TIMECONSTRAINEDENABLED-CB_PAYLOAD-001 | CB_PAYLOAD | TM-TIME_CONSTRAINED_ENABLED | payload verification tests |
 | HLA1516.1-TM-8_6-TIMECONSTRAINEDENABLED-CB_SIG-001 | CB_SIG | TM-TIME_CONSTRAINED_ENABLED | API signature static test |
 
-## IEEE 1516.1-2010 Clause 8.7 Disable Time Constrained
+## IEEE 1516.1-2010 (2010 edition) Clause 8.7 Disable Time Constrained
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8539,7 +8539,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_7-RTIAPI-001-MOM | MOM_TRACE | TM-disableTimeConstrained | MOM observer integration test |
 | HLA1516.1-TM-8_7-RTIAPI-001-SIG | SIG | TM-disableTimeConstrained | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.7 disableTimeConstrained
+## IEEE 1516.1-2010 (2010 edition) Clause 8.7 disableTimeConstrained
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8556,7 +8556,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_7-DISABLETIMECONSTRAINED-SVC-001 | SVC | TM-DISABLE_TIME_CONSTRAINED | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_7-DISABLETIMECONSTRAINED-TEST-001 | TEST | TM-DISABLE_TIME_CONSTRAINED | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.8 Time Advance Request
+## IEEE 1516.1-2010 (2010 edition) Clause 8.8 Time Advance Request
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8569,7 +8569,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_8-RTIAPI-001-MOM | MOM_TRACE | TM-timeAdvanceRequest | MOM observer integration test |
 | HLA1516.1-TM-8_8-RTIAPI-001-SIG | SIG | TM-timeAdvanceRequest | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.8 timeAdvanceRequest
+## IEEE 1516.1-2010 (2010 edition) Clause 8.8 timeAdvanceRequest
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8586,7 +8586,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_8-TIMEADVANCEREQUEST-SVC-001 | SVC | TM-TIME_ADVANCE_REQUEST | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_8-TIMEADVANCEREQUEST-TEST-001 | TEST | TM-TIME_ADVANCE_REQUEST | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 8.9 Time Advance Request Available
+## IEEE 1516.1-2010 (2010 edition) Clause 8.9 Time Advance Request Available
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8599,7 +8599,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_9-RTIAPI-001-MOM | MOM_TRACE | TM-timeAdvanceRequestAvailable | MOM observer integration test |
 | HLA1516.1-TM-8_9-RTIAPI-001-SIG | SIG | TM-timeAdvanceRequestAvailable | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 8.9 timeAdvanceRequestAvailable
+## IEEE 1516.1-2010 (2010 edition) Clause 8.9 timeAdvanceRequestAvailable
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8616,7 +8616,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-TM-8_9-TIMEADVANCEREQUESTAVAILABLE-SVC-001 | SVC | TM-TIME_ADVANCE_REQUEST_AVAILABLE | unit + integration + API conformance tests |
 | HLA1516.1-TM-8_9-TIMEADVANCEREQUESTAVAILABLE-TEST-001 | TEST | TM-TIME_ADVANCE_REQUEST_AVAILABLE | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 9.10 Subscribe Interaction Class With Regions
+## IEEE 1516.1-2010 (2010 edition) Clause 9.10 Subscribe Interaction Class With Regions
 
 - Requirement rows: 10
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8634,7 +8634,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_10-RTIAPI-001-SIG | SIG | DDM-subscribeInteractionClassWithRegions | api signature/static test |
 | HLA1516.1-DDM-9_10-RTIAPI-001-SIG-DUP02 | SIG | DDM-subscribeInteractionClassPassivelyWithRegions | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 9.10 subscribeInteractionClassPassivelyWithRegions
+## IEEE 1516.1-2010 (2010 edition) Clause 9.10 subscribeInteractionClassPassivelyWithRegions
 
 - Requirement rows: 8
 - Requirement types: ARG, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8650,7 +8650,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_10-SUBSCRIBEINTERACTIONCLASSPASSIVELYWITHREGIONS-SVC-001 | SVC | DDM-SUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS | unit + integration + API conformance tests |
 | HLA1516.1-DDM-9_10-SUBSCRIBEINTERACTIONCLASSPASSIVELYWITHREGIONS-TEST-001 | TEST | DDM-SUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 9.10 subscribeInteractionClassWithRegions
+## IEEE 1516.1-2010 (2010 edition) Clause 9.10 subscribeInteractionClassWithRegions
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8667,7 +8667,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_10-SUBSCRIBEINTERACTIONCLASSWITHREGIONS-SVC-001 | SVC | DDM-SUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS | unit + integration + API conformance tests |
 | HLA1516.1-DDM-9_10-SUBSCRIBEINTERACTIONCLASSWITHREGIONS-TEST-001 | TEST | DDM-SUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 9.11 Unsubscribe Interaction Class With Regions
+## IEEE 1516.1-2010 (2010 edition) Clause 9.11 Unsubscribe Interaction Class With Regions
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8680,7 +8680,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_11-RTIAPI-001-MOM | MOM_TRACE | DDM-unsubscribeInteractionClassWithRegions | MOM observer integration test |
 | HLA1516.1-DDM-9_11-RTIAPI-001-SIG | SIG | DDM-unsubscribeInteractionClassWithRegions | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 9.11 unsubscribeInteractionClassWithRegions
+## IEEE 1516.1-2010 (2010 edition) Clause 9.11 unsubscribeInteractionClassWithRegions
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8697,7 +8697,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_11-UNSUBSCRIBEINTERACTIONCLASSWITHREGIONS-SVC-001 | SVC | DDM-UNSUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS | unit + integration + API conformance tests |
 | HLA1516.1-DDM-9_11-UNSUBSCRIBEINTERACTIONCLASSWITHREGIONS-TEST-001 | TEST | DDM-UNSUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 9.12 Send Interaction With Regions
+## IEEE 1516.1-2010 (2010 edition) Clause 9.12 Send Interaction With Regions
 
 - Requirement rows: 10
 - Requirement types: EFF, EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -8715,7 +8715,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_12-RTIAPI-002-RET | RET | DDM-sendInteractionWithRegions | state/effect integration test |
 | HLA1516.1-DDM-9_12-RTIAPI-002-SIG | SIG | DDM-sendInteractionWithRegions | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 9.12 sendInteractionWithRegions
+## IEEE 1516.1-2010 (2010 edition) Clause 9.12 sendInteractionWithRegions
 
 - Requirement rows: 12
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8735,7 +8735,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_12-SENDINTERACTIONWITHREGIONS-SVC-001 | SVC | DDM-SEND_INTERACTION_WITH_REGIONS | unit + integration + API conformance tests |
 | HLA1516.1-DDM-9_12-SENDINTERACTIONWITHREGIONS-TEST-001 | TEST | DDM-SEND_INTERACTION_WITH_REGIONS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 9.13 Request Attribute Value Update With Regions
+## IEEE 1516.1-2010 (2010 edition) Clause 9.13 Request Attribute Value Update With Regions
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8748,7 +8748,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_13-RTIAPI-001-MOM | MOM_TRACE | DDM-requestAttributeValueUpdateWithRegions | MOM observer integration test |
 | HLA1516.1-DDM-9_13-RTIAPI-001-SIG | SIG | DDM-requestAttributeValueUpdateWithRegions | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 9.13 requestAttributeValueUpdateWithRegions
+## IEEE 1516.1-2010 (2010 edition) Clause 9.13 requestAttributeValueUpdateWithRegions
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8765,7 +8765,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_13-REQUESTATTRIBUTEVALUEUPDATEWITHREGIONS-SVC-001 | SVC | DDM-REQUEST_ATTRIBUTE_VALUE_UPDATE_WITH_REGION | unit + integration + API conformance tests |
 | HLA1516.1-DDM-9_13-REQUESTATTRIBUTEVALUEUPDATEWITHREGIONS-TEST-001 | TEST | DDM-REQUEST_ATTRIBUTE_VALUE_UPDATE_WITH_REGION | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 9.2 Create Region
+## IEEE 1516.1-2010 (2010 edition) Clause 9.2 Create Region
 
 - Requirement rows: 5
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -8778,7 +8778,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_2-RTIAPI-001-RET | RET | DDM-createRegion | state/effect integration test |
 | HLA1516.1-DDM-9_2-RTIAPI-001-SIG | SIG | DDM-createRegion | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 9.2 createRegion
+## IEEE 1516.1-2010 (2010 edition) Clause 9.2 createRegion
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8795,7 +8795,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_2-CREATEREGION-SVC-001 | SVC | DDM-CREATE_REGION | unit + integration + API conformance tests |
 | HLA1516.1-DDM-9_2-CREATEREGION-TEST-001 | TEST | DDM-CREATE_REGION | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 9.3 Commit Region Modifications
+## IEEE 1516.1-2010 (2010 edition) Clause 9.3 Commit Region Modifications
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8808,7 +8808,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_3-RTIAPI-001-MOM | MOM_TRACE | DDM-commitRegionModifications | MOM observer integration test |
 | HLA1516.1-DDM-9_3-RTIAPI-001-SIG | SIG | DDM-commitRegionModifications | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 9.3 commitRegionModifications
+## IEEE 1516.1-2010 (2010 edition) Clause 9.3 commitRegionModifications
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8825,7 +8825,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_3-COMMITREGIONMODIFICATIONS-SVC-001 | SVC | DDM-COMMIT_REGION_MODIFICATIONS | unit + integration + API conformance tests |
 | HLA1516.1-DDM-9_3-COMMITREGIONMODIFICATIONS-TEST-001 | TEST | DDM-COMMIT_REGION_MODIFICATIONS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 9.4 Delete Region
+## IEEE 1516.1-2010 (2010 edition) Clause 9.4 Delete Region
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8838,7 +8838,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_4-RTIAPI-001-MOM | MOM_TRACE | DDM-deleteRegion | MOM observer integration test |
 | HLA1516.1-DDM-9_4-RTIAPI-001-SIG | SIG | DDM-deleteRegion | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 9.4 deleteRegion
+## IEEE 1516.1-2010 (2010 edition) Clause 9.4 deleteRegion
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8855,7 +8855,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_4-DELETEREGION-SVC-001 | SVC | DDM-DELETE_REGION | unit + integration + API conformance tests |
 | HLA1516.1-DDM-9_4-DELETEREGION-TEST-001 | TEST | DDM-DELETE_REGION | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 9.5 Register Object Instance With Regions
+## IEEE 1516.1-2010 (2010 edition) Clause 9.5 Register Object Instance With Regions
 
 - Requirement rows: 10
 - Requirement types: EXC_API, MOM_TRACE, RET, RTI_API, SIG
@@ -8873,7 +8873,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_5-RTIAPI-002-RET | RET | DDM-registerObjectInstanceWithRegions | state/effect integration test |
 | HLA1516.1-DDM-9_5-RTIAPI-002-SIG | SIG | DDM-registerObjectInstanceWithRegions | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 9.5 registerObjectInstanceWithRegions
+## IEEE 1516.1-2010 (2010 edition) Clause 9.5 registerObjectInstanceWithRegions
 
 - Requirement rows: 12
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8893,7 +8893,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_5-REGISTEROBJECTINSTANCEWITHREGIONS-SVC-001 | SVC | DDM-REGISTER_OBJECT_INSTANCE_WITH_REGIONS | unit + integration + API conformance tests |
 | HLA1516.1-DDM-9_5-REGISTEROBJECTINSTANCEWITHREGIONS-TEST-001 | TEST | DDM-REGISTER_OBJECT_INSTANCE_WITH_REGIONS | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 9.6 Associate Regions For Updates
+## IEEE 1516.1-2010 (2010 edition) Clause 9.6 Associate Regions For Updates
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8906,7 +8906,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_6-RTIAPI-001-MOM | MOM_TRACE | DDM-associateRegionsForUpdates | MOM observer integration test |
 | HLA1516.1-DDM-9_6-RTIAPI-001-SIG | SIG | DDM-associateRegionsForUpdates | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 9.6 associateRegionsForUpdates
+## IEEE 1516.1-2010 (2010 edition) Clause 9.6 associateRegionsForUpdates
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8923,7 +8923,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_6-ASSOCIATEREGIONSFORUPDATES-SVC-001 | SVC | DDM-ASSOCIATE_REGIONS_FOR_UPDATES | unit + integration + API conformance tests |
 | HLA1516.1-DDM-9_6-ASSOCIATEREGIONSFORUPDATES-TEST-001 | TEST | DDM-ASSOCIATE_REGIONS_FOR_UPDATES | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 9.7 Unassociate Regions For Updates
+## IEEE 1516.1-2010 (2010 edition) Clause 9.7 Unassociate Regions For Updates
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8936,7 +8936,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_7-RTIAPI-001-MOM | MOM_TRACE | DDM-unassociateRegionsForUpdates | MOM observer integration test |
 | HLA1516.1-DDM-9_7-RTIAPI-001-SIG | SIG | DDM-unassociateRegionsForUpdates | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 9.7 unassociateRegionsForUpdates
+## IEEE 1516.1-2010 (2010 edition) Clause 9.7 unassociateRegionsForUpdates
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8953,7 +8953,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_7-UNASSOCIATEREGIONSFORUPDATES-SVC-001 | SVC | DDM-UNASSOCIATE_REGIONS_FOR_UPDATES | unit + integration + API conformance tests |
 | HLA1516.1-DDM-9_7-UNASSOCIATEREGIONSFORUPDATES-TEST-001 | TEST | DDM-UNASSOCIATE_REGIONS_FOR_UPDATES | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 9.8 Subscribe Object Class Attributes With Regions
+## IEEE 1516.1-2010 (2010 edition) Clause 9.8 Subscribe Object Class Attributes With Regions
 
 - Requirement rows: 20
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -8981,7 +8981,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_8-RTIAPI-002-SIG | SIG | DDM-subscribeObjectClassAttributesWithRegions | api signature/static test |
 | HLA1516.1-DDM-9_8-RTIAPI-002-SIG-DUP02 | SIG | DDM-subscribeObjectClassAttributesPassivelyWithRegions | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 9.8 subscribeObjectClassAttributesPassivelyWithRegions
+## IEEE 1516.1-2010 (2010 edition) Clause 9.8 subscribeObjectClassAttributesPassivelyWithRegions
 
 - Requirement rows: 10
 - Requirement types: ARG, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -8999,7 +8999,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELYWITHREGIONS-SVC-001 | SVC | DDM-SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REG | unit + integration + API conformance tests |
 | HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESPASSIVELYWITHREGIONS-TEST-001 | TEST | DDM-SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REG | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 9.8 subscribeObjectClassAttributesWithRegions
+## IEEE 1516.1-2010 (2010 edition) Clause 9.8 subscribeObjectClassAttributesWithRegions
 
 - Requirement rows: 11
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -9018,7 +9018,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-SVC-001 | SVC | DDM-SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REG | unit + integration + API conformance tests |
 | HLA1516.1-DDM-9_8-SUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-TEST-001 | TEST | DDM-SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REG | test-suite audit |
 
-## IEEE 1516.1-2010 Clause 9.9 Unsubscribe Object Class Attributes With Regions
+## IEEE 1516.1-2010 (2010 edition) Clause 9.9 Unsubscribe Object Class Attributes With Regions
 
 - Requirement rows: 5
 - Requirement types: EFF, EXC_API, MOM_TRACE, RTI_API, SIG
@@ -9031,7 +9031,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_9-RTIAPI-001-MOM | MOM_TRACE | DDM-unsubscribeObjectClassAttributesWithRegions | MOM observer integration test |
 | HLA1516.1-DDM-9_9-RTIAPI-001-SIG | SIG | DDM-unsubscribeObjectClassAttributesWithRegions | api signature/static test |
 
-## IEEE 1516.1-2010 Clause 9.9 unsubscribeObjectClassAttributesWithRegions
+## IEEE 1516.1-2010 (2010 edition) Clause 9.9 unsubscribeObjectClassAttributesWithRegions
 
 - Requirement rows: 9
 - Requirement types: ARG, CPP_METHOD, EFF, EXC, MOM, PRE, SIG, SVC, TEST
@@ -9048,7 +9048,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.1-DDM-9_9-UNSUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-SVC-001 | SVC | DDM-UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_R | unit + integration + API conformance tests |
 | HLA1516.1-DDM-9_9-UNSUBSCRIBEOBJECTCLASSATTRIBUTESWITHREGIONS-TEST-001 | TEST | DDM-UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_R | test-suite audit |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F ApplicationDomainEnumerations
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F ApplicationDomainEnumerations
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9057,7 +9057,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-001 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F ApplicationDomainUnion
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F ApplicationDomainUnion
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9066,7 +9066,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-002 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F IdentifierType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F IdentifierType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9075,7 +9075,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-003 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F NonEmptyString
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F NonEmptyString
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9084,7 +9084,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-004 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F OMTypeEnumerations
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F OMTypeEnumerations
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9093,7 +9093,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-005 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F OMTypeUnion
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F OMTypeUnion
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9102,7 +9102,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-006 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F POCTypeEnumeration
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F POCTypeEnumeration
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9111,7 +9111,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-007 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F POCTypeUnion
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F POCTypeUnion
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9120,7 +9120,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-008 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F RateType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F RateType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9129,7 +9129,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-009 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F ReferenceType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F ReferenceType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9138,7 +9138,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-010 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F SecurityClassificationEnumeration
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F SecurityClassificationEnumeration
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9147,7 +9147,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-011 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F SecurityClassificationUnion
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F SecurityClassificationUnion
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9156,7 +9156,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-012 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F Size
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F Size
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9165,7 +9165,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-013 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F String
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F String
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9174,7 +9174,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-014 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F abortFederationRestore
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F abortFederationRestore
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9183,7 +9183,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-001 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F abortFederationSave
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F abortFederationSave
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9192,7 +9192,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-002 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F accuracy
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F accuracy
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9201,7 +9201,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-003 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F acquisitionRequestTag
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F acquisitionRequestTag
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9210,7 +9210,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-004 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F alternative
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F alternative
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9219,7 +9219,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-005 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F announceSynchronizationPoint
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F announceSynchronizationPoint
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9228,7 +9228,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-006 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F applicationDomain
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F applicationDomain
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9237,7 +9237,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-007 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F applicationDomainType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F applicationDomainType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9246,7 +9246,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-015 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F arrayData
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F arrayData
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9255,7 +9255,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-008 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F arrayDataType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F arrayDataType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9264,7 +9264,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-016 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F arrayDataTypes
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F arrayDataTypes
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9273,7 +9273,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-009 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F arrayDataTypesType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F arrayDataTypesType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9282,7 +9282,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-017 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F arrayDatatypeEncodingEnum
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F arrayDatatypeEncodingEnum
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9291,7 +9291,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-018 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F arrayDatatypeEncodingType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F arrayDatatypeEncodingType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9300,7 +9300,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-019 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F arrayDatatypeEncodingUnion
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F arrayDatatypeEncodingUnion
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9309,7 +9309,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-020 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F associateRegionsForUpdates
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F associateRegionsForUpdates
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9318,7 +9318,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-010 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F attribute
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F attribute
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9327,7 +9327,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-011 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F attributeOwnershipAcquisition
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F attributeOwnershipAcquisition
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9336,7 +9336,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-012 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F attributeOwnershipAcquisitionIfAvailable
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F attributeOwnershipAcquisitionIfAvailable
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9345,7 +9345,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-013 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F attributeOwnershipAcquisitionNotification
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F attributeOwnershipAcquisitionNotification
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9354,7 +9354,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-014 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F attributeOwnershipDivestitureIfWanted
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F attributeOwnershipDivestitureIfWanted
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9363,7 +9363,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-015 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F attributeOwnershipReleaseDenied
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F attributeOwnershipReleaseDenied
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9372,7 +9372,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-016 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F attributeOwnershipUnavailable
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F attributeOwnershipUnavailable
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9381,7 +9381,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-017 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F attributeRelevanceAdvisory
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F attributeRelevanceAdvisory
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9390,7 +9390,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-018 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F attributeScopeAdvisory
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F attributeScopeAdvisory
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9399,7 +9399,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-019 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F attributeType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F attributeType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9408,7 +9408,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-021 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F attributesInScope
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F attributesInScope
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9417,7 +9417,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-020 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F attributesOutOfScope
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F attributesOutOfScope
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9426,7 +9426,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-021 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F autoProvide
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F autoProvide
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9435,7 +9435,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-022 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F automaticResignAction
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F automaticResignAction
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9444,7 +9444,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-023 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F basicData
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F basicData
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9453,7 +9453,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-024 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F basicDataRepresentations
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F basicDataRepresentations
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9462,7 +9462,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-025 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F basicDataRepresentationsType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F basicDataRepresentationsType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9471,7 +9471,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-022 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F basicDataType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F basicDataType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9480,7 +9480,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-023 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F cancelAttributeOwnershipAcquisition
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F cancelAttributeOwnershipAcquisition
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9489,7 +9489,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-026 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F cancelNegotiatedAttributeOwnershipDivestiture
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F cancelNegotiatedAttributeOwnershipDivestiture
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9498,7 +9498,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-027 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F capability
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F capability
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9507,7 +9507,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-028 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F capabilityEnumerations
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F capabilityEnumerations
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9516,7 +9516,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-024 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F capabilityType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F capabilityType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9525,7 +9525,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-025 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F cardinality
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F cardinality
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9534,7 +9534,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-029 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F cardinalityPattern
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F cardinalityPattern
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9543,7 +9543,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-026 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F cardinalityType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F cardinalityType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9552,7 +9552,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-027 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F changeAttributeOrderType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F changeAttributeOrderType
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9561,7 +9561,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-030 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F changeInteractionOrderType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F changeInteractionOrderType
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9570,7 +9570,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-031 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F commitRegionModifications
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F commitRegionModifications
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9579,7 +9579,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-032 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F confirmAttributeOwnershipAcquisitionCancellation
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F confirmAttributeOwnershipAcquisitionCancellation
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9588,7 +9588,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-033 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F confirmAttributeTransportationTypeChange
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F confirmAttributeTransportationTypeChange
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9597,7 +9597,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-034 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F confirmDivestiture
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F confirmDivestiture
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9606,7 +9606,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-035 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F confirmFederationRestorationRequest
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F confirmFederationRestorationRequest
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9615,7 +9615,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-036 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F confirmInteractionTransportationTypeChange
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F confirmInteractionTransportationTypeChange
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9624,7 +9624,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-037 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F confirmSynchronizationPointRegistration
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F confirmSynchronizationPointRegistration
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9633,7 +9633,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-038 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F connect
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F connect
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9642,7 +9642,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-039 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F connectionLost
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F connectionLost
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9651,7 +9651,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-040 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F conveyProducingFederate
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F conveyProducingFederate
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9660,7 +9660,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-041 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F conveyRegionDesignatorSets
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F conveyRegionDesignatorSets
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9669,7 +9669,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-042 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F createFederationExecution
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F createFederationExecution
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9678,7 +9678,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-043 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F createRegion
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F createRegion
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9687,7 +9687,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-044 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F dataType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F dataType
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9696,7 +9696,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-045 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F dataTypes
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F dataTypes
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9705,7 +9705,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-046 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F dataTypesType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F dataTypesType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9714,7 +9714,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-028 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F delaySubscriptionEvaluation
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F delaySubscriptionEvaluation
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9723,7 +9723,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-047 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F deleteObjectInstance
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F deleteObjectInstance
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9732,7 +9732,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-048 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F deleteRegion
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F deleteRegion
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9741,7 +9741,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-049 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F deleteRemoveTag
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F deleteRemoveTag
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9750,7 +9750,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-050 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F description
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F description
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9759,7 +9759,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-051 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F destroyFederationExecution
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F destroyFederationExecution
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9768,7 +9768,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-052 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F dimension
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F dimension
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9777,7 +9777,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-053 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F dimensionType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F dimensionType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9786,7 +9786,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-029 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F dimensionValuePattern
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F dimensionValuePattern
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9795,7 +9795,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-030 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F dimensions
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F dimensions
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9804,7 +9804,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-054 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F dimensionsType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F dimensionsType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -9813,7 +9813,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-031 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F disableAsynchronousDelivery
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F disableAsynchronousDelivery
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9822,7 +9822,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-055 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F disableAttributeRelevanceAdvisorySwitch
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F disableAttributeRelevanceAdvisorySwitch
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9831,7 +9831,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-056 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F disableAttributeScopeAdvisorySwitch
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F disableAttributeScopeAdvisorySwitch
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9840,7 +9840,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-057 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F disableCallbacks
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F disableCallbacks
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9849,7 +9849,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-058 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F disableInteractionRelevanceAdvisorySwitch
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F disableInteractionRelevanceAdvisorySwitch
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9858,7 +9858,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-059 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F disableObjectClassRelevanceAdvisorySwitch
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F disableObjectClassRelevanceAdvisorySwitch
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9867,7 +9867,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-060 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F disableTimeConstrained
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F disableTimeConstrained
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9876,7 +9876,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-061 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F disableTimeRegulation
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F disableTimeRegulation
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9885,7 +9885,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-062 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F disconnect
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F disconnect
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9894,7 +9894,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-063 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F discoverObjectInstance
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F discoverObjectInstance
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9903,7 +9903,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-064 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F discriminant
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F discriminant
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9912,7 +9912,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-065 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F divestitureCompletionTag
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F divestitureCompletionTag
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9921,7 +9921,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-066 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F divestitureRequestTag
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F divestitureRequestTag
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9930,7 +9930,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-067 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F enableAsynchronousDelivery
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F enableAsynchronousDelivery
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9939,7 +9939,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-068 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F enableAttributeRelevanceAdvisorySwitch
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F enableAttributeRelevanceAdvisorySwitch
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9948,7 +9948,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-069 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F enableAttributeScopeAdvisorySwitch
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F enableAttributeScopeAdvisorySwitch
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9957,7 +9957,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-070 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F enableCallbacks
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F enableCallbacks
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9966,7 +9966,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-071 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F enableInteractionRelevanceAdvisorySwitch
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F enableInteractionRelevanceAdvisorySwitch
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9975,7 +9975,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-072 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F enableObjectClassRelevanceAdvisorySwitch
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F enableObjectClassRelevanceAdvisorySwitch
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9984,7 +9984,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-073 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F enableTimeConstrained
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F enableTimeConstrained
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -9993,7 +9993,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-074 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F enableTimeRegulation
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F enableTimeRegulation
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10002,7 +10002,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-075 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F encoding
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F encoding
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10011,7 +10011,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-076 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F endian
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F endian
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10020,7 +10020,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-077 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F endianEnumerations
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F endianEnumerations
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10029,7 +10029,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-032 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F endianType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F endianType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10038,7 +10038,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-033 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F enumeratedData
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F enumeratedData
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10047,7 +10047,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-078 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F enumeratedDataType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F enumeratedDataType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10056,7 +10056,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-034 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F enumeratedDataTypes
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F enumeratedDataTypes
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10065,7 +10065,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-079 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F enumeratedDataTypesType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F enumeratedDataTypesType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10074,7 +10074,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-035 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F enumerator
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F enumerator
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10083,7 +10083,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-080 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F evokeCallback
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F evokeCallback
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10092,7 +10092,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-081 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F evokeMultipleCallbacks
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F evokeMultipleCallbacks
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10101,7 +10101,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-082 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F exceptionReporting
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F exceptionReporting
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10110,7 +10110,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-083 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F federateRestoreComplete
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F federateRestoreComplete
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10119,7 +10119,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-084 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F federateSaveBegun
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F federateSaveBegun
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10128,7 +10128,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-085 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F federateSaveComplete
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F federateSaveComplete
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10137,7 +10137,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-086 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F federationRestoreBegun
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F federationRestoreBegun
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10146,7 +10146,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-087 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F federationRestoreStatusResponse
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F federationRestoreStatusResponse
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10155,7 +10155,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-088 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F federationRestored
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F federationRestored
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10164,7 +10164,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-089 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F federationSaveStatusResponse
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F federationSaveStatusResponse
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10173,7 +10173,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-090 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F federationSaved
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F federationSaved
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10182,7 +10182,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-091 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F federationSynchronized
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F federationSynchronized
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10191,7 +10191,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-092 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F field
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F field
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10200,7 +10200,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-093 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F fixedRecordData
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F fixedRecordData
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10209,7 +10209,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-094 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F fixedRecordDataType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F fixedRecordDataType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10218,7 +10218,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-036 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F fixedRecordDataTypes
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F fixedRecordDataTypes
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10227,7 +10227,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-095 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F fixedRecordDataTypesType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F fixedRecordDataTypesType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10236,7 +10236,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-037 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F fixedRecordEncodingEnumeration
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F fixedRecordEncodingEnumeration
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10245,7 +10245,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-038 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F fixedRecordEncodingType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F fixedRecordEncodingType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10254,7 +10254,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-039 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F fixedRecordEncodingUnion
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F fixedRecordEncodingUnion
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10263,7 +10263,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-040 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F flushQueueRequest
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F flushQueueRequest
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10272,7 +10272,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-096 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getAttributeHandle
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getAttributeHandle
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10281,7 +10281,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-097 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getAttributeName
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getAttributeName
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10290,7 +10290,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-098 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getAutomaticResignDirective
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getAutomaticResignDirective
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10299,7 +10299,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-099 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getAvailableDimensionsForClassAttribute
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getAvailableDimensionsForClassAttribute
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10308,7 +10308,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-100 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getAvailableDimensionsForInteractionClass
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getAvailableDimensionsForInteractionClass
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10317,7 +10317,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-101 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getDimensionHandle
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getDimensionHandle
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10326,7 +10326,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-102 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getDimensionHandleSet
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getDimensionHandleSet
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10335,7 +10335,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-103 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getDimensionName
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getDimensionName
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10344,7 +10344,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-104 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getDimensionUpperBound
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getDimensionUpperBound
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10353,7 +10353,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-105 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getFederateHandle
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getFederateHandle
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10362,7 +10362,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-106 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getFederateName
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getFederateName
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10371,7 +10371,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-107 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getInteractionClassHandle
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getInteractionClassHandle
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10380,7 +10380,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-108 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getInteractionClassName
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getInteractionClassName
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10389,7 +10389,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-109 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getKnownObjectClassHandle
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getKnownObjectClassHandle
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10398,7 +10398,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-110 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getObjectClassHandle
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getObjectClassHandle
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10407,7 +10407,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-111 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getObjectClassName
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getObjectClassName
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10416,7 +10416,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-112 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getObjectInstanceHandle
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getObjectInstanceHandle
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10425,7 +10425,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-113 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getObjectInstanceName
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getObjectInstanceName
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10434,7 +10434,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-114 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getOrderName
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getOrderName
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10443,7 +10443,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-115 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getOrderType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getOrderType
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10452,7 +10452,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-116 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getParameterHandle
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getParameterHandle
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10461,7 +10461,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-117 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getParameterName
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getParameterName
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10470,7 +10470,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-118 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getRangeBounds
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getRangeBounds
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10479,7 +10479,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-119 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getTransportationTypeHandle
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getTransportationTypeHandle
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10488,7 +10488,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-120 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getTransportationTypeName
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getTransportationTypeName
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10497,7 +10497,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-121 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getUpdateRateValue
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getUpdateRateValue
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10506,7 +10506,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-122 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F getUpdateRateValueForAttribute
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F getUpdateRateValueForAttribute
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10515,7 +10515,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-123 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F glyph
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F glyph
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10524,7 +10524,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-124 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F glyphType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F glyphType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10533,7 +10533,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-041 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F glyphTypeEnumerations
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F glyphTypeEnumerations
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10542,7 +10542,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-042 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F glyphTypeUnion
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F glyphTypeUnion
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10551,7 +10551,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-043 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F idReferenceType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F idReferenceType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10560,7 +10560,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-044 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F identification
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F identification
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10569,7 +10569,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-125 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F informAttributeOwnership
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F informAttributeOwnership
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10578,7 +10578,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-126 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F initiateFederateRestore
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F initiateFederateRestore
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10587,7 +10587,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-127 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F initiateFederateSave
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F initiateFederateSave
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10596,7 +10596,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-128 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F interactionClass
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F interactionClass
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10605,7 +10605,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-129 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F interactionClassType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F interactionClassType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10614,7 +10614,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-045 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F interactionRelevanceAdvisory
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F interactionRelevanceAdvisory
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10623,7 +10623,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-130 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F interactions
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F interactions
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10632,7 +10632,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-131 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F interactionsType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F interactionsType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10641,7 +10641,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-046 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F interpretation
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F interpretation
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10650,7 +10650,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-132 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F isAttributeOwnedByFederate
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F isAttributeOwnedByFederate
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10659,7 +10659,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-133 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F joinFederationExecution
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F joinFederationExecution
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10668,7 +10668,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-134 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F keyword
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F keyword
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10677,7 +10677,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-135 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F keywordType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F keywordType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10686,7 +10686,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-047 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F keywordValue
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F keywordValue
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10695,7 +10695,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-136 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F label
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F label
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10704,7 +10704,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-137 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F listFederationExecutions
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F listFederationExecutions
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10713,7 +10713,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-138 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F localDeleteObjectInstance
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F localDeleteObjectInstance
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10722,7 +10722,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-139 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F lookahead
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F lookahead
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10731,7 +10731,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-140 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F modelIdentification
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F modelIdentification
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10740,7 +10740,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-141 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F modelIdentificationType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F modelIdentificationType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10749,7 +10749,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-048 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F modelType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F modelType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10758,7 +10758,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-049 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F modificationDate
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F modificationDate
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10767,7 +10767,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-142 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F modifyLookahead
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F modifyLookahead
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10776,7 +10776,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-143 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F multipleObjectInstanceNamesReserved
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F multipleObjectInstanceNamesReserved
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10785,7 +10785,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-144 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F name
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F name
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10794,7 +10794,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-145 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F negotiatedAttributeOwnershipDivestiture
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F negotiatedAttributeOwnershipDivestiture
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10803,7 +10803,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-146 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F nextMessageRequest
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F nextMessageRequest
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10812,7 +10812,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-147 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F nextMessageRequestAvailable
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F nextMessageRequestAvailable
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10821,7 +10821,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-148 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F nonEmptyString
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F nonEmptyString
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10830,7 +10830,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-050 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F normalization
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F normalization
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10839,7 +10839,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-149 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F normalizeFederateHandle
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F normalizeFederateHandle
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10848,7 +10848,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-150 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F normalizeServiceGroup
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F normalizeServiceGroup
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10857,7 +10857,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-151 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F note
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F note
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10866,7 +10866,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-152 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F notes
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F notes
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10875,7 +10875,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-153 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F notesType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F notesType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10884,7 +10884,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-051 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F objectClass
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F objectClass
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10893,7 +10893,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-154 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F objectClassRelevanceAdvisory
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F objectClassRelevanceAdvisory
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10902,7 +10902,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-155 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F objectClassType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F objectClassType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10911,7 +10911,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-052 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F objectInstanceNameReserved
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F objectInstanceNameReserved
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10920,7 +10920,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-156 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F objectModel
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F objectModel
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10929,7 +10929,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-157 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F objectModelType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F objectModelType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10938,7 +10938,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-053 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F objects
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F objects
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10947,7 +10947,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-158 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F objectsType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F objectsType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10956,7 +10956,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-054 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F order
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F order
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10965,7 +10965,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-159 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F orderEnumerations
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F orderEnumerations
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10974,7 +10974,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-055 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F orderType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F orderType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -10983,7 +10983,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-056 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F other
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F other
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -10992,7 +10992,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-160 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F ownership
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F ownership
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11001,7 +11001,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-161 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F ownershipEnumerations
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F ownershipEnumerations
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11010,7 +11010,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-057 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F ownershipType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F ownershipType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11019,7 +11019,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-058 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F parameter
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F parameter
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11028,7 +11028,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-162 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F parameterType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F parameterType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11037,7 +11037,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-059 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F poc
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F poc
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11046,7 +11046,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-163 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F pocEmail
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F pocEmail
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11055,7 +11055,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-164 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F pocName
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F pocName
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11064,7 +11064,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-165 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F pocOrg
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F pocOrg
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11073,7 +11073,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-166 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F pocTelephone
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F pocTelephone
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11082,7 +11082,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-167 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F pocType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F pocType
 
 - Requirement rows: 2
 - Requirement types: XML_ELEM, XML_TYPE
@@ -11092,7 +11092,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.2-XML-ELEM-168 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 | HLA1516.2-XML-TYPE-060 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F pocTypeType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F pocTypeType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11101,7 +11101,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-061 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F provideAttributeValueUpdate
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F provideAttributeValueUpdate
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11110,7 +11110,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-169 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F publishInteractionClass
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F publishInteractionClass
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11119,7 +11119,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-170 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F publishObjectClassAttributes
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F publishObjectClassAttributes
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11128,7 +11128,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-171 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F purpose
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F purpose
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11137,7 +11137,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-172 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F queryAttributeOwnership
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F queryAttributeOwnership
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11146,7 +11146,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-173 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F queryAttributeTransportationType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F queryAttributeTransportationType
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11155,7 +11155,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-174 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F queryFederationRestoreStatus
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F queryFederationRestoreStatus
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11164,7 +11164,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-175 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F queryFederationSaveStatus
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F queryFederationSaveStatus
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11173,7 +11173,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-176 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F queryGALT
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F queryGALT
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11182,7 +11182,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-177 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F queryInteractionTransportationType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F queryInteractionTransportationType
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11191,7 +11191,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-178 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F queryLITS
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F queryLITS
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11200,7 +11200,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-179 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F queryLogicalTime
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F queryLogicalTime
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11209,7 +11209,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-180 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F queryLookahead
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F queryLookahead
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11218,7 +11218,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-181 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F rate
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F rate
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11227,7 +11227,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-182 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F receiveInteraction
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F receiveInteraction
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11236,7 +11236,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-183 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F reference
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F reference
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11245,7 +11245,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-184 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F reflectAttributeValues
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F reflectAttributeValues
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11254,7 +11254,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-185 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F registerFederationSynchronizationPoint
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F registerFederationSynchronizationPoint
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11263,7 +11263,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-186 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F registerObjectInstance
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F registerObjectInstance
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11272,7 +11272,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-187 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F registerObjectInstanceWithRegions
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F registerObjectInstanceWithRegions
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11281,7 +11281,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-188 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F releaseMultipleObjectInstanceNames
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F releaseMultipleObjectInstanceNames
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11290,7 +11290,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-189 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F releaseObjectInstanceName
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F releaseObjectInstanceName
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11299,7 +11299,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-190 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F releaseRestriction
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F releaseRestriction
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11308,7 +11308,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-191 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F reliable
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F reliable
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11317,7 +11317,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-192 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F reliableEnumerations
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F reliableEnumerations
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11326,7 +11326,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-062 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F removeobjectinstance
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F removeobjectinstance
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11335,7 +11335,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-193 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F reportAttributeTransportationType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F reportAttributeTransportationType
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11344,7 +11344,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-194 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F reportFederationExecutions
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F reportFederationExecutions
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11353,7 +11353,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-195 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F reportInteractionTransportationType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F reportInteractionTransportationType
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11362,7 +11362,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-196 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F representation
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F representation
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11371,7 +11371,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-197 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F requestAttributeOwnershipAssumption
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F requestAttributeOwnershipAssumption
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11380,7 +11380,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-198 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F requestAttributeOwnershipRelease
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F requestAttributeOwnershipRelease
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11389,7 +11389,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-199 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F requestAttributeTransportationTypeChange
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F requestAttributeTransportationTypeChange
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11398,7 +11398,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-200 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F requestAttributeValueUpdate
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F requestAttributeValueUpdate
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11407,7 +11407,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-201 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F requestAttributeValueUpdateWithRegions
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F requestAttributeValueUpdateWithRegions
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11416,7 +11416,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-202 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F requestDivestitureConfirmation
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F requestDivestitureConfirmation
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11425,7 +11425,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-203 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F requestFederationRestore
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F requestFederationRestore
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11434,7 +11434,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-204 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F requestFederationSave
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F requestFederationSave
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11443,7 +11443,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-205 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F requestInteractionTransportationTypeChange
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F requestInteractionTransportationTypeChange
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11452,7 +11452,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-206 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F requestRetraction
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F requestRetraction
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11461,7 +11461,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-207 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F requestUpdateTag
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F requestUpdateTag
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11470,7 +11470,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-208 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F reserveMultipleObjectInstanceNames
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F reserveMultipleObjectInstanceNames
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11479,7 +11479,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-209 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F reserveObjectInstanceName
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F reserveObjectInstanceName
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11488,7 +11488,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-210 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F resignActionType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F resignActionType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11497,7 +11497,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-063 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F resignFederationExecution
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F resignFederationExecution
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11506,7 +11506,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-211 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F resignSwitchType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F resignSwitchType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11515,7 +11515,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-064 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F resolution
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F resolution
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11524,7 +11524,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-212 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F retract
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F retract
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11533,7 +11533,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-213 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F securityClassification
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F securityClassification
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11542,7 +11542,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-214 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F securityClassificationType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F securityClassificationType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11551,7 +11551,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-065 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F semantics
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F semantics
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11560,7 +11560,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-215 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F sendInteraction
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F sendInteraction
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11569,7 +11569,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-216 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F sendInteractionWithRegions
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F sendInteractionWithRegions
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11578,7 +11578,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-217 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F sendReceiveTag
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F sendReceiveTag
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11587,7 +11587,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-218 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F serviceReporting
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F serviceReporting
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11596,7 +11596,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-219 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F serviceUtilization
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F serviceUtilization
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11605,7 +11605,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-220 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F serviceUtilizationType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F serviceUtilizationType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11614,7 +11614,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-066 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F setAutomaticResignDirective
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F setAutomaticResignDirective
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11623,7 +11623,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-221 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F setRangeBounds
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F setRangeBounds
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11632,7 +11632,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-222 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F sharing
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F sharing
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11641,7 +11641,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-223 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F sharingEnumerations
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F sharingEnumerations
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11650,7 +11650,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-067 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F sharingType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F sharingType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11659,7 +11659,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-068 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F simpleData
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F simpleData
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11668,7 +11668,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-224 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F simpleDataType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F simpleDataType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11677,7 +11677,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-069 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F simpleDataTypes
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F simpleDataTypes
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11686,7 +11686,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-225 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F simpleDataTypesType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F simpleDataTypesType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11695,7 +11695,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-070 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F size
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F size
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11704,7 +11704,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-226 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F startRegistrationForObjectClass
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F startRegistrationForObjectClass
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11713,7 +11713,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-227 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F stopRegistrationForObjectClass
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F stopRegistrationForObjectClass
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11722,7 +11722,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-228 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F subscribeInteractionClass
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F subscribeInteractionClass
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11731,7 +11731,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-229 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F subscribeInteractionClassWithRegions
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F subscribeInteractionClassWithRegions
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11740,7 +11740,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-230 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F subscribeObjectClassAttributes
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F subscribeObjectClassAttributes
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11749,7 +11749,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-231 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F subscribeObjectClassAttributesWithRegions
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F subscribeObjectClassAttributesWithRegions
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11758,7 +11758,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-232 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F switchType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F switchType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11767,7 +11767,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-071 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F switches
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F switches
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11776,7 +11776,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-233 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F switchesType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F switchesType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11785,7 +11785,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-072 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F synchronizationPoint
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F synchronizationPoint
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11794,7 +11794,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-234 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F synchronizationPointAchieved
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F synchronizationPointAchieved
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11803,7 +11803,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-235 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F synchronizationPointType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F synchronizationPointType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11812,7 +11812,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-073 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F synchronizations
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F synchronizations
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11821,7 +11821,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-236 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F synchronizationsType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F synchronizationsType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11830,7 +11830,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-074 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F tagType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F tagType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11839,7 +11839,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-075 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F tags
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F tags
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11848,7 +11848,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-237 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F tagsType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F tagsType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11857,7 +11857,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-076 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F taxonomy
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F taxonomy
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11866,7 +11866,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-238 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F time
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F time
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11875,7 +11875,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-239 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F timeAdvanceGrant
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F timeAdvanceGrant
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11884,7 +11884,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-240 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F timeAdvanceRequest
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F timeAdvanceRequest
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11893,7 +11893,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-241 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F timeAdvanceRequestAvailable
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F timeAdvanceRequestAvailable
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11902,7 +11902,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-242 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F timeConstrainedEnabled
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F timeConstrainedEnabled
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11911,7 +11911,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-243 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F timeRegulationEnabled
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F timeRegulationEnabled
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11920,7 +11920,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-244 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F timeStamp
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F timeStamp
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11929,7 +11929,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-245 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F timeType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F timeType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11938,7 +11938,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-077 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F transportation
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F transportation
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11947,7 +11947,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-246 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F transportationType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F transportationType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11956,7 +11956,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-078 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F transportations
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F transportations
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11965,7 +11965,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-247 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F transportationsType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F transportationsType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -11974,7 +11974,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-079 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F turnInteractionsOff
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F turnInteractionsOff
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11983,7 +11983,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-248 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F turnInteractionsOn
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F turnInteractionsOn
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -11992,7 +11992,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-249 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F turnUpdatesOffForObjectInstance
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F turnUpdatesOffForObjectInstance
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12001,7 +12001,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-250 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F turnUpdatesOnForObjectInstance
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F turnUpdatesOnForObjectInstance
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12010,7 +12010,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-251 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F type
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F type
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12019,7 +12019,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-252 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F unassociateRegionsForUpdates
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F unassociateRegionsForUpdates
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12028,7 +12028,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-253 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F unconditionalAttributeOwnershipDivestiture
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F unconditionalAttributeOwnershipDivestiture
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12037,7 +12037,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-254 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F units
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F units
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12046,7 +12046,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-255 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F unpublishInteractionClass
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F unpublishInteractionClass
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12055,7 +12055,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-256 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F unpublishObjectClassAttributes
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F unpublishObjectClassAttributes
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12064,7 +12064,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-257 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F unsubscribeInteractionClass
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F unsubscribeInteractionClass
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12073,7 +12073,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-258 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F unsubscribeInteractionClassWithRegions
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F unsubscribeInteractionClassWithRegions
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12082,7 +12082,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-259 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F unsubscribeObjectClassAttributes
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F unsubscribeObjectClassAttributes
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12091,7 +12091,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-260 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F unsubscribeObjectClassAttributesWithRegions
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F unsubscribeObjectClassAttributesWithRegions
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12100,7 +12100,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-261 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F updateAttributeValues
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F updateAttributeValues
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12109,7 +12109,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-262 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F updateCondition
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F updateCondition
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12118,7 +12118,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-263 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F updateEnumerations
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F updateEnumerations
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -12127,7 +12127,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-080 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F updateRate
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F updateRate
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12136,7 +12136,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-264 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F updateRateType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F updateRateType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -12145,7 +12145,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-081 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F updateRates
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F updateRates
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12154,7 +12154,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-265 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F updateRatesType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F updateRatesType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -12163,7 +12163,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-082 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F updateReflectTag
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F updateReflectTag
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12172,7 +12172,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-266 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F updateType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F updateType
 
 - Requirement rows: 2
 - Requirement types: XML_ELEM, XML_TYPE
@@ -12182,7 +12182,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 | HLA1516.2-XML-ELEM-267 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 | HLA1516.2-XML-TYPE-083 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F upperBound
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F upperBound
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12191,7 +12191,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-268 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F useHistory
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F useHistory
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12200,7 +12200,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-269 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F useLimitation
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F useLimitation
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12209,7 +12209,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-270 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F value
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F value
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12218,7 +12218,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-271 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F variantRecordData
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F variantRecordData
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12227,7 +12227,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-272 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F variantRecordDataType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F variantRecordDataType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -12236,7 +12236,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-084 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F variantRecordDataTypes
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F variantRecordDataTypes
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM
@@ -12245,7 +12245,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-ELEM-273 | XML_ELEM | XML-ELEMENTS | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F variantRecordDataTypesType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F variantRecordDataTypesType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -12254,7 +12254,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-085 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F variantRecordEncodingEnumerator
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F variantRecordEncodingEnumerator
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -12263,7 +12263,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-086 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F variantRecordEncodingType
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F variantRecordEncodingType
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -12272,7 +12272,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-087 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F variantRecordEncodingUnion
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F variantRecordEncodingUnion
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -12281,7 +12281,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-088 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F variantRecordEnumeratorPattern
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F variantRecordEnumeratorPattern
 
 - Requirement rows: 1
 - Requirement types: XML_TYPE
@@ -12290,7 +12290,7 @@ The imported v1.0 packet is an engineering baseline, not a certified paragraph-b
 |---|---|---|---|
 | HLA1516.2-XML-TYPE-089 | XML_TYPE | XML-TYPES | XML schema validation/static test |
 
-## IEEE 1516.2-2010 Clause Annex D/E/F version
+## IEEE 1516.2-2010 (2010 edition) Clause Annex D/E/F version
 
 - Requirement rows: 1
 - Requirement types: XML_ELEM

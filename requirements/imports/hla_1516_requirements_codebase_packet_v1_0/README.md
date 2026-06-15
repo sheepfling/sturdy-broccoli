@@ -1,10 +1,19 @@
 # hla_1516_requirements_codebase_packet_v1_0
 
-This directory is a committed intake copy of the external HLA 1516 requirements packet received in `INBOX/REQTS`.
+This directory is a committed intake copy of the external IEEE 1516-2010 (2010 edition),
+IEEE 1516.1-2010 (2010 edition), and IEEE 1516.2-2010 (2010 edition)
+requirements packet received in `INBOX/REQTS`.
 
-It is intentionally separate from the curated top-level `requirements/*.csv` files:
+The packet baseline covers the IEEE 1516-2010 (2010 edition), IEEE 1516.1-2010 (2010 edition), and
+IEEE 1516.2-2010 (2010 edition) editions.
 
-- `requirements/*.csv` stays as the hand-harmonized engineering working set used for repo-native traceability.
+It is intentionally separate from the curated repo-native requirement surfaces:
+
+- `requirements/active_service_rows.csv` is the small hand-edited active
+  traceability working set.
+- `requirements/traceability_matrix.csv` is the generated compatibility merge.
+- `requirements/reference/*.csv` carries the broader hand-harmonized clause and
+  reconciliation catalogs.
 - `requirements/imports/hla_1516_requirements_codebase_packet_v1_0/*` preserves the packet-provided v1.0 dump, workpacket, history, and manifest as imported source material.
 
 ## Imported structure

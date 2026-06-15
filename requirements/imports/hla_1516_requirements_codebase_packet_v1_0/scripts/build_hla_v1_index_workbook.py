@@ -136,7 +136,7 @@ except Exception as exc:
 readme_rows = [
     ['Artifact', 'HLA 1516-2010 Requirements Catalog v1.0'],
     ['Generated', datetime.now().strftime('%Y-%m-%d %H:%M:%S')],
-    ['Scope', 'IEEE 1516-2010, IEEE 1516.1-2010, IEEE 1516.2-2010, Java API, WSDL, MIM XML, OMT/FDD/DIF XSD.'],
+    ['Scope', 'IEEE 1516-2010 (2010 edition), IEEE 1516.1-2010 (2010 edition), IEEE 1516.2-2010 (2010 edition), Java API, WSDL, MIM XML, OMT/FDD/DIF XSD.'],
     ['v1.0 additions', 'Detailed rows for IEEE 1516.1 Clauses 6-11 and IEEE 1516.2 OMT/XML schema codification.'],
     ['Caveat', 'Engineering codification and traceability scaffold; not a certified legal/compliance extraction.'],
     ['Full data', 'Full row-level data is stored in the CSV files listed in File Manifest. This index workbook is intentionally compact for reliable review.'],

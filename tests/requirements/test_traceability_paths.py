@@ -15,7 +15,7 @@ from hla2010_repo_internal.traceability import (
 
 ROOT = Path(__file__).resolve().parents[2]
 EDITIONLESS_STANDARD_RE = re.compile(r"IEEE 1516(?:\.1|\.2)?-2010(?! \(2010 edition\))")
-EDITIONLESS_HLA_STANDARD_RE = re.compile(r"\bHLA 1516(?:\.1|\.2)?(?:-2010)?\b")
+EDITIONLESS_HLA_STANDARD_RE = re.compile(r"\bHLA 1516(?:\.1|\.2)?(?:-2010)?(?! \(2010 edition\))\b")
 PUBLIC_STANDARD_LABEL_PATHS = (
     ROOT / "README.md",
     ROOT / "docs" / "README.md",
@@ -27,6 +27,19 @@ PUBLIC_STANDARD_LABEL_PATHS = (
     ROOT / "docs" / "requirements_traceability.md",
     ROOT / "analysis" / "compliance" / "python_final_requirements_report.md",
     ROOT / "analysis" / "compliance" / "python_boss_capability_brief.md",
+    ROOT / "requirements" / "imports" / "hla_1516_requirements_codebase_packet_v1_0" / "README.md",
+    ROOT
+    / "requirements"
+    / "imports"
+    / "hla_1516_requirements_codebase_packet_v1_0"
+    / "work_packet"
+    / "AGENT_WORK_PACKET.md",
+    ROOT
+    / "requirements"
+    / "imports"
+    / "hla_1516_requirements_codebase_packet_v1_0"
+    / "work_packet"
+    / "ACCEPTANCE_CHECKLIST.md",
 )
 
 
@@ -64,7 +77,7 @@ def test_authored_requirement_rows_use_exact_edition_qualified_source_documents(
     assert not errors, "\n".join(errors)
 
 
-def test_requirement_csv_json_surfaces_do_not_use_editionless_ieee_2010_labels() -> None:
+def test_requirement_csv_json_surfaces_do_not_use_editionless_hla_or_ieee_2010_labels() -> None:
     # Keep this scan on the authored/source-oriented requirements surfaces.
     # Generated compliance packets are covered separately by packet-specific tests
     # so this check does not fail on unrelated packet churn in a dirty workspace.
@@ -75,11 +88,10 @@ def test_requirement_csv_json_surfaces_do_not_use_editionless_ieee_2010_labels()
             if path.suffix not in {".csv", ".json", ".yaml"}:
                 continue
             text = path.read_text(encoding="utf-8")
-            match = EDITIONLESS_STANDARD_RE.search(text)
-            if match is None:
-                continue
-            line = text[: match.start()].count("\n") + 1
-            violations.append(f"{path.relative_to(ROOT).as_posix()}:{line}: {match.group(0)}")
+            for pattern in (EDITIONLESS_STANDARD_RE, EDITIONLESS_HLA_STANDARD_RE):
+                for match in pattern.finditer(text):
+                    line = text[: match.start()].count("\n") + 1
+                    violations.append(f"{path.relative_to(ROOT).as_posix()}:{line}: {match.group(0)}")
     assert not violations, "\n".join(violations)
 
 

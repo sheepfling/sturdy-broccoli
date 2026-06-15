@@ -165,7 +165,7 @@ except Exception as exc:
 readme_rows = [
     {'field': 'Artifact', 'value': 'HLA 1516-2010 Requirements Catalog v1.0'},
     {'field': 'Generated', 'value': datetime.now().strftime('%Y-%m-%d %H:%M:%S')},
-    {'field': 'Scope', 'value': 'IEEE 1516-2010, IEEE 1516.1-2010, IEEE 1516.2-2010, Java API, WSDL, MIM XML, OMT/FDD/DIF XSD.'},
+    {'field': 'Scope', 'value': 'IEEE 1516-2010 (2010 edition), IEEE 1516.1-2010 (2010 edition), IEEE 1516.2-2010 (2010 edition), Java API, WSDL, MIM XML, OMT/FDD/DIF XSD.'},
     {'field': 'v1.0 additions', 'value': 'Detailed rows for IEEE 1516.1 Clauses 6-11 and IEEE 1516.2 OMT/XML schema codification.'},
     {'field': 'Caveat', 'value': 'Engineering codification and traceability scaffold; not a certified legal/compliance extraction.'},
     {'field': 'Suggested next step', 'value': 'Perform PDF prose audit and convert planned verification rows into executable pytest/MOM observer tests.'},
