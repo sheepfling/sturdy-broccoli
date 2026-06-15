@@ -578,6 +578,11 @@ case "$PROFILE" in
         *) exit $? ;;
       esac
     fi
+    if [[ "$certi_ready" -eq 1 ]] && ! certi_helper_supports_repo_green_smoke; then
+      hla2010_shell_warn \
+        "CERTI smoke helper does not expose the repo-green real-runtime command surface; excluding CERTI from vendor runtime smoke all"
+      certi_ready=0
+    fi
     if guard_vendor_preflight pitch; then
       pitch_ready=1
     else

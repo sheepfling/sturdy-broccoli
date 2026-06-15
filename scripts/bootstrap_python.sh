@@ -102,10 +102,10 @@ done
 build_helper_deps=("setuptools>=68" "wheel" "packaging>=24")
 helper_deps=()
 if [[ "$want_pytest" == "1" ]]; then
-  helper_deps+=("pytest" "matplotlib" "grpcio" "protobuf")
+  helper_deps+=("pytest" "py" "matplotlib" "fonttools" "kiwisolver" "grpcio" "protobuf")
 fi
 if [[ "$want_qa" == "1" ]]; then
-  helper_deps+=("ruff" "pyright")
+  helper_deps+=("ruff" "pyright" "typing_extensions")
 fi
 if [[ "$want_jpype" == "1" ]]; then
   helper_deps+=("jpype1")
@@ -170,7 +170,9 @@ if ! hla2010_shell_have "$PYTHON_BIN"; then
 fi
 
 VENV_DIR="$ROOT_DIR/.venv"
-ROOT_ALIAS_DIR="/private/tmp/hla2010-workspace-$(id -un)"
+ROOT_REALPATH="$("$PYTHON_BIN" -c 'import os, sys; print(os.path.realpath(sys.argv[1]))' "$ROOT_DIR")"
+ROOT_ALIAS_KEY="$("$PYTHON_BIN" -c 'import hashlib, sys; print(hashlib.sha256(sys.argv[1].encode("utf-8")).hexdigest()[:12])' "$ROOT_REALPATH")"
+ROOT_ALIAS_DIR="/private/tmp/hla2010-workspace-$(id -un)-${ROOT_ALIAS_KEY}"
 ROOT_ALIAS_PATH="$ROOT_ALIAS_DIR/repo"
 VENV_ALIAS_DIR="$ROOT_ALIAS_PATH/.venv"
 
@@ -189,9 +191,25 @@ ensure_root_alias() {
   ln -s "$ROOT_DIR" "$ROOT_ALIAS_PATH"
 }
 
+venv_prefix_matches_root() {
+  if [[ ! -x "$VENV_DIR/bin/python" ]]; then
+    return 1
+  fi
+  local actual_prefix=""
+  actual_prefix="$("$VENV_DIR/bin/python" -c 'import os, sys; print(os.path.realpath(sys.prefix))' 2>/dev/null || true)"
+  [[ "$actual_prefix" == "$ROOT_REALPATH/.venv" ]]
+}
+
 ensure_root_alias
 if [[ -x "$VENV_DIR/bin/python" ]]; then
-  hla2010_shell_log "reusing existing venv at $VENV_DIR"
+  if venv_prefix_matches_root; then
+    hla2010_shell_log "reusing existing venv at $VENV_DIR"
+  else
+    hla2010_shell_log "removing cross-bound venv at $VENV_DIR"
+    "$PYTHON_BIN" -c 'from pathlib import Path; import shutil, sys; shutil.rmtree(Path(sys.argv[1]), ignore_errors=True)' "$VENV_DIR"
+    hla2010_shell_log "creating venv via alias path $VENV_ALIAS_DIR"
+    "$PYTHON_BIN" -m venv "$VENV_ALIAS_DIR"
+  fi
 else
   if [[ -d "$VENV_DIR" ]]; then
     hla2010_shell_log "removing broken venv at $VENV_DIR"
@@ -249,7 +267,9 @@ hla2010_shell_log "installing helper dependencies profile=${hyperspec}"
 run_venv_python -m ensurepip --upgrade
 run_venv_python -m pip install --no-build-isolation "${build_helper_deps[@]}"
 if [[ "${#helper_deps[@]}" -gt 0 ]]; then
-  run_venv_python -m pip install --no-build-isolation "${helper_deps[@]}"
+  # Force a real reinstall so stale metadata-only helper packages cannot mask
+  # missing runtime modules in reused venvs.
+  run_venv_python -m pip install --no-build-isolation --upgrade --force-reinstall "${helper_deps[@]}"
 fi
 hyperspec_count="${#workspace_packages[@]}"
 hla2010_shell_log "installing editable split packages count=${hyperspec_count}"
