@@ -8,7 +8,8 @@ from pathlib import Path
 SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = Path.cwd()
 REQUIREMENTS_ROOT = REPO_ROOT / "requirements"
-OUTPUT_PATH = REQUIREMENTS_ROOT / "hla_1516_master_harmonization_index_v1_0.csv"
+REFERENCE_ROOT = REQUIREMENTS_ROOT / "reference"
+OUTPUT_PATH = REFERENCE_ROOT / "hla_1516_master_harmonization_index_v1_0.csv"
 
 
 def _bootstrap_source_checkout() -> None:
@@ -23,6 +24,7 @@ def _bootstrap_source_checkout() -> None:
 _bootstrap_source_checkout()
 
 from hla2010_repo_internal.requirements_packet import load_imported_hla_packet
+from hla2010_repo_internal.requirements_source import requirement_document_title_for_binding
 
 FIELDNAMES = [
     "master_requirement_id",
@@ -44,26 +46,39 @@ RECONCILIATION_PRECEDENCE = {
     "hla1516_2_omt_detailed_reconciliation.csv": 1,
 }
 
+_LEGACY_IMPLEMENTATION_AREA_REWRITES = {
+    "docs/omt": "omt.documentation",
+    "docs/rationale": "architecture.rationale",
+    "requirements/source_control": "requirements",
+    "tests/conformance": "verification",
+    "tests/omt_conformance": "omt.validation",
+}
+
 
 def _unreconciled_source_hint(row: object) -> str:
     standard = row.standard.strip()
     clause = row.clause.strip()
-    if standard == "IEEE 1516-2010":
+    if standard == requirement_document_title_for_binding("framework_rules"):
         if clause.startswith("12"):
-            return "hla1516_clause_12_save_restore.csv"
-        return "hla1516_framework_rules.csv"
-    if standard == "IEEE 1516.1-2010":
-        return "hla1516_1_federate_interface.csv"
-    if standard == "IEEE 1516.2-2010":
-        return "hla1516_2_priority_omt.csv"
+            return "reference/hla1516_clause_12_save_restore.csv"
+        return "reference/hla1516_framework_rules.csv"
+    if standard == requirement_document_title_for_binding("federate_interface"):
+        return "reference/hla1516_1_federate_interface.csv"
+    if standard == requirement_document_title_for_binding("omt"):
+        return "reference/hla1516_2_priority_omt.csv"
     return ""
+
+
+def _normalize_implementation_area(value: str) -> str:
+    normalized = value.strip()
+    return _LEGACY_IMPLEMENTATION_AREA_REWRITES.get(normalized, normalized)
 
 
 def build_index_rows() -> list[dict[str, str]]:
     packet = load_imported_hla_packet(REPO_ROOT)
     bridge_lookup: dict[str, dict[str, str]] = {}
     bridge_precedence: dict[str, int] = {}
-    for path in sorted(REQUIREMENTS_ROOT.glob("*detailed_reconciliation.csv")):
+    for path in sorted(REFERENCE_ROOT.glob("*detailed_reconciliation.csv")):
         precedence = RECONCILIATION_PRECEDENCE.get(path.name, 0)
         with path.open(newline="", encoding="utf-8") as handle:
             for row in csv.DictReader(handle):
@@ -98,7 +113,7 @@ def build_index_rows() -> list[dict[str, str]]:
                     "harmonization_source_file": _unreconciled_source_hint(row),
                     "curated_requirement_id": "",
                     "current_test_id": "",
-                    "implementation_area": row.implementation_area,
+                    "implementation_area": _normalize_implementation_area(row.implementation_area),
                     "notes": "No packet-to-curated detailed reconciliation row exists yet for this imported master requirement.",
                 }
             )
@@ -115,7 +130,7 @@ def build_index_rows() -> list[dict[str, str]]:
                 "harmonization_source_file": bridge["harmonization_source_file"],
                 "curated_requirement_id": bridge["curated_requirement_id"],
                 "current_test_id": bridge["current_test_id"],
-                "implementation_area": row.implementation_area,
+                "implementation_area": _normalize_implementation_area(row.implementation_area),
                 "notes": bridge["notes"],
             }
         )

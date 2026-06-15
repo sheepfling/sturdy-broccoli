@@ -3,9 +3,9 @@
 This document is the canonical hierarchy view for the three standards tracked in
 this repo:
 
-- `IEEE 1516-2010`: framework and rules
-- `IEEE 1516.1-2010`: RTI services and MOM behavior
-- `IEEE 1516.2-2010`: OMT schema language and FOM/MIM interchange
+- `IEEE 1516-2010 (2010 edition)`: framework and rules
+- `IEEE 1516.1-2010 (2010 edition)`: RTI services and MOM behavior
+- `IEEE 1516.2-2010 (2010 edition)`: OMT schema language and FOM/MIM interchange
 
 Use the hierarchy in this order:
 
@@ -60,7 +60,7 @@ reader-facing index that groups them into capability trees.
 | OMT schema language | Datatype system | `HLA1516.2-DT-4.13-001` through `-054` | Planned `fom_parser` / `fom_validator` / `fom_merger` / `xml_serializer` slice |
 | OMT schema language | Notes tables | `HLA1516.2-NOTE-4.14-001` through `-003` | Planned parser and serializer fidelity slice |
 | FOM and MIM interchange | Standard MIM inclusion and MOM exposure | `HLA1516.2-MIM-D-001` | `tests/time/test_mom_mim_time_v10.py`, `tests/time/test_mom_mim_and_time_semantics_v010.py` |
-| FOM module merging | Supported merge subset | `HLA1516.2-OMT-7-001`, `HLA1516.2-OMT-7-002` | Current coarse merge rows in `requirements/hla1516_2_priority_omt.csv` |
+| FOM module merging | Supported merge subset | `HLA1516.2-OMT-7-001`, `HLA1516.2-OMT-7-002` | Current coarse merge rows in `requirements/reference/hla1516_2_priority_omt.csv` |
 | FOM module merging | Detailed merge rules | `HLA1516.2-MERGE-7.0-001` through `-008` | `tests/scenarios/test_startup_sync_fom_java_translation_v09.py`, `tests/backends/test_python_backend_federation_extended.py`, remaining rows planned |
 | XML interchange | Schema and semantic round-trip conformance | `HLA1516.2-XML-ANNEX-001` through `-005` | Planned schema validation and serializer slice |
 
@@ -77,7 +77,7 @@ reader-facing index that groups them into capability trees.
 
 ## OMT Background
 
-- The OMT layer is implemented as one part of the wider HLA product set tracked in this repo, alongside framework rules in `IEEE 1516-2010` and RTI service behavior in `IEEE 1516.1-2010`.
+- The OMT layer is implemented as one part of the wider HLA product set tracked in this repo, alongside framework rules in `IEEE 1516-2010 (2010 edition)` and RTI service behavior in `IEEE 1516.1-2010 (2010 edition)`.
 - Object-model implementation decisions in this repo are intentionally traced from OMT artifacts into runtime capabilities, requirements ledgers, and verification evidence rather than being treated as standalone XML parsing only.
 
 ## Implementation Notes
@@ -91,7 +91,7 @@ reader-facing index that groups them into capability trees.
 - `planned` rows are still useful: they tell you which package should own the work
   next (`fom_parser`, `fom_validator`, `fom_merger`, `mim_loader`,
   `xml_serializer`) and what proof shape is expected.
-- The detailed clause rows are in [`requirements/hla1516_2_priority_omt.csv`](../../requirements/hla1516_2_priority_omt.csv).
+- The detailed clause rows are in [`requirements/reference/hla1516_2_priority_omt.csv`](../../requirements/reference/hla1516_2_priority_omt.csv).
 - The bridge from requirement rows to code and tests is in [`requirements/traceability_matrix.csv`](../../requirements/traceability_matrix.csv).
 
 ## OMT Lexicon
@@ -115,7 +115,7 @@ When reading or writing requirement rows, use the lexicon with these expectation
 
 ## Conformance Claim Boundary
 
-This repo does not claim full IEEE 1516.2-2010 conformance.
+This repo does not claim full IEEE 1516.2-2010 (2010 edition) conformance.
 
 The current OMT document conformance labels used in this repo are:
 

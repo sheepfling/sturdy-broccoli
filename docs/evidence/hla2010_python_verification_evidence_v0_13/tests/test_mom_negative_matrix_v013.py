@@ -26,7 +26,7 @@ def test_generated_mom_negative_matrix_is_materialized_as_pytest_cases():
     assert summary["by_execution_level"]["rti-strict"] >= 230
     assert summary["by_execution_level"]["planned-service-semantics"] >= 30
     assert summary["by_kind"]["missing_required_parameter"] >= 80
-    assert "1516.1-2010 §11.4.1" in summary["section_refs"]
+    assert "IEEE 1516.1-2010 §11.4.1" in summary["section_refs"]
 
 
 @pytest.mark.parametrize("case", RTI_STRICT_CASES, ids=lambda c: c.pytest_id())

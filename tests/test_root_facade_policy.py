@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import importlib
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
 import tomllib
 
@@ -68,6 +68,19 @@ RETAINED_PACKAGE_LOCAL_FACADE_MODULES = {
 
 def _join(*parts: str) -> str:
     return ".".join(parts)
+
+
+def _posix_module_name(module_path: str) -> str:
+    return ".".join(PurePosixPath(module_path).with_suffix("").parts)
+
+
+def _normalized_text(path: Path) -> str:
+    return " ".join(path.read_text(encoding="utf-8").split())
+
+
+def _assert_text_contains_all(text: str, fragments: tuple[str, ...], *, label: str) -> None:
+    for fragment in fragments:
+        assert fragment in text, f"{label} missing {fragment}"
 
 
 def _live_root_python_files() -> set[str]:
@@ -197,22 +210,15 @@ def test_only_documented_root_facades_import_split_packages() -> None:
 
 
 def test_root_facade_docs_explicitly_name_the_remaining_split_package_facades() -> None:
-    required_fragments = (
-        "`hla2010.rti`",
-        "workspace facade",
-        "temporary",
-    )
     for path in ROOT_FACADE_DOCS:
-        text = path.read_text(encoding="utf-8")
-        for fragment in required_fragments:
-            assert fragment in text, f"{path.relative_to(ROOT)} missing {fragment}"
+        _assert_text_contains_all(
+            _normalized_text(path),
+            ("`hla2010.rti`", "workspace facade", "temporary"),
+            label=path.relative_to(ROOT).as_posix(),
+        )
 
 
 def test_high_level_docs_name_only_hla2010_rti_as_temporary_split_package_facade() -> None:
-    required_fragments = (
-        "`hla2010.rti`",
-        "temporary",
-    )
     forbidden_fragments = (
         "temporary compatibility facades",
         "temporary split-package facades",
@@ -221,39 +227,41 @@ def test_high_level_docs_name_only_hla2010_rti_as_temporary_split_package_facade
     )
 
     for path in SINGULAR_ROOT_FACADE_DOCS:
-        text = path.read_text(encoding="utf-8")
-        for fragment in required_fragments:
-            assert fragment in text, f"{path.relative_to(ROOT)} missing {fragment}"
+        text = _normalized_text(path)
+        _assert_text_contains_all(text, ("`hla2010.rti`", "temporary"), label=path.relative_to(ROOT).as_posix())
         for fragment in forbidden_fragments:
             assert fragment not in text, f"{path.relative_to(ROOT)} still uses plural facade wording: {fragment}"
 
 
 def test_runtime_discovery_docs_keep_direct_runtime_package_preferred_over_root_facade() -> None:
-    required_fragments = (
-        "`hla2010.rti`",
-        "temporary",
-        "hla2010_rti_runtime_common",
-    )
-
     for path in DIRECT_RUNTIME_PREFERENCE_DOCS:
-        text = path.read_text(encoding="utf-8")
-        for fragment in required_fragments:
-            assert fragment in text, f"{path.relative_to(ROOT)} missing {fragment}"
+        _assert_text_contains_all(
+            _normalized_text(path),
+            ("`hla2010.rti`", "temporary", "hla2010_rti_runtime_common"),
+            label=path.relative_to(ROOT).as_posix(),
+        )
 
-    architecture_text = (ROOT / "docs/architecture.md").read_text(encoding="utf-8")
-    assert "temporary root-facing backend discovery and ambassador-creation" in architecture_text
-
-    options_text = (ROOT / "docs/rti_options_and_test_matrix.md").read_text(encoding="utf-8")
-    assert "package-owned and\nnew public examples should prefer the split runtime package directly" in options_text
-
-    import_boundary_text = (ROOT / "docs/import_boundary_rules.md").read_text(encoding="utf-8")
-    assert "Package-owned code should import runtime factory helpers from" in import_boundary_text
+    _assert_text_contains_all(
+        _normalized_text(ROOT / "docs/architecture.md"),
+        ("temporary", "root-facing", "backend discovery", "ambassador-creation"),
+        label="docs/architecture.md",
+    )
+    _assert_text_contains_all(
+        _normalized_text(ROOT / "docs/rti_options_and_test_matrix.md"),
+        ("package-owned", "new public examples", "prefer", "split runtime package directly"),
+        label="docs/rti_options_and_test_matrix.md",
+    )
+    _assert_text_contains_all(
+        _normalized_text(ROOT / "docs/import_boundary_rules.md"),
+        ("Package-owned code should import runtime factory helpers from", "hla2010_rti_runtime_common"),
+        label="docs/import_boundary_rules.md",
+    )
 
 
 def test_package_migration_docs_do_not_claim_removed_root_compatibility_facades_remain() -> None:
     for path, removed_facade in REMOVED_ROOT_FACADE_MIGRATION_DOCS.items():
         text = path.read_text(encoding="utf-8")
-        normalized_text = " ".join(text.split())
+        normalized_text = _normalized_text(path)
         assert removed_facade in text, f"{path.relative_to(ROOT)} missing removed facade reference"
         assert "do not remain available" in normalized_text or "Removed root compatibility facades" in text, (
             f"{path.relative_to(ROOT)} should describe removed root facade state explicitly"
@@ -283,7 +291,7 @@ def test_retained_package_local_facade_docs_point_at_real_package_modules() -> N
     for path, modules in RETAINED_PACKAGE_LOCAL_FACADE_MODULES.items():
         text = path.read_text(encoding="utf-8")
         for module_path in modules:
-            module = module_path.removesuffix(".py").replace("/", ".")
+            module = _posix_module_name(module_path)
             dotted = module.split("src.", 1)[1]
             assert dotted in text, f"{path.relative_to(ROOT)} missing retained module {dotted}"
             assert (ROOT / module_path).exists(), f"documented retained facade missing file: {module_path}"

@@ -7,6 +7,19 @@ from pathlib import Path
 
 from conftest import REPO_ROOT, load_compliance_json, load_compliance_text
 from tests.compliance_row_models import RequirementDispositionRow, VendorBacklogRow
+from tests.pitch_clause4_policy_helpers import (
+    PITCH_CLAUSE4_ALLOWED_EVIDENCE_PREFIXES,
+    PITCH_CLAUSE4_BACKLOG_FRONTIER,
+    PITCH_CLAUSE4_BLOCKED_FAMILY_REFS,
+    PITCH_CLAUSE4_BLOCKED_JPYPE_REFS,
+    PITCH_CLAUSE4_BLOCKED_NOTES_FRAGMENTS,
+    PITCH_CLAUSE4_BLOCKED_PY4J_REFS,
+    PITCH_CLAUSE4_BLOCKED_REQUIREMENT_IDS,
+    PITCH_CLAUSE4_RESIDUAL_FRONTIER,
+    load_requirement_rows as load_pitch_requirement_rows,
+    load_vendor_backlog_rows as load_pitch_vendor_backlog_rows,
+    pitch_clause_rows,
+)
 from tests.requirement_label_helpers import (
     federate_interface_document_title,
     federate_interface_section_ref,
@@ -30,10 +43,6 @@ PITCH_NEGOTIATED_OWNERSHIP_VENDOR_BUG_NOTE = (
 PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_NOTE = (
     "packages/hla2010-rti-pitch-common/docs/evidence/"
     "pitch_section8_time_management_vendor_divergence_2026-06-11.md"
-)
-PITCH_LOST_FEDERATE_GAP_NOTE = (
-    "packages/hla2010-rti-pitch-common/docs/evidence/"
-    "pitch_clause4_lost_federate_gap_2026-06-11.md"
 )
 TARGET_FUNCTIONS = {
     "test_pitch_backend_connection_lost_callback_matrix": "run_connection_lost_callback_scenario",
@@ -171,13 +180,11 @@ def _scenario_entrypoints(source: str) -> list[str]:
 
 
 def _load_requirement_rows(filename: str) -> list[RequirementDispositionRow]:
-    payload = load_compliance_json(filename)
-    return [RequirementDispositionRow.from_mapping(row) for row in payload["rows"]]
+    return load_pitch_requirement_rows(filename)
 
 
 def _load_vendor_backlog_rows(filename: str) -> list[VendorBacklogRow]:
-    payload = load_compliance_json(filename)
-    return [VendorBacklogRow.from_mapping(row) for row in payload["rows"]]
+    return load_pitch_vendor_backlog_rows(filename)
 
 
 def _clause6_pitch_compliance_wrapper_refs() -> set[str]:
@@ -245,11 +252,7 @@ def _pitch_rows(filename: str) -> list[RequirementDispositionRow]:
 
 
 def _pitch_clause_rows(filename: str, clause_root: str) -> list[RequirementDispositionRow]:
-    return [
-        row
-        for row in _pitch_rows(filename)
-        if row.document == FEDERATE_INTERFACE_DOCUMENT and row.clause_root == clause_root
-    ]
+    return pitch_clause_rows(filename, clause_root)
 
 
 def _assert_wrapper_functions_follow_policy(
@@ -696,76 +699,28 @@ def test_clause4_pitch_lost_federate_rows_keep_family_and_profile_blocked_eviden
     rows = {
         row.requirement_id: row
         for row in _load_requirement_rows("pitch_requirement_disposition.json")
-        if row.requirement_id in {"HLA1516.1-FM-4.1.5-001", "HLA1516.1-FM-4.1.5-002"}
+        if row.requirement_id in PITCH_CLAUSE4_BLOCKED_REQUIREMENT_IDS
     }
-    assert set(rows) == {"HLA1516.1-FM-4.1.5-001", "HLA1516.1-FM-4.1.5-002"}
+    assert set(rows) == PITCH_CLAUSE4_BLOCKED_REQUIREMENT_IDS
 
     for requirement_id, row in rows.items():
         assert row.pitch_disposition == "blocked", requirement_id
         assert row.pitch_jpype_disposition == "blocked", requirement_id
         assert row.pitch_py4j_disposition == "blocked", requirement_id
+        for fragment in PITCH_CLAUSE4_BLOCKED_NOTES_FRAGMENTS:
+            assert fragment in row.notes, requirement_id
 
         family_refs = set(row.evidence_refs)
         jpype_refs = set(row.pitch_jpype_evidence_refs)
         py4j_refs = set(row.pitch_py4j_evidence_refs)
 
-        assert PITCH_LOST_FEDERATE_GAP_NOTE in family_refs
-        assert "analysis/preflight_artifacts/pitch-preflight.json" in family_refs
-        assert (
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/"
-            "vendor_runtime_status_summary.json"
-        ) in family_refs
-        assert (
-            "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/"
-            "vendor_runtime_status_report.md"
-        ) in family_refs
-        assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
-            "scenario_connection_lost.py::run_connection_lost_callback_scenario"
-        ) in family_refs
-        assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
-            "scenario_resign.py::run_disconnect_mom_cleanup_scenario"
-        ) in family_refs
-        assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
-            "scenario_lost_federate.py::run_lost_federate_mom_scenario"
-        ) in family_refs
-        assert (
-            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix"
-        ) in family_refs
-
-        assert PITCH_LOST_FEDERATE_GAP_NOTE in jpype_refs
-        assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
-            "scenario_lost_federate.py::run_external_lost_federate_observer_scenario"
-        ) in jpype_refs
-        assert (
-            "tests/test_rti_pitch_split_packages.py::"
-            "test_pitch_jpype_factory_uses_inprocess_runtime_without_gateway_process"
-        ) in jpype_refs
-        assert (
-            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix"
-        ) in jpype_refs
-        assert "analysis/preflight_artifacts/pitch-preflight.json" in jpype_refs
-
-        assert PITCH_LOST_FEDERATE_GAP_NOTE in py4j_refs
-        assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
-            "scenario_lost_federate.py::run_lost_federate_mom_scenario"
-        ) in py4j_refs
-        assert (
-            "tests/test_rti_pitch_split_packages.py::"
-            "test_pitch_py4j_factory_attaches_gateway_process"
-        ) in py4j_refs
-        assert (
-            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix"
-        ) in py4j_refs
-        assert "analysis/preflight_artifacts/pitch-preflight.json" in py4j_refs
+        assert PITCH_CLAUSE4_BLOCKED_FAMILY_REFS.issubset(family_refs)
+        assert PITCH_CLAUSE4_BLOCKED_JPYPE_REFS.issubset(jpype_refs)
+        assert PITCH_CLAUSE4_BLOCKED_PY4J_REFS.issubset(py4j_refs)
 
 
 def test_clause4_pitch_lost_federate_rows_keep_exact_backlog_frontier_shape() -> None:
-    target_ids = {"HLA1516.1-FM-4.1.5-001", "HLA1516.1-FM-4.1.5-002"}
+    target_ids = PITCH_CLAUSE4_BLOCKED_REQUIREMENT_IDS
 
     rows_by_requirement: dict[str, list[VendorBacklogRow]] = {}
     for row in _load_vendor_backlog_rows("vendor_discovery_backlog.json"):
@@ -775,12 +730,6 @@ def test_clause4_pitch_lost_federate_rows_keep_exact_backlog_frontier_shape() ->
 
     assert set(rows_by_requirement) == target_ids
 
-    expected_surface = {
-        ("pitch-requirements", "blocked", "pitch-requirement-disposition-row"),
-        ("pitch-jpype", "blocked", "pitch-requirement-profile-row"),
-        ("pitch-py4j", "blocked", "pitch-requirement-profile-row"),
-    }
-
     for requirement_id, rows in rows_by_requirement.items():
         assert {
             (
@@ -789,7 +738,7 @@ def test_clause4_pitch_lost_federate_rows_keep_exact_backlog_frontier_shape() ->
                 row.row_kind,
             )
             for row in rows
-        } == expected_surface, requirement_id
+        } == PITCH_CLAUSE4_BACKLOG_FRONTIER, requirement_id
 
         for row in rows:
             assert row.priority == "P2", requirement_id
@@ -803,22 +752,12 @@ def test_clause4_pitch_lost_federate_rows_keep_exact_backlog_frontier_shape() ->
 
 
 def test_clause4_pitch_family_and_profiles_keep_exact_residual_frontier() -> None:
-    expected = {
-        "AREA-1516.1-4": "not-applicable",
-        "HLA1516.1-FM-001": "not-applicable",
-        "REQ-RTI-FM-4_5-createFederationExecutionWithMIM": "vendor-divergent",
-        "HLA1516.1-FM-4.1.5-001": "blocked",
-        "HLA1516.1-FM-4.1.5-002": "blocked",
-        "HLA1516.1-FM-4.5-EXC-001": "vendor-divergent",
-        "HLA1516.1-FM-4.9-EXC-001": "vendor-divergent",
-    }
-
     family_rows = {
         row.identifier: row.pitch_disposition
         for row in _pitch_clause_rows("pitch_requirement_disposition.json", "4")
         if row.pitch_disposition != "verified"
     }
-    assert family_rows == expected
+    assert family_rows == PITCH_CLAUSE4_RESIDUAL_FRONTIER
 
     for filename in ("pitch-jpype_requirement_disposition.json", "pitch-py4j_requirement_disposition.json"):
         profile_rows = {
@@ -826,7 +765,7 @@ def test_clause4_pitch_family_and_profiles_keep_exact_residual_frontier() -> Non
             for row in _pitch_clause_rows(filename, "4")
             if row.runtime_disposition != "verified"
         }
-        assert profile_rows == expected, filename
+        assert profile_rows == PITCH_CLAUSE4_RESIDUAL_FRONTIER, filename
 
 
 def test_clause4_pitch_family_and_profiles_keep_exact_summary_counts() -> None:
@@ -846,20 +785,10 @@ def test_clause4_pitch_family_and_profiles_keep_exact_summary_counts() -> None:
 
 
 def test_clause4_pitch_family_and_profile_evidence_stays_on_allowed_surfaces() -> None:
-    allowed_prefixes = (
-        "packages/hla2010-verification-harness/",
-        "tests/scenarios/",
-        "tests/vendors/",
-        "packages/hla2010-rti-pitch-common/docs/evidence/",
-        "analysis/preflight_artifacts/",
-        "analysis/vendor_runtime_status/",
-        "tests/test_rti_pitch_split_packages.py::",
-    )
-
     for row in _pitch_clause_rows("pitch_requirement_disposition.json", "4"):
         for field in ("evidence_refs", "pitch_jpype_evidence_refs", "pitch_py4j_evidence_refs"):
             refs = row.evidence_refs_for(field)
-            assert all(ref.startswith(allowed_prefixes) for ref in refs), (
+            assert all(ref.startswith(PITCH_CLAUSE4_ALLOWED_EVIDENCE_PREFIXES) for ref in refs), (
                 row.identifier,
                 field,
                 refs,

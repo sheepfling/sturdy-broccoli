@@ -1,30 +1,37 @@
 from __future__ import annotations
 
-import csv
 from collections import Counter
 from pathlib import Path
+
+from tests.verification.reconciliation_helpers import (
+    kind_status_counts,
+    read_csv_rows,
+    rows_by_id,
+    split_test_ids,
+    status_counts,
+)
 
 
 RECONCILIATION_PATH = (
     Path(__file__).resolve().parents[2]
     / "requirements"
+    / "reference"
     / "hla1516_1_sup_detailed_reconciliation.csv"
 )
 
 
 def _read_rows() -> list[dict[str, str]]:
-    with RECONCILIATION_PATH.open(newline="", encoding="utf-8") as handle:
-        return list(csv.DictReader(handle))
+    return read_csv_rows(RECONCILIATION_PATH)
 
 
 def test_sup_detailed_reconciliation_has_expected_shape():
     rows = _read_rows()
 
     assert len(rows) == 603
-    assert Counter(row["current_status"] for row in rows) == Counter(
+    assert status_counts(rows) == Counter(
         {"mapped": 474, "partial": 129}
     )
-    assert Counter((row["reconciliation_kind"], row["current_status"]) for row in rows) == Counter(
+    assert kind_status_counts(rows) == Counter(
         {
             ("SIG", "mapped"): 86,
             ("SVC", "mapped"): 82,
@@ -48,7 +55,7 @@ def test_sup_detailed_reconciliation_has_expected_shape():
 
 
 def test_sup_detailed_reconciliation_spot_checks_key_rows():
-    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    rows = rows_by_id(_read_rows())
 
     assert rows["HLA1516.1-SUP-OVERVIEW-013"]["current_status"] == "mapped"
     assert rows["HLA1516.1-SUP-10_2-001"]["current_status"] == "mapped"
@@ -59,11 +66,11 @@ def test_sup_detailed_reconciliation_spot_checks_key_rows():
 
 
 def test_sup_handles_overview_row_has_direct_lookup_and_factory_evidence():
-    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    rows = rows_by_id(_read_rows())
     row = rows["HLA1516.1-SUP-OVERVIEW-013"]
 
     assert row["current_status"] == "mapped"
-    test_ids = [item.strip() for item in row["current_test_id"].split(";") if item.strip()]
+    test_ids = split_test_ids(row["current_test_id"])
     assert test_ids == [
         "tests/backends/test_python_backend_support_services.py::test_support_lookups_round_trip_class_handle_and_name",
         "tests/backends/test_python_backend_support_services.py::test_support_dimension_and_update_rate_helpers",

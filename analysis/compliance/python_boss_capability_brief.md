@@ -68,7 +68,7 @@ Status: **Proven, with a small number of intentional lifecycle-semantics diverge
 
 The Python backend has no open states in Clause 4 federation management:
 
-- IEEE 1516.1-2010 §4: `281` total
+- IEEE 1516.1-2010 (2010 edition) §4: `281` total
 - `275` verified
 - `4` vendor-divergent
 - `2` not-applicable
@@ -157,7 +157,7 @@ Status: **Strongly proven**
 
 Clause 8 time management has no open states in the Python packet:
 
-- IEEE 1516.1-2010 §8: `61` total
+- IEEE 1516.1-2010 (2010 edition) §8: `61` total
 - `59` verified
 - `2` not-applicable
 - `0` open states

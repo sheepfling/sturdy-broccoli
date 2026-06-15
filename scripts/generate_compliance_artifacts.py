@@ -588,214 +588,91 @@ _CERTI_SCENARIO_EVIDENCE_REGISTRY: dict[str, tuple[str, ...]] = {
     ),
 }
 
+def _certi_subject_rows(
+    scenario_id: str,
+    rows: dict[str, str],
+    template: str,
+) -> dict[str, tuple[tuple[str, ...], str]]:
+    evidence = _CERTI_SCENARIO_EVIDENCE_REGISTRY[scenario_id]
+    return {requirement_id: (evidence, template.format(subject=subject)) for requirement_id, subject in rows.items()}
+
+
 _CERTI_REQUIREMENT_EVIDENCE: dict[str, tuple[tuple[str, ...], str]] = {
-    "REQ-RTI-FM-4_11-registerFederationSynchronizationPoint": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["synchronization"],
-        "CERTI shared synchronization scenario verifies synchronization-point registration on the real backend path.",
+    **_certi_subject_rows(
+        "synchronization",
+        {
+            "REQ-RTI-FM-4_11-registerFederationSynchronizationPoint": "synchronization-point registration",
+            "REQ-FED-FM-4_12-synchronizationPointRegistrationSucceeded": "registration-success callbacks",
+            "REQ-FED-FM-4_13-announceSynchronizationPoint": "synchronization-point announcement callbacks",
+            "REQ-RTI-FM-4_14-synchronizationPointAchieved": "synchronization completion participation",
+            "REQ-FED-FM-4_15-federationSynchronized": "federation-synchronized callbacks",
+        },
+        "CERTI shared synchronization scenario verifies {subject} on the real backend path.",
     ),
-    "REQ-FED-FM-4_12-synchronizationPointRegistrationSucceeded": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["synchronization"],
-        "CERTI shared synchronization scenario verifies registration-success callbacks on the real backend path.",
+    **_certi_subject_rows(
+        "save-restore",
+        {
+            "REQ-RTI-FM-4_16-requestFederationSave": "the positive save-request path",
+            "REQ-FED-FM-4_17-initiateFederateSave": "initiate-save callbacks",
+            "REQ-RTI-FM-4_18-federateSaveBegun": "federate-save-begun participation",
+            "REQ-FED-FM-4_20-federationSaved": "federation-saved callbacks",
+            "REQ-RTI-FM-4_22-queryFederationSaveStatus": "save-status query coverage",
+            "REQ-FED-FM-4_23-federationSaveStatusResponse": "save-status response callbacks",
+            "REQ-RTI-FM-4_24-requestFederationRestore": "the positive restore-request path",
+            "REQ-FED-FM-4_25-requestFederationRestoreSucceeded": "restore-request-succeeded callbacks",
+            "REQ-FED-FM-4_26-federationRestoreBegun": "federation-restore-begun callbacks",
+            "REQ-FED-FM-4_27-initiateFederateRestore": "initiate-restore callbacks",
+            "REQ-FED-FM-4_29-federationRestored": "federation-restored callbacks",
+            "REQ-RTI-FM-4_31-queryFederationRestoreStatus": "restore-status query coverage",
+            "REQ-FED-FM-4_32-federationRestoreStatusResponse": "restore-status response callbacks",
+            "HLA1516.1-FM-4.16-001": "requestFederationSave behavior",
+            "HLA1516.1-FM-4.17-001": "initiateFederateSave callback behavior",
+            "HLA1516.1-FM-4.18-001": "federateSaveBegun behavior",
+            "HLA1516.1-FM-4.22-001": "queryFederationSaveStatus behavior",
+            "HLA1516.1-FM-4.23-001": "federationSaveStatusResponse behavior",
+            "HLA1516.1-FM-4.24-001": "requestFederationRestore behavior",
+            "HLA1516.1-FM-4.26-001": "federationRestoreBegun behavior",
+            "HLA1516.1-FM-4.27-001": "initiateFederateRestore callback behavior",
+            "HLA1516.1-FM-4.31-001": "queryFederationRestoreStatus behavior",
+            "HLA1516.1-FM-4.32-001": "federationRestoreStatusResponse behavior",
+        },
+        "CERTI shared save/restore scenario verifies {subject} on the real backend path.",
     ),
-    "REQ-FED-FM-4_13-announceSynchronizationPoint": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["synchronization"],
-        "CERTI shared synchronization scenario verifies synchronization-point announcement callbacks on the real backend path.",
+    **_certi_subject_rows(
+        "two-federate-exchange",
+        {
+            "REQ-RTI-OM-6_10-updateAttributeValues": "updateAttributeValues on both receive-order and timestamped paths",
+            "REQ-RTI-OM-6_12-sendInteraction": "sendInteraction on both receive-order and timestamped paths",
+            "HLA1516.1-OM-6.10-001": "receive-order updateAttributeValues delivery semantics",
+            "HLA1516.1-OM-6.10-002": "timestamped updateAttributeValues delivery semantics",
+            "HLA1516.1-OM-6.10-003": "updateAttributeValues payload delivery semantics",
+            "HLA1516.1-OM-6.10-004": "updateAttributeValues transportation semantics",
+            "HLA1516.1-OM-6.10-005": "updateAttributeValues ordering semantics",
+            "HLA1516.1-OM-6.12-001": "receive-order sendInteraction delivery semantics",
+            "HLA1516.1-OM-6.12-002": "timestamped sendInteraction delivery semantics",
+            "HLA1516.1-OM-6.12-003": "sendInteraction payload delivery semantics",
+            "HLA1516.1-OM-6.12-004": "sendInteraction transportation semantics",
+            "HLA1516.1-OM-6.12-005": "sendInteraction ordering semantics",
+        },
+        "CERTI shared two-federate exchange scenario verifies {subject} on the real backend path.",
     ),
-    "REQ-RTI-FM-4_14-synchronizationPointAchieved": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["synchronization"],
-        "CERTI shared synchronization scenario verifies synchronization completion participation on the real backend path.",
-    ),
-    "REQ-FED-FM-4_15-federationSynchronized": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["synchronization"],
-        "CERTI shared synchronization scenario verifies federation-synchronized callbacks on the real backend path.",
-    ),
-    "REQ-RTI-FM-4_16-requestFederationSave": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies the positive save-request path on the real backend path.",
-    ),
-    "REQ-FED-FM-4_17-initiateFederateSave": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies initiate-save callbacks on the real backend path.",
-    ),
-    "REQ-RTI-FM-4_18-federateSaveBegun": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies federate-save-begun participation on the real backend path.",
-    ),
-    "REQ-FED-FM-4_20-federationSaved": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies federation-saved callbacks on the real backend path.",
-    ),
-    "REQ-RTI-FM-4_22-queryFederationSaveStatus": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies save-status query coverage on the real backend path.",
-    ),
-    "REQ-FED-FM-4_23-federationSaveStatusResponse": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies save-status response callbacks on the real backend path.",
-    ),
-    "REQ-RTI-FM-4_24-requestFederationRestore": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies the positive restore-request path on the real backend path.",
-    ),
-    "REQ-FED-FM-4_25-requestFederationRestoreSucceeded": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies restore-request-succeeded callbacks on the real backend path.",
-    ),
-    "REQ-FED-FM-4_26-federationRestoreBegun": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies federation-restore-begun callbacks on the real backend path.",
-    ),
-    "REQ-FED-FM-4_27-initiateFederateRestore": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies initiate-restore callbacks on the real backend path.",
-    ),
-    "REQ-FED-FM-4_29-federationRestored": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies federation-restored callbacks on the real backend path.",
-    ),
-    "REQ-RTI-FM-4_31-queryFederationRestoreStatus": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies restore-status query coverage on the real backend path.",
-    ),
-    "REQ-FED-FM-4_32-federationRestoreStatusResponse": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies restore-status response callbacks on the real backend path.",
-    ),
-    "HLA1516.1-FM-4.16-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies requestFederationSave behavior on the real backend path.",
-    ),
-    "HLA1516.1-FM-4.17-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies initiateFederateSave callback behavior on the real backend path.",
-    ),
-    "HLA1516.1-FM-4.18-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies federateSaveBegun behavior on the real backend path.",
-    ),
-    "HLA1516.1-FM-4.22-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies queryFederationSaveStatus behavior on the real backend path.",
-    ),
-    "HLA1516.1-FM-4.23-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies federationSaveStatusResponse behavior on the real backend path.",
-    ),
-    "HLA1516.1-FM-4.24-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies requestFederationRestore behavior on the real backend path.",
-    ),
-    "HLA1516.1-FM-4.26-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies federationRestoreBegun behavior on the real backend path.",
-    ),
-    "HLA1516.1-FM-4.27-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies initiateFederateRestore callback behavior on the real backend path.",
-    ),
-    "HLA1516.1-FM-4.31-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies queryFederationRestoreStatus behavior on the real backend path.",
-    ),
-    "HLA1516.1-FM-4.32-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["save-restore"],
-        "CERTI shared save/restore scenario verifies federationRestoreStatusResponse behavior on the real backend path.",
-    ),
-    "REQ-RTI-OM-6_10-updateAttributeValues": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "CERTI shared two-federate exchange scenario verifies updateAttributeValues on both receive-order and timestamped paths.",
-    ),
-    "REQ-RTI-OM-6_12-sendInteraction": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "CERTI shared two-federate exchange scenario verifies sendInteraction on both receive-order and timestamped paths.",
-    ),
-    "HLA1516.1-OM-6.10-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "CERTI shared two-federate exchange scenario verifies receive-order updateAttributeValues delivery semantics.",
-    ),
-    "HLA1516.1-OM-6.10-002": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "CERTI shared two-federate exchange scenario verifies timestamped updateAttributeValues delivery semantics.",
-    ),
-    "HLA1516.1-OM-6.10-003": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "CERTI shared two-federate exchange scenario verifies updateAttributeValues payload delivery semantics.",
-    ),
-    "HLA1516.1-OM-6.10-004": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "CERTI shared two-federate exchange scenario verifies updateAttributeValues transportation semantics on the real backend path.",
-    ),
-    "HLA1516.1-OM-6.10-005": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "CERTI shared two-federate exchange scenario verifies updateAttributeValues ordering semantics on the real backend path.",
-    ),
-    "HLA1516.1-OM-6.12-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "CERTI shared two-federate exchange scenario verifies receive-order sendInteraction delivery semantics.",
-    ),
-    "HLA1516.1-OM-6.12-002": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "CERTI shared two-federate exchange scenario verifies timestamped sendInteraction delivery semantics.",
-    ),
-    "HLA1516.1-OM-6.12-003": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "CERTI shared two-federate exchange scenario verifies sendInteraction payload delivery semantics.",
-    ),
-    "HLA1516.1-OM-6.12-004": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "CERTI shared two-federate exchange scenario verifies sendInteraction transportation semantics on the real backend path.",
-    ),
-    "HLA1516.1-OM-6.12-005": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "CERTI shared two-federate exchange scenario verifies sendInteraction ordering semantics on the real backend path.",
-    ),
-    "REQ-FED-OWN-7_11-requestAttributeOwnershipRelease": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "CERTI shared ownership scenario verifies requestAttributeOwnershipRelease callbacks on the real backend path.",
-    ),
-    "REQ-RTI-OWN-7_17-queryAttributeOwnership": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "CERTI shared ownership scenario verifies queryAttributeOwnership on the real backend path.",
-    ),
-    "REQ-FED-OWN-7_18-attributeIsNotOwned": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "CERTI shared ownership scenario verifies attributeIsNotOwned callbacks on the real backend path.",
-    ),
-    "REQ-FED-OWN-7_18-attributeIsOwnedByRTI": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "CERTI shared ownership scenario verifies attributeIsOwnedByRTI callbacks on the real backend path.",
-    ),
-    "REQ-FED-OWN-7_18-informAttributeOwnership": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "CERTI shared ownership scenario verifies informAttributeOwnership callbacks on the real backend path.",
-    ),
-    "REQ-RTI-OWN-7_19-isAttributeOwnedByFederate": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "CERTI shared ownership scenario verifies isAttributeOwnedByFederate on the real backend path.",
-    ),
-    "REQ-RTI-OWN-7_2-unconditionalAttributeOwnershipDivestiture": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "CERTI shared ownership scenario verifies unconditionalAttributeOwnershipDivestiture on the real backend path.",
-    ),
-    "REQ-RTI-OWN-7_9-attributeOwnershipAcquisitionIfAvailable": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "CERTI shared ownership scenario verifies attributeOwnershipAcquisitionIfAvailable on the real backend path.",
-    ),
-    "HLA1516.1-OWN-7.11-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "CERTI shared ownership scenario verifies requestAttributeOwnershipRelease behavior on the real backend path.",
-    ),
-    "HLA1516.1-OWN-7.2-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "CERTI shared ownership scenario verifies unconditional divestiture behavior on the real backend path.",
-    ),
-    "HLA1516.1-OWN-7.9-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "CERTI shared ownership scenario verifies if-available acquisition behavior on the real backend path.",
-    ),
-    "HLA1516.1-OWN-7.9-002": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "CERTI shared ownership scenario verifies if-available acquisition callback behavior on the real backend path.",
+    **_certi_subject_rows(
+        "ownership",
+        {
+            "REQ-FED-OWN-7_11-requestAttributeOwnershipRelease": "requestAttributeOwnershipRelease callbacks",
+            "REQ-RTI-OWN-7_17-queryAttributeOwnership": "queryAttributeOwnership",
+            "REQ-FED-OWN-7_18-attributeIsNotOwned": "attributeIsNotOwned callbacks",
+            "REQ-FED-OWN-7_18-attributeIsOwnedByRTI": "attributeIsOwnedByRTI callbacks",
+            "REQ-FED-OWN-7_18-informAttributeOwnership": "informAttributeOwnership callbacks",
+            "REQ-RTI-OWN-7_19-isAttributeOwnedByFederate": "isAttributeOwnedByFederate",
+            "REQ-RTI-OWN-7_2-unconditionalAttributeOwnershipDivestiture": "unconditionalAttributeOwnershipDivestiture",
+            "REQ-RTI-OWN-7_9-attributeOwnershipAcquisitionIfAvailable": "attributeOwnershipAcquisitionIfAvailable",
+            "HLA1516.1-OWN-7.11-001": "requestAttributeOwnershipRelease behavior",
+            "HLA1516.1-OWN-7.2-001": "unconditional divestiture behavior",
+            "HLA1516.1-OWN-7.9-001": "if-available acquisition behavior",
+            "HLA1516.1-OWN-7.9-002": "if-available acquisition callback behavior",
+        },
+        "CERTI shared ownership scenario verifies {subject} on the real backend path.",
     ),
     "REQ-RTI-TM-8_2-enableTimeRegulation": (
         _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-services"],

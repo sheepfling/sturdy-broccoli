@@ -15,7 +15,7 @@
 - Planned semantic service cases: 32
 - MOM interactions inspected: 84
 - RTI-received leaf interactions inspected: 53
-- Case summary: {'by_execution_level': {'planned-service-semantics': 32, 'rti-strict': 237}, 'by_kind': {'bad_boolean_encoding': 9, 'bad_float_encoding': 1, 'bad_handle_encoding': 74, 'bad_interval_encoding': 2, 'bad_time_encoding': 6, 'missing_parameter_choice': 2, 'missing_required_parameter': 90, 'unexpected_parameter': 53, 'unsupported_or_failed_service_action': 32}, 'case_count': 269, 'section_refs': ['1516.1-2010 §11.3', '1516.1-2010 §11.4.1', '1516.1-2010 §11.5', '1516.1-2010 Annex G']}
+- Case summary: {'by_execution_level': {'planned-service-semantics': 32, 'rti-strict': 237}, 'by_kind': {'bad_boolean_encoding': 9, 'bad_float_encoding': 1, 'bad_handle_encoding': 74, 'bad_interval_encoding': 2, 'bad_time_encoding': 6, 'missing_parameter_choice': 2, 'missing_required_parameter': 90, 'unexpected_parameter': 53, 'unsupported_or_failed_service_action': 32}, 'case_count': 269, 'section_refs': ['IEEE 1516.1-2010 §11.3', 'IEEE 1516.1-2010 §11.4.1', 'IEEE 1516.1-2010 §11.5', 'IEEE 1516.1-2010 Annex G']}
 
 ## Verification asset plan
 

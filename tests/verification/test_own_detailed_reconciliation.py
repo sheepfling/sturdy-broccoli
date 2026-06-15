@@ -1,27 +1,28 @@
 from __future__ import annotations
 
-import csv
 from collections import Counter
 from pathlib import Path
+
+from tests.verification.reconciliation_helpers import read_csv_rows, rows_by_id, status_counts
 
 
 RECONCILIATION_PATH = (
     Path(__file__).resolve().parents[2]
     / "requirements"
+    / "reference"
     / "hla1516_1_own_detailed_reconciliation.csv"
 )
 
 
 def _read_rows() -> list[dict[str, str]]:
-    with RECONCILIATION_PATH.open(newline="", encoding="utf-8") as handle:
-        return list(csv.DictReader(handle))
+    return read_csv_rows(RECONCILIATION_PATH)
 
 
 def test_ownership_detailed_reconciliation_has_expected_shape():
     rows = _read_rows()
 
     assert len(rows) == 225
-    assert Counter(row["current_status"] for row in rows) == Counter(
+    assert status_counts(rows) == Counter(
         {"mapped": 195, "partial": 30}
     )
     assert {row["source_packet_file"] for row in rows} == {
@@ -30,7 +31,7 @@ def test_ownership_detailed_reconciliation_has_expected_shape():
 
 
 def test_ownership_detailed_reconciliation_spot_checks_key_rows():
-    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    rows = rows_by_id(_read_rows())
 
     assert rows["HLA1516.1-OWN-OVERVIEW-008"]["current_status"] == "mapped"
     assert rows["HLA1516.1-OWN-OVERVIEW-008"]["reconciliation_kind"] == "OVW"
@@ -60,7 +61,7 @@ def test_ownership_detailed_reconciliation_spot_checks_key_rows():
 
 
 def test_ownership_argument_rows_use_direct_negative_path_nodes():
-    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    rows = rows_by_id(_read_rows())
 
     expected = {
         "HLA1516.1-OWN-7_2-UNCONDITIONALATTRIBUTEOWNERSHIPDIVESTITURE-ARG-001": "tests/backends/test_python_backend_object_ownership_extended.py::test_unconditional_divestiture_query_ownership_and_is_owned_reject_not_connected_not_joined_unknown_object_and_save_restore",

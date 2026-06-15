@@ -4,6 +4,7 @@ import ast
 import tomllib
 from pathlib import Path
 import subprocess
+from typing import Callable
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -68,8 +69,6 @@ PACKAGE_RTI_ROOT_IMPORT_PREFIXES = (
     "import hla2010.rti",
 )
 PACKAGE_ROOT_HELPER_IMPORT_PREFIXES = (
-    "from hla2010.ambassadors import",
-    "import hla2010.ambassadors",
     "from hla2010.runtime_api import",
     "import hla2010.runtime_api",
 )
@@ -110,6 +109,7 @@ FORBIDDEN_PACKAGE_REPO_ROOT_PATTERNS = (
     "Path(__file__).resolve().parent.parent",
 )
 ALLOWLISTED_SELF_LOCATING_SCRIPTS = {
+    "scripts/check_python_route_preflight.py",
     "scripts/check_certi_preflight.py",
     "scripts/check_vendor_runner_template_drift.py",
     "scripts/ci/check_doc_links.py",
@@ -133,8 +133,10 @@ ALLOWLISTED_SELF_LOCATING_SCRIPTS = {
     "scripts/generate_python_rti_service_map.py",
     "scripts/generate_runtime_method_index.py",
     "scripts/human_editability.py",
+    "scripts/new_fom_package.py",
     "scripts/repro_pitch_crc_docker.py",
     "scripts/repro_pitch_crc_macos.py",
+    "scripts/run_python_route_parity_matrix.py",
     "scripts/run_target_radar_backend_matrix.py",
     "scripts/run_target_radar_proof.py",
     "scripts/run_two_federate_suite.py",
@@ -197,6 +199,33 @@ def _find_forbidden_lines(paths: list[Path]) -> list[str]:
                 rel = path.relative_to(ROOT).as_posix()
                 violations.append(f"{rel}:{lineno}: {stripped}")
     return violations
+
+
+def _scan_lines(
+    paths: list[Path],
+    *,
+    skip: Callable[[str, Path], bool] | None = None,
+    line_matches: Callable[[str, Path, str], bool] | None = None,
+) -> list[str]:
+    violations: list[str] = []
+    for path in paths:
+        if _should_skip(path):
+            continue
+        rel = path.relative_to(ROOT).as_posix()
+        if skip is not None and skip(rel, path):
+            continue
+        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+            stripped = line.strip()
+            if line_matches is not None and line_matches(rel, path, stripped):
+                violations.append(f"{rel}:{lineno}: {stripped}")
+    return violations
+
+def _contains_any_pattern(patterns: tuple[str, ...], stripped: str) -> bool:
+    return any(pattern in stripped for pattern in patterns)
+
+
+def _starts_with_any_prefix(prefixes: tuple[str, ...], stripped: str) -> bool:
+    return stripped.startswith(prefixes)
 
 
 def test_repo_code_does_not_import_removed_public_testing_namespaces() -> None:
@@ -262,82 +291,69 @@ def test_root_pyproject_is_tooling_only() -> None:
 
 
 def test_repo_code_does_not_use_import_bootstrap_or_sys_path_mutation() -> None:
-    violations: list[str] = []
-    for path in _iter_python_files():
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        if rel.startswith("scripts/") or rel == "tests/vendors/pitch_jpype_lost_federate_child.py":
-            continue
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if any(pattern in stripped for pattern in FORBIDDEN_BOOTSTRAP_PATTERNS + FORBIDDEN_SYS_PATH_PATTERNS):
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        _iter_python_files(),
+        skip=lambda rel, path: rel.startswith("scripts/") or rel == "tests/vendors/pitch_jpype_lost_federate_child.py",
+        line_matches=lambda rel, path, stripped: _contains_any_pattern(
+            FORBIDDEN_BOOTSTRAP_PATTERNS + FORBIDDEN_SYS_PATH_PATTERNS,
+            stripped,
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 
 def test_public_packages_do_not_use_dynamic_exports_or_package_walking() -> None:
-    violations: list[str] = []
-    for path in _iter_package_python_files():
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if any(pattern in stripped for pattern in FORBIDDEN_DYNAMIC_ALL_PATTERNS + FORBIDDEN_PACKAGE_WALK_PATTERNS):
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        _iter_package_python_files(),
+        line_matches=lambda rel, path, stripped: _contains_any_pattern(
+            FORBIDDEN_DYNAMIC_ALL_PATTERNS + FORBIDDEN_PACKAGE_WALK_PATTERNS,
+            stripped,
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 
 def test_maintained_package_code_does_not_use_wildcard_facades_or_runtime_class_injection() -> None:
-    violations: list[str] = []
-    for path in _iter_package_python_files():
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if any(pattern in stripped for pattern in FORBIDDEN_WILDCARD_IMPORT_PATTERNS + FORBIDDEN_RUNTIME_CLASS_INJECTION_PATTERNS):
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        _iter_package_python_files(),
+        line_matches=lambda rel, path, stripped: _contains_any_pattern(
+            FORBIDDEN_WILDCARD_IMPORT_PATTERNS + FORBIDDEN_RUNTIME_CLASS_INJECTION_PATTERNS,
+            stripped,
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 
 def test_maintained_code_does_not_import_removed_compatibility_paths() -> None:
-    violations: list[str] = []
-    for path in _iter_python_files():
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if any(pattern in stripped for pattern in FORBIDDEN_REMOVED_COMPAT_IMPORT_PATTERNS):
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        _iter_python_files(),
+        line_matches=lambda rel, path, stripped: _contains_any_pattern(
+            FORBIDDEN_REMOVED_COMPAT_IMPORT_PATTERNS,
+            stripped,
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 
 def test_public_packages_do_not_sniff_repo_root_from_file_paths() -> None:
-    violations: list[str] = []
-    for path in _iter_package_python_files():
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if any(pattern in stripped for pattern in FORBIDDEN_PACKAGE_REPO_ROOT_PATTERNS):
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        _iter_package_python_files(),
+        line_matches=lambda rel, path, stripped: _contains_any_pattern(
+            FORBIDDEN_PACKAGE_REPO_ROOT_PATTERNS,
+            stripped,
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 
 def test_installable_package_code_does_not_depend_on_root_backend_or_transport_facades() -> None:
-    violations: list[str] = []
-    for path in _iter_package_python_files():
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if any(pattern in stripped for pattern in FORBIDDEN_PACKAGE_ROOT_FACADE_IMPORTS):
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        _iter_package_python_files(),
+        line_matches=lambda rel, path, stripped: _contains_any_pattern(
+            FORBIDDEN_PACKAGE_ROOT_FACADE_IMPORTS,
+            stripped,
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 
@@ -354,62 +370,50 @@ def test_repo_aware_scripts_that_self_locate_are_explicitly_allowlisted() -> Non
 
 
 def test_non_allowlisted_scripts_do_not_sniff_repo_root_from_file_paths() -> None:
-    violations: list[str] = []
-    for path in _iter_script_python_files():
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        if rel in ALLOWLISTED_SELF_LOCATING_SCRIPTS:
-            continue
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if any(pattern in stripped for pattern in FORBIDDEN_PACKAGE_REPO_ROOT_PATTERNS):
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        _iter_script_python_files(),
+        skip=lambda rel, path: rel in ALLOWLISTED_SELF_LOCATING_SCRIPTS,
+        line_matches=lambda rel, path, stripped: _contains_any_pattern(
+            FORBIDDEN_PACKAGE_REPO_ROOT_PATTERNS,
+            stripped,
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 
 def test_package_owned_transport_helpers_do_not_import_transport_registry_through_root_facade() -> None:
-    violations: list[str] = []
-    for path in _iter_package_python_files():
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        if not rel.startswith("packages/"):
-            continue
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if any(pattern in stripped for pattern in PACKAGE_TRANSPORT_REGISTRY_IMPORTS_THROUGH_ROOT):
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        _iter_package_python_files(),
+        skip=lambda rel, path: not rel.startswith("packages/"),
+        line_matches=lambda rel, path, stripped: _contains_any_pattern(
+            PACKAGE_TRANSPORT_REGISTRY_IMPORTS_THROUGH_ROOT,
+            stripped,
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 
 def test_package_owned_code_does_not_import_root_rti_factory_facade() -> None:
-    violations: list[str] = []
-    for path in _iter_package_python_files():
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        if not rel.startswith("packages/"):
-            continue
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if stripped.startswith(PACKAGE_RTI_ROOT_IMPORT_PREFIXES):
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        _iter_package_python_files(),
+        skip=lambda rel, path: not rel.startswith("packages/"),
+        line_matches=lambda rel, path, stripped: _starts_with_any_prefix(
+            PACKAGE_RTI_ROOT_IMPORT_PREFIXES,
+            stripped,
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 
 def test_package_owned_code_does_not_import_root_callback_helper_facades() -> None:
-    violations: list[str] = []
-    for path in _iter_package_python_files():
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        if not rel.startswith("packages/"):
-            continue
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if stripped.startswith(PACKAGE_ROOT_HELPER_IMPORT_PREFIXES):
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        _iter_package_python_files(),
+        skip=lambda rel, path: not rel.startswith("packages/"),
+        line_matches=lambda rel, path, stripped: _starts_with_any_prefix(
+            PACKAGE_ROOT_HELPER_IMPORT_PREFIXES,
+            stripped,
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 
@@ -440,102 +444,79 @@ def test_installable_packages_do_not_expose_cli_named_modules() -> None:
 
 
 def test_repo_scripts_do_not_import_root_verification_facade() -> None:
-    violations: list[str] = []
-    for path in sorted((ROOT / "scripts").rglob("*.py")):
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if any(pattern in stripped for pattern in FORBIDDEN_ROOT_VERIFICATION_FACADE_IMPORTS):
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        sorted((ROOT / "scripts").rglob("*.py")),
+        line_matches=lambda rel, path, stripped: _contains_any_pattern(
+            FORBIDDEN_ROOT_VERIFICATION_FACADE_IMPORTS,
+            stripped,
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 
 def test_repo_scripts_do_not_import_root_rti_factory_facade() -> None:
-    violations: list[str] = []
-    for path in _iter_script_python_files():
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if stripped.startswith(SCRIPT_RTI_ROOT_IMPORT_PREFIXES):
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        _iter_script_python_files(),
+        line_matches=lambda rel, path, stripped: _starts_with_any_prefix(
+            SCRIPT_RTI_ROOT_IMPORT_PREFIXES,
+            stripped,
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 
 def test_repo_scripts_do_not_import_root_runtime_callback_facades() -> None:
-    violations: list[str] = []
-    for path in _iter_script_python_files():
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if (
-                stripped.startswith("from hla2010.runtime_api import FederateAmbassador")
-                or stripped.startswith("from hla2010.ambassadors import")
-                or stripped.startswith("import hla2010.ambassadors")
-            ):
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        _iter_script_python_files(),
+        line_matches=lambda rel, path, stripped: (
+            stripped.startswith("from hla2010.runtime_api import FederateAmbassador")
+            or stripped.startswith("from hla2010.ambassadors import")
+            or stripped.startswith("import hla2010.ambassadors")
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 
 def test_examples_do_not_import_removed_root_scenario_facades() -> None:
-    violations: list[str] = []
-    for path in sorted((ROOT / "examples").rglob("*.py")):
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if "from hla2010.scenarios" in stripped or "import hla2010.scenarios" in stripped:
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        sorted((ROOT / "examples").rglob("*.py")),
+        line_matches=lambda rel, path, stripped: (
+            "from hla2010.scenarios" in stripped or "import hla2010.scenarios" in stripped
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 
 def test_examples_do_not_import_removed_root_backend_facades() -> None:
-    violations: list[str] = []
-    for path in sorted((ROOT / "examples").rglob("*.py")):
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if "from hla2010.backends." in stripped or "import hla2010.backends." in stripped:
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        sorted((ROOT / "examples").rglob("*.py")),
+        line_matches=lambda rel, path, stripped: (
+            "from hla2010.backends." in stripped or "import hla2010.backends." in stripped
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 
 def test_examples_and_public_docs_do_not_promote_root_rti_import_form() -> None:
-    violations: list[str] = []
     paths = sorted((ROOT / "examples").rglob("*.py")) + _iter_public_docs()
-    for path in paths:
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if stripped.startswith("from hla2010.rti import") or stripped.startswith("import hla2010.rti"):
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        paths,
+        line_matches=lambda rel, path, stripped: (
+            stripped.startswith("from hla2010.rti import") or stripped.startswith("import hla2010.rti")
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 
 def test_examples_do_not_import_root_runtime_callback_facades() -> None:
-    violations: list[str] = []
-    for path in sorted((ROOT / "examples").rglob("*.py")):
-        if _should_skip(path):
-            continue
-        rel = path.relative_to(ROOT).as_posix()
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            stripped = line.strip()
-            if (
-                stripped.startswith("from hla2010.runtime_api import FederateAmbassador")
-                or stripped.startswith("from hla2010.ambassadors import")
-                or stripped.startswith("import hla2010.ambassadors")
-            ):
-                violations.append(f"{rel}:{lineno}: {stripped}")
+    violations = _scan_lines(
+        sorted((ROOT / "examples").rglob("*.py")),
+        line_matches=lambda rel, path, stripped: (
+            stripped.startswith("from hla2010.runtime_api import FederateAmbassador")
+            or stripped.startswith("from hla2010.ambassadors import")
+            or stripped.startswith("import hla2010.ambassadors")
+        ),
+    )
     assert not violations, "\n".join(violations)
 
 

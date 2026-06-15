@@ -1,6 +1,6 @@
 # Public Class Inventory
 
-- all public module classes: 224
+- all public module classes: 213
 - package-exported classes: 0
 
 | Module | Class | Exported via `hla2010` | Mapping status | Rationale |
@@ -156,14 +156,7 @@
 | hla2010.exceptions | UnableToPerformSave | no | close-1to1 | Exception class names intentionally mirror the HLA exception taxonomy. |
 | hla2010.exceptions | UnknownName | no | close-1to1 | Exception class names intentionally mirror the HLA exception taxonomy. |
 | hla2010.exceptions | UnsupportedCallbackModel | no | close-1to1 | Exception class names intentionally mirror the HLA exception taxonomy. |
-| hla2010.fom | FOMCatalog | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla2010.fom | FOMMergeError | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla2010.fom | FOMModule | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla2010.fom | FOMResolutionError | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
 | hla2010.fom | FOMResolver | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla2010.fom | InteractionClassSpec | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla2010.fom | OMTConformanceAssessment | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla2010.fom | ObjectClassSpec | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
 | hla2010.handles | AttributeHandle | no | close-1to1 | Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations. |
 | hla2010.handles | AttributeHandleFactory | no | close-1to1 | Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations. |
 | hla2010.handles | AttributeHandleSet | no | close-1to1 | Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations. |
@@ -204,10 +197,6 @@
 | hla2010.handles | TransportationTypeHandle | no | close-1to1 | Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations. |
 | hla2010.handles | TransportationTypeHandleFactory | no | close-1to1 | Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations. |
 | hla2010.handles | TypedHandleSet | no | close-1to1 | Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations. |
-| hla2010.raw_api | FederateAmbassador | no | close-1to1 | Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs. |
-| hla2010.raw_api | NullFederateAmbassador | no | close-1to1 | Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs. |
-| hla2010.raw_api | RTIAmbassador | no | close-1to1 | Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs. |
-| hla2010.raw_api | RTIambassador | no | close-1to1 | Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs. |
 | hla2010.runtime_api | FederateAmbassador | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
 | hla2010.runtime_api | NullFederateAmbassador | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
 | hla2010.runtime_api | RTIAmbassador | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |

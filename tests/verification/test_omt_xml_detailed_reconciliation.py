@@ -1,15 +1,16 @@
 from __future__ import annotations
 
-import csv
 from collections import Counter
 from pathlib import Path
 
 from hla2010_repo_internal.requirements_packet import load_imported_hla_packet
+from tests.verification.reconciliation_helpers import read_csv_rows, rows_by_id, status_counts
 
 
 RECONCILIATION_PATH = (
     Path(__file__).resolve().parents[2]
     / "requirements"
+    / "reference"
     / "hla1516_2_omt_xml_detailed_reconciliation.csv"
 )
 
@@ -32,8 +33,7 @@ EXPECTED_COLUMNS = [
 
 
 def _read_rows() -> list[dict[str, str]]:
-    with RECONCILIATION_PATH.open(newline="", encoding="utf-8") as handle:
-        return list(csv.DictReader(handle))
+    return read_csv_rows(RECONCILIATION_PATH)
 
 
 def test_omt_xml_detailed_reconciliation_matches_imported_packet_shape():
@@ -43,7 +43,7 @@ def test_omt_xml_detailed_reconciliation_matches_imported_packet_shape():
     assert rows
     assert list(rows[0].keys()) == EXPECTED_COLUMNS
     assert len(rows) == len(packet.omt_xml_detailed_rows) == 1292
-    assert {row["standard"] for row in rows} == {"IEEE 1516.2-2010"}
+    assert {row["standard"] for row in rows} == {"IEEE 1516.2-2010 (2010 edition)"}
     assert {row["source_packet_file"] for row in rows} == {
         "hla_1516_omt_xml_detailed_requirements_v1_0.csv"
     }
@@ -56,11 +56,11 @@ def test_omt_xml_detailed_reconciliation_matches_imported_packet_shape():
 
 def test_omt_xml_detailed_reconciliation_status_distribution_is_intentional():
     rows = _read_rows()
-    statuses = Counter(row["current_status"] for row in rows)
+    statuses = status_counts(rows)
 
     assert statuses == Counter({"partial": 1270, "mapped": 22})
 
-    by_id = {row["packet_requirement_id"]: row for row in rows}
+    by_id = rows_by_id(rows)
     assert by_id["HLA1516.2-OMT-4_1-SEM-001"]["current_status"] == "mapped"
     assert by_id["HLA1516.2-OMT-Annex_C-SEM-019"]["current_status"] == "mapped"
     assert by_id["HLA1516.2-OMT-Annex_B-SEM-018"]["current_status"] == "partial"

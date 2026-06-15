@@ -61,6 +61,7 @@ Find it with:
 
 ```bash
 ./tools/human-editability trace timeAdvanceRequest
+./tools/human-editability trace-summary timeAdvanceRequest
 ```
 
 That lands on:

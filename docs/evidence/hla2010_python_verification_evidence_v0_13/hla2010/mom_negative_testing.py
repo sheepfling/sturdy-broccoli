@@ -80,7 +80,7 @@ class MOMNegativeTestCase:
     expected_python_exception: str = "RTIexception"
     executable: bool = True
     reason: str = ""
-    section_refs: tuple[str, ...] = ("1516.1-2010 §11.4.1", "1516.1-2010 §11.5")
+    section_refs: tuple[str, ...] = ("IEEE 1516.1-2010 §11.4.1", "IEEE 1516.1-2010 §11.5")
     metadata: Mapping[str, Any] = field(default_factory=dict)
 
     def as_dict(self) -> dict[str, Any]:
@@ -180,7 +180,7 @@ def mom_negative_case_report(model: MOMExposureModel) -> dict[str, Any]:
         if case.executable:
             by_kind_executable[case.case] = by_kind_executable.get(case.case, 0) + 1
     return {
-        "section_refs": ["1516.1-2010 §11.3", "1516.1-2010 §11.4.1", "1516.1-2010 §11.5", "1516.1-2010 Annex G"],
+        "section_refs": ["IEEE 1516.1-2010 §11.3", "IEEE 1516.1-2010 §11.4.1", "IEEE 1516.1-2010 §11.5", "IEEE 1516.1-2010 Annex G"],
         "total_generated_cases": len(cases),
         "executable_case_count": len(executable),
         "planned_semantic_case_count": len(planned),

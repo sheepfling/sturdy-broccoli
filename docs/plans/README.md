@@ -20,4 +20,6 @@ Current plans:
 - [imported_requirements_backlog_v1_0.md](imported_requirements_backlog_v1_0.md): generated repo-native work queues from the harmonized requirements ledgers
 - [requirements_finish_line.md](requirements_finish_line.md): the handoff note for finishing remaining requirement rows without overclaiming
 - [human_editability_traceability_finish_line.md](human_editability_traceability_finish_line.md): the concrete finish-line plan for human editability, traceability, and anti-regression guards
+- [human_editability_smell_inventory.md](human_editability_smell_inventory.md): smell inventory and closure matrix for the human-editability tranche
 - [human_editability_reassessment_2026_06.md](human_editability_reassessment_2026_06.md): re-evaluation of remaining contributor pain points after the guardrail phase
+- [hla2010_spec_source_root_migration.md](hla2010_spec_source_root_migration.md): source-root migration note for the `hla2010-spec` package

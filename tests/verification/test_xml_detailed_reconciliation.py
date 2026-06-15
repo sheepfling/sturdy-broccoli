@@ -1,30 +1,36 @@
 from __future__ import annotations
 
-import csv
 from collections import Counter
 from pathlib import Path
+
+from tests.verification.reconciliation_helpers import (
+    kind_status_counts,
+    read_csv_rows,
+    rows_by_id,
+    status_counts,
+)
 
 
 RECONCILIATION_PATH = (
     Path(__file__).resolve().parents[2]
     / "requirements"
+    / "reference"
     / "hla1516_xml_detailed_reconciliation.csv"
 )
 
 
 def _read_rows() -> list[dict[str, str]]:
-    with RECONCILIATION_PATH.open(newline="", encoding="utf-8") as handle:
-        return list(csv.DictReader(handle))
+    return read_csv_rows(RECONCILIATION_PATH)
 
 
 def test_xml_detailed_reconciliation_has_expected_shape():
     rows = _read_rows()
 
     assert len(rows) == 367
-    assert Counter(row["current_status"] for row in rows) == Counter(
+    assert status_counts(rows) == Counter(
         {"partial": 364, "mapped": 3}
     )
-    assert Counter((row["reconciliation_kind"], row["current_status"]) for row in rows) == Counter(
+    assert kind_status_counts(rows) == Counter(
         {
             ("XML_ELEM", "partial"): 274,
             ("XML_TYPE", "partial"): 89,
@@ -40,7 +46,7 @@ def test_xml_detailed_reconciliation_has_expected_shape():
 
 
 def test_xml_detailed_reconciliation_spot_checks_key_rows():
-    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    rows = rows_by_id(_read_rows())
 
     assert rows["HLA1516.2-XML-DIF-032"]["current_status"] == "mapped"
     assert rows["HLA1516.2-XML-SCHEMA-033"]["current_status"] == "mapped"

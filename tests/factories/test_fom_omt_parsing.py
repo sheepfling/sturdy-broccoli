@@ -2164,7 +2164,7 @@ def test_1516_2_hierarchy_doc_declares_omt_lexicon_and_conformance_boundary():
     assert "Attribute definitions carry the documentation, validation, and traceability meaning" in text
     assert "Parameter definitions carry the documentation, validation, and traceability meaning" in text
     assert "## Conformance Claim Boundary" in text
-    assert "does not claim full IEEE 1516.2-2010 conformance" in text
+    assert "does not claim full IEEE 1516.2-2010 (2010 edition) conformance" in text
     assert "The current OMT document conformance labels used in this repo are:" in text
     assert "`conforming`: schema-valid, semantically valid, and fully within the currently supported repo-native OMT subset." in text
     assert "`partially conforming`: schema-valid and semantically valid, but uses features that the repo currently preserves or reports without executing full runtime semantics." in text

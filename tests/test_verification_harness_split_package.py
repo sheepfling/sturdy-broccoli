@@ -2,34 +2,34 @@ from __future__ import annotations
 
 import json
 import re
+from pathlib import Path, PurePosixPath
+
+from conftest import REPO_ROOT, load_compliance_json
 from hla2010_repo_internal.conformance_evidence import focused_evidence_by_method
-from pathlib import Path
+from tests.compliance_row_models import RequirementDispositionRow
 
-
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = REPO_ROOT
 
 
 def _compliance_harness_refs(*, backend: str, clauses: tuple[str, ...]) -> set[str]:
-    payload = json.loads(
-        (ROOT / "analysis" / "compliance" / f"{backend}_requirement_disposition.json").read_text(encoding="utf-8")
-    )
+    payload = load_compliance_json(f"{backend}_requirement_disposition.json")
     return {
         ref
-        for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") in clauses
-        for ref in row["evidence_refs"]
+        for row in (RequirementDispositionRow.from_mapping(item) for item in payload["rows"])
+        if row.document == "IEEE 1516.1-2010 (2010 edition)" and row.clause_root in clauses
+        for ref in row.evidence_refs
         if ref.startswith("packages/hla2010-verification-harness/src/hla2010_verification_harness/")
     }
 
 
 def _pitch_profile_compliance_harness_refs(*, clauses: tuple[str, ...]) -> set[str]:
-    payload = json.loads((ROOT / "analysis" / "compliance" / "pitch_requirement_disposition.json").read_text(encoding="utf-8"))
+    payload = load_compliance_json("pitch_requirement_disposition.json")
     return {
         ref
-        for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") in clauses
+        for row in (RequirementDispositionRow.from_mapping(item) for item in payload["rows"])
+        if row.document == "IEEE 1516.1-2010 (2010 edition)" and row.clause_root in clauses
         for key in ("pitch_jpype_evidence_refs", "pitch_py4j_evidence_refs")
-        for ref in row.get(key, [])
+        for ref in row.evidence_refs_for(key)
         if ref.startswith("packages/hla2010-verification-harness/src/hla2010_verification_harness/")
     }
 
@@ -37,7 +37,7 @@ def _pitch_profile_compliance_harness_refs(*, clauses: tuple[str, ...]) -> set[s
 def _split_harness_ref(ref: str) -> tuple[str, str]:
     prefix = "packages/hla2010-verification-harness/src/"
     module_path, symbol = ref.removeprefix(prefix).split("::", 1)
-    module_name = module_path.removesuffix(".py").replace("/", ".")
+    module_name = ".".join(PurePosixPath(module_path).with_suffix("").parts)
     return module_name, symbol
 
 

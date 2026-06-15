@@ -4,7 +4,7 @@ This repo should treat verification and validation as separate evidence streams.
 
 Verification asks:
 
-- did `hla2010` implement IEEE 1516.1-2010 correctly?
+- did `hla2010` implement IEEE 1516.1-2010 (2010 edition) correctly?
 
 Validation asks:
 

@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OM_PATH = ROOT / "requirements" / "hla1516_1_om_detailed_reconciliation.csv"
+OM_PATH = ROOT / "requirements" / "reference" / "hla1516_1_om_detailed_reconciliation.csv"
 
 
 def _load_rows() -> list[dict[str, str]]:

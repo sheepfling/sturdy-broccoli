@@ -6,6 +6,7 @@ import re
 from typing import Any, Iterable
 
 from .runtime_api import FederateAmbassador
+from .spec import FederateAmbassadorSpec
 from .spec_refs import SpecReference, method_reference
 
 
@@ -18,7 +19,7 @@ def lower_camel_to_snake(name: str) -> str:
     return s2.lower()
 
 
-def invoke_federate_callback(ambassador: FederateAmbassador, method_name: str, *args: Any, **kwargs: Any) -> Any:
+def invoke_federate_callback(ambassador: FederateAmbassador | FederateAmbassadorSpec, method_name: str, *args: Any, **kwargs: Any) -> Any:
     """Invoke a FederateAmbassador callback through an explicit method registry."""
 
     match method_name:

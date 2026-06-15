@@ -5,8 +5,10 @@ import json
 import re
 from pathlib import Path
 
+from conftest import REPO_ROOT, load_compliance_json
+from tests.compliance_row_models import RequirementDispositionRow
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = REPO_ROOT
 SCENARIO_ENTRYPOINT_RE = re.compile(r"\b((?:run|probe)_[A-Za-z0-9_]+)\(")
 DIRECT_BACKEND_CALL_RE = re.compile(
     r"\b(?:leader|wing|late|shadow|owner|acquirer|publisher|subscriber|sender|receiver|left|right|rti|observer|requester|rival|r1|r2)\.[A-Za-z_][A-Za-z0-9_]*\("
@@ -139,24 +141,27 @@ def _scenario_entrypoints(source: str) -> list[str]:
     return SCENARIO_ENTRYPOINT_RE.findall(source)
 
 
+def _python_requirement_rows() -> list[RequirementDispositionRow]:
+    payload = load_compliance_json("python_requirement_disposition.json")
+    return [RequirementDispositionRow.from_mapping(row) for row in payload["rows"]]
+
+
 def _clause6_python_compliance_wrapper_refs() -> set[str]:
-    payload = json.loads((ROOT / "analysis" / "compliance" / "python_requirement_disposition.json").read_text(encoding="utf-8"))
     return {
         ref.split("::", 1)[1]
-        for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "6"
-        for ref in row["evidence_refs"]
+        for row in _python_requirement_rows()
+        if row.document == "IEEE 1516.1-2010 (2010 edition)" and row.clause_root == "6"
+        for ref in row.evidence_refs
         if ref.startswith("tests/scenarios/test_object_management_backend_matrix.py::")
     }
 
 
 def _clause4_python_compliance_wrapper_refs() -> set[str]:
-    payload = json.loads((ROOT / "analysis" / "compliance" / "python_requirement_disposition.json").read_text(encoding="utf-8"))
     return {
         ref.split("::", 1)[1]
-        for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "4"
-        for ref in row["evidence_refs"]
+        for row in _python_requirement_rows()
+        if row.document == "IEEE 1516.1-2010 (2010 edition)" and row.clause_root == "4"
+        for ref in row.evidence_refs
         if ref.startswith("tests/scenarios/test_federation_lifecycle_backend_matrix.py::")
         or ref.startswith("tests/scenarios/test_federation_management_backend_matrix.py::")
     }

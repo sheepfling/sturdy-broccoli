@@ -11,10 +11,10 @@
   "rows": [
     {
       "artifact_refs": [
-        "requirements/hla1516_1_federate_interface.csv"
+        "requirements/reference/hla1516_1_federate_interface.csv"
       ],
       "certi_runtime_status": "",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -28,9 +28,9 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75",
       "service_group": "Declaration Management",
-      "source": "requirements/hla1516_1_federate_interface.csv",
+      "source": "requirements/reference/hla1516_1_federate_interface.csv",
       "status": "planned",
       "title": "The RTI shall implement declaration-management services for publication",
       "vendor_evidence_refs": [],
@@ -43,10 +43,10 @@
     },
     {
       "artifact_refs": [
-        "requirements/hla1516_1_federate_interface.csv"
+        "requirements/reference/hla1516_1_federate_interface.csv"
       ],
       "certi_runtime_status": "",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -60,19 +60,17 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-OM-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76",
       "service_group": "Object Management",
-      "source": "requirements/hla1516_1_federate_interface.csv",
+      "source": "requirements/reference/hla1516_1_federate_interface.csv",
       "status": "planned",
       "title": "The RTI shall implement object-management services for registration",
       "vendor_evidence_refs": [],
       "vendor_notes": "",
-      "vendor_profile_bucket": "Exchange",
-      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
-      "vendor_profile_refs": [
-        "docs/rti_options_and_test_matrix.md"
-      ],
-      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_profile_bucket": "",
+      "vendor_profile_notes": "",
+      "vendor_profile_refs": [],
+      "vendor_profile_source": "",
       "vendor_source": ""
     },
     {
@@ -1957,7 +1955,7 @@
         "../tests/scenarios/test_object_management_backend_matrix.py",
         "../tests/vendors/test_pitch_real_backend_matrix.py"
       ],
-      "vendor_notes": "shared exchange, timed-delete, local-delete, and orphan-lifecycle scenarios verify the core object-management lifecycle on real Pitch",
+      "vendor_notes": "shared exchange scenario verifies real Pitch interaction send and receive paths",
       "vendor_profile_bucket": "Exchange",
       "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
       "vendor_profile_refs": [
@@ -3402,7 +3400,7 @@
         "../tests/scenarios/test_object_management_backend_matrix.py",
         "../tests/vendors/test_pitch_real_backend_matrix.py"
       ],
-      "vendor_notes": "shared exchange scenario verifies the registered Pitch object is published and discoverable as the intended class",
+      "vendor_notes": "shared exchange and request-routing scenarios verify Pitch tracks independently addressable object-instance handles",
       "vendor_profile_bucket": "Exchange",
       "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
       "vendor_profile_refs": [
@@ -3873,7 +3871,7 @@
         "../tests/scenarios/test_object_management_backend_matrix.py",
         "../tests/vendors/test_pitch_real_backend_matrix.py"
       ],
-      "vendor_notes": "shared discovery-class scenario verifies Pitch reflections use attributes valid for the known discovered class",
+      "vendor_notes": "shared exchange and object-scope scenarios verify real Pitch reflect-attribute callback delivery",
       "vendor_profile_bucket": "Exchange",
       "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
       "vendor_profile_refs": [
@@ -4838,7 +4836,7 @@
         "../tests/scenarios/test_object_management_backend_matrix.py",
         "../tests/vendors/test_pitch_real_backend_matrix.py"
       ],
-      "vendor_notes": "shared update-advisory callback scenario verifies Pitch turn-updates-on payload shape including the update-rate designator",
+      "vendor_notes": "shared update-advisory callback scenario verifies Pitch callback-bridge delivery for newly relevant published attributes",
       "vendor_profile_bucket": "Exchange",
       "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): seam present; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): yes; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
       "vendor_profile_refs": [

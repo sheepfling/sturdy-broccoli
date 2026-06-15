@@ -4,7 +4,7 @@ This module does not claim certification.  It creates an auditable engineering
 matrix from the source-derived Java/C++ API metadata, the Python backend service
 handlers, callback helpers, and the verification artifacts we currently have.
 
-Section anchors: IEEE 1516.1-2010 §4-§12, especially the per-service clauses
+Section anchors: IEEE 1516.1-2010 (2010 edition) §4-§12, especially the per-service clauses
 listed in :mod:`hla2010.spec_refs`.
 """
 
@@ -28,6 +28,10 @@ from hla2010_repo_internal.conformance_runtime import (
     verification_asset_artifact_refs,
 )
 from hla2010_repo_internal.conformance_evidence import focused_evidence_by_method
+from hla2010_repo_internal.requirements_source import (
+    format_requirement_section_ref,
+    requirement_document_title_for_binding,
+)
 
 from hla2010_rti_backend_common import RecordingFederateAmbassador
 from hla2010_rti_backend_common import CALLBACK_METHOD_NAMES, RTI_METHOD_NAMES, lower_camel_to_snake
@@ -188,6 +192,7 @@ def _section_asset_id(section: str) -> str:
     root = str(section).split(".", 1)[0]
     return section_to_verification_asset().get(root, "ASSET-UNMAPPED")
 
+
 def _normalize_requirement_section(section: str) -> str:
     token = str(section).strip() or "unmapped"
     return token.replace("§", "").replace(".", "_").replace(" ", "_").replace("-", "_").replace("/", "_")
@@ -323,6 +328,7 @@ def build_service_conformance_matrix(*, version: str = "0.13.0") -> ServiceConfo
     mom_cases = build_mom_negative_test_cases(mom_model)
     mom_executable_count = sum(1 for case in mom_cases if case.execution_level == "rti-strict")
     rows: list[ServiceConformanceRow] = []
+    federate_interface_document = requirement_document_title_for_binding("federate_interface")
 
     for method in RTI_METHOD_NAMES:
         overloads = _metadata_for("RTIambassador", method)
@@ -344,9 +350,9 @@ def build_service_conformance_matrix(*, version: str = "0.13.0") -> ServiceConfo
             interface="RTIambassador",
             method_name=method,
             python_name=lower_camel_to_snake(method),
-            document=ref.document if ref else "IEEE 1516.1-2010",
+            document=ref.document if ref else federate_interface_document,
             section=section,
-            section_ref=f"IEEE 1516.1-2010 §{section}" if section else "unmapped",
+            section_ref=format_requirement_section_ref(ref.document if ref else federate_interface_document, section),
             title=ref.title if ref else method,
             service_group=group,
             source_languages=_source_languages(overloads),
@@ -419,9 +425,9 @@ def build_service_conformance_matrix(*, version: str = "0.13.0") -> ServiceConfo
             interface="FederateAmbassador",
             method_name=method,
             python_name=lower_camel_to_snake(method),
-            document=ref.document if ref else "IEEE 1516.1-2010",
+            document=ref.document if ref else federate_interface_document,
             section=section,
-            section_ref=f"IEEE 1516.1-2010 §{section}" if section else "unmapped",
+            section_ref=format_requirement_section_ref(ref.document if ref else federate_interface_document, section),
             title=ref.title if ref else method,
             service_group=group,
             source_languages=_source_languages(overloads),

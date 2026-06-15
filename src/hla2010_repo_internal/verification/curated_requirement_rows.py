@@ -9,6 +9,12 @@ from hla2010_repo_internal.verification.curated_requirement_refs import (
     get_curated_requirement_direct_refs,
 )
 
+_CURATED_REFERENCE_SOURCES = (
+    "hla1516_1_clause_4_fm_service_decomposition.csv",
+    "hla1516_1_federate_interface.csv",
+    "hla1516_1_priority_clauses_4_8_11.csv",
+)
+
 
 def _split_semicolon_list(value: Any) -> list[str]:
     text = str(value or "").strip()
@@ -83,6 +89,7 @@ def load_curated_requirement_rows(project_root: str | Path) -> list[dict[str, An
     repo_root = Path(project_root).resolve()
     traceability_path = repo_root / "requirements" / "traceability_matrix.csv"
     requirements_dir = repo_root / "requirements"
+    reference_dir = requirements_dir / "reference"
     if not requirements_dir.exists() or not traceability_path.exists():
         return []
     excluded_sources = {
@@ -91,14 +98,14 @@ def load_curated_requirement_rows(project_root: str | Path) -> list[dict[str, An
     }
     excluded_requirement_ids: set[str] = set()
     for source_name in excluded_sources:
-        source_path = requirements_dir / source_name
-        if not source_path.exists():
-            continue
-        with source_path.open(newline="", encoding="utf-8") as fh:
-            for row in csv.DictReader(fh):
-                requirement_id = str(row.get("requirement_id", "")).strip()
-                if requirement_id:
-                    excluded_requirement_ids.add(requirement_id)
+        for source_path in (requirements_dir / source_name, reference_dir / source_name):
+            if not source_path.exists():
+                continue
+            with source_path.open(newline="", encoding="utf-8") as fh:
+                for row in csv.DictReader(fh):
+                    requirement_id = str(row.get("requirement_id", "")).strip()
+                    if requirement_id:
+                        excluded_requirement_ids.add(requirement_id)
 
     with traceability_path.open(newline="", encoding="utf-8") as fh:
         trace_rows = list(csv.DictReader(fh))
@@ -107,11 +114,19 @@ def load_curated_requirement_rows(project_root: str | Path) -> list[dict[str, An
     curated_rows_by_id: dict[str, dict[str, Any]] = {}
     seen: set[str] = set()
 
-    for source_path in sorted(requirements_dir.glob("*.csv")):
-        if source_path.name == "traceability_matrix.csv":
-            continue
-        if source_path.name in excluded_sources:
-            continue
+    source_paths = [
+        source_path
+        for source_path in sorted(requirements_dir.glob("*.csv"))
+        if source_path.name != "traceability_matrix.csv" and source_path.name not in excluded_sources
+    ]
+    source_paths.extend(
+        source_path
+        for source_name in _CURATED_REFERENCE_SOURCES
+        for source_path in [reference_dir / source_name]
+        if source_path.exists() and source_path.name not in excluded_sources
+    )
+
+    for source_path in source_paths:
         with source_path.open(newline="", encoding="utf-8") as fh:
             source_rows = list(csv.DictReader(fh))
         for row in source_rows:
@@ -135,6 +150,7 @@ def load_curated_requirement_rows(project_root: str | Path) -> list[dict[str, An
                 str(trace.get("notes", "")).strip(),
             ]
             direct_refs = get_curated_requirement_direct_refs().get(requirement_id, {})
+            source_ref = str(source_path.relative_to(repo_root)).replace("\\", "/")
             curated_rows_by_id[requirement_id] = {
                 "matrix_id": requirement_id,
                 "kind": _curated_row_kind(row),
@@ -147,13 +163,11 @@ def load_curated_requirement_rows(project_root: str | Path) -> list[dict[str, An
                 "implementation_refs": list(direct_refs.get("implementation_refs", implementation_refs)),
                 "positive_test_refs": list(direct_refs.get("positive_test_refs", test_refs)),
                 "negative_test_refs": list(direct_refs.get("negative_test_refs", ())),
-                "artifact_refs": sorted(
-                    set(_split_semicolon_list(trace.get("artifact_refs"))) | {f"requirements/{source_path.name}"}
-                ),
+                "artifact_refs": sorted(set(_split_semicolon_list(trace.get("artifact_refs"))) | {source_ref}),
                 "linked_methods": _split_scalar_list(row.get("linked_methods")),
                 "linked_assets": linked_assets,
                 "notes": "; ".join(part for part in note_parts if part),
-                "source": f"requirements/{source_path.name}",
+                "source": source_ref,
             }
             seen.add(requirement_id)
 

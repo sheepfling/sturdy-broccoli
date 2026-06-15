@@ -1,78 +1,45 @@
 from __future__ import annotations
 
-import csv
-from collections import Counter, defaultdict
+from collections import Counter
 from pathlib import Path
+
+from tests.verification.reconciliation_helpers import (
+    assert_mapped_test_rows_with_companions,
+    read_csv_rows,
+    status_counts,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DM_PATH = ROOT / "requirements" / "hla1516_1_dm_detailed_reconciliation.csv"
-CLAUSE_5_PATH = ROOT / "requirements" / "hla1516_1_clause_5_dm_detailed_reconciliation.csv"
+DM_PATH = ROOT / "requirements" / "reference" / "hla1516_1_dm_detailed_reconciliation.csv"
+CLAUSE_5_PATH = ROOT / "requirements" / "reference" / "hla1516_1_clause_5_dm_detailed_reconciliation.csv"
 
 
 def _load_rows() -> list[dict[str, str]]:
-    with DM_PATH.open(newline="", encoding="utf-8") as handle:
-        return list(csv.DictReader(handle))
+    return read_csv_rows(DM_PATH)
 
 
 def _load_clause5_rows() -> list[dict[str, str]]:
-    with CLAUSE_5_PATH.open(newline="", encoding="utf-8") as handle:
-        return list(csv.DictReader(handle))
-
-
-def _node_exists(node_id: str) -> bool:
-    file_part, _, test_name = node_id.partition("::")
-    if not file_part or not test_name:
-        return False
-    path = Path(file_part)
-    if not path.exists():
-        return False
-    text = path.read_text(encoding="utf-8")
-    return f"def {test_name}(" in text
+    return read_csv_rows(CLAUSE_5_PATH)
 
 
 def test_declaration_family_test_rows_have_direct_evidence_and_mapped_companion_slices():
-    rows = _load_rows()
-    by_feature: dict[str, dict[str, dict[str, str]]] = defaultdict(dict)
-    for row in rows:
-        by_feature[row["feature"]][row["reconciliation_kind"]] = row
-
-    test_rows = [row for row in rows if row["reconciliation_kind"] == "TEST"]
-    assert len(test_rows) == 12
-
-    for row in test_rows:
-        assert row["current_status"] == "mapped"
-        assert "broader PRE and EXC envelope rows remain partial" in row["notes"]
-
-        feature_rows = by_feature[row["feature"]]
-        for companion_kind in ("SIG", "MOM", "ARG", "EFF"):
-            assert feature_rows[companion_kind]["current_status"] == "mapped"
-
-        test_ids = [item.strip() for item in row["current_test_id"].split(";") if item.strip()]
-        assert len(test_ids) >= 2
-        assert all(_node_exists(test_id) for test_id in test_ids)
+    assert_mapped_test_rows_with_companions(
+        _load_rows(),
+        group_key="feature",
+        expected_count=12,
+        note_fragment="broader PRE and EXC envelope rows remain partial",
+    )
 
 
 def test_clause5_declaration_test_rows_match_family_level_direct_evidence():
     rows = _load_clause5_rows()
-    by_feature: dict[str, dict[str, dict[str, str]]] = defaultdict(dict)
-    for row in rows:
-        by_feature[row["feature"]][row["reconciliation_kind"]] = row
-
-    test_rows = [row for row in rows if row["reconciliation_kind"] == "TEST"]
-    assert len(test_rows) == 12
-    assert Counter(row["current_status"] for row in rows) == Counter(
+    assert status_counts(rows) == Counter(
         {"mapped": 92, "partial": 24}
     )
-
-    for row in test_rows:
-        assert row["current_status"] == "mapped"
-        assert "broader PRE and EXC envelope rows remain partial" in row["notes"]
-
-        feature_rows = by_feature[row["feature"]]
-        for companion_kind in ("SIG", "MOM", "ARG", "EFF"):
-            assert feature_rows[companion_kind]["current_status"] == "mapped"
-
-        test_ids = [item.strip() for item in row["current_test_id"].split(";") if item.strip()]
-        assert len(test_ids) >= 2
-        assert all(_node_exists(test_id) for test_id in test_ids)
+    assert_mapped_test_rows_with_companions(
+        rows,
+        group_key="feature",
+        expected_count=12,
+        note_fragment="broader PRE and EXC envelope rows remain partial",
+    )

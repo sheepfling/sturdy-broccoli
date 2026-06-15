@@ -6,11 +6,11 @@ This release slice moves MOM/MIM handling away from handwritten name tables and 
 
 | Area | Section anchor | v0.12 implementation evidence |
 |---|---:|---|
-| MOM object exposure | 1516.1-2010 §11.2 | `MOMObjectClassRule` rows derived from `FOMCatalog.object_classes`; MOM object attribute reflections are filtered to the active catalog. |
-| MOM interaction direction | 1516.1-2010 §11.3 | `MOMInteractionRule.rti_direction` marks RTI-received adjust/request/service leaves and RTI-sent report leaves. Strict mode rejects federate-sent report interactions. |
-| MOM adjust/request/service parameters | 1516.1-2010 §11.4.1 | Required parameters, at-least-one switch groups, request/report pairing, and representative payload datatype checks come from `hla2010.mom_catalog`. |
-| Service reporting and diagnostics | 1516.1-2010 §11.5 | MOM exceptions and service-invocation reports are generated through catalog-filtered report payloads. Service report files remain JSONL for auditable development. |
-| Standard MIM basis | 1516.1-2010 Annex G | The bundled `HLAstandardMIM.xml` is parsed and merged before user FOM modules. |
+| MOM object exposure | IEEE 1516.1-2010 §11.2 | `MOMObjectClassRule` rows derived from `FOMCatalog.object_classes`; MOM object attribute reflections are filtered to the active catalog. |
+| MOM interaction direction | IEEE 1516.1-2010 §11.3 | `MOMInteractionRule.rti_direction` marks RTI-received adjust/request/service leaves and RTI-sent report leaves. Strict mode rejects federate-sent report interactions. |
+| MOM adjust/request/service parameters | IEEE 1516.1-2010 §11.4.1 | Required parameters, at-least-one switch groups, request/report pairing, and representative payload datatype checks come from `hla2010.mom_catalog`. |
+| Service reporting and diagnostics | IEEE 1516.1-2010 §11.5 | MOM exceptions and service-invocation reports are generated through catalog-filtered report payloads. Service report files remain JSONL for auditable development. |
+| Standard MIM basis | IEEE 1516.1-2010 Annex G | The bundled `HLAstandardMIM.xml` is parsed and merged before user FOM modules. |
 
 ## Table-driven MOM model
 
@@ -82,17 +82,17 @@ In each strict failure path, the RTI queues a `HLAreportMOMexception` diagnostic
 
 | Asset ID | Type | Status | Section anchors | Gaps / caveats |
 |---|---|---|---|---|
-| `REQ-MOM-TABLE-001` | requirement | implemented-slice | 1516.1-2010 §11.2, 1516.1-2010 §11.3, 1516.1-2010 Annex G | — |
-| `REQ-MOM-NEG-001` | requirement | implemented-slice | 1516.1-2010 §11.4.1, 1516.1-2010 §11.5 | The generated matrix is complete for planning, but the executable suite samples representative cases rather than every generated row. |
-| `REQ-MOM-REPORT-001` | requirement | implemented-slice | 1516.1-2010 §11.3, 1516.1-2010 §11.4.1, 1516.1-2010 Annex G | Report payload values are still local-process diagnostics for several specialized report classes. |
-| `REQ-MOM-SERVICE-001` | requirement | implemented-slice | 1516.1-2010 §11.3, 1516.1-2010 §11.4.1 | Not every Annex G service action has a complete semantic implementation yet. |
-| `REQ-SERVICE-FILE-001` | requirement | implemented-slice | 1516.1-2010 §11.5 | The current format is JSONL for auditability; exact vendor/report-file formatting is not claimed. |
-| `REQ-TIME-ORDER-001` | requirement | implemented-slice | 1516.1-2010 §8.1, 1516.1-2010 §8.13, 1516.1-2010 §8.16, 1516.1-2010 §8.18, 1516.1-2010 §9 | The distributed-time algorithm remains a local-process approximation, not a proven multi-process LBTS algorithm. |
-| `REQ-SAVE-RESTORE-001` | requirement | implemented-slice | 1516.1-2010 §4.16-§4.25, 1516.1-2010 §8 | External persistent save-file interchange is not implemented. |
-| `SCENARIO-TARGET-RADAR-001` | scenario | implemented-smoke | 1516.1-2010 §4, 1516.1-2010 §5, 1516.1-2010 §6, 1516.1-2010 §8 | Scenario is a smoke demonstration, not a conformance test. |
-| `ASSET-CONFORMANCE-MATRIX-001` | planned-artifact | planned | 1516.1-2010 §4-§10 | Needs expected exception/state transitions for every service overload. |
-| `ASSET-CROSS-RTI-BRIDGE-001` | planned-artifact | gap | 1516.1-2010 Java binding, 1516.1-2010 §4-§10 | No vendor RTI, jpype1, or py4j package is available in this sandbox. |
-| `ASSET-NEGATIVE-MOM-MATRIX-001` | planned-artifact | implemented-slice | 1516.1-2010 §11.4.1, 1516.1-2010 Annex G | The matrix is generated; exhaustive parameterized execution remains the next verification slice. |
+| `REQ-MOM-TABLE-001` | requirement | implemented-slice | IEEE 1516.1-2010 §11.2, IEEE 1516.1-2010 §11.3, IEEE 1516.1-2010 Annex G | — |
+| `REQ-MOM-NEG-001` | requirement | implemented-slice | IEEE 1516.1-2010 §11.4.1, IEEE 1516.1-2010 §11.5 | The generated matrix is complete for planning, but the executable suite samples representative cases rather than every generated row. |
+| `REQ-MOM-REPORT-001` | requirement | implemented-slice | IEEE 1516.1-2010 §11.3, IEEE 1516.1-2010 §11.4.1, IEEE 1516.1-2010 Annex G | Report payload values are still local-process diagnostics for several specialized report classes. |
+| `REQ-MOM-SERVICE-001` | requirement | implemented-slice | IEEE 1516.1-2010 §11.3, IEEE 1516.1-2010 §11.4.1 | Not every Annex G service action has a complete semantic implementation yet. |
+| `REQ-SERVICE-FILE-001` | requirement | implemented-slice | IEEE 1516.1-2010 §11.5 | The current format is JSONL for auditability; exact vendor/report-file formatting is not claimed. |
+| `REQ-TIME-ORDER-001` | requirement | implemented-slice | IEEE 1516.1-2010 §8.1, IEEE 1516.1-2010 §8.13, IEEE 1516.1-2010 §8.16, IEEE 1516.1-2010 §8.18, IEEE 1516.1-2010 §9 | The distributed-time algorithm remains a local-process approximation, not a proven multi-process LBTS algorithm. |
+| `REQ-SAVE-RESTORE-001` | requirement | implemented-slice | IEEE 1516.1-2010 §4.16-§4.25, IEEE 1516.1-2010 §8 | External persistent save-file interchange is not implemented. |
+| `SCENARIO-TARGET-RADAR-001` | scenario | implemented-smoke | IEEE 1516.1-2010 §4, IEEE 1516.1-2010 §5, IEEE 1516.1-2010 §6, IEEE 1516.1-2010 §8 | Scenario is a smoke demonstration, not a conformance test. |
+| `ASSET-CONFORMANCE-MATRIX-001` | planned-artifact | planned | IEEE 1516.1-2010 §4-§10 | Needs expected exception/state transitions for every service overload. |
+| `ASSET-CROSS-RTI-BRIDGE-001` | planned-artifact | gap | IEEE 1516.1-2010 Java binding, IEEE 1516.1-2010 §4-§10 | No vendor RTI, jpype1, or py4j package is available in this sandbox. |
+| `ASSET-NEGATIVE-MOM-MATRIX-001` | planned-artifact | implemented-slice | IEEE 1516.1-2010 §11.4.1, IEEE 1516.1-2010 Annex G | The matrix is generated; exhaustive parameterized execution remains the next verification slice. |
 
 ## Honest progress notes
 

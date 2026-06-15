@@ -6,7 +6,7 @@ It is intentionally separate from [validation_plan.md](validation_plan.md).
 
 ## Goal
 
-Produce defensible evidence that `hla2010` implements the IEEE 1516.1-2010 federate interface correctly enough to support explicit clause-level claims.
+Produce defensible evidence that `hla2010` implements the IEEE 1516.1-2010 (2010 edition) federate interface correctly enough to support explicit clause-level claims.
 
 ## Master Traceability Model
 

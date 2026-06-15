@@ -1,28 +1,34 @@
 from __future__ import annotations
 
-import csv
 from collections import Counter
 from pathlib import Path
+
+from tests.verification.reconciliation_helpers import (
+    kind_status_counts,
+    read_csv_rows,
+    rows_by_id,
+    status_counts,
+)
 
 
 RECONCILIATION_PATH = (
     Path(__file__).resolve().parents[2]
     / "requirements"
+    / "reference"
     / "hla1516_1_mom_detailed_reconciliation.csv"
 )
 
 
 def _read_rows() -> list[dict[str, str]]:
-    with RECONCILIATION_PATH.open(newline="", encoding="utf-8") as handle:
-        return list(csv.DictReader(handle))
+    return read_csv_rows(RECONCILIATION_PATH)
 
 
 def test_mom_detailed_reconciliation_has_expected_shape():
     rows = _read_rows()
 
     assert len(rows) == 320
-    assert Counter(row["current_status"] for row in rows) == Counter({"mapped": 320})
-    assert Counter((row["reconciliation_kind"], row["current_status"]) for row in rows) == Counter(
+    assert status_counts(rows) == Counter({"mapped": 320})
+    assert kind_status_counts(rows) == Counter(
         {
             ("MIM_PARAM", "mapped"): 101,
             ("MIM_INT", "mapped"): 85,
@@ -44,7 +50,7 @@ def test_mom_detailed_reconciliation_has_expected_shape():
 
 
 def test_mom_detailed_reconciliation_spot_checks_key_rows():
-    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    rows = rows_by_id(_read_rows())
 
     assert rows["HLA1516.1-MOM-11_1-OVW-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-MOM-OVERVIEW-014"]["current_status"] == "mapped"

@@ -13,7 +13,7 @@ def test_verification_plan_is_honest_about_progress_and_gaps(tmp_path):
     assert summary["status_counts"]["implemented-slice"] >= 5
     assert summary["status_counts"]["planned"] >= 1
     assert summary["status_counts"]["gap"] >= 1
-    assert "1516.1-2010 §11.4.1" in summary["sections"]
+    assert "IEEE 1516.1-2010 §11.4.1" in summary["sections"]
     assert any(asset.gaps for asset in plan.assets)
 
     output = write_verification_assets(tmp_path / "verification.json", version="0.12.0")

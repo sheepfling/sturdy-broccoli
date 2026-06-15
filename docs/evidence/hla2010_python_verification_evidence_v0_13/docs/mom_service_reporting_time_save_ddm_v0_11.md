@@ -29,7 +29,7 @@ A new `hla2010.service_reporting` module provides the shared JSON-safe service-r
 - a global audit sink configured by `PythonRTIConfig.service_report_file`; and
 - per-federate service-report files enabled by the MOM `HLAsendServiceReportsToFile` switch or by `service_report_file_on_by_default`.
 
-Per-federate files begin with a `ServiceReportInitialRecord` containing connection, federation, FDD/MIM/FOM, and federate identity data.  Service call records include a serial number, service name, success indicator, exception name, normalized arguments, returned values, UTC timestamp, and a section reference such as `1516.1-2010 §8.17` for `queryLogicalTime`.
+Per-federate files begin with a `ServiceReportInitialRecord` containing connection, federation, FDD/MIM/FOM, and federate identity data.  Service call records include a serial number, service name, success indicator, exception name, normalized arguments, returned values, UTC timestamp, and a section reference such as `IEEE 1516.1-2010 §8.17` for `queryLogicalTime`.
 
 Service-report file output is an audit sink, not a substitute for normal MOM visibility in this development RTI: when a federate is also subscribed to the service-invocation report stream, it can still receive the corresponding MOM report.  The MOM `HLAreportServiceFile` attribute is refreshed with the implementation-selected path.
 

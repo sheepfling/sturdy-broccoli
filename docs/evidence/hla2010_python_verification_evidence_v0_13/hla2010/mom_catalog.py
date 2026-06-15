@@ -101,7 +101,7 @@ class MOMValidationIssue:
     parameter_name: str = ""
     detail: str = ""
     severity: str = "error"
-    section: str = "1516.1-2010 §11.3-§11.5"
+    section: str = "IEEE 1516.1-2010 §11.3-§11.5"
 
     @property
     def code(self) -> str:
@@ -259,7 +259,7 @@ class MOMExposureModel:
                     "MOMInteractionNotReceivableByRTI",
                     canonical,
                     detail=f"direction={rule.rti_direction}",
-                    section="1516.1-2010 §11.3",
+                    section="IEEE 1516.1-2010 §11.3",
                 ),
             )
         if isinstance(supplied_parameters, Mapping):

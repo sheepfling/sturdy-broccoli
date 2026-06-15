@@ -10,12 +10,12 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://standards.ieee.org/IEEE1516-2010 http://standards.ieee.org/downloads/1516/1516.2-2010/IEEE1516-DIF-2010.xsd">
    <modelIdentification>
-      <name>Standard MOM and Initialization Module (MIM) for HLA IEEE 1516-2010 (2010 edition)</name>
+      <name>Standard MOM and Initialization Module (MIM) for HLA IEEE 1516-2010</name>
       <type>FOM</type>
       <version>1.0</version>
       <modificationDate>2010-08-16</modificationDate>
       <securityClassification>Unclassified</securityClassification>
-      <purpose>Standard MOM and Initialization Module for HLA IEEE 1516-2010 (2010 edition)</purpose>
+      <purpose>Standard MOM and Initialization Module for HLA IEEE 1516-2010</purpose>
       <applicationDomain>HLA General</applicationDomain>
       <description>The MOM Object Classes and Interaction Classes of this object model may be extended.</description>
       <poc>

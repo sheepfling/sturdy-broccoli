@@ -134,8 +134,8 @@ It validates:
 
 - `requirements/traceability_matrix.csv`
 - `analysis/compliance/requirements_ledger.csv`
-- other `requirements/*.csv` files that contain implementation, test, or
-  artifact refs
+- broader `requirements/reference/*.csv` files that contain implementation,
+  test, or artifact refs
 
 Validation rules:
 

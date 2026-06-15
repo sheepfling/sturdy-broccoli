@@ -1,30 +1,36 @@
 from __future__ import annotations
 
-import csv
 from collections import Counter
 from pathlib import Path
+
+from tests.verification.reconciliation_helpers import (
+    kind_status_counts,
+    read_csv_rows,
+    rows_by_id,
+    status_counts,
+)
 
 
 RECONCILIATION_PATH = (
     Path(__file__).resolve().parents[2]
     / "requirements"
+    / "reference"
     / "hla1516_1_api_detailed_reconciliation.csv"
 )
 
 
 def _read_rows() -> list[dict[str, str]]:
-    with RECONCILIATION_PATH.open(newline="", encoding="utf-8") as handle:
-        return list(csv.DictReader(handle))
+    return read_csv_rows(RECONCILIATION_PATH)
 
 
 def test_api_detailed_reconciliation_has_expected_shape():
     rows = _read_rows()
 
     assert len(rows) == 614
-    assert Counter(row["current_status"] for row in rows) == Counter(
+    assert status_counts(rows) == Counter(
         {"partial": 394, "mapped": 220}
     )
-    assert Counter((row["reconciliation_kind"], row["current_status"]) for row in rows) == Counter(
+    assert kind_status_counts(rows) == Counter(
         {
             ("WSDL_OP", "partial"): 308,
             ("CPP_METHOD", "mapped"): 211,
@@ -39,7 +45,7 @@ def test_api_detailed_reconciliation_has_expected_shape():
 
 
 def test_api_detailed_reconciliation_spot_checks_key_rows():
-    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    rows = rows_by_id(_read_rows())
 
     assert rows["HLA1516.1-CPP-4_2-CONNECT-001"]["current_status"] == "mapped"
     assert rows["HLA1516.1-CPP-4_2-CONNECT-001"]["curated_requirement_id"] == "HLA1516.1-FM-001"
@@ -57,5 +63,5 @@ def test_api_detailed_reconciliation_spot_checks_key_rows():
     assert rows["HLA1516.1-WSDL-OP-001"]["current_status"] == "partial"
     assert (
         rows["HLA1516.1-WSDL-OP-001"]["current_test_id"]
-        == "tests/verification/test_imported_hla_packet_v1_0.py::test_imported_packet_extended_catalog_families_match_expected_shape"
+        == "tests/verification/test_api_detailed_reconciliation.py::test_api_detailed_reconciliation_spot_checks_key_rows"
     )

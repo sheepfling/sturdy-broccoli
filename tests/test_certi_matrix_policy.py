@@ -139,6 +139,22 @@ def _assert_profile_rows_inherit_family_rows(family_filename: str, profile_filen
         )
 
 
+def _assert_profile_markdown_contains_inheritance_note(
+    cases: tuple[tuple[str, str], ...],
+    *,
+    family_name: str,
+    extra_fragments: tuple[str, ...] = (),
+) -> None:
+    for filename, profile in cases:
+        text = load_compliance_text(filename)
+        for fragment in (
+            f"every row has an explicit generated `{profile}` disposition.",
+            f"inherits the {family_name} family-level requirement disposition",
+            *extra_fragments,
+        ):
+            assert fragment in text
+
+
 def test_certi_matrix_wrappers_stay_shared_harness_driven() -> None:
     _assert_matrix_wrappers_follow_policy(
         file_functions=FILE_FUNCTIONS,
@@ -182,10 +198,10 @@ def test_certi_clause7_vendor_divergent_rows_stay_explicit_negotiated_ownership_
 
 
 def test_generated_certi_profile_requirement_disposition_markdown_keeps_inheritance_note_explicit() -> None:
-    for filename, profile in CERTI_PROFILE_MARKDOWN_CASES:
-        text = load_compliance_text(filename)
-        assert f"every row has an explicit generated `{profile}` disposition." in text
-        assert "inherits the CERTI family-level requirement disposition" in text
+    _assert_profile_markdown_contains_inheritance_note(
+        CERTI_PROFILE_MARKDOWN_CASES,
+        family_name="CERTI",
+    )
 
 
 def test_certi_profile_requirement_disposition_artifacts_currently_inherit_family_rows() -> None:

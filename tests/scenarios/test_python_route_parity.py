@@ -9,22 +9,36 @@ from hla2010_rti_backend_common import RecordingFederateAmbassador
 from hla2010_fom_target_radar.scenarios import run_target_radar_scenario
 from hla2010.enums import OrderType, ResignAction
 from hla2010.time import HLAinteger64Interval, HLAinteger64Time
+from hla2010.types import RangeBounds
 from hla2010_verification_harness import (
+    DdmObjectRegionLifecycleScenarioConfig,
+    DeclarationManagementScenarioConfig,
     FederationLifecycleScenarioConfig,
     NegotiatedOwnershipScenarioConfig,
+    NonOwnerUpdateScenarioConfig,
     OwnershipScenarioConfig,
+    RequestAttributeValueUpdateScenarioConfig,
     ReleaseRequestOwnershipScenarioConfig,
+    SaveRestoreScenarioConfig,
+    SuiteRecordingFederateAmbassador,
     SynchronizationScenarioConfig,
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
     run_attribute_ownership_scenario,
     run_attribute_ownership_unavailable_scenario,
+    run_ddm_object_region_lifecycle_scenario,
+    run_declaration_management_scenario,
     run_federation_lifecycle_scenario,
     run_failed_federate_synchronization_scenario,
     run_late_join_synchronization_scenario,
     run_multiple_synchronization_points_scenario,
+    run_non_owner_update_rejection_scenario,
     run_negotiated_attribute_ownership_scenario,
+    run_request_attribute_value_update_routing_scenario,
+    run_request_attribute_value_update_scenario,
     run_release_request_ownership_scenario,
+    run_save_restore_queued_callback_scenario,
+    run_save_restore_scenario,
     run_synchronization_registration_failure_scenario,
     run_synchronization_scenario,
     run_two_federate_exchange_scenario,
@@ -486,5 +500,252 @@ def test_python_route_parity_ownership_unavailable(route) -> None:
             destroyer=pair.left,
             destroyer_resign_action=ResignAction.DELETE_OBJECTS,
             remaining_resignations=((pair.right, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
+            disconnect_rtis=(pair.right, pair.left),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_save_restore(route) -> None:
+    with python_rti_pair(route) as pair:
+        config = SaveRestoreScenarioConfig(
+            federation_name=f"python-save-restore-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SaveRestoreFederate",
+            save_name=f"SAVE-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_save_restore_scenario(
+            pair.left,
+            pair.right,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["leader_initiate_save"].args[0] == config.save_name
+        assert summary["wing_initiate_save"].args == (config.save_name,)
+        assert summary["leader_restore_succeeded"].args == (config.save_name,)
+        assert summary["wing_initiate_restore"].args[0] == config.save_name
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_save_restore_queued_callbacks(route) -> None:
+    with python_rti_pair(route) as pair:
+        config = SaveRestoreScenarioConfig(
+            federation_name=f"python-save-restore-queued-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            leader_name="Leader",
+            wing_name="Wing",
+            federate_type="SaveRestoreFederate",
+            save_name=f"SAVE-QUEUED-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_save_restore_queued_callback_scenario(
+            pair.left,
+            pair.right,
+            config=config,
+            leader_federate=RecordingFederateAmbassador(),
+            wing_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["leader_initiate_save"].args[0] == config.save_name
+        assert summary["wing_initiate_save"].args == (config.save_name,)
+        assert summary["leader_saved"] is not None
+        assert summary["wing_saved"] is not None
+        assert summary["leader_restore_succeeded"].args == (config.save_name,)
+        assert summary["wing_initiate_restore"].args[0] == config.save_name
+        assert summary["leader_restored"] is not None
+        assert summary["wing_restored"] is not None
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_declaration_management(route) -> None:
+    with python_rti_pair(route) as pair:
+        config = DeclarationManagementScenarioConfig(
+            federation_name=f"python-declaration-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            object_class_name="HLAobjectRoot.SmokeObject",
+            attribute_name="Payload",
+            interaction_class_name="HLAinteractionRoot.SmokeInteraction",
+            parameter_name="Message",
+            object_instance_name=f"python-declaration-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_declaration_management_scenario(
+            pair.left,
+            pair.right,
+            config=config,
+            publisher_federate=RecordingFederateAmbassador(),
+            subscriber_federate=RecordingFederateAmbassador(),
+        )
+
+        assert [record.args for record in summary["start_records"]] == [
+            (summary["publisher_class"],),
+            (summary["publisher_class"],),
+        ]
+        assert [record.args for record in summary["stop_records"]] == [
+            (summary["publisher_class"],),
+            (summary["publisher_class"],),
+        ]
+        assert [record.args for record in summary["turn_on_records"]] == [
+            (summary["publisher_interaction"],),
+            (summary["publisher_interaction"],),
+        ]
+        assert [record.args for record in summary["turn_off_records"]] == [
+            (summary["publisher_interaction"],),
+            (summary["publisher_interaction"],),
+        ]
+        assert summary["discover_record"].args[2] == config.object_instance_name
+        assert summary["reflect_record"].args[1] == {summary["subscriber_attribute"]: config.attribute_payload}
+        assert summary["interaction_record"].args[1] == {summary["subscriber_parameter"]: config.interaction_payload}
+        assert summary["suppressed_reflect_count"] == 1
+        assert summary["suppressed_interaction_count"] == 1
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=pair.left,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((pair.right, ResignAction.NO_ACTION),),
+            disconnect_rtis=(pair.right, pair.left),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_request_attribute_value_update(route) -> None:
+    with python_rti_pair(route) as pair:
+        config = RequestAttributeValueUpdateScenarioConfig(
+            federation_name=f"python-ravu-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            object_instance_name=f"RAVU-{uuid.uuid4().hex[:8]}",
+            request_tag=b"python-ravu",
+        )
+
+        summary = run_request_attribute_value_update_scenario(
+            pair.left,
+            pair.right,
+            config=config,
+            owner_federate=RecordingFederateAmbassador(),
+            requester_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["provide_record"].args == (
+            summary["object_instance"],
+            {summary["owner_attribute"]},
+            b"python-ravu",
+        )
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=pair.left,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((pair.right, ResignAction.NO_ACTION),),
+            disconnect_rtis=(pair.right, pair.left),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_request_attribute_value_update_routing(route) -> None:
+    with python_rti_triple(route) as trio:
+        config = RequestAttributeValueUpdateScenarioConfig(
+            federation_name=f"python-ravu-routing-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            object_instance_name=f"python-RAVU-{uuid.uuid4().hex[:8]}",
+            request_tag=b"object-only",
+        )
+
+        summary = run_request_attribute_value_update_routing_scenario(
+            trio.left,
+            trio.middle,
+            trio.right,
+            config=config,
+            owner_a_federate=RecordingFederateAmbassador(),
+            owner_b_federate=RecordingFederateAmbassador(),
+            requester_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["object_target_provide_a"].args == (summary["object_a"], {summary["requester_attribute"]}, b"object-only")
+        assert summary["object_target_provide_b"] is None
+        assert summary["class_target_provide_a"].args == (summary["object_a"], {summary["requester_attribute"]}, b"class-wide")
+        assert summary["class_target_provide_b"].args == (summary["object_b"], {summary["requester_attribute"]}, b"class-wide")
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=trio.left,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((trio.middle, ResignAction.DELETE_OBJECTS), (trio.right, ResignAction.NO_ACTION)),
+            disconnect_rtis=(trio.right, trio.middle, trio.left),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_non_owner_update_rejection(route) -> None:
+    with python_rti_pair(route) as pair:
+        config = NonOwnerUpdateScenarioConfig(
+            federation_name=f"python-non-owner-update-{route}-{uuid.uuid4().hex[:8]}",
+            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            logical_time_implementation_name="HLAinteger64Time",
+            owner_name="Owner",
+            observer_name="Observer",
+            federate_type="OwnershipFederate",
+            object_class_name="HLAobjectRoot.SmokeObject",
+            attribute_name="Payload",
+            object_instance_name=f"python-illegal-update-{uuid.uuid4().hex[:8]}",
+        )
+
+        summary = run_non_owner_update_rejection_scenario(
+            pair.left,
+            pair.right,
+            config=config,
+            owner_federate=RecordingFederateAmbassador(),
+            observer_federate=RecordingFederateAmbassador(),
+        )
+
+        assert summary["failure"] is not None
+        assert summary["failure_type"]
+
+        cleanup_federation(
+            config.federation_name,
+            destroyer=pair.left,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((pair.right, ResignAction.NO_ACTION),),
+            disconnect_rtis=(pair.right, pair.left),
+        )
+
+
+@pytest.mark.parametrize("route", python_route_params())
+def test_python_route_parity_ddm_object_region_lifecycle(route) -> None:
+    with python_rti_pair(route) as pair:
+        federation_name = f"python-ddm-object-{route}-{uuid.uuid4().hex[:8]}"
+        publisher_fed = SuiteRecordingFederateAmbassador(profile=route, scenario="ddm-object-lifecycle", role="publisher")
+        subscriber_fed = SuiteRecordingFederateAmbassador(profile=route, scenario="ddm-object-lifecycle", role="subscriber")
+
+        summary = run_ddm_object_region_lifecycle_scenario(
+            pair.left,
+            pair.right,
+            config=DdmObjectRegionLifecycleScenarioConfig(
+                federation_name=federation_name,
+                fom_modules=("TargetRadarFOMmodule.xml",),
+            ),
+            publisher_federate=publisher_fed,
+            subscriber_federate=subscriber_fed,
+        )
+
+        assert summary["discovery"] is not None
+        assert summary["provide"] is not None
+        assert summary["received"] is not None
+        assert summary["suppressed_receive"] is None
+
+        cleanup_federation(
+            federation_name,
+            destroyer=pair.left,
+            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
+            remaining_resignations=((pair.right, ResignAction.NO_ACTION),),
             disconnect_rtis=(pair.right, pair.left),
         )

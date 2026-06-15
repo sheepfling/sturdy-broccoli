@@ -23,8 +23,8 @@ Scope: **Pure Python RTI plus Java adapter/shim compatibility layer**
   ],
   "scope": "Pure Python RTI plus Java adapter/shim compatibility layer",
   "sections": [
-    "1516.1-2010 Annex G",
-    "1516.1-2010 Java binding",
+    "IEEE 1516.1-2010 Annex G",
+    "IEEE 1516.1-2010 Java binding",
     "1516.1-2010 \u00a711.2",
     "1516.1-2010 \u00a711.3",
     "1516.1-2010 \u00a711.4.1",
@@ -57,7 +57,7 @@ Scope: **Pure Python RTI plus Java adapter/shim compatibility layer**
 
 Status: `implemented-slice`  
 Type: `requirement`  
-Sections: 1516.1-2010 §11.2, 1516.1-2010 §11.3, 1516.1-2010 Annex G
+Sections: IEEE 1516.1-2010 §11.2, IEEE 1516.1-2010 §11.3, IEEE 1516.1-2010 Annex G
 
 Evidence:
 - `hla2010/mom_catalog.py::build_mom_exposure_model`
@@ -69,7 +69,7 @@ Notes: The active catalog now drives MOM object attributes, interaction paramete
 
 Status: `implemented-slice`  
 Type: `requirement`  
-Sections: 1516.1-2010 §11.4.1, 1516.1-2010 §11.5
+Sections: IEEE 1516.1-2010 §11.4.1, IEEE 1516.1-2010 §11.5
 
 Evidence:
 - `tests/test_mom_catalog_validation_v012.py::test_strict_mom_missing_required_parameter_reports_and_raises`
@@ -84,7 +84,7 @@ Gaps / caveats:
 
 Status: `implemented-slice`  
 Type: `requirement`  
-Sections: 1516.1-2010 §11.3, 1516.1-2010 §11.4.1, 1516.1-2010 Annex G
+Sections: IEEE 1516.1-2010 §11.3, IEEE 1516.1-2010 §11.4.1, IEEE 1516.1-2010 Annex G
 
 Evidence:
 - `tests/test_mom_catalog_validation_v012.py::test_mom_report_payload_uses_exact_mim_catalog_parameters`
@@ -96,7 +96,7 @@ Gaps / caveats:
 
 Status: `implemented-slice`  
 Type: `requirement`  
-Sections: 1516.1-2010 §11.3, 1516.1-2010 §11.4.1
+Sections: IEEE 1516.1-2010 §11.3, IEEE 1516.1-2010 §11.4.1
 
 Evidence:
 - `hla2010/backends/python_rti.py::_run_mom_service_action`
@@ -109,7 +109,7 @@ Gaps / caveats:
 
 Status: `implemented-slice`  
 Type: `requirement`  
-Sections: 1516.1-2010 §11.5
+Sections: IEEE 1516.1-2010 §11.5
 
 Evidence:
 - `hla2010/service_reporting.py`
@@ -122,7 +122,7 @@ Gaps / caveats:
 
 Status: `implemented-slice`  
 Type: `requirement`  
-Sections: 1516.1-2010 §8.1, 1516.1-2010 §8.13, 1516.1-2010 §8.16, 1516.1-2010 §8.18, 1516.1-2010 §9
+Sections: IEEE 1516.1-2010 §8.1, IEEE 1516.1-2010 §8.13, IEEE 1516.1-2010 §8.16, IEEE 1516.1-2010 §8.18, IEEE 1516.1-2010 §9
 
 Evidence:
 - `hla2010/time_management.py`
@@ -135,7 +135,7 @@ Gaps / caveats:
 
 Status: `implemented-slice`  
 Type: `requirement`  
-Sections: 1516.1-2010 §4.16-§4.25, 1516.1-2010 §8
+Sections: IEEE 1516.1-2010 §4.16-§4.25, IEEE 1516.1-2010 §8
 
 Evidence:
 - `tests/test_compliance_slice_v011.py::test_scheduled_save_waits_for_time_and_restore_reinstates_time_state`
@@ -147,7 +147,7 @@ Gaps / caveats:
 
 Status: `implemented-smoke`  
 Type: `scenario`  
-Sections: 1516.1-2010 §4, 1516.1-2010 §5, 1516.1-2010 §6, 1516.1-2010 §8
+Sections: IEEE 1516.1-2010 §4, IEEE 1516.1-2010 §5, IEEE 1516.1-2010 §6, IEEE 1516.1-2010 §8
 
 Evidence:
 - `examples/target_radar_simulation.py`
@@ -161,7 +161,7 @@ Gaps / caveats:
 
 Status: `planned`  
 Type: `planned-artifact`  
-Sections: 1516.1-2010 §4-§10
+Sections: IEEE 1516.1-2010 §4-§10
 
 Evidence:
 - `analysis/python_rti_coverage.json`
@@ -174,7 +174,7 @@ Gaps / caveats:
 
 Status: `gap`  
 Type: `planned-artifact`  
-Sections: 1516.1-2010 Java binding, 1516.1-2010 §4-§10
+Sections: IEEE 1516.1-2010 Java binding, IEEE 1516.1-2010 §4-§10
 
 Evidence:
 - `tests/test_optional_real_java_bridges.py`
@@ -186,7 +186,7 @@ Gaps / caveats:
 
 Status: `implemented-slice`  
 Type: `planned-artifact`  
-Sections: 1516.1-2010 §11.4.1, 1516.1-2010 Annex G
+Sections: IEEE 1516.1-2010 §11.4.1, IEEE 1516.1-2010 Annex G
 
 Evidence:
 - `verification/mom_negative_matrix_v0_12.json`

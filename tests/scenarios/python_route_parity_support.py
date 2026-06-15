@@ -19,6 +19,13 @@ class RtiPair:
     right: Any
 
 
+@dataclass(frozen=True)
+class RtiTriple:
+    left: Any
+    middle: Any
+    right: Any
+
+
 PYTHON_ROUTES: tuple[PythonRoute, ...] = ("python-direct", "python-grpc")
 
 
@@ -71,3 +78,35 @@ def python_rti_pair(route: PythonRoute) -> Iterator[RtiPair]:
 def python_single_rti(route: PythonRoute) -> Iterator[Any]:
     with python_rti_pair(route) as pair:
         yield pair.left
+
+
+@contextmanager
+def python_rti_triple(route: PythonRoute) -> Iterator[RtiTriple]:
+    with ExitStack() as stack:
+        if route == "python-direct":
+            engine = InMemoryRTIEngine()
+            left = create_rti_ambassador("python", engine=engine)
+            middle = create_rti_ambassador("python", engine=engine)
+            right = create_rti_ambassador("python", engine=engine)
+            stack.callback(_close_rti, right)
+            stack.callback(_close_rti, middle)
+            stack.callback(_close_rti, left)
+            yield RtiTriple(left=left, middle=middle, right=right)
+            return
+        if route == "python-grpc":
+            engine = InMemoryRTIEngine()
+            left_server = start_python_grpc_server(engine=engine)
+            middle_server = start_python_grpc_server(engine=engine)
+            right_server = start_python_grpc_server(engine=engine)
+            stack.callback(right_server.close)
+            stack.callback(middle_server.close)
+            stack.callback(left_server.close)
+            left = create_rti_ambassador("certi", transport={"kind": "grpc", "target": left_server.target})
+            middle = create_rti_ambassador("certi", transport={"kind": "grpc", "target": middle_server.target})
+            right = create_rti_ambassador("certi", transport={"kind": "grpc", "target": right_server.target})
+            stack.callback(_close_rti, right)
+            stack.callback(_close_rti, middle)
+            stack.callback(_close_rti, left)
+            yield RtiTriple(left=left, middle=middle, right=right)
+            return
+        raise ValueError(f"unsupported Python route: {route}")

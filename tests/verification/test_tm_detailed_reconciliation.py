@@ -1,27 +1,28 @@
 from __future__ import annotations
 
-import csv
 from collections import Counter
 from pathlib import Path
+
+from tests.verification.reconciliation_helpers import read_csv_rows, rows_by_id, status_counts
 
 
 RECONCILIATION_PATH = (
     Path(__file__).resolve().parents[2]
     / "requirements"
+    / "reference"
     / "hla1516_1_tm_detailed_reconciliation.csv"
 )
 
 
 def _read_rows() -> list[dict[str, str]]:
-    with RECONCILIATION_PATH.open(newline="", encoding="utf-8") as handle:
-        return list(csv.DictReader(handle))
+    return read_csv_rows(RECONCILIATION_PATH)
 
 
 def test_tm_detailed_reconciliation_has_expected_shape():
     rows = _read_rows()
 
     assert len(rows) == 301
-    assert Counter(row["current_status"] for row in rows) == Counter(
+    assert status_counts(rows) == Counter(
         {"mapped": 243, "partial": 58}
     )
     assert {row["source_packet_file"] for row in rows} == {
@@ -30,7 +31,7 @@ def test_tm_detailed_reconciliation_has_expected_shape():
 
 
 def test_tm_detailed_reconciliation_spot_checks_key_rows():
-    rows = {row["packet_requirement_id"]: row for row in _read_rows()}
+    rows = rows_by_id(_read_rows())
 
     assert rows["HLA1516.1-TM-OVERVIEW-009"]["current_status"] == "partial"
     assert rows["HLA1516.1-TM-OVERVIEW-010"]["current_status"] == "mapped"

@@ -2,78 +2,84 @@ from __future__ import annotations
 
 import re
 import tomllib
+from dataclasses import dataclass
 from pathlib import Path
 
+from conftest import REPO_ROOT, load_json_fixture
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = REPO_ROOT
 PACKAGES = ROOT / "packages"
 
 
+@dataclass(frozen=True)
+class PackageExpectation:
+    role: str
+    entry_points: frozenset[str]
+    status: str
+
+
+@dataclass(frozen=True)
+class PackageSplitManifest:
+    root_surface: frozenset[str]
+    docs_exist: tuple[str, ...]
+    policy_modules: dict[str, str]
+    test_surfaces: dict[str, tuple[str, ...]]
+    docs_readme_fragments: dict[str, tuple[str, ...]]
+    package_readme_fragments: dict[str, tuple[str, ...]]
+
+    @classmethod
+    def from_mapping(cls, payload: dict[str, object]) -> PackageSplitManifest:
+        return cls(
+            root_surface=frozenset(str(item) for item in payload["root_surface"]),
+            docs_exist=tuple(str(item) for item in payload["docs_exist"]),
+            policy_modules={str(key): str(value) for key, value in payload["policy_modules"].items()},
+            test_surfaces={
+                str(key): tuple(str(item) for item in value)
+                for key, value in payload["test_surfaces"].items()
+            },
+            docs_readme_fragments={
+                str(key): tuple(str(item) for item in value)
+                for key, value in payload["docs_readme_fragments"].items()
+            },
+            package_readme_fragments={
+                str(key): tuple(str(item) for item in value)
+                for key, value in payload["package_readme_fragments"].items()
+            },
+        )
+
+
 EXPECTED_PACKAGES = {
-    "hla2010-spec": {"role": "core-spec", "entry_points": set(), "status": "implementation-owned"},
-    "hla2010-rti-python": {"role": "rti-backend", "entry_points": {"python"}, "status": "implementation-moved"},
-    "hla2010-rti-certi": {
-        "role": "rti-backend",
-        "entry_points": {"certi", "certi-jpype", "certi-py4j"},
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-backend-common": {
-        "role": "backend-support",
-        "entry_points": set(),
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-java-common": {
-        "role": "java-support",
-        "entry_points": set(),
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-runtime-common": {
-        "role": "runtime-support",
-        "entry_points": set(),
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-transport-common": {
-        "role": "transport-support",
-        "entry_points": set(),
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-java-jpype": {
-        "role": "java-bridge",
-        "entry_points": {"jpype"},
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-java-py4j": {
-        "role": "java-bridge",
-        "entry_points": {"py4j"},
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-pitch-common": {
-        "role": "runtime-common",
-        "entry_points": set(),
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-pitch-jpype": {
-        "role": "rti-backend",
-        "entry_points": {"pitch-jpype"},
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-pitch-py4j": {
-        "role": "rti-backend",
-        "entry_points": {"pitch-py4j"},
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-portico": {
-        "role": "rti-backend",
-        "entry_points": {"portico-jpype", "portico-py4j"},
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-transport-grpc": {"role": "transport", "entry_points": set(), "status": "implementation-moved"},
-    "hla2010-rti-transport-rest": {"role": "transport", "entry_points": set(), "status": "implementation-moved"},
-    "hla2010-fom-target-radar": {"role": "fom-example", "entry_points": set(), "status": "implementation-moved"},
-    "hla2010-fom-minimal-demo": {"role": "fom-example", "entry_points": set(), "status": "implementation-owned"},
-    "hla2010-verification-harness": {"role": "verification-harness", "entry_points": set(), "status": "implementation-moved"},
+    "hla2010-spec": PackageExpectation("core-spec", frozenset(), "implementation-owned"),
+    "hla2010-rti-python": PackageExpectation("rti-backend", frozenset({"python"}), "implementation-moved"),
+    "hla2010-rti-certi": PackageExpectation(
+        "rti-backend",
+        frozenset({"certi", "certi-jpype", "certi-py4j"}),
+        "implementation-moved",
+    ),
+    "hla2010-rti-backend-common": PackageExpectation("backend-support", frozenset(), "implementation-moved"),
+    "hla2010-rti-java-common": PackageExpectation("java-support", frozenset(), "implementation-moved"),
+    "hla2010-rti-runtime-common": PackageExpectation("runtime-support", frozenset(), "implementation-moved"),
+    "hla2010-rti-transport-common": PackageExpectation("transport-support", frozenset(), "implementation-moved"),
+    "hla2010-rti-java-jpype": PackageExpectation("java-bridge", frozenset({"jpype"}), "implementation-moved"),
+    "hla2010-rti-java-py4j": PackageExpectation("java-bridge", frozenset({"py4j"}), "implementation-moved"),
+    "hla2010-rti-pitch-common": PackageExpectation("runtime-common", frozenset(), "implementation-moved"),
+    "hla2010-rti-pitch-jpype": PackageExpectation("rti-backend", frozenset({"pitch-jpype"}), "implementation-moved"),
+    "hla2010-rti-pitch-py4j": PackageExpectation("rti-backend", frozenset({"pitch-py4j"}), "implementation-moved"),
+    "hla2010-rti-portico": PackageExpectation(
+        "rti-backend",
+        frozenset({"portico-jpype", "portico-py4j"}),
+        "implementation-moved",
+    ),
+    "hla2010-rti-transport-grpc": PackageExpectation("transport", frozenset(), "implementation-moved"),
+    "hla2010-rti-transport-rest": PackageExpectation("transport", frozenset(), "implementation-moved"),
+    "hla2010-fom-target-radar": PackageExpectation("fom-example", frozenset(), "implementation-moved"),
+    "hla2010-fom-minimal-demo": PackageExpectation("fom-example", frozenset(), "implementation-owned"),
+    "hla2010-verification-harness": PackageExpectation("verification-harness", frozenset(), "implementation-moved"),
 }
 INTERNAL_PACKAGE_VERSION = "0.13.0"
+PACKAGE_SPLIT_MANIFEST = PackageSplitManifest.from_mapping(
+    load_json_fixture("package_split_scaffolds_manifest.json")
+)
 
 
 def _load_project(package_name: str) -> dict:
@@ -131,7 +137,7 @@ def test_split_packages_use_package_owned_src_roots():
         split = _load_project(package_name)["tool"]["hla2010"]["package-split"]
         source_roots = split["source_roots"]
         assert source_roots
-        if expected.get("status") == "implementation-moved":
+        if expected.status == "implementation-moved":
             assert all(root.startswith(f"packages/{package_name}/src/") for root in source_roots)
         assert all("src/hla2010/testing/" not in root for root in source_roots)
         assert all("hla2010_fom_target_radar/testing/" not in root for root in source_roots)
@@ -282,521 +288,35 @@ def test_hla2010_spec_manifest_owns_exact_root_package_tree() -> None:
     assert package_find["where"] == ["src"]
     assert package_find["include"] == ["hla2010*"]
     assert "hla2010_repo_internal*" in package_find["exclude"]
-
-    expected_root_surface = {
-        "__init__.py",
-        "_spec_impl.py",
-        "ambassadors.py",
-        "api.py",
-        "encoding.py",
-        "enums.py",
-        "exceptions.py",
-        "fom.py",
-        "handles.py",
-        "mom.py",
-        "raw_api.py",
-        "rti.py",
-        "runtime_api.py",
-        "spec/__init__.py",
-        "spec_api.py",
-        "spec_inventory.py",
-        "spec_refs.py",
-        "spec_sources.py",
-        "time.py",
-        "types.py",
-    }
-    assert _live_root_python_files() == expected_root_surface
+    assert _live_root_python_files() == PACKAGE_SPLIT_MANIFEST.root_surface
 
 
-def test_backend_family_packages_own_docs_and_verification_policy_surfaces() -> None:
-    expected_docs = {
-        "hla2010-rti-python": PACKAGES / "hla2010-rti-python" / "docs" / "README.md",
-        "hla2010-rti-certi": PACKAGES / "hla2010-rti-certi" / "docs" / "README.md",
-        "hla2010-rti-pitch-common": PACKAGES / "hla2010-rti-pitch-common" / "docs" / "README.md",
-        "hla2010-rti-pitch-jpype": PACKAGES / "hla2010-rti-pitch-jpype" / "docs" / "README.md",
-        "hla2010-rti-pitch-py4j": PACKAGES / "hla2010-rti-pitch-py4j" / "docs" / "README.md",
-        "hla2010-rti-portico": PACKAGES / "hla2010-rti-portico" / "docs" / "README.md",
-    }
-    expected_policy_modules = {
-        "hla2010-rti-python": PACKAGES / "hla2010-rti-python" / "src" / "hla2010_rti_python" / "testing_policy.py",
-        "hla2010-rti-certi": PACKAGES / "hla2010-rti-certi" / "src" / "hla2010_rti_certi" / "testing_policy.py",
-        "hla2010-rti-pitch-common": PACKAGES / "hla2010-rti-pitch-common" / "src" / "hla2010_rti_pitch_common" / "testing_policy.py",
-        "hla2010-rti-portico": PACKAGES / "hla2010-rti-portico" / "src" / "hla2010_rti_portico" / "testing_policy.py",
-    }
-
-    for package_name, path in expected_docs.items():
+def test_split_packages_own_declared_docs_test_surfaces_and_policy_modules() -> None:
+    for package_name in PACKAGE_SPLIT_MANIFEST.docs_exist:
+        path = PACKAGES / package_name / "docs" / "README.md"
         assert path.exists(), package_name
 
-    for package_name, path in expected_policy_modules.items():
-        assert path.exists(), package_name
+    for package_name, relative_path in PACKAGE_SPLIT_MANIFEST.policy_modules.items():
+        assert (ROOT / relative_path).exists(), package_name
+
+    for package_name, relative_paths in PACKAGE_SPLIT_MANIFEST.test_surfaces.items():
+        for relative_path in relative_paths:
+            path = ROOT / relative_path
+            assert path.exists(), (package_name, relative_path)
 
 
-def test_backend_doc_indexes_describe_owned_policy_and_operator_surfaces() -> None:
-    required_fragments = {
-        "hla2010-rti-python": (
-            "Package-owned notes",
-            "testing_policy.py",
-            "./tools/python verify",
-            "thin wrappers",
-            "tests/test_rti_python_split_package.py",
-            "tests/test_python_matrix_policy.py",
-        ),
-        "hla2010-rti-certi": (
-            "This package owns:",
-            "testing_policy.py",
-            "./tools/certi-easy",
-            "plugin code",
-            "tests/test_rti_certi_split_package.py",
-            "tests/vendors/test_certi_real_backend_exchange_matrix.py",
-            "tests/vendors/test_certi_real_backend_ownership_matrix.py",
-            "tests/vendors/test_certi_real_backend_time_matrix.py",
-        ),
-        "hla2010-rti-pitch-common": (
-            "This package owns:",
-            "testing_policy.py",
-            "./tools/pitch",
-            "runtime discovery and launch policy",
-            "pitch_clause4_lost_federate_gap_2026-06-11.md",
-            "tests/test_rti_pitch_split_packages.py",
-            "tests/vendors/test_pitch_real_backend_matrix.py",
-        ),
-        "hla2010-rti-pitch-jpype": (
-            "src/hla2010_rti_pitch_jpype/",
-            "hla2010_rti_pitch_common.testing_policy",
-            "./tools/pitch",
-            "plugin descriptor",
-            "tests/test_rti_pitch_split_packages.py",
-            "tests/vendors/test_pitch_real_backend_matrix.py",
-        ),
-        "hla2010-rti-pitch-py4j": (
-            "src/hla2010_rti_pitch_py4j/",
-            "hla2010_rti_pitch_common.testing_policy",
-            "./tools/pitch",
-            "plugin descriptor",
-            "tests/test_rti_pitch_split_packages.py",
-            "tests/vendors/test_pitch_real_backend_matrix.py",
-        ),
-        "hla2010-rti-portico": (
-            "This package owns:",
-            "testing_policy.py",
-            "./tools/vendor-green",
-            "runtime discovery and plugin code",
-            "tests/test_rti_portico_split_package.py",
-            "tests/vendors/test_portico_real_backend_matrix.py",
-        ),
-    }
-
-    for package_name, fragments in required_fragments.items():
+def test_split_package_docs_readmes_describe_owned_surfaces() -> None:
+    for package_name, fragments in PACKAGE_SPLIT_MANIFEST.docs_readme_fragments.items():
         text = (PACKAGES / package_name / "docs" / "README.md").read_text(encoding="utf-8")
         for fragment in fragments:
             assert fragment in text, (package_name, fragment)
 
 
-def test_package_root_readmes_describe_canonical_import_and_operator_boundary() -> None:
-    required_fragments = {
-        "hla2010-spec": (
-            "canonical runtime namespace from `hla2010`",
-            "`hla2010.rti`",
-            "`tests/test_package_split_scaffolds.py`",
-            "`tests/test_root_facade_policy.py`",
-            "`tests/test_namespace_policy.py`",
-            "`tests/test_python_api_spec.py`",
-            "does not own human operator entrypoints",
-            "`./tools/`",
-        ),
-        "hla2010-rti-python": (
-            "`src/hla2010_rti_python/`",
-            "`src/hla2010_rti_python/testing_policy.py`",
-            "`tests/test_rti_python_split_package.py`",
-            "`tests/test_python_matrix_policy.py`",
-            "`./tools/python`",
-            "package-local command",
-        ),
-        "hla2010-rti-certi": (
-            "`hla2010_rti_certi`",
-            "`src/hla2010_rti_certi/testing_policy.py`",
-            "`tests/test_rti_certi_split_package.py`",
-            "`tests/vendors/test_certi_real_backend_exchange_matrix.py`",
-            "`tests/vendors/test_certi_real_backend_ownership_matrix.py`",
-            "`tests/vendors/test_certi_real_backend_time_matrix.py`",
-            "`./tools/certi-easy`",
-            "package-local command",
-        ),
-        "hla2010-rti-backend-common": (
-            "`hla2010_rti_backend_common`",
-            "`tests/test_rti_backend_common_split_package.py`",
-            "`tests/test_package_boundary.py`",
-            "does not own human operator entrypoints",
-            "`./tools/`",
-        ),
-        "hla2010-rti-java-common": (
-            "`hla2010_rti_java_common`",
-            "`tests/test_rti_java_common_split_package.py`",
-            "`tests/test_rti_java_runtime_split_package.py`",
-            "`tests/test_package_boundary.py`",
-            "does not own human operator entrypoints",
-            "`./tools/`",
-        ),
-        "hla2010-rti-runtime-common": (
-            "`hla2010_rti_runtime_common`",
-            "`tests/test_rti_runtime_common_split_package.py`",
-            "`tests/test_package_boundary.py`",
-            "does not own human operator entrypoints",
-            "`./tools/`",
-        ),
-        "hla2010-rti-transport-common": (
-            "`hla2010_rti_transport_common`",
-            "`tests/test_rti_transport_common_split_package.py`",
-            "`tests/test_package_boundary.py`",
-            "does not own human operator entrypoints",
-            "`./tools/`",
-        ),
-        "hla2010-rti-java-jpype": (
-            "`hla2010_rti_java_jpype`",
-            "`tests/test_rti_java_plugin_split_packages.py`",
-            "`tests/test_package_boundary.py`",
-            "does not own human operator entrypoints",
-            "`./tools/`",
-        ),
-        "hla2010-rti-java-py4j": (
-            "`hla2010_rti_java_py4j`",
-            "`tests/test_rti_java_plugin_split_packages.py`",
-            "`tests/test_package_boundary.py`",
-            "does not own human operator entrypoints",
-            "`./tools/`",
-        ),
-        "hla2010-rti-pitch-common": (
-            "`hla2010_rti_pitch_common`",
-            "`src/hla2010_rti_pitch_common/testing_policy.py`",
-            "`tests/test_rti_pitch_split_packages.py`",
-            "`tests/vendors/test_pitch_real_backend_matrix.py`",
-            "`./tools/pitch`",
-            "package-local command",
-        ),
-        "hla2010-rti-pitch-jpype": (
-            "`hla2010_rti_pitch_jpype`",
-            "`hla2010_rti_pitch_common.testing_policy`",
-            "`tests/test_rti_pitch_split_packages.py`",
-            "`tests/vendors/test_pitch_real_backend_matrix.py`",
-            "`./tools/pitch`",
-            "package-local command",
-        ),
-        "hla2010-rti-pitch-py4j": (
-            "`hla2010_rti_pitch_py4j`",
-            "`hla2010_rti_pitch_common.testing_policy`",
-            "`tests/test_rti_pitch_split_packages.py`",
-            "`tests/vendors/test_pitch_real_backend_matrix.py`",
-            "`./tools/pitch`",
-            "package-local command",
-        ),
-        "hla2010-rti-portico": (
-            "`hla2010_rti_portico`",
-            "`src/hla2010_rti_portico/testing_policy.py`",
-            "`tests/test_rti_portico_split_package.py`",
-            "`tests/vendors/test_portico_real_backend_matrix.py`",
-            "`./tools/vendor-green`",
-            "package-local command",
-        ),
-        "hla2010-rti-transport-grpc": (
-            "`hla2010_rti_transport_grpc`",
-            "`tests/test_rti_transport_grpc_split_package.py`",
-            "`tests/test_package_boundary.py`",
-            "`tests/test_backend_wrapper_policy.py`",
-            "does not own human operator entrypoints",
-            "`./tools/`",
-        ),
-        "hla2010-rti-transport-rest": (
-            "`hla2010_rti_transport_rest`",
-            "`tests/test_rti_transport_rest_split_package.py`",
-            "`tests/test_package_boundary.py`",
-            "does not own human operator entrypoints",
-            "`./tools/`",
-        ),
-        "hla2010-fom-target-radar": (
-            "`hla2010_fom_target_radar`",
-            "`tests/test_fom_target_radar_split_package.py`",
-            "`./tools/target-radar`",
-            "package-local command",
-        ),
-        "hla2010-fom-minimal-demo": (
-            "`hla2010_fom_minimal_demo`",
-            "`tests/examples/test_minimal_fom_demo.py`",
-            "`examples/minimal_fom_demo.py`",
-            "package-local command",
-        ),
-        "hla2010-verification-harness": (
-            "`hla2010_verification_harness`",
-            "`tests/test_verification_harness_split_package.py`",
-            "`tests/test_backend_wrapper_policy.py`",
-            "does not own human operator entrypoints",
-            "`./tools/`",
-        ),
-    }
-
-    for package_name, fragments in required_fragments.items():
+def test_split_package_root_readmes_describe_import_and_operator_boundaries() -> None:
+    for package_name, fragments in PACKAGE_SPLIT_MANIFEST.package_readme_fragments.items():
         text = (PACKAGES / package_name / "README.md").read_text(encoding="utf-8")
         for fragment in fragments:
             assert fragment in text, (package_name, fragment)
-
-
-def test_transport_packages_own_explicit_docs_and_split_test_surfaces() -> None:
-    expected_docs = {
-        "hla2010-rti-transport-common": PACKAGES / "hla2010-rti-transport-common" / "docs" / "README.md",
-        "hla2010-rti-transport-grpc": PACKAGES / "hla2010-rti-transport-grpc" / "docs" / "README.md",
-        "hla2010-rti-transport-rest": PACKAGES / "hla2010-rti-transport-rest" / "docs" / "README.md",
-    }
-    expected_test_surfaces = {
-        "hla2010-rti-transport-common": {ROOT / "tests" / "test_rti_transport_common_split_package.py"},
-        "hla2010-rti-transport-grpc": {ROOT / "tests" / "test_rti_transport_grpc_split_package.py"},
-        "hla2010-rti-transport-rest": {ROOT / "tests" / "test_rti_transport_rest_split_package.py"},
-    }
-
-    for package_name, path in expected_docs.items():
-        assert path.exists(), package_name
-
-    for package_name, paths in expected_test_surfaces.items():
-        for path in paths:
-            assert path.exists(), (package_name, path.relative_to(ROOT).as_posix())
-
-
-def test_transport_doc_indexes_describe_owned_code_and_operator_boundaries() -> None:
-    required_fragments = {
-        "hla2010-rti-transport-common": (
-            "This package owns backend-neutral transport primitives",
-            "hla2010_rti_transport_common.transport",
-            "hla2010_rti_transport_common.transport_registry",
-            "not a backend, operator entrypoint",
-            "tests/test_rti_transport_common_split_package.py",
-            "tests/test_package_boundary.py",
-        ),
-        "hla2010-rti-transport-grpc": (
-            "installable gRPC transport implementation",
-            "hla2010_rti_transport_grpc.transport",
-            "python_server",
-            "Human operator entrypoints remain in `./tools/`",
-            "tests/test_rti_transport_grpc_split_package.py",
-            "tests/test_package_boundary.py",
-            "tests/test_backend_wrapper_policy.py",
-        ),
-        "hla2010-rti-transport-rest": (
-            "installable REST/HTTP JSON transport implementation",
-            "hla2010_rti_transport_rest.client",
-            "rest_transport_host",
-            "Human operator entrypoints remain in `./tools/`",
-            "tests/test_rti_transport_rest_split_package.py",
-            "tests/test_package_boundary.py",
-        ),
-    }
-
-    for package_name, fragments in required_fragments.items():
-        text = (PACKAGES / package_name / "docs" / "README.md").read_text(encoding="utf-8")
-        for fragment in fragments:
-            assert fragment in text, (package_name, fragment)
-
-
-def test_support_packages_own_explicit_docs_and_split_test_surfaces() -> None:
-    expected_docs = {
-        "hla2010-rti-backend-common": PACKAGES / "hla2010-rti-backend-common" / "docs" / "README.md",
-        "hla2010-rti-java-common": PACKAGES / "hla2010-rti-java-common" / "docs" / "README.md",
-        "hla2010-rti-runtime-common": PACKAGES / "hla2010-rti-runtime-common" / "docs" / "README.md",
-    }
-    expected_test_surfaces = {
-        "hla2010-rti-backend-common": {ROOT / "tests" / "test_rti_backend_common_split_package.py"},
-        "hla2010-rti-java-common": {
-            ROOT / "tests" / "test_rti_java_common_split_package.py",
-            ROOT / "tests" / "test_rti_java_runtime_split_package.py",
-        },
-        "hla2010-rti-runtime-common": {ROOT / "tests" / "test_rti_runtime_common_split_package.py"},
-    }
-
-    for package_name, path in expected_docs.items():
-        assert path.exists(), package_name
-
-    for package_name, paths in expected_test_surfaces.items():
-        for path in paths:
-            assert path.exists(), (package_name, path.relative_to(ROOT).as_posix())
-
-
-def test_support_doc_indexes_describe_owned_code_and_no_operator_surface() -> None:
-    required_fragments = {
-        "hla2010-rti-backend-common": (
-            "backend-neutral support code",
-            "hla2010_rti_backend_common.plugin_api",
-            "not itself a backend or operator entrypoint",
-            "tests/test_rti_backend_common_split_package.py",
-            "tests/test_package_boundary.py",
-        ),
-        "hla2010-rti-java-common": (
-            "bridge-independent Java support code",
-            "hla2010_rti_java_common.java_common",
-            "not a vendor backend or operator",
-            "tests/test_rti_java_common_split_package.py",
-            "tests/test_rti_java_runtime_split_package.py",
-            "tests/test_package_boundary.py",
-        ),
-        "hla2010-rti-runtime-common": (
-            "shared vendor-runtime process and backend-discovery helpers",
-            "hla2010_rti_runtime_common.factory",
-            "not a backend implementation or operator",
-            "tests/test_rti_runtime_common_split_package.py",
-            "tests/test_package_boundary.py",
-        ),
-    }
-
-    for package_name, fragments in required_fragments.items():
-        text = (PACKAGES / package_name / "docs" / "README.md").read_text(encoding="utf-8")
-        for fragment in fragments:
-            assert fragment in text, (package_name, fragment)
-
-
-def test_java_bridge_packages_own_explicit_docs_and_split_test_surfaces() -> None:
-    expected_docs = {
-        "hla2010-rti-java-jpype": PACKAGES / "hla2010-rti-java-jpype" / "docs" / "README.md",
-        "hla2010-rti-java-py4j": PACKAGES / "hla2010-rti-java-py4j" / "docs" / "README.md",
-    }
-    expected_test_surfaces = {
-        "hla2010-rti-java-jpype": {ROOT / "tests" / "test_rti_java_plugin_split_packages.py"},
-        "hla2010-rti-java-py4j": {ROOT / "tests" / "test_rti_java_plugin_split_packages.py"},
-    }
-
-    for package_name, path in expected_docs.items():
-        assert path.exists(), package_name
-
-    for package_name, paths in expected_test_surfaces.items():
-        for path in paths:
-            assert path.exists(), (package_name, path.relative_to(ROOT).as_posix())
-
-
-def test_java_bridge_doc_indexes_describe_owned_bridge_code_and_no_vendor_surface() -> None:
-    required_fragments = {
-        "hla2010-rti-java-jpype": (
-            "installable generic JPype Java bridge",
-            "hla2010_rti_java_jpype.runtime",
-            "factory` and `.plugin",
-            "not a vendor-specific RTI package or",
-            "operator entrypoint",
-            "tests/test_rti_java_plugin_split_packages.py",
-            "tests/test_package_boundary.py",
-        ),
-        "hla2010-rti-java-py4j": (
-            "installable generic Py4J Java bridge",
-            "hla2010_rti_java_py4j.runtime",
-            "factory` and `.plugin",
-            "not a vendor-specific RTI package or",
-            "operator entrypoint",
-            "tests/test_rti_java_plugin_split_packages.py",
-            "tests/test_package_boundary.py",
-        ),
-    }
-
-    for package_name, fragments in required_fragments.items():
-        text = (PACKAGES / package_name / "docs" / "README.md").read_text(encoding="utf-8")
-        for fragment in fragments:
-            assert fragment in text, (package_name, fragment)
-
-
-def test_verification_and_fom_packages_own_explicit_docs_and_split_test_surfaces() -> None:
-    expected_docs = {
-        "hla2010-verification-harness": PACKAGES / "hla2010-verification-harness" / "docs" / "README.md",
-        "hla2010-fom-target-radar": PACKAGES / "hla2010-fom-target-radar" / "docs" / "README.md",
-        "hla2010-fom-minimal-demo": PACKAGES / "hla2010-fom-minimal-demo" / "docs" / "README.md",
-    }
-    expected_test_surfaces = {
-        "hla2010-verification-harness": {ROOT / "tests" / "test_verification_harness_split_package.py"},
-        "hla2010-fom-target-radar": {ROOT / "tests" / "test_fom_target_radar_split_package.py"},
-        "hla2010-fom-minimal-demo": {ROOT / "tests" / "examples" / "test_minimal_fom_demo.py"},
-    }
-
-    for package_name, path in expected_docs.items():
-        assert path.exists(), package_name
-
-    for package_name, paths in expected_test_surfaces.items():
-        for path in paths:
-            assert path.exists(), (package_name, path.relative_to(ROOT).as_posix())
-
-
-def test_verification_and_fom_doc_indexes_describe_owned_non_backend_surfaces() -> None:
-    required_fragments = {
-        "hla2010-verification-harness": (
-            "backend-neutral shared verification scenarios",
-            "scenario_*",
-            "backend wrapper tests and compliance artifacts",
-            "does not own vendor runtime policy",
-            "tests/test_verification_harness_split_package.py",
-            "tests/test_backend_wrapper_policy.py",
-        ),
-        "hla2010-fom-target-radar": (
-            "concrete Target/Radar example FOM",
-            "resources.foms",
-            "example/FOM support reused by repo-internal proof",
-            "does not own RTI backend implementations",
-            "tests/test_fom_target_radar_split_package.py",
-        ),
-        "hla2010-fom-minimal-demo": (
-            "concrete minimal-demo example FOM",
-            "resources.foms",
-            "create-federate-and-FOM tutorial",
-            "does not own RTI backend implementations",
-            "tests/examples/test_minimal_fom_demo.py",
-        ),
-    }
-
-    for package_name, fragments in required_fragments.items():
-        text = (PACKAGES / package_name / "docs" / "README.md").read_text(encoding="utf-8")
-        for fragment in fragments:
-            assert fragment in text, (package_name, fragment)
-
-
-def test_core_spec_package_owns_explicit_docs_and_split_test_surfaces() -> None:
-    expected_docs = {
-        "hla2010-spec": PACKAGES / "hla2010-spec" / "docs" / "README.md",
-    }
-    expected_test_surfaces = {
-        "hla2010-spec": {
-            ROOT / "tests" / "test_package_split_scaffolds.py",
-            ROOT / "tests" / "test_root_facade_policy.py",
-            ROOT / "tests" / "test_namespace_policy.py",
-            ROOT / "tests" / "test_python_api_spec.py",
-        },
-    }
-
-    for package_name, path in expected_docs.items():
-        assert path.exists(), package_name
-
-    for package_name, paths in expected_test_surfaces.items():
-        for path in paths:
-            assert path.exists(), (package_name, path.relative_to(ROOT).as_posix())
-
-
-def test_core_spec_doc_index_describes_the_only_root_facade_boundary() -> None:
-    text = (PACKAGES / "hla2010-spec" / "docs" / "README.md").read_text(encoding="utf-8")
-
-    assert "abstract HLA 2010 spec and core API surface" in text
-    assert "`hla2010.rti`" in text
-    assert "temporary root facade" in text
-    assert "tests/test_package_split_scaffolds.py" in text
-    assert "tests/test_root_facade_policy.py" in text
-    assert "tests/test_namespace_policy.py" in text
-    assert "tests/test_python_api_spec.py" in text
-    assert "must not own concrete RTI backend implementations" in text
-
-
-def test_backend_family_packages_have_explicit_split_package_test_surfaces() -> None:
-    expected_test_surfaces = {
-        "hla2010-rti-python": {ROOT / "tests" / "test_rti_python_split_package.py"},
-        "hla2010-rti-certi": {ROOT / "tests" / "test_rti_certi_split_package.py"},
-        "hla2010-rti-pitch-common": {ROOT / "tests" / "test_rti_pitch_common_split_package.py"},
-        "hla2010-rti-pitch-jpype": {ROOT / "tests" / "test_rti_pitch_split_packages.py"},
-        "hla2010-rti-pitch-py4j": {ROOT / "tests" / "test_rti_pitch_split_packages.py"},
-        "hla2010-rti-portico": {
-            ROOT / "tests" / "test_rti_portico_split_package.py",
-            ROOT / "tests" / "vendors" / "test_portico_real_backend_matrix.py",
-        },
-    }
-
-    for package_name, paths in expected_test_surfaces.items():
-        for path in paths:
-            assert path.exists(), (package_name, path.relative_to(ROOT).as_posix())
 
 
 def test_package_split_pyprojects_have_expected_boundaries():
@@ -807,14 +327,14 @@ def test_package_split_pyprojects_have_expected_boundaries():
 
         assert project["name"] == package_name
         assert project["requires-python"] == ">=3.10"
-        assert split["status"] == expected.get("status", "migration-scaffold")
-        assert split["role"] == expected["role"]
+        assert split["status"] == expected.status
+        assert split["role"] == expected.role
         assert split["source_roots"]
         if split["status"] in {"transition-wrapper", "implementation-moved"}:
             assert (PACKAGES / package_name / "MIGRATION.md").exists()
 
         entry_points = data.get("project", {}).get("entry-points", {}).get("hla2010.rti_backends", {})
-        assert set(entry_points) == expected["entry_points"]
+        assert set(entry_points) == expected.entry_points
         if package_name == "hla2010-rti-python":
             assert entry_points["python"] == "hla2010_rti_python.plugin:plugin"
         if package_name == "hla2010-rti-certi":
@@ -865,7 +385,7 @@ def test_non_spec_split_packages_build_from_their_own_src_roots() -> None:
 
 def test_backend_scaffolds_depend_on_core_spec_package():
     for package_name, expected in EXPECTED_PACKAGES.items():
-        if expected["role"] == "core-spec":
+        if expected.role == "core-spec":
             continue
         dependencies = set(_load_project(package_name)["project"].get("dependencies", ()))
         assert "hla2010-spec==0.13.0" in dependencies

@@ -28,7 +28,7 @@ fi
 git -C "$CERTI_UPSTREAM_SOURCE" fetch --tags origin
 git -C "$CERTI_UPSTREAM_SOURCE" checkout "$CERTI_UPSTREAM_REF"
 
-build_log="$(mktemp -t hla2010-certi-upstream-build)"
+build_log="$(mktemp "${TMPDIR:-/tmp}/hla2010-certi-upstream-build.XXXXXX")"
 hla2010_shell_log "CERTI upstream source: $CERTI_UPSTREAM_SOURCE"
 hla2010_shell_log "CERTI upstream build: $CERTI_UPSTREAM_BUILD"
 hla2010_shell_log "CERTI upstream install: $CERTI_UPSTREAM_INSTALL"

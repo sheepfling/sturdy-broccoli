@@ -24,7 +24,7 @@ def test_service_by_service_conformance_matrix_covers_generated_api_surface(tmp_
     assert matrix["summary"]["status_counts"]["reference-implemented-untested"] > 0
 
     by_method = {(row["interface"], row["method"]): row for row in matrix["rows"]}
-    assert by_method[("RTIambassador", "connect")]["section"] == "1516.1-2010 §4.2"
+    assert by_method[("RTIambassador", "connect")]["section"] == "IEEE 1516.1-2010 §4.2"
     assert by_method[("RTIambassador", "sendInteraction")]["python_backend_entrypoint"] is True
     assert by_method[("RTIambassador", "sendInteraction")]["negative_evidence"]
     assert by_method[("FederateAmbassador", "timeAdvanceGrant")]["callback_helper"] is True

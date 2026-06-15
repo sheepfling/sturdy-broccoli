@@ -24,22 +24,31 @@ def test_delegating_rti_ambassador_is_concrete_without_abc_patch() -> None:
     assert not inspect.isabstract(DelegatingRTIAmbassador)
 
 
-def test_representative_camelcase_methods_are_explicit() -> None:
-    assert "def timeAdvanceRequest" in inspect.getsource(DelegatingRTIAmbassador.timeAdvanceRequest)
-    assert "def createFederationExecution" in inspect.getsource(DelegatingRTIAmbassador.createFederationExecution)
-    assert "def getHLAversion" in inspect.getsource(DelegatingRTIAmbassador.getHLAversion)
-
-
-def test_representative_snake_case_methods_are_explicit() -> None:
-    assert "def time_advance_request" in inspect.getsource(DelegatingRTIAmbassador.time_advance_request)
-    assert "def create_federation_execution" in inspect.getsource(DelegatingRTIAmbassador.create_federation_execution)
-    assert "def get_hla_version" in inspect.getsource(DelegatingRTIAmbassador.get_hla_version)
-
-
-def test_representative_callback_methods_are_explicit() -> None:
-    assert "def reflect_attribute_values" in inspect.getsource(RecordingFederateAmbassador.reflect_attribute_values)
-    assert "def connection_lost" in inspect.getsource(RecordingFederateAmbassador.connection_lost)
-    assert "def time_advance_grant" in inspect.getsource(RecordingFederateAmbassador.time_advance_grant)
+def test_representative_runtime_and_callback_methods_are_owned_explicitly() -> None:
+    for owner, method_names in (
+        (
+            DelegatingRTIAmbassador,
+            (
+                "timeAdvanceRequest",
+                "createFederationExecution",
+                "getHLAversion",
+                "time_advance_request",
+                "create_federation_execution",
+                "get_hla_version",
+            ),
+        ),
+        (
+            RecordingFederateAmbassador,
+            (
+                "reflect_attribute_values",
+                "connection_lost",
+                "time_advance_grant",
+            ),
+        ),
+    ):
+        for method_name in method_names:
+            assert method_name in owner.__dict__
+            assert callable(owner.__dict__[method_name])
 
 
 def test_all_runtime_methods_are_defined_on_delegating_rti_ambassador() -> None:

@@ -5,7 +5,7 @@ validation portion of that matrix into concrete pytest-friendly cases while
 keeping the semantic service-precondition rows visible as planned conformance
 work.
 
-Section anchors: IEEE 1516.1-2010 §11.3, §11.4.1, §11.5, and Annex G.
+Section anchors: IEEE 1516.1-2010 (2010 edition) §11.3, §11.4.1, §11.5, and Annex G.
 """
 from __future__ import annotations
 
@@ -78,7 +78,7 @@ class MOMNegativeTestCase:
     expected_python_exception: str = "RTIexception"
     executable: bool = True
     reason: str = ""
-    section_refs: tuple[str, ...] = ("1516.1-2010 §11.4.1", "1516.1-2010 §11.5")
+    section_refs: tuple[str, ...] = ("IEEE 1516.1-2010 (2010 edition) §11.4.1", "IEEE 1516.1-2010 (2010 edition) §11.5")
     metadata: Mapping[str, Any] = field(default_factory=dict)
 
     @property
@@ -190,7 +190,12 @@ def mom_negative_case_report(model: MOMExposureModel) -> dict[str, Any]:
         if case.executable:
             by_kind_executable[case.case] = by_kind_executable.get(case.case, 0) + 1
     return {
-        "section_refs": ["1516.1-2010 §11.3", "1516.1-2010 §11.4.1", "1516.1-2010 §11.5", "1516.1-2010 Annex G"],
+        "section_refs": [
+            "IEEE 1516.1-2010 (2010 edition) §11.3",
+            "IEEE 1516.1-2010 (2010 edition) §11.4.1",
+            "IEEE 1516.1-2010 (2010 edition) §11.5",
+            "IEEE 1516.1-2010 (2010 edition) Annex G",
+        ],
         "total_generated_cases": len(cases),
         "executable_case_count": len(executable),
         "planned_semantic_case_count": len(planned),

@@ -7,7 +7,9 @@ honest finish.
 
 ## What is already in place
 
-- a harmonized requirements catalog in `requirements/*.csv`
+- a harmonized requirements surface split across:
+  `requirements/traceability_matrix.csv` for active traceability authoring and
+  `requirements/reference/*.csv` for broader clause and reconciliation catalogs
 - generated compliance artifacts under `analysis/compliance/`
 - requirement-to-test traceability
 - vendor and backend discovery artifacts
@@ -37,7 +39,9 @@ and document the narrower behavior rather than inflating the claim.
 ## Recommended finish order
 
 1. Start from the generated backlog in `analysis/compliance/vendor_discovery_backlog.*`
-2. Open the requirement row in `requirements/*.csv`
+2. Open the requirement row in `requirements/traceability_matrix.csv` for
+   active mapping work, or in `requirements/reference/*.csv` only if you are
+   doing broader clause reconciliation
 3. Add or tighten the exact focused test
 4. Update the traceability row with the evidence anchor
 5. Regenerate compliance artifacts

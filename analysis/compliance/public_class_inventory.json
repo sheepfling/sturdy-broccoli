@@ -1,5 +1,5 @@
 {
-  "all_public_row_count": 224,
+  "all_public_row_count": 213,
   "package_exported_row_count": 0,
   "rows": [
     {
@@ -1060,56 +1060,7 @@
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
-      "class_name": "FOMCatalog",
-      "exported_via_package": false,
-      "mapping_status": "adapted",
-      "module": "hla2010.fom",
-      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
-    },
-    {
-      "class_name": "FOMMergeError",
-      "exported_via_package": false,
-      "mapping_status": "adapted",
-      "module": "hla2010.fom",
-      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
-    },
-    {
-      "class_name": "FOMModule",
-      "exported_via_package": false,
-      "mapping_status": "adapted",
-      "module": "hla2010.fom",
-      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
-    },
-    {
-      "class_name": "FOMResolutionError",
-      "exported_via_package": false,
-      "mapping_status": "adapted",
-      "module": "hla2010.fom",
-      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
-    },
-    {
       "class_name": "FOMResolver",
-      "exported_via_package": false,
-      "mapping_status": "adapted",
-      "module": "hla2010.fom",
-      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
-    },
-    {
-      "class_name": "InteractionClassSpec",
-      "exported_via_package": false,
-      "mapping_status": "adapted",
-      "module": "hla2010.fom",
-      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
-    },
-    {
-      "class_name": "OMTConformanceAssessment",
-      "exported_via_package": false,
-      "mapping_status": "adapted",
-      "module": "hla2010.fom",
-      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
-    },
-    {
-      "class_name": "ObjectClassSpec",
       "exported_via_package": false,
       "mapping_status": "adapted",
       "module": "hla2010.fom",
@@ -1394,34 +1345,6 @@
       "mapping_status": "close-1to1",
       "module": "hla2010.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
-    },
-    {
-      "class_name": "FederateAmbassador",
-      "exported_via_package": false,
-      "mapping_status": "close-1to1",
-      "module": "hla2010.raw_api",
-      "rationale": "Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs."
-    },
-    {
-      "class_name": "NullFederateAmbassador",
-      "exported_via_package": false,
-      "mapping_status": "close-1to1",
-      "module": "hla2010.raw_api",
-      "rationale": "Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs."
-    },
-    {
-      "class_name": "RTIAmbassador",
-      "exported_via_package": false,
-      "mapping_status": "close-1to1",
-      "module": "hla2010.raw_api",
-      "rationale": "Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs."
-    },
-    {
-      "class_name": "RTIambassador",
-      "exported_via_package": false,
-      "mapping_status": "close-1to1",
-      "module": "hla2010.raw_api",
-      "rationale": "Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs."
     },
     {
       "class_name": "FederateAmbassador",

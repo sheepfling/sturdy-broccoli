@@ -47,7 +47,7 @@ class MOMNegativeCase:
     expected_issue_kind: str = ""
     expected_exception_name: str = "InteractionParameterNotDefined"
     execution_level: str = "rti-strict"
-    section: str = "1516.1-2010 §11.3-§11.5"
+    section: str = "IEEE 1516.1-2010 §11.3-§11.5"
 
     def as_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -125,7 +125,7 @@ def generated_mom_negative_case_summary(cases: Iterable[MOMNegativeCase] | None 
         "case_count": len(cases),
         "by_kind": dict(sorted(by_kind.items())),
         "by_execution_level": dict(sorted(by_level.items())),
-        "section_refs": ["1516.1-2010 §11.3", "1516.1-2010 §11.4.1", "1516.1-2010 §11.5", "1516.1-2010 Annex G"],
+        "section_refs": ["IEEE 1516.1-2010 §11.3", "IEEE 1516.1-2010 §11.4.1", "IEEE 1516.1-2010 §11.5", "IEEE 1516.1-2010 Annex G"],
     }
 
 
