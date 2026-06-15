@@ -148,6 +148,7 @@ def build_certi_smoke_helper(runtime: CERTIRuntime, *, output_path: str | os.Pat
             "-lRTI1516ed",
             "-lCERTId",
             "-lFedTime1516ed",
+            "-lHLAd",
             "-o",
             str(output),
         ]

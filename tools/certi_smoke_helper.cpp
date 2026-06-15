@@ -1,4 +1,5 @@
 #include <RTI/NullFederateAmbassador.h>
+#include <RTI/RangeBounds.h>
 #include <RTI/RTI1516fedTime.h>
 #include <RTI/RTIambassador.h>
 #include <RTI/RTIambassadorFactory.h>
@@ -73,6 +74,76 @@ rti1516e::OrderType parse_order_type_name(const std::string& text)
         return rti1516e::RECEIVE;
     }
     throw std::runtime_error("Unknown order type " + text);
+}
+
+std::string save_failure_reason_name(rti1516e::SaveFailureReason reason)
+{
+    switch (reason) {
+    case rti1516e::RTI_UNABLE_TO_SAVE:
+        return "RTI_UNABLE_TO_SAVE";
+    case rti1516e::FEDERATE_REPORTED_FAILURE_DURING_SAVE:
+        return "FEDERATE_REPORTED_FAILURE_DURING_SAVE";
+    case rti1516e::FEDERATE_RESIGNED_DURING_SAVE:
+        return "FEDERATE_RESIGNED_DURING_SAVE";
+    case rti1516e::RTI_DETECTED_FAILURE_DURING_SAVE:
+        return "RTI_DETECTED_FAILURE_DURING_SAVE";
+    case rti1516e::SAVE_TIME_CANNOT_BE_HONORED:
+        return "SAVE_TIME_CANNOT_BE_HONORED";
+    case rti1516e::SAVE_ABORTED:
+        return "SAVE_ABORTED";
+    }
+    throw std::runtime_error("Unknown save failure reason");
+}
+
+std::string restore_failure_reason_name(rti1516e::RestoreFailureReason reason)
+{
+    switch (reason) {
+    case rti1516e::RTI_UNABLE_TO_RESTORE:
+        return "RTI_UNABLE_TO_RESTORE";
+    case rti1516e::FEDERATE_REPORTED_FAILURE_DURING_RESTORE:
+        return "FEDERATE_REPORTED_FAILURE_DURING_RESTORE";
+    case rti1516e::FEDERATE_RESIGNED_DURING_RESTORE:
+        return "FEDERATE_RESIGNED_DURING_RESTORE";
+    case rti1516e::RTI_DETECTED_FAILURE_DURING_RESTORE:
+        return "RTI_DETECTED_FAILURE_DURING_RESTORE";
+    case rti1516e::RESTORE_ABORTED:
+        return "RESTORE_ABORTED";
+    }
+    throw std::runtime_error("Unknown restore failure reason");
+}
+
+std::string save_status_name(rti1516e::SaveStatus status)
+{
+    switch (status) {
+    case rti1516e::NO_SAVE_IN_PROGRESS:
+        return "NO_SAVE_IN_PROGRESS";
+    case rti1516e::FEDERATE_INSTRUCTED_TO_SAVE:
+        return "FEDERATE_INSTRUCTED_TO_SAVE";
+    case rti1516e::FEDERATE_SAVING:
+        return "FEDERATE_SAVING";
+    case rti1516e::FEDERATE_WAITING_FOR_FEDERATION_TO_SAVE:
+        return "FEDERATE_WAITING_FOR_FEDERATION_TO_SAVE";
+    }
+    throw std::runtime_error("Unknown save status");
+}
+
+std::string restore_status_name(rti1516e::RestoreStatus status)
+{
+    switch (status) {
+    case rti1516e::NO_RESTORE_IN_PROGRESS:
+        return "NO_RESTORE_IN_PROGRESS";
+    case rti1516e::FEDERATE_RESTORE_REQUEST_PENDING:
+        return "FEDERATE_RESTORE_REQUEST_PENDING";
+    case rti1516e::FEDERATE_WAITING_FOR_RESTORE_TO_BEGIN:
+        return "FEDERATE_WAITING_FOR_RESTORE_TO_BEGIN";
+    case rti1516e::FEDERATE_PREPARED_TO_RESTORE:
+        return "FEDERATE_PREPARED_TO_RESTORE";
+    case rti1516e::FEDERATE_RESTORING:
+        return "FEDERATE_RESTORING";
+    case rti1516e::FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE:
+        return "FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE";
+    }
+    throw std::runtime_error("Unknown restore status");
 }
 
 std::vector<std::string> split_tab(const std::string& line)
@@ -323,6 +394,45 @@ public:
         rti1516e::FederateHandleSet const& failedToSyncSet)
         throw (rti1516e::FederateInternalError);
 
+    virtual void initiateFederateSave(std::wstring const& label)
+        throw (rti1516e::FederateInternalError);
+
+    virtual void initiateFederateSave(std::wstring const& label, rti1516e::LogicalTime const& theTime)
+        throw (rti1516e::FederateInternalError);
+
+    virtual void federationSaved()
+        throw (rti1516e::FederateInternalError);
+
+    virtual void federationNotSaved(rti1516e::SaveFailureReason theSaveFailureReason)
+        throw (rti1516e::FederateInternalError);
+
+    virtual void federationSaveStatusResponse(rti1516e::FederateHandleSaveStatusPairVector const& theFederateStatusVector)
+        throw (rti1516e::FederateInternalError);
+
+    virtual void requestFederationRestoreSucceeded(std::wstring const& label)
+        throw (rti1516e::FederateInternalError);
+
+    virtual void requestFederationRestoreFailed(std::wstring const& label)
+        throw (rti1516e::FederateInternalError);
+
+    virtual void federationRestoreBegun()
+        throw (rti1516e::FederateInternalError);
+
+    virtual void initiateFederateRestore(
+        std::wstring const& label,
+        std::wstring const& federateName,
+        rti1516e::FederateHandle federateHandle)
+        throw (rti1516e::FederateInternalError);
+
+    virtual void federationRestored()
+        throw (rti1516e::FederateInternalError);
+
+    virtual void federationNotRestored(rti1516e::RestoreFailureReason theRestoreFailureReason)
+        throw (rti1516e::FederateInternalError);
+
+    virtual void federationRestoreStatusResponse(rti1516e::FederateRestoreStatusVector const& theFederateRestoreStatusVector)
+        throw (rti1516e::FederateInternalError);
+
     virtual void attributeOwnershipAcquisitionNotification(
         rti1516e::ObjectInstanceHandle theObject,
         rti1516e::AttributeHandleSet const& securedAttributes,
@@ -408,6 +518,16 @@ public:
         return object_instance_handles_.intern(handle);
     }
 
+    int intern_dimension_handle(rti1516e::DimensionHandle handle)
+    {
+        return dimension_handles_.intern(handle);
+    }
+
+    int intern_region_handle(rti1516e::RegionHandle handle)
+    {
+        return region_handles_.intern(handle);
+    }
+
     int intern_retraction_handle(rti1516e::MessageRetractionHandle handle)
     {
         return retraction_handles_.intern(handle);
@@ -441,6 +561,16 @@ public:
     rti1516e::ObjectInstanceHandle resolve_object_instance_handle(int id) const
     {
         return object_instance_handles_.resolve(id);
+    }
+
+    rti1516e::DimensionHandle resolve_dimension_handle(int id) const
+    {
+        return dimension_handles_.resolve(id);
+    }
+
+    rti1516e::RegionHandle resolve_region_handle(int id) const
+    {
+        return region_handles_.resolve(id);
     }
 
     rti1516e::MessageRetractionHandle resolve_retraction_handle(int id) const
@@ -567,6 +697,12 @@ public:
             resolve_attribute_handle(std::atoi(percent_decode(fields.at(2)).c_str())))));
     }
 
+    void get_dimension_handle(const std::vector<std::string>& fields)
+    {
+        rti1516e::DimensionHandle handle = rti_->getDimensionHandle(widen_ascii(percent_decode(fields.at(1))));
+        ok(std::to_string(intern_dimension_handle(handle)));
+    }
+
     void publish_object_class_attributes(const std::vector<std::string>& fields)
     {
         rti_->publishObjectClassAttributes(
@@ -583,6 +719,48 @@ public:
         ok();
     }
 
+    void subscribe_object_class_attributes_with_regions(const std::vector<std::string>& fields)
+    {
+        rti_->subscribeObjectClassAttributesWithRegions(
+            resolve_object_class_handle(std::atoi(percent_decode(fields.at(1)).c_str())),
+            parse_attribute_region_associations(percent_decode(fields.at(2))),
+            true,
+            widen_ascii(""));
+        ok();
+    }
+
+    void unsubscribe_object_class_attributes_with_regions(const std::vector<std::string>& fields)
+    {
+        rti_->unsubscribeObjectClassAttributesWithRegions(
+            resolve_object_class_handle(std::atoi(percent_decode(fields.at(1)).c_str())),
+            parse_attribute_region_associations(percent_decode(fields.at(2))));
+        ok();
+    }
+
+    void create_region(const std::vector<std::string>& fields)
+    {
+        rti1516e::RegionHandle handle = rti_->createRegion(parse_dimension_handle_set(percent_decode(fields.at(1))));
+        ok(std::to_string(intern_region_handle(handle)));
+    }
+
+    void set_range_bounds(const std::vector<std::string>& fields)
+    {
+        (void)fields;
+        throw rti1516e::RTIinternalError(widen_ascii("CERTI setRangeBounds is not implemented in the real RTI"));
+    }
+
+    void commit_region_modifications(const std::vector<std::string>& fields)
+    {
+        rti_->commitRegionModifications(parse_region_handle_set(percent_decode(fields.at(1))));
+        ok();
+    }
+
+    void delete_region(const std::vector<std::string>& fields)
+    {
+        rti_->deleteRegion(resolve_region_handle(std::atoi(percent_decode(fields.at(1)).c_str())));
+        ok();
+    }
+
     void register_object_instance(const std::vector<std::string>& fields)
     {
         rti1516e::ObjectClassHandle object_class = resolve_object_class_handle(std::atoi(percent_decode(fields.at(1)).c_str()));
@@ -591,6 +769,34 @@ public:
                 ? rti_->registerObjectInstance(object_class, widen_ascii(percent_decode(fields.at(2))))
                 : rti_->registerObjectInstance(object_class);
         ok(std::to_string(intern_object_instance_handle(handle)));
+    }
+
+    void register_object_instance_with_regions(const std::vector<std::string>& fields)
+    {
+        rti1516e::ObjectClassHandle object_class = resolve_object_class_handle(std::atoi(percent_decode(fields.at(1)).c_str()));
+        rti1516e::AttributeHandleSetRegionHandleSetPairVector associations = parse_attribute_region_associations(percent_decode(fields.at(2)));
+        const std::string object_name = fields.size() >= 4 ? percent_decode(fields.at(3)) : "";
+        rti1516e::ObjectInstanceHandle handle =
+            object_name.empty()
+                ? rti_->registerObjectInstanceWithRegions(object_class, associations)
+                : rti_->registerObjectInstanceWithRegions(object_class, associations, widen_ascii(object_name));
+        ok(std::to_string(intern_object_instance_handle(handle)));
+    }
+
+    void associate_regions_for_updates(const std::vector<std::string>& fields)
+    {
+        rti_->associateRegionsForUpdates(
+            resolve_object_instance_handle(std::atoi(percent_decode(fields.at(1)).c_str())),
+            parse_attribute_region_associations(percent_decode(fields.at(2))));
+        ok();
+    }
+
+    void unassociate_regions_for_updates(const std::vector<std::string>& fields)
+    {
+        rti_->unassociateRegionsForUpdates(
+            resolve_object_instance_handle(std::atoi(percent_decode(fields.at(1)).c_str())),
+            parse_attribute_region_associations(percent_decode(fields.at(2))));
+        ok();
     }
 
     void get_object_instance_handle(const std::vector<std::string>& fields)
@@ -616,6 +822,14 @@ public:
             resolve_object_instance_handle(std::atoi(percent_decode(fields.at(1)).c_str())),
             parse_attribute_value_map(percent_decode(fields.at(2))),
             make_variable_length_data(hex_decode_string(percent_decode(fields.at(3)))));
+        ok();
+    }
+
+    void delete_object_instance(const std::vector<std::string>& fields)
+    {
+        rti_->deleteObjectInstance(
+            resolve_object_instance_handle(std::atoi(percent_decode(fields.at(1)).c_str())),
+            make_variable_length_data(hex_decode_string(percent_decode(fields.at(2)))));
         ok();
     }
 
@@ -677,12 +891,39 @@ public:
         ok();
     }
 
+    void subscribe_interaction_class_with_regions(const std::vector<std::string>& fields)
+    {
+        rti_->subscribeInteractionClassWithRegions(
+            resolve_interaction_class_handle(std::atoi(percent_decode(fields.at(1)).c_str())),
+            parse_region_handle_set(percent_decode(fields.at(2))),
+            true);
+        ok();
+    }
+
+    void unsubscribe_interaction_class_with_regions(const std::vector<std::string>& fields)
+    {
+        rti_->unsubscribeInteractionClassWithRegions(
+            resolve_interaction_class_handle(std::atoi(percent_decode(fields.at(1)).c_str())),
+            parse_region_handle_set(percent_decode(fields.at(2))));
+        ok();
+    }
+
     void send_interaction(const std::vector<std::string>& fields)
     {
         rti_->sendInteraction(
             resolve_interaction_class_handle(std::atoi(percent_decode(fields.at(1)).c_str())),
             parse_parameter_value_map(percent_decode(fields.at(2))),
             make_variable_length_data(hex_decode_string(percent_decode(fields.at(3)))));
+        ok();
+    }
+
+    void send_interaction_with_regions(const std::vector<std::string>& fields)
+    {
+        rti_->sendInteractionWithRegions(
+            resolve_interaction_class_handle(std::atoi(percent_decode(fields.at(1)).c_str())),
+            parse_parameter_value_map(percent_decode(fields.at(2))),
+            parse_region_handle_set(percent_decode(fields.at(3))),
+            make_variable_length_data(hex_decode_string(percent_decode(fields.at(4)))));
         ok();
     }
 
@@ -715,6 +956,78 @@ public:
     void enable_time_constrained()
     {
         rti_->enableTimeConstrained();
+        ok();
+    }
+
+    void request_federation_save(const std::vector<std::string>& fields)
+    {
+        const std::wstring label = widen_ascii(percent_decode(fields.at(1)));
+        if (fields.size() >= 4) {
+            RTI1516fedTime save_time(parse_logical_time_argument(fields));
+            rti_->requestFederationSave(label, save_time);
+        } else {
+            rti_->requestFederationSave(label);
+        }
+        ok();
+    }
+
+    void federate_save_begun()
+    {
+        rti_->federateSaveBegun();
+        ok();
+    }
+
+    void federate_save_complete()
+    {
+        rti_->federateSaveComplete();
+        ok();
+    }
+
+    void federate_save_not_complete()
+    {
+        rti_->federateSaveNotComplete();
+        ok();
+    }
+
+    void abort_federation_save()
+    {
+        rti_->abortFederationSave();
+        ok();
+    }
+
+    void query_federation_save_status()
+    {
+        rti_->queryFederationSaveStatus();
+        ok();
+    }
+
+    void request_federation_restore(const std::vector<std::string>& fields)
+    {
+        rti_->requestFederationRestore(widen_ascii(percent_decode(fields.at(1))));
+        ok();
+    }
+
+    void federate_restore_complete()
+    {
+        rti_->federateRestoreComplete();
+        ok();
+    }
+
+    void federate_restore_not_complete()
+    {
+        rti_->federateRestoreNotComplete();
+        ok();
+    }
+
+    void abort_federation_restore()
+    {
+        rti_->abortFederationRestore();
+        ok();
+    }
+
+    void query_federation_restore_status()
+    {
+        rti_->queryFederationRestoreStatus();
         ok();
     }
 
@@ -999,6 +1312,53 @@ private:
         return result;
     }
 
+    rti1516e::DimensionHandleSet parse_dimension_handle_set(const std::string& spec) const
+    {
+        rti1516e::DimensionHandleSet result;
+        std::vector<std::string> parts = split_char(spec, ',');
+        for (std::vector<std::string>::const_iterator it = parts.begin(); it != parts.end(); ++it) {
+            if (!it->empty()) {
+                result.insert(resolve_dimension_handle(std::atoi(it->c_str())));
+            }
+        }
+        return result;
+    }
+
+    rti1516e::RegionHandleSet parse_region_handle_set(const std::string& spec) const
+    {
+        rti1516e::RegionHandleSet result;
+        std::vector<std::string> parts = split_char(spec, ',');
+        for (std::vector<std::string>::const_iterator it = parts.begin(); it != parts.end(); ++it) {
+            if (!it->empty()) {
+                result.insert(resolve_region_handle(std::atoi(it->c_str())));
+            }
+        }
+        return result;
+    }
+
+    rti1516e::AttributeHandleSetRegionHandleSetPairVector parse_attribute_region_associations(const std::string& spec) const
+    {
+        rti1516e::AttributeHandleSetRegionHandleSetPairVector result;
+        std::vector<std::string> entries = split_char(spec, '@');
+        if (entries.empty()) {
+            return result;
+        }
+        std::vector<std::string> pairs = split_char(spec, ';');
+        for (std::vector<std::string>::const_iterator it = pairs.begin(); it != pairs.end(); ++it) {
+            if (it->empty()) {
+                continue;
+            }
+            std::size_t at = it->find('@');
+            if (at == std::string::npos) {
+                throw std::runtime_error("Invalid attribute-region association entry");
+            }
+            result.push_back(std::make_pair(
+                parse_attribute_handle_set(it->substr(0, at)),
+                parse_region_handle_set(it->substr(at + 1))));
+        }
+        return result;
+    }
+
     void emit_callback_result(bool evoked)
     {
         if (pending_events_.empty()) {
@@ -1020,6 +1380,28 @@ private:
         } else if (event.kind == "FEDERATION_SYNCHRONIZED") {
             payload.push_back(event.object_name);
             payload.push_back(encode_handle_list(event.handles));
+        } else if (event.kind == "INITIATE_FEDERATE_SAVE") {
+            payload.push_back(event.object_name);
+        } else if (event.kind == "INITIATE_FEDERATE_SAVE_AT") {
+            payload.push_back(event.object_name);
+            payload.push_back(event.time_type);
+            payload.push_back(event.time_value);
+        } else if (
+            event.kind == "FEDERATION_SAVED" ||
+            event.kind == "FEDERATION_RESTORE_BEGUN" ||
+            event.kind == "FEDERATION_RESTORED") {
+        } else if (
+            event.kind == "FEDERATION_NOT_SAVED" ||
+            event.kind == "REQUEST_FEDERATION_RESTORE_SUCCEEDED" ||
+            event.kind == "REQUEST_FEDERATION_RESTORE_FAILED" ||
+            event.kind == "FEDERATION_NOT_RESTORED" ||
+            event.kind == "FEDERATION_SAVE_STATUS_RESPONSE" ||
+            event.kind == "FEDERATION_RESTORE_STATUS_RESPONSE") {
+            payload.push_back(event.object_name);
+        } else if (event.kind == "INITIATE_FEDERATE_RESTORE") {
+            payload.push_back(event.object_name);
+            payload.push_back(event.tag_hex);
+            payload.push_back(std::to_string(event.primary_handle));
         } else if (event.kind == "OWNERSHIP_ACQUIRED") {
             payload.push_back(std::to_string(event.primary_handle));
             payload.push_back(encode_handle_list(event.handles));
@@ -1100,6 +1482,8 @@ private:
     HandleRegistry<rti1516e::InteractionClassHandle> interaction_class_handles_;
     HandleRegistry<rti1516e::ParameterHandle> parameter_handles_;
     HandleRegistry<rti1516e::ObjectInstanceHandle> object_instance_handles_;
+    HandleRegistry<rti1516e::DimensionHandle> dimension_handles_;
+    HandleRegistry<rti1516e::RegionHandle> region_handles_;
     HandleRegistry<rti1516e::MessageRetractionHandle> retraction_handles_;
     std::deque<PendingEvent> pending_events_;
     std::string logical_time_name_;
@@ -1319,6 +1703,135 @@ void QueueingFederateAmbassador::federationSynchronized(
     session_.enqueue_event(event);
 }
 
+void QueueingFederateAmbassador::initiateFederateSave(std::wstring const& label)
+    throw (rti1516e::FederateInternalError)
+{
+    PendingEvent event;
+    event.kind = "INITIATE_FEDERATE_SAVE";
+    event.object_name = narrow_ascii(label);
+    session_.enqueue_event(event);
+}
+
+void QueueingFederateAmbassador::initiateFederateSave(std::wstring const& label, rti1516e::LogicalTime const& theTime)
+    throw (rti1516e::FederateInternalError)
+{
+    PendingEvent event;
+    event.kind = "INITIATE_FEDERATE_SAVE_AT";
+    event.object_name = narrow_ascii(label);
+    event.time_type = session_.logical_time_name();
+    event.time_value = logical_time_to_wire_string(theTime, event.time_type);
+    session_.enqueue_event(event);
+}
+
+void QueueingFederateAmbassador::federationSaved()
+    throw (rti1516e::FederateInternalError)
+{
+    PendingEvent event;
+    event.kind = "FEDERATION_SAVED";
+    session_.enqueue_event(event);
+}
+
+void QueueingFederateAmbassador::federationNotSaved(rti1516e::SaveFailureReason theSaveFailureReason)
+    throw (rti1516e::FederateInternalError)
+{
+    PendingEvent event;
+    event.kind = "FEDERATION_NOT_SAVED";
+    event.object_name = save_failure_reason_name(theSaveFailureReason);
+    session_.enqueue_event(event);
+}
+
+void QueueingFederateAmbassador::federationSaveStatusResponse(rti1516e::FederateHandleSaveStatusPairVector const& theFederateStatusVector)
+    throw (rti1516e::FederateInternalError)
+{
+    PendingEvent event;
+    event.kind = "FEDERATION_SAVE_STATUS_RESPONSE";
+    std::ostringstream stream;
+    for (std::size_t i = 0; i < theFederateStatusVector.size(); ++i) {
+        if (i != 0) {
+            stream << ';';
+        }
+        stream << session_.intern_federate_handle(theFederateStatusVector[i].first) << ':'
+               << save_status_name(theFederateStatusVector[i].second);
+    }
+    event.object_name = stream.str();
+    session_.enqueue_event(event);
+}
+
+void QueueingFederateAmbassador::requestFederationRestoreSucceeded(std::wstring const& label)
+    throw (rti1516e::FederateInternalError)
+{
+    PendingEvent event;
+    event.kind = "REQUEST_FEDERATION_RESTORE_SUCCEEDED";
+    event.object_name = narrow_ascii(label);
+    session_.enqueue_event(event);
+}
+
+void QueueingFederateAmbassador::requestFederationRestoreFailed(std::wstring const& label)
+    throw (rti1516e::FederateInternalError)
+{
+    PendingEvent event;
+    event.kind = "REQUEST_FEDERATION_RESTORE_FAILED";
+    event.object_name = narrow_ascii(label);
+    session_.enqueue_event(event);
+}
+
+void QueueingFederateAmbassador::federationRestoreBegun()
+    throw (rti1516e::FederateInternalError)
+{
+    PendingEvent event;
+    event.kind = "FEDERATION_RESTORE_BEGUN";
+    session_.enqueue_event(event);
+}
+
+void QueueingFederateAmbassador::initiateFederateRestore(
+    std::wstring const& label,
+    std::wstring const& federateName,
+    rti1516e::FederateHandle federateHandle)
+    throw (rti1516e::FederateInternalError)
+{
+    PendingEvent event;
+    event.kind = "INITIATE_FEDERATE_RESTORE";
+    event.object_name = narrow_ascii(label);
+    event.tag_hex = narrow_ascii(federateName);
+    event.primary_handle = session_.intern_federate_handle(federateHandle);
+    session_.enqueue_event(event);
+}
+
+void QueueingFederateAmbassador::federationRestored()
+    throw (rti1516e::FederateInternalError)
+{
+    PendingEvent event;
+    event.kind = "FEDERATION_RESTORED";
+    session_.enqueue_event(event);
+}
+
+void QueueingFederateAmbassador::federationNotRestored(rti1516e::RestoreFailureReason theRestoreFailureReason)
+    throw (rti1516e::FederateInternalError)
+{
+    PendingEvent event;
+    event.kind = "FEDERATION_NOT_RESTORED";
+    event.object_name = restore_failure_reason_name(theRestoreFailureReason);
+    session_.enqueue_event(event);
+}
+
+void QueueingFederateAmbassador::federationRestoreStatusResponse(rti1516e::FederateRestoreStatusVector const& theFederateRestoreStatusVector)
+    throw (rti1516e::FederateInternalError)
+{
+    PendingEvent event;
+    event.kind = "FEDERATION_RESTORE_STATUS_RESPONSE";
+    std::ostringstream stream;
+    for (std::size_t i = 0; i < theFederateRestoreStatusVector.size(); ++i) {
+        if (i != 0) {
+            stream << ';';
+        }
+        stream << session_.intern_federate_handle(theFederateRestoreStatusVector[i].preRestoreHandle) << ':'
+               << session_.intern_federate_handle(theFederateRestoreStatusVector[i].postRestoreHandle) << ':'
+               << restore_status_name(theFederateRestoreStatusVector[i].status);
+    }
+    event.object_name = stream.str();
+    session_.enqueue_event(event);
+}
+
 void QueueingFederateAmbassador::attributeOwnershipAcquisitionNotification(
     rti1516e::ObjectInstanceHandle theObject,
     rti1516e::AttributeHandleSet const& securedAttributes,
@@ -1474,12 +1987,32 @@ int main()
                 session.get_attribute_handle(fields);
             } else if (command == "GET_ATTRIBUTE_NAME") {
                 session.get_attribute_name(fields);
+            } else if (command == "GET_DIMENSION_HANDLE") {
+                session.get_dimension_handle(fields);
             } else if (command == "PUBLISH_OBJECT_CLASS_ATTRIBUTES") {
                 session.publish_object_class_attributes(fields);
             } else if (command == "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES") {
                 session.subscribe_object_class_attributes(fields);
+            } else if (command == "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS") {
+                session.subscribe_object_class_attributes_with_regions(fields);
+            } else if (command == "UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS") {
+                session.unsubscribe_object_class_attributes_with_regions(fields);
+            } else if (command == "CREATE_REGION") {
+                session.create_region(fields);
+            } else if (command == "SET_RANGE_BOUNDS") {
+                session.set_range_bounds(fields);
+            } else if (command == "COMMIT_REGION_MODIFICATIONS") {
+                session.commit_region_modifications(fields);
+            } else if (command == "DELETE_REGION") {
+                session.delete_region(fields);
             } else if (command == "REGISTER_OBJECT_INSTANCE") {
                 session.register_object_instance(fields);
+            } else if (command == "REGISTER_OBJECT_INSTANCE_WITH_REGIONS") {
+                session.register_object_instance_with_regions(fields);
+            } else if (command == "ASSOCIATE_REGIONS_FOR_UPDATES") {
+                session.associate_regions_for_updates(fields);
+            } else if (command == "UNASSOCIATE_REGIONS_FOR_UPDATES") {
+                session.unassociate_regions_for_updates(fields);
             } else if (command == "GET_OBJECT_INSTANCE_HANDLE") {
                 session.get_object_instance_handle(fields);
             } else if (command == "GET_OBJECT_INSTANCE_NAME") {
@@ -1488,6 +2021,8 @@ int main()
                 session.get_known_object_class_handle(fields);
             } else if (command == "UPDATE_ATTRIBUTE_VALUES") {
                 session.update_attribute_values(fields);
+            } else if (command == "DELETE_OBJECT_INSTANCE") {
+                session.delete_object_instance(fields);
             } else if (command == "UPDATE_ATTRIBUTE_VALUES_TIMESTAMP") {
                 session.update_attribute_values_timestamp(fields);
             } else if (command == "CHANGE_ATTRIBUTE_ORDER_TYPE") {
@@ -1504,12 +2039,40 @@ int main()
                 session.publish_interaction_class(fields);
             } else if (command == "SUBSCRIBE_INTERACTION_CLASS") {
                 session.subscribe_interaction_class(fields);
+            } else if (command == "SUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS") {
+                session.subscribe_interaction_class_with_regions(fields);
+            } else if (command == "UNSUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS") {
+                session.unsubscribe_interaction_class_with_regions(fields);
             } else if (command == "SEND_INTERACTION") {
                 session.send_interaction(fields);
+            } else if (command == "SEND_INTERACTION_WITH_REGIONS") {
+                session.send_interaction_with_regions(fields);
             } else if (command == "SEND_INTERACTION_TIMESTAMP") {
                 session.send_interaction_timestamp(fields);
             } else if (command == "CHANGE_INTERACTION_ORDER_TYPE") {
                 session.change_interaction_order_type(fields);
+            } else if (command == "REQUEST_FEDERATION_SAVE") {
+                session.request_federation_save(fields);
+            } else if (command == "FEDERATE_SAVE_BEGUN") {
+                session.federate_save_begun();
+            } else if (command == "FEDERATE_SAVE_COMPLETE") {
+                session.federate_save_complete();
+            } else if (command == "FEDERATE_SAVE_NOT_COMPLETE") {
+                session.federate_save_not_complete();
+            } else if (command == "ABORT_FEDERATION_SAVE") {
+                session.abort_federation_save();
+            } else if (command == "QUERY_FEDERATION_SAVE_STATUS") {
+                session.query_federation_save_status();
+            } else if (command == "REQUEST_FEDERATION_RESTORE") {
+                session.request_federation_restore(fields);
+            } else if (command == "FEDERATE_RESTORE_COMPLETE") {
+                session.federate_restore_complete();
+            } else if (command == "FEDERATE_RESTORE_NOT_COMPLETE") {
+                session.federate_restore_not_complete();
+            } else if (command == "ABORT_FEDERATION_RESTORE") {
+                session.abort_federation_restore();
+            } else if (command == "QUERY_FEDERATION_RESTORE_STATUS") {
+                session.query_federation_restore_status();
             } else if (command == "ENABLE_TIME_REGULATION") {
                 session.enable_time_regulation(fields);
             } else if (command == "ENABLE_TIME_CONSTRAINED") {

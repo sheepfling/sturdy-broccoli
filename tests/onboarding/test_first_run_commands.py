@@ -114,6 +114,43 @@ def test_first_run_examples_import_after_bootstrap(tmp_path: Path) -> None:
     assert result.returncode == 0, result.stderr or result.stdout
 
 
+def test_bootstrap_keeps_checkout_venvs_isolated(tmp_path: Path) -> None:
+    left_root = materialize_fresh_checkout(tmp_path / "fresh-checkout-left")
+    right_root = materialize_fresh_checkout(tmp_path / "fresh-checkout-right")
+
+    for checkout in (left_root, right_root):
+        subprocess.run(
+            ["bash", "./tools/bootstrap", "python"],
+            cwd=checkout,
+            env=bootstrap_test_env(),
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+    def _python_prefix(checkout: Path) -> str:
+        result = subprocess.run(
+            [
+                str(checkout / ".venv" / "bin" / "python"),
+                "-c",
+                "import sys; print(sys.prefix)",
+            ],
+            cwd=checkout,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr or result.stdout
+        return result.stdout.strip()
+
+    left_prefix = _python_prefix(left_root)
+    right_prefix = _python_prefix(right_root)
+
+    assert left_prefix.startswith(str(left_root / ".venv"))
+    assert right_prefix.startswith(str(right_root / ".venv"))
+    assert left_prefix != right_prefix
+
+
 def test_expected_output_shape_matches_live_example() -> None:
     python_bin = workspace_python_bin()
     result = subprocess.run(

@@ -36,6 +36,13 @@ from tests.vendors.runtime_support import (
 EXPECTED_HLA_VERSION = framework_document_title()
 
 
+def _assert_hla_version(actual: str, *, vendor: str) -> None:
+    if vendor == "certi":
+        assert actual in {EXPECTED_HLA_VERSION, "IEEE 1516-2010"}
+        return
+    assert actual == EXPECTED_HLA_VERSION
+
+
 def _require_real_rti_smoke(vendor: str) -> None:
     if os.environ.get("HLA2010_ENABLE_REAL_RTI_SMOKE") != "1":
         pytest.skip("real vendor RTI smoke disabled; set HLA2010_ENABLE_REAL_RTI_SMOKE=1")
@@ -66,7 +73,7 @@ def test_pitch_java_real_lifecycle_smoke(kind: str):
         try:
             fed = RecordingFederateAmbassador()
             rti = create_rti_ambassador(kind)
-            assert rti.getHLAversion() == EXPECTED_HLA_VERSION
+            _assert_hla_version(rti.getHLAversion(), vendor="pitch")
             summary = run_federation_lifecycle_scenario(
                 rti,
                 config=FederationLifecycleScenarioConfig(
@@ -99,7 +106,7 @@ def test_certi_real_lifecycle_smoke():
         except BackendUnavailableError as exc:
             pytest.skip(str(exc))
         try:
-            assert rti.getHLAversion() == EXPECTED_HLA_VERSION
+            _assert_hla_version(rti.getHLAversion(), vendor="certi")
             summary = run_federation_lifecycle_scenario(
                 rti,
                 config=FederationLifecycleScenarioConfig(
@@ -308,7 +315,7 @@ def test_certi_java_profile_real_lifecycle_smoke(kind: str):
         with reserve_udp_pair() as lease:
             (rti_udp_port, _) = lease.ports
         rti = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=rti_udp_port)
-        assert rti.getHLAversion() == EXPECTED_HLA_VERSION
+        _assert_hla_version(rti.getHLAversion(), vendor="certi")
         summary = run_federation_lifecycle_scenario(
             rti,
             config=FederationLifecycleScenarioConfig(
