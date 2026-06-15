@@ -28,6 +28,7 @@ from tests.requirement_label_helpers import framework_document_title
 from tests.vendors.runtime_support import (
     cleanup_federation,
     isolated_vendor_runtime_test_state,
+    require_java_bridge_runtime,
     require_vendor_preflight,
     reserve_udp_pair,
     shutdown_runtime_resources,
@@ -61,6 +62,7 @@ def _runtime_state_root(vendor: str, *, kind: str | None = None) -> Path:
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
 def test_pitch_java_real_lifecycle_smoke(kind: str):
     _require_real_rti_smoke("pitch")
+    require_java_bridge_runtime(kind, operator_hint="./tools/pitch preflight")
     with isolated_vendor_runtime_test_state(_runtime_state_root("pitch", kind=kind)):
         runtime = None
         try:
@@ -400,6 +402,7 @@ def test_certi_java_profile_real_exchange_smoke(kind: str):
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
 def test_pitch_java_real_save_restore_smoke(kind: str):
     _require_real_rti_smoke("pitch")
+    require_java_bridge_runtime(kind, operator_hint="./tools/pitch preflight")
     with isolated_vendor_runtime_test_state(_runtime_state_root("pitch", kind=f"{kind}-save-restore")):
         try:
             runtime = launch_pitch_runtime()
@@ -447,6 +450,7 @@ def test_pitch_java_real_save_restore_smoke(kind: str):
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
 def test_pitch_java_real_ddm_smoke(kind: str):
     _require_real_rti_smoke("pitch")
+    require_java_bridge_runtime(kind, operator_hint="./tools/pitch preflight")
     with isolated_vendor_runtime_test_state(_runtime_state_root("pitch", kind=f"{kind}-ddm")):
         try:
             runtime = launch_pitch_runtime()
@@ -503,6 +507,7 @@ def test_pitch_java_real_ddm_smoke(kind: str):
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])
 def test_pitch_java_real_exchange_smoke(kind: str):
     _require_real_rti_smoke("pitch")
+    require_java_bridge_runtime(kind, operator_hint="./tools/pitch preflight")
     with isolated_vendor_runtime_test_state(_runtime_state_root("pitch", kind=f"{kind}-exchange")):
         try:
             runtime = launch_pitch_runtime()

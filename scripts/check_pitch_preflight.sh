@@ -18,6 +18,14 @@ OUTPUT_JSON=0
 OUTPUT_JSON_FILE=""
 NEXT_IS_JSON_FILE=0
 
+resolve_pitch_runtime_ports() {
+  local python_bin
+  python_bin="$(hla2010_shell_python_bin)"
+  eval "$("$python_bin" "$ROOT_DIR/scripts/resolve_pitch_runtime_ports.py" --shell --docker-container-name "$CONTAINER_NAME")"
+  CRC_PORT="${HLA2010_PITCH_CRC_PORT:-$CRC_PORT}"
+  FEDPRO_PORT="${HLA2010_PITCH_FEDPRO_PORT:-$FEDPRO_PORT}"
+}
+
 for arg in "$@"; do
   if [[ "$NEXT_IS_JSON_FILE" -eq 1 ]]; then
     OUTPUT_JSON_FILE="$arg"
@@ -256,11 +264,14 @@ if [[ "$OUTPUT_JSON" -eq 0 ]]; then
   show_hint "platform" "$platform"
 fi
 
+resolve_pitch_runtime_ports
+
 if hla2010_shell_have docker; then
   if docker info >/dev/null 2>&1; then
     docker_detail="ok: $(command -v docker)"
     if docker_container_running; then
       managed_container_running=1
+      docker_detail="ok: $(command -v docker); managed container $CONTAINER_NAME is already running"
     fi
     if [[ "$OUTPUT_JSON" -eq 0 ]]; then
       show_hint "docker" "$docker_detail"
@@ -330,7 +341,11 @@ if [[ "$managed_container_running" -eq 1 ]]; then
   crc_port_detail="ok: managed container $CONTAINER_NAME is already running on 127.0.0.1:$CRC_PORT"
   fedpro_port_detail="ok: managed container $CONTAINER_NAME is already running on 127.0.0.1:$FEDPRO_PORT"
 elif check_port_available "$CRC_PORT" >"$crc_port_check_file" 2>&1; then
-  crc_port_detail="ok: 127.0.0.1:$CRC_PORT is available"
+  if [[ "${HLA2010_PITCH_CRC_PORT_SOURCE:-preferred}" == "fallback" ]]; then
+    crc_port_detail="ok: selected fallback 127.0.0.1:$CRC_PORT because preferred 127.0.0.1:${HLA2010_PITCH_CRC_PREFERRED_PORT:-8989} was unavailable"
+  else
+    crc_port_detail="ok: 127.0.0.1:$CRC_PORT is available"
+  fi
 else
   status=1
   crc_port_status="blocked"
@@ -341,7 +356,11 @@ rm -f "$crc_port_check_file"
 if [[ "$managed_container_running" -eq 1 ]]; then
   :
 elif check_port_available "$FEDPRO_PORT" >"$fedpro_port_check_file" 2>&1; then
-  fedpro_port_detail="ok: 127.0.0.1:$FEDPRO_PORT is available"
+  if [[ "${HLA2010_PITCH_FEDPRO_PORT_SOURCE:-preferred}" == "fallback" ]]; then
+    fedpro_port_detail="ok: selected fallback 127.0.0.1:$FEDPRO_PORT because preferred 127.0.0.1:${HLA2010_PITCH_FEDPRO_PREFERRED_PORT:-15164} was unavailable"
+  else
+    fedpro_port_detail="ok: 127.0.0.1:$FEDPRO_PORT is available"
+  fi
 else
   status=1
   fedpro_port_status="blocked"

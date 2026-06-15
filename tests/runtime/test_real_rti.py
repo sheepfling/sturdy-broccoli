@@ -285,8 +285,123 @@ def test_launch_pitch_runtime_honors_listener_and_boot_timeout_env(tmp_path, mon
 
     assert boot_calls
     assert all(timeout == 11.5 for _, timeout in boot_calls)
-    assert ("127.0.0.1", 15164, 21.5) in listener_calls
-    assert ("127.0.0.1", 8989, 46.5) in listener_calls
+    assert len(listener_calls) == 2
+    assert listener_calls[0][0] == "127.0.0.1"
+    assert listener_calls[1][0] == "127.0.0.1"
+    assert listener_calls[0][2] == 21.5
+    assert listener_calls[1][2] == 46.5
+    assert listener_calls[0][1] != listener_calls[1][1]
+
+
+def test_launch_pitch_runtime_honors_explicit_custom_ports(tmp_path, monkeypatch):
+    home = tmp_path / "pitch-install"
+    (home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin").mkdir(parents=True)
+    (home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin" / "java").write_text("")
+    (home / "lib").mkdir()
+    (home / "lib" / "prtifull.jar").write_text("")
+
+    monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
+    monkeypatch.setenv("HLA2010_PITCH_CRC_PORT", "18989")
+    monkeypatch.setenv("HLA2010_PITCH_FEDPRO_PORT", "25164")
+
+    class FakeProcess:
+        returncode = None
+
+        def poll(self):
+            return None
+
+        def terminate(self):
+            self.returncode = 0
+
+        def wait(self, timeout=None):
+            self.returncode = 0
+
+        def kill(self):
+            self.returncode = -9
+
+    listener_calls: list[tuple[str, int, float]] = []
+
+    def fake_popen(command, **kwargs):
+        return FakeProcess()
+
+    def fake_wait_for_process_boot(process, *, timeout):
+        return None
+
+    def fake_wait_for_tcp_listener(host, port, *, timeout):
+        listener_calls.append((host, port, timeout))
+
+    monkeypatch.setattr(pitch_runtime_module.subprocess, "Popen", fake_popen)
+
+    runtime = launch_pitch_runtime(
+        _wait_for_process_boot=fake_wait_for_process_boot,
+        _wait_for_tcp_listener=fake_wait_for_tcp_listener,
+    )
+    runtime.terminate()
+
+    assert ("127.0.0.1", 25164, 20.0) in listener_calls
+    assert ("127.0.0.1", 18989, 45.0) in listener_calls
+    assert runtime.tcp_port == 25164
+
+
+def test_launch_pitch_runtime_chooses_fallback_ports_when_defaults_are_busy(tmp_path, monkeypatch):
+    home = tmp_path / "pitch-install"
+    (home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin").mkdir(parents=True)
+    (home / ".install4j" / "jre.bundle" / "Contents" / "Home" / "bin" / "java").write_text("")
+    (home / "lib").mkdir()
+    (home / "lib" / "prtifull.jar").write_text("")
+
+    monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
+    monkeypatch.delenv("HLA2010_PITCH_CRC_PORT", raising=False)
+    monkeypatch.delenv("HLA2010_PITCH_FEDPRO_PORT", raising=False)
+
+    class FakeProcess:
+        returncode = None
+
+        def poll(self):
+            return None
+
+        def terminate(self):
+            self.returncode = 0
+
+        def wait(self, timeout=None):
+            self.returncode = 0
+
+        def kill(self):
+            self.returncode = -9
+
+    listener_calls: list[tuple[str, int, float]] = []
+    fallback_values = iter((28001, 28002))
+
+    def fake_popen(command, **kwargs):
+        return FakeProcess()
+
+    def fake_wait_for_process_boot(process, *, timeout):
+        return None
+
+    def fake_wait_for_tcp_listener(host, port, *, timeout):
+        listener_calls.append((host, port, timeout))
+
+    def fake_port_is_available(host, port):
+        return False if port in {8989, 15164} else True
+
+    def fake_reserve_tcp_port(host):
+        return next(fallback_values)
+
+    monkeypatch.setattr(pitch_runtime_module.subprocess, "Popen", fake_popen)
+    monkeypatch.setattr(pitch_runtime_module, "_port_is_available", fake_port_is_available)
+    monkeypatch.setattr(pitch_runtime_module, "reserve_tcp_port", fake_reserve_tcp_port)
+
+    runtime = launch_pitch_runtime(
+        _wait_for_process_boot=fake_wait_for_process_boot,
+        _wait_for_tcp_listener=fake_wait_for_tcp_listener,
+    )
+    runtime.terminate()
+
+    assert ("127.0.0.1", 28002, 20.0) in listener_calls
+    assert ("127.0.0.1", 28001, 45.0) in listener_calls
+    assert runtime.tcp_port == 28002
+    assert os.environ["HLA2010_PITCH_CRC_PORT"] == "28001"
+    assert os.environ["HLA2010_PITCH_FEDPRO_PORT"] == "28002"
 
 
 def test_launch_pitch_runtime_retries_with_isolated_user_home_and_cleans_it_up(tmp_path, monkeypatch):

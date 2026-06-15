@@ -16,6 +16,14 @@ python_cmd() {
   hla2010_shell_python_bin
 }
 
+resolve_pitch_runtime_ports() {
+  local python_bin
+  python_bin="$(python_cmd)"
+  eval "$("$python_bin" "$ROOT_DIR/scripts/resolve_pitch_runtime_ports.py" --shell --docker-container-name "$CONTAINER_NAME")"
+  CRC_PORT="${HLA2010_PITCH_CRC_PORT:-$CRC_PORT}"
+  FEDPRO_PORT="${HLA2010_PITCH_FEDPRO_PORT:-$FEDPRO_PORT}"
+}
+
 preflight_pitch_docker() {
   "$ROOT_DIR/scripts/check_pitch_preflight.sh" "$@"
 }
@@ -37,6 +45,7 @@ preflight_has_json_file() {
 }
 
 run_persisted_pitch_preflight() {
+  resolve_pitch_runtime_ports
   mkdir -p "$PREFLIGHT_ARTIFACT_DIR"
   local artifact_path
   artifact_path="$(pitch_preflight_artifact_path)"
@@ -122,6 +131,13 @@ docker_container_running() {
   docker ps --format '{{.Names}}' | grep -Fxq "$CONTAINER_NAME"
 }
 
+repair_stale_pitch_container() {
+  if docker_container_exists && ! docker_container_running; then
+    hla2010_shell_log "removing stale stopped Pitch Docker container: $CONTAINER_NAME"
+    docker rm -f "$CONTAINER_NAME" >/dev/null
+  fi
+}
+
 ensure_docker_daemon() {
   hla2010_shell_have docker || hla2010_shell_die "docker CLI not found"
   docker info >/dev/null
@@ -145,6 +161,7 @@ install_pitch_docker() {
 }
 
 start_pitch_docker() {
+  resolve_pitch_runtime_ports
   require_pitch_preflight
   local pitch_home
   local pitch_user_home
@@ -154,11 +171,11 @@ start_pitch_docker() {
   docker image inspect "$IMAGE_NAME" >/dev/null 2>&1 || install_pitch_docker
   if docker_container_running; then
     hla2010_shell_log "Pitch Docker already running: $CONTAINER_NAME"
+    hla2010_shell_log "CRC:    127.0.0.1:$CRC_PORT"
+    hla2010_shell_log "FedPro: 127.0.0.1:$FEDPRO_PORT"
     return 0
   fi
-  if docker_container_exists; then
-    docker rm -f "$CONTAINER_NAME" >/dev/null
-  fi
+  repair_stale_pitch_container
   HLA2010_PITCH_HOME="$pitch_home" \
   HLA2010_PITCH_USER_HOME="$pitch_user_home" \
   HLA2010_PITCH_CRC_MODE=docker \

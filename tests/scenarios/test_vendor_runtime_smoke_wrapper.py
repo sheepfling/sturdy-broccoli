@@ -25,6 +25,25 @@ def _base_env(tmp_path: Path) -> dict[str, str]:
     return env
 
 
+def _blocked_pitch_env(tmp_path: Path) -> dict[str, str]:
+    env = _base_env(tmp_path)
+    fake_bin = tmp_path / "fake-bin"
+    fake_bin.mkdir(parents=True, exist_ok=True)
+    docker = fake_bin / "docker"
+    docker.write_text(
+        "#!/usr/bin/env bash\n"
+        "set -euo pipefail\n"
+        "if [[ \"${1:-}\" == \"info\" ]]; then\n"
+        "  exit 1\n"
+        "fi\n"
+        "exit 0\n",
+        encoding="utf-8",
+    )
+    docker.chmod(0o755)
+    env["PATH"] = f"{fake_bin}:{env['PATH']}"
+    return env
+
+
 def test_vendor_runtime_smoke_writes_certi_preflight_and_skips_cleanly(tmp_path: Path) -> None:
     env = _base_env(tmp_path)
     result = subprocess.run(
@@ -73,7 +92,7 @@ def test_vendor_runtime_smoke_skips_cleanly_without_repo_venv(tmp_path: Path) ->
 
 
 def test_vendor_runtime_smoke_writes_pitch_preflight_and_skips_cleanly(tmp_path: Path) -> None:
-    env = _base_env(tmp_path)
+    env = _blocked_pitch_env(tmp_path)
     result = subprocess.run(
         ["bash", "scripts/ci/vendor_runtime_smoke.sh", "pitch"],
         cwd=ROOT,
@@ -91,15 +110,16 @@ def test_vendor_runtime_smoke_writes_pitch_preflight_and_skips_cleanly(tmp_path:
     assert payload.exit_code == 1
     assert "not ready" in payload.result
     assert payload.runtime.container_name == "hla2010-pitch-crc"
-    assert payload.ports.crc.port == 8989
-    assert payload.ports.fedpro.port == 15164
+    assert payload.ports.crc.port > 0
+    assert payload.ports.fedpro.port > 0
+    assert payload.ports.crc.port != payload.ports.fedpro.port
     assert any(check.name == "crc_port" for check in payload.checks)
     assert any(check.name == "fedpro_port" for check in payload.checks)
     assert "skipping runtime smoke for this vendor" in result.stderr
 
 
 def test_vendor_green_fails_strictly_when_pitch_preflight_is_blocked(tmp_path: Path) -> None:
-    env = _base_env(tmp_path)
+    env = _blocked_pitch_env(tmp_path)
     result = subprocess.run(
         ["bash", "scripts/ci/vendor_green.sh", "pitch"],
         cwd=ROOT,

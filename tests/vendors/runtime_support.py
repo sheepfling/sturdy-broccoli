@@ -12,6 +12,7 @@ from typing import Any, Iterator, Sequence
 import pytest
 
 from hla2010.enums import ResignAction
+from hla2010_rti_java_common import discover_java_home, discover_java_tool
 
 
 _VENDOR_PREFLIGHT_ENV = {
@@ -179,6 +180,16 @@ def require_vendor_preflight(vendor: str, *, operator_hint: str) -> None:
         pytest.skip(
             f"{vendor} preflight not confirmed; run the supported operator path or rerun after `{operator_hint}`"
         )
+
+
+def require_java_bridge_runtime(kind: str, *, operator_hint: str) -> None:
+    if kind not in {"pitch-jpype", "pitch-py4j"}:
+        return
+    if discover_java_home() is not None and discover_java_tool("java") is not None:
+        return
+    pytest.skip(
+        f"{kind} requires a host Java runtime; install Java or configure JAVA_HOME before rerunning `{operator_hint}`"
+    )
 
 
 @contextmanager

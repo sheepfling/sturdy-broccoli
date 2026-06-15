@@ -61,6 +61,12 @@ python_bin() {
   hla2010_shell_python_bin
 }
 
+ensure_pitch_runtime_ports() {
+  local python_exec
+  python_exec="$(python_bin)"
+  eval "$("$python_exec" "$ROOT_DIR/scripts/resolve_pitch_runtime_ports.py" --shell --docker-container-name "${HLA2010_PITCH_DOCKER_NAME:-hla2010-pitch-crc}")"
+}
+
 ensure_python_test_env() {
   if activate_python_env_if_present; then
     return 0
@@ -190,6 +196,7 @@ run_certi_preflight() {
 }
 
 run_pitch_preflight() {
+  ensure_pitch_runtime_ports
   ensure_preflight_artifact_dir
   local artifact_path
   artifact_path="$(preflight_artifact_path pitch)"

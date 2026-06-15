@@ -54,6 +54,7 @@ def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
     runtime = discover_pitch_runtime(args.pitch_home)
     user_home = prepare_pitch_user_home(runtime)
+    crc_port = int(os.environ.get("HLA2010_PITCH_CRC_PORT", "8989"))
     docker_info = subprocess.run(["docker", "info"], capture_output=True, text=True)
     result: dict[str, object] = {
         "pitch_home": str(runtime.home),
@@ -62,7 +63,9 @@ def main(argv: list[str] | None = None) -> int:
         "docker_info_stderr_head": docker_info.stderr.splitlines()[:20],
     }
     if docker_info.returncode != 0:
+        result["crc_port"] = crc_port
         result["opened_8989"] = False
+        result["opened_crc_port"] = False
         result["blocked"] = "docker daemon unavailable"
         json.dump(result, sys.stdout, indent=2)
         sys.stdout.write("\n")
@@ -79,7 +82,7 @@ def main(argv: list[str] | None = None) -> int:
         stderr=subprocess.PIPE,
         text=True,
     )
-    opened_8989 = _wait_for_port("127.0.0.1", 8989, 45.0)
+    opened_crc_port = _wait_for_port("127.0.0.1", crc_port, 45.0)
     try:
         process.terminate()
         stdout, stderr = process.communicate(timeout=10)
@@ -88,7 +91,9 @@ def main(argv: list[str] | None = None) -> int:
         stdout, stderr = process.communicate(timeout=10)
     result.update(
         {
-            "opened_8989": opened_8989,
+            "crc_port": crc_port,
+            "opened_8989": opened_crc_port,
+            "opened_crc_port": opened_crc_port,
             "exit_code": process.returncode,
             "stdout_head": stdout.splitlines()[:30],
             "stderr_head": stderr.splitlines()[:30],

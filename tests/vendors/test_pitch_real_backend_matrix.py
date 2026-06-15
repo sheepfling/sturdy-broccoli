@@ -153,7 +153,12 @@ from hla2010.time import HLAinteger64Interval, HLAinteger64Time
 from hla2010.types import RangeBounds
 from hla2010.types import TimeQueryReturn
 from hla2010_rti_pitch_common.real_rti_pitch import launch_pitch_runtime
-from tests.vendors.runtime_support import cleanup_federation, require_vendor_preflight, shutdown_runtime_resources
+from tests.vendors.runtime_support import (
+    cleanup_federation,
+    require_java_bridge_runtime,
+    require_vendor_preflight,
+    shutdown_runtime_resources,
+)
 
 PITCH_KIND_CASES = ["pitch-jpype", "pitch-py4j"]
 PITCH_PROFILE_CASES = [("pitch-jpype", "jpype"), ("pitch-py4j", "py4j")]
@@ -185,6 +190,7 @@ def _terminate_pitch_py4j_gateway_process(rti) -> bool:
 @contextmanager
 def _pitch_runtime_case(kind: str, ambassador_count: int):
     _require_real_rti_smoke()
+    require_java_bridge_runtime(kind, operator_hint="./tools/pitch preflight")
     try:
         runtime = launch_pitch_runtime()
     except BackendUnavailableError as exc:

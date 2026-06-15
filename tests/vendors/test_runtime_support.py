@@ -15,6 +15,7 @@ from tests.vendors.runtime_support import (
     cleanup_federation,
     close_all,
     isolated_vendor_runtime_test_state,
+    require_java_bridge_runtime,
     require_vendor_preflight,
     reserve_udp_pair,
     shutdown_runtime_resources,
@@ -415,3 +416,33 @@ def test_require_vendor_preflight_ignores_stale_artifact(
 
     with pytest.raises(pytest.skip.Exception, match="certi preflight not confirmed"):
         require_vendor_preflight("certi", operator_hint="./tools/certi-easy preflight")
+
+
+def test_require_java_bridge_runtime_accepts_non_java_kinds() -> None:
+    require_java_bridge_runtime("pitch-cpp", operator_hint="./tools/pitch preflight")
+
+
+def test_require_java_bridge_runtime_skips_when_java_is_unavailable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr("tests.vendors.runtime_support.discover_java_home", lambda: None)
+    monkeypatch.setattr("tests.vendors.runtime_support.discover_java_tool", lambda _name: None)
+
+    with pytest.raises(pytest.skip.Exception, match="pitch-jpype requires a host Java runtime"):
+        require_java_bridge_runtime("pitch-jpype", operator_hint="./tools/pitch preflight")
+
+
+def test_require_java_bridge_runtime_accepts_java_bridge_when_java_is_available(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    java_home = tmp_path / "jdk"
+    java_bin = java_home / "bin"
+    java_bin.mkdir(parents=True, exist_ok=True)
+    (java_bin / "java").write_text("", encoding="utf-8")
+    monkeypatch.setattr("tests.vendors.runtime_support.discover_java_home", lambda: java_home)
+    monkeypatch.setattr(
+        "tests.vendors.runtime_support.discover_java_tool",
+        lambda name: str(java_bin / name),
+    )
+
+    require_java_bridge_runtime("pitch-py4j", operator_hint="./tools/pitch preflight")

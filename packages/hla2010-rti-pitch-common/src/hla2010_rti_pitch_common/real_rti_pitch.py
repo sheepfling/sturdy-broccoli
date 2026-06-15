@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import os
 import re
+import socket
 import shutil
 import subprocess
 import time
@@ -14,7 +15,7 @@ from typing import Any, Sequence
 
 from hla2010_rti_java_common import BackendUnavailableError
 from hla2010_rti_java_common.java_runtime import discover_java_tool, ensure_java_home
-from hla2010_rti_runtime_common import RuntimeProcess
+from hla2010_rti_runtime_common import RuntimeProcess, reserve_tcp_port
 
 
 _PITCH_USER_HOME_MARKER = ".hla2010_pitch_user_home_seeded"
@@ -95,6 +96,32 @@ def pitch_fedpro_local_settings_designator() -> str:
 
 def pitch_connect_local_settings_designator() -> str:
     return pitch_fedpro_local_settings_designator()
+
+
+def _port_is_available(host: str, port: int) -> bool:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            sock.bind((host, port))
+            sock.listen(1)
+            return True
+        except OSError:
+            return False
+
+
+def _resolve_pitch_runtime_ports(host: str = "127.0.0.1") -> tuple[int, int]:
+    explicit_crc = os.environ.get("HLA2010_PITCH_CRC_PORT")
+    explicit_fedpro = os.environ.get("HLA2010_PITCH_FEDPRO_PORT")
+    if explicit_crc and explicit_fedpro:
+        return int(explicit_crc), int(explicit_fedpro)
+
+    preferred_crc = int(os.environ.get("HLA2010_PITCH_CRC_PORT", "8989"))
+    preferred_fedpro = int(os.environ.get("HLA2010_PITCH_FEDPRO_PORT", "15164"))
+    crc_port = preferred_crc if _port_is_available(host, preferred_crc) else reserve_tcp_port(host)
+    fedpro_port = preferred_fedpro if preferred_fedpro != crc_port and _port_is_available(host, preferred_fedpro) else reserve_tcp_port(host)
+    while fedpro_port == crc_port:
+        fedpro_port = reserve_tcp_port(host)
+    return crc_port, fedpro_port
 
 
 def _candidate_paths(*parts: str) -> list[Path]:
@@ -465,6 +492,7 @@ def launch_pitch_runtime(
     runtime = discover_pitch_runtime(pitch_home)
     env = dict(os.environ)
     selected_crc_mode = crc_mode or env.get("HLA2010_PITCH_CRC_MODE", "local")
+    selected_crc_port, selected_fedpro_port = _resolve_pitch_runtime_ports("127.0.0.1")
     fedpro_listener_timeout = float(env.get("HLA2010_PITCH_FEDPRO_LISTENER_TIMEOUT_SECONDS", "20.0"))
     crc_listener_timeout = float(env.get("HLA2010_PITCH_CRC_LISTENER_TIMEOUT_SECONDS", "45.0"))
     process_boot_timeout = float(env.get("HLA2010_PITCH_PROCESS_BOOT_TIMEOUT_SECONDS", "10.0"))
@@ -506,6 +534,8 @@ def launch_pitch_runtime(
         launch_env["HOME"] = str(pitch_user_home)
         launch_env["HLA2010_PITCH_USER_HOME"] = str(pitch_user_home)
         launch_env["HLA2010_PITCH_JAVA_HOME"] = str(runtime.java_home)
+        launch_env["HLA2010_PITCH_CRC_PORT"] = str(selected_crc_port)
+        launch_env["HLA2010_PITCH_FEDPRO_PORT"] = str(selected_fedpro_port)
         launch_env["INSTALL4J_JAVA_HOME"] = str(runtime.java_home)
         launch_env["HLA2010_PITCH_CRC_MODE"] = selected_crc_mode
         selected_launcher_mode = launcher_modes[min(attempt, len(launcher_modes) - 1)]
@@ -513,6 +543,8 @@ def launch_pitch_runtime(
         if ui_automation is not None:
             launch_env["HLA2010_PITCH_UI_AUTOMATION"] = "1" if ui_automation else "0"
         os.environ["HLA2010_PITCH_USER_HOME"] = str(pitch_user_home)
+        os.environ["HLA2010_PITCH_CRC_PORT"] = str(selected_crc_port)
+        os.environ["HLA2010_PITCH_FEDPRO_PORT"] = str(selected_fedpro_port)
 
         crc_command = [str(repo_root / "scripts" / crc_script), *args]
         crc_env = dict(launch_env)
@@ -554,8 +586,8 @@ def launch_pitch_runtime(
             _wait_for_process_boot(crc_process, timeout=process_boot_timeout)
             for child in children:
                 _wait_for_process_boot(child, timeout=process_boot_timeout)
-            _wait_for_tcp_listener("127.0.0.1", 15164, timeout=fedpro_listener_timeout)
-            _wait_for_tcp_listener("127.0.0.1", 8989, timeout=crc_listener_timeout)
+            _wait_for_tcp_listener("127.0.0.1", selected_fedpro_port, timeout=fedpro_listener_timeout)
+            _wait_for_tcp_listener("127.0.0.1", selected_crc_port, timeout=crc_listener_timeout)
             time.sleep(float(launch_env.get("HLA2010_PITCH_STARTUP_SETTLE_SECONDS", "1.0")))
             cleanup_paths = (isolated_home,) if isolated_home is not None else ()
             return RuntimeProcess(
@@ -563,7 +595,7 @@ def launch_pitch_runtime(
                 process=crc_process,
                 env=launch_env,
                 host="127.0.0.1",
-                tcp_port=15164,
+                tcp_port=selected_fedpro_port,
                 children=children,
                 cleanup_paths=cleanup_paths,
             )
