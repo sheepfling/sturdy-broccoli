@@ -36,6 +36,7 @@ def _run_profile_command(tmp_path: Path, command: list[str]) -> RecordedProfile:
     _write_vendor_green_delegate(delegate)
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
     result = subprocess.run(
         command,

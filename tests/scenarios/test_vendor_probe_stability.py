@@ -12,6 +12,15 @@ from tests.typed_json_models import RecordedArgvCall, RecordedProfileExitCode, V
 ROOT = Path(__file__).resolve().parents[2]
 
 
+def _base_env(tmp_path: Path) -> dict[str, str]:
+    env = os.environ.copy()
+    env["HLA2010_VENDOR_PROBE_REQUIRE_CI_STATE"] = "0"
+    env["HLA2010_VENDOR_PROBE_STABILITY_DIR"] = str(tmp_path / "stability")
+    env["HLA2010_TEST_RECORD_FILE"] = str(tmp_path / "record.json")
+    env["HLA2010_TEST_STATE_FILE"] = str(tmp_path / "state.json")
+    return env
+
+
 def _write_vendor_green_stub(path: Path) -> None:
     path.write_text(
         """#!/usr/bin/env python3
@@ -65,11 +74,8 @@ raise SystemExit({exit_code})
 def test_vendor_probe_stability_reports_repeated_probe_success(tmp_path: Path) -> None:
     stub = tmp_path / "vendor_green_stub.py"
     _write_vendor_green_stub(stub)
-    env = os.environ.copy()
+    env = _base_env(tmp_path)
     env["HLA2010_VENDOR_PROBE_STABILITY_VENDOR_GREEN"] = str(stub)
-    env["HLA2010_VENDOR_PROBE_STABILITY_DIR"] = str(tmp_path / "stability")
-    env["HLA2010_TEST_RECORD_FILE"] = str(tmp_path / "record.json")
-    env["HLA2010_TEST_STATE_FILE"] = str(tmp_path / "state.json")
     env["HLA2010_TEST_EXIT_CODES"] = "0,0,0"
 
     result = subprocess.run(
@@ -116,11 +122,8 @@ def test_vendor_probe_stability_reports_repeated_probe_success(tmp_path: Path) -
 def test_vendor_probe_stability_reports_failure_when_any_attempt_fails(tmp_path: Path) -> None:
     stub = tmp_path / "vendor_green_stub.py"
     _write_vendor_green_stub(stub)
-    env = os.environ.copy()
+    env = _base_env(tmp_path)
     env["HLA2010_VENDOR_PROBE_STABILITY_VENDOR_GREEN"] = str(stub)
-    env["HLA2010_VENDOR_PROBE_STABILITY_DIR"] = str(tmp_path / "stability")
-    env["HLA2010_TEST_RECORD_FILE"] = str(tmp_path / "record.json")
-    env["HLA2010_TEST_STATE_FILE"] = str(tmp_path / "state.json")
     env["HLA2010_TEST_EXIT_CODES"] = "0,7,0"
 
     result = subprocess.run(
@@ -190,12 +193,9 @@ def test_vendor_probe_stability_ci_validation_blocks_attempt_loop_on_invalid_run
     ci_state = tmp_path / "ci_state_stub.py"
     _write_vendor_green_stub(stub)
     _write_ci_state_stub(ci_state, exit_code=1)
-    env = os.environ.copy()
+    env = _base_env(tmp_path)
     env["GITHUB_ACTIONS"] = "true"
     env["HLA2010_VENDOR_PROBE_STABILITY_VENDOR_GREEN"] = str(stub)
-    env["HLA2010_VENDOR_PROBE_STABILITY_DIR"] = str(tmp_path / "stability")
-    env["HLA2010_TEST_RECORD_FILE"] = str(tmp_path / "record.json")
-    env["HLA2010_TEST_STATE_FILE"] = str(tmp_path / "state.json")
     env["HLA2010_TEST_EXIT_CODES"] = "0,0,0"
     env["HLA2010_TEST_CI_STATE_RECORD_FILE"] = str(tmp_path / "ci-state-record.json")
     env["HLA2010_VENDOR_RUNTIME_CI_STATE_DIR"] = str(tmp_path / "runtime-ci-state")
@@ -225,12 +225,9 @@ def test_vendor_probe_stability_ci_validation_runs_once_before_repeated_attempts
     ci_state = tmp_path / "ci_state_stub.py"
     _write_vendor_green_stub(stub)
     _write_ci_state_stub(ci_state, exit_code=0)
-    env = os.environ.copy()
+    env = _base_env(tmp_path)
     env["GITHUB_ACTIONS"] = "true"
     env["HLA2010_VENDOR_PROBE_STABILITY_VENDOR_GREEN"] = str(stub)
-    env["HLA2010_VENDOR_PROBE_STABILITY_DIR"] = str(tmp_path / "stability")
-    env["HLA2010_TEST_RECORD_FILE"] = str(tmp_path / "record.json")
-    env["HLA2010_TEST_STATE_FILE"] = str(tmp_path / "state.json")
     env["HLA2010_TEST_EXIT_CODES"] = "0,0,0"
     env["HLA2010_TEST_CI_STATE_RECORD_FILE"] = str(tmp_path / "ci-state-record.json")
     env["HLA2010_VENDOR_RUNTIME_CI_STATE_DIR"] = str(tmp_path / "runtime-ci-state")
