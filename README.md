@@ -33,10 +33,10 @@ This root `README` owns only three jobs:
 It is not the full architecture catalog, backend inventory, or package-family
 map. Those live under `docs/` and `packages/`.
 
-`packages/hla2010-spec/src/hla2010/` is the package-owned 2010 compatibility
-package for the abstract/core API plus the documented temporary compatibility
-facade `hla2010.rti`. `packages/hla2010-spec/src/hla/` owns the neutral
-edition-qualified umbrella namespace.
+`packages/hla2010-spec/src/hla2010/` is the package-owned root Python package
+for the 2010 compatibility surface, the abstract/core API, and the documented
+temporary compatibility facade `hla2010.rti`. `packages/hla2010-spec/src/hla/`
+owns the neutral edition-qualified umbrella namespace.
 
 ## Start Here
 

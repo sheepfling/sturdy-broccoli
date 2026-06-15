@@ -31,11 +31,16 @@ If you are not sure which backend name to instantiate first, start with
 ./tools/rti-factories list
 ./tools/rti-factories show in-memory --probe
 ./tools/rti-factories instantiate in-memory --probe
+./tools/rti-factories debug --edition 2010
 ./tools/examples rti-factory-selection --name in-memory --probe
 ```
 
 That is the canonical “choose backend first” path before you start reading or
 editing Python RTI service code.
+
+When plugin discovery itself looks wrong, use `./tools/rti-factories debug` to
+see whether a backend came from entry points or the source-checkout fallback,
+and to inspect skipped-load diagnostics.
 
 If you want the smallest runnable code example for that selection flow, use:
 

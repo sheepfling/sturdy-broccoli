@@ -21,6 +21,9 @@ _BACKEND_FACTORIES: dict[str, Any] = {}
 _BACKEND_PLUGINS: dict[str, RTIBackendPlugin] = {}
 _BACKEND_PLUGINS_LOADED = False
 _SELECTED_BACKEND_EDITION = "2010"
+_BACKEND_PLUGIN_RECORDS: dict[str, "_LoadedBackendPluginRecord"] = {}
+_BACKEND_PLUGIN_LOAD_ISSUES: tuple["RTIBackendRegistryIssue", ...] = ()
+_BACKEND_PLUGIN_LOAD_STRATEGY = "uninitialized"
 _SOURCE_CHECKOUT_PLUGIN_MODULES: tuple[str, ...] = (
     "hla2010_rti_python.plugin",
     "hla2010_rti_java_jpype.plugin",
@@ -43,7 +46,12 @@ class RTIAmbassadorFactory:
     family: str
     description: str
     probe_supported: bool
+    source_kind: str
     _plugin: RTIBackendPlugin = field(repr=False, compare=False)
+    source_module: str | None = None
+    entry_point_group: str | None = None
+    entry_point_name: str | None = None
+    entry_point_value: str | None = None
 
     def create_backend(self, **options: Any) -> Any:
         """Instantiate the backend implementation behind this factory."""
@@ -80,6 +88,57 @@ class RTIAmbassadorFactory:
             info=info,
             error=error,
         )
+
+
+@dataclass(frozen=True)
+class RTIBackendRegistryIssue:
+    """One skipped or failed backend-plugin load step."""
+
+    source_kind: str
+    phase: str
+    locator: str
+    error_type: str
+    error: str
+
+
+@dataclass(frozen=True)
+class RTIBackendRegistryEntry:
+    """Debug-facing registry row for one installed backend plugin."""
+
+    name: str
+    aliases: tuple[str, ...]
+    supported_editions: tuple[str, ...]
+    selectable_names: tuple[str, ...]
+    family: str
+    description: str
+    probe_supported: bool
+    source_kind: str
+    source_module: str | None = None
+    entry_point_group: str | None = None
+    entry_point_name: str | None = None
+    entry_point_value: str | None = None
+    matches_selected_edition: bool = True
+
+
+@dataclass(frozen=True)
+class RTIBackendRegistryDebugReport:
+    """Debug-facing summary of backend-plugin registry state."""
+
+    selected_backend_edition: str
+    load_strategy: str
+    entry_point_groups: tuple[str, ...]
+    plugins: tuple[RTIBackendRegistryEntry, ...]
+    issues: tuple[RTIBackendRegistryIssue, ...]
+
+
+@dataclass(frozen=True)
+class _LoadedBackendPluginRecord:
+    plugin: RTIBackendPlugin = field(repr=False, compare=False)
+    source_kind: str
+    source_module: str | None = None
+    entry_point_group: str | None = None
+    entry_point_name: str | None = None
+    entry_point_value: str | None = None
 
 
 def _normalize_kind(kind: str) -> str:
@@ -137,23 +196,32 @@ def register_backend_plugin(plugin: RTIBackendPlugin) -> None:
 
 def _load_backend_plugins() -> None:
     global _BACKEND_PLUGINS_LOADED
+    global _BACKEND_PLUGIN_LOAD_ISSUES
+    global _BACKEND_PLUGIN_LOAD_STRATEGY
     if _BACKEND_PLUGINS_LOADED:
         return
-    loaded_plugins = _iter_entry_point_backend_plugins()
-    if not loaded_plugins:
-        loaded_plugins = _iter_source_checkout_backend_plugins()
-    for plugin in loaded_plugins:
-        register_backend_plugin(plugin)
+    _BACKEND_PLUGIN_RECORDS.clear()
+    loaded_records, issues, strategy = _collect_backend_plugin_records()
+    for record in loaded_records:
+        register_backend_plugin(record.plugin)
+        _BACKEND_PLUGIN_RECORDS[_normalize_kind(record.plugin.name)] = record
+    _BACKEND_PLUGIN_LOAD_ISSUES = tuple(issues)
+    _BACKEND_PLUGIN_LOAD_STRATEGY = strategy
     _BACKEND_PLUGINS_LOADED = True
 
 
 def _iter_entry_point_backend_plugins() -> list[RTIBackendPlugin]:
-    plugins: list[RTIBackendPlugin] = []
+    return [record.plugin for record in _collect_entry_point_backend_plugin_records()[0]]
+
+
+def _collect_entry_point_backend_plugin_records() -> tuple[list[_LoadedBackendPluginRecord], list[RTIBackendRegistryIssue]]:
+    records: list[_LoadedBackendPluginRecord] = []
+    issues: list[RTIBackendRegistryIssue] = []
     seen_entry_points: set[tuple[str, str]] = set()
     try:
         entry_points = metadata.entry_points()
     except Exception:
-        return plugins
+        return records, issues
     for group_name in BACKEND_ENTRY_POINT_GROUPS:
         for entry_point in entry_points.select(group=group_name):
             identity = (entry_point.name, entry_point.value)
@@ -162,29 +230,76 @@ def _iter_entry_point_backend_plugins() -> list[RTIBackendPlugin]:
             seen_entry_points.add(identity)
             try:
                 loaded = entry_point.load()
-            except ModuleNotFoundError:
+            except ModuleNotFoundError as exc:
+                issues.append(
+                    RTIBackendRegistryIssue(
+                        source_kind="entry-point",
+                        phase="load",
+                        locator=f"{group_name}:{entry_point.name} -> {entry_point.value}",
+                        error_type=type(exc).__name__,
+                        error=str(exc),
+                    )
+                )
                 continue
             plugin = loaded() if callable(loaded) else loaded
             if not isinstance(plugin, RTIBackendPlugin):
                 raise TypeError(f"Backend entry point {entry_point.name!r} did not return RTIBackendPlugin")
-            plugins.append(plugin)
-    return plugins
+            records.append(
+                _LoadedBackendPluginRecord(
+                    plugin=plugin,
+                    source_kind="entry-point",
+                    entry_point_group=group_name,
+                    entry_point_name=entry_point.name,
+                    entry_point_value=entry_point.value,
+                )
+            )
+    return records, issues
 
 
 def _iter_source_checkout_backend_plugins() -> list[RTIBackendPlugin]:
-    plugins: list[RTIBackendPlugin] = []
+    return [record.plugin for record in _collect_source_checkout_backend_plugin_records()[0]]
+
+
+def _collect_source_checkout_backend_plugin_records() -> tuple[list[_LoadedBackendPluginRecord], list[RTIBackendRegistryIssue]]:
+    records: list[_LoadedBackendPluginRecord] = []
+    issues: list[RTIBackendRegistryIssue] = []
     for module_name in _SOURCE_CHECKOUT_PLUGIN_MODULES:
         try:
             module = importlib.import_module(module_name)
         except ModuleNotFoundError as exc:
             if exc.name == module_name or module_name.startswith(f"{exc.name}."):
+                issues.append(
+                    RTIBackendRegistryIssue(
+                        source_kind="source-checkout",
+                        phase="import",
+                        locator=module_name,
+                        error_type=type(exc).__name__,
+                        error=str(exc),
+                    )
+                )
                 continue
             raise
         for plugin in getattr(module, "backend_plugins", lambda: ())():
             if not isinstance(plugin, RTIBackendPlugin):
                 raise TypeError(f"Source checkout backend module {module_name!r} returned a non-plugin object")
-            plugins.append(plugin)
-    return plugins
+            records.append(
+                _LoadedBackendPluginRecord(
+                    plugin=plugin,
+                    source_kind="source-checkout",
+                    source_module=module_name,
+                )
+            )
+    return records, issues
+
+
+def _collect_backend_plugin_records() -> tuple[list[_LoadedBackendPluginRecord], list[RTIBackendRegistryIssue], str]:
+    entry_point_records, entry_point_issues = _collect_entry_point_backend_plugin_records()
+    if entry_point_records:
+        return entry_point_records, entry_point_issues, "entry-point"
+    source_records, source_issues = _collect_source_checkout_backend_plugin_records()
+    if source_records:
+        return source_records, [*entry_point_issues, *source_issues], "source-checkout"
+    return [], [*entry_point_issues, *source_issues], "empty"
 
 
 def available_backend_plugins() -> Mapping[str, RTIBackendPlugin]:
@@ -216,6 +331,7 @@ def iter_rti_factories(*, edition: str | None = None) -> tuple[RTIAmbassadorFact
 
     rows: list[RTIAmbassadorFactory] = []
     for plugin in iter_rti_backend_plugins(edition=edition):
+        record = _BACKEND_PLUGIN_RECORDS.get(_normalize_kind(plugin.name))
         rows.append(
             RTIAmbassadorFactory(
                 name=plugin.name,
@@ -225,6 +341,11 @@ def iter_rti_factories(*, edition: str | None = None) -> tuple[RTIAmbassadorFact
                 family=plugin.family,
                 description=plugin.description,
                 probe_supported=plugin.discover is not None,
+                source_kind="unknown" if record is None else record.source_kind,
+                source_module=None if record is None else record.source_module,
+                entry_point_group=None if record is None else record.entry_point_group,
+                entry_point_name=None if record is None else record.entry_point_name,
+                entry_point_value=None if record is None else record.entry_point_value,
                 _plugin=plugin,
             )
         )
@@ -266,6 +387,41 @@ def discover_rti_backends(*, probe: bool = False, edition: str | None = None) ->
             )
         )
     return tuple(rows)
+
+
+def debug_rti_backend_registry(*, edition: str | None = None) -> RTIBackendRegistryDebugReport:
+    """Return provenance and skip/failure details for backend-plugin discovery."""
+
+    _load_backend_plugins()
+    resolved_edition = selected_backend_edition() if edition is None else _normalize_edition_name(edition)
+    rows: list[RTIBackendRegistryEntry] = []
+    for name in sorted(_BACKEND_PLUGIN_RECORDS):
+        record = _BACKEND_PLUGIN_RECORDS[name]
+        plugin = record.plugin
+        rows.append(
+            RTIBackendRegistryEntry(
+                name=plugin.name,
+                aliases=plugin.aliases,
+                supported_editions=plugin.supported_editions,
+                selectable_names=_selectable_names_for_plugin(plugin),
+                family=plugin.family,
+                description=plugin.description,
+                probe_supported=plugin.discover is not None,
+                source_kind=record.source_kind,
+                source_module=record.source_module,
+                entry_point_group=record.entry_point_group,
+                entry_point_name=record.entry_point_name,
+                entry_point_value=record.entry_point_value,
+                matches_selected_edition=_edition_matches(plugin, resolved_edition),
+            )
+        )
+    return RTIBackendRegistryDebugReport(
+        selected_backend_edition=resolved_edition,
+        load_strategy=_BACKEND_PLUGIN_LOAD_STRATEGY,
+        entry_point_groups=BACKEND_ENTRY_POINT_GROUPS,
+        plugins=tuple(rows),
+        issues=_BACKEND_PLUGIN_LOAD_ISSUES,
+    )
 
 
 def create_backend(
@@ -315,11 +471,15 @@ __all__ = [
     "RTIAmbassadorFactory",
     "RTIBackendDiscovery",
     "RTIBackendPlugin",
+    "RTIBackendRegistryDebugReport",
+    "RTIBackendRegistryEntry",
+    "RTIBackendRegistryIssue",
     "RTIBackendSpec",
     "RTITransportSpec",
     "available_backend_plugins",
     "create_backend",
     "create_rti_ambassador",
+    "debug_rti_backend_registry",
     "discover_rti_backends",
     "get_rti_factory",
     "iter_rti_backend_plugins",

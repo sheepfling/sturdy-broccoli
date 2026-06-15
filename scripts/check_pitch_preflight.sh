@@ -48,9 +48,12 @@ done
 resolve_pitch_home() {
   local python_bin
   python_bin="$(hla2010_shell_python_bin)"
-  if [[ -n "${HLA2010_PITCH_HOME:-}" && -d "${HLA2010_PITCH_HOME:-}" ]]; then
-    printf '%s\n' "$HLA2010_PITCH_HOME"
-    return 0
+  if [[ -n "${HLA2010_PITCH_HOME:-}" ]]; then
+    if [[ -d "${HLA2010_PITCH_HOME:-}" ]]; then
+      printf '%s\n' "$HLA2010_PITCH_HOME"
+      return 0
+    fi
+    return 1
   fi
   if [[ -d "$ROOT_DIR/third_party/pitch/PITCH-prti1516e-manual" ]]; then
     printf '%s\n' "$ROOT_DIR/third_party/pitch/PITCH-prti1516e-manual"

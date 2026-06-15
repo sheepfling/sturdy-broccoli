@@ -66,4 +66,5 @@ pitch-user-home
 archives
 
 # Narrow Finder/iCloud duplicate scripts
+* 2.*
 scripts/ci/* 2.sh

@@ -302,14 +302,24 @@ def _normalize_pitch_fedpro_timeouts(runtime_state_dir: Path) -> None:
 def discover_pitch_runtime(explicit_home: str | os.PathLike[str] | None = None) -> PitchRuntime:
     explicit = Path(explicit_home).expanduser().resolve() if explicit_home is not None else None
     env_home = os.environ.get("HLA2010_PITCH_HOME")
-    candidates: list[Path] = []
     if explicit is not None:
-        candidates.append(explicit)
-    if env_home:
-        candidates.append(Path(env_home).expanduser())
-    candidates.extend(_candidate_paths("third_party", "pitch", "PITCH-prti1516e-manual"))
-    candidates.extend(_candidate_paths("INBOX", "PITCH-prti1516e-manual"))
-    home = _first_existing(candidates, "lib/prtifull.jar")
+        home = _first_existing((explicit,), "lib/prtifull.jar")
+        if home is None:
+            raise BackendUnavailableError(
+                f"Pitch pRTI runtime not found at explicitly configured home: {explicit}"
+            )
+    elif env_home:
+        configured_home = Path(env_home).expanduser().resolve()
+        home = _first_existing((configured_home,), "lib/prtifull.jar")
+        if home is None:
+            raise BackendUnavailableError(
+                f"Pitch pRTI runtime not found at HLA2010_PITCH_HOME: {configured_home}"
+            )
+    else:
+        candidates: list[Path] = []
+        candidates.extend(_candidate_paths("third_party", "pitch", "PITCH-prti1516e-manual"))
+        candidates.extend(_candidate_paths("INBOX", "PITCH-prti1516e-manual"))
+        home = _first_existing(candidates, "lib/prtifull.jar")
     if home is None:
         raise BackendUnavailableError("Pitch pRTI runtime not found; set HLA2010_PITCH_HOME to the extracted runtime")
 

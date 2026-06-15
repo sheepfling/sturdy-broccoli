@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import argparse
-import ast
 import csv
+import importlib.util
+import inspect
 import sys
 from pathlib import Path
 
@@ -13,33 +14,34 @@ DEFAULT_PATHS = [
 ]
 
 
-def _requirement_ids_from_decorator(decorator: ast.expr) -> list[str]:
-    if not isinstance(decorator, ast.Call):
-        return []
-    func = decorator.func
-    if not isinstance(func, ast.Attribute) or func.attr != "requirements":
-        return []
-    return [
-        arg.value.strip()
-        for arg in decorator.args
-        if isinstance(arg, ast.Constant) and isinstance(arg.value, str) and arg.value.strip()
-    ]
+def _load_test_module(path: Path) -> object:
+    spec = importlib.util.spec_from_file_location(path.stem, path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Unable to load test module from {path}")
+    module = importlib.util.module_from_spec(spec)
+    repo_root = str(REPO_ROOT)
+    if repo_root not in sys.path:
+        sys.path.insert(0, repo_root)
+    spec.loader.exec_module(module)
+    return module
 
 
 def _rows_for_path(path: Path) -> list[dict[str, str]]:
-    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    module = _load_test_module(path)
     rows: list[dict[str, str]] = []
-    for node in tree.body:
-        if not isinstance(node, ast.FunctionDef) or not node.name.startswith("test_"):
+    for name, func in inspect.getmembers(module, inspect.isfunction):
+        if not name.startswith("test_"):
             continue
         requirement_ids: list[str] = []
-        for decorator in node.decorator_list:
-            requirement_ids.extend(_requirement_ids_from_decorator(decorator))
+        for mark in getattr(func, "pytestmark", []):
+            if getattr(mark, "name", "") != "requirements":
+                continue
+            requirement_ids.extend(str(arg).strip() for arg in mark.args if str(arg).strip())
         for requirement_id in requirement_ids:
             rows.append(
                 {
                     "test_path": str(path.relative_to(REPO_ROOT)),
-                    "test_name": node.name,
+                    "test_name": name,
                     "requirement_id": requirement_id,
                 }
             )

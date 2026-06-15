@@ -1,5 +1,5 @@
 {
-  "artifact_dir": "<tmp>/pytest-of-rick/pytest-1831/test_vendor_green_fails_strict0/preflight",
+  "artifact_dir": "<tmp>/pytest-of-rick/pytest-1898/test_vendor_green_fails_strict0/preflight",
   "blocked_vendors": [
     "pitch"
   ],
@@ -18,24 +18,30 @@
   "vendors": [
     {
       "actionable": false,
-      "artifact_path": "<tmp>/pytest-of-rick/pytest-1831/test_vendor_green_fails_strict0/preflight/pitch-preflight.json",
+      "artifact_path": "<tmp>/pytest-of-rick/pytest-1898/test_vendor_green_fails_strict0/preflight/pitch-preflight.json",
       "blocked_checks": [
         {
-          "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 48] Address already in use",
+          "detail": "blocked: Docker CLI exists but the daemon is not reachable",
           "message": null,
-          "name": "crc_port",
+          "name": "docker",
           "status": "blocked"
         },
         {
-          "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 48] Address already in use",
+          "detail": "blocked: archive exists at <repo>/third_party/pitch/HLA_PITCH_linux.zip but extraction failed",
           "message": null,
-          "name": "fedpro_port",
+          "name": "pitch_bundle",
           "status": "blocked"
+        },
+        {
+          "detail": "missing user.home",
+          "message": null,
+          "name": "pitch_user_home",
+          "status": "missing"
         }
       ],
-      "blocked_reason": "crc_port",
+      "blocked_reason": "docker",
       "classification": "environment-blocked",
-      "environment": "ports-blocked",
+      "environment": "docker-blocked",
       "exit_code": 1,
       "lane_ok": false,
       "next_steps": [
@@ -43,21 +49,19 @@
       ],
       "note": "host/runtime prerequisites are blocked on this surface",
       "present": true,
-      "required_markers": {
-        "runtime_home": "third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
-      },
+      "required_markers": {},
       "required_ports": {
         "crc": {
-          "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 48] Address already in use",
+          "detail": "ok: 127.0.0.1:50688 is available",
           "host": "127.0.0.1",
-          "port": 8989,
-          "status": "blocked"
+          "port": 50688,
+          "status": "ok"
         },
         "fedpro": {
-          "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 48] Address already in use",
+          "detail": "ok: 127.0.0.1:50689 is available",
           "host": "127.0.0.1",
-          "port": 15164,
-          "status": "blocked"
+          "port": 50689,
+          "status": "ok"
         }
       },
       "result": "not ready; fix the blocked prerequisite(s) above and rerun",

@@ -6,9 +6,9 @@ from dataclasses import asdict, is_dataclass
 from typing import Any
 
 from hla2010_rti_runtime_common import (
+    debug_rti_backend_registry,
     get_rti_factory,
     iter_rti_factories,
-    selected_backend_edition,
 )
 
 
@@ -37,8 +37,9 @@ def _serialize_probe_info(value: Any) -> Any:
 
 
 def cmd_list(_: argparse.Namespace) -> int:
+    resolved_edition = debug_rti_backend_registry(edition=_.edition).selected_backend_edition
     print("Installed RTI factories")
-    print(f"selected_backend_edition: {selected_backend_edition()}")
+    print(f"selected_backend_edition: {resolved_edition}")
     for factory in iter_rti_factories(edition=_.edition):
         aliases = ", ".join(factory.aliases) if factory.aliases else "-"
         selectable = ", ".join(factory.selectable_names)
@@ -47,6 +48,7 @@ def cmd_list(_: argparse.Namespace) -> int:
         print(f"  supported_editions: {editions}")
         print(f"  selectable_names: {selectable}")
         print(f"  aliases: {aliases}")
+        print(f"  source_kind: {factory.source_kind}")
         print(f"  probe_supported: {'yes' if factory.probe_supported else 'no'}")
         if factory.description:
             print(f"  description: {factory.description}")
@@ -54,6 +56,7 @@ def cmd_list(_: argparse.Namespace) -> int:
 
 
 def cmd_show(args: argparse.Namespace) -> int:
+    resolved_edition = debug_rti_backend_registry(edition=args.edition).selected_backend_edition
     factory = get_rti_factory(args.name, edition=args.edition)
     probe = factory.discover() if args.probe else None
     payload = {
@@ -62,9 +65,14 @@ def cmd_show(args: argparse.Namespace) -> int:
         "aliases": list(factory.aliases),
         "supported_editions": list(factory.supported_editions),
         "selectable_names": list(factory.selectable_names),
-        "selected_backend_edition": selected_backend_edition(),
+        "selected_backend_edition": resolved_edition,
         "probe_supported": factory.probe_supported,
         "description": factory.description,
+        "source_kind": factory.source_kind,
+        "source_module": factory.source_module,
+        "entry_point_group": factory.entry_point_group,
+        "entry_point_name": factory.entry_point_name,
+        "entry_point_value": factory.entry_point_value,
     }
     if probe is not None:
         payload["probe"] = {
@@ -76,6 +84,7 @@ def cmd_show(args: argparse.Namespace) -> int:
 
 
 def cmd_instantiate(args: argparse.Namespace) -> int:
+    resolved_edition = debug_rti_backend_registry(edition=args.edition).selected_backend_edition
     factory = get_rti_factory(args.name, edition=args.edition)
     ambassador = factory.create_rti_ambassador(edition=args.edition)
     payload = {
@@ -84,7 +93,12 @@ def cmd_instantiate(args: argparse.Namespace) -> int:
         "supported_editions": list(factory.supported_editions),
         "selectable_names": list(factory.selectable_names),
         "family": factory.family,
-        "selected_backend_edition": selected_backend_edition(),
+        "selected_backend_edition": resolved_edition,
+        "source_kind": factory.source_kind,
+        "source_module": factory.source_module,
+        "entry_point_group": factory.entry_point_group,
+        "entry_point_name": factory.entry_point_name,
+        "entry_point_value": factory.entry_point_value,
         "backend_info": {
             "name": ambassador.backend_info.name,
             "kind": ambassador.backend_info.kind,
@@ -98,6 +112,15 @@ def cmd_instantiate(args: argparse.Namespace) -> int:
             key: _serialize_probe_info(value)
             for key, value in asdict(probe).items()
         }
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def cmd_debug(args: argparse.Namespace) -> int:
+    payload = {
+        key: _serialize_probe_info(value)
+        for key, value in asdict(debug_rti_backend_registry(edition=args.edition)).items()
+    }
     print(json.dumps(payload, indent=2, sort_keys=True))
     return 0
 
@@ -143,6 +166,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="Include backend discovery/probe information for the selected factory.",
     )
     instantiate_parser.set_defaults(func=cmd_instantiate)
+
+    debug_parser = subparsers.add_parser(
+        "debug",
+        help="Print backend-plugin registry provenance and skipped-load diagnostics.",
+    )
+    debug_parser.add_argument(
+        "--edition",
+        help="Annotate the registry against one edition key such as 2010.",
+    )
+    debug_parser.set_defaults(func=cmd_debug)
 
     return parser
 

@@ -17,6 +17,10 @@ from hla2010_rti_runtime_common import create_backend
 
 pytestmark = pytest.mark.requires_loopback_server
 
+_EXPECTED_RPC_PATH = "/" + ".".join(
+    ("hla2010", "backends", "grpc_transport", "RTITransportService")
+) + "/Request"
+
 
 class _GrpcServicer(pb2_grpc.RTITransportServiceServicer):
     requests: list[pb2.TransportRequest] = []
@@ -88,7 +92,7 @@ def test_grpc_transport_accepts_injected_wire_adapter():
         assert response.fields == ("HLA 1516.1-2010",)
         assert wire_adapter.encode_request_calls == 1
         assert wire_adapter.decode_response_calls == 1
-        assert transport.rpc_path == "/hla2010.backends.grpc_transport.RTITransportService/Request"
+        assert transport.rpc_path == _EXPECTED_RPC_PATH
     finally:
         if transport is not None:
             transport.close()

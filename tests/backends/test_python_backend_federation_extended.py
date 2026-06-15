@@ -25,6 +25,13 @@ from hla2010.exceptions import (
     InconsistentFDD,
 )
 from hla2010.handles import FederateHandleSet
+from tests.requirement_marker_groups import (
+    FM_CONNECT_REQUIREMENTS,
+    FM_CREATE_FEDERATION_REQUIREMENTS,
+    FM_DESTROY_FEDERATION_REQUIREMENTS,
+    FM_DISCONNECT_REQUIREMENTS,
+    FM_RESIGN_FEDERATION_REQUIREMENTS,
+)
 from hla2010.spec_refs import method_label, method_reference
 
 def test_spec_references_link_services_to_clause_numbers():
@@ -101,7 +108,7 @@ def test_disconnect_clears_buffered_report_callbacks():
     assert fed.last_callback("reportFederationExecutions") is None
 
 
-@pytest.mark.requirements("HLA1516.1-FM-4.3-001")
+@pytest.mark.requirements(*FM_DISCONNECT_REQUIREMENTS)
 def test_disconnect_is_observable_through_mom_service_invocation_reporting():
     engine, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("fm-disconnect-mom-report-fed")
     witness = rti_ambassador(engine=engine)
@@ -150,7 +157,7 @@ def test_disconnect_is_observable_through_mom_service_invocation_reporting():
     observer.destroy_federation_execution("fm-disconnect-mom-report-fed")
 
 
-@pytest.mark.requirements("HLA1516.1-FM-4.2-001")
+@pytest.mark.requirements(*FM_CONNECT_REQUIREMENTS)
 def test_connect_establishes_callback_delivery_model_for_follow_on_reports():
     engine = InMemoryRTIEngine()
 
@@ -937,7 +944,7 @@ def test_connect_rejects_second_connection_attempt():
     rti.disconnect()
 
 
-@pytest.mark.requirements("HLA1516.1-FM-4.5-001")
+@pytest.mark.requirements(*FM_CREATE_FEDERATION_REQUIREMENTS)
 def test_create_federation_execution_rejects_duplicate_name():
     engine = InMemoryRTIEngine()
     rti = rti_ambassador(engine=engine)
@@ -1196,7 +1203,7 @@ def test_create_federation_execution_with_standard_mim_designator_is_rejected():
     rti.disconnect()
 
 
-@pytest.mark.requirements("HLA1516.1-FM-4.6-001")
+@pytest.mark.requirements(*FM_DESTROY_FEDERATION_REQUIREMENTS)
 def test_destroy_federation_execution_requires_no_joined_federates():
     engine, r1, r2, _f1, _f2, _h1, _h2 = joined_pair("destroy-fed")
 
@@ -1217,7 +1224,7 @@ def test_destroy_federation_execution_rejects_missing_federation():
     rti.disconnect()
 
 
-@pytest.mark.requirements("HLA1516.1-FM-4.10-001")
+@pytest.mark.requirements(*FM_RESIGN_FEDERATION_REQUIREMENTS)
 def test_resign_federation_execution_rejects_not_connected_and_not_joined():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):

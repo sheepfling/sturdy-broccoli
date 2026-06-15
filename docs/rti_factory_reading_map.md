@@ -35,6 +35,7 @@ Run these before reading every backend package:
 - `./tools/rti-factories show python`
 - `./tools/rti-factories show in-memory --probe`
 - `./tools/rti-factories instantiate in-memory --probe`
+- `./tools/rti-factories debug --edition 2010`
 - `./tools/examples rti-factory-selection --name in-memory --probe`
 - `./tools/human-editability front-doors rti-factories`
 
@@ -62,7 +63,9 @@ rti = factory.create_rti_ambassador()
 Use `iter_rti_factories()` when you want the canonical installed list. Use
 `get_rti_factory(name)` when you want alias-tolerant selection. Use
 `discover_rti_backends(probe=True)` only when you need the lower-level
-discovery rows directly.
+discovery rows directly. Use `debug_rti_backend_registry()` or
+`./tools/rti-factories debug` when you need plugin provenance, entry-point
+source details, or skipped-load diagnostics.
 
 ## What To Ignore First
 

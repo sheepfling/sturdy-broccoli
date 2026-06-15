@@ -60,6 +60,44 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516-2010 (2010 edition) | 12 | HLA1516-RULE-12.3-001 | not-applicable | extracted-requirement | Unknown restore label failure |
 | IEEE 1516-2010 (2010 edition) | unknown | HLA1516-RULE-001 | not-applicable | extracted-requirement | Federation rules |
 | IEEE 1516-2010 (2010 edition) | unknown | HLA1516-FW-001 | not-applicable | extracted-requirement | Framework concepts |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_10-resignFederationExecution | classification-required | service-requirement | Resign Federation Execution service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_11-registerFederationSynchronizationPoint | classification-required | service-requirement | Register Federation Synchronization Point service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_12-synchronizationPointRegistrationFailed | classification-required | service-requirement | Confirm Synchronization Point Registration service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_12-synchronizationPointRegistrationSucceeded | classification-required | service-requirement | Confirm Synchronization Point Registration service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_13-announceSynchronizationPoint | classification-required | service-requirement | Announce Synchronization Point service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_14-synchronizationPointAchieved | classification-required | service-requirement | Synchronization Point Achieved service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_15-federationSynchronized | classification-required | service-requirement | Federation Synchronized service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_16-requestFederationSave | classification-required | service-requirement | Request Federation Save service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_17-initiateFederateSave | classification-required | service-requirement | Initiate Federate Save service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_18-federateSaveBegun | classification-required | service-requirement | Federate Save Begun service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_19-federateSaveComplete | classification-required | service-requirement | Federate Save Complete service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_19-federateSaveNotComplete | classification-required | service-requirement | Federate Save Complete service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_2-connect | classification-required | service-requirement | Connect service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_20-federationNotSaved | classification-required | service-requirement | Federation Saved service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_20-federationSaved | classification-required | service-requirement | Federation Saved service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_21-abortFederationSave | classification-required | service-requirement | Abort Federation Save service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_22-queryFederationSaveStatus | classification-required | service-requirement | Query Federation Save Status service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_23-federationSaveStatusResponse | classification-required | service-requirement | Federation Save Status Response service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_24-requestFederationRestore | classification-required | service-requirement | Request Federation Restore service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_25-requestFederationRestoreFailed | classification-required | service-requirement | Confirm Federation Restoration Request service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_25-requestFederationRestoreSucceeded | classification-required | service-requirement | Confirm Federation Restoration Request service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_26-federationRestoreBegun | classification-required | service-requirement | Federation Restore Begun service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_27-initiateFederateRestore | classification-required | service-requirement | Initiate Federate Restore service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_28-federateRestoreComplete | classification-required | service-requirement | Federate Restore Complete service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_28-federateRestoreNotComplete | classification-required | service-requirement | Federate Restore Complete service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_29-federationNotRestored | classification-required | service-requirement | Federation Restored service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_29-federationRestored | classification-required | service-requirement | Federation Restored service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_3-disconnect | classification-required | service-requirement | Disconnect service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_30-abortFederationRestore | classification-required | service-requirement | Abort Federation Restore service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_31-queryFederationRestoreStatus | classification-required | service-requirement | Query Federation Restore Status service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_32-federationRestoreStatusResponse | classification-required | service-requirement | Federation Restore Status Response service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_4-connectionLost | classification-required | service-requirement | Connection Lost service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_5-createFederationExecution | classification-required | service-requirement | Create Federation Execution service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_5-createFederationExecutionWithMIM | classification-required | service-requirement | Create Federation Execution service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_6-destroyFederationExecution | classification-required | service-requirement | Destroy Federation Execution service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_7-listFederationExecutions | classification-required | service-requirement | List Federation Executions service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_8-reportFederationExecutions | classification-required | service-requirement | Report Federation Executions service |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_9-joinFederationExecution | classification-required | service-requirement | Join Federation Execution service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | AREA-1516.1-4 | not-applicable | section-area | Federation management |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-001 | not-applicable | curated-seed | Federation Management |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1-001 | classification-required | extracted-requirement | RTI shall support federate connection federation creation federation joining resignation and disconnection as distinct lifecycle states |
@@ -86,7 +124,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.10-PRE-001 | classification-required | extracted-requirement | Resign Federation Execution shall require a connected ambassador that is currently joined and shall validate ownership and pending-acquisition conditions against the selected resign action. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.10-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Resign Federation Execution service. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.10-TEST-001 | classification-required | extracted-requirement | Resign Federation Execution shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_10-resignFederationExecution | classification-required | service-requirement | Resign Federation Execution service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.11-001 | classification-required | extracted-requirement | Register Federation Synchronization Point |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.11-CB-001 | classification-required | extracted-requirement | Register Federation Synchronization Point shall trigger the clause-defined success, failure, or status callbacks to the appropriate federates. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.11-EFF-001 | classification-required | extracted-requirement | Successful Register Federation Synchronization Point processing shall update federation synchronization or save/restore state consistently for the participating federates. |
@@ -95,7 +132,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.11-PRE-001 | classification-required | extracted-requirement | Register Federation Synchronization Point shall require the caller to satisfy the connected, joined, and in-progress state guards applicable to clause 4.11. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.11-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Register Federation Synchronization Point. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.11-TEST-001 | classification-required | extracted-requirement | Register Federation Synchronization Point shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_11-registerFederationSynchronizationPoint | classification-required | service-requirement | Register Federation Synchronization Point service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.12-001 | classification-required | extracted-requirement | Synchronization Point Registration callbacks |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.12-CB-001 | classification-required | extracted-requirement | The Synchronization Point Registration callbacks callback shall be delivered to the appropriate federates with the clause-defined payload and timing semantics. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.12-EFF-001 | classification-required | extracted-requirement | The Synchronization Point Registration callbacks callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates. |
@@ -104,8 +140,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.12-PRE-001 | classification-required | extracted-requirement | The Synchronization Point Registration callbacks requirement shall apply only when the synchronization or save/restore preconditions for clause 4.12 are satisfied. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.12-SIG-001 | classification-required | extracted-requirement | RTI shall deliver the federation synchronization point registration success or failure. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.12-TEST-001 | classification-required | extracted-requirement | Synchronization Point Registration callbacks shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_12-synchronizationPointRegistrationFailed | classification-required | service-requirement | Confirm Synchronization Point Registration service |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_12-synchronizationPointRegistrationSucceeded | classification-required | service-requirement | Confirm Synchronization Point Registration service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.13-001 | classification-required | extracted-requirement | Announce Synchronization Point |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.13-CB-001 | classification-required | extracted-requirement | The Announce Synchronization Point callback shall be delivered to the appropriate federates with the clause-defined payload and timing semantics. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.13-EFF-001 | classification-required | extracted-requirement | The Announce Synchronization Point callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates. |
@@ -114,7 +148,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.13-PRE-001 | classification-required | extracted-requirement | The Announce Synchronization Point requirement shall apply only when the synchronization or save/restore preconditions for clause 4.13 are satisfied. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.13-SIG-001 | classification-required | extracted-requirement | RTI shall announce synchronization points to the appropriate federates. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.13-TEST-001 | classification-required | extracted-requirement | Announce Synchronization Point shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_13-announceSynchronizationPoint | classification-required | service-requirement | Announce Synchronization Point service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.14-001 | classification-required | extracted-requirement | Synchronization Point Achieved |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.14-CB-001 | classification-required | extracted-requirement | Synchronization Point Achieved shall trigger the clause-defined success, failure, or status callbacks to the appropriate federates. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.14-EFF-001 | classification-required | extracted-requirement | Successful Synchronization Point Achieved processing shall update federation synchronization or save/restore state consistently for the participating federates. |
@@ -123,7 +156,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.14-PRE-001 | classification-required | extracted-requirement | Synchronization Point Achieved shall require the caller to satisfy the connected, joined, and in-progress state guards applicable to clause 4.14. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.14-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Synchronization Point Achieved. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.14-TEST-001 | classification-required | extracted-requirement | Synchronization Point Achieved shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_14-synchronizationPointAchieved | classification-required | service-requirement | Synchronization Point Achieved service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.15-001 | classification-required | extracted-requirement | Federation Synchronized callback |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.15-002 | classification-required | extracted-requirement | Federation Synchronized non-emission before all participants achieve |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.15-CB-001 | classification-required | extracted-requirement | The Federation Synchronized callback shall be delivered to the appropriate federates with the clause-defined payload and timing semantics. |
@@ -133,7 +165,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.15-PRE-001 | classification-required | extracted-requirement | The Federation Synchronized requirement shall apply only when the synchronization or save/restore preconditions for clause 4.15 are satisfied. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.15-SIG-001 | classification-required | extracted-requirement | RTI shall deliver the federates when a synchronization point is achieved federation wide. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.15-TEST-001 | classification-required | extracted-requirement | Federation Synchronized shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_15-federationSynchronized | classification-required | service-requirement | Federation Synchronized service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.16-001 | classification-required | extracted-requirement | Request Federation Save |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.16-CB-001 | classification-required | extracted-requirement | Request Federation Save shall trigger the clause-defined success, failure, or status callbacks to the appropriate federates. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.16-EFF-001 | classification-required | extracted-requirement | Successful Request Federation Save processing shall update federation synchronization or save/restore state consistently for the participating federates. |
@@ -142,7 +173,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.16-PRE-001 | classification-required | extracted-requirement | Request Federation Save shall require the caller to satisfy the connected, joined, and in-progress state guards applicable to clause 4.16. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.16-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Request Federation Save. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.16-TEST-001 | classification-required | extracted-requirement | Request Federation Save shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_16-requestFederationSave | classification-required | service-requirement | Request Federation Save service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.17-001 | classification-required | extracted-requirement | Initiate Federate Save callback |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.17-CB-001 | classification-required | extracted-requirement | The Initiate Federate Save callback shall be delivered to the appropriate federates with the clause-defined payload and timing semantics. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.17-EFF-001 | classification-required | extracted-requirement | The Initiate Federate Save callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates. |
@@ -151,7 +181,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.17-PRE-001 | classification-required | extracted-requirement | The Initiate Federate Save requirement shall apply only when the synchronization or save/restore preconditions for clause 4.17 are satisfied. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.17-SIG-001 | classification-required | extracted-requirement | RTI shall deliver the each participating federate to initiate save. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.17-TEST-001 | classification-required | extracted-requirement | Initiate Federate Save shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_17-initiateFederateSave | classification-required | service-requirement | Initiate Federate Save service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.18-001 | classification-required | extracted-requirement | Federate Save Begun |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.18-CB-001 | classification-required | extracted-requirement | Federate Save Begun shall trigger the clause-defined success, failure, or status callbacks to the appropriate federates. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.18-EFF-001 | classification-required | extracted-requirement | Successful Federate Save Begun processing shall update federation synchronization or save/restore state consistently for the participating federates. |
@@ -160,7 +189,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.18-PRE-001 | classification-required | extracted-requirement | Federate Save Begun shall require the caller to satisfy the connected, joined, and in-progress state guards applicable to clause 4.18. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.18-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Federate Save Begun. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.18-TEST-001 | classification-required | extracted-requirement | Federate Save Begun shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_18-federateSaveBegun | classification-required | service-requirement | Federate Save Begun service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.19-001 | classification-required | extracted-requirement | Federate Save Complete / Not Complete |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.19-CB-001 | classification-required | extracted-requirement | Federate Save Complete and Federate Save Not Complete shall trigger the clause-defined success, failure, or status callbacks to the appropriate federates. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.19-EFF-001 | classification-required | extracted-requirement | Successful Federate Save Complete and Federate Save Not Complete processing shall update federation synchronization or save/restore state consistently for the participating federates. |
@@ -169,8 +197,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.19-PRE-001 | classification-required | extracted-requirement | Federate Save Complete and Federate Save Not Complete shall require the caller to satisfy the connected, joined, and in-progress state guards applicable to clause 4.19. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.19-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Federate Save Complete and Federate Save Not Complete. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.19-TEST-001 | classification-required | extracted-requirement | Federate Save Complete and Federate Save Not Complete shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_19-federateSaveComplete | classification-required | service-requirement | Federate Save Complete service |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_19-federateSaveNotComplete | classification-required | service-requirement | Federate Save Complete service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.2-001 | classification-required | extracted-requirement | Connect service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.2-CB-001 | classification-required | extracted-requirement | Connect shall establish the callback-delivery model that governs subsequent RTI callback behavior for the connected ambassador. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.2-EFF-001 | classification-required | extracted-requirement | Successful Connect shall bind the ambassador, persist the selected callback model, persist the optional local settings designator, and mark the ambassador connected. |
@@ -179,7 +205,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.2-PRE-001 | classification-required | extracted-requirement | Connect shall be rejected when the RTI ambassador is already connected. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.2-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Connect service with federate ambassador, callback model, and optional local settings designator inputs. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.2-TEST-001 | classification-required | extracted-requirement | Connect shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_2-connect | classification-required | service-requirement | Connect service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.20-001 | classification-required | extracted-requirement | Federation Saved / Federation Not Saved callbacks |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.20-CB-001 | classification-required | extracted-requirement | The Federation Saved and Federation Not Saved callback shall be delivered to the appropriate federates with the clause-defined payload and timing semantics. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.20-EFF-001 | classification-required | extracted-requirement | The Federation Saved and Federation Not Saved callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates. |
@@ -188,8 +213,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.20-PRE-001 | classification-required | extracted-requirement | The Federation Saved and Federation Not Saved requirement shall apply only when the synchronization or save/restore preconditions for clause 4.20 are satisfied. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.20-SIG-001 | classification-required | extracted-requirement | RTI shall deliver the Federation Saved or Federation Not Saved according to save outcome. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.20-TEST-001 | classification-required | extracted-requirement | Federation Saved and Federation Not Saved shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_20-federationNotSaved | classification-required | service-requirement | Federation Saved service |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_20-federationSaved | classification-required | service-requirement | Federation Saved service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.21-001 | classification-required | extracted-requirement | Abort Federation Save |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.21-CB-001 | classification-required | extracted-requirement | Abort Federation Save shall trigger the clause-defined success, failure, or status callbacks to the appropriate federates. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.21-EFF-001 | classification-required | extracted-requirement | Successful Abort Federation Save processing shall update federation synchronization or save/restore state consistently for the participating federates. |
@@ -198,7 +221,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.21-PRE-001 | classification-required | extracted-requirement | Abort Federation Save shall require the caller to satisfy the connected, joined, and in-progress state guards applicable to clause 4.21. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.21-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Abort Federation Save. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.21-TEST-001 | classification-required | extracted-requirement | Abort Federation Save shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_21-abortFederationSave | classification-required | service-requirement | Abort Federation Save service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.22-001 | classification-required | extracted-requirement | Query Federation Save Status |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.22-CB-001 | classification-required | extracted-requirement | Query Federation Save Status shall trigger the clause-defined success, failure, or status callbacks to the appropriate federates. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.22-EFF-001 | classification-required | extracted-requirement | Successful Query Federation Save Status processing shall update federation synchronization or save/restore state consistently for the participating federates. |
@@ -207,7 +229,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.22-PRE-001 | classification-required | extracted-requirement | Query Federation Save Status shall require the caller to satisfy the connected, joined, and in-progress state guards applicable to clause 4.22. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.22-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Query Federation Save Status. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.22-TEST-001 | classification-required | extracted-requirement | Query Federation Save Status shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_22-queryFederationSaveStatus | classification-required | service-requirement | Query Federation Save Status service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.23-001 | classification-required | extracted-requirement | Federation Save Status Response |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.23-CB-001 | classification-required | extracted-requirement | The Federation Save Status Response callback shall be delivered to the appropriate federates with the clause-defined payload and timing semantics. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.23-EFF-001 | classification-required | extracted-requirement | The Federation Save Status Response callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates. |
@@ -216,7 +237,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.23-PRE-001 | classification-required | extracted-requirement | The Federation Save Status Response requirement shall apply only when the synchronization or save/restore preconditions for clause 4.23 are satisfied. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.23-SIG-001 | classification-required | extracted-requirement | RTI shall deliver the federation save status through Federation Save Status Response. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.23-TEST-001 | classification-required | extracted-requirement | Federation Save Status Response shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_23-federationSaveStatusResponse | classification-required | service-requirement | Federation Save Status Response service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.24-001 | classification-required | extracted-requirement | Request Federation Restore |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.24-CB-001 | classification-required | extracted-requirement | Request Federation Restore shall trigger the clause-defined success, failure, or status callbacks to the appropriate federates. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.24-EFF-001 | classification-required | extracted-requirement | Successful Request Federation Restore processing shall update federation synchronization or save/restore state consistently for the participating federates. |
@@ -225,7 +245,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.24-PRE-001 | classification-required | extracted-requirement | Request Federation Restore shall require the caller to satisfy the connected, joined, and in-progress state guards applicable to clause 4.24. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.24-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Request Federation Restore. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.24-TEST-001 | classification-required | extracted-requirement | Request Federation Restore shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_24-requestFederationRestore | classification-required | service-requirement | Request Federation Restore service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.25-001 | classification-required | extracted-requirement | Request Federation Restore Succeeded / Failed |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.25-CB-001 | classification-required | extracted-requirement | The Request Federation Restore confirmation callback shall be delivered to the appropriate federates with the clause-defined payload and timing semantics. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.25-EFF-001 | classification-required | extracted-requirement | The Request Federation Restore confirmation callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates. |
@@ -234,8 +253,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.25-PRE-001 | classification-required | extracted-requirement | The Request Federation Restore confirmation requirement shall apply only when the synchronization or save/restore preconditions for clause 4.25 are satisfied. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.25-SIG-001 | classification-required | extracted-requirement | RTI shall deliver the federation restoration request success or failure. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.25-TEST-001 | classification-required | extracted-requirement | Request Federation Restore confirmation shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_25-requestFederationRestoreFailed | classification-required | service-requirement | Confirm Federation Restoration Request service |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_25-requestFederationRestoreSucceeded | classification-required | service-requirement | Confirm Federation Restoration Request service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.26-001 | classification-required | extracted-requirement | Federation Restore Begun |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.26-CB-001 | classification-required | extracted-requirement | The Federation Restore Begun callback shall be delivered to the appropriate federates with the clause-defined payload and timing semantics. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.26-EFF-001 | classification-required | extracted-requirement | The Federation Restore Begun callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates. |
@@ -244,7 +261,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.26-PRE-001 | classification-required | extracted-requirement | The Federation Restore Begun requirement shall apply only when the synchronization or save/restore preconditions for clause 4.26 are satisfied. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.26-SIG-001 | classification-required | extracted-requirement | RTI shall deliver the when federation restore has begun. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.26-TEST-001 | classification-required | extracted-requirement | Federation Restore Begun shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_26-federationRestoreBegun | classification-required | service-requirement | Federation Restore Begun service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.27-001 | classification-required | extracted-requirement | Initiate Federate Restore callback |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.27-CB-001 | classification-required | extracted-requirement | The Initiate Federate Restore callback shall be delivered to the appropriate federates with the clause-defined payload and timing semantics. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.27-EFF-001 | classification-required | extracted-requirement | The Initiate Federate Restore callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates. |
@@ -253,7 +269,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.27-PRE-001 | classification-required | extracted-requirement | The Initiate Federate Restore requirement shall apply only when the synchronization or save/restore preconditions for clause 4.27 are satisfied. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.27-SIG-001 | classification-required | extracted-requirement | RTI shall deliver the each participating federate to initiate restore. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.27-TEST-001 | classification-required | extracted-requirement | Initiate Federate Restore shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_27-initiateFederateRestore | classification-required | service-requirement | Initiate Federate Restore service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.28-001 | classification-required | extracted-requirement | Federate Restore Complete / Not Complete |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.28-CB-001 | classification-required | extracted-requirement | Federate Restore Complete and Federate Restore Not Complete shall trigger the clause-defined success, failure, or status callbacks to the appropriate federates. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.28-EFF-001 | classification-required | extracted-requirement | Successful Federate Restore Complete and Federate Restore Not Complete processing shall update federation synchronization or save/restore state consistently for the participating federates. |
@@ -262,8 +277,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.28-PRE-001 | classification-required | extracted-requirement | Federate Restore Complete and Federate Restore Not Complete shall require the caller to satisfy the connected, joined, and in-progress state guards applicable to clause 4.28. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.28-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Federate Restore Complete and Federate Restore Not Complete. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.28-TEST-001 | classification-required | extracted-requirement | Federate Restore Complete and Federate Restore Not Complete shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_28-federateRestoreComplete | classification-required | service-requirement | Federate Restore Complete service |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_28-federateRestoreNotComplete | classification-required | service-requirement | Federate Restore Complete service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.29-001 | classification-required | extracted-requirement | Federation Restored / Federation Not Restored callbacks |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.29-CB-001 | classification-required | extracted-requirement | The Federation Restored and Federation Not Restored callback shall be delivered to the appropriate federates with the clause-defined payload and timing semantics. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.29-EFF-001 | classification-required | extracted-requirement | The Federation Restored and Federation Not Restored callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates. |
@@ -272,8 +285,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.29-PRE-001 | classification-required | extracted-requirement | The Federation Restored and Federation Not Restored requirement shall apply only when the synchronization or save/restore preconditions for clause 4.29 are satisfied. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.29-SIG-001 | classification-required | extracted-requirement | RTI shall deliver the Federation Restored or Federation Not Restored according to restore outcome. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.29-TEST-001 | classification-required | extracted-requirement | Federation Restored and Federation Not Restored shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_29-federationNotRestored | classification-required | service-requirement | Federation Restored service |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_29-federationRestored | classification-required | service-requirement | Federation Restored service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.3-001 | classification-required | extracted-requirement | Disconnect service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.3-CB-001 | classification-required | extracted-requirement | After Disconnect, the RTI shall cease callback delivery to the disconnected ambassador. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.3-EFF-001 | classification-required | extracted-requirement | Successful Disconnect shall clear connected state, clear the bound ambassador reference, and clear queued callbacks for the disconnected ambassador. |
@@ -282,7 +293,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.3-PRE-001 | classification-required | extracted-requirement | Disconnect shall require a connected ambassador that is no longer a federation execution member. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.3-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Disconnect service. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.3-TEST-001 | classification-required | extracted-requirement | Disconnect shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_3-disconnect | classification-required | service-requirement | Disconnect service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.30-001 | classification-required | extracted-requirement | Abort Federation Restore |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.30-CB-001 | classification-required | extracted-requirement | Abort Federation Restore shall trigger the clause-defined success, failure, or status callbacks to the appropriate federates. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.30-EFF-001 | classification-required | extracted-requirement | Successful Abort Federation Restore processing shall update federation synchronization or save/restore state consistently for the participating federates. |
@@ -291,7 +301,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.30-PRE-001 | classification-required | extracted-requirement | Abort Federation Restore shall require the caller to satisfy the connected, joined, and in-progress state guards applicable to clause 4.30. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.30-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Abort Federation Restore. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.30-TEST-001 | classification-required | extracted-requirement | Abort Federation Restore shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_30-abortFederationRestore | classification-required | service-requirement | Abort Federation Restore service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.31-001 | classification-required | extracted-requirement | Query Federation Restore Status |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.31-CB-001 | classification-required | extracted-requirement | Query Federation Restore Status shall trigger the clause-defined success, failure, or status callbacks to the appropriate federates. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.31-EFF-001 | classification-required | extracted-requirement | Successful Query Federation Restore Status processing shall update federation synchronization or save/restore state consistently for the participating federates. |
@@ -300,7 +309,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.31-PRE-001 | classification-required | extracted-requirement | Query Federation Restore Status shall require the caller to satisfy the connected, joined, and in-progress state guards applicable to clause 4.31. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.31-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Query Federation Restore Status. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.31-TEST-001 | classification-required | extracted-requirement | Query Federation Restore Status shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_31-queryFederationRestoreStatus | classification-required | service-requirement | Query Federation Restore Status service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.32-001 | classification-required | extracted-requirement | Federation Restore Status Response |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.32-CB-001 | classification-required | extracted-requirement | The Federation Restore Status Response callback shall be delivered to the appropriate federates with the clause-defined payload and timing semantics. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.32-EFF-001 | classification-required | extracted-requirement | The Federation Restore Status Response callback shall expose the resulting federation synchronization or save/restore state transition to the affected federates. |
@@ -309,8 +317,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.32-PRE-001 | classification-required | extracted-requirement | The Federation Restore Status Response requirement shall apply only when the synchronization or save/restore preconditions for clause 4.32 are satisfied. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.32-SIG-001 | classification-required | extracted-requirement | RTI shall deliver the federation restore status through Federation Restore Status Response. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.32-TEST-001 | classification-required | extracted-requirement | Federation Restore Status Response shall be covered by direct service or callback tests and by transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_32-federationRestoreStatusResponse | classification-required | service-requirement | Federation Restore Status Response service |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_4-connectionLost | classification-required | service-requirement | Connection Lost service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-001 | classification-required | extracted-requirement | Create Federation Execution |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-CB-001 | classification-required | extracted-requirement | Create Federation Execution shall make the created federation observable to subsequent callback-based reporting services such as Report Federation Executions. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-EFF-001 | classification-required | extracted-requirement | Successful Create Federation Execution shall install the federation, resolve and merge the supplied FOM modules, supply the standard MIM by default when needed, and choose a logical time factory compatible with the merged model. |
@@ -319,8 +325,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-PRE-001 | classification-required | extracted-requirement | Create Federation Execution shall require a connected ambassador and shall reject duplicate federation execution names. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Create Federation Execution service, including the explicit-MIM overload shape used by the current API surface. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-TEST-001 | classification-required | extracted-requirement | Create Federation Execution shall be covered by direct service tests plus transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_5-createFederationExecution | classification-required | service-requirement | Create Federation Execution service |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_5-createFederationExecutionWithMIM | classification-required | service-requirement | Create Federation Execution service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.6-001 | classification-required | extracted-requirement | Destroy Federation Execution |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.6-CB-001 | classification-required | extracted-requirement | After successful destruction, callback-based federation listing shall no longer report the destroyed federation execution. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.6-EFF-001 | classification-required | extracted-requirement | Successful Destroy Federation Execution shall remove the target federation execution from the RTI federation catalog. |
@@ -329,9 +333,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.6-PRE-001 | classification-required | extracted-requirement | Destroy Federation Execution shall require a connected ambassador and a target federation execution that has no currently joined federates. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.6-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Destroy Federation Execution service. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.6-TEST-001 | classification-required | extracted-requirement | Destroy Federation Execution shall be covered by direct service tests plus transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_6-destroyFederationExecution | classification-required | service-requirement | Destroy Federation Execution service |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_7-listFederationExecutions | classification-required | service-requirement | List Federation Executions service |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-FED-FM-4_8-reportFederationExecutions | classification-required | service-requirement | Report Federation Executions service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-001 | classification-required | extracted-requirement | Join Federation Execution |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-CB-001 | classification-required | extracted-requirement | Successful Join Federation Execution shall trigger delivery of any open synchronization-point announcements relevant to the joiner and enable subsequent callback delivery for joined participation. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-EFF-001 | classification-required | extracted-requirement | Successful Join Federation Execution shall allocate a federate handle, bind the federate to the target federation, initialize logical time and lookahead state, merge any accepted additional FOM modules, and register the federate in the federation state. |
@@ -340,7 +341,22 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-PRE-001 | classification-required | extracted-requirement | Join Federation Execution shall require a connected ambassador that is not already joined, an existing federation execution, a non-conflicting federate name, and no save or restore already in progress for the federation. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-SIG-001 | classification-required | extracted-requirement | RTI shall provide the Join Federation Execution service, including the overload shapes that accept generated federate names and optional additional FOM modules. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-TEST-001 | classification-required | extracted-requirement | Join Federation Execution shall be covered by direct service tests and transport-equivalence checks across native, gRPC, and REST entry points. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_9-joinFederationExecution | classification-required | service-requirement | Join Federation Execution service |
+| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-FED-DM-5_10-startRegistrationForObjectClass | classification-required | service-requirement | Start Registration For Object Class service |
+| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-FED-DM-5_11-stopRegistrationForObjectClass | classification-required | service-requirement | Stop Registration For Object Class service |
+| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-FED-DM-5_12-turnInteractionsOn | classification-required | service-requirement | Turn Interactions On service |
+| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-FED-DM-5_13-turnInteractionsOff | classification-required | service-requirement | Turn Interactions Off service |
+| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_2-publishObjectClassAttributes | classification-required | service-requirement | Publish Object Class Attributes service |
+| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_3-unpublishObjectClass | classification-required | service-requirement | Unpublish Object Class Attributes service |
+| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_3-unpublishObjectClassAttributes | classification-required | service-requirement | Unpublish Object Class Attributes service |
+| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_4-publishInteractionClass | classification-required | service-requirement | Publish Interaction Class service |
+| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_5-unpublishInteractionClass | classification-required | service-requirement | Unpublish Interaction Class service |
+| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_6-subscribeObjectClassAttributes | classification-required | service-requirement | Subscribe Object Class Attributes service |
+| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_6-subscribeObjectClassAttributesPassively | classification-required | service-requirement | Subscribe Object Class Attributes service |
+| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_7-unsubscribeObjectClass | classification-required | service-requirement | Unsubscribe Object Class Attributes service |
+| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_7-unsubscribeObjectClassAttributes | classification-required | service-requirement | Unsubscribe Object Class Attributes service |
+| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_8-subscribeInteractionClass | classification-required | service-requirement | Subscribe Interaction Class service |
+| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_8-subscribeInteractionClassPassively | classification-required | service-requirement | Subscribe Interaction Class service |
+| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_9-unsubscribeInteractionClass | classification-required | service-requirement | Unsubscribe Interaction Class service |
 | IEEE 1516.1-2010 (2010 edition) | 5 | AREA-1516.1-5 | not-applicable | section-area | Declaration management |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-001 | not-applicable | extracted-requirement | The RTI shall implement declaration-management services for publication |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1-001 | classification-required | extracted-requirement | Joined federates shall use DM services to declare intent to generate information. |
@@ -357,42 +373,61 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.5-001 | classification-required | extracted-requirement | RTI shall support interaction between DM subscriptions and DDM subscriptions. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.6-001 | classification-required | extracted-requirement | RTI shall support subscribing with update rate reduction where applicable. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.10-001 | classification-required | extracted-requirement | RTI shall invoke Start Registration For Object Class when registration becomes useful for subscribed federates. |
-| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-FED-DM-5_10-startRegistrationForObjectClass | classification-required | service-requirement | Start Registration For Object Class service |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.11-001 | classification-required | extracted-requirement | RTI shall invoke Stop Registration For Object Class when registration is no longer useful for subscribed federates. |
-| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-FED-DM-5_11-stopRegistrationForObjectClass | classification-required | service-requirement | Stop Registration For Object Class service |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.12-001 | classification-required | extracted-requirement | RTI shall invoke Turn Interactions On when a published interaction class has matching subscribers. |
-| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-FED-DM-5_12-turnInteractionsOn | classification-required | service-requirement | Turn Interactions On service |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.13-001 | classification-required | extracted-requirement | RTI shall invoke Turn Interactions Off when a published interaction class no longer has matching subscribers. |
-| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-FED-DM-5_13-turnInteractionsOff | classification-required | service-requirement | Turn Interactions Off service |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.2-001 | classification-required | extracted-requirement | RTI shall provide Publish Object Class Attributes. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.2-002 | classification-required | extracted-requirement | Publish Object Class Attributes shall declare attributes a federate may update for instances of an object class. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.2-003 | classification-required | extracted-requirement | RTI shall reject publication requests for unavailable attributes. |
-| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_2-publishObjectClassAttributes | classification-required | service-requirement | Publish Object Class Attributes service |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.3-001 | classification-required | extracted-requirement | RTI shall provide Unpublish Object Class Attributes. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.3-002 | classification-required | extracted-requirement | Unpublishing shall remove the federate’s ability to update the specified attributes. |
-| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_3-unpublishObjectClass | classification-required | service-requirement | Unpublish Object Class Attributes service |
-| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_3-unpublishObjectClassAttributes | classification-required | service-requirement | Unpublish Object Class Attributes service |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.4-001 | classification-required | extracted-requirement | RTI shall provide Publish Interaction Class. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.4-002 | classification-required | extracted-requirement | Publication of an interaction class shall permit the federate to send interactions of that class. |
-| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_4-publishInteractionClass | classification-required | service-requirement | Publish Interaction Class service |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.5-001 | classification-required | extracted-requirement | RTI shall provide Unpublish Interaction Class. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.5-002 | classification-required | extracted-requirement | Unpublishing an interaction class shall remove the federate’s ability to send interactions of that class. |
-| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_5-unpublishInteractionClass | classification-required | service-requirement | Unpublish Interaction Class service |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.6-001 | classification-required | extracted-requirement | RTI shall provide Subscribe Object Class Attributes. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.6-002 | classification-required | extracted-requirement | Subscribing to object-class attributes shall make matching object instances discoverable when discovery conditions are met. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.6-003 | classification-required | extracted-requirement | Subscribing to object-class attributes shall make matching in-scope attribute updates reflectable. |
-| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_6-subscribeObjectClassAttributes | classification-required | service-requirement | Subscribe Object Class Attributes service |
-| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_6-subscribeObjectClassAttributesPassively | classification-required | service-requirement | Subscribe Object Class Attributes service |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.7-001 | classification-required | extracted-requirement | RTI shall provide Unsubscribe Object Class Attributes. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.7-002 | classification-required | extracted-requirement | Unsubscribing shall remove the federate’s interest in the specified object-class attributes. |
-| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_7-unsubscribeObjectClass | classification-required | service-requirement | Unsubscribe Object Class Attributes service |
-| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_7-unsubscribeObjectClassAttributes | classification-required | service-requirement | Unsubscribe Object Class Attributes service |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.8-001 | classification-required | extracted-requirement | RTI shall provide Subscribe Interaction Class. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.8-002 | classification-required | extracted-requirement | Subscribing to an interaction class shall make matching interactions receivable. |
-| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_8-subscribeInteractionClass | classification-required | service-requirement | Subscribe Interaction Class service |
-| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_8-subscribeInteractionClassPassively | classification-required | service-requirement | Subscribe Interaction Class service |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.9-001 | classification-required | extracted-requirement | RTI shall provide Unsubscribe Interaction Class. |
-| IEEE 1516.1-2010 (2010 edition) | 5 | REQ-RTI-DM-5_9-unsubscribeInteractionClass | classification-required | service-requirement | Unsubscribe Interaction Class service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_10-updateAttributeValues | classification-required | service-requirement | Update Attribute Values service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_11-reflectAttributeValues | classification-required | service-requirement | Reflect Attribute Values service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_12-sendInteraction | classification-required | service-requirement | Send Interaction service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_13-receiveInteraction | classification-required | service-requirement | Receive Interaction service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_14-deleteObjectInstance | classification-required | service-requirement | Delete Object Instance service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_15-removeObjectInstance | classification-required | service-requirement | Remove Object Instance service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_16-localDeleteObjectInstance | classification-required | service-requirement | Local Delete Object Instance service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_17-attributesInScope | classification-required | service-requirement | Attributes In Scope service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_18-attributesOutOfScope | classification-required | service-requirement | Attributes Out Of Scope service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_19-requestAttributeValueUpdate | classification-required | service-requirement | Request Attribute Value Update service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_2-reserveObjectInstanceName | classification-required | service-requirement | Reserve Object Instance Name service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_20-provideAttributeValueUpdate | classification-required | service-requirement | Provide Attribute Value Update service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_21-turnUpdatesOnForObjectInstance | classification-required | service-requirement | Turn Updates On For Object Instance service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_22-turnUpdatesOffForObjectInstance | classification-required | service-requirement | Turn Updates Off For Object Instance service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_23-requestAttributeTransportationTypeChange | classification-required | service-requirement | Request Attribute Transportation Type Change service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_24-confirmAttributeTransportationTypeChange | classification-required | service-requirement | Confirm Attribute Transportation Type Change service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_25-queryAttributeTransportationType | classification-required | service-requirement | Query Attribute Transportation Type service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_26-reportAttributeTransportationType | classification-required | service-requirement | Report Attribute Transportation Type service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_27-requestInteractionTransportationTypeChange | classification-required | service-requirement | Request Interaction Transportation Type Change service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_28-confirmInteractionTransportationTypeChange | classification-required | service-requirement | Confirm Interaction Transportation Type Change service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_29-queryInteractionTransportationType | classification-required | service-requirement | Query Interaction Transportation Type service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_3-objectInstanceNameReservationFailed | classification-required | service-requirement | Object Instance Name Reserved service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_3-objectInstanceNameReservationSucceeded | classification-required | service-requirement | Object Instance Name Reserved service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_30-reportInteractionTransportationType | classification-required | service-requirement | Report Interaction Transportation Type service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_4-releaseObjectInstanceName | classification-required | service-requirement | Release Object Instance Name service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_5-reserveMultipleObjectInstanceName | classification-required | service-requirement | Reserve Multiple Object Instance Names service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_6-multipleObjectInstanceNameReservationFailed | classification-required | service-requirement | Multiple Object Instance Names Reserved service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_6-multipleObjectInstanceNameReservationSucceeded | classification-required | service-requirement | Multiple Object Instance Names Reserved service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_7-releaseMultipleObjectInstanceName | classification-required | service-requirement | Release Multiple Object Instance Names service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_8-registerObjectInstance | classification-required | service-requirement | Register Object Instance service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_9-discoverObjectInstance | classification-required | service-requirement | Discover Object Instance service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_9-getProducingFederate | classification-required | service-requirement | Discover Object Instance service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_9-getSentRegions | classification-required | service-requirement | Discover Object Instance service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_9-hasProducingFederate | classification-required | service-requirement | Discover Object Instance service |
+| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_9-hasSentRegions | classification-required | service-requirement | Discover Object Instance service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | AREA-1516.1-6 | not-applicable | section-area | Object management |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-001 | not-applicable | extracted-requirement | The RTI shall implement object-management services for registration |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1-001 | classification-required | extracted-requirement | RTI shall support registration, modification, and deletion of object instances. |
@@ -417,104 +452,60 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.10-003 | classification-required | extracted-requirement | RTI shall route attribute updates to joined federates with relevant subscriptions and scope. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.10-004 | classification-required | extracted-requirement | RTI shall support RO and TSO attribute updates according to time-management rules. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.10-005 | classification-required | extracted-requirement | RTI shall deliver reflected attribute updates with transportation metadata that matches the currently implemented reliable and best-effort transport subset. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_10-updateAttributeValues | classification-required | service-requirement | Update Attribute Values service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.11-001 | classification-required | extracted-requirement | RTI shall invoke Reflect Attribute Values to deliver attribute updates. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.11-002 | classification-required | extracted-requirement | Reflected attributes shall correspond to attributes available at the object instance’s known class. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_11-reflectAttributeValues | classification-required | service-requirement | Reflect Attribute Values service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.12-001 | classification-required | extracted-requirement | RTI shall provide Send Interaction. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.12-002 | classification-required | extracted-requirement | A federate shall send only interaction classes it has published. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.12-003 | classification-required | extracted-requirement | Sent interaction parameters shall be available parameters of the interaction class. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.12-004 | classification-required | extracted-requirement | RTI shall support RO and TSO interactions according to time-management rules. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.12-005 | classification-required | extracted-requirement | RTI shall deliver received interactions with transportation metadata that matches the currently implemented reliable and best-effort transport subset. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_12-sendInteraction | classification-required | service-requirement | Send Interaction service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.13-001 | classification-required | extracted-requirement | RTI shall invoke Receive Interaction for matching subscribed federates. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_13-receiveInteraction | classification-required | service-requirement | Receive Interaction service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.14-001 | classification-required | extracted-requirement | RTI shall provide Delete Object Instance. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.14-002 | classification-required | extracted-requirement | Delete Object Instance shall remove an object instance from the federation execution according to ownership and time rules. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_14-deleteObjectInstance | classification-required | service-requirement | Delete Object Instance service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.15-001 | classification-required | extracted-requirement | RTI shall invoke Remove Object Instance at federates that know the deleted object instance. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_15-removeObjectInstance | classification-required | service-requirement | Remove Object Instance service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.16-001 | classification-required | extracted-requirement | RTI shall provide Local Delete Object Instance. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.16-002 | classification-required | extracted-requirement | Local Delete Object Instance shall remove knowledge of the object instance only at the invoking federate. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_16-localDeleteObjectInstance | classification-required | service-requirement | Local Delete Object Instance service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.17-001 | classification-required | extracted-requirement | RTI shall invoke Attributes In Scope when subscribed attributes become in scope. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_17-attributesInScope | classification-required | service-requirement | Attributes In Scope service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.18-001 | classification-required | extracted-requirement | RTI shall invoke Attributes Out Of Scope when subscribed attributes go out of scope. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_18-attributesOutOfScope | classification-required | service-requirement | Attributes Out Of Scope service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.19-001 | classification-required | extracted-requirement | RTI shall provide Request Attribute Value Update. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.19-002 | classification-required | extracted-requirement | Request Attribute Value Update shall cause relevant owning federates to receive a request to provide current values. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_19-requestAttributeValueUpdate | classification-required | service-requirement | Request Attribute Value Update service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.2-001 | classification-required | extracted-requirement | RTI shall provide Reserve Object Instance Name. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_2-reserveObjectInstanceName | classification-required | service-requirement | Reserve Object Instance Name service |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_20-provideAttributeValueUpdate | classification-required | service-requirement | Provide Attribute Value Update service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.21-001 | classification-required | extracted-requirement | RTI shall invoke Turn Updates On For Object Instance when subscribed demand makes a published object instance attribute set newly relevant to the owning federate. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.21-002 | classification-required | extracted-requirement | Turn Updates On For Object Instance shall carry the object instance handle, relevant attribute set, and applicable update rate designator when one is in effect. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_21-turnUpdatesOnForObjectInstance | classification-required | service-requirement | Turn Updates On For Object Instance service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.22-001 | classification-required | extracted-requirement | RTI shall invoke Turn Updates Off For Object Instance when subscribed demand no longer exists for a published object instance attribute set. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_22-turnUpdatesOffForObjectInstance | classification-required | service-requirement | Turn Updates Off For Object Instance service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.23-001 | classification-required | extracted-requirement | RTI shall provide Request Attribute Transportation Type Change across the full transportation semantic space defined by the standard. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.23-002 | classification-required | extracted-requirement | RTI shall support Request Attribute Transportation Type Change for the currently implemented reliable and best-effort transport subset and persist that selected attribute transport state across restore. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_23-requestAttributeTransportationTypeChange | classification-required | service-requirement | Request Attribute Transportation Type Change service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.24-001 | classification-required | extracted-requirement | RTI shall invoke Confirm Attribute Transportation Type Change across the full transportation semantic space. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.24-002 | classification-required | extracted-requirement | RTI shall invoke Confirm Attribute Transportation Type Change for the currently implemented reliable and best-effort transport subset. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.24-003 | classification-required | extracted-requirement | RTI shall not emit Confirm Attribute Transportation Type Change when the corresponding change request is rejected for invalid state, handle, ownership, publication, or transport inputs. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_24-confirmAttributeTransportationTypeChange | classification-required | service-requirement | Confirm Attribute Transportation Type Change service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.25-001 | classification-required | extracted-requirement | RTI shall provide Query Attribute Transportation Type across the full transportation semantic space defined by the standard. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.25-002 | classification-required | extracted-requirement | RTI shall report stored attribute transportation overrides for the currently implemented reliable and best-effort transport subset. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_25-queryAttributeTransportationType | classification-required | service-requirement | Query Attribute Transportation Type service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.26-001 | classification-required | extracted-requirement | RTI shall invoke Report Attribute Transportation Type across the full transportation semantic space. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.26-002 | classification-required | extracted-requirement | RTI shall invoke Report Attribute Transportation Type for the currently implemented reliable and best-effort transport subset. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.26-003 | classification-required | extracted-requirement | RTI shall not emit Report Attribute Transportation Type when the corresponding query is rejected for invalid state, object, or attribute inputs. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_26-reportAttributeTransportationType | classification-required | service-requirement | Report Attribute Transportation Type service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.27-001 | classification-required | extracted-requirement | RTI shall provide Request Interaction Transportation Type Change across the full transportation semantic space defined by the standard. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.27-002 | classification-required | extracted-requirement | RTI shall support Request Interaction Transportation Type Change for the currently implemented reliable and best-effort transport subset and persist that selected interaction transport state across restore. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_27-requestInteractionTransportationTypeChange | classification-required | service-requirement | Request Interaction Transportation Type Change service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.28-001 | classification-required | extracted-requirement | RTI shall invoke Confirm Interaction Transportation Type Change across the full transportation semantic space. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.28-002 | classification-required | extracted-requirement | RTI shall invoke Confirm Interaction Transportation Type Change for the currently implemented reliable and best-effort transport subset. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.28-003 | classification-required | extracted-requirement | RTI shall not emit Confirm Interaction Transportation Type Change when the corresponding change request is rejected for invalid state, class, publication, or transport inputs. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_28-confirmInteractionTransportationTypeChange | classification-required | service-requirement | Confirm Interaction Transportation Type Change service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.29-001 | classification-required | extracted-requirement | RTI shall provide Query Interaction Transportation Type across the full transportation semantic space defined by the standard. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.29-002 | classification-required | extracted-requirement | RTI shall report stored interaction transportation overrides for the currently implemented reliable and best-effort transport subset. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_29-queryInteractionTransportationType | classification-required | service-requirement | Query Interaction Transportation Type service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.3-001 | classification-required | extracted-requirement | RTI shall invoke Object Instance Name Reserved when a reservation succeeds. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_3-objectInstanceNameReservationFailed | classification-required | service-requirement | Object Instance Name Reserved service |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_3-objectInstanceNameReservationSucceeded | classification-required | service-requirement | Object Instance Name Reserved service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.30-001 | classification-required | extracted-requirement | RTI shall invoke Report Interaction Transportation Type across the full transportation semantic space. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.30-002 | classification-required | extracted-requirement | RTI shall invoke Report Interaction Transportation Type for the currently implemented reliable and best-effort transport subset. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.30-003 | classification-required | extracted-requirement | RTI shall not emit Report Interaction Transportation Type when the corresponding query is rejected for invalid state or invalid interaction inputs. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_30-reportInteractionTransportationType | classification-required | service-requirement | Report Interaction Transportation Type service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.4-001 | classification-required | extracted-requirement | RTI shall provide Release Object Instance Name. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_4-releaseObjectInstanceName | classification-required | service-requirement | Release Object Instance Name service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.5-001 | classification-required | extracted-requirement | RTI shall provide Reserve Multiple Object Instance Names. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_5-reserveMultipleObjectInstanceName | classification-required | service-requirement | Reserve Multiple Object Instance Names service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.6-001 | classification-required | extracted-requirement | RTI shall invoke Multiple Object Instance Names Reserved when multiple-name reservation succeeds. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_6-multipleObjectInstanceNameReservationFailed | classification-required | service-requirement | Multiple Object Instance Names Reserved service |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_6-multipleObjectInstanceNameReservationSucceeded | classification-required | service-requirement | Multiple Object Instance Names Reserved service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.7-001 | classification-required | extracted-requirement | RTI shall provide Release Multiple Object Instance Names. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_7-releaseMultipleObjectInstanceName | classification-required | service-requirement | Release Multiple Object Instance Names service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.8-001 | classification-required | extracted-requirement | RTI shall provide Register Object Instance. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.8-002 | classification-required | extracted-requirement | Register Object Instance shall create an object instance of a published object class. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.8-003 | classification-required | extracted-requirement | RTI shall assign a unique object instance handle to each registered object instance. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.8-004 | classification-required | extracted-requirement | RTI shall support registration with RTI-assigned or federate-supplied object instance names. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-RTI-OM-6_8-registerObjectInstance | classification-required | service-requirement | Register Object Instance service |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.9-001 | classification-required | extracted-requirement | RTI shall invoke Discover Object Instance at federates satisfying discovery conditions. |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_9-discoverObjectInstance | classification-required | service-requirement | Discover Object Instance service |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_9-getProducingFederate | classification-required | service-requirement | Discover Object Instance service |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_9-getSentRegions | classification-required | service-requirement | Discover Object Instance service |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_9-hasProducingFederate | classification-required | service-requirement | Discover Object Instance service |
-| IEEE 1516.1-2010 (2010 edition) | 6 | REQ-FED-OM-6_9-hasSentRegions | classification-required | service-requirement | Discover Object Instance service |
-| IEEE 1516.1-2010 (2010 edition) | 7 | AREA-1516.1-7 | not-applicable | section-area | Ownership management |
-| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-001 | not-applicable | curated-seed | Ownership Management |
-| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.1-001 | classification-required | extracted-requirement | Attribute ownership tracking |
-| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.1-002 | classification-required | extracted-requirement | Single owner per attribute |
-| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.1-003 | classification-required | extracted-requirement | Owned-attribute update restriction |
-| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.10-001 | classification-required | extracted-requirement | Cancel ownership acquisition |
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-FED-OWN-7_10-attributeOwnershipUnavailable | classification-required | service-requirement | Attribute Ownership Unavailable service |
-| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.11-001 | classification-required | extracted-requirement | Cancellation confirmation |
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-FED-OWN-7_11-requestAttributeOwnershipRelease | classification-required | service-requirement | Request Attribute Ownership Release service |
-| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.12-001 | classification-required | extracted-requirement | Attribute ownership query |
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_12-attributeOwnershipReleaseDenied | classification-required | service-requirement | Attribute Ownership Release Denied service |
-| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.13-001 | classification-required | extracted-requirement | Owned-unowned-owner notification |
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_13-attributeOwnershipDivestitureIfWanted | classification-required | service-requirement | Attribute Ownership Divestiture If Wanted service |
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_14-cancelNegotiatedAttributeOwnershipDivestiture | classification-required | service-requirement | Cancel Negotiated Attribute Ownership Divestiture service |
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_15-cancelAttributeOwnershipAcquisition | classification-required | service-requirement | Cancel Attribute Ownership Acquisition service |
@@ -524,24 +515,56 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-FED-OWN-7_18-attributeIsOwnedByRTI | classification-required | service-requirement | Inform Attribute Ownership service |
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-FED-OWN-7_18-informAttributeOwnership | classification-required | service-requirement | Inform Attribute Ownership service |
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_19-isAttributeOwnedByFederate | classification-required | service-requirement | Is Attribute Owned By Federate service |
-| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.2-001 | classification-required | extracted-requirement | Unconditional divestiture |
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_2-unconditionalAttributeOwnershipDivestiture | classification-required | service-requirement | Unconditional Attribute Ownership Divestiture service |
-| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.3-001 | classification-required | extracted-requirement | Negotiated divestiture |
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_3-negotiatedAttributeOwnershipDivestiture | classification-required | service-requirement | Negotiated Attribute Ownership Divestiture service |
-| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.4-001 | classification-required | extracted-requirement | Divestiture request notification |
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-FED-OWN-7_4-requestAttributeOwnershipAssumption | classification-required | service-requirement | Request Attribute Ownership Assumption service |
-| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.5-001 | classification-required | extracted-requirement | Attribute ownership acquisition |
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-FED-OWN-7_5-requestDivestitureConfirmation | classification-required | service-requirement | Request Divestiture Confirmation service |
-| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.6-001 | classification-required | extracted-requirement | Attribute ownership acquisition if available |
 | IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_6-confirmDivestiture | classification-required | service-requirement | Confirm Divestiture service |
+| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-FED-OWN-7_7-attributeOwnershipAcquisitionNotification | classification-required | service-requirement | Attribute Ownership Acquisition Notification service |
+| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_8-attributeOwnershipAcquisition | classification-required | service-requirement | Attribute Ownership Acquisition service |
+| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_9-attributeOwnershipAcquisitionIfAvailable | classification-required | service-requirement | Attribute Ownership Acquisition If Available service |
+| IEEE 1516.1-2010 (2010 edition) | 7 | AREA-1516.1-7 | not-applicable | section-area | Ownership management |
+| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-001 | not-applicable | curated-seed | Ownership Management |
+| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.1-001 | classification-required | extracted-requirement | Attribute ownership tracking |
+| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.1-002 | classification-required | extracted-requirement | Single owner per attribute |
+| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.1-003 | classification-required | extracted-requirement | Owned-attribute update restriction |
+| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.10-001 | classification-required | extracted-requirement | Cancel ownership acquisition |
+| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.11-001 | classification-required | extracted-requirement | Cancellation confirmation |
+| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.12-001 | classification-required | extracted-requirement | Attribute ownership query |
+| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.13-001 | classification-required | extracted-requirement | Owned-unowned-owner notification |
+| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.2-001 | classification-required | extracted-requirement | Unconditional divestiture |
+| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.3-001 | classification-required | extracted-requirement | Negotiated divestiture |
+| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.4-001 | classification-required | extracted-requirement | Divestiture request notification |
+| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.5-001 | classification-required | extracted-requirement | Attribute ownership acquisition |
+| IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.6-001 | classification-required | extracted-requirement | Attribute ownership acquisition if available |
 | IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.7-001 | classification-required | extracted-requirement | Acquisition success notification |
 | IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.7-002 | classification-required | extracted-requirement | Acquisition success callback non-emission when release is denied |
-| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-FED-OWN-7_7-attributeOwnershipAcquisitionNotification | classification-required | service-requirement | Attribute Ownership Acquisition Notification service |
 | IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.8-001 | classification-required | extracted-requirement | Acquisition failure notification |
-| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_8-attributeOwnershipAcquisition | classification-required | service-requirement | Attribute Ownership Acquisition service |
 | IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.9-001 | classification-required | extracted-requirement | Release in response to acquisition request |
 | IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.9-002 | classification-required | extracted-requirement | Release callback non-emission when acquisition-if-available cannot proceed |
-| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_9-attributeOwnershipAcquisitionIfAvailable | classification-required | service-requirement | Attribute Ownership Acquisition If Available service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_10-nextMessageRequest | classification-required | service-requirement | Next Message Request service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_11-nextMessageRequestAvailable | classification-required | service-requirement | Next Message Request Available service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_12-flushQueueRequest | classification-required | service-requirement | Flush Queue Request service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-FED-TM-8_13-timeAdvanceGrant | classification-required | service-requirement | Time Advance Grant service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_14-enableAsynchronousDelivery | classification-required | service-requirement | Enable Asynchronous Delivery service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_15-disableAsynchronousDelivery | classification-required | service-requirement | Disable Asynchronous Delivery service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_16-queryGALT | classification-required | service-requirement | Query GALT service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_17-queryLogicalTime | classification-required | service-requirement | Query Logical Time service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_18-queryLITS | classification-required | service-requirement | Query LITS service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_19-modifyLookahead | classification-required | service-requirement | Modify Lookahead service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_2-enableTimeRegulation | classification-required | service-requirement | Enable Time Regulation service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_20-queryLookahead | classification-required | service-requirement | Query Lookahead service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_21-retract | classification-required | service-requirement | Retract service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-FED-TM-8_22-requestRetraction | classification-required | service-requirement | Request Retraction service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_23-changeAttributeOrderType | classification-required | service-requirement | Change Attribute Order Type service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_24-changeInteractionOrderType | classification-required | service-requirement | Change Interaction Order Type service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-FED-TM-8_3-timeRegulationEnabled | classification-required | service-requirement | Time Regulation Enabled service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_4-disableTimeRegulation | classification-required | service-requirement | Disable Time Regulation service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_5-enableTimeConstrained | classification-required | service-requirement | Enable Time Constrained service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-FED-TM-8_6-timeConstrainedEnabled | classification-required | service-requirement | Time Constrained Enabled service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_7-disableTimeConstrained | classification-required | service-requirement | Disable Time Constrained service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_8-timeAdvanceRequest | classification-required | service-requirement | Time Advance Request service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_9-timeAdvanceRequestAvailable | classification-required | service-requirement | Time Advance Request Available service |
 | IEEE 1516.1-2010 (2010 edition) | 8 | AREA-1516.1-8 | not-applicable | section-area | Time management |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-001 | not-applicable | curated-seed | Time Management |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1-001 | classification-required | extracted-requirement | RTI shall represent modeled time as points on the HLA time axis |
@@ -563,102 +586,64 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1.6-001 | classification-required | extracted-requirement | RTI shall support time advance request services and grant only when delivery guarantees are satisfied |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1.7-001 | classification-required | extracted-requirement | RTI shall queue pending TSO and RO messages until eligible for delivery |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.10-001 | classification-required | extracted-requirement | RTI shall provide Next Message Request |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_10-nextMessageRequest | classification-required | service-requirement | Next Message Request service |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_11-nextMessageRequestAvailable | classification-required | service-requirement | Next Message Request Available service |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.12-001 | classification-required | extracted-requirement | RTI shall provide Flush Queue Request |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_12-flushQueueRequest | classification-required | service-requirement | Flush Queue Request service |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-FED-TM-8_13-timeAdvanceGrant | classification-required | service-requirement | Time Advance Grant service |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_14-enableAsynchronousDelivery | classification-required | service-requirement | Enable Asynchronous Delivery service |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_15-disableAsynchronousDelivery | classification-required | service-requirement | Disable Asynchronous Delivery service |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.16-001 | classification-required | extracted-requirement | Query GALT |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_16-queryGALT | classification-required | service-requirement | Query GALT service |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.17-001 | classification-required | extracted-requirement | Query Logical Time |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_17-queryLogicalTime | classification-required | service-requirement | Query Logical Time service |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.18-001 | classification-required | extracted-requirement | Query LITS |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_18-queryLITS | classification-required | service-requirement | Query LITS service |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.19-001 | classification-required | extracted-requirement | Modify Lookahead |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_19-modifyLookahead | classification-required | service-requirement | Modify Lookahead service |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.2-001 | classification-required | extracted-requirement | Enable Time Regulation |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.2-002 | classification-required | extracted-requirement | timeRegulationEnabled callback |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.2-003 | classification-required | extracted-requirement | timeRegulationEnabled non-emission on failure |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_2-enableTimeRegulation | classification-required | service-requirement | Enable Time Regulation service |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_20-queryLookahead | classification-required | service-requirement | Query Lookahead service |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.21-001 | classification-required | extracted-requirement | RTI shall provide Retract |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_21-retract | classification-required | service-requirement | Retract service |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-FED-TM-8_22-requestRetraction | classification-required | service-requirement | Request Retraction service |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_23-changeAttributeOrderType | classification-required | service-requirement | Change Attribute Order Type service |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_24-changeInteractionOrderType | classification-required | service-requirement | Change Interaction Order Type service |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-FED-TM-8_3-timeRegulationEnabled | classification-required | service-requirement | Time Regulation Enabled service |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.4-001 | classification-required | extracted-requirement | RTI shall provide Disable Time Regulation |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_4-disableTimeRegulation | classification-required | service-requirement | Disable Time Regulation service |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.5-001 | classification-required | extracted-requirement | Enable Time Constrained |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.5-002 | classification-required | extracted-requirement | timeConstrainedEnabled callback |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.5-003 | classification-required | extracted-requirement | timeConstrainedEnabled non-emission on failure |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_5-enableTimeConstrained | classification-required | service-requirement | Enable Time Constrained service |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-FED-TM-8_6-timeConstrainedEnabled | classification-required | service-requirement | Time Constrained Enabled service |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.7-001 | classification-required | extracted-requirement | RTI shall provide Disable Time Constrained |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_7-disableTimeConstrained | classification-required | service-requirement | Disable Time Constrained service |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.8-001 | classification-required | extracted-requirement | Time Advance Request |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.8-002 | classification-required | extracted-requirement | Time Advance Grant callback |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.8-003 | classification-required | extracted-requirement | Time Advance Grant non-emission before eligibility |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_8-timeAdvanceRequest | classification-required | service-requirement | Time Advance Request service |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_9-timeAdvanceRequestAvailable | classification-required | service-requirement | Time Advance Request Available service |
+| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_10-subscribeInteractionClassPassivelyWithRegions | classification-required | service-requirement | Subscribe Interaction Class With Regions service |
+| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_10-subscribeInteractionClassWithRegions | classification-required | service-requirement | Subscribe Interaction Class With Regions service |
+| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_11-unsubscribeInteractionClassWithRegions | classification-required | service-requirement | Unsubscribe Interaction Class With Regions service |
+| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_12-sendInteractionWithRegions | classification-required | service-requirement | Send Interaction With Regions service |
+| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_13-requestAttributeValueUpdateWithRegions | classification-required | service-requirement | Request Attribute Value Update With Regions service |
+| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_2-createRegion | classification-required | service-requirement | Create Region service |
+| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_3-commitRegionModifications | classification-required | service-requirement | Commit Region Modifications service |
+| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_4-deleteRegion | classification-required | service-requirement | Delete Region service |
+| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_5-registerObjectInstanceWithRegions | classification-required | service-requirement | Register Object Instance With Regions service |
+| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_6-associateRegionsForUpdates | classification-required | service-requirement | Associate Regions For Updates service |
+| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_7-unassociateRegionsForUpdates | classification-required | service-requirement | Unassociate Regions For Updates service |
+| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_8-subscribeObjectClassAttributesPassivelyWithRegions | classification-required | service-requirement | Subscribe Object Class Attributes With Regions service |
+| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_8-subscribeObjectClassAttributesWithRegions | classification-required | service-requirement | Subscribe Object Class Attributes With Regions service |
+| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_9-unsubscribeObjectClassAttributesWithRegions | classification-required | service-requirement | Unsubscribe Object Class Attributes With Regions service |
 | IEEE 1516.1-2010 (2010 edition) | 9 | AREA-1516.1-9 | not-applicable | section-area | Data distribution management |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-001 | not-applicable | curated-seed | Data Distribution Management |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-9.1-001 | classification-required | extracted-requirement | Region-based DDM |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-9.1-002 | classification-required | extracted-requirement | FOM-defined dimensions for routing |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-9.1-003 | classification-required | extracted-requirement | Relevance from subscription and update regions |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-9.10-001 | classification-required | extracted-requirement | Interaction subscription with regions |
-| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_10-subscribeInteractionClassPassivelyWithRegions | classification-required | service-requirement | Subscribe Interaction Class With Regions service |
-| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_10-subscribeInteractionClassWithRegions | classification-required | service-requirement | Subscribe Interaction Class With Regions service |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-9.11-001 | classification-required | extracted-requirement | Interaction unsubscription with regions |
-| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_11-unsubscribeInteractionClassWithRegions | classification-required | service-requirement | Unsubscribe Interaction Class With Regions service |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-9.12-001 | classification-required | extracted-requirement | Attribute update routing by overlap |
-| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_12-sendInteractionWithRegions | classification-required | service-requirement | Send Interaction With Regions service |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-9.13-001 | classification-required | extracted-requirement | Interaction routing by overlap |
-| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_13-requestAttributeValueUpdateWithRegions | classification-required | service-requirement | Request Attribute Value Update With Regions service |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-9.2-001 | classification-required | extracted-requirement | Create Region |
-| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_2-createRegion | classification-required | service-requirement | Create Region service |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-9.3-001 | classification-required | extracted-requirement | Commit Region Modifications |
-| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_3-commitRegionModifications | classification-required | service-requirement | Commit Region Modifications service |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-9.4-001 | classification-required | extracted-requirement | Delete Region |
-| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_4-deleteRegion | classification-required | service-requirement | Delete Region service |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-9.5-001 | classification-required | extracted-requirement | Object registration with regions |
-| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_5-registerObjectInstanceWithRegions | classification-required | service-requirement | Register Object Instance With Regions service |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-9.6-001 | classification-required | extracted-requirement | Associate regions for attributes |
-| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_6-associateRegionsForUpdates | classification-required | service-requirement | Associate Regions For Updates service |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-9.7-001 | classification-required | extracted-requirement | Unassociate regions for attributes |
-| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_7-unassociateRegionsForUpdates | classification-required | service-requirement | Unassociate Regions For Updates service |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-9.8-001 | classification-required | extracted-requirement | Object-class attribute subscription with regions |
-| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_8-subscribeObjectClassAttributesPassivelyWithRegions | classification-required | service-requirement | Subscribe Object Class Attributes With Regions service |
-| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_8-subscribeObjectClassAttributesWithRegions | classification-required | service-requirement | Subscribe Object Class Attributes With Regions service |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-9.9-001 | classification-required | extracted-requirement | Object-class attribute unsubscription with regions |
-| IEEE 1516.1-2010 (2010 edition) | 9 | REQ-RTI-DDM-9_9-unsubscribeObjectClassAttributesWithRegions | classification-required | service-requirement | Unsubscribe Object Class Attributes With Regions service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | AREA-1516.1-10 | not-applicable | section-area | Support services |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-001 | not-applicable | curated-seed | Support Services |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-001 | classification-required | extracted-requirement | Name-handle lookup services |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-002 | classification-required | extracted-requirement | Advisory switch services |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-003 | classification-required | extracted-requirement | Ordering transportation and dimension metadata queries |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.10-001 | classification-required | extracted-requirement | Object instance handle by name |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_10-getObjectInstanceName | classification-required | service-requirement | Get Object Instance Name service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.11-001 | classification-required | extracted-requirement | Object instance name by handle |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_11-getAttributeHandle | classification-required | service-requirement | Get Attribute Handle service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.12-001 | classification-required | extracted-requirement | Dimension handle by name |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_12-getAttributeName | classification-required | service-requirement | Get Attribute Name service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.13-001 | classification-required | extracted-requirement | Dimension name by handle |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_13-getUpdateRateValue | classification-required | service-requirement | Get Update Rate Value service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.14-001 | classification-required | extracted-requirement | Available dimensions query |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_14-getUpdateRateValueForAttribute | classification-required | service-requirement | Get Update Rate Value For Attribute service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.15-001 | classification-required | extracted-requirement | Transportation type handles and names |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_15-getInteractionClassHandle | classification-required | service-requirement | Get Interaction Class Handle service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.16-001 | classification-required | extracted-requirement | Order type handles and names |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_16-getInteractionClassName | classification-required | service-requirement | Get Interaction Class Name service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.17-001 | classification-required | extracted-requirement | Enable-disable advisory switches |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_17-getParameterHandle | classification-required | service-requirement | Get Parameter Handle service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.18-001 | classification-required | extracted-requirement | Callbacks for advisory switch changes |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_18-getParameterName | classification-required | service-requirement | Get Parameter Name service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_19-getOrderType | classification-required | service-requirement | Get Order Type service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.2-001 | classification-required | extracted-requirement | Object class handle by name |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_2-getAutomaticResignDirective | classification-required | service-requirement | Get Automatic Resign Directive service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_20-getOrderName | classification-required | service-requirement | Get Order Name service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_21-getTransportationType | classification-required | service-requirement | Get Transportation Type Handle service |
@@ -672,7 +657,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_27-getDimensionUpperBound | classification-required | service-requirement | Get Dimension Upper Bound service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_28-getDimensionHandleSet | classification-required | service-requirement | Get Dimension Handle Set service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_29-getRangeBounds | classification-required | service-requirement | Get Range Bounds service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.3-001 | classification-required | extracted-requirement | Object class name by handle |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_3-setAutomaticResignDirective | classification-required | service-requirement | Set Automatic Resign Directive service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_30-setRangeBounds | classification-required | service-requirement | Set Range Bounds service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_31-normalizeFederateHandle | classification-required | service-requirement | Normalize Federate Handle service |
@@ -684,7 +668,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_37-enableAttributeScopeAdvisorySwitch | classification-required | service-requirement | Enable Attribute Scope Advisory Switch service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_38-disableAttributeScopeAdvisorySwitch | classification-required | service-requirement | Disable Attribute Scope Advisory Switch service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_39-enableInteractionRelevanceAdvisorySwitch | classification-required | service-requirement | Enable Interaction Relevance Advisory Switch service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.4-001 | classification-required | extracted-requirement | Attribute handle by name and class |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_4-getFederateHandle | classification-required | service-requirement | Get Federate Handle service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_40-disableInteractionRelevanceAdvisorySwitch | classification-required | service-requirement | Disable Interaction Relevance Advisory Switch service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_41-evokeCallback | classification-required | service-requirement | Evoke Callback service |
@@ -708,16 +691,33 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getRegionHandleSetFactory | classification-required | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getTimeFactory | classification-required | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getTransportationTypeHandleFactory | classification-required | service-requirement | Disable Callbacks service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.5-001 | classification-required | extracted-requirement | Attribute name by handle and class |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_5-getFederateName | classification-required | service-requirement | Get Federate Name service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.6-001 | classification-required | extracted-requirement | Interaction class handle by name |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_6-getObjectClassHandle | classification-required | service-requirement | Get Object Class Handle service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.7-001 | classification-required | extracted-requirement | Interaction class name by handle |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_7-getObjectClassName | classification-required | service-requirement | Get Object Class Name service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.8-001 | classification-required | extracted-requirement | Parameter handle by name and interaction |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_8-getKnownObjectClassHandle | classification-required | service-requirement | Get Known Object Class Handle service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.9-001 | classification-required | extracted-requirement | Parameter name by handle and interaction |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_9-getObjectInstanceHandle | classification-required | service-requirement | Get Object Instance Handle service |
+| IEEE 1516.1-2010 (2010 edition) | 10 | AREA-1516.1-10 | not-applicable | section-area | Support services |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-001 | not-applicable | curated-seed | Support Services |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-001 | classification-required | extracted-requirement | Name-handle lookup services |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-002 | classification-required | extracted-requirement | Advisory switch services |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-003 | classification-required | extracted-requirement | Ordering transportation and dimension metadata queries |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.10-001 | classification-required | extracted-requirement | Object instance handle by name |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.11-001 | classification-required | extracted-requirement | Object instance name by handle |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.12-001 | classification-required | extracted-requirement | Dimension handle by name |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.13-001 | classification-required | extracted-requirement | Dimension name by handle |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.14-001 | classification-required | extracted-requirement | Available dimensions query |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.15-001 | classification-required | extracted-requirement | Transportation type handles and names |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.16-001 | classification-required | extracted-requirement | Order type handles and names |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.17-001 | classification-required | extracted-requirement | Enable-disable advisory switches |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.18-001 | classification-required | extracted-requirement | Callbacks for advisory switch changes |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.2-001 | classification-required | extracted-requirement | Object class handle by name |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.3-001 | classification-required | extracted-requirement | Object class name by handle |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.4-001 | classification-required | extracted-requirement | Attribute handle by name and class |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.5-001 | classification-required | extracted-requirement | Attribute name by handle and class |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.6-001 | classification-required | extracted-requirement | Interaction class handle by name |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.7-001 | classification-required | extracted-requirement | Interaction class name by handle |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.8-001 | classification-required | extracted-requirement | Parameter handle by name and interaction |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.9-001 | classification-required | extracted-requirement | Parameter name by handle and interaction |
 | IEEE 1516.1-2010 (2010 edition) | 11 | AREA-1516.1-11 | not-applicable | section-area | Management object model |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-001 | not-applicable | curated-seed | Management Object Model behavior |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.1-001 | classification-required | extracted-requirement | RTI shall expose management information through standard MOM objects and interactions |
@@ -755,7 +755,6 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.5-003 | classification-required | extracted-requirement | Rejected MOM adjustments do not emit HLAreportServiceInvocation |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.5-004 | classification-required | extracted-requirement | RTI shall report standard MOM exception information when exception reporting is enabled |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.6-001 | classification-required | extracted-requirement | MOM table information appears in compliant FOMs without alteration |
-| IEEE 1516.1-2010 (2010 edition) | 12 | AREA-1516.1-12 | not-applicable | section-area | Programming language mappings |
 | IEEE 1516.1-2010 (2010 edition) | 12 | REQ-RTI-PLM-12_2-decodeAttributeHandle | classification-required | service-requirement | Designators |
 | IEEE 1516.1-2010 (2010 edition) | 12 | REQ-RTI-PLM-12_2-decodeDimensionHandle | classification-required | service-requirement | Designators |
 | IEEE 1516.1-2010 (2010 edition) | 12 | REQ-RTI-PLM-12_2-decodeFederateHandle | classification-required | service-requirement | Designators |
@@ -765,6 +764,7 @@ Portico currently has no promoted package-owned real-runtime requirement evidenc
 | IEEE 1516.1-2010 (2010 edition) | 12 | REQ-RTI-PLM-12_2-decodeObjectInstanceHandle | classification-required | service-requirement | Designators |
 | IEEE 1516.1-2010 (2010 edition) | 12 | REQ-RTI-PLM-12_2-decodeParameterHandle | classification-required | service-requirement | Designators |
 | IEEE 1516.1-2010 (2010 edition) | 12 | REQ-RTI-PLM-12_2-decodeRegionHandle | classification-required | service-requirement | Designators |
+| IEEE 1516.1-2010 (2010 edition) | 12 | AREA-1516.1-12 | not-applicable | section-area | Programming language mappings |
 | IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-ID-4-001 | classification-required | extracted-requirement | Object model modules shall contain identification information sufficient to distinguish the module and its provenance |
 | IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-OMT-4.0-001 | classification-required | extracted-requirement | HLA object models shall be represented using the OMT components defined by the standard |
 | IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-OMT-4.0-002 | classification-required | extracted-requirement | FOM SOM and MIM parsers shall recognize all standard OMT component tables |

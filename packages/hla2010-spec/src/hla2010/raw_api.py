@@ -1,6 +1,6 @@
 # Generated from specs/hla2010_api.json.
 # Do not edit by hand. Run ./tools/spec-api generate.
-"""Source-derived metadata surface for HLA IEEE 1516.1-2010.
+"""Source-derived metadata surface for HLA IEEE 1516.1-2010 (2010 edition).
 
 This module intentionally exposes only the generated overload/source metadata.
 Contributor-facing interface reading should start with ``hla2010.spec`` and

@@ -18,6 +18,7 @@ If you only need the supported import ladder, use:
 ## Package Reality
 
 - installable root: `hla2010-spec`
+- spec source root: `packages/hla2010-spec/src/hla2010/`
 - neutral source root: `packages/hla2010-spec/src/hla/`
 - 2010 compatibility source root: `packages/hla2010-spec/src/hla2010/`
 - package-owned implementations: `packages/*/src/...`

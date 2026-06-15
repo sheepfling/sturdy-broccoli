@@ -199,6 +199,9 @@ def test_pitch_port_resolver_selects_fallback_ports_when_preferred_pair_is_busy(
         preferred_ports.append(int(sock.getsockname()[1]))
         listeners.append(sock)
     try:
+        env = os.environ.copy()
+        env.pop("HLA2010_PITCH_CRC_PORT", None)
+        env.pop("HLA2010_PITCH_FEDPRO_PORT", None)
         result = subprocess.run(
             [
                 sys.executable,
@@ -210,7 +213,7 @@ def test_pitch_port_resolver_selects_fallback_ports_when_preferred_pair_is_busy(
                 str(preferred_ports[1]),
             ],
             cwd=ROOT,
-            env=os.environ.copy(),
+            env=env,
             capture_output=True,
             text=True,
             check=False,

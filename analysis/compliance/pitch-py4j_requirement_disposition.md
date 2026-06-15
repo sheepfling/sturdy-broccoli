@@ -60,12 +60,12 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516-2010 (2010 edition) | 12 | HLA1516-RULE-12.3-001 | classification-required | extracted-requirement | Unknown restore label failure |
 | IEEE 1516-2010 (2010 edition) | unknown | HLA1516-RULE-001 | classification-required | extracted-requirement | Federation rules |
 | IEEE 1516-2010 (2010 edition) | unknown | HLA1516-FW-001 | classification-required | extracted-requirement | Framework concepts |
+| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_5-createFederationExecutionWithMIM | vendor-divergent | service-requirement | Create Federation Execution service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | AREA-1516.1-4 | not-applicable | section-area | Federation management |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-001 | not-applicable | curated-seed | Federation Management |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.5-001 | blocked | extracted-requirement | RTI shall detect lost federates and report them through MOM |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.1.5-002 | blocked | extracted-requirement | RTI shall resign lost federates using the current automatic resign directive |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-EXC-001 | vendor-divergent | extracted-requirement | Create Federation Execution shall distinguish duplicate-name, FOM-open, FOM-read, MIM-open, MIM-read, invalid-time-factory, inconsistent-FOM, and invalid-standard-MIM-designator failures. |
-| IEEE 1516.1-2010 (2010 edition) | 4 | REQ-RTI-FM-4_5-createFederationExecutionWithMIM | vendor-divergent | service-requirement | Create Federation Execution service |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-EXC-001 | vendor-divergent | extracted-requirement | Join Federation Execution shall distinguish not-connected, missing-federation, duplicate-federate-name, already-joined, save-in-progress, restore-in-progress, FOM-open, FOM-read, invalid-time-factory, and inconsistent-FOM failures. |
 | IEEE 1516.1-2010 (2010 edition) | 5 | AREA-1516.1-5 | not-applicable | section-area | Declaration management |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-001 | not-applicable | extracted-requirement | The RTI shall implement declaration-management services for publication |
@@ -85,18 +85,22 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.28-001 | vendor-divergent | extracted-requirement | RTI shall invoke Confirm Interaction Transportation Type Change across the full transportation semantic space. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.29-001 | vendor-divergent | extracted-requirement | RTI shall provide Query Interaction Transportation Type across the full transportation semantic space defined by the standard. |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.30-001 | vendor-divergent | extracted-requirement | RTI shall invoke Report Interaction Transportation Type across the full transportation semantic space. |
+| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_14-cancelNegotiatedAttributeOwnershipDivestiture | vendor-divergent | service-requirement | Cancel Negotiated Attribute Ownership Divestiture service |
+| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_15-cancelAttributeOwnershipAcquisition | vendor-divergent | service-requirement | Cancel Attribute Ownership Acquisition service |
+| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-FED-OWN-7_16-confirmAttributeOwnershipAcquisitionCancellation | vendor-divergent | service-requirement | Confirm Attribute Ownership Acquisition Cancellation service |
+| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_3-negotiatedAttributeOwnershipDivestiture | vendor-divergent | service-requirement | Negotiated Attribute Ownership Divestiture service |
+| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-FED-OWN-7_5-requestDivestitureConfirmation | vendor-divergent | service-requirement | Request Divestiture Confirmation service |
+| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_6-confirmDivestiture | vendor-divergent | service-requirement | Confirm Divestiture service |
 | IEEE 1516.1-2010 (2010 edition) | 7 | AREA-1516.1-7 | not-applicable | section-area | Ownership management |
 | IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-001 | not-applicable | curated-seed | Ownership Management |
 | IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.10-001 | vendor-divergent | extracted-requirement | Cancel ownership acquisition |
 | IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.11-001 | vendor-divergent | extracted-requirement | Cancellation confirmation |
-| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_14-cancelNegotiatedAttributeOwnershipDivestiture | vendor-divergent | service-requirement | Cancel Negotiated Attribute Ownership Divestiture service |
-| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_15-cancelAttributeOwnershipAcquisition | vendor-divergent | service-requirement | Cancel Attribute Ownership Acquisition service |
-| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-FED-OWN-7_16-confirmAttributeOwnershipAcquisitionCancellation | vendor-divergent | service-requirement | Confirm Attribute Ownership Acquisition Cancellation service |
 | IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.3-001 | vendor-divergent | extracted-requirement | Negotiated divestiture |
-| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_3-negotiatedAttributeOwnershipDivestiture | vendor-divergent | service-requirement | Negotiated Attribute Ownership Divestiture service |
 | IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-7.4-001 | vendor-divergent | extracted-requirement | Divestiture request notification |
-| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-FED-OWN-7_5-requestDivestitureConfirmation | vendor-divergent | service-requirement | Request Divestiture Confirmation service |
-| IEEE 1516.1-2010 (2010 edition) | 7 | REQ-RTI-OWN-7_6-confirmDivestiture | vendor-divergent | service-requirement | Confirm Divestiture service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_10-nextMessageRequest | vendor-divergent | service-requirement | Next Message Request service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_11-nextMessageRequestAvailable | vendor-divergent | service-requirement | Next Message Request Available service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_21-retract | vendor-divergent | service-requirement | Retract service |
+| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-FED-TM-8_22-requestRetraction | vendor-divergent | service-requirement | Request Retraction service |
 | IEEE 1516.1-2010 (2010 edition) | 8 | AREA-1516.1-8 | not-applicable | section-area | Time management |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-001 | not-applicable | curated-seed | Time Management |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1-001 | vendor-divergent | extracted-requirement | RTI shall represent modeled time as points on the HLA time axis |
@@ -112,38 +116,19 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1.6-001 | vendor-divergent | extracted-requirement | RTI shall support time advance request services and grant only when delivery guarantees are satisfied |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.1.7-001 | vendor-divergent | extracted-requirement | RTI shall queue pending TSO and RO messages until eligible for delivery |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.10-001 | vendor-divergent | extracted-requirement | RTI shall provide Next Message Request |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_10-nextMessageRequest | vendor-divergent | service-requirement | Next Message Request service |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_11-nextMessageRequestAvailable | vendor-divergent | service-requirement | Next Message Request Available service |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-8.21-001 | vendor-divergent | extracted-requirement | RTI shall provide Retract |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-RTI-TM-8_21-retract | vendor-divergent | service-requirement | Retract service |
-| IEEE 1516.1-2010 (2010 edition) | 8 | REQ-FED-TM-8_22-requestRetraction | vendor-divergent | service-requirement | Request Retraction service |
 | IEEE 1516.1-2010 (2010 edition) | 9 | AREA-1516.1-9 | not-applicable | section-area | Data distribution management |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-001 | not-applicable | curated-seed | Data Distribution Management |
-| IEEE 1516.1-2010 (2010 edition) | 10 | AREA-1516.1-10 | not-applicable | section-area | Support services |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-001 | not-applicable | curated-seed | Support Services |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-001 | not-yet-tested | extracted-requirement | Name-handle lookup services |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-002 | not-yet-tested | extracted-requirement | Advisory switch services |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-003 | not-yet-tested | extracted-requirement | Ordering transportation and dimension metadata queries |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.10-001 | not-yet-tested | extracted-requirement | Object instance handle by name |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_10-getObjectInstanceName | not-yet-tested | service-requirement | Get Object Instance Name service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.11-001 | not-yet-tested | extracted-requirement | Object instance name by handle |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_11-getAttributeHandle | not-yet-tested | service-requirement | Get Attribute Handle service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.12-001 | not-yet-tested | extracted-requirement | Dimension handle by name |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_12-getAttributeName | not-yet-tested | service-requirement | Get Attribute Name service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.13-001 | not-yet-tested | extracted-requirement | Dimension name by handle |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_13-getUpdateRateValue | not-yet-tested | service-requirement | Get Update Rate Value service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.14-001 | not-yet-tested | extracted-requirement | Available dimensions query |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_14-getUpdateRateValueForAttribute | not-yet-tested | service-requirement | Get Update Rate Value For Attribute service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.15-001 | not-yet-tested | extracted-requirement | Transportation type handles and names |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_15-getInteractionClassHandle | not-yet-tested | service-requirement | Get Interaction Class Handle service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.16-001 | not-yet-tested | extracted-requirement | Order type handles and names |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_16-getInteractionClassName | not-yet-tested | service-requirement | Get Interaction Class Name service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.17-001 | not-yet-tested | extracted-requirement | Enable-disable advisory switches |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_17-getParameterHandle | not-yet-tested | service-requirement | Get Parameter Handle service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.18-001 | not-yet-tested | extracted-requirement | Callbacks for advisory switch changes |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_18-getParameterName | not-yet-tested | service-requirement | Get Parameter Name service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_19-getOrderType | not-yet-tested | service-requirement | Get Order Type service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.2-001 | not-yet-tested | extracted-requirement | Object class handle by name |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_2-getAutomaticResignDirective | not-yet-tested | service-requirement | Get Automatic Resign Directive service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_20-getOrderName | not-yet-tested | service-requirement | Get Order Name service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_21-getTransportationType | not-yet-tested | service-requirement | Get Transportation Type Handle service |
@@ -157,7 +142,6 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_27-getDimensionUpperBound | not-yet-tested | service-requirement | Get Dimension Upper Bound service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_28-getDimensionHandleSet | not-yet-tested | service-requirement | Get Dimension Handle Set service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_29-getRangeBounds | not-yet-tested | service-requirement | Get Range Bounds service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.3-001 | not-yet-tested | extracted-requirement | Object class name by handle |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_3-setAutomaticResignDirective | not-yet-tested | service-requirement | Set Automatic Resign Directive service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_30-setRangeBounds | not-yet-tested | service-requirement | Set Range Bounds service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_31-normalizeFederateHandle | not-yet-tested | service-requirement | Normalize Federate Handle service |
@@ -169,7 +153,6 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_37-enableAttributeScopeAdvisorySwitch | not-yet-tested | service-requirement | Enable Attribute Scope Advisory Switch service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_38-disableAttributeScopeAdvisorySwitch | not-yet-tested | service-requirement | Disable Attribute Scope Advisory Switch service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_39-enableInteractionRelevanceAdvisorySwitch | not-yet-tested | service-requirement | Enable Interaction Relevance Advisory Switch service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.4-001 | not-yet-tested | extracted-requirement | Attribute handle by name and class |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_4-getFederateHandle | not-yet-tested | service-requirement | Get Federate Handle service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_40-disableInteractionRelevanceAdvisorySwitch | not-yet-tested | service-requirement | Disable Interaction Relevance Advisory Switch service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_41-evokeCallback | not-yet-tested | service-requirement | Evoke Callback service |
@@ -193,16 +176,33 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getRegionHandleSetFactory | not-yet-tested | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getTimeFactory | not-yet-tested | service-requirement | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getTransportationTypeHandleFactory | not-yet-tested | service-requirement | Disable Callbacks service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.5-001 | not-yet-tested | extracted-requirement | Attribute name by handle and class |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_5-getFederateName | not-yet-tested | service-requirement | Get Federate Name service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.6-001 | not-yet-tested | extracted-requirement | Interaction class handle by name |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_6-getObjectClassHandle | not-yet-tested | service-requirement | Get Object Class Handle service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.7-001 | not-yet-tested | extracted-requirement | Interaction class name by handle |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_7-getObjectClassName | not-yet-tested | service-requirement | Get Object Class Name service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.8-001 | not-yet-tested | extracted-requirement | Parameter handle by name and interaction |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_8-getKnownObjectClassHandle | not-yet-tested | service-requirement | Get Known Object Class Handle service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.9-001 | not-yet-tested | extracted-requirement | Parameter name by handle and interaction |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_9-getObjectInstanceHandle | not-yet-tested | service-requirement | Get Object Instance Handle service |
+| IEEE 1516.1-2010 (2010 edition) | 10 | AREA-1516.1-10 | not-applicable | section-area | Support services |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-001 | not-applicable | curated-seed | Support Services |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-001 | not-yet-tested | extracted-requirement | Name-handle lookup services |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-002 | not-yet-tested | extracted-requirement | Advisory switch services |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-003 | not-yet-tested | extracted-requirement | Ordering transportation and dimension metadata queries |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.10-001 | not-yet-tested | extracted-requirement | Object instance handle by name |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.11-001 | not-yet-tested | extracted-requirement | Object instance name by handle |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.12-001 | not-yet-tested | extracted-requirement | Dimension handle by name |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.13-001 | not-yet-tested | extracted-requirement | Dimension name by handle |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.14-001 | not-yet-tested | extracted-requirement | Available dimensions query |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.15-001 | not-yet-tested | extracted-requirement | Transportation type handles and names |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.16-001 | not-yet-tested | extracted-requirement | Order type handles and names |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.17-001 | not-yet-tested | extracted-requirement | Enable-disable advisory switches |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.18-001 | not-yet-tested | extracted-requirement | Callbacks for advisory switch changes |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.2-001 | not-yet-tested | extracted-requirement | Object class handle by name |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.3-001 | not-yet-tested | extracted-requirement | Object class name by handle |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.4-001 | not-yet-tested | extracted-requirement | Attribute handle by name and class |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.5-001 | not-yet-tested | extracted-requirement | Attribute name by handle and class |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.6-001 | not-yet-tested | extracted-requirement | Interaction class handle by name |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.7-001 | not-yet-tested | extracted-requirement | Interaction class name by handle |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.8-001 | not-yet-tested | extracted-requirement | Parameter handle by name and interaction |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.9-001 | not-yet-tested | extracted-requirement | Parameter name by handle and interaction |
 | IEEE 1516.1-2010 (2010 edition) | 11 | AREA-1516.1-11 | not-applicable | section-area | Management object model |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-001 | not-applicable | curated-seed | Management Object Model behavior |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.1-001 | classification-required | extracted-requirement | RTI shall expose management information through standard MOM objects and interactions |
@@ -240,7 +240,6 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.5-003 | classification-required | extracted-requirement | Rejected MOM adjustments do not emit HLAreportServiceInvocation |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.5-004 | classification-required | extracted-requirement | RTI shall report standard MOM exception information when exception reporting is enabled |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-11.6-001 | classification-required | extracted-requirement | MOM table information appears in compliant FOMs without alteration |
-| IEEE 1516.1-2010 (2010 edition) | 12 | AREA-1516.1-12 | not-applicable | section-area | Programming language mappings |
 | IEEE 1516.1-2010 (2010 edition) | 12 | REQ-RTI-PLM-12_2-decodeAttributeHandle | not-yet-tested | service-requirement | Designators |
 | IEEE 1516.1-2010 (2010 edition) | 12 | REQ-RTI-PLM-12_2-decodeDimensionHandle | not-yet-tested | service-requirement | Designators |
 | IEEE 1516.1-2010 (2010 edition) | 12 | REQ-RTI-PLM-12_2-decodeFederateHandle | not-yet-tested | service-requirement | Designators |
@@ -250,6 +249,7 @@ This profile currently inherits the Pitch family-level requirement disposition b
 | IEEE 1516.1-2010 (2010 edition) | 12 | REQ-RTI-PLM-12_2-decodeObjectInstanceHandle | not-yet-tested | service-requirement | Designators |
 | IEEE 1516.1-2010 (2010 edition) | 12 | REQ-RTI-PLM-12_2-decodeParameterHandle | not-yet-tested | service-requirement | Designators |
 | IEEE 1516.1-2010 (2010 edition) | 12 | REQ-RTI-PLM-12_2-decodeRegionHandle | not-yet-tested | service-requirement | Designators |
+| IEEE 1516.1-2010 (2010 edition) | 12 | AREA-1516.1-12 | not-applicable | section-area | Programming language mappings |
 | IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-ID-4-001 | classification-required | extracted-requirement | Object model modules shall contain identification information sufficient to distinguish the module and its provenance |
 | IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-OMT-4.0-001 | classification-required | extracted-requirement | HLA object models shall be represented using the OMT components defined by the standard |
 | IEEE 1516.2-2010 (2010 edition) | 4 | HLA1516.2-OMT-4.0-002 | classification-required | extracted-requirement | FOM SOM and MIM parsers shall recognize all standard OMT component tables |

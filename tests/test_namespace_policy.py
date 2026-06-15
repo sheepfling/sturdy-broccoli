@@ -134,6 +134,7 @@ ALLOWLISTED_SELF_LOCATING_SCRIPTS = {
     "scripts/generate_runtime_method_index.py",
     "scripts/human_editability.py",
     "scripts/new_fom_package.py",
+    "scripts/probe_pitch_native_local.py",
     "scripts/repro_pitch_crc_docker.py",
     "scripts/repro_pitch_crc_macos.py",
     "scripts/run_python_route_parity_matrix.py",

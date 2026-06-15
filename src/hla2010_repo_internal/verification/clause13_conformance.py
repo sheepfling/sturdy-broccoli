@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-import ast
 import csv
+import importlib.util
+import inspect
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -63,38 +65,39 @@ def _load_master_index_capability_counts(repo_root: Path) -> dict[str, dict[str,
     return counts
 
 
-def _requirement_ids_from_decorator(decorator: ast.expr) -> list[str]:
-    if not isinstance(decorator, ast.Call):
-        return []
-    func = decorator.func
-    if not isinstance(func, ast.Attribute) or func.attr != "requirements":
-        return []
-    requirement_ids: list[str] = []
-    for arg in decorator.args:
-        if isinstance(arg, ast.Constant) and isinstance(arg.value, str):
-            requirement_id = arg.value.strip()
-            if requirement_id:
-                requirement_ids.append(requirement_id)
-    return requirement_ids
+def _load_test_module(path: Path) -> Any:
+    spec = importlib.util.spec_from_file_location(path.stem, path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Unable to load test module from {path}")
+    module = importlib.util.module_from_spec(spec)
+    repo_root = str(path.parents[2])
+    if repo_root not in sys.path:
+        sys.path.insert(0, repo_root)
+    spec.loader.exec_module(module)
+    return module
 
 
 def _load_requirement_markers(repo_root: Path) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
     for relative_path in DEFAULT_MARKER_PATHS:
         path = repo_root / relative_path
-        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
-        for node in tree.body:
-            if not isinstance(node, ast.FunctionDef) or not node.name.startswith("test_"):
+        module = _load_test_module(path)
+        for name, func in inspect.getmembers(module, inspect.isfunction):
+            if not name.startswith("test_"):
                 continue
-            for decorator in node.decorator_list:
-                for requirement_id in _requirement_ids_from_decorator(decorator):
-                    rows.append(
-                        {
-                            "test_path": relative_path,
-                            "test_name": node.name,
-                            "requirement_id": requirement_id,
-                        }
-                    )
+            requirement_ids: list[str] = []
+            for mark in getattr(func, "pytestmark", []):
+                if getattr(mark, "name", "") != "requirements":
+                    continue
+                requirement_ids.extend(str(arg).strip() for arg in mark.args if str(arg).strip())
+            for requirement_id in requirement_ids:
+                rows.append(
+                    {
+                        "test_path": relative_path,
+                        "test_name": name,
+                        "requirement_id": requirement_id,
+                    }
+                )
     return rows
 
 

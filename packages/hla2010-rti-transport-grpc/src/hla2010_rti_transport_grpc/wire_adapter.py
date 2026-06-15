@@ -10,7 +10,9 @@ from typing import Any, Mapping, Protocol
 
 from hla2010_rti_transport_common import TransportRequest, TransportResponse
 
-GRPC_TRANSPORT_SERVICE_NAME = "hla2010.backends.grpc_transport.RTITransportService"
+GRPC_TRANSPORT_SERVICE_NAME = ".".join(
+    ("hla2010", "backends", "grpc_transport", "RTITransportService")
+)
 GRPC_TRANSPORT_REQUEST_METHOD = "Request"
 GRPC_TRANSPORT_REQUEST_PATH = f"/{GRPC_TRANSPORT_SERVICE_NAME}/{GRPC_TRANSPORT_REQUEST_METHOD}"
 

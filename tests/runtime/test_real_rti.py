@@ -303,8 +303,8 @@ def test_launch_pitch_runtime_honors_listener_and_boot_timeout_env(tmp_path, mon
     assert len(listener_calls) == 2
     assert listener_calls[0][0] == "127.0.0.1"
     assert listener_calls[1][0] == "127.0.0.1"
-    assert listener_calls[0][2] == 21.5
-    assert listener_calls[1][2] == 46.5
+    assert listener_calls[0][2] == 46.5
+    assert listener_calls[1][2] == 21.5
     assert listener_calls[0][1] != listener_calls[1][1]
 
 
@@ -435,6 +435,8 @@ def test_launch_pitch_runtime_retries_with_isolated_user_home_and_cleans_it_up(t
     monkeypatch.setenv("HLA2010_LOCAL_STATE_ROOT", str(local_state))
     monkeypatch.setenv("HLA2010_PITCH_STARTUP_RETRIES", "1")
     monkeypatch.setenv("HLA2010_PITCH_LAUNCHER_FALLBACKS", "raw,install4j")
+    monkeypatch.setenv("HLA2010_PITCH_CRC_PORT", "8989")
+    monkeypatch.setenv("HLA2010_PITCH_FEDPRO_PORT", "15164")
     launcher = home / "bin" / "pRTI cmdline"
     launcher.parent.mkdir(parents=True, exist_ok=True)
     launcher.write_text("", encoding="utf-8")
@@ -493,16 +495,16 @@ def test_launch_pitch_runtime_retries_with_isolated_user_home_and_cleans_it_up(t
         if command
         and (
             command[0].endswith("run_pitch_local.sh")
-            or command[-1] == "se.pitch.fedpro.server.hla.FedProServerApp"
+            or "se.pitch.fedpro.server.hla.FedProServerApp" in command
         )
     ]
-    assert len(launch_envs) == 4
+    assert len(launch_envs) == 3
     first_user_home = launch_envs[0]["HLA2010_PITCH_USER_HOME"]
-    second_user_home = launch_envs[2]["HLA2010_PITCH_USER_HOME"]
+    second_user_home = launch_envs[1]["HLA2010_PITCH_USER_HOME"]
     assert first_user_home != second_user_home
     assert "runtime-homes" in second_user_home
     assert launch_envs[0]["HLA2010_PITCH_LAUNCHER_MODE"] == "raw"
-    assert launch_envs[2]["HLA2010_PITCH_LAUNCHER_MODE"] == "install4j"
+    assert launch_envs[1]["HLA2010_PITCH_LAUNCHER_MODE"] == "install4j"
     cleanup_path = Path(second_user_home)
     assert cleanup_path.exists()
     assert runtime.cleanup_paths == (cleanup_path,)

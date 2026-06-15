@@ -23,10 +23,14 @@ from hla2010_rti_backend_common.time_management import (
 from tests.requirement_marker_groups import (
     TM_ADVANCE_AND_GRANT_REQUIREMENTS,
     TM_FLUSH_QUEUE_REQUIREMENTS,
+    TM_MODIFY_LOOKAHEAD_REQUIREMENTS,
     TM_NEXT_MESSAGE_REQUIREMENTS,
+    TM_NEXT_MESSAGE_REQUEST_ONLY_REQUIREMENTS,
+    TM_NEXT_MESSAGE_AND_FLUSH_QUEUE_REQUIREMENTS,
     TM_QUERY_GALT_AND_LITS_REQUIREMENTS,
     TM_QUERY_GALT_REQUIREMENTS,
     TM_QUERY_LITS_REQUIREMENTS,
+    TM_STRICT_AND_INCLUSIVE_TIME_ADVANCE_REQUEST_REQUIREMENTS,
     TM_TIME_ADVANCE_REQUEST_REQUIREMENTS,
     TM_TSO_QUEUE_REQUIREMENTS,
     TM_VALID_TSO_LOWER_BOUND_REQUIREMENTS,
@@ -357,10 +361,7 @@ def test_next_message_request_strictly_rejects_equal_galt_while_available_reques
     assert [msg.sequence for msg in inclusive.deliverable_messages] == [1]
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-TM-8.8-TIMEADVANCEREQUEST-TEST-001",
-    "HLA1516.1-TM-8.10-NEXTMESSAGEREQUEST-TEST-001",
-)
+@pytest.mark.requirements(*TM_TIME_ADVANCE_REQUEST_REQUIREMENTS, *TM_NEXT_MESSAGE_REQUEST_ONLY_REQUIREMENTS)
 def test_zero_lookahead_keeps_the_bound_at_the_current_or_pending_time_and_strict_modes_reject_equal_galt():
     sender = _regulating_federate(current_time=4, lookahead=0)
     target = _target_federate(time_constrained_enabled=True)
@@ -404,7 +405,7 @@ def test_zero_lookahead_keeps_the_bound_at_the_current_or_pending_time_and_stric
     assert available_nmr.grant_time == HLAinteger64Time(4)
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.19-MODIFYLOOKAHEAD-TEST-001")
+@pytest.mark.requirements(*TM_MODIFY_LOOKAHEAD_REQUIREMENTS)
 def test_zero_lookahead_pending_time_advance_shifts_the_lower_bound_to_the_pending_request_time():
     fed = DummyFederate(
         current_time=HLAinteger64Time(4),
@@ -416,7 +417,7 @@ def test_zero_lookahead_pending_time_advance_shifts_the_lower_bound_to_the_pendi
     assert valid_tso_lower_bound(fed) == HLAinteger64Time(4)
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.19-MODIFYLOOKAHEAD-TEST-001")
+@pytest.mark.requirements(*TM_MODIFY_LOOKAHEAD_REQUIREMENTS)
 def test_valid_tso_lower_bound_uses_pending_advance_base_for_lookahead():
     fed = DummyFederate(
         current_time=HLAinteger64Time(4),
@@ -557,10 +558,7 @@ def test_compute_grant_decision_accepts_python_and_hla_service_mode_names(mode, 
     assert [msg.sequence for msg in decision.deliverable_messages] == expected_sequences
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-TM-8.8-TIMEADVANCEREQUEST-TEST-001",
-    "HLA1516.1-TM-8.9-TIMEADVANCEREQUESTAVAILABLE-TEST-001",
-)
+@pytest.mark.requirements(*TM_STRICT_AND_INCLUSIVE_TIME_ADVANCE_REQUEST_REQUIREMENTS)
 def test_compute_grant_decision_distinguishes_strict_and_inclusive_time_advance_requests():
     left = _regulating_federate(current_time=4, lookahead=1)
     target = _target_federate(time_constrained_enabled=True)
@@ -584,10 +582,7 @@ def test_compute_grant_decision_distinguishes_strict_and_inclusive_time_advance_
     assert inclusive.optimistic_time == HLAinteger64Time(5)
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-TM-8.10-NEXTMESSAGEREQUEST-TEST-001",
-    "HLA1516.1-TM-8.11-NEXTMESSAGEREQUESTAVAILABLE-TEST-001",
-)
+@pytest.mark.requirements(*TM_NEXT_MESSAGE_REQUIREMENTS)
 def test_next_message_requests_deliver_equal_earliest_timestamp_group_only():
     sender = _regulating_federate(current_time=9, lookahead=2)
     target = _target_federate(time_constrained_enabled=True)
@@ -621,10 +616,7 @@ def test_next_message_requests_deliver_equal_earliest_timestamp_group_only():
     assert [msg.sequence for msg in available.deliverable_messages] == [1, 2]
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-TM-8.8-TIMEADVANCEREQUEST-TEST-001",
-    "HLA1516.1-TM-8.9-TIMEADVANCEREQUESTAVAILABLE-TEST-001",
-)
+@pytest.mark.requirements(*TM_STRICT_AND_INCLUSIVE_TIME_ADVANCE_REQUEST_REQUIREMENTS)
 def test_time_advance_requests_deliver_all_messages_through_requested_time_when_galt_allows():
     sender = _regulating_federate(current_time=12, lookahead=2)
     target = _target_federate(time_constrained_enabled=True)
@@ -726,11 +718,7 @@ def test_flush_queue_request_delivers_messages_at_inclusive_galt_boundary():
     assert [msg.sequence for msg in decision.deliverable_messages] == [1]
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-TM-8.10-NEXTMESSAGEREQUEST-TEST-001",
-    "HLA1516.1-TM-8.11-NEXTMESSAGEREQUESTAVAILABLE-TEST-001",
-    "HLA1516.1-TM-8.12-FLUSHQUEUEREQUEST-TEST-001",
-)
+@pytest.mark.requirements(*TM_NEXT_MESSAGE_AND_FLUSH_QUEUE_REQUIREMENTS)
 def test_compute_grant_decision_next_message_request_uses_earliest_eligible_timestamp_order_message():
     sender = _regulating_federate(current_time=4, lookahead=1)
     target = _target_federate(time_constrained_enabled=True)

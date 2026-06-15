@@ -12,10 +12,11 @@ import hla2010.spec as hla_spec
 import hla2010.rti as rti_module
 from hla2010_rti_backend_common import RecordingBackend, make_rti_ambassador
 import hla2010_rti_runtime_common.factory as runtime_factory
-from hla2010_rti_runtime_common import selected_backend_edition, set_selected_backend_edition
+from hla2010_rti_runtime_common import debug_rti_backend_registry, selected_backend_edition, set_selected_backend_edition
 from hla2010.rti import (
     available_backend_plugins,
     create_rti_ambassador,
+    debug_rti_backend_registry as root_debug_rti_backend_registry,
     discover_rti_backends,
     get_rti_factory,
     iter_rti_backend_plugins,
@@ -97,6 +98,7 @@ def test_runtime_factories_are_listable_selectable_and_instantiable():
     assert "python" in python_factory.selectable_names
     assert "in-memory" in python_factory.selectable_names
     assert python_factory.probe_supported is True
+    assert python_factory.source_kind in {"entry-point", "source-checkout"}
 
     rti = python_factory.create_rti_ambassador()
     assert rti.backend_info.kind == "python/in-memory"
@@ -139,6 +141,7 @@ def test_rti_factory_tool_lists_and_shows_installed_factories():
     assert "selected_backend_edition: 2010" in listed.stdout
     assert "- python [python-reference]" in listed.stdout
     assert "supported_editions: 2010" in listed.stdout
+    assert "source_kind:" in listed.stdout
     assert "selectable_names:" in listed.stdout
     assert "in-memory" in listed.stdout
 
@@ -153,6 +156,7 @@ def test_rti_factory_tool_lists_and_shows_installed_factories():
     assert payload["supported_editions"] == ["2010"]
     assert payload["selected_backend_edition"] == "2010"
     assert "in-memory" in payload["selectable_names"]
+    assert payload["source_kind"] in {"entry-point", "source-checkout"}
     assert payload["probe"]["available"] is True
 
     instantiated = subprocess.run(
@@ -165,8 +169,23 @@ def test_rti_factory_tool_lists_and_shows_installed_factories():
     assert instantiated_payload["name"] == "python"
     assert instantiated_payload["supported_editions"] == ["2010"]
     assert instantiated_payload["selected_backend_edition"] == "2010"
+    assert instantiated_payload["source_kind"] in {"entry-point", "source-checkout"}
     assert instantiated_payload["backend_info"]["kind"] == "python/in-memory"
     assert instantiated_payload["probe"]["available"] is True
+
+    debugged = subprocess.run(
+        ["bash", "./tools/rti-factories", "debug", "--edition", "2010"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    debug_payload = json.loads(debugged.stdout)
+    assert debug_payload["selected_backend_edition"] == "2010"
+    assert debug_payload["load_strategy"] in {"entry-point", "source-checkout", "empty"}
+    assert "hla.rti_backends" in debug_payload["entry_point_groups"]
+    plugin_rows = {row["name"]: row for row in debug_payload["plugins"]}
+    assert plugin_rows["python"]["matches_selected_edition"] is True
+    assert plugin_rows["python"]["source_kind"] in {"entry-point", "source-checkout"}
 
 
 def test_root_rti_facade_stays_narrow():
@@ -174,6 +193,7 @@ def test_root_rti_facade_stays_narrow():
         "available_backend_plugins",
         "create_backend",
         "create_rti_ambassador",
+        "debug_rti_backend_registry",
         "discover_rti_backends",
         "get_rti_factory",
         "iter_rti_backend_plugins",
@@ -187,6 +207,22 @@ def test_root_rti_facade_stays_narrow():
     assert not hasattr(rti_module, "BACKEND_ENTRY_POINT_GROUP")
     assert not hasattr(rti_module, "register_backend_factory")
     assert not hasattr(rti_module, "register_transport_factory")
+
+
+def test_runtime_backend_registry_debug_surface_is_introspectable():
+    report = debug_rti_backend_registry()
+    assert report.selected_backend_edition == "2010"
+    assert report.load_strategy in {"entry-point", "source-checkout", "empty"}
+    assert report.entry_point_groups == ("hla.rti_backends", "hla2010.rti_backends")
+    assert root_debug_rti_backend_registry().selected_backend_edition == "2010"
+
+    plugin_rows = {row.name: row for row in report.plugins}
+    assert plugin_rows["python"].matches_selected_edition is True
+    assert plugin_rows["python"].source_kind in {"entry-point", "source-checkout"}
+
+    report_2025 = debug_rti_backend_registry(edition="2025")
+    plugin_rows_2025 = {row.name: row for row in report_2025.plugins}
+    assert plugin_rows_2025["python"].matches_selected_edition is False
 
 
 def test_backend_entry_point_loader_skips_unimportable_optional_plugins(monkeypatch):
@@ -206,6 +242,13 @@ def test_backend_entry_point_loader_skips_unimportable_optional_plugins(monkeypa
     monkeypatch.setattr(runtime_factory, "_SOURCE_CHECKOUT_PLUGIN_MODULES", ())
 
     assert runtime_factory._iter_entry_point_backend_plugins() == []
+    records, issues = runtime_factory._collect_entry_point_backend_plugin_records()
+    assert records == []
+    assert len(issues) == 1
+    assert issues[0].source_kind == "entry-point"
+    assert issues[0].phase == "load"
+    assert "broken" in issues[0].locator
+    assert issues[0].error_type == "ModuleNotFoundError"
 
 
 def test_runtime_factory_falls_back_to_source_checkout_plugins(monkeypatch):

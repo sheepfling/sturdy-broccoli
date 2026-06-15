@@ -109,29 +109,16 @@ Rows where `pitch-jpype` and `pitch-py4j` currently have different generated dis
 
 | Document | Clause | Requirement | Kind | Applicability | Title |
 |---|---|---|---|---|
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-001 | extracted-requirement | runtime-or-service-probe | Name-handle lookup services |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-002 | extracted-requirement | runtime-or-service-probe | Advisory switch services |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-003 | extracted-requirement | runtime-or-service-probe | Ordering transportation and dimension metadata queries |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.10-001 | extracted-requirement | runtime-or-service-probe | Object instance handle by name |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_10-getObjectInstanceName | service-requirement | runtime-or-service-probe | Get Object Instance Name service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.11-001 | extracted-requirement | runtime-or-service-probe | Object instance name by handle |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_11-getAttributeHandle | service-requirement | runtime-or-service-probe | Get Attribute Handle service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.12-001 | extracted-requirement | runtime-or-service-probe | Dimension handle by name |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_12-getAttributeName | service-requirement | runtime-or-service-probe | Get Attribute Name service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.13-001 | extracted-requirement | runtime-or-service-probe | Dimension name by handle |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_13-getUpdateRateValue | service-requirement | runtime-or-service-probe | Get Update Rate Value service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.14-001 | extracted-requirement | runtime-or-service-probe | Available dimensions query |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_14-getUpdateRateValueForAttribute | service-requirement | runtime-or-service-probe | Get Update Rate Value For Attribute service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.15-001 | extracted-requirement | runtime-or-service-probe | Transportation type handles and names |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_15-getInteractionClassHandle | service-requirement | runtime-or-service-probe | Get Interaction Class Handle service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.16-001 | extracted-requirement | runtime-or-service-probe | Order type handles and names |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_16-getInteractionClassName | service-requirement | runtime-or-service-probe | Get Interaction Class Name service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.17-001 | extracted-requirement | runtime-or-service-probe | Enable-disable advisory switches |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_17-getParameterHandle | service-requirement | runtime-or-service-probe | Get Parameter Handle service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.18-001 | extracted-requirement | runtime-or-service-probe | Callbacks for advisory switch changes |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_18-getParameterName | service-requirement | runtime-or-service-probe | Get Parameter Name service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_19-getOrderType | service-requirement | runtime-or-service-probe | Get Order Type service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.2-001 | extracted-requirement | runtime-or-service-probe | Object class handle by name |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_2-getAutomaticResignDirective | service-requirement | runtime-or-service-probe | Get Automatic Resign Directive service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_20-getOrderName | service-requirement | runtime-or-service-probe | Get Order Name service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_21-getTransportationType | service-requirement | runtime-or-service-probe | Get Transportation Type Handle service |
@@ -145,7 +132,6 @@ Rows where `pitch-jpype` and `pitch-py4j` currently have different generated dis
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_27-getDimensionUpperBound | service-requirement | runtime-or-service-probe | Get Dimension Upper Bound service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_28-getDimensionHandleSet | service-requirement | runtime-or-service-probe | Get Dimension Handle Set service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_29-getRangeBounds | service-requirement | runtime-or-service-probe | Get Range Bounds service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.3-001 | extracted-requirement | runtime-or-service-probe | Object class name by handle |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_3-setAutomaticResignDirective | service-requirement | runtime-or-service-probe | Set Automatic Resign Directive service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_30-setRangeBounds | service-requirement | runtime-or-service-probe | Set Range Bounds service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_31-normalizeFederateHandle | service-requirement | runtime-or-service-probe | Normalize Federate Handle service |
@@ -157,7 +143,6 @@ Rows where `pitch-jpype` and `pitch-py4j` currently have different generated dis
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_37-enableAttributeScopeAdvisorySwitch | service-requirement | runtime-or-service-probe | Enable Attribute Scope Advisory Switch service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_38-disableAttributeScopeAdvisorySwitch | service-requirement | runtime-or-service-probe | Disable Attribute Scope Advisory Switch service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_39-enableInteractionRelevanceAdvisorySwitch | service-requirement | runtime-or-service-probe | Enable Interaction Relevance Advisory Switch service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.4-001 | extracted-requirement | runtime-or-service-probe | Attribute handle by name and class |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_4-getFederateHandle | service-requirement | runtime-or-service-probe | Get Federate Handle service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_40-disableInteractionRelevanceAdvisorySwitch | service-requirement | runtime-or-service-probe | Disable Interaction Relevance Advisory Switch service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_41-evokeCallback | service-requirement | runtime-or-service-probe | Evoke Callback service |
@@ -181,16 +166,31 @@ Rows where `pitch-jpype` and `pitch-py4j` currently have different generated dis
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getRegionHandleSetFactory | service-requirement | runtime-or-service-probe | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getTimeFactory | service-requirement | runtime-or-service-probe | Disable Callbacks service |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_44-getTransportationTypeHandleFactory | service-requirement | runtime-or-service-probe | Disable Callbacks service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.5-001 | extracted-requirement | runtime-or-service-probe | Attribute name by handle and class |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_5-getFederateName | service-requirement | runtime-or-service-probe | Get Federate Name service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.6-001 | extracted-requirement | runtime-or-service-probe | Interaction class handle by name |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_6-getObjectClassHandle | service-requirement | runtime-or-service-probe | Get Object Class Handle service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.7-001 | extracted-requirement | runtime-or-service-probe | Interaction class name by handle |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_7-getObjectClassName | service-requirement | runtime-or-service-probe | Get Object Class Name service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.8-001 | extracted-requirement | runtime-or-service-probe | Parameter handle by name and interaction |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_8-getKnownObjectClassHandle | service-requirement | runtime-or-service-probe | Get Known Object Class Handle service |
-| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.9-001 | extracted-requirement | runtime-or-service-probe | Parameter name by handle and interaction |
 | IEEE 1516.1-2010 (2010 edition) | 10 | REQ-RTI-SS-10_9-getObjectInstanceHandle | service-requirement | runtime-or-service-probe | Get Object Instance Handle service |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-001 | extracted-requirement | runtime-or-service-probe | Name-handle lookup services |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-002 | extracted-requirement | runtime-or-service-probe | Advisory switch services |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.1-003 | extracted-requirement | runtime-or-service-probe | Ordering transportation and dimension metadata queries |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.10-001 | extracted-requirement | runtime-or-service-probe | Object instance handle by name |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.11-001 | extracted-requirement | runtime-or-service-probe | Object instance name by handle |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.12-001 | extracted-requirement | runtime-or-service-probe | Dimension handle by name |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.13-001 | extracted-requirement | runtime-or-service-probe | Dimension name by handle |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.14-001 | extracted-requirement | runtime-or-service-probe | Available dimensions query |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.15-001 | extracted-requirement | runtime-or-service-probe | Transportation type handles and names |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.16-001 | extracted-requirement | runtime-or-service-probe | Order type handles and names |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.17-001 | extracted-requirement | runtime-or-service-probe | Enable-disable advisory switches |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.18-001 | extracted-requirement | runtime-or-service-probe | Callbacks for advisory switch changes |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.2-001 | extracted-requirement | runtime-or-service-probe | Object class handle by name |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.3-001 | extracted-requirement | runtime-or-service-probe | Object class name by handle |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.4-001 | extracted-requirement | runtime-or-service-probe | Attribute handle by name and class |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.5-001 | extracted-requirement | runtime-or-service-probe | Attribute name by handle and class |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.6-001 | extracted-requirement | runtime-or-service-probe | Interaction class handle by name |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.7-001 | extracted-requirement | runtime-or-service-probe | Interaction class name by handle |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.8-001 | extracted-requirement | runtime-or-service-probe | Parameter handle by name and interaction |
+| IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-10.9-001 | extracted-requirement | runtime-or-service-probe | Parameter name by handle and interaction |
 | IEEE 1516.1-2010 (2010 edition) | 12 | REQ-RTI-PLM-12_2-decodeAttributeHandle | service-requirement | artifact-or-model-verification | Designators |
 | IEEE 1516.1-2010 (2010 edition) | 12 | REQ-RTI-PLM-12_2-decodeDimensionHandle | service-requirement | artifact-or-model-verification | Designators |
 | IEEE 1516.1-2010 (2010 edition) | 12 | REQ-RTI-PLM-12_2-decodeFederateHandle | service-requirement | artifact-or-model-verification | Designators |
