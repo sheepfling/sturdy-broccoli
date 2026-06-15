@@ -674,157 +674,100 @@ _CERTI_REQUIREMENT_EVIDENCE: dict[str, tuple[tuple[str, ...], str]] = {
         },
         "CERTI shared ownership scenario verifies {subject} on the real backend path.",
     ),
-    "REQ-RTI-TM-8_2-enableTimeRegulation": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-services"],
-        "CERTI shared Section 8 state-services scenario verifies enableTimeRegulation on the real backend path.",
+    **_certi_subject_rows(
+        "section8-state-services",
+        {
+            "REQ-RTI-TM-8_2-enableTimeRegulation": "enableTimeRegulation",
+            "REQ-FED-TM-8_3-timeRegulationEnabled": "timeRegulationEnabled callbacks",
+            "REQ-RTI-TM-8_5-enableTimeConstrained": "enableTimeConstrained",
+            "REQ-FED-TM-8_6-timeConstrainedEnabled": "timeConstrainedEnabled callbacks",
+            "HLA1516.1-TM-8.2-001": "Enable Time Regulation service behavior",
+            "HLA1516.1-TM-8.2-002": "timeRegulationEnabled callback behavior",
+            "HLA1516.1-TM-8.5-001": "Enable Time Constrained service behavior",
+            "HLA1516.1-TM-8.5-002": "timeConstrainedEnabled callback behavior",
+        },
+        "CERTI shared Section 8 state-services scenario verifies {subject} on the real backend path.",
     ),
-    "REQ-FED-TM-8_3-timeRegulationEnabled": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-services"],
-        "CERTI shared Section 8 state-services scenario verifies timeRegulationEnabled callbacks on the real backend path.",
+    **_certi_subject_rows(
+        "section8-ordering-and-query",
+        {
+            "REQ-RTI-TM-8_8-timeAdvanceRequest": "timeAdvanceRequest",
+            "REQ-RTI-TM-8_10-nextMessageRequest": "nextMessageRequest",
+            "HLA1516.1-TM-8.8-001": "Time Advance Request service behavior",
+            "HLA1516.1-TM-8.8-002": "Time Advance Grant delivery for Time Advance Request",
+            "HLA1516.1-TM-8.10-001": "Next Message Request service behavior",
+        },
+        "CERTI shared Section 8 ordering-and-query scenario verifies {subject} on the real backend path.",
     ),
-    "REQ-RTI-TM-8_5-enableTimeConstrained": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-services"],
-        "CERTI shared Section 8 state-services scenario verifies enableTimeConstrained on the real backend path.",
+    **_certi_subject_rows(
+        "section8-available-and-flush",
+        {
+            "REQ-RTI-TM-8_9-timeAdvanceRequestAvailable": "timeAdvanceRequestAvailable",
+            "REQ-RTI-TM-8_12-flushQueueRequest": "flushQueueRequest",
+            "REQ-FED-TM-8_13-timeAdvanceGrant": "timeAdvanceGrant delivery",
+            "HLA1516.1-TM-8.12-001": "Flush Queue Request behavior",
+        },
+        "CERTI shared Section 8 available-and-flush scenario verifies {subject} on the real backend path.",
     ),
-    "REQ-FED-TM-8_6-timeConstrainedEnabled": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-services"],
-        "CERTI shared Section 8 state-services scenario verifies timeConstrainedEnabled callbacks on the real backend path.",
+    **_certi_subject_rows(
+        "section8-state-toggles",
+        {
+            "REQ-RTI-TM-8_14-enableAsynchronousDelivery": "enableAsynchronousDelivery",
+            "REQ-RTI-TM-8_15-disableAsynchronousDelivery": "disableAsynchronousDelivery",
+            "REQ-RTI-TM-8_19-modifyLookahead": "modifyLookahead",
+            "REQ-RTI-TM-8_20-queryLookahead": "queryLookahead",
+            "REQ-RTI-TM-8_4-disableTimeRegulation": "disableTimeRegulation",
+            "REQ-RTI-TM-8_7-disableTimeConstrained": "disableTimeConstrained",
+            "HLA1516.1-TM-8.19-001": "Modify Lookahead behavior",
+            "HLA1516.1-TM-8.4-001": "Disable Time Regulation behavior",
+            "HLA1516.1-TM-8.7-001": "Disable Time Constrained behavior",
+        },
+        "CERTI shared Section 8 state-services scenario verifies {subject} on the real backend path.",
     ),
-    "REQ-RTI-TM-8_8-timeAdvanceRequest": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-query"],
-        "CERTI shared Section 8 ordering-and-query scenario verifies timeAdvanceRequest on the real backend path.",
+    **_certi_subject_rows(
+        "section8-logical-time-query",
+        {
+            "REQ-RTI-TM-8_17-queryLogicalTime": "queryLogicalTime",
+            "HLA1516.1-TM-8.17-001": "Query Logical Time behavior",
+        },
+        "CERTI shared Section 8 logical-time scenario verifies {subject} on the real backend path.",
     ),
-    "REQ-RTI-TM-8_10-nextMessageRequest": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-query"],
-        "CERTI shared Section 8 ordering-and-query scenario verifies nextMessageRequest on the real backend path.",
+    **_certi_subject_rows(
+        "section8-request-retraction",
+        {
+            "REQ-RTI-TM-8_21-retract": "retract",
+            "REQ-FED-TM-8_22-requestRetraction": "requestRetraction callbacks",
+            "HLA1516.1-TM-8.21-001": "Retract behavior",
+        },
+        "CERTI shared Section 8 request-retraction scenario verifies {subject} on the real backend path.",
     ),
-    "REQ-RTI-TM-8_9-timeAdvanceRequestAvailable": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-available-and-flush"],
-        "CERTI shared Section 8 available-and-flush scenario verifies timeAdvanceRequestAvailable on the real backend path.",
+    **_certi_subject_rows(
+        "section8-time-bound-query",
+        {
+            "REQ-RTI-TM-8_16-queryGALT": "the current vendor-divergent queryGALT behavior",
+            "REQ-RTI-TM-8_18-queryLITS": "the current vendor-divergent queryLITS behavior",
+            "HLA1516.1-TM-8.16-001": "the current vendor-divergent Query GALT behavior",
+            "HLA1516.1-TM-8.18-001": "the current vendor-divergent Query LITS behavior",
+        },
+        "CERTI shared Section 8 time-bound query scenario exposes {subject} on the real backend path.",
     ),
-    "REQ-RTI-TM-8_12-flushQueueRequest": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-available-and-flush"],
-        "CERTI shared Section 8 available-and-flush scenario verifies flushQueueRequest on the real backend path.",
+    **_certi_subject_rows(
+        "section8-order-override",
+        {
+            "REQ-RTI-TM-8_24-changeInteractionOrderType": "changeInteractionOrderType",
+        },
+        "CERTI shared Section 8 order-override scenario verifies {subject} on the real backend path.",
     ),
-    "REQ-FED-TM-8_13-timeAdvanceGrant": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-available-and-flush"],
-        "CERTI shared Section 8 available-and-flush scenario verifies timeAdvanceGrant delivery on the real backend path.",
-    ),
-    "HLA1516.1-TM-8.2-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-services"],
-        "CERTI shared Section 8 state-services scenario verifies Enable Time Regulation service behavior on the real backend path.",
-    ),
-    "HLA1516.1-TM-8.2-002": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-services"],
-        "CERTI shared Section 8 state-services scenario verifies timeRegulationEnabled callback behavior on the real backend path.",
-    ),
-    "HLA1516.1-TM-8.5-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-services"],
-        "CERTI shared Section 8 state-services scenario verifies Enable Time Constrained service behavior on the real backend path.",
-    ),
-    "HLA1516.1-TM-8.5-002": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-services"],
-        "CERTI shared Section 8 state-services scenario verifies timeConstrainedEnabled callback behavior on the real backend path.",
-    ),
-    "HLA1516.1-TM-8.8-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-query"],
-        "CERTI shared Section 8 ordering-and-query scenario verifies Time Advance Request service behavior on the real backend path.",
-    ),
-    "HLA1516.1-TM-8.8-002": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-query"],
-        "CERTI shared Section 8 ordering-and-query scenario verifies Time Advance Grant delivery for Time Advance Request on the real backend path.",
-    ),
-    "HLA1516.1-TM-8.10-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-query"],
-        "CERTI shared Section 8 ordering-and-query scenario verifies Next Message Request service behavior on the real backend path.",
-    ),
-    "HLA1516.1-TM-8.12-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-available-and-flush"],
-        "CERTI shared Section 8 available-and-flush scenario verifies Flush Queue Request behavior on the real backend path.",
-    ),
-    "REQ-RTI-TM-8_14-enableAsynchronousDelivery": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-toggles"],
-        "CERTI shared Section 8 state-services scenario verifies enableAsynchronousDelivery on the real backend path.",
-    ),
-    "REQ-RTI-TM-8_15-disableAsynchronousDelivery": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-toggles"],
-        "CERTI shared Section 8 state-services scenario verifies disableAsynchronousDelivery on the real backend path.",
-    ),
-    "REQ-RTI-TM-8_17-queryLogicalTime": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-logical-time-query"],
-        "CERTI shared Section 8 logical-time scenario verifies queryLogicalTime on the real backend path.",
-    ),
-    "REQ-RTI-TM-8_19-modifyLookahead": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-toggles"],
-        "CERTI shared Section 8 state-services scenario verifies modifyLookahead on the real backend path.",
-    ),
-    "REQ-RTI-TM-8_20-queryLookahead": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-toggles"],
-        "CERTI shared Section 8 state-services scenario verifies queryLookahead on the real backend path.",
-    ),
-    "REQ-RTI-TM-8_21-retract": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-request-retraction"],
-        "CERTI shared Section 8 request-retraction scenario verifies retract on the real backend path.",
-    ),
-    "REQ-FED-TM-8_22-requestRetraction": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-request-retraction"],
-        "CERTI shared Section 8 request-retraction scenario verifies requestRetraction callbacks on the real backend path.",
-    ),
-    "REQ-RTI-TM-8_24-changeInteractionOrderType": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-order-override"],
-        "CERTI shared Section 8 order-override scenario verifies changeInteractionOrderType on the real backend path.",
-    ),
-    "REQ-RTI-TM-8_4-disableTimeRegulation": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-toggles"],
-        "CERTI shared Section 8 state-services scenario verifies disableTimeRegulation on the real backend path.",
-    ),
-    "REQ-RTI-TM-8_7-disableTimeConstrained": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-toggles"],
-        "CERTI shared Section 8 state-services scenario verifies disableTimeConstrained on the real backend path.",
-    ),
-    "HLA1516.1-TM-8.17-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-logical-time-query"],
-        "CERTI shared Section 8 logical-time scenario verifies Query Logical Time behavior on the real backend path.",
-    ),
-    "HLA1516.1-TM-8.19-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-toggles"],
-        "CERTI shared Section 8 state-services scenario verifies Modify Lookahead behavior on the real backend path.",
-    ),
-    "HLA1516.1-TM-8.21-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-request-retraction"],
-        "CERTI shared Section 8 request-retraction scenario verifies Retract behavior on the real backend path.",
-    ),
-    "HLA1516.1-TM-8.4-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-toggles"],
-        "CERTI shared Section 8 state-services scenario verifies Disable Time Regulation behavior on the real backend path.",
-    ),
-    "HLA1516.1-TM-8.7-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-state-toggles"],
-        "CERTI shared Section 8 state-services scenario verifies Disable Time Constrained behavior on the real backend path.",
-    ),
-    "REQ-RTI-TM-8_16-queryGALT": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-time-bound-query"],
-        "CERTI shared Section 8 time-bound query scenario exposes the current vendor-divergent queryGALT behavior on the real backend path.",
-    ),
-    "REQ-RTI-TM-8_18-queryLITS": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-time-bound-query"],
-        "CERTI shared Section 8 time-bound query scenario exposes the current vendor-divergent queryLITS behavior on the real backend path.",
-    ),
-    "HLA1516.1-TM-8.16-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-time-bound-query"],
-        "CERTI shared Section 8 time-bound query scenario exposes the current vendor-divergent Query GALT behavior on the real backend path.",
-    ),
-    "HLA1516.1-TM-8.18-001": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-time-bound-query"],
-        "CERTI shared Section 8 time-bound query scenario exposes the current vendor-divergent Query LITS behavior on the real backend path.",
+    **_certi_subject_rows(
+        "section8-available-and-retraction",
+        {
+            "REQ-RTI-TM-8_11-nextMessageRequestAvailable": "nextMessageRequestAvailable",
+        },
+        "CERTI shared Section 8 available-and-retraction scenario verifies {subject} on the real backend path.",
     ),
     "REQ-RTI-TM-8_23-changeAttributeOrderType": (
         _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-order-override"],
         "CERTI shared Section 8 order-override scenario exposes the current vendor-divergent changeAttributeOrderType behavior on the real backend path.",
-    ),
-    "REQ-RTI-TM-8_11-nextMessageRequestAvailable": (
-        _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-available-and-retraction"],
-        "CERTI shared Section 8 available-and-retraction scenario verifies nextMessageRequestAvailable on the real backend path.",
     ),
     "HLA1516.1-TM-8.1.2-003": (
         _CERTI_SCENARIO_EVIDENCE_REGISTRY["section8-order-override"],
@@ -997,6 +940,21 @@ _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF = (
     "packages/hla2010-rti-pitch-common/docs/evidence/"
     "pitch_section8_time_management_vendor_divergence_2026-06-11.md",
 )
+
+
+def _pitch_subject_rows(
+    rows: dict[str, str],
+    *,
+    scenario_id: str,
+    template: str,
+    status: str = "verified",
+) -> dict[str, tuple[str, tuple[str, ...], str]]:
+    evidence = _SCENARIO_EVIDENCE_REGISTRY[scenario_id]
+    return {
+        requirement_id: (status, evidence, template.format(subject=subject))
+        for requirement_id, subject in rows.items()
+    }
+
 
 _PITCH_REQUIREMENT_EVIDENCE: dict[str, tuple[str, tuple[str, ...], str]] = {
     "REQ-RTI-FM-4_2-connect": (
@@ -1232,130 +1190,64 @@ _PITCH_REQUIREMENT_EVIDENCE: dict[str, tuple[str, tuple[str, ...], str]] = {
         ),
         "Target/Radar is tracked as a smoke demonstration rather than a Pitch conformance or shared-harness parity requirement.",
     ),
-    "REQ-RTI-OM-6_2-reserveObjectInstanceName": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["name-reservation"],
-        "Shared name-reservation scenario verifies single-name reservation and conflict handling.",
+    **_pitch_subject_rows(
+        {
+            "REQ-RTI-OM-6_2-reserveObjectInstanceName": "single-name reservation and conflict handling",
+            "REQ-FED-OM-6_3-objectInstanceNameReservationFailed": "failed single-name reservation callbacks on conflict",
+            "REQ-FED-OM-6_3-objectInstanceNameReservationSucceeded": "successful single-name reservation callbacks",
+            "REQ-RTI-OM-6_4-releaseObjectInstanceName": "released single-name reservations can be reacquired by another federate",
+            "REQ-RTI-OM-6_5-reserveMultipleObjectInstanceName": "multi-name reservation and conflict handling",
+            "REQ-FED-OM-6_6-multipleObjectInstanceNameReservationFailed": "failed multi-name reservation callbacks on conflict",
+            "REQ-FED-OM-6_6-multipleObjectInstanceNameReservationSucceeded": "successful multi-name reservation callbacks",
+            "REQ-RTI-OM-6_7-releaseMultipleObjectInstanceName": "released multi-name reservations can be reacquired by another federate",
+        },
+        scenario_id="name-reservation",
+        template="Shared name-reservation scenario verifies {subject}.",
     ),
-    "REQ-FED-OM-6_3-objectInstanceNameReservationFailed": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["name-reservation"],
-        "Shared name-reservation scenario verifies failed single-name reservation callbacks on conflict.",
+    **_pitch_subject_rows(
+        {
+            "REQ-RTI-OM-6_8-registerObjectInstance": "object registration before discovery, update, and delete flows",
+            "REQ-FED-OM-6_9-discoverObjectInstance": "discovery callback delivery for registered instances",
+            "REQ-FED-OM-6_11-reflectAttributeValues": "reflected attribute delivery across receive and timestamp order paths",
+            "REQ-FED-OM-6_13-receiveInteraction": "interaction delivery across receive and timestamp order paths",
+            "REQ-RTI-OM-6_14-deleteObjectInstance": "delete-object teardown after successful exchange delivery",
+            "REQ-FED-OM-6_15-removeObjectInstance": "remove-object callbacks for deleted instances",
+        },
+        scenario_id="two-federate-exchange",
+        template="Shared two-federate exchange scenario verifies {subject}.",
     ),
-    "REQ-FED-OM-6_3-objectInstanceNameReservationSucceeded": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["name-reservation"],
-        "Shared name-reservation scenario verifies successful single-name reservation callbacks.",
+    **_pitch_subject_rows(
+        {
+            "REQ-FED-OM-6_9-hasProducingFederate": "producing-federate metadata callback delivery",
+            "REQ-FED-OM-6_9-getProducingFederate": "producing-federate metadata payload delivery",
+            "REQ-FED-OM-6_9-hasSentRegions": "sent-region metadata callback delivery",
+            "REQ-FED-OM-6_9-getSentRegions": "sent-region metadata payload delivery",
+        },
+        scenario_id="discovery-metadata-callbacks",
+        template="Shared discovery metadata callback probe verifies {subject}.",
     ),
-    "REQ-RTI-OM-6_4-releaseObjectInstanceName": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["name-reservation"],
-        "Shared name-reservation scenario verifies released single-name reservations can be reacquired by another federate.",
+    **_pitch_subject_rows(
+        {
+            "REQ-FED-OM-6_17-attributesInScope": "attributes-in-scope callback delivery",
+            "REQ-FED-OM-6_18-attributesOutOfScope": "attributes-out-of-scope callback delivery",
+            "REQ-FED-OM-6_20-provideAttributeValueUpdate": "provide-attribute-value-update callback delivery",
+            "REQ-FED-OM-6_21-turnUpdatesOnForObjectInstance": "turn-updates-on callback delivery",
+            "REQ-FED-OM-6_22-turnUpdatesOffForObjectInstance": "turn-updates-off callback delivery",
+        },
+        scenario_id="update-advisory-callbacks",
+        template="Shared update-advisory callback probe verifies {subject}.",
     ),
-    "REQ-RTI-OM-6_5-reserveMultipleObjectInstanceName": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["name-reservation"],
-        "Shared name-reservation scenario verifies multi-name reservation and conflict handling.",
-    ),
-    "REQ-FED-OM-6_6-multipleObjectInstanceNameReservationFailed": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["name-reservation"],
-        "Shared name-reservation scenario verifies failed multi-name reservation callbacks on conflict.",
-    ),
-    "REQ-FED-OM-6_6-multipleObjectInstanceNameReservationSucceeded": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["name-reservation"],
-        "Shared name-reservation scenario verifies successful multi-name reservation callbacks.",
-    ),
-    "REQ-RTI-OM-6_7-releaseMultipleObjectInstanceName": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["name-reservation"],
-        "Shared name-reservation scenario verifies released multi-name reservations can be reacquired by another federate.",
-    ),
-    "REQ-RTI-OM-6_8-registerObjectInstance": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "Shared two-federate exchange scenario verifies object registration before discovery, update, and delete flows.",
-    ),
-    "REQ-FED-OM-6_9-discoverObjectInstance": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "Shared two-federate exchange scenario verifies discovery callback delivery for registered instances.",
-    ),
-    "REQ-FED-OM-6_9-hasProducingFederate": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["discovery-metadata-callbacks"],
-        "Shared discovery metadata callback probe verifies producing-federate metadata callback delivery.",
-    ),
-    "REQ-FED-OM-6_9-getProducingFederate": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["discovery-metadata-callbacks"],
-        "Shared discovery metadata callback probe verifies producing-federate metadata payload delivery.",
-    ),
-    "REQ-FED-OM-6_9-hasSentRegions": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["discovery-metadata-callbacks"],
-        "Shared discovery metadata callback probe verifies sent-region metadata callback delivery.",
-    ),
-    "REQ-FED-OM-6_9-getSentRegions": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["discovery-metadata-callbacks"],
-        "Shared discovery metadata callback probe verifies sent-region metadata payload delivery.",
-    ),
-    "REQ-FED-OM-6_11-reflectAttributeValues": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "Shared two-federate exchange scenario verifies reflected attribute delivery across receive and timestamp order paths.",
-    ),
-    "REQ-FED-OM-6_13-receiveInteraction": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "Shared two-federate exchange scenario verifies interaction delivery across receive and timestamp order paths.",
-    ),
-    "REQ-RTI-OM-6_14-deleteObjectInstance": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "Shared two-federate exchange scenario exercises delete-object teardown after successful exchange delivery.",
-    ),
-    "REQ-FED-OM-6_15-removeObjectInstance": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"],
-        "Shared two-federate exchange scenario verifies remove-object callbacks for deleted instances.",
-    ),
-    "REQ-RTI-OM-6_16-localDeleteObjectInstance": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["local-delete"],
-        "Shared local-delete scenario verifies local knowledge removal and rediscovery behavior.",
-    ),
-    "REQ-FED-OM-6_17-attributesInScope": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["update-advisory-callbacks"],
-        "Shared update-advisory callback probe verifies attributes-in-scope callback delivery.",
-    ),
-    "REQ-FED-OM-6_18-attributesOutOfScope": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["update-advisory-callbacks"],
-        "Shared update-advisory callback probe verifies attributes-out-of-scope callback delivery.",
+    **_pitch_subject_rows(
+        {
+            "REQ-RTI-OM-6_16-localDeleteObjectInstance": "local knowledge removal and rediscovery behavior",
+        },
+        scenario_id="local-delete",
+        template="Shared local-delete scenario verifies {subject}.",
     ),
     "REQ-RTI-OM-6_19-requestAttributeValueUpdate": (
         "verified",
         _SCENARIO_EVIDENCE_REGISTRY["request-attribute-value-update"],
         "Shared request-attribute-value-update scenario verifies service-driven provide-value callbacks to the owning federate.",
-    ),
-    "REQ-FED-OM-6_20-provideAttributeValueUpdate": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["update-advisory-callbacks"],
-        "Shared update-advisory callback probe verifies provide-attribute-value-update callback delivery.",
-    ),
-    "REQ-FED-OM-6_21-turnUpdatesOnForObjectInstance": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["update-advisory-callbacks"],
-        "Shared update-advisory callback probe verifies turn-updates-on callback delivery.",
-    ),
-    "REQ-FED-OM-6_22-turnUpdatesOffForObjectInstance": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["update-advisory-callbacks"],
-        "Shared update-advisory callback probe verifies turn-updates-off callback delivery.",
     ),
     "REQ-RTI-OM-6_23-requestAttributeTransportationTypeChange": (
         "verified",

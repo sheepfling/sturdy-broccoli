@@ -133,6 +133,34 @@ def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_
             decode_bytes(parts[3]),
         )
         return
+    if kind == "START_REGISTRATION_FOR_OBJECT_CLASS":
+        invoke_federate_callback(
+            ambassador,
+            "startRegistrationForObjectClass",
+            ObjectClassHandle(int(parts[1])),
+        )
+        return
+    if kind == "STOP_REGISTRATION_FOR_OBJECT_CLASS":
+        invoke_federate_callback(
+            ambassador,
+            "stopRegistrationForObjectClass",
+            ObjectClassHandle(int(parts[1])),
+        )
+        return
+    if kind == "TURN_INTERACTIONS_ON":
+        invoke_federate_callback(
+            ambassador,
+            "turnInteractionsOn",
+            InteractionClassHandle(int(parts[1])),
+        )
+        return
+    if kind == "TURN_INTERACTIONS_OFF":
+        invoke_federate_callback(
+            ambassador,
+            "turnInteractionsOff",
+            InteractionClassHandle(int(parts[1])),
+        )
+        return
     if kind == "REQUEST_RETRACTION":
         invoke_federate_callback(ambassador, "requestRetraction", MessageRetractionHandle(int(parts[1])))
         return

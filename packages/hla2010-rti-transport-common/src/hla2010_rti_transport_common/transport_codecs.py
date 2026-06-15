@@ -4,7 +4,8 @@ from __future__ import annotations
 from typing import Any, Iterable, Mapping
 
 from hla2010.enums import OrderType
-from hla2010.handles import AttributeHandle, FederateHandle
+from hla2010.handles import AttributeHandle, AttributeHandleSet, FederateHandle, RegionHandle, RegionHandleSet
+from hla2010.types import AttributeRegionAssociation, RangeBounds
 
 
 def encode_bytes(value: bytes | bytearray | memoryview) -> str:
@@ -54,13 +55,48 @@ def decode_handle_set(spec: str, handle_type: type[Any], set_type: type[Any]) ->
     return result
 
 
+def range_bounds_spec(bounds: RangeBounds) -> str:
+    return f"{int(bounds.lower_bound)}:{int(bounds.upper_bound)}"
+
+
+def decode_range_bounds(spec: str) -> RangeBounds:
+    lower_raw, upper_raw = spec.split(":", 1)
+    return RangeBounds(int(lower_raw), int(upper_raw))
+
+
+def attribute_region_associations_spec(values: Iterable[AttributeRegionAssociation]) -> str:
+    parts: list[str] = []
+    for association in values:
+        parts.append(f"{handle_set_spec(association.attributes)}|{handle_set_spec(association.regions)}")
+    return ";".join(parts)
+
+
+def decode_attribute_region_associations(spec: str) -> list[AttributeRegionAssociation]:
+    if not spec:
+        return []
+    result: list[AttributeRegionAssociation] = []
+    for entry in spec.split(";"):
+        attributes_raw, regions_raw = entry.split("|", 1)
+        result.append(
+            AttributeRegionAssociation(
+                decode_handle_set(attributes_raw, AttributeHandle, AttributeHandleSet),
+                decode_handle_set(regions_raw, RegionHandle, RegionHandleSet),
+            )
+        )
+    return result
+
+
 __all__ = [
+    "attribute_region_associations_spec",
     "decode_bytes",
+    "decode_attribute_region_associations",
     "decode_handle_set",
     "decode_handle_value_map",
     "decode_order",
+    "decode_range_bounds",
     "encode_bytes",
     "federate_handle_set_spec",
     "handle_set_spec",
     "handle_value_map_spec",
+    "range_bounds_spec",
 ]
