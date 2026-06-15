@@ -9,6 +9,7 @@ Core operator entrypoints:
 - `./tools/python`
 - `./tools/bootstrap`
 - `./tools/test`
+- `./tools/test-surface`
 - `./tools/lint`
 - `./tools/certi-easy`
 - `./tools/pitch`
@@ -41,6 +42,7 @@ Shortest common paths:
 - inspect factories: `./tools/rti-factories list`
 - trace one method: `./tools/human-editability trace timeAdvanceRequest`
 - run the default test wrapper: `./tools/test`
+- discover the canonical verification lanes: `./tools/test-surface recommend`
 - run Python direct-vs-gRPC parity: `./tools/python verify-routes`
 - check whether hosted Python gRPC is runnable here: `./tools/python verify-routes-preflight`
 

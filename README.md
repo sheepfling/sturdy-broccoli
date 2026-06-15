@@ -109,6 +109,19 @@ Or through the wrapper:
 ./tools/test
 ```
 
+8. Run the hosted Python route hygiene lane when you touch Python RTI transport, hosted-route helpers, or backend parity:
+
+```bash
+./tools/python verify-routes-preflight
+./tools/python verify-routes
+```
+
+9. Ask the repo which verification lane to run:
+
+```bash
+./tools/test-surface recommend
+```
+
 ## Concrete Lanes
 
 These are the primary newcomer lanes:
@@ -131,6 +144,9 @@ If you need vendor flows, stay on the `tools/` operator surface:
 ./tools/pitch smoke
 ./tools/pitch verify
 
+./tools/test-surface recommend
+./tools/python verify-fast
+./tools/python verify-routes
 ./tools/python verify
 ./tools/vendor-green matrix
 ```

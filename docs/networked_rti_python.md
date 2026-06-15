@@ -42,6 +42,26 @@ rti = create_rti_ambassador(
 That route is the documented Python RTI over gRPC path in
 [`backend_route_inventory_routes.md`](backend_route_inventory_routes.md).
 
+## Operator Lane
+
+The maintained verification lane for this surface is:
+
+```bash
+./tools/python verify-routes-preflight
+./tools/python verify-routes
+```
+
+That lane runs the shared direct-versus-hosted Python parity suite, the hosted
+Python gRPC transport tests, regenerates the route parity matrix artifact, and
+reruns the Target/Radar example over both direct and hosted Python routes.
+
+Treat it as regular hygiene after changes to:
+
+- Python RTI backend semantics that should survive the transport boundary
+- hosted transport client or server wiring
+- route-parity fixtures, docs, or operator wrappers
+- hosted Python example or Target/Radar route selection
+
 ## Typical Example Flow
 
 For a full runnable example, start with:

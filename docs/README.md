@@ -11,7 +11,7 @@ If you only need the shortest on-ramp:
 1. read [`../README.md`](../README.md)
 2. read [`onboarding.md`](onboarding.md)
 3. read [`first_run.md`](first_run.md)
-4. read [`networked_rti_python.md`](networked_rti_python.md) only if you need a hosted Python RTI route
+4. read [`networked_rti_python.md`](networked_rti_python.md) only if you need a hosted Python RTI route or its parity/hygiene lane
 
 ## Start Here
 
@@ -34,6 +34,7 @@ Concrete contributor lanes:
 Reading maps and setup notes:
 
 - [python_environment.md](python_environment.md): Python bootstrap, `.venv`, extras, and install order
+- [test_surface.md](test_surface.md): canonical verification lanes and machine-readable discovery flow
 - [codex_runner_authorization.md](codex_runner_authorization.md): draft loopback-socket authorization request for Codex verification sessions
 - [spec_reading_map.md](spec_reading_map.md): smallest practical reading path for the abstract/public spec surface
 - [fom_reading_map.md](fom_reading_map.md): smallest practical reading path for FOM parsing and merge behavior
