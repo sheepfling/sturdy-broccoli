@@ -343,6 +343,7 @@ Simple Pitch Docker workflow:
   $script_name lost-federate-review [repeat-count] # run repeated review for the real Pitch lost-federate probe
   $script_name crc-macos-repro [args...] # run the macOS CRC startup reproducer
   $script_name crc-docker-repro # run the Docker CRC startup reproducer
+  $script_name native-local-probe [args...] # probe the native local CRC/FedPro path
   $script_name all       # install, then smoke, then verify
   $script_name logs      # show container logs
   $script_name stop      # stop and remove the container
@@ -437,6 +438,10 @@ case "${1:-start}" in
   crc-docker-repro)
     shift
     exec "$(hla2010_shell_python_bin)" "$ROOT_DIR/scripts/repro_pitch_crc_docker.py" "$@"
+    ;;
+  native-local-probe)
+    shift
+    exec "$(hla2010_shell_python_bin)" "$ROOT_DIR/scripts/probe_pitch_native_local.py" "$@"
     ;;
   all)
     install_pitch_docker

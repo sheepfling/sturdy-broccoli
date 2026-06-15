@@ -41,6 +41,7 @@ Choose the Docker-backed Pitch flow when you want:
 - no host Java dependency
 - the cleanest operator experience
 - the current stable vendor evidence path
+- automatic fallback host ports if `8989` / `15164` are already occupied
 
 Commands:
 
@@ -100,6 +101,9 @@ This launches the vendor runtime container and waits for:
 
 - CRC on `127.0.0.1:8989`
 - FedPro on `127.0.0.1:15164`
+
+If those default host ports are busy, the repo resolves a fallback pair and
+launches the managed container on that pair instead.
 
 ### Connect
 
@@ -161,6 +165,15 @@ The non-Docker local launcher can still involve the vendor acceptance flow and
 host GUI behavior on macOS.
 
 The Docker-backed `./tools/pitch` path is the easiest way to avoid that pain.
+
+If you need to inspect the host-native path directly, use:
+
+```bash
+./tools/pitch native-local-probe
+```
+
+That route separates CRC and FedPro startup evidence so local runtime issues can
+be diagnosed without confusing them with the supported Docker operator path.
 
 ### Linux Docker host mapping
 

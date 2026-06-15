@@ -875,6 +875,7 @@ def test_pitch_top_level_wrapper_help_lists_best_effort_routes() -> None:
     assert result.returncode == 0
     assert "./tools/pitch smoke-best-effort" in result.stdout
     assert "./tools/pitch verify-best-effort" in result.stdout
+    assert "./tools/pitch native-local-probe" in result.stdout
 
 
 def test_pitch_top_level_wrapper_crc_macos_repro_is_reachable_from_outside_repo(tmp_path: Path) -> None:
@@ -927,6 +928,36 @@ def test_pitch_top_level_wrapper_crc_docker_repro_is_reachable_from_outside_repo
     assert payload.pitch_home == str(pitch_home)
     assert payload.has_key("docker_info_exit_code")
     assert payload.has_key("opened_8989")
+
+
+def test_pitch_top_level_wrapper_native_local_probe_is_reachable_from_outside_repo(tmp_path: Path) -> None:
+    env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
+    pitch_home = _make_fake_pitch_home(tmp_path / "fake-pitch-home")
+    result = subprocess.run(
+        [
+            "bash",
+            str(ROOT / "tools" / "pitch"),
+            "native-local-probe",
+            "--pitch-home",
+            str(pitch_home),
+            "--timeout",
+            "0.1",
+            "--bridge",
+            "none",
+        ],
+        cwd=tmp_path,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    payload = PitchReproOutput.from_mapping(json.loads(result.stdout))
+    assert payload.pitch_home == str(pitch_home)
+    assert payload.has_key("crc")
+    assert payload.has_key("fedpro")
+    assert payload.has_key("designator")
 
 
 DELEGATE_PROFILE_CASES = [

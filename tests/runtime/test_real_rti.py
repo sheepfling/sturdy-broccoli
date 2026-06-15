@@ -40,15 +40,18 @@ def test_discover_pitch_runtime_from_env(tmp_path, monkeypatch):
     expected_user_home = local_state_root / "pitch" / "user-home"
     assert any(str(expected_user_home) in arg for arg in config.jvm_args)
     assert any("java.library.path=" in arg for arg in config.jvm_args)
-    assert config.connect_local_settings_designator == "localhost"
+    assert config.connect_local_settings_designator == "127.0.0.1:15164;;127.0.0.1:8989"
 
 
-def test_pitch_fedpro_local_settings_designator_defaults_to_localhost(monkeypatch):
+def test_pitch_fedpro_local_settings_designator_defaults_to_local_ports(monkeypatch):
     monkeypatch.delenv("HLA2010_PITCH_FEDPRO_LOCAL_SETTINGS_DESIGNATOR", raising=False)
     monkeypatch.delenv("HLA2010_PITCH_FEDPRO_ADDRESS", raising=False)
+    monkeypatch.delenv("HLA2010_PITCH_CRC_MODE", raising=False)
+    monkeypatch.delenv("HLA2010_PITCH_CRC_PORT", raising=False)
+    monkeypatch.delenv("HLA2010_PITCH_FEDPRO_PORT", raising=False)
 
-    assert pitch_fedpro_local_settings_designator() == "localhost"
-    assert pitch_connect_local_settings_designator() == "localhost"
+    assert pitch_fedpro_local_settings_designator() == "127.0.0.1:15164;;127.0.0.1:8989"
+    assert pitch_connect_local_settings_designator() == "127.0.0.1:15164;;127.0.0.1:8989"
 
 
 def test_pitch_fedpro_local_settings_designator_honors_explicit_designator(monkeypatch):
@@ -63,6 +66,16 @@ def test_pitch_fedpro_local_settings_designator_uses_container_crc_loopback_in_d
     monkeypatch.setenv("HLA2010_PITCH_CRC_PORT", "18989")
 
     assert pitch_fedpro_local_settings_designator() == "localhost;;crcAddress=127.0.0.1:18989"
+
+
+def test_pitch_fedpro_local_settings_designator_uses_explicit_local_ports(monkeypatch):
+    monkeypatch.delenv("HLA2010_PITCH_FEDPRO_LOCAL_SETTINGS_DESIGNATOR", raising=False)
+    monkeypatch.delenv("HLA2010_PITCH_FEDPRO_ADDRESS", raising=False)
+    monkeypatch.delenv("HLA2010_PITCH_CRC_MODE", raising=False)
+    monkeypatch.setenv("HLA2010_PITCH_CRC_PORT", "18989")
+    monkeypatch.setenv("HLA2010_PITCH_FEDPRO_PORT", "25164")
+
+    assert pitch_fedpro_local_settings_designator() == "127.0.0.1:25164;;127.0.0.1:18989"
 
 
 def test_discover_pitch_runtime_from_installed_layout(tmp_path, monkeypatch):
@@ -265,8 +278,10 @@ def test_launch_pitch_runtime_honors_listener_and_boot_timeout_env(tmp_path, mon
 
     boot_calls: list[tuple[object, float]] = []
     listener_calls: list[tuple[str, int, float]] = []
+    popen_commands: list[list[str]] = []
 
     def fake_popen(command, **kwargs):
+        popen_commands.append(list(command))
         return FakeProcess()
 
     def fake_wait_for_process_boot(process, *, timeout):
@@ -320,8 +335,10 @@ def test_launch_pitch_runtime_honors_explicit_custom_ports(tmp_path, monkeypatch
             self.returncode = -9
 
     listener_calls: list[tuple[str, int, float]] = []
+    popen_commands: list[list[str]] = []
 
     def fake_popen(command, **kwargs):
+        popen_commands.append(list(command))
         return FakeProcess()
 
     def fake_wait_for_process_boot(process, *, timeout):
@@ -341,6 +358,9 @@ def test_launch_pitch_runtime_honors_explicit_custom_ports(tmp_path, monkeypatch
     assert ("127.0.0.1", 25164, 20.0) in listener_calls
     assert ("127.0.0.1", 18989, 45.0) in listener_calls
     assert runtime.tcp_port == 25164
+    fedpro_commands = [command for command in popen_commands if "se.pitch.fedpro.server.hla.FedProServerApp" in command]
+    assert len(fedpro_commands) == 1
+    assert fedpro_commands[0][-2:] == ["-p", "25164"]
 
 
 def test_launch_pitch_runtime_chooses_fallback_ports_when_defaults_are_busy(tmp_path, monkeypatch):

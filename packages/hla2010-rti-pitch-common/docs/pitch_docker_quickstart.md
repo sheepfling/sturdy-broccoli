@@ -31,6 +31,25 @@ status reports under:
 - `analysis/vendor_runtime_status/`
 - `analysis/vendor_parity_artifacts/`
 
+What you need on disk for a fresh setup:
+
+- vendor runtime bundle:
+  - `third_party/pitch/PITCH-prti1516e-manual/`
+- operator front door:
+  - `./tools/pitch`
+- Docker wrapper implementation:
+  - `scripts/pitch_docker_easy.sh`
+  - `scripts/run_pitch_docker_crc.sh`
+  - `scripts/resolve_pitch_runtime_ports.py`
+- persistent local state seeded by the repo:
+  - `.local/pitch/user-home/`
+- default preflight artifact:
+  - `analysis/preflight_artifacts/pitch-preflight.json`
+
+Host Java is not required for the Docker runtime path itself. It is only needed
+later if you intentionally run the Java bridge diagnostic profiles
+`pitch-jpype` or `pitch-py4j`.
+
 If you want the staged flow:
 
 ```bash
@@ -43,6 +62,14 @@ What that does:
 - seeds a persistent Pitch `user.home`
 - builds the Docker image used for CRC + FedPro
 
+Fresh setup checklist:
+
+1. Put the extracted vendor runtime at `third_party/pitch/PITCH-prti1516e-manual`.
+2. Run `./tools/pitch preflight`.
+3. If preflight is `ready`, run `./tools/pitch install`.
+4. Run `./tools/pitch start`.
+5. Run `./tools/pitch smoke` or `./tools/pitch verify`.
+
 ## Start Pitch
 
 ```bash
@@ -54,6 +81,11 @@ That starts one named container:
 - container: `hla2010-pitch-crc`
 - CRC: `127.0.0.1:8989`
 - FedPro: `127.0.0.1:15164`
+
+If `8989` or `15164` are already occupied, the repo resolves a fallback pair
+automatically and prints the selected host ports during `preflight` and
+`start`. The managed container is then published on that resolved pair instead
+of failing fast on the defaults.
 
 ## Smoke test
 
@@ -164,6 +196,30 @@ Common causes:
 - Docker Desktop is not running
 - the Pitch runtime bundle is missing from `third_party/pitch/PITCH-prti1516e-manual`
 - another process is already bound to `8989` or `15164`
+
+If the default ports are busy, that is no longer a hard failure by itself. The
+supported Docker path now resolves repo-local fallback host ports automatically.
+Use `./tools/pitch preflight --json` if you need the exact selected pair.
+
+## Proved Docker behavior
+
+Current proved operator behavior for the Docker path:
+
+- `./tools/pitch preflight --json` returns `ready` when the Pitch bundle and
+  Docker daemon are present.
+- if `127.0.0.1:8989` and `127.0.0.1:15164` are already occupied, preflight
+  resolves fallback host ports instead of failing
+- `./tools/pitch start` uses the same resolved pair when it launches the
+  managed container
+
+The native local macOS path remains diagnostic-only. Use:
+
+```bash
+./tools/pitch native-local-probe
+```
+
+when you need to inspect the host-native CRC/FedPro startup state separately
+from the supported Docker route.
 
 The implementation shim remains under `scripts/`, but the supported operator
 path is `./tools/pitch`.

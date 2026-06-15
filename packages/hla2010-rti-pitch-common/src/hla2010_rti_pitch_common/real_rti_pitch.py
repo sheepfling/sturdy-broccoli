@@ -88,10 +88,14 @@ def pitch_fedpro_local_settings_designator() -> str:
     explicit = os.environ.get("HLA2010_PITCH_FEDPRO_LOCAL_SETTINGS_DESIGNATOR")
     if explicit:
         return explicit
+    crc_port = os.environ.get("HLA2010_PITCH_CRC_PORT", "8989")
+    fedpro_port = os.environ.get("HLA2010_PITCH_FEDPRO_PORT", "15164")
     if os.environ.get("HLA2010_PITCH_CRC_MODE") == "docker":
-        crc_port = os.environ.get("HLA2010_PITCH_CRC_PORT", "8989")
         return f"localhost;;crcAddress=127.0.0.1:{crc_port}"
-    return os.environ.get("HLA2010_PITCH_FEDPRO_ADDRESS", "localhost")
+    explicit_address = os.environ.get("HLA2010_PITCH_FEDPRO_ADDRESS")
+    if explicit_address:
+        return explicit_address
+    return f"127.0.0.1:{fedpro_port};;127.0.0.1:{crc_port}"
 
 
 def pitch_connect_local_settings_designator() -> str:
@@ -559,35 +563,37 @@ def launch_pitch_runtime(
             cwd=repo_root,
         )
         children: tuple[Any, ...] = ()
-        if selected_crc_mode == "local":
-            fedpro_classpath = os.pathsep.join(str(path) for path in sorted((runtime.home / "lib").glob("*.jar")))
-            fedpro_command = [
-                str(runtime.java_bin),
-                f"-Djava.util.logging.config.file={pitch_user_home / 'prti1516e' / 'FedProServer.logging'}",
-                "-Dse.pitch.prti1516e.useSystemWideLicenseFile=true",
-                "-Dse.pitch.fedpro.acceptRtiAddressFromClient=true",
-                "-Dse.pitch.fedpro.acceptAdditionalSettingsFromClient=true",
-                f"-Duser.home={pitch_user_home}",
-                f"-Djava.library.path={os.pathsep.join(str(item) for item in runtime.java_library_path)}",
-                "-classpath",
-                fedpro_classpath,
-                "se.pitch.fedpro.server.hla.FedProServerApp",
-            ]
-            fedpro_process = _subprocess.Popen(
-                fedpro_command,
-                env=launch_env,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                cwd=runtime.home,
-            )
-            children = (fedpro_process,)
         try:
             _wait_for_process_boot(crc_process, timeout=process_boot_timeout)
+            _wait_for_tcp_listener("127.0.0.1", selected_crc_port, timeout=crc_listener_timeout)
+            if selected_crc_mode == "local":
+                fedpro_classpath = os.pathsep.join(str(path) for path in sorted((runtime.home / "lib").glob("*.jar")))
+                fedpro_command = [
+                    str(runtime.java_bin),
+                    f"-Djava.util.logging.config.file={pitch_user_home / 'prti1516e' / 'FedProServer.logging'}",
+                    "-Dse.pitch.prti1516e.useSystemWideLicenseFile=true",
+                    "-Dse.pitch.fedpro.acceptRtiAddressFromClient=true",
+                    "-Dse.pitch.fedpro.acceptAdditionalSettingsFromClient=true",
+                    f"-Duser.home={pitch_user_home}",
+                    f"-Djava.library.path={os.pathsep.join(str(item) for item in runtime.java_library_path)}",
+                    "-classpath",
+                    fedpro_classpath,
+                    "se.pitch.fedpro.server.hla.FedProServerApp",
+                    "-p",
+                    str(selected_fedpro_port),
+                ]
+                fedpro_process = _subprocess.Popen(
+                    fedpro_command,
+                    env=launch_env,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    cwd=runtime.home,
+                )
+                children = (fedpro_process,)
             for child in children:
                 _wait_for_process_boot(child, timeout=process_boot_timeout)
             _wait_for_tcp_listener("127.0.0.1", selected_fedpro_port, timeout=fedpro_listener_timeout)
-            _wait_for_tcp_listener("127.0.0.1", selected_crc_port, timeout=crc_listener_timeout)
             time.sleep(float(launch_env.get("HLA2010_PITCH_STARTUP_SETTLE_SECONDS", "1.0")))
             cleanup_paths = (isolated_home,) if isolated_home is not None else ()
             return RuntimeProcess(
