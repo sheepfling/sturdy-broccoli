@@ -1,6 +1,7 @@
 """Service-report file support for the pure-Python RTI.
 
-IEEE 1516.1-2010 §11.5 defines service reporting through MOM interactions.
+IEEE 1516.1-2010 (2010 edition) §11.5 defines service reporting through MOM
+interactions.
 This module implements an optional local JSONL audit sink that records the same
 logical events for test/debug workflows without changing the MOM surface.
 """

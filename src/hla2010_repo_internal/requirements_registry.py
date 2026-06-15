@@ -49,6 +49,30 @@ def requirement_spec_by_alias(alias: str, source: dict[str, Any] | None = None) 
     return None
 
 
+def requirement_active_binding_specs(source: dict[str, Any] | None = None) -> dict[str, dict[str, Any]]:
+    bindings = requirement_active_bindings(source)
+    resolved: dict[str, dict[str, Any]] = {}
+    for binding_name, alias in bindings.items():
+        spec = requirement_spec_by_alias(alias, source)
+        if spec is not None:
+            resolved[binding_name] = spec
+    return resolved
+
+
+def requirement_active_binding_editions(source: dict[str, Any] | None = None) -> dict[str, int]:
+    editions: dict[str, int] = {}
+    for binding_name, spec in requirement_active_binding_specs(source).items():
+        edition_year = spec.get("edition_year")
+        if isinstance(edition_year, int):
+            editions[binding_name] = edition_year
+    return editions
+
+
+def requirement_selected_editions(source: dict[str, Any] | None = None) -> tuple[str, ...]:
+    editions = {str(year) for year in requirement_active_binding_editions(source).values()}
+    return tuple(sorted(editions))
+
+
 def requirement_document_title_for_alias(alias: str, source: dict[str, Any] | None = None) -> str:
     spec = requirement_spec_by_alias(alias, source)
     if spec is not None:
@@ -74,12 +98,50 @@ def requirement_document_matches_binding(document: str, binding: str, source: di
     return str(document).strip() == requirement_document_title_for_binding(binding, source)
 
 
+def _requirement_document_title_aliases(spec: dict[str, Any]) -> tuple[str, ...]:
+    title = str(spec.get("document_title", "")).strip()
+    if not title:
+        return ()
+    edition_year = spec.get("edition_year")
+    edition_suffix = f" ({edition_year} edition)" if isinstance(edition_year, int) else ""
+    base_title = title.removesuffix(edition_suffix).strip() if edition_suffix else title
+    aliases = {title, base_title}
+    if base_title.startswith("IEEE "):
+        aliases.add(base_title.removeprefix("IEEE ").strip())
+    return tuple(sorted((alias for alias in aliases if alias), key=len, reverse=True))
+
+
 def format_requirement_section_ref(document: str, section: str) -> str:
     normalized_document = str(document).strip()
     normalized_section = str(section).strip()
     if not normalized_section:
         return "unmapped"
     return f"{normalized_document} §{normalized_section}" if normalized_document else normalized_section
+
+
+def normalize_requirement_section_ref(
+    section_ref: str,
+    *,
+    default_document: str = "",
+    source: dict[str, Any] | None = None,
+) -> str:
+    normalized = str(section_ref).strip()
+    if not normalized:
+        return normalized
+    for spec in requirement_spec_registry(source):
+        if not isinstance(spec, dict):
+            continue
+        title = str(spec.get("document_title", "")).strip()
+        if not title:
+            continue
+        for alias in _requirement_document_title_aliases(spec):
+            if normalized == alias:
+                return title
+            if normalized.startswith(alias):
+                return f"{title}{normalized[len(alias):]}"
+    if default_document and "§" in normalized:
+        return format_requirement_section_ref(default_document, normalized.split("§", 1)[1].strip())
+    return normalized
 
 
 def format_requirement_clause_key(document: str, clause_root: str) -> str:
@@ -168,11 +230,15 @@ __all__ = [
     "format_requirement_clause_key",
     "format_requirement_section_ref",
     "match_requirement_spec_prefix",
+    "normalize_requirement_section_ref",
+    "requirement_active_binding_editions",
+    "requirement_active_binding_specs",
     "requirement_active_bindings",
     "requirement_document_matches_alias",
     "requirement_document_matches_binding",
     "requirement_document_title_for_alias",
     "requirement_document_title_for_binding",
+    "requirement_selected_editions",
     "requirement_spec_by_alias",
     "requirement_spec_registry",
     "validate_requirement_document_registry",

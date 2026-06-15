@@ -20,6 +20,7 @@ from tests.pitch_clause4_policy_helpers import (
     load_vendor_backlog_rows as load_pitch_vendor_backlog_rows,
     pitch_clause_rows,
 )
+from tests.pitch_matrix_policy_helpers import PITCH_MATRIX_POLICY
 from tests.requirement_label_helpers import (
     federate_interface_document_title,
     federate_interface_section_ref,
@@ -360,7 +361,7 @@ def test_pitch_profile_requirement_disposition_artifacts_inherit_family_rows() -
 
 
 def test_pitch_tranche_clauses_4_6_7_8_9_have_no_not_yet_tested_rows_in_family_or_profiles() -> None:
-    target_clauses = ("4", "6", "7", "8", "9")
+    target_clauses = PITCH_MATRIX_POLICY.tranche_clauses_no_not_yet_tested
 
     family_rows = _pitch_rows("pitch_requirement_disposition.json")
     for clause_root in target_clauses:
@@ -418,115 +419,34 @@ def test_clause6_pitch_vendor_divergent_rows_stay_explicit_transport_subset_poli
     rows = _clause6_pitch_vendor_divergent_rows()
     assert rows
 
-    expected_ids = {
-        "HLA1516.1-OM-6.1.10-001",
-        "HLA1516.1-OM-6.23-001",
-        "HLA1516.1-OM-6.24-001",
-        "HLA1516.1-OM-6.25-001",
-        "HLA1516.1-OM-6.26-001",
-        "HLA1516.1-OM-6.27-001",
-        "HLA1516.1-OM-6.28-001",
-        "HLA1516.1-OM-6.29-001",
-        "HLA1516.1-OM-6.30-001",
-    }
-    assert {row.requirement_id for row in rows} == expected_ids
+    policy = PITCH_MATRIX_POLICY.vendor_divergence_cases["6"]
+    assert {row.requirement_id for row in rows} == policy.expected_ids
 
     for row in rows:
         refs = set(row.evidence_refs)
-        assert PITCH_TRANSPORT_DIVERGENCE_NOTE in refs
-        assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
-            "scenario_transportation_type.py::run_transportation_type_scenario"
-        ) in refs
-        assert (
-            "tests/scenarios/test_object_management_backend_matrix.py::"
-            "test_python_transportation_type_matrix"
-        ) in refs
-        assert (
-            "tests/vendors/test_pitch_real_backend_matrix.py::"
-            "test_pitch_backend_transportation_type_matrix"
-        ) in refs
-
-    restore_subset_ids = {
-        "HLA1516.1-OM-6.1.10-001",
-        "HLA1516.1-OM-6.23-001",
-        "HLA1516.1-OM-6.27-001",
-    }
-    for row in rows:
-        refs = set(row.evidence_refs)
-        if row.requirement_id in restore_subset_ids:
-            assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
-                "scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario"
-            ) in refs
-            assert (
-                "tests/scenarios/test_object_management_backend_matrix.py::"
-                "test_python_transportation_type_restore_persistence_matrix"
-            ) in refs
-            assert (
-                "tests/vendors/test_pitch_real_backend_matrix.py::"
-                "test_pitch_backend_transportation_type_restore_persistence_matrix"
-            ) in refs
+        for ref in policy.shared_refs:
+            assert ref in refs
+        for group in policy.groups.values():
+            if row.requirement_id in group.ids:
+                for ref in group.refs:
+                    assert ref in refs
 
 
 def test_clause7_pitch_vendor_divergent_rows_stay_explicit_negotiated_ownership_policy() -> None:
     rows = _clause7_pitch_vendor_divergent_rows()
     assert rows
 
-    expected_ids = {
-        "REQ-RTI-OWN-7_3-negotiatedAttributeOwnershipDivestiture",
-        "REQ-FED-OWN-7_5-requestDivestitureConfirmation",
-        "REQ-RTI-OWN-7_6-confirmDivestiture",
-        "REQ-RTI-OWN-7_14-cancelNegotiatedAttributeOwnershipDivestiture",
-        "REQ-RTI-OWN-7_15-cancelAttributeOwnershipAcquisition",
-        "REQ-FED-OWN-7_16-confirmAttributeOwnershipAcquisitionCancellation",
-        "HLA1516.1-OWN-7.3-001",
-        "HLA1516.1-OWN-7.4-001",
-        "HLA1516.1-OWN-7.10-001",
-        "HLA1516.1-OWN-7.11-001",
-    }
-    assert {row.requirement_id for row in rows} == expected_ids
-
-    offer_probe_ids = {
-        "REQ-RTI-OWN-7_3-negotiatedAttributeOwnershipDivestiture",
-        "REQ-FED-OWN-7_5-requestDivestitureConfirmation",
-        "REQ-RTI-OWN-7_6-confirmDivestiture",
-        "REQ-RTI-OWN-7_14-cancelNegotiatedAttributeOwnershipDivestiture",
-        "HLA1516.1-OWN-7.3-001",
-        "HLA1516.1-OWN-7.4-001",
-    }
-    full_negotiated_ids = expected_ids - offer_probe_ids
+    policy = PITCH_MATRIX_POLICY.vendor_divergence_cases["7"]
+    assert {row.requirement_id for row in rows} == policy.expected_ids
 
     for row in rows:
         refs = set(row.evidence_refs)
-        assert PITCH_NEGOTIATED_OWNERSHIP_VENDOR_BUG_NOTE in refs
-        if row.requirement_id in offer_probe_ids:
-            assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
-                "scenario_ownership.py::probe_negotiated_attribute_ownership_offer"
-            ) in refs
-            assert (
-                "tests/scenarios/test_ownership_management_backend_matrix.py::"
-                "test_python_negotiated_divesting_offer_probe_matrix"
-            ) in refs
-            assert (
-                "tests/vendors/test_pitch_real_backend_matrix.py::"
-                "test_pitch_negotiated_divesting_offer_probe"
-            ) in refs
-        else:
-            assert row.requirement_id in full_negotiated_ids
-            assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
-                "scenario_ownership.py::run_negotiated_attribute_ownership_scenario"
-            ) in refs
-            assert (
-                "tests/scenarios/test_ownership_management_backend_matrix.py::"
-                "test_python_backend_negotiated_ownership_matrix"
-            ) in refs
-            assert (
-                "tests/vendors/test_pitch_real_backend_matrix.py::"
-                "test_pitch_backend_negotiated_ownership_matrix"
-            ) in refs
+        for ref in policy.shared_refs:
+            assert ref in refs
+        for group in policy.groups.values():
+            if row.requirement_id in group.ids:
+                for ref in group.refs:
+                    assert ref in refs
 
 
 def test_clause7_pitch_backend_matrix_functions_stay_shared_harness_wrappers() -> None:
@@ -543,123 +463,17 @@ def test_clause8_pitch_vendor_divergent_rows_stay_explicit_shared_harness_policy
     rows = _clause8_pitch_vendor_divergent_rows()
     assert rows
 
-    expected_ids = {
-        "REQ-RTI-TM-8_10-nextMessageRequest",
-        "REQ-RTI-TM-8_11-nextMessageRequestAvailable",
-        "REQ-RTI-TM-8_21-retract",
-        "REQ-FED-TM-8_22-requestRetraction",
-        "HLA1516.1-TM-8.1-001",
-        "HLA1516.1-TM-8.1-002",
-        "HLA1516.1-TM-8.1.1-001",
-        "HLA1516.1-TM-8.1.2-001",
-        "HLA1516.1-TM-8.1.2-002",
-        "HLA1516.1-TM-8.1.2-003",
-        "HLA1516.1-TM-8.1.2-004",
-        "HLA1516.1-TM-8.1.3-002",
-        "HLA1516.1-TM-8.1.3-003",
-        "HLA1516.1-TM-8.1.5-001",
-        "HLA1516.1-TM-8.1.6-001",
-        "HLA1516.1-TM-8.1.7-001",
-        "HLA1516.1-TM-8.10-001",
-        "HLA1516.1-TM-8.21-001",
-    }
-    assert {row.requirement_id for row in rows} == expected_ids
-
-    ordering_and_query_ids = {
-        "REQ-RTI-TM-8_10-nextMessageRequest",
-        "HLA1516.1-TM-8.1-002",
-        "HLA1516.1-TM-8.1.1-001",
-        "HLA1516.1-TM-8.1.2-004",
-        "HLA1516.1-TM-8.1.3-002",
-        "HLA1516.1-TM-8.1.3-003",
-        "HLA1516.1-TM-8.1.5-001",
-        "HLA1516.1-TM-8.1.6-001",
-        "HLA1516.1-TM-8.1.7-001",
-        "HLA1516.1-TM-8.10-001",
-    }
-    available_and_retraction_ids = {
-        "REQ-RTI-TM-8_11-nextMessageRequestAvailable",
-        "REQ-RTI-TM-8_21-retract",
-        "HLA1516.1-TM-8.21-001",
-    }
-    request_retraction_ids = {"REQ-FED-TM-8_22-requestRetraction"}
-    state_services_ids = {"HLA1516.1-TM-8.1-001"}
-    order_override_ids = {
-        "HLA1516.1-TM-8.1.2-001",
-        "HLA1516.1-TM-8.1.2-002",
-        "HLA1516.1-TM-8.1.2-003",
-    }
+    policy = PITCH_MATRIX_POLICY.vendor_divergence_cases["8"]
+    assert {row.requirement_id for row in rows} == policy.expected_ids
 
     for row in rows:
-        requirement_id = row.requirement_id
         refs = set(row.evidence_refs)
-        assert PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_NOTE in refs
-        if requirement_id in ordering_and_query_ids:
-            assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
-                "section8_matrix.py::run_section8_ordering_and_query_case"
-            ) in refs
-            assert (
-                "tests/time/test_section8_backend_matrix.py::"
-                "test_section8_backend_matrix_ordering_and_queries"
-            ) in refs
-            assert (
-                "tests/vendors/test_pitch_real_backend_matrix.py::"
-                "test_pitch_section8_ordering_and_queries_matrix"
-            ) in refs
-        elif requirement_id in available_and_retraction_ids:
-            assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
-                "section8_matrix.py::run_section8_available_and_retraction_case"
-            ) in refs
-            assert (
-                "tests/time/test_section8_backend_matrix.py::"
-                "test_section8_backend_matrix_available_and_retraction"
-            ) in refs
-            assert (
-                "tests/vendors/test_pitch_real_backend_matrix.py::"
-                "test_pitch_section8_available_and_retraction_matrix"
-            ) in refs
-        elif requirement_id in request_retraction_ids:
-            assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
-                "section8_matrix.py::run_section8_request_retraction_case"
-            ) in refs
-            assert (
-                "tests/time/test_section8_backend_matrix.py::"
-                "test_section8_backend_matrix_request_retraction_callback"
-            ) in refs
-            assert (
-                "tests/vendors/test_pitch_real_backend_matrix.py::"
-                "test_pitch_section8_request_retraction_callback_matrix"
-            ) in refs
-        elif requirement_id in state_services_ids:
-            assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
-                "section8_matrix.py::run_section8_state_services_case"
-            ) in refs
-            assert (
-                "tests/time/test_section8_backend_matrix.py::"
-                "test_section8_backend_matrix_state_services"
-            ) in refs
-            assert (
-                "tests/vendors/test_pitch_real_backend_matrix.py::"
-                "test_pitch_section8_state_services_matrix"
-            ) in refs
-        else:
-            assert requirement_id in order_override_ids
-            assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
-                "section8_matrix.py::run_section8_order_override_case"
-            ) in refs
-            assert (
-                "tests/time/test_section8_backend_matrix.py::"
-                "test_section8_backend_matrix_order_override_services"
-            ) in refs
-            assert (
-                "tests/vendors/test_pitch_real_backend_matrix.py::"
-                "test_pitch_section8_order_override_services_matrix"
-            ) in refs
+        for ref in policy.shared_refs:
+            assert ref in refs
+        for group in policy.groups.values():
+            if row.requirement_id in group.ids:
+                for ref in group.refs:
+                    assert ref in refs
 
 
 def test_clause8_pitch_backend_matrix_functions_stay_shared_harness_wrappers() -> None:
@@ -771,13 +585,7 @@ def test_clause4_pitch_family_and_profiles_keep_exact_residual_frontier() -> Non
 def test_clause4_pitch_family_and_profiles_keep_exact_summary_counts() -> None:
     payload = load_compliance_json("pitch_requirement_disposition.json")
 
-    expected = {
-        "blocked": 2,
-        "not-applicable": 2,
-        "total": 281,
-        "vendor-divergent": 3,
-        "verified": 274,
-    }
+    expected = PITCH_MATRIX_POLICY.clause4_summary_counts
     section_ref = federate_interface_section_ref("4")
     assert payload["summary"]["clause_summary"][section_ref] == expected
     assert payload["summary"]["profile_clause_summary"]["pitch-jpype"][section_ref] == expected

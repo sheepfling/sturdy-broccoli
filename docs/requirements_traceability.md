@@ -2,6 +2,11 @@
 
 This repo treats traceability as an executable product, not a prose claim.
 
+The traceability model is edition-selectable in structure, but the current
+selected requirement document set is `2010` only. In normal maintenance, treat
+2010-edition document titles and clause references as the active truth and only
+introduce other editions when changing the registry structure deliberately.
+
 Use this page for the broad model:
 
 - what the generated service trace index means

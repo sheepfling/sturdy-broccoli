@@ -6,7 +6,7 @@ is the source of truth for MOM object attributes, interaction parameters,
 request/report pairing, RTI-send/RTI-receive direction, and strict negative-path
 validation.
 
-Section anchors: IEEE 1516.1-2010 §11.1-§11.6 and Annex G.
+Section anchors: IEEE 1516.1-2010 (2010 edition) §11.1-§11.6 and Annex G.
 """
 from __future__ import annotations
 
@@ -100,7 +100,7 @@ class MOMValidationIssue:
     parameter_name: str = ""
     detail: str = ""
     severity: str = "error"
-    section: str = "1516.1-2010 §11.3-§11.5"
+    section: str = "IEEE 1516.1-2010 (2010 edition) §11.3-§11.5"
 
     @property
     def code(self) -> str:
@@ -258,7 +258,7 @@ class MOMExposureModel:
                     "MOMInteractionNotReceivableByRTI",
                     canonical,
                     detail=f"direction={rule.rti_direction}",
-                    section="1516.1-2010 §11.3",
+                    section="IEEE 1516.1-2010 (2010 edition) §11.3",
                 ),
             )
         if isinstance(supplied_parameters, Mapping):

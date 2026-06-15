@@ -36,6 +36,7 @@ class RTIAmbassadorFactory:
 
     name: str
     aliases: tuple[str, ...]
+    supported_editions: tuple[str, ...]
     selectable_names: tuple[str, ...]
     family: str
     description: str
@@ -68,6 +69,7 @@ class RTIAmbassadorFactory:
         return RTIBackendDiscovery(
             name=self.name,
             aliases=self.aliases,
+            supported_editions=self.supported_editions,
             family=self.family,
             description=self.description,
             selectable_names=self.selectable_names,
@@ -181,6 +183,7 @@ def iter_rti_factories() -> tuple[RTIAmbassadorFactory, ...]:
             RTIAmbassadorFactory(
                 name=plugin.name,
                 aliases=plugin.aliases,
+                supported_editions=plugin.supported_editions,
                 selectable_names=_selectable_names_for_plugin(plugin),
                 family=plugin.family,
                 description=plugin.description,
@@ -213,6 +216,7 @@ def discover_rti_backends(*, probe: bool = False) -> tuple[RTIBackendDiscovery, 
             RTIBackendDiscovery(
                 name=factory.name,
                 aliases=factory.aliases,
+                supported_editions=factory.supported_editions,
                 family=factory.family,
                 description=factory.description,
                 selectable_names=factory.selectable_names,

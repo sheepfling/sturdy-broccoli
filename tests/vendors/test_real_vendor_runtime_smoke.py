@@ -35,11 +35,15 @@ from tests.vendors.runtime_support import (
 )
 
 EXPECTED_HLA_VERSION = framework_document_title()
+CERTI_LEGACY_2010_VERSION_ALIASES = {
+    "IEEE 1516-2010",
+    "IEEE 1516-2010 (2010 edition)",
+}
 
 
 def _assert_hla_version(actual: str, *, vendor: str) -> None:
     if vendor == "certi":
-        assert actual in {EXPECTED_HLA_VERSION, "IEEE 1516-2010"}
+        assert actual in {EXPECTED_HLA_VERSION, *CERTI_LEGACY_2010_VERSION_ALIASES}
         return
     assert actual == EXPECTED_HLA_VERSION
 

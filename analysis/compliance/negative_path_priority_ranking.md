@@ -4,63 +4,63 @@ Rows ranked by section priority and declared exception count for converting mapp
 
 | Priority | Section | Interface | Method | Declared exceptions | Verification status |
 |---|---|---|---|---:|---|
-| P1 | IEEE 1516.1-2010 §4.18 | RTIambassador | federateSaveBegun | 5 | focused-executable-tests |
-| P1 | IEEE 1516.1-2010 §4.19 | RTIambassador | federateSaveComplete | 5 | focused-executable-tests |
-| P1 | IEEE 1516.1-2010 §4.19 | RTIambassador | federateSaveNotComplete | 5 | focused-executable-tests |
-| P1 | IEEE 1516.1-2010 §4.28 | RTIambassador | federateRestoreComplete | 5 | focused-executable-tests |
-| P1 | IEEE 1516.1-2010 §4.28 | RTIambassador | federateRestoreNotComplete | 5 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §9.8 | RTIambassador | subscribeObjectClassAttributesPassivelyWithRegions | 11 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §8.10 | RTIambassador | nextMessageRequest | 10 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §8.12 | RTIambassador | flushQueueRequest | 10 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §8.9 | RTIambassador | timeAdvanceRequestAvailable | 10 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §9.10 | RTIambassador | subscribeInteractionClassPassivelyWithRegions | 10 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §7.3 | RTIambassador | negotiatedAttributeOwnershipDivestiture | 9 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §9.7 | RTIambassador | unassociateRegionsForUpdates | 9 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §5.3 | RTIambassador | unpublishObjectClassAttributes | 8 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §5.6 | RTIambassador | subscribeObjectClassAttributes | 8 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §5.6 | RTIambassador | subscribeObjectClassAttributesPassively | 8 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §7.2 | RTIambassador | unconditionalAttributeOwnershipDivestiture | 8 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §8.21 | RTIambassador | retract | 8 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §9.4 | RTIambassador | deleteRegion | 8 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §5.3 | RTIambassador | unpublishObjectClass | 7 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §5.7 | RTIambassador | unsubscribeObjectClassAttributes | 7 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §5.8 | RTIambassador | subscribeInteractionClass | 7 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §5.8 | RTIambassador | subscribeInteractionClassPassively | 7 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §6.25 | RTIambassador | queryAttributeTransportationType | 7 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §7.19 | RTIambassador | isAttributeOwnedByFederate | 7 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §8.24 | RTIambassador | changeInteractionOrderType | 7 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §5.5 | RTIambassador | unpublishInteractionClass | 6 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §5.7 | RTIambassador | unsubscribeObjectClass | 6 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §5.9 | RTIambassador | unsubscribeInteractionClass | 6 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §8.20 | RTIambassador | queryLookahead | 6 | focused-executable-tests |
-| P2 | IEEE 1516.1-2010 §8.16 | RTIambassador | queryGALT | 5 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.28 | RTIambassador | getDimensionHandleSet | 6 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.33 | RTIambassador | enableObjectClassRelevanceAdvisorySwitch | 6 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.34 | RTIambassador | disableObjectClassRelevanceAdvisorySwitch | 6 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.35 | RTIambassador | enableAttributeRelevanceAdvisorySwitch | 6 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.36 | RTIambassador | disableAttributeRelevanceAdvisorySwitch | 6 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.37 | RTIambassador | enableAttributeScopeAdvisorySwitch | 6 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.38 | RTIambassador | disableAttributeScopeAdvisorySwitch | 6 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.14 | RTIambassador | getUpdateRateValueForAttribute | 5 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.13 | RTIambassador | getUpdateRateValue | 4 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.21 | RTIambassador | getTransportationType | 4 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.22 | RTIambassador | getTransportationTypeName | 4 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.3 | RTIambassador | setAutomaticResignDirective | 4 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.32 | RTIambassador | normalizeServiceGroup | 4 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.2 | RTIambassador | getAutomaticResignDirective | 3 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.44 | RTIambassador | getAttributeHandleFactory | 2 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.44 | RTIambassador | getAttributeHandleSetFactory | 2 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.44 | RTIambassador | getAttributeHandleValueMapFactory | 2 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.44 | RTIambassador | getAttributeSetRegionSetPairListFactory | 2 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.44 | RTIambassador | getDimensionHandleFactory | 2 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.44 | RTIambassador | getDimensionHandleSetFactory | 2 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.44 | RTIambassador | getFederateHandleFactory | 2 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.44 | RTIambassador | getFederateHandleSetFactory | 2 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.44 | RTIambassador | getInteractionClassHandleFactory | 2 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.44 | RTIambassador | getObjectClassHandleFactory | 2 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.44 | RTIambassador | getObjectInstanceHandleFactory | 2 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.44 | RTIambassador | getParameterHandleFactory | 2 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.44 | RTIambassador | getParameterHandleValueMapFactory | 2 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.44 | RTIambassador | getRegionHandleSetFactory | 2 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.44 | RTIambassador | getTimeFactory | 2 | focused-executable-tests |
-| P3 | IEEE 1516.1-2010 §10.44 | RTIambassador | getTransportationTypeHandleFactory | 2 | focused-executable-tests |
+| P1 | IEEE 1516.1-2010 (2010 edition) §4.18 | RTIambassador | federateSaveBegun | 5 | focused-executable-tests |
+| P1 | IEEE 1516.1-2010 (2010 edition) §4.19 | RTIambassador | federateSaveComplete | 5 | focused-executable-tests |
+| P1 | IEEE 1516.1-2010 (2010 edition) §4.19 | RTIambassador | federateSaveNotComplete | 5 | focused-executable-tests |
+| P1 | IEEE 1516.1-2010 (2010 edition) §4.28 | RTIambassador | federateRestoreComplete | 5 | focused-executable-tests |
+| P1 | IEEE 1516.1-2010 (2010 edition) §4.28 | RTIambassador | federateRestoreNotComplete | 5 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §9.8 | RTIambassador | subscribeObjectClassAttributesPassivelyWithRegions | 11 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §8.10 | RTIambassador | nextMessageRequest | 10 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §8.12 | RTIambassador | flushQueueRequest | 10 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §8.9 | RTIambassador | timeAdvanceRequestAvailable | 10 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §9.10 | RTIambassador | subscribeInteractionClassPassivelyWithRegions | 10 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §7.3 | RTIambassador | negotiatedAttributeOwnershipDivestiture | 9 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §9.7 | RTIambassador | unassociateRegionsForUpdates | 9 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §5.3 | RTIambassador | unpublishObjectClassAttributes | 8 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §5.6 | RTIambassador | subscribeObjectClassAttributes | 8 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §5.6 | RTIambassador | subscribeObjectClassAttributesPassively | 8 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §7.2 | RTIambassador | unconditionalAttributeOwnershipDivestiture | 8 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §8.21 | RTIambassador | retract | 8 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §9.4 | RTIambassador | deleteRegion | 8 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §5.3 | RTIambassador | unpublishObjectClass | 7 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §5.7 | RTIambassador | unsubscribeObjectClassAttributes | 7 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §5.8 | RTIambassador | subscribeInteractionClass | 7 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §5.8 | RTIambassador | subscribeInteractionClassPassively | 7 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §6.25 | RTIambassador | queryAttributeTransportationType | 7 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §7.19 | RTIambassador | isAttributeOwnedByFederate | 7 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §8.24 | RTIambassador | changeInteractionOrderType | 7 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §5.5 | RTIambassador | unpublishInteractionClass | 6 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §5.7 | RTIambassador | unsubscribeObjectClass | 6 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §5.9 | RTIambassador | unsubscribeInteractionClass | 6 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §8.20 | RTIambassador | queryLookahead | 6 | focused-executable-tests |
+| P2 | IEEE 1516.1-2010 (2010 edition) §8.16 | RTIambassador | queryGALT | 5 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.28 | RTIambassador | getDimensionHandleSet | 6 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.33 | RTIambassador | enableObjectClassRelevanceAdvisorySwitch | 6 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.34 | RTIambassador | disableObjectClassRelevanceAdvisorySwitch | 6 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.35 | RTIambassador | enableAttributeRelevanceAdvisorySwitch | 6 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.36 | RTIambassador | disableAttributeRelevanceAdvisorySwitch | 6 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.37 | RTIambassador | enableAttributeScopeAdvisorySwitch | 6 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.38 | RTIambassador | disableAttributeScopeAdvisorySwitch | 6 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.14 | RTIambassador | getUpdateRateValueForAttribute | 5 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.13 | RTIambassador | getUpdateRateValue | 4 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.21 | RTIambassador | getTransportationType | 4 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.22 | RTIambassador | getTransportationTypeName | 4 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.3 | RTIambassador | setAutomaticResignDirective | 4 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.32 | RTIambassador | normalizeServiceGroup | 4 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.2 | RTIambassador | getAutomaticResignDirective | 3 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getAttributeHandleFactory | 2 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getAttributeHandleSetFactory | 2 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getAttributeHandleValueMapFactory | 2 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getAttributeSetRegionSetPairListFactory | 2 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getDimensionHandleFactory | 2 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getDimensionHandleSetFactory | 2 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getFederateHandleFactory | 2 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getFederateHandleSetFactory | 2 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getInteractionClassHandleFactory | 2 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getObjectClassHandleFactory | 2 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getObjectInstanceHandleFactory | 2 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getParameterHandleFactory | 2 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getParameterHandleValueMapFactory | 2 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getRegionHandleSetFactory | 2 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getTimeFactory | 2 | focused-executable-tests |
+| P3 | IEEE 1516.1-2010 (2010 edition) §10.44 | RTIambassador | getTransportationTypeHandleFactory | 2 | focused-executable-tests |

@@ -4,10 +4,10 @@ The helpers in this module are intentionally thin wrappers around standard
 RTIambassador services. They keep examples clean while preserving the normal HLA
 startup sequence and section anchors:
 
-* IEEE 1516.1-2010 §4.2 ``Connect``
-* IEEE 1516.1-2010 §4.5 ``Create Federation Execution``
-* IEEE 1516.1-2010 §4.9 ``Join Federation Execution``
-* IEEE 1516.1-2010 §4.11-§4.15 federation synchronization services
+* IEEE 1516.1-2010 (2010 edition) §4.2 ``Connect``
+* IEEE 1516.1-2010 (2010 edition) §4.5 ``Create Federation Execution``
+* IEEE 1516.1-2010 (2010 edition) §4.9 ``Join Federation Execution``
+* IEEE 1516.1-2010 (2010 edition) §4.11-§4.15 federation synchronization services
 
 They work with the pure Python RTI and the Java JPype/Py4J adapters because they
 only call the backend-neutral Python RTIambassador façade.

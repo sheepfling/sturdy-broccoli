@@ -5,6 +5,9 @@ clean Python spec surface plus pluggable RTI backends.
 
 The neutral namespace path is:
 
+- `hla.spec` for the default selected HLA contract surface
+- `hla.runtime_api` for the default selected runtime convenience layer
+- `hla.select_edition("2010")` to select the current supported edition explicitly
 - `hla.editions.ed2010` for the explicit 2010-edition surface
 
 The 2010 compatibility namespace remains:
@@ -163,9 +166,11 @@ If you need vendor flows, stay on the `tools/` operator surface:
 
 ## What This Repo Is For
 
-The neutral import surface is `hla.editions.ed2010`, with the clean contract
-available at `hla.editions.ed2010.spec`. The legacy `hla2010` import surface
-remains the 2010 compatibility namespace. The
+The neutral import surface is `hla`, with the clean contract available at
+`hla.spec` and the current explicit edition available at
+`hla.editions.ed2010.spec`. Right now the neutral namespace selects only the
+2010 edition. The legacy `hla2010` import surface remains the 2010
+compatibility namespace. The
 `packages/hla2010-spec/src/hla2010/` tree stays limited to the abstract/core
 API, backend-neutral types and contracts, FOM/MOM helpers, and the one
 documented temporary split-package facade `hla2010.rti`.
@@ -180,7 +185,8 @@ Concrete backend implementations now live in package-owned source trees such as:
 
 Namespace policy:
 
-- `hla.editions.ed2010` is the neutral edition-qualified runtime namespace
+- `hla` is the neutral runtime namespace with explicit edition selection
+- `hla.editions.ed2010` is the explicit neutral 2010-edition runtime namespace
 - `hla2010` is the supported 2010 compatibility runtime namespace
 - `hla2010_verification_harness` is the only supported public verification namespace
 - `hla2010_fom_target_radar.scenarios` is public scenario/FOM surface

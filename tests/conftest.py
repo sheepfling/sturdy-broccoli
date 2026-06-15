@@ -109,6 +109,8 @@ def ensure_bootstrapped_python_workspace() -> Path:
             str(python_bin),
             "-c",
             (
+                "import hla;"
+                "import hla.spec;"
                 "import hla2010;"
                 "import hla2010.spec;"
                 "import hla2010_rti_backend_common;"

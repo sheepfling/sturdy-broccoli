@@ -38,8 +38,8 @@
       "notes": "Reference backend now has a shared-harness support factory/decode matrix plus existing traceability coverage for the broader support lookup surface.",
       "scope": "reference support lookup slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a710.4",
-        "IEEE 1516.1-2010 \u00a710.32"
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.4",
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.32"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "support-lookups",
@@ -54,8 +54,8 @@
       "notes": "REST transport exercises hosted Python positive-path federation/object/time flows, but the current CERTI-style transport facade does not expose the full support-service lookup surface such as getFederateHandle, so this slice remains only partially matrixed.",
       "scope": "hosted support lookup slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a710.4",
-        "IEEE 1516.1-2010 \u00a710.32"
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.4",
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.32"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "support-lookups",
@@ -70,8 +70,8 @@
       "notes": "gRPC transport exercises hosted Python positive-path federation/object/time flows, but the current CERTI-style transport facade does not expose the full support-service lookup surface such as getFederateHandle, so this slice remains only partially matrixed.",
       "scope": "hosted support lookup slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a710.4",
-        "IEEE 1516.1-2010 \u00a710.32"
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.4",
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.32"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "support-lookups",
@@ -87,8 +87,8 @@
       "notes": "Java shim JPype now runs the shared support-services scenario in-process for the lookup subset it implements, giving executable Section 10 support-lookup coverage without vendor runtime dependencies.",
       "scope": "java shim support lookup slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a710.4",
-        "IEEE 1516.1-2010 \u00a710.32"
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.4",
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.32"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "support-lookups",
@@ -104,8 +104,8 @@
       "notes": "Java shim Py4J now runs the shared support-services scenario in-process for the lookup subset it implements, giving executable Section 10 support-lookup coverage without vendor runtime dependencies.",
       "scope": "java shim support lookup slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a710.4",
-        "IEEE 1516.1-2010 \u00a710.32"
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.4",
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.32"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "support-lookups",
@@ -120,8 +120,8 @@
       "notes": "CERTI native now has a thin real-runtime wrapper for the shared support-services scenario over the lookup subset exposed by the current facade, but local proof is still gated on enabling real vendor smoke and preflight.",
       "scope": "vendor support lookup slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a710.4",
-        "IEEE 1516.1-2010 \u00a710.32"
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.4",
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.32"
       ],
       "session_status": "skipped-in-this-session",
       "slice_id": "support-lookups",
@@ -136,8 +136,8 @@
       "notes": "Pitch JPype now has a thin real-runtime wrapper for the shared support factory/decode scenario, but local proof is still gated on enabling real vendor smoke and preflight.",
       "scope": "vendor support lookup slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a710.4",
-        "IEEE 1516.1-2010 \u00a710.32"
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.4",
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.32"
       ],
       "session_status": "skipped-in-this-session",
       "slice_id": "support-lookups",
@@ -152,8 +152,8 @@
       "notes": "Pitch Py4J now has a thin real-runtime wrapper for the shared support factory/decode scenario, but local proof is still gated on enabling real vendor smoke and preflight.",
       "scope": "vendor support lookup slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a710.4",
-        "IEEE 1516.1-2010 \u00a710.32"
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.4",
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.32"
       ],
       "session_status": "skipped-in-this-session",
       "slice_id": "support-lookups",
@@ -168,8 +168,8 @@
       "notes": "Reference backend now enforces save/restore callback-control blocking and within-callback evoke rejection.",
       "scope": "reference callback-control slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a710.41",
-        "IEEE 1516.1-2010 \u00a710.44"
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.41",
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.44"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "support-callback-control",
@@ -184,8 +184,8 @@
       "notes": "REST transport exercises evoke paths positively, but the support callback-control slice is not yet matrixed to the same depth.",
       "scope": "hosted callback-control slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a710.41",
-        "IEEE 1516.1-2010 \u00a710.44"
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.41",
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.44"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "support-callback-control",
@@ -200,8 +200,8 @@
       "notes": "gRPC transport exercises evoke paths positively, but the support callback-control slice is not yet matrixed to the same depth.",
       "scope": "hosted callback-control slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a710.41",
-        "IEEE 1516.1-2010 \u00a710.44"
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.41",
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.44"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "support-callback-control",
@@ -216,8 +216,8 @@
       "notes": "Reference backend has explicit advisory on/off and save/restore negative coverage.",
       "scope": "reference advisory-switch slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a710.33",
-        "IEEE 1516.1-2010 \u00a710.40"
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.33",
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.40"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "support-advisories",
@@ -232,7 +232,7 @@
       "notes": "Reference backend factory getters now have explicit connected vs joined negative coverage.",
       "scope": "reference factory slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a710.44"
+        "IEEE 1516.1-2010 (2010 edition) \u00a710.44"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "support-factories",

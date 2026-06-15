@@ -37,8 +37,8 @@
       "notes": "Python reference lookahead is exercised directly and through the Section 8 matrix.",
       "scope": "reference lookahead slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a78.2",
-        "IEEE 1516.1-2010 \u00a78.17"
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.17"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "lookahead-window",
@@ -54,8 +54,8 @@
       "notes": "REST-hosted Python RTI has explicit lookahead query/modify and early-send coverage.",
       "scope": "hosted lookahead slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a78.2",
-        "IEEE 1516.1-2010 \u00a78.17"
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.17"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "lookahead-window",
@@ -71,8 +71,8 @@
       "notes": "gRPC-hosted Python RTI has explicit lookahead query/modify and early-send coverage.",
       "scope": "hosted lookahead slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a78.2",
-        "IEEE 1516.1-2010 \u00a78.17"
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.17"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "lookahead-window",
@@ -87,8 +87,8 @@
       "notes": "CERTI native lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
       "scope": "real-vendor lookahead slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a78.2",
-        "IEEE 1516.1-2010 \u00a78.17"
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.17"
       ],
       "session_status": "failing-in-this-session",
       "slice_id": "lookahead-window",
@@ -103,8 +103,8 @@
       "notes": "CERTI JPype lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
       "scope": "real-vendor lookahead slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a78.2",
-        "IEEE 1516.1-2010 \u00a78.17"
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.17"
       ],
       "session_status": "failing-in-this-session",
       "slice_id": "lookahead-window",
@@ -119,8 +119,8 @@
       "notes": "CERTI Py4J lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
       "scope": "real-vendor lookahead slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a78.2",
-        "IEEE 1516.1-2010 \u00a78.17"
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.17"
       ],
       "session_status": "failing-in-this-session",
       "slice_id": "lookahead-window",
@@ -135,8 +135,8 @@
       "notes": "Pitch JPype lookahead query/modify and early-send assertions passed against the Docker-backed real runtime in this session.",
       "scope": "real-vendor lookahead slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a78.2",
-        "IEEE 1516.1-2010 \u00a78.17"
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.17"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "lookahead-window",
@@ -151,8 +151,8 @@
       "notes": "Pitch Py4J lookahead query/modify and early-send assertions passed against the Docker-backed real runtime in this session.",
       "scope": "real-vendor lookahead slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a78.2",
-        "IEEE 1516.1-2010 \u00a78.17"
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.17"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "lookahead-window",

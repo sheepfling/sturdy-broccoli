@@ -42,8 +42,8 @@
       "notes": "Reference backend semantics are exercised indirectly through shared scenario helpers and broader federation tests.",
       "scope": "core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a74.25",
-        "IEEE 1516.1-2010 \u00a74.26"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.26"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "federation-sync",
@@ -58,8 +58,8 @@
       "notes": "REST-hosted Python RTI now has explicit synchronization end-to-end coverage.",
       "scope": "hosted core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a74.25",
-        "IEEE 1516.1-2010 \u00a74.26"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.26"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "federation-sync",
@@ -74,8 +74,8 @@
       "notes": "gRPC-hosted Python RTI has explicit synchronization end-to-end coverage.",
       "scope": "hosted core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a74.25",
-        "IEEE 1516.1-2010 \u00a74.26"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.26"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "federation-sync",
@@ -90,8 +90,8 @@
       "notes": "JPype Java shim has explicit synchronization coverage.",
       "scope": "in-process Java shim slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a74.25",
-        "IEEE 1516.1-2010 \u00a74.26"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.26"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "federation-sync",
@@ -106,8 +106,8 @@
       "notes": "Py4J Java shim has explicit synchronization coverage.",
       "scope": "in-process Java shim slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a74.25",
-        "IEEE 1516.1-2010 \u00a74.26"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.26"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "federation-sync",
@@ -122,8 +122,8 @@
       "notes": "CERTI native synchronization matrix exists but was not rerun in this session.",
       "scope": "real-vendor core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a74.25",
-        "IEEE 1516.1-2010 \u00a74.26"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.26"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "federation-sync",
@@ -138,8 +138,8 @@
       "notes": "CERTI JPype synchronization matrix exists but was not rerun in this session.",
       "scope": "real-vendor core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a74.25",
-        "IEEE 1516.1-2010 \u00a74.26"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.26"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "federation-sync",
@@ -154,8 +154,8 @@
       "notes": "CERTI Py4J synchronization matrix exists but was not rerun in this session.",
       "scope": "real-vendor core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a74.25",
-        "IEEE 1516.1-2010 \u00a74.26"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.26"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "federation-sync",
@@ -170,8 +170,8 @@
       "notes": "Reference backend exchange behavior is exercised heavily through the Section 8 and scenario suites.",
       "scope": "core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a75.2",
-        "IEEE 1516.1-2010 \u00a76.9"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.9"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "exchange",
@@ -186,8 +186,8 @@
       "notes": "REST-hosted Python RTI has explicit exchange end-to-end coverage.",
       "scope": "hosted core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a75.2",
-        "IEEE 1516.1-2010 \u00a76.9"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.9"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "exchange",
@@ -202,8 +202,8 @@
       "notes": "gRPC-hosted Python RTI has explicit exchange end-to-end coverage.",
       "scope": "hosted core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a75.2",
-        "IEEE 1516.1-2010 \u00a76.9"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.9"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "exchange",
@@ -218,8 +218,8 @@
       "notes": "JPype Java shim has explicit exchange coverage including timed exchange.",
       "scope": "in-process Java shim slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a75.2",
-        "IEEE 1516.1-2010 \u00a76.9"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.9"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "exchange",
@@ -234,8 +234,8 @@
       "notes": "Py4J Java shim has explicit exchange coverage including timed exchange.",
       "scope": "in-process Java shim slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a75.2",
-        "IEEE 1516.1-2010 \u00a76.9"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.9"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "exchange",
@@ -250,8 +250,8 @@
       "notes": "CERTI native exchange and cross-facade parity slices passed in this session.",
       "scope": "real-vendor core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a75.2",
-        "IEEE 1516.1-2010 \u00a76.9"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.9"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "exchange",
@@ -266,8 +266,8 @@
       "notes": "CERTI JPype exchange and cross-facade parity slices passed in this session.",
       "scope": "real-vendor core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a75.2",
-        "IEEE 1516.1-2010 \u00a76.9"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.9"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "exchange",
@@ -282,8 +282,8 @@
       "notes": "CERTI Py4J exchange and cross-facade parity slices passed in this session.",
       "scope": "real-vendor core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a75.2",
-        "IEEE 1516.1-2010 \u00a76.9"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.9"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "exchange",
@@ -298,8 +298,8 @@
       "notes": "Reference backend ownership semantics are covered in the Python backend suite.",
       "scope": "core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.2",
-        "IEEE 1516.1-2010 \u00a77.18"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.18"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "ownership",
@@ -314,8 +314,8 @@
       "notes": "REST-hosted Python RTI now has explicit ownership end-to-end coverage.",
       "scope": "hosted core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.2",
-        "IEEE 1516.1-2010 \u00a77.18"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.18"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "ownership",
@@ -330,8 +330,8 @@
       "notes": "gRPC-hosted Python RTI has explicit ownership and negotiated ownership coverage.",
       "scope": "hosted core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.2",
-        "IEEE 1516.1-2010 \u00a77.18"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.18"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "ownership",
@@ -346,8 +346,8 @@
       "notes": "JPype Java shim has explicit ownership coverage.",
       "scope": "in-process Java shim slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.2",
-        "IEEE 1516.1-2010 \u00a77.18"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.18"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "ownership",
@@ -362,8 +362,8 @@
       "notes": "Py4J Java shim has explicit ownership coverage.",
       "scope": "in-process Java shim slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.2",
-        "IEEE 1516.1-2010 \u00a77.18"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.18"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "ownership",
@@ -378,8 +378,8 @@
       "notes": "CERTI native plain ownership slice passed in this session.",
       "scope": "real-vendor core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.2",
-        "IEEE 1516.1-2010 \u00a77.18"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.18"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "ownership",
@@ -394,8 +394,8 @@
       "notes": "CERTI JPype plain ownership slice passed in this session.",
       "scope": "real-vendor core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.2",
-        "IEEE 1516.1-2010 \u00a77.18"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.18"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "ownership",
@@ -410,8 +410,8 @@
       "notes": "CERTI Py4J plain ownership slice passed in this session.",
       "scope": "real-vendor core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.2",
-        "IEEE 1516.1-2010 \u00a77.18"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.18"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "ownership",
@@ -426,8 +426,8 @@
       "notes": "Reference backend negotiated ownership semantics are covered in the Python backend suite.",
       "scope": "core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.3",
-        "IEEE 1516.1-2010 \u00a77.15"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.15"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "negotiated-ownership",
@@ -442,8 +442,8 @@
       "notes": "REST-hosted Python RTI has explicit negotiated ownership end-to-end coverage.",
       "scope": "hosted core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.3",
-        "IEEE 1516.1-2010 \u00a77.15"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.15"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "negotiated-ownership",
@@ -458,8 +458,8 @@
       "notes": "gRPC-hosted Python RTI has explicit negotiated ownership end-to-end coverage.",
       "scope": "hosted core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.3",
-        "IEEE 1516.1-2010 \u00a77.15"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.15"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "negotiated-ownership",
@@ -474,8 +474,8 @@
       "notes": "JPype Java shim has explicit negotiated ownership coverage.",
       "scope": "in-process Java shim slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.3",
-        "IEEE 1516.1-2010 \u00a77.15"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.15"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "negotiated-ownership",
@@ -490,8 +490,8 @@
       "notes": "Py4J Java shim has explicit negotiated ownership coverage.",
       "scope": "in-process Java shim slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.3",
-        "IEEE 1516.1-2010 \u00a77.15"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.15"
       ],
       "session_status": "passing-in-this-session",
       "slice_id": "negotiated-ownership",
@@ -506,8 +506,8 @@
       "notes": "CERTI native negotiated ownership failed in this session because the runtime never produced the expected release/acquisition handshake.",
       "scope": "real-vendor core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.3",
-        "IEEE 1516.1-2010 \u00a77.15"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.15"
       ],
       "session_status": "failing-in-this-session",
       "slice_id": "negotiated-ownership",
@@ -522,8 +522,8 @@
       "notes": "CERTI JPype negotiated ownership failed in this session because the runtime never produced the expected release/acquisition handshake.",
       "scope": "real-vendor core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.3",
-        "IEEE 1516.1-2010 \u00a77.15"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.15"
       ],
       "session_status": "failing-in-this-session",
       "slice_id": "negotiated-ownership",
@@ -538,8 +538,8 @@
       "notes": "CERTI Py4J negotiated ownership failed in this session because the runtime never produced the expected release/acquisition handshake.",
       "scope": "real-vendor core scenario slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.3",
-        "IEEE 1516.1-2010 \u00a77.15"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.15"
       ],
       "session_status": "failing-in-this-session",
       "slice_id": "negotiated-ownership",

@@ -194,8 +194,11 @@ def test_requirements_surface_manifest_paths_exist_and_do_not_overlap() -> None:
     assert source.registry.active_bindings.federate_interface == "HLA1516.1-2010"
     generated_registry_text = read_repo_text("requirements/requirement_id_registry.yaml")
     assert "active_bindings:" in generated_registry_text
+    assert "active_binding_editions:" in generated_registry_text
+    assert "selected_editions:" in generated_registry_text
     assert "specs:" in generated_registry_text
     assert "federate_interface: HLA1516.1-2010" in generated_registry_text
+    assert "  - 2010" in generated_registry_text
 
 
 @pytest.mark.parametrize("case", _command_cases(), ids=lambda case: case.case_id)

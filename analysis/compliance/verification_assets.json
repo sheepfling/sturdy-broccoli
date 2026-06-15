@@ -10,9 +10,9 @@
       "gaps": [],
       "notes": "The active catalog now drives MOM object attributes, interaction parameters, request/report pairs, direction, and matrix output.",
       "section_refs": [
-        "1516.1-2010 \u00a711.2",
-        "1516.1-2010 \u00a711.3",
-        "1516.1-2010 Annex G"
+        "IEEE 1516.1-2010 (2010 edition) \u00a711.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a711.3",
+        "IEEE 1516.1-2010 (2010 edition) Annex G"
       ],
       "status": "implemented-slice",
       "title": "MOM object and interaction exposure is derived from the active MIM/FOM catalog"
@@ -31,8 +31,8 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a711.4.1",
-        "1516.1-2010 \u00a711.5"
+        "IEEE 1516.1-2010 (2010 edition) \u00a711.4.1",
+        "IEEE 1516.1-2010 (2010 edition) \u00a711.5"
       ],
       "status": "implemented-slice",
       "title": "Strict MOM decoding reports and raises through generated parameterized negative-path tests"
@@ -48,9 +48,9 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a711.3",
-        "1516.1-2010 \u00a711.4.1",
-        "1516.1-2010 Annex G"
+        "IEEE 1516.1-2010 (2010 edition) \u00a711.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a711.4.1",
+        "IEEE 1516.1-2010 (2010 edition) Annex G"
       ],
       "status": "implemented-slice",
       "title": "MOM reports use the exact parameter names declared in the active MIM catalog"
@@ -67,8 +67,8 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a711.3",
-        "1516.1-2010 \u00a711.4.1"
+        "IEEE 1516.1-2010 (2010 edition) \u00a711.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a711.4.1"
       ],
       "status": "implemented-slice",
       "title": "MOM HLAservice interactions are modeled as RTI-received actions with negative-path service failure reporting"
@@ -87,9 +87,9 @@
       ],
       "notes": "This slice treats MOM traffic as an independent witness for visible federation state and service reporting.",
       "section_refs": [
-        "1516.1-2010 \u00a711.2",
-        "1516.1-2010 \u00a711.3",
-        "1516.1-2010 \u00a711.5"
+        "IEEE 1516.1-2010 (2010 edition) \u00a711.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a711.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a711.5"
       ],
       "status": "implemented-slice",
       "title": "A MOM observer witness can reconstruct federation-visible MOM objects, reports, and service invocation traffic"
@@ -106,14 +106,14 @@
       "gaps": [],
       "notes": "This slice proves the repo consumes active FOM/MIM XML into a usable catalog and surfaces the expected names and module payloads.",
       "section_refs": [
-        "1516.2-2010 \u00a74",
-        "1516.2-2010 \u00a74.2",
-        "1516.2-2010 \u00a74.3",
-        "1516.2-2010 \u00a74.4",
-        "1516.2-2010 \u00a74.5",
-        "1516.2-2010 \u00a74.6",
-        "1516.2-2010 \u00a74.7",
-        "1516.2-2010 Annex D"
+        "IEEE 1516.2-2010 (2010 edition) \u00a74",
+        "IEEE 1516.2-2010 (2010 edition) \u00a74.2",
+        "IEEE 1516.2-2010 (2010 edition) \u00a74.3",
+        "IEEE 1516.2-2010 (2010 edition) \u00a74.4",
+        "IEEE 1516.2-2010 (2010 edition) \u00a74.5",
+        "IEEE 1516.2-2010 (2010 edition) \u00a74.6",
+        "IEEE 1516.2-2010 (2010 edition) \u00a74.7",
+        "IEEE 1516.2-2010 (2010 edition) Annex D"
       ],
       "status": "implemented-slice",
       "title": "FOM/MIM XML parsing and name-bearing OMT catalog extraction cover the active 1516.2 object, interaction, attribute, parameter, dimension, and time tables"
@@ -128,11 +128,11 @@
         "tests/backends/test_python_backend_federation_extended.py::test_join_federation_execution_with_additional_modules_updates_catalog"
       ],
       "gaps": [
-        "The merge policy is a supported subset of IEEE 1516.2-2010 \u00a77 rather than a complete schema-level implementation."
+        "The merge policy is a supported subset of IEEE 1516.2-2010 (2010 edition) \u00a77 rather than a complete schema-level implementation."
       ],
       "notes": "",
       "section_refs": [
-        "1516.2-2010 \u00a77"
+        "IEEE 1516.2-2010 (2010 edition) \u00a77"
       ],
       "status": "implemented-slice",
       "title": "FOM module merge and MIM/FOM combination rules are enforced for the supported 1516.2 subset"
@@ -148,7 +148,7 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.2-2010 Annex E"
+        "IEEE 1516.2-2010 (2010 edition) Annex E"
       ],
       "status": "planned",
       "title": "Annex E schema-level conformance checking is identified explicitly and remains planned"
@@ -165,7 +165,7 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a711.5"
+        "IEEE 1516.1-2010 (2010 edition) \u00a711.5"
       ],
       "status": "implemented-slice",
       "title": "Service-report file output contains initial and per-service records with section anchors"
@@ -182,11 +182,11 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a78.1",
-        "1516.1-2010 \u00a78.13",
-        "1516.1-2010 \u00a78.16",
-        "1516.1-2010 \u00a78.18",
-        "1516.1-2010 \u00a79"
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.1",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.13",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.16",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.18",
+        "IEEE 1516.1-2010 (2010 edition) \u00a79"
       ],
       "status": "implemented-slice",
       "title": "Timestamp-order queues respect local GALT/LITS-style lower-bound rules and DDM filtering before delivery"
@@ -202,8 +202,8 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a74.16-\u00a74.25",
-        "1516.1-2010 \u00a78"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.16-\u00a74.25",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78"
       ],
       "status": "implemented-slice",
       "title": "Save/restore coordinates with time-state and restores logical-time state"
@@ -220,10 +220,10 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516-2010 \u00a712.2",
-        "1516.1-2010 \u00a74.24-\u00a74.29",
-        "1516.1-2010 \u00a76",
-        "1516.1-2010 \u00a77"
+        "IEEE 1516-2010 (2010 edition) \u00a712.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.24-\u00a74.29",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77"
       ],
       "status": "implemented-slice",
       "title": "Save/restore reinstates saved object existence, name mapping, attribute values, and ownership state"
@@ -241,9 +241,9 @@
       "gaps": [],
       "notes": "",
       "section_refs": [
-        "1516-2010 \u00a712.2",
-        "1516.1-2010 \u00a74.24-\u00a74.29",
-        "1516.1-2010 \u00a78"
+        "IEEE 1516-2010 (2010 edition) \u00a712.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.24-\u00a74.29",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78"
       ],
       "status": "implemented-slice",
       "title": "Save/restore reinstates saved federate runtime flags, policy switches, reporting switches, conveyance state, order-override state, and transportation-override state"
@@ -258,8 +258,8 @@
       "gaps": [],
       "notes": "This is an explicit implementation contract: callback dispatch enablement is process-local delivery policy, while persisted restore state covers federation-visible ordering and reporting semantics.",
       "section_refs": [
-        "1516-2010 \u00a712.2",
-        "1516.1-2010 \u00a74.24-\u00a74.29"
+        "IEEE 1516-2010 (2010 edition) \u00a712.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.24-\u00a74.29"
       ],
       "status": "implemented-slice",
       "title": "Save/restore treats callback enablement as local runtime policy rather than persisted federation state"
@@ -274,9 +274,9 @@
       "gaps": [],
       "notes": "This slice specifies transient post-restore quiescence rather than persistence of queued callback or message-retraction state.",
       "section_refs": [
-        "1516-2010 \u00a712.2",
-        "1516.1-2010 \u00a74.24-\u00a74.29",
-        "1516.1-2010 \u00a78.21"
+        "IEEE 1516-2010 (2010 edition) \u00a712.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.24-\u00a74.29",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.21"
       ],
       "status": "implemented-slice",
       "title": "Save/restore discards stale pre-restore callback-queue and message-retraction bookkeeping state"
@@ -292,13 +292,13 @@
       "gaps": [],
       "notes": "This is narrower than the end-to-end Target/Radar smoke because it explicitly exercises publication state as a precondition for later object and interaction flow.",
       "section_refs": [
-        "1516.1-2010 \u00a75.1",
-        "1516.1-2010 \u00a75.1.2",
-        "1516.1-2010 \u00a75.1.3",
-        "1516.1-2010 \u00a75.2",
-        "1516.1-2010 \u00a75.3",
-        "1516.1-2010 \u00a75.4",
-        "1516.1-2010 \u00a75.5"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.1",
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.1.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.1.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.4",
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.5"
       ],
       "status": "implemented-slice",
       "title": "Declaration-management state gates registration, update, and interaction send behavior"
@@ -314,15 +314,15 @@
       "gaps": [],
       "notes": "This slice ties object/interaction subscriptions directly to the visible callback traffic instead of relying only on service-level existence.",
       "section_refs": [
-        "1516.1-2010 \u00a75.6",
-        "1516.1-2010 \u00a75.7",
-        "1516.1-2010 \u00a75.8",
-        "1516.1-2010 \u00a75.9",
-        "1516.1-2010 \u00a76.9",
-        "1516.1-2010 \u00a76.11",
-        "1516.1-2010 \u00a76.13",
-        "1516.1-2010 \u00a76.17",
-        "1516.1-2010 \u00a76.18"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.6",
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.7",
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.8",
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.9",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.11",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.13",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.17",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.18"
       ],
       "status": "implemented-slice",
       "title": "Declaration subscriptions drive discover/reflect/receive delivery visibility"
@@ -337,11 +337,11 @@
       "gaps": [],
       "notes": "This is the narrowest current proof that routing/scope decisions happen before reflect/receive delivery.",
       "section_refs": [
-        "1516.1-2010 \u00a75.1.5",
-        "1516.1-2010 \u00a76.1.2",
-        "1516.1-2010 \u00a76.1.3",
-        "1516.1-2010 \u00a76.1.4",
-        "1516.1-2010 \u00a79"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.1.5",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.4",
+        "IEEE 1516.1-2010 (2010 edition) \u00a79"
       ],
       "status": "implemented-slice",
       "title": "DM subscriptions and DDM scope filtering compose before delivery"
@@ -355,11 +355,11 @@
       "gaps": [],
       "notes": "This slice is narrower than the generic DDM routing asset because it proves both the blocked and restored reflect path for a region-scoped object attribute.",
       "section_refs": [
-        "1516.1-2010 \u00a75.1.5",
-        "1516.1-2010 \u00a76.1.2",
-        "1516.1-2010 \u00a76.1.3",
-        "1516.1-2010 \u00a76.1.4",
-        "1516.1-2010 \u00a79"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.1.5",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.4",
+        "IEEE 1516.1-2010 (2010 edition) \u00a79"
       ],
       "status": "implemented-slice",
       "title": "Object attribute routing is suppressed while regions are out of scope and resumes when regions overlap"
@@ -373,11 +373,11 @@
       "gaps": [],
       "notes": "This slice proves no discovery, reflect, or receive occurs before subscription declaration, and that all three become possible after the matching DDM subscriptions are declared.",
       "section_refs": [
-        "1516.1-2010 \u00a75.1",
-        "1516.1-2010 \u00a75.1.5",
-        "1516.1-2010 \u00a76.1.1",
-        "1516.1-2010 \u00a76.1.3",
-        "1516.1-2010 \u00a76.1.7"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.1",
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.1.5",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.1",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.7"
       ],
       "status": "implemented-slice",
       "title": "DM or DDM subscription declarations are required before object discovery, attribute reflection, or interaction receipt occurs"
@@ -392,9 +392,9 @@
       "gaps": [],
       "notes": "This slice proves both the gained-scope and lost-scope callback transitions on the same known object instance under DDM region changes.",
       "section_refs": [
-        "1516.1-2010 \u00a76.17",
-        "1516.1-2010 \u00a76.18",
-        "1516.1-2010 \u00a79"
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.17",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.18",
+        "IEEE 1516.1-2010 (2010 edition) \u00a79"
       ],
       "status": "implemented-slice",
       "title": "Object-scope transitions emit Attributes In Scope and Attributes Out Of Scope callbacks for known subscribed attributes"
@@ -412,10 +412,10 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a76.1.1",
-        "1516.1-2010 \u00a76.8",
-        "1516.1-2010 \u00a76.9",
-        "1516.1-2010 \u00a76.15"
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.1",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.8",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.15"
       ],
       "status": "implemented-slice",
       "title": "Object registration, discovery, known-class behavior, and removal form a stable object lifecycle"
@@ -429,8 +429,8 @@
       "gaps": [],
       "notes": "This slice specifically proves discovered-class selection and stability instead of only proving that a discovery callback occurs.",
       "section_refs": [
-        "1516.1-2010 \u00a76.1.1",
-        "1516.1-2010 \u00a76.9"
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.1",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.9"
       ],
       "status": "implemented-slice",
       "title": "Discovery chooses the closest subscribed superclass and the discovered class remains stable for later lookups"
@@ -447,8 +447,8 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a76.19",
-        "1516.1-2010 \u00a76.20"
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.19",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.20"
       ],
       "status": "implemented-slice",
       "title": "Attribute-value update requests trigger Provide Attribute Value Update at relevant owners"
@@ -462,8 +462,8 @@
       "gaps": [],
       "notes": "This slice is narrower than the generic request-value-update asset because it proves owner-specific routing for both object-handle and class-handle requests.",
       "section_refs": [
-        "1516.1-2010 \u00a76.19",
-        "1516.1-2010 \u00a76.20"
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.19",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.20"
       ],
       "status": "implemented-slice",
       "title": "Request Attribute Value Update routes object-target and class-target requests only to relevant owning federates"
@@ -480,15 +480,15 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a76.1.2",
-        "1516.1-2010 \u00a76.1.10",
-        "1516.1-2010 \u00a76.1.12",
-        "1516.1-2010 \u00a76.14",
-        "1516.1-2010 \u00a76.16",
-        "1516.1-2010 \u00a76.23",
-        "1516.1-2010 \u00a76.25",
-        "1516.1-2010 \u00a76.27",
-        "1516.1-2010 \u00a76.29"
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.10",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.14",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.16",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.25",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.29"
       ],
       "status": "implemented-slice",
       "title": "Object-management routing semantics cover transport choice, scope, and local-delete restrictions"
@@ -504,8 +504,8 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a76.1.6",
-        "1516.1-2010 \u00a76.16"
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.6",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.16"
       ],
       "status": "implemented-slice",
       "title": "Local delete clears only the invoking federate's object knowledge and allows later rediscovery"
@@ -521,8 +521,8 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a76.1.6",
-        "1516.1-2010 \u00a76.16"
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.6",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.16"
       ],
       "status": "implemented-slice",
       "title": "An ownerless object instance remains discoverable to a joined federate until that federate locally deletes it"
@@ -536,10 +536,10 @@
       "gaps": [],
       "notes": "This slice proves an ownerless object persists in federation state, remains discoverable to a late subscriber, can be locally deleted at one federate without affecting others, and is removed globally only when the registrar explicitly deletes it.",
       "section_refs": [
-        "1516.1-2010 \u00a76.1.6",
-        "1516.1-2010 \u00a76.14",
-        "1516.1-2010 \u00a76.15",
-        "1516.1-2010 \u00a76.16"
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.6",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.14",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.15",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.16"
       ],
       "status": "implemented-slice",
       "title": "An orphaned object remains discoverable to existing and late subscribers, supports local-delete knowledge clearing, and is removed globally only by explicit delete"
@@ -553,7 +553,7 @@
       "gaps": [],
       "notes": "This slice proves that an in-scope subscribed observer reflects updates from the current owner, suppresses out-of-scope updates, and stops accepting stale updates from the previous owner after transfer.",
       "section_refs": [
-        "1516.1-2010 \u00a76.1.5"
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.5"
       ],
       "status": "implemented-slice",
       "title": "Attribute relevance is determined from the combination of publication, subscription, ownership, and DDM scope on a single object instance"
@@ -567,9 +567,9 @@
       "gaps": [],
       "notes": "This slice proves the time-managed delete/remove path: no early removal before grant, TSO remove delivery after grant, and known-object cleanup after callback delivery.",
       "section_refs": [
-        "1516.1-2010 \u00a76.14",
-        "1516.1-2010 \u00a76.15",
-        "1516.1-2010 \u00a78"
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.14",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.15",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78"
       ],
       "status": "implemented-slice",
       "title": "A timestamped delete removes the object from federation knowledge only after the time-managed remove callback is delivered"
@@ -587,8 +587,8 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a75.1.6",
-        "1516.1-2010 \u00a76.1.12"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.1.6",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12"
       ],
       "status": "implemented-slice",
       "title": "Subscribed and FOM-declared update-rate settings throttle eligible reflected updates across direct, inherited, and regioned subscriptions without suppressing receive-order delivery that has no logical-time basis"
@@ -602,7 +602,7 @@
       "gaps": [],
       "notes": "This slice proves handle-space normalization for reflect callbacks after discovery at a subscribed superclass.",
       "section_refs": [
-        "1516.1-2010 \u00a76.11"
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.11"
       ],
       "status": "implemented-slice",
       "title": "Reflected attributes are reported using the subscriber's known discovered class handles"
@@ -616,8 +616,8 @@
       "gaps": [],
       "notes": "This slice proves that DM state changes remain effective while one federate is time regulating and another is time constrained.",
       "section_refs": [
-        "1516.1-2010 \u00a75.1",
-        "1516.1-2010 \u00a78"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.1",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78"
       ],
       "status": "implemented-slice",
       "title": "Declaration-management publication and subscription state takes effect even while federates are time managed"
@@ -631,8 +631,8 @@
       "gaps": [],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a75.3",
-        "1516.1-2010 \u00a76.10"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.10"
       ],
       "status": "implemented-slice",
       "title": "Unpublishing object-class attributes removes the federate's ability to perform strict updates for those attributes"
@@ -646,8 +646,8 @@
       "gaps": [],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a75.5",
-        "1516.1-2010 \u00a76.12"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.5",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.12"
       ],
       "status": "implemented-slice",
       "title": "Unpublishing an interaction class removes the federate's ability to perform strict sends for that class"
@@ -661,8 +661,8 @@
       "gaps": [],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a75.7",
-        "1516.1-2010 \u00a76.11"
+        "IEEE 1516.1-2010 (2010 edition) \u00a75.7",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.11"
       ],
       "status": "implemented-slice",
       "title": "Unsubscribing object-class attributes removes interest in later reflected updates for those attributes"
@@ -682,15 +682,15 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a76.1.10",
-        "1516.1-2010 \u00a76.23",
-        "1516.1-2010 \u00a76.24",
-        "1516.1-2010 \u00a76.25",
-        "1516.1-2010 \u00a76.26",
-        "1516.1-2010 \u00a76.27",
-        "1516.1-2010 \u00a76.28",
-        "1516.1-2010 \u00a76.29",
-        "1516.1-2010 \u00a76.30"
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.10",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.24",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.25",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.28",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.29",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.30"
       ],
       "status": "implemented-slice",
       "title": "Transportation-type change, query, and report services emit confirm/report callbacks for the backend's supported reliable and best-effort subset"
@@ -708,10 +708,10 @@
       ],
       "notes": "The backend now executes distinct best-effort versus reliable callback transport behavior for both FOM-defined defaults and explicit service-selected overrides, and persists that non-reliable transport state across restore.",
       "section_refs": [
-        "1516.1-2010 \u00a76.1.10",
-        "1516.1-2010 \u00a76.23",
-        "1516.1-2010 \u00a76.27",
-        "1516-2010 \u00a712.2"
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.1.10",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
+        "IEEE 1516-2010 (2010 edition) \u00a712.2"
       ],
       "status": "implemented-slice",
       "title": "Best-effort transportation semantics, including FOM-defined defaults and explicit overrides, are implemented distinctly from reliable transport and persist across restore"
@@ -729,10 +729,10 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a74",
-        "1516.1-2010 \u00a75",
-        "1516.1-2010 \u00a76",
-        "1516.1-2010 \u00a78"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74",
+        "IEEE 1516.1-2010 (2010 edition) \u00a75",
+        "IEEE 1516.1-2010 (2010 edition) \u00a76",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78"
       ],
       "status": "implemented-smoke",
       "title": "Two-federate Target/Radar simulation runs over Python RTI and Java shim profiles"
@@ -751,8 +751,8 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a74-\u00a711",
-        "1516.1-2010 Annex G"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74-\u00a711",
+        "IEEE 1516.1-2010 (2010 edition) Annex G"
       ],
       "status": "implemented-slice",
       "title": "Service-by-service conformance matrix covering RTIambassador services and MOM receive interactions"
@@ -771,8 +771,8 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a74-\u00a711",
-        "1516.1-2010 Annex G"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74-\u00a711",
+        "IEEE 1516.1-2010 (2010 edition) Annex G"
       ],
       "status": "implemented-slice",
       "title": "Strict requirements ledger classifying each mapped service row as pass, partial, fail, or not-evidenced"
@@ -791,8 +791,8 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a74-\u00a711",
-        "1516.1-2010 Annex G"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74-\u00a711",
+        "IEEE 1516.1-2010 (2010 edition) Annex G"
       ],
       "status": "implemented-slice",
       "title": "Verification-plan asset packet and flat section-to-asset traceability export"
@@ -811,7 +811,7 @@
       ],
       "notes": "Use this asset to normalize CERTI and Pitch parity evidence around a stable manifest before attaching session-specific preflight or runtime outputs.",
       "section_refs": [
-        "1516.1-2010 \u00a74-\u00a710",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74-\u00a710",
         "operational vendor parity"
       ],
       "status": "implemented-slice",
@@ -829,8 +829,8 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a711.4.1",
-        "1516.1-2010 Annex G"
+        "IEEE 1516.1-2010 (2010 edition) \u00a711.4.1",
+        "IEEE 1516.1-2010 (2010 edition) Annex G"
       ],
       "status": "planned",
       "title": "Bespoke semantic negative-path harnesses for every MOM HLAservice action"
@@ -846,8 +846,8 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 Java binding",
-        "1516.1-2010 \u00a74-\u00a710"
+        "IEEE 1516.1-2010 (2010 edition) Java binding",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74-\u00a710"
       ],
       "status": "gap",
       "title": "Cross-run verification against at least one real Java RTI via JPype and Py4J"
@@ -866,8 +866,8 @@
       ],
       "notes": "",
       "section_refs": [
-        "1516.1-2010 \u00a711.4.1",
-        "1516.1-2010 Annex G"
+        "IEEE 1516.1-2010 (2010 edition) \u00a711.4.1",
+        "IEEE 1516.1-2010 (2010 edition) Annex G"
       ],
       "status": "implemented-slice",
       "title": "Generated MOM negative-path matrix with executable parameter-validation rows"
@@ -906,81 +906,81 @@
     ],
     "scope": "Pure Python RTI plus Java adapter/shim compatibility layer",
     "sections": [
-      "1516-2010 \u00a712.2",
-      "1516.1-2010 Annex G",
-      "1516.1-2010 Java binding",
-      "1516.1-2010 \u00a711.2",
-      "1516.1-2010 \u00a711.3",
-      "1516.1-2010 \u00a711.4.1",
-      "1516.1-2010 \u00a711.5",
-      "1516.1-2010 \u00a74",
-      "1516.1-2010 \u00a74-\u00a710",
-      "1516.1-2010 \u00a74-\u00a711",
-      "1516.1-2010 \u00a74.16-\u00a74.25",
-      "1516.1-2010 \u00a74.24-\u00a74.29",
-      "1516.1-2010 \u00a75",
-      "1516.1-2010 \u00a75.1",
-      "1516.1-2010 \u00a75.1.2",
-      "1516.1-2010 \u00a75.1.3",
-      "1516.1-2010 \u00a75.1.5",
-      "1516.1-2010 \u00a75.1.6",
-      "1516.1-2010 \u00a75.2",
-      "1516.1-2010 \u00a75.3",
-      "1516.1-2010 \u00a75.4",
-      "1516.1-2010 \u00a75.5",
-      "1516.1-2010 \u00a75.6",
-      "1516.1-2010 \u00a75.7",
-      "1516.1-2010 \u00a75.8",
-      "1516.1-2010 \u00a75.9",
-      "1516.1-2010 \u00a76",
-      "1516.1-2010 \u00a76.1.1",
-      "1516.1-2010 \u00a76.1.10",
-      "1516.1-2010 \u00a76.1.12",
-      "1516.1-2010 \u00a76.1.2",
-      "1516.1-2010 \u00a76.1.3",
-      "1516.1-2010 \u00a76.1.4",
-      "1516.1-2010 \u00a76.1.5",
-      "1516.1-2010 \u00a76.1.6",
-      "1516.1-2010 \u00a76.1.7",
-      "1516.1-2010 \u00a76.10",
-      "1516.1-2010 \u00a76.11",
-      "1516.1-2010 \u00a76.12",
-      "1516.1-2010 \u00a76.13",
-      "1516.1-2010 \u00a76.14",
-      "1516.1-2010 \u00a76.15",
-      "1516.1-2010 \u00a76.16",
-      "1516.1-2010 \u00a76.17",
-      "1516.1-2010 \u00a76.18",
-      "1516.1-2010 \u00a76.19",
-      "1516.1-2010 \u00a76.20",
-      "1516.1-2010 \u00a76.23",
-      "1516.1-2010 \u00a76.24",
-      "1516.1-2010 \u00a76.25",
-      "1516.1-2010 \u00a76.26",
-      "1516.1-2010 \u00a76.27",
-      "1516.1-2010 \u00a76.28",
-      "1516.1-2010 \u00a76.29",
-      "1516.1-2010 \u00a76.30",
-      "1516.1-2010 \u00a76.8",
-      "1516.1-2010 \u00a76.9",
-      "1516.1-2010 \u00a77",
-      "1516.1-2010 \u00a78",
-      "1516.1-2010 \u00a78.1",
-      "1516.1-2010 \u00a78.13",
-      "1516.1-2010 \u00a78.16",
-      "1516.1-2010 \u00a78.18",
-      "1516.1-2010 \u00a78.21",
-      "1516.1-2010 \u00a79",
-      "1516.2-2010 Annex D",
-      "1516.2-2010 Annex E",
-      "1516.2-2010 \u00a74",
-      "1516.2-2010 \u00a74.2",
-      "1516.2-2010 \u00a74.3",
-      "1516.2-2010 \u00a74.4",
-      "1516.2-2010 \u00a74.5",
-      "1516.2-2010 \u00a74.6",
-      "1516.2-2010 \u00a74.7",
-      "1516.2-2010 \u00a77",
+      "IEEE 1516-2010 (2010 edition) \u00a712.2",
+      "IEEE 1516.1-2010 (2010 edition) Annex G",
+      "IEEE 1516.1-2010 (2010 edition) Java binding",
+      "IEEE 1516.1-2010 (2010 edition) \u00a711.2",
+      "IEEE 1516.1-2010 (2010 edition) \u00a711.3",
+      "IEEE 1516.1-2010 (2010 edition) \u00a711.4.1",
+      "IEEE 1516.1-2010 (2010 edition) \u00a711.5",
+      "IEEE 1516.1-2010 (2010 edition) \u00a74",
+      "IEEE 1516.1-2010 (2010 edition) \u00a74-\u00a710",
+      "IEEE 1516.1-2010 (2010 edition) \u00a74-\u00a711",
+      "IEEE 1516.1-2010 (2010 edition) \u00a74.16-\u00a74.25",
+      "IEEE 1516.1-2010 (2010 edition) \u00a74.24-\u00a74.29",
+      "IEEE 1516.1-2010 (2010 edition) \u00a75",
+      "IEEE 1516.1-2010 (2010 edition) \u00a75.1",
+      "IEEE 1516.1-2010 (2010 edition) \u00a75.1.2",
+      "IEEE 1516.1-2010 (2010 edition) \u00a75.1.3",
+      "IEEE 1516.1-2010 (2010 edition) \u00a75.1.5",
+      "IEEE 1516.1-2010 (2010 edition) \u00a75.1.6",
+      "IEEE 1516.1-2010 (2010 edition) \u00a75.2",
+      "IEEE 1516.1-2010 (2010 edition) \u00a75.3",
+      "IEEE 1516.1-2010 (2010 edition) \u00a75.4",
+      "IEEE 1516.1-2010 (2010 edition) \u00a75.5",
+      "IEEE 1516.1-2010 (2010 edition) \u00a75.6",
+      "IEEE 1516.1-2010 (2010 edition) \u00a75.7",
+      "IEEE 1516.1-2010 (2010 edition) \u00a75.8",
+      "IEEE 1516.1-2010 (2010 edition) \u00a75.9",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.1.1",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.1.10",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.1.2",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.1.3",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.1.4",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.1.5",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.1.6",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.1.7",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.10",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.11",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.12",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.13",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.14",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.15",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.16",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.17",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.18",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.19",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.20",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.24",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.25",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.28",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.29",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.8",
+      "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
+      "IEEE 1516.1-2010 (2010 edition) \u00a77",
+      "IEEE 1516.1-2010 (2010 edition) \u00a78",
+      "IEEE 1516.1-2010 (2010 edition) \u00a78.1",
+      "IEEE 1516.1-2010 (2010 edition) \u00a78.13",
+      "IEEE 1516.1-2010 (2010 edition) \u00a78.16",
+      "IEEE 1516.1-2010 (2010 edition) \u00a78.18",
+      "IEEE 1516.1-2010 (2010 edition) \u00a78.21",
+      "IEEE 1516.1-2010 (2010 edition) \u00a79",
+      "IEEE 1516.2-2010 (2010 edition) Annex D",
+      "IEEE 1516.2-2010 (2010 edition) Annex E",
+      "IEEE 1516.2-2010 (2010 edition) \u00a74",
+      "IEEE 1516.2-2010 (2010 edition) \u00a74.2",
+      "IEEE 1516.2-2010 (2010 edition) \u00a74.3",
+      "IEEE 1516.2-2010 (2010 edition) \u00a74.4",
+      "IEEE 1516.2-2010 (2010 edition) \u00a74.5",
+      "IEEE 1516.2-2010 (2010 edition) \u00a74.6",
+      "IEEE 1516.2-2010 (2010 edition) \u00a74.7",
+      "IEEE 1516.2-2010 (2010 edition) \u00a77",
       "operational vendor parity"
     ],
     "status_counts": {

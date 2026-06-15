@@ -31,38 +31,38 @@ class SpecReference:
 
 
 SERVICE_AREAS: dict[str, SpecReference] = {
-    "federation_management": SpecReference("IEEE 1516.1-2010", "4", "Federation management"),
-    "declaration_management": SpecReference("IEEE 1516.1-2010", "5", "Declaration management"),
-    "object_management": SpecReference("IEEE 1516.1-2010", "6", "Object management"),
-    "ownership_management": SpecReference("IEEE 1516.1-2010", "7", "Ownership management"),
-    "time_management": SpecReference("IEEE 1516.1-2010", "8", "Time management"),
-    "data_distribution_management": SpecReference("IEEE 1516.1-2010", "9", "Data distribution management"),
-    "support_services": SpecReference("IEEE 1516.1-2010", "10", "Support services"),
-    "mom": SpecReference("IEEE 1516.1-2010", "11", "Management object model"),
-    "language_mappings": SpecReference("IEEE 1516.1-2010", "12", "Programming language mappings"),
+    "federation_management": SpecReference("IEEE 1516.1-2010 (2010 edition)", "4", "Federation management"),
+    "declaration_management": SpecReference("IEEE 1516.1-2010 (2010 edition)", "5", "Declaration management"),
+    "object_management": SpecReference("IEEE 1516.1-2010 (2010 edition)", "6", "Object management"),
+    "ownership_management": SpecReference("IEEE 1516.1-2010 (2010 edition)", "7", "Ownership management"),
+    "time_management": SpecReference("IEEE 1516.1-2010 (2010 edition)", "8", "Time management"),
+    "data_distribution_management": SpecReference("IEEE 1516.1-2010 (2010 edition)", "9", "Data distribution management"),
+    "support_services": SpecReference("IEEE 1516.1-2010 (2010 edition)", "10", "Support services"),
+    "mom": SpecReference("IEEE 1516.1-2010 (2010 edition)", "11", "Management object model"),
+    "language_mappings": SpecReference("IEEE 1516.1-2010 (2010 edition)", "12", "Programming language mappings"),
 }
 
 FOM_REFERENCES: dict[str, SpecReference] = {
-    "omt_components": SpecReference("IEEE 1516.2-2010", "4", "HLA OMT components"),
-    "object_model_identification": SpecReference("IEEE 1516.2-2010", "4.1", "Object model identification"),
-    "object_class_structure": SpecReference("IEEE 1516.2-2010", "4.2", "Object class structure table"),
-    "interaction_class_structure": SpecReference("IEEE 1516.2-2010", "4.3", "Interaction class structure table"),
-    "attribute_table": SpecReference("IEEE 1516.2-2010", "4.4", "Attribute table"),
-    "parameter_table": SpecReference("IEEE 1516.2-2010", "4.5", "Parameter table"),
-    "dimension_table": SpecReference("IEEE 1516.2-2010", "4.6", "Dimension table"),
-    "time_representation_table": SpecReference("IEEE 1516.2-2010", "4.7", "Time representation table"),
-    "user_supplied_tag_table": SpecReference("IEEE 1516.2-2010", "4.8", "User-supplied tag table"),
-    "synchronization_table": SpecReference("IEEE 1516.2-2010", "4.9", "Synchronization table"),
-    "transportation_type_table": SpecReference("IEEE 1516.2-2010", "4.10", "Transportation type table"),
-    "update_rate_table": SpecReference("IEEE 1516.2-2010", "4.11", "Update rate table"),
-    "switches_table": SpecReference("IEEE 1516.2-2010", "4.12", "Switches table"),
-    "datatype_table": SpecReference("IEEE 1516.2-2010", "4.13", "Datatype tables"),
-    "notes_table": SpecReference("IEEE 1516.2-2010", "4.14", "Notes table"),
-    "lexicon": SpecReference("IEEE 1516.2-2010", "5", "FOM/SOM lexicon"),
-    "conformance": SpecReference("IEEE 1516.2-2010", "6", "Conformance"),
-    "merging_rules": SpecReference("IEEE 1516.2-2010", "7", "FOM module/SOM module merging rules"),
-    "dif": SpecReference("IEEE 1516.2-2010", "Annex D", "OMT data interchange format"),
-    "schema": SpecReference("IEEE 1516.2-2010", "Annex E", "OMT conformance XML Schema"),
+    "omt_components": SpecReference("IEEE 1516.2-2010 (2010 edition)", "4", "HLA OMT components"),
+    "object_model_identification": SpecReference("IEEE 1516.2-2010 (2010 edition)", "4.1", "Object model identification"),
+    "object_class_structure": SpecReference("IEEE 1516.2-2010 (2010 edition)", "4.2", "Object class structure table"),
+    "interaction_class_structure": SpecReference("IEEE 1516.2-2010 (2010 edition)", "4.3", "Interaction class structure table"),
+    "attribute_table": SpecReference("IEEE 1516.2-2010 (2010 edition)", "4.4", "Attribute table"),
+    "parameter_table": SpecReference("IEEE 1516.2-2010 (2010 edition)", "4.5", "Parameter table"),
+    "dimension_table": SpecReference("IEEE 1516.2-2010 (2010 edition)", "4.6", "Dimension table"),
+    "time_representation_table": SpecReference("IEEE 1516.2-2010 (2010 edition)", "4.7", "Time representation table"),
+    "user_supplied_tag_table": SpecReference("IEEE 1516.2-2010 (2010 edition)", "4.8", "User-supplied tag table"),
+    "synchronization_table": SpecReference("IEEE 1516.2-2010 (2010 edition)", "4.9", "Synchronization table"),
+    "transportation_type_table": SpecReference("IEEE 1516.2-2010 (2010 edition)", "4.10", "Transportation type table"),
+    "update_rate_table": SpecReference("IEEE 1516.2-2010 (2010 edition)", "4.11", "Update rate table"),
+    "switches_table": SpecReference("IEEE 1516.2-2010 (2010 edition)", "4.12", "Switches table"),
+    "datatype_table": SpecReference("IEEE 1516.2-2010 (2010 edition)", "4.13", "Datatype tables"),
+    "notes_table": SpecReference("IEEE 1516.2-2010 (2010 edition)", "4.14", "Notes table"),
+    "lexicon": SpecReference("IEEE 1516.2-2010 (2010 edition)", "5", "FOM/SOM lexicon"),
+    "conformance": SpecReference("IEEE 1516.2-2010 (2010 edition)", "6", "Conformance"),
+    "merging_rules": SpecReference("IEEE 1516.2-2010 (2010 edition)", "7", "FOM module/SOM module merging rules"),
+    "dif": SpecReference("IEEE 1516.2-2010 (2010 edition)", "Annex D", "OMT data interchange format"),
+    "schema": SpecReference("IEEE 1516.2-2010 (2010 edition)", "Annex E", "OMT conformance XML Schema"),
 }
 
 _METHOD_REFERENCE_DATA: dict[str, tuple[str, str, str]] = {   'abortFederationRestore': ('4.30', 'Federation Management', 'Abort Federation Restore service'),
@@ -371,7 +371,7 @@ _METHOD_REFERENCE_DATA: dict[str, tuple[str, str, str]] = {   'abortFederationRe
     'updateAttributeValues': ('6.10', 'Object Management', 'Update Attribute Values service')}
 
 METHOD_REFERENCES: dict[str, SpecReference] = {
-    method: SpecReference("IEEE 1516.1-2010", section, title, group)
+    method: SpecReference("IEEE 1516.1-2010 (2010 edition)", section, title, group)
     for method, (section, group, title) in _METHOD_REFERENCE_DATA.items()
 }
 

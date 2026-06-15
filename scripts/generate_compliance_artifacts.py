@@ -3288,7 +3288,7 @@ def _pitch_bridge_profiles(
 _CORE_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     _slice(
         "federation-sync",
-        ("IEEE 1516.1-2010 §4.25", "IEEE 1516.1-2010 §4.26"),
+        ("IEEE 1516.1-2010 (2010 edition) §4.25", "IEEE 1516.1-2010 (2010 edition) §4.26"),
         _python_reference_profile(
             "reference-passing",
             "not-run-in-this-session",
@@ -3318,7 +3318,7 @@ _CORE_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     ),
     _slice(
         "exchange",
-        ("IEEE 1516.1-2010 §5.2", "IEEE 1516.1-2010 §6.9"),
+        ("IEEE 1516.1-2010 (2010 edition) §5.2", "IEEE 1516.1-2010 (2010 edition) §6.9"),
         _python_reference_profile(
             "reference-passing",
             "passing-in-this-session",
@@ -3348,7 +3348,7 @@ _CORE_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     ),
     _slice(
         "ownership",
-        ("IEEE 1516.1-2010 §7.2", "IEEE 1516.1-2010 §7.18"),
+        ("IEEE 1516.1-2010 (2010 edition) §7.2", "IEEE 1516.1-2010 (2010 edition) §7.18"),
         _python_reference_profile(
             "reference-passing",
             "not-run-in-this-session",
@@ -3378,7 +3378,7 @@ _CORE_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     ),
     _slice(
         "negotiated-ownership",
-        ("IEEE 1516.1-2010 §7.3", "IEEE 1516.1-2010 §7.15"),
+        ("IEEE 1516.1-2010 (2010 edition) §7.3", "IEEE 1516.1-2010 (2010 edition) §7.15"),
         _python_reference_profile(
             "reference-passing",
             "not-run-in-this-session",
@@ -3411,7 +3411,7 @@ _CORE_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
 _SECTION10_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     _slice(
         "support-lookups",
-        ("IEEE 1516.1-2010 §10.4", "IEEE 1516.1-2010 §10.32"),
+        ("IEEE 1516.1-2010 (2010 edition) §10.4", "IEEE 1516.1-2010 (2010 edition) §10.32"),
         _python_reference_profile(
             "complete-actionable",
             "passing-in-this-session",
@@ -3460,7 +3460,7 @@ _SECTION10_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     ),
     _slice(
         "support-callback-control",
-        ("IEEE 1516.1-2010 §10.41", "IEEE 1516.1-2010 §10.44"),
+        ("IEEE 1516.1-2010 (2010 edition) §10.41", "IEEE 1516.1-2010 (2010 edition) §10.44"),
         _python_reference_profile(
             "complete-actionable",
             "passing-in-this-session",
@@ -3480,7 +3480,7 @@ _SECTION10_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     ),
     _slice(
         "support-advisories",
-        ("IEEE 1516.1-2010 §10.33", "IEEE 1516.1-2010 §10.40"),
+        ("IEEE 1516.1-2010 (2010 edition) §10.33", "IEEE 1516.1-2010 (2010 edition) §10.40"),
         _python_reference_profile(
             "complete-actionable",
             "passing-in-this-session",
@@ -3491,7 +3491,7 @@ _SECTION10_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     ),
     _slice(
         "support-factories",
-        ("IEEE 1516.1-2010 §10.44",),
+        ("IEEE 1516.1-2010 (2010 edition) §10.44",),
         _python_reference_profile(
             "complete-actionable",
             "passing-in-this-session",
@@ -3505,7 +3505,7 @@ _SECTION10_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
 _PITCH_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     _slice(
         "lifecycle",
-        ("IEEE 1516.1-2010 §4.1", "IEEE 1516.1-2010 §4.10"),
+        ("IEEE 1516.1-2010 (2010 edition) §4.1", "IEEE 1516.1-2010 (2010 edition) §4.10"),
         *_pitch_bridge_profiles(
             "positive-path-passing",
             "not-run-in-this-session",
@@ -3516,7 +3516,7 @@ _PITCH_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     ),
     _slice(
         "exchange",
-        ("IEEE 1516.1-2010 §6.9", "IEEE 1516.1-2010 §8.13"),
+        ("IEEE 1516.1-2010 (2010 edition) §6.9", "IEEE 1516.1-2010 (2010 edition) §8.13"),
         *_pitch_bridge_profiles(
             "positive-path-passing",
             "not-run-in-this-session",
@@ -3527,7 +3527,7 @@ _PITCH_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     ),
     _slice(
         "synchronization",
-        ("IEEE 1516.1-2010 §4.11", "IEEE 1516.1-2010 §4.15"),
+        ("IEEE 1516.1-2010 (2010 edition) §4.11", "IEEE 1516.1-2010 (2010 edition) §4.15"),
         *_pitch_bridge_profiles(
             "positive-path-passing",
             "not-run-in-this-session",
@@ -3538,13 +3538,13 @@ _PITCH_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     ),
     _slice(
         "lost-federate",
-        ("IEEE 1516.1-2010 §4.1.5",),
+        ("IEEE 1516.1-2010 (2010 edition) §4.1.5",),
         _pitch_profile("jpype", "not-yet-matrixed", "not-run-in-this-session", ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",), "Pitch JPype now has a child-process probe path, but executed real-runtime runs still auto-resume the dropped FedPro session instead of yielding observer-visible lost-federate evidence.", scope="real-vendor lost-federate slice"),
         _pitch_profile("py4j", "blocked-runtime", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix", "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md"), "Pitch Py4J now has a shared-harness lost-federate wrapper that terminates the victim gateway JVM, but executed real-runtime runs still do not surface the observer-visible lost-federate report.", scope="real-vendor lost-federate slice"),
     ),
     _slice(
         "ownership",
-        ("IEEE 1516.1-2010 §7.2", "IEEE 1516.1-2010 §7.19"),
+        ("IEEE 1516.1-2010 (2010 edition) §7.2", "IEEE 1516.1-2010 (2010 edition) §7.19"),
         *_pitch_bridge_profiles(
             "positive-path-passing",
             "not-run-in-this-session",
@@ -3555,7 +3555,7 @@ _PITCH_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     ),
     _slice(
         "negotiated-ownership",
-        ("IEEE 1516.1-2010 §7.3", "IEEE 1516.1-2010 §7.16"),
+        ("IEEE 1516.1-2010 (2010 edition) §7.3", "IEEE 1516.1-2010 (2010 edition) §7.16"),
         *_pitch_bridge_profiles(
             "vendor-divergent",
             "not-run-in-this-session",
@@ -3566,7 +3566,7 @@ _PITCH_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     ),
     _slice(
         "time-profile",
-        ("IEEE 1516.1-2010 §8.2", "IEEE 1516.1-2010 §8.24"),
+        ("IEEE 1516.1-2010 (2010 edition) §8.2", "IEEE 1516.1-2010 (2010 edition) §8.24"),
         *_pitch_bridge_profiles(
             "positive-path-passing",
             "not-run-in-this-session",
@@ -3624,7 +3624,7 @@ _SECTION8_BACKEND_PROFILES: tuple[dict[str, Any], ...] = (
 _LOOKAHEAD_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     _slice(
         "lookahead-window",
-        ("IEEE 1516.1-2010 §8.2", "IEEE 1516.1-2010 §8.17"),
+        ("IEEE 1516.1-2010 (2010 edition) §8.2", "IEEE 1516.1-2010 (2010 edition) §8.17"),
         _python_reference_profile(
             "complete-actionable",
             "passing-in-this-session",

@@ -2,7 +2,7 @@
 
 This repo now distinguishes between two kinds of compliance claim:
 
-- `broad-spec`: the full IEEE 1516.1-2010 requirement wording
+- `broad-spec`: the full IEEE 1516.1-2010 (2010 edition) requirement wording
 - `supported-subset`: a narrower requirement row that matches the behavior the
   current Python reference backend actually implements and evidences
 

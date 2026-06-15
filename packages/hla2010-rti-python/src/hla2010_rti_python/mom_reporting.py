@@ -10,6 +10,7 @@ from typing import Any, Mapping, Sequence
 from hla2010 import mom as hla_mom
 from hla2010.enums import OrderType
 from hla2010.spec_refs import method_reference
+from .reporting import SERVICE_REPORT_SECTION_REF
 from .service_reporting import ServiceReportRecord
 from .state import CallbackEvent, FederateState, FederationState, SupplementalReceiveInfo
 
@@ -60,7 +61,9 @@ class PythonRTIMomReportingMixin:
         self.state.service_report_serial_number += 1
         record = {
             "recordType": "ServiceReportRecord",
-            "specSection": f"1516.1-2010 §{section}" if section else "1516.1-2010 §11.5.2",
+            "specSection": (
+                f"IEEE 1516.1-2010 (2010 edition) §{section}" if section else SERVICE_REPORT_SECTION_REF
+            ),
             "timestampUTC": datetime.now(timezone.utc).isoformat(),
             "serialNumber": self.state.service_report_serial_number,
             "federate": getattr(handle, "value", handle),

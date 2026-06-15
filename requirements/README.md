@@ -10,6 +10,11 @@ The compact machine-readable source of truth is
 for humans. [`surface_manifest.json`](surface_manifest.json) is now a generated
 compatibility projection from it.
 
+The requirements registry is edition-selectable in structure, but the current
+selected edition set is `2010` only. The generated compatibility registry in
+[`requirement_id_registry.yaml`](requirement_id_registry.yaml) now makes that
+explicit through `active_binding_editions` and `selected_editions`.
+
 For normal repo maintenance, start with:
 
 <!-- GENERATED:README_START_HERE:START -->

@@ -37,7 +37,9 @@ def cmd_list(_: argparse.Namespace) -> int:
     for factory in iter_rti_factories():
         aliases = ", ".join(factory.aliases) if factory.aliases else "-"
         selectable = ", ".join(factory.selectable_names)
+        editions = ", ".join(factory.supported_editions)
         print(f"- {factory.name} [{factory.family}]")
+        print(f"  supported_editions: {editions}")
         print(f"  selectable_names: {selectable}")
         print(f"  aliases: {aliases}")
         print(f"  probe_supported: {'yes' if factory.probe_supported else 'no'}")
@@ -53,6 +55,7 @@ def cmd_show(args: argparse.Namespace) -> int:
         "name": factory.name,
         "family": factory.family,
         "aliases": list(factory.aliases),
+        "supported_editions": list(factory.supported_editions),
         "selectable_names": list(factory.selectable_names),
         "probe_supported": factory.probe_supported,
         "description": factory.description,
@@ -72,6 +75,7 @@ def cmd_instantiate(args: argparse.Namespace) -> int:
     payload = {
         "name": factory.name,
         "aliases": list(factory.aliases),
+        "supported_editions": list(factory.supported_editions),
         "selectable_names": list(factory.selectable_names),
         "family": factory.family,
         "backend_info": {

@@ -1,11 +1,19 @@
 version: 0.13.0
 description: >
-  Stable requirement namespace registry for the Python HLA workstream. The current repo is populated with the 2010 editions, but the registry is structured so later editions can be added without changing parser code.
+  Stable requirement namespace registry for the Python HLA workstream. The live repo currently selects only the 2010 editions, but the registry is structured so later editions can be added without changing parser code.
 
 active_bindings:
   framework_rules: HLA1516-2010
   federate_interface: HLA1516.1-2010
   omt: HLA1516.2-2010
+
+active_binding_editions:
+  framework_rules: 2010
+  federate_interface: 2010
+  omt: 2010
+
+selected_editions:
+  - 2010
 
 specs:
   - spec_id: HLA1516-2010
@@ -111,8 +119,6 @@ id_format:
   examples:
     - HLA1516-2010-RULE-001
     - HLA1516.1-2010-FM-001
-    - HLA1516.1-2025-TM-001
-    - HLA1516.2-2025-OMT-001
     - HLA1516-RULE-001
     - HLA1516.1-FM-001
     - HLA1516.1-TM-001

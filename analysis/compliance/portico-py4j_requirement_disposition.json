@@ -11429,7 +11429,7 @@
       "requirement_id": "REQ-OM-TRANSPORT-BEST-EFFORT-001",
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
-      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.10; IEEE 1516.1-2010 (2010 edition) \u00a76.23; IEEE 1516.1-2010 (2010 edition) \u00a76.27; 1516-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.10; IEEE 1516.1-2010 (2010 edition) \u00a76.23; IEEE 1516.1-2010 (2010 edition) \u00a76.27; IEEE 1516-2010 (2010 edition) \u00a712.2",
       "title": "Best-effort transportation semantics, including FOM-defined defaults and explicit overrides, are implemented distinctly from reliable transport and persist across restore"
     },
     {
@@ -11702,7 +11702,7 @@
       "requirement_id": "REQ-SAVE-RESTORE-CALLBACK-POLICY-001",
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
-      "section_ref": "1516-2010 \u00a712.2; IEEE 1516.1-2010 (2010 edition) \u00a74.24-\u00a74.29",
+      "section_ref": "IEEE 1516-2010 (2010 edition) \u00a712.2; IEEE 1516.1-2010 (2010 edition) \u00a74.24-\u00a74.29",
       "title": "Save/restore treats callback enablement as local runtime policy rather than persisted federation state"
     },
     {
@@ -11715,7 +11715,7 @@
       "requirement_id": "REQ-SAVE-RESTORE-OBJECT-STATE-001",
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
-      "section_ref": "1516-2010 \u00a712.2; IEEE 1516.1-2010 (2010 edition) \u00a74.24-\u00a74.29; IEEE 1516.1-2010 (2010 edition) \u00a76; IEEE 1516.1-2010 (2010 edition) \u00a77",
+      "section_ref": "IEEE 1516-2010 (2010 edition) \u00a712.2; IEEE 1516.1-2010 (2010 edition) \u00a74.24-\u00a74.29; IEEE 1516.1-2010 (2010 edition) \u00a76; IEEE 1516.1-2010 (2010 edition) \u00a77",
       "title": "Save/restore reinstates saved object existence, name mapping, attribute values, and ownership state"
     },
     {
@@ -11728,7 +11728,7 @@
       "requirement_id": "REQ-SAVE-RESTORE-FEDERATE-LOCAL-STATE-001",
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
-      "section_ref": "1516-2010 \u00a712.2; IEEE 1516.1-2010 (2010 edition) \u00a74.24-\u00a74.29; IEEE 1516.1-2010 (2010 edition) \u00a78",
+      "section_ref": "IEEE 1516-2010 (2010 edition) \u00a712.2; IEEE 1516.1-2010 (2010 edition) \u00a74.24-\u00a74.29; IEEE 1516.1-2010 (2010 edition) \u00a78",
       "title": "Save/restore reinstates saved federate runtime flags, policy switches, reporting switches, conveyance state, order-override state, and transportation-override state"
     },
     {
@@ -11741,7 +11741,7 @@
       "requirement_id": "REQ-SAVE-RESTORE-TRANSIENT-STATE-001",
       "runtime_disposition": "not-applicable",
       "runtime_status": "",
-      "section_ref": "1516-2010 \u00a712.2; IEEE 1516.1-2010 (2010 edition) \u00a74.24-\u00a74.29; IEEE 1516.1-2010 (2010 edition) \u00a78.21",
+      "section_ref": "IEEE 1516-2010 (2010 edition) \u00a712.2; IEEE 1516.1-2010 (2010 edition) \u00a74.24-\u00a74.29; IEEE 1516.1-2010 (2010 edition) \u00a78.21",
       "title": "Save/restore discards stale pre-restore callback-queue and message-retraction bookkeeping state"
     },
     {

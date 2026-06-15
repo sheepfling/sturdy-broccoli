@@ -100,6 +100,7 @@ def test_first_run_examples_import_after_bootstrap(tmp_path: Path) -> None:
             "-c",
             (
                 "import hla;"
+                "import hla.spec;"
                 "import hla.editions.ed2010;"
                 "import hla2010;"
                 "import hla2010.spec;"

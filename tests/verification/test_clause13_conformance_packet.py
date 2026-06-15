@@ -57,7 +57,7 @@ def test_clause13_conformance_packet_writers_emit_review_assets(tmp_path: Path):
     )
 
     assert json.loads(json_path.read_text(encoding="utf-8"))["scope"].startswith(
-        "IEEE 1516.1-2010 Clause 13"
+        "IEEE 1516.1-2010 (2010 edition) Clause 13"
     )
     md_text = md_path.read_text(encoding="utf-8")
     assert "## Federate conformance" in md_text

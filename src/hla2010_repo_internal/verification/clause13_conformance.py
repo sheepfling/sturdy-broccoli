@@ -213,10 +213,10 @@ def build_clause13_conformance_packet(
 
     return {
         "version": version,
-        "scope": "IEEE 1516.1-2010 Clause 13 conformance claim support packet",
+        "scope": "IEEE 1516.1-2010 (2010 edition) Clause 13 conformance claim support packet",
         "notes": [
             "This packet does not claim certification.",
-            "It packages current repo evidence so that federate and RTI conformance claims are explicitly backed by reviewable artifacts.",
+            "It packages current repo evidence so that IEEE 1516.1-2010 (2010 edition) federate and RTI conformance claims are explicitly backed by reviewable artifacts.",
         ],
         "service_conformance_summary": service_matrix["summary"],
         "requirements_ledger_summary": requirements_ledger["summary"],
@@ -257,7 +257,7 @@ def write_clause13_conformance_packet_markdown(
     lines = [
         f"# Clause 13 Conformance Packet v{version}",
         "",
-        "This packet does not claim certification. It packages current repo evidence so that IEEE 1516.1-2010 Clause 13 federate and RTI conformance claims are explicitly backed by reviewable artifacts.",
+        "This packet does not claim certification. It packages current repo evidence so that IEEE 1516.1-2010 (2010 edition) Clause 13 federate and RTI conformance claims are explicitly backed by reviewable artifacts.",
         "",
         "## Aggregate counts",
         "",

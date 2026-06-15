@@ -10,6 +10,8 @@ from typing import Any, Mapping
 from hla2010 import mom as hla_mom
 from .state import FederateState, FederationState
 
+SERVICE_REPORT_SECTION_REF = "IEEE 1516.1-2010 (2010 edition) §11.5.2"
+
 
 def _project_root() -> Path:
     return Path(os.environ.get("HLA2010_PROJECT_ROOT", os.getcwd())).expanduser().resolve()
@@ -75,7 +77,7 @@ class PythonRTIServiceReportFiles:
         self.ensure_file(federation, federate)
         initial = {
             "recordType": "ServiceReportInitialRecord",
-            "specSection": "1516.1-2010 §11.5.2",
+            "specSection": SERVICE_REPORT_SECTION_REF,
             "timestampUTC": datetime.now(timezone.utc).isoformat(),
             "connect": {
                 "callbackModel": _enum_name(federate.callback_model),

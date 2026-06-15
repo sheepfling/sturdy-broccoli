@@ -10,13 +10,13 @@ inventory scaffolding, and a validation path that can answer whether the
 project is ready to claim 2010-family compliance.
 
 Scope:
-- IEEE 1516-2010 framework and rules
-- IEEE 1516.1-2010 federate interface
-- IEEE 1516.2-2010 OMT
+- IEEE 1516-2010 (2010 edition) framework and rules
+- IEEE 1516.1-2010 (2010 edition) federate interface
+- IEEE 1516.2-2010 (2010 edition) OMT
 - 2010-only extraction, traceability, and evidence artifacts
 
 Out of Scope:
-- 2025-spec implementation work
+- additional post-2010 edition implementation work
 - broader HLA family redesign beyond the 2010 scope
 - certification claims without clause-level evidence
 

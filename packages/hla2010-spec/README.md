@@ -8,6 +8,9 @@ namespace `hla.editions.ed2010` and the 2010 compatibility namespace
 
 Primary imports:
 
+- `hla.spec` for the neutral default contract layer
+- `hla.runtime_api` for the neutral default runtime facade
+- `hla.select_edition("2010")` for explicit edition selection
 - `hla.editions.ed2010.spec` for the explicit 2010-edition contract layer
 - `hla.editions.ed2010.rti` for the explicit 2010-edition runtime facade
 - `hla2010.spec` for the clean contract layer

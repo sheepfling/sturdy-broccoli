@@ -7,6 +7,9 @@ interface without reading the full workspace layout first.
 
 If you only need the supported import ladder, use:
 
+- `from hla.spec import RTIambassadorSpec, FederateAmbassadorSpec`
+- `import hla; hla.select_edition("2010")`
+- `from hla.runtime_api import RTIambassador, FederateAmbassador`
 - `from hla2010.spec import RTIambassadorSpec, FederateAmbassadorSpec`
 - `from hla2010.runtime_api import RTIambassador, FederateAmbassador`
 - `from hla2010_rti_python import rti_ambassador`
@@ -15,7 +18,8 @@ If you only need the supported import ladder, use:
 ## Package Reality
 
 - installable root: `hla2010-spec`
-- spec source root: `packages/hla2010-spec/src/hla2010/`
+- neutral source root: `packages/hla2010-spec/src/hla/`
+- 2010 compatibility source root: `packages/hla2010-spec/src/hla2010/`
 - package-owned implementations: `packages/*/src/...`
 
 The installable root owns the abstract API surface and spec-facing support
@@ -37,6 +41,9 @@ temporary compatibility routing across the split packages.
 
 | Use case | Import |
 |---|---|
+| Neutral spec contracts | `from hla.spec import RTIambassadorSpec, FederateAmbassadorSpec` |
+| Neutral runtime convenience facade | `from hla.runtime_api import RTIambassador, FederateAmbassador` |
+| Explicit edition selection | `import hla; hla.select_edition("2010")` |
 | Abstract spec contracts | `from hla2010.spec import RTIambassadorSpec, FederateAmbassadorSpec` |
 | Runtime convenience facade | `from hla2010.runtime_api import RTIambassador, FederateAmbassador` |
 | Scenario / FOM entrypoint | `from hla2010_fom_target_radar.scenarios import run_target_radar_scenario` |
@@ -44,7 +51,22 @@ temporary compatibility routing across the split packages.
 
 ## Recommended Imports
 
-For new Python code, prefer the spec module:
+For new Python code, prefer the neutral spec module:
+
+```python
+from hla.spec import RTIambassadorSpec, FederateAmbassadorSpec
+```
+
+If you want the neutral namespace to state the edition explicitly:
+
+```python
+import hla
+
+hla.select_edition("2010")
+from hla.spec import RTIambassadorSpec, FederateAmbassadorSpec
+```
+
+The legacy 2010 compatibility path remains:
 
 ```python
 from hla2010.spec import RTIambassadorSpec, FederateAmbassadorSpec

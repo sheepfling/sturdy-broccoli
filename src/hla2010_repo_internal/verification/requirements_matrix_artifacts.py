@@ -9,6 +9,7 @@ from hla2010.spec_refs import FOM_REFERENCES, SERVICE_AREAS
 
 from ..requirements_source import (
     format_requirement_section_ref,
+    normalize_requirement_section_ref,
     requirement_document_title_for_binding,
 )
 from .asset_plan import build_verification_plan
@@ -20,7 +21,6 @@ from .vendor_parity_metadata import (
     load_operational_vendor_profiles,
     with_vendor_parity,
 )
-
 
 def require_project_root(project_root: str | Path | None) -> Path:
     if project_root is None:
@@ -77,18 +77,10 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
         return "planned"
 
     def _normalize_section_ref(section_ref: str, *, default_document: str) -> str:
-        normalized = str(section_ref).strip()
-        if not normalized or "§" not in normalized:
-            return normalized
-        return format_requirement_section_ref(default_document, normalized.split("§", 1)[1].strip())
+        return normalize_requirement_section_ref(section_ref, default_document=default_document)
 
     def _normalize_known_section_ref(section_ref: str) -> str:
-        normalized = str(section_ref).strip()
-        if normalized.startswith(("1516.1-2010 §", "IEEE 1516.1-2010 §")):
-            return _normalize_section_ref(normalized, default_document=federate_interface_document)
-        if normalized.startswith(("1516.2-2010 §", "IEEE 1516.2-2010 §")):
-            return _normalize_section_ref(normalized, default_document=omt_document)
-        return normalized
+        return normalize_requirement_section_ref(section_ref)
 
     section_area_inputs: dict[str, list[str]] = {}
     omt_area_inputs: dict[str, list[str]] = {}
@@ -293,8 +285,9 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
                 operational_vendor_profiles=operational_vendor_profiles,
             )
         )
-        if spec["section_ref"].startswith("IEEE 1516.1-2010 §"):
-            section = spec["section_ref"].split("§", 1)[1].split(".", 1)[0].strip()
+        normalized_spec_ref = _normalize_known_section_ref(str(spec["section_ref"]))
+        if normalized_spec_ref.startswith(f"{federate_interface_document} §"):
+            section = normalized_spec_ref.split("§", 1)[1].split(".", 1)[0].strip()
             section_area_inputs.setdefault(section, []).append(status)
 
     for asset in plan.assets:

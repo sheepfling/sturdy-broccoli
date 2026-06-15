@@ -1,6 +1,6 @@
 # Backend Conformance Matrix
 
-Clause-level conformance snapshot for the backend-neutral Python HLA 1516.1-2010
+Clause-level conformance snapshot for the backend-neutral Python IEEE 1516.1-2010 (2010 edition)
 surface.
 
 This is document `4/4` in the backend documentation set.
@@ -40,7 +40,7 @@ The four backend docs are intentionally parallel:
 
 Use this file to answer:
 
-- which IEEE 1516.1-2010 clauses have working behavior now
+- which IEEE 1516.1-2010 (2010 edition) clauses have working behavior now
 - where Python RTI is ahead of vendor/runtime paths
 - where CERTI or Pitch remains partial beyond the currently promoted overlap
 

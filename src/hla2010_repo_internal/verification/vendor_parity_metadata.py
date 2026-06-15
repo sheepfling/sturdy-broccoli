@@ -5,6 +5,15 @@ import re
 from pathlib import Path
 from typing import Any
 
+_FEDERATE_INTERFACE_DOCUMENT_TITLES = {
+    "IEEE 1516.1-2010",
+    "IEEE 1516.1-2010 (2010 edition)",
+}
+
+
+def _is_federate_interface_document(value: Any) -> bool:
+    return str(value or "").strip() in _FEDERATE_INTERFACE_DOCUMENT_TITLES
+
 
 def load_backend_conformance_vendor_rows(project_root: str | Path) -> dict[str, list[dict[str, Any]]]:
     matrix_path = Path(project_root).resolve() / "docs" / "backend_conformance_matrix.md"
@@ -82,8 +91,7 @@ def with_vendor_parity(
     operational_vendor_profiles: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     augmented = dict(row)
-    clause = _extract_numeric_clause(augmented.get("section_ref"))
-    vendor = _select_vendor_row(augmented, vendor_rows_by_clause) if str(augmented.get("document")) == "IEEE 1516.1-2010" else {}
+    vendor = _select_vendor_row(augmented, vendor_rows_by_clause) if _is_federate_interface_document(augmented.get("document")) else {}
     augmented.setdefault("python_runtime_status", vendor.get("python_runtime_status", ""))
     augmented.setdefault("certi_runtime_status", vendor.get("certi_runtime_status", ""))
     augmented.setdefault("pitch_runtime_status", vendor.get("pitch_runtime_status", ""))
@@ -137,7 +145,7 @@ def _select_vendor_row(
 
 
 def _operational_capability_bucket(row: dict[str, Any]) -> str:
-    if str(row.get("document")) != "IEEE 1516.1-2010":
+    if not _is_federate_interface_document(row.get("document")):
         return ""
     clause = _extract_numeric_clause(row.get("section_ref"))
     root = clause.split(".", 1)[0] if clause else ""

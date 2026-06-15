@@ -13,7 +13,7 @@
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
@@ -27,31 +27,34 @@
       "matrix_id": "HLA1516.1-DDM-9.1-001",
       "negative_test_refs": [],
       "notes": "End-to-end region subscription and routing flow now anchors the Clause 9 family; End-to-end region subscription and routing flow now anchors the Clause 9 family",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "yes",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.1-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.1",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Region-based DDM",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_ddm_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared DDM suite scenario verifies real Pitch end-to-end region subscription and routing flow",
       "vendor_profile_bucket": "",
       "vendor_profile_notes": "",
       "vendor_profile_refs": [],
       "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
@@ -65,31 +68,34 @@
       "matrix_id": "HLA1516.1-DDM-9.1-002",
       "negative_test_refs": [],
       "notes": "Dimension lookup and region creation evidence tie DDM routing to declared dimensions; Dimension lookup and region creation evidence tie DDM routing to declared dimensions",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "yes",
       "positive_test_refs": [
         "tests/backends/test_python_backend_support_services.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.1-002",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.1",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "FOM-defined dimensions for routing",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_ddm_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared DDM suite scenario verifies Pitch dimension lookup and region creation against declared routing dimensions",
       "vendor_profile_bucket": "",
       "vendor_profile_notes": "",
       "vendor_profile_refs": [],
       "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
@@ -104,31 +110,34 @@
       "matrix_id": "HLA1516.1-DDM-9.1-003",
       "negative_test_refs": [],
       "notes": "The same overlap helpers drive object and interaction relevance in the focused DDM lifecycle test; The same overlap helpers drive object and interaction relevance in the focused DDM lifecycle test",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "yes",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.1-003",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.1",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Relevance from subscription and update regions",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_ddm_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared DDM suite scenario verifies Pitch overlap-based relevance for regional routing",
       "vendor_profile_bucket": "",
       "vendor_profile_notes": "",
       "vendor_profile_refs": [],
       "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
@@ -142,31 +151,37 @@
       "matrix_id": "HLA1516.1-DDM-9.10-001",
       "negative_test_refs": [],
       "notes": "Interaction region subscription maps are asserted directly; Interaction region subscription maps are asserted directly",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "blocked",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.10-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.10",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Interaction subscription with regions",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
+      "vendor_evidence_refs": [
+        "../tests/backends/test_python_backend_support_services.py",
+        "../tests/backends/test_python_backend_federation_extended.py",
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_python_backend_time_ddm_extended.py",
+        "../tests/verification/test_compliance_slice_v011.py"
+      ],
+      "vendor_notes": "Python proves both active and passive interaction regional subscription plus overlap-filtered delivery",
       "vendor_profile_bucket": "",
       "vendor_profile_notes": "",
       "vendor_profile_refs": [],
       "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
@@ -180,31 +195,36 @@
       "matrix_id": "HLA1516.1-DDM-9.11-001",
       "negative_test_refs": [],
       "notes": "Interaction region unsubscription is asserted directly; Interaction region unsubscription is asserted directly",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "blocked",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.11-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.11",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Interaction unsubscription with regions",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
+      "vendor_evidence_refs": [
+        "../tests/backends/test_python_backend_support_services.py",
+        "../tests/backends/test_python_backend_federation_extended.py",
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_python_backend_time_ddm_extended.py"
+      ],
+      "vendor_notes": "Python has focused executable coverage for removing regional interaction subscriptions",
       "vendor_profile_bucket": "",
       "vendor_profile_notes": "",
       "vendor_profile_refs": [],
       "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
@@ -219,31 +239,33 @@
       "matrix_id": "HLA1516.1-DDM-9.12-001",
       "negative_test_refs": [],
       "notes": "The focused DDM lifecycle test uses the same overlap-filter path that gates reflected attribute delivery; The focused DDM lifecycle test uses the same overlap-filter path that gates reflected attribute delivery",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "blocked",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.12-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.12",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Attribute update routing by overlap",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
+      "vendor_evidence_refs": [
+        "../tests/verification/test_compliance_slice_v011.py"
+      ],
+      "vendor_notes": "Python proves DDM filtering is applied before timestamp-order delivery, not after",
       "vendor_profile_bucket": "",
       "vendor_profile_notes": "",
       "vendor_profile_refs": [],
       "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
@@ -257,31 +279,37 @@
       "matrix_id": "HLA1516.1-DDM-9.13-001",
       "negative_test_refs": [],
       "notes": "Interaction delivery with matching regions is asserted directly; Interaction delivery with matching regions is asserted directly",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "blocked",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.13-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.13",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Interaction routing by overlap",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
+      "vendor_evidence_refs": [
+        "../tests/backends/test_python_backend_support_services.py",
+        "../tests/backends/test_python_backend_federation_extended.py",
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_python_backend_time_ddm_extended.py",
+        "../tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
+      "vendor_notes": "Python proves region-scoped AVU requests trigger the provider callback path",
       "vendor_profile_bucket": "",
       "vendor_profile_notes": "",
       "vendor_profile_refs": [],
       "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py"
@@ -294,31 +322,38 @@
       "matrix_id": "HLA1516.1-DDM-9.2-001",
       "negative_test_refs": [],
       "notes": "Region creation is explicitly exercised and validated; Region creation is explicitly exercised and validated",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "blocked",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.2-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.2",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Create Region",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
+      "vendor_evidence_refs": [
+        "../tests/verification/test_compliance_slice_v011.py",
+        "../tests/backends/test_python_backend_support_services.py",
+        "../tests/backends/test_python_backend_federation_extended.py",
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_python_backend_time_ddm_extended.py",
+        "../tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
+      "vendor_notes": "Python DDM region lifecycle is exercised directly",
       "vendor_profile_bucket": "",
       "vendor_profile_notes": "",
       "vendor_profile_refs": [],
       "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py"
@@ -331,31 +366,33 @@
       "matrix_id": "HLA1516.1-DDM-9.3-001",
       "negative_test_refs": [],
       "notes": "Commit service is directly exercised on both peers; Commit service is directly exercised on both peers",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "blocked",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.3-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.3",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Commit Region Modifications",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
+      "vendor_evidence_refs": [
+        "../tests/verification/test_compliance_slice_v011.py"
+      ],
+      "vendor_notes": "Python proves committed ranges affect later timestamp-order delivery filtering",
       "vendor_profile_bucket": "",
       "vendor_profile_notes": "",
       "vendor_profile_refs": [],
       "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py"
@@ -368,31 +405,36 @@
       "matrix_id": "HLA1516.1-DDM-9.4-001",
       "negative_test_refs": [],
       "notes": "Delete service is directly exercised and state removal is asserted; Delete service is directly exercised and state removal is asserted",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "blocked",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.4-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.4",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Delete Region",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
+      "vendor_evidence_refs": [
+        "../tests/backends/test_python_backend_support_services.py",
+        "../tests/backends/test_python_backend_federation_extended.py",
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_python_backend_time_ddm_extended.py"
+      ],
+      "vendor_notes": "Python has focused executable coverage for region deletion and local region-state cleanup",
       "vendor_profile_bucket": "",
       "vendor_profile_notes": "",
       "vendor_profile_refs": [],
       "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py"
@@ -405,31 +447,37 @@
       "matrix_id": "HLA1516.1-DDM-9.5-001",
       "negative_test_refs": [],
       "notes": "Region-aware registration path is explicitly covered; Region-aware registration path is explicitly covered",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "blocked",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.5-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.5",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Object registration with regions",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
+      "vendor_evidence_refs": [
+        "../tests/backends/test_python_backend_support_services.py",
+        "../tests/backends/test_python_backend_federation_extended.py",
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_python_backend_time_ddm_extended.py",
+        "../tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
+      "vendor_notes": "Python proves object registration with regional update associations and discovery on the subscriber side",
       "vendor_profile_bucket": "",
       "vendor_profile_notes": "",
       "vendor_profile_refs": [],
       "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py"
@@ -442,31 +490,37 @@
       "matrix_id": "HLA1516.1-DDM-9.6-001",
       "negative_test_refs": [],
       "notes": "Association state is asserted on the registered object; Association state is asserted on the registered object",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "blocked",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.6-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.6",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Associate regions for attributes",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
+      "vendor_evidence_refs": [
+        "../tests/backends/test_python_backend_support_services.py",
+        "../tests/backends/test_python_backend_federation_extended.py",
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_python_backend_time_ddm_extended.py",
+        "../tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
+      "vendor_notes": "Python has focused executable coverage for associating attribute update regions",
       "vendor_profile_bucket": "",
       "vendor_profile_notes": "",
       "vendor_profile_refs": [],
       "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py"
@@ -479,31 +533,37 @@
       "matrix_id": "HLA1516.1-DDM-9.7-001",
       "negative_test_refs": [],
       "notes": "Unassociation state removal is asserted directly; Unassociation state removal is asserted directly",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "blocked",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.7-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.7",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Unassociate regions for attributes",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
+      "vendor_evidence_refs": [
+        "../tests/backends/test_python_backend_support_services.py",
+        "../tests/backends/test_python_backend_federation_extended.py",
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_python_backend_time_ddm_extended.py",
+        "../tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
+      "vendor_notes": "Python has focused executable coverage for removing attribute update regions",
       "vendor_profile_bucket": "",
       "vendor_profile_notes": "",
       "vendor_profile_refs": [],
       "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
@@ -517,31 +577,37 @@
       "matrix_id": "HLA1516.1-DDM-9.8-001",
       "negative_test_refs": [],
       "notes": "Region subscription maps are asserted directly; Region subscription maps are asserted directly",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "blocked",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.8-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.8",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Object-class attribute subscription with regions",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
+      "vendor_evidence_refs": [
+        "../tests/backends/test_python_backend_support_services.py",
+        "../tests/backends/test_python_backend_federation_extended.py",
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_python_backend_time_ddm_extended.py",
+        "../tests/verification/test_spec_traceability_and_extended_python_rti.py"
+      ],
+      "vendor_notes": "Python proves both active and passive regional object-class subscription state and later discovery/reflection flow",
       "vendor_profile_bucket": "",
       "vendor_profile_notes": "",
       "vendor_profile_refs": [],
       "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ddm.py",
@@ -555,31 +621,36 @@
       "matrix_id": "HLA1516.1-DDM-9.9-001",
       "negative_test_refs": [],
       "notes": "Region unsubscription state removal is asserted directly; Region unsubscription state removal is asserted directly",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "blocked",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.9-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.9",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Object-class attribute unsubscription with regions",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
+      "vendor_evidence_refs": [
+        "../tests/backends/test_python_backend_support_services.py",
+        "../tests/backends/test_python_backend_federation_extended.py",
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_python_backend_time_ddm_extended.py"
+      ],
+      "vendor_notes": "Python has focused executable coverage for removing regional object subscriptions",
       "vendor_profile_bucket": "",
       "vendor_profile_notes": "",
       "vendor_profile_refs": [],
       "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py",
@@ -593,31 +664,36 @@
       "matrix_id": "HLA1516.1-OWN-7.1-001",
       "negative_test_refs": [],
       "notes": "Ownership state is evidenced through explicit owner transfer and query behavior; Ownership state is evidenced through explicit owner transfer and query behavior",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "yes",
       "positive_test_refs": [
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.1-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.1",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Attribute ownership tracking",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_ownership_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared ownership scenario verifies real Pitch ownership transfer and later ownership query visibility",
+      "vendor_profile_bucket": "Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
@@ -630,31 +706,36 @@
       "matrix_id": "HLA1516.1-OWN-7.1-002",
       "negative_test_refs": [],
       "notes": "Negotiated transfer evidence shows one winning owner for a single attribute at a time; Negotiated transfer evidence shows one winning owner for a single attribute at a time",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "yes",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.1-002",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.1",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Single owner per attribute",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_ownership_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared ownership scenario verifies Pitch moves a single attribute to one winning owner at a time",
+      "vendor_profile_bucket": "Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/object.py",
@@ -668,31 +749,36 @@
       "matrix_id": "HLA1516.1-OWN-7.1-003",
       "negative_test_refs": [],
       "notes": "Negative update-path coverage proves non-owners are rejected; Negative update-path coverage proves non-owners are rejected",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "yes",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.1-003",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.1",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Owned-attribute update restriction",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_ownership_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared non-owner-update scenario verifies real Pitch rejects attribute updates from non-owners",
+      "vendor_profile_bucket": "Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "partial",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
@@ -705,31 +791,37 @@
       "matrix_id": "HLA1516.1-OWN-7.10-001",
       "negative_test_refs": [],
       "notes": "Cancellation service is covered on both positive and negative paths; Cancellation service is covered on both positive and negative paths",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "blocked",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.10-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.10",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Cancel ownership acquisition",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_certi_backend_callbacks.py",
+        "../tests/backends/test_certi_java_profile_callbacks.py"
+      ],
+      "vendor_notes": "callback path covered in Python; real negotiated-flow parity is still vendor/runtime-dependent",
+      "vendor_profile_bucket": "Negotiated Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "yes",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
@@ -742,31 +834,43 @@
       "matrix_id": "HLA1516.1-OWN-7.11-001",
       "negative_test_refs": [],
       "notes": "Cancellation confirmation callback is asserted directly; Cancellation confirmation callback is asserted directly",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "blocked",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.11-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.11",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Cancellation confirmation",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/backends/test_python_backend_support_services.py",
+        "../tests/backends/test_python_backend_federation_extended.py",
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_python_backend_time_ddm_extended.py",
+        "../tests/backends/test_certi_backend_callbacks.py",
+        "../tests/backends/test_certi_java_profile_callbacks.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py",
+        "../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md",
+        "../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+      ],
+      "vendor_notes": "Python release-request path is exercised; direct CERTI probe now proves owner-side release callback delivery on owned-attribute acquisition; the current Pitch result is bridge-divergent because `pitch-py4j` reaches this callback on the release-request path while `pitch-jpype` does not",
+      "vendor_profile_bucket": "Negotiated Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
@@ -779,32 +883,37 @@
       "matrix_id": "HLA1516.1-OWN-7.12-001",
       "negative_test_refs": [],
       "notes": "Query behavior is evidenced for both owned and unowned outcomes; Query behavior is evidenced for both owned and unowned outcomes",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "yes",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py",
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.12-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.12",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Attribute ownership query",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_ownership_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared ownership scenario verifies real Pitch ownership query reporting after transfer",
+      "vendor_profile_bucket": "Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
@@ -817,32 +926,37 @@
       "matrix_id": "HLA1516.1-OWN-7.13-001",
       "negative_test_refs": [],
       "notes": "Query callbacks prove unowned and owned-by-another-federate reporting; Query callbacks prove unowned and owned-by-another-federate reporting",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "yes",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py",
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.13-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.13",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Owned-unowned-owner notification",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_ownership_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared ownership-query callback scenario verifies real Pitch inform/not-owned/RTI-owned callback coverage",
+      "vendor_profile_bucket": "Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): yes; Java shim (Py4J, none): yes; CERTI (native, subprocess-line): yes; CERTI (JPype facade, subprocess-line): yes; CERTI (Py4J facade, subprocess-line): yes; CERTI hosted (native, `grpc`): yes; CERTI hosted (native, `rest`): not yet explicit; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): yes; Pitch (Py4J, none): yes; Portico (JPype, none): install-dependent; Portico (Py4J, none): install-dependent",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "yes",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
@@ -855,24 +969,33 @@
       "matrix_id": "HLA1516.1-OWN-7.2-001",
       "negative_test_refs": [],
       "notes": "Unconditional divestiture path is directly exercised and validated; Unconditional divestiture path is directly exercised and validated",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "yes",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.2-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.2",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Unconditional divestiture",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/backends/test_python_backend_support_services.py",
+        "../tests/backends/test_python_backend_federation_extended.py",
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_python_backend_time_ddm_extended.py",
+        "../tests/vendors/README.md",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "current real ownership smoke anchor",
+      "vendor_profile_bucket": "Negotiated Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
@@ -883,7 +1006,7 @@
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "partial",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
@@ -896,31 +1019,41 @@
       "matrix_id": "HLA1516.1-OWN-7.3-001",
       "negative_test_refs": [],
       "notes": "Negotiated ownership flow is covered end to end on the Python reference path; vendor note: current CERTI runs remain partial and current Pitch runs are bridge-divergent or blocked on the promoted negotiated-ownership slice; Negotiated ownership flow is covered end to end on the Python reference path; vendor note: current CERTI runs remain partial and current Pitch runs are bridge-divergent or blocked on the promoted negotiated-ownership slice",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "blocked",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.3-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.3",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Negotiated divestiture",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/backends/test_python_backend_support_services.py",
+        "../tests/backends/test_python_backend_federation_extended.py",
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_python_backend_time_ddm_extended.py",
+        "../tests/vendors/README.md",
+        "../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md",
+        "../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+      ],
+      "vendor_notes": "Python tracks divesting state and assumption callbacks; current CERTI native, JPype, and Py4J matrix runs still diverge before the expected negotiated release/acquisition handshake completes; Pitch is also bridge-divergent here, with `pitch-jpype` and `pitch-py4j` exposing different partial callback surfaces on the same Docker-backed runtime",
+      "vendor_profile_bucket": "Negotiated Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "partial",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
@@ -933,31 +1066,43 @@
       "matrix_id": "HLA1516.1-OWN-7.4-001",
       "negative_test_refs": [],
       "notes": "Callbacks for assumption and release requests provide the Clause 7.4 notification evidence; Callbacks for assumption and release requests provide the Clause 7.4 notification evidence",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "blocked",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.4-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.4",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Divestiture request notification",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/backends/test_python_backend_support_services.py",
+        "../tests/backends/test_python_backend_federation_extended.py",
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_python_backend_time_ddm_extended.py",
+        "../tests/vendors/README.md",
+        "../tests/backends/test_certi_backend_callbacks.py",
+        "../tests/backends/test_certi_java_profile_callbacks.py",
+        "../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md",
+        "../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+      ],
+      "vendor_notes": "backend-neutral Python path is exercised; current CERTI runs show that negotiated ownership remains unstable end to end even though lower-level callback probes exist; both Pitch bridges reach the assumption callback on the offer path, but they diverge immediately after that point",
+      "vendor_profile_bucket": "Negotiated Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
@@ -970,31 +1115,36 @@
       "matrix_id": "HLA1516.1-OWN-7.5-001",
       "negative_test_refs": [],
       "notes": "Standard acquisition path is exercised through negotiated transfer scenarios; Standard acquisition path is exercised through negotiated transfer scenarios",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "yes",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.5-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.5",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Attribute ownership acquisition",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_ownership_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared release-request ownership scenario verifies real Pitch attribute acquisition through the standard request path",
+      "vendor_profile_bucket": "Negotiated Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
@@ -1007,31 +1157,36 @@
       "matrix_id": "HLA1516.1-OWN-7.6-001",
       "negative_test_refs": [],
       "notes": "Immediate-acquisition availability path is validated by the focused unavailable-without-transfer proof.; Immediate-acquisition availability path is validated by the focused unavailable-without-transfer proof.",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "yes",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py::test_python_rti_acquisition_if_available_reports_unavailable_without_transfer"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.6-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.6",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Attribute ownership acquisition if available",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_ownership_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared ownership scenario verifies real Pitch acquisition-if-available transfer and resulting ownership state",
+      "vendor_profile_bucket": "Negotiated Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
@@ -1044,31 +1199,36 @@
       "matrix_id": "HLA1516.1-OWN-7.7-001",
       "negative_test_refs": [],
       "notes": "Acquisition notification callback is asserted directly on the successful negotiated and divest-if-wanted paths.; Acquisition notification callback is asserted directly on the successful negotiated and divest-if-wanted paths.",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "yes",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py::test_python_rti_negotiated_ownership_tracks_divesting_and_candidate_flows"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.7-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.7",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Acquisition success notification",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_ownership_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared ownership and release-request scenarios verify real Pitch acquisition-notification callbacks on successful transfer",
+      "vendor_profile_bucket": "Negotiated Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
@@ -1083,29 +1243,34 @@
         "tests/backends/test_python_backend_object_ownership_extended.py::test_python_rti_release_denied_preserves_owner_and_no_acquisition_grant"
       ],
       "notes": "Focused runtime proof shows attributeOwnershipAcquisitionNotification is not emitted when the owning federate denies release.; Focused runtime proof shows attributeOwnershipAcquisitionNotification is not emitted when the owning federate denies release.",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "yes",
       "positive_test_refs": [],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.7-002",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.7",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Acquisition success callback non-emission when release is denied",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_ownership_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared release-denied scenario verifies Pitch does not emit acquisition notification after denied release",
+      "vendor_profile_bucket": "Negotiated Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
@@ -1118,31 +1283,36 @@
       "matrix_id": "HLA1516.1-OWN-7.8-001",
       "negative_test_refs": [],
       "notes": "Unavailable callback gives direct failure-path evidence; Unavailable callback gives direct failure-path evidence",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "yes",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.8-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.8",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Acquisition failure notification",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/scenarios/test_ownership_management_backend_matrix.py",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "shared ownership-unavailable scenario verifies real Pitch acquisition-failure callbacks",
+      "vendor_profile_bucket": "Negotiated Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "yes",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
@@ -1155,31 +1325,40 @@
       "matrix_id": "HLA1516.1-OWN-7.9-001",
       "negative_test_refs": [],
       "notes": "Divestiture-if-wanted path provides explicit release callback behavior under pending acquisition.; Divestiture-if-wanted path provides explicit release callback behavior under pending acquisition.",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "yes",
       "positive_test_refs": [
         "tests/backends/test_python_backend_object_ownership_extended.py::test_python_rti_negotiated_ownership_tracks_divesting_and_candidate_flows"
       ],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.9-001",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.9",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Release in response to acquisition request",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/backends/test_python_backend_support_services.py",
+        "../tests/backends/test_python_backend_federation_extended.py",
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_python_backend_time_ddm_extended.py",
+        "../tests/vendors/README.md",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "exercised end to end",
+      "vendor_profile_bucket": "Negotiated Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     },
     {
       "artifact_refs": [
         "requirements/active_service_rows.csv",
         "requirements/reference/hla1516_1_priority_clauses_7_9_10.csv"
       ],
-      "certi_runtime_status": "",
+      "certi_runtime_status": "yes",
       "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
@@ -1194,22 +1373,31 @@
         "tests/backends/test_python_backend_object_ownership_extended.py::test_python_rti_acquisition_if_available_reports_unavailable_without_transfer"
       ],
       "notes": "Focused runtime proof shows requestAttributeOwnershipRelease is not emitted when acquisition-if-available immediately reports unavailable.; Focused runtime proof shows requestAttributeOwnershipRelease is not emitted when acquisition-if-available immediately reports unavailable.",
-      "pitch_runtime_status": "",
+      "pitch_runtime_status": "yes",
       "positive_test_refs": [],
-      "python_runtime_status": "",
+      "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.9-002",
       "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.9",
       "service_group": "requirement",
       "source": "requirements/active_service_rows.csv",
       "status": "pass",
       "title": "Release callback non-emission when acquisition-if-available cannot proceed",
-      "vendor_evidence_refs": [],
-      "vendor_notes": "",
-      "vendor_profile_bucket": "",
-      "vendor_profile_notes": "",
-      "vendor_profile_refs": [],
-      "vendor_profile_source": "",
-      "vendor_source": ""
+      "vendor_evidence_refs": [
+        "../tests/backends/test_python_backend_support_services.py",
+        "../tests/backends/test_python_backend_federation_extended.py",
+        "../tests/backends/test_python_backend_object_ownership_extended.py",
+        "../tests/backends/test_python_backend_time_ddm_extended.py",
+        "../tests/vendors/README.md",
+        "../tests/vendors/test_pitch_real_backend_matrix.py"
+      ],
+      "vendor_notes": "exercised end to end",
+      "vendor_profile_bucket": "Negotiated Ownership",
+      "vendor_profile_notes": "Python RTI (none, none): yes; Java shim (JPype, none): partial; Java shim (Py4J, none): partial; CERTI (native, subprocess-line): partial; CERTI (JPype facade, subprocess-line): partial; CERTI (Py4J facade, subprocess-line): partial; CERTI hosted (native, `grpc`): not yet explicit; CERTI hosted (native, `rest`): no; Python RTI hosted (none, `grpc`): yes; Python RTI hosted (none, `rest`): not yet explicit; Pitch (JPype, none): bridge-divergent; Pitch (Py4J, none): bridge-divergent; Portico (JPype, none): no; Portico (Py4J, none): no",
+      "vendor_profile_refs": [
+        "docs/rti_options_and_test_matrix.md"
+      ],
+      "vendor_profile_source": "docs/rti_options_and_test_matrix.md",
+      "vendor_source": "docs/backend_conformance_matrix.md"
     }
   ],
   "status_counts": {

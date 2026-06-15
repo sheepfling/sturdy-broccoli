@@ -5,6 +5,11 @@ Use this page when you want the smallest possible requirements workflow.
 If you only need to create, read, update, or delete one active requirement row,
 start here instead of reading the broader requirements surface map.
 
+The requirements surface is edition-selectable in structure, but the current
+selected requirement document set is `2010` only. Active rows and authored
+requirement document titles should therefore stay explicitly tied to the 2010
+edition unless you are deliberately extending the registry structure itself.
+
 Operator summary:
 
 ```bash

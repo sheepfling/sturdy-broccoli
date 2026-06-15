@@ -36,6 +36,7 @@ class RTIBackendPlugin:
     name: str
     create_backend: Callable[[dict[str, Any]], Any]
     aliases: tuple[str, ...] = ()
+    supported_editions: tuple[str, ...] = ("2010",)
     family: str = "generic"
     description: str = ""
     discover: Callable[[], Any] | None = None
@@ -47,6 +48,7 @@ class RTIBackendDiscovery:
 
     name: str
     aliases: tuple[str, ...]
+    supported_editions: tuple[str, ...]
     family: str
     description: str
     selectable_names: tuple[str, ...] = ()
@@ -100,6 +102,7 @@ class RTIBackendPluginLike(Protocol):
 
     name: str
     aliases: tuple[str, ...]
+    supported_editions: tuple[str, ...]
     family: str
     description: str
     discover: Callable[[], Any] | None

@@ -10,11 +10,14 @@ from hla2010_repo_internal.requirements_registry import (
     format_requirement_clause_key,
     format_requirement_section_ref,
     match_requirement_spec_prefix,
+    normalize_requirement_section_ref,
+    requirement_active_binding_editions,
     requirement_active_bindings,
     requirement_document_matches_alias,
     requirement_document_matches_binding,
     requirement_document_title_for_alias,
     requirement_document_title_for_binding,
+    requirement_selected_editions,
     requirement_spec_by_alias,
     requirement_spec_registry,
     validate_requirement_document_registry,
@@ -283,6 +286,18 @@ def _render_registry_yaml(source: dict[str, Any]) -> str:
     lines.append("active_bindings:")
     for key, value in dict(registry.get("active_bindings", {})).items():
         lines.append(f"  {key}: {value}")
+    active_edition_map = requirement_active_binding_editions(source)
+    if active_edition_map:
+        lines.append("")
+        lines.append("active_binding_editions:")
+        for key, value in active_edition_map.items():
+            lines.append(f"  {key}: {value}")
+    selected_editions = requirement_selected_editions(source)
+    if selected_editions:
+        lines.append("")
+        lines.append("selected_editions:")
+        for value in selected_editions:
+            lines.append(f"  - {value}")
     lines.append("")
     lines.append("specs:")
     for spec_row in registry.get("specs", []):
@@ -538,12 +553,15 @@ __all__ = [
     "load_source_of_truth",
     "format_requirement_section_ref",
     "format_requirement_clause_key",
+    "normalize_requirement_section_ref",
     "merged_traceability_rows",
+    "requirement_active_binding_editions",
     "requirement_active_bindings",
     "requirement_document_matches_alias",
     "requirement_document_matches_binding",
     "requirement_document_title_for_alias",
     "requirement_document_title_for_binding",
+    "requirement_selected_editions",
     "requirement_spec_by_alias",
     "match_requirement_spec_prefix",
     "requirement_spec_registry",

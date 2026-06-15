@@ -1,0 +1,16 @@
+{
+  "clause7_vendor_divergent_negotiated_ownership": {
+    "scenario_backed_ids": [
+      "REQ-RTI-OWN-7_3-negotiatedAttributeOwnershipDivestiture",
+      "REQ-FED-OWN-7_4-requestAttributeOwnershipAssumption",
+      "REQ-RTI-OWN-7_15-cancelAttributeOwnershipAcquisition",
+      "REQ-FED-OWN-7_16-confirmAttributeOwnershipAcquisitionCancellation",
+      "HLA1516.1-OWN-7.3-001",
+      "HLA1516.1-OWN-7.4-001",
+      "HLA1516.1-OWN-7.10-001"
+    ],
+    "matrix_inherited_ids": [
+      "REQ-FED-OWN-7_10-attributeOwnershipUnavailable"
+    ]
+  }
+}

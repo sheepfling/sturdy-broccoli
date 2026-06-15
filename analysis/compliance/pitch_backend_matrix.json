@@ -22,8 +22,8 @@
       "notes": "Pitch JPype lifecycle smoke exists through the Docker-backed CRC/FedPro route.",
       "scope": "real-vendor lifecycle slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a74.1",
-        "IEEE 1516.1-2010 \u00a74.10"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.1",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.10"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "lifecycle",
@@ -38,8 +38,8 @@
       "notes": "Pitch Py4J lifecycle smoke exists through the Docker-backed CRC/FedPro route.",
       "scope": "real-vendor lifecycle slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a74.1",
-        "IEEE 1516.1-2010 \u00a74.10"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.1",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.10"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "lifecycle",
@@ -54,8 +54,8 @@
       "notes": "Pitch JPype exchange matrix covers receive and timestamped flows.",
       "scope": "real-vendor exchange/time slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a76.9",
-        "IEEE 1516.1-2010 \u00a78.13"
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.13"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "exchange",
@@ -70,8 +70,8 @@
       "notes": "Pitch Py4J exchange matrix covers receive and timestamped flows.",
       "scope": "real-vendor exchange/time slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a76.9",
-        "IEEE 1516.1-2010 \u00a78.13"
+        "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.13"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "exchange",
@@ -86,8 +86,8 @@
       "notes": "Pitch JPype synchronization matrix exists.",
       "scope": "real-vendor synchronization slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a74.11",
-        "IEEE 1516.1-2010 \u00a74.15"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.11",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.15"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "synchronization",
@@ -102,8 +102,8 @@
       "notes": "Pitch Py4J synchronization matrix exists.",
       "scope": "real-vendor synchronization slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a74.11",
-        "IEEE 1516.1-2010 \u00a74.15"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.11",
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.15"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "synchronization",
@@ -118,7 +118,7 @@
       "notes": "Pitch JPype now has a child-process probe path, but executed real-runtime runs still auto-resume the dropped FedPro session instead of yielding observer-visible lost-federate evidence.",
       "scope": "real-vendor lost-federate slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a74.1.5"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.1.5"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "lost-federate",
@@ -134,7 +134,7 @@
       "notes": "Pitch Py4J now has a shared-harness lost-federate wrapper that terminates the victim gateway JVM, but executed real-runtime runs still do not surface the observer-visible lost-federate report.",
       "scope": "real-vendor lost-federate slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a74.1.5"
+        "IEEE 1516.1-2010 (2010 edition) \u00a74.1.5"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "lost-federate",
@@ -149,8 +149,8 @@
       "notes": "Pitch JPype plain ownership slice exists.",
       "scope": "real-vendor ownership slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.2",
-        "IEEE 1516.1-2010 \u00a77.19"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.19"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "ownership",
@@ -165,8 +165,8 @@
       "notes": "Pitch Py4J plain ownership slice exists.",
       "scope": "real-vendor ownership slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.2",
-        "IEEE 1516.1-2010 \u00a77.19"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.19"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "ownership",
@@ -182,8 +182,8 @@
       "notes": "Pitch JPype negotiated ownership is currently bridge-divergent.",
       "scope": "real-vendor negotiated ownership slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.3",
-        "IEEE 1516.1-2010 \u00a77.16"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.16"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "negotiated-ownership",
@@ -199,8 +199,8 @@
       "notes": "Pitch Py4J negotiated ownership is currently bridge-divergent.",
       "scope": "real-vendor negotiated ownership slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a77.3",
-        "IEEE 1516.1-2010 \u00a77.16"
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.3",
+        "IEEE 1516.1-2010 (2010 edition) \u00a77.16"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "negotiated-ownership",
@@ -215,8 +215,8 @@
       "notes": "Pitch JPype time-profile and exchange/time parity slice exists.",
       "scope": "real-vendor time-profile slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a78.2",
-        "IEEE 1516.1-2010 \u00a78.24"
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.24"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "time-profile",
@@ -231,8 +231,8 @@
       "notes": "Pitch Py4J time-profile and exchange/time parity slice exists.",
       "scope": "real-vendor time-profile slice",
       "section_refs": [
-        "IEEE 1516.1-2010 \u00a78.2",
-        "IEEE 1516.1-2010 \u00a78.24"
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.2",
+        "IEEE 1516.1-2010 (2010 edition) \u00a78.24"
       ],
       "session_status": "not-run-in-this-session",
       "slice_id": "time-profile",

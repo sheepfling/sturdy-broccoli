@@ -6,6 +6,7 @@ import subprocess
 
 import hla
 import hla.editions.ed2010 as hla_ed2010
+import hla.spec as hla_neutral_spec
 import hla2010
 import hla2010.spec as hla_spec
 import hla2010.rti as rti_module
@@ -47,6 +48,7 @@ def test_runtime_rti_alias_routes_through_pythonic_method():
 def test_runtime_backends_are_discovered_as_plugins():
     plugins = available_backend_plugins()
     assert plugins["python"].name == "python"
+    assert plugins["python"].supported_editions == ("2010",)
     assert plugins["in-memory"].name == "python"
     assert plugins["pitch-jpype"].family == "pitch/java"
     assert plugins["portico-jpype"].family == "portico/java"
@@ -67,12 +69,14 @@ def test_runtime_backend_listing_is_deduplicated_and_probeable():
 
     registered = {row.name: row for row in discover_rti_backends()}
     assert registered["python"].available is None
+    assert registered["python"].supported_editions == ("2010",)
     assert registered["python"].family == "python-reference"
     assert "in-memory" in registered["python"].selectable_names
     assert registered["python"].probe_supported is True
 
     probed = {row.name: row for row in discover_rti_backends(probe=True)}
     assert probed["python"].available is True
+    assert probed["python"].supported_editions == ("2010",)
     assert probed["python"].info.kind == "python/in-memory"
 
 
@@ -86,6 +90,7 @@ def test_runtime_factories_are_listable_selectable_and_instantiable():
 
     python_factory = get_rti_factory("in-memory")
     assert python_factory.name == "python"
+    assert python_factory.supported_editions == ("2010",)
     assert "python" in python_factory.selectable_names
     assert "in-memory" in python_factory.selectable_names
     assert python_factory.probe_supported is True
@@ -108,6 +113,7 @@ def test_rti_factory_tool_lists_and_shows_installed_factories():
     )
     assert "Installed RTI factories" in listed.stdout
     assert "- python [python-reference]" in listed.stdout
+    assert "supported_editions: 2010" in listed.stdout
     assert "selectable_names:" in listed.stdout
     assert "in-memory" in listed.stdout
 
@@ -119,6 +125,7 @@ def test_rti_factory_tool_lists_and_shows_installed_factories():
     )
     payload = json.loads(shown.stdout)
     assert payload["name"] == "python"
+    assert payload["supported_editions"] == ["2010"]
     assert "in-memory" in payload["selectable_names"]
     assert payload["probe"]["available"] is True
 
@@ -130,6 +137,7 @@ def test_rti_factory_tool_lists_and_shows_installed_factories():
     )
     instantiated_payload = json.loads(instantiated.stdout)
     assert instantiated_payload["name"] == "python"
+    assert instantiated_payload["supported_editions"] == ["2010"]
     assert instantiated_payload["backend_info"]["kind"] == "python/in-memory"
     assert instantiated_payload["probe"]["available"] is True
 
@@ -196,8 +204,18 @@ def test_top_level_package_defaults_to_the_clean_spec_layer():
 
 def test_neutral_namespace_routes_to_explicit_2010_surface() -> None:
     assert hla.__version__ == hla2010.__version__
+    assert hla.DEFAULT_EDITION == "2010"
+    assert hla.available_editions() == ("2010",)
+    assert hla.selected_edition() == "2010"
+    assert hla.get_edition("2010") is hla_ed2010
+    assert hla.get_edition("ed2010") is hla_ed2010
+    assert hla.select_edition("2010") is hla_ed2010
+    assert hla.current is hla_ed2010
     assert hla_ed2010.edition_year == 2010
     assert hla_ed2010.legacy_namespace == "hla2010"
+    assert hla_neutral_spec.RTIambassadorSpec is RTIambassadorSpec
+    assert hla.spec.RTIambassadorSpec is RTIambassadorSpec
+    assert hla.runtime_api is hla_ed2010.runtime_api
     assert hla_ed2010.spec.RTIambassadorSpec is RTIambassadorSpec
     assert hla_ed2010.rti.create_rti_ambassador is create_rti_ambassador
 

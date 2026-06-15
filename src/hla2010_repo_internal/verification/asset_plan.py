@@ -3,9 +3,36 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
+
+_SECTION_REF_EDITORIAL_REWRITES = (
+    ("IEEE 1516.1-2010", "IEEE 1516.1-2010 (2010 edition)"),
+    ("IEEE 1516.2-2010", "IEEE 1516.2-2010 (2010 edition)"),
+    ("IEEE 1516-2010", "IEEE 1516-2010 (2010 edition)"),
+    ("1516.1-2010", "IEEE 1516.1-2010 (2010 edition)"),
+    ("1516.2-2010", "IEEE 1516.2-2010 (2010 edition)"),
+    ("1516-2010", "IEEE 1516-2010 (2010 edition)"),
+)
+
+
+def _editorialize_section_ref(section_ref: str) -> str:
+    normalized = str(section_ref).strip()
+    for prefix, replacement in _SECTION_REF_EDITORIAL_REWRITES:
+        if normalized.startswith(prefix):
+            editorialized = replacement + normalized[len(prefix) :]
+            return re.sub(
+                r"(?<!\()2010 edition\) \(2010 edition\)",
+                "2010 edition)",
+                editorialized,
+            )
+    return normalized
+
+
+def _editorialize_section_refs(section_refs: tuple[str, ...]) -> tuple[str, ...]:
+    return tuple(_editorialize_section_ref(section_ref) for section_ref in section_refs)
 
 
 @dataclass(frozen=True)
@@ -22,7 +49,9 @@ class VerificationAsset:
     notes: str = ""
 
     def as_dict(self) -> dict[str, Any]:
-        return asdict(self)
+        payload = asdict(self)
+        payload["section_refs"] = list(_editorialize_section_refs(self.section_refs))
+        return payload
 
 
 @dataclass(frozen=True)
@@ -42,7 +71,7 @@ class VerificationPlan:
     def by_section(self) -> dict[str, list[VerificationAsset]]:
         grouped: dict[str, list[VerificationAsset]] = {}
         for asset in self.assets:
-            for section in asset.section_refs:
+            for section in _editorialize_section_refs(asset.section_refs):
                 grouped.setdefault(section, []).append(asset)
         return grouped
 
@@ -177,7 +206,7 @@ def build_verification_plan(version: str = "0.13.0") -> VerificationPlan:
                 "tests/backends/test_python_backend_federation_extended.py::test_create_federation_execution_with_explicit_mim_overrides_default_mim",
                 "tests/backends/test_python_backend_federation_extended.py::test_join_federation_execution_with_additional_modules_updates_catalog",
             ),
-            gaps=("The merge policy is a supported subset of IEEE 1516.2-2010 §7 rather than a complete schema-level implementation.",),
+            gaps=("The merge policy is a supported subset of IEEE 1516.2-2010 (2010 edition) §7 rather than a complete schema-level implementation.",),
         ),
         VerificationAsset(
             "REQ-OMT-SCHEMA-001",
@@ -673,7 +702,7 @@ def write_traceability_csv(path: str | Path, *, version: str = "0.13.0") -> Path
         writer = csv.writer(fh)
         writer.writerow(["asset_id", "asset_type", "title", "section_ref", "status", "evidence", "gaps"])
         for asset in plan.assets:
-            for section in asset.section_refs:
+            for section in _editorialize_section_refs(asset.section_refs):
                 writer.writerow(
                     [
                         asset.asset_id,

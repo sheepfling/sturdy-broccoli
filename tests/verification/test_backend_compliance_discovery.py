@@ -25,7 +25,7 @@ from tests.pitch_clause4_policy_helpers import (
     PITCH_CLAUSE4_BLOCKED_REQUIREMENT_IDS,
     PITCH_CLAUSE4_RESIDUAL_FRONTIER,
 )
-from tests.conftest import REPO_ROOT, load_compliance_json, load_compliance_text
+from tests.conftest import REPO_ROOT, load_compliance_json, load_compliance_text, load_json_fixture
 from tests.verification.evidence_bundles import bundle
 
 
@@ -40,6 +40,7 @@ ALLOWED_DISPOSITIONS = {
 ROOT = REPO_ROOT
 FEDERATE_INTERFACE_2010_DOCUMENT = "IEEE 1516.1-2010 (2010 edition)"
 OMT_2010_DOCUMENT = "IEEE 1516.2-2010 (2010 edition)"
+DISCOVERY_POLICY = load_json_fixture("backend_compliance_discovery_policy.json")
 
 
 def _source_checkout_env(project_root: Path) -> dict[str, str]:
@@ -1296,12 +1297,8 @@ def test_requirements_matrix_projects_certi_shared_save_restore_rows_as_verified
     payload = _compliance_payload("requirements_matrix_2010.json")
     rows = {row["requirement_id"]: row for row in payload["rows"] if row.get("requirement_id")}
 
-    assert rows["REQ-RTI-FM-4_16-requestFederationSave"]["certi_runtime_disposition"] == "verified"
-    assert rows["REQ-FED-FM-4_17-initiateFederateSave"]["certi_runtime_disposition"] == "verified"
-    assert rows["REQ-RTI-FM-4_24-requestFederationRestore"]["certi_runtime_disposition"] == "verified"
-    assert rows["REQ-FED-FM-4_27-initiateFederateRestore"]["certi_runtime_disposition"] == "verified"
-    assert rows["HLA1516.1-FM-4.16-001"]["certi_runtime_disposition"] == "verified"
-    assert rows["HLA1516.1-FM-4.24-001"]["certi_runtime_disposition"] == "verified"
+    for requirement_id in DISCOVERY_POLICY["certi_verified_requirement_ids"]:
+        assert rows[requirement_id]["certi_runtime_disposition"] == "verified"
 
 
 def test_vendor_discovery_backlog_covers_divergent_gated_matrixed_and_defended_rows():
@@ -1309,40 +1306,37 @@ def test_vendor_discovery_backlog_covers_divergent_gated_matrixed_and_defended_r
     backlog = build_vendor_discovery_backlog(project_root)
 
     assert backlog["summary"]["row_count"] > 0
-    _assert_min_counts(
-        backlog["summary"]["status_counts"],
-        {
-            "vendor-divergent": 1,
-            "blocked": 1,
-            "env-gated-positive": 1,
-            "not-yet-matrixed": 1,
-            "classification-required": 1,
-            "defended-partial": 1,
-        },
-    )
+    _assert_min_counts(backlog["summary"]["status_counts"], DISCOVERY_POLICY["required_backlog_status_counts"])
 
     by_backend_and_target = {
         (row["backend_id"], row["requirement_id"] or row["section_ref"], row["current_status"]): row
         for row in backlog["rows"]
     }
-    assert ("certi-native", "IEEE 1516.1-2010 §7.3, IEEE 1516.1-2010 §7.15", "vendor-divergent") in by_backend_and_target
-    assert ("certi-native", "IEEE 1516.1-2010 §4.25, IEEE 1516.1-2010 §4.26", "env-gated-positive") in by_backend_and_target
-    assert ("pitch-jpype", "IEEE 1516.1-2010 §8.16", "not-yet-matrixed") in by_backend_and_target
-    assert ("pitch-jpype", "IEEE 1516.1-2010 §4.1.5", "not-yet-matrixed") in by_backend_and_target
-    assert ("pitch-py4j", "IEEE 1516.1-2010 §4.1.5", "not-yet-matrixed") not in by_backend_and_target
-    assert ("pitch-jpype", "HLA1516.1-FM-4.1.5-001", "blocked") in by_backend_and_target
-    assert ("pitch-py4j", "HLA1516.1-FM-4.1.5-001", "blocked") in by_backend_and_target
-    assert ("pitch-py4j", "HLA1516.1-FM-4.1.5-001", "verified") not in by_backend_and_target
-    assert ("pitch-requirements", "REQ-RTI-FM-4_5-createFederationExecutionWithMIM", "vendor-divergent") in by_backend_and_target
+    for example in DISCOVERY_POLICY["expected_backlog_examples"]:
+        assert (
+            example["backend_id"],
+            example["target"],
+            example["current_status"],
+        ) in by_backend_and_target
+    for example in DISCOVERY_POLICY["forbidden_backlog_examples"]:
+        assert (
+            example["backend_id"],
+            example["target"],
+            example["current_status"],
+        ) not in by_backend_and_target
 
     hosted_positive = [
-        row for row in backlog["rows"] if row["backend_id"] == "rest-hosted-python" and row["current_status"] == "positive-path-passing"
+        row
+        for row in backlog["rows"]
+        if row["backend_id"] == DISCOVERY_POLICY["hosted_positive_backend_id"]
+        and row["current_status"] == DISCOVERY_POLICY["hosted_positive_status"]
     ]
     assert hosted_positive
-    assert hosted_positive[0]["recommended_next_action"] == "widen from positive-path slice into deeper vendor matrix coverage"
+    assert hosted_positive[0]["recommended_next_action"] == DISCOVERY_POLICY["hosted_positive_action"]
 
     defended = [row for row in backlog["rows"] if row["current_status"] == "defended-partial"]
-    assert any(row["requirement_id"] == "HLA1516.1-OM-6.1.12-001" for row in defended)
+    defended_ids = {row["requirement_id"] for row in defended}
+    assert set(DISCOVERY_POLICY["defended_requirement_ids"]) <= defended_ids
     assert backlog["rows"][0]["priority"] == "P1"
 
 

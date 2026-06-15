@@ -1,0 +1,182 @@
+{
+  "tranche_clauses_no_not_yet_tested": ["4", "6", "7", "8", "9"],
+  "clause4_summary_counts": {
+    "blocked": 2,
+    "not-applicable": 2,
+    "total": 281,
+    "vendor-divergent": 3,
+    "verified": 274
+  },
+  "vendor_divergence_cases": {
+    "6": {
+      "expected_ids": [
+        "HLA1516.1-OM-6.1.10-001",
+        "HLA1516.1-OM-6.23-001",
+        "HLA1516.1-OM-6.24-001",
+        "HLA1516.1-OM-6.25-001",
+        "HLA1516.1-OM-6.26-001",
+        "HLA1516.1-OM-6.27-001",
+        "HLA1516.1-OM-6.28-001",
+        "HLA1516.1-OM-6.29-001",
+        "HLA1516.1-OM-6.30-001"
+      ],
+      "shared_refs": [
+        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md",
+        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
+        "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
+        "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix"
+      ],
+      "groups": {
+        "restore_persistence": {
+          "ids": [
+            "HLA1516.1-OM-6.1.10-001",
+            "HLA1516.1-OM-6.23-001",
+            "HLA1516.1-OM-6.27-001"
+          ],
+          "refs": [
+            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
+            "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
+          ]
+        }
+      }
+    },
+    "7": {
+      "expected_ids": [
+        "REQ-RTI-OWN-7_3-negotiatedAttributeOwnershipDivestiture",
+        "REQ-FED-OWN-7_5-requestDivestitureConfirmation",
+        "REQ-RTI-OWN-7_6-confirmDivestiture",
+        "REQ-RTI-OWN-7_14-cancelNegotiatedAttributeOwnershipDivestiture",
+        "REQ-RTI-OWN-7_15-cancelAttributeOwnershipAcquisition",
+        "REQ-FED-OWN-7_16-confirmAttributeOwnershipAcquisitionCancellation",
+        "HLA1516.1-OWN-7.3-001",
+        "HLA1516.1-OWN-7.4-001",
+        "HLA1516.1-OWN-7.10-001",
+        "HLA1516.1-OWN-7.11-001"
+      ],
+      "shared_refs": [
+        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+      ],
+      "groups": {
+        "offer_probe": {
+          "ids": [
+            "REQ-RTI-OWN-7_3-negotiatedAttributeOwnershipDivestiture",
+            "REQ-FED-OWN-7_5-requestDivestitureConfirmation",
+            "REQ-RTI-OWN-7_6-confirmDivestiture",
+            "REQ-RTI-OWN-7_14-cancelNegotiatedAttributeOwnershipDivestiture",
+            "HLA1516.1-OWN-7.3-001",
+            "HLA1516.1-OWN-7.4-001"
+          ],
+          "refs": [
+            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
+            "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe"
+          ]
+        },
+        "full_negotiated": {
+          "ids": [
+            "REQ-RTI-OWN-7_15-cancelAttributeOwnershipAcquisition",
+            "REQ-FED-OWN-7_16-confirmAttributeOwnershipAcquisitionCancellation",
+            "HLA1516.1-OWN-7.10-001",
+            "HLA1516.1-OWN-7.11-001"
+          ],
+          "refs": [
+            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+            "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
+          ]
+        }
+      }
+    },
+    "8": {
+      "expected_ids": [
+        "REQ-RTI-TM-8_10-nextMessageRequest",
+        "REQ-RTI-TM-8_11-nextMessageRequestAvailable",
+        "REQ-RTI-TM-8_21-retract",
+        "REQ-FED-TM-8_22-requestRetraction",
+        "HLA1516.1-TM-8.1-001",
+        "HLA1516.1-TM-8.1-002",
+        "HLA1516.1-TM-8.1.1-001",
+        "HLA1516.1-TM-8.1.2-001",
+        "HLA1516.1-TM-8.1.2-002",
+        "HLA1516.1-TM-8.1.2-003",
+        "HLA1516.1-TM-8.1.2-004",
+        "HLA1516.1-TM-8.1.3-002",
+        "HLA1516.1-TM-8.1.3-003",
+        "HLA1516.1-TM-8.1.5-001",
+        "HLA1516.1-TM-8.1.6-001",
+        "HLA1516.1-TM-8.1.7-001",
+        "HLA1516.1-TM-8.10-001",
+        "HLA1516.1-TM-8.21-001"
+      ],
+      "shared_refs": [
+        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+      ],
+      "groups": {
+        "ordering_and_query": {
+          "ids": [
+            "REQ-RTI-TM-8_10-nextMessageRequest",
+            "HLA1516.1-TM-8.1-002",
+            "HLA1516.1-TM-8.1.1-001",
+            "HLA1516.1-TM-8.1.2-004",
+            "HLA1516.1-TM-8.1.3-002",
+            "HLA1516.1-TM-8.1.3-003",
+            "HLA1516.1-TM-8.1.5-001",
+            "HLA1516.1-TM-8.1.6-001",
+            "HLA1516.1-TM-8.1.7-001",
+            "HLA1516.1-TM-8.10-001"
+          ],
+          "refs": [
+            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+            "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_ordering_and_queries_matrix"
+          ]
+        },
+        "available_and_retraction": {
+          "ids": [
+            "REQ-RTI-TM-8_11-nextMessageRequestAvailable",
+            "REQ-RTI-TM-8_21-retract",
+            "HLA1516.1-TM-8.21-001"
+          ],
+          "refs": [
+            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_available_and_retraction_case",
+            "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_available_and_retraction",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_available_and_retraction_matrix"
+          ]
+        },
+        "request_retraction": {
+          "ids": [
+            "REQ-FED-TM-8_22-requestRetraction"
+          ],
+          "refs": [
+            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_request_retraction_case",
+            "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_request_retraction_callback",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_request_retraction_callback_matrix"
+          ]
+        },
+        "state_services": {
+          "ids": [
+            "HLA1516.1-TM-8.1-001"
+          ],
+          "refs": [
+            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+            "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_state_services_matrix"
+          ]
+        },
+        "order_override": {
+          "ids": [
+            "HLA1516.1-TM-8.1.2-001",
+            "HLA1516.1-TM-8.1.2-002",
+            "HLA1516.1-TM-8.1.2-003"
+          ],
+          "refs": [
+            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_order_override_case",
+            "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_order_override_services",
+            "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_order_override_services_matrix"
+          ]
+        }
+      }
+    }
+  }
+}

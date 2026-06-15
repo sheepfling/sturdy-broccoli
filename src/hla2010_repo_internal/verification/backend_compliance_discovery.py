@@ -833,7 +833,10 @@ def render_backend_compliance_catalog_text(
         lines.append(f"- {profile}_requirement_dispositions: {rendered}")
     profile_clause_summary = pitch_disposition.get("profile_clause_summary", {})
     for profile in ("pitch-jpype", "pitch-py4j"):
-        clause4_counts = profile_clause_summary.get(profile, {}).get("IEEE 1516.1-2010 §4", {})
+        clause_summary = profile_clause_summary.get(profile, {})
+        clause4_counts = clause_summary.get("IEEE 1516.1-2010 (2010 edition) §4", {}) or clause_summary.get(
+            "IEEE 1516.1-2010 §4", {}
+        )
         if clause4_counts:
             rendered = ", ".join(f"{name}={count}" for name, count in clause4_counts.items())
             lines.append(f"- {profile}_clause4_requirement_dispositions: {rendered}")

@@ -43,6 +43,18 @@ PUBLIC_STANDARD_LABEL_PATHS = (
     / "work_packet"
     / "ACCEPTANCE_CHECKLIST.md",
 )
+PRIMARY_REQUIREMENT_EDITORIAL_SURFACES = (
+    ROOT / "analysis" / "compliance" / "requirements_matrix_2010.csv",
+    ROOT / "analysis" / "compliance" / "requirements_matrix_2010.json",
+    ROOT / "analysis" / "compliance" / "verification_assets.json",
+    ROOT / "analysis" / "compliance" / "verification_traceability.csv",
+    ROOT / "analysis" / "compliance" / "vendor_discovery_backlog.json",
+    ROOT / "docs" / "verification" / "clause13_conformance_packet.json",
+    ROOT / "docs" / "verification" / "clause13_conformance_packet.md",
+    ROOT / "docs" / "backend_conformance_matrix.md",
+    ROOT / "docs" / "supported_subset_policy.md",
+    ROOT / "docs" / "plans" / "PLN-001_hla_2010_foundation.md",
+)
 
 
 def test_active_traceability_refs_resolve() -> None:
@@ -100,6 +112,17 @@ def test_requirement_csv_json_surfaces_do_not_use_editionless_hla_or_ieee_2010_l
 def test_public_standard_label_surfaces_do_not_use_editionless_hla_or_ieee_2010_labels() -> None:
     violations: list[str] = []
     for path in PUBLIC_STANDARD_LABEL_PATHS:
+        text = path.read_text(encoding="utf-8")
+        for pattern in (EDITIONLESS_STANDARD_RE, EDITIONLESS_HLA_STANDARD_RE):
+            for match in pattern.finditer(text):
+                line = text[: match.start()].count("\n") + 1
+                violations.append(f"{path.relative_to(ROOT).as_posix()}:{line}: {match.group(0)}")
+    assert not violations, "\n".join(violations)
+
+
+def test_primary_requirement_editorial_surfaces_use_edition_qualified_2010_labels() -> None:
+    violations: list[str] = []
+    for path in PRIMARY_REQUIREMENT_EDITORIAL_SURFACES:
         text = path.read_text(encoding="utf-8")
         for pattern in (EDITIONLESS_STANDARD_RE, EDITIONLESS_HLA_STANDARD_RE):
             for match in pattern.finditer(text):

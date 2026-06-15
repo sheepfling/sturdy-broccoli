@@ -5,13 +5,14 @@ import json
 import re
 from pathlib import Path
 
-from conftest import REPO_ROOT, load_compliance_json, load_compliance_text
+from conftest import REPO_ROOT, load_compliance_json, load_compliance_text, load_json_fixture
 from tests.compliance_row_models import RequirementDispositionRow
 from tests.requirement_label_helpers import federate_interface_document_title, framework_document_title
 
 ROOT = REPO_ROOT
 FEDERATE_INTERFACE_DOCUMENT = federate_interface_document_title()
 FRAMEWORK_DOCUMENT = framework_document_title()
+CERTI_MATRIX_POLICY = load_json_fixture("certi_matrix_policy.json")
 CERTI_NEGOTIATED_OWNERSHIP_FINDINGS = "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md"
 SCENARIO_ENTRYPOINT_RE = re.compile(r"\b((?:run|probe)_[A-Za-z0-9_]+)\(")
 DIRECT_BACKEND_CALL_RE = re.compile(
@@ -166,28 +167,27 @@ def test_certi_clause7_vendor_divergent_rows_stay_explicit_negotiated_ownership_
     rows = _clause7_certi_vendor_divergent_rows()
     assert rows
 
-    expected_ids = {
-        "REQ-RTI-OWN-7_3-negotiatedAttributeOwnershipDivestiture",
-        "REQ-FED-OWN-7_4-requestAttributeOwnershipAssumption",
-        "REQ-RTI-OWN-7_15-cancelAttributeOwnershipAcquisition",
-        "REQ-FED-OWN-7_16-confirmAttributeOwnershipAcquisitionCancellation",
-        "HLA1516.1-OWN-7.3-001",
-        "HLA1516.1-OWN-7.4-001",
-        "HLA1516.1-OWN-7.10-001",
-    }
+    policy = CERTI_MATRIX_POLICY["clause7_vendor_divergent_negotiated_ownership"]
+    expected_ids = set(policy["scenario_backed_ids"]) | set(policy["matrix_inherited_ids"])
     assert {row.requirement_id for row in rows} == expected_ids
 
     for row in rows:
         refs = set(row.evidence_refs)
-        assert CERTI_NEGOTIATED_OWNERSHIP_FINDINGS in refs
-        assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
-            "scenario_ownership.py::run_negotiated_attribute_ownership_scenario"
-        ) in refs
-        assert (
-            "tests/vendors/test_certi_real_backend_ownership_matrix.py::"
-            "test_certi_backend_negotiated_ownership_matrix"
-        ) in refs
+        if row.requirement_id in set(policy["scenario_backed_ids"]):
+            assert CERTI_NEGOTIATED_OWNERSHIP_FINDINGS in refs
+            assert (
+                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+                "scenario_ownership.py::run_negotiated_attribute_ownership_scenario"
+            ) in refs
+            assert (
+                "tests/vendors/test_certi_real_backend_ownership_matrix.py::"
+                "test_certi_backend_negotiated_ownership_matrix"
+            ) in refs
+            continue
+
+        assert row.requirement_id in set(policy["matrix_inherited_ids"])
+        assert refs == set()
+        assert "shared IEEE 1516-2010 (2010 edition)" in row.notes
 
 
 def test_generated_certi_profile_requirement_disposition_markdown_keeps_inheritance_note_explicit() -> None:

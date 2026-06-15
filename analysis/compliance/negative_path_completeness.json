@@ -12,7 +12,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.10",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -26,7 +26,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.11",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -40,7 +40,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.12",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -54,7 +54,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.13",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -68,7 +68,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.12",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -82,7 +82,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.12",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -96,7 +96,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.13",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -110,7 +110,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.15",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.15",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -124,7 +124,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.17",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.17",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -138,7 +138,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.20",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.20",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -152,7 +152,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.20",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.20",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -166,7 +166,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.23",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.23",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -180,7 +180,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.25",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -194,7 +194,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.25",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -208,7 +208,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.26",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.26",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -222,7 +222,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.27",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.27",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -236,7 +236,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.29",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.29",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -250,7 +250,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.29",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.29",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -264,7 +264,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.32",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.32",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -278,7 +278,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.4",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -292,7 +292,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.8",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -306,7 +306,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.11",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -320,7 +320,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.13",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -334,7 +334,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.15",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.15",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -348,7 +348,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.17",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.17",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -362,7 +362,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.18",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -376,7 +376,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.20",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.20",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -390,7 +390,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.21",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.21",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -404,7 +404,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.22",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.22",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -418,7 +418,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.24",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.24",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -432,7 +432,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.26",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -446,7 +446,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.28",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.28",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -460,7 +460,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.3",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -474,7 +474,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.3",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -488,7 +488,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.30",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -502,7 +502,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.6",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -516,7 +516,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.6",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -530,7 +530,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -542,7 +542,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -554,7 +554,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -566,7 +566,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -578,7 +578,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -592,7 +592,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.10",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -606,7 +606,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.11",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -620,7 +620,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.16",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -634,7 +634,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.18",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -648,7 +648,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.18",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -662,7 +662,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.18",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -676,7 +676,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.4",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -690,7 +690,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.5",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -704,7 +704,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.7",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -718,7 +718,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.13",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -732,7 +732,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.22",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.22",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -746,7 +746,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.3",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -760,7 +760,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.6",
       "verification_status": "callback-helper-covered"
     },
     {
@@ -783,7 +783,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.10",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -806,7 +806,7 @@
       "negative_executed_count": 4,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.10",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -827,7 +827,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.11",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -852,7 +852,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.12",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -875,7 +875,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.13",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -894,7 +894,7 @@
       "negative_executed_count": 4,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.2",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -914,7 +914,7 @@
       "negative_executed_count": 4,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.3",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -935,7 +935,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.4",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -962,7 +962,7 @@
       "negative_executed_count": 4,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.5",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -985,7 +985,7 @@
       "negative_executed_count": 6,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.6",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1007,7 +1007,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.7",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1031,7 +1031,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.8",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1055,7 +1055,7 @@
       "negative_executed_count": 4,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.8",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1077,7 +1077,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.9",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1097,7 +1097,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.2",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1117,7 +1117,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.3",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1138,7 +1138,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.3",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1157,7 +1157,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.4",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1176,7 +1176,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.5",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1197,7 +1197,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.6",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1218,7 +1218,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.6",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1237,7 +1237,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.7",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1257,7 +1257,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.7",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1277,7 +1277,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.8",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1297,7 +1297,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.8",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1316,7 +1316,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.9",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1336,7 +1336,7 @@
       "negative_executed_count": 6,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.10",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1355,7 +1355,7 @@
       "negative_executed_count": 5,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.11",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1374,7 +1374,7 @@
       "negative_executed_count": 4,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.14",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1395,7 +1395,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.16",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1413,7 +1413,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.18",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1431,7 +1431,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.19",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1449,7 +1449,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.19",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1468,7 +1468,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.2",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1485,7 +1485,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.21",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.21",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1502,7 +1502,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.22",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.22",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1520,7 +1520,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.24",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.24",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1538,7 +1538,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.28",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.28",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1556,7 +1556,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.28",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.28",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1572,7 +1572,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.3",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1589,7 +1589,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.30",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.30",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1606,7 +1606,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.31",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.31",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1629,7 +1629,7 @@
       "negative_executed_count": 9,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.5",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1652,7 +1652,7 @@
       "negative_executed_count": 9,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.5",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1669,7 +1669,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.6",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1684,7 +1684,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.7",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1709,7 +1709,7 @@
       "negative_executed_count": 8,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.9",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1731,7 +1731,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.10",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1753,7 +1753,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.12",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1774,7 +1774,7 @@
       "negative_executed_count": 6,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.14",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1795,7 +1795,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.16",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1816,7 +1816,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.19",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1835,7 +1835,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.2",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1858,7 +1858,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.23",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1878,7 +1878,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.25",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.25",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1900,7 +1900,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.27",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1919,7 +1919,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.29",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.29",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1938,7 +1938,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.4",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1958,7 +1958,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.5",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1977,7 +1977,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.7",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -1999,7 +1999,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.8",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2020,7 +2020,7 @@
       "negative_executed_count": 7,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.12",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2041,7 +2041,7 @@
       "negative_executed_count": 7,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.13",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2063,7 +2063,7 @@
       "negative_executed_count": 8,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.14",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2085,7 +2085,7 @@
       "negative_executed_count": 8,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.15",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.15",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2105,7 +2105,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.17",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.17",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2125,7 +2125,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.19",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2146,7 +2146,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.2",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2168,7 +2168,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.3",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2191,7 +2191,7 @@
       "negative_executed_count": 9,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.6",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2214,7 +2214,7 @@
       "negative_executed_count": 9,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.8",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2238,7 +2238,7 @@
       "negative_executed_count": 10,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.9",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2250,7 +2250,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2262,7 +2262,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2274,7 +2274,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2286,7 +2286,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2298,7 +2298,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2310,7 +2310,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2322,7 +2322,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2334,7 +2334,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2346,7 +2346,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2363,7 +2363,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.10",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2381,7 +2381,7 @@
       "negative_executed_count": 4,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.11",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2400,7 +2400,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.12",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2417,7 +2417,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.13",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2435,7 +2435,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.14",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2452,7 +2452,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.15",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.15",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2469,7 +2469,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.16",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2487,7 +2487,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.17",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.17",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2506,7 +2506,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.18",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2523,7 +2523,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.19",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2539,7 +2539,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.2",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2556,7 +2556,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.20",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.20",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2573,7 +2573,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.21",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.21",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2590,7 +2590,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.21",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.21",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2607,7 +2607,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.22",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.22",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2624,7 +2624,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.22",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.22",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2643,7 +2643,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.23",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.23",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2660,7 +2660,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.24",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.24",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2677,7 +2677,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.25",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.25",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2694,7 +2694,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.26",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.26",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2711,7 +2711,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.27",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.27",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2730,7 +2730,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.28",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.28",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2750,7 +2750,7 @@
       "negative_executed_count": 4,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.29",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.29",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2767,7 +2767,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.3",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2789,7 +2789,7 @@
       "negative_executed_count": 4,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.30",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.30",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2806,7 +2806,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.31",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.31",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2823,7 +2823,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.32",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.32",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2842,7 +2842,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.33",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.33",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2861,7 +2861,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.34",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.34",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2880,7 +2880,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.35",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.35",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2899,7 +2899,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.36",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.36",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2918,7 +2918,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.37",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.37",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2937,7 +2937,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.38",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.38",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2956,7 +2956,7 @@
       "negative_executed_count": 5,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.39",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.39",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2973,7 +2973,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.4",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -2992,7 +2992,7 @@
       "negative_executed_count": 5,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.40",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.40",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3007,7 +3007,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.41",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.41",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3022,7 +3022,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.42",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.42",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3038,7 +3038,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.43",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.43",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3054,7 +3054,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3069,7 +3069,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3084,7 +3084,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3099,7 +3099,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3114,7 +3114,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3129,7 +3129,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3144,7 +3144,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3159,7 +3159,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3174,7 +3174,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3186,7 +3186,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "not-applicable",
       "rationale": "No declared RTI exception matrix is present for this row.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3201,7 +3201,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3216,7 +3216,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3231,7 +3231,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3246,7 +3246,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3261,7 +3261,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3276,7 +3276,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3291,7 +3291,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3306,7 +3306,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3324,7 +3324,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.5",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3341,7 +3341,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.6",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3358,7 +3358,7 @@
       "negative_executed_count": 3,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.7",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3375,7 +3375,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.8",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3392,7 +3392,7 @@
       "negative_executed_count": 2,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.9",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3415,7 +3415,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.10",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3438,7 +3438,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.11",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3461,7 +3461,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.12",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3480,7 +3480,7 @@
       "negative_executed_count": 5,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.14",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3499,7 +3499,7 @@
       "negative_executed_count": 5,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.15",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.15",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3517,7 +3517,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.16",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3535,7 +3535,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.17",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.17",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3553,7 +3553,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.18",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3574,7 +3574,7 @@
       "negative_executed_count": 4,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.19",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3596,7 +3596,7 @@
       "negative_executed_count": 8,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.2",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3615,7 +3615,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.20",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.20",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3636,7 +3636,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.21",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.21",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3657,7 +3657,7 @@
       "negative_executed_count": 7,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.23",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.23",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3677,7 +3677,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.24",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.24",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3696,7 +3696,7 @@
       "negative_executed_count": 5,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.4",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3717,7 +3717,7 @@
       "negative_executed_count": 7,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.5",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3736,7 +3736,7 @@
       "negative_executed_count": 5,
       "negative_path_status": "complete",
       "rationale": "Declared negative-path expectations are fully represented by executable evidence.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.7",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3759,7 +3759,7 @@
       "negative_executed_count": 1,
       "negative_path_status": "partial",
       "rationale": "Some negative-path execution exists, but completeness is still partial.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.8",
       "verification_status": "focused-executable-tests"
     },
     {
@@ -3782,7 +3782,7 @@
       "negative_executed_count": 0,
       "negative_path_status": "mapped-not-exhaustive",
       "rationale": "Declared exceptions are mapped from source metadata, but exhaustive negative-path execution is still incomplete.",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.9",
       "verification_status": "focused-executable-tests"
     }
   ],

@@ -7,7 +7,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -30,7 +30,7 @@
       "python_name": "start_registration_for_object_class",
       "requirement_id": "REQ-FED-DM-5_10-startRegistrationForObjectClass",
       "section": "5.10",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.10",
       "service_group": "Declaration Management",
       "source_languages": [
         "cpp",
@@ -48,7 +48,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -71,7 +71,7 @@
       "python_name": "stop_registration_for_object_class",
       "requirement_id": "REQ-FED-DM-5_11-stopRegistrationForObjectClass",
       "section": "5.11",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.11",
       "service_group": "Declaration Management",
       "source_languages": [
         "cpp",
@@ -89,7 +89,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -112,7 +112,7 @@
       "python_name": "turn_interactions_on",
       "requirement_id": "REQ-FED-DM-5_12-turnInteractionsOn",
       "section": "5.12",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.12",
       "service_group": "Declaration Management",
       "source_languages": [
         "cpp",
@@ -130,7 +130,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -153,7 +153,7 @@
       "python_name": "turn_interactions_off",
       "requirement_id": "REQ-FED-DM-5_13-turnInteractionsOff",
       "section": "5.13",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.13",
       "service_group": "Declaration Management",
       "source_languages": [
         "cpp",
@@ -171,7 +171,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_registration_failure_scenario",
@@ -197,7 +197,7 @@
       "python_name": "synchronization_point_registration_failed",
       "requirement_id": "REQ-FED-FM-4_12-synchronizationPointRegistrationFailed",
       "section": "4.12",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.12",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -215,7 +215,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
@@ -246,7 +246,7 @@
       "python_name": "synchronization_point_registration_succeeded",
       "requirement_id": "REQ-FED-FM-4_12-synchronizationPointRegistrationSucceeded",
       "section": "4.12",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.12",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -264,7 +264,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
@@ -290,7 +290,7 @@
       "python_name": "announce_synchronization_point",
       "requirement_id": "REQ-FED-FM-4_13-announceSynchronizationPoint",
       "section": "4.13",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.13",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -308,7 +308,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
@@ -339,7 +339,7 @@
       "python_name": "federation_synchronized",
       "requirement_id": "REQ-FED-FM-4_15-federationSynchronized",
       "section": "4.15",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.15",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.15",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -357,7 +357,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
@@ -383,7 +383,7 @@
       "python_name": "initiate_federate_save",
       "requirement_id": "REQ-FED-FM-4_17-initiateFederateSave",
       "section": "4.17",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.17",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.17",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -401,7 +401,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -424,7 +424,7 @@
       "python_name": "federation_not_saved",
       "requirement_id": "REQ-FED-FM-4_20-federationNotSaved",
       "section": "4.20",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.20",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.20",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -442,7 +442,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -465,7 +465,7 @@
       "python_name": "federation_saved",
       "requirement_id": "REQ-FED-FM-4_20-federationSaved",
       "section": "4.20",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.20",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.20",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -483,7 +483,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
@@ -509,7 +509,7 @@
       "python_name": "federation_save_status_response",
       "requirement_id": "REQ-FED-FM-4_23-federationSaveStatusResponse",
       "section": "4.23",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.23",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.23",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -527,7 +527,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_request_failure_scenario",
@@ -553,7 +553,7 @@
       "python_name": "request_federation_restore_failed",
       "requirement_id": "REQ-FED-FM-4_25-requestFederationRestoreFailed",
       "section": "4.25",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.25",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -571,7 +571,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
@@ -597,7 +597,7 @@
       "python_name": "request_federation_restore_succeeded",
       "requirement_id": "REQ-FED-FM-4_25-requestFederationRestoreSucceeded",
       "section": "4.25",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.25",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -615,7 +615,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
@@ -641,7 +641,7 @@
       "python_name": "federation_restore_begun",
       "requirement_id": "REQ-FED-FM-4_26-federationRestoreBegun",
       "section": "4.26",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.26",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.26",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -659,7 +659,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
@@ -685,7 +685,7 @@
       "python_name": "initiate_federate_restore",
       "requirement_id": "REQ-FED-FM-4_27-initiateFederateRestore",
       "section": "4.27",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.27",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.27",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -703,7 +703,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_failure_scenario",
@@ -729,7 +729,7 @@
       "python_name": "federation_not_restored",
       "requirement_id": "REQ-FED-FM-4_29-federationNotRestored",
       "section": "4.29",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.29",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.29",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -747,7 +747,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
@@ -773,7 +773,7 @@
       "python_name": "federation_restored",
       "requirement_id": "REQ-FED-FM-4_29-federationRestored",
       "section": "4.29",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.29",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.29",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -791,7 +791,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
@@ -817,7 +817,7 @@
       "python_name": "federation_restore_status_response",
       "requirement_id": "REQ-FED-FM-4_32-federationRestoreStatusResponse",
       "section": "4.32",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.32",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.32",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -835,7 +835,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -858,7 +858,7 @@
       "python_name": "connection_lost",
       "requirement_id": "REQ-FED-FM-4_4-connectionLost",
       "section": "4.4",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.4",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -876,7 +876,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_listing_scenario",
@@ -902,7 +902,7 @@
       "python_name": "report_federation_executions",
       "requirement_id": "REQ-FED-FM-4_8-reportFederationExecutions",
       "section": "4.8",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.8",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -920,7 +920,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
@@ -951,7 +951,7 @@
       "python_name": "reflect_attribute_values",
       "requirement_id": "REQ-FED-OM-6_11-reflectAttributeValues",
       "section": "6.11",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.11",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -969,7 +969,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
@@ -995,7 +995,7 @@
       "python_name": "receive_interaction",
       "requirement_id": "REQ-FED-OM-6_13-receiveInteraction",
       "section": "6.13",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.13",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -1013,7 +1013,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
@@ -1049,7 +1049,7 @@
       "python_name": "remove_object_instance",
       "requirement_id": "REQ-FED-OM-6_15-removeObjectInstance",
       "section": "6.15",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.15",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.15",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -1067,7 +1067,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_object_scope.py::run_object_scope_relevance_scenario",
@@ -1093,7 +1093,7 @@
       "python_name": "attributes_in_scope",
       "requirement_id": "REQ-FED-OM-6_17-attributesInScope",
       "section": "6.17",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.17",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.17",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -1111,7 +1111,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_object_scope.py::run_object_scope_relevance_scenario",
@@ -1137,7 +1137,7 @@
       "python_name": "attributes_out_of_scope",
       "requirement_id": "REQ-FED-OM-6_18-attributesOutOfScope",
       "section": "6.18",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.18",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -1155,7 +1155,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_request_attribute_value_update.py::run_request_attribute_value_update_scenario",
@@ -1181,7 +1181,7 @@
       "python_name": "provide_attribute_value_update",
       "requirement_id": "REQ-FED-OM-6_20-provideAttributeValueUpdate",
       "section": "6.20",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.20",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.20",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -1199,7 +1199,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_update_advisory.py::run_update_advisory_callback_scenario",
@@ -1225,7 +1225,7 @@
       "python_name": "turn_updates_on_for_object_instance",
       "requirement_id": "REQ-FED-OM-6_21-turnUpdatesOnForObjectInstance",
       "section": "6.21",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.21",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.21",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -1243,7 +1243,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_update_advisory.py::run_update_advisory_callback_scenario",
@@ -1269,7 +1269,7 @@
       "python_name": "turn_updates_off_for_object_instance",
       "requirement_id": "REQ-FED-OM-6_22-turnUpdatesOffForObjectInstance",
       "section": "6.22",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.22",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.22",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -1287,7 +1287,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -1310,7 +1310,7 @@
       "python_name": "confirm_attribute_transportation_type_change",
       "requirement_id": "REQ-FED-OM-6_24-confirmAttributeTransportationTypeChange",
       "section": "6.24",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.24",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.24",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -1328,7 +1328,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
@@ -1354,7 +1354,7 @@
       "python_name": "report_attribute_transportation_type",
       "requirement_id": "REQ-FED-OM-6_26-reportAttributeTransportationType",
       "section": "6.26",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.26",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -1372,7 +1372,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -1395,7 +1395,7 @@
       "python_name": "confirm_interaction_transportation_type_change",
       "requirement_id": "REQ-FED-OM-6_28-confirmInteractionTransportationTypeChange",
       "section": "6.28",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.28",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.28",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -1413,7 +1413,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -1436,7 +1436,7 @@
       "python_name": "object_instance_name_reservation_failed",
       "requirement_id": "REQ-FED-OM-6_3-objectInstanceNameReservationFailed",
       "section": "6.3",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.3",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -1454,7 +1454,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -1477,7 +1477,7 @@
       "python_name": "object_instance_name_reservation_succeeded",
       "requirement_id": "REQ-FED-OM-6_3-objectInstanceNameReservationSucceeded",
       "section": "6.3",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.3",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -1495,7 +1495,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
@@ -1521,7 +1521,7 @@
       "python_name": "report_interaction_transportation_type",
       "requirement_id": "REQ-FED-OM-6_30-reportInteractionTransportationType",
       "section": "6.30",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.30",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -1539,7 +1539,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -1562,7 +1562,7 @@
       "python_name": "multiple_object_instance_name_reservation_failed",
       "requirement_id": "REQ-FED-OM-6_6-multipleObjectInstanceNameReservationFailed",
       "section": "6.6",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.6",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -1580,7 +1580,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -1603,7 +1603,7 @@
       "python_name": "multiple_object_instance_name_reservation_succeeded",
       "requirement_id": "REQ-FED-OM-6_6-multipleObjectInstanceNameReservationSucceeded",
       "section": "6.6",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.6",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -1621,7 +1621,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
@@ -1652,7 +1652,7 @@
       "python_name": "discover_object_instance",
       "requirement_id": "REQ-FED-OM-6_9-discoverObjectInstance",
       "section": "6.9",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -1668,7 +1668,7 @@
         "analysis/compliance/service_conformance.json"
       ],
       "declared_exceptions": [],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -1691,7 +1691,7 @@
       "python_name": "get_producing_federate",
       "requirement_id": "REQ-FED-OM-6_9-getProducingFederate",
       "section": "6.9",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
       "service_group": "Object Management",
       "source_languages": [
         "java"
@@ -1706,7 +1706,7 @@
         "analysis/compliance/service_conformance.json"
       ],
       "declared_exceptions": [],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -1729,7 +1729,7 @@
       "python_name": "get_sent_regions",
       "requirement_id": "REQ-FED-OM-6_9-getSentRegions",
       "section": "6.9",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
       "service_group": "Object Management",
       "source_languages": [
         "java"
@@ -1744,7 +1744,7 @@
         "analysis/compliance/service_conformance.json"
       ],
       "declared_exceptions": [],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -1767,7 +1767,7 @@
       "python_name": "has_producing_federate",
       "requirement_id": "REQ-FED-OM-6_9-hasProducingFederate",
       "section": "6.9",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
       "service_group": "Object Management",
       "source_languages": [
         "java"
@@ -1782,7 +1782,7 @@
         "analysis/compliance/service_conformance.json"
       ],
       "declared_exceptions": [],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -1805,7 +1805,7 @@
       "python_name": "has_sent_regions",
       "requirement_id": "REQ-FED-OM-6_9-hasSentRegions",
       "section": "6.9",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
       "service_group": "Object Management",
       "source_languages": [
         "java"
@@ -1822,7 +1822,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_unavailable_scenario",
@@ -1848,7 +1848,7 @@
       "python_name": "attribute_ownership_unavailable",
       "requirement_id": "REQ-FED-OWN-7_10-attributeOwnershipUnavailable",
       "section": "7.10",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.10",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -1866,7 +1866,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -1889,7 +1889,7 @@
       "python_name": "request_attribute_ownership_release",
       "requirement_id": "REQ-FED-OWN-7_11-requestAttributeOwnershipRelease",
       "section": "7.11",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.11",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -1907,7 +1907,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -1930,7 +1930,7 @@
       "python_name": "confirm_attribute_ownership_acquisition_cancellation",
       "requirement_id": "REQ-FED-OWN-7_16-confirmAttributeOwnershipAcquisitionCancellation",
       "section": "7.16",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.16",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -1948,7 +1948,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_query_callback_scenario",
@@ -1974,7 +1974,7 @@
       "python_name": "attribute_is_not_owned",
       "requirement_id": "REQ-FED-OWN-7_18-attributeIsNotOwned",
       "section": "7.18",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.18",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -1992,7 +1992,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_query_callback_scenario",
@@ -2018,7 +2018,7 @@
       "python_name": "attribute_is_owned_by_rti",
       "requirement_id": "REQ-FED-OWN-7_18-attributeIsOwnedByRTI",
       "section": "7.18",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.18",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -2036,7 +2036,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_query_callback_scenario",
@@ -2062,7 +2062,7 @@
       "python_name": "inform_attribute_ownership",
       "requirement_id": "REQ-FED-OWN-7_18-informAttributeOwnership",
       "section": "7.18",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.18",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -2080,7 +2080,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
@@ -2106,7 +2106,7 @@
       "python_name": "request_attribute_ownership_assumption",
       "requirement_id": "REQ-FED-OWN-7_4-requestAttributeOwnershipAssumption",
       "section": "7.4",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.4",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -2124,7 +2124,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -2147,7 +2147,7 @@
       "python_name": "request_divestiture_confirmation",
       "requirement_id": "REQ-FED-OWN-7_5-requestDivestitureConfirmation",
       "section": "7.5",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.5",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -2165,7 +2165,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -2188,7 +2188,7 @@
       "python_name": "attribute_ownership_acquisition_notification",
       "requirement_id": "REQ-FED-OWN-7_7-attributeOwnershipAcquisitionNotification",
       "section": "7.7",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.7",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -2206,7 +2206,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -2229,7 +2229,7 @@
       "python_name": "time_advance_grant",
       "requirement_id": "REQ-FED-TM-8_13-timeAdvanceGrant",
       "section": "8.13",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.13",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -2247,7 +2247,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -2270,7 +2270,7 @@
       "python_name": "request_retraction",
       "requirement_id": "REQ-FED-TM-8_22-requestRetraction",
       "section": "8.22",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.22",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.22",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -2288,7 +2288,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -2311,7 +2311,7 @@
       "python_name": "time_regulation_enabled",
       "requirement_id": "REQ-FED-TM-8_3-timeRegulationEnabled",
       "section": "8.3",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.3",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -2329,7 +2329,7 @@
       "declared_exceptions": [
         "FederateInternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/recording.py::RecordingFederateAmbassador",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -2352,7 +2352,7 @@
       "python_name": "time_constrained_enabled",
       "requirement_id": "REQ-FED-TM-8_6-timeConstrainedEnabled",
       "section": "8.6",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.6",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -2379,7 +2379,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_passive_regions.py::run_ddm_passive_region_subscription_scenario",
@@ -2408,7 +2408,7 @@
       "python_name": "subscribe_interaction_class_passively_with_regions",
       "requirement_id": "REQ-RTI-DDM-9_10-subscribeInteractionClassPassivelyWithRegions",
       "section": "9.10",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.10",
       "service_group": "Data Distribution Management",
       "source_languages": [
         "java"
@@ -2434,7 +2434,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
@@ -2467,7 +2467,7 @@
       "python_name": "subscribe_interaction_class_with_regions",
       "requirement_id": "REQ-RTI-DDM-9_10-subscribeInteractionClassWithRegions",
       "section": "9.10",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.10",
       "service_group": "Data Distribution Management",
       "source_languages": [
         "cpp",
@@ -2492,7 +2492,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
@@ -2525,7 +2525,7 @@
       "python_name": "unsubscribe_interaction_class_with_regions",
       "requirement_id": "REQ-RTI-DDM-9_11-unsubscribeInteractionClassWithRegions",
       "section": "9.11",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.11",
       "service_group": "Data Distribution Management",
       "source_languages": [
         "cpp",
@@ -2554,7 +2554,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/two_federate_suite_scenarios.py::run_suite_ddm_scenario",
@@ -2601,7 +2601,7 @@
       "python_name": "send_interaction_with_regions",
       "requirement_id": "REQ-RTI-DDM-9_12-sendInteractionWithRegions",
       "section": "9.12",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.12",
       "service_group": "Data Distribution Management",
       "source_languages": [
         "cpp",
@@ -2628,7 +2628,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
@@ -2661,7 +2661,7 @@
       "python_name": "request_attribute_value_update_with_regions",
       "requirement_id": "REQ-RTI-DDM-9_13-requestAttributeValueUpdateWithRegions",
       "section": "9.13",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.13",
       "service_group": "Data Distribution Management",
       "source_languages": [
         "cpp",
@@ -2684,7 +2684,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
@@ -2724,7 +2724,7 @@
       "python_name": "create_region",
       "requirement_id": "REQ-RTI-DDM-9_2-createRegion",
       "section": "9.2",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.2",
       "service_group": "Data Distribution Management",
       "source_languages": [
         "cpp",
@@ -2748,7 +2748,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
@@ -2788,7 +2788,7 @@
       "python_name": "commit_region_modifications",
       "requirement_id": "REQ-RTI-DDM-9_3-commitRegionModifications",
       "section": "9.3",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.3",
       "service_group": "Data Distribution Management",
       "source_languages": [
         "cpp",
@@ -2813,7 +2813,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
@@ -2847,7 +2847,7 @@
       "python_name": "delete_region",
       "requirement_id": "REQ-RTI-DDM-9_4-deleteRegion",
       "section": "9.4",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.4",
       "service_group": "Data Distribution Management",
       "source_languages": [
         "cpp",
@@ -2878,7 +2878,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
@@ -2911,7 +2911,7 @@
       "python_name": "register_object_instance_with_regions",
       "requirement_id": "REQ-RTI-DDM-9_5-registerObjectInstanceWithRegions",
       "section": "9.5",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.5",
       "service_group": "Data Distribution Management",
       "source_languages": [
         "cpp",
@@ -2938,7 +2938,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
@@ -2971,7 +2971,7 @@
       "python_name": "associate_regions_for_updates",
       "requirement_id": "REQ-RTI-DDM-9_6-associateRegionsForUpdates",
       "section": "9.6",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.6",
       "service_group": "Data Distribution Management",
       "source_languages": [
         "cpp",
@@ -2997,7 +2997,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
@@ -3026,7 +3026,7 @@
       "python_name": "unassociate_regions_for_updates",
       "requirement_id": "REQ-RTI-DDM-9_7-unassociateRegionsForUpdates",
       "section": "9.7",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.7",
       "service_group": "Data Distribution Management",
       "source_languages": [
         "cpp",
@@ -3054,7 +3054,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_passive_regions.py::run_ddm_passive_region_subscription_scenario",
@@ -3083,7 +3083,7 @@
       "python_name": "subscribe_object_class_attributes_passively_with_regions",
       "requirement_id": "REQ-RTI-DDM-9_8-subscribeObjectClassAttributesPassivelyWithRegions",
       "section": "9.8",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.8",
       "service_group": "Data Distribution Management",
       "source_languages": [
         "java"
@@ -3110,7 +3110,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
@@ -3143,7 +3143,7 @@
       "python_name": "subscribe_object_class_attributes_with_regions",
       "requirement_id": "REQ-RTI-DDM-9_8-subscribeObjectClassAttributesWithRegions",
       "section": "9.8",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.8",
       "service_group": "Data Distribution Management",
       "source_languages": [
         "cpp",
@@ -3169,7 +3169,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
@@ -3202,7 +3202,7 @@
       "python_name": "unsubscribe_object_class_attributes_with_regions",
       "requirement_id": "REQ-RTI-DDM-9_9-unsubscribeObjectClassAttributesWithRegions",
       "section": "9.9",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.9",
       "service_group": "Data Distribution Management",
       "source_languages": [
         "cpp",
@@ -3226,7 +3226,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
@@ -3259,7 +3259,7 @@
       "python_name": "publish_object_class_attributes",
       "requirement_id": "REQ-RTI-DM-5_2-publishObjectClassAttributes",
       "section": "5.2",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.2",
       "service_group": "Declaration Management",
       "source_languages": [
         "cpp",
@@ -3283,7 +3283,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
@@ -3312,7 +3312,7 @@
       "python_name": "unpublish_object_class",
       "requirement_id": "REQ-RTI-DM-5_3-unpublishObjectClass",
       "section": "5.3",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.3",
       "service_group": "Declaration Management",
       "source_languages": [
         "cpp",
@@ -3337,7 +3337,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
@@ -3366,7 +3366,7 @@
       "python_name": "unpublish_object_class_attributes",
       "requirement_id": "REQ-RTI-DM-5_3-unpublishObjectClassAttributes",
       "section": "5.3",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.3",
       "service_group": "Declaration Management",
       "source_languages": [
         "cpp",
@@ -3389,7 +3389,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
@@ -3422,7 +3422,7 @@
       "python_name": "publish_interaction_class",
       "requirement_id": "REQ-RTI-DM-5_4-publishInteractionClass",
       "section": "5.4",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.4",
       "service_group": "Declaration Management",
       "source_languages": [
         "cpp",
@@ -3445,7 +3445,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
@@ -3474,7 +3474,7 @@
       "python_name": "unpublish_interaction_class",
       "requirement_id": "REQ-RTI-DM-5_5-unpublishInteractionClass",
       "section": "5.5",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.5",
       "service_group": "Declaration Management",
       "source_languages": [
         "cpp",
@@ -3499,7 +3499,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
@@ -3528,7 +3528,7 @@
       "python_name": "subscribe_object_class_attributes",
       "requirement_id": "REQ-RTI-DM-5_6-subscribeObjectClassAttributes",
       "section": "5.6",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.6",
       "service_group": "Declaration Management",
       "source_languages": [
         "cpp",
@@ -3553,7 +3553,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
@@ -3582,7 +3582,7 @@
       "python_name": "subscribe_object_class_attributes_passively",
       "requirement_id": "REQ-RTI-DM-5_6-subscribeObjectClassAttributesPassively",
       "section": "5.6",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.6",
       "service_group": "Declaration Management",
       "source_languages": [
         "java"
@@ -3604,7 +3604,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
@@ -3633,7 +3633,7 @@
       "python_name": "unsubscribe_object_class",
       "requirement_id": "REQ-RTI-DM-5_7-unsubscribeObjectClass",
       "section": "5.7",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.7",
       "service_group": "Declaration Management",
       "source_languages": [
         "cpp",
@@ -3657,7 +3657,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
@@ -3686,7 +3686,7 @@
       "python_name": "unsubscribe_object_class_attributes",
       "requirement_id": "REQ-RTI-DM-5_7-unsubscribeObjectClassAttributes",
       "section": "5.7",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.7",
       "service_group": "Declaration Management",
       "source_languages": [
         "cpp",
@@ -3710,7 +3710,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
@@ -3739,7 +3739,7 @@
       "python_name": "subscribe_interaction_class",
       "requirement_id": "REQ-RTI-DM-5_8-subscribeInteractionClass",
       "section": "5.8",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.8",
       "service_group": "Declaration Management",
       "source_languages": [
         "cpp",
@@ -3763,7 +3763,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
@@ -3792,7 +3792,7 @@
       "python_name": "subscribe_interaction_class_passively",
       "requirement_id": "REQ-RTI-DM-5_8-subscribeInteractionClassPassively",
       "section": "5.8",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.8",
       "service_group": "Declaration Management",
       "source_languages": [
         "java"
@@ -3814,7 +3814,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
@@ -3843,7 +3843,7 @@
       "python_name": "unsubscribe_interaction_class",
       "requirement_id": "REQ-RTI-DM-5_9-unsubscribeInteractionClass",
       "section": "5.9",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.9",
       "service_group": "Declaration Management",
       "source_languages": [
         "cpp",
@@ -3867,7 +3867,7 @@
         "OwnershipAcquisitionPending",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -3917,7 +3917,7 @@
       "python_name": "resign_federation_execution",
       "requirement_id": "REQ-RTI-FM-4_10-resignFederationExecution",
       "section": "4.10",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.10",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -3940,7 +3940,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -3983,7 +3983,7 @@
       "python_name": "register_federation_synchronization_point",
       "requirement_id": "REQ-RTI-FM-4_11-registerFederationSynchronizationPoint",
       "section": "4.11",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.11",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4006,7 +4006,7 @@
         "SaveInProgress",
         "SynchronizationPointLabelNotAnnounced"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4042,7 +4042,7 @@
       "python_name": "synchronization_point_achieved",
       "requirement_id": "REQ-RTI-FM-4_14-synchronizationPointAchieved",
       "section": "4.14",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.14",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4067,7 +4067,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4110,7 +4110,7 @@
       "python_name": "request_federation_save",
       "requirement_id": "REQ-RTI-FM-4_16-requestFederationSave",
       "section": "4.16",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.16",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4132,7 +4132,7 @@
         "RestoreInProgress",
         "SaveNotInitiated"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4163,7 +4163,7 @@
       "python_name": "federate_save_begun",
       "requirement_id": "REQ-RTI-FM-4_18-federateSaveBegun",
       "section": "4.18",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.18",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4185,7 +4185,7 @@
         "RTIinternalError",
         "RestoreInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4216,7 +4216,7 @@
       "python_name": "federate_save_complete",
       "requirement_id": "REQ-RTI-FM-4_19-federateSaveComplete",
       "section": "4.19",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.19",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4238,7 +4238,7 @@
         "RTIinternalError",
         "RestoreInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4269,7 +4269,7 @@
       "python_name": "federate_save_not_complete",
       "requirement_id": "REQ-RTI-FM-4_19-federateSaveNotComplete",
       "section": "4.19",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.19",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4292,7 +4292,7 @@
         "RTIinternalError",
         "UnsupportedCallbackModel"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4324,7 +4324,7 @@
       "python_name": "connect",
       "requirement_id": "REQ-RTI-FM-4_2-connect",
       "section": "4.2",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.2",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4345,7 +4345,7 @@
         "RTIinternalError",
         "SaveNotInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4381,7 +4381,7 @@
       "python_name": "abort_federation_save",
       "requirement_id": "REQ-RTI-FM-4_21-abortFederationSave",
       "section": "4.21",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.21",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.21",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4402,7 +4402,7 @@
         "RTIinternalError",
         "RestoreInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4438,7 +4438,7 @@
       "python_name": "query_federation_save_status",
       "requirement_id": "REQ-RTI-FM-4_22-queryFederationSaveStatus",
       "section": "4.22",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.22",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.22",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4460,7 +4460,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4503,7 +4503,7 @@
       "python_name": "request_federation_restore",
       "requirement_id": "REQ-RTI-FM-4_24-requestFederationRestore",
       "section": "4.24",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.24",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.24",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4525,7 +4525,7 @@
         "RestoreNotRequested",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4556,7 +4556,7 @@
       "python_name": "federate_restore_complete",
       "requirement_id": "REQ-RTI-FM-4_28-federateRestoreComplete",
       "section": "4.28",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.28",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.28",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4578,7 +4578,7 @@
         "RestoreNotRequested",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4609,7 +4609,7 @@
       "python_name": "federate_restore_not_complete",
       "requirement_id": "REQ-RTI-FM-4_28-federateRestoreNotComplete",
       "section": "4.28",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.28",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.28",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4629,7 +4629,7 @@
         "FederateIsExecutionMember",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4672,7 +4672,7 @@
       "python_name": "disconnect",
       "requirement_id": "REQ-RTI-FM-4_3-disconnect",
       "section": "4.3",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.3",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4693,7 +4693,7 @@
         "RTIinternalError",
         "RestoreNotInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4729,7 +4729,7 @@
       "python_name": "abort_federation_restore",
       "requirement_id": "REQ-RTI-FM-4_30-abortFederationRestore",
       "section": "4.30",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.30",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.30",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4750,7 +4750,7 @@
         "RTIinternalError",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4786,7 +4786,7 @@
       "python_name": "query_federation_restore_status",
       "requirement_id": "REQ-RTI-FM-4_31-queryFederationRestoreStatus",
       "section": "4.31",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.31",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.31",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4813,7 +4813,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4848,7 +4848,7 @@
       "python_name": "create_federation_execution",
       "requirement_id": "REQ-RTI-FM-4_5-createFederationExecution",
       "section": "4.5",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.5",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4875,7 +4875,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4911,7 +4911,7 @@
       "python_name": "create_federation_execution_with_mim",
       "requirement_id": "REQ-RTI-FM-4_5-createFederationExecutionWithMIM",
       "section": "4.5",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.5",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp"
@@ -4931,7 +4931,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -4970,7 +4970,7 @@
       "python_name": "destroy_federation_execution",
       "requirement_id": "REQ-RTI-FM-4_6-destroyFederationExecution",
       "section": "4.6",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.6",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -4989,7 +4989,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -5025,7 +5025,7 @@
       "python_name": "list_federation_executions",
       "requirement_id": "REQ-RTI-FM-4_7-listFederationExecutions",
       "section": "4.7",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.7",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -5054,7 +5054,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
@@ -5086,7 +5086,7 @@
       "python_name": "join_federation_execution",
       "requirement_id": "REQ-RTI-FM-4_9-joinFederationExecution",
       "section": "4.9",
-      "section_ref": "IEEE 1516.1-2010 \u00a74.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.9",
       "service_group": "Federation Management",
       "source_languages": [
         "cpp",
@@ -5112,7 +5112,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
@@ -5145,7 +5145,7 @@
       "python_name": "update_attribute_values",
       "requirement_id": "REQ-RTI-OM-6_10-updateAttributeValues",
       "section": "6.10",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.10",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -5171,7 +5171,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
@@ -5204,7 +5204,7 @@
       "python_name": "send_interaction",
       "requirement_id": "REQ-RTI-OM-6_12-sendInteraction",
       "section": "6.12",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.12",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -5229,7 +5229,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
@@ -5269,7 +5269,7 @@
       "python_name": "delete_object_instance",
       "requirement_id": "REQ-RTI-OM-6_14-deleteObjectInstance",
       "section": "6.14",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.14",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -5294,7 +5294,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_local_delete.py::run_local_delete_scenario",
@@ -5327,7 +5327,7 @@
       "python_name": "local_delete_object_instance",
       "requirement_id": "REQ-RTI-OM-6_16-localDeleteObjectInstance",
       "section": "6.16",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.16",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -5352,7 +5352,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_request_attribute_value_update.py::run_request_attribute_value_update_scenario",
@@ -5392,7 +5392,7 @@
       "python_name": "request_attribute_value_update",
       "requirement_id": "REQ-RTI-OM-6_19-requestAttributeValueUpdate",
       "section": "6.19",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.19",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -5415,7 +5415,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_name_reservation.py::run_name_reservation_scenario",
@@ -5448,7 +5448,7 @@
       "python_name": "reserve_object_instance_name",
       "requirement_id": "REQ-RTI-OM-6_2-reserveObjectInstanceName",
       "section": "6.2",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.2",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -5475,7 +5475,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
@@ -5515,7 +5515,7 @@
       "python_name": "request_attribute_transportation_type_change",
       "requirement_id": "REQ-RTI-OM-6_23-requestAttributeTransportationTypeChange",
       "section": "6.23",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.23",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -5539,7 +5539,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
@@ -5573,7 +5573,7 @@
       "python_name": "query_attribute_transportation_type",
       "requirement_id": "REQ-RTI-OM-6_25-queryAttributeTransportationType",
       "section": "6.25",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.25",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.25",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -5599,7 +5599,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
@@ -5639,7 +5639,7 @@
       "python_name": "request_interaction_transportation_type_change",
       "requirement_id": "REQ-RTI-OM-6_27-requestInteractionTransportationTypeChange",
       "section": "6.27",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.27",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -5662,7 +5662,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
@@ -5702,7 +5702,7 @@
       "python_name": "query_interaction_transportation_type",
       "requirement_id": "REQ-RTI-OM-6_29-queryInteractionTransportationType",
       "section": "6.29",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.29",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.29",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -5725,7 +5725,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_name_reservation.py::run_name_reservation_scenario",
@@ -5758,7 +5758,7 @@
       "python_name": "release_object_instance_name",
       "requirement_id": "REQ-RTI-OM-6_4-releaseObjectInstanceName",
       "section": "6.4",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.4",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -5782,7 +5782,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_name_reservation.py::run_name_reservation_scenario",
@@ -5815,7 +5815,7 @@
       "python_name": "reserve_multiple_object_instance_name",
       "requirement_id": "REQ-RTI-OM-6_5-reserveMultipleObjectInstanceName",
       "section": "6.5",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.5",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -5838,7 +5838,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_name_reservation.py::run_name_reservation_scenario",
@@ -5871,7 +5871,7 @@
       "python_name": "release_multiple_object_instance_name",
       "requirement_id": "REQ-RTI-OM-6_7-releaseMultipleObjectInstanceName",
       "section": "6.7",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.7",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -5897,7 +5897,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
@@ -5930,7 +5930,7 @@
       "python_name": "register_object_instance",
       "requirement_id": "REQ-RTI-OM-6_8-registerObjectInstance",
       "section": "6.8",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.8",
       "service_group": "Object Management",
       "source_languages": [
         "cpp",
@@ -5955,7 +5955,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ownership_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_release_request_ownership_scenario",
@@ -5986,7 +5986,7 @@
       "python_name": "attribute_ownership_release_denied",
       "requirement_id": "REQ-RTI-OWN-7_12-attributeOwnershipReleaseDenied",
       "section": "7.12",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.12",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -6011,7 +6011,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ownership_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_release_request_ownership_scenario",
@@ -6042,7 +6042,7 @@
       "python_name": "attribute_ownership_divestiture_if_wanted",
       "requirement_id": "REQ-RTI-OWN-7_13-attributeOwnershipDivestitureIfWanted",
       "section": "7.13",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.13",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -6068,7 +6068,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ownership_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
@@ -6099,7 +6099,7 @@
       "python_name": "cancel_negotiated_attribute_ownership_divestiture",
       "requirement_id": "REQ-RTI-OWN-7_14-cancelNegotiatedAttributeOwnershipDivestiture",
       "section": "7.14",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.14",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -6125,7 +6125,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ownership_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
@@ -6156,7 +6156,7 @@
       "python_name": "cancel_attribute_ownership_acquisition",
       "requirement_id": "REQ-RTI-OWN-7_15-cancelAttributeOwnershipAcquisition",
       "section": "7.15",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.15",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.15",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -6180,7 +6180,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ownership_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_query_callback_scenario",
@@ -6211,7 +6211,7 @@
       "python_name": "query_attribute_ownership",
       "requirement_id": "REQ-RTI-OWN-7_17-queryAttributeOwnership",
       "section": "7.17",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.17",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.17",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -6235,7 +6235,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ownership_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_query_callback_scenario",
@@ -6264,7 +6264,7 @@
       "python_name": "is_attribute_owned_by_federate",
       "requirement_id": "REQ-RTI-OWN-7_19-isAttributeOwnedByFederate",
       "section": "7.19",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.19",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -6289,7 +6289,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ownership_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
@@ -6318,7 +6318,7 @@
       "python_name": "unconditional_attribute_ownership_divestiture",
       "requirement_id": "REQ-RTI-OWN-7_2-unconditionalAttributeOwnershipDivestiture",
       "section": "7.2",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.2",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -6344,7 +6344,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ownership_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
@@ -6373,7 +6373,7 @@
       "python_name": "negotiated_attribute_ownership_divestiture",
       "requirement_id": "REQ-RTI-OWN-7_3-negotiatedAttributeOwnershipDivestiture",
       "section": "7.3",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.3",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -6400,7 +6400,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ownership_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
@@ -6431,7 +6431,7 @@
       "python_name": "confirm_divestiture",
       "requirement_id": "REQ-RTI-OWN-7_6-confirmDivestiture",
       "section": "7.6",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.6",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -6458,7 +6458,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ownership_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_release_request_ownership_scenario",
@@ -6489,7 +6489,7 @@
       "python_name": "attribute_ownership_acquisition",
       "requirement_id": "REQ-RTI-OWN-7_8-attributeOwnershipAcquisition",
       "section": "7.8",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.8",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -6517,7 +6517,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_ownership_management_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_unavailable_scenario",
@@ -6548,7 +6548,7 @@
       "python_name": "attribute_ownership_acquisition_if_available",
       "requirement_id": "REQ-RTI-OWN-7_9-attributeOwnershipAcquisitionIfAvailable",
       "section": "7.9",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.9",
       "service_group": "Ownership Management",
       "source_languages": [
         "cpp",
@@ -6564,7 +6564,7 @@
         "analysis/compliance/service_conformance.json"
       ],
       "declared_exceptions": [],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -6591,7 +6591,7 @@
       "python_name": "decode_attribute_handle",
       "requirement_id": "REQ-RTI-PLM-12_2-decodeAttributeHandle",
       "section": "12.2",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "service_group": "Programming Language Mappings",
       "source_languages": [
         "cpp"
@@ -6606,7 +6606,7 @@
         "analysis/compliance/service_conformance.json"
       ],
       "declared_exceptions": [],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -6633,7 +6633,7 @@
       "python_name": "decode_dimension_handle",
       "requirement_id": "REQ-RTI-PLM-12_2-decodeDimensionHandle",
       "section": "12.2",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "service_group": "Programming Language Mappings",
       "source_languages": [
         "cpp"
@@ -6648,7 +6648,7 @@
         "analysis/compliance/service_conformance.json"
       ],
       "declared_exceptions": [],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -6675,7 +6675,7 @@
       "python_name": "decode_federate_handle",
       "requirement_id": "REQ-RTI-PLM-12_2-decodeFederateHandle",
       "section": "12.2",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "service_group": "Programming Language Mappings",
       "source_languages": [
         "cpp"
@@ -6690,7 +6690,7 @@
         "analysis/compliance/service_conformance.json"
       ],
       "declared_exceptions": [],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -6717,7 +6717,7 @@
       "python_name": "decode_interaction_class_handle",
       "requirement_id": "REQ-RTI-PLM-12_2-decodeInteractionClassHandle",
       "section": "12.2",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "service_group": "Programming Language Mappings",
       "source_languages": [
         "cpp"
@@ -6732,7 +6732,7 @@
         "analysis/compliance/service_conformance.json"
       ],
       "declared_exceptions": [],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -6759,7 +6759,7 @@
       "python_name": "decode_message_retraction_handle",
       "requirement_id": "REQ-RTI-PLM-12_2-decodeMessageRetractionHandle",
       "section": "12.2",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "service_group": "Programming Language Mappings",
       "source_languages": [
         "cpp"
@@ -6774,7 +6774,7 @@
         "analysis/compliance/service_conformance.json"
       ],
       "declared_exceptions": [],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -6801,7 +6801,7 @@
       "python_name": "decode_object_class_handle",
       "requirement_id": "REQ-RTI-PLM-12_2-decodeObjectClassHandle",
       "section": "12.2",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "service_group": "Programming Language Mappings",
       "source_languages": [
         "cpp"
@@ -6816,7 +6816,7 @@
         "analysis/compliance/service_conformance.json"
       ],
       "declared_exceptions": [],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -6843,7 +6843,7 @@
       "python_name": "decode_object_instance_handle",
       "requirement_id": "REQ-RTI-PLM-12_2-decodeObjectInstanceHandle",
       "section": "12.2",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "service_group": "Programming Language Mappings",
       "source_languages": [
         "cpp"
@@ -6858,7 +6858,7 @@
         "analysis/compliance/service_conformance.json"
       ],
       "declared_exceptions": [],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -6885,7 +6885,7 @@
       "python_name": "decode_parameter_handle",
       "requirement_id": "REQ-RTI-PLM-12_2-decodeParameterHandle",
       "section": "12.2",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "service_group": "Programming Language Mappings",
       "source_languages": [
         "cpp"
@@ -6900,7 +6900,7 @@
         "analysis/compliance/service_conformance.json"
       ],
       "declared_exceptions": [],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -6927,7 +6927,7 @@
       "python_name": "decode_region_handle",
       "requirement_id": "REQ-RTI-PLM-12_2-decodeRegionHandle",
       "section": "12.2",
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "service_group": "Programming Language Mappings",
       "source_languages": [
         "cpp"
@@ -6947,7 +6947,7 @@
         "ObjectInstanceNotKnown",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -6980,7 +6980,7 @@
       "python_name": "get_object_instance_name",
       "requirement_id": "REQ-RTI-SS-10_10-getObjectInstanceName",
       "section": "10.10",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.10",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -7002,7 +7002,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -7035,7 +7035,7 @@
       "python_name": "get_attribute_handle",
       "requirement_id": "REQ-RTI-SS-10_11-getAttributeHandle",
       "section": "10.11",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.11",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -7058,7 +7058,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -7091,7 +7091,7 @@
       "python_name": "get_attribute_name",
       "requirement_id": "REQ-RTI-SS-10_12-getAttributeName",
       "section": "10.12",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.12",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -7112,7 +7112,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -7138,7 +7138,7 @@
       "python_name": "get_update_rate_value",
       "requirement_id": "REQ-RTI-SS-10_13-getUpdateRateValue",
       "section": "10.13",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.13",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -7160,7 +7160,7 @@
         "ObjectInstanceNotKnown",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -7186,7 +7186,7 @@
       "python_name": "get_update_rate_value_for_attribute",
       "requirement_id": "REQ-RTI-SS-10_14-getUpdateRateValueForAttribute",
       "section": "10.14",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.14",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -7207,7 +7207,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -7240,7 +7240,7 @@
       "python_name": "get_interaction_class_handle",
       "requirement_id": "REQ-RTI-SS-10_15-getInteractionClassHandle",
       "section": "10.15",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.15",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.15",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -7261,7 +7261,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -7294,7 +7294,7 @@
       "python_name": "get_interaction_class_name",
       "requirement_id": "REQ-RTI-SS-10_16-getInteractionClassName",
       "section": "10.16",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.16",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -7316,7 +7316,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -7349,7 +7349,7 @@
       "python_name": "get_parameter_handle",
       "requirement_id": "REQ-RTI-SS-10_17-getParameterHandle",
       "section": "10.17",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.17",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.17",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -7372,7 +7372,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -7405,7 +7405,7 @@
       "python_name": "get_parameter_name",
       "requirement_id": "REQ-RTI-SS-10_18-getParameterName",
       "section": "10.18",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.18",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -7426,7 +7426,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -7459,7 +7459,7 @@
       "python_name": "get_order_type",
       "requirement_id": "REQ-RTI-SS-10_19-getOrderType",
       "section": "10.19",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.19",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -7479,7 +7479,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -7505,7 +7505,7 @@
       "python_name": "get_automatic_resign_directive",
       "requirement_id": "REQ-RTI-SS-10_2-getAutomaticResignDirective",
       "section": "10.2",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.2",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -7526,7 +7526,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -7559,7 +7559,7 @@
       "python_name": "get_order_name",
       "requirement_id": "REQ-RTI-SS-10_20-getOrderName",
       "section": "10.20",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.20",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.20",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -7580,7 +7580,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -7606,7 +7606,7 @@
       "python_name": "get_transportation_type",
       "requirement_id": "REQ-RTI-SS-10_21-getTransportationType",
       "section": "10.21",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.21",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.21",
       "service_group": "Support Services",
       "source_languages": [
         "cpp"
@@ -7626,7 +7626,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -7659,7 +7659,7 @@
       "python_name": "get_transportation_type_handle",
       "requirement_id": "REQ-RTI-SS-10_21-getTransportationTypeHandle",
       "section": "10.21",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.21",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.21",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -7679,7 +7679,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -7712,7 +7712,7 @@
       "python_name": "get_transportation_name",
       "requirement_id": "REQ-RTI-SS-10_22-getTransportationName",
       "section": "10.22",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.22",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.22",
       "service_group": "Support Services",
       "source_languages": [
         "cpp"
@@ -7732,7 +7732,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -7758,7 +7758,7 @@
       "python_name": "get_transportation_type_name",
       "requirement_id": "REQ-RTI-SS-10_22-getTransportationTypeName",
       "section": "10.22",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.22",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.22",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -7780,7 +7780,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -7821,7 +7821,7 @@
       "python_name": "get_available_dimensions_for_class_attribute",
       "requirement_id": "REQ-RTI-SS-10_23-getAvailableDimensionsForClassAttribute",
       "section": "10.23",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.23",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.23",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -7842,7 +7842,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -7871,7 +7871,7 @@
       "python_name": "get_available_dimensions_for_interaction_class",
       "requirement_id": "REQ-RTI-SS-10_24-getAvailableDimensionsForInteractionClass",
       "section": "10.24",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.24",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.24",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -7892,7 +7892,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/factories/test_fom_time_factories.py",
@@ -7936,7 +7936,7 @@
       "python_name": "get_dimension_handle",
       "requirement_id": "REQ-RTI-SS-10_25-getDimensionHandle",
       "section": "10.25",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.25",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.25",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -7957,7 +7957,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/backends/test_python_backend_support_services.py",
@@ -7995,7 +7995,7 @@
       "python_name": "get_dimension_name",
       "requirement_id": "REQ-RTI-SS-10_26-getDimensionName",
       "section": "10.26",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.26",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.26",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8016,7 +8016,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -8057,7 +8057,7 @@
       "python_name": "get_dimension_upper_bound",
       "requirement_id": "REQ-RTI-SS-10_27-getDimensionUpperBound",
       "section": "10.27",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.27",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.27",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8080,7 +8080,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/factories/test_fom_time_factories.py",
@@ -8114,7 +8114,7 @@
       "python_name": "get_dimension_handle_set",
       "requirement_id": "REQ-RTI-SS-10_28-getDimensionHandleSet",
       "section": "10.28",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.28",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.28",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8138,7 +8138,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -8179,7 +8179,7 @@
       "python_name": "get_range_bounds",
       "requirement_id": "REQ-RTI-SS-10_29-getRangeBounds",
       "section": "10.29",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.29",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.29",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8200,7 +8200,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8226,7 +8226,7 @@
       "python_name": "set_automatic_resign_directive",
       "requirement_id": "REQ-RTI-SS-10_3-setAutomaticResignDirective",
       "section": "10.3",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.3",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8252,7 +8252,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py",
@@ -8293,7 +8293,7 @@
       "python_name": "set_range_bounds",
       "requirement_id": "REQ-RTI-SS-10_30-setRangeBounds",
       "section": "10.30",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.30",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.30",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8314,7 +8314,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -8347,7 +8347,7 @@
       "python_name": "normalize_federate_handle",
       "requirement_id": "REQ-RTI-SS-10_31-normalizeFederateHandle",
       "section": "10.31",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.31",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.31",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8368,7 +8368,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8394,7 +8394,7 @@
       "python_name": "normalize_service_group",
       "requirement_id": "REQ-RTI-SS-10_32-normalizeServiceGroup",
       "section": "10.32",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.32",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.32",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8417,7 +8417,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8443,7 +8443,7 @@
       "python_name": "enable_object_class_relevance_advisory_switch",
       "requirement_id": "REQ-RTI-SS-10_33-enableObjectClassRelevanceAdvisorySwitch",
       "section": "10.33",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.33",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.33",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8466,7 +8466,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8492,7 +8492,7 @@
       "python_name": "disable_object_class_relevance_advisory_switch",
       "requirement_id": "REQ-RTI-SS-10_34-disableObjectClassRelevanceAdvisorySwitch",
       "section": "10.34",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.34",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.34",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8515,7 +8515,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8541,7 +8541,7 @@
       "python_name": "enable_attribute_relevance_advisory_switch",
       "requirement_id": "REQ-RTI-SS-10_35-enableAttributeRelevanceAdvisorySwitch",
       "section": "10.35",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.35",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.35",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8564,7 +8564,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8590,7 +8590,7 @@
       "python_name": "disable_attribute_relevance_advisory_switch",
       "requirement_id": "REQ-RTI-SS-10_36-disableAttributeRelevanceAdvisorySwitch",
       "section": "10.36",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.36",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.36",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8613,7 +8613,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8639,7 +8639,7 @@
       "python_name": "enable_attribute_scope_advisory_switch",
       "requirement_id": "REQ-RTI-SS-10_37-enableAttributeScopeAdvisorySwitch",
       "section": "10.37",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.37",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.37",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8662,7 +8662,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8688,7 +8688,7 @@
       "python_name": "disable_attribute_scope_advisory_switch",
       "requirement_id": "REQ-RTI-SS-10_38-disableAttributeScopeAdvisorySwitch",
       "section": "10.38",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.38",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.38",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8711,7 +8711,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8740,7 +8740,7 @@
       "python_name": "enable_interaction_relevance_advisory_switch",
       "requirement_id": "REQ-RTI-SS-10_39-enableInteractionRelevanceAdvisorySwitch",
       "section": "10.39",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.39",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.39",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8761,7 +8761,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -8794,7 +8794,7 @@
       "python_name": "get_federate_handle",
       "requirement_id": "REQ-RTI-SS-10_4-getFederateHandle",
       "section": "10.4",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.4",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8817,7 +8817,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
@@ -8846,7 +8846,7 @@
       "python_name": "disable_interaction_relevance_advisory_switch",
       "requirement_id": "REQ-RTI-SS-10_40-disableInteractionRelevanceAdvisorySwitch",
       "section": "10.40",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.40",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.40",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8865,7 +8865,7 @@
         "CallNotAllowedFromWithinCallback",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/transport/test_rest_transport.py",
@@ -8909,7 +8909,7 @@
       "python_name": "evoke_callback",
       "requirement_id": "REQ-RTI-SS-10_41-evokeCallback",
       "section": "10.41",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.41",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.41",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8928,7 +8928,7 @@
         "CallNotAllowedFromWithinCallback",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/transport/test_rest_transport.py",
@@ -8972,7 +8972,7 @@
       "python_name": "evoke_multiple_callbacks",
       "requirement_id": "REQ-RTI-SS-10_42-evokeMultipleCallbacks",
       "section": "10.42",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.42",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.42",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -8992,7 +8992,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/backends/test_python_backend_support_services.py",
@@ -9030,7 +9030,7 @@
       "python_name": "enable_callbacks",
       "requirement_id": "REQ-RTI-SS-10_43-enableCallbacks",
       "section": "10.43",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.43",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.43",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -9050,7 +9050,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/backends/test_python_backend_support_services.py",
@@ -9088,7 +9088,7 @@
       "python_name": "disable_callbacks",
       "requirement_id": "REQ-RTI-SS-10_44-disableCallbacks",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -9107,7 +9107,7 @@
         "FederateNotExecutionMember",
         "NotConnected"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9136,7 +9136,7 @@
       "python_name": "get_attribute_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getAttributeHandleFactory",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -9154,7 +9154,7 @@
         "FederateNotExecutionMember",
         "NotConnected"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9183,7 +9183,7 @@
       "python_name": "get_attribute_handle_set_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getAttributeHandleSetFactory",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -9201,7 +9201,7 @@
         "FederateNotExecutionMember",
         "NotConnected"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9230,7 +9230,7 @@
       "python_name": "get_attribute_handle_value_map_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getAttributeHandleValueMapFactory",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -9248,7 +9248,7 @@
         "FederateNotExecutionMember",
         "NotConnected"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9277,7 +9277,7 @@
       "python_name": "get_attribute_set_region_set_pair_list_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getAttributeSetRegionSetPairListFactory",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -9295,7 +9295,7 @@
         "FederateNotExecutionMember",
         "NotConnected"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9324,7 +9324,7 @@
       "python_name": "get_dimension_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getDimensionHandleFactory",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -9342,7 +9342,7 @@
         "FederateNotExecutionMember",
         "NotConnected"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9371,7 +9371,7 @@
       "python_name": "get_dimension_handle_set_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getDimensionHandleSetFactory",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -9389,7 +9389,7 @@
         "FederateNotExecutionMember",
         "NotConnected"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9418,7 +9418,7 @@
       "python_name": "get_federate_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getFederateHandleFactory",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -9436,7 +9436,7 @@
         "FederateNotExecutionMember",
         "NotConnected"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9465,7 +9465,7 @@
       "python_name": "get_federate_handle_set_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getFederateHandleSetFactory",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -9480,7 +9480,7 @@
         "analysis/compliance/service_conformance.json"
       ],
       "declared_exceptions": [],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/transport/test_grpc_transport.py",
@@ -9513,7 +9513,7 @@
       "python_name": "get_hla_version",
       "requirement_id": "REQ-RTI-SS-10_44-getHLAversion",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -9531,7 +9531,7 @@
         "FederateNotExecutionMember",
         "NotConnected"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9560,7 +9560,7 @@
       "python_name": "get_interaction_class_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getInteractionClassHandleFactory",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -9578,7 +9578,7 @@
         "FederateNotExecutionMember",
         "NotConnected"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9607,7 +9607,7 @@
       "python_name": "get_object_class_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getObjectClassHandleFactory",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -9625,7 +9625,7 @@
         "FederateNotExecutionMember",
         "NotConnected"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9654,7 +9654,7 @@
       "python_name": "get_object_instance_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getObjectInstanceHandleFactory",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -9672,7 +9672,7 @@
         "FederateNotExecutionMember",
         "NotConnected"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9701,7 +9701,7 @@
       "python_name": "get_parameter_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getParameterHandleFactory",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -9719,7 +9719,7 @@
         "FederateNotExecutionMember",
         "NotConnected"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9748,7 +9748,7 @@
       "python_name": "get_parameter_handle_value_map_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getParameterHandleValueMapFactory",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -9766,7 +9766,7 @@
         "FederateNotExecutionMember",
         "NotConnected"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9795,7 +9795,7 @@
       "python_name": "get_region_handle_set_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getRegionHandleSetFactory",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -9813,7 +9813,7 @@
         "FederateNotExecutionMember",
         "NotConnected"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/factories/test_fom_time_factories.py"
@@ -9839,7 +9839,7 @@
       "python_name": "get_time_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getTimeFactory",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -9858,7 +9858,7 @@
         "FederateNotExecutionMember",
         "NotConnected"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9887,7 +9887,7 @@
       "python_name": "get_transportation_type_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getTransportationTypeHandleFactory",
       "section": "10.44",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "service_group": "Support Services",
       "source_languages": [
         "java"
@@ -9908,7 +9908,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9941,7 +9941,7 @@
       "python_name": "get_federate_name",
       "requirement_id": "REQ-RTI-SS-10_5-getFederateName",
       "section": "10.5",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.5",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -9962,7 +9962,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -9995,7 +9995,7 @@
       "python_name": "get_object_class_handle",
       "requirement_id": "REQ-RTI-SS-10_6-getObjectClassHandle",
       "section": "10.6",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.6",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -10016,7 +10016,7 @@
         "NotConnected",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -10049,7 +10049,7 @@
       "python_name": "get_object_class_name",
       "requirement_id": "REQ-RTI-SS-10_7-getObjectClassName",
       "section": "10.7",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.7",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -10070,7 +10070,7 @@
         "ObjectInstanceNotKnown",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -10103,7 +10103,7 @@
       "python_name": "get_known_object_class_handle",
       "requirement_id": "REQ-RTI-SS-10_8-getKnownObjectClassHandle",
       "section": "10.8",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.8",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -10124,7 +10124,7 @@
         "ObjectInstanceNotKnown",
         "RTIinternalError"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
@@ -10157,7 +10157,7 @@
       "python_name": "get_object_instance_handle",
       "requirement_id": "REQ-RTI-SS-10_9-getObjectInstanceHandle",
       "section": "10.9",
-      "section_ref": "IEEE 1516.1-2010 \u00a710.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.9",
       "service_group": "Support Services",
       "source_languages": [
         "cpp",
@@ -10184,7 +10184,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -10212,7 +10212,7 @@
       "python_name": "next_message_request",
       "requirement_id": "REQ-RTI-TM-8_10-nextMessageRequest",
       "section": "8.10",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.10",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -10239,7 +10239,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -10269,7 +10269,7 @@
       "python_name": "next_message_request_available",
       "requirement_id": "REQ-RTI-TM-8_11-nextMessageRequestAvailable",
       "section": "8.11",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.11",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -10296,7 +10296,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -10324,7 +10324,7 @@
       "python_name": "flush_queue_request",
       "requirement_id": "REQ-RTI-TM-8_12-flushQueueRequest",
       "section": "8.12",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.12",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -10347,7 +10347,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -10385,7 +10385,7 @@
       "python_name": "enable_asynchronous_delivery",
       "requirement_id": "REQ-RTI-TM-8_14-enableAsynchronousDelivery",
       "section": "8.14",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.14",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -10408,7 +10408,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -10446,7 +10446,7 @@
       "python_name": "disable_asynchronous_delivery",
       "requirement_id": "REQ-RTI-TM-8_15-disableAsynchronousDelivery",
       "section": "8.15",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.15",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.15",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -10468,7 +10468,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -10496,7 +10496,7 @@
       "python_name": "query_galt",
       "requirement_id": "REQ-RTI-TM-8_16-queryGALT",
       "section": "8.16",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.16",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -10518,7 +10518,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -10548,7 +10548,7 @@
       "python_name": "query_logical_time",
       "requirement_id": "REQ-RTI-TM-8_17-queryLogicalTime",
       "section": "8.17",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.17",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.17",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -10570,7 +10570,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -10600,7 +10600,7 @@
       "python_name": "query_lits",
       "requirement_id": "REQ-RTI-TM-8_18-queryLITS",
       "section": "8.18",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.18",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -10625,7 +10625,7 @@
         "SaveInProgress",
         "TimeRegulationIsNotEnabled"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -10663,7 +10663,7 @@
       "python_name": "modify_lookahead",
       "requirement_id": "REQ-RTI-TM-8_19-modifyLookahead",
       "section": "8.19",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.19",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -10689,7 +10689,7 @@
         "SaveInProgress",
         "TimeRegulationAlreadyEnabled"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -10719,7 +10719,7 @@
       "python_name": "enable_time_regulation",
       "requirement_id": "REQ-RTI-TM-8_2-enableTimeRegulation",
       "section": "8.2",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.2",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -10742,7 +10742,7 @@
         "SaveInProgress",
         "TimeRegulationIsNotEnabled"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -10770,7 +10770,7 @@
       "python_name": "query_lookahead",
       "requirement_id": "REQ-RTI-TM-8_20-queryLookahead",
       "section": "8.20",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.20",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.20",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -10795,7 +10795,7 @@
         "SaveInProgress",
         "TimeRegulationIsNotEnabled"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -10823,7 +10823,7 @@
       "python_name": "retract",
       "requirement_id": "REQ-RTI-TM-8_21-retract",
       "section": "8.21",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.21",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.21",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -10848,7 +10848,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -10886,7 +10886,7 @@
       "python_name": "change_attribute_order_type",
       "requirement_id": "REQ-RTI-TM-8_23-changeAttributeOrderType",
       "section": "8.23",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.23",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.23",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -10910,7 +10910,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -10946,7 +10946,7 @@
       "python_name": "change_interaction_order_type",
       "requirement_id": "REQ-RTI-TM-8_24-changeInteractionOrderType",
       "section": "8.24",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.24",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.24",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -10969,7 +10969,7 @@
         "SaveInProgress",
         "TimeRegulationIsNotEnabled"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -10999,7 +10999,7 @@
       "python_name": "disable_time_regulation",
       "requirement_id": "REQ-RTI-TM-8_4-disableTimeRegulation",
       "section": "8.4",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.4",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -11024,7 +11024,7 @@
         "SaveInProgress",
         "TimeConstrainedAlreadyEnabled"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -11054,7 +11054,7 @@
       "python_name": "enable_time_constrained",
       "requirement_id": "REQ-RTI-TM-8_5-enableTimeConstrained",
       "section": "8.5",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.5",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -11077,7 +11077,7 @@
         "SaveInProgress",
         "TimeConstrainedIsNotEnabled"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -11107,7 +11107,7 @@
       "python_name": "disable_time_constrained",
       "requirement_id": "REQ-RTI-TM-8_7-disableTimeConstrained",
       "section": "8.7",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.7",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -11134,7 +11134,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -11164,7 +11164,7 @@
       "python_name": "time_advance_request",
       "requirement_id": "REQ-RTI-TM-8_8-timeAdvanceRequest",
       "section": "8.8",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.8",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
@@ -11191,7 +11191,7 @@
         "RestoreInProgress",
         "SaveInProgress"
       ],
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "evidence": [
         "tests/time/test_mom_mim_time_v10.py",
         "tests/time/test_mom_mim_and_time_semantics_v010.py",
@@ -11219,7 +11219,7 @@
       "python_name": "time_advance_request_available",
       "requirement_id": "REQ-RTI-TM-8_9-timeAdvanceRequestAvailable",
       "section": "8.9",
-      "section_ref": "IEEE 1516.1-2010 \u00a78.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.9",
       "service_group": "Time Management",
       "source_languages": [
         "cpp",
