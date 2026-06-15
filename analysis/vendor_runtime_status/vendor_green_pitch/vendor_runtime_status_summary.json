@@ -1,5 +1,5 @@
 {
-  "artifact_dir": "<tmp>/pytest-of-rick/pytest-1898/test_vendor_green_fails_strict0/preflight",
+  "artifact_dir": "<tmp>/pytest-of-rick/pytest-2003/test_vendor_green_fails_strict0/preflight",
   "blocked_vendors": [
     "pitch"
   ],
@@ -18,7 +18,7 @@
   "vendors": [
     {
       "actionable": false,
-      "artifact_path": "<tmp>/pytest-of-rick/pytest-1898/test_vendor_green_fails_strict0/preflight/pitch-preflight.json",
+      "artifact_path": "<tmp>/pytest-of-rick/pytest-2003/test_vendor_green_fails_strict0/preflight/pitch-preflight.json",
       "blocked_checks": [
         {
           "detail": "blocked: Docker CLI exists but the daemon is not reachable",
@@ -52,15 +52,15 @@
       "required_markers": {},
       "required_ports": {
         "crc": {
-          "detail": "ok: 127.0.0.1:50688 is available",
+          "detail": "ok: 127.0.0.1:8989 is available",
           "host": "127.0.0.1",
-          "port": 50688,
+          "port": 8989,
           "status": "ok"
         },
         "fedpro": {
-          "detail": "ok: 127.0.0.1:50689 is available",
+          "detail": "ok: 127.0.0.1:15164 is available",
           "host": "127.0.0.1",
-          "port": 50689,
+          "port": 15164,
           "status": "ok"
         }
       },

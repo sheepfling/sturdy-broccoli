@@ -22,18 +22,14 @@ Required markers for `certi`:
 Next steps for `certi`:
 - `./tools/certi-easy smoke compare`
 - `HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q tests/vendors/test_certi_real_backend_exchange_matrix.py tests/vendors/test_certi_real_backend_time_matrix.py tests/vendors/test_certi_real_backend_ownership_matrix.py`
-| pitch | environment-blocked | ports-blocked | 1 | crc_port | analysis/preflight_artifacts/pitch-preflight.json | host/runtime prerequisites are blocked on this surface |
-
-Blocked checks for `pitch`:
-- `crc_port`: blocked: 127.0.0.1:8989 is not available: [Errno 48] Address already in use
-- `fedpro_port`: blocked: 127.0.0.1:15164 is not available: [Errno 48] Address already in use
+| pitch | ready | ready | 0 |  | analysis/preflight_artifacts/pitch-preflight.json | vendor runtime prerequisites are ready |
 
 Required markers for `pitch`:
 - `runtime_home`: `third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar`
 
 Required ports for `pitch`:
-- `crc`: `127.0.0.1:8989` [blocked]
-- `fedpro`: `127.0.0.1:15164` [blocked]
+- `crc`: `127.0.0.1:8989` [ok]
+- `fedpro`: `127.0.0.1:15164` [ok]
 
 Next steps for `pitch`:
-- `fix the blocked prerequisite(s) above and rerun`
+- `./tools/pitch install or ./tools/pitch all`

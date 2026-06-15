@@ -9,6 +9,7 @@ from hla2010_rti_backend_common import (
 )
 from hla2010_rti_java_common import java_parameter_names, resolve_java_arguments
 from hla2010.enums import CallbackModel
+from hla2010.handles import FederateHandle
 from hla2010.raw_api import API_METADATA
 
 
@@ -16,17 +17,17 @@ def test_delegating_ambassador_is_concrete():
     backend = RecordingBackend(results={"getFederateName": "fed"})
     rti = make_rti_ambassador(backend)
     assert isinstance(rti, DelegatingRTIAmbassador)
-    assert rti.getFederateName() == "fed"
+    assert rti.getFederateName(FederateHandle(1)) == "fed"
     assert backend.calls[-1].method_name == "getFederateName"
 
 
 def test_source_named_method_forwards_to_service_key():
     backend = RecordingBackend(results={"createRegion": "region"})
     rti = make_rti_ambassador(backend)
-    assert rti.createRegion("space", {"dimension"}) == "region"
+    assert rti.createRegion({"dimension"}) == "region"
     call = backend.calls[-1]
     assert call.method_name == "createRegion"
-    assert call.args == ("space", {"dimension"})
+    assert call.args == ({"dimension"},)
 
 
 def test_connect_adapts_python_federate_ambassador():

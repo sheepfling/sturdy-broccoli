@@ -34,10 +34,10 @@ def run_discovery_metadata_callback_scenario(
     sent_regions = sent_regions or RegionHandleSet({RegionHandle(11), RegionHandle(12)})
 
     invoke_discover_callback(object_handle, object_class, object_name, producing_federate)
-    invoke_has_producing_federate_callback(object_handle, producing_federate)
-    invoke_get_producing_federate_callback(object_handle, producing_federate)
-    invoke_has_sent_regions_callback(object_handle, sent_regions)
-    invoke_get_sent_regions_callback(object_handle, sent_regions)
+    invoke_has_producing_federate_callback()
+    invoke_get_producing_federate_callback()
+    invoke_has_sent_regions_callback()
+    invoke_get_sent_regions_callback()
 
     discover_record = federate.last_callback("discoverObjectInstance")
     has_producing_record = federate.last_callback("hasProducingFederate")
@@ -57,24 +57,13 @@ def run_discovery_metadata_callback_scenario(
     assert discover_record.args[2] == object_name, discover_record.args
     assert isinstance(discover_record.args[3], FederateHandle), discover_record.args
 
-    assert len(has_producing_record.args) == 2
-    assert has_producing_record.args[0] == discover_record.args[0]
-    assert has_producing_record.args[1] == discover_record.args[3]
+    assert has_producing_record.args == ()
 
-    assert len(get_producing_record.args) == 2
-    assert get_producing_record.args[0] == discover_record.args[0]
-    assert get_producing_record.args[1] == discover_record.args[3]
+    assert get_producing_record.args == ()
 
-    assert len(has_regions_record.args) == 2
-    assert has_regions_record.args[0] == discover_record.args[0]
-    assert len(_region_values(has_regions_record.args[1])) == len(_region_values(sent_regions)), has_regions_record.args
+    assert has_regions_record.args == ()
 
-    assert len(get_regions_record.args) == 2
-    assert get_regions_record.args[0] == discover_record.args[0]
-    assert _region_values(get_regions_record.args[1]) == _region_values(has_regions_record.args[1]), (
-        has_regions_record.args,
-        get_regions_record.args,
-    )
+    assert get_regions_record.args == ()
 
     return {
         "object_handle": object_handle,

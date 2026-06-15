@@ -241,9 +241,29 @@ def _collect_entry_point_backend_plugin_records() -> tuple[list[_LoadedBackendPl
                     )
                 )
                 continue
+            except Exception as exc:
+                issues.append(
+                    RTIBackendRegistryIssue(
+                        source_kind="entry-point",
+                        phase="load",
+                        locator=f"{group_name}:{entry_point.name} -> {entry_point.value}",
+                        error_type=type(exc).__name__,
+                        error=str(exc),
+                    )
+                )
+                continue
             plugin = loaded() if callable(loaded) else loaded
             if not isinstance(plugin, RTIBackendPlugin):
-                raise TypeError(f"Backend entry point {entry_point.name!r} did not return RTIBackendPlugin")
+                issues.append(
+                    RTIBackendRegistryIssue(
+                        source_kind="entry-point",
+                        phase="validate",
+                        locator=f"{group_name}:{entry_point.name} -> {entry_point.value}",
+                        error_type="TypeError",
+                        error=f"Backend entry point {entry_point.name!r} did not return RTIBackendPlugin",
+                    )
+                )
+                continue
             records.append(
                 _LoadedBackendPluginRecord(
                     plugin=plugin,

@@ -98,7 +98,6 @@ FORBIDDEN_RUNTIME_CLASS_INJECTION_PATTERNS = (
     "setattr(FederateAmbassadorMultiplexer",
     "setattr(PythonFederateAmbassadorDispatcher",
     "setattr(Py4JFederateAmbassadorProxy",
-    "setattr(_CERTIJavaFederateAdapter",
 )
 FORBIDDEN_PACKAGE_WALK_PATTERNS = (
     "__path__",
@@ -126,6 +125,7 @@ ALLOWLISTED_SELF_LOCATING_SCRIPTS = {
     "scripts/generate_clause13_conformance_packet.py",
     "scripts/generate_compliance_artifacts.py",
     "scripts/generate_fom_overview.py",
+    "scripts/generate_hla_interface_contracts.py",
     "scripts/generate_imported_packet_backlog.py",
     "scripts/generate_imported_packet_requirements_docs.py",
     "scripts/generate_master_harmonization_index.py",

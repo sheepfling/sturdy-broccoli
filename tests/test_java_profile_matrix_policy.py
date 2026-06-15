@@ -14,7 +14,6 @@ TARGET_FUNCTIONS = {
     "test_inprocess_java_shim_support_factory_and_decode_scenario": "run_support_factory_and_decode_scenario",
     "test_inprocess_java_shim_ownership_scenario": "run_attribute_ownership_scenario",
     "test_inprocess_java_shim_negotiated_ownership_scenario": "run_negotiated_attribute_ownership_scenario",
-    "test_certi_java_profile_backend_matrix": "run_two_federate_exchange_scenario",
 }
 SCENARIO_ENTRYPOINT_RE = re.compile(r"\b((?:run|probe)_[A-Za-z0-9_]+)\(")
 DIRECT_BACKEND_CALL_RE = re.compile(

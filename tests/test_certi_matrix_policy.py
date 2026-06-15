@@ -20,13 +20,9 @@ DIRECT_BACKEND_CALL_RE = re.compile(
 )
 CERTI_PROFILE_MARKDOWN_CASES = (
     ("certi-native_requirement_disposition.md", "certi-native"),
-    ("certi-jpype_requirement_disposition.md", "certi-jpype"),
-    ("certi-py4j_requirement_disposition.md", "certi-py4j"),
 )
 CERTI_PROFILE_JSON_CASES = (
     "certi-native_requirement_disposition.json",
-    "certi-jpype_requirement_disposition.json",
-    "certi-py4j_requirement_disposition.json",
 )
 
 FILE_FUNCTIONS: dict[Path, dict[str, str]] = {

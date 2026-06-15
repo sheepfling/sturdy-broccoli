@@ -42,8 +42,6 @@ Legend:
 | `java-shim-jpype` | yes | partial | yes | yes | no |
 | `java-shim-py4j` | yes | partial | yes | yes | no |
 | `certi` | yes | partial | yes | yes | yes |
-| `certi-jpype` | yes | partial | yes | yes | yes |
-| `certi-py4j` | yes | partial | yes | yes | yes |
 | `pitch-jpype` | yes | yes | yes | yes | yes |
 | `pitch-py4j` | yes | yes | yes | yes | yes |
 
@@ -75,8 +73,7 @@ Primary anchors:
 
 - `java-shim-jpype` and `java-shim-py4j` now support end-to-end multi-federate synchronization and ownership scenarios through the shared in-process Java shim.
 - The shared Java shims do not model full vendor-style timestamped delivery semantics. They cover the common backend-neutral exchange contract, but timed-delivery assertions remain a real-RTI concern.
-- `certi-jpype` and `certi-py4j` are Java-profile facades over the real native CERTI transport in this workspace. There is no vendor-supplied CERTI Java 2010 RTI artifact here.
-- `certi`, `certi-jpype`, and `certi-py4j` are covered by real synchronization and ownership smoke tests, but the current shared timed-exchange route is only partial because CERTI does not implement `changeAttributeOrderType`.
+- `certi` is covered by real synchronization and ownership smoke tests, but the current shared timed-exchange route is only partial because CERTI does not implement `changeAttributeOrderType`.
 - `rest` remains a transport seam, not an additional runtime family. It now has a transport-hosted pure-Python RTI proving server and uses the same polling callback contract as gRPC.
 - `grpc` now goes one step further: a transport-hosted pure-Python RTI server proves that the existing backend-neutral exchange path can run end to end over the gRPC wire without changing federate code.
 - The current remote callback contract is explicit across both `rest` and `grpc`: unary transport requests plus callback polling through `evokeCallback` / `evokeMultipleCallbacks`. Callback streaming is a future design option, not the current contract.
@@ -87,7 +84,7 @@ Primary anchors:
   release-response implementation. See
   [backend_conformance_matrix.md](backend_conformance_matrix.md)
   for the per-clause status.
-- The real CERTI backend now carries the same backend-neutral synchronization and ownership scenario helpers used by the in-process shims, which improves parity between the pure Python RTI and the CERTI-backed Java-profile paths.
+- The real CERTI backend now carries the same backend-neutral synchronization and ownership scenario helpers used by the in-process shims, which improves parity between the pure Python RTI and the native CERTI path.
 - `pitch-jpype` and `pitch-py4j` now pass the real exchange, timed-exchange, synchronization, and ownership matrix against the Docker-backed Pitch CRC/FedPro route.
 
 ## Test Coverage
@@ -96,8 +93,6 @@ Primary anchors:
   - [test_java_profile_backend_matrix.py](../tests/vendors/test_java_profile_backend_matrix.py)
 - Real CERTI backend matrix:
   - [tests/vendors/README.md](../tests/vendors/README.md)
-- CERTI Java-profile callback forwarding and conversion:
-  - [test_certi_java_profile_callbacks.py](../tests/backends/test_certi_java_profile_callbacks.py)
 - Real vendor smoke:
   - [test_real_vendor_runtime_smoke.py](../tests/vendors/test_real_vendor_runtime_smoke.py)
 - Real Pitch backend matrix:

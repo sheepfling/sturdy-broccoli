@@ -48,8 +48,14 @@ def _isolate_preflight_confirmation(monkeypatch: pytest.MonkeyPatch, tmp_path: P
 class _FakeRTI:
     calls: list[tuple[str, object]] = field(default_factory=list)
 
+    def resignFederationExecution(self, action: ResignAction) -> None:  # noqa: N802
+        self.calls.append(("resign", action))
+
     def resign_federation_execution(self, action: ResignAction) -> None:
         self.calls.append(("resign", action))
+
+    def destroyFederationExecution(self, federation_name: str) -> None:  # noqa: N802
+        self.calls.append(("destroy", federation_name))
 
     def destroy_federation_execution(self, federation_name: str) -> None:
         self.calls.append(("destroy", federation_name))

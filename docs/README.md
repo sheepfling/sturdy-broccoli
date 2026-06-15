@@ -24,6 +24,7 @@ Primary entrypoints:
 - [onboarding.md](onboarding.md): canonical ordered run/edit/scaffold/trace path
 - [first_run.md](first_run.md): shortest path from fresh checkout to one working pure-Python example
 - [package_layout.md](package_layout.md): canonical package hierarchy and family roles
+- [package_hierarchy_and_versioning.md](package_hierarchy_and_versioning.md): quick package dependency tree and current versioning model
 - [../packages/README.md](../packages/README.md): package ownership cards and where to edit first
 - [python_environment.md](python_environment.md): bootstrap, `.venv`, extras, and install order
 - [test_surface.md](test_surface.md): canonical verification lanes and discovery flow
@@ -55,6 +56,7 @@ Focused reading maps and setup notes:
 Use these together:
 
 - [package_layout.md](package_layout.md): human-readable package hierarchy
+- [package_hierarchy_and_versioning.md](package_hierarchy_and_versioning.md): quick hierarchy tree and lockstep-versus-independent versioning status
 - [../packages/README.md](../packages/README.md): package ownership cards
 - [package_dependency_tree.md](package_dependency_tree.md): generated dependency evidence
 - [import_boundary_rules.md](import_boundary_rules.md): allowed dependency directions

@@ -1,5 +1,5 @@
 {
-  "package_count": 18,
+  "package_count": 19,
   "packages": {
     "hla2010-fom-minimal-demo": {
       "backend_names": [],
@@ -72,6 +72,7 @@
       ],
       "declared_external_dependencies": [],
       "declared_internal_dependencies": [
+        "hla2010-rti-backend-common",
         "hla2010-rti-java-common",
         "hla2010-rti-runtime-common",
         "hla2010-rti-transport-common",
@@ -87,6 +88,7 @@
       "manifest_role": "rti-backend",
       "manifest_status": "implementation-moved",
       "may_depend_on": [
+        "hla2010-rti-backend-common",
         "hla2010-rti-java-common",
         "hla2010-rti-runtime-common",
         "hla2010-rti-transport-common",
@@ -95,6 +97,33 @@
       "role": "rti-backend",
       "source_roots": [
         "packages/hla2010-rti-certi/src/hla2010_rti_certi"
+      ]
+    },
+    "hla2010-rti-java": {
+      "backend_names": [],
+      "declared_external_dependencies": [],
+      "declared_internal_dependencies": [
+        "hla2010-rti-backend-common",
+        "hla2010-rti-java-common",
+        "hla2010-rti-java-jpype",
+        "hla2010-rti-java-py4j",
+        "hla2010-spec"
+      ],
+      "import_root": "hla2010_rti_java",
+      "layer": 4,
+      "manifest_backend_names": [],
+      "manifest_role": "java-rti-selector",
+      "manifest_status": "implementation-moved",
+      "may_depend_on": [
+        "hla2010-rti-backend-common",
+        "hla2010-rti-java-common",
+        "hla2010-rti-java-jpype",
+        "hla2010-rti-java-py4j",
+        "hla2010-spec"
+      ],
+      "role": "java-rti-selector",
+      "source_roots": [
+        "packages/hla2010-rti-java/src/hla2010_rti_java"
       ]
     },
     "hla2010-rti-java-common": {

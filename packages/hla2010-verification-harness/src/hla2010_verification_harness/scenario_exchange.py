@@ -73,10 +73,7 @@ def run_two_federate_exchange_scenario(
     publisher_attr = publisher_rti.getAttributeHandle(publisher_class, config.attribute_name)
     subscriber_attr = subscriber_rti.getAttributeHandle(subscriber_class, config.attribute_name)
     publisher_rti.publishObjectClassAttributes(publisher_class, {publisher_attr})
-    subscriber_rti.subscribeObjectClassAttributes(
-        the_class=subscriber_class,
-        attribute_list={subscriber_attr},
-    )
+    subscriber_rti.subscribeObjectClassAttributes(subscriber_class, {subscriber_attr})
 
     publisher_interaction = publisher_rti.getInteractionClassHandle(config.interaction_class_name)
     subscriber_interaction = subscriber_rti.getInteractionClassHandle(config.interaction_class_name)

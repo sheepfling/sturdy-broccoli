@@ -30,6 +30,20 @@ Then add the JPype bridge extras:
 HLA2010_BOOTSTRAP_EXTRAS=jpype ./tools/bootstrap python
 ```
 
+Minimal split-package import shape:
+
+```python
+from hla2010_rti_java_jpype import JPypeConfig, rti_ambassador
+
+rti = rti_ambassador(
+    JPypeConfig(
+        implementation="com.vendor.hla.RtiFactory",
+        classpath=["/path/to/vendor.jar"],
+        connect_local_settings_designator="crcHost=localhost",
+    )
+)
+```
+
 Minimal standard-Java RTI import shape:
 
 ```python

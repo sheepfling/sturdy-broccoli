@@ -28,7 +28,7 @@ from hla2010.spec import FederateAmbassadorSpec, RTIambassadorSpec, lower_camel_
 def test_spec_rti_is_abstract_and_source_named():
     assert inspect.isabstract(RTIambassadorSpec)
     assert hasattr(RTIambassadorSpec, "getHLAversion")
-    assert not hasattr(RTIambassadorSpec, "get_hla_version")
+    assert hasattr(RTIambassadorSpec, "get_hla_version")
     assert lower_camel_to_snake("getHLAversion") == "get_hla_version"
     assert "Java:" in RTIambassadorSpec.connect.__doc__
     assert "C++:" in RTIambassadorSpec.connect.__doc__
@@ -36,8 +36,8 @@ def test_spec_rti_is_abstract_and_source_named():
 
 def test_spec_federate_is_a_noop_prototype():
     fed = FederateAmbassadorSpec()
-    assert fed.announce_synchronization_point("label") is None
-    assert fed.announceSynchronizationPoint("label") is None
+    assert fed.announce_synchronization_point("label", b"tag") is None
+    assert fed.announceSynchronizationPoint("label", b"tag") is None
     assert "Java:" in FederateAmbassadorSpec.connection_lost.__doc__
     assert "C++:" in FederateAmbassadorSpec.connection_lost.__doc__
 

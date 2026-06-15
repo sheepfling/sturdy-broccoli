@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-import os
 import uuid
 
 import pytest
 
 from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010_rti_backend_common import BackendUnavailableError, make_rti_ambassador
+from hla2010_rti_backend_common import make_rti_ambassador
 from hla2010.enums import ResignAction
-from hla2010_rti_runtime_common import create_rti_ambassador
 from hla2010_rti_java_common.java_shim_factory import create_shared_java_shim_backend
 from hla2010_rti_java_common.java_shim_kernel import SharedJavaShimKernel
 from hla2010_verification_harness import (
@@ -25,14 +23,7 @@ from hla2010_verification_harness import (
     run_synchronization_scenario,
 )
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from hla2010_rti_certi.real_rti_certi import discover_certi_smoke_fom, launch_certi_rtig
-from tests.vendors.runtime_support import cleanup_federation, close_all, require_vendor_preflight, terminate_all, udp_port_pair
-
-
-def _require_real_rti_smoke() -> None:
-    if os.environ.get("HLA2010_ENABLE_REAL_RTI_SMOKE") != "1":
-        pytest.skip("real vendor RTI smoke disabled; set HLA2010_ENABLE_REAL_RTI_SMOKE=1")
-    require_vendor_preflight("certi", operator_hint="./tools/certi-easy preflight")
+from tests.vendors.runtime_support import cleanup_federation, close_all
 
 
 def _exchange_time_profile(time_factory_name: str) -> dict[str, object]:
@@ -305,74 +296,3 @@ def test_inprocess_java_shim_negotiated_ownership_scenario(profile: str):
         )
     finally:
         close_all(acquirer, owner)
-
-
-@pytest.mark.parametrize("kind", ["certi-jpype", "certi-py4j"])
-def test_certi_java_profile_backend_matrix(kind: str):
-    _require_real_rti_smoke()
-    try:
-        rtig = launch_certi_rtig(verbose=0)
-        smoke_fom = discover_certi_smoke_fom()
-    except BackendUnavailableError as exc:
-        pytest.skip(str(exc))
-
-    federation_name = f"{kind}-matrix-{uuid.uuid4().hex[:8]}"
-    publisher_fed = RecordingFederateAmbassador()
-    subscriber_fed = RecordingFederateAmbassador()
-    publisher = None
-    subscriber = None
-    config = TwoFederateExchangeConfig(
-        federation_name=federation_name,
-        fom_modules=(smoke_fom,),
-        logical_time_implementation_name="HLAinteger64Time",
-        object_class_name="TestObjectClassR",
-        attribute_name="DataR",
-        interaction_class_name="MsgR",
-        parameter_name="MsgDataR",
-        object_instance_name=f"{kind}-Object-1",
-        attribute_payload=b"payload-r",
-        attribute_tag=b"reflect-tag",
-        interaction_payload=b"hello-r",
-        interaction_tag=b"interaction-tag",
-        enable_time_management=True,
-        lookahead=HLAfloat64Interval(1.0),
-        advance_time=HLAfloat64Time(8.0),
-        timestamped_attribute_payload=b"payload-tso",
-        timestamped_attribute_tag=b"reflect-tso",
-        timestamped_attribute_time=HLAfloat64Time(5.0),
-        timestamped_interaction_payload=b"hello-tso",
-        timestamped_interaction_tag=b"interaction-tso",
-        timestamped_interaction_time=HLAfloat64Time(6.0),
-    )
-    try:
-        with udp_port_pair() as (publisher_udp_port, subscriber_udp_port):
-            publisher = create_rti_ambassador(
-                kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=publisher_udp_port
-            )
-            subscriber = create_rti_ambassador(
-                kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=subscriber_udp_port
-            )
-        summary = run_two_federate_exchange_scenario(
-            publisher,
-            subscriber,
-            config=config,
-            publisher_federate=publisher_fed,
-            subscriber_federate=subscriber_fed,
-        )
-        history = assert_two_federate_exchange_callback_history(
-            summary,
-            publisher_federate=publisher_fed,
-            subscriber_federate=subscriber_fed,
-            config=config,
-        )
-        assert history["receive_reflect"].args[2] == b"reflect-tag"
-        cleanup_federation(
-            federation_name,
-            destroyer=publisher,
-            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
-            remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
-            disconnect_rtis=(subscriber, publisher),
-        )
-    finally:
-        close_all(subscriber, publisher)
-        terminate_all(rtig)

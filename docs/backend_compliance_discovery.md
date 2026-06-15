@@ -98,9 +98,9 @@ After the discovery summary:
 - Open `analysis/compliance/section8_backend_matrix.md` for detailed Section 8 time-management backend coverage.
 - Open `analysis/compliance/pitch_backend_matrix.md` for the focused Pitch real-runtime view.
 - Open `analysis/compliance/pitch_requirement_disposition.md` for aggregate Pitch family requirement dispositions and split-profile clause summaries.
-- Open `analysis/compliance/certi_requirement_disposition.md` for the aggregate CERTI family requirement disposition view before drilling into one runtime or Java bridge profile.
+- Open `analysis/compliance/certi_requirement_disposition.md` for the aggregate CERTI family requirement disposition view.
 - Open `analysis/compliance/pitch-jpype_requirement_disposition.md` or `analysis/compliance/pitch-py4j_requirement_disposition.md` when you need backend-specific requirement rows for one Pitch bridge profile.
-- Open `analysis/compliance/certi-native_requirement_disposition.md`, `analysis/compliance/certi-jpype_requirement_disposition.md`, or `analysis/compliance/certi-py4j_requirement_disposition.md` when you need the generated explicit CERTI profile views; these currently inherit the same family-level projection because the Java-profile routes are documented facades over the native CERTI runtime path.
+- Open `analysis/compliance/certi-native_requirement_disposition.md`, `analysis/compliance/certi-jpype_requirement_disposition.md`, or `analysis/compliance/certi-py4j_requirement_disposition.md` when you need the generated explicit CERTI profile views.
 - Open `analysis/compliance/portico_requirement_disposition.md`, `analysis/compliance/portico-jpype_requirement_disposition.md`, or `analysis/compliance/portico-py4j_requirement_disposition.md` when you need the generated explicit Portico requirement views; the JPype and Py4J profiles currently inherit the same family-level projection because Portico remains install-dependent and no profile-specific requirement evidence is generated yet.
 - Open `analysis/compliance/requirements_matrix_2010.csv` when you need clause and requirement rows with vendor notes merged into the spec catalog.
 - Open `analysis/compliance/vendor_discovery_backlog.md` when you want the ranked next vendor/backend discovery work across all current artifacts.

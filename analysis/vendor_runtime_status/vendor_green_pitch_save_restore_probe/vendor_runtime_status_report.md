@@ -1,26 +1,22 @@
 # Vendor Runtime Status
 
 - lane: `vendor-green`
-- overall classification: `environment-blocked`
-- exit code: `1`
+- overall classification: `vendor-green`
+- exit code: `0`
 - artifact dir: `analysis/preflight_artifacts`
 
 ## Vendors
 
 | Vendor | Classification | Environment | Exit | Blocked Reason | Artifact | Note |
 | --- | --- | --- | ---: | --- | --- | --- |
-| pitch | environment-blocked | ports-blocked | 1 | crc_port | analysis/preflight_artifacts/pitch-preflight.json | host/runtime prerequisites are blocked on this surface |
-
-Blocked checks for `pitch`:
-- `crc_port`: blocked: 127.0.0.1:8989 is not available: [Errno 48] Address already in use
-- `fedpro_port`: blocked: 127.0.0.1:15164 is not available: [Errno 48] Address already in use
+| pitch | ready | ready | 0 |  | analysis/preflight_artifacts/pitch-preflight.json | vendor runtime prerequisites are ready |
 
 Required markers for `pitch`:
 - `runtime_home`: `third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar`
 
 Required ports for `pitch`:
-- `crc`: `127.0.0.1:8989` [blocked]
-- `fedpro`: `127.0.0.1:15164` [blocked]
+- `crc`: `127.0.0.1:8989` [ok]
+- `fedpro`: `127.0.0.1:15164` [ok]
 
 Next steps for `pitch`:
-- `fix the blocked prerequisite(s) above and rerun`
+- `./tools/pitch install or ./tools/pitch all`

@@ -11,7 +11,7 @@ from typing import Any, Mapping, Sequence
 from hla2010.exceptions import RTIinternalError
 from hla2010.fom import normalize_module_uri
 from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from hla2010_rti_java_common import BackendUnavailableError, UnsupportedBackendService
+from hla2010_rti_backend_common import BackendUnavailableError, UnsupportedBackendService
 from hla2010_rti_transport_common import RTITransport
 from hla2010_rti_certi.real_rti_certi import CERTIRuntime, _project_root as project_root
 

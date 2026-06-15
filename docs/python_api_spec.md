@@ -82,6 +82,34 @@ If you want the runtime convenience layer instead of the pure contract layer:
 from hla2010.runtime_api import RTIambassador, FederateAmbassador
 ```
 
+## Naming and Typing Direction
+
+The RTI surface preserves Java lowerCamelCase service names as the canonical
+backend invocation keys. Python-facing aliases should mirror those Java names
+with snake_case spelling and snake_case parameter names. For example,
+`timeAdvanceRequest(theTime)` maps to `time_advance_request(the_time)`.
+
+New or tightened runtime aliases should use explicit typed signatures instead
+of `*args` and `**kwargs`. The backend-neutral `Invocation` object remains the
+internal dispatch boundary for adapters and transports.
+
+For Java services with overloaded positional forms, prefer a Python alias that
+keeps the common path positional and makes ambiguous options keyword-only:
+
+```python
+rti.create_federation_execution(
+    "example-fed",
+    ["DemoFOMmodule.xml"],
+    logical_time_implementation_name="HLAinteger64Time",
+)
+
+federate_handle = rti.join_federation_execution(
+    "observer",
+    "example-fed",
+    federate_name="ObserverOne",
+)
+```
+
 ## Why This Split Exists
 
 - `hla2010-spec` is the installable root package for the clean spec surface.

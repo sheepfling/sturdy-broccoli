@@ -10,8 +10,6 @@ backend path and where the evidence lives.
 
 - Runtime paths covered:
   - `certi`
-  - `certi-jpype`
-  - `certi-py4j`
 - Baseline:
   - default evidence is against the active runtime selected by
     `discover_certi_runtime()`; in this workspace that is normally the
@@ -26,7 +24,6 @@ backend path and where the evidence lives.
 - Evidence types:
   - real multi-federate runtime tests
   - backend callback-dispatch unit tests
-  - Java-profile callback adapter unit tests
 
 See [certi_runtime_limitations.md](certi_runtime_limitations.md)
 for the current runtime shortfalls and patched-vs-upstream baseline policy.
@@ -64,9 +61,9 @@ Operational note:
 | Service | Clause | Real CERTI status | Evidence |
 |---|---:|---|---|
 | `registerFederationSynchronizationPoint` | 4.11 | implemented and exercised | [tests/vendors/README.md](../../../tests/vendors/README.md) |
-| `announceSynchronizationPoint` | 4.13 | callback implemented and exercised | [tests/vendors/README.md](../../../tests/vendors/README.md), [test_certi_java_profile_callbacks.py](../../../tests/backends/test_certi_java_profile_callbacks.py) |
+| `announceSynchronizationPoint` | 4.13 | callback implemented and exercised | [tests/vendors/README.md](../../../tests/vendors/README.md) |
 | `synchronizationPointAchieved` | 4.14 | implemented and exercised | [tests/vendors/README.md](../../../tests/vendors/README.md) |
-| `federationSynchronized` | 4.15 | callback implemented and exercised | [tests/vendors/README.md](../../../tests/vendors/README.md), [test_certi_java_profile_callbacks.py](../../../tests/backends/test_certi_java_profile_callbacks.py) |
+| `federationSynchronized` | 4.15 | callback implemented and exercised | [tests/vendors/README.md](../../../tests/vendors/README.md) |
 
 ## Time Management
 
@@ -91,19 +88,19 @@ Operational note:
 |---|---:|---|---|
 | `unconditionalAttributeOwnershipDivestiture` | 7.2 | implemented and exercised | [tests/vendors/README.md](../../../tests/vendors/README.md) |
 | `negotiatedAttributeOwnershipDivestiture` | 7.3 | patched CERTI completes the negotiated-ownership compare probe and delivers the assumption callback; pristine upstream does not reach a stable end-to-end negotiated flow | [tests/vendors/README.md](../../../tests/vendors/README.md), [certi_negotiated_ownership_findings.md](certi_negotiated_ownership_findings.md) |
-| `requestAttributeOwnershipAssumption` | 7.4 | patched CERTI callback path is now exercised end to end in the compare probe; pristine upstream does not reach a stable observation point | [tests/vendors/README.md](../../../tests/vendors/README.md), [test_certi_backend_callbacks.py](../../../tests/backends/test_certi_backend_callbacks.py), [test_certi_java_profile_callbacks.py](../../../tests/backends/test_certi_java_profile_callbacks.py), [certi_negotiated_ownership_findings.md](certi_negotiated_ownership_findings.md) |
-| `requestDivestitureConfirmation` | 7.5 | callback wired and unit-covered | [test_certi_backend_callbacks.py](../../../tests/backends/test_certi_backend_callbacks.py), [test_certi_java_profile_callbacks.py](../../../tests/backends/test_certi_java_profile_callbacks.py) |
+| `requestAttributeOwnershipAssumption` | 7.4 | patched CERTI callback path is now exercised end to end in the compare probe; pristine upstream does not reach a stable observation point | [tests/vendors/README.md](../../../tests/vendors/README.md), [test_certi_backend_callbacks.py](../../../tests/backends/test_certi_backend_callbacks.py), [certi_negotiated_ownership_findings.md](certi_negotiated_ownership_findings.md) |
+| `requestDivestitureConfirmation` | 7.5 | callback wired and unit-covered | [test_certi_backend_callbacks.py](../../../tests/backends/test_certi_backend_callbacks.py) |
 | `confirmDivestiture` | 7.6 | direct runtime path exercised through the patched release-response mapping; negotiated confirm now enforces owner-side preconditions and propagates the confirm tag, while release-request `confirm` is rejected unless negotiated divestiture is active | [certi_negotiated_ownership_findings.md](certi_negotiated_ownership_findings.md), [tests/vendors/README.md](../../../tests/vendors/README.md) |
-| `attributeOwnershipAcquisitionNotification` | 7.7 | callback implemented and exercised | [tests/vendors/README.md](../../../tests/vendors/README.md), [test_certi_java_profile_callbacks.py](../../../tests/backends/test_certi_java_profile_callbacks.py) |
+| `attributeOwnershipAcquisitionNotification` | 7.7 | callback implemented and exercised | [tests/vendors/README.md](../../../tests/vendors/README.md) |
 | `attributeOwnershipAcquisition` | 7.8 | implemented and exercised on the real owner release-request path | [tests/vendors/README.md](../../../tests/vendors/README.md), [certi_negotiated_ownership_findings.md](certi_negotiated_ownership_findings.md) |
 | `attributeOwnershipAcquisitionIfAvailable` | 7.9 | implemented and exercised | [tests/vendors/README.md](../../../tests/vendors/README.md) |
-| `attributeOwnershipUnavailable` | 7.10 | callback wired and unit-covered | [test_certi_backend_callbacks.py](../../../tests/backends/test_certi_backend_callbacks.py), [test_certi_java_profile_callbacks.py](../../../tests/backends/test_certi_java_profile_callbacks.py) |
-| `requestAttributeOwnershipRelease` | 7.11 | callback wired, unit-covered, and exercised on the real owner release-request path | [test_certi_backend_callbacks.py](../../../tests/backends/test_certi_backend_callbacks.py), [test_certi_java_profile_callbacks.py](../../../tests/backends/test_certi_java_profile_callbacks.py), [certi_negotiated_ownership_findings.md](certi_negotiated_ownership_findings.md) |
+| `attributeOwnershipUnavailable` | 7.10 | callback wired and unit-covered | [test_certi_backend_callbacks.py](../../../tests/backends/test_certi_backend_callbacks.py) |
+| `requestAttributeOwnershipRelease` | 7.11 | callback wired, unit-covered, and exercised on the real owner release-request path | [test_certi_backend_callbacks.py](../../../tests/backends/test_certi_backend_callbacks.py), [certi_negotiated_ownership_findings.md](certi_negotiated_ownership_findings.md) |
 | `attributeOwnershipReleaseDenied` | 7.12 | patched CERTI compare probe exercises the direct deny branch successfully; pristine upstream does not reach a stable direct-deny observation point | [tests/vendors/README.md](../../../tests/vendors/README.md), [certi_negotiated_ownership_findings.md](certi_negotiated_ownership_findings.md) |
 | `attributeOwnershipDivestitureIfWanted` | 7.13 | patched CERTI compare probe exercises the direct runtime transfer path successfully; it remains distinct from release-request `confirm`, but still uses the same underlying release-response transfer machinery once the owner grants transfer; pristine upstream does not reach this branch in the end-to-end compare slice | [tests/vendors/README.md](../../../tests/vendors/README.md), [certi_negotiated_ownership_findings.md](certi_negotiated_ownership_findings.md) |
 | `cancelNegotiatedAttributeOwnershipDivestiture` | 7.14 | service wired, not yet exercised end to end | [service_adapter.py](../src/hla2010_rti_certi/certi/service_adapter.py), [certi_smoke_helper.cpp](../../../tools/certi_smoke_helper.cpp) |
-| `cancelAttributeOwnershipAcquisition` | 7.15 | patched CERTI compare probe now exercises cancellation and the confirmation callback end to end; pristine upstream does not complete the same negotiated flow | [test_certi_backend_callbacks.py](../../../tests/backends/test_certi_backend_callbacks.py), [test_certi_java_profile_callbacks.py](../../../tests/backends/test_certi_java_profile_callbacks.py), [tests/vendors/README.md](../../../tests/vendors/README.md) |
-| `confirmAttributeOwnershipAcquisitionCancellation` | 7.16 | callback wired and unit-covered | [test_certi_backend_callbacks.py](../../../tests/backends/test_certi_backend_callbacks.py), [test_certi_java_profile_callbacks.py](../../../tests/backends/test_certi_java_profile_callbacks.py) |
+| `cancelAttributeOwnershipAcquisition` | 7.15 | patched CERTI compare probe now exercises cancellation and the confirmation callback end to end; pristine upstream does not complete the same negotiated flow | [test_certi_backend_callbacks.py](../../../tests/backends/test_certi_backend_callbacks.py), [tests/vendors/README.md](../../../tests/vendors/README.md) |
+| `confirmAttributeOwnershipAcquisitionCancellation` | 7.16 | callback wired and unit-covered | [test_certi_backend_callbacks.py](../../../tests/backends/test_certi_backend_callbacks.py) |
 | `queryAttributeOwnership` | 7.17 | implemented and exercised | [tests/vendors/README.md](../../../tests/vendors/README.md) |
 | `informAttributeOwnership` | 7.18 | callback implemented and exercised | [tests/vendors/README.md](../../../tests/vendors/README.md), [test_certi_backend_callbacks.py](../../../tests/backends/test_certi_backend_callbacks.py) |
 | `attributeIsNotOwned` | 7.18 | callback implemented and exercised | [tests/vendors/README.md](../../../tests/vendors/README.md), [test_certi_backend_callbacks.py](../../../tests/backends/test_certi_backend_callbacks.py) |
@@ -129,6 +126,3 @@ Operational note:
   `getFederateHandle()`, are not implemented by the runtime used here. The real
   ownership tests therefore assert the portable spec-facing signals:
   ownership callbacks and `isAttributeOwnedByFederate(...)`.
-- `certi-jpype` and `certi-py4j` reuse the same native CERTI transport, so the
-  Java-profile parity story is primarily about adapter/callback conversion, not
-  a separate vendor Java RTI implementation.

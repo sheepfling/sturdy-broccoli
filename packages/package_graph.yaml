@@ -45,6 +45,18 @@
         "hla2010-rti-backend-common"
       ]
     },
+    "hla2010-rti-java": {
+      "import_root": "hla2010_rti_java",
+      "layer": 4,
+      "role": "java-rti-selector",
+      "may_depend_on": [
+        "hla2010-spec",
+        "hla2010-rti-backend-common",
+        "hla2010-rti-java-common",
+        "hla2010-rti-java-jpype",
+        "hla2010-rti-java-py4j"
+      ]
+    },
     "hla2010-rti-java-jpype": {
       "import_root": "hla2010_rti_java_jpype",
       "layer": 3,
@@ -90,6 +102,7 @@
       ],
       "may_depend_on": [
         "hla2010-spec",
+        "hla2010-rti-backend-common",
         "hla2010-rti-java-common",
         "hla2010-rti-runtime-common",
         "hla2010-rti-transport-common"

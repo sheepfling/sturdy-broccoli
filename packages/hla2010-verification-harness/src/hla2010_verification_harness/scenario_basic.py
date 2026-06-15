@@ -40,7 +40,7 @@ def run_basic_federate_scenario(
     assert isinstance(attribute, AttributeHandle)
     assert rti.getAttributeName(object_class, attribute) == "Payload"
     rti.publishObjectClassAttributes(object_class, {attribute})
-    rti.subscribeObjectClassAttributes(the_class=object_class, attribute_list={attribute})
+    rti.subscribe_object_class_attributes(the_class=object_class, attribute_list={attribute})
     object_instance = rti.registerObjectInstance(object_class, "DemoObject-1")
     assert isinstance(object_instance, ObjectInstanceHandle)
     assert rti.getObjectInstanceHandle("DemoObject-1") == object_instance

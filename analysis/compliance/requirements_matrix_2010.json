@@ -15914,8 +15914,7 @@
       "title": "Cancel ownership acquisition",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_object_ownership_extended.py",
-        "../tests/backends/test_certi_backend_callbacks.py",
-        "../tests/backends/test_certi_java_profile_callbacks.py"
+        "../tests/backends/test_certi_backend_callbacks.py"
       ],
       "vendor_notes": "callback path covered in Python; real negotiated-flow parity is still vendor/runtime-dependent",
       "vendor_profile_bucket": "Negotiated Ownership",
@@ -15967,7 +15966,6 @@
         "../tests/backends/test_python_backend_object_ownership_extended.py",
         "../tests/backends/test_python_backend_time_ddm_extended.py",
         "../tests/backends/test_certi_backend_callbacks.py",
-        "../tests/backends/test_certi_java_profile_callbacks.py",
         "../tests/vendors/test_pitch_real_backend_matrix.py",
         "../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md",
         "../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
@@ -16230,7 +16228,6 @@
         "../tests/backends/test_python_backend_time_ddm_extended.py",
         "../tests/vendors/README.md",
         "../tests/backends/test_certi_backend_callbacks.py",
-        "../tests/backends/test_certi_java_profile_callbacks.py",
         "../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md",
         "../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
@@ -25787,8 +25784,7 @@
       "title": "Attribute Ownership Unavailable service",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_object_ownership_extended.py",
-        "../tests/backends/test_certi_backend_callbacks.py",
-        "../tests/backends/test_certi_java_profile_callbacks.py"
+        "../tests/backends/test_certi_backend_callbacks.py"
       ],
       "vendor_notes": "callback path covered in Python; real negotiated-flow parity is still vendor/runtime-dependent",
       "vendor_profile_bucket": "Ownership",
@@ -25835,7 +25831,6 @@
         "../tests/backends/test_python_backend_object_ownership_extended.py",
         "../tests/backends/test_python_backend_time_ddm_extended.py",
         "../tests/backends/test_certi_backend_callbacks.py",
-        "../tests/backends/test_certi_java_profile_callbacks.py",
         "../tests/vendors/test_pitch_real_backend_matrix.py",
         "../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md",
         "../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
@@ -25882,7 +25877,6 @@
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_object_ownership_extended.py",
         "../tests/backends/test_certi_backend_callbacks.py",
-        "../tests/backends/test_certi_java_profile_callbacks.py",
         "../tests/vendors/test_pitch_real_backend_matrix.py",
         "../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
@@ -26077,7 +26071,6 @@
         "../tests/backends/test_python_backend_time_ddm_extended.py",
         "../tests/vendors/README.md",
         "../tests/backends/test_certi_backend_callbacks.py",
-        "../tests/backends/test_certi_java_profile_callbacks.py",
         "../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md",
         "../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
@@ -29462,7 +29455,6 @@
         "../tests/backends/test_python_backend_time_ddm_extended.py",
         "../tests/vendors/README.md",
         "../tests/backends/test_certi_backend_callbacks.py",
-        "../tests/backends/test_certi_java_profile_callbacks.py",
         "../tests/vendors/test_pitch_real_backend_matrix.py",
         "../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],

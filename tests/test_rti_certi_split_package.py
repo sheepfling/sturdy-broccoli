@@ -32,18 +32,20 @@ def test_split_certi_package_exports_backend_surface():
 
 def test_legacy_certi_modules_are_compatibility_facades():
     from hla2010_rti_certi import CERTIBackend, CERTITransport
-    from hla2010_rti_certi.certi_java.factory import create_certi_java_backend
     from hla2010_rti_certi.certi.service_adapter import CERTIBackend as ServiceBackend
     from hla2010_rti_certi.certi.transport import CERTITransport as PackageTransport
-    from hla2010_rti_certi.certi_java import create_certi_java_backend as package_create_java_backend
 
     assert ServiceBackend is CERTIBackend
     assert PackageTransport is CERTITransport
-    assert package_create_java_backend is create_certi_java_backend
 
 
 def test_split_certi_plugin_descriptors_create_transport_backends():
-    from hla2010_rti_certi.certi.plugin import backend_plugins, certi_jpype_plugin, certi_py4j_plugin, plugin
+    from hla2010_rti_certi.certi.plugin import (
+        backend_plugins,
+        certi_jpype_plugin,
+        certi_py4j_plugin,
+        plugin,
+    )
 
     descriptor = plugin()
     assert isinstance(descriptor, RTIBackendPlugin)
@@ -51,7 +53,8 @@ def test_split_certi_plugin_descriptors_create_transport_backends():
     assert "certi-native" in descriptor.aliases
     assert descriptor.create_backend({"transport": _TransportStub()}).info.name == "CERTI"
 
-    names = {item.name for item in backend_plugins()}
-    assert names == {"certi", "certi-jpype", "certi-py4j"}
     assert certi_jpype_plugin().name == "certi-jpype"
     assert certi_py4j_plugin().name == "certi-py4j"
+
+    names = {item.name for item in backend_plugins()}
+    assert names == {"certi", "certi-jpype", "certi-py4j"}

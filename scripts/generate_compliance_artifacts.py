@@ -5251,7 +5251,7 @@ def _write_pitch_profile_requirement_disposition_artifacts(profile: str) -> None
 
 
 def _write_certi_profile_requirement_disposition_artifacts(profile: str) -> None:
-    if profile not in {"certi-native", "certi-jpype", "certi-py4j"}:
+    if profile not in {"certi-native"}:
         raise ValueError(f"unsupported certi profile: {profile}")
     _write_profile_requirement_disposition_artifacts(
         profile,
@@ -5655,8 +5655,6 @@ def main(argv: list[str] | None = None) -> int:
     _write_family_requirement_disposition_artifacts("certi")
     _write_family_requirement_disposition_artifacts("portico")
     _write_certi_profile_requirement_disposition_artifacts("certi-native")
-    _write_certi_profile_requirement_disposition_artifacts("certi-jpype")
-    _write_certi_profile_requirement_disposition_artifacts("certi-py4j")
     _write_portico_profile_requirement_disposition_artifacts("portico-jpype")
     _write_portico_profile_requirement_disposition_artifacts("portico-py4j")
     _write_pitch_profile_requirement_disposition_artifacts("pitch-jpype")

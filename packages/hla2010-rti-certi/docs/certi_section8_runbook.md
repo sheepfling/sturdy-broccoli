@@ -83,8 +83,6 @@ The real CERTI surface in this repo is still the native HLA 1516.1-2010 RTI
 path.
 
 - `certi` is the native smoke backend
-- `certi-jpype` and `certi-py4j` are Java-profile adapters over the same native
-  CERTI runtime
 - `rest` and `grpc` are transport surfaces used for proving hosted Python RTI
   behavior, not separate vendor RTIs
 

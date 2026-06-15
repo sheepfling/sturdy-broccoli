@@ -99,7 +99,7 @@ BACKEND_ENTRYPOINT_CASES = {
 }
 TRANSITIONAL_NAMESPACE_EXPECTATIONS = {
     "python_packages": ("packages/hla2010-rti-python/src", "hla2010_rti_python*", ("hla2010_rti_python",)),
-    "certi_packages": ("packages/hla2010-rti-certi/src", "hla2010_rti_certi*", ("hla2010_rti_certi", "hla2010_rti_certi.certi", "hla2010_rti_certi.certi_java")),
+    "certi_packages": ("packages/hla2010-rti-certi/src", "hla2010_rti_certi*", ("hla2010_rti_certi", "hla2010_rti_certi.certi")),
     "backend_common_packages": ("packages/hla2010-rti-backend-common/src", "hla2010_rti_backend_common*", ("hla2010_rti_backend_common",)),
     "java_common_packages": ("packages/hla2010-rti-java-common/src", "hla2010_rti_java_common*", ("hla2010_rti_java_common",)),
     "java_packages": ("packages/hla2010-rti-java/src", "hla2010_rti_java*", ("hla2010_rti_java",)),

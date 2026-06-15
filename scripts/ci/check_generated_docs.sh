@@ -23,7 +23,7 @@ trap cleanup EXIT
 cp "$DOC_PATH" "$TMP_DOC"
 (
   cd "$ROOT_DIR"
-  "$PYTHON_BIN" "$GENERATOR"
+  hla2010_shell_run_workspace_python "$PYTHON_BIN" "$GENERATOR"
 )
 
 if ! cmp -s "$DOC_PATH" "$TMP_DOC"; then
@@ -34,5 +34,5 @@ fi
 
 (
   cd "$ROOT_DIR"
-  "$PYTHON_BIN" "$ROOT_DIR/scripts/ci/check_doc_links.py"
+  hla2010_shell_run_workspace_python "$PYTHON_BIN" "$ROOT_DIR/scripts/ci/check_doc_links.py"
 )

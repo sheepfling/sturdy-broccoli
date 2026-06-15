@@ -638,8 +638,9 @@ def test_pitch_backend_discovery_metadata_callback_matrix(kind: str, profile: st
         object_name=f"{kind}-discovery-metadata",
     )
     assert summary["discover_record"].args[2] == f"{kind}-discovery-metadata"
-    assert summary["get_producing_record"].args[1] == summary["discover_record"].args[3]
-    assert summary["has_regions_record"].args[1] == summary["get_regions_record"].args[1]
+    assert isinstance(summary["discover_record"].args[3], type(summary["producing_federate"]))
+    assert summary["has_regions_record"].args == ()
+    assert summary["get_regions_record"].args == ()
 
 
 @pytest.mark.parametrize("kind", PITCH_KIND_CASES)

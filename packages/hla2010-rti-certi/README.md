@@ -3,7 +3,7 @@
 CERTI RTI backend plugin package.
 
 This package now contains the CERTI transport adapter, CERTI runtime discovery
-helpers, and CERTI Java bridge adapter glue under `src/hla2010_rti_certi/`.
+helpers, and native CERTI backend plugin under `src/hla2010_rti_certi/`.
 Package-owned verification and preflight policy helpers live in
 `src/hla2010_rti_certi/testing_policy.py`.
 Package-owned split-package and real-runtime wrapper coverage lives in

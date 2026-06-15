@@ -315,7 +315,6 @@ def test_legacy_root_namespace_directories_contain_no_python_modules() -> None:
     legacy_dirs = (
         ROOT / "src/hla2010/backends",
         ROOT / "src/hla2010/backends/certi",
-        ROOT / "src/hla2010/backends/certi_java",
         ROOT / "src/hla2010/backends/grpc_transport",
         ROOT / "src/hla2010/backends/jpype",
         ROOT / "src/hla2010/backends/py4j",

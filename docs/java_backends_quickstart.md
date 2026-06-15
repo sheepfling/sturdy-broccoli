@@ -101,7 +101,6 @@ Use Py4J when you want:
 ## What CERTI, Pitch, And Portico Mean
 
 - `certi`: real CERTI runtime with the native helper path
-- `certi-jpype` and `certi-py4j`: CERTI plus a Java bridge layer
 - `pitch-jpype` and `pitch-py4j`: Pitch pRTI plus a Java bridge layer
 - `portico-jpype` and `portico-py4j`: Portico plus a Java bridge layer
 
@@ -111,7 +110,7 @@ Those are real-runtime or vendor-runtime routes, not first-run routes.
 
 These routes need more than bridge dependencies:
 
-- `certi`, `certi-jpype`, `certi-py4j`
+- `certi`
 - `pitch-jpype`, `pitch-py4j`
 - `portico-jpype`, `portico-py4j`
 

@@ -9,12 +9,8 @@ As of June 7, 2026, the current `hla-2010` vendor matrix result is:
 
 - plain CERTI ownership passes on:
   - `certi`
-  - `certi-jpype`
-  - `certi-py4j`
 - negotiated CERTI ownership is still vendor-divergent on:
   - `certi`
-  - `certi-jpype`
-  - `certi-py4j`
 
 The observable runtime failure is that the negotiated ownership scenario never
 reaches the expected release/acquisition handshake. In the current matrix this
@@ -35,8 +31,8 @@ Decision for the compliance matrix:
 
 Reason:
 
-- the same failure reproduces on native CERTI, `certi-jpype`, `certi-py4j`, and
-  the patched local build profile
+- the same failure reproduces on native CERTI and the patched local build
+  profile
 - that makes this a runtime/vendor behavior gap, not a Python bridge-only bug
 
 ## Scope

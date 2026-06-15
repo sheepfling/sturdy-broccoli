@@ -1,14 +1,13 @@
 {
   "artifact_dir": "analysis/preflight_artifacts",
-  "blocked_vendors": [
-    "pitch"
-  ],
+  "blocked_vendors": [],
   "exit_code": 0,
   "lane": "repo-green",
   "missing_vendors": [],
   "overall_classification": "repo-green",
   "ready_vendors": [
-    "certi"
+    "certi",
+    "pitch"
   ],
   "recommended_next_steps": {
     "certi": [
@@ -16,7 +15,7 @@
       "HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q tests/vendors/test_certi_real_backend_exchange_matrix.py tests/vendors/test_certi_real_backend_time_matrix.py tests/vendors/test_certi_real_backend_ownership_matrix.py"
     ],
     "pitch": [
-      "fix the blocked prerequisite(s) above and rerun"
+      "./tools/pitch install or ./tools/pitch all"
     ]
   },
   "suite_name": "vendor-runtime-status",
@@ -51,50 +50,37 @@
       "vendor": "certi"
     },
     {
-      "actionable": false,
+      "actionable": true,
       "artifact_path": "analysis/preflight_artifacts/pitch-preflight.json",
-      "blocked_checks": [
-        {
-          "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 48] Address already in use",
-          "message": null,
-          "name": "crc_port",
-          "status": "blocked"
-        },
-        {
-          "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 48] Address already in use",
-          "message": null,
-          "name": "fedpro_port",
-          "status": "blocked"
-        }
-      ],
-      "blocked_reason": "crc_port",
-      "classification": "environment-blocked",
-      "environment": "ports-blocked",
-      "exit_code": 1,
+      "blocked_checks": [],
+      "blocked_reason": null,
+      "classification": "ready",
+      "environment": "ready",
+      "exit_code": 0,
       "lane_ok": true,
       "next_steps": [
-        "fix the blocked prerequisite(s) above and rerun"
+        "./tools/pitch install or ./tools/pitch all"
       ],
-      "note": "host/runtime prerequisites are blocked on this surface",
+      "note": "vendor runtime prerequisites are ready",
       "present": true,
       "required_markers": {
         "runtime_home": "third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
       },
       "required_ports": {
         "crc": {
-          "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 48] Address already in use",
+          "detail": "ok: 127.0.0.1:8989 is available",
           "host": "127.0.0.1",
           "port": 8989,
-          "status": "blocked"
+          "status": "ok"
         },
         "fedpro": {
-          "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 48] Address already in use",
+          "detail": "ok: 127.0.0.1:15164 is available",
           "host": "127.0.0.1",
           "port": 15164,
-          "status": "blocked"
+          "status": "ok"
         }
       },
-      "result": "not ready; fix the blocked prerequisite(s) above and rerun",
+      "result": "ready to run ./tools/pitch install or ./tools/pitch all",
       "tool": "pitch-preflight",
       "vendor": "pitch"
     }

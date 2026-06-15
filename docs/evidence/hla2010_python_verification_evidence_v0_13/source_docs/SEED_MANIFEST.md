@@ -34,7 +34,6 @@ Validation before packaging: `577 passed, 2 skipped` via `python -m pytest -q`.
 - `hla2010/backends/java_common.py`
 - `hla2010/backends/jpype/`
 - `hla2010/backends/py4j/`
-- `hla2010/backends/certi_java/`
 - `hla2010/backends/python_rti.py`
 - `hla2010/conformance.py`
 - `hla2010/encoding.py`

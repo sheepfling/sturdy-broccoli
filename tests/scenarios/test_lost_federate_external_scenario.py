@@ -4,8 +4,9 @@ from dataclasses import dataclass, field
 
 from hla2010 import mom as hla_mom
 from hla2010_rti_backend_common import RecordingFederateAmbassador
+from hla2010.enums import OrderType
 from hla2010.exceptions import ObjectInstanceNotKnown
-from hla2010.handles import AttributeHandle, FederateHandle, InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle, ParameterHandle
+from hla2010.handles import AttributeHandle, FederateHandle, InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle, ParameterHandle, TransportationTypeHandle
 from hla2010.ambassadors import invoke_federate_callback
 from hla2010.time import HLAinteger64Time
 from hla2010_verification_harness import (
@@ -39,26 +40,54 @@ class _FakeObserverRTI:
     def create_federation_execution(self, federation_name, fom_modules, logical_time_implementation_name):
         return None
 
+    def createFederationExecution(self, federation_name, fom_modules, logical_time_implementation_name):  # noqa: N802
+        return self.create_federation_execution(
+            federation_name,
+            fom_modules,
+            logical_time_implementation_name,
+        )
+
     def join_federation_execution(self, federate_name, federate_type, federation_name):
         return FederateHandle(1)
+
+    def joinFederationExecution(self, federate_name, federate_type, federation_name):  # noqa: N802
+        return self.join_federation_execution(federate_name, federate_type, federation_name)
 
     def get_object_class_handle(self, name):
         return self.object_class_handle
 
+    def getObjectClassHandle(self, name):  # noqa: N802
+        return self.get_object_class_handle(name)
+
     def get_attribute_handle(self, object_class, name):
         return self.attribute_handle
+
+    def getAttributeHandle(self, object_class, name):  # noqa: N802
+        return self.get_attribute_handle(object_class, name)
 
     def subscribe_object_class_attributes(self, object_class, attributes):
         return None
 
+    def subscribeObjectClassAttributes(self, object_class, attributes):  # noqa: N802
+        return self.subscribe_object_class_attributes(object_class, attributes)
+
     def get_interaction_class_handle(self, name):
         return self.interaction_handle
+
+    def getInteractionClassHandle(self, name):  # noqa: N802
+        return self.get_interaction_class_handle(name)
 
     def get_parameter_handle(self, interaction, name):
         return self.parameter_handles[name]
 
+    def getParameterHandle(self, interaction, name):  # noqa: N802
+        return self.get_parameter_handle(interaction, name)
+
     def subscribe_interaction_class(self, interaction):
         return None
+
+    def subscribeInteractionClass(self, interaction):  # noqa: N802
+        return self.subscribe_interaction_class(interaction)
 
     def evoke_multiple_callbacks(self, min_seconds, max_seconds):
         if not self.queue:
@@ -67,16 +96,28 @@ class _FakeObserverRTI:
         invoke_federate_callback(self.federate, method_name, *args)
         return bool(self.queue)
 
+    def evokeMultipleCallbacks(self, min_seconds, max_seconds):  # noqa: N802
+        return self.evoke_multiple_callbacks(min_seconds, max_seconds)
+
     def request_attribute_value_update(self, object_instance, attributes, tag):
         if self.object_removed:
             raise ObjectInstanceNotKnown(repr(object_instance))
         return None
 
+    def requestAttributeValueUpdate(self, object_instance, attributes, tag):  # noqa: N802
+        return self.request_attribute_value_update(object_instance, attributes, tag)
+
     def resign_federation_execution(self, resign_action):
         return None
 
+    def resignFederationExecution(self, resign_action):  # noqa: N802
+        return self.resign_federation_execution(resign_action)
+
     def destroy_federation_execution(self, federation_name):
         return None
+
+    def destroyFederationExecution(self, federation_name):  # noqa: N802
+        return self.destroy_federation_execution(federation_name)
 
     def disconnect(self):
         return None
@@ -116,6 +157,9 @@ def test_external_lost_federate_observer_scenario_orchestrates_callbacks():
                             observer.parameter_handles["HLAfaultDescription"]: hla_mom.encode_text(config.fault_description),
                         },
                         b"lost",
+                        OrderType.RECEIVE,
+                        TransportationTypeHandle(1),
+                        victim_time,
                     ),
                 )
             )
@@ -125,6 +169,9 @@ def test_external_lost_federate_observer_scenario_orchestrates_callbacks():
                     (
                         observer.object_instance,
                         b"lost",
+                        OrderType.RECEIVE,
+                        victim_time,
+                        None,
                         None,
                         type("Removed", (), {"producing_federate": victim_handle})(),
                     ),

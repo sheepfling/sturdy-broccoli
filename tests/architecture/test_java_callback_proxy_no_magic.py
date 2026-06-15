@@ -7,7 +7,6 @@ ROOT = Path(__file__).resolve().parents[2]
 FILES = [
     ROOT / "packages/hla2010-rti-java-common/src/hla2010_rti_java_common/java_shim_runtime.py",
     ROOT / "packages/hla2010-rti-java-common/src/hla2010_rti_java_common/java_shim_backend.py",
-    ROOT / "packages/hla2010-rti-certi/src/hla2010_rti_certi/certi_java/adapter.py",
 ]
 
 

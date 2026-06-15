@@ -41,11 +41,11 @@ Those are not the same choice.
 
 Example:
 
-- `certi-jpype`
+- `certi`
   - RTI runtime: `CERTI`
-  - Python/Java interaction: `JPype`
-  - transport surface: usually none explicit from the caller, but internally the
-    CERTI helper can also be hosted behind `grpc` or `rest`
+  - Python/Java interaction: none
+  - transport surface: usually none explicit from the caller, but the CERTI
+    helper can also be hosted behind `grpc` or `rest`
 
 - `hla2010_rti_runtime_common.create_rti_ambassador("certi", transport={"kind": "grpc", ...})`
   - RTI runtime: `CERTI`
@@ -63,7 +63,7 @@ Example:
 |---|---|---|---|
 | Python RTI | in-process reference RTI implemented in Python | `python` | strongest reference path for local semantics and clause work |
 | Java shim | in-process Java-shaped test shim for bridge validation | `java-shim-jpype`, `java-shim-py4j` | useful for bridge and callback parity, not a vendor RTI |
-| CERTI | real vendored 1516.1-2010 RTI in this repo | `certi`, `certi-jpype`, `certi-py4j` | strongest real-runtime path in this workspace |
+| CERTI | real vendored 1516.1-2010 RTI in this repo | `certi` | strongest real-runtime path in this workspace |
 | Pitch pRTI | real vendor runtime through Java adapters | `pitch-jpype`, `pitch-py4j` | available, but local activation/state constraints still matter |
 | Portico | real vendor runtime through Java adapters | `portico-jpype`, `portico-py4j` | wiring exists; use only if a real local Portico install is present |
 
@@ -83,8 +83,8 @@ These only matter when the chosen runtime is Java-facing.
 | Interaction model | Meaning | Used by |
 |---|---|---|
 | none | pure Python path | `python`, `certi` |
-| `jpype` | Python loads JVM in-process | `jpype`, `pitch-jpype`, `portico-jpype`, `certi-jpype`, `java-shim-jpype` |
-| `py4j` | Python talks to a separate JVM gateway process | `py4j`, `pitch-py4j`, `portico-py4j`, `certi-py4j`, `java-shim-py4j` |
+| `jpype` | Python loads JVM in-process | `jpype`, `pitch-jpype`, `portico-jpype`, `java-shim-jpype` |
+| `py4j` | Python talks to a separate JVM gateway process | `py4j`, `pitch-py4j`, `portico-py4j`, `java-shim-py4j` |
 
 ## Transport Surfaces
 
@@ -170,7 +170,7 @@ Use this simpler classification in practice:
 |---|---|
 | Python reference RTI | `python` |
 | Java shim bridge proofs | `java-shim-jpype`, `java-shim-py4j` |
-| Real CERTI | `certi`, `certi-jpype`, `certi-py4j` |
+| Real CERTI | `certi` |
 | Real Pitch | `pitch-jpype`, `pitch-py4j` |
 | Real Portico | `portico-jpype`, `portico-py4j` |
 
@@ -263,13 +263,11 @@ If the goal is a manageable default matrix, use this:
 2. `java-shim-jpype`
 3. `java-shim-py4j`
 4. `certi`
-5. `certi-jpype`
-6. `certi-py4j`
-7. `certi` over `grpc`
-8. `python` hosted over `grpc`
-9. `python` hosted over `rest`
-10. `pitch-jpype`
-11. `pitch-py4j`
+5. `certi` over `grpc`
+6. `python` hosted over `grpc`
+7. `python` hosted over `rest`
+8. `pitch-jpype`
+9. `pitch-py4j`
 
 That gives one matrix that covers:
 
@@ -281,7 +279,7 @@ That gives one matrix that covers:
 
 ## What To Avoid Confusing
 
-- `certi-jpype` is not a vendor Java RTI from CERTI; it is a Java-profile facade over the real native CERTI path in this repo.
+- CERTI is a native backend in this repo; Java bridge routes are reserved for Java-facing RTIs and test shims.
 - `rest` and `grpc` are not separate RTI families; they are transport choices.
 - `java-shim-*` is a test backend, not a real RTI.
 - `pitch-*` and `portico-*` are runtime families, not transport kinds.

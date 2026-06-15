@@ -21,6 +21,9 @@ class _FakeRTI:
         assert handle == ParameterHandle(5)
         return "Message"
 
+    def getParameterName(self, interaction, handle):  # noqa: N802
+        return self.get_parameter_name(interaction, handle)
+
 
 def test_decode_handle_value_map_uses_receiver_parameter_names_and_decodes_bytes() -> None:
     payload = {ParameterHandle(5): b"near"}

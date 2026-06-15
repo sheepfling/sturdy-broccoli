@@ -18,6 +18,76 @@ GENERATED_HEADER = """# Generated from specs/hla2010_api.json.
 # Do not edit by hand. Run python3 scripts/generate_hla_interface_contracts.py generate.
 """
 
+ENUM_IMPORTS = [
+    "CallbackModel",
+    "OrderType",
+    "ResignAction",
+    "RestoreFailureReason",
+    "SaveFailureReason",
+    "ServiceGroup",
+    "SynchronizationPointFailureReason",
+    "TransportationType",
+]
+
+HANDLE_IMPORTS = [
+    "AttributeHandle",
+    "AttributeHandleFactory",
+    "AttributeHandleSet",
+    "AttributeHandleSetFactory",
+    "AttributeHandleValueMap",
+    "AttributeHandleValueMapFactory",
+    "AttributeSetRegionSetPairList",
+    "AttributeSetRegionSetPairListFactory",
+    "DimensionHandle",
+    "DimensionHandleFactory",
+    "DimensionHandleSet",
+    "DimensionHandleSetFactory",
+    "FederateHandle",
+    "FederateHandleFactory",
+    "FederateHandleSet",
+    "FederateHandleSetFactory",
+    "InteractionClassHandle",
+    "InteractionClassHandleFactory",
+    "InteractionClassHandleSet",
+    "MessageRetractionHandle",
+    "MessageRetractionHandleFactory",
+    "ObjectClassHandle",
+    "ObjectClassHandleFactory",
+    "ObjectInstanceHandle",
+    "ObjectInstanceHandleFactory",
+    "ParameterHandle",
+    "ParameterHandleFactory",
+    "ParameterHandleValueMap",
+    "ParameterHandleValueMapFactory",
+    "RegionHandle",
+    "RegionHandleSet",
+    "RegionHandleSetFactory",
+    "TransportationTypeHandle",
+    "TransportationTypeHandleFactory",
+]
+
+TYPE_IMPORTS = [
+    "FederateHandleSaveStatusPair",
+    "FederateRestoreStatus",
+    "FederationExecutionInformationSet",
+    "MessageRetractionReturn",
+    "RangeBounds",
+    "TimeQueryReturn",
+]
+
+SPEC_IMPL_IMPORT_LINES = [
+    "from .enums import (",
+    *[f"    {name}," for name in ENUM_IMPORTS],
+    ")",
+    "from .handles import (",
+    *[f"    {name}," for name in HANDLE_IMPORTS],
+    ")",
+    "from .time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time, LogicalTimeFactory",
+    "from .types import (",
+    *[f"    {name}," for name in TYPE_IMPORTS],
+    ")",
+]
+
 
 JAVA_TYPE_MAP = {
     "AttributeHandle": "AttributeHandle",
@@ -114,6 +184,93 @@ PYTHON_ALIAS_PARAM_OVERRIDES = {
         "target: ObjectInstanceHandle | ObjectClassHandle",
         "the_attributes: AttributeHandleSet",
         "user_supplied_tag: VariableLengthDataLike",
+    ],
+    "queryInteractionTransportationType": [
+        "self",
+        "the_interaction: InteractionClassHandle",
+        "the_federate: FederateHandle | None = None",
+    ],
+}
+
+SOURCE_PARAM_OVERRIDES = {
+    "queryInteractionTransportationType": [
+        "self",
+        "theFederateOrInteraction: FederateHandle | InteractionClassHandle",
+        "theInteraction: InteractionClassHandle | None = None",
+    ],
+}
+
+CALLBACK_SOURCE_PARAM_OVERRIDES = {
+    "receiveInteraction": [
+        "self",
+        "interactionClass: InteractionClassHandle",
+        "theParameters: ParameterHandleValueMap",
+        "userSuppliedTag: VariableLengthDataLike",
+        "sentOrdering: OrderType",
+        "theTransport: TransportationTypeHandle",
+        "theTime: LogicalTimeLike | None = None",
+        "receivedOrdering: OrderType | None = None",
+        "retractionHandle: MessageRetractionHandle | None = None",
+        "receiveInfo: SupplementalReceiveInfo | None = None",
+    ],
+    "reflectAttributeValues": [
+        "self",
+        "theObject: ObjectInstanceHandle",
+        "theAttributes: AttributeHandleValueMap",
+        "userSuppliedTag: VariableLengthDataLike",
+        "sentOrdering: OrderType",
+        "theTransport: TransportationTypeHandle",
+        "theTime: LogicalTimeLike | None = None",
+        "receivedOrdering: OrderType | None = None",
+        "retractionHandle: MessageRetractionHandle | None = None",
+        "reflectInfo: SupplementalReflectInfo | None = None",
+    ],
+    "removeObjectInstance": [
+        "self",
+        "theObject: ObjectInstanceHandle",
+        "userSuppliedTag: VariableLengthDataLike",
+        "sentOrdering: OrderType",
+        "theTime: LogicalTimeLike | None = None",
+        "receivedOrdering: OrderType | None = None",
+        "retractionHandle: MessageRetractionHandle | None = None",
+        "removeInfo: SupplementalRemoveInfo | None = None",
+    ],
+}
+
+CALLBACK_ALIAS_PARAM_OVERRIDES = {
+    "receiveInteraction": [
+        "self",
+        "interaction_class: InteractionClassHandle",
+        "the_parameters: ParameterHandleValueMap",
+        "user_supplied_tag: VariableLengthDataLike",
+        "sent_ordering: OrderType",
+        "the_transport: TransportationTypeHandle",
+        "the_time: LogicalTimeLike | None = None",
+        "received_ordering: OrderType | None = None",
+        "retraction_handle: MessageRetractionHandle | None = None",
+        "receive_info: SupplementalReceiveInfo | None = None",
+    ],
+    "reflectAttributeValues": [
+        "self",
+        "the_object: ObjectInstanceHandle",
+        "the_attributes: AttributeHandleValueMap",
+        "user_supplied_tag: VariableLengthDataLike",
+        "sent_ordering: OrderType",
+        "the_transport: TransportationTypeHandle",
+        "the_time: LogicalTimeLike | None = None",
+        "received_ordering: OrderType | None = None",
+        "retraction_handle: MessageRetractionHandle | None = None",
+        "reflect_info: SupplementalReflectInfo | None = None",
+    ],
+    "removeObjectInstance": [
+        "self",
+        "the_object: ObjectInstanceHandle",
+        "user_supplied_tag: VariableLengthDataLike",
+        "sent_ordering: OrderType",
+        "the_time: LogicalTimeLike | None = None",
+        "received_ordering: OrderType | None = None",
+        "retraction_handle: MessageRetractionHandle | None = None",
+        "remove_info: SupplementalRemoveInfo | None = None",
     ],
 }
 
@@ -216,6 +373,18 @@ def alias_params(method_name: str, names: list[str], types: list[str], min_arity
     return PYTHON_ALIAS_PARAM_OVERRIDES.get(method_name) or annotated_params(names, types, min_arity, snake=True)
 
 
+def source_params(method_name: str, names: list[str], types: list[str], min_arity: int) -> list[str]:
+    return SOURCE_PARAM_OVERRIDES.get(method_name) or annotated_params(names, types, min_arity, snake=False)
+
+
+def callback_source_params(method_name: str, names: list[str], types: list[str], min_arity: int) -> list[str]:
+    return CALLBACK_SOURCE_PARAM_OVERRIDES.get(method_name) or annotated_params(names, types, min_arity, snake=False)
+
+
+def callback_alias_params(method_name: str, names: list[str], types: list[str], min_arity: int) -> list[str]:
+    return CALLBACK_ALIAS_PARAM_OVERRIDES.get(method_name) or annotated_params(names, types, min_arity, snake=True)
+
+
 def format_signature(name: str, params: list[str], return_type: str, *, noqa: bool = False) -> list[str]:
     suffix = "  # noqa: N802" if noqa else ""
     one_line = f"def {name}({', '.join(params)}) -> {return_type}:{suffix}"
@@ -254,6 +423,21 @@ def optional_append_block(names: list[str], min_arity: int, *, snake: bool, inde
     return lines
 
 
+def delegate_docstring(method_name: str, method_meta: dict[str, Any]) -> str:
+    overloads = list(method_meta.get("overloads", []))
+    source = next((item for item in overloads if item.get("language") == "java" and item.get("service")), None)
+    if source is None:
+        source = next((item for item in overloads if item.get("service")), None)
+    if source is None:
+        return f"Delegate HLA RTI service {method_name} to the configured backend."
+    group = source.get("group") or method_meta.get("service_group")
+    group_suffix = f" ({group})" if group else ""
+    return (
+        f"Delegate HLA RTI service {method_name} to the configured backend. "
+        f"Spec reference: IEEE 1516.1-2010 §{source['service']}{group_suffix}."
+    )
+
+
 def alias_body(method_name: str) -> list[str] | None:
     if method_name == "createFederationExecution":
         return [
@@ -277,6 +461,12 @@ def alias_body(method_name: str) -> list[str] | None:
     if method_name == "requestAttributeValueUpdate":
         return [
             "        return self.requestAttributeValueUpdate(target, the_attributes, user_supplied_tag)",
+        ]
+    if method_name == "queryInteractionTransportationType":
+        return [
+            "        if the_federate is None:",
+            "            return self.queryInteractionTransportationType(the_interaction)",
+            "        return self.queryInteractionTransportationType(the_federate, the_interaction)",
         ]
     return None
 
@@ -305,6 +495,66 @@ def delegate_alias_body(method_name: str) -> list[str] | None:
         return [
             '        return self._invoke("requestAttributeValueUpdate", target, the_attributes, user_supplied_tag)',
         ]
+    if method_name == "queryInteractionTransportationType":
+        return [
+            "        if the_federate is None:",
+            '            return self._invoke("queryInteractionTransportationType", the_interaction)',
+            '        return self._invoke("queryInteractionTransportationType", the_federate, the_interaction)',
+        ]
+    return None
+
+
+def delegate_method_body(method_name: str, names: list[str], min_arity: int) -> list[str] | None:
+    if method_name == "queryInteractionTransportationType":
+        return [
+            "        if theInteraction is None:",
+            '            return self._invoke("queryInteractionTransportationType", theFederateOrInteraction)',
+            '        return self._invoke("queryInteractionTransportationType", theFederateOrInteraction, theInteraction)',
+        ]
+    return None
+
+
+def callback_forward_body(method_name: str, snake_name: str) -> list[str] | None:
+    if method_name == "receiveInteraction":
+        return [
+            "        return self.receive_interaction(",
+            "            interactionClass,",
+            "            theParameters,",
+            "            userSuppliedTag,",
+            "            sentOrdering,",
+            "            theTransport,",
+            "            theTime,",
+            "            receivedOrdering,",
+            "            retractionHandle,",
+            "            receiveInfo,",
+            "        )",
+        ]
+    if method_name == "reflectAttributeValues":
+        return [
+            "        return self.reflect_attribute_values(",
+            "            theObject,",
+            "            theAttributes,",
+            "            userSuppliedTag,",
+            "            sentOrdering,",
+            "            theTransport,",
+            "            theTime,",
+            "            receivedOrdering,",
+            "            retractionHandle,",
+            "            reflectInfo,",
+            "        )",
+        ]
+    if method_name == "removeObjectInstance":
+        return [
+            "        return self.remove_object_instance(",
+            "            theObject,",
+            "            userSuppliedTag,",
+            "            sentOrdering,",
+            "            theTime,",
+            "            receivedOrdering,",
+            "            retractionHandle,",
+            "            removeInfo,",
+            "        )",
+        ]
     return None
 
 
@@ -313,7 +563,7 @@ def render_rti_method(method_name: str, method_meta: dict[str, Any]) -> list[str
     lines = [
         f'    @_service_metadata("{method_name}")',
         "    @abstractmethod",
-        *indent(format_signature(method_name, annotated_params(names, types, min_arity, snake=False), return_type, noqa=True), 4),
+        *indent(format_signature(method_name, source_params(method_name, names, types, min_arity), return_type, noqa=True), 4),
         "        raise NotImplementedError",
         "",
     ]
@@ -342,19 +592,23 @@ def render_rti_method(method_name: str, method_meta: dict[str, Any]) -> list[str
 def render_delegate_method(method_name: str, method_meta: dict[str, Any]) -> list[str]:
     names, types, min_arity, return_type = canonical_overload(method_meta)
     lines = [
-        *indent(format_signature(method_name, annotated_params(names, types, min_arity, snake=False), return_type, noqa=True), 4),
-        f'        """Delegate HLA RTI service {method_name} to the configured backend."""',
+        *indent(format_signature(method_name, source_params(method_name, names, types, min_arity), return_type, noqa=True), 4),
+        f'        """{delegate_docstring(method_name, method_meta)}"""',
     ]
-    optional = optional_append_block(names, min_arity, snake=False)
-    if optional:
-        lines.extend(optional)
-        lines.append(f'        return self._invoke("{method_name}", *args)')
+    override_body = delegate_method_body(method_name, names, min_arity)
+    if override_body is not None:
+        lines.extend(override_body)
     else:
-        required_args = ", ".join(call_args(names, min_arity, snake=False))
-        if required_args:
-            lines.append(f'        return self._invoke("{method_name}", {required_args})')
+        optional = optional_append_block(names, min_arity, snake=False)
+        if optional:
+            lines.extend(optional)
+            lines.append(f'        return self._invoke("{method_name}", *args)')
         else:
-            lines.append(f'        return self._invoke("{method_name}")')
+            required_args = ", ".join(call_args(names, min_arity, snake=False))
+            if required_args:
+                lines.append(f'        return self._invoke("{method_name}", {required_args})')
+            else:
+                lines.append(f'        return self._invoke("{method_name}")')
     lines.append("")
 
     snake_name = PYTHON_NAME_OVERRIDES.get(method_name, lower_camel_to_snake(method_name))
@@ -394,18 +648,22 @@ def render_callback_method(method_name: str, method_meta: dict[str, Any]) -> lis
     snake_name = PYTHON_NAME_OVERRIDES.get(method_name, lower_camel_to_snake(method_name))
     lines = [
         f'    @_callback("{method_name}")',
-        *indent(format_signature(snake_name, annotated_params(names, types, min_arity, snake=True), return_type), 4),
+        *indent(format_signature(snake_name, callback_alias_params(method_name, names, types, min_arity), return_type), 4),
         "        return None",
         "",
         f'    @_callback("{method_name}")',
-        *indent(format_signature(method_name, annotated_params(names, types, min_arity, snake=False), return_type, noqa=True), 4),
+        *indent(format_signature(method_name, callback_source_params(method_name, names, types, min_arity), return_type, noqa=True), 4),
     ]
-    optional = optional_append_block(names, min_arity, snake=False)
-    if optional:
-        lines.extend(optional)
-        lines.append(f"        return self.{snake_name}(*args)")
+    override_body = callback_forward_body(method_name, snake_name)
+    if override_body is not None:
+        lines.extend(override_body)
     else:
-        lines.append(f"        return self.{snake_name}({', '.join(call_args(names, min_arity, snake=False))})")
+        optional = optional_append_block(names, min_arity, snake=False)
+        if optional:
+            lines.extend(optional)
+            lines.append(f"        return self.{snake_name}(*args)")
+        else:
+            lines.append(f"        return self.{snake_name}({', '.join(call_args(names, min_arity, snake=False))})")
     lines.append("")
     return lines
 
@@ -429,10 +687,7 @@ def render_spec_impl() -> str:
         "import re",
         "from typing import Callable, TypeAlias",
         "",
-        "from .enums import *",
-        "from .handles import *",
-        "from .time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time, LogicalTimeFactory",
-        "from .types import *",
+        *SPEC_IMPL_IMPORT_LINES,
         "from .spec_refs import method_reference",
         "from .spec_sources import method_source_summary",
         "",
@@ -440,6 +695,7 @@ def render_spec_impl() -> str:
         "LogicalTimeIntervalLike: TypeAlias = HLAfloat64Interval | HLAinteger64Interval | float | int",
         "LogicalTimeFactoryLike: TypeAlias = LogicalTimeFactory[HLAinteger64Time | HLAfloat64Time, HLAinteger64Interval | HLAfloat64Interval]",
         "URLLike: TypeAlias = str | PathLike[str]",
+        "FomModuleLike: TypeAlias = URLLike | Sequence[URLLike]",
         "VariableLengthDataLike: TypeAlias = bytes | bytearray | memoryview",
         "",
         "@dataclass(frozen=True)",
@@ -562,7 +818,7 @@ def render_docs() -> str:
             if interface_name == "RTIambassador":
                 params = alias_params(method_name, names, types, min_arity)
             else:
-                params = annotated_params(names, types, min_arity, snake=True)
+                params = callback_alias_params(method_name, names, types, min_arity)
             signature = f"{snake_name}({', '.join(params[1:])})"
             lines.append(f"| `{method_name}` | `{snake_name}` | `{signature}` | `{return_type}` |")
         lines.append("")

@@ -1,6 +1,6 @@
 # hla2010-python
 
-This repository is an unofficial IEEE 1516.1-2010 HLA workspace centered on:
+This repository is an unofficial IEEE 1516.1-2010 (2010 edition) HLA workspace centered on:
 
 - a clean Python-facing HLA spec surface
 - split installable packages under `packages/`
@@ -70,6 +70,11 @@ The installable package root is [`packages/`](packages/README.md). The
 repository root is tooling and workspace orchestration, not an installable
 Python package.
 
+The package-owned root Python package lives at
+`packages/hla2010-spec/src/hla2010/`. It owns the abstract/core API and a
+temporary compatibility facade for `hla2010.rti` while the split package
+families keep concrete runtime behavior in package-owned roots.
+
 Read the package tree this way:
 
 ```text
@@ -90,6 +95,7 @@ The main families are:
   - `hla2010-rti-runtime-common`
   - `hla2010-rti-transport-common`
   - `hla2010-rti-java-common`
+  - `hla2010-rti-java`
   - `hla2010-verification-harness`
 - backend families
   - `hla2010-rti-python`
@@ -107,6 +113,7 @@ The main families are:
 The canonical package docs are:
 
 - [`docs/package_layout.md`](docs/package_layout.md): human-readable hierarchy and family roles
+- [`docs/package_hierarchy_and_versioning.md`](docs/package_hierarchy_and_versioning.md): quick dependency tree and current versioning model
 - [`packages/README.md`](packages/README.md): package ownership cards and where to edit first
 - [`docs/package_dependency_tree.md`](docs/package_dependency_tree.md): generated dependency evidence
 - [`docs/import_boundary_rules.md`](docs/import_boundary_rules.md): allowed dependency directions
@@ -153,8 +160,11 @@ Stay on `tools/` for supported operator commands:
 ./tools/test-surface recommend
 ./tools/python verify-fast
 ./tools/python verify
+./tools/compliance generate
+./tools/compliance discover --show-backlog
 ./tools/certi-easy preflight
 ./tools/pitch preflight
+./tools/vendor-green
 ```
 
 For vendor and route-specific commands, use:

@@ -121,8 +121,8 @@ def test_python_discovery_metadata_callback_matrix():
     )
 
     assert summary["discover_record"].args[2] == "python-discovery-metadata"
-    assert summary["has_producing_record"].args[1] == summary["producing_federate"]
-    assert summary["get_regions_record"].args[1] == summary["sent_regions"]
+    assert summary["has_producing_record"].args == ()
+    assert summary["get_regions_record"].args == ()
 
 
 def test_python_discovery_class_matrix(tmp_path: Path):

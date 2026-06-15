@@ -92,7 +92,6 @@ The rule is that new backend kinds or transport kinds should register themselves
 - `packages/hla2010-rti-certi/src/hla2010_rti_certi/certi/transport.py` and `service_adapter.py`: explicit CERTI transport/service split.
 - `packages/hla2010-rti-java-jpype/src/hla2010_rti_java_jpype/runtime.py`, `adapter.py`, and `factory.py`: JPype-backed Java RTI family.
 - `packages/hla2010-rti-java-py4j/src/hla2010_rti_java_py4j/runtime.py`, `adapter.py`, and `factory.py`: Py4J-backed Java RTI family.
-- `packages/hla2010-rti-certi/src/hla2010_rti_certi/certi_java/runtime.py`, `adapter.py`, and `factory.py`: Java-profile CERTI family over the real native CERTI path.
 - `packages/hla2010-rti-pitch-common/src/hla2010_rti_pitch_common/real_rti_pitch.py`, `packages/hla2010-rti-portico/src/hla2010_rti_portico/real_rti_portico.py`, and `packages/hla2010-rti-runtime-common/src/hla2010_rti_runtime_common/real_rti_process.py`: runtime discovery and process-launch helpers.
 
 The development goal is that a federate written against `hla2010` runs against the same ambassador API whether the backend is pure Python, CERTI-backed, JPype-backed, or Py4J-backed. REST and gRPC are transport options underneath that backend-neutral surface, not separate application APIs.
@@ -109,7 +108,7 @@ live only in `hla2010_rti_backend_common`.
   - `rti_transport_pb2.py`
   - `rti_transport_pb2_grpc.py`
 - REST has a formal OpenAPI schema plus a checked-in Python adapter layer, but the repo does not currently check in OpenAPI-generated Python client code.
-- Java transport stubs for this RTI transport are currently out of scope. The Java-facing integration path in this repo is JPype, Py4J, and the CERTI Java-profile adapters, not generated REST or gRPC transport bindings.
+- Java transport stubs for this RTI transport are currently out of scope. The Java-facing integration path in this repo is JPype and Py4J for Java RTIs, not generated REST or gRPC transport bindings.
 
 That split is intentional for now. It keeps one generated-wire example in-tree, keeps the REST contract explicit, and avoids suggesting that Java transport stubs are a supported distribution artifact when they are not part of the current runtime model.
 
@@ -142,14 +141,6 @@ Use this family for in-process JVM access where Python talks directly to vendor 
 - `packages/hla2010-rti-java-py4j/src/hla2010_rti_java_py4j/factory.py`: owns `create_py4j_backend(...)` and `rti_ambassador(...)`.
 
 Use this family when the Java RTI lives in another JVM process or when vendor deployment prefers gateway isolation.
-
-### CERTI Java-Profile Family
-
-- `packages/hla2010-rti-certi/src/hla2010_rti_certi/certi_java/runtime.py`: owns Java-shaped CERTI value conversion helpers.
-- `packages/hla2010-rti-certi/src/hla2010_rti_certi/certi_java/adapter.py`: owns the CERTI Java callback adapter and Java-shaped RTI shim.
-- `packages/hla2010-rti-certi/src/hla2010_rti_certi/certi_java/factory.py`: owns `create_certi_java_backend(...)`.
-
-Use this family when the transport side is real native CERTI, but the ambassador path needs to exercise the same Java-bridge profile used by JPype or Py4J backends.
 
 ## Current Remote Callback Contract
 

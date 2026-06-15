@@ -32,8 +32,6 @@ DEFAULT_BACKENDS = [
     "jpype",
     "py4j",
     "certi",
-    "certi-jpype",
-    "certi-py4j",
     "pitch-jpype",
     "pitch-py4j",
     "portico-jpype",

@@ -27,8 +27,16 @@ If you only need the shortest package-edit path:
 For the package architecture docs, read them in this order:
 
 1. [`../docs/package_layout.md`](../docs/package_layout.md): canonical human package hierarchy and family ownership
-2. [`../docs/package_dependency_tree.md`](../docs/package_dependency_tree.md): generated dependency layers and direct graph
-3. [`../docs/import_boundary_rules.md`](../docs/import_boundary_rules.md): guardrails for allowed dependency directions
+2. [`../docs/package_hierarchy_and_versioning.md`](../docs/package_hierarchy_and_versioning.md): quick hierarchy tree and current versioning model
+3. [`../docs/package_dependency_tree.md`](../docs/package_dependency_tree.md): generated dependency layers and direct graph
+4. [`../docs/import_boundary_rules.md`](../docs/import_boundary_rules.md): guardrails for allowed dependency directions
+
+Current versioning note:
+
+- every package has its own `project.version`
+- the workspace is still effectively lockstep versioned today because internal
+  package dependencies are pinned with exact `==` versions
+- see [`../docs/package_hierarchy_and_versioning.md`](../docs/package_hierarchy_and_versioning.md) for the precise current status
 
 Architecturally, `hla2010-spec` is the one installable root. The
 `packages/hla2010-spec/src/hla2010/` tree is the package-owned spec source root used for stable imports, abstract

@@ -30,9 +30,14 @@ For the stricter rule table about what may import what, use
 For the machine-derived installable package dependency graph, use
 [`package_dependency_tree.md`](package_dependency_tree.md).
 
+For the shortest combined answer to "what depends on what?" and "are these
+packages independently versioned?", use
+[`package_hierarchy_and_versioning.md`](package_hierarchy_and_versioning.md).
+
 Use the three package docs this way:
 
 - [`package_layout.md`](package_layout.md): canonical human package hierarchy
+- [`package_hierarchy_and_versioning.md`](package_hierarchy_and_versioning.md): quick family tree and current versioning status
 - [`package_dependency_tree.md`](package_dependency_tree.md): generated dependency evidence from package metadata
 - [`import_boundary_rules.md`](import_boundary_rules.md): architectural guardrails and forbidden dependency directions
 

@@ -2835,7 +2835,7 @@
             ]
           }
         ],
-        "python_name": "createFederationExecution",
+        "python_name": "create_federation_execution",
         "section": "4.5",
         "service_group": "Federation Management",
         "title": "Create Federation Execution service"
@@ -3248,7 +3248,7 @@
             ]
           }
         ],
-        "python_name": "destroyFederationExecution",
+        "python_name": "destroy_federation_execution",
         "section": "4.6",
         "service_group": "Federation Management",
         "title": "Destroy Federation Execution service"
@@ -4935,7 +4935,7 @@
             "throws": []
           }
         ],
-        "python_name": "getHLAversion",
+        "python_name": "get_hla_version",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -5960,7 +5960,7 @@
             ]
           }
         ],
-        "python_name": "joinFederationExecution",
+        "python_name": "join_federation_execution",
         "section": "4.9",
         "service_group": "Federation Management",
         "title": "Join Federation Execution service"
@@ -7619,7 +7619,7 @@
             ]
           }
         ],
-        "python_name": "resignFederationExecution",
+        "python_name": "resign_federation_execution",
         "section": "4.10",
         "service_group": "Federation Management",
         "title": "Resign Federation Execution service"
@@ -8441,7 +8441,7 @@
             ]
           }
         ],
-        "python_name": "timeAdvanceRequest",
+        "python_name": "time_advance_request",
         "section": "8.8",
         "service_group": "Time Management",
         "title": "Time Advance Request service"

@@ -88,10 +88,19 @@ def invoke_federate_callback(ambassador: FederateAmbassador | FederateAmbassador
         case "provideAttributeValueUpdate":
             return ambassador.provideAttributeValueUpdate(*args, **kwargs)
         case "receiveInteraction":
+            handler = getattr(ambassador, "receive_interaction", None)
+            if callable(handler):
+                return handler(*args, **kwargs)
             return ambassador.receiveInteraction(*args, **kwargs)
         case "reflectAttributeValues":
+            handler = getattr(ambassador, "reflect_attribute_values", None)
+            if callable(handler):
+                return handler(*args, **kwargs)
             return ambassador.reflectAttributeValues(*args, **kwargs)
         case "removeObjectInstance":
+            handler = getattr(ambassador, "remove_object_instance", None)
+            if callable(handler):
+                return handler(*args, **kwargs)
             return ambassador.removeObjectInstance(*args, **kwargs)
         case "reportAttributeTransportationType":
             return ambassador.reportAttributeTransportationType(*args, **kwargs)

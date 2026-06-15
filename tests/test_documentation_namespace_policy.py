@@ -16,7 +16,7 @@ def test_repo_does_not_keep_duplicate_markdown_copies() -> None:
     duplicates = sorted(
         path.relative_to(ROOT).as_posix()
         for path in ROOT.glob("**/* 2.md")
-        if path.is_file()
+        if path.is_file() and ".venv" not in path.parts
     )
     assert duplicates == [], f"duplicate markdown copies remain: {duplicates}"
 
