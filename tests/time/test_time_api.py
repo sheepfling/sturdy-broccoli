@@ -17,7 +17,7 @@ from tests.requirement_marker_groups import (
 def _drain(*rtis, rounds: int = 20) -> None:
     for _ in range(rounds):
         for rti in rtis:
-            rti.evoke_multiple_callbacks(0.0, 0.0)
+            rti.evokeMultipleCallbacks(0.0, 0.0)
 
 
 def _joined_pair(name: str):
@@ -28,60 +28,60 @@ def _joined_pair(name: str):
     right_fed = RecordingFederateAmbassador()
     left.connect(left_fed, CallbackModel.HLA_EVOKED)
     right.connect(right_fed, CallbackModel.HLA_EVOKED)
-    left.create_federation_execution(name, "TargetRadarFOMmodule.xml")
-    left.join_federation_execution("left", "producer", name)
-    right.join_federation_execution("right", "consumer", name)
+    left.createFederationExecution(name, "TargetRadarFOMmodule.xml")
+    left.joinFederationExecution("left", "producer", name)
+    right.joinFederationExecution("right", "consumer", name)
     return left, right, left_fed, right_fed
 
 
 @pytest.mark.requirements(*TM_TIME_QUERY_API_REQUIREMENTS)
 def test_time_query_api_reports_galt_lits_logical_time_and_lookahead():
     regulator, constrained, regulator_fed, constrained_fed = _joined_pair("time-api-query-fed")
-    factory = regulator.get_time_factory()
+    factory = regulator.getTimeFactory()
 
-    assert regulator.query_logical_time() == factory.make_time(0.0)
-    assert isinstance(constrained.query_galt(), TimeQueryReturn)
-    assert constrained.query_galt().time_is_valid is False
-    assert constrained.query_lits().time_is_valid is False
+    assert regulator.queryLogicalTime() == factory.make_time(0.0)
+    assert isinstance(constrained.queryGALT(), TimeQueryReturn)
+    assert constrained.queryGALT().time_is_valid is False
+    assert constrained.queryLITS().time_is_valid is False
 
-    regulator.enable_time_regulation(factory.make_interval(1.0))
-    constrained.enable_time_constrained()
+    regulator.enableTimeRegulation(factory.make_interval(1.0))
+    constrained.enableTimeConstrained()
     _drain(regulator, constrained)
 
     assert regulator_fed.last_callback("timeRegulationEnabled").args[0] == factory.make_time(0.0)
     assert constrained_fed.last_callback("timeConstrainedEnabled").args[0] == factory.make_time(0.0)
-    assert regulator.query_lookahead() == factory.make_interval(1.0)
-    assert constrained.query_galt().time == factory.make_time(1.0)
-    assert constrained.query_lits().time == factory.make_time(1.0)
+    assert regulator.queryLookahead() == factory.make_interval(1.0)
+    assert constrained.queryGALT().time == factory.make_time(1.0)
+    assert constrained.queryLITS().time == factory.make_time(1.0)
 
 
 @pytest.mark.requirements(*TM_ADVANCE_AND_GRANT_REQUIREMENTS)
 def test_time_advance_api_delivers_tso_callbacks_before_or_with_grants():
     sender, receiver, sender_fed, receiver_fed = _joined_pair("time-api-advance-fed")
-    factory = sender.get_time_factory()
-    interaction = sender.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    track_id = sender.get_parameter_handle(interaction, "TrackId")
-    sender.publish_interaction_class(interaction)
-    receiver.subscribe_interaction_class(interaction)
-    sender.enable_time_regulation(factory.make_interval(1.0))
-    receiver.enable_time_constrained()
+    factory = sender.getTimeFactory()
+    interaction = sender.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    track_id = sender.getParameterHandle(interaction, "TrackId")
+    sender.publishInteractionClass(interaction)
+    receiver.subscribeInteractionClass(interaction)
+    sender.enableTimeRegulation(factory.make_interval(1.0))
+    receiver.enableTimeConstrained()
     _drain(sender, receiver)
 
-    sender.send_interaction(interaction, {track_id: b"early"}, b"early", factory.make_time(2.0))
-    sender.send_interaction(interaction, {track_id: b"late"}, b"late", factory.make_time(3.0))
+    sender.sendInteraction(interaction, {track_id: b"early"}, b"early", factory.make_time(2.0))
+    sender.sendInteraction(interaction, {track_id: b"late"}, b"late", factory.make_time(3.0))
     _drain(sender, receiver)
     assert not receiver_fed.callbacks_named("receiveInteraction")
 
-    sender.time_advance_request(factory.make_time(4.0))
+    sender.timeAdvanceRequest(factory.make_time(4.0))
     _drain(sender, receiver)
     assert sender_fed.last_callback("timeAdvanceGrant").args[0] == factory.make_time(4.0)
 
-    receiver.next_message_request(factory.make_time(10.0))
+    receiver.nextMessageRequest(factory.make_time(10.0))
     _drain(sender, receiver)
     assert receiver_fed.callbacks_named("receiveInteraction")[-1].args[2] == b"early"
     assert receiver_fed.last_callback("timeAdvanceGrant").args[0] == factory.make_time(2.0)
 
-    receiver.next_message_request_available(factory.make_time(10.0))
+    receiver.nextMessageRequestAvailable(factory.make_time(10.0))
     _drain(sender, receiver)
     assert receiver_fed.callbacks_named("receiveInteraction")[-1].args[2] == b"late"
     assert receiver_fed.last_callback("timeAdvanceGrant").args[0] == factory.make_time(3.0)
@@ -90,21 +90,21 @@ def test_time_advance_api_delivers_tso_callbacks_before_or_with_grants():
 @pytest.mark.requirements(*TM_REQUEST_RETRACTION_REQUIREMENTS)
 def test_time_api_retraction_before_delivery_removes_queued_tso_callback():
     sender, receiver, _sender_fed, receiver_fed = _joined_pair("time-api-retract-fed")
-    factory = sender.get_time_factory()
-    interaction = sender.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    track_id = sender.get_parameter_handle(interaction, "TrackId")
-    sender.publish_interaction_class(interaction)
-    receiver.subscribe_interaction_class(interaction)
-    sender.enable_time_regulation(factory.make_interval(1.0))
-    receiver.enable_time_constrained()
+    factory = sender.getTimeFactory()
+    interaction = sender.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    track_id = sender.getParameterHandle(interaction, "TrackId")
+    sender.publishInteractionClass(interaction)
+    receiver.subscribeInteractionClass(interaction)
+    sender.enableTimeRegulation(factory.make_interval(1.0))
+    receiver.enableTimeConstrained()
     _drain(sender, receiver)
 
-    retraction = sender.send_interaction(interaction, {track_id: b"gone"}, b"gone", factory.make_time(2.0))
+    retraction = sender.sendInteraction(interaction, {track_id: b"gone"}, b"gone", factory.make_time(2.0))
     assert retraction is not None
     assert isinstance(retraction.handle, MessageRetractionHandle)
     sender.retract(retraction.handle)
-    sender.time_advance_request(factory.make_time(4.0))
-    receiver.time_advance_request_available(factory.make_time(5.0))
+    sender.timeAdvanceRequest(factory.make_time(4.0))
+    receiver.timeAdvanceRequestAvailable(factory.make_time(5.0))
     _drain(sender, receiver)
 
     assert not receiver_fed.callbacks_named("receiveInteraction")

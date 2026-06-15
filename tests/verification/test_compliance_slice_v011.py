@@ -34,7 +34,7 @@ def _rti(engine: InMemoryRTIEngine, *, config: PythonRTIConfig | None = None):
 def _drain(*rtis) -> None:
     for _ in range(30):
         for rti in rtis:
-            rti.evoke_multiple_callbacks(0.0, 0.0)
+            rti.evokeMultipleCallbacks(0.0, 0.0)
 
 
 def _joined(name: str, *, n: int = 1, config: PythonRTIConfig | None = None):
@@ -43,9 +43,9 @@ def _joined(name: str, *, n: int = 1, config: PythonRTIConfig | None = None):
     feds = [RecordingFederateAmbassador() for _ in range(n)]
     for rti, fed in zip(rtis, feds):
         rti.connect(fed, CallbackModel.HLA_EVOKED)
-    rtis[0].create_federation_execution(name, "TargetRadarFOMmodule.xml")
+    rtis[0].createFederationExecution(name, "TargetRadarFOMmodule.xml")
     for i, rti in enumerate(rtis):
-        rti.join_federation_execution(f"fed-{i}", f"type-{i}", name)
+        rti.joinFederationExecution(f"fed-{i}", f"type-{i}", name)
     return engine, rtis, feds
 
 
@@ -95,26 +95,26 @@ def _assert_restore_succeeded(summary: dict[str, object], save_name: str) -> Non
 
 
 def _switch_handles(rti):
-    adjust = rti.get_interaction_class_handle(
+    adjust = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches"
     )
-    set_service_reporting = rti.get_interaction_class_handle(
+    set_service_reporting = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
     )
-    set_exception_reporting = rti.get_interaction_class_handle(
+    set_exception_reporting = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetExceptionReporting"
     )
     return {
         "adjust": adjust,
         "set_service_reporting": set_service_reporting,
         "set_exception_reporting": set_exception_reporting,
-        "federate_param": rti.get_parameter_handle(adjust, "HLAfederate"),
-        "convey_pf_param": rti.get_parameter_handle(adjust, "HLAconveyProducingFederate"),
-        "convey_regions_param": rti.get_parameter_handle(adjust, "HLAconveyRegionDesignatorSets"),
-        "service_reporting_fed": rti.get_parameter_handle(set_service_reporting, "HLAfederate"),
-        "service_reporting_param": rti.get_parameter_handle(set_service_reporting, "HLAreportingState"),
-        "exception_reporting_fed": rti.get_parameter_handle(set_exception_reporting, "HLAfederate"),
-        "exception_reporting_param": rti.get_parameter_handle(set_exception_reporting, "HLAreportingState"),
+        "federate_param": rti.getParameterHandle(adjust, "HLAfederate"),
+        "convey_pf_param": rti.getParameterHandle(adjust, "HLAconveyProducingFederate"),
+        "convey_regions_param": rti.getParameterHandle(adjust, "HLAconveyRegionDesignatorSets"),
+        "service_reporting_fed": rti.getParameterHandle(set_service_reporting, "HLAfederate"),
+        "service_reporting_param": rti.getParameterHandle(set_service_reporting, "HLAreportingState"),
+        "exception_reporting_fed": rti.getParameterHandle(set_exception_reporting, "HLAfederate"),
+        "exception_reporting_param": rti.getParameterHandle(set_exception_reporting, "HLAreportingState"),
     }
 
 
@@ -128,7 +128,7 @@ def _send_switch_state(
     service_reporting: bool,
     exception_reporting: bool,
 ) -> None:
-    rti.send_interaction(
+    rti.sendInteraction(
         handles["adjust"],
         {
             handles["federate_param"]: rti.backend.state.handle.encode(),
@@ -137,7 +137,7 @@ def _send_switch_state(
         },
         tag_prefix + b"-switches",
     )
-    rti.send_interaction(
+    rti.sendInteraction(
         handles["set_service_reporting"],
         {
             handles["service_reporting_fed"]: rti.backend.state.handle.encode(),
@@ -145,7 +145,7 @@ def _send_switch_state(
         },
         tag_prefix + b"-service-reporting",
     )
-    rti.send_interaction(
+    rti.sendInteraction(
         handles["set_exception_reporting"],
         {
             handles["exception_reporting_fed"]: rti.backend.state.handle.encode(),
@@ -167,8 +167,8 @@ def _shutdown_federation(
     if not leader_last:
         ordered = ((leader, *followers), (leader_action,) + (ResignAction.NO_ACTION,) * len(followers))
     for rti, action in zip(*ordered):
-        rti.resign_federation_execution(action)
-    leader.destroy_federation_execution(federation_name)
+        rti.resignFederationExecution(action)
+    leader.destroyFederationExecution(federation_name)
 
 
 def _ownership_config(
@@ -197,11 +197,11 @@ def test_mom_service_reports_to_file_and_global_report_file(tmp_path: Path):
     )
     _engine, (rti,), (fed,) = _joined("service-report-file-v011", config=config)
 
-    adjust = rti.get_interaction_class_handle(
+    adjust = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches"
     )
-    rti.send_interaction(adjust, {}, b"enable-reports")
-    rti.query_logical_time()
+    rti.sendInteraction(adjust, {}, b"enable-reports")
+    rti.queryLogicalTime()
     _drain(rti)
 
     assert global_file.exists()
@@ -223,20 +223,20 @@ def test_mom_service_reports_to_file_and_global_report_file(tmp_path: Path):
 
 def test_mom_set_switches_service_reporting_conflict_is_reported():
     _engine, (rti,), (fed,) = _joined("mom-switch-conflict-v011")
-    report = rti.get_interaction_class_handle(
+    report = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
     )
-    exception_report = rti.get_interaction_class_handle(
+    exception_report = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception"
     )
-    adjust = rti.get_interaction_class_handle(
+    adjust = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
     )
-    federate_param = rti.get_parameter_handle(adjust, "HLAfederate")
-    service_reporting_param = rti.get_parameter_handle(adjust, "HLAreportingState")
+    federate_param = rti.getParameterHandle(adjust, "HLAfederate")
+    service_reporting_param = rti.getParameterHandle(adjust, "HLAreportingState")
 
-    rti.subscribe_interaction_class(report)
-    rti.send_interaction(
+    rti.subscribeInteractionClass(report)
+    rti.sendInteraction(
         adjust,
         {
             federate_param: rti.backend.state.handle.encode(),
@@ -263,22 +263,22 @@ def test_mom_set_switches_service_reporting_conflict_is_reported():
     rti2 = _rti(InMemoryRTIEngine())
     fed2 = RecordingFederateAmbassador()
     rti2.connect(fed2, CallbackModel.HLA_EVOKED)
-    rti2.create_federation_execution("mom-switch-conflict-v011b", "TargetRadarFOMmodule.xml")
-    rti2.join_federation_execution("fed", "type", "mom-switch-conflict-v011b")
+    rti2.createFederationExecution("mom-switch-conflict-v011b", "TargetRadarFOMmodule.xml")
+    rti2.joinFederationExecution("fed", "type", "mom-switch-conflict-v011b")
     rti2.backend.state.service_reporting = True
-    report2 = rti2.get_interaction_class_handle(
+    report2 = rti2.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
     )
     with pytest.raises(FederateServiceInvocationsAreBeingReportedViaMOM):
-        rti2.subscribe_interaction_class(report2)
+        rti2.subscribeInteractionClass(report2)
 
 
 def test_mom_service_action_can_drive_time_management_service():
     _engine, (rti,), (fed,) = _joined("mom-service-action-v011")
-    service = rti.get_interaction_class_handle(
+    service = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAenableTimeConstrained"
     )
-    rti.send_interaction(service, {}, b"enable-tc")
+    rti.sendInteraction(service, {}, b"enable-tc")
     _drain(rti)
 
     assert fed.last_callback("timeConstrainedEnabled") is not None
@@ -310,27 +310,27 @@ def test_scheduled_save_waits_for_time_and_restore_reinstates_time_state():
 
 def test_restore_reinstates_saved_object_values_names_and_ownership_state():
     def setup_saved_state(left, right, context):
-        cls = left.get_object_class_handle("HLAobjectRoot.Target")
-        attr = left.get_attribute_handle(cls, "Position")
-        left.publish_object_class_attributes(cls, {attr})
-        right.publish_object_class_attributes(cls, {attr})
-        obj = left.register_object_instance(cls, "Restore-State-Object")
-        left.update_attribute_values(obj, {attr: b"saved-value"}, b"saved")
+        cls = left.getObjectClassHandle("HLAobjectRoot.Target")
+        attr = left.getAttributeHandle(cls, "Position")
+        left.publishObjectClassAttributes(cls, {attr})
+        right.publishObjectClassAttributes(cls, {attr})
+        obj = left.registerObjectInstance(cls, "Restore-State-Object")
+        left.updateAttributeValues(obj, {attr: b"saved-value"}, b"saved")
         _drain(left, right)
-        left.unconditional_attribute_ownership_divestiture(obj, {attr})
-        right.attribute_ownership_acquisition_if_available(obj, {attr})
+        left.unconditionalAttributeOwnershipDivestiture(obj, {attr})
+        right.attributeOwnershipAcquisitionIfAvailable(obj, {attr})
         _drain(left, right)
-        assert right.is_attribute_owned_by_federate(obj, attr) is True
+        assert right.isAttributeOwnedByFederate(obj, attr) is True
         context.update({"object_instance": obj, "attribute": attr})
 
     def mutate_post_save_state(left, right, context):
         obj = context["object_instance"]
         attr = context["attribute"]
-        right.unconditional_attribute_ownership_divestiture(obj, {attr})
-        left.attribute_ownership_acquisition_if_available(obj, {attr})
+        right.unconditionalAttributeOwnershipDivestiture(obj, {attr})
+        left.attributeOwnershipAcquisitionIfAvailable(obj, {attr})
         _drain(left, right)
-        assert left.is_attribute_owned_by_federate(obj, attr) is True
-        left.update_attribute_values(obj, {attr: b"mutated-value"}, b"mutated")
+        assert left.isAttributeOwnedByFederate(obj, attr) is True
+        left.updateAttributeValues(obj, {attr: b"mutated-value"}, b"mutated")
         _drain(left, right)
 
     def assert_restored_state(left, right, context):
@@ -341,7 +341,7 @@ def test_restore_reinstates_saved_object_values_names_and_ownership_state():
         assert left.backend.state.federation.object_names["Restore-State-Object"] == obj
         assert restored.attributes[attr] == b"saved-value"
         assert restored.attribute_owners[attr] == right.backend.state.handle
-        assert right.is_attribute_owned_by_federate(obj, attr) is True
+        assert right.isAttributeOwnedByFederate(obj, attr) is True
 
     summary = _run_restore_scenario(
         run_restore_object_state_scenario,
@@ -356,19 +356,19 @@ def test_restore_reinstates_saved_object_values_names_and_ownership_state():
 
 def test_restore_reinstates_saved_federate_runtime_flags_and_lookahead_state():
     def setup_saved_state(left, right, context):
-        factory = left.get_time_factory()
-        left.enable_time_regulation(factory.make_interval(2.0))
-        left.enable_asynchronous_delivery()
-        right.enable_time_constrained()
+        factory = left.getTimeFactory()
+        left.enableTimeRegulation(factory.make_interval(2.0))
+        left.enableAsynchronousDelivery()
+        right.enableTimeConstrained()
         _drain(left, right)
         context["factory"] = factory
 
     def mutate_post_save_state(left, right, context):
         factory = context["factory"]
-        left.modify_lookahead(factory.make_interval(5.0))
-        left.disable_asynchronous_delivery()
-        left.disable_time_regulation()
-        right.disable_time_constrained()
+        left.modifyLookahead(factory.make_interval(5.0))
+        left.disableAsynchronousDelivery()
+        left.disableTimeRegulation()
+        right.disableTimeConstrained()
         assert left.backend.state.lookahead == factory.make_interval(5.0)
         assert left.backend.state.asynchronous_delivery_enabled is False
         assert left.backend.state.time_regulation_enabled is False
@@ -394,11 +394,11 @@ def test_restore_reinstates_saved_federate_runtime_flags_and_lookahead_state():
 
 def test_restore_reinstates_saved_federate_policy_reporting_and_conveyance_switches():
     def setup_saved_state(left, right, _context):
-        left.set_automatic_resign_directive(ResignAction.DELETE_OBJECTS)
-        left.enable_object_class_relevance_advisory_switch()
-        left.enable_attribute_relevance_advisory_switch()
-        left.enable_attribute_scope_advisory_switch()
-        left.enable_interaction_relevance_advisory_switch()
+        left.setAutomaticResignDirective(ResignAction.DELETE_OBJECTS)
+        left.enableObjectClassRelevanceAdvisorySwitch()
+        left.enableAttributeRelevanceAdvisorySwitch()
+        left.enableAttributeScopeAdvisorySwitch()
+        left.enableInteractionRelevanceAdvisorySwitch()
         handles = _switch_handles(left)
         _send_switch_state(
             left,
@@ -412,11 +412,11 @@ def test_restore_reinstates_saved_federate_policy_reporting_and_conveyance_switc
         _drain(left, right)
 
     def mutate_post_save_state(left, right, _context):
-        left.set_automatic_resign_directive(ResignAction.NO_ACTION)
-        left.disable_object_class_relevance_advisory_switch()
-        left.disable_attribute_relevance_advisory_switch()
-        left.disable_attribute_scope_advisory_switch()
-        left.disable_interaction_relevance_advisory_switch()
+        left.setAutomaticResignDirective(ResignAction.NO_ACTION)
+        left.disableObjectClassRelevanceAdvisorySwitch()
+        left.disableAttributeRelevanceAdvisorySwitch()
+        left.disableAttributeScopeAdvisorySwitch()
+        left.disableInteractionRelevanceAdvisorySwitch()
         handles = _switch_handles(left)
         _send_switch_state(
             left,
@@ -430,7 +430,7 @@ def test_restore_reinstates_saved_federate_policy_reporting_and_conveyance_switc
         _drain(left, right)
 
     def assert_restored_state(left, _right, _context):
-        assert left.get_automatic_resign_directive() is ResignAction.DELETE_OBJECTS
+        assert left.getAutomaticResignDirective() is ResignAction.DELETE_OBJECTS
         assert left.backend.state.object_class_relevance_advisory is True
         assert left.backend.state.attribute_relevance_advisory is True
         assert left.backend.state.attribute_scope_advisory is True
@@ -454,14 +454,14 @@ def test_restore_reinstates_saved_federate_policy_reporting_and_conveyance_switc
 
 def test_restore_reinstates_saved_attribute_and_interaction_order_overrides():
     def setup_saved_state(left, right, context):
-        cls = left.get_object_class_handle("HLAobjectRoot.Target")
-        attr = left.get_attribute_handle(cls, "Position")
-        interaction = left.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-        left.publish_object_class_attributes(cls, {attr})
-        obj = left.register_object_instance(cls, "Restore-Order-Overrides")
+        cls = left.getObjectClassHandle("HLAobjectRoot.Target")
+        attr = left.getAttributeHandle(cls, "Position")
+        interaction = left.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        left.publishObjectClassAttributes(cls, {attr})
+        obj = left.registerObjectInstance(cls, "Restore-Order-Overrides")
         _drain(left, right)
-        left.change_attribute_order_type(obj, {attr}, OrderType.TIMESTAMP)
-        left.change_interaction_order_type(interaction, OrderType.TIMESTAMP)
+        left.changeAttributeOrderType(obj, {attr}, OrderType.TIMESTAMP)
+        left.changeInteractionOrderType(interaction, OrderType.TIMESTAMP)
         assert left.backend.state.attribute_order_overrides[(obj, attr)] is OrderType.TIMESTAMP
         assert left.backend.state.interaction_order_overrides[interaction] is OrderType.TIMESTAMP
         context.update({"object_instance": obj, "attribute": attr, "interaction": interaction})
@@ -470,8 +470,8 @@ def test_restore_reinstates_saved_attribute_and_interaction_order_overrides():
         obj = context["object_instance"]
         attr = context["attribute"]
         interaction = context["interaction"]
-        left.change_attribute_order_type(obj, {attr}, OrderType.RECEIVE)
-        left.change_interaction_order_type(interaction, OrderType.RECEIVE)
+        left.changeAttributeOrderType(obj, {attr}, OrderType.RECEIVE)
+        left.changeInteractionOrderType(interaction, OrderType.RECEIVE)
         assert left.backend.state.attribute_order_overrides[(obj, attr)] is OrderType.RECEIVE
         assert left.backend.state.interaction_order_overrides[interaction] is OrderType.RECEIVE
 
@@ -495,16 +495,16 @@ def test_restore_reinstates_saved_attribute_and_interaction_order_overrides():
 
 def test_restore_reinstates_saved_attribute_and_interaction_transportation_overrides():
     def setup_saved_state(left, right, context):
-        cls = left.get_object_class_handle("HLAobjectRoot.Target")
-        attr = left.get_attribute_handle(cls, "Position")
-        interaction = left.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+        cls = left.getObjectClassHandle("HLAobjectRoot.Target")
+        attr = left.getAttributeHandle(cls, "Position")
+        interaction = left.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
         best_effort = left.backend.engine.transportation_best_effort
-        left.publish_object_class_attributes(cls, {attr})
-        left.publish_interaction_class(interaction)
-        obj = left.register_object_instance(cls, "Restore-Transport-Overrides")
+        left.publishObjectClassAttributes(cls, {attr})
+        left.publishInteractionClass(interaction)
+        obj = left.registerObjectInstance(cls, "Restore-Transport-Overrides")
         _drain(left, right)
-        left.request_attribute_transportation_type_change(obj, {attr}, best_effort)
-        left.request_interaction_transportation_type_change(interaction, best_effort)
+        left.requestAttributeTransportationTypeChange(obj, {attr}, best_effort)
+        left.requestInteractionTransportationTypeChange(interaction, best_effort)
         _drain(left, right)
         assert left.backend.state.attribute_transportation_overrides[(obj, attr)] == best_effort
         assert left.backend.state.interaction_transportation_overrides[interaction] == best_effort
@@ -544,7 +544,7 @@ def test_restore_treats_callback_enablement_as_runtime_policy_not_saved_state():
         assert right.backend.state.callbacks_enabled is True
 
     def mutate_post_save_state(_left, right, _context):
-        right.disable_callbacks()
+        right.disableCallbacks()
         assert right.backend.state.callbacks_enabled is False
 
     def assert_restored_state(_left, right, _context):
@@ -573,13 +573,13 @@ def test_restore_treats_callback_enablement_as_runtime_policy_not_saved_state():
 
 def test_restore_discards_pre_restore_callback_queue_and_retraction_bookkeeping():
     def setup_saved_state(left, right, context):
-        factory = left.get_time_factory()
-        interaction = left.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-        track_id = left.get_parameter_handle(interaction, "TrackId")
-        left.enable_time_regulation(factory.make_interval(1.0))
-        right.enable_time_constrained()
-        left.publish_interaction_class(interaction)
-        right.subscribe_interaction_class(interaction)
+        factory = left.getTimeFactory()
+        interaction = left.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        track_id = left.getParameterHandle(interaction, "TrackId")
+        left.enableTimeRegulation(factory.make_interval(1.0))
+        right.enableTimeConstrained()
+        left.publishInteractionClass(interaction)
+        right.subscribeInteractionClass(interaction)
         _drain(left, right)
         context.update({"factory": factory, "interaction": interaction, "track_id": track_id})
 
@@ -588,7 +588,7 @@ def test_restore_discards_pre_restore_callback_queue_and_retraction_bookkeeping(
         track_id = context["track_id"]
         factory = context["factory"]
         right.backend.state.queue.append(CallbackEvent("reflectAttributeValues", (b"stale",)))
-        retraction = left.send_interaction(interaction, {track_id: b"queued"}, b"queued", factory.make_time(5.0))
+        retraction = left.sendInteraction(interaction, {track_id: b"queued"}, b"queued", factory.make_time(5.0))
         assert retraction is not None
         assert right.backend.state.retraction_messages
         assert left.backend.state.retractable_messages.get(retraction.handle) is True
@@ -612,34 +612,34 @@ def test_restore_discards_pre_restore_callback_queue_and_retraction_bookkeeping(
 
 def test_ddm_region_filtering_applies_before_timestamp_order_delivery():
     _engine, (sender, receiver), (_sender_fed, receiver_fed) = _joined("ddm-tso-v011", n=2)
-    factory = sender.get_time_factory()
-    sender.enable_time_regulation(factory.make_interval(1.0))
-    receiver.enable_time_constrained()
+    factory = sender.getTimeFactory()
+    sender.enableTimeRegulation(factory.make_interval(1.0))
+    receiver.enableTimeConstrained()
     _drain(sender, receiver)
 
-    dim = sender.get_dimension_handle("HLAdefaultRoutingSpace")
-    source_near = sender.create_region({dim})
-    source_far = sender.create_region({dim})
-    target_region = receiver.create_region({dim})
-    sender.set_range_bounds(source_near, dim, RangeBounds(0, 10))
-    sender.set_range_bounds(source_far, dim, RangeBounds(90, 100))
-    receiver.set_range_bounds(target_region, dim, RangeBounds(5, 15))
-    sender.commit_region_modifications({source_near, source_far})
-    receiver.commit_region_modifications({target_region})
+    dim = sender.getDimensionHandle("HLAdefaultRoutingSpace")
+    source_near = sender.createRegion({dim})
+    source_far = sender.createRegion({dim})
+    target_region = receiver.createRegion({dim})
+    sender.setRangeBounds(source_near, dim, RangeBounds(0, 10))
+    sender.setRangeBounds(source_far, dim, RangeBounds(90, 100))
+    receiver.setRangeBounds(target_region, dim, RangeBounds(5, 15))
+    sender.commitRegionModifications({source_near, source_far})
+    receiver.commitRegionModifications({target_region})
 
-    interaction = sender.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    track_id = sender.get_parameter_handle(interaction, "TrackId")
-    sender.publish_interaction_class(interaction)
-    receiver.subscribe_interaction_class_with_regions(interaction, {target_region})
+    interaction = sender.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    track_id = sender.getParameterHandle(interaction, "TrackId")
+    sender.publishInteractionClass(interaction)
+    receiver.subscribeInteractionClassWithRegions(interaction, {target_region})
 
-    sender.send_interaction_with_regions(interaction, {track_id: b"far"}, {source_far}, b"far", factory.make_time(2.0))
-    sender.send_interaction_with_regions(interaction, {track_id: b"near"}, {source_near}, b"near", factory.make_time(3.0))
+    sender.sendInteractionWithRegions(interaction, {track_id: b"far"}, {source_far}, b"far", factory.make_time(2.0))
+    sender.sendInteractionWithRegions(interaction, {track_id: b"near"}, {source_near}, b"near", factory.make_time(3.0))
     _drain(sender, receiver)
     assert not receiver_fed.callbacks_named("receiveInteraction")
 
-    sender.time_advance_request(factory.make_time(5.0))
+    sender.timeAdvanceRequest(factory.make_time(5.0))
     _drain(sender, receiver)
-    receiver.next_message_request_available(factory.make_time(6.0))
+    receiver.nextMessageRequestAvailable(factory.make_time(6.0))
     _drain(sender, receiver)
 
     received = receiver_fed.callbacks_named("receiveInteraction")
@@ -652,20 +652,20 @@ def test_ddm_region_filtering_applies_before_timestamp_order_delivery():
 
 def test_galt_uses_pending_regulator_lbts_not_only_current_time():
     _engine, (a, b, c), (_afed, _bfed, _cfed) = _joined("distributed-galt-v011", n=3)
-    factory = a.get_time_factory()
+    factory = a.getTimeFactory()
 
-    a.enable_time_regulation(factory.make_interval(1.0))
-    b.enable_time_regulation(factory.make_interval(5.0))
-    a.enable_time_constrained()
-    c.enable_time_constrained()
+    a.enableTimeRegulation(factory.make_interval(1.0))
+    b.enableTimeRegulation(factory.make_interval(5.0))
+    a.enableTimeConstrained()
+    c.enableTimeConstrained()
     _drain(a, b, c)
 
-    assert c.query_galt().time == factory.make_time(1.0)
-    a.time_advance_request(factory.make_time(10.0))
+    assert c.queryGALT().time == factory.make_time(1.0)
+    a.timeAdvanceRequest(factory.make_time(10.0))
     _drain(a, b, c)
 
     assert a.backend.state.time_advancing is True
-    assert c.query_galt().time == factory.make_time(5.0)
+    assert c.queryGALT().time == factory.make_time(5.0)
 
 
 def test_core_time_and_sync_compliance_smoke_covers_late_join_sync_and_time_controls():
@@ -680,54 +680,54 @@ def test_core_time_and_sync_compliance_smoke_covers_late_join_sync_and_time_cont
 
     for rti, fed in ((leader, leader_fed), (follower, follower_fed), (late, late_fed)):
         rti.connect(fed, CallbackModel.HLA_EVOKED)
-    leader.create_federation_execution(federation_name, "TargetRadarFOMmodule.xml")
-    leader.join_federation_execution("leader", "leader-type", federation_name)
-    follower.join_federation_execution("follower", "follower-type", federation_name)
+    leader.createFederationExecution(federation_name, "TargetRadarFOMmodule.xml")
+    leader.joinFederationExecution("leader", "leader-type", federation_name)
+    follower.joinFederationExecution("follower", "follower-type", federation_name)
 
-    leader.register_federation_synchronization_point("ReadyToRun", b"startup")
+    leader.registerFederationSynchronizationPoint("ReadyToRun", b"startup")
     _drain(leader, follower)
     assert leader_fed.callbacks_named("announceSynchronizationPoint")
     assert follower_fed.callbacks_named("announceSynchronizationPoint")
 
-    late.join_federation_execution("late", "late-type", federation_name)
+    late.joinFederationExecution("late", "late-type", federation_name)
     _drain(leader, follower, late)
     assert late_fed.callbacks_named("announceSynchronizationPoint")
 
-    leader.synchronization_point_achieved("ReadyToRun")
-    follower.synchronization_point_achieved("ReadyToRun")
+    leader.synchronizationPointAchieved("ReadyToRun")
+    follower.synchronizationPointAchieved("ReadyToRun")
     _drain(leader, follower, late)
     assert not leader_fed.callbacks_named("federationSynchronized")
 
-    late.synchronization_point_achieved("ReadyToRun")
+    late.synchronizationPointAchieved("ReadyToRun")
     _drain(leader, follower, late)
     assert leader_fed.callbacks_named("federationSynchronized")
     assert follower_fed.callbacks_named("federationSynchronized")
     assert late_fed.callbacks_named("federationSynchronized")
 
-    factory = leader.get_time_factory()
-    leader.enable_time_regulation(factory.make_interval(1.0))
-    follower.enable_time_constrained()
-    late.enable_time_constrained()
+    factory = leader.getTimeFactory()
+    leader.enableTimeRegulation(factory.make_interval(1.0))
+    follower.enableTimeConstrained()
+    late.enableTimeConstrained()
     _drain(leader, follower, late)
-    assert leader.query_logical_time() == factory.make_time(0.0)
-    assert leader.query_lookahead() == factory.make_interval(1.0)
+    assert leader.queryLogicalTime() == factory.make_time(0.0)
+    assert leader.queryLookahead() == factory.make_interval(1.0)
 
-    leader.modify_lookahead(factory.make_interval(2.0))
-    assert leader.query_lookahead() == factory.make_interval(2.0)
+    leader.modifyLookahead(factory.make_interval(2.0))
+    assert leader.queryLookahead() == factory.make_interval(2.0)
 
-    leader.time_advance_request(factory.make_time(4.0))
-    follower.time_advance_request_available(factory.make_time(4.0))
-    late.time_advance_request_available(factory.make_time(4.0))
+    leader.timeAdvanceRequest(factory.make_time(4.0))
+    follower.timeAdvanceRequestAvailable(factory.make_time(4.0))
+    late.timeAdvanceRequestAvailable(factory.make_time(4.0))
     _drain(leader, follower, late)
-    assert leader.query_logical_time() == factory.make_time(4.0)
-    assert follower.query_logical_time() == factory.make_time(4.0)
-    assert late.query_logical_time() == factory.make_time(4.0)
+    assert leader.queryLogicalTime() == factory.make_time(4.0)
+    assert follower.queryLogicalTime() == factory.make_time(4.0)
+    assert late.queryLogicalTime() == factory.make_time(4.0)
 
-    leader.disable_time_regulation()
-    follower.disable_time_constrained()
-    late.disable_time_constrained()
-    leader.enable_asynchronous_delivery()
-    leader.disable_asynchronous_delivery()
+    leader.disableTimeRegulation()
+    follower.disableTimeConstrained()
+    late.disableTimeConstrained()
+    leader.enableAsynchronousDelivery()
+    leader.disableAsynchronousDelivery()
     assert leader.backend.state.time_regulation_enabled is False
     assert follower.backend.state.time_constrained_enabled is False
     assert late.backend.state.time_constrained_enabled is False

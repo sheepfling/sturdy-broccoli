@@ -53,17 +53,17 @@ def main() -> int:
     signal.signal(signal.SIGTERM, _terminate)
 
     victim.connect(federate, CallbackModel.HLA_EVOKED)
-    victim.join_federation_execution(args.federate_name, args.federate_type, args.federation_name)
-    victim.set_automatic_resign_directive(getattr(ResignAction, args.automatic_resign_directive))
+    victim.joinFederationExecution(args.federate_name, args.federate_type, args.federation_name)
+    victim.setAutomaticResignDirective(getattr(ResignAction, args.automatic_resign_directive))
 
-    object_class = victim.get_object_class_handle(args.object_class_name)
-    attribute = victim.get_attribute_handle(object_class, args.attribute_name)
-    victim.publish_object_class_attributes(object_class, {attribute})
+    object_class = victim.getObjectClassHandle(args.object_class_name)
+    attribute = victim.getAttributeHandle(object_class, args.attribute_name)
+    victim.publishObjectClassAttributes(object_class, {attribute})
     register_named_object_instance(victim, federate, object_class, args.object_instance_name)
 
     payload = {
-        "victim_handle_hex": victim.get_federate_handle(args.federate_name).encode().hex(),
-        "victim_time_hex": victim.query_logical_time().encode().hex(),
+        "victim_handle_hex": victim.getFederateHandle(args.federate_name).encode().hex(),
+        "victim_time_hex": victim.queryLogicalTime().encode().hex(),
         "victim_name": args.federate_name,
     }
     sys.stdout.write(json.dumps(payload) + "\n")

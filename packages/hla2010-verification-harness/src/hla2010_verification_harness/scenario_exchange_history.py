@@ -85,13 +85,13 @@ def run_exchange_round(
     baseline_interactions = len(subscriber_federate.callbacks_named("receiveInteraction"))
 
     if config.attribute_time is None:
-        publisher_rti.update_attribute_values(
+        publisher_rti.updateAttributeValues(
             summary["object_instance"],
             {summary["publisher_attribute"]: config.attribute_payload},
             config.attribute_tag,
         )
     else:
-        publisher_rti.update_attribute_values(
+        publisher_rti.updateAttributeValues(
             summary["object_instance"],
             {summary["publisher_attribute"]: config.attribute_payload},
             config.attribute_tag,
@@ -99,13 +99,13 @@ def run_exchange_round(
         )
 
     if config.interaction_time is None:
-        publisher_rti.send_interaction(
+        publisher_rti.sendInteraction(
             summary["publisher_interaction"],
             {summary["publisher_parameter"]: config.interaction_payload},
             config.interaction_tag,
         )
     else:
-        publisher_rti.send_interaction(
+        publisher_rti.sendInteraction(
             summary["publisher_interaction"],
             {summary["publisher_parameter"]: config.interaction_payload},
             config.interaction_tag,

@@ -25,7 +25,7 @@ def build_markdown() -> str:
         rows.append(
             (
                 method_name,
-                lower_camel_to_snake(method_name),
+                str(interfaces["RTIambassador"][method_name]["python_name"]),
                 "RTIambassador",
                 "DelegatingRTIAmbassador",
                 "_invoke",

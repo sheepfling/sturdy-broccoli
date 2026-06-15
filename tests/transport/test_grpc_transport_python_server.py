@@ -153,9 +153,9 @@ def test_grpc_transport_can_host_python_rti_exchange_end_to_end(time_factory_nam
         assert history["receive_reflect"].args[3] is OrderType.RECEIVE
         assert history["timestamp_interaction"].args[3] is OrderType.TIMESTAMP
 
-        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
-        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        publisher.destroy_federation_execution(config.federation_name)
+        subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+        publisher.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+        publisher.destroyFederationExecution(config.federation_name)
         subscriber.disconnect()
         publisher.disconnect()
     finally:
@@ -198,9 +198,9 @@ def test_grpc_transport_can_host_python_rti_synchronization_end_to_end():
         assert summary["leader_sync"].args[0] == "ReadyToRun"
         assert summary["wing_sync"].args[0] == "ReadyToRun"
 
-        wing.resign_federation_execution(ResignAction.NO_ACTION)
-        leader.resign_federation_execution(ResignAction.NO_ACTION)
-        leader.destroy_federation_execution(config.federation_name)
+        wing.resignFederationExecution(ResignAction.NO_ACTION)
+        leader.resignFederationExecution(ResignAction.NO_ACTION)
+        leader.destroyFederationExecution(config.federation_name)
         wing.disconnect()
         leader.disconnect()
     finally:
@@ -226,14 +226,14 @@ def test_grpc_transport_can_host_python_rti_fm_lifecycle_end_to_end():
 
         leader.connect(leader_federate, CallbackModel.HLA_EVOKED)
         wing.connect(wing_federate, CallbackModel.HLA_EVOKED)
-        leader.create_federation_execution(federation_name, [fom], "HLAfloat64Time")
-        leader_handle = leader.join_federation_execution("Leader", "LifecycleFederate", federation_name)
-        wing_handle = wing.join_federation_execution("Wing", "LifecycleFederate", federation_name)
+        leader.createFederationExecution(federation_name, [fom], "HLAfloat64Time")
+        leader_handle = leader.joinFederationExecution("Leader", "LifecycleFederate", federation_name)
+        wing_handle = wing.joinFederationExecution("Wing", "LifecycleFederate", federation_name)
         assert leader_handle is not None
         assert wing_handle is not None
-        wing.resign_federation_execution(ResignAction.NO_ACTION)
-        leader.resign_federation_execution(ResignAction.NO_ACTION)
-        leader.destroy_federation_execution(federation_name)
+        wing.resignFederationExecution(ResignAction.NO_ACTION)
+        leader.resignFederationExecution(ResignAction.NO_ACTION)
+        leader.destroyFederationExecution(federation_name)
 
         wing.disconnect()
         leader.disconnect()
@@ -262,74 +262,74 @@ def test_grpc_transport_can_host_python_rti_save_restore_end_to_end():
 
         leader.connect(leader_federate, CallbackModel.HLA_EVOKED)
         wing.connect(wing_federate, CallbackModel.HLA_EVOKED)
-        leader.create_federation_execution(federation_name, [fom], "HLAfloat64Time")
-        leader.join_federation_execution("Leader", "SaveRestoreFederate", federation_name)
-        wing.join_federation_execution("Wing", "SaveRestoreFederate", federation_name)
+        leader.createFederationExecution(federation_name, [fom], "HLAfloat64Time")
+        leader.joinFederationExecution("Leader", "SaveRestoreFederate", federation_name)
+        wing.joinFederationExecution("Wing", "SaveRestoreFederate", federation_name)
 
-        leader.request_federation_save(save_name)
+        leader.requestFederationSave(save_name)
         for _ in range(12):
-            leader.evoke_multiple_callbacks(0.0, 0.0)
-            wing.evoke_multiple_callbacks(0.0, 0.0)
+            leader.evokeMultipleCallbacks(0.0, 0.0)
+            wing.evokeMultipleCallbacks(0.0, 0.0)
         assert leader_federate.last_callback("initiateFederateSave").args == (save_name,)
         assert wing_federate.last_callback("initiateFederateSave").args == (save_name,)
 
-        leader.federate_save_begun()
-        wing.federate_save_begun()
-        leader.federate_save_complete()
-        wing.federate_save_complete()
+        leader.federateSaveBegun()
+        wing.federateSaveBegun()
+        leader.federateSaveComplete()
+        wing.federateSaveComplete()
         for _ in range(12):
-            leader.evoke_multiple_callbacks(0.0, 0.0)
-            wing.evoke_multiple_callbacks(0.0, 0.0)
+            leader.evokeMultipleCallbacks(0.0, 0.0)
+            wing.evokeMultipleCallbacks(0.0, 0.0)
         assert leader_federate.last_callback("federationSaved") is not None
 
-        leader.query_federation_save_status()
+        leader.queryFederationSaveStatus()
         for _ in range(6):
-            leader.evoke_multiple_callbacks(0.0, 0.0)
+            leader.evokeMultipleCallbacks(0.0, 0.0)
         save_status = leader_federate.last_callback("federationSaveStatusResponse").args[0]
         assert all(pair.save_status is SaveStatus.NO_SAVE_IN_PROGRESS for pair in save_status)
 
-        leader.request_federation_restore(save_name)
+        leader.requestFederationRestore(save_name)
         for _ in range(12):
-            leader.evoke_multiple_callbacks(0.0, 0.0)
-            wing.evoke_multiple_callbacks(0.0, 0.0)
+            leader.evokeMultipleCallbacks(0.0, 0.0)
+            wing.evokeMultipleCallbacks(0.0, 0.0)
         assert leader_federate.last_callback("requestFederationRestoreSucceeded").args == (save_name,)
         assert wing_federate.last_callback("initiateFederateRestore") is not None
         assert leader_federate.last_callback("federationRestoreBegun") is not None
 
-        leader.federate_restore_complete()
-        wing.federate_restore_complete()
+        leader.federateRestoreComplete()
+        wing.federateRestoreComplete()
         for _ in range(12):
-            leader.evoke_multiple_callbacks(0.0, 0.0)
-            wing.evoke_multiple_callbacks(0.0, 0.0)
+            leader.evokeMultipleCallbacks(0.0, 0.0)
+            wing.evokeMultipleCallbacks(0.0, 0.0)
         assert leader_federate.last_callback("federationRestored") is not None
 
-        leader.query_federation_restore_status()
+        leader.queryFederationRestoreStatus()
         for _ in range(6):
-            leader.evoke_multiple_callbacks(0.0, 0.0)
+            leader.evokeMultipleCallbacks(0.0, 0.0)
         restore_status = leader_federate.last_callback("federationRestoreStatusResponse").args[0]
         assert all(pair.restore_status is RestoreStatus.NO_RESTORE_IN_PROGRESS for pair in restore_status)
 
-        leader.request_federation_save(abort_save_name)
+        leader.requestFederationSave(abort_save_name)
         for _ in range(12):
-            leader.evoke_multiple_callbacks(0.0, 0.0)
-            wing.evoke_multiple_callbacks(0.0, 0.0)
-        leader.federate_save_begun()
-        wing.federate_save_begun()
-        leader.abort_federation_save()
+            leader.evokeMultipleCallbacks(0.0, 0.0)
+            wing.evokeMultipleCallbacks(0.0, 0.0)
+        leader.federateSaveBegun()
+        wing.federateSaveBegun()
+        leader.abortFederationSave()
         for _ in range(12):
-            leader.evoke_multiple_callbacks(0.0, 0.0)
-            wing.evoke_multiple_callbacks(0.0, 0.0)
+            leader.evokeMultipleCallbacks(0.0, 0.0)
+            wing.evokeMultipleCallbacks(0.0, 0.0)
         assert leader_federate.last_callback("federationNotSaved").args == (SaveFailureReason.SAVE_ABORTED,)
 
-        leader.request_federation_restore(abort_save_name)
+        leader.requestFederationRestore(abort_save_name)
         for _ in range(12):
-            leader.evoke_multiple_callbacks(0.0, 0.0)
-            wing.evoke_multiple_callbacks(0.0, 0.0)
+            leader.evokeMultipleCallbacks(0.0, 0.0)
+            wing.evokeMultipleCallbacks(0.0, 0.0)
         assert leader_federate.last_callback("requestFederationRestoreFailed").args == (abort_save_name,)
 
-        wing.resign_federation_execution(ResignAction.NO_ACTION)
-        leader.resign_federation_execution(ResignAction.NO_ACTION)
-        leader.destroy_federation_execution(federation_name)
+        wing.resignFederationExecution(ResignAction.NO_ACTION)
+        leader.resignFederationExecution(ResignAction.NO_ACTION)
+        leader.destroyFederationExecution(federation_name)
         wing.disconnect()
         leader.disconnect()
     finally:
@@ -372,9 +372,9 @@ def test_grpc_transport_can_host_python_rti_ownership_end_to_end():
         assert summary["acquired"].args[0] == summary["acquirer_object_instance"]
         assert summary["informed"].args[0] == summary["object_instance"]
 
-        acquirer.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
-        owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        owner.destroy_federation_execution(config.federation_name)
+        acquirer.resignFederationExecution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
+        owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+        owner.destroyFederationExecution(config.federation_name)
         acquirer.disconnect()
         owner.disconnect()
     finally:
@@ -421,9 +421,9 @@ def test_grpc_transport_can_host_python_rti_negotiated_ownership_end_to_end():
             assert summary["offered_acquired"] is not None
             assert summary["divestiture_confirmation"] is not None
 
-        acquirer.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
-        owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        owner.destroy_federation_execution(config.federation_name)
+        acquirer.resignFederationExecution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
+        owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+        owner.destroyFederationExecution(config.federation_name)
         acquirer.disconnect()
         owner.disconnect()
     finally:
@@ -448,34 +448,34 @@ def test_grpc_transport_polling_contract_drains_buffered_callbacks():
         subscriber.connect(subscriber_federate, CallbackModel.HLA_EVOKED)
 
         fom = VENDOR_SMOKE_FOM
-        publisher.create_federation_execution("GrpcPollingContractFederation", [fom], "HLAfloat64Time")
-        publisher.join_federation_execution("Publisher", "ProbeFederate", "GrpcPollingContractFederation")
-        subscriber.join_federation_execution("Subscriber", "ProbeFederate", "GrpcPollingContractFederation")
+        publisher.createFederationExecution("GrpcPollingContractFederation", [fom], "HLAfloat64Time")
+        publisher.joinFederationExecution("Publisher", "ProbeFederate", "GrpcPollingContractFederation")
+        subscriber.joinFederationExecution("Subscriber", "ProbeFederate", "GrpcPollingContractFederation")
 
-        publisher_class = publisher.get_object_class_handle("HLAobjectRoot.SmokeObject")
-        subscriber_class = subscriber.get_object_class_handle("HLAobjectRoot.SmokeObject")
-        publisher_attr = publisher.get_attribute_handle(publisher_class, "Payload")
-        subscriber_attr = subscriber.get_attribute_handle(subscriber_class, "Payload")
-        publisher.publish_object_class_attributes(publisher_class, {publisher_attr})
-        subscriber.subscribe_object_class_attributes(subscriber_class, {subscriber_attr})
+        publisher_class = publisher.getObjectClassHandle("HLAobjectRoot.SmokeObject")
+        subscriber_class = subscriber.getObjectClassHandle("HLAobjectRoot.SmokeObject")
+        publisher_attr = publisher.getAttributeHandle(publisher_class, "Payload")
+        subscriber_attr = subscriber.getAttributeHandle(subscriber_class, "Payload")
+        publisher.publishObjectClassAttributes(publisher_class, {publisher_attr})
+        subscriber.subscribeObjectClassAttributes(subscriber_class, {subscriber_attr})
 
-        obj = publisher.register_object_instance(publisher_class, "BufferedObject-1")
-        publisher.update_attribute_values(obj, {publisher_attr: b"buffered"}, b"tag")
+        obj = publisher.registerObjectInstance(publisher_class, "BufferedObject-1")
+        publisher.updateAttributeValues(obj, {publisher_attr: b"buffered"}, b"tag")
 
-        assert subscriber.evoke_multiple_callbacks(0.0, 0.05) is True
+        assert subscriber.evokeMultipleCallbacks(0.0, 0.05) is True
         first = subscriber_federate.last_callback()
         assert first is not None
         assert first.method_name == "discoverObjectInstance"
 
-        assert subscriber.evoke_callback(0.0) is True
+        assert subscriber.evokeCallback(0.0) is True
         second = subscriber_federate.last_callback()
         assert second is not None
         assert second.method_name == "reflectAttributeValues"
         assert second.args[1] == {subscriber_attr: b"buffered"}
 
-        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
-        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        publisher.destroy_federation_execution("GrpcPollingContractFederation")
+        subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+        publisher.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+        publisher.destroyFederationExecution("GrpcPollingContractFederation")
         subscriber.disconnect()
         publisher.disconnect()
     finally:

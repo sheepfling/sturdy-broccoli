@@ -81,12 +81,12 @@ def test_certi_backend_time_query_and_fqr_matrix(kind: str, time_factory_name: s
 
         regulator.connect(regulator_fed, CallbackModel.HLA_EVOKED)
         constrained.connect(constrained_fed, CallbackModel.HLA_EVOKED)
-        regulator.create_federation_execution(federation_name, [smoke_fom], time_factory_name)
-        regulator.join_federation_execution("Regulator", "TimeFederate", federation_name)
-        constrained.join_federation_execution("Constrained", "TimeFederate", federation_name)
+        regulator.createFederationExecution(federation_name, [smoke_fom], time_factory_name)
+        regulator.joinFederationExecution("Regulator", "TimeFederate", federation_name)
+        constrained.joinFederationExecution("Constrained", "TimeFederate", federation_name)
 
-        initial_galt = constrained.query_galt()
-        initial_lits = constrained.query_lits()
+        initial_galt = constrained.queryGALT()
+        initial_lits = constrained.queryLITS()
         assert isinstance(initial_galt, TimeQueryReturn)
         assert isinstance(initial_lits, TimeQueryReturn)
         assert initial_galt.time_is_valid is True
@@ -95,17 +95,17 @@ def test_certi_backend_time_query_and_fqr_matrix(kind: str, time_factory_name: s
         assert isinf(initial_lits.time.value)
 
         time_profile = _exchange_time_profile(time_factory_name)
-        regulator.enable_time_regulation(time_profile["lookahead"])
-        constrained.enable_time_constrained()
+        regulator.enableTimeRegulation(time_profile["lookahead"])
+        constrained.enableTimeConstrained()
         for _ in range(16):
-            regulator.evoke_multiple_callbacks(0.0, 0.05)
-            constrained.evoke_multiple_callbacks(0.0, 0.05)
+            regulator.evokeMultipleCallbacks(0.0, 0.05)
+            constrained.evokeMultipleCallbacks(0.0, 0.05)
 
         assert regulator_fed.last_callback("timeRegulationEnabled") is not None
         assert constrained_fed.last_callback("timeConstrainedEnabled") is not None
 
-        enabled_galt = constrained.query_galt()
-        enabled_lits = constrained.query_lits()
+        enabled_galt = constrained.queryGALT()
+        enabled_lits = constrained.queryLITS()
         assert enabled_galt.time_is_valid is True
         assert enabled_lits.time_is_valid is True
         _assert_certi_query_time_value(enabled_galt.time, time_factory_name)
@@ -113,7 +113,7 @@ def test_certi_backend_time_query_and_fqr_matrix(kind: str, time_factory_name: s
         assert _logical_time_value(enabled_galt.time) == pytest.approx(_logical_time_value(time_profile["lookahead"]))
         assert _logical_time_value(enabled_lits.time) == pytest.approx(_logical_time_value(time_profile["lookahead"]))
 
-        constrained.flush_queue_request(time_profile["timestamped_interaction_time"])
+        constrained.flushQueueRequest(time_profile["timestamped_interaction_time"])
         _evoke_pair(regulator, constrained)
         grant = constrained_fed.last_callback("timeAdvanceGrant")
         assert grant is not None

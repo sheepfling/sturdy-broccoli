@@ -48,52 +48,52 @@ def run_object_scope_relevance_scenario(
     owner_rti.connect(owner_federate, CallbackModel.HLA_EVOKED)
     acquirer_rti.connect(acquirer_federate, CallbackModel.HLA_EVOKED)
     observer_rti.connect(observer_federate, CallbackModel.HLA_EVOKED)
-    owner_rti.create_federation_execution(
+    owner_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    owner_handle = owner_rti.join_federation_execution(config.owner_name, config.federate_type, config.federation_name)
-    acquirer_handle = acquirer_rti.join_federation_execution(
+    owner_handle = owner_rti.joinFederationExecution(config.owner_name, config.federate_type, config.federation_name)
+    acquirer_handle = acquirer_rti.joinFederationExecution(
         config.acquirer_name,
         config.federate_type,
         config.federation_name,
     )
-    observer_handle = observer_rti.join_federation_execution(
+    observer_handle = observer_rti.joinFederationExecution(
         config.observer_name,
         config.federate_type,
         config.federation_name,
     )
 
-    owner_class = owner_rti.get_object_class_handle(config.object_class_name)
-    acquirer_class = acquirer_rti.get_object_class_handle(config.object_class_name)
-    observer_class = observer_rti.get_object_class_handle(config.object_class_name)
-    owner_attribute = owner_rti.get_attribute_handle(owner_class, config.attribute_name)
-    acquirer_attribute = acquirer_rti.get_attribute_handle(acquirer_class, config.attribute_name)
-    observer_attribute = observer_rti.get_attribute_handle(observer_class, config.attribute_name)
-    owner_dimension = owner_rti.get_dimension_handle("HLAdefaultRoutingSpace")
-    acquirer_dimension = acquirer_rti.get_dimension_handle("HLAdefaultRoutingSpace")
-    observer_dimension = observer_rti.get_dimension_handle("HLAdefaultRoutingSpace")
+    owner_class = owner_rti.getObjectClassHandle(config.object_class_name)
+    acquirer_class = acquirer_rti.getObjectClassHandle(config.object_class_name)
+    observer_class = observer_rti.getObjectClassHandle(config.object_class_name)
+    owner_attribute = owner_rti.getAttributeHandle(owner_class, config.attribute_name)
+    acquirer_attribute = acquirer_rti.getAttributeHandle(acquirer_class, config.attribute_name)
+    observer_attribute = observer_rti.getAttributeHandle(observer_class, config.attribute_name)
+    owner_dimension = owner_rti.getDimensionHandle("HLAdefaultRoutingSpace")
+    acquirer_dimension = acquirer_rti.getDimensionHandle("HLAdefaultRoutingSpace")
+    observer_dimension = observer_rti.getDimensionHandle("HLAdefaultRoutingSpace")
 
-    owner_region = owner_rti.create_region({owner_dimension})
-    acquirer_region = acquirer_rti.create_region({acquirer_dimension})
-    observer_region = observer_rti.create_region({observer_dimension})
-    owner_rti.set_range_bounds(owner_region, owner_dimension, config.owner_bounds)
-    acquirer_rti.set_range_bounds(acquirer_region, acquirer_dimension, config.in_scope_bounds)
-    observer_rti.set_range_bounds(observer_region, observer_dimension, config.observer_initial_bounds)
-    owner_rti.commit_region_modifications({owner_region})
-    acquirer_rti.commit_region_modifications({acquirer_region})
-    observer_rti.commit_region_modifications({observer_region})
+    owner_region = owner_rti.createRegion({owner_dimension})
+    acquirer_region = acquirer_rti.createRegion({acquirer_dimension})
+    observer_region = observer_rti.createRegion({observer_dimension})
+    owner_rti.setRangeBounds(owner_region, owner_dimension, config.owner_bounds)
+    acquirer_rti.setRangeBounds(acquirer_region, acquirer_dimension, config.in_scope_bounds)
+    observer_rti.setRangeBounds(observer_region, observer_dimension, config.observer_initial_bounds)
+    owner_rti.commitRegionModifications({owner_region})
+    acquirer_rti.commitRegionModifications({acquirer_region})
+    observer_rti.commitRegionModifications({observer_region})
 
-    owner_rti.publish_object_class_attributes(owner_class, {owner_attribute})
-    acquirer_rti.publish_object_class_attributes(acquirer_class, {acquirer_attribute})
-    observer_rti.enable_attribute_scope_advisory_switch()
-    observer_rti.subscribe_object_class_attributes_with_regions(
+    owner_rti.publishObjectClassAttributes(owner_class, {owner_attribute})
+    acquirer_rti.publishObjectClassAttributes(acquirer_class, {acquirer_attribute})
+    observer_rti.enableAttributeScopeAdvisorySwitch()
+    observer_rti.subscribeObjectClassAttributesWithRegions(
         observer_class,
         [AttributeRegionAssociation(AttributeHandleSet({observer_attribute}), RegionHandleSet({observer_region}))],
     )
 
-    object_instance = owner_rti.register_object_instance_with_regions(
+    object_instance = owner_rti.registerObjectInstanceWithRegions(
         owner_class,
         [AttributeRegionAssociation(AttributeHandleSet({owner_attribute}), RegionHandleSet({owner_region}))],
         config.object_instance_name,
@@ -103,8 +103,8 @@ def run_object_scope_relevance_scenario(
     assert not observer_federate.callbacks_named("attributesInScope")
     assert not observer_federate.callbacks_named("attributesOutOfScope")
 
-    observer_rti.set_range_bounds(observer_region, observer_dimension, config.in_scope_bounds)
-    observer_rti.commit_region_modifications({observer_region})
+    observer_rti.setRangeBounds(observer_region, observer_dimension, config.in_scope_bounds)
+    observer_rti.commitRegionModifications({observer_region})
     drain_callbacks_pair(owner_rti, acquirer_rti, observer_rti, loops=16)
     initial_in_scope = observer_federate.last_callback("attributesInScope")
     assert initial_in_scope is not None
@@ -112,34 +112,34 @@ def run_object_scope_relevance_scenario(
     assert initial_in_scope.args[1] == {observer_attribute}
 
     observer_federate.clear()
-    owner_rti.update_attribute_values(object_instance, {owner_attribute: config.in_scope_payload}, b"\x00\x00\x00\x00")
+    owner_rti.updateAttributeValues(object_instance, {owner_attribute: config.in_scope_payload}, b"\x00\x00\x00\x00")
     drain_callbacks_pair(owner_rti, acquirer_rti, observer_rti, loops=16)
     initial_reflection = observer_federate.last_callback("reflectAttributeValues")
     assert initial_reflection is not None
     assert initial_reflection.args[1] == {observer_attribute: config.in_scope_payload}
 
-    observer_rti.set_range_bounds(observer_region, observer_dimension, config.out_of_scope_bounds)
-    observer_rti.commit_region_modifications({observer_region})
+    observer_rti.setRangeBounds(observer_region, observer_dimension, config.out_of_scope_bounds)
+    observer_rti.commitRegionModifications({observer_region})
     drain_callbacks_pair(owner_rti, acquirer_rti, observer_rti, loops=16)
     out_of_scope = observer_federate.last_callback("attributesOutOfScope")
     assert out_of_scope is not None
     assert out_of_scope.args[0] == object_instance
     assert out_of_scope.args[1] == {observer_attribute}
     observer_federate.clear()
-    owner_rti.update_attribute_values(object_instance, {owner_attribute: config.out_of_scope_payload}, b"\x00\x00\x00\x00")
+    owner_rti.updateAttributeValues(object_instance, {owner_attribute: config.out_of_scope_payload}, b"\x00\x00\x00\x00")
     drain_callbacks_pair(owner_rti, acquirer_rti, observer_rti, loops=16)
     suppressed_reflection = observer_federate.last_callback("reflectAttributeValues")
     assert suppressed_reflection is None
 
-    acquirer_rti.attribute_ownership_acquisition(object_instance, {acquirer_attribute}, config.acquisition_tag)
+    acquirer_rti.attributeOwnershipAcquisition(object_instance, {acquirer_attribute}, config.acquisition_tag)
     drain_callbacks_pair(owner_rti, acquirer_rti, observer_rti, loops=24)
-    owner_rti.attribute_ownership_divestiture_if_wanted(object_instance, {owner_attribute})
+    owner_rti.attributeOwnershipDivestitureIfWanted(object_instance, {owner_attribute})
     drain_callbacks_pair(owner_rti, acquirer_rti, observer_rti, loops=24)
 
-    owner_rti.set_range_bounds(owner_region, owner_dimension, config.in_scope_bounds)
-    observer_rti.set_range_bounds(observer_region, observer_dimension, config.in_scope_bounds)
-    owner_rti.commit_region_modifications({owner_region})
-    observer_rti.commit_region_modifications({observer_region})
+    owner_rti.setRangeBounds(owner_region, owner_dimension, config.in_scope_bounds)
+    observer_rti.setRangeBounds(observer_region, observer_dimension, config.in_scope_bounds)
+    owner_rti.commitRegionModifications({owner_region})
+    observer_rti.commitRegionModifications({observer_region})
     drain_callbacks_pair(owner_rti, acquirer_rti, observer_rti, loops=16)
     reacquired_in_scope = observer_federate.last_callback("attributesInScope")
     assert reacquired_in_scope is not None
@@ -148,13 +148,13 @@ def run_object_scope_relevance_scenario(
 
     owner_not_owned = False
     try:
-        owner_rti.update_attribute_values(object_instance, {owner_attribute: b"stale-owner"}, b"\x00\x00\x00\x00")
+        owner_rti.updateAttributeValues(object_instance, {owner_attribute: b"stale-owner"}, b"\x00\x00\x00\x00")
     except AttributeNotOwned:
         owner_not_owned = True
     assert owner_not_owned
 
     observer_federate.clear()
-    acquirer_rti.update_attribute_values(
+    acquirer_rti.updateAttributeValues(
         object_instance,
         {acquirer_attribute: config.acquired_payload},
         b"\x00\x00\x00\x00",

@@ -341,8 +341,9 @@ def _bootstrap_from_current() -> None:
         methods: dict[str, object] = {}
         for method_name, overloads in API_METADATA[interface_name].items():
             ref = method_reference(method_name)
+            python_name = method_name if interface_name == "RTIambassador" else _camel_to_snake(method_name)
             methods[method_name] = {
-                "python_name": _camel_to_snake(method_name),
+                "python_name": python_name,
                 "section": ref.section if ref else None,
                 "service_group": ref.service_group if ref else None,
                 "title": ref.title if ref else None,

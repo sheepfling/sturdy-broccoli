@@ -56,14 +56,14 @@ def _python_pair():
 def _cleanup_pair(*rtis: Any, federation_name: str) -> None:
     for rti in rtis:
         try:
-            rti.resign_federation_execution(ResignAction.NO_ACTION)
+            rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             try:
-                rti.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+                rti.resignFederationExecution(ResignAction.DELETE_OBJECTS)
             except Exception:
                 pass
     try:
-        rtis[0].destroy_federation_execution(federation_name)
+        rtis[0].destroyFederationExecution(federation_name)
     except Exception:
         pass
     for rti in rtis:

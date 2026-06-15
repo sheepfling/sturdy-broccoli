@@ -38,25 +38,25 @@ def run_orphan_object_lifecycle_scenario(
     owner_rti.connect(owner_federate, CallbackModel.HLA_EVOKED)
     observer_rti.connect(observer_federate, CallbackModel.HLA_EVOKED)
     late_rti.connect(late_federate, CallbackModel.HLA_EVOKED)
-    owner_rti.create_federation_execution(
+    owner_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    owner_handle = owner_rti.join_federation_execution(config.owner_name, config.federate_type, config.federation_name)
-    observer_handle = observer_rti.join_federation_execution(
+    owner_handle = owner_rti.joinFederationExecution(config.owner_name, config.federate_type, config.federation_name)
+    observer_handle = observer_rti.joinFederationExecution(
         config.observer_name,
         config.federate_type,
         config.federation_name,
     )
 
-    owner_class = owner_rti.get_object_class_handle(config.object_class_name)
-    observer_class = observer_rti.get_object_class_handle(config.object_class_name)
-    owner_attr = owner_rti.get_attribute_handle(owner_class, config.attribute_name)
-    observer_attr = observer_rti.get_attribute_handle(observer_class, config.attribute_name)
+    owner_class = owner_rti.getObjectClassHandle(config.object_class_name)
+    observer_class = observer_rti.getObjectClassHandle(config.object_class_name)
+    owner_attr = owner_rti.getAttributeHandle(owner_class, config.attribute_name)
+    observer_attr = observer_rti.getAttributeHandle(observer_class, config.attribute_name)
 
-    owner_rti.publish_object_class_attributes(owner_class, {owner_attr})
-    observer_rti.subscribe_object_class_attributes(observer_class, {observer_attr})
+    owner_rti.publishObjectClassAttributes(owner_class, {owner_attr})
+    observer_rti.subscribeObjectClassAttributes(observer_class, {observer_attr})
     drain_callbacks_pair(owner_rti, observer_rti, loops=8)
 
     object_instance = register_named_object_instance(
@@ -66,35 +66,35 @@ def run_orphan_object_lifecycle_scenario(
         config.object_instance_name,
     )
     drain_callbacks_pair(owner_rti, observer_rti, loops=8)
-    assert observer_rti.get_object_instance_handle(config.object_instance_name) == object_instance
+    assert observer_rti.getObjectInstanceHandle(config.object_instance_name) == object_instance
     observer_federate.clear()
 
-    owner_rti.unconditional_attribute_ownership_divestiture(object_instance, {owner_attr})
-    assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attr) is False
-    assert observer_rti.get_object_instance_handle(config.object_instance_name) == object_instance
-    assert observer_rti.get_known_object_class_handle(object_instance) == observer_class
+    owner_rti.unconditionalAttributeOwnershipDivestiture(object_instance, {owner_attr})
+    assert owner_rti.isAttributeOwnedByFederate(object_instance, owner_attr) is False
+    assert observer_rti.getObjectInstanceHandle(config.object_instance_name) == object_instance
+    assert observer_rti.getKnownObjectClassHandle(object_instance) == observer_class
 
-    late_handle = late_rti.join_federation_execution(config.late_name, config.federate_type, config.federation_name)
-    late_class = late_rti.get_object_class_handle(config.object_class_name)
-    late_attr = late_rti.get_attribute_handle(late_class, config.attribute_name)
-    late_rti.subscribe_object_class_attributes(late_class, {late_attr})
+    late_handle = late_rti.joinFederationExecution(config.late_name, config.federate_type, config.federation_name)
+    late_class = late_rti.getObjectClassHandle(config.object_class_name)
+    late_attr = late_rti.getAttributeHandle(late_class, config.attribute_name)
+    late_rti.subscribeObjectClassAttributes(late_class, {late_attr})
     drain_callbacks_pair(owner_rti, observer_rti, late_rti, loops=16)
 
     late_discovery = late_federate.last_callback("discoverObjectInstance")
     assert late_discovery is not None
     assert late_discovery.args[0] == object_instance
-    assert late_rti.get_object_instance_handle(config.object_instance_name) == object_instance
-    assert late_rti.get_known_object_class_handle(object_instance) == late_class
+    assert late_rti.getObjectInstanceHandle(config.object_instance_name) == object_instance
+    assert late_rti.getKnownObjectClassHandle(object_instance) == late_class
 
-    observer_rti.local_delete_object_instance(object_instance)
+    observer_rti.localDeleteObjectInstance(object_instance)
     observer_removed_local_knowledge = False
     try:
-        observer_rti.get_object_instance_handle(config.object_instance_name)
+        observer_rti.getObjectInstanceHandle(config.object_instance_name)
     except ObjectInstanceNotKnown:
         observer_removed_local_knowledge = True
     assert observer_removed_local_knowledge
 
-    owner_rti.delete_object_instance(object_instance, config.delete_tag)
+    owner_rti.deleteObjectInstance(object_instance, config.delete_tag)
     drain_callbacks_pair(owner_rti, observer_rti, late_rti, loops=16)
 
     observer_remove = observer_federate.last_callback("removeObjectInstance")
@@ -106,7 +106,7 @@ def run_orphan_object_lifecycle_scenario(
 
     late_removed_global_knowledge = False
     try:
-        late_rti.get_object_instance_handle(config.object_instance_name)
+        late_rti.getObjectInstanceHandle(config.object_instance_name)
     except ObjectInstanceNotKnown:
         late_removed_global_knowledge = True
     assert late_removed_global_knowledge

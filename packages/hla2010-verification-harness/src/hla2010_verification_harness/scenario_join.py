@@ -40,7 +40,7 @@ def run_join_precondition_scenario(
     late_federate: Any,
 ) -> dict[str, Any]:
     try:
-        late_rti.join_federation_execution(config.late_name, config.federate_type, config.federation_name)
+        late_rti.joinFederationExecution(config.late_name, config.federate_type, config.federation_name)
     except NotConnected as exc:
         not_connected = exc
     else:  # pragma: no cover - scenario contract
@@ -51,67 +51,67 @@ def run_join_precondition_scenario(
     late_rti.connect(late_federate, CallbackModel.HLA_EVOKED)
 
     try:
-        late_rti.join_federation_execution(config.late_name, config.federate_type, f"{config.federation_name}-missing")
+        late_rti.joinFederationExecution(config.late_name, config.federate_type, f"{config.federation_name}-missing")
     except FederationExecutionDoesNotExist as exc:
         missing_federation = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected join_federation_execution to reject a missing federation")
 
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
 
     try:
-        late_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
+        late_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
     except FederateNameAlreadyInUse as exc:
         duplicate_name = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected join_federation_execution to reject a duplicate federate name")
 
     try:
-        leader_rti.join_federation_execution("Other", config.federate_type, config.federation_name)
+        leader_rti.joinFederationExecution("Other", config.federate_type, config.federation_name)
     except FederateAlreadyExecutionMember as exc:
         already_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected join_federation_execution to reject an already-joined ambassador")
 
-    leader_rti.request_federation_save(config.save_name)
+    leader_rti.requestFederationSave(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     wait_for_callback(leader_rti, leader_federate, "initiateFederateSave", loops=120)
     wait_for_callback(wing_rti, wing_federate, "initiateFederateSave", loops=120)
     try:
-        late_rti.join_federation_execution(config.late_name, config.federate_type, config.federation_name)
+        late_rti.joinFederationExecution(config.late_name, config.federate_type, config.federation_name)
     except SaveInProgress as exc:
         save_in_progress = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected join_federation_execution to reject a federation save in progress")
 
-    leader_rti.federate_save_begun()
-    wing_rti.federate_save_begun()
-    leader_rti.federate_save_complete()
-    wing_rti.federate_save_complete()
+    leader_rti.federateSaveBegun()
+    wing_rti.federateSaveBegun()
+    leader_rti.federateSaveComplete()
+    wing_rti.federateSaveComplete()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     wait_for_callback(leader_rti, leader_federate, "federationSaved", loops=120)
     wait_for_callback(wing_rti, wing_federate, "federationSaved", loops=120)
 
-    leader_rti.request_federation_restore(config.save_name)
+    leader_rti.requestFederationRestore(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     wait_for_callback(leader_rti, leader_federate, "requestFederationRestoreSucceeded", loops=120)
     wait_for_callback(leader_rti, leader_federate, "federationRestoreBegun", loops=120)
     wait_for_callback(wing_rti, wing_federate, "initiateFederateRestore", loops=120)
     try:
-        late_rti.join_federation_execution(config.late_name, config.federate_type, config.federation_name)
+        late_rti.joinFederationExecution(config.late_name, config.federate_type, config.federation_name)
     except RestoreInProgress as exc:
         restore_in_progress = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected join_federation_execution to reject a federation restore in progress")
     finally:
         try:
-            leader_rti.abort_federation_restore()
+            leader_rti.abortFederationRestore()
             drain_callbacks_pair(leader_rti, wing_rti, loops=16)
         except Exception:
             pass
@@ -120,15 +120,15 @@ def run_join_precondition_scenario(
         except Exception:
             pass
         try:
-            leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            leader_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            wing_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            wing_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            leader_rti.destroy_federation_execution(config.federation_name)
+            leader_rti.destroyFederationExecution(config.federation_name)
         except Exception:
             pass
         try:

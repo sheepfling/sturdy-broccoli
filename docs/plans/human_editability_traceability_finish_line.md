@@ -231,7 +231,7 @@ This is done when a contributor can run
 - requirement ID
 - IEEE section
 - public RTI method
-- Python snake_case method
+- source-named Python RTI method
 - backend implementation function
 - test evidence
 - generated artifact evidence

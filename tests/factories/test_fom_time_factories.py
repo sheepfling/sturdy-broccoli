@@ -14,65 +14,65 @@ TARGET_RADAR_FOM = target_radar_fom_path()
 def test_python_rti_resolves_fom_path_and_uses_requested_time_factory():
     rti = create_rti_ambassador("python")
     rti.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
-    rti.create_federation_execution("fom-time-fed", TARGET_RADAR_FOM, "HLAfloat64Time")
-    rti.join_federation_execution("tester", "test", "fom-time-fed")
+    rti.createFederationExecution("fom-time-fed", TARGET_RADAR_FOM, "HLAfloat64Time")
+    rti.joinFederationExecution("tester", "test", "fom-time-fed")
 
-    target_class = rti.get_object_class_handle("HLAobjectRoot.Target")
-    assert rti.get_object_class_name(target_class) == "HLAobjectRoot.Target"
-    rcs = rti.get_attribute_handle(target_class, "RCS")
-    assert rti.get_attribute_name(target_class, rcs) == "RCS"
+    target_class = rti.getObjectClassHandle("HLAobjectRoot.Target")
+    assert rti.getObjectClassName(target_class) == "HLAobjectRoot.Target"
+    rcs = rti.getAttributeHandle(target_class, "RCS")
+    assert rti.getAttributeName(target_class, rcs) == "RCS"
 
-    track_report = rti.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    time_param = rti.get_parameter_handle(track_report, "Time")
-    assert rti.get_parameter_name(track_report, time_param) == "Time"
+    track_report = rti.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    time_param = rti.getParameterHandle(track_report, "Time")
+    assert rti.getParameterName(track_report, time_param) == "Time"
 
-    factory = rti.get_time_factory()
+    factory = rti.getTimeFactory()
     assert factory.get_name() == "HLAfloat64Time"
-    assert isinstance(rti.query_logical_time(), HLAfloat64Time)
+    assert isinstance(rti.queryLogicalTime(), HLAfloat64Time)
 
-    rti.enable_time_regulation(factory.make_interval(0.25))
-    rti.evoke_multiple_callbacks(0.0, 0.0)
-    assert rti.query_lookahead() == HLAfloat64Interval(0.25)
+    rti.enableTimeRegulation(factory.make_interval(0.25))
+    rti.evokeMultipleCallbacks(0.0, 0.0)
+    assert rti.queryLookahead() == HLAfloat64Interval(0.25)
 
-    rti.time_advance_request(factory.make_time(1.5))
-    rti.evoke_multiple_callbacks(0.0, 0.0)
-    assert rti.query_logical_time() == HLAfloat64Time(1.5)
+    rti.timeAdvanceRequest(factory.make_time(1.5))
+    rti.evokeMultipleCallbacks(0.0, 0.0)
+    assert rti.queryLogicalTime() == HLAfloat64Time(1.5)
 
-    rti.resign_federation_execution(ResignAction.NO_ACTION)
-    rti.destroy_federation_execution("fom-time-fed")
+    rti.resignFederationExecution(ResignAction.NO_ACTION)
+    rti.destroyFederationExecution("fom-time-fed")
     rti.disconnect()
 
 
 def test_python_rti_exposes_handle_set_and_map_factories():
     rti = create_rti_ambassador("python")
     rti.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
-    rti.create_federation_execution("factory-fed", "TargetRadarFOMmodule.xml")
-    rti.join_federation_execution("tester", "test", "factory-fed")
+    rti.createFederationExecution("factory-fed", "TargetRadarFOMmodule.xml")
+    rti.joinFederationExecution("tester", "test", "factory-fed")
 
-    cls = rti.get_object_class_handle("HLAobjectRoot.Target")
-    attr = rti.get_attribute_handle(cls, "RCS")
+    cls = rti.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = rti.getAttributeHandle(cls, "RCS")
 
-    attrs = rti.get_attribute_handle_set_factory().create()
+    attrs = rti.getAttributeHandleSetFactory().create()
     attrs.add(attr)
     assert isinstance(attrs, AttributeHandleSet)
-    rti.publish_object_class_attributes(cls, attrs)
+    rti.publishObjectClassAttributes(cls, attrs)
 
-    values = rti.get_attribute_handle_value_map_factory().create(1)
+    values = rti.getAttributeHandleValueMapFactory().create(1)
     values[attr] = b"rcs"
     assert isinstance(values, AttributeHandleValueMap)
-    obj = rti.register_object_instance(cls, "Target-Factory")
-    rti.update_attribute_values(obj, values, b"tag")
+    obj = rti.registerObjectInstance(cls, "Target-Factory")
+    rti.updateAttributeValues(obj, values, b"tag")
 
-    dim = rti.get_dimension_handle("HLAdefaultRoutingSpace")
-    dims = rti.get_dimension_handle_set_factory().create()
+    dim = rti.getDimensionHandle("HLAdefaultRoutingSpace")
+    dims = rti.getDimensionHandleSetFactory().create()
     dims.add(dim)
-    region = rti.create_region(dims)
-    roundtrip_dims = rti.get_dimension_handle_set(region)
+    region = rti.createRegion(dims)
+    roundtrip_dims = rti.getDimensionHandleSet(region)
     assert isinstance(roundtrip_dims, DimensionHandleSet)
     assert dim in roundtrip_dims
 
-    rti.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    rti.destroy_federation_execution("factory-fed")
+    rti.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    rti.destroyFederationExecution("factory-fed")
     rti.disconnect()
 
 

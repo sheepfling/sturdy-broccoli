@@ -39,7 +39,7 @@ def run_resign_precondition_scenario(
     wing_federate: Any,
 ) -> dict[str, Any]:
     try:
-        leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
+        leader_rti.resignFederationExecution(ResignAction.NO_ACTION)
     except NotConnected as exc:
         not_connected = exc
     else:  # pragma: no cover - scenario contract
@@ -47,25 +47,25 @@ def run_resign_precondition_scenario(
 
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     try:
-        leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
+        leader_rti.resignFederationExecution(ResignAction.NO_ACTION)
     except FederateNotExecutionMember as exc:
         not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected resign_federation_execution to raise FederateNotExecutionMember before join")
 
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
 
-    object_class = leader_rti.get_object_class_handle(config.object_class_name)
-    attribute = leader_rti.get_attribute_handle(object_class, config.attribute_name)
-    leader_rti.publish_object_class_attributes(object_class, {attribute})
-    wing_rti.publish_object_class_attributes(object_class, {attribute})
+    object_class = leader_rti.getObjectClassHandle(config.object_class_name)
+    attribute = leader_rti.getAttributeHandle(object_class, config.attribute_name)
+    leader_rti.publishObjectClassAttributes(object_class, {attribute})
+    wing_rti.publishObjectClassAttributes(object_class, {attribute})
     object_instance = register_named_object_instance(
         leader_rti,
         leader_federate,
@@ -74,42 +74,42 @@ def run_resign_precondition_scenario(
     )
 
     try:
-        leader_rti.resign_federation_execution("bogus")
+        leader_rti.resignFederationExecution("bogus")
     except InvalidResignAction as exc:
         invalid_action = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected resign_federation_execution to reject an invalid resign action")
 
     try:
-        leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
+        leader_rti.resignFederationExecution(ResignAction.NO_ACTION)
     except FederateOwnsAttributes as exc:
         owns_attributes = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected resign_federation_execution to reject owned attributes without divest/delete")
 
-    wing_rti.attribute_ownership_acquisition(object_instance, {attribute}, b"req")
+    wing_rti.attributeOwnershipAcquisition(object_instance, {attribute}, b"req")
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     try:
-        wing_rti.resign_federation_execution(ResignAction.NO_ACTION)
+        wing_rti.resignFederationExecution(ResignAction.NO_ACTION)
     except OwnershipAcquisitionPending as exc:
         acquisition_pending = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected resign_federation_execution to reject pending ownership acquisition")
     finally:
         try:
-            leader_rti.attribute_ownership_release_denied(object_instance, {attribute})
+            leader_rti.attributeOwnershipReleaseDenied(object_instance, {attribute})
         except Exception:
             pass
         try:
-            leader_rti.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+            leader_rti.resignFederationExecution(ResignAction.DELETE_OBJECTS)
         except Exception:
             pass
         try:
-            wing_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            wing_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            leader_rti.destroy_federation_execution(config.federation_name)
+            leader_rti.destroyFederationExecution(config.federation_name)
         except Exception:
             pass
         try:
@@ -142,21 +142,21 @@ def run_resign_mom_cleanup_scenario(
 ) -> dict[str, Any]:
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
 
-    federation_class = leader_rti.get_object_class_handle("HLAobjectRoot.HLAmanager.HLAfederation")
-    federation_members = leader_rti.get_attribute_handle(federation_class, "HLAfederatesInFederation")
-    federate_class = leader_rti.get_object_class_handle("HLAobjectRoot.HLAmanager.HLAfederate")
-    federate_name = leader_rti.get_attribute_handle(federate_class, "HLAfederateName")
+    federation_class = leader_rti.getObjectClassHandle("HLAobjectRoot.HLAmanager.HLAfederation")
+    federation_members = leader_rti.getAttributeHandle(federation_class, "HLAfederatesInFederation")
+    federate_class = leader_rti.getObjectClassHandle("HLAobjectRoot.HLAmanager.HLAfederate")
+    federate_name = leader_rti.getAttributeHandle(federate_class, "HLAfederateName")
 
-    leader_rti.subscribe_object_class_attributes(federation_class, {federation_members})
-    leader_rti.subscribe_object_class_attributes(federate_class, {federate_name})
+    leader_rti.subscribeObjectClassAttributes(federation_class, {federation_members})
+    leader_rti.subscribeObjectClassAttributes(federate_class, {federate_name})
     drain_callbacks_pair(leader_rti, wing_rti, loops=24)
 
     wing_discoveries = [
@@ -165,17 +165,17 @@ def run_resign_mom_cleanup_scenario(
     assert wing_discoveries
     wing_mom_object = wing_discoveries[-1].args[0]
 
-    leader_rti.request_attribute_value_update(wing_mom_object, {federate_name}, b"wing-before-resign")
+    leader_rti.requestAttributeValueUpdate(wing_mom_object, {federate_name}, b"wing-before-resign")
     drain_callbacks_pair(leader_rti, wing_rti, loops=24)
     wing_before = wait_for_callback(leader_rti, leader_federate, "reflectAttributeValues", loops=120)
     assert wing_before is not None
     assert wing_before.args[0] == wing_mom_object
     assert wing_before.args[1][federate_name] == config.wing_name.encode()
 
-    wing_rti.resign_federation_execution(ResignAction.NO_ACTION)
+    wing_rti.resignFederationExecution(ResignAction.NO_ACTION)
     drain_callbacks_pair(leader_rti, wing_rti, loops=24)
 
-    leader_rti.request_attribute_value_update(federation_class, {federation_members}, b"after-resign-members")
+    leader_rti.requestAttributeValueUpdate(federation_class, {federation_members}, b"after-resign-members")
     drain_callbacks_pair(leader_rti, wing_rti, loops=24)
     federation_after = wait_for_callback(leader_rti, leader_federate, "reflectAttributeValues", loops=120)
     assert federation_after is not None
@@ -184,18 +184,18 @@ def run_resign_mom_cleanup_scenario(
     assert federation_after.args[1][federation_members] == config.leader_name.encode()
 
     try:
-        leader_rti.request_attribute_value_update(wing_mom_object, {federate_name}, b"wing-after-resign")
+        leader_rti.requestAttributeValueUpdate(wing_mom_object, {federate_name}, b"wing-after-resign")
     except ObjectInstanceNotKnown as exc:
         object_instance_not_known = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected resigned MOM federate object to become unknown to observer updates")
     finally:
         try:
-            leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            leader_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            leader_rti.destroy_federation_execution(config.federation_name)
+            leader_rti.destroyFederationExecution(config.federation_name)
         except Exception:
             pass
         try:
@@ -225,21 +225,21 @@ def run_disconnect_mom_cleanup_scenario(
 ) -> dict[str, Any]:
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
 
-    federation_class = wing_rti.get_object_class_handle("HLAobjectRoot.HLAmanager.HLAfederation")
-    federation_members = wing_rti.get_attribute_handle(federation_class, "HLAfederatesInFederation")
-    federate_class = wing_rti.get_object_class_handle("HLAobjectRoot.HLAmanager.HLAfederate")
-    federate_name = wing_rti.get_attribute_handle(federate_class, "HLAfederateName")
+    federation_class = wing_rti.getObjectClassHandle("HLAobjectRoot.HLAmanager.HLAfederation")
+    federation_members = wing_rti.getAttributeHandle(federation_class, "HLAfederatesInFederation")
+    federate_class = wing_rti.getObjectClassHandle("HLAobjectRoot.HLAmanager.HLAfederate")
+    federate_name = wing_rti.getAttributeHandle(federate_class, "HLAfederateName")
 
-    wing_rti.subscribe_object_class_attributes(federation_class, {federation_members})
-    wing_rti.subscribe_object_class_attributes(federate_class, {federate_name})
+    wing_rti.subscribeObjectClassAttributes(federation_class, {federation_members})
+    wing_rti.subscribeObjectClassAttributes(federate_class, {federate_name})
     drain_callbacks_pair(leader_rti, wing_rti, loops=24)
 
     leader_discoveries = [
@@ -248,19 +248,19 @@ def run_disconnect_mom_cleanup_scenario(
     assert leader_discoveries
     leader_mom_object = leader_discoveries[-1].args[0]
 
-    wing_rti.request_attribute_value_update(leader_mom_object, {federate_name}, b"leader-before-disconnect")
+    wing_rti.requestAttributeValueUpdate(leader_mom_object, {federate_name}, b"leader-before-disconnect")
     drain_callbacks_pair(leader_rti, wing_rti, loops=24)
     leader_before = wait_for_callback(wing_rti, wing_federate, "reflectAttributeValues", loops=120)
     assert leader_before is not None
     assert leader_before.args[0] == leader_mom_object
     assert leader_before.args[1][federate_name] == config.leader_name.encode()
 
-    leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
+    leader_rti.resignFederationExecution(ResignAction.NO_ACTION)
     leader_rti.disconnect()
     for _ in range(24):
         drain_callbacks_pair(wing_rti, loops=1)
 
-    wing_rti.request_attribute_value_update(federation_class, {federation_members}, b"after-disconnect-members")
+    wing_rti.requestAttributeValueUpdate(federation_class, {federation_members}, b"after-disconnect-members")
     for _ in range(24):
         drain_callbacks_pair(wing_rti, loops=1)
     federation_after = wait_for_callback(wing_rti, wing_federate, "reflectAttributeValues", loops=120)
@@ -270,18 +270,18 @@ def run_disconnect_mom_cleanup_scenario(
     assert federation_after.args[1][federation_members] == config.wing_name.encode()
 
     try:
-        wing_rti.request_attribute_value_update(leader_mom_object, {federate_name}, b"leader-after-disconnect")
+        wing_rti.requestAttributeValueUpdate(leader_mom_object, {federate_name}, b"leader-after-disconnect")
     except ObjectInstanceNotKnown as exc:
         object_instance_not_known = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected disconnected federate MOM object to become unknown to observer updates")
     finally:
         try:
-            wing_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            wing_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            wing_rti.destroy_federation_execution(config.federation_name)
+            wing_rti.destroyFederationExecution(config.federation_name)
         except Exception:
             pass
         try:

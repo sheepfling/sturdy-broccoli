@@ -14,8 +14,8 @@ from .two_federate_suite_summary import _jsonable
 
 def _evoke_pair(left_rti: Any, right_rti: Any, *, rounds: int = 1) -> None:
     for _ in range(rounds):
-        left_rti.evoke_multiple_callbacks(0.0, 0.1)
-        right_rti.evoke_multiple_callbacks(0.0, 0.1)
+        left_rti.evokeMultipleCallbacks(0.0, 0.1)
+        right_rti.evokeMultipleCallbacks(0.0, 0.1)
 
 
 def _wait_for_callback(
@@ -41,7 +41,7 @@ def _decode_handle_value_map(rti: Any, interaction: Any, payload: Any) -> Any:
     decoded: dict[str, Any] = {}
     for handle, value in payload.items():
         try:
-            key = str(rti.get_parameter_name(interaction, handle))
+            key = str(rti.getParameterName(interaction, handle))
         except Exception:
             key = str(_jsonable(handle))
         if isinstance(value, bytes):
@@ -72,36 +72,36 @@ def run_suite_save_restore_scenario(
 
     left_rti.connect(left_federate, CallbackModel.HLA_EVOKED)
     right_rti.connect(right_federate, CallbackModel.HLA_EVOKED)
-    left_rti.create_federation_execution(
+    left_rti.createFederationExecution(
         federation_name,
         list(config["fom_modules"]),
         config["logical_time_implementation_name"],
     )
-    left_rti.join_federation_execution("left", "save-restore", federation_name)
-    right_rti.join_federation_execution("right", "save-restore", federation_name)
-    left_rti.enable_time_constrained()
-    right_rti.enable_time_constrained()
-    left_rti.enable_time_regulation(HLAfloat64Interval(1.0))
-    right_rti.enable_time_regulation(HLAfloat64Interval(1.0))
+    left_rti.joinFederationExecution("left", "save-restore", federation_name)
+    right_rti.joinFederationExecution("right", "save-restore", federation_name)
+    left_rti.enableTimeConstrained()
+    right_rti.enableTimeConstrained()
+    left_rti.enableTimeRegulation(HLAfloat64Interval(1.0))
+    right_rti.enableTimeRegulation(HLAfloat64Interval(1.0))
     _evoke_pair(left_rti, right_rti, rounds=16)
 
-    left_rti.request_federation_save(save_name)
+    left_rti.requestFederationSave(save_name)
     _wait_for_callback(left_rti, right_rti, left_federate, right_federate, "initiateFederateSave")
 
-    left_rti.federate_save_begun()
-    right_rti.federate_save_begun()
-    left_rti.federate_save_complete()
-    right_rti.federate_save_complete()
+    left_rti.federateSaveBegun()
+    right_rti.federateSaveBegun()
+    left_rti.federateSaveComplete()
+    right_rti.federateSaveComplete()
     _wait_for_callback(left_rti, right_rti, left_federate, right_federate, "federationSaved")
 
-    left_rti.time_advance_request_available(resume_time)
-    right_rti.time_advance_request_available(resume_time)
+    left_rti.timeAdvanceRequestAvailable(resume_time)
+    right_rti.timeAdvanceRequestAvailable(resume_time)
     _evoke_pair(left_rti, right_rti, rounds=16)
 
-    left_rti.request_federation_restore(save_name)
+    left_rti.requestFederationRestore(save_name)
     _wait_for_callback(left_rti, right_rti, left_federate, right_federate, "initiateFederateRestore")
-    left_rti.federate_restore_complete()
-    right_rti.federate_restore_complete()
+    left_rti.federateRestoreComplete()
+    right_rti.federateRestoreComplete()
     _wait_for_callback(left_rti, right_rti, left_federate, right_federate, "federationRestored")
 
     return {
@@ -109,8 +109,8 @@ def run_suite_save_restore_scenario(
         "right_callbacks": _jsonable(right_federate.records),
         "federation_saved": bool(left_federate.last_callback("federationSaved")),
         "restore_completed": bool(left_federate.last_callback("federationRestored")),
-        "left_time": _jsonable(left_rti.query_logical_time()),
-        "right_time": _jsonable(right_rti.query_logical_time()),
+        "left_time": _jsonable(left_rti.queryLogicalTime()),
+        "right_time": _jsonable(right_rti.queryLogicalTime()),
     }
 
 
@@ -125,16 +125,16 @@ def run_suite_ddm_scenario(
     federation_name = config["federation_name"]
     sender_rti.connect(sender_federate, CallbackModel.HLA_EVOKED)
     receiver_rti.connect(receiver_federate, CallbackModel.HLA_EVOKED)
-    sender_rti.create_federation_execution(
+    sender_rti.createFederationExecution(
         federation_name,
         list(config["fom_modules"]),
         config["logical_time_implementation_name"],
     )
-    sender_rti.join_federation_execution("sender", "ddm", federation_name)
-    receiver_rti.join_federation_execution("receiver", "ddm", federation_name)
+    sender_rti.joinFederationExecution("sender", "ddm", federation_name)
+    receiver_rti.joinFederationExecution("receiver", "ddm", federation_name)
 
-    sender_rti.enable_time_regulation(config.get("lookahead", HLAfloat64Interval(1.0)))
-    receiver_rti.enable_time_constrained()
+    sender_rti.enableTimeRegulation(config.get("lookahead", HLAfloat64Interval(1.0)))
+    receiver_rti.enableTimeConstrained()
     time_regulation = wait_for_callback(
         sender_rti,
         sender_federate,
@@ -150,33 +150,33 @@ def run_suite_ddm_scenario(
     assert time_regulation is not None
     assert time_constrained is not None
 
-    sender_dimension = sender_rti.get_dimension_handle("HLAdefaultRoutingSpace")
-    receiver_dimension = receiver_rti.get_dimension_handle("HLAdefaultRoutingSpace")
-    source_near = sender_rti.create_region({sender_dimension})
-    source_far = sender_rti.create_region({sender_dimension})
-    target_region = receiver_rti.create_region({receiver_dimension})
-    sender_rti.set_range_bounds(source_near, sender_dimension, config["source_near"])
-    sender_rti.set_range_bounds(source_far, sender_dimension, config["source_far"])
-    receiver_rti.set_range_bounds(target_region, receiver_dimension, config["target_bounds"])
-    sender_rti.commit_region_modifications({source_near, source_far})
-    receiver_rti.commit_region_modifications({target_region})
+    sender_dimension = sender_rti.getDimensionHandle("HLAdefaultRoutingSpace")
+    receiver_dimension = receiver_rti.getDimensionHandle("HLAdefaultRoutingSpace")
+    source_near = sender_rti.createRegion({sender_dimension})
+    source_far = sender_rti.createRegion({sender_dimension})
+    target_region = receiver_rti.createRegion({receiver_dimension})
+    sender_rti.setRangeBounds(source_near, sender_dimension, config["source_near"])
+    sender_rti.setRangeBounds(source_far, sender_dimension, config["source_far"])
+    receiver_rti.setRangeBounds(target_region, receiver_dimension, config["target_bounds"])
+    sender_rti.commitRegionModifications({source_near, source_far})
+    receiver_rti.commitRegionModifications({target_region})
 
-    sender_interaction = sender_rti.get_interaction_class_handle(config["interaction_class_name"])
-    receiver_interaction = receiver_rti.get_interaction_class_handle(config["interaction_class_name"])
-    parameter = sender_rti.get_parameter_handle(sender_interaction, config["parameter_name"])
-    sender_rti.publish_interaction_class(sender_interaction)
-    receiver_rti.subscribe_interaction_class_with_regions(receiver_interaction, {target_region})
+    sender_interaction = sender_rti.getInteractionClassHandle(config["interaction_class_name"])
+    receiver_interaction = receiver_rti.getInteractionClassHandle(config["interaction_class_name"])
+    parameter = sender_rti.getParameterHandle(sender_interaction, config["parameter_name"])
+    sender_rti.publishInteractionClass(sender_interaction)
+    receiver_rti.subscribeInteractionClassWithRegions(receiver_interaction, {target_region})
     _evoke_pair(sender_rti, receiver_rti, rounds=16)
 
     received_baseline = len(receiver_federate.callbacks_named("receiveInteraction"))
-    sender_rti.send_interaction_with_regions(
+    sender_rti.sendInteractionWithRegions(
         sender_interaction,
         {parameter: config["far_payload"]},
         {source_far},
         config["far_tag"],
         config["far_time"],
     )
-    sender_rti.send_interaction_with_regions(
+    sender_rti.sendInteractionWithRegions(
         sender_interaction,
         {parameter: config["near_payload"]},
         {source_near},
@@ -184,8 +184,8 @@ def run_suite_ddm_scenario(
         config["near_time"],
     )
     _evoke_pair(sender_rti, receiver_rti, rounds=16)
-    sender_rti.time_advance_request(config["grant_time"])
-    receiver_rti.next_message_request_available(config["next_request_time"])
+    sender_rti.timeAdvanceRequest(config["grant_time"])
+    receiver_rti.nextMessageRequestAvailable(config["next_request_time"])
     received_records = wait_for_callback_count_pair(
         sender_rti,
         receiver_rti,

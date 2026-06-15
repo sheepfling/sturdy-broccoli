@@ -35,25 +35,25 @@ def run_local_delete_scenario(
 ) -> dict[str, Any]:
     owner_rti.connect(owner_federate, CallbackModel.HLA_EVOKED)
     observer_rti.connect(observer_federate, CallbackModel.HLA_EVOKED)
-    owner_rti.create_federation_execution(
+    owner_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    owner_handle = owner_rti.join_federation_execution(config.owner_name, config.federate_type, config.federation_name)
-    observer_handle = observer_rti.join_federation_execution(
+    owner_handle = owner_rti.joinFederationExecution(config.owner_name, config.federate_type, config.federation_name)
+    observer_handle = observer_rti.joinFederationExecution(
         config.observer_name,
         config.federate_type,
         config.federation_name,
     )
 
-    owner_class = owner_rti.get_object_class_handle(config.object_class_name)
-    observer_class = observer_rti.get_object_class_handle(config.object_class_name)
-    owner_attr = owner_rti.get_attribute_handle(owner_class, config.attribute_name)
-    observer_attr = observer_rti.get_attribute_handle(observer_class, config.attribute_name)
+    owner_class = owner_rti.getObjectClassHandle(config.object_class_name)
+    observer_class = observer_rti.getObjectClassHandle(config.object_class_name)
+    owner_attr = owner_rti.getAttributeHandle(owner_class, config.attribute_name)
+    observer_attr = observer_rti.getAttributeHandle(observer_class, config.attribute_name)
 
-    owner_rti.publish_object_class_attributes(owner_class, {owner_attr})
-    observer_rti.subscribe_object_class_attributes(observer_class, {observer_attr})
+    owner_rti.publishObjectClassAttributes(owner_class, {owner_attr})
+    observer_rti.subscribeObjectClassAttributes(observer_class, {observer_attr})
     drain_callbacks_pair(owner_rti, observer_rti, loops=8)
 
     object_instance = register_named_object_instance(
@@ -63,24 +63,24 @@ def run_local_delete_scenario(
         config.object_instance_name,
     )
     drain_callbacks_pair(owner_rti, observer_rti, loops=8)
-    assert observer_rti.get_object_instance_handle(config.object_instance_name) == object_instance
+    assert observer_rti.getObjectInstanceHandle(config.object_instance_name) == object_instance
 
     observer_federate.clear()
-    observer_rti.local_delete_object_instance(object_instance)
+    observer_rti.localDeleteObjectInstance(object_instance)
     with_object_missing = False
     with_class_missing = False
     try:
-        observer_rti.get_object_instance_handle(config.object_instance_name)
+        observer_rti.getObjectInstanceHandle(config.object_instance_name)
     except ObjectInstanceNotKnown:
         with_object_missing = True
     try:
-        observer_rti.get_known_object_class_handle(object_instance)
+        observer_rti.getKnownObjectClassHandle(object_instance)
     except ObjectInstanceNotKnown:
         with_class_missing = True
     assert with_object_missing
     assert with_class_missing
 
-    owner_rti.update_attribute_values(
+    owner_rti.updateAttributeValues(
         object_instance,
         {owner_attr: config.rediscover_payload},
         config.rediscover_tag,
@@ -91,8 +91,8 @@ def run_local_delete_scenario(
     reflection = observer_federate.last_callback("reflectAttributeValues")
     assert discovery is not None
     assert reflection is not None
-    assert observer_rti.get_object_instance_handle(config.object_instance_name) == object_instance
-    assert observer_rti.get_known_object_class_handle(object_instance) == observer_class
+    assert observer_rti.getObjectInstanceHandle(config.object_instance_name) == object_instance
+    assert observer_rti.getKnownObjectClassHandle(object_instance) == observer_class
 
     return {
         "owner_handle": owner_handle,

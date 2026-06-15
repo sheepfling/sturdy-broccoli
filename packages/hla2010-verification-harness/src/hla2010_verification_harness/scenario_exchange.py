@@ -27,14 +27,14 @@ def _try_set_timestamp_order(
     publisher_interaction: Any,
 ) -> None:
     try:
-        publisher_rti.change_attribute_order_type(
+        publisher_rti.changeAttributeOrderType(
             object_instance,
             {publisher_attr},
             OrderType.TIMESTAMP,
         )
     except UnsupportedBackendService:
         return
-    publisher_rti.change_interaction_order_type(
+    publisher_rti.changeInteractionOrderType(
         publisher_interaction,
         OrderType.TIMESTAMP,
     )
@@ -50,17 +50,17 @@ def run_two_federate_exchange_scenario(
 ) -> dict[str, Any]:
     publisher_rti.connect(publisher_federate, CallbackModel.HLA_EVOKED)
     subscriber_rti.connect(subscriber_federate, CallbackModel.HLA_EVOKED)
-    publisher_rti.create_federation_execution(
+    publisher_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    publisher_handle = publisher_rti.join_federation_execution(
+    publisher_handle = publisher_rti.joinFederationExecution(
         config.publisher_name,
         config.federate_type,
         config.federation_name,
     )
-    subscriber_handle = subscriber_rti.join_federation_execution(
+    subscriber_handle = subscriber_rti.joinFederationExecution(
         config.subscriber_name,
         config.federate_type,
         config.federation_name,
@@ -68,22 +68,22 @@ def run_two_federate_exchange_scenario(
     assert isinstance(publisher_handle, FederateHandle)
     assert isinstance(subscriber_handle, FederateHandle)
 
-    publisher_class = publisher_rti.get_object_class_handle(config.object_class_name)
-    subscriber_class = subscriber_rti.get_object_class_handle(config.object_class_name)
-    publisher_attr = publisher_rti.get_attribute_handle(publisher_class, config.attribute_name)
-    subscriber_attr = subscriber_rti.get_attribute_handle(subscriber_class, config.attribute_name)
-    publisher_rti.publish_object_class_attributes(publisher_class, {publisher_attr})
-    subscriber_rti.subscribe_object_class_attributes(
+    publisher_class = publisher_rti.getObjectClassHandle(config.object_class_name)
+    subscriber_class = subscriber_rti.getObjectClassHandle(config.object_class_name)
+    publisher_attr = publisher_rti.getAttributeHandle(publisher_class, config.attribute_name)
+    subscriber_attr = subscriber_rti.getAttributeHandle(subscriber_class, config.attribute_name)
+    publisher_rti.publishObjectClassAttributes(publisher_class, {publisher_attr})
+    subscriber_rti.subscribeObjectClassAttributes(
         the_class=subscriber_class,
         attribute_list={subscriber_attr},
     )
 
-    publisher_interaction = publisher_rti.get_interaction_class_handle(config.interaction_class_name)
-    subscriber_interaction = subscriber_rti.get_interaction_class_handle(config.interaction_class_name)
-    publisher_param = publisher_rti.get_parameter_handle(publisher_interaction, config.parameter_name)
-    subscriber_param = subscriber_rti.get_parameter_handle(subscriber_interaction, config.parameter_name)
-    publisher_rti.publish_interaction_class(publisher_interaction)
-    subscriber_rti.subscribe_interaction_class(subscriber_interaction)
+    publisher_interaction = publisher_rti.getInteractionClassHandle(config.interaction_class_name)
+    subscriber_interaction = subscriber_rti.getInteractionClassHandle(config.interaction_class_name)
+    publisher_param = publisher_rti.getParameterHandle(publisher_interaction, config.parameter_name)
+    subscriber_param = subscriber_rti.getParameterHandle(subscriber_interaction, config.parameter_name)
+    publisher_rti.publishInteractionClass(publisher_interaction)
+    subscriber_rti.subscribeInteractionClass(subscriber_interaction)
     drain_callbacks_pair(publisher_rti, subscriber_rti)
 
     discover_baseline = len(subscriber_federate.callbacks_named("discoverObjectInstance"))
@@ -106,11 +106,11 @@ def run_two_federate_exchange_scenario(
     discovered_object, discovered_class, discovered_name = discover.args[:3]
     assert discovered_class == subscriber_class
     assert discovered_name == config.object_instance_name
-    assert subscriber_rti.get_object_instance_handle(config.object_instance_name) == discovered_object
-    assert subscriber_rti.get_known_object_class_handle(discovered_object) == subscriber_class
+    assert subscriber_rti.getObjectInstanceHandle(config.object_instance_name) == discovered_object
+    assert subscriber_rti.getKnownObjectClassHandle(discovered_object) == subscriber_class
 
     reflect_baseline = len(subscriber_federate.callbacks_named("reflectAttributeValues"))
-    publisher_rti.update_attribute_values(
+    publisher_rti.updateAttributeValues(
         object_instance,
         {publisher_attr: config.attribute_payload},
         config.attribute_tag,
@@ -135,7 +135,7 @@ def run_two_federate_exchange_scenario(
     assert int(reflect.args[4].value) >= 1
 
     interaction_baseline = len(subscriber_federate.callbacks_named("receiveInteraction"))
-    publisher_rti.send_interaction(
+    publisher_rti.sendInteraction(
         publisher_interaction,
         {publisher_param: config.interaction_payload},
         config.interaction_tag,
@@ -177,8 +177,8 @@ def run_two_federate_exchange_scenario(
     }
 
     if config.enable_time_management:
-        publisher_rti.enable_time_regulation(config.lookahead)
-        subscriber_rti.enable_time_constrained()
+        publisher_rti.enableTimeRegulation(config.lookahead)
+        subscriber_rti.enableTimeConstrained()
         time_regulation = wait_for_callback(
             publisher_rti,
             publisher_federate,
@@ -204,20 +204,20 @@ def run_two_federate_exchange_scenario(
 
         timed_reflect_baseline = len(subscriber_federate.callbacks_named("reflectAttributeValues"))
         timed_interaction_baseline = len(subscriber_federate.callbacks_named("receiveInteraction"))
-        publisher_rti.update_attribute_values(
+        publisher_rti.updateAttributeValues(
             object_instance,
             {publisher_attr: config.timestamped_attribute_payload},
             config.timestamped_attribute_tag,
             config.timestamped_attribute_time,
         )
-        publisher_rti.send_interaction(
+        publisher_rti.sendInteraction(
             publisher_interaction,
             {publisher_param: config.timestamped_interaction_payload},
             config.timestamped_interaction_tag,
             config.timestamped_interaction_time,
         )
-        publisher_rti.time_advance_request(config.advance_time)
-        subscriber_rti.time_advance_request(config.advance_time)
+        publisher_rti.timeAdvanceRequest(config.advance_time)
+        subscriber_rti.timeAdvanceRequest(config.advance_time)
         drain_callbacks_pair(publisher_rti, subscriber_rti, loops=120)
 
         timed_reflect_records = wait_for_callback_count_pair(
@@ -286,9 +286,9 @@ def run_two_federate_exchange_scenario(
 
     remove_baseline = len(subscriber_federate.callbacks_named("removeObjectInstance"))
     try:
-        publisher_rti.delete_object_instance(object_instance, config.delete_tag)
+        publisher_rti.deleteObjectInstance(object_instance, config.delete_tag)
     except UnsupportedBackendService:
-        publisher_rti.unconditional_attribute_ownership_divestiture(
+        publisher_rti.unconditionalAttributeOwnershipDivestiture(
             object_instance,
             {publisher_attr},
         )

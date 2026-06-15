@@ -28,48 +28,48 @@ def run_basic_federate_scenario(
     federate = DemoFederate()
     summary: dict[str, Any] = {"backend": getattr(rti, "backend_info", None)}
     rti.connect(federate, CallbackModel.HLA_EVOKED)
-    rti.create_federation_execution(federation_name, "DemoFOMmodule.xml")
-    federate_handle = rti.join_federation_execution("python-federate", "demo", federation_name)
+    rti.createFederationExecution(federation_name, "DemoFOMmodule.xml")
+    federate_handle = rti.joinFederationExecution("python-federate", "demo", federation_name)
     assert isinstance(federate_handle, FederateHandle)
-    assert rti.get_federate_name(federate_handle) == "python-federate"
-    assert rti.get_federate_handle("python-federate") == federate_handle
-    object_class = rti.get_object_class_handle("HLAobjectRoot.DemoObject")
+    assert rti.getFederateName(federate_handle) == "python-federate"
+    assert rti.getFederateHandle("python-federate") == federate_handle
+    object_class = rti.getObjectClassHandle("HLAobjectRoot.DemoObject")
     assert isinstance(object_class, ObjectClassHandle)
-    assert rti.get_object_class_name(object_class) == "HLAobjectRoot.DemoObject"
-    attribute = rti.get_attribute_handle(object_class, "Payload")
+    assert rti.getObjectClassName(object_class) == "HLAobjectRoot.DemoObject"
+    attribute = rti.getAttributeHandle(object_class, "Payload")
     assert isinstance(attribute, AttributeHandle)
-    assert rti.get_attribute_name(object_class, attribute) == "Payload"
-    rti.publish_object_class_attributes(object_class, {attribute})
-    rti.subscribe_object_class_attributes(the_class=object_class, attribute_list={attribute})
-    object_instance = rti.register_object_instance(object_class, "DemoObject-1")
+    assert rti.getAttributeName(object_class, attribute) == "Payload"
+    rti.publishObjectClassAttributes(object_class, {attribute})
+    rti.subscribeObjectClassAttributes(the_class=object_class, attribute_list={attribute})
+    object_instance = rti.registerObjectInstance(object_class, "DemoObject-1")
     assert isinstance(object_instance, ObjectInstanceHandle)
-    assert rti.get_object_instance_handle("DemoObject-1") == object_instance
-    assert rti.get_object_instance_name(object_instance) == "DemoObject-1"
-    assert rti.get_known_object_class_handle(object_instance) == object_class
+    assert rti.getObjectInstanceHandle("DemoObject-1") == object_instance
+    assert rti.getObjectInstanceName(object_instance) == "DemoObject-1"
+    assert rti.getKnownObjectClassHandle(object_instance) == object_class
     drain_callbacks(rti)
-    rti.update_attribute_values(object_instance, {attribute: b"attribute-bytes"}, b"update-tag")
+    rti.updateAttributeValues(object_instance, {attribute: b"attribute-bytes"}, b"update-tag")
     drain_callbacks(rti)
-    interaction_class = rti.get_interaction_class_handle("HLAinteractionRoot.DemoInteraction")
+    interaction_class = rti.getInteractionClassHandle("HLAinteractionRoot.DemoInteraction")
     assert isinstance(interaction_class, InteractionClassHandle)
-    assert rti.get_interaction_class_name(interaction_class) == "HLAinteractionRoot.DemoInteraction"
-    parameter = rti.get_parameter_handle(interaction_class, "Message")
+    assert rti.getInteractionClassName(interaction_class) == "HLAinteractionRoot.DemoInteraction"
+    parameter = rti.getParameterHandle(interaction_class, "Message")
     assert isinstance(parameter, ParameterHandle)
-    assert rti.get_parameter_name(interaction_class, parameter) == "Message"
-    rti.publish_interaction_class(interaction_class)
-    rti.subscribe_interaction_class(interaction_class)
-    rti.send_interaction(interaction_class, {parameter: b"hello"}, b"interaction-tag")
+    assert rti.getParameterName(interaction_class, parameter) == "Message"
+    rti.publishInteractionClass(interaction_class)
+    rti.subscribeInteractionClass(interaction_class)
+    rti.sendInteraction(interaction_class, {parameter: b"hello"}, b"interaction-tag")
     drain_callbacks(rti)
-    rti.enable_time_regulation(HLAinteger64Interval(1))
-    rti.enable_time_constrained()
-    rti.time_advance_request(HLAinteger64Time(10))
+    rti.enableTimeRegulation(HLAinteger64Interval(1))
+    rti.enableTimeConstrained()
+    rti.timeAdvanceRequest(HLAinteger64Time(10))
     drain_callbacks(rti)
-    dimension = rti.get_dimension_handle("RoutingSpace")
+    dimension = rti.getDimensionHandle("RoutingSpace")
     assert isinstance(dimension, DimensionHandle)
-    assert rti.get_dimension_name(dimension) == "RoutingSpace"
-    region = rti.create_region({dimension})
+    assert rti.getDimensionName(dimension) == "RoutingSpace"
+    region = rti.createRegion({dimension})
     assert isinstance(region, RegionHandle)
-    rti.commit_region_modifications({region})
-    rti.delete_region(region)
+    rti.commitRegionModifications({region})
+    rti.deleteRegion(region)
     event_names = [name for name, _ in federate.events]
     assert "discover" in event_names
     assert "reflect" in event_names
@@ -105,8 +105,8 @@ def run_basic_federate_scenario(
             "event_names": event_names,
         }
     )
-    rti.resign_federation_execution(ResignAction.NO_ACTION)
-    rti.destroy_federation_execution(federation_name)
+    rti.resignFederationExecution(ResignAction.NO_ACTION)
+    rti.destroyFederationExecution(federation_name)
     rti.disconnect()
     rti.close()
     return summary

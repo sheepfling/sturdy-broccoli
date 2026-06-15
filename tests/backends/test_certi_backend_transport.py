@@ -50,7 +50,7 @@ def test_certi_backend_can_run_against_an_injected_transport():
 
     assert backend.start() is backend
     assert transport.started is True
-    assert rti.get_hla_version() == "HLA 1516.1-2010"
+    assert rti.getHLAversion() == "HLA 1516.1-2010"
 
     rti.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
     assert transport.requests[0][0] == "GET_HLA_VERSION"

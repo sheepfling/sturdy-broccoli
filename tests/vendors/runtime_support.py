@@ -211,19 +211,19 @@ def cleanup_federation(
 ) -> None:
     if destroyer is not None and destroyer_resign_action is not None:
         try:
-            destroyer.resign_federation_execution(destroyer_resign_action)
+            destroyer.resignFederationExecution(destroyer_resign_action)
         except BaseException:
             pass
     for rti, action in remaining_resignations:
         if rti is None:
             continue
         try:
-            rti.resign_federation_execution(action)
+            rti.resignFederationExecution(action)
         except BaseException:
             pass
     if destroyer is not None:
         try:
-            destroyer.destroy_federation_execution(federation_name)
+            destroyer.destroyFederationExecution(federation_name)
         except BaseException:
             pass
     for rti in disconnect_rtis:

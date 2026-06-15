@@ -44,16 +44,16 @@ def run_federation_lifecycle_scenario(
     rti.connect(federate, CallbackModel.HLA_EVOKED)
     create_args = (config.federation_name, list(config.fom_modules), config.logical_time_implementation_name)
     if config.use_mim_create:
-        rti.create_federation_execution_with_mim(*create_args)
+        rti.createFederationExecutionWithMIM(*create_args)
     else:
-        rti.create_federation_execution(*create_args)
-    federate_handle = rti.join_federation_execution(
+        rti.createFederationExecution(*create_args)
+    federate_handle = rti.joinFederationExecution(
         config.federate_name,
         config.federate_type,
         config.federation_name,
     )
-    rti.resign_federation_execution(config.resign_action)
-    rti.destroy_federation_execution(config.federation_name)
+    rti.resignFederationExecution(config.resign_action)
+    rti.destroyFederationExecution(config.federation_name)
     rti.disconnect()
     return {
         "federation_name": config.federation_name,
@@ -86,21 +86,21 @@ def run_federation_listing_scenario(
     rti.connect(federate, CallbackModel.HLA_EVOKED)
     destroyed = False
     try:
-        rti.create_federation_execution(
+        rti.createFederationExecution(
             config.federation_name,
             list(config.fom_modules),
             config.logical_time_implementation_name,
         )
-        rti.list_federation_executions()
+        rti.listFederationExecutions()
         drain_callbacks(rti)
         report = wait_for_callback(rti, federate, "reportFederationExecutions", loops=120)
         assert report is not None
         reported_names = {_federation_execution_name(item) for item in report.args[0]}
         assert config.federation_name in reported_names
 
-        rti.destroy_federation_execution(config.federation_name)
+        rti.destroyFederationExecution(config.federation_name)
         destroyed = True
-        rti.list_federation_executions()
+        rti.listFederationExecutions()
         drain_callbacks(rti)
         post_destroy_report = wait_for_callback(rti, federate, "reportFederationExecutions", loops=120)
         assert post_destroy_report is not None
@@ -116,7 +116,7 @@ def run_federation_listing_scenario(
     finally:
         try:
             if not destroyed:
-                rti.destroy_federation_execution(config.federation_name)
+                rti.destroyFederationExecution(config.federation_name)
         finally:
             rti.disconnect()
 
@@ -125,7 +125,7 @@ def _resolve_interaction_handle(rti: Any, *names: str) -> Any:
     last_error: Exception | None = None
     for name in names:
         try:
-            return rti.get_interaction_class_handle(name)
+            return rti.getInteractionClassHandle(name)
         except Exception as exc:  # pragma: no cover - backend-specific naming fallback
             last_error = exc
     assert last_error is not None
@@ -136,7 +136,7 @@ def _resolve_parameter_handle(rti: Any, interaction: Any, *names: str) -> Any:
     last_error: Exception | None = None
     for name in names:
         try:
-            return rti.get_parameter_handle(interaction, name)
+            return rti.getParameterHandle(interaction, name)
         except Exception as exc:  # pragma: no cover - backend-specific naming fallback
             last_error = exc
     assert last_error is not None
@@ -199,21 +199,21 @@ def run_fom_module_visibility_scenario(
 ) -> dict[str, Any]:
     rti.connect(federate, CallbackModel.HLA_EVOKED)
     try:
-        rti.create_federation_execution(
+        rti.createFederationExecution(
             config.federation_name,
             list(config.fom_modules),
             config.logical_time_implementation_name,
         )
-        federate_handle = rti.join_federation_execution(
+        federate_handle = rti.joinFederationExecution(
             config.federate_name,
             config.federate_type,
             config.federation_name,
         )
 
-        federation_class = rti.get_object_class_handle(mom.MOM_FEDERATION_OBJECT_CLASS)
-        federate_class = rti.get_object_class_handle(mom.MOM_FEDERATE_OBJECT_CLASS)
-        federation_name_attr = rti.get_attribute_handle(federation_class, "HLAfederationName")
-        federate_name_attr = rti.get_attribute_handle(federate_class, "HLAfederateName")
+        federation_class = rti.getObjectClassHandle(mom.MOM_FEDERATION_OBJECT_CLASS)
+        federate_class = rti.getObjectClassHandle(mom.MOM_FEDERATE_OBJECT_CLASS)
+        federation_name_attr = rti.getAttributeHandle(federation_class, "HLAfederationName")
+        federate_name_attr = rti.getAttributeHandle(federate_class, "HLAfederateName")
 
         fom_request = _resolve_interaction_handle(
             rti,
@@ -238,16 +238,16 @@ def run_fom_module_visibility_scenario(
         )
         mim_data = _resolve_parameter_handle(rti, mim_report, "HLAMIMData", "HLAMIMdata")
 
-        rti.subscribe_interaction_class(fom_report)
-        rti.send_interaction(fom_request, {fom_indicator: b"0"}, b"fom-request")
+        rti.subscribeInteractionClass(fom_report)
+        rti.sendInteraction(fom_request, {fom_indicator: b"0"}, b"fom-request")
         fom_reports = wait_for_callback_count(rti, federate, "receiveInteraction", 1, loops=120)
         matching_fom_reports = [record for record in fom_reports if record.args[0] == fom_report]
         assert matching_fom_reports, "Expected a MOM FOM-module report interaction"
         fom_report_record = matching_fom_reports[-1]
         assert fom_data in fom_report_record.args[1]
 
-        rti.subscribe_interaction_class(mim_report)
-        rti.send_interaction(mim_request, {}, b"mim-request")
+        rti.subscribeInteractionClass(mim_report)
+        rti.sendInteraction(mim_request, {}, b"mim-request")
         mim_reports = wait_for_callback_count(rti, federate, "receiveInteraction", 2, loops=120)
         matching_mim_reports = [record for record in mim_reports if record.args[0] == mim_report]
         assert matching_mim_reports, "Expected a MOM MIM-data report interaction"
@@ -266,11 +266,11 @@ def run_fom_module_visibility_scenario(
         }
     finally:
         try:
-            rti.resign_federation_execution(config.resign_action)
+            rti.resignFederationExecution(config.resign_action)
         except Exception:
             pass
         try:
-            rti.destroy_federation_execution(config.federation_name)
+            rti.destroyFederationExecution(config.federation_name)
         except Exception:
             pass
         rti.disconnect()
@@ -305,12 +305,12 @@ def run_multi_module_fom_visibility_scenario(
 
         rti.connect(federate, CallbackModel.HLA_EVOKED)
         try:
-            rti.create_federation_execution(
+            rti.createFederationExecution(
                 config.federation_name,
                 [first_fom, second_fom],
                 config.logical_time_implementation_name,
             )
-            federate_handle = rti.join_federation_execution(
+            federate_handle = rti.joinFederationExecution(
                 config.federate_name,
                 config.federate_type,
                 config.federation_name,
@@ -327,8 +327,8 @@ def run_multi_module_fom_visibility_scenario(
             fom_indicator = _resolve_parameter_handle(rti, fom_request, "HLAFOMmoduleIndicator")
             fom_data = _resolve_parameter_handle(rti, fom_report, "HLAFOMmoduleData")
 
-            rti.subscribe_interaction_class(fom_report)
-            rti.send_interaction(fom_request, {fom_indicator: b"0"}, b"fom-multi-request")
+            rti.subscribeInteractionClass(fom_report)
+            rti.sendInteraction(fom_request, {fom_indicator: b"0"}, b"fom-multi-request")
             reports = wait_for_callback_count(rti, federate, "receiveInteraction", 1, loops=120)
             matching_reports = [record for record in reports if record.args[0] == fom_report]
             assert matching_reports, "Expected a MOM FOM-module report interaction"
@@ -346,11 +346,11 @@ def run_multi_module_fom_visibility_scenario(
             }
         finally:
             try:
-                rti.resign_federation_execution(config.resign_action)
+                rti.resignFederationExecution(config.resign_action)
             except Exception:
                 pass
             try:
-                rti.destroy_federation_execution(config.federation_name)
+                rti.destroyFederationExecution(config.federation_name)
             except Exception:
                 pass
             rti.disconnect()
@@ -388,14 +388,14 @@ def run_fom_integrity_negative_scenario(
         bad_fom.write_text("<not-an-object-model/>", encoding="utf-8")
 
         try:
-            leader_rti.create_federation_execution(f"{config.federation_name}-missing", [missing_fom])
+            leader_rti.createFederationExecution(f"{config.federation_name}-missing", [missing_fom])
         except CouldNotOpenFDD as exc:
             create_missing = exc
         else:  # pragma: no cover - scenario contract
             raise AssertionError("Expected missing create FOM to raise CouldNotOpenFDD")
 
         try:
-            leader_rti.create_federation_execution(f"{config.federation_name}-bad", [bad_fom])
+            leader_rti.createFederationExecution(f"{config.federation_name}-bad", [bad_fom])
         except ErrorReadingFDD as exc:
             create_bad = exc
         else:  # pragma: no cover - scenario contract
@@ -403,24 +403,24 @@ def run_fom_integrity_negative_scenario(
 
         transactional_federation_name = f"{config.federation_name}-transactional"
         try:
-            leader_rti.create_federation_execution(transactional_federation_name, [primary_fom, conflicting_fom])
+            leader_rti.createFederationExecution(transactional_federation_name, [primary_fom, conflicting_fom])
         except InconsistentFDD as exc:
             create_inconsistent = exc
         else:  # pragma: no cover - scenario contract
             raise AssertionError("Expected conflicting create FOM set to raise InconsistentFDD")
 
-        leader_rti.create_federation_execution(transactional_federation_name, [primary_fom])
-        leader_rti.destroy_federation_execution(transactional_federation_name)
+        leader_rti.createFederationExecution(transactional_federation_name, [primary_fom])
+        leader_rti.destroyFederationExecution(transactional_federation_name)
 
-        leader_rti.create_federation_execution(config.federation_name, [primary_fom])
-        leader_handle = leader_rti.join_federation_execution(
+        leader_rti.createFederationExecution(config.federation_name, [primary_fom])
+        leader_handle = leader_rti.joinFederationExecution(
             config.federate_name,
             config.federate_type,
             config.federation_name,
         )
 
         try:
-            wing_rti.join_federation_execution(
+            wing_rti.joinFederationExecution(
                 config.second_federate_name,
                 config.federate_type,
                 config.federation_name,
@@ -432,7 +432,7 @@ def run_fom_integrity_negative_scenario(
             raise AssertionError("Expected missing join FOM to raise CouldNotOpenFDD")
 
         try:
-            wing_rti.join_federation_execution(
+            wing_rti.joinFederationExecution(
                 config.second_federate_name,
                 config.federate_type,
                 config.federation_name,
@@ -444,7 +444,7 @@ def run_fom_integrity_negative_scenario(
             raise AssertionError("Expected malformed join FOM to raise ErrorReadingFDD")
 
         try:
-            wing_rti.join_federation_execution(
+            wing_rti.joinFederationExecution(
                 config.second_federate_name,
                 config.federate_type,
                 config.federation_name,
@@ -455,22 +455,22 @@ def run_fom_integrity_negative_scenario(
         else:  # pragma: no cover - scenario contract
             raise AssertionError("Expected conflicting join FOM set to raise InconsistentFDD")
 
-        wing_handle = wing_rti.join_federation_execution(
+        wing_handle = wing_rti.joinFederationExecution(
             config.second_federate_name,
             config.federate_type,
             config.federation_name,
         )
 
         try:
-            wing_rti.resign_federation_execution(config.resign_action)
+            wing_rti.resignFederationExecution(config.resign_action)
         except Exception:
             pass
         try:
-            leader_rti.resign_federation_execution(config.resign_action)
+            leader_rti.resignFederationExecution(config.resign_action)
         except Exception:
             pass
         try:
-            leader_rti.destroy_federation_execution(config.federation_name)
+            leader_rti.destroyFederationExecution(config.federation_name)
         except Exception:
             pass
         leader_rti.disconnect()
@@ -503,13 +503,13 @@ def run_federation_lifecycle_negative_scenario(
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected a repeated connect attempt to raise AlreadyConnected")
 
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
     try:
-        leader_rti.create_federation_execution(
+        leader_rti.createFederationExecution(
             config.federation_name,
             list(config.fom_modules),
             config.logical_time_implementation_name,
@@ -519,7 +519,7 @@ def run_federation_lifecycle_negative_scenario(
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected a duplicate create attempt to raise FederationExecutionAlreadyExists")
 
-    leader_handle = leader_rti.join_federation_execution(
+    leader_handle = leader_rti.joinFederationExecution(
         config.federate_name,
         config.federate_type,
         config.federation_name,
@@ -532,23 +532,23 @@ def run_federation_lifecycle_negative_scenario(
         raise AssertionError("Expected disconnect while joined to raise FederateIsExecutionMember")
 
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
-    wing_handle = wing_rti.join_federation_execution(
+    wing_handle = wing_rti.joinFederationExecution(
         f"{config.federate_name}-wing",
         config.federate_type,
         config.federation_name,
     )
     try:
-        leader_rti.destroy_federation_execution(config.federation_name)
+        leader_rti.destroyFederationExecution(config.federation_name)
     except FederatesCurrentlyJoined as exc:
         destroy_with_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected destroy with joined members to raise FederatesCurrentlyJoined")
 
-    leader_rti.resign_federation_execution(config.resign_action)
-    wing_rti.resign_federation_execution(config.resign_action)
-    leader_rti.destroy_federation_execution(config.federation_name)
+    leader_rti.resignFederationExecution(config.resign_action)
+    wing_rti.resignFederationExecution(config.resign_action)
+    leader_rti.destroyFederationExecution(config.federation_name)
     try:
-        leader_rti.destroy_federation_execution(config.federation_name)
+        leader_rti.destroyFederationExecution(config.federation_name)
     except FederationExecutionDoesNotExist as exc:
         destroy_missing = exc
     else:  # pragma: no cover - scenario contract
@@ -585,28 +585,28 @@ def run_multi_participation_scenario(
     shadow_rti.connect(shadow_federate, CallbackModel.HLA_EVOKED)
 
     try:
-        leader_rti.create_federation_execution(
+        leader_rti.createFederationExecution(
             config.federation_name,
             list(config.fom_modules),
             config.logical_time_implementation_name,
         )
-        shadow_rti.create_federation_execution(
+        shadow_rti.createFederationExecution(
             secondary_federation_name,
             list(config.fom_modules),
             config.logical_time_implementation_name,
         )
 
-        leader_handle = leader_rti.join_federation_execution(
+        leader_handle = leader_rti.joinFederationExecution(
             config.federate_name,
             config.federate_type,
             config.federation_name,
         )
-        wing_handle = wing_rti.join_federation_execution(
+        wing_handle = wing_rti.joinFederationExecution(
             config.second_federate_name,
             config.federate_type,
             config.federation_name,
         )
-        shadow_handle = shadow_rti.join_federation_execution(
+        shadow_handle = shadow_rti.joinFederationExecution(
             config.secondary_federate_name,
             config.federate_type,
             secondary_federation_name,
@@ -621,23 +621,23 @@ def run_multi_participation_scenario(
         }
     finally:
         try:
-            leader_rti.resign_federation_execution(config.resign_action)
+            leader_rti.resignFederationExecution(config.resign_action)
         except Exception:
             pass
         try:
-            wing_rti.resign_federation_execution(config.resign_action)
+            wing_rti.resignFederationExecution(config.resign_action)
         except Exception:
             pass
         try:
-            shadow_rti.resign_federation_execution(config.resign_action)
+            shadow_rti.resignFederationExecution(config.resign_action)
         except Exception:
             pass
         try:
-            leader_rti.destroy_federation_execution(config.federation_name)
+            leader_rti.destroyFederationExecution(config.federation_name)
         except Exception:
             pass
         try:
-            shadow_rti.destroy_federation_execution(secondary_federation_name)
+            shadow_rti.destroyFederationExecution(secondary_federation_name)
         except Exception:
             pass
         try:

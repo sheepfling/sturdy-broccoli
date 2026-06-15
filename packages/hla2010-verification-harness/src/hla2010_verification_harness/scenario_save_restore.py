@@ -52,15 +52,15 @@ def run_save_restore_scenario(
 ) -> dict[str, Any]:
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    leader_handle = leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_handle = wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    leader_handle = leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_handle = wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
 
-    leader_rti.request_federation_save(config.save_name)
+    leader_rti.requestFederationSave(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_initiate_save = wait_for_callback(leader_rti, leader_federate, "initiateFederateSave", loops=120)
     wing_initiate_save = wait_for_callback(wing_rti, wing_federate, "initiateFederateSave", loops=120)
@@ -70,7 +70,7 @@ def run_save_restore_scenario(
     assert wing_initiate_save.args[0] == config.save_name
 
     save_status_count = len(leader_federate.callbacks_named("federationSaveStatusResponse")) + 1
-    leader_rti.query_federation_save_status()
+    leader_rti.queryFederationSaveStatus()
     save_status_records = wait_for_callback_count(
         leader_rti,
         leader_federate,
@@ -83,17 +83,17 @@ def run_save_restore_scenario(
     assert pending_save[leader_handle] is not SaveStatus.NO_SAVE_IN_PROGRESS
     assert pending_save[wing_handle] is not SaveStatus.NO_SAVE_IN_PROGRESS
 
-    leader_rti.federate_save_begun()
-    wing_rti.federate_save_begun()
-    leader_rti.federate_save_complete()
-    wing_rti.federate_save_complete()
+    leader_rti.federateSaveBegun()
+    wing_rti.federateSaveBegun()
+    leader_rti.federateSaveComplete()
+    wing_rti.federateSaveComplete()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_saved = wait_for_callback(leader_rti, leader_federate, "federationSaved", loops=120)
     wing_saved = wait_for_callback(wing_rti, wing_federate, "federationSaved", loops=120)
     assert leader_saved is not None
     assert wing_saved is not None
 
-    leader_rti.query_federation_save_status()
+    leader_rti.queryFederationSaveStatus()
     save_status_cleared_records = wait_for_callback_count(
         leader_rti,
         leader_federate,
@@ -105,7 +105,7 @@ def run_save_restore_scenario(
     cleared_save = _save_statuses(save_status_cleared)
     assert all(status is SaveStatus.NO_SAVE_IN_PROGRESS for status in cleared_save.values())
 
-    leader_rti.request_federation_restore(config.save_name)
+    leader_rti.requestFederationRestore(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_restore_succeeded = wait_for_callback(
         leader_rti,
@@ -132,7 +132,7 @@ def run_save_restore_scenario(
     assert wing_initiate_restore.args[0] == config.save_name
 
     restore_status_count = len(leader_federate.callbacks_named("federationRestoreStatusResponse")) + 1
-    leader_rti.query_federation_restore_status()
+    leader_rti.queryFederationRestoreStatus()
     restore_status_records = wait_for_callback_count(
         leader_rti,
         leader_federate,
@@ -145,15 +145,15 @@ def run_save_restore_scenario(
     assert pending_restore[leader_handle] is not RestoreStatus.NO_RESTORE_IN_PROGRESS
     assert pending_restore[wing_handle] is not RestoreStatus.NO_RESTORE_IN_PROGRESS
 
-    leader_rti.federate_restore_complete()
-    wing_rti.federate_restore_complete()
+    leader_rti.federateRestoreComplete()
+    wing_rti.federateRestoreComplete()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_restored = wait_for_callback(leader_rti, leader_federate, "federationRestored", loops=120)
     wing_restored = wait_for_callback(wing_rti, wing_federate, "federationRestored", loops=120)
     assert leader_restored is not None
     assert wing_restored is not None
 
-    leader_rti.query_federation_restore_status()
+    leader_rti.queryFederationRestoreStatus()
     restore_status_cleared_records = wait_for_callback_count(
         leader_rti,
         leader_federate,
@@ -196,31 +196,31 @@ def run_scheduled_save_restore_time_state_scenario(
 ) -> dict[str, Any]:
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    leader_handle = leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_handle = wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
-    leader_factory = leader_rti.get_time_factory()
-    wing_factory = wing_rti.get_time_factory()
+    leader_handle = leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_handle = wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
+    leader_factory = leader_rti.getTimeFactory()
+    wing_factory = wing_rti.getTimeFactory()
     expected_save_time_leader = leader_factory.make_time(_time_value(save_time))
     expected_save_time_wing = wing_factory.make_time(_time_value(save_time))
     expected_post_save_time_leader = leader_factory.make_time(_time_value(post_save_time))
     expected_post_save_time_wing = wing_factory.make_time(_time_value(post_save_time))
 
-    leader_rti.enable_time_constrained()
-    wing_rti.enable_time_constrained()
+    leader_rti.enableTimeConstrained()
+    wing_rti.enableTimeConstrained()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
 
-    leader_rti.request_federation_save(config.save_name, save_time)
+    leader_rti.requestFederationSave(config.save_name, save_time)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     assert leader_federate.last_callback("initiateFederateSave") is None
     assert wing_federate.last_callback("initiateFederateSave") is None
 
-    leader_rti.time_advance_request_available(save_time)
-    wing_rti.time_advance_request_available(save_time)
+    leader_rti.timeAdvanceRequestAvailable(save_time)
+    wing_rti.timeAdvanceRequestAvailable(save_time)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_initiate_save = wait_for_callback(leader_rti, leader_federate, "initiateFederateSave", loops=120)
     wing_initiate_save = wait_for_callback(wing_rti, wing_federate, "initiateFederateSave", loops=120)
@@ -229,24 +229,24 @@ def run_scheduled_save_restore_time_state_scenario(
     assert leader_initiate_save.args[0] == config.save_name
     assert wing_initiate_save.args[0] == config.save_name
 
-    leader_rti.federate_save_begun()
-    wing_rti.federate_save_begun()
-    leader_rti.federate_save_complete()
-    wing_rti.federate_save_complete()
+    leader_rti.federateSaveBegun()
+    wing_rti.federateSaveBegun()
+    leader_rti.federateSaveComplete()
+    wing_rti.federateSaveComplete()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_saved = wait_for_callback(leader_rti, leader_federate, "federationSaved", loops=120)
     wing_saved = wait_for_callback(wing_rti, wing_federate, "federationSaved", loops=120)
     assert leader_saved is not None
     assert wing_saved is not None
 
-    leader_rti.time_advance_request_available(post_save_time)
-    wing_rti.time_advance_request_available(post_save_time)
+    leader_rti.timeAdvanceRequestAvailable(post_save_time)
+    wing_rti.timeAdvanceRequestAvailable(post_save_time)
     leader_logical_time = None
     wing_logical_time = None
     for _ in range(24):
         drain_callbacks_pair(leader_rti, wing_rti, loops=2)
-        leader_logical_time = leader_rti.query_logical_time()
-        wing_logical_time = wing_rti.query_logical_time()
+        leader_logical_time = leader_rti.queryLogicalTime()
+        wing_logical_time = wing_rti.queryLogicalTime()
         if (
             leader_logical_time == expected_post_save_time_leader
             and wing_logical_time == expected_post_save_time_wing
@@ -255,7 +255,7 @@ def run_scheduled_save_restore_time_state_scenario(
     assert leader_logical_time == expected_post_save_time_leader
     assert wing_logical_time == expected_post_save_time_wing
 
-    leader_rti.request_federation_restore(config.save_name)
+    leader_rti.requestFederationRestore(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_restore_succeeded = wait_for_callback(
         leader_rti,
@@ -281,16 +281,16 @@ def run_scheduled_save_restore_time_state_scenario(
     assert leader_restore_succeeded.args == (config.save_name,)
     assert wing_initiate_restore.args[0] == config.save_name
 
-    leader_rti.federate_restore_complete()
-    wing_rti.federate_restore_complete()
+    leader_rti.federateRestoreComplete()
+    wing_rti.federateRestoreComplete()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_restored = wait_for_callback(leader_rti, leader_federate, "federationRestored", loops=120)
     wing_restored = wait_for_callback(wing_rti, wing_federate, "federationRestored", loops=120)
     assert leader_restored is not None
     assert wing_restored is not None
 
-    restored_leader_time = leader_rti.query_logical_time()
-    restored_wing_time = wing_rti.query_logical_time()
+    restored_leader_time = leader_rti.queryLogicalTime()
+    restored_wing_time = wing_rti.queryLogicalTime()
     assert restored_leader_time == expected_save_time_leader
     assert restored_wing_time == expected_save_time_wing
 
@@ -330,7 +330,7 @@ def run_save_restore_queued_callback_scenario(
     )
 
     try:
-        leader_rti.request_federation_save(config.save_name)
+        leader_rti.requestFederationSave(config.save_name)
         leader_initiate_save = wait_for_callback(leader_rti, leader_federate, "initiateFederateSave", loops=120)
         assert leader_initiate_save is not None
         assert leader_initiate_save.args == (config.save_name,)
@@ -340,10 +340,10 @@ def run_save_restore_queued_callback_scenario(
         assert wing_initiate_save is not None
         assert wing_initiate_save.args == (config.save_name,)
 
-        leader_rti.federate_save_begun()
-        wing_rti.federate_save_begun()
-        leader_rti.federate_save_complete()
-        wing_rti.federate_save_complete()
+        leader_rti.federateSaveBegun()
+        wing_rti.federateSaveBegun()
+        leader_rti.federateSaveComplete()
+        wing_rti.federateSaveComplete()
 
         leader_saved = wait_for_callback(leader_rti, leader_federate, "federationSaved", loops=120)
         assert leader_saved is not None
@@ -352,7 +352,7 @@ def run_save_restore_queued_callback_scenario(
         wing_saved = wait_for_callback(wing_rti, wing_federate, "federationSaved", loops=120)
         assert wing_saved is not None
 
-        leader_rti.request_federation_restore(config.save_name)
+        leader_rti.requestFederationRestore(config.save_name)
         leader_restore_succeeded = wait_for_callback(
             leader_rti,
             leader_federate,
@@ -379,8 +379,8 @@ def run_save_restore_queued_callback_scenario(
         assert wing_initiate_restore is not None
         assert wing_initiate_restore.args[0] == config.save_name
 
-        leader_rti.federate_restore_complete()
-        wing_rti.federate_restore_complete()
+        leader_rti.federateRestoreComplete()
+        wing_rti.federateRestoreComplete()
 
         leader_restored = wait_for_callback(leader_rti, leader_federate, "federationRestored", loops=120)
         assert leader_restored is not None
@@ -402,15 +402,15 @@ def run_save_restore_queued_callback_scenario(
         }
     finally:
         try:
-            leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            leader_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            wing_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            wing_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            leader_rti.destroy_federation_execution(config.federation_name)
+            leader_rti.destroyFederationExecution(config.federation_name)
         except Exception:
             pass
         try:
@@ -433,13 +433,13 @@ def _connect_pair(
 ) -> tuple[Any, Any]:
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    leader_handle = leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_handle = wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    leader_handle = leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_handle = wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
     return leader_handle, wing_handle
 
 
@@ -467,17 +467,17 @@ def run_restore_round_trip_scenario(
     }
     setup_saved_state(leader_rti, wing_rti, context)
 
-    leader_rti.request_federation_save(config.save_name)
+    leader_rti.requestFederationSave(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_initiate_save = wait_for_callback(leader_rti, leader_federate, "initiateFederateSave", loops=120)
     wing_initiate_save = wait_for_callback(wing_rti, wing_federate, "initiateFederateSave", loops=120)
     assert leader_initiate_save is not None
     assert wing_initiate_save is not None
 
-    leader_rti.federate_save_begun()
-    wing_rti.federate_save_begun()
-    leader_rti.federate_save_complete()
-    wing_rti.federate_save_complete()
+    leader_rti.federateSaveBegun()
+    wing_rti.federateSaveBegun()
+    leader_rti.federateSaveComplete()
+    wing_rti.federateSaveComplete()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_saved = wait_for_callback(leader_rti, leader_federate, "federationSaved", loops=120)
     wing_saved = wait_for_callback(wing_rti, wing_federate, "federationSaved", loops=120)
@@ -486,7 +486,7 @@ def run_restore_round_trip_scenario(
 
     mutate_post_save_state(leader_rti, wing_rti, context)
 
-    leader_rti.request_federation_restore(config.save_name)
+    leader_rti.requestFederationRestore(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_restore_succeeded = wait_for_callback(
         leader_rti,
@@ -510,8 +510,8 @@ def run_restore_round_trip_scenario(
     assert leader_restore_begun is not None
     assert wing_initiate_restore is not None
 
-    leader_rti.federate_restore_complete()
-    wing_rti.federate_restore_complete()
+    leader_rti.federateRestoreComplete()
+    wing_rti.federateRestoreComplete()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_restored = wait_for_callback(leader_rti, leader_federate, "federationRestored", loops=120)
     wing_restored = wait_for_callback(wing_rti, wing_federate, "federationRestored", loops=120)
@@ -553,19 +553,19 @@ def run_restore_object_state_scenario(
     mutated_tag: bytes = b"mutated",
 ) -> dict[str, Any]:
     def _default_setup_saved_state(owner: Any, acquirer: Any, context: dict[str, Any]) -> None:
-        owner_class = owner.get_object_class_handle(object_class_name)
-        acquirer_class = acquirer.get_object_class_handle(object_class_name)
-        owner_attribute = owner.get_attribute_handle(owner_class, attribute_name)
-        acquirer_attribute = acquirer.get_attribute_handle(acquirer_class, attribute_name)
-        owner.publish_object_class_attributes(owner_class, {owner_attribute})
-        acquirer.publish_object_class_attributes(acquirer_class, {acquirer_attribute})
-        acquirer.subscribe_object_class_attributes(acquirer_class, {acquirer_attribute})
-        object_instance = owner.register_object_instance(owner_class, object_instance_name)
-        owner.update_attribute_values(object_instance, {owner_attribute: saved_value}, saved_tag)
+        owner_class = owner.getObjectClassHandle(object_class_name)
+        acquirer_class = acquirer.getObjectClassHandle(object_class_name)
+        owner_attribute = owner.getAttributeHandle(owner_class, attribute_name)
+        acquirer_attribute = acquirer.getAttributeHandle(acquirer_class, attribute_name)
+        owner.publishObjectClassAttributes(owner_class, {owner_attribute})
+        acquirer.publishObjectClassAttributes(acquirer_class, {acquirer_attribute})
+        acquirer.subscribeObjectClassAttributes(acquirer_class, {acquirer_attribute})
+        object_instance = owner.registerObjectInstance(owner_class, object_instance_name)
+        owner.updateAttributeValues(object_instance, {owner_attribute: saved_value}, saved_tag)
         drain_callbacks_pair(owner, acquirer, loops=16)
-        owner.unconditional_attribute_ownership_divestiture(object_instance, {owner_attribute})
-        acquirer_object_instance = acquirer.get_object_instance_handle(object_instance_name)
-        acquirer.attribute_ownership_acquisition_if_available(acquirer_object_instance, {acquirer_attribute})
+        owner.unconditionalAttributeOwnershipDivestiture(object_instance, {owner_attribute})
+        acquirer_object_instance = acquirer.getObjectInstanceHandle(object_instance_name)
+        acquirer.attributeOwnershipAcquisitionIfAvailable(acquirer_object_instance, {acquirer_attribute})
         drain_callbacks_pair(owner, acquirer, loops=16)
         context.update(
             {
@@ -583,10 +583,10 @@ def run_restore_object_state_scenario(
         owner_attribute = context["owner_attribute"]
         acquirer_object_instance = context["acquirer_object_instance"]
         acquirer_attribute = context["acquirer_attribute"]
-        acquirer.unconditional_attribute_ownership_divestiture(acquirer_object_instance, {acquirer_attribute})
-        owner.attribute_ownership_acquisition_if_available(object_instance, {owner_attribute})
+        acquirer.unconditionalAttributeOwnershipDivestiture(acquirer_object_instance, {acquirer_attribute})
+        owner.attributeOwnershipAcquisitionIfAvailable(object_instance, {owner_attribute})
         drain_callbacks_pair(owner, acquirer, loops=16)
-        owner.update_attribute_values(object_instance, {owner_attribute: mutated_value}, mutated_tag)
+        owner.updateAttributeValues(object_instance, {owner_attribute: mutated_value}, mutated_tag)
         drain_callbacks_pair(owner, acquirer, loops=16)
 
     def _default_assert_restored_state(owner: Any, acquirer: Any, context: dict[str, Any]) -> None:
@@ -594,17 +594,17 @@ def run_restore_object_state_scenario(
         acquirer_object_instance = context["acquirer_object_instance"]
         owner_attribute = context["owner_attribute"]
         acquirer_attribute = context["acquirer_attribute"]
-        assert owner.get_object_instance_name(object_instance) == object_instance_name
-        assert acquirer.get_object_instance_name(acquirer_object_instance) == object_instance_name
-        owner.query_attribute_ownership(object_instance, owner_attribute)
+        assert owner.getObjectInstanceName(object_instance) == object_instance_name
+        assert acquirer.getObjectInstanceName(acquirer_object_instance) == object_instance_name
+        owner.queryAttributeOwnership(object_instance, owner_attribute)
         drain_callbacks_pair(owner, acquirer, loops=16)
         informed = wait_for_callback(owner, leader_federate, "informAttributeOwnership", loops=120)
         assert informed is not None
         assert informed.args[0] == object_instance
         assert informed.args[1] == owner_attribute
-        assert acquirer.is_attribute_owned_by_federate(acquirer_object_instance, acquirer_attribute)
+        assert acquirer.isAttributeOwnedByFederate(acquirer_object_instance, acquirer_attribute)
         context["informed"] = informed
-        context["informed_federate_name"] = owner.get_federate_name(informed.args[2])
+        context["informed_federate_name"] = owner.getFederateName(informed.args[2])
 
     if setup_saved_state is None:
         setup_saved_state = _default_setup_saved_state
@@ -653,31 +653,31 @@ def run_restore_federate_local_state_scenario(
     advance_time: float = 8.0,
 ) -> dict[str, Any]:
     def _default_setup_saved_state(r1: Any, r2: Any, context: dict[str, Any]) -> None:
-        factory = r1.get_time_factory()
-        leader_object_class = r1.get_object_class_handle(object_class_name)
-        wing_object_class = r2.get_object_class_handle(object_class_name)
-        leader_attribute = r1.get_attribute_handle(leader_object_class, attribute_name)
-        wing_attribute = r2.get_attribute_handle(wing_object_class, attribute_name)
-        leader_interaction = r1.get_interaction_class_handle(interaction_class_name)
-        wing_interaction = r2.get_interaction_class_handle(interaction_class_name)
-        leader_parameter = r1.get_parameter_handle(leader_interaction, parameter_name)
-        wing_parameter = r2.get_parameter_handle(wing_interaction, parameter_name)
-        best_effort_transport = r1.get_transportation_type_handle(best_effort_transportation_name)
-        r1.publish_object_class_attributes(leader_object_class, {leader_attribute})
-        r2.subscribe_object_class_attributes(wing_object_class, {wing_attribute})
-        r1.publish_interaction_class(leader_interaction)
-        r2.subscribe_interaction_class(wing_interaction)
+        factory = r1.getTimeFactory()
+        leader_object_class = r1.getObjectClassHandle(object_class_name)
+        wing_object_class = r2.getObjectClassHandle(object_class_name)
+        leader_attribute = r1.getAttributeHandle(leader_object_class, attribute_name)
+        wing_attribute = r2.getAttributeHandle(wing_object_class, attribute_name)
+        leader_interaction = r1.getInteractionClassHandle(interaction_class_name)
+        wing_interaction = r2.getInteractionClassHandle(interaction_class_name)
+        leader_parameter = r1.getParameterHandle(leader_interaction, parameter_name)
+        wing_parameter = r2.getParameterHandle(wing_interaction, parameter_name)
+        best_effort_transport = r1.getTransportationTypeHandle(best_effort_transportation_name)
+        r1.publishObjectClassAttributes(leader_object_class, {leader_attribute})
+        r2.subscribeObjectClassAttributes(wing_object_class, {wing_attribute})
+        r1.publishInteractionClass(leader_interaction)
+        r2.subscribeInteractionClass(wing_interaction)
         drain_callbacks_pair(r1, r2, loops=8)
-        object_instance = r1.register_object_instance(leader_object_class, object_instance_name)
+        object_instance = r1.registerObjectInstance(leader_object_class, object_instance_name)
         drain_callbacks_pair(r1, r2, loops=8)
-        wing_object_instance = r2.get_object_instance_handle(object_instance_name)
-        r1.enable_time_regulation(factory.make_interval(initial_lookahead))
-        r1.enable_asynchronous_delivery()
-        r2.enable_time_constrained()
-        r1.change_attribute_order_type(object_instance, {leader_attribute}, OrderType.TIMESTAMP)
-        r1.change_interaction_order_type(leader_interaction, OrderType.TIMESTAMP)
-        r1.request_attribute_transportation_type_change(object_instance, {leader_attribute}, best_effort_transport)
-        r1.request_interaction_transportation_type_change(leader_interaction, best_effort_transport)
+        wing_object_instance = r2.getObjectInstanceHandle(object_instance_name)
+        r1.enableTimeRegulation(factory.make_interval(initial_lookahead))
+        r1.enableAsynchronousDelivery()
+        r2.enableTimeConstrained()
+        r1.changeAttributeOrderType(object_instance, {leader_attribute}, OrderType.TIMESTAMP)
+        r1.changeInteractionOrderType(leader_interaction, OrderType.TIMESTAMP)
+        r1.requestAttributeTransportationTypeChange(object_instance, {leader_attribute}, best_effort_transport)
+        r1.requestInteractionTransportationTypeChange(leader_interaction, best_effort_transport)
         drain_callbacks_pair(r1, r2, loops=16)
         context.update(
             {
@@ -701,15 +701,15 @@ def run_restore_federate_local_state_scenario(
         leader_attribute = context["leader_attribute"]
         leader_interaction = context["leader_interaction"]
         factory = context["factory"]
-        reliable_transport = r1.get_transportation_type_handle(reliable_transportation_name)
-        r1.modify_lookahead(factory.make_interval(modified_lookahead))
-        r1.disable_asynchronous_delivery()
-        r1.disable_time_regulation()
-        r2.disable_time_constrained()
-        r1.change_attribute_order_type(object_instance, {leader_attribute}, OrderType.RECEIVE)
-        r1.change_interaction_order_type(leader_interaction, OrderType.RECEIVE)
-        r1.request_attribute_transportation_type_change(object_instance, {leader_attribute}, reliable_transport)
-        r1.request_interaction_transportation_type_change(leader_interaction, reliable_transport)
+        reliable_transport = r1.getTransportationTypeHandle(reliable_transportation_name)
+        r1.modifyLookahead(factory.make_interval(modified_lookahead))
+        r1.disableAsynchronousDelivery()
+        r1.disableTimeRegulation()
+        r2.disableTimeConstrained()
+        r1.changeAttributeOrderType(object_instance, {leader_attribute}, OrderType.RECEIVE)
+        r1.changeInteractionOrderType(leader_interaction, OrderType.RECEIVE)
+        r1.requestAttributeTransportationTypeChange(object_instance, {leader_attribute}, reliable_transport)
+        r1.requestInteractionTransportationTypeChange(leader_interaction, reliable_transport)
         drain_callbacks_pair(r1, r2, loops=16)
         context["reliable_transport"] = reliable_transport
 
@@ -724,11 +724,11 @@ def run_restore_federate_local_state_scenario(
         factory = context["factory"]
         best_effort_transport = context["best_effort_transport"]
 
-        assert r1.query_lookahead() == factory.make_interval(initial_lookahead)
+        assert r1.queryLookahead() == factory.make_interval(initial_lookahead)
 
         leader_federate.clear()
-        r1.query_attribute_transportation_type(object_instance, leader_attribute)
-        r1.query_interaction_transportation_type(leader_interaction)
+        r1.queryAttributeTransportationType(object_instance, leader_attribute)
+        r1.queryInteractionTransportationType(leader_interaction)
         drain_callbacks_pair(r1, r2, loops=16)
         attribute_report = wait_for_callback(r1, leader_federate, "reportAttributeTransportationType", loops=120)
         interaction_report = wait_for_callback(r1, leader_federate, "reportInteractionTransportationType", loops=120)
@@ -742,20 +742,20 @@ def run_restore_federate_local_state_scenario(
 
         leader_federate.clear()
         wing_federate.clear()
-        r1.update_attribute_values(
+        r1.updateAttributeValues(
             object_instance,
             {leader_attribute: attribute_payload},
             attribute_tag,
             factory.make_time(attribute_time),
         )
-        r1.send_interaction(
+        r1.sendInteraction(
             leader_interaction,
             {leader_parameter: interaction_payload},
             interaction_tag,
             factory.make_time(interaction_time),
         )
-        r1.time_advance_request(factory.make_time(advance_time))
-        r2.time_advance_request(factory.make_time(advance_time))
+        r1.timeAdvanceRequest(factory.make_time(advance_time))
+        r2.timeAdvanceRequest(factory.make_time(advance_time))
         drain_callbacks_pair(r1, r2, loops=24)
 
         reflect = wait_for_callback(r2, wing_federate, "reflectAttributeValues", loops=120)
@@ -775,9 +775,9 @@ def run_restore_federate_local_state_scenario(
         assert interaction.args[4] == best_effort_transport
         assert interaction.args[5] == factory.make_time(interaction_time)
 
-        r1.disable_asynchronous_delivery()
-        r1.disable_time_regulation()
-        r2.disable_time_constrained()
+        r1.disableAsynchronousDelivery()
+        r1.disableTimeRegulation()
+        r2.disableTimeConstrained()
         context["post_restore_attribute_report"] = attribute_report
         context["post_restore_interaction_report"] = interaction_report
         context["post_restore_reflect"] = reflect
@@ -826,17 +826,17 @@ def run_restore_callback_policy_scenario(
     }
     setup_saved_state(leader_rti, wing_rti, context)
 
-    leader_rti.request_federation_save(config.save_name)
+    leader_rti.requestFederationSave(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_initiate_save = wait_for_callback(leader_rti, leader_federate, "initiateFederateSave", loops=120)
     wing_initiate_save = wait_for_callback(wing_rti, wing_federate, "initiateFederateSave", loops=120)
     assert leader_initiate_save is not None
     assert wing_initiate_save is not None
 
-    leader_rti.federate_save_begun()
-    wing_rti.federate_save_begun()
-    leader_rti.federate_save_complete()
-    wing_rti.federate_save_complete()
+    leader_rti.federateSaveBegun()
+    wing_rti.federateSaveBegun()
+    leader_rti.federateSaveComplete()
+    wing_rti.federateSaveComplete()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_saved = wait_for_callback(leader_rti, leader_federate, "federationSaved", loops=120)
     wing_saved = wait_for_callback(wing_rti, wing_federate, "federationSaved", loops=120)
@@ -845,7 +845,7 @@ def run_restore_callback_policy_scenario(
 
     mutate_post_save_state(leader_rti, wing_rti, context)
 
-    leader_rti.request_federation_restore(config.save_name)
+    leader_rti.requestFederationRestore(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_restore_succeeded = wait_for_callback(
         leader_rti,
@@ -862,8 +862,8 @@ def run_restore_callback_policy_scenario(
     assert leader_restore_succeeded is not None
     assert leader_restore_begun is not None
 
-    leader_rti.federate_restore_complete()
-    wing_rti.federate_restore_complete()
+    leader_rti.federateRestoreComplete()
+    wing_rti.federateRestoreComplete()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     assert_restored_state(leader_rti, wing_rti, context)
 
@@ -910,7 +910,7 @@ def run_save_request_precondition_scenario(
     wing_federate: Any,
 ) -> dict[str, Any]:
     try:
-        leader_rti.request_federation_save(config.save_name)
+        leader_rti.requestFederationSave(config.save_name)
     except NotConnected as exc:
         not_connected = exc
     else:  # pragma: no cover - scenario contract
@@ -918,69 +918,69 @@ def run_save_request_precondition_scenario(
 
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     try:
-        leader_rti.request_federation_save(config.save_name)
+        leader_rti.requestFederationSave(config.save_name)
     except FederateNotExecutionMember as exc:
         not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected request_federation_save to raise FederateNotExecutionMember before join")
 
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
 
-    leader_rti.request_federation_save(config.save_name)
+    leader_rti.requestFederationSave(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     wait_for_callback(leader_rti, leader_federate, "initiateFederateSave", loops=120)
     wait_for_callback(wing_rti, wing_federate, "initiateFederateSave", loops=120)
 
     try:
-        wing_rti.request_federation_save(f"{config.save_name}-DUP")
+        wing_rti.requestFederationSave(f"{config.save_name}-DUP")
     except SaveInProgress as exc:
         save_in_progress = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected request_federation_save to raise SaveInProgress during save")
 
-    leader_rti.federate_save_begun()
-    wing_rti.federate_save_begun()
-    leader_rti.federate_save_complete()
-    wing_rti.federate_save_complete()
+    leader_rti.federateSaveBegun()
+    wing_rti.federateSaveBegun()
+    leader_rti.federateSaveComplete()
+    wing_rti.federateSaveComplete()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     wait_for_callback(leader_rti, leader_federate, "federationSaved", loops=120)
     wait_for_callback(wing_rti, wing_federate, "federationSaved", loops=120)
 
-    leader_rti.request_federation_restore(config.save_name)
+    leader_rti.requestFederationRestore(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     wait_for_callback(leader_rti, leader_federate, "requestFederationRestoreSucceeded", loops=120)
     wait_for_callback(leader_rti, leader_federate, "federationRestoreBegun", loops=120)
     wait_for_callback(wing_rti, wing_federate, "initiateFederateRestore", loops=120)
 
     try:
-        wing_rti.request_federation_save(f"{config.save_name}-RESTORE-BLOCK")
+        wing_rti.requestFederationSave(f"{config.save_name}-RESTORE-BLOCK")
     except RestoreInProgress as exc:
         restore_in_progress = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected request_federation_save to raise RestoreInProgress during restore")
     finally:
         try:
-            leader_rti.abort_federation_restore()
+            leader_rti.abortFederationRestore()
             drain_callbacks_pair(leader_rti, wing_rti, loops=16)
         except Exception:
             pass
         try:
-            leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            leader_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            wing_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            wing_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            leader_rti.destroy_federation_execution(config.federation_name)
+            leader_rti.destroyFederationExecution(config.federation_name)
         except Exception:
             pass
         try:
@@ -1016,17 +1016,17 @@ def run_save_failure_scenario(
         wing_federate=wing_federate,
     )
 
-    leader_rti.request_federation_save(config.save_name)
+    leader_rti.requestFederationSave(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_initiate_save = wait_for_callback(leader_rti, leader_federate, "initiateFederateSave", loops=120)
     wing_initiate_save = wait_for_callback(wing_rti, wing_federate, "initiateFederateSave", loops=120)
     assert leader_initiate_save is not None
     assert wing_initiate_save is not None
 
-    leader_rti.federate_save_begun()
-    wing_rti.federate_save_begun()
-    leader_rti.federate_save_complete()
-    wing_rti.federate_save_not_complete()
+    leader_rti.federateSaveBegun()
+    wing_rti.federateSaveBegun()
+    leader_rti.federateSaveComplete()
+    wing_rti.federateSaveNotComplete()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_not_saved = wait_for_callback(leader_rti, leader_federate, "federationNotSaved", loops=120)
     wing_not_saved = wait_for_callback(wing_rti, wing_federate, "federationNotSaved", loops=120)
@@ -1036,7 +1036,7 @@ def run_save_failure_scenario(
     assert wing_not_saved.args == (SaveFailureReason.FEDERATE_REPORTED_FAILURE_DURING_SAVE,)
 
     status_count = len(leader_federate.callbacks_named("federationSaveStatusResponse")) + 1
-    leader_rti.query_federation_save_status()
+    leader_rti.queryFederationSaveStatus()
     status_records = wait_for_callback_count(
         leader_rti,
         leader_federate,
@@ -1077,7 +1077,7 @@ def run_restore_request_failure_scenario(
         wing_federate=wing_federate,
     )
 
-    leader_rti.request_federation_restore(missing_save_name)
+    leader_rti.requestFederationRestore(missing_save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     restore_failed = wait_for_callback(leader_rti, leader_federate, "requestFederationRestoreFailed", loops=120)
     assert restore_failed is not None
@@ -1085,7 +1085,7 @@ def run_restore_request_failure_scenario(
     assert wing_federate.last_callback("requestFederationRestoreFailed") is None
 
     status_count = len(leader_federate.callbacks_named("federationRestoreStatusResponse")) + 1
-    leader_rti.query_federation_restore_status()
+    leader_rti.queryFederationRestoreStatus()
     status_records = wait_for_callback_count(
         leader_rti,
         leader_federate,
@@ -1122,18 +1122,18 @@ def run_restore_failure_scenario(
         wing_federate=wing_federate,
     )
 
-    leader_rti.request_federation_save(config.save_name)
+    leader_rti.requestFederationSave(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     wait_for_callback(leader_rti, leader_federate, "initiateFederateSave", loops=120)
     wait_for_callback(wing_rti, wing_federate, "initiateFederateSave", loops=120)
-    leader_rti.federate_save_begun()
-    wing_rti.federate_save_begun()
-    leader_rti.federate_save_complete()
-    wing_rti.federate_save_complete()
+    leader_rti.federateSaveBegun()
+    wing_rti.federateSaveBegun()
+    leader_rti.federateSaveComplete()
+    wing_rti.federateSaveComplete()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     wait_for_callback(leader_rti, leader_federate, "federationSaved", loops=120)
 
-    leader_rti.request_federation_restore(config.save_name)
+    leader_rti.requestFederationRestore(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     restore_succeeded = wait_for_callback(leader_rti, leader_federate, "requestFederationRestoreSucceeded", loops=120)
     leader_restore_begun = wait_for_callback(leader_rti, leader_federate, "federationRestoreBegun", loops=120)
@@ -1142,8 +1142,8 @@ def run_restore_failure_scenario(
     assert leader_restore_begun is not None
     assert wing_initiate_restore is not None
 
-    leader_rti.federate_restore_complete()
-    wing_rti.federate_restore_not_complete()
+    leader_rti.federateRestoreComplete()
+    wing_rti.federateRestoreNotComplete()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_not_restored = wait_for_callback(leader_rti, leader_federate, "federationNotRestored", loops=120)
     wing_not_restored = wait_for_callback(wing_rti, wing_federate, "federationNotRestored", loops=120)
@@ -1153,7 +1153,7 @@ def run_restore_failure_scenario(
     assert wing_not_restored.args == (RestoreFailureReason.FEDERATE_REPORTED_FAILURE_DURING_RESTORE,)
 
     status_count = len(leader_federate.callbacks_named("federationRestoreStatusResponse")) + 1
-    leader_rti.query_federation_restore_status()
+    leader_rti.queryFederationRestoreStatus()
     status_records = wait_for_callback_count(
         leader_rti,
         leader_federate,
@@ -1194,16 +1194,16 @@ def run_save_abort_scenario(
         wing_federate=wing_federate,
     )
 
-    leader_rti.request_federation_save(config.save_name)
+    leader_rti.requestFederationSave(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_initiate_save = wait_for_callback(leader_rti, leader_federate, "initiateFederateSave", loops=120)
     wing_initiate_save = wait_for_callback(wing_rti, wing_federate, "initiateFederateSave", loops=120)
     assert leader_initiate_save is not None
     assert wing_initiate_save is not None
 
-    leader_rti.federate_save_begun()
-    wing_rti.federate_save_begun()
-    leader_rti.abort_federation_save()
+    leader_rti.federateSaveBegun()
+    wing_rti.federateSaveBegun()
+    leader_rti.abortFederationSave()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_not_saved = wait_for_callback(leader_rti, leader_federate, "federationNotSaved", loops=120)
     wing_not_saved = wait_for_callback(wing_rti, wing_federate, "federationNotSaved", loops=120)
@@ -1213,7 +1213,7 @@ def run_save_abort_scenario(
     assert wing_not_saved.args == (SaveFailureReason.SAVE_ABORTED,)
 
     status_count = len(leader_federate.callbacks_named("federationSaveStatusResponse")) + 1
-    leader_rti.query_federation_save_status()
+    leader_rti.queryFederationSaveStatus()
     status_records = wait_for_callback_count(
         leader_rti,
         leader_federate,
@@ -1253,18 +1253,18 @@ def run_restore_abort_scenario(
         wing_federate=wing_federate,
     )
 
-    leader_rti.request_federation_save(config.save_name)
+    leader_rti.requestFederationSave(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     wait_for_callback(leader_rti, leader_federate, "initiateFederateSave", loops=120)
     wait_for_callback(wing_rti, wing_federate, "initiateFederateSave", loops=120)
-    leader_rti.federate_save_begun()
-    wing_rti.federate_save_begun()
-    leader_rti.federate_save_complete()
-    wing_rti.federate_save_complete()
+    leader_rti.federateSaveBegun()
+    wing_rti.federateSaveBegun()
+    leader_rti.federateSaveComplete()
+    wing_rti.federateSaveComplete()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     wait_for_callback(leader_rti, leader_federate, "federationSaved", loops=120)
 
-    leader_rti.request_federation_restore(config.save_name)
+    leader_rti.requestFederationRestore(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     restore_succeeded = wait_for_callback(leader_rti, leader_federate, "requestFederationRestoreSucceeded", loops=120)
     leader_restore_begun = wait_for_callback(leader_rti, leader_federate, "federationRestoreBegun", loops=120)
@@ -1273,7 +1273,7 @@ def run_restore_abort_scenario(
     assert leader_restore_begun is not None
     assert wing_initiate_restore is not None
 
-    leader_rti.abort_federation_restore()
+    leader_rti.abortFederationRestore()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     leader_not_restored = wait_for_callback(leader_rti, leader_federate, "federationNotRestored", loops=120)
     wing_not_restored = wait_for_callback(wing_rti, wing_federate, "federationNotRestored", loops=120)
@@ -1283,7 +1283,7 @@ def run_restore_abort_scenario(
     assert wing_not_restored.args == (RestoreFailureReason.RESTORE_ABORTED,)
 
     status_count = len(leader_federate.callbacks_named("federationRestoreStatusResponse")) + 1
-    leader_rti.query_federation_restore_status()
+    leader_rti.queryFederationRestoreStatus()
     status_records = wait_for_callback_count(
         leader_rti,
         leader_federate,
@@ -1317,7 +1317,7 @@ def run_restore_abort_exception_scenario(
     wing_federate: Any,
 ) -> dict[str, Any]:
     try:
-        leader_rti.abort_federation_restore()
+        leader_rti.abortFederationRestore()
     except NotConnected as exc:
         not_connected = exc
     else:  # pragma: no cover - scenario contract
@@ -1325,42 +1325,42 @@ def run_restore_abort_exception_scenario(
 
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     try:
-        leader_rti.abort_federation_restore()
+        leader_rti.abortFederationRestore()
     except FederateNotExecutionMember as exc:
         not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected abort_federation_restore to raise FederateNotExecutionMember before join")
 
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
 
-    leader_rti.request_federation_save(config.save_name)
+    leader_rti.requestFederationSave(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     wait_for_callback(leader_rti, leader_federate, "initiateFederateSave", loops=120)
     wait_for_callback(wing_rti, wing_federate, "initiateFederateSave", loops=120)
-    leader_rti.federate_save_begun()
-    wing_rti.federate_save_begun()
-    leader_rti.federate_save_complete()
-    wing_rti.federate_save_complete()
+    leader_rti.federateSaveBegun()
+    wing_rti.federateSaveBegun()
+    leader_rti.federateSaveComplete()
+    wing_rti.federateSaveComplete()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     wait_for_callback(leader_rti, leader_federate, "federationSaved", loops=120)
 
     try:
-        leader_rti.abort_federation_restore()
+        leader_rti.abortFederationRestore()
     except RestoreNotInProgress as exc:
         restore_not_in_progress = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected abort_federation_restore to raise RestoreNotInProgress before restore starts")
     finally:
-        leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
-        wing_rti.resign_federation_execution(ResignAction.NO_ACTION)
-        leader_rti.destroy_federation_execution(config.federation_name)
+        leader_rti.resignFederationExecution(ResignAction.NO_ACTION)
+        wing_rti.resignFederationExecution(ResignAction.NO_ACTION)
+        leader_rti.destroyFederationExecution(config.federation_name)
         wing_rti.disconnect()
         leader_rti.disconnect()
 
@@ -1377,7 +1377,7 @@ def run_save_status_exception_scenario(
     federate: Any,
 ) -> dict[str, Any]:
     try:
-        rti.query_federation_save_status()
+        rti.queryFederationSaveStatus()
     except NotConnected as exc:
         not_connected = exc
     else:  # pragma: no cover - scenario contract
@@ -1385,7 +1385,7 @@ def run_save_status_exception_scenario(
 
     rti.connect(federate, CallbackModel.HLA_EVOKED)
     try:
-        rti.query_federation_save_status()
+        rti.queryFederationSaveStatus()
     except FederateNotExecutionMember as exc:
         not_joined = exc
     else:  # pragma: no cover - scenario contract
@@ -1405,7 +1405,7 @@ def run_restore_status_exception_scenario(
     federate: Any,
 ) -> dict[str, Any]:
     try:
-        rti.query_federation_restore_status()
+        rti.queryFederationRestoreStatus()
     except NotConnected as exc:
         not_connected = exc
     else:  # pragma: no cover - scenario contract
@@ -1413,7 +1413,7 @@ def run_restore_status_exception_scenario(
 
     rti.connect(federate, CallbackModel.HLA_EVOKED)
     try:
-        rti.query_federation_restore_status()
+        rti.queryFederationRestoreStatus()
     except FederateNotExecutionMember as exc:
         not_joined = exc
     else:  # pragma: no cover - scenario contract
@@ -1436,7 +1436,7 @@ def run_restore_request_precondition_scenario(
     wing_federate: Any,
 ) -> dict[str, Any]:
     try:
-        leader_rti.request_federation_restore(config.save_name)
+        leader_rti.requestFederationRestore(config.save_name)
     except NotConnected as exc:
         not_connected = exc
     else:  # pragma: no cover - scenario contract
@@ -1444,69 +1444,69 @@ def run_restore_request_precondition_scenario(
 
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     try:
-        leader_rti.request_federation_restore(config.save_name)
+        leader_rti.requestFederationRestore(config.save_name)
     except FederateNotExecutionMember as exc:
         not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected request_federation_restore to raise FederateNotExecutionMember before join")
 
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
 
-    leader_rti.request_federation_save(config.save_name)
+    leader_rti.requestFederationSave(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     wait_for_callback(leader_rti, leader_federate, "initiateFederateSave", loops=120)
     wait_for_callback(wing_rti, wing_federate, "initiateFederateSave", loops=120)
 
     try:
-        wing_rti.request_federation_restore(config.save_name)
+        wing_rti.requestFederationRestore(config.save_name)
     except SaveInProgress as exc:
         save_in_progress = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected request_federation_restore to raise SaveInProgress during save")
 
-    leader_rti.federate_save_begun()
-    wing_rti.federate_save_begun()
-    leader_rti.federate_save_complete()
-    wing_rti.federate_save_complete()
+    leader_rti.federateSaveBegun()
+    wing_rti.federateSaveBegun()
+    leader_rti.federateSaveComplete()
+    wing_rti.federateSaveComplete()
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     wait_for_callback(leader_rti, leader_federate, "federationSaved", loops=120)
     wait_for_callback(wing_rti, wing_federate, "federationSaved", loops=120)
 
-    leader_rti.request_federation_restore(config.save_name)
+    leader_rti.requestFederationRestore(config.save_name)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     wait_for_callback(leader_rti, leader_federate, "requestFederationRestoreSucceeded", loops=120)
     wait_for_callback(leader_rti, leader_federate, "federationRestoreBegun", loops=120)
     wait_for_callback(wing_rti, wing_federate, "initiateFederateRestore", loops=120)
 
     try:
-        wing_rti.request_federation_restore(config.save_name)
+        wing_rti.requestFederationRestore(config.save_name)
     except RestoreInProgress as exc:
         restore_in_progress = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected request_federation_restore to raise RestoreInProgress during restore")
     finally:
         try:
-            leader_rti.abort_federation_restore()
+            leader_rti.abortFederationRestore()
             drain_callbacks_pair(leader_rti, wing_rti, loops=16)
         except Exception:
             pass
         try:
-            leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            leader_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            wing_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            wing_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            leader_rti.destroy_federation_execution(config.federation_name)
+            leader_rti.destroyFederationExecution(config.federation_name)
         except Exception:
             pass
         try:
@@ -1535,21 +1535,21 @@ def run_save_participant_exception_scenario(
     wing_federate: Any,
 ) -> dict[str, Any]:
     try:
-        leader_rti.federate_save_begun()
+        leader_rti.federateSaveBegun()
     except NotConnected as exc:
         begun_not_connected = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_begun to raise NotConnected before connect")
 
     try:
-        leader_rti.federate_save_complete()
+        leader_rti.federateSaveComplete()
     except NotConnected as exc:
         complete_not_connected = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_complete to raise NotConnected before connect")
 
     try:
-        leader_rti.federate_save_not_complete()
+        leader_rti.federateSaveNotComplete()
     except NotConnected as exc:
         not_complete_not_connected = exc
     else:  # pragma: no cover - scenario contract
@@ -1557,66 +1557,66 @@ def run_save_participant_exception_scenario(
 
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     try:
-        leader_rti.federate_save_begun()
+        leader_rti.federateSaveBegun()
     except FederateNotExecutionMember as exc:
         begun_not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_begun to raise FederateNotExecutionMember before join")
 
     try:
-        leader_rti.federate_save_complete()
+        leader_rti.federateSaveComplete()
     except FederateNotExecutionMember as exc:
         complete_not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_complete to raise FederateNotExecutionMember before join")
 
     try:
-        leader_rti.federate_save_not_complete()
+        leader_rti.federateSaveNotComplete()
     except FederateNotExecutionMember as exc:
         not_complete_not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_not_complete to raise FederateNotExecutionMember before join")
 
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
 
     try:
-        leader_rti.federate_save_begun()
+        leader_rti.federateSaveBegun()
     except SaveNotInitiated as exc:
         begun_not_initiated = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_begun to raise SaveNotInitiated without an active save")
 
     try:
-        leader_rti.federate_save_complete()
+        leader_rti.federateSaveComplete()
     except SaveNotInitiated as exc:
         complete_not_initiated = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_complete to raise SaveNotInitiated without an active save")
 
     try:
-        leader_rti.federate_save_not_complete()
+        leader_rti.federateSaveNotComplete()
     except SaveNotInitiated as exc:
         not_complete_not_initiated = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_save_not_complete to raise SaveNotInitiated without an active save")
     finally:
         try:
-            leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            leader_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            wing_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            wing_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            leader_rti.destroy_federation_execution(config.federation_name)
+            leader_rti.destroyFederationExecution(config.federation_name)
         except Exception:
             pass
         try:
@@ -1647,7 +1647,7 @@ def run_abort_save_exception_scenario(
     federate: Any,
 ) -> dict[str, Any]:
     try:
-        leader_rti.abort_federation_save()
+        leader_rti.abortFederationSave()
     except NotConnected as exc:
         not_connected = exc
     else:  # pragma: no cover - scenario contract
@@ -1655,7 +1655,7 @@ def run_abort_save_exception_scenario(
 
     leader_rti.connect(federate, CallbackModel.HLA_EVOKED)
     try:
-        leader_rti.abort_federation_save()
+        leader_rti.abortFederationSave()
     except FederateNotExecutionMember as exc:
         not_joined = exc
     else:  # pragma: no cover - scenario contract
@@ -1678,14 +1678,14 @@ def run_restore_participant_exception_scenario(
     wing_federate: Any,
 ) -> dict[str, Any]:
     try:
-        leader_rti.federate_restore_complete()
+        leader_rti.federateRestoreComplete()
     except NotConnected as exc:
         complete_not_connected = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_restore_complete to raise NotConnected before connect")
 
     try:
-        leader_rti.federate_restore_not_complete()
+        leader_rti.federateRestoreNotComplete()
     except NotConnected as exc:
         not_complete_not_connected = exc
     else:  # pragma: no cover - scenario contract
@@ -1693,52 +1693,52 @@ def run_restore_participant_exception_scenario(
 
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     try:
-        leader_rti.federate_restore_complete()
+        leader_rti.federateRestoreComplete()
     except FederateNotExecutionMember as exc:
         complete_not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_restore_complete to raise FederateNotExecutionMember before join")
 
     try:
-        leader_rti.federate_restore_not_complete()
+        leader_rti.federateRestoreNotComplete()
     except FederateNotExecutionMember as exc:
         not_complete_not_joined = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_restore_not_complete to raise FederateNotExecutionMember before join")
 
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
 
     try:
-        leader_rti.federate_restore_complete()
+        leader_rti.federateRestoreComplete()
     except RestoreNotRequested as exc:
         complete_not_requested = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_restore_complete to raise RestoreNotRequested without an active restore")
 
     try:
-        leader_rti.federate_restore_not_complete()
+        leader_rti.federateRestoreNotComplete()
     except RestoreNotRequested as exc:
         not_complete_not_requested = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected federate_restore_not_complete to raise RestoreNotRequested without an active restore")
     finally:
         try:
-            leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            leader_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            wing_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            wing_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            leader_rti.destroy_federation_execution(config.federation_name)
+            leader_rti.destroyFederationExecution(config.federation_name)
         except Exception:
             pass
         try:
@@ -1777,17 +1777,17 @@ def run_resigned_federate_callback_silence_scenario(
     )
 
     try:
-        wing_rti.resign_federation_execution(ResignAction.NO_ACTION)
+        wing_rti.resignFederationExecution(ResignAction.NO_ACTION)
         resigned_record_count = len(wing_federate.records)
 
-        leader_rti.request_federation_save(config.save_name)
+        leader_rti.requestFederationSave(config.save_name)
         drain_callbacks_pair(leader_rti, wing_rti, loops=16)
         leader_initiate_save = wait_for_callback(leader_rti, leader_federate, "initiateFederateSave", loops=120)
         assert leader_initiate_save is not None
         assert leader_initiate_save.args == (config.save_name,)
 
-        leader_rti.federate_save_begun()
-        leader_rti.federate_save_complete()
+        leader_rti.federateSaveBegun()
+        leader_rti.federateSaveComplete()
         drain_callbacks_pair(leader_rti, wing_rti, loops=16)
         leader_saved = wait_for_callback(leader_rti, leader_federate, "federationSaved", loops=120)
         assert leader_saved is not None
@@ -1805,11 +1805,11 @@ def run_resigned_federate_callback_silence_scenario(
         }
     finally:
         try:
-            leader_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            leader_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            leader_rti.destroy_federation_execution(config.federation_name)
+            leader_rti.destroyFederationExecution(config.federation_name)
         except Exception:
             pass
         try:

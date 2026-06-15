@@ -40,48 +40,48 @@ def run_ddm_passive_region_subscription_scenario(
 ) -> dict[str, Any]:
     publisher_rti.connect(publisher_federate, CallbackModel.HLA_EVOKED)
     subscriber_rti.connect(subscriber_federate, CallbackModel.HLA_EVOKED)
-    publisher_rti.create_federation_execution(
+    publisher_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    publisher_handle = publisher_rti.join_federation_execution(
+    publisher_handle = publisher_rti.joinFederationExecution(
         config.publisher_name,
         config.federate_type,
         config.federation_name,
     )
-    subscriber_handle = subscriber_rti.join_federation_execution(
+    subscriber_handle = subscriber_rti.joinFederationExecution(
         config.subscriber_name,
         config.federate_type,
         config.federation_name,
     )
 
-    publisher_class = publisher_rti.get_object_class_handle(config.object_class_name)
-    subscriber_class = subscriber_rti.get_object_class_handle(config.object_class_name)
-    publisher_attribute = publisher_rti.get_attribute_handle(publisher_class, config.attribute_name)
-    subscriber_attribute = subscriber_rti.get_attribute_handle(subscriber_class, config.attribute_name)
-    publisher_dimension = publisher_rti.get_dimension_handle("HLAdefaultRoutingSpace")
-    subscriber_dimension = subscriber_rti.get_dimension_handle("HLAdefaultRoutingSpace")
-    publisher_interaction = publisher_rti.get_interaction_class_handle(config.interaction_class_name)
-    subscriber_interaction = subscriber_rti.get_interaction_class_handle(config.interaction_class_name)
-    publisher_parameter = publisher_rti.get_parameter_handle(publisher_interaction, config.parameter_name)
-    subscriber_parameter = subscriber_rti.get_parameter_handle(subscriber_interaction, config.parameter_name)
+    publisher_class = publisher_rti.getObjectClassHandle(config.object_class_name)
+    subscriber_class = subscriber_rti.getObjectClassHandle(config.object_class_name)
+    publisher_attribute = publisher_rti.getAttributeHandle(publisher_class, config.attribute_name)
+    subscriber_attribute = subscriber_rti.getAttributeHandle(subscriber_class, config.attribute_name)
+    publisher_dimension = publisher_rti.getDimensionHandle("HLAdefaultRoutingSpace")
+    subscriber_dimension = subscriber_rti.getDimensionHandle("HLAdefaultRoutingSpace")
+    publisher_interaction = publisher_rti.getInteractionClassHandle(config.interaction_class_name)
+    subscriber_interaction = subscriber_rti.getInteractionClassHandle(config.interaction_class_name)
+    publisher_parameter = publisher_rti.getParameterHandle(publisher_interaction, config.parameter_name)
+    subscriber_parameter = subscriber_rti.getParameterHandle(subscriber_interaction, config.parameter_name)
 
-    publisher_region = publisher_rti.create_region({publisher_dimension})
-    subscriber_region = subscriber_rti.create_region({subscriber_dimension})
-    publisher_rti.set_range_bounds(publisher_region, publisher_dimension, config.publish_bounds)
-    subscriber_rti.set_range_bounds(subscriber_region, subscriber_dimension, config.subscribe_bounds)
-    publisher_rti.commit_region_modifications({publisher_region})
-    subscriber_rti.commit_region_modifications({subscriber_region})
+    publisher_region = publisher_rti.createRegion({publisher_dimension})
+    subscriber_region = subscriber_rti.createRegion({subscriber_dimension})
+    publisher_rti.setRangeBounds(publisher_region, publisher_dimension, config.publish_bounds)
+    subscriber_rti.setRangeBounds(subscriber_region, subscriber_dimension, config.subscribe_bounds)
+    publisher_rti.commitRegionModifications({publisher_region})
+    subscriber_rti.commitRegionModifications({subscriber_region})
 
     update_pairs = [AttributeRegionAssociation(AttributeHandleSet({publisher_attribute}), RegionHandleSet({publisher_region}))]
     subscription_pairs = [
         AttributeRegionAssociation(AttributeHandleSet({subscriber_attribute}), RegionHandleSet({subscriber_region}))
     ]
 
-    subscriber_rti.subscribe_object_class_attributes_passively_with_regions(subscriber_class, subscription_pairs)
-    publisher_rti.publish_object_class_attributes(publisher_class, {publisher_attribute})
-    object_instance = publisher_rti.register_object_instance_with_regions(
+    subscriber_rti.subscribeObjectClassAttributesPassivelyWithRegions(subscriber_class, subscription_pairs)
+    publisher_rti.publishObjectClassAttributes(publisher_class, {publisher_attribute})
+    object_instance = publisher_rti.registerObjectInstanceWithRegions(
         publisher_class,
         update_pairs,
         config.object_instance_name,
@@ -91,11 +91,11 @@ def run_ddm_passive_region_subscription_scenario(
     assert discovery is not None
     assert discovery.args[0] == object_instance
 
-    publisher_rti.publish_interaction_class(publisher_interaction)
-    subscriber_rti.subscribe_interaction_class_passively_with_regions(subscriber_interaction, {subscriber_region})
+    publisher_rti.publishInteractionClass(publisher_interaction)
+    subscriber_rti.subscribeInteractionClassPassivelyWithRegions(subscriber_interaction, {subscriber_region})
     publisher_federate.clear()
     subscriber_federate.clear()
-    publisher_rti.send_interaction_with_regions(
+    publisher_rti.sendInteractionWithRegions(
         publisher_interaction,
         {publisher_parameter: config.interaction_payload},
         {publisher_region},
@@ -108,8 +108,8 @@ def run_ddm_passive_region_subscription_scenario(
     assert received.args[1] == {subscriber_parameter: config.interaction_payload}
     assert publisher_federate.last_callback("provideAttributeValueUpdate") is None
 
-    subscriber_rti.unsubscribe_object_class_attributes_with_regions(subscriber_class, subscription_pairs)
-    subscriber_rti.unsubscribe_interaction_class_with_regions(subscriber_interaction, {subscriber_region})
+    subscriber_rti.unsubscribeObjectClassAttributesWithRegions(subscriber_class, subscription_pairs)
+    subscriber_rti.unsubscribeInteractionClassWithRegions(subscriber_interaction, {subscriber_region})
 
     return {
         "publisher_handle": publisher_handle,

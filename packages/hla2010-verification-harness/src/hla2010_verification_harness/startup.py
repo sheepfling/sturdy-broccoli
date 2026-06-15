@@ -87,7 +87,7 @@ FederateStartupResult = StartupResult
 def _as_rti_list(rtis: Any) -> list[Any]:
     if isinstance(rtis, (str, bytes, bytearray)):
         return [rtis]
-    if hasattr(rtis, "evokeMultipleCallbacks") or hasattr(rtis, "evoke_multiple_callbacks"):
+    if hasattr(rtis, "evokeMultipleCallbacks") or hasattr(rtis, "evokeMultipleCallbacks"):
         return [rtis]
     try:
         return list(rtis)
@@ -125,7 +125,7 @@ def connect_create_join(
             if config.mim_module is not None and hasattr(rti, "createFederationExecutionWithMIM"):
                 _call_service(
                     rti,
-                    "create_federation_execution_with_mim",
+                    "createFederationExecutionWithMIM",
                     "createFederationExecutionWithMIM",
                     config.federation_name,
                     *config.create_federation_args(),
@@ -133,7 +133,7 @@ def connect_create_join(
             else:
                 _call_service(
                     rti,
-                    "create_federation_execution",
+                    "createFederationExecution",
                     "createFederationExecution",
                     config.federation_name,
                     *config.create_federation_args(),
@@ -142,7 +142,7 @@ def connect_create_join(
         except FederationExecutionAlreadyExists:
             created = False
 
-    handle = _call_service(rti, "join_federation_execution", "joinFederationExecution", *config.join_args())
+    handle = _call_service(rti, "joinFederationExecution", "joinFederationExecution", *config.join_args())
     return StartupResult(handle, created, config.ready_to_run_sync_point)
 
 
@@ -152,7 +152,7 @@ def evoke_all_callbacks(rtis: Iterable[Any] | Any) -> bool:
     delivered = False
     for rti in _as_rti_list(rtis):
         try:
-            delivered = bool(_call_service(rti, "evoke_multiple_callbacks", "evokeMultipleCallbacks", 0.0, 0.0)) or delivered
+            delivered = bool(_call_service(rti, "evokeMultipleCallbacks", "evokeMultipleCallbacks", 0.0, 0.0)) or delivered
         except RTIexception:
             raise
         except AttributeError:
@@ -185,11 +185,11 @@ def register_startup_sync_point(
     """Register the usual startup synchronization point."""
 
     if synchronization_set is None:
-        _call_service(rti, "register_federation_synchronization_point", "registerFederationSynchronizationPoint", label, tag)
+        _call_service(rti, "registerFederationSynchronizationPoint", "registerFederationSynchronizationPoint", label, tag)
     else:
         _call_service(
             rti,
-            "register_federation_synchronization_point",
+            "registerFederationSynchronizationPoint",
             "registerFederationSynchronizationPoint",
             label,
             tag,
@@ -200,7 +200,7 @@ def register_startup_sync_point(
 def achieve_startup_sync_point(rti: Any, label: str = "ReadyToRun", *, success: bool = True) -> None:
     """Report achievement for the usual startup synchronization point."""
 
-    _call_service(rti, "synchronization_point_achieved", "synchronizationPointAchieved", label, bool(success))
+    _call_service(rti, "synchronizationPointAchieved", "synchronizationPointAchieved", label, bool(success))
 
 
 def synchronize_ready_to_run(

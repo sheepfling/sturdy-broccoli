@@ -64,23 +64,23 @@ def run_support_factory_and_decode_scenario(
     federate: Any,
 ) -> dict[str, Any]:
     rti.connect(federate, CallbackModel.HLA_EVOKED)
-    rti.create_federation_execution(
+    rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    federate_handle = rti.join_federation_execution(
+    federate_handle = rti.joinFederationExecution(
         config.federate_name,
         config.federate_type,
         config.federation_name,
     )
     assert isinstance(federate_handle, FederateHandle)
 
-    object_class = rti.get_object_class_handle(config.object_class_name)
-    attribute = rti.get_attribute_handle(object_class, config.attribute_name)
-    interaction_class = rti.get_interaction_class_handle(config.interaction_class_name)
-    parameter = rti.get_parameter_handle(interaction_class, config.parameter_name)
-    rti.publish_object_class_attributes(object_class, {attribute})
+    object_class = rti.getObjectClassHandle(config.object_class_name)
+    attribute = rti.getAttributeHandle(object_class, config.attribute_name)
+    interaction_class = rti.getInteractionClassHandle(config.interaction_class_name)
+    parameter = rti.getParameterHandle(interaction_class, config.parameter_name)
+    rti.publishObjectClassAttributes(object_class, {attribute})
     object_instance = register_named_object_instance(
         rti,
         federate,
@@ -89,53 +89,53 @@ def run_support_factory_and_decode_scenario(
     )
 
     lookup_summary = {
-        "federate_name": rti.get_federate_name(rti.get_federate_handle(config.federate_name)),
-        "normalized_federate_handle": rti.normalize_federate_handle(federate_handle),
-        "object_class_name": rti.get_object_class_name(object_class),
-        "attribute_name": rti.get_attribute_name(object_class, attribute),
-        "interaction_class_name": rti.get_interaction_class_name(interaction_class),
-        "parameter_name": rti.get_parameter_name(interaction_class, parameter),
-        "object_instance_name": rti.get_object_instance_name(object_instance),
-        "object_instance_handle": rti.get_object_instance_handle(config.object_instance_name),
-        "known_object_class": rti.get_known_object_class_handle(object_instance),
+        "federate_name": rti.getFederateName(rti.getFederateHandle(config.federate_name)),
+        "normalized_federate_handle": rti.normalizeFederateHandle(federate_handle),
+        "object_class_name": rti.getObjectClassName(object_class),
+        "attribute_name": rti.getAttributeName(object_class, attribute),
+        "interaction_class_name": rti.getInteractionClassName(interaction_class),
+        "parameter_name": rti.getParameterName(interaction_class, parameter),
+        "object_instance_name": rti.getObjectInstanceName(object_instance),
+        "object_instance_handle": rti.getObjectInstanceHandle(config.object_instance_name),
+        "known_object_class": rti.getKnownObjectClassHandle(object_instance),
     }
     if config.include_order_support:
         lookup_summary.update(
             {
-                "receive_order_name": rti.get_order_name(OrderType.RECEIVE),
-                "timestamp_order_type": rti.get_order_type("HLAtimestamp"),
+                "receive_order_name": rti.getOrderName(OrderType.RECEIVE),
+                "timestamp_order_type": rti.getOrderType("HLAtimestamp"),
             }
         )
     if config.include_transport_support:
         lookup_summary.update(
             {
-                "reliable_transport_name": rti.get_transportation_type_name(rti.get_transportation_type_handle("HLAreliable")),
-                "best_effort_transport_name": rti.get_transportation_type_name(rti.get_transportation_type_handle("HLAbestEffort")),
-                "reliable_transport_enum_name": rti.get_transportation_name(rti.get_transportation_type("HLAreliable")),
-                "best_effort_transport_enum_name": rti.get_transportation_name(rti.get_transportation_type("HLAbestEffort")),
+                "reliable_transport_name": rti.getTransportationTypeName(rti.getTransportationTypeHandle("HLAreliable")),
+                "best_effort_transport_name": rti.getTransportationTypeName(rti.getTransportationTypeHandle("HLAbestEffort")),
+                "reliable_transport_enum_name": rti.getTransportationName(rti.getTransportationType("HLAreliable")),
+                "best_effort_transport_enum_name": rti.getTransportationName(rti.getTransportationType("HLAbestEffort")),
             }
         )
 
     factory_summary: dict[str, Any] = {}
     if config.include_factory_support:
         factory_summary = {
-            "attribute_factory": rti.get_attribute_handle_factory(),
-            "attribute_set_factory": rti.get_attribute_handle_set_factory(),
-            "attribute_value_map_factory": rti.get_attribute_handle_value_map_factory(),
-            "attribute_region_pair_list_factory": rti.get_attribute_set_region_set_pair_list_factory(),
-            "dimension_factory": rti.get_dimension_handle_factory(),
-            "dimension_set_factory": rti.get_dimension_handle_set_factory(),
-            "federate_factory": rti.get_federate_handle_factory(),
-            "federate_set_factory": rti.get_federate_handle_set_factory(),
-            "interaction_factory": rti.get_interaction_class_handle_factory(),
-            "object_class_factory": rti.get_object_class_handle_factory(),
-            "object_instance_factory": rti.get_object_instance_handle_factory(),
-            "parameter_factory": rti.get_parameter_handle_factory(),
-            "parameter_value_map_factory": rti.get_parameter_handle_value_map_factory(),
-            "region_set_factory": rti.get_region_handle_set_factory(),
+            "attribute_factory": rti.getAttributeHandleFactory(),
+            "attribute_set_factory": rti.getAttributeHandleSetFactory(),
+            "attribute_value_map_factory": rti.getAttributeHandleValueMapFactory(),
+            "attribute_region_pair_list_factory": rti.getAttributeSetRegionSetPairListFactory(),
+            "dimension_factory": rti.getDimensionHandleFactory(),
+            "dimension_set_factory": rti.getDimensionHandleSetFactory(),
+            "federate_factory": rti.getFederateHandleFactory(),
+            "federate_set_factory": rti.getFederateHandleSetFactory(),
+            "interaction_factory": rti.getInteractionClassHandleFactory(),
+            "object_class_factory": rti.getObjectClassHandleFactory(),
+            "object_instance_factory": rti.getObjectInstanceHandleFactory(),
+            "parameter_factory": rti.getParameterHandleFactory(),
+            "parameter_value_map_factory": rti.getParameterHandleValueMapFactory(),
+            "region_set_factory": rti.getRegionHandleSetFactory(),
         }
         if config.include_transport_support:
-            factory_summary["transportation_factory"] = rti.get_transportation_type_handle_factory()
+            factory_summary["transportation_factory"] = rti.getTransportationTypeHandleFactory()
 
         assert isinstance(factory_summary["attribute_factory"], AttributeHandleFactory)
         assert isinstance(factory_summary["attribute_set_factory"], AttributeHandleSetFactory)
@@ -161,15 +161,15 @@ def run_support_factory_and_decode_scenario(
     decoded_summary: dict[str, Any] = {}
     if config.include_decode_support:
         decoded_summary = {
-            "federate_handle": rti.decode_federate_handle(federate_handle.encode()),
-            "object_class_handle": rti.decode_object_class_handle(object_class.encode()),
-            "interaction_class_handle": rti.decode_interaction_class_handle(interaction_class.encode()),
-            "object_instance_handle": rti.decode_object_instance_handle(object_instance.encode()),
-            "attribute_handle": rti.decode_attribute_handle(attribute.encode()),
-            "parameter_handle": rti.decode_parameter_handle(parameter.encode()),
-            "dimension_handle": rti.decode_dimension_handle(sample_dimension.encode()),
-            "message_retraction_handle": rti.decode_message_retraction_handle(sample_retraction.encode()),
-            "region_handle": rti.decode_region_handle(sample_region.encode()),
+            "federate_handle": rti.decodeFederateHandle(federate_handle.encode()),
+            "object_class_handle": rti.decodeObjectClassHandle(object_class.encode()),
+            "interaction_class_handle": rti.decodeInteractionClassHandle(interaction_class.encode()),
+            "object_instance_handle": rti.decodeObjectInstanceHandle(object_instance.encode()),
+            "attribute_handle": rti.decodeAttributeHandle(attribute.encode()),
+            "parameter_handle": rti.decodeParameterHandle(parameter.encode()),
+            "dimension_handle": rti.decodeDimensionHandle(sample_dimension.encode()),
+            "message_retraction_handle": rti.decodeMessageRetractionHandle(sample_retraction.encode()),
+            "region_handle": rti.decodeRegionHandle(sample_region.encode()),
         }
 
         assert decoded_summary["federate_handle"] == federate_handle

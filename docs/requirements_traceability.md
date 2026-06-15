@@ -69,8 +69,7 @@ Traceability depends on a small set of surfaces:
 
 - Requirement row: `REQ-RTI-FM-4_5-createFederationExecution`
 - Spec reference: `IEEE 1516.1-2010 (2010 edition) §4.5`
-- Python public method: `create_federation_execution`
-- HLA service key: `createFederationExecution`
+- Python public method: `createFederationExecution`
 - Backend service: `hla2010_rti_python.backend.PythonRTIBackend._svc_createFederationExecution`
 - Implementation file: `packages/hla2010-rti-python/src/hla2010_rti_python/backend.py`
 - Test evidence: `tests/scenarios/test_federation_lifecycle_backend_matrix.py`, `tests/scenarios/test_federation_management_backend_matrix.py`, `tests/factories/test_fom_time_factories.py`
@@ -81,8 +80,7 @@ Traceability depends on a small set of surfaces:
 
 - Requirement row: `REQ-RTI-TM-8_8-timeAdvanceRequest`
 - Spec reference: `IEEE 1516.1-2010 (2010 edition) §8.8`
-- Python public method: `time_advance_request`
-- HLA service key: `timeAdvanceRequest`
+- Python public method: `timeAdvanceRequest`
 - Backend service: `hla2010_rti_python.backend.PythonRTIBackend._svc_timeAdvanceRequest`
 - Implementation file: `packages/hla2010-rti-python/src/hla2010_rti_python/backend.py`
 - Test evidence: `tests/time/test_mom_mim_time_v10.py`, `tests/time/test_mom_mim_and_time_semantics_v010.py`, `tests/verification/test_compliance_slice_v011.py`

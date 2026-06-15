@@ -115,15 +115,15 @@ def main(argv: list[str] | None = None) -> int:
             _dump_records("publisher callbacks", publisher_fed)
             _dump_records("subscriber callbacks", subscriber_fed)
             try:
-                subscriber.resign_federation_execution(ResignAction.NO_ACTION)
+                subscriber.resignFederationExecution(ResignAction.NO_ACTION)
             except BaseException:
                 pass
             try:
-                publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+                publisher.resignFederationExecution(ResignAction.DELETE_OBJECTS)
             except BaseException:
                 pass
             try:
-                publisher.destroy_federation_execution(federation_name)
+                publisher.destroyFederationExecution(federation_name)
             except BaseException:
                 pass
             for rti in (subscriber, publisher):

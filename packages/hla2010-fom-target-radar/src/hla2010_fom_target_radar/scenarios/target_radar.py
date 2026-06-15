@@ -202,15 +202,15 @@ class TargetFederate(FederateAmbassadorSpec):
 
     def setup(self, rti: Any) -> None:
         self.rti = rti
-        self.object_class = rti.get_object_class_handle(TARGET_CLASS)
-        self.position_attr = rti.get_attribute_handle(self.object_class, TARGET_POSITION)
-        self.velocity_attr = rti.get_attribute_handle(self.object_class, TARGET_VELOCITY)
-        self.rcs_attr = rti.get_attribute_handle(self.object_class, TARGET_RCS)
-        rti.publish_object_class_attributes(
+        self.object_class = rti.getObjectClassHandle(TARGET_CLASS)
+        self.position_attr = rti.getAttributeHandle(self.object_class, TARGET_POSITION)
+        self.velocity_attr = rti.getAttributeHandle(self.object_class, TARGET_VELOCITY)
+        self.rcs_attr = rti.getAttributeHandle(self.object_class, TARGET_RCS)
+        rti.publishObjectClassAttributes(
             self.object_class,
             {self.position_attr, self.velocity_attr, self.rcs_attr},
         )
-        self.object_handle = rti.register_object_instance(self.object_class, self.name)
+        self.object_handle = rti.registerObjectInstance(self.object_class, self.name)
         self.update_position_velocity(tag=b"target-initial")
 
     def step(self, *, time_seconds: float, dt: float) -> None:
@@ -223,7 +223,7 @@ class TargetFederate(FederateAmbassadorSpec):
         assert self.object_handle is not None
         assert self.position_attr is not None
         assert self.velocity_attr is not None
-        self.rti.update_attribute_values(
+        self.rti.updateAttributeValues(
             self.object_handle,
             {
                 self.position_attr: encode_vec3(self.position),
@@ -236,7 +236,7 @@ class TargetFederate(FederateAmbassadorSpec):
         assert self.rti is not None
         assert self.object_handle is not None
         assert self.rcs_attr is not None
-        self.rti.update_attribute_values(
+        self.rti.updateAttributeValues(
             self.object_handle,
             {self.rcs_attr: encode_float(self.rcs_square_meters)},
             tag,
@@ -300,21 +300,21 @@ class RadarFederate(FederateAmbassadorSpec):
     def setup(self, rti: Any) -> None:
         self.rti = rti
 
-        self.target_class = rti.get_object_class_handle(TARGET_CLASS)
-        self.position_attr = rti.get_attribute_handle(self.target_class, TARGET_POSITION)
-        self.velocity_attr = rti.get_attribute_handle(self.target_class, TARGET_VELOCITY)
-        self.rcs_attr = rti.get_attribute_handle(self.target_class, TARGET_RCS)
-        rti.subscribe_object_class_attributes(
+        self.target_class = rti.getObjectClassHandle(TARGET_CLASS)
+        self.position_attr = rti.getAttributeHandle(self.target_class, TARGET_POSITION)
+        self.velocity_attr = rti.getAttributeHandle(self.target_class, TARGET_VELOCITY)
+        self.rcs_attr = rti.getAttributeHandle(self.target_class, TARGET_RCS)
+        rti.subscribeObjectClassAttributes(
             self.target_class,
             {self.position_attr, self.velocity_attr, self.rcs_attr},
         )
 
-        self.track_class = rti.get_object_class_handle(TRACK_CLASS)
+        self.track_class = rti.getObjectClassHandle(TRACK_CLASS)
         for name in (TRACK_TARGET_NAME, TRACK_POSITION, TRACK_RANGE, TRACK_BEARING, TRACK_RCS, TRACK_TIME):
-            self.track_attrs[name] = rti.get_attribute_handle(self.track_class, name)
-        rti.publish_object_class_attributes(self.track_class, set(self.track_attrs.values()))
+            self.track_attrs[name] = rti.getAttributeHandle(self.track_class, name)
+        rti.publishObjectClassAttributes(self.track_class, set(self.track_attrs.values()))
 
-        self.track_report_interaction = rti.get_interaction_class_handle(TRACK_REPORT_INTERACTION)
+        self.track_report_interaction = rti.getInteractionClassHandle(TRACK_REPORT_INTERACTION)
         for name in (
             TRACK_PARAM_ID,
             TRACK_PARAM_TARGET_NAME,
@@ -324,8 +324,8 @@ class RadarFederate(FederateAmbassadorSpec):
             TRACK_PARAM_RCS,
             TRACK_PARAM_TIME,
         ):
-            self.track_params[name] = rti.get_parameter_handle(self.track_report_interaction, name)
-        rti.publish_interaction_class(self.track_report_interaction)
+            self.track_params[name] = rti.getParameterHandle(self.track_report_interaction, name)
+        rti.publishInteractionClass(self.track_report_interaction)
 
     def discover_object_instance(self, the_object: ObjectInstanceHandle, the_object_class: ObjectClassHandle, object_name: str, *extra: Any) -> None:
         if self.target_class is not None and the_object_class == self.target_class:
@@ -359,7 +359,7 @@ class RadarFederate(FederateAmbassadorSpec):
         assert self.rcs_attr is not None
         for object_handle in list(self.contacts):
             self.events.append(("query_rcs", object_handle))
-            self.rti.request_attribute_value_update(object_handle, {self.rcs_attr}, b"radar-rcs-query")
+            self.rti.requestAttributeValueUpdate(object_handle, {self.rcs_attr}, b"radar-rcs-query")
 
     def flush_pending_track_reports(self) -> int:
         pending_handles = self._pending_track_contacts
@@ -393,10 +393,10 @@ class RadarFederate(FederateAmbassadorSpec):
 
         track_object = self.track_objects.get(contact.object_handle)
         if track_object is None:
-            track_object = self.rti.register_object_instance(self.track_class, f"Track-{contact.object_name}")
+            track_object = self.rti.registerObjectInstance(self.track_class, f"Track-{contact.object_name}")
             self.track_objects[contact.object_handle] = track_object
 
-        self.rti.update_attribute_values(
+        self.rti.updateAttributeValues(
             track_object,
             {
                 self.track_attrs[TRACK_TARGET_NAME]: encode_text(report.target_name),
@@ -409,7 +409,7 @@ class RadarFederate(FederateAmbassadorSpec):
             b"track-object-update",
         )
 
-        self.rti.send_interaction(
+        self.rti.sendInteraction(
             self.track_report_interaction,
             {
                 self.track_params[TRACK_PARAM_ID]: encode_text(report.track_id),
@@ -468,7 +468,7 @@ def _drain_callbacks(*rtis: Any, cycles: int = 8) -> None:
     # local scenario and still work against evoked-callback Java RTIs.
     for _ in range(cycles):
         for rti in rtis:
-            rti.evoke_multiple_callbacks(0.0, 0.1)
+            rti.evokeMultipleCallbacks(0.0, 0.1)
 
 
 def _default_target_radar_fom_modules() -> list[str]:
@@ -512,15 +512,15 @@ def run_target_radar_scenario(
     radar_rti.connect(radar, CallbackModel.HLA_EVOKED)
 
     try:
-        target_rti.create_federation_execution(
+        target_rti.createFederationExecution(
             federation_name,
             list(fom_modules) if fom_modules else _default_target_radar_fom_modules(),
         )
     except FederationExecutionAlreadyExists:
         pass
 
-    target_rti.join_federation_execution("SingleTarget", "target", federation_name)
-    radar_rti.join_federation_execution("Radar", "radar", federation_name)
+    target_rti.joinFederationExecution("SingleTarget", "target", federation_name)
+    radar_rti.joinFederationExecution("Radar", "radar", federation_name)
 
     # Radar subscribes before the target registers, so discovery is observable.
     radar.setup(radar_rti)
@@ -542,8 +542,8 @@ def run_target_radar_scenario(
                 _drain_callbacks(target_rti, radar_rti)
             if not progress:
                 break
-        target_rti.time_advance_request(HLAinteger64Time(step_index))
-        radar_rti.time_advance_request(HLAinteger64Time(step_index))
+        target_rti.timeAdvanceRequest(HLAinteger64Time(step_index))
+        radar_rti.timeAdvanceRequest(HLAinteger64Time(step_index))
         _drain_callbacks(target_rti, radar_rti)
 
     backend_kinds = (
@@ -563,11 +563,11 @@ def run_target_radar_scenario(
     if cleanup:
         for rti in (radar_rti, target_rti):
             try:
-                rti.resign_federation_execution(ResignAction.NO_ACTION)
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
             except RTIexception:
                 pass
         try:
-            target_rti.destroy_federation_execution(federation_name)
+            target_rti.destroyFederationExecution(federation_name)
         except (FederationExecutionDoesNotExist, FederatesCurrentlyJoined, RTIexception):
             pass
         for rti in (radar_rti, target_rti):

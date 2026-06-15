@@ -30,64 +30,64 @@ from tests.requirement_marker_groups import (
 def test_support_surface_negative_paths_cover_handle_validation_region_bounds_and_advisory_switches():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.get_attribute_name(object(), object())
+        rti.getAttributeName(object(), object())
     with pytest.raises(NotConnected):
-        rti.get_parameter_name(object(), object())
+        rti.getParameterName(object(), object())
     with pytest.raises(NotConnected):
-        rti.get_available_dimensions_for_class_attribute(object(), object())
+        rti.getAvailableDimensionsForClassAttribute(object(), object())
     with pytest.raises(NotConnected):
-        rti.get_dimension_handle_set(object())
+        rti.getDimensionHandleSet(object())
     with pytest.raises(NotConnected):
-        rti.enable_object_class_relevance_advisory_switch()
+        rti.enableObjectClassRelevanceAdvisorySwitch()
     with pytest.raises(NotConnected):
-        rti.disable_object_class_relevance_advisory_switch()
+        rti.disableObjectClassRelevanceAdvisorySwitch()
     with pytest.raises(NotConnected):
-        rti.enable_attribute_relevance_advisory_switch()
+        rti.enableAttributeRelevanceAdvisorySwitch()
     with pytest.raises(NotConnected):
-        rti.disable_attribute_relevance_advisory_switch()
+        rti.disableAttributeRelevanceAdvisorySwitch()
     with pytest.raises(NotConnected):
-        rti.enable_attribute_scope_advisory_switch()
+        rti.enableAttributeScopeAdvisorySwitch()
     with pytest.raises(NotConnected):
-        rti.disable_attribute_scope_advisory_switch()
+        rti.disableAttributeScopeAdvisorySwitch()
     with pytest.raises(NotConnected):
-        rti.get_range_bounds(object(), object())
+        rti.getRangeBounds(object(), object())
     with pytest.raises(NotConnected):
-        rti.set_range_bounds(object(), object(), RangeBounds(0, 1))
+        rti.setRangeBounds(object(), object(), RangeBounds(0, 1))
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_attribute_name(object(), object())
+        rti.getAttributeName(object(), object())
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_parameter_name(object(), object())
+        rti.getParameterName(object(), object())
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_available_dimensions_for_class_attribute(object(), object())
+        rti.getAvailableDimensionsForClassAttribute(object(), object())
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_dimension_handle_set(object())
+        rti.getDimensionHandleSet(object())
     with pytest.raises(FederateNotExecutionMember):
-        rti.enable_object_class_relevance_advisory_switch()
+        rti.enableObjectClassRelevanceAdvisorySwitch()
     with pytest.raises(FederateNotExecutionMember):
-        rti.disable_object_class_relevance_advisory_switch()
+        rti.disableObjectClassRelevanceAdvisorySwitch()
     with pytest.raises(FederateNotExecutionMember):
-        rti.enable_attribute_relevance_advisory_switch()
+        rti.enableAttributeRelevanceAdvisorySwitch()
     with pytest.raises(FederateNotExecutionMember):
-        rti.disable_attribute_relevance_advisory_switch()
+        rti.disableAttributeRelevanceAdvisorySwitch()
     with pytest.raises(FederateNotExecutionMember):
-        rti.enable_attribute_scope_advisory_switch()
+        rti.enableAttributeScopeAdvisorySwitch()
     with pytest.raises(FederateNotExecutionMember):
-        rti.disable_attribute_scope_advisory_switch()
+        rti.disableAttributeScopeAdvisorySwitch()
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_range_bounds(object(), object())
+        rti.getRangeBounds(object(), object())
     with pytest.raises(FederateNotExecutionMember):
-        rti.set_range_bounds(object(), object(), RangeBounds(0, 1))
+        rti.setRangeBounds(object(), object(), RangeBounds(0, 1))
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("support-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    param = owner.get_parameter_handle(interaction, "TrackId")
-    dim = owner.get_dimension_handle("HLAdefaultRoutingSpace")
-    region = owner.create_region({dim})
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    param = owner.getParameterHandle(interaction, "TrackId")
+    dim = owner.getDimensionHandle("HLAdefaultRoutingSpace")
+    region = owner.createRegion({dim})
 
     bad_class = type(cls)(cls.value + 1000)
     bad_attr = type(attr)(attr.value + 1000)
@@ -97,416 +97,416 @@ def test_support_surface_negative_paths_cover_handle_validation_region_bounds_an
     bad_region = type(region)(region.value + 1000)
 
     with pytest.raises(InvalidObjectClassHandle):
-        owner.get_attribute_name(bad_class, attr)
+        owner.getAttributeName(bad_class, attr)
     with pytest.raises(AttributeNotDefined):
-        owner.get_attribute_name(cls, bad_attr)
+        owner.getAttributeName(cls, bad_attr)
     with pytest.raises(InvalidInteractionClassHandle):
-        owner.get_parameter_name(bad_interaction, param)
+        owner.getParameterName(bad_interaction, param)
     with pytest.raises(InteractionParameterNotDefined):
-        owner.get_parameter_name(interaction, bad_param)
+        owner.getParameterName(interaction, bad_param)
     with pytest.raises(InvalidObjectClassHandle):
-        owner.get_available_dimensions_for_class_attribute(bad_class, attr)
+        owner.getAvailableDimensionsForClassAttribute(bad_class, attr)
     with pytest.raises(AttributeNotDefined):
-        owner.get_available_dimensions_for_class_attribute(cls, bad_attr)
+        owner.getAvailableDimensionsForClassAttribute(cls, bad_attr)
 
     with pytest.raises(InvalidRegion):
-        owner.get_dimension_handle_set(bad_region)
+        owner.getDimensionHandleSet(bad_region)
     with pytest.raises(ObjectClassRelevanceAdvisorySwitchIsOff):
-        owner.disable_object_class_relevance_advisory_switch()
-    owner.enable_object_class_relevance_advisory_switch()
+        owner.disableObjectClassRelevanceAdvisorySwitch()
+    owner.enableObjectClassRelevanceAdvisorySwitch()
     with pytest.raises(ObjectClassRelevanceAdvisorySwitchIsOn):
-        owner.enable_object_class_relevance_advisory_switch()
-    owner.disable_object_class_relevance_advisory_switch()
+        owner.enableObjectClassRelevanceAdvisorySwitch()
+    owner.disableObjectClassRelevanceAdvisorySwitch()
 
     with pytest.raises(AttributeRelevanceAdvisorySwitchIsOff):
-        owner.disable_attribute_relevance_advisory_switch()
-    owner.enable_attribute_relevance_advisory_switch()
+        owner.disableAttributeRelevanceAdvisorySwitch()
+    owner.enableAttributeRelevanceAdvisorySwitch()
     with pytest.raises(AttributeRelevanceAdvisorySwitchIsOn):
-        owner.enable_attribute_relevance_advisory_switch()
-    owner.disable_attribute_relevance_advisory_switch()
+        owner.enableAttributeRelevanceAdvisorySwitch()
+    owner.disableAttributeRelevanceAdvisorySwitch()
 
     with pytest.raises(AttributeScopeAdvisorySwitchIsOff):
-        owner.disable_attribute_scope_advisory_switch()
-    owner.enable_attribute_scope_advisory_switch()
+        owner.disableAttributeScopeAdvisorySwitch()
+    owner.enableAttributeScopeAdvisorySwitch()
     with pytest.raises(AttributeScopeAdvisorySwitchIsOn):
-        owner.enable_attribute_scope_advisory_switch()
-    owner.disable_attribute_scope_advisory_switch()
+        owner.enableAttributeScopeAdvisorySwitch()
+    owner.disableAttributeScopeAdvisorySwitch()
 
     with pytest.raises(InvalidRegion):
-        owner.get_range_bounds(bad_region, dim)
+        owner.getRangeBounds(bad_region, dim)
     with pytest.raises(RegionDoesNotContainSpecifiedDimension):
-        owner.get_range_bounds(region, bad_dim)
+        owner.getRangeBounds(region, bad_dim)
     with pytest.raises(InvalidRegion):
-        owner.set_range_bounds(bad_region, dim, RangeBounds(0, 1))
+        owner.setRangeBounds(bad_region, dim, RangeBounds(0, 1))
     with pytest.raises(RegionDoesNotContainSpecifiedDimension):
-        owner.set_range_bounds(region, bad_dim, RangeBounds(0, 1))
+        owner.setRangeBounds(region, bad_dim, RangeBounds(0, 1))
     with pytest.raises(InvalidRangeBound):
-        owner.set_range_bounds(region, dim, RangeBounds(10, 1))
+        owner.setRangeBounds(region, dim, RangeBounds(10, 1))
 
-    owner.request_federation_save("SUPPORT-NEGATIVE-SAVE")
+    owner.requestFederationSave("SUPPORT-NEGATIVE-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.get_dimension_handle_set(region)
+        owner.getDimensionHandleSet(region)
     with pytest.raises(SaveInProgress):
-        owner.enable_object_class_relevance_advisory_switch()
+        owner.enableObjectClassRelevanceAdvisorySwitch()
     with pytest.raises(SaveInProgress):
-        owner.disable_attribute_relevance_advisory_switch()
+        owner.disableAttributeRelevanceAdvisorySwitch()
     with pytest.raises(SaveInProgress):
-        owner.enable_attribute_scope_advisory_switch()
+        owner.enableAttributeScopeAdvisorySwitch()
     with pytest.raises(SaveInProgress):
-        owner.get_range_bounds(region, dim)
+        owner.getRangeBounds(region, dim)
     with pytest.raises(SaveInProgress):
-        owner.set_range_bounds(region, dim, RangeBounds(0, 1))
+        owner.setRangeBounds(region, dim, RangeBounds(0, 1))
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("SUPPORT-NEGATIVE-SAVE")
+    owner.requestFederationRestore("SUPPORT-NEGATIVE-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.get_dimension_handle_set(region)
+        owner.getDimensionHandleSet(region)
     with pytest.raises(RestoreInProgress):
-        owner.enable_object_class_relevance_advisory_switch()
+        owner.enableObjectClassRelevanceAdvisorySwitch()
     with pytest.raises(RestoreInProgress):
-        owner.disable_attribute_relevance_advisory_switch()
+        owner.disableAttributeRelevanceAdvisorySwitch()
     with pytest.raises(RestoreInProgress):
-        owner.enable_attribute_scope_advisory_switch()
+        owner.enableAttributeScopeAdvisorySwitch()
     with pytest.raises(RestoreInProgress):
-        owner.get_range_bounds(region, dim)
+        owner.getRangeBounds(region, dim)
     with pytest.raises(RestoreInProgress):
-        owner.set_range_bounds(region, dim, RangeBounds(0, 1))
+        owner.setRangeBounds(region, dim, RangeBounds(0, 1))
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("support-negative-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("support-negative-fed")
 
 
 def test_request_attribute_transportation_type_change_rejects_not_connected_not_joined_and_unknown_object():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.request_attribute_transportation_type_change(ObjectInstanceHandle(999), set(), object())
+        rti.requestAttributeTransportationTypeChange(ObjectInstanceHandle(999), set(), object())
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.request_attribute_transportation_type_change(ObjectInstanceHandle(999), set(), object())
+        rti.requestAttributeTransportationTypeChange(ObjectInstanceHandle(999), set(), object())
     rti.disconnect()
 
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("transport-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    rcs = owner.get_attribute_handle(cls, "RCS")
-    owner.publish_object_class_attributes(cls, {attr})
-    obj = owner.register_object_instance(cls, "Transport-1")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    rcs = owner.getAttributeHandle(cls, "RCS")
+    owner.publishObjectClassAttributes(cls, {attr})
+    obj = owner.registerObjectInstance(cls, "Transport-1")
     owner_fed.clear()
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.request_attribute_transportation_type_change(ObjectInstanceHandle(999), set(), owner.backend.engine.transportation_reliable)
+        owner.requestAttributeTransportationTypeChange(ObjectInstanceHandle(999), set(), owner.backend.engine.transportation_reliable)
     with pytest.raises(AttributeNotDefined):
-        owner.request_attribute_transportation_type_change(obj, {type(attr)(attr.value + 1000)}, owner.backend.engine.transportation_reliable)
+        owner.requestAttributeTransportationTypeChange(obj, {type(attr)(attr.value + 1000)}, owner.backend.engine.transportation_reliable)
     with pytest.raises(InvalidTransportationType):
-        owner.request_attribute_transportation_type_change(obj, {attr}, TransportationTypeHandle(999))
+        owner.requestAttributeTransportationTypeChange(obj, {attr}, TransportationTypeHandle(999))
     with pytest.raises(AttributeNotOwned):
-        observer.request_attribute_transportation_type_change(obj, {attr}, owner.backend.engine.transportation_reliable)
+        observer.requestAttributeTransportationTypeChange(obj, {attr}, owner.backend.engine.transportation_reliable)
 
     owner.backend.config.strict_object_publication = True
     with pytest.raises(AttributeNotPublished):
-        owner.request_attribute_transportation_type_change(obj, {rcs}, owner.backend.engine.transportation_reliable)
+        owner.requestAttributeTransportationTypeChange(obj, {rcs}, owner.backend.engine.transportation_reliable)
     owner.backend.config.strict_object_publication = False
     assert owner_fed.callbacks_named("confirmAttributeTransportationTypeChange") == []
 
-    owner.request_federation_save("ATTRIBUTE-TRANSPORT-SAVE")
+    owner.requestFederationSave("ATTRIBUTE-TRANSPORT-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.request_attribute_transportation_type_change(obj, {attr}, owner.backend.engine.transportation_reliable)
+        owner.requestAttributeTransportationTypeChange(obj, {attr}, owner.backend.engine.transportation_reliable)
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("ATTRIBUTE-TRANSPORT-SAVE")
+    owner.requestFederationRestore("ATTRIBUTE-TRANSPORT-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.request_attribute_transportation_type_change(obj, {attr}, owner.backend.engine.transportation_reliable)
+        owner.requestAttributeTransportationTypeChange(obj, {attr}, owner.backend.engine.transportation_reliable)
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("transport-negative-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("transport-negative-fed")
 
 
 @pytest.mark.requirements(*CLAUSE5_DECLARATION_NEGATIVE_REQUIREMENTS)
 def test_declaration_services_reject_not_connected_not_joined_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.unpublish_object_class_attributes(object(), set())
+        rti.unpublishObjectClassAttributes(object(), set())
     with pytest.raises(NotConnected):
-        rti.subscribe_object_class_attributes(object(), set())
+        rti.subscribeObjectClassAttributes(object(), set())
     with pytest.raises(NotConnected):
-        rti.subscribe_object_class_attributes_passively(object(), set())
+        rti.subscribeObjectClassAttributesPassively(object(), set())
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.unpublish_object_class_attributes(object(), set())
+        rti.unpublishObjectClassAttributes(object(), set())
     with pytest.raises(FederateNotExecutionMember):
-        rti.subscribe_object_class_attributes(object(), set())
+        rti.subscribeObjectClassAttributes(object(), set())
     with pytest.raises(FederateNotExecutionMember):
-        rti.subscribe_object_class_attributes_passively(object(), set())
+        rti.subscribeObjectClassAttributesPassively(object(), set())
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("declaration-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
-    owner.request_federation_save("DECL-SAVE")
+    owner.requestFederationSave("DECL-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.unpublish_object_class_attributes(cls, {attr})
+        owner.unpublishObjectClassAttributes(cls, {attr})
     with pytest.raises(SaveInProgress):
-        observer.subscribe_object_class_attributes(cls, {attr})
+        observer.subscribeObjectClassAttributes(cls, {attr})
     with pytest.raises(SaveInProgress):
-        observer.subscribe_object_class_attributes_passively(cls, {attr})
+        observer.subscribeObjectClassAttributesPassively(cls, {attr})
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("DECL-SAVE")
+    owner.requestFederationRestore("DECL-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.unpublish_object_class_attributes(cls, {attr})
+        owner.unpublishObjectClassAttributes(cls, {attr})
     with pytest.raises(RestoreInProgress):
-        observer.subscribe_object_class_attributes(cls, {attr})
+        observer.subscribeObjectClassAttributes(cls, {attr})
     with pytest.raises(RestoreInProgress):
-        observer.subscribe_object_class_attributes_passively(cls, {attr})
+        observer.subscribeObjectClassAttributesPassively(cls, {attr})
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("declaration-negative-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("declaration-negative-fed")
 
 
 def test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_not_connected_not_joined_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.publish_object_class_attributes(object(), set())
+        rti.publishObjectClassAttributes(object(), set())
     with pytest.raises(NotConnected):
-        rti.unpublish_object_class(object())
+        rti.unpublishObjectClass(object())
     with pytest.raises(NotConnected):
-        rti.unsubscribe_object_class_attributes(object(), set())
+        rti.unsubscribeObjectClassAttributes(object(), set())
     with pytest.raises(NotConnected):
-        rti.subscribe_interaction_class(object())
+        rti.subscribeInteractionClass(object())
     with pytest.raises(NotConnected):
-        rti.subscribe_interaction_class_passively(object())
+        rti.subscribeInteractionClassPassively(object())
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.publish_object_class_attributes(object(), set())
+        rti.publishObjectClassAttributes(object(), set())
     with pytest.raises(FederateNotExecutionMember):
-        rti.unpublish_object_class(object())
+        rti.unpublishObjectClass(object())
     with pytest.raises(FederateNotExecutionMember):
-        rti.unsubscribe_object_class_attributes(object(), set())
+        rti.unsubscribeObjectClassAttributes(object(), set())
     with pytest.raises(FederateNotExecutionMember):
-        rti.subscribe_interaction_class(object())
+        rti.subscribeInteractionClass(object())
     with pytest.raises(FederateNotExecutionMember):
-        rti.subscribe_interaction_class_passively(object())
+        rti.subscribeInteractionClassPassively(object())
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("decl-tail-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
 
-    owner.request_federation_save("DECL-TAIL-SAVE")
+    owner.requestFederationSave("DECL-TAIL-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.publish_object_class_attributes(cls, {attr})
+        owner.publishObjectClassAttributes(cls, {attr})
     with pytest.raises(SaveInProgress):
-        owner.unpublish_object_class(cls)
+        owner.unpublishObjectClass(cls)
     with pytest.raises(SaveInProgress):
-        observer.unsubscribe_object_class_attributes(cls, {attr})
+        observer.unsubscribeObjectClassAttributes(cls, {attr})
     with pytest.raises(SaveInProgress):
-        observer.subscribe_interaction_class(interaction)
+        observer.subscribeInteractionClass(interaction)
     with pytest.raises(SaveInProgress):
-        observer.subscribe_interaction_class_passively(interaction)
+        observer.subscribeInteractionClassPassively(interaction)
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("DECL-TAIL-SAVE")
+    owner.requestFederationRestore("DECL-TAIL-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.publish_object_class_attributes(cls, {attr})
+        owner.publishObjectClassAttributes(cls, {attr})
     with pytest.raises(RestoreInProgress):
-        owner.unpublish_object_class(cls)
+        owner.unpublishObjectClass(cls)
     with pytest.raises(RestoreInProgress):
-        observer.unsubscribe_object_class_attributes(cls, {attr})
+        observer.unsubscribeObjectClassAttributes(cls, {attr})
     with pytest.raises(RestoreInProgress):
-        observer.subscribe_interaction_class(interaction)
+        observer.subscribeInteractionClass(interaction)
     with pytest.raises(RestoreInProgress):
-        observer.subscribe_interaction_class_passively(interaction)
+        observer.subscribeInteractionClassPassively(interaction)
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("decl-tail-negative-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("decl-tail-negative-fed")
 
 
 @pytest.mark.requirements(*CLAUSE5_DECLARATION_ADMIN_NEGATIVE_REQUIREMENTS)
 def test_publish_unpublish_and_unsubscribe_interaction_tail_reject_not_connected_not_joined_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.publish_interaction_class(object())
+        rti.publishInteractionClass(object())
     with pytest.raises(NotConnected):
-        rti.unpublish_interaction_class(object())
+        rti.unpublishInteractionClass(object())
     with pytest.raises(NotConnected):
-        rti.unsubscribe_object_class(object())
+        rti.unsubscribeObjectClass(object())
     with pytest.raises(NotConnected):
-        rti.unsubscribe_interaction_class(object())
+        rti.unsubscribeInteractionClass(object())
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.publish_interaction_class(object())
+        rti.publishInteractionClass(object())
     with pytest.raises(FederateNotExecutionMember):
-        rti.unpublish_interaction_class(object())
+        rti.unpublishInteractionClass(object())
     with pytest.raises(FederateNotExecutionMember):
-        rti.unsubscribe_object_class(object())
+        rti.unsubscribeObjectClass(object())
     with pytest.raises(FederateNotExecutionMember):
-        rti.unsubscribe_interaction_class(object())
+        rti.unsubscribeInteractionClass(object())
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("decl-admin-tail-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
 
-    owner.request_federation_save("DECL-ADMIN-SAVE")
+    owner.requestFederationSave("DECL-ADMIN-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.publish_interaction_class(interaction)
+        owner.publishInteractionClass(interaction)
     with pytest.raises(SaveInProgress):
-        owner.unpublish_interaction_class(interaction)
+        owner.unpublishInteractionClass(interaction)
     with pytest.raises(SaveInProgress):
-        observer.unsubscribe_object_class(cls)
+        observer.unsubscribeObjectClass(cls)
     with pytest.raises(SaveInProgress):
-        observer.unsubscribe_interaction_class(interaction)
+        observer.unsubscribeInteractionClass(interaction)
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("DECL-ADMIN-SAVE")
+    owner.requestFederationRestore("DECL-ADMIN-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.publish_interaction_class(interaction)
+        owner.publishInteractionClass(interaction)
     with pytest.raises(RestoreInProgress):
-        owner.unpublish_interaction_class(interaction)
+        owner.unpublishInteractionClass(interaction)
     with pytest.raises(RestoreInProgress):
-        observer.unsubscribe_object_class(cls)
+        observer.unsubscribeObjectClass(cls)
     with pytest.raises(RestoreInProgress):
-        observer.unsubscribe_interaction_class(interaction)
+        observer.unsubscribeInteractionClass(interaction)
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("decl-admin-tail-negative-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("decl-admin-tail-negative-fed")
 
 
 def test_declaration_services_validate_declared_handles_attributes_and_update_rate_designators():
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("decl-arg-validation-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
 
     bad_class = type(cls)(cls.value + 1000)
     bad_attr = type(attr)(attr.value + 1000)
     bad_interaction = type(interaction)(interaction.value + 1000)
 
     with pytest.raises(InvalidObjectClassHandle):
-        owner.publish_object_class_attributes(bad_class, {attr})
+        owner.publishObjectClassAttributes(bad_class, {attr})
     with pytest.raises(AttributeNotDefined):
-        owner.publish_object_class_attributes(cls, {bad_attr})
+        owner.publishObjectClassAttributes(cls, {bad_attr})
 
     with pytest.raises(InvalidObjectClassHandle):
-        owner.unpublish_object_class(bad_class)
+        owner.unpublishObjectClass(bad_class)
     with pytest.raises(InvalidObjectClassHandle):
-        owner.unpublish_object_class_attributes(bad_class, {attr})
+        owner.unpublishObjectClassAttributes(bad_class, {attr})
     with pytest.raises(AttributeNotDefined):
-        owner.unpublish_object_class_attributes(cls, {bad_attr})
+        owner.unpublishObjectClassAttributes(cls, {bad_attr})
 
     with pytest.raises(InvalidInteractionClassHandle):
-        owner.publish_interaction_class(bad_interaction)
+        owner.publishInteractionClass(bad_interaction)
     with pytest.raises(InvalidInteractionClassHandle):
-        owner.unpublish_interaction_class(bad_interaction)
+        owner.unpublishInteractionClass(bad_interaction)
 
     with pytest.raises(InvalidObjectClassHandle):
-        observer.subscribe_object_class_attributes(bad_class, {attr})
+        observer.subscribeObjectClassAttributes(bad_class, {attr})
     with pytest.raises(AttributeNotDefined):
-        observer.subscribe_object_class_attributes(cls, {bad_attr})
+        observer.subscribeObjectClassAttributes(cls, {bad_attr})
     with pytest.raises(InvalidUpdateRateDesignator):
-        observer.subscribe_object_class_attributes(cls, {attr}, "not-a-rate")
+        observer.subscribeObjectClassAttributes(cls, {attr}, "not-a-rate")
 
     with pytest.raises(InvalidObjectClassHandle):
-        observer.subscribe_object_class_attributes_passively(bad_class, {attr})
+        observer.subscribeObjectClassAttributesPassively(bad_class, {attr})
     with pytest.raises(AttributeNotDefined):
-        observer.subscribe_object_class_attributes_passively(cls, {bad_attr})
+        observer.subscribeObjectClassAttributesPassively(cls, {bad_attr})
     with pytest.raises(InvalidUpdateRateDesignator):
-        observer.subscribe_object_class_attributes_passively(cls, {attr}, "not-a-rate")
+        observer.subscribeObjectClassAttributesPassively(cls, {attr}, "not-a-rate")
 
     with pytest.raises(InvalidObjectClassHandle):
-        observer.unsubscribe_object_class(bad_class)
+        observer.unsubscribeObjectClass(bad_class)
     with pytest.raises(InvalidObjectClassHandle):
-        observer.unsubscribe_object_class_attributes(bad_class, {attr})
+        observer.unsubscribeObjectClassAttributes(bad_class, {attr})
     with pytest.raises(AttributeNotDefined):
-        observer.unsubscribe_object_class_attributes(cls, {bad_attr})
+        observer.unsubscribeObjectClassAttributes(cls, {bad_attr})
 
     with pytest.raises(InvalidInteractionClassHandle):
-        observer.subscribe_interaction_class(bad_interaction)
+        observer.subscribeInteractionClass(bad_interaction)
     with pytest.raises(InvalidInteractionClassHandle):
-        observer.subscribe_interaction_class_passively(bad_interaction)
+        observer.subscribeInteractionClassPassively(bad_interaction)
     with pytest.raises(InvalidInteractionClassHandle):
-        observer.unsubscribe_interaction_class(bad_interaction)
+        observer.unsubscribeInteractionClass(bad_interaction)
 
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("decl-arg-validation-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("decl-arg-validation-fed")
 
 
 def test_declaration_services_are_observable_through_mom_service_invocation_reporting():
     _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("decl-mom-service-report-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
 
-    set_reporting = owner.get_interaction_class_handle(
+    set_reporting = owner.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
     )
-    service_report = owner.get_interaction_class_handle(
+    service_report = owner.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
     )
-    sr_fed = owner.get_parameter_handle(set_reporting, "HLAfederate")
-    sr_state = owner.get_parameter_handle(set_reporting, "HLAreportingState")
-    report_service = observer.get_parameter_handle(service_report, "HLAservice")
-    report_success = observer.get_parameter_handle(service_report, "HLAsuccessIndicator")
+    sr_fed = owner.getParameterHandle(set_reporting, "HLAfederate")
+    sr_state = owner.getParameterHandle(set_reporting, "HLAreportingState")
+    report_service = observer.getParameterHandle(service_report, "HLAservice")
+    report_success = observer.getParameterHandle(service_report, "HLAsuccessIndicator")
 
-    observer.subscribe_interaction_class(service_report)
-    owner.send_interaction(
+    observer.subscribeInteractionClass(service_report)
+    owner.sendInteraction(
         set_reporting,
         {
             sr_fed: owner.backend.state.handle.encode(),
@@ -518,16 +518,16 @@ def test_declaration_services_are_observable_through_mom_service_invocation_repo
     assert owner.backend.state.service_reporting is True
 
     observer_fed.clear()
-    owner.publish_object_class_attributes(cls, {attr})
-    owner.unpublish_object_class(cls)
-    owner.publish_interaction_class(interaction)
-    owner.unpublish_interaction_class(interaction)
-    owner.subscribe_object_class_attributes(cls, {attr})
-    owner.subscribe_object_class_attributes_passively(cls, {attr}, "HLAdefault")
-    owner.unsubscribe_object_class(cls)
-    owner.subscribe_interaction_class(interaction)
-    owner.subscribe_interaction_class_passively(interaction)
-    owner.unsubscribe_interaction_class(interaction)
+    owner.publishObjectClassAttributes(cls, {attr})
+    owner.unpublishObjectClass(cls)
+    owner.publishInteractionClass(interaction)
+    owner.unpublishInteractionClass(interaction)
+    owner.subscribeObjectClassAttributes(cls, {attr})
+    owner.subscribeObjectClassAttributesPassively(cls, {attr}, "HLAdefault")
+    owner.unsubscribeObjectClass(cls)
+    owner.subscribeInteractionClass(interaction)
+    owner.subscribeInteractionClassPassively(interaction)
+    owner.unsubscribeInteractionClass(interaction)
     drain(owner, observer)
 
     reports = [rec for rec in observer_fed.callbacks_named("receiveInteraction") if rec.args[0] == service_report]
@@ -549,9 +549,9 @@ def test_declaration_services_are_observable_through_mom_service_invocation_repo
         "unsubscribeInteractionClass",
     }
 
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("decl-mom-service-report-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("decl-mom-service-report-fed")
 
 
 @pytest.mark.requirements(*CLAUSE6_MOM_SERVICE_REPORT_REQUIREMENTS)
@@ -560,26 +560,26 @@ def test_clause_6_federate_initiated_services_are_observable_through_mom_service
     witness = rti_ambassador(engine=engine)
     witness_fed = RecordingFederateAmbassador()
     witness.connect(witness_fed, CallbackModel.HLA_EVOKED)
-    witness.join_federation_execution("charlie", "type-c", "om-mom-service-report-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    track_id = owner.get_parameter_handle(interaction, "TrackId")
+    witness.joinFederationExecution("charlie", "type-c", "om-mom-service-report-fed")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    track_id = owner.getParameterHandle(interaction, "TrackId")
     best_effort = owner.backend.engine.transportation_best_effort
 
-    set_reporting = owner.get_interaction_class_handle(
+    set_reporting = owner.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
     )
-    service_report = owner.get_interaction_class_handle(
+    service_report = owner.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
     )
-    sr_fed = owner.get_parameter_handle(set_reporting, "HLAfederate")
-    sr_state = owner.get_parameter_handle(set_reporting, "HLAreportingState")
-    report_service = witness.get_parameter_handle(service_report, "HLAservice")
-    report_success = witness.get_parameter_handle(service_report, "HLAsuccessIndicator")
+    sr_fed = owner.getParameterHandle(set_reporting, "HLAfederate")
+    sr_state = owner.getParameterHandle(set_reporting, "HLAreportingState")
+    report_service = witness.getParameterHandle(service_report, "HLAservice")
+    report_success = witness.getParameterHandle(service_report, "HLAsuccessIndicator")
 
-    witness.subscribe_interaction_class(service_report)
-    owner.send_interaction(
+    witness.subscribeInteractionClass(service_report)
+    owner.sendInteraction(
         set_reporting,
         {
             sr_fed: owner.backend.state.handle.encode(),
@@ -587,7 +587,7 @@ def test_clause_6_federate_initiated_services_are_observable_through_mom_service
         },
         b"enable-om-service-reporting",
     )
-    observer.send_interaction(
+    observer.sendInteraction(
         set_reporting,
         {
             sr_fed: observer.backend.state.handle.encode(),
@@ -599,24 +599,24 @@ def test_clause_6_federate_initiated_services_are_observable_through_mom_service
     assert owner.backend.state.service_reporting is True
     assert observer.backend.state.service_reporting is True
 
-    owner.publish_object_class_attributes(cls, {attr})
-    observer.subscribe_object_class_attributes(cls, {attr})
-    owner.publish_interaction_class(interaction)
-    owner.reserve_object_instance_name("OM-MOM-Reserved")
-    owner.release_object_instance_name("OM-MOM-Reserved")
-    owner.reserve_multiple_object_instance_name({"OM-MOM-A", "OM-MOM-B"})
-    owner.release_multiple_object_instance_name({"OM-MOM-A", "OM-MOM-B"})
-    obj = owner.register_object_instance(cls, "OM-MOM-Object")
+    owner.publishObjectClassAttributes(cls, {attr})
+    observer.subscribeObjectClassAttributes(cls, {attr})
+    owner.publishInteractionClass(interaction)
+    owner.reserveObjectInstanceName("OM-MOM-Reserved")
+    owner.releaseObjectInstanceName("OM-MOM-Reserved")
+    owner.reserveMultipleObjectInstanceName({"OM-MOM-A", "OM-MOM-B"})
+    owner.releaseMultipleObjectInstanceName({"OM-MOM-A", "OM-MOM-B"})
+    obj = owner.registerObjectInstance(cls, "OM-MOM-Object")
     drain(owner, observer)
-    observer.local_delete_object_instance(obj)
-    owner.update_attribute_values(obj, {attr: b"mom-position"}, b"mom-update")
-    owner.send_interaction(interaction, {track_id: b"mom-track"}, b"mom-send")
-    owner.request_attribute_value_update(obj, {attr}, b"mom-refresh")
-    owner.request_attribute_transportation_type_change(obj, {attr}, best_effort)
-    owner.query_attribute_transportation_type(obj, attr)
-    owner.request_interaction_transportation_type_change(interaction, best_effort)
-    owner.query_interaction_transportation_type(interaction)
-    owner.delete_object_instance(obj, b"mom-delete")
+    observer.localDeleteObjectInstance(obj)
+    owner.updateAttributeValues(obj, {attr: b"mom-position"}, b"mom-update")
+    owner.sendInteraction(interaction, {track_id: b"mom-track"}, b"mom-send")
+    owner.requestAttributeValueUpdate(obj, {attr}, b"mom-refresh")
+    owner.requestAttributeTransportationTypeChange(obj, {attr}, best_effort)
+    owner.queryAttributeTransportationType(obj, attr)
+    owner.requestInteractionTransportationTypeChange(interaction, best_effort)
+    owner.queryInteractionTransportationType(interaction)
+    owner.deleteObjectInstance(obj, b"mom-delete")
     drain(owner, observer, witness)
 
     reports = [rec for rec in witness_fed.callbacks_named("receiveInteraction") if rec.args[0] == service_report]
@@ -642,45 +642,45 @@ def test_clause_6_federate_initiated_services_are_observable_through_mom_service
         "deleteObjectInstance",
     }
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    witness.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("om-mom-service-report-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    witness.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("om-mom-service-report-fed")
 
 
 @pytest.mark.requirements(*CLAUSE6_MOM_CALLBACK_SUMMARY_REQUIREMENTS)
 def test_clause_6_callback_activity_is_visible_in_mom_summary():
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("om-mom-callback-summary-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    track_id = owner.get_parameter_handle(interaction, "TrackId")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    track_id = owner.getParameterHandle(interaction, "TrackId")
     best_effort = owner.backend.engine.transportation_best_effort
 
-    owner.reserve_object_instance_name("OM-MOM-Callback-Reserved")
-    owner.reserve_multiple_object_instance_name({"OM-MOM-CB-A", "OM-MOM-CB-B"})
+    owner.reserveObjectInstanceName("OM-MOM-Callback-Reserved")
+    owner.reserveMultipleObjectInstanceName({"OM-MOM-CB-A", "OM-MOM-CB-B"})
     drain(owner, observer)
 
-    observer.subscribe_object_class_attributes(cls, {attr})
-    observer.subscribe_interaction_class(interaction)
-    owner.publish_object_class_attributes(cls, {attr})
-    owner.publish_interaction_class(interaction)
-    owner.enable_attribute_relevance_advisory_switch()
-    obj = owner.register_object_instance(cls, "OM-MOM-Callback-Object")
+    observer.subscribeObjectClassAttributes(cls, {attr})
+    observer.subscribeInteractionClass(interaction)
+    owner.publishObjectClassAttributes(cls, {attr})
+    owner.publishInteractionClass(interaction)
+    owner.enableAttributeRelevanceAdvisorySwitch()
+    obj = owner.registerObjectInstance(cls, "OM-MOM-Callback-Object")
     drain(owner, observer)
-    observer.unsubscribe_object_class_attributes(cls, {attr})
+    observer.unsubscribeObjectClassAttributes(cls, {attr})
     drain(owner, observer)
-    observer.subscribe_object_class_attributes(cls, {attr}, "HLAdefault")
+    observer.subscribeObjectClassAttributes(cls, {attr}, "HLAdefault")
     drain(owner, observer)
 
-    owner.update_attribute_values(obj, {attr: b"mom-callback-position"}, b"mom-callback-update")
-    owner.send_interaction(interaction, {track_id: b"mom-callback-track"}, b"mom-callback-send")
-    observer.request_attribute_value_update(obj, {attr}, b"mom-callback-refresh")
-    owner.request_attribute_transportation_type_change(obj, {attr}, best_effort)
-    owner.query_attribute_transportation_type(obj, attr)
-    owner.request_interaction_transportation_type_change(interaction, best_effort)
-    owner.query_interaction_transportation_type(interaction)
-    owner.delete_object_instance(obj, b"mom-callback-delete")
+    owner.updateAttributeValues(obj, {attr: b"mom-callback-position"}, b"mom-callback-update")
+    owner.sendInteraction(interaction, {track_id: b"mom-callback-track"}, b"mom-callback-send")
+    observer.requestAttributeValueUpdate(obj, {attr}, b"mom-callback-refresh")
+    owner.requestAttributeTransportationTypeChange(obj, {attr}, best_effort)
+    owner.queryAttributeTransportationType(obj, attr)
+    owner.requestInteractionTransportationTypeChange(interaction, best_effort)
+    owner.queryInteractionTransportationType(interaction)
+    owner.deleteObjectInstance(obj, b"mom-callback-delete")
     drain(owner, observer)
 
     owner_summary = owner.backend.current_mom_summary()
@@ -706,9 +706,9 @@ def test_clause_6_callback_activity_is_visible_in_mom_summary():
     assert "provideAttributeValueUpdate" in owner_summary["recent_callbacks"]
     assert "discoverObjectInstance" in observer_summary["recent_callbacks"]
 
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("om-mom-callback-summary-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("om-mom-callback-summary-fed")
 
 
 @pytest.mark.requirements(*CLAUSE7_MOM_SERVICE_REPORT_REQUIREMENTS)
@@ -717,23 +717,23 @@ def test_clause_7_services_are_observable_through_mom_service_invocation_reporti
     witness = rti_ambassador(engine=engine)
     witness_fed = RecordingFederateAmbassador()
     witness.connect(witness_fed, CallbackModel.HLA_EVOKED)
-    witness.join_federation_execution("charlie", "type-c", "own-mom-service-report-fed")
+    witness.joinFederationExecution("charlie", "type-c", "own-mom-service-report-fed")
 
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    set_reporting = owner.get_interaction_class_handle(
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    set_reporting = owner.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
     )
-    service_report = owner.get_interaction_class_handle(
+    service_report = owner.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
     )
-    sr_fed = owner.get_parameter_handle(set_reporting, "HLAfederate")
-    sr_state = owner.get_parameter_handle(set_reporting, "HLAreportingState")
-    report_service = witness.get_parameter_handle(service_report, "HLAservice")
-    report_success = witness.get_parameter_handle(service_report, "HLAsuccessIndicator")
+    sr_fed = owner.getParameterHandle(set_reporting, "HLAfederate")
+    sr_state = owner.getParameterHandle(set_reporting, "HLAreportingState")
+    report_service = witness.getParameterHandle(service_report, "HLAservice")
+    report_success = witness.getParameterHandle(service_report, "HLAsuccessIndicator")
 
-    witness.subscribe_interaction_class(service_report)
-    owner.send_interaction(
+    witness.subscribeInteractionClass(service_report)
+    owner.sendInteraction(
         set_reporting,
         {
             sr_fed: owner.backend.state.handle.encode(),
@@ -741,7 +741,7 @@ def test_clause_7_services_are_observable_through_mom_service_invocation_reporti
         },
         b"enable-own-owner-service-reporting",
     )
-    observer.send_interaction(
+    observer.sendInteraction(
         set_reporting,
         {
             sr_fed: observer.backend.state.handle.encode(),
@@ -753,52 +753,52 @@ def test_clause_7_services_are_observable_through_mom_service_invocation_reporti
     assert owner.backend.state.service_reporting is True
     assert observer.backend.state.service_reporting is True
 
-    owner.publish_object_class_attributes(cls, {attr})
-    observer.publish_object_class_attributes(cls, {attr})
+    owner.publishObjectClassAttributes(cls, {attr})
+    observer.publishObjectClassAttributes(cls, {attr})
 
-    obj_uncond = owner.register_object_instance(cls, "OWN-MOM-Uncond")
-    obj_neg = owner.register_object_instance(cls, "OWN-MOM-Neg")
-    obj_confirm = owner.register_object_instance(cls, "OWN-MOM-Confirm")
-    obj_acquire = owner.register_object_instance(cls, "OWN-MOM-Acquire")
-    obj_available = owner.register_object_instance(cls, "OWN-MOM-Available")
-    obj_deny = owner.register_object_instance(cls, "OWN-MOM-Deny")
-    obj_wanted = owner.register_object_instance(cls, "OWN-MOM-Wanted")
-    obj_cancel_neg = owner.register_object_instance(cls, "OWN-MOM-CancelNeg")
-    obj_cancel_acq = owner.register_object_instance(cls, "OWN-MOM-CancelAcq")
-    obj_query = owner.register_object_instance(cls, "OWN-MOM-Query")
+    obj_uncond = owner.registerObjectInstance(cls, "OWN-MOM-Uncond")
+    obj_neg = owner.registerObjectInstance(cls, "OWN-MOM-Neg")
+    obj_confirm = owner.registerObjectInstance(cls, "OWN-MOM-Confirm")
+    obj_acquire = owner.registerObjectInstance(cls, "OWN-MOM-Acquire")
+    obj_available = owner.registerObjectInstance(cls, "OWN-MOM-Available")
+    obj_deny = owner.registerObjectInstance(cls, "OWN-MOM-Deny")
+    obj_wanted = owner.registerObjectInstance(cls, "OWN-MOM-Wanted")
+    obj_cancel_neg = owner.registerObjectInstance(cls, "OWN-MOM-CancelNeg")
+    obj_cancel_acq = owner.registerObjectInstance(cls, "OWN-MOM-CancelAcq")
+    obj_query = owner.registerObjectInstance(cls, "OWN-MOM-Query")
     drain(owner, observer, witness)
 
-    owner.unconditional_attribute_ownership_divestiture(obj_uncond, {attr})
+    owner.unconditionalAttributeOwnershipDivestiture(obj_uncond, {attr})
 
-    owner.negotiated_attribute_ownership_divestiture(obj_neg, {attr}, b"neg-offer")
+    owner.negotiatedAttributeOwnershipDivestiture(obj_neg, {attr}, b"neg-offer")
 
-    owner.negotiated_attribute_ownership_divestiture(obj_confirm, {attr}, b"confirm-offer")
+    owner.negotiatedAttributeOwnershipDivestiture(obj_confirm, {attr}, b"confirm-offer")
     drain(owner, observer, witness)
     federation = engine.federations["own-mom-service-report-fed"]
     federation.objects[obj_confirm].attribute_candidates[attr] = {h2}
-    owner.confirm_divestiture(obj_confirm, {attr}, b"confirm-tag")
+    owner.confirmDivestiture(obj_confirm, {attr}, b"confirm-tag")
 
-    observer.attribute_ownership_acquisition(obj_acquire, {attr}, b"acquire-tag")
-    observer.attribute_ownership_acquisition_if_available(obj_available, {attr})
+    observer.attributeOwnershipAcquisition(obj_acquire, {attr}, b"acquire-tag")
+    observer.attributeOwnershipAcquisitionIfAvailable(obj_available, {attr})
 
-    observer.attribute_ownership_acquisition(obj_deny, {attr}, b"deny-tag")
+    observer.attributeOwnershipAcquisition(obj_deny, {attr}, b"deny-tag")
     drain(owner, observer, witness)
-    owner.attribute_ownership_release_denied(obj_deny, {attr})
+    owner.attributeOwnershipReleaseDenied(obj_deny, {attr})
 
-    observer.attribute_ownership_acquisition(obj_wanted, {attr}, b"wanted-tag")
+    observer.attributeOwnershipAcquisition(obj_wanted, {attr}, b"wanted-tag")
     drain(owner, observer, witness)
-    owner.attribute_ownership_divestiture_if_wanted(obj_wanted, {attr})
+    owner.attributeOwnershipDivestitureIfWanted(obj_wanted, {attr})
 
-    owner.negotiated_attribute_ownership_divestiture(obj_cancel_neg, {attr}, b"cancel-neg-tag")
+    owner.negotiatedAttributeOwnershipDivestiture(obj_cancel_neg, {attr}, b"cancel-neg-tag")
     drain(owner, observer, witness)
-    owner.cancel_negotiated_attribute_ownership_divestiture(obj_cancel_neg, {attr})
+    owner.cancelNegotiatedAttributeOwnershipDivestiture(obj_cancel_neg, {attr})
 
-    observer.attribute_ownership_acquisition(obj_cancel_acq, {attr}, b"cancel-acq-tag")
+    observer.attributeOwnershipAcquisition(obj_cancel_acq, {attr}, b"cancel-acq-tag")
     drain(owner, observer, witness)
-    observer.cancel_attribute_ownership_acquisition(obj_cancel_acq, {attr})
+    observer.cancelAttributeOwnershipAcquisition(obj_cancel_acq, {attr})
 
-    observer.query_attribute_ownership(obj_query, attr)
-    assert owner.is_attribute_owned_by_federate(obj_query, attr) is True
+    observer.queryAttributeOwnership(obj_query, attr)
+    assert owner.isAttributeOwnedByFederate(obj_query, attr) is True
     drain(owner, observer, witness)
 
     reports = [rec for rec in witness_fed.callbacks_named("receiveInteraction") if rec.args[0] == service_report]
@@ -821,10 +821,10 @@ def test_clause_7_services_are_observable_through_mom_service_invocation_reporti
         "isAttributeOwnedByFederate",
     }
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    witness.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("own-mom-service-report-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    witness.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("own-mom-service-report-fed")
 
 
 @pytest.mark.requirements(*CLAUSE8_MOM_SERVICE_REPORT_REQUIREMENTS)
@@ -833,27 +833,27 @@ def test_clause_8_services_are_observable_through_mom_service_invocation_reporti
     witness = rti_ambassador(engine=engine)
     witness_fed = RecordingFederateAmbassador()
     witness.connect(witness_fed, CallbackModel.HLA_EVOKED)
-    witness.join_federation_execution("charlie", "type-c", "tm-mom-service-report-fed")
+    witness.joinFederationExecution("charlie", "type-c", "tm-mom-service-report-fed")
 
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    track_id = owner.get_parameter_handle(interaction, "TrackId")
-    factory = owner.get_time_factory()
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    track_id = owner.getParameterHandle(interaction, "TrackId")
+    factory = owner.getTimeFactory()
 
-    set_reporting = owner.get_interaction_class_handle(
+    set_reporting = owner.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
     )
-    service_report = owner.get_interaction_class_handle(
+    service_report = owner.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
     )
-    sr_fed = owner.get_parameter_handle(set_reporting, "HLAfederate")
-    sr_state = owner.get_parameter_handle(set_reporting, "HLAreportingState")
-    report_service = witness.get_parameter_handle(service_report, "HLAservice")
-    report_success = witness.get_parameter_handle(service_report, "HLAsuccessIndicator")
+    sr_fed = owner.getParameterHandle(set_reporting, "HLAfederate")
+    sr_state = owner.getParameterHandle(set_reporting, "HLAreportingState")
+    report_service = witness.getParameterHandle(service_report, "HLAservice")
+    report_success = witness.getParameterHandle(service_report, "HLAsuccessIndicator")
 
-    witness.subscribe_interaction_class(service_report)
-    owner.send_interaction(
+    witness.subscribeInteractionClass(service_report)
+    owner.sendInteraction(
         set_reporting,
         {
             sr_fed: owner.backend.state.handle.encode(),
@@ -861,7 +861,7 @@ def test_clause_8_services_are_observable_through_mom_service_invocation_reporti
         },
         b"enable-tm-owner-service-reporting",
     )
-    observer.send_interaction(
+    observer.sendInteraction(
         set_reporting,
         {
             sr_fed: observer.backend.state.handle.encode(),
@@ -873,48 +873,48 @@ def test_clause_8_services_are_observable_through_mom_service_invocation_reporti
     assert owner.backend.state.service_reporting is True
     assert observer.backend.state.service_reporting is True
 
-    owner.publish_object_class_attributes(cls, {attr})
-    observer.subscribe_object_class_attributes(cls, {attr})
-    owner.publish_interaction_class(interaction)
-    observer.subscribe_interaction_class(interaction)
+    owner.publishObjectClassAttributes(cls, {attr})
+    observer.subscribeObjectClassAttributes(cls, {attr})
+    owner.publishInteractionClass(interaction)
+    observer.subscribeInteractionClass(interaction)
 
-    owner.enable_asynchronous_delivery()
-    owner.disable_asynchronous_delivery()
-    owner.enable_time_regulation(factory.make_interval(1.0))
+    owner.enableAsynchronousDelivery()
+    owner.disableAsynchronousDelivery()
+    owner.enableTimeRegulation(factory.make_interval(1.0))
     drain(owner, observer, witness)
-    observer.enable_time_constrained()
-    drain(owner, observer, witness)
-
-    owner.query_galt()
-    owner.query_logical_time()
-    owner.query_lits()
-    owner.modify_lookahead(factory.make_interval(2.0))
-    owner.query_lookahead()
-
-    owner.time_advance_request(factory.make_time(4.0))
-    observer.time_advance_request_available(factory.make_time(4.0))
+    observer.enableTimeConstrained()
     drain(owner, observer, witness)
 
-    owner.next_message_request(factory.make_time(5.0))
-    observer.next_message_request_available(factory.make_time(5.0))
+    owner.queryGALT()
+    owner.queryLogicalTime()
+    owner.queryLITS()
+    owner.modifyLookahead(factory.make_interval(2.0))
+    owner.queryLookahead()
+
+    owner.timeAdvanceRequest(factory.make_time(4.0))
+    observer.timeAdvanceRequestAvailable(factory.make_time(4.0))
     drain(owner, observer, witness)
 
-    owner.flush_queue_request(factory.make_time(6.0))
+    owner.nextMessageRequest(factory.make_time(5.0))
+    observer.nextMessageRequestAvailable(factory.make_time(5.0))
     drain(owner, observer, witness)
 
-    obj = owner.register_object_instance(cls, "TM-MOM-Object")
+    owner.flushQueueRequest(factory.make_time(6.0))
     drain(owner, observer, witness)
-    retraction = owner.send_interaction(
+
+    obj = owner.registerObjectInstance(cls, "TM-MOM-Object")
+    drain(owner, observer, witness)
+    retraction = owner.sendInteraction(
         interaction,
         {track_id: b"tm-mom-track"},
         b"tm-mom-send",
         factory.make_time(8.0),
     )
     owner.retract(retraction.handle)
-    owner.change_attribute_order_type(obj, {attr}, OrderType.TIMESTAMP)
-    owner.change_interaction_order_type(interaction, OrderType.TIMESTAMP)
-    owner.disable_time_regulation()
-    observer.disable_time_constrained()
+    owner.changeAttributeOrderType(obj, {attr}, OrderType.TIMESTAMP)
+    owner.changeInteractionOrderType(interaction, OrderType.TIMESTAMP)
+    owner.disableTimeRegulation()
+    observer.disableTimeConstrained()
     drain(owner, observer, witness)
 
     reports = [rec for rec in witness_fed.callbacks_named("receiveInteraction") if rec.args[0] == service_report]
@@ -945,10 +945,10 @@ def test_clause_8_services_are_observable_through_mom_service_invocation_reporti
         "disableTimeConstrained",
     }
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    witness.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("tm-mom-service-report-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    witness.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("tm-mom-service-report-fed")
 
 
 @pytest.mark.requirements(*CLAUSE10_MOM_SERVICE_REPORT_REQUIREMENTS)
@@ -957,31 +957,31 @@ def test_clause_10_services_are_observable_through_mom_service_invocation_report
     witness = rti_ambassador(engine=engine)
     witness_fed = RecordingFederateAmbassador()
     witness.connect(witness_fed, CallbackModel.HLA_EVOKED)
-    witness.join_federation_execution("charlie", "type-c", "sup-mom-service-report-fed")
+    witness.joinFederationExecution("charlie", "type-c", "sup-mom-service-report-fed")
 
-    obj_cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(obj_cls, "Position")
-    inter_cls = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    param = owner.get_parameter_handle(inter_cls, "TrackId")
-    dim = owner.get_dimension_handle("HLAdefaultRoutingSpace")
-    region = owner.create_region({dim})
-    owner.set_range_bounds(region, dim, RangeBounds(10, 20))
-    obj = owner.register_object_instance(obj_cls, "Support-MOM-1")
+    obj_cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(obj_cls, "Position")
+    inter_cls = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    param = owner.getParameterHandle(inter_cls, "TrackId")
+    dim = owner.getDimensionHandle("HLAdefaultRoutingSpace")
+    region = owner.createRegion({dim})
+    owner.setRangeBounds(region, dim, RangeBounds(10, 20))
+    obj = owner.registerObjectInstance(obj_cls, "Support-MOM-1")
     drain(owner, observer, witness)
 
-    set_reporting = owner.get_interaction_class_handle(
+    set_reporting = owner.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
     )
-    service_report = owner.get_interaction_class_handle(
+    service_report = owner.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
     )
-    sr_fed = owner.get_parameter_handle(set_reporting, "HLAfederate")
-    sr_state = owner.get_parameter_handle(set_reporting, "HLAreportingState")
-    report_service = witness.get_parameter_handle(service_report, "HLAservice")
-    report_success = witness.get_parameter_handle(service_report, "HLAsuccessIndicator")
+    sr_fed = owner.getParameterHandle(set_reporting, "HLAfederate")
+    sr_state = owner.getParameterHandle(set_reporting, "HLAreportingState")
+    report_service = witness.getParameterHandle(service_report, "HLAservice")
+    report_success = witness.getParameterHandle(service_report, "HLAsuccessIndicator")
 
-    witness.subscribe_interaction_class(service_report)
-    owner.send_interaction(
+    witness.subscribeInteractionClass(service_report)
+    owner.sendInteraction(
         set_reporting,
         {
             sr_fed: owner.backend.state.handle.encode(),
@@ -989,7 +989,7 @@ def test_clause_10_services_are_observable_through_mom_service_invocation_report
         },
         b"enable-sup-owner-service-reporting",
     )
-    observer.send_interaction(
+    observer.sendInteraction(
         set_reporting,
         {
             sr_fed: observer.backend.state.handle.encode(),
@@ -1001,49 +1001,49 @@ def test_clause_10_services_are_observable_through_mom_service_invocation_report
     assert owner.backend.state.service_reporting is True
     assert observer.backend.state.service_reporting is True
 
-    owner.get_automatic_resign_directive()
-    owner.set_automatic_resign_directive(ResignAction.DELETE_OBJECTS)
-    owner.get_federate_handle("alpha")
-    owner.get_federate_name(h1)
-    owner.get_object_class_handle("HLAobjectRoot.Target")
-    owner.get_object_class_name(obj_cls)
-    owner.get_known_object_class_handle(obj)
-    owner.get_object_instance_handle("Support-MOM-1")
-    owner.get_object_instance_name(obj)
-    owner.get_attribute_handle(obj_cls, "Position")
-    owner.get_attribute_name(obj_cls, attr)
-    owner.get_update_rate_value("default")
-    owner.get_update_rate_value_for_attribute(obj, attr)
-    owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    owner.get_interaction_class_name(inter_cls)
-    owner.get_parameter_handle(inter_cls, "TrackId")
-    owner.get_parameter_name(inter_cls, param)
-    owner.get_order_type("HLAreceive")
-    owner.get_order_name(OrderType.RECEIVE)
-    owner.get_transportation_type_handle("HLAreliable")
-    owner.get_transportation_type_name(owner.get_transportation_type_handle("HLAreliable"))
-    owner.get_available_dimensions_for_class_attribute(obj_cls, attr)
-    owner.get_available_dimensions_for_interaction_class(inter_cls)
-    owner.get_dimension_handle("HLAdefaultRoutingSpace")
-    owner.get_dimension_name(dim)
-    owner.get_dimension_upper_bound(dim)
-    owner.get_dimension_handle_set(region)
-    owner.get_range_bounds(region, dim)
-    owner.set_range_bounds(region, dim, RangeBounds(15, 25))
-    owner.normalize_federate_handle(h1)
-    owner.normalize_service_group(ServiceGroup.OBJECT_MANAGEMENT)
-    owner.enable_object_class_relevance_advisory_switch()
-    owner.disable_object_class_relevance_advisory_switch()
-    owner.enable_attribute_relevance_advisory_switch()
-    owner.disable_attribute_relevance_advisory_switch()
-    owner.enable_attribute_scope_advisory_switch()
-    owner.disable_attribute_scope_advisory_switch()
-    owner.enable_interaction_relevance_advisory_switch()
-    owner.disable_interaction_relevance_advisory_switch()
-    owner.evoke_callback(0.0)
-    owner.evoke_multiple_callbacks(0.0, 0.0)
-    owner.disable_callbacks()
-    owner.enable_callbacks()
+    owner.getAutomaticResignDirective()
+    owner.setAutomaticResignDirective(ResignAction.DELETE_OBJECTS)
+    owner.getFederateHandle("alpha")
+    owner.getFederateName(h1)
+    owner.getObjectClassHandle("HLAobjectRoot.Target")
+    owner.getObjectClassName(obj_cls)
+    owner.getKnownObjectClassHandle(obj)
+    owner.getObjectInstanceHandle("Support-MOM-1")
+    owner.getObjectInstanceName(obj)
+    owner.getAttributeHandle(obj_cls, "Position")
+    owner.getAttributeName(obj_cls, attr)
+    owner.getUpdateRateValue("default")
+    owner.getUpdateRateValueForAttribute(obj, attr)
+    owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    owner.getInteractionClassName(inter_cls)
+    owner.getParameterHandle(inter_cls, "TrackId")
+    owner.getParameterName(inter_cls, param)
+    owner.getOrderType("HLAreceive")
+    owner.getOrderName(OrderType.RECEIVE)
+    owner.getTransportationTypeHandle("HLAreliable")
+    owner.getTransportationTypeName(owner.getTransportationTypeHandle("HLAreliable"))
+    owner.getAvailableDimensionsForClassAttribute(obj_cls, attr)
+    owner.getAvailableDimensionsForInteractionClass(inter_cls)
+    owner.getDimensionHandle("HLAdefaultRoutingSpace")
+    owner.getDimensionName(dim)
+    owner.getDimensionUpperBound(dim)
+    owner.getDimensionHandleSet(region)
+    owner.getRangeBounds(region, dim)
+    owner.setRangeBounds(region, dim, RangeBounds(15, 25))
+    owner.normalizeFederateHandle(h1)
+    owner.normalizeServiceGroup(ServiceGroup.OBJECT_MANAGEMENT)
+    owner.enableObjectClassRelevanceAdvisorySwitch()
+    owner.disableObjectClassRelevanceAdvisorySwitch()
+    owner.enableAttributeRelevanceAdvisorySwitch()
+    owner.disableAttributeRelevanceAdvisorySwitch()
+    owner.enableAttributeScopeAdvisorySwitch()
+    owner.disableAttributeScopeAdvisorySwitch()
+    owner.enableInteractionRelevanceAdvisorySwitch()
+    owner.disableInteractionRelevanceAdvisorySwitch()
+    owner.evokeCallback(0.0)
+    owner.evokeMultipleCallbacks(0.0, 0.0)
+    owner.disableCallbacks()
+    owner.enableCallbacks()
     drain(owner, observer, witness)
 
     reports = [rec for rec in witness_fed.callbacks_named("receiveInteraction") if rec.args[0] == service_report]
@@ -1098,19 +1098,19 @@ def test_clause_10_services_are_observable_through_mom_service_invocation_report
         "disableCallbacks",
     }
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    witness.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("sup-mom-service-report-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    witness.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("sup-mom-service-report-fed")
 
 
 @pytest.mark.requirements(*CLAUSE8_ENABLE_AND_GRANT_CALLBACK_ORDER_REQUIREMENTS)
 def test_clause_8_enable_and_grant_callbacks_arrive_in_expected_order():
     _, owner, observer, owner_fed, observer_fed, _h1, _h2 = joined_pair("tm-callback-order-fed")
-    factory = owner.get_time_factory()
+    factory = owner.getTimeFactory()
 
-    owner.enable_time_regulation(factory.make_interval(1.0))
-    observer.enable_time_constrained()
+    owner.enableTimeRegulation(factory.make_interval(1.0))
+    observer.enableTimeConstrained()
     drain(owner, observer)
 
     assert owner_fed.records
@@ -1122,8 +1122,8 @@ def test_clause_8_enable_and_grant_callbacks_arrive_in_expected_order():
 
     owner_fed.clear()
     observer_fed.clear()
-    owner.time_advance_request(factory.make_time(4.0))
-    observer.time_advance_request_available(factory.make_time(4.0))
+    owner.timeAdvanceRequest(factory.make_time(4.0))
+    observer.timeAdvanceRequestAvailable(factory.make_time(4.0))
     drain(owner, observer)
 
     assert owner_fed.records
@@ -1133,9 +1133,9 @@ def test_clause_8_enable_and_grant_callbacks_arrive_in_expected_order():
     assert owner_fed.records[-1].args[0] == factory.make_time(4.0)
     assert observer_fed.records[-1].args[0] == factory.make_time(4.0)
 
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("tm-callback-order-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("tm-callback-order-fed")
 
 
 @pytest.mark.requirements(*CLAUSE8_REQUEST_RETRACTION_CALLBACK_REQUIREMENTS)
@@ -1167,62 +1167,62 @@ def test_clause_8_request_retraction_callback_arrives_after_delivered_interactio
 
 def test_python_rti_query_attribute_ownership_reports_owner_for_owned_attribute():
     _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("query-owned-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
-    owner.publish_object_class_attributes(cls, {attr})
-    obj = owner.register_object_instance(cls, "Owned-1")
+    owner.publishObjectClassAttributes(cls, {attr})
+    obj = owner.registerObjectInstance(cls, "Owned-1")
 
-    observer.query_attribute_ownership(obj, attr)
+    observer.queryAttributeOwnership(obj, attr)
     drain(owner, observer)
 
     owned = observer_fed.last_callback("informAttributeOwnership")
     assert owned is not None
     assert owned.args == (obj, attr, owner.backend.state.handle)
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("query-owned-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("query-owned-fed")
 
 
 def test_python_rti_query_attribute_ownership_reports_rti_for_mom_owned_attribute():
     _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("query-rti-owned-fed")
-    federation_class = observer.get_object_class_handle("HLAobjectRoot.HLAmanager.HLAfederation")
-    federation_name = observer.get_attribute_handle(federation_class, "HLAfederationName")
+    federation_class = observer.getObjectClassHandle("HLAobjectRoot.HLAmanager.HLAfederation")
+    federation_name = observer.getAttributeHandle(federation_class, "HLAfederationName")
     mom_object = observer.backend.current_mom_summary()["federation_object"]
 
     assert isinstance(mom_object, ObjectInstanceHandle)
-    observer.query_attribute_ownership(mom_object, federation_name)
+    observer.queryAttributeOwnership(mom_object, federation_name)
     drain(owner, observer)
 
     owned = observer_fed.last_callback("attributeIsOwnedByRTI")
     assert owned is not None
     assert owned.args == (mom_object, federation_name)
 
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("query-rti-owned-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("query-rti-owned-fed")
 
 
 def test_declaration_management_effects_apply_while_time_managed():
     _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("decl-time-managed-fed")
-    factory = owner.get_time_factory()
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    track_id = owner.get_parameter_handle(interaction, "TrackId")
+    factory = owner.getTimeFactory()
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    track_id = owner.getParameterHandle(interaction, "TrackId")
 
-    owner.enable_time_regulation(factory.make_interval(1.0))
-    observer.enable_time_constrained()
+    owner.enableTimeRegulation(factory.make_interval(1.0))
+    observer.enableTimeConstrained()
     drain(owner, observer)
 
-    observer.subscribe_object_class_attributes(cls, {attr})
-    owner.publish_object_class_attributes(cls, {attr})
-    observer.subscribe_interaction_class(interaction)
-    owner.publish_interaction_class(interaction)
+    observer.subscribeObjectClassAttributes(cls, {attr})
+    owner.publishObjectClassAttributes(cls, {attr})
+    observer.subscribeInteractionClass(interaction)
+    owner.publishInteractionClass(interaction)
 
-    obj = owner.register_object_instance(cls, "Time-Managed-Declared")
-    owner.send_interaction(interaction, {track_id: b"ro"}, b"\x00\x00\x00\x00")
+    obj = owner.registerObjectInstance(cls, "Time-Managed-Declared")
+    owner.sendInteraction(interaction, {track_id: b"ro"}, b"\x00\x00\x00\x00")
     drain(owner, observer)
 
     discovery = observer_fed.last_callback("discoverObjectInstance")
@@ -1233,64 +1233,64 @@ def test_declaration_management_effects_apply_while_time_managed():
     assert received.args[0] == interaction
     assert received.args[1][track_id] == b"ro"
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("decl-time-managed-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("decl-time-managed-fed")
 
 
 def test_unpublishing_object_class_attributes_prevents_strict_updates():
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("decl-unpublish-object-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
-    owner.publish_object_class_attributes(cls, {attr})
-    obj = owner.register_object_instance(cls, "Strict-Unpublish-Object")
-    owner.unpublish_object_class_attributes(cls, {attr})
+    owner.publishObjectClassAttributes(cls, {attr})
+    obj = owner.registerObjectInstance(cls, "Strict-Unpublish-Object")
+    owner.unpublishObjectClassAttributes(cls, {attr})
     owner.backend.config.strict_object_publication = True
 
     with pytest.raises(AttributeNotPublished):
-        owner.update_attribute_values(obj, {attr: b"x"}, b"\x00\x00\x00\x00")
+        owner.updateAttributeValues(obj, {attr: b"x"}, b"\x00\x00\x00\x00")
 
     owner.backend.config.strict_object_publication = False
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("decl-unpublish-object-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("decl-unpublish-object-fed")
 
 
 def test_unpublishing_interaction_class_prevents_strict_sends():
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("decl-unpublish-interaction-fed")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    track_id = owner.get_parameter_handle(interaction, "TrackId")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    track_id = owner.getParameterHandle(interaction, "TrackId")
 
-    owner.publish_interaction_class(interaction)
-    owner.unpublish_interaction_class(interaction)
+    owner.publishInteractionClass(interaction)
+    owner.unpublishInteractionClass(interaction)
     owner.backend.config.strict_interaction_publication = True
 
     with pytest.raises(InteractionClassNotPublished):
-        owner.send_interaction(interaction, {track_id: b"x"}, b"\x00\x00\x00\x00")
+        owner.sendInteraction(interaction, {track_id: b"x"}, b"\x00\x00\x00\x00")
 
     owner.backend.config.strict_interaction_publication = False
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("decl-unpublish-interaction-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("decl-unpublish-interaction-fed")
 
 
 def test_transportation_type_services_emit_confirm_and_report_callbacks():
     _, owner, observer, owner_fed, _observer_fed, owner_handle, _observer_handle = joined_pair("transport-positive-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
     best_effort = owner.backend.engine.transportation_best_effort
 
-    owner.publish_object_class_attributes(cls, {attr})
-    owner.publish_interaction_class(interaction)
-    obj = owner.register_object_instance(cls, "Transport-Positive-1")
+    owner.publishObjectClassAttributes(cls, {attr})
+    owner.publishInteractionClass(interaction)
+    obj = owner.registerObjectInstance(cls, "Transport-Positive-1")
     owner_fed.clear()
 
-    owner.request_attribute_transportation_type_change(obj, {attr}, best_effort)
-    owner.query_attribute_transportation_type(obj, attr)
-    owner.request_interaction_transportation_type_change(interaction, best_effort)
-    owner.query_interaction_transportation_type(interaction)
+    owner.requestAttributeTransportationTypeChange(obj, {attr}, best_effort)
+    owner.queryAttributeTransportationType(obj, attr)
+    owner.requestInteractionTransportationTypeChange(interaction, best_effort)
+    owner.queryInteractionTransportationType(interaction)
     drain(owner, observer)
 
     assert owner.backend.state.attribute_transportation_overrides[(obj, attr)] == best_effort
@@ -1310,37 +1310,37 @@ def test_transportation_type_services_emit_confirm_and_report_callbacks():
     assert report_interaction is not None
     assert report_interaction.args == (owner_handle, interaction, best_effort)
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("transport-positive-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("transport-positive-fed")
 
 
 def test_best_effort_transport_changes_callback_transport_and_splits_mixed_attribute_updates():
     _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("transport-runtime-behavior-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    pos = owner.get_attribute_handle(cls, "Position")
-    rcs = owner.get_attribute_handle(cls, "RCS")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    track_id = owner.get_parameter_handle(interaction, "TrackId")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    pos = owner.getAttributeHandle(cls, "Position")
+    rcs = owner.getAttributeHandle(cls, "RCS")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    track_id = owner.getParameterHandle(interaction, "TrackId")
     reliable = owner.backend.engine.transportation_reliable
     best_effort = owner.backend.engine.transportation_best_effort
 
-    owner.publish_object_class_attributes(cls, {pos, rcs})
-    observer.subscribe_object_class_attributes(cls, {pos, rcs})
-    owner.publish_interaction_class(interaction)
-    observer.subscribe_interaction_class(interaction)
-    obj = owner.register_object_instance(cls, "Transport-Runtime-Behavior")
+    owner.publishObjectClassAttributes(cls, {pos, rcs})
+    observer.subscribeObjectClassAttributes(cls, {pos, rcs})
+    owner.publishInteractionClass(interaction)
+    observer.subscribeInteractionClass(interaction)
+    obj = owner.registerObjectInstance(cls, "Transport-Runtime-Behavior")
     drain(owner, observer)
     observer_fed.clear()
 
-    owner.request_attribute_transportation_type_change(obj, {pos}, reliable)
-    owner.request_attribute_transportation_type_change(obj, {rcs}, best_effort)
-    owner.request_interaction_transportation_type_change(interaction, best_effort)
+    owner.requestAttributeTransportationTypeChange(obj, {pos}, reliable)
+    owner.requestAttributeTransportationTypeChange(obj, {rcs}, best_effort)
+    owner.requestInteractionTransportationTypeChange(interaction, best_effort)
     drain(owner, observer)
     observer_fed.clear()
 
-    owner.update_attribute_values(obj, {pos: b"pos", rcs: b"rcs"}, b"mixed-transport")
-    owner.send_interaction(interaction, {track_id: b"trk"}, b"be-interaction")
+    owner.updateAttributeValues(obj, {pos: b"pos", rcs: b"rcs"}, b"mixed-transport")
+    owner.sendInteraction(interaction, {track_id: b"trk"}, b"be-interaction")
     drain(owner, observer)
 
     reflections = observer_fed.callbacks_named("reflectAttributeValues")
@@ -1356,26 +1356,26 @@ def test_best_effort_transport_changes_callback_transport_and_splits_mixed_attri
     assert interaction_record.args[1][track_id] == b"trk"
     assert interaction_record.args[4] == best_effort
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("transport-runtime-behavior-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("transport-runtime-behavior-fed")
 
 
 @pytest.mark.requirements("HLA1516.1-DM-5.10-001", "HLA1516.1-DM-5.11-001")
 def test_start_and_stop_registration_callbacks_are_delivered():
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("decl-registration-callback-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
     owner_fed.clear()
-    observer.subscribe_object_class_attributes(cls, {attr})
+    observer.subscribeObjectClassAttributes(cls, {attr})
     drain(owner, observer)
     assert owner_fed.callbacks_named("startRegistrationForObjectClass") == []
 
-    owner.publish_object_class_attributes(cls, {attr})
-    owner.unpublish_object_class_attributes(cls, {attr})
-    owner.publish_object_class_attributes(cls, {attr})
-    observer.unsubscribe_object_class_attributes(cls, {attr})
+    owner.publishObjectClassAttributes(cls, {attr})
+    owner.unpublishObjectClassAttributes(cls, {attr})
+    owner.publishObjectClassAttributes(cls, {attr})
+    observer.unsubscribeObjectClassAttributes(cls, {attr})
     drain(owner, observer)
 
     registration_callbacks = [
@@ -1398,25 +1398,25 @@ def test_start_and_stop_registration_callbacks_are_delivered():
     assert second_started.args == (cls,)
     assert second_stopped.args == (cls,)
 
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("decl-registration-callback-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("decl-registration-callback-fed")
 
 
 @pytest.mark.requirements("HLA1516.1-DM-5.12-001", "HLA1516.1-DM-5.13-001")
 def test_turn_interactions_on_and_off_callbacks_are_delivered():
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("decl-interaction-callback-fed")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
 
     owner_fed.clear()
-    observer.subscribe_interaction_class(interaction)
+    observer.subscribeInteractionClass(interaction)
     drain(owner, observer)
     assert owner_fed.callbacks_named("turnInteractionsOn") == []
 
-    owner.publish_interaction_class(interaction)
-    owner.unpublish_interaction_class(interaction)
-    owner.publish_interaction_class(interaction)
-    observer.unsubscribe_interaction_class(interaction)
+    owner.publishInteractionClass(interaction)
+    owner.unpublishInteractionClass(interaction)
+    owner.publishInteractionClass(interaction)
+    observer.unsubscribeInteractionClass(interaction)
     drain(owner, observer)
 
     interaction_callbacks = [
@@ -1439,45 +1439,45 @@ def test_turn_interactions_on_and_off_callbacks_are_delivered():
     assert second_on.args == (interaction,)
     assert second_off.args == (interaction,)
 
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("decl-interaction-callback-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("decl-interaction-callback-fed")
 
 
 def test_turn_updates_on_and_off_callbacks_follow_object_instance_relevance():
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("om-turn-updates-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
-    owner.publish_object_class_attributes(cls, {attr})
-    owner.enable_attribute_relevance_advisory_switch()
-    obj = owner.register_object_instance(cls, "Turn-Updates-Object")
+    owner.publishObjectClassAttributes(cls, {attr})
+    owner.enableAttributeRelevanceAdvisorySwitch()
+    obj = owner.registerObjectInstance(cls, "Turn-Updates-Object")
     drain(owner, observer)
     owner_fed.clear()
 
-    observer.subscribe_object_class_attributes(cls, {attr})
+    observer.subscribeObjectClassAttributes(cls, {attr})
     drain(owner, observer)
     on = owner_fed.last_callback("turnUpdatesOnForObjectInstance")
     assert on is not None
     assert on.args == (obj, {attr})
 
     owner_fed.clear()
-    observer.unsubscribe_object_class_attributes(cls, {attr})
+    observer.unsubscribeObjectClassAttributes(cls, {attr})
     drain(owner, observer)
     off = owner_fed.last_callback("turnUpdatesOffForObjectInstance")
     assert off is not None
     assert off.args == (obj, {attr})
 
     owner_fed.clear()
-    observer.subscribe_object_class_attributes(cls, {attr}, "HLAdefault")
+    observer.subscribeObjectClassAttributes(cls, {attr}, "HLAdefault")
     drain(owner, observer)
     on_with_designator = owner_fed.last_callback("turnUpdatesOnForObjectInstance")
     assert on_with_designator is not None
     assert on_with_designator.args == (obj, {attr}, "HLAdefault")
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("om-turn-updates-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("om-turn-updates-fed")
 
 
 def test_turn_updates_object_instance_callbacks_validate_state_arguments_and_wrap_callback_failures():
@@ -1495,12 +1495,12 @@ def test_turn_updates_object_instance_callbacks_validate_state_arguments_and_wra
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("om-turn-updates-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
     bad_attr = type(attr)(attr.value + 1000)
 
-    owner.publish_object_class_attributes(cls, {attr})
-    obj = owner.register_object_instance(cls, "Turn-Updates-Negative")
+    owner.publishObjectClassAttributes(cls, {attr})
+    obj = owner.registerObjectInstance(cls, "Turn-Updates-Negative")
 
     with pytest.raises(ObjectInstanceNotKnown):
         owner.backend.turn_updates_on_for_object_instance(ObjectInstanceHandle(999), {attr})
@@ -1513,26 +1513,26 @@ def test_turn_updates_object_instance_callbacks_validate_state_arguments_and_wra
     with pytest.raises(InvalidUpdateRateDesignator):
         owner.backend.turn_updates_on_for_object_instance(obj, {attr}, "MissingRate")
 
-    owner.request_federation_save("TURN-UPDATES-SAVE")
+    owner.requestFederationSave("TURN-UPDATES-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
         owner.backend.turn_updates_on_for_object_instance(obj, {attr})
     with pytest.raises(SaveInProgress):
         owner.backend.turn_updates_off_for_object_instance(obj, {attr})
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("TURN-UPDATES-SAVE")
+    owner.requestFederationRestore("TURN-UPDATES-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
         owner.backend.turn_updates_on_for_object_instance(obj, {attr})
     with pytest.raises(RestoreInProgress):
         owner.backend.turn_updates_off_for_object_instance(obj, {attr})
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
 
     class _FailingTurnUpdatesAmbassador(RecordingFederateAmbassador):
@@ -1544,23 +1544,23 @@ def test_turn_updates_object_instance_callbacks_validate_state_arguments_and_wra
 
     failing = rti_ambassador(engine=InMemoryRTIEngine())
     failing.connect(_FailingTurnUpdatesAmbassador(), CallbackModel.HLA_IMMEDIATE)
-    failing.create_federation_execution("om-turn-updates-failing-fed", "TargetRadarFOMmodule.xml")
-    failing.join_federation_execution("alpha", "type-a", "om-turn-updates-failing-fed")
-    fail_cls = failing.get_object_class_handle("HLAobjectRoot.Target")
-    fail_attr = failing.get_attribute_handle(fail_cls, "Position")
-    failing.publish_object_class_attributes(fail_cls, {fail_attr})
-    fail_obj = failing.register_object_instance(fail_cls, "Turn-Updates-Failing")
+    failing.createFederationExecution("om-turn-updates-failing-fed", "TargetRadarFOMmodule.xml")
+    failing.joinFederationExecution("alpha", "type-a", "om-turn-updates-failing-fed")
+    fail_cls = failing.getObjectClassHandle("HLAobjectRoot.Target")
+    fail_attr = failing.getAttributeHandle(fail_cls, "Position")
+    failing.publishObjectClassAttributes(fail_cls, {fail_attr})
+    fail_obj = failing.registerObjectInstance(fail_cls, "Turn-Updates-Failing")
 
     with pytest.raises(FederateInternalError):
         failing.backend.turn_updates_on_for_object_instance(fail_obj, {fail_attr})
     with pytest.raises(FederateInternalError):
         failing.backend.turn_updates_off_for_object_instance(fail_obj, {fail_attr})
 
-    failing.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    failing.destroy_federation_execution("om-turn-updates-failing-fed")
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("om-turn-updates-negative-fed")
+    failing.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    failing.destroyFederationExecution("om-turn-updates-failing-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("om-turn-updates-negative-fed")
 
 
 def test_provide_attribute_value_update_callback_validates_state_arguments_and_wraps_callback_failures():
@@ -1574,34 +1574,34 @@ def test_provide_attribute_value_update_callback_validates_state_arguments_and_w
     rti.disconnect()
 
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("om-provide-avu-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
     bad_attr = type(attr)(attr.value + 1000)
 
-    owner.publish_object_class_attributes(cls, {attr})
-    obj = owner.register_object_instance(cls, "Provide-AVU-Negative")
+    owner.publishObjectClassAttributes(cls, {attr})
+    obj = owner.registerObjectInstance(cls, "Provide-AVU-Negative")
 
     with pytest.raises(ObjectInstanceNotKnown):
         owner.backend.provide_attribute_value_update(ObjectInstanceHandle(999), {attr}, b"tag")
     with pytest.raises(AttributeNotDefined):
         owner.backend.provide_attribute_value_update(obj, {bad_attr}, b"tag")
 
-    owner.request_federation_save("PROVIDE-AVU-SAVE")
+    owner.requestFederationSave("PROVIDE-AVU-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
         owner.backend.provide_attribute_value_update(obj, {attr}, b"tag")
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("PROVIDE-AVU-SAVE")
+    owner.requestFederationRestore("PROVIDE-AVU-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
         owner.backend.provide_attribute_value_update(obj, {attr}, b"tag")
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
 
     owner_fed.clear()
@@ -1617,21 +1617,21 @@ def test_provide_attribute_value_update_callback_validates_state_arguments_and_w
 
     failing = rti_ambassador(engine=InMemoryRTIEngine())
     failing.connect(_FailingProvideAmbassador(), CallbackModel.HLA_IMMEDIATE)
-    failing.create_federation_execution("om-provide-avu-failing-fed", "TargetRadarFOMmodule.xml")
-    failing.join_federation_execution("alpha", "type-a", "om-provide-avu-failing-fed")
-    fail_cls = failing.get_object_class_handle("HLAobjectRoot.Target")
-    fail_attr = failing.get_attribute_handle(fail_cls, "Position")
-    failing.publish_object_class_attributes(fail_cls, {fail_attr})
-    fail_obj = failing.register_object_instance(fail_cls, "Provide-AVU-Failing")
+    failing.createFederationExecution("om-provide-avu-failing-fed", "TargetRadarFOMmodule.xml")
+    failing.joinFederationExecution("alpha", "type-a", "om-provide-avu-failing-fed")
+    fail_cls = failing.getObjectClassHandle("HLAobjectRoot.Target")
+    fail_attr = failing.getAttributeHandle(fail_cls, "Position")
+    failing.publishObjectClassAttributes(fail_cls, {fail_attr})
+    fail_obj = failing.registerObjectInstance(fail_cls, "Provide-AVU-Failing")
 
     with pytest.raises(FederateInternalError):
         failing.backend.provide_attribute_value_update(fail_obj, {fail_attr}, b"tag")
 
-    failing.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    failing.destroy_federation_execution("om-provide-avu-failing-fed")
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("om-provide-avu-negative-fed")
+    failing.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    failing.destroyFederationExecution("om-provide-avu-failing-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("om-provide-avu-negative-fed")
 
 
 def test_clause_5_service_and_callback_signature_metadata_matches_source_bindings():
@@ -1669,7 +1669,7 @@ def test_clause_5_service_and_callback_signature_metadata_matches_source_binding
     }
 
     for method_name, (service, expected_params) in rti_checks.items():
-        assert hasattr(RTIambassadorSpec, lower_camel_to_snake(method_name))
+        assert hasattr(RTIambassadorSpec, method_name)
         java_records = [
             record for record in API_METADATA["RTIambassador"][method_name]
             if record["language"] == "java"
@@ -1827,7 +1827,7 @@ def test_clause_6_service_and_callback_signature_metadata_matches_source_binding
     }
 
     for method_name, (service, expected_returns, expected_params) in rti_checks.items():
-        assert hasattr(RTIambassadorSpec, lower_camel_to_snake(method_name))
+        assert hasattr(RTIambassadorSpec, method_name)
         java_records = [
             record for record in API_METADATA["RTIambassador"][method_name]
             if record["language"] == "java"
@@ -1945,7 +1945,7 @@ def test_clause_7_service_and_callback_signature_metadata_matches_source_binding
     }
 
     for method_name, (service, expected_returns, expected_params) in rti_checks.items():
-        assert hasattr(RTIambassadorSpec, lower_camel_to_snake(method_name))
+        assert hasattr(RTIambassadorSpec, method_name)
         java_records = [
             record for record in API_METADATA["RTIambassador"][method_name]
             if record["language"] == "java"
@@ -2003,7 +2003,7 @@ def test_clause_8_service_and_callback_signature_metadata_matches_source_binding
     }
 
     for method_name, (service, expected_returns, expected_params) in rti_checks.items():
-        assert hasattr(RTIambassadorSpec, lower_camel_to_snake(method_name))
+        assert hasattr(RTIambassadorSpec, method_name)
         java_records = [
             record for record in API_METADATA["RTIambassador"][method_name]
             if record["language"] == "java"
@@ -2098,7 +2098,7 @@ def test_clause_9_service_signature_metadata_matches_source_bindings():
     }
 
     for method_name, (service, expected_returns, expected_params) in rti_checks.items():
-        assert hasattr(RTIambassadorSpec, lower_camel_to_snake(method_name))
+        assert hasattr(RTIambassadorSpec, method_name)
         java_records = [
             record for record in API_METADATA["RTIambassador"][method_name]
             if record["language"] == "java"
@@ -2114,27 +2114,27 @@ def test_clause_9_services_are_observable_through_mom_service_invocation_reporti
     witness = rti_ambassador(engine=engine)
     witness_fed = RecordingFederateAmbassador()
     witness.connect(witness_fed, CallbackModel.HLA_EVOKED)
-    witness.join_federation_execution("charlie", "type-c", "ddm-mom-service-report-fed")
+    witness.joinFederationExecution("charlie", "type-c", "ddm-mom-service-report-fed")
 
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    dim = owner.get_dimension_handle("HLAdefaultRoutingSpace")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    track_id = owner.get_parameter_handle(interaction, "TrackId")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    dim = owner.getDimensionHandle("HLAdefaultRoutingSpace")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    track_id = owner.getParameterHandle(interaction, "TrackId")
 
-    set_reporting = owner.get_interaction_class_handle(
+    set_reporting = owner.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
     )
-    service_report = owner.get_interaction_class_handle(
+    service_report = owner.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
     )
-    sr_fed = owner.get_parameter_handle(set_reporting, "HLAfederate")
-    sr_state = owner.get_parameter_handle(set_reporting, "HLAreportingState")
-    report_service = witness.get_parameter_handle(service_report, "HLAservice")
-    report_success = witness.get_parameter_handle(service_report, "HLAsuccessIndicator")
+    sr_fed = owner.getParameterHandle(set_reporting, "HLAfederate")
+    sr_state = owner.getParameterHandle(set_reporting, "HLAreportingState")
+    report_service = witness.getParameterHandle(service_report, "HLAservice")
+    report_success = witness.getParameterHandle(service_report, "HLAsuccessIndicator")
 
-    witness.subscribe_interaction_class(service_report)
-    owner.send_interaction(
+    witness.subscribeInteractionClass(service_report)
+    owner.sendInteraction(
         set_reporting,
         {
             sr_fed: owner.backend.state.handle.encode(),
@@ -2145,26 +2145,26 @@ def test_clause_9_services_are_observable_through_mom_service_invocation_reporti
     drain(owner, observer, witness)
     assert owner.backend.state.service_reporting is True
 
-    owner.publish_object_class_attributes(cls, {attr})
-    owner.publish_interaction_class(interaction)
+    owner.publishObjectClassAttributes(cls, {attr})
+    owner.publishInteractionClass(interaction)
 
-    region = owner.create_region({dim})
-    owner.set_range_bounds(region, dim, RangeBounds(10, 20))
-    owner.commit_region_modifications({region})
+    region = owner.createRegion({dim})
+    owner.setRangeBounds(region, dim, RangeBounds(10, 20))
+    owner.commitRegionModifications({region})
     pairs = [AttributeRegionAssociation(AttributeHandleSet({attr}), RegionHandleSet({region}))]
 
-    obj = owner.register_object_instance_with_regions(cls, pairs, "DDM-MOM-Object")
-    owner.unassociate_regions_for_updates(obj, pairs)
-    owner.associate_regions_for_updates(obj, pairs)
-    owner.subscribe_object_class_attributes_passively_with_regions(cls, pairs)
-    owner.subscribe_object_class_attributes_with_regions(cls, pairs)
-    owner.unsubscribe_object_class_attributes_with_regions(cls, pairs)
-    owner.subscribe_interaction_class_passively_with_regions(interaction, {region})
-    owner.subscribe_interaction_class_with_regions(interaction, {region})
-    owner.unsubscribe_interaction_class_with_regions(interaction, {region})
-    owner.send_interaction_with_regions(interaction, {track_id: b"ddm-mom-track"}, {region}, b"ddm-mom-send")
-    owner.request_attribute_value_update_with_regions(cls, pairs, b"ddm-mom-refresh")
-    owner.delete_region(region)
+    obj = owner.registerObjectInstanceWithRegions(cls, pairs, "DDM-MOM-Object")
+    owner.unassociateRegionsForUpdates(obj, pairs)
+    owner.associateRegionsForUpdates(obj, pairs)
+    owner.subscribeObjectClassAttributesPassivelyWithRegions(cls, pairs)
+    owner.subscribeObjectClassAttributesWithRegions(cls, pairs)
+    owner.unsubscribeObjectClassAttributesWithRegions(cls, pairs)
+    owner.subscribeInteractionClassPassivelyWithRegions(interaction, {region})
+    owner.subscribeInteractionClassWithRegions(interaction, {region})
+    owner.unsubscribeInteractionClassWithRegions(interaction, {region})
+    owner.sendInteractionWithRegions(interaction, {track_id: b"ddm-mom-track"}, {region}, b"ddm-mom-send")
+    owner.requestAttributeValueUpdateWithRegions(cls, pairs, b"ddm-mom-refresh")
+    owner.deleteRegion(region)
     drain(owner, observer, witness)
 
     reports = [rec for rec in witness_fed.callbacks_named("receiveInteraction") if rec.args[0] == service_report]
@@ -2190,10 +2190,10 @@ def test_clause_9_services_are_observable_through_mom_service_invocation_reporti
         "requestAttributeValueUpdateWithRegions",
     }
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    witness.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("ddm-mom-service-report-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    witness.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("ddm-mom-service-report-fed")
 
 
 def test_clause_10_service_signature_metadata_matches_source_bindings():
@@ -2292,7 +2292,7 @@ def test_clause_10_service_signature_metadata_matches_source_bindings():
     }
 
     for method_name, (service, expected_returns, expected_params) in rti_checks.items():
-        assert hasattr(RTIambassadorSpec, lower_camel_to_snake(method_name))
+        assert hasattr(RTIambassadorSpec, method_name)
         java_records = [
             record for record in API_METADATA["RTIambassador"][method_name]
             if record["language"] == "java"
@@ -2304,467 +2304,467 @@ def test_clause_10_service_signature_metadata_matches_source_bindings():
 
 def test_clause_6_federate_initiated_services_validate_core_argument_shapes():
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("om-arg-validation-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    track_id = owner.get_parameter_handle(interaction, "TrackId")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    track_id = owner.getParameterHandle(interaction, "TrackId")
 
     bad_class = type(cls)(cls.value + 1000)
     bad_attr = type(attr)(attr.value + 1000)
     bad_interaction = type(interaction)(interaction.value + 1000)
     bad_param = type(track_id)(track_id.value + 1000)
 
-    owner.publish_object_class_attributes(cls, {attr})
-    owner.publish_interaction_class(interaction)
-    obj = owner.register_object_instance(cls, "OM-Arg-Validation")
+    owner.publishObjectClassAttributes(cls, {attr})
+    owner.publishInteractionClass(interaction)
+    obj = owner.registerObjectInstance(cls, "OM-Arg-Validation")
 
     with pytest.raises(InvalidObjectClassHandle):
-        owner.register_object_instance(bad_class, "bad-class")
+        owner.registerObjectInstance(bad_class, "bad-class")
 
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.update_attribute_values(ObjectInstanceHandle(999), {attr: b"x"}, b"tag")
+        owner.updateAttributeValues(ObjectInstanceHandle(999), {attr: b"x"}, b"tag")
     with pytest.raises(AttributeNotDefined):
-        owner.update_attribute_values(obj, {bad_attr: b"x"}, b"tag")
+        owner.updateAttributeValues(obj, {bad_attr: b"x"}, b"tag")
 
     with pytest.raises(InvalidInteractionClassHandle):
-        owner.send_interaction(bad_interaction, {track_id: b"x"}, b"tag")
+        owner.sendInteraction(bad_interaction, {track_id: b"x"}, b"tag")
     with pytest.raises(InteractionParameterNotDefined):
-        owner.send_interaction(interaction, {bad_param: b"x"}, b"tag")
+        owner.sendInteraction(interaction, {bad_param: b"x"}, b"tag")
 
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.delete_object_instance(ObjectInstanceHandle(999), b"tag")
+        owner.deleteObjectInstance(ObjectInstanceHandle(999), b"tag")
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.local_delete_object_instance(ObjectInstanceHandle(999))
+        owner.localDeleteObjectInstance(ObjectInstanceHandle(999))
 
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.request_attribute_value_update(ObjectInstanceHandle(999), {attr}, b"tag")
+        owner.requestAttributeValueUpdate(ObjectInstanceHandle(999), {attr}, b"tag")
     with pytest.raises(AttributeNotDefined):
-        owner.request_attribute_value_update(obj, {bad_attr}, b"tag")
+        owner.requestAttributeValueUpdate(obj, {bad_attr}, b"tag")
     with pytest.raises(InvalidObjectClassHandle):
-        owner.request_attribute_value_update(bad_class, {attr}, b"tag")
+        owner.requestAttributeValueUpdate(bad_class, {attr}, b"tag")
 
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.request_attribute_transportation_type_change(
+        owner.requestAttributeTransportationTypeChange(
             ObjectInstanceHandle(999),
             {attr},
             owner.backend.engine.transportation_reliable,
         )
     with pytest.raises(AttributeNotDefined):
-        owner.request_attribute_transportation_type_change(
+        owner.requestAttributeTransportationTypeChange(
             obj,
             {bad_attr},
             owner.backend.engine.transportation_reliable,
         )
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.query_attribute_transportation_type(ObjectInstanceHandle(999), attr)
+        owner.queryAttributeTransportationType(ObjectInstanceHandle(999), attr)
     with pytest.raises(AttributeNotDefined):
-        owner.query_attribute_transportation_type(obj, bad_attr)
+        owner.queryAttributeTransportationType(obj, bad_attr)
 
     with pytest.raises(InvalidInteractionClassHandle):
-        owner.request_interaction_transportation_type_change(
+        owner.requestInteractionTransportationTypeChange(
             bad_interaction,
             owner.backend.engine.transportation_reliable,
         )
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("om-arg-validation-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("om-arg-validation-fed")
 
 
 def test_update_attribute_values_rejects_not_connected_not_joined_unknown_object_invalid_time_not_owned_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.update_attribute_values(ObjectInstanceHandle(999), {}, b"tag")
+        rti.updateAttributeValues(ObjectInstanceHandle(999), {}, b"tag")
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.update_attribute_values(ObjectInstanceHandle(999), {}, b"tag")
+        rti.updateAttributeValues(ObjectInstanceHandle(999), {}, b"tag")
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("update-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    owner.publish_object_class_attributes(cls, {attr})
-    observer.publish_object_class_attributes(cls, {attr})
-    obj = owner.register_object_instance(cls, "Update-Negative")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    owner.publishObjectClassAttributes(cls, {attr})
+    observer.publishObjectClassAttributes(cls, {attr})
+    obj = owner.registerObjectInstance(cls, "Update-Negative")
 
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.update_attribute_values(ObjectInstanceHandle(999), {attr: b"x"}, b"tag")
+        owner.updateAttributeValues(ObjectInstanceHandle(999), {attr: b"x"}, b"tag")
     with pytest.raises(AttributeNotOwned):
-        observer.update_attribute_values(obj, {attr: b"x"}, b"tag")
+        observer.updateAttributeValues(obj, {attr: b"x"}, b"tag")
 
-    owner.request_federation_save("UPDATE-SAVE")
+    owner.requestFederationSave("UPDATE-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.update_attribute_values(obj, {attr: b"x"}, b"tag")
+        owner.updateAttributeValues(obj, {attr: b"x"}, b"tag")
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("UPDATE-SAVE")
+    owner.requestFederationRestore("UPDATE-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.update_attribute_values(obj, {attr: b"x"}, b"tag")
+        owner.updateAttributeValues(obj, {attr: b"x"}, b"tag")
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("update-negative-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("update-negative-fed")
 
 
 def test_delete_and_local_delete_object_instance_reject_not_connected_not_joined_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.delete_object_instance(ObjectInstanceHandle(999), b"tag")
+        rti.deleteObjectInstance(ObjectInstanceHandle(999), b"tag")
     with pytest.raises(NotConnected):
-        rti.local_delete_object_instance(ObjectInstanceHandle(999))
+        rti.localDeleteObjectInstance(ObjectInstanceHandle(999))
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.delete_object_instance(ObjectInstanceHandle(999), b"tag")
+        rti.deleteObjectInstance(ObjectInstanceHandle(999), b"tag")
     with pytest.raises(FederateNotExecutionMember):
-        rti.local_delete_object_instance(ObjectInstanceHandle(999))
+        rti.localDeleteObjectInstance(ObjectInstanceHandle(999))
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("delete-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    owner.publish_object_class_attributes(cls, {attr})
-    observer.publish_object_class_attributes(cls, {attr})
-    obj = owner.register_object_instance(cls, "Delete-Negative")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    owner.publishObjectClassAttributes(cls, {attr})
+    observer.publishObjectClassAttributes(cls, {attr})
+    obj = owner.registerObjectInstance(cls, "Delete-Negative")
 
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.delete_object_instance(ObjectInstanceHandle(999), b"tag")
+        owner.deleteObjectInstance(ObjectInstanceHandle(999), b"tag")
     with pytest.raises(DeletePrivilegeNotHeld):
-        observer.delete_object_instance(obj, b"tag")
+        observer.deleteObjectInstance(obj, b"tag")
     with pytest.raises(FederateOwnsAttributes):
-        owner.local_delete_object_instance(obj)
+        owner.localDeleteObjectInstance(obj)
 
-    owner.request_federation_save("DELETE-SAVE")
+    owner.requestFederationSave("DELETE-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.delete_object_instance(obj, b"tag")
+        owner.deleteObjectInstance(obj, b"tag")
     with pytest.raises(SaveInProgress):
-        owner.local_delete_object_instance(obj)
+        owner.localDeleteObjectInstance(obj)
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("DELETE-SAVE")
+    owner.requestFederationRestore("DELETE-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.delete_object_instance(obj, b"tag")
+        owner.deleteObjectInstance(obj, b"tag")
     with pytest.raises(RestoreInProgress):
-        owner.local_delete_object_instance(obj)
+        owner.localDeleteObjectInstance(obj)
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("delete-negative-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("delete-negative-fed")
 
 
 def test_request_attribute_value_update_rejects_not_connected_not_joined_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.request_attribute_value_update(ObjectInstanceHandle(999), set(), b"tag")
+        rti.requestAttributeValueUpdate(ObjectInstanceHandle(999), set(), b"tag")
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.request_attribute_value_update(ObjectInstanceHandle(999), set(), b"tag")
+        rti.requestAttributeValueUpdate(ObjectInstanceHandle(999), set(), b"tag")
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("ravu-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
-    owner.request_federation_save("RAVU-SAVE")
+    owner.requestFederationSave("RAVU-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.request_attribute_value_update(cls, {attr}, b"tag")
+        owner.requestAttributeValueUpdate(cls, {attr}, b"tag")
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("RAVU-SAVE")
+    owner.requestFederationRestore("RAVU-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.request_attribute_value_update(cls, {attr}, b"tag")
+        owner.requestAttributeValueUpdate(cls, {attr}, b"tag")
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("ravu-negative-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("ravu-negative-fed")
 
 
 def test_request_interaction_transportation_type_change_rejects_not_connected_not_joined_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.request_interaction_transportation_type_change(object(), object())
+        rti.requestInteractionTransportationTypeChange(object(), object())
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.request_interaction_transportation_type_change(object(), object())
+        rti.requestInteractionTransportationTypeChange(object(), object())
     rti.disconnect()
 
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("interaction-transport-negative-fed")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
     owner_fed.clear()
     owner.backend.config.strict_interaction_publication = True
     with pytest.raises(InteractionClassNotPublished):
-        owner.request_interaction_transportation_type_change(interaction, owner.backend.engine.transportation_reliable)
+        owner.requestInteractionTransportationTypeChange(interaction, owner.backend.engine.transportation_reliable)
     with pytest.raises(InvalidInteractionClassHandle):
-        owner.request_interaction_transportation_type_change(type(interaction)(interaction.value + 1000), owner.backend.engine.transportation_reliable)
+        owner.requestInteractionTransportationTypeChange(type(interaction)(interaction.value + 1000), owner.backend.engine.transportation_reliable)
     owner.backend.config.strict_interaction_publication = False
-    owner.publish_interaction_class(interaction)
+    owner.publishInteractionClass(interaction)
     with pytest.raises(InvalidTransportationType):
-        owner.request_interaction_transportation_type_change(interaction, TransportationTypeHandle(999))
+        owner.requestInteractionTransportationTypeChange(interaction, TransportationTypeHandle(999))
     assert owner_fed.callbacks_named("confirmInteractionTransportationTypeChange") == []
 
-    owner.request_federation_save("INTERACTION-TRANSPORT-SAVE")
+    owner.requestFederationSave("INTERACTION-TRANSPORT-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.request_interaction_transportation_type_change(interaction, owner.backend.engine.transportation_reliable)
+        owner.requestInteractionTransportationTypeChange(interaction, owner.backend.engine.transportation_reliable)
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("INTERACTION-TRANSPORT-SAVE")
+    owner.requestFederationRestore("INTERACTION-TRANSPORT-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.request_interaction_transportation_type_change(interaction, owner.backend.engine.transportation_reliable)
+        owner.requestInteractionTransportationTypeChange(interaction, owner.backend.engine.transportation_reliable)
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("interaction-transport-negative-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("interaction-transport-negative-fed")
 
 
 def test_query_attribute_transportation_type_and_reserve_multiple_names_reject_not_connected_not_joined_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.query_attribute_transportation_type(ObjectInstanceHandle(999), object())
+        rti.queryAttributeTransportationType(ObjectInstanceHandle(999), object())
     with pytest.raises(NotConnected):
-        rti.reserve_multiple_object_instance_name(set())
+        rti.reserveMultipleObjectInstanceName(set())
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.query_attribute_transportation_type(ObjectInstanceHandle(999), object())
+        rti.queryAttributeTransportationType(ObjectInstanceHandle(999), object())
     with pytest.raises(FederateNotExecutionMember):
-        rti.reserve_multiple_object_instance_name(set())
+        rti.reserveMultipleObjectInstanceName(set())
     rti.disconnect()
 
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("query-transport-reserve-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    owner.publish_object_class_attributes(cls, {attr})
-    obj = owner.register_object_instance(cls, "QueryTransport")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    owner.publishObjectClassAttributes(cls, {attr})
+    obj = owner.registerObjectInstance(cls, "QueryTransport")
     owner_fed.clear()
 
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.query_attribute_transportation_type(ObjectInstanceHandle(999), attr)
+        owner.queryAttributeTransportationType(ObjectInstanceHandle(999), attr)
     with pytest.raises(AttributeNotDefined):
-        owner.query_attribute_transportation_type(obj, type(attr)(attr.value + 1000))
+        owner.queryAttributeTransportationType(obj, type(attr)(attr.value + 1000))
     assert owner_fed.callbacks_named("reportAttributeTransportationType") == []
 
-    owner.request_federation_save("QUERY-TRANSPORT-SAVE")
+    owner.requestFederationSave("QUERY-TRANSPORT-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.query_attribute_transportation_type(obj, attr)
+        owner.queryAttributeTransportationType(obj, attr)
     with pytest.raises(SaveInProgress):
-        owner.reserve_multiple_object_instance_name({"A", "B"})
+        owner.reserveMultipleObjectInstanceName({"A", "B"})
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("QUERY-TRANSPORT-SAVE")
+    owner.requestFederationRestore("QUERY-TRANSPORT-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.query_attribute_transportation_type(obj, attr)
+        owner.queryAttributeTransportationType(obj, attr)
     with pytest.raises(RestoreInProgress):
-        owner.reserve_multiple_object_instance_name({"A", "B"})
+        owner.reserveMultipleObjectInstanceName({"A", "B"})
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("query-transport-reserve-negative-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("query-transport-reserve-negative-fed")
 
 
 def test_query_interaction_transportation_type_rejects_not_connected_not_joined_invalid_handle_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.query_interaction_transportation_type(object())
+        rti.queryInteractionTransportationType(object())
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.query_interaction_transportation_type(object())
+        rti.queryInteractionTransportationType(object())
     rti.disconnect()
 
     _, owner, observer, owner_fed, _observer_fed, _h1, _h2 = joined_pair("query-interaction-transport-negative-fed")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
     owner_fed.clear()
 
     with pytest.raises(InvalidInteractionClassHandle):
-        owner.query_interaction_transportation_type(type(interaction)(interaction.value + 1000))
+        owner.queryInteractionTransportationType(type(interaction)(interaction.value + 1000))
     assert owner_fed.callbacks_named("reportInteractionTransportationType") == []
 
-    owner.query_interaction_transportation_type(interaction)
+    owner.queryInteractionTransportationType(interaction)
     drain(owner, observer)
     report = owner_fed.last_callback("reportInteractionTransportationType")
     assert report is not None
     assert report.args == (owner.backend.state.handle, interaction, owner.backend.engine.transportation_reliable)
     owner_fed.clear()
 
-    owner.request_federation_save("QUERY-INTERACTION-TRANSPORT-SAVE")
+    owner.requestFederationSave("QUERY-INTERACTION-TRANSPORT-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.query_interaction_transportation_type(interaction)
+        owner.queryInteractionTransportationType(interaction)
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("QUERY-INTERACTION-TRANSPORT-SAVE")
+    owner.requestFederationRestore("QUERY-INTERACTION-TRANSPORT-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.query_interaction_transportation_type(interaction)
+        owner.queryInteractionTransportationType(interaction)
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("query-interaction-transport-negative-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("query-interaction-transport-negative-fed")
 
 
 def test_name_release_and_query_interaction_transport_tail_reject_not_connected_not_joined_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.release_object_instance_name("name")
+        rti.releaseObjectInstanceName("name")
     with pytest.raises(NotConnected):
-        rti.release_multiple_object_instance_name({"a", "b"})
+        rti.releaseMultipleObjectInstanceName({"a", "b"})
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.release_object_instance_name("name")
+        rti.releaseObjectInstanceName("name")
     with pytest.raises(FederateNotExecutionMember):
-        rti.release_multiple_object_instance_name({"a", "b"})
+        rti.releaseMultipleObjectInstanceName({"a", "b"})
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("release-query-interaction-negative-fed")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
 
-    owner.request_federation_save("REL-QUERY-SAVE")
+    owner.requestFederationSave("REL-QUERY-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.release_object_instance_name("name")
+        owner.releaseObjectInstanceName("name")
     with pytest.raises(SaveInProgress):
-        owner.release_multiple_object_instance_name({"a", "b"})
+        owner.releaseMultipleObjectInstanceName({"a", "b"})
     with pytest.raises(SaveInProgress):
-        owner.query_interaction_transportation_type(interaction)
+        owner.queryInteractionTransportationType(interaction)
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("REL-QUERY-SAVE")
+    owner.requestFederationRestore("REL-QUERY-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.release_object_instance_name("name")
+        owner.releaseObjectInstanceName("name")
     with pytest.raises(RestoreInProgress):
-        owner.release_multiple_object_instance_name({"a", "b"})
+        owner.releaseMultipleObjectInstanceName({"a", "b"})
     with pytest.raises(RestoreInProgress):
-        owner.query_interaction_transportation_type(interaction)
+        owner.queryInteractionTransportationType(interaction)
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("release-query-interaction-negative-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("release-query-interaction-negative-fed")
 
 
 def test_register_object_instance_rejects_not_connected_not_joined_name_in_use_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.register_object_instance(object(), "bad")
+        rti.registerObjectInstance(object(), "bad")
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.register_object_instance(object(), "bad")
+        rti.registerObjectInstance(object(), "bad")
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("register-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    owner.register_object_instance(cls, "Duplicate-Object")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    owner.registerObjectInstance(cls, "Duplicate-Object")
     with pytest.raises(ObjectInstanceNameInUse):
-        owner.register_object_instance(cls, "Duplicate-Object")
+        owner.registerObjectInstance(cls, "Duplicate-Object")
 
-    owner.request_federation_save("REGISTER-SAVE")
+    owner.requestFederationSave("REGISTER-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.register_object_instance(cls, "Blocked-Object")
+        owner.registerObjectInstance(cls, "Blocked-Object")
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("REGISTER-SAVE")
+    owner.requestFederationRestore("REGISTER-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.register_object_instance(cls, "Blocked-Restore-Object")
+        owner.registerObjectInstance(cls, "Blocked-Restore-Object")
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("register-negative-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("register-negative-fed")
 
 
 def test_python_rti_negotiated_ownership_tracks_divesting_and_candidate_flows():
     _, owner, acquirer, owner_fed, acquirer_fed, _h1, _h2 = joined_pair("negotiated-ownership-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
-    owner.publish_object_class_attributes(cls, {attr})
-    acquirer.publish_object_class_attributes(cls, {attr})
-    acquirer.subscribe_object_class_attributes(cls, {attr})
+    owner.publishObjectClassAttributes(cls, {attr})
+    acquirer.publishObjectClassAttributes(cls, {attr})
+    acquirer.subscribeObjectClassAttributes(cls, {attr})
 
-    offered = owner.register_object_instance(cls, "Negotiated-1")
+    offered = owner.registerObjectInstance(cls, "Negotiated-1")
     drain(owner, acquirer)
     assert acquirer_fed.last_callback("discoverObjectInstance") is not None
 
-    owner.negotiated_attribute_ownership_divestiture(offered, {attr}, b"offer-tag")
+    owner.negotiatedAttributeOwnershipDivestiture(offered, {attr}, b"offer-tag")
     drain(owner, acquirer)
     assumption = acquirer_fed.last_callback("requestAttributeOwnershipAssumption")
     assert assumption is not None
     assert assumption.args == (offered, AttributeHandleSet({attr}), b"offer-tag")
-    assert owner.is_attribute_owned_by_federate(offered, attr) is True
+    assert owner.isAttributeOwnedByFederate(offered, attr) is True
 
-    acquirer.attribute_ownership_acquisition(offered, {attr}, b"acquire-tag")
+    acquirer.attributeOwnershipAcquisition(offered, {attr}, b"acquire-tag")
     drain(owner, acquirer)
     acquired = acquirer_fed.last_callback("attributeOwnershipAcquisitionNotification")
     assert acquired is not None
@@ -2772,55 +2772,55 @@ def test_python_rti_negotiated_ownership_tracks_divesting_and_candidate_flows():
     divest_notice = owner_fed.last_callback("requestDivestitureConfirmation")
     assert divest_notice is not None
     assert divest_notice.args == (offered, AttributeHandleSet({attr}))
-    assert acquirer.is_attribute_owned_by_federate(offered, attr) is True
+    assert acquirer.isAttributeOwnedByFederate(offered, attr) is True
 
-    pending = owner.register_object_instance(cls, "Pending-1")
+    pending = owner.registerObjectInstance(cls, "Pending-1")
     drain(owner, acquirer)
-    acquirer.attribute_ownership_acquisition(pending, {attr}, b"request-tag")
+    acquirer.attributeOwnershipAcquisition(pending, {attr}, b"request-tag")
     drain(owner, acquirer)
     release = owner_fed.last_callback("requestAttributeOwnershipRelease")
     assert release is not None
     assert release.args == (pending, AttributeHandleSet({attr}), b"request-tag")
-    acquirer.cancel_attribute_ownership_acquisition(pending, {attr})
+    acquirer.cancelAttributeOwnershipAcquisition(pending, {attr})
     drain(owner, acquirer)
     cancelled = acquirer_fed.last_callback("confirmAttributeOwnershipAcquisitionCancellation")
     assert cancelled is not None
     assert cancelled.args == (pending, AttributeHandleSet({attr}))
 
-    acquirer.attribute_ownership_acquisition(pending, {attr}, b"retry-tag")
+    acquirer.attributeOwnershipAcquisition(pending, {attr}, b"retry-tag")
     drain(owner, acquirer)
     release = owner_fed.last_callback("requestAttributeOwnershipRelease")
     assert release is not None
     assert release.args == (pending, AttributeHandleSet({attr}), b"retry-tag")
-    divested = owner.attribute_ownership_divestiture_if_wanted(pending, {attr})
+    divested = owner.attributeOwnershipDivestitureIfWanted(pending, {attr})
     assert divested == AttributeHandleSet({attr})
     drain(owner, acquirer)
     acquired = acquirer_fed.last_callback("attributeOwnershipAcquisitionNotification")
     assert acquired is not None
     assert acquired.args == (pending, AttributeHandleSet({attr}), b"")
-    assert acquirer.is_attribute_owned_by_federate(pending, attr) is True
+    assert acquirer.isAttributeOwnedByFederate(pending, attr) is True
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("negotiated-ownership-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("negotiated-ownership-fed")
 
 
 @pytest.mark.requirements(*CLAUSE7_NEGOTIATED_CALLBACK_SEQUENCE_REQUIREMENTS)
 def test_ownership_callback_sequences_and_payloads_are_exact_for_negotiated_and_cancellation_flows():
     _, owner, acquirer, owner_fed, acquirer_fed, _h1, _h2 = joined_pair("ownership-callback-sequence-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
-    owner.publish_object_class_attributes(cls, {attr})
-    acquirer.publish_object_class_attributes(cls, {attr})
-    acquirer.subscribe_object_class_attributes(cls, {attr})
+    owner.publishObjectClassAttributes(cls, {attr})
+    acquirer.publishObjectClassAttributes(cls, {attr})
+    acquirer.subscribeObjectClassAttributes(cls, {attr})
 
-    offered = owner.register_object_instance(cls, "Callback-Offered-1")
+    offered = owner.registerObjectInstance(cls, "Callback-Offered-1")
     drain(owner, acquirer)
     owner_fed.clear()
     acquirer_fed.clear()
 
-    owner.negotiated_attribute_ownership_divestiture(offered, {attr}, b"offer-tag")
+    owner.negotiatedAttributeOwnershipDivestiture(offered, {attr}, b"offer-tag")
     drain(owner, acquirer)
     assumption_callbacks = [
         rec for rec in acquirer_fed.records if rec.method_name == "requestAttributeOwnershipAssumption"
@@ -2830,7 +2830,7 @@ def test_ownership_callback_sequences_and_payloads_are_exact_for_negotiated_and_
 
     owner_fed.clear()
     acquirer_fed.clear()
-    acquirer.attribute_ownership_acquisition(offered, {attr}, b"acquire-tag")
+    acquirer.attributeOwnershipAcquisition(offered, {attr}, b"acquire-tag")
     drain(owner, acquirer)
 
     divest_callbacks = [
@@ -2844,12 +2844,12 @@ def test_ownership_callback_sequences_and_payloads_are_exact_for_negotiated_and_
     assert divest_callbacks[0].args == (offered, AttributeHandleSet({attr}))
     assert acquisition_callbacks[0].args == (offered, AttributeHandleSet({attr}), b"acquire-tag")
 
-    pending = owner.register_object_instance(cls, "Callback-Pending-1")
+    pending = owner.registerObjectInstance(cls, "Callback-Pending-1")
     drain(owner, acquirer)
     owner_fed.clear()
     acquirer_fed.clear()
 
-    acquirer.attribute_ownership_acquisition(pending, {attr}, b"request-tag")
+    acquirer.attributeOwnershipAcquisition(pending, {attr}, b"request-tag")
     drain(owner, acquirer)
     release_callbacks = [
         rec for rec in owner_fed.records if rec.method_name == "requestAttributeOwnershipRelease"
@@ -2859,7 +2859,7 @@ def test_ownership_callback_sequences_and_payloads_are_exact_for_negotiated_and_
 
     owner_fed.clear()
     acquirer_fed.clear()
-    acquirer.cancel_attribute_ownership_acquisition(pending, {attr})
+    acquirer.cancelAttributeOwnershipAcquisition(pending, {attr})
     drain(owner, acquirer)
     cancellation_callbacks = [
         rec for rec in acquirer_fed.records if rec.method_name == "confirmAttributeOwnershipAcquisitionCancellation"
@@ -2869,132 +2869,132 @@ def test_ownership_callback_sequences_and_payloads_are_exact_for_negotiated_and_
     ]
     assert cancellation_callbacks[0].args == (pending, AttributeHandleSet({attr}))
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("ownership-callback-sequence-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("ownership-callback-sequence-fed")
 
 
 def test_negotiated_attribute_ownership_divestiture_rejects_not_connected_not_joined_unknown_object_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.negotiated_attribute_ownership_divestiture(ObjectInstanceHandle(999), set(), b"tag")
+        rti.negotiatedAttributeOwnershipDivestiture(ObjectInstanceHandle(999), set(), b"tag")
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.negotiated_attribute_ownership_divestiture(ObjectInstanceHandle(999), set(), b"tag")
+        rti.negotiatedAttributeOwnershipDivestiture(ObjectInstanceHandle(999), set(), b"tag")
     rti.disconnect()
 
     _, owner, acquirer, _owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("negotiated-divest-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    owner.publish_object_class_attributes(cls, {attr})
-    obj = owner.register_object_instance(cls, "Negotiated-Divest-Negative")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    owner.publishObjectClassAttributes(cls, {attr})
+    obj = owner.registerObjectInstance(cls, "Negotiated-Divest-Negative")
 
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.negotiated_attribute_ownership_divestiture(ObjectInstanceHandle(999), {attr}, b"tag")
+        owner.negotiatedAttributeOwnershipDivestiture(ObjectInstanceHandle(999), {attr}, b"tag")
     with pytest.raises(AttributeNotDefined):
-        owner.negotiated_attribute_ownership_divestiture(obj, {type(attr)(attr.value + 1000)}, b"tag")
+        owner.negotiatedAttributeOwnershipDivestiture(obj, {type(attr)(attr.value + 1000)}, b"tag")
     with pytest.raises(AttributeNotOwned):
-        acquirer.negotiated_attribute_ownership_divestiture(obj, {attr}, b"tag")
-    owner.negotiated_attribute_ownership_divestiture(obj, {attr}, b"tag")
+        acquirer.negotiatedAttributeOwnershipDivestiture(obj, {attr}, b"tag")
+    owner.negotiatedAttributeOwnershipDivestiture(obj, {attr}, b"tag")
     with pytest.raises(AttributeAlreadyBeingDivested):
-        owner.negotiated_attribute_ownership_divestiture(obj, {attr}, b"tag")
+        owner.negotiatedAttributeOwnershipDivestiture(obj, {attr}, b"tag")
 
-    owner.request_federation_save("NEGOTIATED-DIVEST-SAVE")
+    owner.requestFederationSave("NEGOTIATED-DIVEST-SAVE")
     drain(owner, acquirer)
     with pytest.raises(SaveInProgress):
-        owner.negotiated_attribute_ownership_divestiture(obj, {attr}, b"tag")
+        owner.negotiatedAttributeOwnershipDivestiture(obj, {attr}, b"tag")
 
-    owner.federate_save_begun()
-    acquirer.federate_save_begun()
-    owner.federate_save_complete()
-    acquirer.federate_save_complete()
+    owner.federateSaveBegun()
+    acquirer.federateSaveBegun()
+    owner.federateSaveComplete()
+    acquirer.federateSaveComplete()
     drain(owner, acquirer)
 
-    owner.request_federation_restore("NEGOTIATED-DIVEST-SAVE")
+    owner.requestFederationRestore("NEGOTIATED-DIVEST-SAVE")
     drain(owner, acquirer)
     with pytest.raises(RestoreInProgress):
-        owner.negotiated_attribute_ownership_divestiture(obj, {attr}, b"tag")
+        owner.negotiatedAttributeOwnershipDivestiture(obj, {attr}, b"tag")
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, acquirer)
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("negotiated-divest-negative-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("negotiated-divest-negative-fed")
 
 
 def test_confirm_divestiture_rejects_not_connected_not_joined_unknown_object_and_not_owned():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.confirm_divestiture(ObjectInstanceHandle(999), set(), b"tag")
+        rti.confirmDivestiture(ObjectInstanceHandle(999), set(), b"tag")
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.confirm_divestiture(ObjectInstanceHandle(999), set(), b"tag")
+        rti.confirmDivestiture(ObjectInstanceHandle(999), set(), b"tag")
     rti.disconnect()
 
     _, owner, acquirer, _owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("confirm-divestiture-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    owner.publish_object_class_attributes(cls, {attr})
-    acquired = owner.register_object_instance(cls, "Confirm-Negative")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    owner.publishObjectClassAttributes(cls, {attr})
+    acquired = owner.registerObjectInstance(cls, "Confirm-Negative")
 
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.confirm_divestiture(ObjectInstanceHandle(999), {attr}, b"tag")
+        owner.confirmDivestiture(ObjectInstanceHandle(999), {attr}, b"tag")
     with pytest.raises(AttributeNotDefined):
-        owner.confirm_divestiture(acquired, {type(attr)(attr.value + 1000)}, b"tag")
+        owner.confirmDivestiture(acquired, {type(attr)(attr.value + 1000)}, b"tag")
     with pytest.raises(AttributeNotOwned):
-        acquirer.confirm_divestiture(acquired, {attr}, b"tag")
+        acquirer.confirmDivestiture(acquired, {attr}, b"tag")
 
-    owner.negotiated_attribute_ownership_divestiture(acquired, {attr}, b"divest-tag")
+    owner.negotiatedAttributeOwnershipDivestiture(acquired, {attr}, b"divest-tag")
     federation = owner.backend.engine.federations["confirm-divestiture-negative-fed"]
     federation.objects[acquired].attribute_candidates[attr] = {acquirer.backend.state.handle}
 
-    owner.request_federation_save("CONFIRM-DIVEST-SAVE")
+    owner.requestFederationSave("CONFIRM-DIVEST-SAVE")
     drain(owner, acquirer)
     with pytest.raises(SaveInProgress):
-        owner.confirm_divestiture(acquired, {attr}, b"tag")
-    owner.federate_save_begun()
-    acquirer.federate_save_begun()
-    owner.federate_save_complete()
-    acquirer.federate_save_complete()
+        owner.confirmDivestiture(acquired, {attr}, b"tag")
+    owner.federateSaveBegun()
+    acquirer.federateSaveBegun()
+    owner.federateSaveComplete()
+    acquirer.federateSaveComplete()
     drain(owner, acquirer)
-    owner.request_federation_restore("CONFIRM-DIVEST-SAVE")
+    owner.requestFederationRestore("CONFIRM-DIVEST-SAVE")
     drain(owner, acquirer)
     with pytest.raises(RestoreInProgress):
-        owner.confirm_divestiture(acquired, {attr}, b"tag")
-    owner.abort_federation_restore()
+        owner.confirmDivestiture(acquired, {attr}, b"tag")
+    owner.abortFederationRestore()
     drain(owner, acquirer)
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("confirm-divestiture-negative-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("confirm-divestiture-negative-fed")
 
 
 def test_python_rti_confirm_divestiture_requires_divesting_request_and_candidate():
     engine, owner, acquirer, _owner_fed, acquirer_fed, _h1, h2 = joined_pair("confirm-divestiture-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
-    owner.publish_object_class_attributes(cls, {attr})
-    acquirer.publish_object_class_attributes(cls, {attr})
-    acquirer.subscribe_object_class_attributes(cls, {attr})
+    owner.publishObjectClassAttributes(cls, {attr})
+    acquirer.publishObjectClassAttributes(cls, {attr})
+    acquirer.subscribeObjectClassAttributes(cls, {attr})
 
-    offered = owner.register_object_instance(cls, "Confirm-1")
+    offered = owner.registerObjectInstance(cls, "Confirm-1")
     drain(owner, acquirer)
 
     try:
-        owner.confirm_divestiture(offered, {attr}, b"confirm-tag")
+        owner.confirmDivestiture(offered, {attr}, b"confirm-tag")
     except AttributeDivestitureWasNotRequested:
         pass
     else:
         raise AssertionError("confirm_divestiture should require prior negotiated divestiture")
 
-    owner.negotiated_attribute_ownership_divestiture(offered, {attr}, b"offer-tag")
+    owner.negotiatedAttributeOwnershipDivestiture(offered, {attr}, b"offer-tag")
     drain(owner, acquirer)
 
     try:
-        owner.confirm_divestiture(offered, {attr}, b"confirm-tag")
+        owner.confirmDivestiture(offered, {attr}, b"confirm-tag")
     except NoAcquisitionPending:
         pass
     else:
@@ -3002,491 +3002,491 @@ def test_python_rti_confirm_divestiture_requires_divesting_request_and_candidate
 
     federation = engine.federations["confirm-divestiture-fed"]
     federation.objects[offered].attribute_candidates[attr] = {h2}
-    owner.confirm_divestiture(offered, {attr}, b"confirm-tag")
+    owner.confirmDivestiture(offered, {attr}, b"confirm-tag")
     drain(owner, acquirer)
 
     acquired = acquirer_fed.last_callback("attributeOwnershipAcquisitionNotification")
     assert acquired is not None
     assert acquired.args == (offered, AttributeHandleSet({attr}), b"confirm-tag")
-    assert acquirer.is_attribute_owned_by_federate(offered, attr) is True
+    assert acquirer.isAttributeOwnedByFederate(offered, attr) is True
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("confirm-divestiture-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("confirm-divestiture-fed")
 
 
 def test_attribute_ownership_acquisition_services_reject_not_connected_not_joined_unknown_object_and_owned_attributes():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.attribute_ownership_acquisition(ObjectInstanceHandle(999), set(), b"tag")
+        rti.attributeOwnershipAcquisition(ObjectInstanceHandle(999), set(), b"tag")
     with pytest.raises(NotConnected):
-        rti.attribute_ownership_acquisition_if_available(ObjectInstanceHandle(999), set())
+        rti.attributeOwnershipAcquisitionIfAvailable(ObjectInstanceHandle(999), set())
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.attribute_ownership_acquisition(ObjectInstanceHandle(999), set(), b"tag")
+        rti.attributeOwnershipAcquisition(ObjectInstanceHandle(999), set(), b"tag")
     with pytest.raises(FederateNotExecutionMember):
-        rti.attribute_ownership_acquisition_if_available(ObjectInstanceHandle(999), set())
+        rti.attributeOwnershipAcquisitionIfAvailable(ObjectInstanceHandle(999), set())
     rti.disconnect()
 
     _, owner, acquirer, _owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("acquisition-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    rcs = owner.get_attribute_handle(cls, "RCS")
-    owner.publish_object_class_attributes(cls, {attr})
-    acquirer.publish_object_class_attributes(cls, {attr})
-    held = owner.register_object_instance(cls, "Acquisition-Negative")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    rcs = owner.getAttributeHandle(cls, "RCS")
+    owner.publishObjectClassAttributes(cls, {attr})
+    acquirer.publishObjectClassAttributes(cls, {attr})
+    held = owner.registerObjectInstance(cls, "Acquisition-Negative")
 
     with pytest.raises(ObjectInstanceNotKnown):
-        acquirer.attribute_ownership_acquisition(ObjectInstanceHandle(999), {attr}, b"tag")
+        acquirer.attributeOwnershipAcquisition(ObjectInstanceHandle(999), {attr}, b"tag")
     with pytest.raises(ObjectInstanceNotKnown):
-        acquirer.attribute_ownership_acquisition_if_available(ObjectInstanceHandle(999), {attr})
+        acquirer.attributeOwnershipAcquisitionIfAvailable(ObjectInstanceHandle(999), {attr})
     with pytest.raises(AttributeNotDefined):
-        acquirer.attribute_ownership_acquisition(held, {type(attr)(attr.value + 1000)}, b"tag")
+        acquirer.attributeOwnershipAcquisition(held, {type(attr)(attr.value + 1000)}, b"tag")
     with pytest.raises(AttributeNotDefined):
-        acquirer.attribute_ownership_acquisition_if_available(held, {type(attr)(attr.value + 1000)})
+        acquirer.attributeOwnershipAcquisitionIfAvailable(held, {type(attr)(attr.value + 1000)})
     with pytest.raises(FederateOwnsAttributes):
-        owner.attribute_ownership_acquisition(held, {attr}, b"tag")
+        owner.attributeOwnershipAcquisition(held, {attr}, b"tag")
     with pytest.raises(FederateOwnsAttributes):
-        owner.attribute_ownership_acquisition_if_available(held, {attr})
+        owner.attributeOwnershipAcquisitionIfAvailable(held, {attr})
 
-    acquirer.attribute_ownership_acquisition_if_available(held, {attr})
+    acquirer.attributeOwnershipAcquisitionIfAvailable(held, {attr})
     with pytest.raises(AttributeAlreadyBeingAcquired):
-        acquirer.attribute_ownership_acquisition_if_available(held, {attr})
+        acquirer.attributeOwnershipAcquisitionIfAvailable(held, {attr})
 
     acquirer.backend.config.strict_object_publication = True
     with pytest.raises(AttributeNotPublished):
-        acquirer.attribute_ownership_acquisition(held, {rcs}, b"tag")
+        acquirer.attributeOwnershipAcquisition(held, {rcs}, b"tag")
     with pytest.raises(AttributeNotPublished):
-        acquirer.attribute_ownership_acquisition_if_available(held, {rcs})
+        acquirer.attributeOwnershipAcquisitionIfAvailable(held, {rcs})
     acquirer.backend.config.strict_object_publication = False
-    acquirer.unpublish_object_class(cls)
+    acquirer.unpublishObjectClass(cls)
     with pytest.raises(ObjectClassNotPublished):
-        acquirer.attribute_ownership_acquisition(held, {attr}, b"tag")
+        acquirer.attributeOwnershipAcquisition(held, {attr}, b"tag")
     with pytest.raises(ObjectClassNotPublished):
-        acquirer.attribute_ownership_acquisition_if_available(held, {attr})
-    acquirer.publish_object_class_attributes(cls, {attr})
+        acquirer.attributeOwnershipAcquisitionIfAvailable(held, {attr})
+    acquirer.publishObjectClassAttributes(cls, {attr})
 
-    acquirer.request_federation_save("ACQUIRE-SAVE")
+    acquirer.requestFederationSave("ACQUIRE-SAVE")
     drain(owner, acquirer)
     with pytest.raises(SaveInProgress):
-        acquirer.attribute_ownership_acquisition(held, {attr}, b"tag")
+        acquirer.attributeOwnershipAcquisition(held, {attr}, b"tag")
     with pytest.raises(SaveInProgress):
-        acquirer.attribute_ownership_acquisition_if_available(held, {attr})
-    acquirer.federate_save_begun()
-    owner.federate_save_begun()
-    acquirer.federate_save_complete()
-    owner.federate_save_complete()
+        acquirer.attributeOwnershipAcquisitionIfAvailable(held, {attr})
+    acquirer.federateSaveBegun()
+    owner.federateSaveBegun()
+    acquirer.federateSaveComplete()
+    owner.federateSaveComplete()
     drain(owner, acquirer)
-    acquirer.request_federation_restore("ACQUIRE-SAVE")
+    acquirer.requestFederationRestore("ACQUIRE-SAVE")
     drain(owner, acquirer)
     with pytest.raises(RestoreInProgress):
-        acquirer.attribute_ownership_acquisition(held, {attr}, b"tag")
+        acquirer.attributeOwnershipAcquisition(held, {attr}, b"tag")
     with pytest.raises(RestoreInProgress):
-        acquirer.attribute_ownership_acquisition_if_available(held, {attr})
+        acquirer.attributeOwnershipAcquisitionIfAvailable(held, {attr})
 
-    acquirer.abort_federation_restore()
+    acquirer.abortFederationRestore()
     drain(owner, acquirer)
-    owner.attribute_ownership_release_denied(held, {attr})
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("acquisition-negative-fed")
+    owner.attributeOwnershipReleaseDenied(held, {attr})
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("acquisition-negative-fed")
 
 
 def test_python_rti_attribute_ownership_release_denied_clears_pending_acquisition():
     _, owner, acquirer, owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("release-denied-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
-    owner.publish_object_class_attributes(cls, {attr})
-    acquirer.publish_object_class_attributes(cls, {attr})
+    owner.publishObjectClassAttributes(cls, {attr})
+    acquirer.publishObjectClassAttributes(cls, {attr})
 
-    pending = owner.register_object_instance(cls, "Denied-1")
-    acquirer.attribute_ownership_acquisition(pending, {attr}, b"deny-tag")
+    pending = owner.registerObjectInstance(cls, "Denied-1")
+    acquirer.attributeOwnershipAcquisition(pending, {attr}, b"deny-tag")
     drain(owner, acquirer)
 
     release = owner_fed.last_callback("requestAttributeOwnershipRelease")
     assert release is not None
     assert release.args == (pending, AttributeHandleSet({attr}), b"deny-tag")
 
-    owner.attribute_ownership_release_denied(pending, {attr})
+    owner.attributeOwnershipReleaseDenied(pending, {attr})
 
     try:
-        acquirer.cancel_attribute_ownership_acquisition(pending, {attr})
+        acquirer.cancelAttributeOwnershipAcquisition(pending, {attr})
     except AttributeAcquisitionWasNotRequested:
         pass
     else:
         raise AssertionError("release denial should clear the pending acquisition request")
 
-    owner.unconditional_attribute_ownership_divestiture(pending, {attr})
-    assert owner.is_attribute_owned_by_federate(pending, attr) is False
-    assert acquirer.is_attribute_owned_by_federate(pending, attr) is False
+    owner.unconditionalAttributeOwnershipDivestiture(pending, {attr})
+    assert owner.isAttributeOwnedByFederate(pending, attr) is False
+    assert acquirer.isAttributeOwnedByFederate(pending, attr) is False
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("release-denied-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("release-denied-fed")
 
 
 def test_attribute_ownership_release_denied_and_divestiture_if_wanted_reject_not_connected_not_joined_unknown_object_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.attribute_ownership_release_denied(ObjectInstanceHandle(999), set())
+        rti.attributeOwnershipReleaseDenied(ObjectInstanceHandle(999), set())
     with pytest.raises(NotConnected):
-        rti.attribute_ownership_divestiture_if_wanted(ObjectInstanceHandle(999), set())
+        rti.attributeOwnershipDivestitureIfWanted(ObjectInstanceHandle(999), set())
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.attribute_ownership_release_denied(ObjectInstanceHandle(999), set())
+        rti.attributeOwnershipReleaseDenied(ObjectInstanceHandle(999), set())
     with pytest.raises(FederateNotExecutionMember):
-        rti.attribute_ownership_divestiture_if_wanted(ObjectInstanceHandle(999), set())
+        rti.attributeOwnershipDivestitureIfWanted(ObjectInstanceHandle(999), set())
     rti.disconnect()
 
     _, owner, acquirer, _owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("release-divest-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    owner.publish_object_class_attributes(cls, {attr})
-    obj = owner.register_object_instance(cls, "Release-Divest-Negative")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    owner.publishObjectClassAttributes(cls, {attr})
+    obj = owner.registerObjectInstance(cls, "Release-Divest-Negative")
 
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.attribute_ownership_release_denied(ObjectInstanceHandle(999), {attr})
+        owner.attributeOwnershipReleaseDenied(ObjectInstanceHandle(999), {attr})
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.attribute_ownership_divestiture_if_wanted(ObjectInstanceHandle(999), {attr})
+        owner.attributeOwnershipDivestitureIfWanted(ObjectInstanceHandle(999), {attr})
     with pytest.raises(AttributeNotDefined):
-        owner.attribute_ownership_release_denied(obj, {type(attr)(attr.value + 1000)})
+        owner.attributeOwnershipReleaseDenied(obj, {type(attr)(attr.value + 1000)})
     with pytest.raises(AttributeNotDefined):
-        owner.attribute_ownership_divestiture_if_wanted(obj, {type(attr)(attr.value + 1000)})
+        owner.attributeOwnershipDivestitureIfWanted(obj, {type(attr)(attr.value + 1000)})
     with pytest.raises(AttributeNotOwned):
-        acquirer.attribute_ownership_release_denied(obj, {attr})
+        acquirer.attributeOwnershipReleaseDenied(obj, {attr})
     with pytest.raises(AttributeNotOwned):
-        acquirer.attribute_ownership_divestiture_if_wanted(obj, {attr})
+        acquirer.attributeOwnershipDivestitureIfWanted(obj, {attr})
 
-    owner.request_federation_save("RELEASE-DIVEST-SAVE")
+    owner.requestFederationSave("RELEASE-DIVEST-SAVE")
     drain(owner, acquirer)
     with pytest.raises(SaveInProgress):
-        owner.attribute_ownership_release_denied(obj, {attr})
+        owner.attributeOwnershipReleaseDenied(obj, {attr})
     with pytest.raises(SaveInProgress):
-        owner.attribute_ownership_divestiture_if_wanted(obj, {attr})
+        owner.attributeOwnershipDivestitureIfWanted(obj, {attr})
 
-    owner.federate_save_begun()
-    acquirer.federate_save_begun()
-    owner.federate_save_complete()
-    acquirer.federate_save_complete()
+    owner.federateSaveBegun()
+    acquirer.federateSaveBegun()
+    owner.federateSaveComplete()
+    acquirer.federateSaveComplete()
     drain(owner, acquirer)
 
-    owner.request_federation_restore("RELEASE-DIVEST-SAVE")
+    owner.requestFederationRestore("RELEASE-DIVEST-SAVE")
     drain(owner, acquirer)
     with pytest.raises(RestoreInProgress):
-        owner.attribute_ownership_release_denied(obj, {attr})
+        owner.attributeOwnershipReleaseDenied(obj, {attr})
     with pytest.raises(RestoreInProgress):
-        owner.attribute_ownership_divestiture_if_wanted(obj, {attr})
+        owner.attributeOwnershipDivestitureIfWanted(obj, {attr})
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, acquirer)
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("release-divest-negative-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("release-divest-negative-fed")
 
 
 def test_unconditional_divestiture_query_ownership_and_is_owned_reject_not_connected_not_joined_unknown_object_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.unconditional_attribute_ownership_divestiture(ObjectInstanceHandle(999), set())
+        rti.unconditionalAttributeOwnershipDivestiture(ObjectInstanceHandle(999), set())
     with pytest.raises(NotConnected):
-        rti.query_attribute_ownership(ObjectInstanceHandle(999), object())
+        rti.queryAttributeOwnership(ObjectInstanceHandle(999), object())
     with pytest.raises(NotConnected):
-        rti.is_attribute_owned_by_federate(ObjectInstanceHandle(999), object())
+        rti.isAttributeOwnedByFederate(ObjectInstanceHandle(999), object())
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.unconditional_attribute_ownership_divestiture(ObjectInstanceHandle(999), set())
+        rti.unconditionalAttributeOwnershipDivestiture(ObjectInstanceHandle(999), set())
     with pytest.raises(FederateNotExecutionMember):
-        rti.query_attribute_ownership(ObjectInstanceHandle(999), object())
+        rti.queryAttributeOwnership(ObjectInstanceHandle(999), object())
     with pytest.raises(FederateNotExecutionMember):
-        rti.is_attribute_owned_by_federate(ObjectInstanceHandle(999), object())
+        rti.isAttributeOwnedByFederate(ObjectInstanceHandle(999), object())
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("ownership-query-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    owner.publish_object_class_attributes(cls, {attr})
-    obj = owner.register_object_instance(cls, "OwnershipQuery")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    owner.publishObjectClassAttributes(cls, {attr})
+    obj = owner.registerObjectInstance(cls, "OwnershipQuery")
 
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.unconditional_attribute_ownership_divestiture(ObjectInstanceHandle(999), {attr})
+        owner.unconditionalAttributeOwnershipDivestiture(ObjectInstanceHandle(999), {attr})
     with pytest.raises(AttributeNotDefined):
-        owner.unconditional_attribute_ownership_divestiture(obj, {type(attr)(attr.value + 1000)})
+        owner.unconditionalAttributeOwnershipDivestiture(obj, {type(attr)(attr.value + 1000)})
     with pytest.raises(AttributeNotOwned):
-        observer.unconditional_attribute_ownership_divestiture(obj, {attr})
+        observer.unconditionalAttributeOwnershipDivestiture(obj, {attr})
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.query_attribute_ownership(ObjectInstanceHandle(999), attr)
+        owner.queryAttributeOwnership(ObjectInstanceHandle(999), attr)
     with pytest.raises(AttributeNotDefined):
-        owner.query_attribute_ownership(obj, type(attr)(attr.value + 1000))
+        owner.queryAttributeOwnership(obj, type(attr)(attr.value + 1000))
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.is_attribute_owned_by_federate(ObjectInstanceHandle(999), attr)
+        owner.isAttributeOwnedByFederate(ObjectInstanceHandle(999), attr)
     with pytest.raises(AttributeNotDefined):
-        owner.is_attribute_owned_by_federate(obj, type(attr)(attr.value + 1000))
+        owner.isAttributeOwnedByFederate(obj, type(attr)(attr.value + 1000))
 
-    owner.request_federation_save("OWNERSHIP-QUERY-SAVE")
+    owner.requestFederationSave("OWNERSHIP-QUERY-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.unconditional_attribute_ownership_divestiture(obj, {attr})
+        owner.unconditionalAttributeOwnershipDivestiture(obj, {attr})
     with pytest.raises(SaveInProgress):
-        owner.query_attribute_ownership(obj, attr)
+        owner.queryAttributeOwnership(obj, attr)
     with pytest.raises(SaveInProgress):
-        owner.is_attribute_owned_by_federate(obj, attr)
+        owner.isAttributeOwnedByFederate(obj, attr)
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("OWNERSHIP-QUERY-SAVE")
+    owner.requestFederationRestore("OWNERSHIP-QUERY-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.unconditional_attribute_ownership_divestiture(obj, {attr})
+        owner.unconditionalAttributeOwnershipDivestiture(obj, {attr})
     with pytest.raises(RestoreInProgress):
-        owner.query_attribute_ownership(obj, attr)
+        owner.queryAttributeOwnership(obj, attr)
     with pytest.raises(RestoreInProgress):
-        owner.is_attribute_owned_by_federate(obj, attr)
+        owner.isAttributeOwnedByFederate(obj, attr)
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("ownership-query-negative-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("ownership-query-negative-fed")
 
 
 def test_cancel_negotiated_divestiture_rejects_not_connected_not_joined_unknown_object_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.cancel_negotiated_attribute_ownership_divestiture(ObjectInstanceHandle(999), set())
+        rti.cancelNegotiatedAttributeOwnershipDivestiture(ObjectInstanceHandle(999), set())
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.cancel_negotiated_attribute_ownership_divestiture(ObjectInstanceHandle(999), set())
+        rti.cancelNegotiatedAttributeOwnershipDivestiture(ObjectInstanceHandle(999), set())
     rti.disconnect()
 
     _, owner, acquirer, _owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("cancel-negotiated-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    owner.publish_object_class_attributes(cls, {attr})
-    obj = owner.register_object_instance(cls, "Cancel-Negotiated-Negative")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    owner.publishObjectClassAttributes(cls, {attr})
+    obj = owner.registerObjectInstance(cls, "Cancel-Negotiated-Negative")
 
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.cancel_negotiated_attribute_ownership_divestiture(ObjectInstanceHandle(999), {attr})
+        owner.cancelNegotiatedAttributeOwnershipDivestiture(ObjectInstanceHandle(999), {attr})
     with pytest.raises(AttributeNotDefined):
-        owner.cancel_negotiated_attribute_ownership_divestiture(obj, {type(attr)(attr.value + 1000)})
+        owner.cancelNegotiatedAttributeOwnershipDivestiture(obj, {type(attr)(attr.value + 1000)})
     with pytest.raises(AttributeNotOwned):
-        acquirer.cancel_negotiated_attribute_ownership_divestiture(obj, {attr})
+        acquirer.cancelNegotiatedAttributeOwnershipDivestiture(obj, {attr})
 
-    owner.request_federation_save("CANCEL-NEGOTIATED-SAVE")
+    owner.requestFederationSave("CANCEL-NEGOTIATED-SAVE")
     drain(owner, acquirer)
     with pytest.raises(SaveInProgress):
-        owner.cancel_negotiated_attribute_ownership_divestiture(obj, {attr})
+        owner.cancelNegotiatedAttributeOwnershipDivestiture(obj, {attr})
 
-    owner.federate_save_begun()
-    acquirer.federate_save_begun()
-    owner.federate_save_complete()
-    acquirer.federate_save_complete()
+    owner.federateSaveBegun()
+    acquirer.federateSaveBegun()
+    owner.federateSaveComplete()
+    acquirer.federateSaveComplete()
     drain(owner, acquirer)
 
-    owner.request_federation_restore("CANCEL-NEGOTIATED-SAVE")
+    owner.requestFederationRestore("CANCEL-NEGOTIATED-SAVE")
     drain(owner, acquirer)
     with pytest.raises(RestoreInProgress):
-        owner.cancel_negotiated_attribute_ownership_divestiture(obj, {attr})
+        owner.cancelNegotiatedAttributeOwnershipDivestiture(obj, {attr})
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, acquirer)
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("cancel-negotiated-negative-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("cancel-negotiated-negative-fed")
 
 
 def test_python_rti_cancel_negotiated_divestiture_requires_active_request():
     _, owner, acquirer, owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("cancel-negotiated-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
-    owner.publish_object_class_attributes(cls, {attr})
-    acquirer.subscribe_object_class_attributes(cls, {attr})
-    offered = owner.register_object_instance(cls, "Cancel-1")
+    owner.publishObjectClassAttributes(cls, {attr})
+    acquirer.subscribeObjectClassAttributes(cls, {attr})
+    offered = owner.registerObjectInstance(cls, "Cancel-1")
     drain(owner, acquirer)
 
     try:
-        owner.cancel_negotiated_attribute_ownership_divestiture(offered, {attr})
+        owner.cancelNegotiatedAttributeOwnershipDivestiture(offered, {attr})
     except AttributeDivestitureWasNotRequested:
         pass
     else:
         raise AssertionError("cancel_negotiated_attribute_ownership_divestiture should require an active request")
 
-    owner.negotiated_attribute_ownership_divestiture(offered, {attr}, b"cancel-tag")
+    owner.negotiatedAttributeOwnershipDivestiture(offered, {attr}, b"cancel-tag")
     drain(owner, acquirer)
     assert owner_fed.last_callback("requestDivestitureConfirmation") is None
 
-    owner.cancel_negotiated_attribute_ownership_divestiture(offered, {attr})
+    owner.cancelNegotiatedAttributeOwnershipDivestiture(offered, {attr})
     try:
-        owner.confirm_divestiture(offered, {attr}, b"confirm-tag")
+        owner.confirmDivestiture(offered, {attr}, b"confirm-tag")
     except AttributeDivestitureWasNotRequested:
         pass
     else:
         raise AssertionError("cancelled negotiated divestiture should clear the divesting state")
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("cancel-negotiated-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("cancel-negotiated-fed")
 
 
 def test_python_rti_acquisition_if_available_reports_unavailable_without_transfer():
     _, owner, acquirer, owner_fed, acquirer_fed, _h1, _h2 = joined_pair("acquire-if-available-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
-    owner.publish_object_class_attributes(cls, {attr})
-    acquirer.publish_object_class_attributes(cls, {attr})
-    offered = owner.register_object_instance(cls, "Unavailable-1")
+    owner.publishObjectClassAttributes(cls, {attr})
+    acquirer.publishObjectClassAttributes(cls, {attr})
+    offered = owner.registerObjectInstance(cls, "Unavailable-1")
 
-    acquirer.attribute_ownership_acquisition_if_available(offered, {attr})
+    acquirer.attributeOwnershipAcquisitionIfAvailable(offered, {attr})
     drain(owner, acquirer)
 
     unavailable = acquirer_fed.last_callback("attributeOwnershipUnavailable")
     assert unavailable is not None
     assert unavailable.args == (offered, AttributeHandleSet({attr}))
-    assert owner.is_attribute_owned_by_federate(offered, attr) is True
-    assert acquirer.is_attribute_owned_by_federate(offered, attr) is False
+    assert owner.isAttributeOwnedByFederate(offered, attr) is True
+    assert acquirer.isAttributeOwnedByFederate(offered, attr) is False
     assert owner_fed.last_callback("requestAttributeOwnershipRelease") is None
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("acquire-if-available-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("acquire-if-available-fed")
 
 
 def test_python_rti_divestiture_if_wanted_requires_pending_acquirer():
     _, owner, acquirer, _owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("divest-if-wanted-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
-    owner.publish_object_class_attributes(cls, {attr})
-    acquirer.publish_object_class_attributes(cls, {attr})
-    pending = owner.register_object_instance(cls, "Wanted-1")
+    owner.publishObjectClassAttributes(cls, {attr})
+    acquirer.publishObjectClassAttributes(cls, {attr})
+    pending = owner.registerObjectInstance(cls, "Wanted-1")
 
     try:
-        owner.attribute_ownership_divestiture_if_wanted(pending, {attr})
+        owner.attributeOwnershipDivestitureIfWanted(pending, {attr})
     except NoAcquisitionPending:
         pass
     else:
         raise AssertionError("attribute_ownership_divestiture_if_wanted should require a pending acquisition")
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("divest-if-wanted-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("divest-if-wanted-fed")
 
 
 def test_python_rti_cancel_attribute_ownership_acquisition_requires_request():
     _, owner, acquirer, _owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("cancel-acquisition-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
-    owner.publish_object_class_attributes(cls, {attr})
-    acquirer.publish_object_class_attributes(cls, {attr})
-    pending = owner.register_object_instance(cls, "CancelAcquire-1")
+    owner.publishObjectClassAttributes(cls, {attr})
+    acquirer.publishObjectClassAttributes(cls, {attr})
+    pending = owner.registerObjectInstance(cls, "CancelAcquire-1")
 
     try:
-        acquirer.cancel_attribute_ownership_acquisition(pending, {attr})
+        acquirer.cancelAttributeOwnershipAcquisition(pending, {attr})
     except AttributeAcquisitionWasNotRequested:
         pass
     else:
         raise AssertionError("cancel_attribute_ownership_acquisition should require an outstanding request")
 
     with pytest.raises(AttributeAlreadyOwned):
-        owner.cancel_attribute_ownership_acquisition(pending, {attr})
+        owner.cancelAttributeOwnershipAcquisition(pending, {attr})
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("cancel-acquisition-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("cancel-acquisition-fed")
 
 
 def test_cancel_attribute_ownership_acquisition_rejects_not_connected_not_joined_unknown_object_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.cancel_attribute_ownership_acquisition(ObjectInstanceHandle(999), set())
+        rti.cancelAttributeOwnershipAcquisition(ObjectInstanceHandle(999), set())
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.cancel_attribute_ownership_acquisition(ObjectInstanceHandle(999), set())
+        rti.cancelAttributeOwnershipAcquisition(ObjectInstanceHandle(999), set())
     rti.disconnect()
 
     _, owner, acquirer, _owner_fed, _acquirer_fed, _h1, _h2 = joined_pair("cancel-acquisition-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
     bad_attr = type(attr)(attr.value + 1000)
-    owner.publish_object_class_attributes(cls, {attr})
-    acquirer.publish_object_class_attributes(cls, {attr})
-    obj = owner.register_object_instance(cls, "Cancel-Acquisition-Negative")
+    owner.publishObjectClassAttributes(cls, {attr})
+    acquirer.publishObjectClassAttributes(cls, {attr})
+    obj = owner.registerObjectInstance(cls, "Cancel-Acquisition-Negative")
 
     with pytest.raises(ObjectInstanceNotKnown):
-        acquirer.cancel_attribute_ownership_acquisition(ObjectInstanceHandle(999), {attr})
+        acquirer.cancelAttributeOwnershipAcquisition(ObjectInstanceHandle(999), {attr})
     with pytest.raises(AttributeNotDefined):
-        acquirer.cancel_attribute_ownership_acquisition(obj, {bad_attr})
+        acquirer.cancelAttributeOwnershipAcquisition(obj, {bad_attr})
 
-    owner.request_federation_save("CANCEL-ACQ-SAVE")
+    owner.requestFederationSave("CANCEL-ACQ-SAVE")
     drain(owner, acquirer)
     with pytest.raises(SaveInProgress):
-        acquirer.cancel_attribute_ownership_acquisition(obj, {attr})
+        acquirer.cancelAttributeOwnershipAcquisition(obj, {attr})
 
-    owner.federate_save_begun()
-    acquirer.federate_save_begun()
-    owner.federate_save_complete()
-    acquirer.federate_save_complete()
+    owner.federateSaveBegun()
+    acquirer.federateSaveBegun()
+    owner.federateSaveComplete()
+    acquirer.federateSaveComplete()
     drain(owner, acquirer)
 
-    owner.request_federation_restore("CANCEL-ACQ-SAVE")
+    owner.requestFederationRestore("CANCEL-ACQ-SAVE")
     drain(owner, acquirer)
     with pytest.raises(RestoreInProgress):
-        acquirer.cancel_attribute_ownership_acquisition(obj, {attr})
+        acquirer.cancelAttributeOwnershipAcquisition(obj, {attr})
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, acquirer)
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("cancel-acquisition-negative-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("cancel-acquisition-negative-fed")
 
 
 def test_python_rti_query_attribute_ownership_reports_not_owned_after_divestiture():
     _, owner, observer, _owner_fed, observer_fed, _h1, _h2 = joined_pair("query-unowned-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
-    owner.publish_object_class_attributes(cls, {attr})
-    obj = owner.register_object_instance(cls, "Unowned-1")
-    owner.unconditional_attribute_ownership_divestiture(obj, {attr})
+    owner.publishObjectClassAttributes(cls, {attr})
+    obj = owner.registerObjectInstance(cls, "Unowned-1")
+    owner.unconditionalAttributeOwnershipDivestiture(obj, {attr})
 
-    observer.query_attribute_ownership(obj, attr)
+    observer.queryAttributeOwnership(obj, attr)
     drain(observer)
 
     not_owned = observer_fed.last_callback("attributeIsNotOwned")
     assert not_owned is not None
     assert not_owned.args == (obj, attr)
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("query-unowned-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("query-unowned-fed")
 
 
 @pytest.mark.requirements(*CLAUSE7_OWNERSHIP_UNAVAILABLE_CALLBACK_REQUIREMENTS)
 def test_ownership_unavailable_and_query_callbacks_are_isolated_and_exact():
     _, owner, acquirer, owner_fed, acquirer_fed, _h1, _h2 = joined_pair("ownership-callback-query-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
-    owner.publish_object_class_attributes(cls, {attr})
-    acquirer.publish_object_class_attributes(cls, {attr})
-    offered = owner.register_object_instance(cls, "Unavailable-Callback-1")
+    owner.publishObjectClassAttributes(cls, {attr})
+    acquirer.publishObjectClassAttributes(cls, {attr})
+    offered = owner.registerObjectInstance(cls, "Unavailable-Callback-1")
     drain(owner, acquirer)
     owner_fed.clear()
     acquirer_fed.clear()
 
-    acquirer.attribute_ownership_acquisition_if_available(offered, {attr})
+    acquirer.attributeOwnershipAcquisitionIfAvailable(offered, {attr})
     drain(owner, acquirer)
     unavailable_callbacks = [
         rec for rec in acquirer_fed.records if rec.method_name == "attributeOwnershipUnavailable"
@@ -3495,10 +3495,10 @@ def test_ownership_unavailable_and_query_callbacks_are_isolated_and_exact():
     assert unavailable_callbacks[0].args == (offered, AttributeHandleSet({attr}))
     assert owner_fed.last_callback("requestAttributeOwnershipRelease") is None
 
-    query_target = owner.register_object_instance(cls, "Query-Callback-1")
+    query_target = owner.registerObjectInstance(cls, "Query-Callback-1")
     owner_fed.clear()
     acquirer_fed.clear()
-    acquirer.query_attribute_ownership(query_target, attr)
+    acquirer.queryAttributeOwnership(query_target, attr)
     drain(owner, acquirer)
     owned_callbacks = [
         rec for rec in acquirer_fed.records if rec.method_name == "informAttributeOwnership"
@@ -3506,10 +3506,10 @@ def test_ownership_unavailable_and_query_callbacks_are_isolated_and_exact():
     assert [rec.method_name for rec in owned_callbacks] == ["informAttributeOwnership"]
     assert owned_callbacks[0].args == (query_target, attr, owner.backend.state.handle)
 
-    owner.unconditional_attribute_ownership_divestiture(query_target, {attr})
+    owner.unconditionalAttributeOwnershipDivestiture(query_target, {attr})
     owner_fed.clear()
     acquirer_fed.clear()
-    acquirer.query_attribute_ownership(query_target, attr)
+    acquirer.queryAttributeOwnership(query_target, attr)
     drain(owner, acquirer)
     not_owned_callbacks = [
         rec for rec in acquirer_fed.records if rec.method_name == "attributeIsNotOwned"
@@ -3517,13 +3517,13 @@ def test_ownership_unavailable_and_query_callbacks_are_isolated_and_exact():
     assert [rec.method_name for rec in not_owned_callbacks] == ["attributeIsNotOwned"]
     assert not_owned_callbacks[0].args == (query_target, attr)
 
-    mom_class = owner.get_object_class_handle(hla_mom.MOM_FEDERATION_OBJECT_CLASS)
-    mom_attr = owner.get_attribute_handle(mom_class, "HLAfederationName")
+    mom_class = owner.getObjectClassHandle(hla_mom.MOM_FEDERATION_OBJECT_CLASS)
+    mom_attr = owner.getAttributeHandle(mom_class, "HLAfederationName")
     mom_object = owner.backend.state.federation.mom_federation_object
     assert mom_object is not None
     owner_fed.clear()
     acquirer_fed.clear()
-    acquirer.query_attribute_ownership(mom_object, mom_attr)
+    acquirer.queryAttributeOwnership(mom_object, mom_attr)
     drain(owner, acquirer)
     rti_owned_callbacks = [
         rec for rec in acquirer_fed.records if rec.method_name == "attributeIsOwnedByRTI"
@@ -3531,474 +3531,474 @@ def test_ownership_unavailable_and_query_callbacks_are_isolated_and_exact():
     assert [rec.method_name for rec in rti_owned_callbacks] == ["attributeIsOwnedByRTI"]
     assert rti_owned_callbacks[0].args == (mom_object, mom_attr)
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("ownership-callback-query-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("ownership-callback-query-fed")
 
 
 def test_python_rti_release_denied_preserves_owner_and_no_acquisition_grant():
     _, owner, acquirer, owner_fed, acquirer_fed, _h1, _h2 = joined_pair("release-denied-retains-owner-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
 
-    owner.publish_object_class_attributes(cls, {attr})
-    acquirer.publish_object_class_attributes(cls, {attr})
-    pending = owner.register_object_instance(cls, "DeniedOwner-1")
+    owner.publishObjectClassAttributes(cls, {attr})
+    acquirer.publishObjectClassAttributes(cls, {attr})
+    pending = owner.registerObjectInstance(cls, "DeniedOwner-1")
 
-    acquirer.attribute_ownership_acquisition(pending, {attr}, b"deny-tag")
+    acquirer.attributeOwnershipAcquisition(pending, {attr}, b"deny-tag")
     drain(owner, acquirer)
 
     release = owner_fed.last_callback("requestAttributeOwnershipRelease")
     assert release is not None
     assert release.args == (pending, AttributeHandleSet({attr}), b"deny-tag")
 
-    owner.attribute_ownership_release_denied(pending, {attr})
+    owner.attributeOwnershipReleaseDenied(pending, {attr})
     drain(owner, acquirer)
 
-    assert owner.is_attribute_owned_by_federate(pending, attr) is True
-    assert acquirer.is_attribute_owned_by_federate(pending, attr) is False
+    assert owner.isAttributeOwnedByFederate(pending, attr) is True
+    assert acquirer.isAttributeOwnedByFederate(pending, attr) is False
     assert acquirer_fed.last_callback("attributeOwnershipAcquisitionNotification") is None
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    acquirer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("release-denied-retains-owner-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("release-denied-retains-owner-fed")
 
 
 def test_modify_lookahead_retract_change_attribute_order_type_and_enable_time_constrained_reject_core_negative_paths():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.modify_lookahead(object())
+        rti.modifyLookahead(object())
     with pytest.raises(NotConnected):
         rti.retract(MessageRetractionHandle(1))
     with pytest.raises(NotConnected):
-        rti.change_attribute_order_type(ObjectInstanceHandle(999), set(), OrderType.RECEIVE)
+        rti.changeAttributeOrderType(ObjectInstanceHandle(999), set(), OrderType.RECEIVE)
     with pytest.raises(NotConnected):
-        rti.enable_time_constrained()
+        rti.enableTimeConstrained()
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.modify_lookahead(object())
+        rti.modifyLookahead(object())
     with pytest.raises(FederateNotExecutionMember):
         rti.retract(MessageRetractionHandle(1))
     with pytest.raises(FederateNotExecutionMember):
-        rti.change_attribute_order_type(ObjectInstanceHandle(999), set(), OrderType.RECEIVE)
+        rti.changeAttributeOrderType(ObjectInstanceHandle(999), set(), OrderType.RECEIVE)
     with pytest.raises(FederateNotExecutionMember):
-        rti.enable_time_constrained()
+        rti.enableTimeConstrained()
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("time-tail-negative-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
     bad_attr = type(attr)(attr.value + 1000)
-    owner.publish_object_class_attributes(cls, {attr})
-    observer.publish_object_class_attributes(cls, {attr})
-    obj = owner.register_object_instance(cls, "Time-Tail-Negative")
+    owner.publishObjectClassAttributes(cls, {attr})
+    observer.publishObjectClassAttributes(cls, {attr})
+    obj = owner.registerObjectInstance(cls, "Time-Tail-Negative")
 
     with pytest.raises(TimeRegulationIsNotEnabled):
-        owner.modify_lookahead(1.0)
+        owner.modifyLookahead(1.0)
     with pytest.raises(TimeRegulationIsNotEnabled):
         owner.retract(MessageRetractionHandle(1))
     with pytest.raises(AttributeNotOwned):
-        observer.change_attribute_order_type(obj, {attr}, OrderType.RECEIVE)
+        observer.changeAttributeOrderType(obj, {attr}, OrderType.RECEIVE)
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.change_attribute_order_type(ObjectInstanceHandle(999), {attr}, OrderType.RECEIVE)
+        owner.changeAttributeOrderType(ObjectInstanceHandle(999), {attr}, OrderType.RECEIVE)
     with pytest.raises(AttributeNotDefined):
-        owner.change_attribute_order_type(obj, {bad_attr}, OrderType.RECEIVE)
+        owner.changeAttributeOrderType(obj, {bad_attr}, OrderType.RECEIVE)
 
-    owner.enable_time_regulation(owner.get_time_factory().make_interval(1.0))
+    owner.enableTimeRegulation(owner.getTimeFactory().make_interval(1.0))
     drain(owner, observer)
-    owner.enable_time_constrained()
+    owner.enableTimeConstrained()
     drain(owner, observer)
     with pytest.raises(TimeConstrainedAlreadyEnabled):
-        owner.enable_time_constrained()
+        owner.enableTimeConstrained()
 
-    owner.disable_time_regulation()
-    owner.request_federation_save("TIME-TAIL-SAVE")
+    owner.disableTimeRegulation()
+    owner.requestFederationSave("TIME-TAIL-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.modify_lookahead(1.0)
+        owner.modifyLookahead(1.0)
     with pytest.raises(SaveInProgress):
         owner.retract(MessageRetractionHandle(1))
     with pytest.raises(SaveInProgress):
-        owner.change_attribute_order_type(obj, {attr}, OrderType.RECEIVE)
+        owner.changeAttributeOrderType(obj, {attr}, OrderType.RECEIVE)
     with pytest.raises(SaveInProgress):
-        observer.enable_time_constrained()
+        observer.enableTimeConstrained()
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("TIME-TAIL-SAVE")
+    owner.requestFederationRestore("TIME-TAIL-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.modify_lookahead(1.0)
+        owner.modifyLookahead(1.0)
     with pytest.raises(RestoreInProgress):
         owner.retract(MessageRetractionHandle(1))
     with pytest.raises(RestoreInProgress):
-        owner.change_attribute_order_type(obj, {attr}, OrderType.RECEIVE)
+        owner.changeAttributeOrderType(obj, {attr}, OrderType.RECEIVE)
     with pytest.raises(RestoreInProgress):
-        observer.enable_time_constrained()
+        observer.enableTimeConstrained()
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.enable_time_regulation(owner.get_time_factory().make_interval(1.0))
+    owner.enableTimeRegulation(owner.getTimeFactory().make_interval(1.0))
     owner.backend.state.time_advancing = True
     with pytest.raises(InTimeAdvancingState):
-        owner.modify_lookahead(1.0)
+        owner.modifyLookahead(1.0)
     with pytest.raises(InvalidMessageRetractionHandle):
         owner.retract("bad")
     owner.backend.state.time_advancing = False
-    owner.disable_time_regulation()
+    owner.disableTimeRegulation()
 
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("time-tail-negative-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("time-tail-negative-fed")
 
 
 def test_change_interaction_order_type_rejects_not_connected_not_joined_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.change_interaction_order_type(object(), OrderType.RECEIVE)
+        rti.changeInteractionOrderType(object(), OrderType.RECEIVE)
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.change_interaction_order_type(object(), OrderType.RECEIVE)
+        rti.changeInteractionOrderType(object(), OrderType.RECEIVE)
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("interaction-order-negative-fed")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
     owner.backend.config.strict_interaction_publication = True
     with pytest.raises(InteractionClassNotPublished):
-        owner.change_interaction_order_type(interaction, OrderType.RECEIVE)
+        owner.changeInteractionOrderType(interaction, OrderType.RECEIVE)
     with pytest.raises(InteractionClassNotDefined):
-        owner.change_interaction_order_type(type(interaction)(interaction.value + 1000), OrderType.RECEIVE)
+        owner.changeInteractionOrderType(type(interaction)(interaction.value + 1000), OrderType.RECEIVE)
 
-    owner.request_federation_save("INTERACTION-ORDER-SAVE")
+    owner.requestFederationSave("INTERACTION-ORDER-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.change_interaction_order_type(interaction, OrderType.RECEIVE)
+        owner.changeInteractionOrderType(interaction, OrderType.RECEIVE)
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("INTERACTION-ORDER-SAVE")
+    owner.requestFederationRestore("INTERACTION-ORDER-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.change_interaction_order_type(interaction, OrderType.RECEIVE)
+        owner.changeInteractionOrderType(interaction, OrderType.RECEIVE)
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("interaction-order-negative-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("interaction-order-negative-fed")
 
 
 def test_async_delivery_and_time_query_disable_tail_reject_not_connected_not_joined_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.enable_asynchronous_delivery()
+        rti.enableAsynchronousDelivery()
     with pytest.raises(NotConnected):
-        rti.disable_asynchronous_delivery()
+        rti.disableAsynchronousDelivery()
     with pytest.raises(NotConnected):
-        rti.query_lookahead()
+        rti.queryLookahead()
     with pytest.raises(NotConnected):
-        rti.disable_time_regulation()
+        rti.disableTimeRegulation()
     with pytest.raises(NotConnected):
-        rti.disable_time_constrained()
+        rti.disableTimeConstrained()
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.enable_asynchronous_delivery()
+        rti.enableAsynchronousDelivery()
     with pytest.raises(FederateNotExecutionMember):
-        rti.disable_asynchronous_delivery()
+        rti.disableAsynchronousDelivery()
     with pytest.raises(FederateNotExecutionMember):
-        rti.query_lookahead()
+        rti.queryLookahead()
     with pytest.raises(FederateNotExecutionMember):
-        rti.disable_time_regulation()
+        rti.disableTimeRegulation()
     with pytest.raises(FederateNotExecutionMember):
-        rti.disable_time_constrained()
+        rti.disableTimeConstrained()
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("async-time-tail-negative-fed")
     with pytest.raises(AsynchronousDeliveryAlreadyDisabled):
-        owner.disable_asynchronous_delivery()
-    owner.enable_asynchronous_delivery()
+        owner.disableAsynchronousDelivery()
+    owner.enableAsynchronousDelivery()
     with pytest.raises(AsynchronousDeliveryAlreadyEnabled):
-        owner.enable_asynchronous_delivery()
-    owner.disable_asynchronous_delivery()
+        owner.enableAsynchronousDelivery()
+    owner.disableAsynchronousDelivery()
 
     with pytest.raises(TimeRegulationIsNotEnabled):
-        owner.query_lookahead()
+        owner.queryLookahead()
     with pytest.raises(TimeRegulationIsNotEnabled):
-        owner.disable_time_regulation()
+        owner.disableTimeRegulation()
     with pytest.raises(TimeConstrainedIsNotEnabled):
-        owner.disable_time_constrained()
+        owner.disableTimeConstrained()
 
-    owner.request_federation_save("ASYNC-TIME-SAVE")
+    owner.requestFederationSave("ASYNC-TIME-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.enable_asynchronous_delivery()
+        owner.enableAsynchronousDelivery()
     with pytest.raises(SaveInProgress):
-        owner.disable_asynchronous_delivery()
+        owner.disableAsynchronousDelivery()
     with pytest.raises(SaveInProgress):
-        owner.query_lookahead()
+        owner.queryLookahead()
     with pytest.raises(SaveInProgress):
-        owner.disable_time_regulation()
+        owner.disableTimeRegulation()
     with pytest.raises(SaveInProgress):
-        owner.disable_time_constrained()
+        owner.disableTimeConstrained()
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("ASYNC-TIME-SAVE")
+    owner.requestFederationRestore("ASYNC-TIME-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.enable_asynchronous_delivery()
+        owner.enableAsynchronousDelivery()
     with pytest.raises(RestoreInProgress):
-        owner.disable_asynchronous_delivery()
+        owner.disableAsynchronousDelivery()
     with pytest.raises(RestoreInProgress):
-        owner.query_lookahead()
+        owner.queryLookahead()
     with pytest.raises(RestoreInProgress):
-        owner.disable_time_regulation()
+        owner.disableTimeRegulation()
     with pytest.raises(RestoreInProgress):
-        owner.disable_time_constrained()
+        owner.disableTimeConstrained()
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("async-time-tail-negative-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("async-time-tail-negative-fed")
 
 
 def test_enable_time_regulation_rejects_not_connected_not_joined_invalid_lookahead_duplicate_save_restore_and_time_advancing():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.enable_time_regulation(object())
+        rti.enableTimeRegulation(object())
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.enable_time_regulation(object())
+        rti.enableTimeRegulation(object())
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("enable-time-reg-negative-fed")
-    factory = owner.get_time_factory()
+    factory = owner.getTimeFactory()
 
     with pytest.raises(InvalidLookahead):
-        owner.enable_time_regulation(factory.make_interval(-1.0))
+        owner.enableTimeRegulation(factory.make_interval(-1.0))
 
-    owner.enable_time_regulation(factory.make_interval(1.0))
+    owner.enableTimeRegulation(factory.make_interval(1.0))
     drain(owner, observer)
     with pytest.raises(TimeRegulationAlreadyEnabled):
-        owner.enable_time_regulation(factory.make_interval(1.0))
+        owner.enableTimeRegulation(factory.make_interval(1.0))
 
-    owner.disable_time_regulation()
-    owner.request_federation_save("ENABLE-TIME-SAVE")
+    owner.disableTimeRegulation()
+    owner.requestFederationSave("ENABLE-TIME-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.enable_time_regulation(factory.make_interval(1.0))
+        owner.enableTimeRegulation(factory.make_interval(1.0))
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("ENABLE-TIME-SAVE")
+    owner.requestFederationRestore("ENABLE-TIME-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.enable_time_regulation(factory.make_interval(1.0))
+        owner.enableTimeRegulation(factory.make_interval(1.0))
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
     owner.backend.state.time_advancing = True
     with pytest.raises(InTimeAdvancingState):
-        owner.enable_time_regulation(factory.make_interval(1.0))
+        owner.enableTimeRegulation(factory.make_interval(1.0))
     owner.backend.state.time_advancing = False
 
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("enable-time-reg-negative-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("enable-time-reg-negative-fed")
 
 
 def test_time_enable_callbacks_are_not_emitted_on_failed_requests():
     _, owner, observer, owner_fed, observer_fed, _h1, _h2 = joined_pair("time-enable-callback-negative-fed")
-    factory = owner.get_time_factory()
+    factory = owner.getTimeFactory()
 
     owner_fed.clear()
     with pytest.raises(InvalidLookahead):
-        owner.enable_time_regulation(factory.make_interval(-1.0))
+        owner.enableTimeRegulation(factory.make_interval(-1.0))
     assert owner_fed.callbacks_named("timeRegulationEnabled") == []
 
-    owner.enable_time_regulation(factory.make_interval(1.0))
+    owner.enableTimeRegulation(factory.make_interval(1.0))
     drain(owner, observer)
     assert owner_fed.last_callback("timeRegulationEnabled") is not None
 
     owner_fed.clear()
     with pytest.raises(TimeRegulationAlreadyEnabled):
-        owner.enable_time_regulation(factory.make_interval(1.0))
+        owner.enableTimeRegulation(factory.make_interval(1.0))
     assert owner_fed.callbacks_named("timeRegulationEnabled") == []
 
-    observer.enable_time_constrained()
+    observer.enableTimeConstrained()
     drain(owner, observer)
     assert observer_fed.last_callback("timeConstrainedEnabled") is not None
 
     observer_fed.clear()
     with pytest.raises(TimeConstrainedAlreadyEnabled):
-        observer.enable_time_constrained()
+        observer.enableTimeConstrained()
     assert observer_fed.callbacks_named("timeConstrainedEnabled") == []
 
-    owner.disable_time_regulation()
-    observer.disable_time_constrained()
+    owner.disableTimeRegulation()
+    observer.disableTimeConstrained()
 
-    owner.request_federation_save("TIME-ENABLE-CB-SAVE")
+    owner.requestFederationSave("TIME-ENABLE-CB-SAVE")
     drain(owner, observer)
     owner_fed.clear()
     observer_fed.clear()
     with pytest.raises(SaveInProgress):
-        owner.enable_time_regulation(factory.make_interval(1.0))
+        owner.enableTimeRegulation(factory.make_interval(1.0))
     with pytest.raises(SaveInProgress):
-        observer.enable_time_constrained()
+        observer.enableTimeConstrained()
     assert owner_fed.callbacks_named("timeRegulationEnabled") == []
     assert observer_fed.callbacks_named("timeConstrainedEnabled") == []
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("TIME-ENABLE-CB-SAVE")
+    owner.requestFederationRestore("TIME-ENABLE-CB-SAVE")
     drain(owner, observer)
     owner_fed.clear()
     observer_fed.clear()
     with pytest.raises(RestoreInProgress):
-        owner.enable_time_regulation(factory.make_interval(1.0))
+        owner.enableTimeRegulation(factory.make_interval(1.0))
     with pytest.raises(RestoreInProgress):
-        observer.enable_time_constrained()
+        observer.enableTimeConstrained()
     assert owner_fed.callbacks_named("timeRegulationEnabled") == []
     assert observer_fed.callbacks_named("timeConstrainedEnabled") == []
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
     owner.backend.state.time_advancing = True
     owner_fed.clear()
     with pytest.raises(InTimeAdvancingState):
-        owner.enable_time_regulation(factory.make_interval(1.0))
+        owner.enableTimeRegulation(factory.make_interval(1.0))
     assert owner_fed.callbacks_named("timeRegulationEnabled") == []
     owner.backend.state.time_advancing = False
 
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("time-enable-callback-negative-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("time-enable-callback-negative-fed")
 
 
 def test_support_service_lookup_and_factory_tail_rejects_declared_exceptions():
     factory_getters = (
-        lambda tx: tx.get_attribute_handle_factory(),
-        lambda tx: tx.get_attribute_handle_set_factory(),
-        lambda tx: tx.get_attribute_handle_value_map_factory(),
-        lambda tx: tx.get_attribute_set_region_set_pair_list_factory(),
-        lambda tx: tx.get_dimension_handle_factory(),
-        lambda tx: tx.get_dimension_handle_set_factory(),
-        lambda tx: tx.get_federate_handle_factory(),
-        lambda tx: tx.get_federate_handle_set_factory(),
-        lambda tx: tx.get_interaction_class_handle_factory(),
-        lambda tx: tx.get_object_class_handle_factory(),
-        lambda tx: tx.get_object_instance_handle_factory(),
-        lambda tx: tx.get_parameter_handle_factory(),
-        lambda tx: tx.get_parameter_handle_value_map_factory(),
-        lambda tx: tx.get_region_handle_set_factory(),
-        lambda tx: tx.get_transportation_type_handle_factory(),
+        lambda tx: tx.getAttributeHandleFactory(),
+        lambda tx: tx.getAttributeHandleSetFactory(),
+        lambda tx: tx.getAttributeHandleValueMapFactory(),
+        lambda tx: tx.getAttributeSetRegionSetPairListFactory(),
+        lambda tx: tx.getDimensionHandleFactory(),
+        lambda tx: tx.getDimensionHandleSetFactory(),
+        lambda tx: tx.getFederateHandleFactory(),
+        lambda tx: tx.getFederateHandleSetFactory(),
+        lambda tx: tx.getInteractionClassHandleFactory(),
+        lambda tx: tx.getObjectClassHandleFactory(),
+        lambda tx: tx.getObjectInstanceHandleFactory(),
+        lambda tx: tx.getParameterHandleFactory(),
+        lambda tx: tx.getParameterHandleValueMapFactory(),
+        lambda tx: tx.getRegionHandleSetFactory(),
+        lambda tx: tx.getTransportationTypeHandleFactory(),
     )
 
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
-        rti.get_federate_name(None)
+        rti.getFederateName(None)
     with pytest.raises(NotConnected):
-        rti.get_attribute_handle(object(), "Position")
+        rti.getAttributeHandle(object(), "Position")
     with pytest.raises(NotConnected):
-        rti.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+        rti.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
     with pytest.raises(NotConnected):
-        rti.get_parameter_handle(object(), "TrackId")
+        rti.getParameterHandle(object(), "TrackId")
     with pytest.raises(NotConnected):
-        rti.get_object_instance_name(ObjectInstanceHandle(1))
+        rti.getObjectInstanceName(ObjectInstanceHandle(1))
     with pytest.raises(NotConnected):
-        rti.get_update_rate_value("default")
+        rti.getUpdateRateValue("default")
     with pytest.raises(NotConnected):
-        rti.get_update_rate_value_for_attribute(ObjectInstanceHandle(1), AttributeHandle(1))
+        rti.getUpdateRateValueForAttribute(ObjectInstanceHandle(1), AttributeHandle(1))
     with pytest.raises(NotConnected):
-        rti.get_transportation_type("HLAreliable")
+        rti.getTransportationType("HLAreliable")
     with pytest.raises(NotConnected):
-        rti.get_transportation_name(TransportationTypeHandle(1))
+        rti.getTransportationName(TransportationTypeHandle(1))
     with pytest.raises(NotConnected):
-        rti.get_automatic_resign_directive()
+        rti.getAutomaticResignDirective()
     with pytest.raises(NotConnected):
-        rti.set_automatic_resign_directive(ResignAction.NO_ACTION)
+        rti.setAutomaticResignDirective(ResignAction.NO_ACTION)
     with pytest.raises(NotConnected):
-        rti.normalize_federate_handle(object())
+        rti.normalizeFederateHandle(object())
     with pytest.raises(NotConnected):
-        rti.normalize_service_group("OBJECT_MANAGEMENT")
+        rti.normalizeServiceGroup("OBJECT_MANAGEMENT")
     with pytest.raises(NotConnected):
-        rti.enable_interaction_relevance_advisory_switch()
+        rti.enableInteractionRelevanceAdvisorySwitch()
     with pytest.raises(NotConnected):
-        rti.disable_interaction_relevance_advisory_switch()
+        rti.disableInteractionRelevanceAdvisorySwitch()
     with pytest.raises(NotConnected):
-        rti.get_time_factory()
+        rti.getTimeFactory()
     for getter in factory_getters:
         with pytest.raises(NotConnected):
             getter(rti)
 
     rti.connect(RecordingFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_federate_name(None)
+        rti.getFederateName(None)
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_attribute_handle(object(), "Position")
+        rti.getAttributeHandle(object(), "Position")
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
+        rti.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_parameter_handle(object(), "TrackId")
+        rti.getParameterHandle(object(), "TrackId")
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_object_instance_name(ObjectInstanceHandle(1))
+        rti.getObjectInstanceName(ObjectInstanceHandle(1))
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_update_rate_value("default")
+        rti.getUpdateRateValue("default")
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_update_rate_value_for_attribute(ObjectInstanceHandle(1), AttributeHandle(1))
+        rti.getUpdateRateValueForAttribute(ObjectInstanceHandle(1), AttributeHandle(1))
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_transportation_type("HLAreliable")
+        rti.getTransportationType("HLAreliable")
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_transportation_name(TransportationTypeHandle(1))
+        rti.getTransportationName(TransportationTypeHandle(1))
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_automatic_resign_directive()
+        rti.getAutomaticResignDirective()
     with pytest.raises(FederateNotExecutionMember):
-        rti.set_automatic_resign_directive(ResignAction.NO_ACTION)
+        rti.setAutomaticResignDirective(ResignAction.NO_ACTION)
     with pytest.raises(FederateNotExecutionMember):
-        rti.normalize_federate_handle(object())
+        rti.normalizeFederateHandle(object())
     with pytest.raises(FederateNotExecutionMember):
-        rti.normalize_service_group("OBJECT_MANAGEMENT")
+        rti.normalizeServiceGroup("OBJECT_MANAGEMENT")
     with pytest.raises(FederateNotExecutionMember):
-        rti.enable_interaction_relevance_advisory_switch()
+        rti.enableInteractionRelevanceAdvisorySwitch()
     with pytest.raises(FederateNotExecutionMember):
-        rti.disable_interaction_relevance_advisory_switch()
+        rti.disableInteractionRelevanceAdvisorySwitch()
     with pytest.raises(FederateNotExecutionMember):
-        rti.get_time_factory()
+        rti.getTimeFactory()
     for getter in factory_getters:
         with pytest.raises(FederateNotExecutionMember):
             getter(rti)
     rti.disconnect()
 
     _, owner, observer, _owner_fed, _observer_fed, owner_handle, observer_handle = joined_pair("support-lookup-tail-fed")
-    cls = owner.get_object_class_handle("HLAobjectRoot.Target")
-    attr = owner.get_attribute_handle(cls, "Position")
-    interaction = owner.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    object_handle = owner.register_object_instance(cls, "support-tail-object")
+    cls = owner.getObjectClassHandle("HLAobjectRoot.Target")
+    attr = owner.getAttributeHandle(cls, "Position")
+    interaction = owner.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    object_handle = owner.registerObjectInstance(cls, "support-tail-object")
 
     bad_class = type(cls)(cls.value + 999)
     bad_interaction = type(interaction)(interaction.value + 999)
@@ -4007,94 +4007,94 @@ def test_support_service_lookup_and_factory_tail_rejects_declared_exceptions():
     bad_attr = AttributeHandle(999999)
 
     with pytest.raises(FederateHandleNotKnown):
-        owner.get_federate_name(type(owner_handle)(owner_handle.value + observer_handle.value + 1000))
+        owner.getFederateName(type(owner_handle)(owner_handle.value + observer_handle.value + 1000))
     with pytest.raises(InvalidFederateHandle):
-        owner.get_federate_name(object())
+        owner.getFederateName(object())
     with pytest.raises(NameNotFound):
-        owner.get_federate_handle("no-such-federate")
+        owner.getFederateHandle("no-such-federate")
     with pytest.raises(NameNotFound):
-        owner.get_object_class_handle("HLAobjectRoot.NoSuchClass")
+        owner.getObjectClassHandle("HLAobjectRoot.NoSuchClass")
     with pytest.raises(InvalidObjectClassHandle):
-        owner.get_object_class_name(bad_class)
+        owner.getObjectClassName(bad_class)
     with pytest.raises(InvalidObjectClassHandle):
-        owner.get_attribute_handle(bad_class, "Position")
+        owner.getAttributeHandle(bad_class, "Position")
     with pytest.raises(NameNotFound):
-        owner.get_attribute_handle(cls, "NoSuchAttribute")
+        owner.getAttributeHandle(cls, "NoSuchAttribute")
     with pytest.raises(NameNotFound):
-        owner.get_interaction_class_handle("HLAinteractionRoot.NoSuchInteraction")
+        owner.getInteractionClassHandle("HLAinteractionRoot.NoSuchInteraction")
     with pytest.raises(InvalidInteractionClassHandle):
-        owner.get_interaction_class_name(bad_interaction)
+        owner.getInteractionClassName(bad_interaction)
     with pytest.raises(InvalidInteractionClassHandle):
-        owner.get_parameter_handle(bad_interaction, "TrackId")
+        owner.getParameterHandle(bad_interaction, "TrackId")
     with pytest.raises(NameNotFound):
-        owner.get_parameter_handle(interaction, "NoSuchParameter")
+        owner.getParameterHandle(interaction, "NoSuchParameter")
     with pytest.raises(AttributeNotDefined):
-        owner.get_update_rate_value_for_attribute(object_handle, bad_attr)
+        owner.getUpdateRateValueForAttribute(object_handle, bad_attr)
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.get_update_rate_value_for_attribute(bad_object, attr)
+        owner.getUpdateRateValueForAttribute(bad_object, attr)
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.get_object_instance_name(bad_object)
+        owner.getObjectInstanceName(bad_object)
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.get_object_instance_handle("no-such-object")
+        owner.getObjectInstanceHandle("no-such-object")
     with pytest.raises(ObjectInstanceNotKnown):
-        owner.get_known_object_class_handle(bad_object)
+        owner.getKnownObjectClassHandle(bad_object)
     with pytest.raises(InvalidUpdateRateDesignator):
-        owner.get_update_rate_value("bogus-rate")
+        owner.getUpdateRateValue("bogus-rate")
     with pytest.raises(InvalidInteractionClassHandle):
-        owner.get_available_dimensions_for_interaction_class(bad_interaction)
+        owner.getAvailableDimensionsForInteractionClass(bad_interaction)
     with pytest.raises(NameNotFound):
-        owner.get_dimension_handle("NoSuchDimension")
+        owner.getDimensionHandle("NoSuchDimension")
     with pytest.raises(InvalidDimensionHandle):
-        owner.get_dimension_name(bad_dim)
+        owner.getDimensionName(bad_dim)
     with pytest.raises(InvalidDimensionHandle):
-        owner.get_dimension_upper_bound(bad_dim)
+        owner.getDimensionUpperBound(bad_dim)
     with pytest.raises(InvalidResignAction):
-        owner.set_automatic_resign_directive(object())
+        owner.setAutomaticResignDirective(object())
     with pytest.raises(InvalidFederateHandle):
-        owner.normalize_federate_handle(object())
+        owner.normalizeFederateHandle(object())
     with pytest.raises(InvalidServiceGroup):
-        owner.normalize_service_group("not-a-group")
+        owner.normalizeServiceGroup("not-a-group")
     with pytest.raises(InvalidOrderType):
-        owner.get_order_name(object())
+        owner.getOrderName(object())
     with pytest.raises(InvalidOrderName):
-        owner.get_order_type("bogus-order")
+        owner.getOrderType("bogus-order")
     with pytest.raises(InvalidTransportationName):
-        owner.get_transportation_type_handle("bogus-transport")
+        owner.getTransportationTypeHandle("bogus-transport")
     with pytest.raises(InvalidTransportationName):
-        owner.get_transportation_type("bogus-transport")
+        owner.getTransportationType("bogus-transport")
     with pytest.raises(InvalidTransportationType):
-        owner.get_transportation_type_name(TransportationTypeHandle(999))
+        owner.getTransportationTypeName(TransportationTypeHandle(999))
     with pytest.raises(InvalidTransportationType):
-        owner.get_transportation_name(TransportationTypeHandle(999))
+        owner.getTransportationName(TransportationTypeHandle(999))
     with pytest.raises(InteractionRelevanceAdvisorySwitchIsOff):
-        owner.disable_interaction_relevance_advisory_switch()
-    owner.enable_interaction_relevance_advisory_switch()
+        owner.disableInteractionRelevanceAdvisorySwitch()
+    owner.enableInteractionRelevanceAdvisorySwitch()
     with pytest.raises(InteractionRelevanceAdvisorySwitchIsOn):
-        owner.enable_interaction_relevance_advisory_switch()
-    owner.disable_interaction_relevance_advisory_switch()
-    assert owner.get_update_rate_value_for_attribute(object_handle, attr) == 0.0
+        owner.enableInteractionRelevanceAdvisorySwitch()
+    owner.disableInteractionRelevanceAdvisorySwitch()
+    assert owner.getUpdateRateValueForAttribute(object_handle, attr) == 0.0
 
-    owner.request_federation_save("SUPPORT-LOOKUP-SAVE")
+    owner.requestFederationSave("SUPPORT-LOOKUP-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.enable_interaction_relevance_advisory_switch()
+        owner.enableInteractionRelevanceAdvisorySwitch()
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("SUPPORT-LOOKUP-SAVE")
+    owner.requestFederationRestore("SUPPORT-LOOKUP-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.disable_interaction_relevance_advisory_switch()
+        owner.disableInteractionRelevanceAdvisorySwitch()
 
-    owner.abort_federation_restore()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("support-lookup-tail-fed")
+    owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("support-lookup-tail-fed")
 
 
 class _ImmediateSupportCallbackAmbassador(RecordingFederateAmbassador):
@@ -4106,8 +4106,8 @@ class _ImmediateSupportCallbackAmbassador(RecordingFederateAmbassador):
     def synchronizationPointRegistrationSucceeded(self, label):
         super().synchronizationPointRegistrationSucceeded(label)
         for fn, args in (
-            (self.rti.evoke_callback, (0.0,)),
-            (self.rti.evoke_multiple_callbacks, (0.0, 0.0)),
+            (self.rti.evokeCallback, (0.0,)),
+            (self.rti.evokeMultipleCallbacks, (0.0, 0.0)),
         ):
             try:
                 fn(*args)
@@ -4117,38 +4117,38 @@ class _ImmediateSupportCallbackAmbassador(RecordingFederateAmbassador):
 
 def test_callback_controls_reject_save_restore_and_within_callback_evoke():
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("support-callback-tail-fed")
-    owner.request_federation_save("SUPPORT-CALLBACK-SAVE")
+    owner.requestFederationSave("SUPPORT-CALLBACK-SAVE")
     drain(owner, observer)
     with pytest.raises(SaveInProgress):
-        owner.enable_callbacks()
+        owner.enableCallbacks()
     with pytest.raises(SaveInProgress):
-        owner.disable_callbacks()
+        owner.disableCallbacks()
 
-    owner.federate_save_begun()
-    observer.federate_save_begun()
-    owner.federate_save_complete()
-    observer.federate_save_complete()
+    owner.federateSaveBegun()
+    observer.federateSaveBegun()
+    owner.federateSaveComplete()
+    observer.federateSaveComplete()
     drain(owner, observer)
 
-    owner.request_federation_restore("SUPPORT-CALLBACK-SAVE")
+    owner.requestFederationRestore("SUPPORT-CALLBACK-SAVE")
     drain(owner, observer)
     with pytest.raises(RestoreInProgress):
-        owner.enable_callbacks()
+        owner.enableCallbacks()
     with pytest.raises(RestoreInProgress):
-        owner.disable_callbacks()
-    owner.abort_federation_restore()
+        owner.disableCallbacks()
+    owner.abortFederationRestore()
     drain(owner, observer)
-    owner.resign_federation_execution(ResignAction.NO_ACTION)
-    observer.resign_federation_execution(ResignAction.NO_ACTION)
-    owner.destroy_federation_execution("support-callback-tail-fed")
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution("support-callback-tail-fed")
 
     engine = InMemoryRTIEngine()
     rti = rti_ambassador(engine=engine)
     fed = _ImmediateSupportCallbackAmbassador(rti)
     rti.connect(fed, CallbackModel.HLA_IMMEDIATE)
-    rti.create_federation_execution("support-immediate-callback-fed", "TargetRadarFOMmodule.xml")
-    rti.join_federation_execution("alpha", "type-a", "support-immediate-callback-fed")
-    rti.register_federation_synchronization_point("IMMEDIATE-CALLBACK", b"x")
+    rti.createFederationExecution("support-immediate-callback-fed", "TargetRadarFOMmodule.xml")
+    rti.joinFederationExecution("alpha", "type-a", "support-immediate-callback-fed")
+    rti.registerFederationSynchronizationPoint("IMMEDIATE-CALLBACK", b"x")
     assert fed.captured == [CallNotAllowedFromWithinCallback, CallNotAllowedFromWithinCallback]
-    rti.resign_federation_execution(ResignAction.NO_ACTION)
-    rti.destroy_federation_execution("support-immediate-callback-fed")
+    rti.resignFederationExecution(ResignAction.NO_ACTION)
+    rti.destroyFederationExecution("support-immediate-callback-fed")

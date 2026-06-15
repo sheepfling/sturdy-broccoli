@@ -25,10 +25,10 @@ from hla2010.rti import (
 from hla2010.spec import FederateAmbassadorSpec, RTIambassadorSpec, lower_camel_to_snake
 
 
-def test_spec_rti_is_abstract_and_pythonic():
+def test_spec_rti_is_abstract_and_source_named():
     assert inspect.isabstract(RTIambassadorSpec)
-    assert hasattr(RTIambassadorSpec, "get_hla_version")
-    assert not hasattr(RTIambassadorSpec, "getHLAversion")
+    assert hasattr(RTIambassadorSpec, "getHLAversion")
+    assert not hasattr(RTIambassadorSpec, "get_hla_version")
     assert lower_camel_to_snake("getHLAversion") == "get_hla_version"
     assert "Java:" in RTIambassadorSpec.connect.__doc__
     assert "C++:" in RTIambassadorSpec.connect.__doc__
@@ -42,9 +42,9 @@ def test_spec_federate_is_a_noop_prototype():
     assert "C++:" in FederateAmbassadorSpec.connection_lost.__doc__
 
 
-def test_runtime_rti_service_key_routes_through_pythonic_method():
+def test_runtime_rti_service_key_routes_through_source_named_method():
     rti = make_rti_ambassador(RecordingBackend(results={"getHLAversion": "HLA 1516.1-2010"}))
-    assert rti.get_hla_version() == "HLA 1516.1-2010"
+    assert rti.getHLAversion() == "HLA 1516.1-2010"
 
 
 def test_runtime_backends_are_discovered_as_plugins():

@@ -16,14 +16,14 @@ def _joined(name: str, *, config: PythonRTIConfig | None = None):
     rti = create_rti_ambassador("python", engine=engine, config=config)
     fed = RecordingFederateAmbassador()
     rti.connect(fed, CallbackModel.HLA_EVOKED)
-    rti.create_federation_execution(name, "TargetRadarFOMmodule.xml")
-    rti.join_federation_execution("fed", "type", name)
+    rti.createFederationExecution(name, "TargetRadarFOMmodule.xml")
+    rti.joinFederationExecution("fed", "type", name)
     return engine, rti, fed
 
 
 def _drain(rti) -> None:
     for _ in range(20):
-        rti.evoke_multiple_callbacks(0.0, 0.0)
+        rti.evokeMultipleCallbacks(0.0, 0.0)
 
 
 def _decoded_exception_values(fed: RecordingFederateAmbassador):
@@ -64,12 +64,12 @@ def test_mom_report_payload_uses_exact_mim_catalog_parameters():
     _engine, rti, fed = _joined("mom-report-catalog-v012")
     report_name = "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata"
     request_name = "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMdata"
-    report = rti.get_interaction_class_handle(report_name)
-    request = rti.get_interaction_class_handle(request_name)
+    report = rti.getInteractionClassHandle(report_name)
+    request = rti.getInteractionClassHandle(request_name)
     expected_names = rti.backend._mom_exposure_model(rti.backend.state.federation).parameters_for(report_name)
 
-    rti.subscribe_interaction_class(report)
-    rti.send_interaction(request, {}, b"request-mim")
+    rti.subscribeInteractionClass(report)
+    rti.sendInteraction(request, {}, b"request-mim")
     _drain(rti)
 
     received = [rec for rec in fed.callbacks_named("receiveInteraction") if rec.args[0] == report]
@@ -83,20 +83,20 @@ def test_mom_report_payload_uses_exact_mim_catalog_parameters():
 
 def test_mom_receive_path_ignores_added_nonstandard_parameters_in_non_strict_mode():
     _engine, rti, fed = _joined("mom-extra-param-ignored-v012")
-    service_reporting = rti.get_interaction_class_handle(
+    service_reporting = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
     )
-    sr_fed = rti.get_parameter_handle(service_reporting, "HLAfederate")
-    sr_state = rti.get_parameter_handle(service_reporting, "HLAreportingState")
+    sr_fed = rti.getParameterHandle(service_reporting, "HLAfederate")
+    sr_state = rti.getParameterHandle(service_reporting, "HLAreportingState")
     extra = rti.backend.engine.get_or_create_parameter(service_reporting, "HLAignoredByRTI")
-    mom_exception = rti.get_interaction_class_handle(
+    mom_exception = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception"
     )
 
-    rti.subscribe_interaction_class(mom_exception)
+    rti.subscribeInteractionClass(mom_exception)
     fed.clear()
 
-    rti.send_interaction(
+    rti.sendInteraction(
         service_reporting,
         {
             sr_fed: rti.backend.state.handle.encode(),
@@ -113,13 +113,13 @@ def test_mom_receive_path_ignores_added_nonstandard_parameters_in_non_strict_mod
 
 def test_strict_mom_missing_required_parameter_reports_and_raises():
     _engine, rti, fed = _joined("mom-missing-param-v012", config=PythonRTIConfig(strict_mom_parameter_decoding=True))
-    adjust = rti.get_interaction_class_handle(
+    adjust = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetTiming"
     )
-    federate_param = rti.get_parameter_handle(adjust, "HLAfederate")
+    federate_param = rti.getParameterHandle(adjust, "HLAfederate")
 
     with pytest.raises(InteractionParameterNotDefined):
-        rti.send_interaction(adjust, {federate_param: rti.backend.state.handle.encode()}, b"missing-report-period")
+        rti.sendInteraction(adjust, {federate_param: rti.backend.state.handle.encode()}, b"missing-report-period")
     _drain(rti)
 
     values = _decoded_exception_values(fed)
@@ -129,18 +129,18 @@ def test_strict_mom_missing_required_parameter_reports_and_raises():
 
 def test_strict_mom_rejects_invalid_boolean_payload_and_accepts_valid_service_reporting_adjust():
     _engine, rti, fed = _joined("mom-bool-param-v012", config=PythonRTIConfig(strict_mom_parameter_decoding=True))
-    service_reporting = rti.get_interaction_class_handle(
+    service_reporting = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
     )
-    exception_reporting = rti.get_interaction_class_handle(
+    exception_reporting = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetExceptionReporting"
     )
-    sr_fed = rti.get_parameter_handle(service_reporting, "HLAfederate")
-    sr_state = rti.get_parameter_handle(service_reporting, "HLAreportingState")
-    er_fed = rti.get_parameter_handle(exception_reporting, "HLAfederate")
-    er_state = rti.get_parameter_handle(exception_reporting, "HLAreportingState")
+    sr_fed = rti.getParameterHandle(service_reporting, "HLAfederate")
+    sr_state = rti.getParameterHandle(service_reporting, "HLAreportingState")
+    er_fed = rti.getParameterHandle(exception_reporting, "HLAfederate")
+    er_state = rti.getParameterHandle(exception_reporting, "HLAreportingState")
 
-    rti.send_interaction(
+    rti.sendInteraction(
         service_reporting,
         {sr_fed: rti.backend.state.handle.encode(), sr_state: hla_mom.encode_bool(True)},
         b"enable-service-reporting",
@@ -149,7 +149,7 @@ def test_strict_mom_rejects_invalid_boolean_payload_and_accepts_valid_service_re
 
     before_exception_reporting = rti.backend.state.exception_reporting
     with pytest.raises(InteractionParameterNotDefined):
-        rti.send_interaction(
+        rti.sendInteraction(
             exception_reporting,
             {er_fed: rti.backend.state.handle.encode(), er_state: b"not-a-boolean"},
             b"bad-bool",
@@ -164,26 +164,26 @@ def test_strict_mom_rejects_invalid_boolean_payload_and_accepts_valid_service_re
 
 def test_rejected_mom_adjustment_emits_exception_but_not_service_invocation_report():
     _engine, rti, fed = _joined("mom-no-positive-report-on-reject-v012", config=PythonRTIConfig(strict_mom_parameter_decoding=True))
-    service_reporting = rti.get_interaction_class_handle(
+    service_reporting = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
     )
-    exception_reporting = rti.get_interaction_class_handle(
+    exception_reporting = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetExceptionReporting"
     )
-    service_report = rti.get_interaction_class_handle(
+    service_report = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
     )
-    mom_exception = rti.get_interaction_class_handle(
+    mom_exception = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception"
     )
-    sr_fed = rti.get_parameter_handle(service_reporting, "HLAfederate")
-    sr_state = rti.get_parameter_handle(service_reporting, "HLAreportingState")
-    er_fed = rti.get_parameter_handle(exception_reporting, "HLAfederate")
-    er_state = rti.get_parameter_handle(exception_reporting, "HLAreportingState")
+    sr_fed = rti.getParameterHandle(service_reporting, "HLAfederate")
+    sr_state = rti.getParameterHandle(service_reporting, "HLAreportingState")
+    er_fed = rti.getParameterHandle(exception_reporting, "HLAfederate")
+    er_state = rti.getParameterHandle(exception_reporting, "HLAreportingState")
 
-    rti.subscribe_interaction_class(service_report)
-    rti.subscribe_interaction_class(mom_exception)
-    rti.send_interaction(
+    rti.subscribeInteractionClass(service_report)
+    rti.subscribeInteractionClass(mom_exception)
+    rti.sendInteraction(
         service_reporting,
         {sr_fed: rti.backend.state.handle.encode(), sr_state: hla_mom.encode_bool(True)},
         b"enable-service-reporting",
@@ -192,7 +192,7 @@ def test_rejected_mom_adjustment_emits_exception_but_not_service_invocation_repo
 
     fed.clear()
     with pytest.raises(InteractionParameterNotDefined):
-        rti.send_interaction(
+        rti.sendInteraction(
             exception_reporting,
             {er_fed: rti.backend.state.handle.encode(), er_state: b"not-a-boolean"},
             b"bad-bool",
@@ -206,15 +206,15 @@ def test_rejected_mom_adjustment_emits_exception_but_not_service_invocation_repo
 def test_strict_mom_rejects_federate_sent_report_interaction():
     _engine, rti, fed = _joined("mom-sent-report-v012", config=PythonRTIConfig(strict_mom_parameter_decoding=True))
     report_name = "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
-    report = rti.get_interaction_class_handle(report_name)
-    mom_exception = rti.get_interaction_class_handle(
+    report = rti.getInteractionClassHandle(report_name)
+    mom_exception = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception"
     )
-    rti.subscribe_interaction_class(report)
-    rti.subscribe_interaction_class(mom_exception)
+    rti.subscribeInteractionClass(report)
+    rti.subscribeInteractionClass(mom_exception)
 
     with pytest.raises(InteractionClassNotPublished):
-        rti.send_interaction(report, {}, b"federate-should-not-send-report")
+        rti.sendInteraction(report, {}, b"federate-should-not-send-report")
     _drain(rti)
 
     values = _decoded_exception_values(fed)
@@ -226,21 +226,21 @@ def test_strict_mom_rejects_federate_sent_report_interaction():
 
 def test_rejected_mom_report_request_does_not_emit_positive_mim_report():
     _engine, rti, fed = _joined("mom-no-positive-mim-report-on-reject-v012", config=PythonRTIConfig(strict_mom_parameter_decoding=True))
-    adjust = rti.get_interaction_class_handle(
+    adjust = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetTiming"
     )
-    federate_param = rti.get_parameter_handle(adjust, "HLAfederate")
-    mim_report = rti.get_interaction_class_handle(
+    federate_param = rti.getParameterHandle(adjust, "HLAfederate")
+    mim_report = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata"
     )
-    mom_exception = rti.get_interaction_class_handle(
+    mom_exception = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception"
     )
-    rti.subscribe_interaction_class(mim_report)
-    rti.subscribe_interaction_class(mom_exception)
+    rti.subscribeInteractionClass(mim_report)
+    rti.subscribeInteractionClass(mom_exception)
 
     with pytest.raises(InteractionParameterNotDefined):
-        rti.send_interaction(adjust, {federate_param: rti.backend.state.handle.encode()}, b"missing-report-period")
+        rti.sendInteraction(adjust, {federate_param: rti.backend.state.handle.encode()}, b"missing-report-period")
     _drain(rti)
 
     assert [rec for rec in fed.callbacks_named("receiveInteraction") if rec.args[0] == mom_exception]
@@ -252,8 +252,8 @@ def test_mom_internal_object_instances_remain_rti_owned_without_non_rti_attribut
     federation = rti.backend.state.federation
     assert federation is not None
 
-    federate_class = rti.get_object_class_handle(MOM_FEDERATE_CLASS)
-    federation_class = rti.get_object_class_handle(MOM_FEDERATION_CLASS)
+    federate_class = rti.getObjectClassHandle(MOM_FEDERATE_CLASS)
+    federation_class = rti.getObjectClassHandle(MOM_FEDERATION_CLASS)
     mom_instances = [
         instance
         for instance in federation.objects.values()
@@ -270,20 +270,20 @@ def test_mom_internal_object_instances_remain_rti_owned_without_non_rti_attribut
 
 def test_mom_internal_traffic_uses_receive_order_reliable_transport_and_no_time_metadata():
     _engine, rti, fed = _joined("mom-ro-transport-v012")
-    cls = rti.get_object_class_handle(MOM_FEDERATE_CLASS)
-    attr = rti.get_attribute_handle(cls, "HLAfederateName")
+    cls = rti.getObjectClassHandle(MOM_FEDERATE_CLASS)
+    attr = rti.getAttributeHandle(cls, "HLAfederateName")
     report_name = "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata"
     request_name = "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMdata"
-    report = rti.get_interaction_class_handle(report_name)
-    request = rti.get_interaction_class_handle(request_name)
+    report = rti.getInteractionClassHandle(report_name)
+    request = rti.getInteractionClassHandle(request_name)
 
-    rti.subscribe_object_class_attributes(cls, {attr})
-    rti.subscribe_interaction_class(report)
+    rti.subscribeObjectClassAttributes(cls, {attr})
+    rti.subscribeInteractionClass(report)
     _drain(rti)
     fed.clear()
 
-    rti.request_attribute_value_update(cls, {attr}, b"mom-ro-refresh")
-    rti.send_interaction(request, {}, b"mom-ro-request")
+    rti.requestAttributeValueUpdate(cls, {attr}, b"mom-ro-refresh")
+    rti.sendInteraction(request, {}, b"mom-ro-request")
     _drain(rti)
 
     reflections = fed.callbacks_named("reflectAttributeValues")
@@ -333,21 +333,21 @@ def test_mom_runtime_does_not_join_as_time_managed_federate():
 
 def test_mom_classes_reject_ddm_region_services():
     _engine, rti, _fed = _joined("mom-ddm-reject-v012")
-    dim = rti.get_dimension_handle("HLAdefaultRoutingSpace")
-    region = rti.create_region({dim})
-    federate_cls = rti.get_object_class_handle(MOM_FEDERATE_CLASS)
-    federate_attr = rti.get_attribute_handle(federate_cls, "HLAfederateName")
-    report = rti.get_interaction_class_handle(
+    dim = rti.getDimensionHandle("HLAdefaultRoutingSpace")
+    region = rti.createRegion({dim})
+    federate_cls = rti.getObjectClassHandle(MOM_FEDERATE_CLASS)
+    federate_attr = rti.getAttributeHandle(federate_cls, "HLAfederateName")
+    report = rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata"
     )
 
     with pytest.raises(InvalidRegionContext):
-        rti.subscribe_object_class_attributes_with_regions(
+        rti.subscribeObjectClassAttributesWithRegions(
             federate_cls,
             [{"attributes": {federate_attr}, "regions": {region}}],
         )
     with pytest.raises(InvalidRegionContext):
-        rti.subscribe_interaction_class_with_regions(report, {region})
+        rti.subscribeInteractionClassWithRegions(report, {region})
 
 
 def test_mom_runtime_applies_standard_rti_characteristics_as_one_coherent_contract():
@@ -362,22 +362,22 @@ def test_mom_runtime_applies_standard_rti_characteristics_as_one_coherent_contra
     assert joined.subscribed_objects == {}
     assert joined.subscribed_interactions == set()
 
-    federate_class = rti.get_object_class_handle(MOM_FEDERATE_CLASS)
-    federate_attr = rti.get_attribute_handle(federate_class, "HLAfederateName")
+    federate_class = rti.getObjectClassHandle(MOM_FEDERATE_CLASS)
+    federate_attr = rti.getAttributeHandle(federate_class, "HLAfederateName")
     request_name = "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMdata"
     report_name = "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata"
-    request = rti.get_interaction_class_handle(request_name)
-    report = rti.get_interaction_class_handle(report_name)
-    dim = rti.get_dimension_handle("HLAdefaultRoutingSpace")
-    region = rti.create_region({dim})
+    request = rti.getInteractionClassHandle(request_name)
+    report = rti.getInteractionClassHandle(report_name)
+    dim = rti.getDimensionHandle("HLAdefaultRoutingSpace")
+    region = rti.createRegion({dim})
 
-    rti.subscribe_object_class_attributes(federate_class, {federate_attr})
-    rti.subscribe_interaction_class(report)
+    rti.subscribeObjectClassAttributes(federate_class, {federate_attr})
+    rti.subscribeInteractionClass(report)
     _drain(rti)
     fed.clear()
 
-    rti.request_attribute_value_update(federate_class, {federate_attr}, b"mom-rti-refresh")
-    rti.send_interaction(request, {}, b"mom-rti-request")
+    rti.requestAttributeValueUpdate(federate_class, {federate_attr}, b"mom-rti-refresh")
+    rti.sendInteraction(request, {}, b"mom-rti-request")
     _drain(rti)
 
     reflection = fed.last_callback("reflectAttributeValues")
@@ -394,9 +394,9 @@ def test_mom_runtime_applies_standard_rti_characteristics_as_one_coherent_contra
     assert len(received.args) == 6
 
     with pytest.raises(InvalidRegionContext):
-        rti.subscribe_object_class_attributes_with_regions(
+        rti.subscribeObjectClassAttributesWithRegions(
             federate_class,
             [{"attributes": {federate_attr}, "regions": {region}}],
         )
     with pytest.raises(InvalidRegionContext):
-        rti.subscribe_interaction_class_with_regions(report, {region})
+        rti.subscribeInteractionClassWithRegions(report, {region})

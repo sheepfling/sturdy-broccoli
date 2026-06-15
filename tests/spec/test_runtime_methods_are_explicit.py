@@ -29,9 +29,9 @@ def test_representative_runtime_and_callback_methods_are_owned_explicitly() -> N
         (
             DelegatingRTIAmbassador,
             (
-                "time_advance_request",
-                "create_federation_execution",
-                "get_hla_version",
+                "timeAdvanceRequest",
+                "createFederationExecution",
+                "getHLAversion",
             ),
         ),
         (
@@ -51,9 +51,9 @@ def test_representative_runtime_and_callback_methods_are_owned_explicitly() -> N
 def test_all_runtime_methods_are_defined_on_delegating_rti_ambassador() -> None:
     for method_name in RTI_METHOD_NAMES:
         snake_name = lower_camel_to_snake(method_name)
-        assert snake_name in DelegatingRTIAmbassador.__dict__
+        assert method_name in DelegatingRTIAmbassador.__dict__
         if snake_name != method_name:
-            assert method_name not in DelegatingRTIAmbassador.__dict__
+            assert snake_name not in DelegatingRTIAmbassador.__dict__
 
 
 def test_all_callback_methods_are_defined_on_recording_federate_ambassador() -> None:
@@ -62,19 +62,19 @@ def test_all_callback_methods_are_defined_on_recording_federate_ambassador() -> 
         assert snake_name in RecordingFederateAmbassador.__dict__
 
 
-def test_snake_case_method_routes_to_same_backend_invocation() -> None:
+def test_source_named_method_routes_to_same_backend_invocation() -> None:
     backend = RecordingBackend(results={"timeAdvanceRequest": "ok"})
     rti = make_rti_ambassador(backend)
 
-    assert rti.time_advance_request("t1") == "ok"
+    assert rti.timeAdvanceRequest("t1") == "ok"
     assert backend.calls[-1].method_name == "timeAdvanceRequest"
 
 
-def test_camelcase_method_is_not_part_of_python_runtime_surface() -> None:
+def test_snake_case_method_is_not_part_of_rti_runtime_surface() -> None:
     backend = RecordingBackend(results={"timeAdvanceRequest": "ok"})
     rti = make_rti_ambassador(backend)
 
-    assert not hasattr(rti, "timeAdvanceRequest")
+    assert not hasattr(rti, "time_advance_request")
     assert backend.calls == []
 
 
@@ -107,5 +107,5 @@ def test_runtime_method_index_is_current() -> None:
     )
     assert result.returncode == 0, result.stderr
     text = RUNTIME_METHOD_INDEX_PATH.read_text(encoding="utf-8")
-    assert "| timeAdvanceRequest | time_advance_request | RTIambassador | DelegatingRTIAmbassador | _invoke | specs/hla2010_api.json |" in text
+    assert "| timeAdvanceRequest | timeAdvanceRequest | RTIambassador | DelegatingRTIAmbassador | _invoke | specs/hla2010_api.json |" in text
     assert "| timeAdvanceGrant | time_advance_grant | FederateAmbassador | RecordingFederateAmbassador | record_callback | specs/hla2010_api.json |" in text

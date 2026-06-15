@@ -27,7 +27,7 @@ class Receiver(FederateAmbassadorSpec):
 def drain(*rtis):
     for _ in range(10):
         for rti in rtis:
-            rti.evoke_multiple_callbacks(0.0, 0.0)
+            rti.evokeMultipleCallbacks(0.0, 0.0)
 
 
 def test_two_python_federates_share_in_memory_rti():
@@ -39,21 +39,21 @@ def test_two_python_federates_share_in_memory_rti():
 
     tx.connect(tx_fed, CallbackModel.HLA_EVOKED)
     rx.connect(rx_fed, CallbackModel.HLA_EVOKED)
-    tx.create_federation_execution("unit-fed", "TargetRadarFOMmodule.xml")
-    tx.join_federation_execution("target", "target-type", "unit-fed")
-    rx.join_federation_execution("radar", "radar-type", "unit-fed")
+    tx.createFederationExecution("unit-fed", "TargetRadarFOMmodule.xml")
+    tx.joinFederationExecution("target", "target-type", "unit-fed")
+    rx.joinFederationExecution("radar", "radar-type", "unit-fed")
 
-    cls = tx.get_object_class_handle("HLAobjectRoot.Target")
-    pos = tx.get_attribute_handle(cls, "Position")
-    rx.subscribe_object_class_attributes(cls, {pos})
-    tx.publish_object_class_attributes(cls, {pos})
+    cls = tx.getObjectClassHandle("HLAobjectRoot.Target")
+    pos = tx.getAttributeHandle(cls, "Position")
+    rx.subscribeObjectClassAttributes(cls, {pos})
+    tx.publishObjectClassAttributes(cls, {pos})
 
-    obj = tx.register_object_instance(cls, "Target-1")
+    obj = tx.registerObjectInstance(cls, "Target-1")
     assert isinstance(obj, ObjectInstanceHandle)
     drain(tx, rx)
     assert rx_fed.discoveries[-1][2] == "Target-1"
 
-    tx.update_attribute_values(obj, {pos: b"12345678"}, b"tag")
+    tx.updateAttributeValues(obj, {pos: b"12345678"}, b"tag")
     drain(tx, rx)
     reflected = rx_fed.reflections[-1]
     assert reflected[0] == obj
@@ -61,18 +61,18 @@ def test_two_python_federates_share_in_memory_rti():
     assert reflected[2] == b"tag"
     assert reflected[3] is OrderType.RECEIVE
 
-    query = tx.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    request_id = tx.get_parameter_handle(query, "TrackId")
-    tx.publish_interaction_class(query)
-    rx.subscribe_interaction_class(query)
-    tx.send_interaction(query, {request_id: b"Q1"}, b"iq")
+    query = tx.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    request_id = tx.getParameterHandle(query, "TrackId")
+    tx.publishInteractionClass(query)
+    rx.subscribeInteractionClass(query)
+    tx.sendInteraction(query, {request_id: b"Q1"}, b"iq")
     drain(tx, rx)
     assert rx_fed.interactions[-1][0] == query
     assert rx_fed.interactions[-1][1] == {request_id: b"Q1"}
 
-    tx.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-    rx.resign_federation_execution(ResignAction.NO_ACTION)
-    tx.destroy_federation_execution("unit-fed")
+    tx.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    rx.resignFederationExecution(ResignAction.NO_ACTION)
+    tx.destroyFederationExecution("unit-fed")
 
 
 def test_python_backend_validates_declared_user_tag_encoding_for_updates_and_interactions():
@@ -81,23 +81,23 @@ def test_python_backend_validates_declared_user_tag_encoding_for_updates_and_int
     rx = rti_ambassador(engine=engine)
     tx.connect(Receiver(), CallbackModel.HLA_EVOKED)
     rx.connect(Receiver(), CallbackModel.HLA_EVOKED)
-    tx.create_federation_execution("tag-fed", "TargetRadarFOMmodule.xml")
-    tx.join_federation_execution("target", "target-type", "tag-fed")
-    rx.join_federation_execution("radar", "radar-type", "tag-fed")
+    tx.createFederationExecution("tag-fed", "TargetRadarFOMmodule.xml")
+    tx.joinFederationExecution("target", "target-type", "tag-fed")
+    rx.joinFederationExecution("radar", "radar-type", "tag-fed")
 
-    obj_cls = tx.get_object_class_handle("HLAobjectRoot.Target")
-    pos = tx.get_attribute_handle(obj_cls, "Position")
-    tx.publish_object_class_attributes(obj_cls, {pos})
-    obj = tx.register_object_instance(obj_cls, "Tagged-1")
+    obj_cls = tx.getObjectClassHandle("HLAobjectRoot.Target")
+    pos = tx.getAttributeHandle(obj_cls, "Position")
+    tx.publishObjectClassAttributes(obj_cls, {pos})
+    obj = tx.registerObjectInstance(obj_cls, "Tagged-1")
     good_tag = HLAunicodeString("ok").encode()
 
-    tx.update_attribute_values(obj, {pos: b"12345678"}, good_tag)
+    tx.updateAttributeValues(obj, {pos: b"12345678"}, good_tag)
     with pytest.raises(CouldNotDecode, match="updateReflectTag"):
-        tx.update_attribute_values(obj, {pos: b"12345678"}, b"\xff")
+        tx.updateAttributeValues(obj, {pos: b"12345678"}, b"\xff")
 
-    interaction = tx.get_interaction_class_handle("HLAinteractionRoot.TrackReport")
-    track_id = tx.get_parameter_handle(interaction, "TrackId")
-    tx.publish_interaction_class(interaction)
-    tx.send_interaction(interaction, {track_id: b"T-1"}, good_tag)
+    interaction = tx.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    track_id = tx.getParameterHandle(interaction, "TrackId")
+    tx.publishInteractionClass(interaction)
+    tx.sendInteraction(interaction, {track_id: b"T-1"}, good_tag)
     with pytest.raises(CouldNotDecode, match="sendReceiveTag"):
-        tx.send_interaction(interaction, {track_id: b"T-1"}, b"\xff")
+        tx.sendInteraction(interaction, {track_id: b"T-1"}, b"\xff")

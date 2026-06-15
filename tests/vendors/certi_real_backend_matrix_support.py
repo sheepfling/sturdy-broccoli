@@ -122,8 +122,8 @@ def _logical_time_wire_type(value: object) -> str:
 
 def _evoke_pair(left, right, *, iterations: int = 16) -> None:
     for _ in range(iterations):
-        left.evoke_multiple_callbacks(0.0, 0.05)
-        right.evoke_multiple_callbacks(0.0, 0.05)
+        left.evokeMultipleCallbacks(0.0, 0.05)
+        right.evokeMultipleCallbacks(0.0, 0.05)
 
 
 def _assert_time_value_type(value: object, time_factory_name: str) -> None:
@@ -266,17 +266,17 @@ def _assert_certi_profile_time_query_and_fqr_baseline(
 
             regulator.connect(regulator_fed, CallbackModel.HLA_EVOKED)
             constrained.connect(constrained_fed, CallbackModel.HLA_EVOKED)
-            regulator.create_federation_execution(federation_name, [smoke_fom], time_factory_name)
-            regulator.join_federation_execution("Regulator", "TimeFederate", federation_name)
-            constrained.join_federation_execution("Constrained", "TimeFederate", federation_name)
+            regulator.createFederationExecution(federation_name, [smoke_fom], time_factory_name)
+            regulator.joinFederationExecution("Regulator", "TimeFederate", federation_name)
+            constrained.joinFederationExecution("Constrained", "TimeFederate", federation_name)
 
             if profile_name == "certi-upstream":
                 with pytest.raises((BackendUnavailableError, RTIinternalError), match="Network Read Error|LAST message type"):
-                    constrained.query_galt()
+                    constrained.queryGALT()
                 return
 
-            initial_galt = constrained.query_galt()
-            initial_lits = constrained.query_lits()
+            initial_galt = constrained.queryGALT()
+            initial_lits = constrained.queryLITS()
             assert isinstance(initial_galt, TimeQueryReturn)
             assert isinstance(initial_lits, TimeQueryReturn)
             assert initial_galt.time_is_valid is True
@@ -285,57 +285,57 @@ def _assert_certi_profile_time_query_and_fqr_baseline(
             assert isinf(initial_lits.time.value)
 
             time_profile = _exchange_time_profile(time_factory_name)
-            regulator.enable_time_regulation(time_profile["lookahead"])
-            constrained.enable_time_constrained()
+            regulator.enableTimeRegulation(time_profile["lookahead"])
+            constrained.enableTimeConstrained()
             _evoke_pair(regulator, constrained)
 
             assert regulator_fed.last_callback("timeRegulationEnabled") is not None
             assert constrained_fed.last_callback("timeConstrainedEnabled") is not None
-            enabled_galt = constrained.query_galt()
-            enabled_lits = constrained.query_lits()
+            enabled_galt = constrained.queryGALT()
+            enabled_lits = constrained.queryLITS()
             assert enabled_galt.time_is_valid is True
             assert enabled_lits.time_is_valid is True
             assert _logical_time_value(enabled_galt.time) == _logical_time_value(time_profile["lookahead"])
             assert _logical_time_value(enabled_lits.time) == _logical_time_value(time_profile["lookahead"])
             try:
-                assert _logical_time_value(regulator.query_lookahead()) == _logical_time_value(time_profile["lookahead"])
-                regulator.modify_lookahead(time_profile["modified_lookahead"])
-                assert _logical_time_value(regulator.query_lookahead()) == _logical_time_value(time_profile["modified_lookahead"])
+                assert _logical_time_value(regulator.queryLookahead()) == _logical_time_value(time_profile["lookahead"])
+                regulator.modifyLookahead(time_profile["modified_lookahead"])
+                assert _logical_time_value(regulator.queryLookahead()) == _logical_time_value(time_profile["modified_lookahead"])
             except RTIinternalError as exc:
                 if profile_name in {"certi-upstream", "certi-patched"} and "Not yet implemented" in str(exc):
                     pytest.xfail("CERTI queryLookahead/modifyLookahead are not implemented in this runtime")
                 raise
 
-            regulator_cls = regulator.get_object_class_handle("TestObjectClassR")
-            constrained_cls = constrained.get_object_class_handle("TestObjectClassR")
-            regulator_attr = regulator.get_attribute_handle(regulator_cls, "DataR")
-            constrained_attr = constrained.get_attribute_handle(constrained_cls, "DataR")
-            regulator_int = regulator.get_interaction_class_handle("MsgR")
-            regulator_param = regulator.get_parameter_handle(regulator_int, "MsgDataR")
-            regulator.publish_object_class_attributes(regulator_cls, {regulator_attr})
-            constrained.subscribe_object_class_attributes(constrained_cls, {constrained_attr})
-            regulator.publish_interaction_class(regulator_int)
-            constrained.subscribe_interaction_class(regulator_int)
-            regulator_obj = regulator.register_object_instance(regulator_cls, f"{federation_name}-Lookahead")
+            regulator_cls = regulator.getObjectClassHandle("TestObjectClassR")
+            constrained_cls = constrained.getObjectClassHandle("TestObjectClassR")
+            regulator_attr = regulator.getAttributeHandle(regulator_cls, "DataR")
+            constrained_attr = constrained.getAttributeHandle(constrained_cls, "DataR")
+            regulator_int = regulator.getInteractionClassHandle("MsgR")
+            regulator_param = regulator.getParameterHandle(regulator_int, "MsgDataR")
+            regulator.publishObjectClassAttributes(regulator_cls, {regulator_attr})
+            constrained.subscribeObjectClassAttributes(constrained_cls, {constrained_attr})
+            regulator.publishInteractionClass(regulator_int)
+            constrained.subscribeInteractionClass(regulator_int)
+            regulator_obj = regulator.registerObjectInstance(regulator_cls, f"{federation_name}-Lookahead")
             _evoke_pair(regulator, constrained)
 
             zero_time = time_profile["initial_time"]
             with pytest.raises(InvalidLogicalTime):
-                regulator.update_attribute_values(
+                regulator.updateAttributeValues(
                     regulator_obj,
                     {regulator_attr: b"lookahead-early"},
                     b"lookahead-early",
                     zero_time,
                 )
             with pytest.raises(InvalidLogicalTime):
-                regulator.send_interaction(
+                regulator.sendInteraction(
                     regulator_int,
                     {regulator_param: b"lookahead-early"},
                     b"lookahead-early",
                     zero_time,
                 )
 
-            constrained.flush_queue_request(time_profile["timestamped_interaction_time"])
+            constrained.flushQueueRequest(time_profile["timestamped_interaction_time"])
             _evoke_pair(regulator, constrained)
 
             grant = constrained_fed.last_callback("timeAdvanceGrant")
@@ -396,36 +396,36 @@ def _assert_certi_profile_queued_fqr_baseline(
 
             regulator.connect(regulator_fed, CallbackModel.HLA_EVOKED)
             constrained.connect(constrained_fed, CallbackModel.HLA_EVOKED)
-            regulator.create_federation_execution(federation_name, [smoke_fom], time_factory_name)
-            regulator.join_federation_execution("Regulator", "TimeFederate", federation_name)
-            constrained.join_federation_execution("Constrained", "TimeFederate", federation_name)
+            regulator.createFederationExecution(federation_name, [smoke_fom], time_factory_name)
+            regulator.joinFederationExecution("Regulator", "TimeFederate", federation_name)
+            constrained.joinFederationExecution("Constrained", "TimeFederate", federation_name)
 
             if profile_name == "certi-upstream":
                 with pytest.raises((BackendUnavailableError, RTIinternalError), match="LAST message type|Network Read Error|Unimplemented|RTIinternalError"):
-                    regulator.get_object_class_handle("TestObjectClassR")
+                    regulator.getObjectClassHandle("TestObjectClassR")
                 return
 
-        regulator_cls = regulator.get_object_class_handle("TestObjectClassR")
-        constrained_cls = constrained.get_object_class_handle("TestObjectClassR")
-        regulator_attr = regulator.get_attribute_handle(regulator_cls, "DataR")
-        constrained_attr = constrained.get_attribute_handle(constrained_cls, "DataR")
+        regulator_cls = regulator.getObjectClassHandle("TestObjectClassR")
+        constrained_cls = constrained.getObjectClassHandle("TestObjectClassR")
+        regulator_attr = regulator.getAttributeHandle(regulator_cls, "DataR")
+        constrained_attr = constrained.getAttributeHandle(constrained_cls, "DataR")
         time_profile = _exchange_time_profile(time_factory_name)
         object_name = f"{profile_name}-FlushTarget"
 
-        regulator.publish_object_class_attributes(regulator_cls, {regulator_attr})
-        constrained.subscribe_object_class_attributes(constrained_cls, {constrained_attr})
-        regulator.enable_time_regulation(time_profile["lookahead"])
-        constrained.enable_time_constrained()
+        regulator.publishObjectClassAttributes(regulator_cls, {regulator_attr})
+        constrained.subscribeObjectClassAttributes(constrained_cls, {constrained_attr})
+        regulator.enableTimeRegulation(time_profile["lookahead"])
+        constrained.enableTimeConstrained()
         _evoke_pair(regulator, constrained)
 
-        obj = regulator.register_object_instance(regulator_cls, object_name)
+        obj = regulator.registerObjectInstance(regulator_cls, object_name)
         _evoke_pair(regulator, constrained)
         constrained_fed.clear()
 
-        regulator.change_attribute_order_type(obj, {regulator_attr}, OrderType.TIMESTAMP)
+        regulator.changeAttributeOrderType(obj, {regulator_attr}, OrderType.TIMESTAMP)
         _evoke_pair(regulator, constrained)
 
-        regulator.update_attribute_values(
+        regulator.updateAttributeValues(
             obj,
             {regulator_attr: b"five"},
             b"t5",
@@ -433,7 +433,7 @@ def _assert_certi_profile_queued_fqr_baseline(
         )
         earlier_time_value = _logical_time_value(time_profile["timestamped_attribute_time"]) - 2.0
         earlier_time = type(time_profile["timestamped_attribute_time"])(earlier_time_value)
-        regulator.update_attribute_values(
+        regulator.updateAttributeValues(
             obj,
             {regulator_attr: b"three"},
             b"t3",
@@ -442,10 +442,10 @@ def _assert_certi_profile_queued_fqr_baseline(
         _evoke_pair(regulator, constrained)
         assert not constrained_fed.callbacks_named("reflectAttributeValues")
 
-        regulator.time_advance_request(time_profile["advance_time"])
+        regulator.timeAdvanceRequest(time_profile["advance_time"])
         _evoke_pair(regulator, constrained)
 
-        constrained.flush_queue_request(time_profile["timestamped_interaction_time"])
+        constrained.flushQueueRequest(time_profile["timestamped_interaction_time"])
         _evoke_pair(regulator, constrained)
 
         reflections = constrained_fed.callbacks_named("reflectAttributeValues")
@@ -508,17 +508,17 @@ def _assert_certi_patched_fail_fast_time_request_matrix(
 
             regulator.connect(regulator_fed, CallbackModel.HLA_EVOKED)
             constrained.connect(constrained_fed, CallbackModel.HLA_EVOKED)
-            regulator.create_federation_execution(federation_name, [smoke_fom], time_factory_name)
-            regulator.join_federation_execution("Regulator", "TimeFederate", federation_name)
-            constrained.join_federation_execution("Constrained", "TimeFederate", federation_name)
+            regulator.createFederationExecution(federation_name, [smoke_fom], time_factory_name)
+            regulator.joinFederationExecution("Regulator", "TimeFederate", federation_name)
+            constrained.joinFederationExecution("Constrained", "TimeFederate", federation_name)
 
         time_profile = _exchange_time_profile(time_factory_name)
-        regulator.enable_time_regulation(time_profile["lookahead"])
-        constrained.enable_time_constrained()
+        regulator.enableTimeRegulation(time_profile["lookahead"])
+        constrained.enableTimeConstrained()
         _evoke_pair(regulator, constrained)
 
         if helper_command == "TIME_ADVANCE_REQUEST_AVAILABLE":
-            regulator.time_advance_request(time_profile["advance_time"])
+            regulator.timeAdvanceRequest(time_profile["advance_time"])
             _evoke_pair(regulator, constrained)
 
             _helper_time_request(constrained, helper_command, HLAinteger64Time(5) if time_factory_name == "HLAinteger64Time" else HLAfloat64Time(5.0))
@@ -530,33 +530,33 @@ def _assert_certi_patched_fail_fast_time_request_matrix(
             assert _logical_time_value(grant.args[0]) == 5.0
 
         elif helper_command in {"NEXT_MESSAGE_REQUEST", "NEXT_MESSAGE_REQUEST_AVAILABLE"}:
-            regulator_cls = regulator.get_object_class_handle("TestObjectClassR")
-            constrained_cls = constrained.get_object_class_handle("TestObjectClassR")
-            regulator_attr = regulator.get_attribute_handle(regulator_cls, "DataR")
-            constrained_attr = constrained.get_attribute_handle(constrained_cls, "DataR")
+            regulator_cls = regulator.getObjectClassHandle("TestObjectClassR")
+            constrained_cls = constrained.getObjectClassHandle("TestObjectClassR")
+            regulator_attr = regulator.getAttributeHandle(regulator_cls, "DataR")
+            constrained_attr = constrained.getAttributeHandle(constrained_cls, "DataR")
             object_name = f"{federation_name}-Obj"
 
-            regulator.publish_object_class_attributes(regulator_cls, {regulator_attr})
-            constrained.subscribe_object_class_attributes(constrained_cls, {constrained_attr})
-            obj = regulator.register_object_instance(regulator_cls, object_name)
+            regulator.publishObjectClassAttributes(regulator_cls, {regulator_attr})
+            constrained.subscribeObjectClassAttributes(constrained_cls, {constrained_attr})
+            obj = regulator.registerObjectInstance(regulator_cls, object_name)
             _evoke_pair(regulator, constrained)
             constrained_fed.clear()
-            regulator.change_attribute_order_type(obj, {regulator_attr}, OrderType.TIMESTAMP)
+            regulator.changeAttributeOrderType(obj, {regulator_attr}, OrderType.TIMESTAMP)
             _evoke_pair(regulator, constrained)
 
-            regulator.update_attribute_values(
+            regulator.updateAttributeValues(
                 obj,
                 {regulator_attr: b"late"},
                 b"t3",
                 HLAinteger64Time(3) if time_factory_name == "HLAinteger64Time" else HLAfloat64Time(3.0),
             )
-            regulator.update_attribute_values(
+            regulator.updateAttributeValues(
                 obj,
                 {regulator_attr: b"early"},
                 b"t2",
                 HLAinteger64Time(2) if time_factory_name == "HLAinteger64Time" else HLAfloat64Time(2.0),
             )
-            regulator.time_advance_request(HLAinteger64Time(4) if time_factory_name == "HLAinteger64Time" else HLAfloat64Time(4.0))
+            regulator.timeAdvanceRequest(HLAinteger64Time(4) if time_factory_name == "HLAinteger64Time" else HLAfloat64Time(4.0))
             _evoke_pair(regulator, constrained)
 
             _helper_time_request(constrained, helper_command, HLAinteger64Time(10) if time_factory_name == "HLAinteger64Time" else HLAfloat64Time(10.0))

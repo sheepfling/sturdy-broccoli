@@ -201,7 +201,7 @@ PITCH_BUNDLES: dict[str, tuple[str, ...]] = {
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_local_delete_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_local_delete_matrix",
     ),
-    "request_attribute_value_update": _bundle(
+    "requestAttributeValueUpdate": _bundle(
         "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_request_attribute_value_update.py::run_request_attribute_value_update_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix",

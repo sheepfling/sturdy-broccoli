@@ -48,39 +48,39 @@ def run_lost_federate_mom_scenario(
 ) -> dict[str, Any]:
     observer_rti.connect(observer_federate, CallbackModel.HLA_EVOKED)
     victim_rti.connect(victim_federate, CallbackModel.HLA_EVOKED)
-    observer_rti.create_federation_execution(
+    observer_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    observer_handle = observer_rti.join_federation_execution(
+    observer_handle = observer_rti.joinFederationExecution(
         config.observer_name,
         config.federate_type,
         config.federation_name,
     )
-    victim_handle = victim_rti.join_federation_execution(
+    victim_handle = victim_rti.joinFederationExecution(
         config.victim_name,
         config.federate_type,
         config.federation_name,
     )
 
-    observer_object_class = observer_rti.get_object_class_handle(config.object_class_name)
-    observer_attribute = observer_rti.get_attribute_handle(observer_object_class, config.attribute_name)
-    observer_rti.subscribe_object_class_attributes(observer_object_class, {observer_attribute})
+    observer_object_class = observer_rti.getObjectClassHandle(config.object_class_name)
+    observer_attribute = observer_rti.getAttributeHandle(observer_object_class, config.attribute_name)
+    observer_rti.subscribeObjectClassAttributes(observer_object_class, {observer_attribute})
 
-    lost_report = observer_rti.get_interaction_class_handle(
+    lost_report = observer_rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportFederateLost"
     )
-    report_federate = observer_rti.get_parameter_handle(lost_report, "HLAfederate")
-    report_federate_name = observer_rti.get_parameter_handle(lost_report, "HLAfederateName")
-    report_timestamp = observer_rti.get_parameter_handle(lost_report, "HLAtimeStamp")
-    report_fault = observer_rti.get_parameter_handle(lost_report, "HLAfaultDescription")
-    observer_rti.subscribe_interaction_class(lost_report)
+    report_federate = observer_rti.getParameterHandle(lost_report, "HLAfederate")
+    report_federate_name = observer_rti.getParameterHandle(lost_report, "HLAfederateName")
+    report_timestamp = observer_rti.getParameterHandle(lost_report, "HLAtimeStamp")
+    report_fault = observer_rti.getParameterHandle(lost_report, "HLAfaultDescription")
+    observer_rti.subscribeInteractionClass(lost_report)
 
-    victim_object_class = victim_rti.get_object_class_handle(config.object_class_name)
-    victim_attribute = victim_rti.get_attribute_handle(victim_object_class, config.attribute_name)
-    victim_rti.set_automatic_resign_directive(config.automatic_resign_directive)
-    victim_rti.publish_object_class_attributes(victim_object_class, {victim_attribute})
+    victim_object_class = victim_rti.getObjectClassHandle(config.object_class_name)
+    victim_attribute = victim_rti.getAttributeHandle(victim_object_class, config.attribute_name)
+    victim_rti.setAutomaticResignDirective(config.automatic_resign_directive)
+    victim_rti.publishObjectClassAttributes(victim_object_class, {victim_attribute})
     object_instance = register_named_object_instance(
         victim_rti,
         victim_federate,
@@ -94,7 +94,7 @@ def run_lost_federate_mom_scenario(
     assert discovery.args[2] == config.object_instance_name
     observed_object_instance = discovery.args[0]
 
-    victim_time_before_loss = victim_rti.query_logical_time()
+    victim_time_before_loss = victim_rti.queryLogicalTime()
     induce_loss(victim_handle, config.fault_description)
     for _ in range(32):
         drain_callbacks(observer_rti)
@@ -114,14 +114,14 @@ def run_lost_federate_mom_scenario(
     assert removal.args[3].producing_federate == victim_handle
 
     try:
-        observer_rti.request_attribute_value_update(observed_object_instance, {observer_attribute}, b"post-loss")
+        observer_rti.requestAttributeValueUpdate(observed_object_instance, {observer_attribute}, b"post-loss")
     except ObjectInstanceNotKnown as exc:
         object_instance_not_known = exc
     else:  # pragma: no cover - scenario contract
         raise AssertionError("Expected lost federate object to be removed under DELETE_OBJECTS automatic resign")
     finally:
         try:
-            observer_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            observer_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
@@ -129,7 +129,7 @@ def run_lost_federate_mom_scenario(
         except Exception:
             pass
         try:
-            observer_rti.destroy_federation_execution(config.federation_name)
+            observer_rti.destroyFederationExecution(config.federation_name)
         except Exception:
             pass
         try:
@@ -156,29 +156,29 @@ def run_external_lost_federate_observer_scenario(
     launch_victim: Callable[[LostFederateScenarioConfig], ExternalLostFederateVictimSession],
 ) -> dict[str, Any]:
     observer_rti.connect(observer_federate, CallbackModel.HLA_EVOKED)
-    observer_rti.create_federation_execution(
+    observer_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    observer_handle = observer_rti.join_federation_execution(
+    observer_handle = observer_rti.joinFederationExecution(
         config.observer_name,
         config.federate_type,
         config.federation_name,
     )
 
-    observer_object_class = observer_rti.get_object_class_handle(config.object_class_name)
-    observer_attribute = observer_rti.get_attribute_handle(observer_object_class, config.attribute_name)
-    observer_rti.subscribe_object_class_attributes(observer_object_class, {observer_attribute})
+    observer_object_class = observer_rti.getObjectClassHandle(config.object_class_name)
+    observer_attribute = observer_rti.getAttributeHandle(observer_object_class, config.attribute_name)
+    observer_rti.subscribeObjectClassAttributes(observer_object_class, {observer_attribute})
 
-    lost_report = observer_rti.get_interaction_class_handle(
+    lost_report = observer_rti.getInteractionClassHandle(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportFederateLost"
     )
-    report_federate = observer_rti.get_parameter_handle(lost_report, "HLAfederate")
-    report_federate_name = observer_rti.get_parameter_handle(lost_report, "HLAfederateName")
-    report_timestamp = observer_rti.get_parameter_handle(lost_report, "HLAtimeStamp")
-    report_fault = observer_rti.get_parameter_handle(lost_report, "HLAfaultDescription")
-    observer_rti.subscribe_interaction_class(lost_report)
+    report_federate = observer_rti.getParameterHandle(lost_report, "HLAfederate")
+    report_federate_name = observer_rti.getParameterHandle(lost_report, "HLAfederateName")
+    report_timestamp = observer_rti.getParameterHandle(lost_report, "HLAtimeStamp")
+    report_fault = observer_rti.getParameterHandle(lost_report, "HLAfaultDescription")
+    observer_rti.subscribeInteractionClass(lost_report)
 
     victim_session = launch_victim(config)
     try:
@@ -203,7 +203,7 @@ def run_external_lost_federate_observer_scenario(
         assert removal.args[1] == b"lost"
 
         try:
-            observer_rti.request_attribute_value_update(object_instance, {observer_attribute}, b"post-loss")
+            observer_rti.requestAttributeValueUpdate(object_instance, {observer_attribute}, b"post-loss")
         except ObjectInstanceNotKnown as exc:
             object_instance_not_known = exc
         else:  # pragma: no cover - scenario contract
@@ -214,11 +214,11 @@ def run_external_lost_federate_observer_scenario(
         except Exception:
             pass
         try:
-            observer_rti.resign_federation_execution(ResignAction.NO_ACTION)
+            observer_rti.resignFederationExecution(ResignAction.NO_ACTION)
         except Exception:
             pass
         try:
-            observer_rti.destroy_federation_execution(config.federation_name)
+            observer_rti.destroyFederationExecution(config.federation_name)
         except Exception:
             pass
         try:

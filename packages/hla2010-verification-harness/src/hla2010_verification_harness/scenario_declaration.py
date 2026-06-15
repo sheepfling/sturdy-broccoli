@@ -65,17 +65,17 @@ def run_declaration_management_scenario(
 ) -> dict[str, Any]:
     publisher_rti.connect(publisher_federate, CallbackModel.HLA_EVOKED)
     subscriber_rti.connect(subscriber_federate, CallbackModel.HLA_EVOKED)
-    publisher_rti.create_federation_execution(
+    publisher_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    publisher_handle = publisher_rti.join_federation_execution(
+    publisher_handle = publisher_rti.joinFederationExecution(
         config.publisher_name,
         config.federate_type,
         config.federation_name,
     )
-    subscriber_handle = subscriber_rti.join_federation_execution(
+    subscriber_handle = subscriber_rti.joinFederationExecution(
         config.subscriber_name,
         config.federate_type,
         config.federation_name,
@@ -83,23 +83,23 @@ def run_declaration_management_scenario(
     assert isinstance(publisher_handle, FederateHandle)
     assert isinstance(subscriber_handle, FederateHandle)
 
-    publisher_class = publisher_rti.get_object_class_handle(config.object_class_name)
-    subscriber_class = subscriber_rti.get_object_class_handle(config.object_class_name)
-    publisher_attribute = publisher_rti.get_attribute_handle(publisher_class, config.attribute_name)
-    subscriber_attribute = subscriber_rti.get_attribute_handle(subscriber_class, config.attribute_name)
-    publisher_interaction = publisher_rti.get_interaction_class_handle(config.interaction_class_name)
-    subscriber_interaction = subscriber_rti.get_interaction_class_handle(config.interaction_class_name)
-    publisher_parameter = publisher_rti.get_parameter_handle(publisher_interaction, config.parameter_name)
-    subscriber_parameter = subscriber_rti.get_parameter_handle(subscriber_interaction, config.parameter_name)
+    publisher_class = publisher_rti.getObjectClassHandle(config.object_class_name)
+    subscriber_class = subscriber_rti.getObjectClassHandle(config.object_class_name)
+    publisher_attribute = publisher_rti.getAttributeHandle(publisher_class, config.attribute_name)
+    subscriber_attribute = subscriber_rti.getAttributeHandle(subscriber_class, config.attribute_name)
+    publisher_interaction = publisher_rti.getInteractionClassHandle(config.interaction_class_name)
+    subscriber_interaction = subscriber_rti.getInteractionClassHandle(config.interaction_class_name)
+    publisher_parameter = publisher_rti.getParameterHandle(publisher_interaction, config.parameter_name)
+    subscriber_parameter = subscriber_rti.getParameterHandle(subscriber_interaction, config.parameter_name)
 
     if config.use_passive_object_subscription:
-        subscriber_rti.subscribe_object_class_attributes_passively(subscriber_class, {subscriber_attribute})
+        subscriber_rti.subscribeObjectClassAttributesPassively(subscriber_class, {subscriber_attribute})
     else:
-        subscriber_rti.subscribe_object_class_attributes(subscriber_class, {subscriber_attribute})
+        subscriber_rti.subscribeObjectClassAttributes(subscriber_class, {subscriber_attribute})
     if config.use_passive_interaction_subscription:
-        subscriber_rti.subscribe_interaction_class_passively(subscriber_interaction)
+        subscriber_rti.subscribeInteractionClassPassively(subscriber_interaction)
     else:
-        subscriber_rti.subscribe_interaction_class(subscriber_interaction)
+        subscriber_rti.subscribeInteractionClass(subscriber_interaction)
     drain_callbacks_pair(publisher_rti, subscriber_rti)
 
     start_baseline = len(publisher_federate.callbacks_named("startRegistrationForObjectClass"))
@@ -111,8 +111,8 @@ def run_declaration_management_scenario(
     assert turn_on_baseline == 0
     assert turn_off_baseline == 0
 
-    publisher_rti.publish_object_class_attributes(publisher_class, {publisher_attribute})
-    publisher_rti.publish_interaction_class(publisher_interaction)
+    publisher_rti.publishObjectClassAttributes(publisher_class, {publisher_attribute})
+    publisher_rti.publishInteractionClass(publisher_interaction)
     start_records = wait_for_callback_count_pair(
         publisher_rti,
         subscriber_rti,
@@ -152,7 +152,7 @@ def run_declaration_management_scenario(
     assert discover_record.args[1] == subscriber_class
     assert discover_record.args[2] == config.object_instance_name
 
-    publisher_rti.update_attribute_values(
+    publisher_rti.updateAttributeValues(
         object_instance,
         {publisher_attribute: config.attribute_payload},
         config.attribute_tag,
@@ -170,7 +170,7 @@ def run_declaration_management_scenario(
     assert reflect_record.args[1] == {subscriber_attribute: config.attribute_payload}
     assert reflect_record.args[2] == config.attribute_tag
 
-    publisher_rti.send_interaction(
+    publisher_rti.sendInteraction(
         publisher_interaction,
         {publisher_parameter: config.interaction_payload},
         config.interaction_tag,
@@ -189,10 +189,10 @@ def run_declaration_management_scenario(
     assert interaction_record.args[2] == config.interaction_tag
 
     if config.use_full_object_unpublish:
-        publisher_rti.unpublish_object_class(publisher_class)
+        publisher_rti.unpublishObjectClass(publisher_class)
     else:
-        publisher_rti.unpublish_object_class_attributes(publisher_class, {publisher_attribute})
-    publisher_rti.unpublish_interaction_class(publisher_interaction)
+        publisher_rti.unpublishObjectClassAttributes(publisher_class, {publisher_attribute})
+    publisher_rti.unpublishInteractionClass(publisher_interaction)
     stop_records = wait_for_callback_count_pair(
         publisher_rti,
         subscriber_rti,
@@ -214,8 +214,8 @@ def run_declaration_management_scenario(
     assert first_stop_record.args == (publisher_class,)
     assert first_turn_off_record.args == (publisher_interaction,)
 
-    publisher_rti.publish_object_class_attributes(publisher_class, {publisher_attribute})
-    publisher_rti.publish_interaction_class(publisher_interaction)
+    publisher_rti.publishObjectClassAttributes(publisher_class, {publisher_attribute})
+    publisher_rti.publishInteractionClass(publisher_interaction)
     start_records = wait_for_callback_count_pair(
         publisher_rti,
         subscriber_rti,
@@ -238,10 +238,10 @@ def run_declaration_management_scenario(
     assert second_turn_on_record.args == (publisher_interaction,)
 
     if config.use_full_object_unsubscribe:
-        subscriber_rti.unsubscribe_object_class(subscriber_class)
+        subscriber_rti.unsubscribeObjectClass(subscriber_class)
     else:
-        subscriber_rti.unsubscribe_object_class_attributes(subscriber_class, {subscriber_attribute})
-    subscriber_rti.unsubscribe_interaction_class(subscriber_interaction)
+        subscriber_rti.unsubscribeObjectClassAttributes(subscriber_class, {subscriber_attribute})
+    subscriber_rti.unsubscribeInteractionClass(subscriber_interaction)
     expected_second_stop_count = stop_baseline + (1 if config.use_full_object_unsubscribe else 2)
     stop_records = wait_for_callback_count_pair(
         publisher_rti,
@@ -267,12 +267,12 @@ def run_declaration_management_scenario(
 
     suppressed_reflect_baseline = len(subscriber_federate.callbacks_named("reflectAttributeValues"))
     suppressed_interaction_baseline = len(subscriber_federate.callbacks_named("receiveInteraction"))
-    publisher_rti.update_attribute_values(
+    publisher_rti.updateAttributeValues(
         object_instance,
         {publisher_attribute: b"after-unsubscribe"},
         b"after-unsubscribe",
     )
-    publisher_rti.send_interaction(
+    publisher_rti.sendInteraction(
         publisher_interaction,
         {publisher_parameter: b"after-unsubscribe"},
         b"after-unsubscribe",
@@ -321,24 +321,24 @@ def run_declaration_invalid_attribute_publication_scenario(
     publisher_federate: Any,
 ) -> dict[str, Any]:
     publisher_rti.connect(publisher_federate, CallbackModel.HLA_EVOKED)
-    publisher_rti.create_federation_execution(
+    publisher_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    publisher_handle = publisher_rti.join_federation_execution(
+    publisher_handle = publisher_rti.joinFederationExecution(
         config.publisher_name,
         config.federate_type,
         config.federation_name,
     )
     assert isinstance(publisher_handle, FederateHandle)
 
-    publisher_class = publisher_rti.get_object_class_handle(config.object_class_name)
-    publisher_attribute = publisher_rti.get_attribute_handle(publisher_class, config.attribute_name)
+    publisher_class = publisher_rti.getObjectClassHandle(config.object_class_name)
+    publisher_attribute = publisher_rti.getAttributeHandle(publisher_class, config.attribute_name)
     invalid_attribute = type(publisher_attribute)(publisher_attribute.value + 1000)
 
     try:
-        publisher_rti.publish_object_class_attributes(publisher_class, {invalid_attribute})
+        publisher_rti.publishObjectClassAttributes(publisher_class, {invalid_attribute})
     except AttributeNotDefined as exc:
         return {
             "publisher_handle": publisher_handle,
@@ -357,25 +357,25 @@ def run_declaration_unpublish_rejection_scenario(
     publisher_federate: Any,
 ) -> dict[str, Any]:
     publisher_rti.connect(publisher_federate, CallbackModel.HLA_EVOKED)
-    publisher_rti.create_federation_execution(
+    publisher_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    publisher_handle = publisher_rti.join_federation_execution(
+    publisher_handle = publisher_rti.joinFederationExecution(
         config.publisher_name,
         config.federate_type,
         config.federation_name,
     )
     assert isinstance(publisher_handle, FederateHandle)
 
-    publisher_class = publisher_rti.get_object_class_handle(config.object_class_name)
-    publisher_attribute = publisher_rti.get_attribute_handle(publisher_class, config.attribute_name)
-    publisher_interaction = publisher_rti.get_interaction_class_handle(config.interaction_class_name)
-    publisher_parameter = publisher_rti.get_parameter_handle(publisher_interaction, config.parameter_name)
+    publisher_class = publisher_rti.getObjectClassHandle(config.object_class_name)
+    publisher_attribute = publisher_rti.getAttributeHandle(publisher_class, config.attribute_name)
+    publisher_interaction = publisher_rti.getInteractionClassHandle(config.interaction_class_name)
+    publisher_parameter = publisher_rti.getParameterHandle(publisher_interaction, config.parameter_name)
 
-    publisher_rti.publish_object_class_attributes(publisher_class, {publisher_attribute})
-    publisher_rti.publish_interaction_class(publisher_interaction)
+    publisher_rti.publishObjectClassAttributes(publisher_class, {publisher_attribute})
+    publisher_rti.publishInteractionClass(publisher_interaction)
     object_instance = register_named_object_instance(
         publisher_rti,
         publisher_federate,
@@ -383,11 +383,11 @@ def run_declaration_unpublish_rejection_scenario(
         config.object_instance_name,
     )
 
-    publisher_rti.unpublish_object_class_attributes(publisher_class, {publisher_attribute})
+    publisher_rti.unpublishObjectClassAttributes(publisher_class, {publisher_attribute})
     if config.before_object_unpublish_rejection_probe is not None:
         config.before_object_unpublish_rejection_probe(publisher_rti)
     try:
-        publisher_rti.update_attribute_values(
+        publisher_rti.updateAttributeValues(
             object_instance,
             {publisher_attribute: config.attribute_payload},
             config.attribute_tag,
@@ -397,11 +397,11 @@ def run_declaration_unpublish_rejection_scenario(
     else:
         raise AssertionError("update_attribute_values succeeded after unpublish_object_class_attributes")
 
-    publisher_rti.unpublish_interaction_class(publisher_interaction)
+    publisher_rti.unpublishInteractionClass(publisher_interaction)
     if config.before_interaction_unpublish_rejection_probe is not None:
         config.before_interaction_unpublish_rejection_probe(publisher_rti)
     try:
-        publisher_rti.send_interaction(
+        publisher_rti.sendInteraction(
             publisher_interaction,
             {publisher_parameter: config.interaction_payload},
             config.interaction_tag,
@@ -433,17 +433,17 @@ def run_time_managed_declaration_independence_scenario(
 ) -> dict[str, Any]:
     publisher_rti.connect(publisher_federate, CallbackModel.HLA_EVOKED)
     subscriber_rti.connect(subscriber_federate, CallbackModel.HLA_EVOKED)
-    publisher_rti.create_federation_execution(
+    publisher_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    publisher_handle = publisher_rti.join_federation_execution(
+    publisher_handle = publisher_rti.joinFederationExecution(
         config.publisher_name,
         config.federate_type,
         config.federation_name,
     )
-    subscriber_handle = subscriber_rti.join_federation_execution(
+    subscriber_handle = subscriber_rti.joinFederationExecution(
         config.subscriber_name,
         config.federate_type,
         config.federation_name,
@@ -451,17 +451,17 @@ def run_time_managed_declaration_independence_scenario(
     assert isinstance(publisher_handle, FederateHandle)
     assert isinstance(subscriber_handle, FederateHandle)
 
-    publisher_class = publisher_rti.get_object_class_handle(config.object_class_name)
-    subscriber_class = subscriber_rti.get_object_class_handle(config.object_class_name)
-    publisher_attribute = publisher_rti.get_attribute_handle(publisher_class, config.attribute_name)
-    subscriber_attribute = subscriber_rti.get_attribute_handle(subscriber_class, config.attribute_name)
-    publisher_interaction = publisher_rti.get_interaction_class_handle(config.interaction_class_name)
-    subscriber_interaction = subscriber_rti.get_interaction_class_handle(config.interaction_class_name)
-    publisher_parameter = publisher_rti.get_parameter_handle(publisher_interaction, config.parameter_name)
-    subscriber_parameter = subscriber_rti.get_parameter_handle(subscriber_interaction, config.parameter_name)
+    publisher_class = publisher_rti.getObjectClassHandle(config.object_class_name)
+    subscriber_class = subscriber_rti.getObjectClassHandle(config.object_class_name)
+    publisher_attribute = publisher_rti.getAttributeHandle(publisher_class, config.attribute_name)
+    subscriber_attribute = subscriber_rti.getAttributeHandle(subscriber_class, config.attribute_name)
+    publisher_interaction = publisher_rti.getInteractionClassHandle(config.interaction_class_name)
+    subscriber_interaction = subscriber_rti.getInteractionClassHandle(config.interaction_class_name)
+    publisher_parameter = publisher_rti.getParameterHandle(publisher_interaction, config.parameter_name)
+    subscriber_parameter = subscriber_rti.getParameterHandle(subscriber_interaction, config.parameter_name)
 
-    publisher_rti.enable_time_regulation(config.declaration_lookahead)
-    subscriber_rti.enable_time_constrained()
+    publisher_rti.enableTimeRegulation(config.declaration_lookahead)
+    subscriber_rti.enableTimeConstrained()
     time_regulation = wait_for_callback(
         publisher_rti,
         publisher_federate,
@@ -477,12 +477,12 @@ def run_time_managed_declaration_independence_scenario(
     assert time_regulation is not None
     assert time_constrained is not None
 
-    subscriber_rti.subscribe_object_class_attributes(subscriber_class, {subscriber_attribute})
-    subscriber_rti.subscribe_interaction_class(subscriber_interaction)
+    subscriber_rti.subscribeObjectClassAttributes(subscriber_class, {subscriber_attribute})
+    subscriber_rti.subscribeInteractionClass(subscriber_interaction)
     drain_callbacks_pair(publisher_rti, subscriber_rti)
 
-    publisher_rti.publish_object_class_attributes(publisher_class, {publisher_attribute})
-    publisher_rti.publish_interaction_class(publisher_interaction)
+    publisher_rti.publishObjectClassAttributes(publisher_class, {publisher_attribute})
+    publisher_rti.publishInteractionClass(publisher_interaction)
     start_records = wait_for_callback_count_pair(
         publisher_rti,
         subscriber_rti,
@@ -522,7 +522,7 @@ def run_time_managed_declaration_independence_scenario(
     assert discover_record.args[1] == subscriber_class
     assert discover_record.args[2] == config.object_instance_name
 
-    publisher_rti.update_attribute_values(
+    publisher_rti.updateAttributeValues(
         object_instance,
         {publisher_attribute: config.attribute_payload},
         config.attribute_tag,
@@ -540,7 +540,7 @@ def run_time_managed_declaration_independence_scenario(
     assert reflect_record.args[1] == {subscriber_attribute: config.attribute_payload}
     assert reflect_record.args[2] == config.attribute_tag
 
-    publisher_rti.send_interaction(
+    publisher_rti.sendInteraction(
         publisher_interaction,
         {publisher_parameter: config.interaction_payload},
         config.interaction_tag,

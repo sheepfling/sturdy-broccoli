@@ -86,33 +86,33 @@ def probe_negotiated_attribute_ownership_offer(
 ) -> dict[str, Any]:
     owner_rti.connect(owner_federate, CallbackModel.HLA_EVOKED)
     acquirer_rti.connect(acquirer_federate, CallbackModel.HLA_EVOKED)
-    owner_rti.create_federation_execution(config.federation_name, list(config.fom_modules), config.logical_time_implementation_name)
-    owner_handle = owner_rti.join_federation_execution(config.owner_name, config.federate_type, config.federation_name)
-    acquirer_handle = acquirer_rti.join_federation_execution(config.acquirer_name, config.federate_type, config.federation_name)
-    owner_class = owner_rti.get_object_class_handle(config.object_class_name)
-    acquirer_class = acquirer_rti.get_object_class_handle(config.object_class_name)
-    owner_attr = owner_rti.get_attribute_handle(owner_class, config.attribute_name)
-    acquirer_attr = acquirer_rti.get_attribute_handle(acquirer_class, config.attribute_name)
-    owner_rti.publish_object_class_attributes(owner_class, {owner_attr})
-    acquirer_rti.publish_object_class_attributes(acquirer_class, {acquirer_attr})
-    acquirer_rti.subscribe_object_class_attributes(acquirer_class, {acquirer_attr})
+    owner_rti.createFederationExecution(config.federation_name, list(config.fom_modules), config.logical_time_implementation_name)
+    owner_handle = owner_rti.joinFederationExecution(config.owner_name, config.federate_type, config.federation_name)
+    acquirer_handle = acquirer_rti.joinFederationExecution(config.acquirer_name, config.federate_type, config.federation_name)
+    owner_class = owner_rti.getObjectClassHandle(config.object_class_name)
+    acquirer_class = acquirer_rti.getObjectClassHandle(config.object_class_name)
+    owner_attr = owner_rti.getAttributeHandle(owner_class, config.attribute_name)
+    acquirer_attr = acquirer_rti.getAttributeHandle(acquirer_class, config.attribute_name)
+    owner_rti.publishObjectClassAttributes(owner_class, {owner_attr})
+    acquirer_rti.publishObjectClassAttributes(acquirer_class, {acquirer_attr})
+    acquirer_rti.subscribeObjectClassAttributes(acquirer_class, {acquirer_attr})
     object_instance = register_named_object_instance(owner_rti, owner_federate, owner_class, config.object_instance_name)
     discover = wait_for_callback(acquirer_rti, acquirer_federate, "discoverObjectInstance")
     assert discover is not None
-    acquirer_object = acquirer_rti.get_object_instance_handle(config.object_instance_name)
-    assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attr)
+    acquirer_object = acquirer_rti.getObjectInstanceHandle(config.object_instance_name)
+    assert owner_rti.isAttributeOwnedByFederate(object_instance, owner_attr)
 
     assumption = None
     negotiated_divestiture_supported = False
     try:
-        owner_rti.negotiated_attribute_ownership_divestiture(object_instance, {owner_attr}, config.assumption_tag)
+        owner_rti.negotiatedAttributeOwnershipDivestiture(object_instance, {owner_attr}, config.assumption_tag)
         drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
         assumption = acquirer_federate.last_callback("requestAttributeOwnershipAssumption")
         negotiated_divestiture_supported = assumption is not None
     except RTIexception:
         assumption = None
 
-    acquirer_rti.attribute_ownership_acquisition(acquirer_object, {acquirer_attr}, config.request_tag)
+    acquirer_rti.attributeOwnershipAcquisition(acquirer_object, {acquirer_attr}, config.request_tag)
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     release = owner_federate.last_callback("requestAttributeOwnershipRelease")
     offered_acquired = acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification")
@@ -137,42 +137,42 @@ def run_attribute_ownership_scenario(
 ) -> dict[str, Any]:
     owner_rti.connect(owner_federate, CallbackModel.HLA_EVOKED)
     acquirer_rti.connect(acquirer_federate, CallbackModel.HLA_EVOKED)
-    owner_rti.create_federation_execution(config.federation_name, list(config.fom_modules), config.logical_time_implementation_name)
-    owner_handle = owner_rti.join_federation_execution(config.owner_name, config.federate_type, config.federation_name)
-    acquirer_handle = acquirer_rti.join_federation_execution(config.acquirer_name, config.federate_type, config.federation_name)
-    owner_class = owner_rti.get_object_class_handle(config.object_class_name)
-    acquirer_class = acquirer_rti.get_object_class_handle(config.object_class_name)
-    owner_attr = owner_rti.get_attribute_handle(owner_class, config.attribute_name)
-    acquirer_attr = acquirer_rti.get_attribute_handle(acquirer_class, config.attribute_name)
-    owner_rti.publish_object_class_attributes(owner_class, {owner_attr})
-    acquirer_rti.publish_object_class_attributes(acquirer_class, {acquirer_attr})
-    acquirer_rti.subscribe_object_class_attributes(acquirer_class, {acquirer_attr})
+    owner_rti.createFederationExecution(config.federation_name, list(config.fom_modules), config.logical_time_implementation_name)
+    owner_handle = owner_rti.joinFederationExecution(config.owner_name, config.federate_type, config.federation_name)
+    acquirer_handle = acquirer_rti.joinFederationExecution(config.acquirer_name, config.federate_type, config.federation_name)
+    owner_class = owner_rti.getObjectClassHandle(config.object_class_name)
+    acquirer_class = acquirer_rti.getObjectClassHandle(config.object_class_name)
+    owner_attr = owner_rti.getAttributeHandle(owner_class, config.attribute_name)
+    acquirer_attr = acquirer_rti.getAttributeHandle(acquirer_class, config.attribute_name)
+    owner_rti.publishObjectClassAttributes(owner_class, {owner_attr})
+    acquirer_rti.publishObjectClassAttributes(acquirer_class, {acquirer_attr})
+    acquirer_rti.subscribeObjectClassAttributes(acquirer_class, {acquirer_attr})
     object_instance = register_named_object_instance(owner_rti, owner_federate, owner_class, config.object_instance_name)
     discover = wait_for_callback(acquirer_rti, acquirer_federate, "discoverObjectInstance")
     assert discover is not None
-    acquirer_object = acquirer_rti.get_object_instance_handle(config.object_instance_name)
-    assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attr)
-    owner_rti.unconditional_attribute_ownership_divestiture(object_instance, {owner_attr})
-    assert not owner_rti.is_attribute_owned_by_federate(object_instance, owner_attr)
-    owner_rti.query_attribute_ownership(object_instance, owner_attr)
+    acquirer_object = acquirer_rti.getObjectInstanceHandle(config.object_instance_name)
+    assert owner_rti.isAttributeOwnedByFederate(object_instance, owner_attr)
+    owner_rti.unconditionalAttributeOwnershipDivestiture(object_instance, {owner_attr})
+    assert not owner_rti.isAttributeOwnedByFederate(object_instance, owner_attr)
+    owner_rti.queryAttributeOwnership(object_instance, owner_attr)
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     not_owned = wait_for_callback(owner_rti, owner_federate, "attributeIsNotOwned", loops=120)
     assert not_owned is not None
-    acquirer_rti.attribute_ownership_acquisition_if_available(acquirer_object, {acquirer_attr})
+    acquirer_rti.attributeOwnershipAcquisitionIfAvailable(acquirer_object, {acquirer_attr})
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     acquired = wait_for_callback(acquirer_rti, acquirer_federate, "attributeOwnershipAcquisitionNotification", loops=120)
     assert acquired is not None
     assert acquired.args[0] == acquirer_object
     assert acquirer_attr in acquired.args[1]
-    assert acquirer_rti.is_attribute_owned_by_federate(acquirer_object, acquirer_attr)
-    owner_rti.query_attribute_ownership(object_instance, owner_attr)
+    assert acquirer_rti.isAttributeOwnedByFederate(acquirer_object, acquirer_attr)
+    owner_rti.queryAttributeOwnership(object_instance, owner_attr)
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     informed = wait_for_callback(owner_rti, owner_federate, "informAttributeOwnership", loops=120)
     assert informed is not None
     assert informed.args[0] == object_instance
     assert informed.args[1] == owner_attr
     assert isinstance(informed.args[2], FederateHandle)
-    informed_federate_name = owner_rti.get_federate_name(informed.args[2])
+    informed_federate_name = owner_rti.getFederateName(informed.args[2])
     return {
         "owner_handle": owner_handle,
         "acquirer_handle": acquirer_handle,
@@ -194,25 +194,25 @@ def run_attribute_ownership_unavailable_scenario(
 ) -> dict[str, Any]:
     owner_rti.connect(owner_federate, CallbackModel.HLA_EVOKED)
     acquirer_rti.connect(acquirer_federate, CallbackModel.HLA_EVOKED)
-    owner_rti.create_federation_execution(config.federation_name, list(config.fom_modules), config.logical_time_implementation_name)
-    owner_handle = owner_rti.join_federation_execution(config.owner_name, config.federate_type, config.federation_name)
-    acquirer_handle = acquirer_rti.join_federation_execution(config.acquirer_name, config.federate_type, config.federation_name)
-    owner_class = owner_rti.get_object_class_handle(config.object_class_name)
-    acquirer_class = acquirer_rti.get_object_class_handle(config.object_class_name)
-    owner_attr = owner_rti.get_attribute_handle(owner_class, config.attribute_name)
-    acquirer_attr = acquirer_rti.get_attribute_handle(acquirer_class, config.attribute_name)
-    owner_rti.publish_object_class_attributes(owner_class, {owner_attr})
-    acquirer_rti.publish_object_class_attributes(acquirer_class, {acquirer_attr})
+    owner_rti.createFederationExecution(config.federation_name, list(config.fom_modules), config.logical_time_implementation_name)
+    owner_handle = owner_rti.joinFederationExecution(config.owner_name, config.federate_type, config.federation_name)
+    acquirer_handle = acquirer_rti.joinFederationExecution(config.acquirer_name, config.federate_type, config.federation_name)
+    owner_class = owner_rti.getObjectClassHandle(config.object_class_name)
+    acquirer_class = acquirer_rti.getObjectClassHandle(config.object_class_name)
+    owner_attr = owner_rti.getAttributeHandle(owner_class, config.attribute_name)
+    acquirer_attr = acquirer_rti.getAttributeHandle(acquirer_class, config.attribute_name)
+    owner_rti.publishObjectClassAttributes(owner_class, {owner_attr})
+    acquirer_rti.publishObjectClassAttributes(acquirer_class, {acquirer_attr})
     object_instance = register_named_object_instance(owner_rti, owner_federate, owner_class, config.object_instance_name)
-    assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attr)
-    acquirer_rti.attribute_ownership_acquisition_if_available(object_instance, {acquirer_attr})
+    assert owner_rti.isAttributeOwnedByFederate(object_instance, owner_attr)
+    acquirer_rti.attributeOwnershipAcquisitionIfAvailable(object_instance, {acquirer_attr})
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     unavailable = wait_for_callback(acquirer_rti, acquirer_federate, "attributeOwnershipUnavailable", loops=120)
     assert unavailable is not None
     assert unavailable.args[0] == object_instance
     assert acquirer_attr in unavailable.args[1]
-    assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attr)
-    assert not acquirer_rti.is_attribute_owned_by_federate(object_instance, acquirer_attr)
+    assert owner_rti.isAttributeOwnedByFederate(object_instance, owner_attr)
+    assert not acquirer_rti.isAttributeOwnedByFederate(object_instance, acquirer_attr)
     release = owner_federate.last_callback("requestAttributeOwnershipRelease")
     assert release is None
     return {
@@ -230,23 +230,23 @@ def run_non_owner_update_rejection_scenario(
 ) -> dict[str, Any]:
     owner_rti.connect(owner_federate, CallbackModel.HLA_EVOKED)
     observer_rti.connect(observer_federate, CallbackModel.HLA_EVOKED)
-    owner_rti.create_federation_execution(config.federation_name, list(config.fom_modules), config.logical_time_implementation_name)
-    owner_handle = owner_rti.join_federation_execution(config.owner_name, config.federate_type, config.federation_name)
-    observer_handle = observer_rti.join_federation_execution(config.observer_name, config.federate_type, config.federation_name)
-    owner_class = owner_rti.get_object_class_handle(config.object_class_name)
-    observer_class = observer_rti.get_object_class_handle(config.object_class_name)
-    owner_attr = owner_rti.get_attribute_handle(owner_class, config.attribute_name)
-    observer_attr = observer_rti.get_attribute_handle(observer_class, config.attribute_name)
-    owner_rti.publish_object_class_attributes(owner_class, {owner_attr})
-    observer_rti.subscribe_object_class_attributes(observer_class, {observer_attr})
+    owner_rti.createFederationExecution(config.federation_name, list(config.fom_modules), config.logical_time_implementation_name)
+    owner_handle = owner_rti.joinFederationExecution(config.owner_name, config.federate_type, config.federation_name)
+    observer_handle = observer_rti.joinFederationExecution(config.observer_name, config.federate_type, config.federation_name)
+    owner_class = owner_rti.getObjectClassHandle(config.object_class_name)
+    observer_class = observer_rti.getObjectClassHandle(config.object_class_name)
+    owner_attr = owner_rti.getAttributeHandle(owner_class, config.attribute_name)
+    observer_attr = observer_rti.getAttributeHandle(observer_class, config.attribute_name)
+    owner_rti.publishObjectClassAttributes(owner_class, {owner_attr})
+    observer_rti.subscribeObjectClassAttributes(observer_class, {observer_attr})
     object_instance = register_named_object_instance(owner_rti, owner_federate, owner_class, config.object_instance_name)
     discover = wait_for_callback(observer_rti, observer_federate, "discoverObjectInstance")
     assert discover is not None
-    observer_object = observer_rti.get_object_instance_handle(config.object_instance_name)
+    observer_object = observer_rti.getObjectInstanceHandle(config.object_instance_name)
 
     failure: RTIexception | None = None
     try:
-        observer_rti.update_attribute_values(
+        observer_rti.updateAttributeValues(
             observer_object,
             {observer_attr: config.illegal_payload},
             config.illegal_tag,
@@ -254,8 +254,8 @@ def run_non_owner_update_rejection_scenario(
     except RTIexception as exc:
         failure = exc
     assert failure is not None
-    assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attr)
-    assert not observer_rti.is_attribute_owned_by_federate(observer_object, observer_attr)
+    assert owner_rti.isAttributeOwnedByFederate(object_instance, owner_attr)
+    assert not observer_rti.isAttributeOwnedByFederate(observer_object, observer_attr)
 
     return {
         "owner_handle": owner_handle,
@@ -337,32 +337,32 @@ def run_negotiated_attribute_ownership_scenario(
     if release is None:
         assert offered_acquired is not None
         pending_object_name = f"{config.object_instance_name}-pending"
-        owner_class = owner_rti.get_object_class_handle(config.object_class_name)
+        owner_class = owner_rti.getObjectClassHandle(config.object_class_name)
         release_object_instance = register_named_object_instance(owner_rti, owner_federate, owner_class, pending_object_name)
         pending_discover = wait_for_callback(acquirer_rti, acquirer_federate, "discoverObjectInstance")
         assert pending_discover is not None
-        release_acquirer_object = acquirer_rti.get_object_instance_handle(pending_object_name)
-        acquirer_rti.attribute_ownership_acquisition(release_acquirer_object, {acquirer_attr}, config.request_tag)
+        release_acquirer_object = acquirer_rti.getObjectInstanceHandle(pending_object_name)
+        acquirer_rti.attributeOwnershipAcquisition(release_acquirer_object, {acquirer_attr}, config.request_tag)
         drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
         release = owner_federate.last_callback("requestAttributeOwnershipRelease")
     assert release is not None
     assert release.args[2] == config.request_tag
-    acquirer_rti.cancel_attribute_ownership_acquisition(release_acquirer_object, {release_acquirer_attribute})
+    acquirer_rti.cancelAttributeOwnershipAcquisition(release_acquirer_object, {release_acquirer_attribute})
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     cancellation = acquirer_federate.last_callback("confirmAttributeOwnershipAcquisitionCancellation")
     assert cancellation is not None
-    acquirer_rti.attribute_ownership_acquisition(release_acquirer_object, {release_acquirer_attribute}, config.cancel_tag)
+    acquirer_rti.attributeOwnershipAcquisition(release_acquirer_object, {release_acquirer_attribute}, config.cancel_tag)
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     release = owner_federate.last_callback("requestAttributeOwnershipRelease")
     assert release is not None
     assert release.args[2] == config.cancel_tag
-    divested = owner_rti.attribute_ownership_divestiture_if_wanted(release_object_instance, {release_owner_attribute})
+    divested = owner_rti.attributeOwnershipDivestitureIfWanted(release_object_instance, {release_owner_attribute})
     assert divested == {release_owner_attribute}
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     acquired = acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification")
     assert acquired is not None
-    assert acquirer_rti.is_attribute_owned_by_federate(release_acquirer_object, release_acquirer_attribute)
-    owner_rti.query_attribute_ownership(release_object_instance, release_owner_attribute)
+    assert acquirer_rti.isAttributeOwnedByFederate(release_acquirer_object, release_acquirer_attribute)
+    owner_rti.queryAttributeOwnership(release_object_instance, release_owner_attribute)
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     informed = owner_federate.last_callback("informAttributeOwnership")
     assert informed is not None
@@ -413,7 +413,7 @@ def run_confirm_divestiture_negotiated_scenario(
     owner_attr = probe_summary["owner_attribute"]
     acquirer_attr = probe_summary["acquirer_attribute"]
 
-    owner_rti.confirm_divestiture(object_instance, {owner_attr}, confirm_tag)
+    owner_rti.confirmDivestiture(object_instance, {owner_attr}, confirm_tag)
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
 
     acquired = acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification")
@@ -421,9 +421,9 @@ def run_confirm_divestiture_negotiated_scenario(
     assert acquired.args[0] == acquirer_object
     assert acquired.args[1] == {acquirer_attr}
     assert acquired.args[2] == confirm_tag
-    assert acquirer_rti.is_attribute_owned_by_federate(acquirer_object, acquirer_attr)
+    assert acquirer_rti.isAttributeOwnedByFederate(acquirer_object, acquirer_attr)
 
-    owner_rti.query_attribute_ownership(object_instance, owner_attr)
+    owner_rti.queryAttributeOwnership(object_instance, owner_attr)
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     informed = owner_federate.last_callback("informAttributeOwnership")
     assert informed is not None
@@ -453,23 +453,23 @@ def run_release_request_ownership_scenario(
 ) -> dict[str, Any]:
     owner_rti.connect(owner_federate, CallbackModel.HLA_EVOKED)
     acquirer_rti.connect(acquirer_federate, CallbackModel.HLA_EVOKED)
-    owner_rti.create_federation_execution(config.federation_name, list(config.fom_modules), config.logical_time_implementation_name)
-    owner_handle = owner_rti.join_federation_execution(config.owner_name, config.federate_type, config.federation_name)
-    acquirer_handle = acquirer_rti.join_federation_execution(config.acquirer_name, config.federate_type, config.federation_name)
-    owner_class = owner_rti.get_object_class_handle(config.object_class_name)
-    acquirer_class = acquirer_rti.get_object_class_handle(config.object_class_name)
-    owner_attr = owner_rti.get_attribute_handle(owner_class, config.attribute_name)
-    acquirer_attr = acquirer_rti.get_attribute_handle(acquirer_class, config.attribute_name)
-    owner_rti.publish_object_class_attributes(owner_class, {owner_attr})
-    acquirer_rti.publish_object_class_attributes(acquirer_class, {acquirer_attr})
-    acquirer_rti.subscribe_object_class_attributes(acquirer_class, {acquirer_attr})
+    owner_rti.createFederationExecution(config.federation_name, list(config.fom_modules), config.logical_time_implementation_name)
+    owner_handle = owner_rti.joinFederationExecution(config.owner_name, config.federate_type, config.federation_name)
+    acquirer_handle = acquirer_rti.joinFederationExecution(config.acquirer_name, config.federate_type, config.federation_name)
+    owner_class = owner_rti.getObjectClassHandle(config.object_class_name)
+    acquirer_class = acquirer_rti.getObjectClassHandle(config.object_class_name)
+    owner_attr = owner_rti.getAttributeHandle(owner_class, config.attribute_name)
+    acquirer_attr = acquirer_rti.getAttributeHandle(acquirer_class, config.attribute_name)
+    owner_rti.publishObjectClassAttributes(owner_class, {owner_attr})
+    acquirer_rti.publishObjectClassAttributes(acquirer_class, {acquirer_attr})
+    acquirer_rti.subscribeObjectClassAttributes(acquirer_class, {acquirer_attr})
     object_instance = register_named_object_instance(owner_rti, owner_federate, owner_class, config.object_instance_name)
     discover = wait_for_callback(acquirer_rti, acquirer_federate, "discoverObjectInstance")
     assert discover is not None
-    acquirer_object = acquirer_rti.get_object_instance_handle(config.object_instance_name)
-    assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attr)
+    acquirer_object = acquirer_rti.getObjectInstanceHandle(config.object_instance_name)
+    assert owner_rti.isAttributeOwnedByFederate(object_instance, owner_attr)
 
-    acquirer_rti.attribute_ownership_acquisition(acquirer_object, {acquirer_attr}, config.request_tag)
+    acquirer_rti.attributeOwnershipAcquisition(acquirer_object, {acquirer_attr}, config.request_tag)
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     release = owner_federate.last_callback("requestAttributeOwnershipRelease")
     assert release is not None
@@ -478,12 +478,12 @@ def run_release_request_ownership_scenario(
     denied = False
     divested = None
     if config.owner_action == "deny":
-        owner_rti.attribute_ownership_release_denied(object_instance, {owner_attr})
+        owner_rti.attributeOwnershipReleaseDenied(object_instance, {owner_attr})
         denied = True
     elif config.owner_action == "confirm":
-        owner_rti.confirm_divestiture(object_instance, {owner_attr}, config.confirm_tag)
+        owner_rti.confirmDivestiture(object_instance, {owner_attr}, config.confirm_tag)
     elif config.owner_action == "ifwanted":
-        divested = owner_rti.attribute_ownership_divestiture_if_wanted(object_instance, {owner_attr})
+        divested = owner_rti.attributeOwnershipDivestitureIfWanted(object_instance, {owner_attr})
         assert divested == {owner_attr}
     else:
         raise AssertionError(f"unexpected owner_action {config.owner_action!r}")
@@ -492,8 +492,8 @@ def run_release_request_ownership_scenario(
     acquired = acquirer_federate.last_callback("attributeOwnershipAcquisitionNotification")
 
     if denied:
-        assert owner_rti.is_attribute_owned_by_federate(object_instance, owner_attr)
-        assert not acquirer_rti.is_attribute_owned_by_federate(acquirer_object, acquirer_attr)
+        assert owner_rti.isAttributeOwnedByFederate(object_instance, owner_attr)
+        assert not acquirer_rti.isAttributeOwnedByFederate(acquirer_object, acquirer_attr)
         assert acquired is None
         return {
             "owner_handle": owner_handle,
@@ -513,8 +513,8 @@ def run_release_request_ownership_scenario(
     assert acquired.args[1] == {acquirer_attr}
     if config.owner_action == "ifwanted":
         assert acquired.args[2] == b""
-    assert acquirer_rti.is_attribute_owned_by_federate(acquirer_object, acquirer_attr)
-    owner_rti.query_attribute_ownership(object_instance, owner_attr)
+    assert acquirer_rti.isAttributeOwnedByFederate(acquirer_object, acquirer_attr)
+    owner_rti.queryAttributeOwnership(object_instance, owner_attr)
     drain_callbacks_pair(owner_rti, acquirer_rti, loops=12)
     informed = owner_federate.last_callback("informAttributeOwnership")
     assert informed is not None

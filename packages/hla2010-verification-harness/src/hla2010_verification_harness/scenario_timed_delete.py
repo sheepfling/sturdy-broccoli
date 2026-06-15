@@ -34,28 +34,28 @@ def run_timed_delete_scenario(
 ) -> dict[str, Any]:
     owner_rti.connect(owner_federate, CallbackModel.HLA_EVOKED)
     observer_rti.connect(observer_federate, CallbackModel.HLA_EVOKED)
-    owner_rti.create_federation_execution(
+    owner_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    owner_handle = owner_rti.join_federation_execution(config.owner_name, config.federate_type, config.federation_name)
-    observer_handle = observer_rti.join_federation_execution(
+    owner_handle = owner_rti.joinFederationExecution(config.owner_name, config.federate_type, config.federation_name)
+    observer_handle = observer_rti.joinFederationExecution(
         config.observer_name,
         config.federate_type,
         config.federation_name,
     )
 
-    time_factory = owner_rti.get_time_factory()
-    object_class = owner_rti.get_object_class_handle(config.object_class_name)
-    owner_attr = owner_rti.get_attribute_handle(object_class, config.attribute_name)
-    observer_class = observer_rti.get_object_class_handle(config.object_class_name)
-    observer_attr = observer_rti.get_attribute_handle(observer_class, config.attribute_name)
+    time_factory = owner_rti.getTimeFactory()
+    object_class = owner_rti.getObjectClassHandle(config.object_class_name)
+    owner_attr = owner_rti.getAttributeHandle(object_class, config.attribute_name)
+    observer_class = observer_rti.getObjectClassHandle(config.object_class_name)
+    observer_attr = observer_rti.getAttributeHandle(observer_class, config.attribute_name)
 
-    owner_rti.publish_object_class_attributes(object_class, {owner_attr})
-    observer_rti.subscribe_object_class_attributes(observer_class, {observer_attr})
-    owner_rti.enable_time_regulation(time_factory.make_interval(1.0))
-    observer_rti.enable_time_constrained()
+    owner_rti.publishObjectClassAttributes(object_class, {owner_attr})
+    observer_rti.subscribeObjectClassAttributes(observer_class, {observer_attr})
+    owner_rti.enableTimeRegulation(time_factory.make_interval(1.0))
+    observer_rti.enableTimeConstrained()
     drain_callbacks_pair(owner_rti, observer_rti, loops=24)
 
     object_instance = register_named_object_instance(
@@ -65,21 +65,21 @@ def run_timed_delete_scenario(
         config.object_instance_name,
     )
     drain_callbacks_pair(owner_rti, observer_rti, loops=16)
-    assert observer_rti.get_object_instance_handle(config.object_instance_name) == object_instance
+    assert observer_rti.getObjectInstanceHandle(config.object_instance_name) == object_instance
     observer_federate.clear()
 
     delete_time = time_factory.make_time(1.0)
     advance_time = time_factory.make_time(2.0)
-    owner_rti.delete_object_instance(object_instance, config.delete_tag, delete_time)
+    owner_rti.deleteObjectInstance(object_instance, config.delete_tag, delete_time)
     drain_callbacks_pair(owner_rti, observer_rti, loops=16)
     remove_before_grant = observer_federate.last_callback("removeObjectInstance")
     assert remove_before_grant is None
-    assert observer_rti.get_object_instance_handle(config.object_instance_name) == object_instance
+    assert observer_rti.getObjectInstanceHandle(config.object_instance_name) == object_instance
 
-    owner_rti.time_advance_request(advance_time)
-    observer_rti.next_message_request_available(advance_time)
+    owner_rti.timeAdvanceRequest(advance_time)
+    observer_rti.nextMessageRequestAvailable(advance_time)
     drain_callbacks_pair(owner_rti, observer_rti, loops=24)
-    observer_rti.next_message_request_available(advance_time)
+    observer_rti.nextMessageRequestAvailable(advance_time)
     drain_callbacks_pair(owner_rti, observer_rti, loops=24)
 
     remove_after_grant = observer_federate.last_callback("removeObjectInstance")
@@ -89,14 +89,14 @@ def run_timed_delete_scenario(
 
     removed_from_catalog = False
     try:
-        observer_rti.get_object_instance_handle(config.object_instance_name)
+        observer_rti.getObjectInstanceHandle(config.object_instance_name)
     except ObjectInstanceNotKnown:
         removed_from_catalog = True
     assert removed_from_catalog
 
     removed_known_class = False
     try:
-        observer_rti.get_known_object_class_handle(object_instance)
+        observer_rti.getKnownObjectClassHandle(object_instance)
     except ObjectInstanceNotKnown:
         removed_known_class = True
     assert removed_known_class

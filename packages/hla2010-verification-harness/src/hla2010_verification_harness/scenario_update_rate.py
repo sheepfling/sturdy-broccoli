@@ -69,55 +69,55 @@ def run_update_rate_scenario(
 ) -> dict[str, Any]:
     publisher_rti.connect(publisher_federate, CallbackModel.HLA_EVOKED)
     subscriber_rti.connect(subscriber_federate, CallbackModel.HLA_EVOKED)
-    publisher_rti.create_federation_execution(
+    publisher_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    publisher_handle = publisher_rti.join_federation_execution(
+    publisher_handle = publisher_rti.joinFederationExecution(
         config.publisher_name,
         config.federate_type,
         config.federation_name,
     )
-    subscriber_handle = subscriber_rti.join_federation_execution(
+    subscriber_handle = subscriber_rti.joinFederationExecution(
         config.subscriber_name,
         config.federate_type,
         config.federation_name,
     )
 
-    object_class = publisher_rti.get_object_class_handle(config.object_class_name)
-    attribute = publisher_rti.get_attribute_handle(object_class, config.attribute_name)
-    subscriber_class = subscriber_rti.get_object_class_handle(config.object_class_name)
-    subscriber_attribute = subscriber_rti.get_attribute_handle(subscriber_class, config.attribute_name)
-    time_factory = publisher_rti.get_time_factory()
+    object_class = publisher_rti.getObjectClassHandle(config.object_class_name)
+    attribute = publisher_rti.getAttributeHandle(object_class, config.attribute_name)
+    subscriber_class = subscriber_rti.getObjectClassHandle(config.object_class_name)
+    subscriber_attribute = subscriber_rti.getAttributeHandle(subscriber_class, config.attribute_name)
+    time_factory = publisher_rti.getTimeFactory()
 
-    publisher_rti.publish_object_class_attributes(object_class, {attribute})
-    subscriber_rti.subscribe_object_class_attributes(
+    publisher_rti.publishObjectClassAttributes(object_class, {attribute})
+    subscriber_rti.subscribeObjectClassAttributes(
         subscriber_class,
         {subscriber_attribute},
         config.update_rate_designator,
     )
-    publisher_rti.enable_time_regulation(time_factory.make_interval(0.1))
-    subscriber_rti.enable_time_constrained()
+    publisher_rti.enableTimeRegulation(time_factory.make_interval(0.1))
+    subscriber_rti.enableTimeConstrained()
     drain_callbacks_pair(publisher_rti, subscriber_rti, loops=16)
 
-    object_instance = publisher_rti.register_object_instance(object_class, config.object_instance_name)
+    object_instance = publisher_rti.registerObjectInstance(object_class, config.object_instance_name)
     drain_callbacks_pair(publisher_rti, subscriber_rti, loops=16)
     subscriber_federate.clear()
 
-    publisher_rti.update_attribute_values(
+    publisher_rti.updateAttributeValues(
         object_instance,
         {attribute: b"t1"},
         b"tag1",
         time_factory.make_time(config.timestamp_1),
     )
-    publisher_rti.update_attribute_values(
+    publisher_rti.updateAttributeValues(
         object_instance,
         {attribute: b"t12"},
         b"tag12",
         time_factory.make_time(config.timestamp_2),
     )
-    publisher_rti.update_attribute_values(
+    publisher_rti.updateAttributeValues(
         object_instance,
         {attribute: b"t16"},
         b"tag16",
@@ -125,16 +125,16 @@ def run_update_rate_scenario(
     )
     drain_callbacks_pair(publisher_rti, subscriber_rti, loops=16)
 
-    publisher_rti.time_advance_request(time_factory.make_time(config.advance_time))
-    subscriber_rti.next_message_request_available(time_factory.make_time(config.advance_time))
+    publisher_rti.timeAdvanceRequest(time_factory.make_time(config.advance_time))
+    subscriber_rti.nextMessageRequestAvailable(time_factory.make_time(config.advance_time))
     drain_callbacks_pair(publisher_rti, subscriber_rti, loops=16)
-    subscriber_rti.next_message_request_available(time_factory.make_time(config.advance_time))
+    subscriber_rti.nextMessageRequestAvailable(time_factory.make_time(config.advance_time))
     drain_callbacks_pair(publisher_rti, subscriber_rti, loops=16)
 
     reflections = subscriber_federate.callbacks_named("reflectAttributeValues")
     values = [record.args[1][subscriber_attribute] for record in reflections]
     assert values == [b"t1", b"t16"]
-    assert subscriber_rti.get_update_rate_value(config.update_rate_designator) == 2.0
+    assert subscriber_rti.getUpdateRateValue(config.update_rate_designator) == 2.0
 
     return {
         "publisher_handle": publisher_handle,

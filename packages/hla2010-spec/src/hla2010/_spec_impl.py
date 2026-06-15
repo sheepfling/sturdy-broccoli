@@ -1,7 +1,7 @@
-"""Pythonic source-backed HLA 1516.1-2010 API spec.
+"""Source-named HLA 1516.1-2010 API spec.
 
-This module is the clean, Python-facing contract layer. Method definitions are
-checked in explicitly so import-time package behavior is visible to static tools.
+This module keeps the RTI ambassador surface close to the Java/C++ service
+names while checking in explicit method definitions for static tools.
 """
 from __future__ import annotations
 
@@ -22,10 +22,10 @@ def lower_camel_to_snake(name: str) -> str:
     return s2.lower()
 
 
-def _method_doc(method_name: str, snake_name: str) -> str:
+def _method_doc(method_name: str) -> str:
     ref = method_reference(method_name)
     source_summary = method_source_summary(method_name)
-    doc_parts = [f"{snake_name} ({method_name})."]
+    doc_parts = [method_name]
     if ref is not None:
         doc_parts.append(f"IEEE reference: {ref.label}.")
     if source_summary:
@@ -33,12 +33,12 @@ def _method_doc(method_name: str, snake_name: str) -> str:
     return " ".join(doc_parts)
 
 
-def _rti_service(method_name: str) -> Callable[[Callable[..., object]], Callable[..., object]]:
+def _service_metadata(method_name: str) -> Callable[[Callable[..., object]], Callable[..., object]]:
     def _decorate(method: Callable[..., object]) -> Callable[..., object]:
         method.spec_name = method_name  # type: ignore[attr-defined]
         method.spec_reference = method_reference(method_name)  # type: ignore[attr-defined]
         method.spec_source_summary = method_source_summary(method_name)  # type: ignore[attr-defined]
-        method.__doc__ = _method_doc(method_name, method.__name__)
+        method.__doc__ = _method_doc(method_name)
         return method
 
     return _decorate
@@ -46,827 +46,827 @@ def _rti_service(method_name: str) -> Callable[[Callable[..., object]], Callable
 
 def _callback(method_name: str) -> Callable[[Callable[..., object]], Callable[..., object]]:
     def _decorate(method: Callable[..., object]) -> Callable[..., object]:
+        method.spec_name = method_name  # type: ignore[attr-defined]
         method.spec_reference = method_reference(method_name)  # type: ignore[attr-defined]
         method.spec_source_summary = method_source_summary(method_name)  # type: ignore[attr-defined]
-        method.__doc__ = _method_doc(method_name, lower_camel_to_snake(method_name))
+        method.__doc__ = _method_doc(method_name)
         return method
 
     return _decorate
 
 
 class RTIambassadorSpec(ABC):
-    """Pythonic abstract contract for an HLA RTI ambassador."""
+    """Source-named abstract contract for an HLA RTI ambassador."""
 
-    @_rti_service("abortFederationRestore")
+    @_service_metadata("abortFederationRestore")
     @abstractmethod
-    def abort_federation_restore(self, *args: object, **kwargs: object) -> object:
+    def abortFederationRestore(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("abortFederationSave")
+    @_service_metadata("abortFederationSave")
     @abstractmethod
-    def abort_federation_save(self, *args: object, **kwargs: object) -> object:
+    def abortFederationSave(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("associateRegionsForUpdates")
+    @_service_metadata("associateRegionsForUpdates")
     @abstractmethod
-    def associate_regions_for_updates(self, *args: object, **kwargs: object) -> object:
+    def associateRegionsForUpdates(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("attributeOwnershipAcquisition")
+    @_service_metadata("attributeOwnershipAcquisition")
     @abstractmethod
-    def attribute_ownership_acquisition(self, *args: object, **kwargs: object) -> object:
+    def attributeOwnershipAcquisition(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("attributeOwnershipAcquisitionIfAvailable")
+    @_service_metadata("attributeOwnershipAcquisitionIfAvailable")
     @abstractmethod
-    def attribute_ownership_acquisition_if_available(self, *args: object, **kwargs: object) -> object:
+    def attributeOwnershipAcquisitionIfAvailable(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("attributeOwnershipDivestitureIfWanted")
+    @_service_metadata("attributeOwnershipDivestitureIfWanted")
     @abstractmethod
-    def attribute_ownership_divestiture_if_wanted(self, *args: object, **kwargs: object) -> object:
+    def attributeOwnershipDivestitureIfWanted(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("attributeOwnershipReleaseDenied")
+    @_service_metadata("attributeOwnershipReleaseDenied")
     @abstractmethod
-    def attribute_ownership_release_denied(self, *args: object, **kwargs: object) -> object:
+    def attributeOwnershipReleaseDenied(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("cancelAttributeOwnershipAcquisition")
+    @_service_metadata("cancelAttributeOwnershipAcquisition")
     @abstractmethod
-    def cancel_attribute_ownership_acquisition(self, *args: object, **kwargs: object) -> object:
+    def cancelAttributeOwnershipAcquisition(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("cancelNegotiatedAttributeOwnershipDivestiture")
+    @_service_metadata("cancelNegotiatedAttributeOwnershipDivestiture")
     @abstractmethod
-    def cancel_negotiated_attribute_ownership_divestiture(self, *args: object, **kwargs: object) -> object:
+    def cancelNegotiatedAttributeOwnershipDivestiture(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("changeAttributeOrderType")
+    @_service_metadata("changeAttributeOrderType")
     @abstractmethod
-    def change_attribute_order_type(self, *args: object, **kwargs: object) -> object:
+    def changeAttributeOrderType(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("changeInteractionOrderType")
+    @_service_metadata("changeInteractionOrderType")
     @abstractmethod
-    def change_interaction_order_type(self, *args: object, **kwargs: object) -> object:
+    def changeInteractionOrderType(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("commitRegionModifications")
+    @_service_metadata("commitRegionModifications")
     @abstractmethod
-    def commit_region_modifications(self, *args: object, **kwargs: object) -> object:
+    def commitRegionModifications(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("confirmDivestiture")
+    @_service_metadata("confirmDivestiture")
     @abstractmethod
-    def confirm_divestiture(self, *args: object, **kwargs: object) -> object:
+    def confirmDivestiture(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("connect")
+    @_service_metadata("connect")
     @abstractmethod
-    def connect(self, *args: object, **kwargs: object) -> object:
+    def connect(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("createFederationExecution")
+    @_service_metadata("createFederationExecution")
     @abstractmethod
-    def create_federation_execution(self, *args: object, **kwargs: object) -> object:
+    def createFederationExecution(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("createFederationExecutionWithMIM")
+    @_service_metadata("createFederationExecutionWithMIM")
     @abstractmethod
-    def create_federation_execution_with_mim(self, *args: object, **kwargs: object) -> object:
+    def createFederationExecutionWithMIM(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("createRegion")
+    @_service_metadata("createRegion")
     @abstractmethod
-    def create_region(self, *args: object, **kwargs: object) -> object:
+    def createRegion(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("decodeAttributeHandle")
+    @_service_metadata("decodeAttributeHandle")
     @abstractmethod
-    def decode_attribute_handle(self, *args: object, **kwargs: object) -> object:
+    def decodeAttributeHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("decodeDimensionHandle")
+    @_service_metadata("decodeDimensionHandle")
     @abstractmethod
-    def decode_dimension_handle(self, *args: object, **kwargs: object) -> object:
+    def decodeDimensionHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("decodeFederateHandle")
+    @_service_metadata("decodeFederateHandle")
     @abstractmethod
-    def decode_federate_handle(self, *args: object, **kwargs: object) -> object:
+    def decodeFederateHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("decodeInteractionClassHandle")
+    @_service_metadata("decodeInteractionClassHandle")
     @abstractmethod
-    def decode_interaction_class_handle(self, *args: object, **kwargs: object) -> object:
+    def decodeInteractionClassHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("decodeMessageRetractionHandle")
+    @_service_metadata("decodeMessageRetractionHandle")
     @abstractmethod
-    def decode_message_retraction_handle(self, *args: object, **kwargs: object) -> object:
+    def decodeMessageRetractionHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("decodeObjectClassHandle")
+    @_service_metadata("decodeObjectClassHandle")
     @abstractmethod
-    def decode_object_class_handle(self, *args: object, **kwargs: object) -> object:
+    def decodeObjectClassHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("decodeObjectInstanceHandle")
+    @_service_metadata("decodeObjectInstanceHandle")
     @abstractmethod
-    def decode_object_instance_handle(self, *args: object, **kwargs: object) -> object:
+    def decodeObjectInstanceHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("decodeParameterHandle")
+    @_service_metadata("decodeParameterHandle")
     @abstractmethod
-    def decode_parameter_handle(self, *args: object, **kwargs: object) -> object:
+    def decodeParameterHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("decodeRegionHandle")
+    @_service_metadata("decodeRegionHandle")
     @abstractmethod
-    def decode_region_handle(self, *args: object, **kwargs: object) -> object:
+    def decodeRegionHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("deleteObjectInstance")
+    @_service_metadata("deleteObjectInstance")
     @abstractmethod
-    def delete_object_instance(self, *args: object, **kwargs: object) -> object:
+    def deleteObjectInstance(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("deleteRegion")
+    @_service_metadata("deleteRegion")
     @abstractmethod
-    def delete_region(self, *args: object, **kwargs: object) -> object:
+    def deleteRegion(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("destroyFederationExecution")
+    @_service_metadata("destroyFederationExecution")
     @abstractmethod
-    def destroy_federation_execution(self, *args: object, **kwargs: object) -> object:
+    def destroyFederationExecution(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("disableAsynchronousDelivery")
+    @_service_metadata("disableAsynchronousDelivery")
     @abstractmethod
-    def disable_asynchronous_delivery(self, *args: object, **kwargs: object) -> object:
+    def disableAsynchronousDelivery(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("disableAttributeRelevanceAdvisorySwitch")
+    @_service_metadata("disableAttributeRelevanceAdvisorySwitch")
     @abstractmethod
-    def disable_attribute_relevance_advisory_switch(self, *args: object, **kwargs: object) -> object:
+    def disableAttributeRelevanceAdvisorySwitch(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("disableAttributeScopeAdvisorySwitch")
+    @_service_metadata("disableAttributeScopeAdvisorySwitch")
     @abstractmethod
-    def disable_attribute_scope_advisory_switch(self, *args: object, **kwargs: object) -> object:
+    def disableAttributeScopeAdvisorySwitch(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("disableCallbacks")
+    @_service_metadata("disableCallbacks")
     @abstractmethod
-    def disable_callbacks(self, *args: object, **kwargs: object) -> object:
+    def disableCallbacks(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("disableInteractionRelevanceAdvisorySwitch")
+    @_service_metadata("disableInteractionRelevanceAdvisorySwitch")
     @abstractmethod
-    def disable_interaction_relevance_advisory_switch(self, *args: object, **kwargs: object) -> object:
+    def disableInteractionRelevanceAdvisorySwitch(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("disableObjectClassRelevanceAdvisorySwitch")
+    @_service_metadata("disableObjectClassRelevanceAdvisorySwitch")
     @abstractmethod
-    def disable_object_class_relevance_advisory_switch(self, *args: object, **kwargs: object) -> object:
+    def disableObjectClassRelevanceAdvisorySwitch(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("disableTimeConstrained")
+    @_service_metadata("disableTimeConstrained")
     @abstractmethod
-    def disable_time_constrained(self, *args: object, **kwargs: object) -> object:
+    def disableTimeConstrained(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("disableTimeRegulation")
+    @_service_metadata("disableTimeRegulation")
     @abstractmethod
-    def disable_time_regulation(self, *args: object, **kwargs: object) -> object:
+    def disableTimeRegulation(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("disconnect")
+    @_service_metadata("disconnect")
     @abstractmethod
-    def disconnect(self, *args: object, **kwargs: object) -> object:
+    def disconnect(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("enableAsynchronousDelivery")
+    @_service_metadata("enableAsynchronousDelivery")
     @abstractmethod
-    def enable_asynchronous_delivery(self, *args: object, **kwargs: object) -> object:
+    def enableAsynchronousDelivery(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("enableAttributeRelevanceAdvisorySwitch")
+    @_service_metadata("enableAttributeRelevanceAdvisorySwitch")
     @abstractmethod
-    def enable_attribute_relevance_advisory_switch(self, *args: object, **kwargs: object) -> object:
+    def enableAttributeRelevanceAdvisorySwitch(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("enableAttributeScopeAdvisorySwitch")
+    @_service_metadata("enableAttributeScopeAdvisorySwitch")
     @abstractmethod
-    def enable_attribute_scope_advisory_switch(self, *args: object, **kwargs: object) -> object:
+    def enableAttributeScopeAdvisorySwitch(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("enableCallbacks")
+    @_service_metadata("enableCallbacks")
     @abstractmethod
-    def enable_callbacks(self, *args: object, **kwargs: object) -> object:
+    def enableCallbacks(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("enableInteractionRelevanceAdvisorySwitch")
+    @_service_metadata("enableInteractionRelevanceAdvisorySwitch")
     @abstractmethod
-    def enable_interaction_relevance_advisory_switch(self, *args: object, **kwargs: object) -> object:
+    def enableInteractionRelevanceAdvisorySwitch(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("enableObjectClassRelevanceAdvisorySwitch")
+    @_service_metadata("enableObjectClassRelevanceAdvisorySwitch")
     @abstractmethod
-    def enable_object_class_relevance_advisory_switch(self, *args: object, **kwargs: object) -> object:
+    def enableObjectClassRelevanceAdvisorySwitch(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("enableTimeConstrained")
+    @_service_metadata("enableTimeConstrained")
     @abstractmethod
-    def enable_time_constrained(self, *args: object, **kwargs: object) -> object:
+    def enableTimeConstrained(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("enableTimeRegulation")
+    @_service_metadata("enableTimeRegulation")
     @abstractmethod
-    def enable_time_regulation(self, *args: object, **kwargs: object) -> object:
+    def enableTimeRegulation(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("evokeCallback")
+    @_service_metadata("evokeCallback")
     @abstractmethod
-    def evoke_callback(self, *args: object, **kwargs: object) -> object:
+    def evokeCallback(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("evokeMultipleCallbacks")
+    @_service_metadata("evokeMultipleCallbacks")
     @abstractmethod
-    def evoke_multiple_callbacks(self, *args: object, **kwargs: object) -> object:
+    def evokeMultipleCallbacks(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("federateRestoreComplete")
+    @_service_metadata("federateRestoreComplete")
     @abstractmethod
-    def federate_restore_complete(self, *args: object, **kwargs: object) -> object:
+    def federateRestoreComplete(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("federateRestoreNotComplete")
+    @_service_metadata("federateRestoreNotComplete")
     @abstractmethod
-    def federate_restore_not_complete(self, *args: object, **kwargs: object) -> object:
+    def federateRestoreNotComplete(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("federateSaveBegun")
+    @_service_metadata("federateSaveBegun")
     @abstractmethod
-    def federate_save_begun(self, *args: object, **kwargs: object) -> object:
+    def federateSaveBegun(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("federateSaveComplete")
+    @_service_metadata("federateSaveComplete")
     @abstractmethod
-    def federate_save_complete(self, *args: object, **kwargs: object) -> object:
+    def federateSaveComplete(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("federateSaveNotComplete")
+    @_service_metadata("federateSaveNotComplete")
     @abstractmethod
-    def federate_save_not_complete(self, *args: object, **kwargs: object) -> object:
+    def federateSaveNotComplete(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("flushQueueRequest")
+    @_service_metadata("flushQueueRequest")
     @abstractmethod
-    def flush_queue_request(self, *args: object, **kwargs: object) -> object:
+    def flushQueueRequest(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getAttributeHandle")
+    @_service_metadata("getAttributeHandle")
     @abstractmethod
-    def get_attribute_handle(self, *args: object, **kwargs: object) -> object:
+    def getAttributeHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getAttributeHandleFactory")
+    @_service_metadata("getAttributeHandleFactory")
     @abstractmethod
-    def get_attribute_handle_factory(self, *args: object, **kwargs: object) -> object:
+    def getAttributeHandleFactory(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getAttributeHandleSetFactory")
+    @_service_metadata("getAttributeHandleSetFactory")
     @abstractmethod
-    def get_attribute_handle_set_factory(self, *args: object, **kwargs: object) -> object:
+    def getAttributeHandleSetFactory(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getAttributeHandleValueMapFactory")
+    @_service_metadata("getAttributeHandleValueMapFactory")
     @abstractmethod
-    def get_attribute_handle_value_map_factory(self, *args: object, **kwargs: object) -> object:
+    def getAttributeHandleValueMapFactory(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getAttributeName")
+    @_service_metadata("getAttributeName")
     @abstractmethod
-    def get_attribute_name(self, *args: object, **kwargs: object) -> object:
+    def getAttributeName(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getAttributeSetRegionSetPairListFactory")
+    @_service_metadata("getAttributeSetRegionSetPairListFactory")
     @abstractmethod
-    def get_attribute_set_region_set_pair_list_factory(self, *args: object, **kwargs: object) -> object:
+    def getAttributeSetRegionSetPairListFactory(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getAutomaticResignDirective")
+    @_service_metadata("getAutomaticResignDirective")
     @abstractmethod
-    def get_automatic_resign_directive(self, *args: object, **kwargs: object) -> object:
+    def getAutomaticResignDirective(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getAvailableDimensionsForClassAttribute")
+    @_service_metadata("getAvailableDimensionsForClassAttribute")
     @abstractmethod
-    def get_available_dimensions_for_class_attribute(self, *args: object, **kwargs: object) -> object:
+    def getAvailableDimensionsForClassAttribute(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getAvailableDimensionsForInteractionClass")
+    @_service_metadata("getAvailableDimensionsForInteractionClass")
     @abstractmethod
-    def get_available_dimensions_for_interaction_class(self, *args: object, **kwargs: object) -> object:
+    def getAvailableDimensionsForInteractionClass(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getDimensionHandle")
+    @_service_metadata("getDimensionHandle")
     @abstractmethod
-    def get_dimension_handle(self, *args: object, **kwargs: object) -> object:
+    def getDimensionHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getDimensionHandleFactory")
+    @_service_metadata("getDimensionHandleFactory")
     @abstractmethod
-    def get_dimension_handle_factory(self, *args: object, **kwargs: object) -> object:
+    def getDimensionHandleFactory(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getDimensionHandleSet")
+    @_service_metadata("getDimensionHandleSet")
     @abstractmethod
-    def get_dimension_handle_set(self, *args: object, **kwargs: object) -> object:
+    def getDimensionHandleSet(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getDimensionHandleSetFactory")
+    @_service_metadata("getDimensionHandleSetFactory")
     @abstractmethod
-    def get_dimension_handle_set_factory(self, *args: object, **kwargs: object) -> object:
+    def getDimensionHandleSetFactory(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getDimensionName")
+    @_service_metadata("getDimensionName")
     @abstractmethod
-    def get_dimension_name(self, *args: object, **kwargs: object) -> object:
+    def getDimensionName(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getDimensionUpperBound")
+    @_service_metadata("getDimensionUpperBound")
     @abstractmethod
-    def get_dimension_upper_bound(self, *args: object, **kwargs: object) -> object:
+    def getDimensionUpperBound(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getFederateHandle")
+    @_service_metadata("getFederateHandle")
     @abstractmethod
-    def get_federate_handle(self, *args: object, **kwargs: object) -> object:
+    def getFederateHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getFederateHandleFactory")
+    @_service_metadata("getFederateHandleFactory")
     @abstractmethod
-    def get_federate_handle_factory(self, *args: object, **kwargs: object) -> object:
+    def getFederateHandleFactory(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getFederateHandleSetFactory")
+    @_service_metadata("getFederateHandleSetFactory")
     @abstractmethod
-    def get_federate_handle_set_factory(self, *args: object, **kwargs: object) -> object:
+    def getFederateHandleSetFactory(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getFederateName")
+    @_service_metadata("getFederateName")
     @abstractmethod
-    def get_federate_name(self, *args: object, **kwargs: object) -> object:
+    def getFederateName(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getHLAversion")
+    @_service_metadata("getHLAversion")
     @abstractmethod
-    def get_hla_version(self, *args: object, **kwargs: object) -> object:
+    def getHLAversion(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getInteractionClassHandle")
+    @_service_metadata("getInteractionClassHandle")
     @abstractmethod
-    def get_interaction_class_handle(self, *args: object, **kwargs: object) -> object:
+    def getInteractionClassHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getInteractionClassHandleFactory")
+    @_service_metadata("getInteractionClassHandleFactory")
     @abstractmethod
-    def get_interaction_class_handle_factory(self, *args: object, **kwargs: object) -> object:
+    def getInteractionClassHandleFactory(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getInteractionClassName")
+    @_service_metadata("getInteractionClassName")
     @abstractmethod
-    def get_interaction_class_name(self, *args: object, **kwargs: object) -> object:
+    def getInteractionClassName(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getKnownObjectClassHandle")
+    @_service_metadata("getKnownObjectClassHandle")
     @abstractmethod
-    def get_known_object_class_handle(self, *args: object, **kwargs: object) -> object:
+    def getKnownObjectClassHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getObjectClassHandle")
+    @_service_metadata("getObjectClassHandle")
     @abstractmethod
-    def get_object_class_handle(self, *args: object, **kwargs: object) -> object:
+    def getObjectClassHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getObjectClassHandleFactory")
+    @_service_metadata("getObjectClassHandleFactory")
     @abstractmethod
-    def get_object_class_handle_factory(self, *args: object, **kwargs: object) -> object:
+    def getObjectClassHandleFactory(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getObjectClassName")
+    @_service_metadata("getObjectClassName")
     @abstractmethod
-    def get_object_class_name(self, *args: object, **kwargs: object) -> object:
+    def getObjectClassName(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getObjectInstanceHandle")
+    @_service_metadata("getObjectInstanceHandle")
     @abstractmethod
-    def get_object_instance_handle(self, *args: object, **kwargs: object) -> object:
+    def getObjectInstanceHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getObjectInstanceHandleFactory")
+    @_service_metadata("getObjectInstanceHandleFactory")
     @abstractmethod
-    def get_object_instance_handle_factory(self, *args: object, **kwargs: object) -> object:
+    def getObjectInstanceHandleFactory(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getObjectInstanceName")
+    @_service_metadata("getObjectInstanceName")
     @abstractmethod
-    def get_object_instance_name(self, *args: object, **kwargs: object) -> object:
+    def getObjectInstanceName(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getOrderName")
+    @_service_metadata("getOrderName")
     @abstractmethod
-    def get_order_name(self, *args: object, **kwargs: object) -> object:
+    def getOrderName(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getOrderType")
+    @_service_metadata("getOrderType")
     @abstractmethod
-    def get_order_type(self, *args: object, **kwargs: object) -> object:
+    def getOrderType(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getParameterHandle")
+    @_service_metadata("getParameterHandle")
     @abstractmethod
-    def get_parameter_handle(self, *args: object, **kwargs: object) -> object:
+    def getParameterHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getParameterHandleFactory")
+    @_service_metadata("getParameterHandleFactory")
     @abstractmethod
-    def get_parameter_handle_factory(self, *args: object, **kwargs: object) -> object:
+    def getParameterHandleFactory(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getParameterHandleValueMapFactory")
+    @_service_metadata("getParameterHandleValueMapFactory")
     @abstractmethod
-    def get_parameter_handle_value_map_factory(self, *args: object, **kwargs: object) -> object:
+    def getParameterHandleValueMapFactory(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getParameterName")
+    @_service_metadata("getParameterName")
     @abstractmethod
-    def get_parameter_name(self, *args: object, **kwargs: object) -> object:
+    def getParameterName(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getRangeBounds")
+    @_service_metadata("getRangeBounds")
     @abstractmethod
-    def get_range_bounds(self, *args: object, **kwargs: object) -> object:
+    def getRangeBounds(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getRegionHandleSetFactory")
+    @_service_metadata("getRegionHandleSetFactory")
     @abstractmethod
-    def get_region_handle_set_factory(self, *args: object, **kwargs: object) -> object:
+    def getRegionHandleSetFactory(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getTimeFactory")
+    @_service_metadata("getTimeFactory")
     @abstractmethod
-    def get_time_factory(self, *args: object, **kwargs: object) -> object:
+    def getTimeFactory(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getTransportationName")
+    @_service_metadata("getTransportationName")
     @abstractmethod
-    def get_transportation_name(self, *args: object, **kwargs: object) -> object:
+    def getTransportationName(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getTransportationType")
+    @_service_metadata("getTransportationType")
     @abstractmethod
-    def get_transportation_type(self, *args: object, **kwargs: object) -> object:
+    def getTransportationType(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getTransportationTypeHandle")
+    @_service_metadata("getTransportationTypeHandle")
     @abstractmethod
-    def get_transportation_type_handle(self, *args: object, **kwargs: object) -> object:
+    def getTransportationTypeHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getTransportationTypeHandleFactory")
+    @_service_metadata("getTransportationTypeHandleFactory")
     @abstractmethod
-    def get_transportation_type_handle_factory(self, *args: object, **kwargs: object) -> object:
+    def getTransportationTypeHandleFactory(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getTransportationTypeName")
+    @_service_metadata("getTransportationTypeName")
     @abstractmethod
-    def get_transportation_type_name(self, *args: object, **kwargs: object) -> object:
+    def getTransportationTypeName(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getUpdateRateValue")
+    @_service_metadata("getUpdateRateValue")
     @abstractmethod
-    def get_update_rate_value(self, *args: object, **kwargs: object) -> object:
+    def getUpdateRateValue(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("getUpdateRateValueForAttribute")
+    @_service_metadata("getUpdateRateValueForAttribute")
     @abstractmethod
-    def get_update_rate_value_for_attribute(self, *args: object, **kwargs: object) -> object:
+    def getUpdateRateValueForAttribute(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("isAttributeOwnedByFederate")
+    @_service_metadata("isAttributeOwnedByFederate")
     @abstractmethod
-    def is_attribute_owned_by_federate(self, *args: object, **kwargs: object) -> object:
+    def isAttributeOwnedByFederate(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("joinFederationExecution")
+    @_service_metadata("joinFederationExecution")
     @abstractmethod
-    def join_federation_execution(self, *args: object, **kwargs: object) -> object:
+    def joinFederationExecution(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("listFederationExecutions")
+    @_service_metadata("listFederationExecutions")
     @abstractmethod
-    def list_federation_executions(self, *args: object, **kwargs: object) -> object:
+    def listFederationExecutions(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("localDeleteObjectInstance")
+    @_service_metadata("localDeleteObjectInstance")
     @abstractmethod
-    def local_delete_object_instance(self, *args: object, **kwargs: object) -> object:
+    def localDeleteObjectInstance(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("modifyLookahead")
+    @_service_metadata("modifyLookahead")
     @abstractmethod
-    def modify_lookahead(self, *args: object, **kwargs: object) -> object:
+    def modifyLookahead(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("negotiatedAttributeOwnershipDivestiture")
+    @_service_metadata("negotiatedAttributeOwnershipDivestiture")
     @abstractmethod
-    def negotiated_attribute_ownership_divestiture(self, *args: object, **kwargs: object) -> object:
+    def negotiatedAttributeOwnershipDivestiture(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("nextMessageRequest")
+    @_service_metadata("nextMessageRequest")
     @abstractmethod
-    def next_message_request(self, *args: object, **kwargs: object) -> object:
+    def nextMessageRequest(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("nextMessageRequestAvailable")
+    @_service_metadata("nextMessageRequestAvailable")
     @abstractmethod
-    def next_message_request_available(self, *args: object, **kwargs: object) -> object:
+    def nextMessageRequestAvailable(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("normalizeFederateHandle")
+    @_service_metadata("normalizeFederateHandle")
     @abstractmethod
-    def normalize_federate_handle(self, *args: object, **kwargs: object) -> object:
+    def normalizeFederateHandle(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("normalizeServiceGroup")
+    @_service_metadata("normalizeServiceGroup")
     @abstractmethod
-    def normalize_service_group(self, *args: object, **kwargs: object) -> object:
+    def normalizeServiceGroup(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("publishInteractionClass")
+    @_service_metadata("publishInteractionClass")
     @abstractmethod
-    def publish_interaction_class(self, *args: object, **kwargs: object) -> object:
+    def publishInteractionClass(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("publishObjectClassAttributes")
+    @_service_metadata("publishObjectClassAttributes")
     @abstractmethod
-    def publish_object_class_attributes(self, *args: object, **kwargs: object) -> object:
+    def publishObjectClassAttributes(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("queryAttributeOwnership")
+    @_service_metadata("queryAttributeOwnership")
     @abstractmethod
-    def query_attribute_ownership(self, *args: object, **kwargs: object) -> object:
+    def queryAttributeOwnership(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("queryAttributeTransportationType")
+    @_service_metadata("queryAttributeTransportationType")
     @abstractmethod
-    def query_attribute_transportation_type(self, *args: object, **kwargs: object) -> object:
+    def queryAttributeTransportationType(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("queryFederationRestoreStatus")
+    @_service_metadata("queryFederationRestoreStatus")
     @abstractmethod
-    def query_federation_restore_status(self, *args: object, **kwargs: object) -> object:
+    def queryFederationRestoreStatus(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("queryFederationSaveStatus")
+    @_service_metadata("queryFederationSaveStatus")
     @abstractmethod
-    def query_federation_save_status(self, *args: object, **kwargs: object) -> object:
+    def queryFederationSaveStatus(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("queryGALT")
+    @_service_metadata("queryGALT")
     @abstractmethod
-    def query_galt(self, *args: object, **kwargs: object) -> object:
+    def queryGALT(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("queryInteractionTransportationType")
+    @_service_metadata("queryInteractionTransportationType")
     @abstractmethod
-    def query_interaction_transportation_type(self, *args: object, **kwargs: object) -> object:
+    def queryInteractionTransportationType(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("queryLITS")
+    @_service_metadata("queryLITS")
     @abstractmethod
-    def query_lits(self, *args: object, **kwargs: object) -> object:
+    def queryLITS(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("queryLogicalTime")
+    @_service_metadata("queryLogicalTime")
     @abstractmethod
-    def query_logical_time(self, *args: object, **kwargs: object) -> object:
+    def queryLogicalTime(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("queryLookahead")
+    @_service_metadata("queryLookahead")
     @abstractmethod
-    def query_lookahead(self, *args: object, **kwargs: object) -> object:
+    def queryLookahead(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("registerFederationSynchronizationPoint")
+    @_service_metadata("registerFederationSynchronizationPoint")
     @abstractmethod
-    def register_federation_synchronization_point(self, *args: object, **kwargs: object) -> object:
+    def registerFederationSynchronizationPoint(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("registerObjectInstance")
+    @_service_metadata("registerObjectInstance")
     @abstractmethod
-    def register_object_instance(self, *args: object, **kwargs: object) -> object:
+    def registerObjectInstance(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("registerObjectInstanceWithRegions")
+    @_service_metadata("registerObjectInstanceWithRegions")
     @abstractmethod
-    def register_object_instance_with_regions(self, *args: object, **kwargs: object) -> object:
+    def registerObjectInstanceWithRegions(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("releaseMultipleObjectInstanceName")
+    @_service_metadata("releaseMultipleObjectInstanceName")
     @abstractmethod
-    def release_multiple_object_instance_name(self, *args: object, **kwargs: object) -> object:
+    def releaseMultipleObjectInstanceName(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("releaseObjectInstanceName")
+    @_service_metadata("releaseObjectInstanceName")
     @abstractmethod
-    def release_object_instance_name(self, *args: object, **kwargs: object) -> object:
+    def releaseObjectInstanceName(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("requestAttributeTransportationTypeChange")
+    @_service_metadata("requestAttributeTransportationTypeChange")
     @abstractmethod
-    def request_attribute_transportation_type_change(self, *args: object, **kwargs: object) -> object:
+    def requestAttributeTransportationTypeChange(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("requestAttributeValueUpdate")
+    @_service_metadata("requestAttributeValueUpdate")
     @abstractmethod
-    def request_attribute_value_update(self, *args: object, **kwargs: object) -> object:
+    def requestAttributeValueUpdate(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("requestAttributeValueUpdateWithRegions")
+    @_service_metadata("requestAttributeValueUpdateWithRegions")
     @abstractmethod
-    def request_attribute_value_update_with_regions(self, *args: object, **kwargs: object) -> object:
+    def requestAttributeValueUpdateWithRegions(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("requestFederationRestore")
+    @_service_metadata("requestFederationRestore")
     @abstractmethod
-    def request_federation_restore(self, *args: object, **kwargs: object) -> object:
+    def requestFederationRestore(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("requestFederationSave")
+    @_service_metadata("requestFederationSave")
     @abstractmethod
-    def request_federation_save(self, *args: object, **kwargs: object) -> object:
+    def requestFederationSave(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("requestInteractionTransportationTypeChange")
+    @_service_metadata("requestInteractionTransportationTypeChange")
     @abstractmethod
-    def request_interaction_transportation_type_change(self, *args: object, **kwargs: object) -> object:
+    def requestInteractionTransportationTypeChange(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("reserveMultipleObjectInstanceName")
+    @_service_metadata("reserveMultipleObjectInstanceName")
     @abstractmethod
-    def reserve_multiple_object_instance_name(self, *args: object, **kwargs: object) -> object:
+    def reserveMultipleObjectInstanceName(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("reserveObjectInstanceName")
+    @_service_metadata("reserveObjectInstanceName")
     @abstractmethod
-    def reserve_object_instance_name(self, *args: object, **kwargs: object) -> object:
+    def reserveObjectInstanceName(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("resignFederationExecution")
+    @_service_metadata("resignFederationExecution")
     @abstractmethod
-    def resign_federation_execution(self, *args: object, **kwargs: object) -> object:
+    def resignFederationExecution(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("retract")
+    @_service_metadata("retract")
     @abstractmethod
-    def retract(self, *args: object, **kwargs: object) -> object:
+    def retract(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("sendInteraction")
+    @_service_metadata("sendInteraction")
     @abstractmethod
-    def send_interaction(self, *args: object, **kwargs: object) -> object:
+    def sendInteraction(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("sendInteractionWithRegions")
+    @_service_metadata("sendInteractionWithRegions")
     @abstractmethod
-    def send_interaction_with_regions(self, *args: object, **kwargs: object) -> object:
+    def sendInteractionWithRegions(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("setAutomaticResignDirective")
+    @_service_metadata("setAutomaticResignDirective")
     @abstractmethod
-    def set_automatic_resign_directive(self, *args: object, **kwargs: object) -> object:
+    def setAutomaticResignDirective(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("setRangeBounds")
+    @_service_metadata("setRangeBounds")
     @abstractmethod
-    def set_range_bounds(self, *args: object, **kwargs: object) -> object:
+    def setRangeBounds(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("subscribeInteractionClass")
+    @_service_metadata("subscribeInteractionClass")
     @abstractmethod
-    def subscribe_interaction_class(self, *args: object, **kwargs: object) -> object:
+    def subscribeInteractionClass(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("subscribeInteractionClassPassively")
+    @_service_metadata("subscribeInteractionClassPassively")
     @abstractmethod
-    def subscribe_interaction_class_passively(self, *args: object, **kwargs: object) -> object:
+    def subscribeInteractionClassPassively(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("subscribeInteractionClassPassivelyWithRegions")
+    @_service_metadata("subscribeInteractionClassPassivelyWithRegions")
     @abstractmethod
-    def subscribe_interaction_class_passively_with_regions(self, *args: object, **kwargs: object) -> object:
+    def subscribeInteractionClassPassivelyWithRegions(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("subscribeInteractionClassWithRegions")
+    @_service_metadata("subscribeInteractionClassWithRegions")
     @abstractmethod
-    def subscribe_interaction_class_with_regions(self, *args: object, **kwargs: object) -> object:
+    def subscribeInteractionClassWithRegions(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("subscribeObjectClassAttributes")
+    @_service_metadata("subscribeObjectClassAttributes")
     @abstractmethod
-    def subscribe_object_class_attributes(self, *args: object, **kwargs: object) -> object:
+    def subscribeObjectClassAttributes(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("subscribeObjectClassAttributesPassively")
+    @_service_metadata("subscribeObjectClassAttributesPassively")
     @abstractmethod
-    def subscribe_object_class_attributes_passively(self, *args: object, **kwargs: object) -> object:
+    def subscribeObjectClassAttributesPassively(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("subscribeObjectClassAttributesPassivelyWithRegions")
+    @_service_metadata("subscribeObjectClassAttributesPassivelyWithRegions")
     @abstractmethod
-    def subscribe_object_class_attributes_passively_with_regions(self, *args: object, **kwargs: object) -> object:
+    def subscribeObjectClassAttributesPassivelyWithRegions(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("subscribeObjectClassAttributesWithRegions")
+    @_service_metadata("subscribeObjectClassAttributesWithRegions")
     @abstractmethod
-    def subscribe_object_class_attributes_with_regions(self, *args: object, **kwargs: object) -> object:
+    def subscribeObjectClassAttributesWithRegions(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("synchronizationPointAchieved")
+    @_service_metadata("synchronizationPointAchieved")
     @abstractmethod
-    def synchronization_point_achieved(self, *args: object, **kwargs: object) -> object:
+    def synchronizationPointAchieved(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("timeAdvanceRequest")
+    @_service_metadata("timeAdvanceRequest")
     @abstractmethod
-    def time_advance_request(self, *args: object, **kwargs: object) -> object:
+    def timeAdvanceRequest(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("timeAdvanceRequestAvailable")
+    @_service_metadata("timeAdvanceRequestAvailable")
     @abstractmethod
-    def time_advance_request_available(self, *args: object, **kwargs: object) -> object:
+    def timeAdvanceRequestAvailable(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("unassociateRegionsForUpdates")
+    @_service_metadata("unassociateRegionsForUpdates")
     @abstractmethod
-    def unassociate_regions_for_updates(self, *args: object, **kwargs: object) -> object:
+    def unassociateRegionsForUpdates(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("unconditionalAttributeOwnershipDivestiture")
+    @_service_metadata("unconditionalAttributeOwnershipDivestiture")
     @abstractmethod
-    def unconditional_attribute_ownership_divestiture(self, *args: object, **kwargs: object) -> object:
+    def unconditionalAttributeOwnershipDivestiture(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("unpublishInteractionClass")
+    @_service_metadata("unpublishInteractionClass")
     @abstractmethod
-    def unpublish_interaction_class(self, *args: object, **kwargs: object) -> object:
+    def unpublishInteractionClass(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("unpublishObjectClass")
+    @_service_metadata("unpublishObjectClass")
     @abstractmethod
-    def unpublish_object_class(self, *args: object, **kwargs: object) -> object:
+    def unpublishObjectClass(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("unpublishObjectClassAttributes")
+    @_service_metadata("unpublishObjectClassAttributes")
     @abstractmethod
-    def unpublish_object_class_attributes(self, *args: object, **kwargs: object) -> object:
+    def unpublishObjectClassAttributes(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("unsubscribeInteractionClass")
+    @_service_metadata("unsubscribeInteractionClass")
     @abstractmethod
-    def unsubscribe_interaction_class(self, *args: object, **kwargs: object) -> object:
+    def unsubscribeInteractionClass(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("unsubscribeInteractionClassWithRegions")
+    @_service_metadata("unsubscribeInteractionClassWithRegions")
     @abstractmethod
-    def unsubscribe_interaction_class_with_regions(self, *args: object, **kwargs: object) -> object:
+    def unsubscribeInteractionClassWithRegions(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("unsubscribeObjectClass")
+    @_service_metadata("unsubscribeObjectClass")
     @abstractmethod
-    def unsubscribe_object_class(self, *args: object, **kwargs: object) -> object:
+    def unsubscribeObjectClass(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("unsubscribeObjectClassAttributes")
+    @_service_metadata("unsubscribeObjectClassAttributes")
     @abstractmethod
-    def unsubscribe_object_class_attributes(self, *args: object, **kwargs: object) -> object:
+    def unsubscribeObjectClassAttributes(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("unsubscribeObjectClassAttributesWithRegions")
+    @_service_metadata("unsubscribeObjectClassAttributesWithRegions")
     @abstractmethod
-    def unsubscribe_object_class_attributes_with_regions(self, *args: object, **kwargs: object) -> object:
+    def unsubscribeObjectClassAttributesWithRegions(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
 
-    @_rti_service("updateAttributeValues")
+    @_service_metadata("updateAttributeValues")
     @abstractmethod
-    def update_attribute_values(self, *args: object, **kwargs: object) -> object:
+    def updateAttributeValues(self, *args: object, **kwargs: object) -> object:  # noqa: N802
         raise NotImplementedError
-
 
 class FederateAmbassadorSpec:
     """No-op prototype base for HLA federate callbacks."""

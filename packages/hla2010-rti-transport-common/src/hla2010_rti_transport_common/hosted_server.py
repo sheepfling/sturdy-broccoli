@@ -297,12 +297,12 @@ class HostedRTICommandProcessor:
         fields = cast(Sequence[Any], request.fields)
 
         if command == "GET_HLA_VERSION":
-            return TransportResponse(fields=(self.rti.get_hla_version(),))
+            return TransportResponse(fields=(self.rti.getHLAversion(),))
         if command == "GET_FEDERATE_HANDLE":
-            handle = self.rti.get_federate_handle(str(fields[0]))
+            handle = self.rti.getFederateHandle(str(fields[0]))
             return TransportResponse(fields=(str(int(handle.value)),))
         if command == "GET_FEDERATE_NAME":
-            return TransportResponse(fields=(self.rti.get_federate_name(FederateHandle(int(fields[0]))),))
+            return TransportResponse(fields=(self.rti.getFederateName(FederateHandle(int(fields[0]))),))
         if command == "CONNECT":
             callback_model = CallbackModel[str(fields[0])]
             local_settings = str(fields[1]) if len(fields) >= 2 and fields[1] not in {"", None} else None
@@ -312,22 +312,22 @@ class HostedRTICommandProcessor:
             self.rti.disconnect()
             return TransportResponse()
         if command == "LIST_FEDERATION_EXECUTIONS":
-            self.rti.list_federation_executions()
+            self.rti.listFederationExecutions()
             return TransportResponse()
         if command == "CREATE":
             federation_name = str(fields[0])
             logical_time_name = str(fields[1]) if len(fields) >= 2 else ""
             fom_modules = [str(value) for value in fields[2:]]
-            self.rti.create_federation_execution(federation_name, fom_modules, logical_time_name or None)
+            self.rti.createFederationExecution(federation_name, fom_modules, logical_time_name or None)
             return TransportResponse()
         if command == "CREATE_WITH_MIM":
             federation_name = str(fields[0])
             logical_time_name = str(fields[1]) if len(fields) >= 2 else ""
             fom_modules = [str(value) for value in fields[2:]]
-            self.rti.create_federation_execution_with_mim(federation_name, fom_modules, logical_time_name or None)
+            self.rti.createFederationExecutionWithMIM(federation_name, fom_modules, logical_time_name or None)
             return TransportResponse()
         if command == "DESTROY":
-            self.rti.destroy_federation_execution(str(fields[0]))
+            self.rti.destroyFederationExecution(str(fields[0]))
             return TransportResponse()
         if command == "JOIN":
             federate_name = str(fields[0]) if fields and fields[0] is not None else ""
@@ -335,178 +335,178 @@ class HostedRTICommandProcessor:
             federation_name = str(fields[2])
             additional_foms = [str(value) for value in fields[3:]]
             if additional_foms:
-                handle = self.rti.join_federation_execution(federate_name, federate_type, federation_name, additional_foms)
+                handle = self.rti.joinFederationExecution(federate_name, federate_type, federation_name, additional_foms)
             elif federate_name:
-                handle = self.rti.join_federation_execution(federate_name, federate_type, federation_name)
+                handle = self.rti.joinFederationExecution(federate_name, federate_type, federation_name)
             else:
-                handle = self.rti.join_federation_execution(federate_type, federation_name)
+                handle = self.rti.joinFederationExecution(federate_type, federation_name)
             return TransportResponse(fields=(str(int(handle.value)),))
         if command == "RESIGN":
             try:
                 action = ResignAction[str(fields[0])]
             except KeyError as exc:
                 raise InvalidResignAction(repr(fields[0])) from exc
-            self.rti.resign_federation_execution(action)
+            self.rti.resignFederationExecution(action)
             return TransportResponse()
         if command == "REQUEST_FEDERATION_SAVE":
             label = str(fields[0])
             if len(fields) >= 3:
-                self.rti.request_federation_save(label, _decode_logical_time(str(fields[1]), fields[2]))
+                self.rti.requestFederationSave(label, _decode_logical_time(str(fields[1]), fields[2]))
             else:
-                self.rti.request_federation_save(label)
+                self.rti.requestFederationSave(label)
             return TransportResponse()
         if command == "FEDERATE_SAVE_BEGUN":
-            self.rti.federate_save_begun()
+            self.rti.federateSaveBegun()
             return TransportResponse()
         if command == "FEDERATE_SAVE_COMPLETE":
-            self.rti.federate_save_complete()
+            self.rti.federateSaveComplete()
             return TransportResponse()
         if command == "FEDERATE_SAVE_NOT_COMPLETE":
-            self.rti.federate_save_not_complete()
+            self.rti.federateSaveNotComplete()
             return TransportResponse()
         if command == "ABORT_FEDERATION_SAVE":
-            self.rti.abort_federation_save()
+            self.rti.abortFederationSave()
             return TransportResponse()
         if command == "QUERY_FEDERATION_SAVE_STATUS":
-            self.rti.query_federation_save_status()
+            self.rti.queryFederationSaveStatus()
             return TransportResponse()
         if command == "REQUEST_FEDERATION_RESTORE":
-            self.rti.request_federation_restore(str(fields[0]))
+            self.rti.requestFederationRestore(str(fields[0]))
             return TransportResponse()
         if command == "FEDERATE_RESTORE_COMPLETE":
-            self.rti.federate_restore_complete()
+            self.rti.federateRestoreComplete()
             return TransportResponse()
         if command == "FEDERATE_RESTORE_NOT_COMPLETE":
-            self.rti.federate_restore_not_complete()
+            self.rti.federateRestoreNotComplete()
             return TransportResponse()
         if command == "ABORT_FEDERATION_RESTORE":
-            self.rti.abort_federation_restore()
+            self.rti.abortFederationRestore()
             return TransportResponse()
         if command == "QUERY_FEDERATION_RESTORE_STATUS":
-            self.rti.query_federation_restore_status()
+            self.rti.queryFederationRestoreStatus()
             return TransportResponse()
         if command == "GET_OBJECT_CLASS_HANDLE":
-            return TransportResponse(fields=(str(int(self.rti.get_object_class_handle(str(fields[0])).value)),))
+            return TransportResponse(fields=(str(int(self.rti.getObjectClassHandle(str(fields[0])).value)),))
         if command == "GET_OBJECT_CLASS_NAME":
-            return TransportResponse(fields=(self.rti.get_object_class_name(ObjectClassHandle(int(fields[0]))),))
+            return TransportResponse(fields=(self.rti.getObjectClassName(ObjectClassHandle(int(fields[0]))),))
         if command == "GET_ATTRIBUTE_HANDLE":
-            handle = self.rti.get_attribute_handle(ObjectClassHandle(int(fields[0])), str(fields[1]))
+            handle = self.rti.getAttributeHandle(ObjectClassHandle(int(fields[0])), str(fields[1]))
             return TransportResponse(fields=(str(int(handle.value)),))
         if command == "GET_ATTRIBUTE_NAME":
-            return TransportResponse(fields=(self.rti.get_attribute_name(ObjectClassHandle(int(fields[0])), AttributeHandle(int(fields[1]))),))
+            return TransportResponse(fields=(self.rti.getAttributeName(ObjectClassHandle(int(fields[0])), AttributeHandle(int(fields[1]))),))
         if command == "GET_DIMENSION_HANDLE":
-            handle = self.rti.get_dimension_handle(str(fields[0]))
+            handle = self.rti.getDimensionHandle(str(fields[0]))
             return TransportResponse(fields=(str(int(handle.value)),))
         if command == "GET_TRANSPORTATION_TYPE_HANDLE":
             requested = None if not fields or fields[0] in {"", None} else str(fields[0])
-            handle = self.rti.get_transportation_type_handle(requested)
+            handle = self.rti.getTransportationTypeHandle(requested)
             return TransportResponse(fields=(str(int(handle.value)),))
         if command == "GET_TRANSPORTATION_TYPE_NAME":
-            return TransportResponse(fields=(self.rti.get_transportation_type_name(TransportationTypeHandle(int(fields[0]))),))
+            return TransportResponse(fields=(self.rti.getTransportationTypeName(TransportationTypeHandle(int(fields[0]))),))
         if command == "PUBLISH_OBJECT_CLASS_ATTRIBUTES":
-            self.rti.publish_object_class_attributes(
+            self.rti.publishObjectClassAttributes(
                 ObjectClassHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
         if command == "UNPUBLISH_OBJECT_CLASS_ATTRIBUTES":
-            self.rti.unpublish_object_class_attributes(
+            self.rti.unpublishObjectClassAttributes(
                 ObjectClassHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
         if command == "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES":
-            self.rti.subscribe_object_class_attributes(
+            self.rti.subscribeObjectClassAttributes(
                 ObjectClassHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
         if command == "UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES":
-            self.rti.unsubscribe_object_class_attributes(
+            self.rti.unsubscribeObjectClassAttributes(
                 ObjectClassHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
         if command == "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS":
-            self.rti.subscribe_object_class_attributes_with_regions(
+            self.rti.subscribeObjectClassAttributesWithRegions(
                 ObjectClassHandle(int(fields[0])),
                 _decode_attribute_region_associations(str(fields[1])),
             )
             return TransportResponse()
         if command == "UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS":
-            self.rti.unsubscribe_object_class_attributes_with_regions(
+            self.rti.unsubscribeObjectClassAttributesWithRegions(
                 ObjectClassHandle(int(fields[0])),
                 _decode_attribute_region_associations(str(fields[1])),
             )
             return TransportResponse()
         if command == "CREATE_REGION":
-            handle = self.rti.create_region(
+            handle = self.rti.createRegion(
                 decode_handle_set(str(fields[0]), DimensionHandle, set),
             )
             return TransportResponse(fields=(str(int(handle.value)),))
         if command == "SET_RANGE_BOUNDS":
-            self.rti.set_range_bounds(
+            self.rti.setRangeBounds(
                 RegionHandle(int(fields[0])),
                 DimensionHandle(int(fields[1])),
                 RangeBounds(int(fields[2]), int(fields[3])),
             )
             return TransportResponse()
         if command == "COMMIT_REGION_MODIFICATIONS":
-            self.rti.commit_region_modifications(_decode_region_set(str(fields[0])))
+            self.rti.commitRegionModifications(_decode_region_set(str(fields[0])))
             return TransportResponse()
         if command == "DELETE_REGION":
-            self.rti.delete_region(RegionHandle(int(fields[0])))
+            self.rti.deleteRegion(RegionHandle(int(fields[0])))
             return TransportResponse()
         if command == "REGISTER_OBJECT_INSTANCE":
             if not fields:
                 raise ValueError("REGISTER_OBJECT_INSTANCE requires an object class handle")
             if len(fields) >= 2 and fields[1]:
-                handle = self.rti.register_object_instance(ObjectClassHandle(int(fields[0])), str(fields[1]))
+                handle = self.rti.registerObjectInstance(ObjectClassHandle(int(fields[0])), str(fields[1]))
             else:
-                handle = self.rti.register_object_instance(ObjectClassHandle(int(fields[0])))
+                handle = self.rti.registerObjectInstance(ObjectClassHandle(int(fields[0])))
             return TransportResponse(fields=(str(int(handle.value)),))
         if command == "REGISTER_OBJECT_INSTANCE_WITH_REGIONS":
             if len(fields) >= 3 and fields[2]:
-                handle = self.rti.register_object_instance_with_regions(
+                handle = self.rti.registerObjectInstanceWithRegions(
                     ObjectClassHandle(int(fields[0])),
                     _decode_attribute_region_associations(str(fields[1])),
                     str(fields[2]),
                 )
             else:
-                handle = self.rti.register_object_instance_with_regions(
+                handle = self.rti.registerObjectInstanceWithRegions(
                     ObjectClassHandle(int(fields[0])),
                     _decode_attribute_region_associations(str(fields[1])),
                 )
             return TransportResponse(fields=(str(int(handle.value)),))
         if command == "ASSOCIATE_REGIONS_FOR_UPDATES":
-            self.rti.associate_regions_for_updates(
+            self.rti.associateRegionsForUpdates(
                 ObjectInstanceHandle(int(fields[0])),
                 _decode_attribute_region_associations(str(fields[1])),
             )
             return TransportResponse()
         if command == "UNASSOCIATE_REGIONS_FOR_UPDATES":
-            self.rti.unassociate_regions_for_updates(
+            self.rti.unassociateRegionsForUpdates(
                 ObjectInstanceHandle(int(fields[0])),
                 _decode_attribute_region_associations(str(fields[1])),
             )
             return TransportResponse()
         if command == "GET_OBJECT_INSTANCE_HANDLE":
-            handle = self.rti.get_object_instance_handle(str(fields[0]))
+            handle = self.rti.getObjectInstanceHandle(str(fields[0]))
             return TransportResponse(fields=(str(int(handle.value)),))
         if command == "GET_OBJECT_INSTANCE_NAME":
-            return TransportResponse(fields=(self.rti.get_object_instance_name(ObjectInstanceHandle(int(fields[0]))),))
+            return TransportResponse(fields=(self.rti.getObjectInstanceName(ObjectInstanceHandle(int(fields[0]))),))
         if command == "GET_KNOWN_OBJECT_CLASS_HANDLE":
-            handle = self.rti.get_known_object_class_handle(ObjectInstanceHandle(int(fields[0])))
+            handle = self.rti.getKnownObjectClassHandle(ObjectInstanceHandle(int(fields[0])))
             return TransportResponse(fields=(str(int(handle.value)),))
         if command == "UPDATE_ATTRIBUTE_VALUES":
-            self.rti.update_attribute_values(
+            self.rti.updateAttributeValues(
                 ObjectInstanceHandle(int(fields[0])),
                 decode_handle_value_map(str(fields[1]), AttributeHandle, AttributeHandleValueMap),
                 decode_bytes(str(fields[2])),
             )
             return TransportResponse()
         if command == "UPDATE_ATTRIBUTE_VALUES_TIMESTAMP":
-            handle = self.rti.update_attribute_values(
+            handle = self.rti.updateAttributeValues(
                 ObjectInstanceHandle(int(fields[0])),
                 decode_handle_value_map(str(fields[1]), AttributeHandle, AttributeHandleValueMap),
                 decode_bytes(str(fields[2])),
@@ -516,54 +516,54 @@ class HostedRTICommandProcessor:
                 return TransportResponse()
             return TransportResponse(fields=(str(int(handle.handle.value)),))
         if command == "DELETE_OBJECT_INSTANCE":
-            self.rti.delete_object_instance(
+            self.rti.deleteObjectInstance(
                 ObjectInstanceHandle(int(fields[0])),
                 decode_bytes(str(fields[1])),
             )
             return TransportResponse()
         if command == "GET_INTERACTION_CLASS_HANDLE":
-            handle = self.rti.get_interaction_class_handle(str(fields[0]))
+            handle = self.rti.getInteractionClassHandle(str(fields[0]))
             return TransportResponse(fields=(str(int(handle.value)),))
         if command == "GET_INTERACTION_CLASS_NAME":
-            return TransportResponse(fields=(self.rti.get_interaction_class_name(InteractionClassHandle(int(fields[0]))),))
+            return TransportResponse(fields=(self.rti.getInteractionClassName(InteractionClassHandle(int(fields[0]))),))
         if command == "GET_PARAMETER_HANDLE":
-            handle = self.rti.get_parameter_handle(InteractionClassHandle(int(fields[0])), str(fields[1]))
+            handle = self.rti.getParameterHandle(InteractionClassHandle(int(fields[0])), str(fields[1]))
             return TransportResponse(fields=(str(int(handle.value)),))
         if command == "GET_PARAMETER_NAME":
-            return TransportResponse(fields=(self.rti.get_parameter_name(InteractionClassHandle(int(fields[0])), ParameterHandle(int(fields[1]))),))
+            return TransportResponse(fields=(self.rti.getParameterName(InteractionClassHandle(int(fields[0])), ParameterHandle(int(fields[1]))),))
         if command == "PUBLISH_INTERACTION_CLASS":
-            self.rti.publish_interaction_class(InteractionClassHandle(int(fields[0])))
+            self.rti.publishInteractionClass(InteractionClassHandle(int(fields[0])))
             return TransportResponse()
         if command == "UNPUBLISH_INTERACTION_CLASS":
-            self.rti.unpublish_interaction_class(InteractionClassHandle(int(fields[0])))
+            self.rti.unpublishInteractionClass(InteractionClassHandle(int(fields[0])))
             return TransportResponse()
         if command == "SUBSCRIBE_INTERACTION_CLASS":
-            self.rti.subscribe_interaction_class(InteractionClassHandle(int(fields[0])))
+            self.rti.subscribeInteractionClass(InteractionClassHandle(int(fields[0])))
             return TransportResponse()
         if command == "UNSUBSCRIBE_INTERACTION_CLASS":
-            self.rti.unsubscribe_interaction_class(InteractionClassHandle(int(fields[0])))
+            self.rti.unsubscribeInteractionClass(InteractionClassHandle(int(fields[0])))
             return TransportResponse()
         if command == "SUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS":
-            self.rti.subscribe_interaction_class_with_regions(
+            self.rti.subscribeInteractionClassWithRegions(
                 InteractionClassHandle(int(fields[0])),
                 _decode_region_set(str(fields[1])),
             )
             return TransportResponse()
         if command == "UNSUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS":
-            self.rti.unsubscribe_interaction_class_with_regions(
+            self.rti.unsubscribeInteractionClassWithRegions(
                 InteractionClassHandle(int(fields[0])),
                 _decode_region_set(str(fields[1])),
             )
             return TransportResponse()
         if command == "SEND_INTERACTION":
-            self.rti.send_interaction(
+            self.rti.sendInteraction(
                 InteractionClassHandle(int(fields[0])),
                 decode_handle_value_map(str(fields[1]), ParameterHandle, ParameterHandleValueMap),
                 decode_bytes(str(fields[2])),
             )
             return TransportResponse()
         if command == "SEND_INTERACTION_WITH_REGIONS":
-            self.rti.send_interaction_with_regions(
+            self.rti.sendInteractionWithRegions(
                 InteractionClassHandle(int(fields[0])),
                 decode_handle_value_map(str(fields[1]), ParameterHandle, ParameterHandleValueMap),
                 _decode_region_set(str(fields[2])),
@@ -571,7 +571,7 @@ class HostedRTICommandProcessor:
             )
             return TransportResponse()
         if command == "SEND_INTERACTION_TIMESTAMP":
-            handle = self.rti.send_interaction(
+            handle = self.rti.sendInteraction(
                 InteractionClassHandle(int(fields[0])),
                 decode_handle_value_map(str(fields[1]), ParameterHandle, ParameterHandleValueMap),
                 decode_bytes(str(fields[2])),
@@ -581,65 +581,65 @@ class HostedRTICommandProcessor:
                 return TransportResponse()
             return TransportResponse(fields=(str(int(handle.handle.value)),))
         if command == "REQUEST_ATTRIBUTE_VALUE_UPDATE_OBJECT":
-            self.rti.request_attribute_value_update(
+            self.rti.requestAttributeValueUpdate(
                 ObjectInstanceHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
                 decode_bytes(str(fields[2])),
             )
             return TransportResponse()
         if command == "REQUEST_ATTRIBUTE_VALUE_UPDATE_CLASS":
-            self.rti.request_attribute_value_update(
+            self.rti.requestAttributeValueUpdate(
                 ObjectClassHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
                 decode_bytes(str(fields[2])),
             )
             return TransportResponse()
         if command == "REQUEST_ATTRIBUTE_VALUE_UPDATE_WITH_REGIONS":
-            self.rti.request_attribute_value_update_with_regions(
+            self.rti.requestAttributeValueUpdateWithRegions(
                 ObjectInstanceHandle(int(fields[0])),
                 _decode_attribute_region_associations(str(fields[1])),
                 decode_bytes(str(fields[2])),
             )
             return TransportResponse()
         if command == "REQUEST_ATTRIBUTE_TRANSPORTATION_TYPE_CHANGE":
-            self.rti.request_attribute_transportation_type_change(
+            self.rti.requestAttributeTransportationTypeChange(
                 ObjectInstanceHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
                 TransportationTypeHandle(int(fields[2])),
             )
             return TransportResponse()
         if command == "QUERY_ATTRIBUTE_TRANSPORTATION_TYPE":
-            self.rti.query_attribute_transportation_type(
+            self.rti.queryAttributeTransportationType(
                 ObjectInstanceHandle(int(fields[0])),
                 AttributeHandle(int(fields[1])),
             )
             return TransportResponse()
         if command == "ENABLE_TIME_REGULATION":
-            self.rti.enable_time_regulation(_decode_logical_interval(str(fields[0]), fields[1]))
+            self.rti.enableTimeRegulation(_decode_logical_interval(str(fields[0]), fields[1]))
             return TransportResponse()
         if command == "ENABLE_TIME_CONSTRAINED":
-            self.rti.enable_time_constrained()
+            self.rti.enableTimeConstrained()
             return TransportResponse()
         if command == "DISABLE_TIME_REGULATION":
-            self.rti.disable_time_regulation()
+            self.rti.disableTimeRegulation()
             return TransportResponse()
         if command == "DISABLE_TIME_CONSTRAINED":
-            self.rti.disable_time_constrained()
+            self.rti.disableTimeConstrained()
             return TransportResponse()
         if command == "QUERY_LOGICAL_TIME":
-            logical_time = self.rti.query_logical_time()
+            logical_time = self.rti.queryLogicalTime()
             return TransportResponse(fields=(_logical_time_name(logical_time), _logical_scalar(logical_time)))
         if command == "QUERY_LOOKAHEAD":
-            lookahead = self.rti.query_lookahead()
+            lookahead = self.rti.queryLookahead()
             return TransportResponse(fields=(_logical_interval_name(lookahead), _logical_scalar(lookahead)))
         if command == "MODIFY_LOOKAHEAD":
-            self.rti.modify_lookahead(_decode_logical_interval(str(fields[0]), fields[1]))
+            self.rti.modifyLookahead(_decode_logical_interval(str(fields[0]), fields[1]))
             return TransportResponse()
         if command == "ENABLE_ASYNCHRONOUS_DELIVERY":
-            self.rti.enable_asynchronous_delivery()
+            self.rti.enableAsynchronousDelivery()
             return TransportResponse()
         if command == "DISABLE_ASYNCHRONOUS_DELIVERY":
-            self.rti.disable_asynchronous_delivery()
+            self.rti.disableAsynchronousDelivery()
             return TransportResponse()
         if command == "REGISTER_FEDERATION_SYNCHRONIZATION_POINT":
             label = str(fields[0])
@@ -650,125 +650,125 @@ class HostedRTICommandProcessor:
                 else None
             )
             if synchronization_set is None:
-                self.rti.register_federation_synchronization_point(label, tag)
+                self.rti.registerFederationSynchronizationPoint(label, tag)
             else:
-                self.rti.register_federation_synchronization_point(label, tag, synchronization_set)
+                self.rti.registerFederationSynchronizationPoint(label, tag, synchronization_set)
             return TransportResponse()
         if command == "SYNCHRONIZATION_POINT_ACHIEVED":
             label = str(fields[0])
             successful = str(fields[1]) == "1" if len(fields) >= 2 else True
-            self.rti.synchronization_point_achieved(label, successful)
+            self.rti.synchronizationPointAchieved(label, successful)
             return TransportResponse()
         if command == "UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE":
-            self.rti.unconditional_attribute_ownership_divestiture(
+            self.rti.unconditionalAttributeOwnershipDivestiture(
                 ObjectInstanceHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
         if command == "NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE":
-            self.rti.negotiated_attribute_ownership_divestiture(
+            self.rti.negotiatedAttributeOwnershipDivestiture(
                 ObjectInstanceHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
                 decode_bytes(str(fields[2])),
             )
             return TransportResponse()
         if command == "CONFIRM_DIVESTITURE":
-            self.rti.confirm_divestiture(
+            self.rti.confirmDivestiture(
                 ObjectInstanceHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
                 decode_bytes(str(fields[2])),
             )
             return TransportResponse()
         if command == "ATTRIBUTE_OWNERSHIP_ACQUISITION":
-            self.rti.attribute_ownership_acquisition(
+            self.rti.attributeOwnershipAcquisition(
                 ObjectInstanceHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
                 decode_bytes(str(fields[2])),
             )
             return TransportResponse()
         if command == "ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE":
-            self.rti.attribute_ownership_acquisition_if_available(
+            self.rti.attributeOwnershipAcquisitionIfAvailable(
                 ObjectInstanceHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
         if command == "ATTRIBUTE_OWNERSHIP_RELEASE_DENIED":
-            self.rti.attribute_ownership_release_denied(
+            self.rti.attributeOwnershipReleaseDenied(
                 ObjectInstanceHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
         if command == "ATTRIBUTE_OWNERSHIP_DIVESTITURE_IF_WANTED":
-            result = self.rti.attribute_ownership_divestiture_if_wanted(
+            result = self.rti.attributeOwnershipDivestitureIfWanted(
                 ObjectInstanceHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse(fields=(handle_set_spec(result),))
         if command == "CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE":
-            self.rti.cancel_negotiated_attribute_ownership_divestiture(
+            self.rti.cancelNegotiatedAttributeOwnershipDivestiture(
                 ObjectInstanceHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
         if command == "CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION":
-            self.rti.cancel_attribute_ownership_acquisition(
+            self.rti.cancelAttributeOwnershipAcquisition(
                 ObjectInstanceHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
             )
             return TransportResponse()
         if command == "QUERY_ATTRIBUTE_OWNERSHIP":
-            self.rti.query_attribute_ownership(ObjectInstanceHandle(int(fields[0])), AttributeHandle(int(fields[1])))
+            self.rti.queryAttributeOwnership(ObjectInstanceHandle(int(fields[0])), AttributeHandle(int(fields[1])))
             return TransportResponse()
         if command == "IS_ATTRIBUTE_OWNED_BY_FEDERATE":
-            owned = self.rti.is_attribute_owned_by_federate(ObjectInstanceHandle(int(fields[0])), AttributeHandle(int(fields[1])))
+            owned = self.rti.isAttributeOwnedByFederate(ObjectInstanceHandle(int(fields[0])), AttributeHandle(int(fields[1])))
             return TransportResponse(fields=("1" if owned else "0",))
         if command == "CHANGE_ATTRIBUTE_ORDER_TYPE":
-            self.rti.change_attribute_order_type(
+            self.rti.changeAttributeOrderType(
                 ObjectInstanceHandle(int(fields[0])),
                 decode_handle_set(str(fields[1]), AttributeHandle, AttributeHandleSet),
                 OrderType[str(fields[2])],
             )
             return TransportResponse()
         if command == "CHANGE_INTERACTION_ORDER_TYPE":
-            self.rti.change_interaction_order_type(InteractionClassHandle(int(fields[0])), OrderType[str(fields[1])])
+            self.rti.changeInteractionOrderType(InteractionClassHandle(int(fields[0])), OrderType[str(fields[1])])
             return TransportResponse()
         if command == "REQUEST_INTERACTION_TRANSPORTATION_TYPE_CHANGE":
-            self.rti.request_interaction_transportation_type_change(
+            self.rti.requestInteractionTransportationTypeChange(
                 InteractionClassHandle(int(fields[0])),
                 TransportationTypeHandle(int(fields[1])),
             )
             return TransportResponse()
         if command == "QUERY_INTERACTION_TRANSPORTATION_TYPE":
             if len(fields) >= 2:
-                self.rti.query_interaction_transportation_type(
+                self.rti.queryInteractionTransportationType(
                     FederateHandle(int(fields[0])),
                     InteractionClassHandle(int(fields[1])),
                 )
             else:
-                self.rti.query_interaction_transportation_type(InteractionClassHandle(int(fields[0])))
+                self.rti.queryInteractionTransportationType(InteractionClassHandle(int(fields[0])))
             return TransportResponse()
         if command == "TIME_ADVANCE_REQUEST":
-            self.rti.time_advance_request(_decode_logical_time(str(fields[0]), fields[1]))
+            self.rti.timeAdvanceRequest(_decode_logical_time(str(fields[0]), fields[1]))
             return TransportResponse()
         if command == "TIME_ADVANCE_REQUEST_AVAILABLE":
-            self.rti.time_advance_request_available(_decode_logical_time(str(fields[0]), fields[1]))
+            self.rti.timeAdvanceRequestAvailable(_decode_logical_time(str(fields[0]), fields[1]))
             return TransportResponse()
         if command == "NEXT_MESSAGE_REQUEST":
-            self.rti.next_message_request(_decode_logical_time(str(fields[0]), fields[1]))
+            self.rti.nextMessageRequest(_decode_logical_time(str(fields[0]), fields[1]))
             return TransportResponse()
         if command == "NEXT_MESSAGE_REQUEST_AVAILABLE":
-            self.rti.next_message_request_available(_decode_logical_time(str(fields[0]), fields[1]))
+            self.rti.nextMessageRequestAvailable(_decode_logical_time(str(fields[0]), fields[1]))
             return TransportResponse()
         if command == "FLUSH_QUEUE_REQUEST":
-            self.rti.flush_queue_request(_decode_logical_time(str(fields[0]), fields[1]))
+            self.rti.flushQueueRequest(_decode_logical_time(str(fields[0]), fields[1]))
             return TransportResponse()
         if command == "QUERY_GALT":
-            query = self.rti.query_galt()
+            query = self.rti.queryGALT()
             if not query.time_is_valid:
                 return TransportResponse(fields=("0",))
             return TransportResponse(fields=("1", _logical_time_name(query.time), _logical_scalar(query.time)))
         if command == "QUERY_LITS":
-            query = self.rti.query_lits()
+            query = self.rti.queryLITS()
             if not query.time_is_valid:
                 return TransportResponse(fields=("0",))
             return TransportResponse(fields=("1", _logical_time_name(query.time), _logical_scalar(query.time)))
@@ -789,9 +789,9 @@ class HostedRTICommandProcessor:
             return ("1", *self.federate.pending.popleft())
         pending_before = len(self.federate.pending)
         if single:
-            evoked = self.rti.evoke_callback(minimum)
+            evoked = self.rti.evokeCallback(minimum)
         else:
-            evoked = self.rti.evoke_multiple_callbacks(minimum, maximum if maximum is not None else minimum)
+            evoked = self.rti.evokeMultipleCallbacks(minimum, maximum if maximum is not None else minimum)
         delivered = len(self.federate.pending) > pending_before
         if delivered and self.federate.pending:
             return ("1", *self.federate.pending.popleft())

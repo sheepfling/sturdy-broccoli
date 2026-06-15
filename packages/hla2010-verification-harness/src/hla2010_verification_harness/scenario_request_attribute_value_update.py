@@ -33,25 +33,25 @@ def run_request_attribute_value_update_scenario(
 ) -> dict[str, Any]:
     owner_rti.connect(owner_federate, CallbackModel.HLA_EVOKED)
     requester_rti.connect(requester_federate, CallbackModel.HLA_EVOKED)
-    owner_rti.create_federation_execution(
+    owner_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    owner_handle = owner_rti.join_federation_execution(config.owner_name, config.federate_type, config.federation_name)
-    requester_handle = requester_rti.join_federation_execution(
+    owner_handle = owner_rti.joinFederationExecution(config.owner_name, config.federate_type, config.federation_name)
+    requester_handle = requester_rti.joinFederationExecution(
         config.requester_name,
         config.federate_type,
         config.federation_name,
     )
 
-    owner_class = owner_rti.get_object_class_handle(config.object_class_name)
-    requester_class = requester_rti.get_object_class_handle(config.object_class_name)
-    owner_attr = owner_rti.get_attribute_handle(owner_class, config.attribute_name)
-    requester_attr = requester_rti.get_attribute_handle(requester_class, config.attribute_name)
+    owner_class = owner_rti.getObjectClassHandle(config.object_class_name)
+    requester_class = requester_rti.getObjectClassHandle(config.object_class_name)
+    owner_attr = owner_rti.getAttributeHandle(owner_class, config.attribute_name)
+    requester_attr = requester_rti.getAttributeHandle(requester_class, config.attribute_name)
 
-    owner_rti.publish_object_class_attributes(owner_class, {owner_attr})
-    requester_rti.subscribe_object_class_attributes(requester_class, {requester_attr})
+    owner_rti.publishObjectClassAttributes(owner_class, {owner_attr})
+    requester_rti.subscribeObjectClassAttributes(requester_class, {requester_attr})
     drain_callbacks_pair(owner_rti, requester_rti, loops=8)
 
     object_instance = register_named_object_instance(
@@ -63,7 +63,7 @@ def run_request_attribute_value_update_scenario(
     drain_callbacks_pair(owner_rti, requester_rti, loops=8)
     owner_federate.clear()
 
-    requester_rti.request_attribute_value_update(object_instance, {requester_attr}, config.request_tag)
+    requester_rti.requestAttributeValueUpdate(object_instance, {requester_attr}, config.request_tag)
     drain_callbacks_pair(owner_rti, requester_rti, loops=16)
 
     provide_record = owner_federate.last_callback("provideAttributeValueUpdate")
@@ -95,29 +95,29 @@ def run_request_attribute_value_update_routing_scenario(
     owner_a_rti.connect(owner_a_federate, CallbackModel.HLA_EVOKED)
     owner_b_rti.connect(owner_b_federate, CallbackModel.HLA_EVOKED)
     requester_rti.connect(requester_federate, CallbackModel.HLA_EVOKED)
-    owner_a_rti.create_federation_execution(
+    owner_a_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    owner_a_handle = owner_a_rti.join_federation_execution("OwnerA", config.federate_type, config.federation_name)
-    owner_b_handle = owner_b_rti.join_federation_execution("OwnerB", config.federate_type, config.federation_name)
-    requester_handle = requester_rti.join_federation_execution(
+    owner_a_handle = owner_a_rti.joinFederationExecution("OwnerA", config.federate_type, config.federation_name)
+    owner_b_handle = owner_b_rti.joinFederationExecution("OwnerB", config.federate_type, config.federation_name)
+    requester_handle = requester_rti.joinFederationExecution(
         config.requester_name,
         config.federate_type,
         config.federation_name,
     )
 
-    owner_a_class = owner_a_rti.get_object_class_handle(config.object_class_name)
-    owner_b_class = owner_b_rti.get_object_class_handle(config.object_class_name)
-    requester_class = requester_rti.get_object_class_handle(config.object_class_name)
-    owner_a_attr = owner_a_rti.get_attribute_handle(owner_a_class, config.attribute_name)
-    owner_b_attr = owner_b_rti.get_attribute_handle(owner_b_class, config.attribute_name)
-    requester_attr = requester_rti.get_attribute_handle(requester_class, config.attribute_name)
+    owner_a_class = owner_a_rti.getObjectClassHandle(config.object_class_name)
+    owner_b_class = owner_b_rti.getObjectClassHandle(config.object_class_name)
+    requester_class = requester_rti.getObjectClassHandle(config.object_class_name)
+    owner_a_attr = owner_a_rti.getAttributeHandle(owner_a_class, config.attribute_name)
+    owner_b_attr = owner_b_rti.getAttributeHandle(owner_b_class, config.attribute_name)
+    requester_attr = requester_rti.getAttributeHandle(requester_class, config.attribute_name)
 
-    owner_a_rti.publish_object_class_attributes(owner_a_class, {owner_a_attr})
-    owner_b_rti.publish_object_class_attributes(owner_b_class, {owner_b_attr})
-    requester_rti.subscribe_object_class_attributes(requester_class, {requester_attr})
+    owner_a_rti.publishObjectClassAttributes(owner_a_class, {owner_a_attr})
+    owner_b_rti.publishObjectClassAttributes(owner_b_class, {owner_b_attr})
+    requester_rti.subscribeObjectClassAttributes(requester_class, {requester_attr})
     drain_callbacks_pair(owner_a_rti, owner_b_rti, requester_rti, loops=8)
 
     object_a = register_named_object_instance(
@@ -137,7 +137,7 @@ def run_request_attribute_value_update_routing_scenario(
     owner_b_federate.clear()
     requester_federate.clear()
 
-    requester_rti.request_attribute_value_update(object_a, {requester_attr}, config.request_tag)
+    requester_rti.requestAttributeValueUpdate(object_a, {requester_attr}, config.request_tag)
     drain_callbacks_pair(owner_a_rti, owner_b_rti, requester_rti, loops=16)
     object_target_provide_a = owner_a_federate.last_callback("provideAttributeValueUpdate")
     object_target_provide_b = owner_b_federate.last_callback("provideAttributeValueUpdate")
@@ -147,7 +147,7 @@ def run_request_attribute_value_update_routing_scenario(
 
     owner_a_federate.clear()
     owner_b_federate.clear()
-    requester_rti.request_attribute_value_update(requester_class, {requester_attr}, b"class-wide")
+    requester_rti.requestAttributeValueUpdate(requester_class, {requester_attr}, b"class-wide")
     drain_callbacks_pair(owner_a_rti, owner_b_rti, requester_rti, loops=16)
     class_target_provide_a = owner_a_federate.last_callback("provideAttributeValueUpdate")
     class_target_provide_b = owner_b_federate.last_callback("provideAttributeValueUpdate")

@@ -64,15 +64,15 @@ def _dump_records(label: str, federate: RecordingFederateAmbassador) -> None:
 
 def _cleanup_federation(federation_name: str, owner, acquirer) -> None:
     try:
-        acquirer.resign_federation_execution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
+        acquirer.resignFederationExecution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
     except BaseException:
         pass
     try:
-        owner.resign_federation_execution(ResignAction.DELETE_OBJECTS)
+        owner.resignFederationExecution(ResignAction.DELETE_OBJECTS)
     except BaseException:
         pass
     try:
-        owner.destroy_federation_execution(federation_name)
+        owner.destroyFederationExecution(federation_name)
     except BaseException:
         pass
     for rti in (acquirer, owner):

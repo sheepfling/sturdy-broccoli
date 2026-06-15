@@ -67,30 +67,30 @@ def run_discovery_class_scenario(
 ) -> dict[str, Any]:
     publisher_rti.connect(publisher_federate, CallbackModel.HLA_EVOKED)
     subscriber_rti.connect(subscriber_federate, CallbackModel.HLA_EVOKED)
-    publisher_rti.create_federation_execution(
+    publisher_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    publisher_handle = publisher_rti.join_federation_execution(
+    publisher_handle = publisher_rti.joinFederationExecution(
         config.publisher_name,
         config.federate_type,
         config.federation_name,
     )
-    subscriber_handle = subscriber_rti.join_federation_execution(
+    subscriber_handle = subscriber_rti.joinFederationExecution(
         config.subscriber_name,
         config.federate_type,
         config.federation_name,
     )
 
-    subscriber_class = subscriber_rti.get_object_class_handle(config.subscriber_class_name)
-    publisher_class = publisher_rti.get_object_class_handle(config.publisher_class_name)
-    subscriber_attribute = subscriber_rti.get_attribute_handle(subscriber_class, config.attribute_name)
-    publisher_attribute = publisher_rti.get_attribute_handle(publisher_class, config.attribute_name)
+    subscriber_class = subscriber_rti.getObjectClassHandle(config.subscriber_class_name)
+    publisher_class = publisher_rti.getObjectClassHandle(config.publisher_class_name)
+    subscriber_attribute = subscriber_rti.getAttributeHandle(subscriber_class, config.attribute_name)
+    publisher_attribute = publisher_rti.getAttributeHandle(publisher_class, config.attribute_name)
 
-    subscriber_rti.subscribe_object_class_attributes(subscriber_class, {subscriber_attribute})
-    publisher_rti.publish_object_class_attributes(publisher_class, {publisher_attribute})
-    object_instance = publisher_rti.register_object_instance(publisher_class, config.object_instance_name)
+    subscriber_rti.subscribeObjectClassAttributes(subscriber_class, {subscriber_attribute})
+    publisher_rti.publishObjectClassAttributes(publisher_class, {publisher_attribute})
+    object_instance = publisher_rti.registerObjectInstance(publisher_class, config.object_instance_name)
     drain_callbacks_pair(publisher_rti, subscriber_rti, loops=16)
 
     discovery = subscriber_federate.last_callback("discoverObjectInstance")
@@ -98,9 +98,9 @@ def run_discovery_class_scenario(
     assert discovery.args[0] == object_instance
     assert discovery.args[1] == subscriber_class
     assert discovery.args[2] == config.object_instance_name
-    assert subscriber_rti.get_known_object_class_handle(object_instance) == subscriber_class
+    assert subscriber_rti.getKnownObjectClassHandle(object_instance) == subscriber_class
 
-    publisher_rti.update_attribute_values(
+    publisher_rti.updateAttributeValues(
         object_instance,
         {publisher_attribute: config.attribute_payload},
         config.attribute_tag,
@@ -111,7 +111,7 @@ def run_discovery_class_scenario(
     assert reflection is not None
     assert reflection.args[0] == object_instance
     assert reflection.args[1] == {subscriber_attribute: config.attribute_payload}
-    assert subscriber_rti.get_known_object_class_handle(object_instance) == subscriber_class
+    assert subscriber_rti.getKnownObjectClassHandle(object_instance) == subscriber_class
 
     return {
         "publisher_handle": publisher_handle,

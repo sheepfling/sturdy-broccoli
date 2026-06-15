@@ -33,10 +33,10 @@ def run_synchronization_scenario(
 ) -> dict[str, Any]:
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
-    leader_rti.create_federation_execution(config.federation_name, list(config.fom_modules), config.logical_time_implementation_name)
-    leader_handle = leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_handle = wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
-    leader_rti.register_federation_synchronization_point(config.label, config.tag)
+    leader_rti.createFederationExecution(config.federation_name, list(config.fom_modules), config.logical_time_implementation_name)
+    leader_handle = leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_handle = wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
+    leader_rti.registerFederationSynchronizationPoint(config.label, config.tag)
     drain_callbacks_pair(leader_rti, wing_rti, loops=12)
     leader_registration = wait_for_callback(
         leader_rti,
@@ -54,8 +54,8 @@ def run_synchronization_scenario(
     assert leader_announce.args[:2] == (config.label, config.tag)
     assert wing_announce.args[:2] == (config.label, config.tag)
 
-    leader_rti.synchronization_point_achieved(config.label)
-    wing_rti.synchronization_point_achieved(config.label)
+    leader_rti.synchronizationPointAchieved(config.label)
+    wing_rti.synchronizationPointAchieved(config.label)
     drain_callbacks_pair(leader_rti, wing_rti, loops=12)
     leader_sync = wait_for_callback(leader_rti, leader_federate, "federationSynchronized", loops=120)
     wing_sync = wait_for_callback(wing_rti, wing_federate, "federationSynchronized", loops=120)
@@ -85,14 +85,14 @@ def run_synchronization_registration_failure_scenario(
 ) -> dict[str, Any]:
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    leader_handle = leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_handle = wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
-    leader_rti.register_federation_synchronization_point(config.label, config.tag)
+    leader_handle = leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_handle = wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
+    leader_rti.registerFederationSynchronizationPoint(config.label, config.tag)
     drain_callbacks_pair(leader_rti, wing_rti, loops=12)
 
     registration_success = wait_for_callback(
@@ -105,7 +105,7 @@ def run_synchronization_registration_failure_scenario(
     assert registration_success.args == (config.label,)
 
     failure_count = len(leader_federate.callbacks_named("synchronizationPointRegistrationFailed")) + 1
-    leader_rti.register_federation_synchronization_point(config.label, config.tag)
+    leader_rti.registerFederationSynchronizationPoint(config.label, config.tag)
     drain_callbacks_pair(leader_rti, wing_rti, loops=12)
     failure_records = wait_for_callback_count(
         leader_rti,
@@ -140,15 +140,15 @@ def run_failed_federate_synchronization_scenario(
 ) -> dict[str, Any]:
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    leader_handle = leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_handle = wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    leader_handle = leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_handle = wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
 
-    leader_rti.register_federation_synchronization_point(config.label, config.tag)
+    leader_rti.registerFederationSynchronizationPoint(config.label, config.tag)
     drain_callbacks_pair(leader_rti, wing_rti, loops=12)
 
     leader_registration = wait_for_callback(
@@ -163,8 +163,8 @@ def run_failed_federate_synchronization_scenario(
     assert leader_announce is not None
     assert wing_announce is not None
 
-    leader_rti.synchronization_point_achieved(config.label, leader_success)
-    wing_rti.synchronization_point_achieved(config.label, wing_success)
+    leader_rti.synchronizationPointAchieved(config.label, leader_success)
+    wing_rti.synchronizationPointAchieved(config.label, wing_success)
     drain_callbacks_pair(leader_rti, wing_rti, loops=12)
 
     leader_sync = wait_for_callback(leader_rti, leader_federate, "federationSynchronized", loops=120)
@@ -211,14 +211,14 @@ def run_late_join_synchronization_scenario(
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
     late_rti.connect(late_federate, CallbackModel.HLA_EVOKED)
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    leader_handle = leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_handle = wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
-    leader_rti.register_federation_synchronization_point(config.label, config.tag)
+    leader_handle = leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_handle = wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
+    leader_rti.registerFederationSynchronizationPoint(config.label, config.tag)
     drain_callbacks_pair(leader_rti, wing_rti, loops=12)
 
     leader_announce = wait_for_callback(leader_rti, leader_federate, "announceSynchronizationPoint", loops=120)
@@ -228,20 +228,20 @@ def run_late_join_synchronization_scenario(
     assert leader_announce.args[:2] == (config.label, config.tag)
     assert wing_announce.args[:2] == (config.label, config.tag)
 
-    late_handle = late_rti.join_federation_execution(config.late_name, config.federate_type, config.federation_name)
+    late_handle = late_rti.joinFederationExecution(config.late_name, config.federate_type, config.federation_name)
     drain_callbacks_pair(leader_rti, wing_rti, late_rti, loops=12)
     late_announce = wait_for_callback(late_rti, late_federate, "announceSynchronizationPoint", loops=120)
     assert late_announce is not None
     assert late_announce.args[:2] == (config.label, config.tag)
 
-    leader_rti.synchronization_point_achieved(config.label)
-    wing_rti.synchronization_point_achieved(config.label)
+    leader_rti.synchronizationPointAchieved(config.label)
+    wing_rti.synchronizationPointAchieved(config.label)
     drain_callbacks_pair(leader_rti, wing_rti, late_rti, loops=12)
     assert leader_federate.last_callback("federationSynchronized") is None
     assert wing_federate.last_callback("federationSynchronized") is None
     assert late_federate.last_callback("federationSynchronized") is None
 
-    late_rti.synchronization_point_achieved(config.label)
+    late_rti.synchronizationPointAchieved(config.label)
     drain_callbacks_pair(leader_rti, wing_rti, late_rti, loops=12)
     leader_sync = wait_for_callback(leader_rti, leader_federate, "federationSynchronized", loops=120)
     wing_sync = wait_for_callback(wing_rti, wing_federate, "federationSynchronized", loops=120)
@@ -276,16 +276,16 @@ def run_multiple_synchronization_points_scenario(
 ) -> dict[str, Any]:
     leader_rti.connect(leader_federate, CallbackModel.HLA_EVOKED)
     wing_rti.connect(wing_federate, CallbackModel.HLA_EVOKED)
-    leader_rti.create_federation_execution(
+    leader_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    leader_handle = leader_rti.join_federation_execution(config.leader_name, config.federate_type, config.federation_name)
-    wing_handle = wing_rti.join_federation_execution(config.wing_name, config.federate_type, config.federation_name)
+    leader_handle = leader_rti.joinFederationExecution(config.leader_name, config.federate_type, config.federation_name)
+    wing_handle = wing_rti.joinFederationExecution(config.wing_name, config.federate_type, config.federation_name)
 
-    leader_rti.register_federation_synchronization_point(config.label, config.tag)
-    leader_rti.register_federation_synchronization_point(config.second_label, config.second_tag)
+    leader_rti.registerFederationSynchronizationPoint(config.label, config.tag)
+    leader_rti.registerFederationSynchronizationPoint(config.second_label, config.second_tag)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
 
     first_leader_announce = wait_for_callback(leader_rti, leader_federate, "announceSynchronizationPoint", loops=120)
@@ -300,8 +300,8 @@ def run_multiple_synchronization_points_scenario(
     assert announced_labels_leader == {config.label, config.second_label}
     assert announced_labels_wing == {config.label, config.second_label}
 
-    leader_rti.synchronization_point_achieved(config.label)
-    wing_rti.synchronization_point_achieved(config.label)
+    leader_rti.synchronizationPointAchieved(config.label)
+    wing_rti.synchronizationPointAchieved(config.label)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     first_sync_leader = wait_for_callback(leader_rti, leader_federate, "federationSynchronized", loops=120)
     first_sync_wing = wait_for_callback(wing_rti, wing_federate, "federationSynchronized", loops=120)
@@ -315,8 +315,8 @@ def run_multiple_synchronization_points_scenario(
     assert len(leader_sync_records) == 1
     assert len(wing_sync_records) == 1
 
-    leader_rti.synchronization_point_achieved(config.second_label)
-    wing_rti.synchronization_point_achieved(config.second_label)
+    leader_rti.synchronizationPointAchieved(config.second_label)
+    wing_rti.synchronizationPointAchieved(config.second_label)
     drain_callbacks_pair(leader_rti, wing_rti, loops=16)
     second_sync_leader_records = wait_for_callback_count(
         leader_rti,

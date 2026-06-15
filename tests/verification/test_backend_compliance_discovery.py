@@ -2898,7 +2898,7 @@ def test_pitch_clause6_object_management_surface_is_compact_and_explicit() -> No
         )
 
     _assert_row_disposition_and_refs(rows, "REQ-RTI-OM-6_16-localDeleteObjectInstance", "pitch_disposition", "verified", bundle("local_delete"))
-    _assert_row_disposition_and_refs(rows, "REQ-RTI-OM-6_19-requestAttributeValueUpdate", "pitch_disposition", "verified", bundle("request_attribute_value_update"))
+    _assert_row_disposition_and_refs(rows, "REQ-RTI-OM-6_19-requestAttributeValueUpdate", "pitch_disposition", "verified", bundle("requestAttributeValueUpdate"))
     for requirement_id in {
         "REQ-RTI-OM-6_23-requestAttributeTransportationTypeChange",
         "REQ-RTI-OM-6_27-requestInteractionTransportationTypeChange",

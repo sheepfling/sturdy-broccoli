@@ -64,8 +64,8 @@ def test_strict_fom_loading_discovers_bundled_fom_and_rejects_unknown_names():
     fed = RecordingFederateAmbassador()
 
     rti.connect(fed, CallbackModel.HLA_EVOKED)
-    rti.create_federation_execution("strict-fom-fed", ["TargetRadarFOMmodule.xml"])
-    rti.join_federation_execution("FomUser", "Radar", "strict-fom-fed")
+    rti.createFederationExecution("strict-fom-fed", ["TargetRadarFOMmodule.xml"])
+    rti.joinFederationExecution("FomUser", "Radar", "strict-fom-fed")
 
     summary = rti.backend.current_fom_summary()
     assert "HLAobjectRoot.Target" in summary["object_classes"]
@@ -73,11 +73,11 @@ def test_strict_fom_loading_discovers_bundled_fom_and_rejects_unknown_names():
     assert summary["logical_time_implementation"] == "HLAfloat64Time"
     assert summary["module_uris"][0].startswith("file:")
 
-    target = rti.get_object_class_handle("HLAobjectRoot.Target")
-    rcs = rti.get_attribute_handle(target, "RCS")
+    target = rti.getObjectClassHandle("HLAobjectRoot.Target")
+    rcs = rti.getAttributeHandle(target, "RCS")
     assert isinstance(rcs, AttributeHandle)
     with pytest.raises(NameNotFound):
-        rti.get_object_class_handle("HLAobjectRoot.NotInFOM")
+        rti.getObjectClassHandle("HLAobjectRoot.NotInFOM")
 
 
 def test_startup_helper_connects_joins_and_completes_ready_to_run_sync_point():
@@ -192,12 +192,12 @@ def test_join_fom_time_conflict_is_transactional(tmp_path):
     f1, f2 = RecordingFederateAmbassador(), RecordingFederateAmbassador()
     r1.connect(f1, CallbackModel.HLA_EVOKED)
     r2.connect(f2, CallbackModel.HLA_EVOKED)
-    r1.create_federation_execution("time-conflict-fed", [first])
-    r1.join_federation_execution("Creator", "Participant", "time-conflict-fed")
+    r1.createFederationExecution("time-conflict-fed", [first])
+    r1.joinFederationExecution("Creator", "Participant", "time-conflict-fed")
     before = r1.backend.current_fom_summary()
 
     with pytest.raises(InconsistentFDD):
-        r2.join_federation_execution("Joiner", "Participant", "time-conflict-fed", [second])
+        r2.joinFederationExecution("Joiner", "Participant", "time-conflict-fed", [second])
 
     after = r1.backend.current_fom_summary()
     assert before == after

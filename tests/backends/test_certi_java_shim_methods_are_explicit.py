@@ -12,15 +12,15 @@ class _RecordingRTI:
     def __init__(self) -> None:
         self.calls: list[tuple[str, tuple[Any, ...]]] = []
 
-    def time_advance_request(self, *args: Any) -> bytes:
+    def timeAdvanceRequest(self, *args: Any) -> bytes:  # noqa: N802
         self.calls.append(("timeAdvanceRequest", args))
         return b"grant"
 
-    def create_federation_execution(self, *args: Any) -> str:
+    def createFederationExecution(self, *args: Any) -> str:  # noqa: N802
         self.calls.append(("createFederationExecution", args))
         return "created"
 
-    def get_hla_version(self) -> str:
+    def getHLAversion(self) -> str:  # noqa: N802
         self.calls.append(("getHLAversion", ()))
         return "HLA 1516.1-2010"
 

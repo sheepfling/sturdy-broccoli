@@ -31,15 +31,15 @@ def run_name_reservation_scenario(
 ) -> dict[str, Any]:
     owner_rti.connect(owner_federate, CallbackModel.HLA_EVOKED)
     rival_rti.connect(rival_federate, CallbackModel.HLA_EVOKED)
-    owner_rti.create_federation_execution(
+    owner_rti.createFederationExecution(
         config.federation_name,
         list(config.fom_modules),
         config.logical_time_implementation_name,
     )
-    owner_handle = owner_rti.join_federation_execution(config.owner_name, config.federate_type, config.federation_name)
-    rival_handle = rival_rti.join_federation_execution(config.rival_name, config.federate_type, config.federation_name)
+    owner_handle = owner_rti.joinFederationExecution(config.owner_name, config.federate_type, config.federation_name)
+    rival_handle = rival_rti.joinFederationExecution(config.rival_name, config.federate_type, config.federation_name)
 
-    owner_rti.reserve_object_instance_name(config.reserved_name)
+    owner_rti.reserveObjectInstanceName(config.reserved_name)
     drain_callbacks_pair(owner_rti, rival_rti, loops=12)
     owner_reserved = wait_for_callback(
         owner_rti,
@@ -51,7 +51,7 @@ def run_name_reservation_scenario(
     assert owner_reserved.args == (config.reserved_name,)
 
     rival_failure_count = len(rival_federate.callbacks_named("objectInstanceNameReservationFailed")) + 1
-    rival_rti.reserve_object_instance_name(config.reserved_name)
+    rival_rti.reserveObjectInstanceName(config.reserved_name)
     drain_callbacks_pair(owner_rti, rival_rti, loops=12)
     rival_failed_records = wait_for_callback_count(
         rival_rti,
@@ -63,11 +63,11 @@ def run_name_reservation_scenario(
     rival_reserved_failed = rival_failed_records[-1]
     assert rival_reserved_failed.args == (config.reserved_name,)
 
-    owner_rti.release_object_instance_name(config.reserved_name)
+    owner_rti.releaseObjectInstanceName(config.reserved_name)
     drain_callbacks_pair(owner_rti, rival_rti, loops=12)
 
     rival_success_count = len(rival_federate.callbacks_named("objectInstanceNameReservationSucceeded")) + 1
-    rival_rti.reserve_object_instance_name(config.reserved_name)
+    rival_rti.reserveObjectInstanceName(config.reserved_name)
     drain_callbacks_pair(owner_rti, rival_rti, loops=12)
     rival_reserved_records = wait_for_callback_count(
         rival_rti,
@@ -79,7 +79,7 @@ def run_name_reservation_scenario(
     rival_reserved = rival_reserved_records[-1]
     assert rival_reserved.args == (config.reserved_name,)
 
-    owner_rti.reserve_multiple_object_instance_name(set(config.multiple_names))
+    owner_rti.reserveMultipleObjectInstanceName(set(config.multiple_names))
     drain_callbacks_pair(owner_rti, rival_rti, loops=12)
     owner_multiple_reserved = wait_for_callback(
         owner_rti,
@@ -91,7 +91,7 @@ def run_name_reservation_scenario(
     assert owner_multiple_reserved.args[0] == set(config.multiple_names)
 
     rival_multiple_failure_count = len(rival_federate.callbacks_named("multipleObjectInstanceNameReservationFailed")) + 1
-    rival_rti.reserve_multiple_object_instance_name(set(config.multiple_names))
+    rival_rti.reserveMultipleObjectInstanceName(set(config.multiple_names))
     drain_callbacks_pair(owner_rti, rival_rti, loops=12)
     rival_multiple_failed_records = wait_for_callback_count(
         rival_rti,
@@ -103,11 +103,11 @@ def run_name_reservation_scenario(
     rival_multiple_reserved_failed = rival_multiple_failed_records[-1]
     assert rival_multiple_reserved_failed.args[0] == set(config.multiple_names)
 
-    owner_rti.release_multiple_object_instance_name(set(config.multiple_names))
+    owner_rti.releaseMultipleObjectInstanceName(set(config.multiple_names))
     drain_callbacks_pair(owner_rti, rival_rti, loops=12)
 
     rival_multiple_success_count = len(rival_federate.callbacks_named("multipleObjectInstanceNameReservationSucceeded")) + 1
-    rival_rti.reserve_multiple_object_instance_name(set(config.multiple_names))
+    rival_rti.reserveMultipleObjectInstanceName(set(config.multiple_names))
     drain_callbacks_pair(owner_rti, rival_rti, loops=12)
     rival_multiple_reserved_records = wait_for_callback_count(
         rival_rti,

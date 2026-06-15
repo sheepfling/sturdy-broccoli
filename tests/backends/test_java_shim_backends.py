@@ -46,7 +46,7 @@ def test_java_like_exceptions_translate_to_python_rti_exceptions():
 
     rti.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederationExecutionDoesNotExist):
-        rti.destroy_federation_execution("missing")
+        rti.destroyFederationExecution("missing")
     rti.disconnect()
     rti.close()
 
@@ -62,26 +62,26 @@ def test_shared_java_bridge_profile_round_trips_basic_objects_and_callbacks(prof
     try:
         publisher.connect(publisher_fed, CallbackModel.HLA_EVOKED)
         subscriber.connect(subscriber_fed, CallbackModel.HLA_EVOKED)
-        publisher.create_federation_execution(federation_name, "DemoFOMmodule.xml", "HLAfloat64Time")
-        publisher_handle = publisher.join_federation_execution("publisher", "demo", federation_name)
-        subscriber_handle = subscriber.join_federation_execution("subscriber", "demo", federation_name)
+        publisher.createFederationExecution(federation_name, "DemoFOMmodule.xml", "HLAfloat64Time")
+        publisher_handle = publisher.joinFederationExecution("publisher", "demo", federation_name)
+        subscriber_handle = subscriber.joinFederationExecution("subscriber", "demo", federation_name)
 
         assert publisher.backend_info.kind == f"java/{profile}/shared-shim"
         assert subscriber.backend_info.kind == f"java/{profile}/shared-shim"
-        assert publisher.get_federate_name(publisher_handle) == "publisher"
-        assert subscriber.get_federate_name(subscriber_handle) == "subscriber"
+        assert publisher.getFederateName(publisher_handle) == "publisher"
+        assert subscriber.getFederateName(subscriber_handle) == "subscriber"
 
-        publisher_object_class = publisher.get_object_class_handle("HLAobjectRoot.DemoObject")
-        publisher_attribute = publisher.get_attribute_handle(publisher_object_class, "Payload")
-        publisher_interaction = publisher.get_interaction_class_handle("HLAinteractionRoot.DemoInteraction")
-        publisher_parameter = publisher.get_parameter_handle(publisher_interaction, "Message")
-        publisher_dimension = publisher.get_dimension_handle("RoutingSpace")
-        region = publisher.create_region({publisher_dimension})
+        publisher_object_class = publisher.getObjectClassHandle("HLAobjectRoot.DemoObject")
+        publisher_attribute = publisher.getAttributeHandle(publisher_object_class, "Payload")
+        publisher_interaction = publisher.getInteractionClassHandle("HLAinteractionRoot.DemoInteraction")
+        publisher_parameter = publisher.getParameterHandle(publisher_interaction, "Message")
+        publisher_dimension = publisher.getDimensionHandle("RoutingSpace")
+        region = publisher.createRegion({publisher_dimension})
 
-        subscriber_object_class = subscriber.get_object_class_handle("HLAobjectRoot.DemoObject")
-        subscriber_attribute = subscriber.get_attribute_handle(subscriber_object_class, "Payload")
-        subscriber_interaction = subscriber.get_interaction_class_handle("HLAinteractionRoot.DemoInteraction")
-        subscriber_parameter = subscriber.get_parameter_handle(subscriber_interaction, "Message")
+        subscriber_object_class = subscriber.getObjectClassHandle("HLAobjectRoot.DemoObject")
+        subscriber_attribute = subscriber.getAttributeHandle(subscriber_object_class, "Payload")
+        subscriber_interaction = subscriber.getInteractionClassHandle("HLAinteractionRoot.DemoInteraction")
+        subscriber_parameter = subscriber.getParameterHandle(subscriber_interaction, "Message")
 
         assert isinstance(publisher_object_class, ObjectClassHandle)
         assert isinstance(publisher_attribute, AttributeHandle)
@@ -94,28 +94,28 @@ def test_shared_java_bridge_profile_round_trips_basic_objects_and_callbacks(prof
         assert subscriber_interaction == publisher_interaction
         assert subscriber_parameter == publisher_parameter
 
-        publisher.publish_object_class_attributes(publisher_object_class, {publisher_attribute})
-        subscriber.subscribe_object_class_attributes(subscriber_object_class, {subscriber_attribute})
-        publisher.publish_interaction_class(publisher_interaction)
-        subscriber.subscribe_interaction_class(subscriber_interaction)
+        publisher.publishObjectClassAttributes(publisher_object_class, {publisher_attribute})
+        subscriber.subscribeObjectClassAttributes(subscriber_object_class, {subscriber_attribute})
+        publisher.publishInteractionClass(publisher_interaction)
+        subscriber.subscribeInteractionClass(subscriber_interaction)
 
-        obj = publisher.register_object_instance(publisher_object_class, f"{profile}-Object-1")
+        obj = publisher.registerObjectInstance(publisher_object_class, f"{profile}-Object-1")
         assert isinstance(obj, ObjectInstanceHandle)
         drain_callbacks_pair(publisher, subscriber)
 
         discover = subscriber_fed.last_callback("discoverObjectInstance")
-        subscriber_obj = subscriber.get_object_instance_handle(f"{profile}-Object-1")
+        subscriber_obj = subscriber.getObjectInstanceHandle(f"{profile}-Object-1")
         assert discover is not None
         assert discover.args == (subscriber_obj, subscriber_object_class, f"{profile}-Object-1")
 
-        publisher.enable_time_regulation(HLAfloat64Interval(1.0))
-        subscriber.enable_time_regulation(HLAfloat64Interval(1.0))
-        publisher.enable_time_constrained()
-        subscriber.enable_time_constrained()
+        publisher.enableTimeRegulation(HLAfloat64Interval(1.0))
+        subscriber.enableTimeRegulation(HLAfloat64Interval(1.0))
+        publisher.enableTimeConstrained()
+        subscriber.enableTimeConstrained()
         drain_callbacks_pair(publisher, subscriber)
 
-        publisher.time_advance_request(HLAfloat64Time(2.0))
-        subscriber.time_advance_request(HLAfloat64Time(2.0))
+        publisher.timeAdvanceRequest(HLAfloat64Time(2.0))
+        subscriber.timeAdvanceRequest(HLAfloat64Time(2.0))
         drain_callbacks_pair(publisher, subscriber)
         assert publisher_fed.last_callback("timeRegulationEnabled").args == (HLAfloat64Time(0.0),)
         assert subscriber_fed.last_callback("timeRegulationEnabled").args == (HLAfloat64Time(0.0),)
@@ -124,8 +124,8 @@ def test_shared_java_bridge_profile_round_trips_basic_objects_and_callbacks(prof
         assert publisher_fed.last_callback("timeAdvanceGrant").args == (HLAfloat64Time(2.0),)
         assert subscriber_fed.last_callback("timeAdvanceGrant").args == (HLAfloat64Time(2.0),)
 
-        publisher.update_attribute_values(obj, {publisher_attribute: b"route-bytes"}, b"route-tag")
-        publisher.send_interaction(publisher_interaction, {publisher_parameter: b"route-hello"}, b"interaction-tag")
+        publisher.updateAttributeValues(obj, {publisher_attribute: b"route-bytes"}, b"route-tag")
+        publisher.sendInteraction(publisher_interaction, {publisher_parameter: b"route-hello"}, b"interaction-tag")
         drain_callbacks_pair(publisher, subscriber)
 
         reflect = subscriber_fed.last_callback("reflectAttributeValues")
@@ -141,10 +141,10 @@ def test_shared_java_bridge_profile_round_trips_basic_objects_and_callbacks(prof
         assert receive.args[2] == b"interaction-tag"
         assert receive.args[3] is OrderType.RECEIVE
 
-        publisher.delete_region(region)
-        publisher.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-        subscriber.resign_federation_execution(ResignAction.NO_ACTION)
-        publisher.destroy_federation_execution(federation_name)
+        publisher.deleteRegion(region)
+        publisher.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+        subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+        publisher.destroyFederationExecution(federation_name)
         subscriber.disconnect()
         publisher.disconnect()
     finally:

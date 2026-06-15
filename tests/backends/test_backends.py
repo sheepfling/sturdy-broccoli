@@ -16,14 +16,14 @@ def test_delegating_ambassador_is_concrete():
     backend = RecordingBackend(results={"getFederateName": "fed"})
     rti = make_rti_ambassador(backend)
     assert isinstance(rti, DelegatingRTIAmbassador)
-    assert rti.get_federate_name() == "fed"
+    assert rti.getFederateName() == "fed"
     assert backend.calls[-1].method_name == "getFederateName"
 
 
-def test_snake_case_method_forwards_to_service_key():
+def test_source_named_method_forwards_to_service_key():
     backend = RecordingBackend(results={"createRegion": "region"})
     rti = make_rti_ambassador(backend)
-    assert rti.create_region("space", {"dimension"}) == "region"
+    assert rti.createRegion("space", {"dimension"}) == "region"
     call = backend.calls[-1]
     assert call.method_name == "createRegion"
     assert call.args == ("space", {"dimension"})

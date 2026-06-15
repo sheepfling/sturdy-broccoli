@@ -203,15 +203,15 @@ class PublisherFederate(FederateAmbassadorSpec):
 
     def setup(self, rti: Any) -> None:
         self.rti = rti
-        self.object_class = rti.get_object_class_handle({upper}_OBJECT_CLASS)
-        self.message_attr = rti.get_attribute_handle(self.object_class, MESSAGE_ATTRIBUTE)
-        self.interaction_class = rti.get_interaction_class_handle({upper}_INTERACTION_CLASS)
-        self.sender_param = rti.get_parameter_handle(self.interaction_class, SENDER_PARAMETER)
-        self.message_param = rti.get_parameter_handle(self.interaction_class, MESSAGE_PARAMETER)
-        rti.publish_object_class_attributes(self.object_class, {{self.message_attr}})
-        rti.publish_interaction_class(self.interaction_class)
-        self.object_handle = rti.register_object_instance(self.object_class, self.name)
-        self.events.append(("register_object_instance", self.name))
+        self.object_class = rti.getObjectClassHandle({upper}_OBJECT_CLASS)
+        self.message_attr = rti.getAttributeHandle(self.object_class, MESSAGE_ATTRIBUTE)
+        self.interaction_class = rti.getInteractionClassHandle({upper}_INTERACTION_CLASS)
+        self.sender_param = rti.getParameterHandle(self.interaction_class, SENDER_PARAMETER)
+        self.message_param = rti.getParameterHandle(self.interaction_class, MESSAGE_PARAMETER)
+        rti.publishObjectClassAttributes(self.object_class, {{self.message_attr}})
+        rti.publishInteractionClass(self.interaction_class)
+        self.object_handle = rti.registerObjectInstance(self.object_class, self.name)
+        self.events.append(("registerObjectInstance", self.name))
 
     def publish(self, *, object_message: str, interaction_message: str) -> None:
         assert self.rti is not None
@@ -221,14 +221,14 @@ class PublisherFederate(FederateAmbassadorSpec):
         assert self.sender_param is not None
         assert self.message_param is not None
 
-        self.rti.update_attribute_values(
+        self.rti.updateAttributeValues(
             self.object_handle,
             {{self.message_attr: encode_text(object_message)}},
             b"{scenario_stem}-object",
         )
-        self.events.append(("update_attribute_values", object_message))
+        self.events.append(("updateAttributeValues", object_message))
 
-        self.rti.send_interaction(
+        self.rti.sendInteraction(
             self.interaction_class,
             {{
                 self.sender_param: encode_text(self.name),
@@ -236,7 +236,7 @@ class PublisherFederate(FederateAmbassadorSpec):
             }},
             b"{scenario_stem}-interaction",
         )
-        self.events.append(("send_interaction", interaction_message))
+        self.events.append(("sendInteraction", interaction_message))
 
 
 class SubscriberFederate(FederateAmbassadorSpec):
@@ -257,13 +257,13 @@ class SubscriberFederate(FederateAmbassadorSpec):
 
     def setup(self, rti: Any) -> None:
         self.rti = rti
-        self.object_class = rti.get_object_class_handle({upper}_OBJECT_CLASS)
-        self.message_attr = rti.get_attribute_handle(self.object_class, MESSAGE_ATTRIBUTE)
-        self.interaction_class = rti.get_interaction_class_handle({upper}_INTERACTION_CLASS)
-        self.sender_param = rti.get_parameter_handle(self.interaction_class, SENDER_PARAMETER)
-        self.message_param = rti.get_parameter_handle(self.interaction_class, MESSAGE_PARAMETER)
-        rti.subscribe_object_class_attributes(self.object_class, {{self.message_attr}})
-        rti.subscribe_interaction_class(self.interaction_class)
+        self.object_class = rti.getObjectClassHandle({upper}_OBJECT_CLASS)
+        self.message_attr = rti.getAttributeHandle(self.object_class, MESSAGE_ATTRIBUTE)
+        self.interaction_class = rti.getInteractionClassHandle({upper}_INTERACTION_CLASS)
+        self.sender_param = rti.getParameterHandle(self.interaction_class, SENDER_PARAMETER)
+        self.message_param = rti.getParameterHandle(self.interaction_class, MESSAGE_PARAMETER)
+        rti.subscribeObjectClassAttributes(self.object_class, {{self.message_attr}})
+        rti.subscribeInteractionClass(self.interaction_class)
 
     def discover_object_instance(self, the_object: ObjectInstanceHandle, the_object_class: ObjectClassHandle, object_name: str, *extra: Any) -> None:
         if self.object_class is not None and the_object_class == self.object_class:
@@ -337,7 +337,7 @@ def _call_factory(factory: RtiFactory, role: str) -> RTIAmbassadorLike:
 def _drain_callbacks(*rtis: Any, cycles: int = 6) -> None:
     for _ in range(cycles):
         for rti in rtis:
-            rti.evoke_multiple_callbacks(0.0, 0.1)
+            rti.evokeMultipleCallbacks(0.0, 0.1)
 
 
 def run_{scenario_stem}_scenario(
@@ -365,12 +365,12 @@ def run_{scenario_stem}_scenario(
     subscriber_rti.connect(subscriber, CallbackModel.HLA_EVOKED)
 
     try:
-        publisher_rti.create_federation_execution(federation_name, list(fom_modules or []))
+        publisher_rti.createFederationExecution(federation_name, list(fom_modules or []))
     except FederationExecutionAlreadyExists:
         pass
 
-    publisher_rti.join_federation_execution("Publisher", "{scenario_stem}-publisher", federation_name)
-    subscriber_rti.join_federation_execution("Subscriber", "{scenario_stem}-subscriber", federation_name)
+    publisher_rti.joinFederationExecution("Publisher", "{scenario_stem}-publisher", federation_name)
+    subscriber_rti.joinFederationExecution("Subscriber", "{scenario_stem}-subscriber", federation_name)
 
     subscriber.setup(subscriber_rti)
     publisher.setup(publisher_rti)
@@ -394,11 +394,11 @@ def run_{scenario_stem}_scenario(
     if cleanup:
         for rti in (subscriber_rti, publisher_rti):
             try:
-                rti.resign_federation_execution(ResignAction.NO_ACTION)
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
             except RTIexception:
                 pass
         try:
-            publisher_rti.destroy_federation_execution(federation_name)
+            publisher_rti.destroyFederationExecution(federation_name)
         except (FederationExecutionDoesNotExist, FederatesCurrentlyJoined, RTIexception):
             pass
         for rti in (subscriber_rti, publisher_rti):

@@ -110,8 +110,8 @@ def advance_time_beyond(publisher_rti: Any, subscriber_rti: Any, target_time: An
         advance_to = type(target_time)(int(raw) + 1)
     else:
         advance_to = type(target_time)(raw + 1.0)
-    publisher_rti.time_advance_request(advance_to)
-    subscriber_rti.time_advance_request(advance_to)
+    publisher_rti.timeAdvanceRequest(advance_to)
+    subscriber_rti.timeAdvanceRequest(advance_to)
     drain_callbacks_pair(publisher_rti, subscriber_rti, loops=24)
 
 
@@ -121,14 +121,14 @@ def order_value(value: Any) -> int:
 
 def safe_evoke_callback(rti: Any, seconds: float = 0.0) -> bool:
     try:
-        return bool(rti.evoke_callback(seconds))
+        return bool(rti.evokeCallback(seconds))
     except CallNotAllowedFromWithinCallback:
         return False
 
 
 def safe_evoke_multiple_callbacks(rti: Any, min_seconds: float = 0.0, max_seconds: float = 0.1) -> bool:
     try:
-        return bool(rti.evoke_multiple_callbacks(min_seconds, max_seconds))
+        return bool(rti.evokeMultipleCallbacks(min_seconds, max_seconds))
     except CallNotAllowedFromWithinCallback:
         return False
 
@@ -136,7 +136,7 @@ def safe_evoke_multiple_callbacks(rti: Any, min_seconds: float = 0.0, max_second
 def register_named_object_instance(rti: Any, federate: Any, object_class: Any, object_instance_name: str) -> Any:
     reserved = False
     try:
-        rti.reserve_object_instance_name(object_instance_name)
+        rti.reserveObjectInstanceName(object_instance_name)
         reserved = True
     except RTIexception:
         reserved = False
@@ -149,23 +149,23 @@ def register_named_object_instance(rti: Any, federate: Any, object_class: Any, o
             safe_evoke_multiple_callbacks(rti)
 
     try:
-        return rti.register_object_instance(object_class, object_instance_name)
+        return rti.registerObjectInstance(object_class, object_instance_name)
     except ObjectInstanceNameNotReserved:
         if not reserved:
-            rti.reserve_object_instance_name(object_instance_name)
+            rti.reserveObjectInstanceName(object_instance_name)
         for _ in range(24):
             reservation = federate.last_callback("objectInstanceNameReservationSucceeded")
             if reservation is not None and reservation.args == (object_instance_name,):
-                return rti.register_object_instance(object_class, object_instance_name)
+                return rti.registerObjectInstance(object_class, object_instance_name)
             safe_evoke_multiple_callbacks(rti, max_seconds=0.05)
             try:
-                return rti.register_object_instance(object_class, object_instance_name)
+                return rti.registerObjectInstance(object_class, object_instance_name)
             except ObjectInstanceNameNotReserved:
                 continue
         reservation = federate.last_callback("objectInstanceNameReservationSucceeded")
         if reservation is not None:
             assert reservation.args == (object_instance_name,)
-        return rti.register_object_instance(object_class, object_instance_name)
+        return rti.registerObjectInstance(object_class, object_instance_name)
 
 
 _safe_evoke_callback = safe_evoke_callback

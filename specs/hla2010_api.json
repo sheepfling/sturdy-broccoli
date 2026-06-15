@@ -2072,7 +2072,7 @@
             ]
           }
         ],
-        "python_name": "abort_federation_restore",
+        "python_name": "abortFederationRestore",
         "section": "4.30",
         "service_group": "Federation Management",
         "title": "Abort Federation Restore service"
@@ -2111,7 +2111,7 @@
             ]
           }
         ],
-        "python_name": "abort_federation_save",
+        "python_name": "abortFederationSave",
         "section": "4.21",
         "service_group": "Federation Management",
         "title": "Abort Federation Save service"
@@ -2162,7 +2162,7 @@
             ]
           }
         ],
-        "python_name": "associate_regions_for_updates",
+        "python_name": "associateRegionsForUpdates",
         "section": "9.6",
         "service_group": "Data Distribution Management",
         "title": "Associate Regions For Updates service"
@@ -2213,7 +2213,7 @@
             ]
           }
         ],
-        "python_name": "attribute_ownership_acquisition",
+        "python_name": "attributeOwnershipAcquisition",
         "section": "7.8",
         "service_group": "Ownership Management",
         "title": "Attribute Ownership Acquisition service"
@@ -2266,7 +2266,7 @@
             ]
           }
         ],
-        "python_name": "attribute_ownership_acquisition_if_available",
+        "python_name": "attributeOwnershipAcquisitionIfAvailable",
         "section": "7.9",
         "service_group": "Ownership Management",
         "title": "Attribute Ownership Acquisition If Available service"
@@ -2304,7 +2304,7 @@
             "throws": []
           }
         ],
-        "python_name": "attribute_ownership_divestiture_if_wanted",
+        "python_name": "attributeOwnershipDivestitureIfWanted",
         "section": "7.13",
         "service_group": "Ownership Management",
         "title": "Attribute Ownership Divestiture If Wanted service"
@@ -2351,7 +2351,7 @@
             ]
           }
         ],
-        "python_name": "attribute_ownership_release_denied",
+        "python_name": "attributeOwnershipReleaseDenied",
         "section": "7.12",
         "service_group": "Ownership Management",
         "title": "Attribute Ownership Release Denied service"
@@ -2400,7 +2400,7 @@
             ]
           }
         ],
-        "python_name": "cancel_attribute_ownership_acquisition",
+        "python_name": "cancelAttributeOwnershipAcquisition",
         "section": "7.15",
         "service_group": "Ownership Management",
         "title": "Cancel Attribute Ownership Acquisition service"
@@ -2449,7 +2449,7 @@
             ]
           }
         ],
-        "python_name": "cancel_negotiated_attribute_ownership_divestiture",
+        "python_name": "cancelNegotiatedAttributeOwnershipDivestiture",
         "section": "7.14",
         "service_group": "Ownership Management",
         "title": "Cancel Negotiated Attribute Ownership Divestiture service"
@@ -2496,7 +2496,7 @@
             ]
           }
         ],
-        "python_name": "change_attribute_order_type",
+        "python_name": "changeAttributeOrderType",
         "section": "8.23",
         "service_group": "Time Management",
         "title": "Change Attribute Order Type service"
@@ -2541,7 +2541,7 @@
             ]
           }
         ],
-        "python_name": "change_interaction_order_type",
+        "python_name": "changeInteractionOrderType",
         "section": "8.24",
         "service_group": "Time Management",
         "title": "Change Interaction Order Type service"
@@ -2586,7 +2586,7 @@
             ]
           }
         ],
-        "python_name": "commit_region_modifications",
+        "python_name": "commitRegionModifications",
         "section": "9.3",
         "service_group": "Data Distribution Management",
         "title": "Commit Region Modifications service"
@@ -2637,7 +2637,7 @@
             ]
           }
         ],
-        "python_name": "confirm_divestiture",
+        "python_name": "confirmDivestiture",
         "section": "7.6",
         "service_group": "Ownership Management",
         "title": "Confirm Divestiture service"
@@ -2835,7 +2835,7 @@
             ]
           }
         ],
-        "python_name": "create_federation_execution",
+        "python_name": "createFederationExecution",
         "section": "4.5",
         "service_group": "Federation Management",
         "title": "Create Federation Execution service"
@@ -2865,7 +2865,7 @@
             ]
           }
         ],
-        "python_name": "create_federation_execution_with_mim",
+        "python_name": "createFederationExecutionWithMIM",
         "section": "4.5",
         "service_group": "Federation Management",
         "title": "Create Federation Execution service"
@@ -2908,7 +2908,7 @@
             ]
           }
         ],
-        "python_name": "create_region",
+        "python_name": "createRegion",
         "section": "9.2",
         "service_group": "Data Distribution Management",
         "title": "Create Region service"
@@ -2927,7 +2927,7 @@
             "throws": []
           }
         ],
-        "python_name": "decode_attribute_handle",
+        "python_name": "decodeAttributeHandle",
         "section": "12.2",
         "service_group": "Programming Language Mappings",
         "title": "Designators"
@@ -2946,7 +2946,7 @@
             "throws": []
           }
         ],
-        "python_name": "decode_dimension_handle",
+        "python_name": "decodeDimensionHandle",
         "section": "12.2",
         "service_group": "Programming Language Mappings",
         "title": "Designators"
@@ -2965,7 +2965,7 @@
             "throws": []
           }
         ],
-        "python_name": "decode_federate_handle",
+        "python_name": "decodeFederateHandle",
         "section": "12.2",
         "service_group": "Programming Language Mappings",
         "title": "Designators"
@@ -2984,7 +2984,7 @@
             "throws": []
           }
         ],
-        "python_name": "decode_interaction_class_handle",
+        "python_name": "decodeInteractionClassHandle",
         "section": "12.2",
         "service_group": "Programming Language Mappings",
         "title": "Designators"
@@ -3003,7 +3003,7 @@
             "throws": []
           }
         ],
-        "python_name": "decode_message_retraction_handle",
+        "python_name": "decodeMessageRetractionHandle",
         "section": "12.2",
         "service_group": "Programming Language Mappings",
         "title": "Designators"
@@ -3022,7 +3022,7 @@
             "throws": []
           }
         ],
-        "python_name": "decode_object_class_handle",
+        "python_name": "decodeObjectClassHandle",
         "section": "12.2",
         "service_group": "Programming Language Mappings",
         "title": "Designators"
@@ -3041,7 +3041,7 @@
             "throws": []
           }
         ],
-        "python_name": "decode_object_instance_handle",
+        "python_name": "decodeObjectInstanceHandle",
         "section": "12.2",
         "service_group": "Programming Language Mappings",
         "title": "Designators"
@@ -3060,7 +3060,7 @@
             "throws": []
           }
         ],
-        "python_name": "decode_parameter_handle",
+        "python_name": "decodeParameterHandle",
         "section": "12.2",
         "service_group": "Programming Language Mappings",
         "title": "Designators"
@@ -3079,7 +3079,7 @@
             "throws": []
           }
         ],
-        "python_name": "decode_region_handle",
+        "python_name": "decodeRegionHandle",
         "section": "12.2",
         "service_group": "Programming Language Mappings",
         "title": "Designators"
@@ -3162,7 +3162,7 @@
             ]
           }
         ],
-        "python_name": "delete_object_instance",
+        "python_name": "deleteObjectInstance",
         "section": "6.14",
         "service_group": "Object Management",
         "title": "Delete Object Instance service"
@@ -3209,7 +3209,7 @@
             ]
           }
         ],
-        "python_name": "delete_region",
+        "python_name": "deleteRegion",
         "section": "9.4",
         "service_group": "Data Distribution Management",
         "title": "Delete Region service"
@@ -3248,7 +3248,7 @@
             ]
           }
         ],
-        "python_name": "destroy_federation_execution",
+        "python_name": "destroyFederationExecution",
         "section": "4.6",
         "service_group": "Federation Management",
         "title": "Destroy Federation Execution service"
@@ -3291,7 +3291,7 @@
             ]
           }
         ],
-        "python_name": "disable_asynchronous_delivery",
+        "python_name": "disableAsynchronousDelivery",
         "section": "8.15",
         "service_group": "Time Management",
         "title": "Disable Asynchronous Delivery service"
@@ -3334,7 +3334,7 @@
             ]
           }
         ],
-        "python_name": "disable_attribute_relevance_advisory_switch",
+        "python_name": "disableAttributeRelevanceAdvisorySwitch",
         "section": "10.36",
         "service_group": "Support Services",
         "title": "Disable Attribute Relevance Advisory Switch service"
@@ -3377,7 +3377,7 @@
             ]
           }
         ],
-        "python_name": "disable_attribute_scope_advisory_switch",
+        "python_name": "disableAttributeScopeAdvisorySwitch",
         "section": "10.38",
         "service_group": "Support Services",
         "title": "Disable Attribute Scope Advisory Switch service"
@@ -3414,7 +3414,7 @@
             ]
           }
         ],
-        "python_name": "disable_callbacks",
+        "python_name": "disableCallbacks",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -3457,7 +3457,7 @@
             ]
           }
         ],
-        "python_name": "disable_interaction_relevance_advisory_switch",
+        "python_name": "disableInteractionRelevanceAdvisorySwitch",
         "section": "10.40",
         "service_group": "Support Services",
         "title": "Disable Interaction Relevance Advisory Switch service"
@@ -3500,7 +3500,7 @@
             ]
           }
         ],
-        "python_name": "disable_object_class_relevance_advisory_switch",
+        "python_name": "disableObjectClassRelevanceAdvisorySwitch",
         "section": "10.34",
         "service_group": "Support Services",
         "title": "Disable Object Class Relevance Advisory Switch service"
@@ -3543,7 +3543,7 @@
             ]
           }
         ],
-        "python_name": "disable_time_constrained",
+        "python_name": "disableTimeConstrained",
         "section": "8.7",
         "service_group": "Time Management",
         "title": "Disable Time Constrained service"
@@ -3586,7 +3586,7 @@
             ]
           }
         ],
-        "python_name": "disable_time_regulation",
+        "python_name": "disableTimeRegulation",
         "section": "8.4",
         "service_group": "Time Management",
         "title": "Disable Time Regulation service"
@@ -3666,7 +3666,7 @@
             ]
           }
         ],
-        "python_name": "enable_asynchronous_delivery",
+        "python_name": "enableAsynchronousDelivery",
         "section": "8.14",
         "service_group": "Time Management",
         "title": "Enable Asynchronous Delivery service"
@@ -3709,7 +3709,7 @@
             ]
           }
         ],
-        "python_name": "enable_attribute_relevance_advisory_switch",
+        "python_name": "enableAttributeRelevanceAdvisorySwitch",
         "section": "10.35",
         "service_group": "Support Services",
         "title": "Enable Attribute Relevance Advisory Switch service"
@@ -3752,7 +3752,7 @@
             ]
           }
         ],
-        "python_name": "enable_attribute_scope_advisory_switch",
+        "python_name": "enableAttributeScopeAdvisorySwitch",
         "section": "10.37",
         "service_group": "Support Services",
         "title": "Enable Attribute Scope Advisory Switch service"
@@ -3789,7 +3789,7 @@
             ]
           }
         ],
-        "python_name": "enable_callbacks",
+        "python_name": "enableCallbacks",
         "section": "10.43",
         "service_group": "Support Services",
         "title": "Enable Callbacks service"
@@ -3832,7 +3832,7 @@
             ]
           }
         ],
-        "python_name": "enable_interaction_relevance_advisory_switch",
+        "python_name": "enableInteractionRelevanceAdvisorySwitch",
         "section": "10.39",
         "service_group": "Support Services",
         "title": "Enable Interaction Relevance Advisory Switch service"
@@ -3875,7 +3875,7 @@
             ]
           }
         ],
-        "python_name": "enable_object_class_relevance_advisory_switch",
+        "python_name": "enableObjectClassRelevanceAdvisorySwitch",
         "section": "10.33",
         "service_group": "Support Services",
         "title": "Enable Object Class Relevance Advisory Switch service"
@@ -3922,7 +3922,7 @@
             ]
           }
         ],
-        "python_name": "enable_time_constrained",
+        "python_name": "enableTimeConstrained",
         "section": "8.5",
         "service_group": "Time Management",
         "title": "Enable Time Constrained service"
@@ -3971,7 +3971,7 @@
             ]
           }
         ],
-        "python_name": "enable_time_regulation",
+        "python_name": "enableTimeRegulation",
         "section": "8.2",
         "service_group": "Time Management",
         "title": "Enable Time Regulation service"
@@ -4006,7 +4006,7 @@
             ]
           }
         ],
-        "python_name": "evoke_callback",
+        "python_name": "evokeCallback",
         "section": "10.41",
         "service_group": "Support Services",
         "title": "Evoke Callback service"
@@ -4041,7 +4041,7 @@
             ]
           }
         ],
-        "python_name": "evoke_multiple_callbacks",
+        "python_name": "evokeMultipleCallbacks",
         "section": "10.42",
         "service_group": "Support Services",
         "title": "Evoke Multiple Callbacks service"
@@ -4082,7 +4082,7 @@
             ]
           }
         ],
-        "python_name": "federate_restore_complete",
+        "python_name": "federateRestoreComplete",
         "section": "4.28",
         "service_group": "Federation Management",
         "title": "Federate Restore Complete service"
@@ -4123,7 +4123,7 @@
             ]
           }
         ],
-        "python_name": "federate_restore_not_complete",
+        "python_name": "federateRestoreNotComplete",
         "section": "4.28",
         "service_group": "Federation Management",
         "title": "Federate Restore Complete service"
@@ -4164,7 +4164,7 @@
             ]
           }
         ],
-        "python_name": "federate_save_begun",
+        "python_name": "federateSaveBegun",
         "section": "4.18",
         "service_group": "Federation Management",
         "title": "Federate Save Begun service"
@@ -4205,7 +4205,7 @@
             ]
           }
         ],
-        "python_name": "federate_save_complete",
+        "python_name": "federateSaveComplete",
         "section": "4.19",
         "service_group": "Federation Management",
         "title": "Federate Save Complete service"
@@ -4246,7 +4246,7 @@
             ]
           }
         ],
-        "python_name": "federate_save_not_complete",
+        "python_name": "federateSaveNotComplete",
         "section": "4.19",
         "service_group": "Federation Management",
         "title": "Federate Save Complete service"
@@ -4297,7 +4297,7 @@
             ]
           }
         ],
-        "python_name": "flush_queue_request",
+        "python_name": "flushQueueRequest",
         "section": "8.12",
         "service_group": "Time Management",
         "title": "Flush Queue Request service"
@@ -4338,7 +4338,7 @@
             ]
           }
         ],
-        "python_name": "get_attribute_handle",
+        "python_name": "getAttributeHandle",
         "section": "10.11",
         "service_group": "Support Services",
         "title": "Get Attribute Handle service"
@@ -4360,7 +4360,7 @@
             ]
           }
         ],
-        "python_name": "get_attribute_handle_factory",
+        "python_name": "getAttributeHandleFactory",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -4382,7 +4382,7 @@
             ]
           }
         ],
-        "python_name": "get_attribute_handle_set_factory",
+        "python_name": "getAttributeHandleSetFactory",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -4404,7 +4404,7 @@
             ]
           }
         ],
-        "python_name": "get_attribute_handle_value_map_factory",
+        "python_name": "getAttributeHandleValueMapFactory",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -4447,7 +4447,7 @@
             ]
           }
         ],
-        "python_name": "get_attribute_name",
+        "python_name": "getAttributeName",
         "section": "10.12",
         "service_group": "Support Services",
         "title": "Get Attribute Name service"
@@ -4469,7 +4469,7 @@
             ]
           }
         ],
-        "python_name": "get_attribute_set_region_set_pair_list_factory",
+        "python_name": "getAttributeSetRegionSetPairListFactory",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -4506,7 +4506,7 @@
             ]
           }
         ],
-        "python_name": "get_automatic_resign_directive",
+        "python_name": "getAutomaticResignDirective",
         "section": "10.2",
         "service_group": "Support Services",
         "title": "Get Automatic Resign Directive service"
@@ -4549,7 +4549,7 @@
             ]
           }
         ],
-        "python_name": "get_available_dimensions_for_class_attribute",
+        "python_name": "getAvailableDimensionsForClassAttribute",
         "section": "10.23",
         "service_group": "Support Services",
         "title": "Get Available Dimensions For Class Attribute service"
@@ -4588,7 +4588,7 @@
             ]
           }
         ],
-        "python_name": "get_available_dimensions_for_interaction_class",
+        "python_name": "getAvailableDimensionsForInteractionClass",
         "section": "10.24",
         "service_group": "Support Services",
         "title": "Get Available Dimensions For Interaction Class service"
@@ -4627,7 +4627,7 @@
             ]
           }
         ],
-        "python_name": "get_dimension_handle",
+        "python_name": "getDimensionHandle",
         "section": "10.25",
         "service_group": "Support Services",
         "title": "Get Dimension Handle service"
@@ -4649,7 +4649,7 @@
             ]
           }
         ],
-        "python_name": "get_dimension_handle_factory",
+        "python_name": "getDimensionHandleFactory",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -4692,7 +4692,7 @@
             ]
           }
         ],
-        "python_name": "get_dimension_handle_set",
+        "python_name": "getDimensionHandleSet",
         "section": "10.28",
         "service_group": "Support Services",
         "title": "Get Dimension Handle Set service"
@@ -4714,7 +4714,7 @@
             ]
           }
         ],
-        "python_name": "get_dimension_handle_set_factory",
+        "python_name": "getDimensionHandleSetFactory",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -4753,7 +4753,7 @@
             ]
           }
         ],
-        "python_name": "get_dimension_name",
+        "python_name": "getDimensionName",
         "section": "10.26",
         "service_group": "Support Services",
         "title": "Get Dimension Name service"
@@ -4792,7 +4792,7 @@
             ]
           }
         ],
-        "python_name": "get_dimension_upper_bound",
+        "python_name": "getDimensionUpperBound",
         "section": "10.27",
         "service_group": "Support Services",
         "title": "Get Dimension Upper Bound service"
@@ -4831,7 +4831,7 @@
             ]
           }
         ],
-        "python_name": "get_federate_handle",
+        "python_name": "getFederateHandle",
         "section": "10.4",
         "service_group": "Support Services",
         "title": "Get Federate Handle service"
@@ -4853,7 +4853,7 @@
             ]
           }
         ],
-        "python_name": "get_federate_handle_factory",
+        "python_name": "getFederateHandleFactory",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -4875,7 +4875,7 @@
             ]
           }
         ],
-        "python_name": "get_federate_handle_set_factory",
+        "python_name": "getFederateHandleSetFactory",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -4916,7 +4916,7 @@
             ]
           }
         ],
-        "python_name": "get_federate_name",
+        "python_name": "getFederateName",
         "section": "10.5",
         "service_group": "Support Services",
         "title": "Get Federate Name service"
@@ -4935,7 +4935,7 @@
             "throws": []
           }
         ],
-        "python_name": "get_hla_version",
+        "python_name": "getHLAversion",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -4974,7 +4974,7 @@
             ]
           }
         ],
-        "python_name": "get_interaction_class_handle",
+        "python_name": "getInteractionClassHandle",
         "section": "10.15",
         "service_group": "Support Services",
         "title": "Get Interaction Class Handle service"
@@ -4996,7 +4996,7 @@
             ]
           }
         ],
-        "python_name": "get_interaction_class_handle_factory",
+        "python_name": "getInteractionClassHandleFactory",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -5035,7 +5035,7 @@
             ]
           }
         ],
-        "python_name": "get_interaction_class_name",
+        "python_name": "getInteractionClassName",
         "section": "10.16",
         "service_group": "Support Services",
         "title": "Get Interaction Class Name service"
@@ -5074,7 +5074,7 @@
             ]
           }
         ],
-        "python_name": "get_known_object_class_handle",
+        "python_name": "getKnownObjectClassHandle",
         "section": "10.8",
         "service_group": "Support Services",
         "title": "Get Known Object Class Handle service"
@@ -5113,7 +5113,7 @@
             ]
           }
         ],
-        "python_name": "get_object_class_handle",
+        "python_name": "getObjectClassHandle",
         "section": "10.6",
         "service_group": "Support Services",
         "title": "Get Object Class Handle service"
@@ -5135,7 +5135,7 @@
             ]
           }
         ],
-        "python_name": "get_object_class_handle_factory",
+        "python_name": "getObjectClassHandleFactory",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -5174,7 +5174,7 @@
             ]
           }
         ],
-        "python_name": "get_object_class_name",
+        "python_name": "getObjectClassName",
         "section": "10.7",
         "service_group": "Support Services",
         "title": "Get Object Class Name service"
@@ -5213,7 +5213,7 @@
             ]
           }
         ],
-        "python_name": "get_object_instance_handle",
+        "python_name": "getObjectInstanceHandle",
         "section": "10.9",
         "service_group": "Support Services",
         "title": "Get Object Instance Handle service"
@@ -5235,7 +5235,7 @@
             ]
           }
         ],
-        "python_name": "get_object_instance_handle_factory",
+        "python_name": "getObjectInstanceHandleFactory",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -5274,7 +5274,7 @@
             ]
           }
         ],
-        "python_name": "get_object_instance_name",
+        "python_name": "getObjectInstanceName",
         "section": "10.10",
         "service_group": "Support Services",
         "title": "Get Object Instance Name service"
@@ -5313,7 +5313,7 @@
             ]
           }
         ],
-        "python_name": "get_order_name",
+        "python_name": "getOrderName",
         "section": "10.20",
         "service_group": "Support Services",
         "title": "Get Order Name service"
@@ -5352,7 +5352,7 @@
             ]
           }
         ],
-        "python_name": "get_order_type",
+        "python_name": "getOrderType",
         "section": "10.19",
         "service_group": "Support Services",
         "title": "Get Order Type service"
@@ -5393,7 +5393,7 @@
             ]
           }
         ],
-        "python_name": "get_parameter_handle",
+        "python_name": "getParameterHandle",
         "section": "10.17",
         "service_group": "Support Services",
         "title": "Get Parameter Handle service"
@@ -5415,7 +5415,7 @@
             ]
           }
         ],
-        "python_name": "get_parameter_handle_factory",
+        "python_name": "getParameterHandleFactory",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -5437,7 +5437,7 @@
             ]
           }
         ],
-        "python_name": "get_parameter_handle_value_map_factory",
+        "python_name": "getParameterHandleValueMapFactory",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -5480,7 +5480,7 @@
             ]
           }
         ],
-        "python_name": "get_parameter_name",
+        "python_name": "getParameterName",
         "section": "10.18",
         "service_group": "Support Services",
         "title": "Get Parameter Name service"
@@ -5525,7 +5525,7 @@
             ]
           }
         ],
-        "python_name": "get_range_bounds",
+        "python_name": "getRangeBounds",
         "section": "10.29",
         "service_group": "Support Services",
         "title": "Get Range Bounds service"
@@ -5547,7 +5547,7 @@
             ]
           }
         ],
-        "python_name": "get_region_handle_set_factory",
+        "python_name": "getRegionHandleSetFactory",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -5579,7 +5579,7 @@
             "throws": []
           }
         ],
-        "python_name": "get_time_factory",
+        "python_name": "getTimeFactory",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -5603,7 +5603,7 @@
             ]
           }
         ],
-        "python_name": "get_transportation_name",
+        "python_name": "getTransportationName",
         "section": "10.22",
         "service_group": "Support Services",
         "title": "Get Transportation Type Name service"
@@ -5627,7 +5627,7 @@
             ]
           }
         ],
-        "python_name": "get_transportation_type",
+        "python_name": "getTransportationType",
         "section": "10.21",
         "service_group": "Support Services",
         "title": "Get Transportation Type Handle service"
@@ -5651,7 +5651,7 @@
             ]
           }
         ],
-        "python_name": "get_transportation_type_handle",
+        "python_name": "getTransportationTypeHandle",
         "section": "10.21",
         "service_group": "Support Services",
         "title": "Get Transportation Type Handle service"
@@ -5673,7 +5673,7 @@
             ]
           }
         ],
-        "python_name": "get_transportation_type_handle_factory",
+        "python_name": "getTransportationTypeHandleFactory",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -5697,7 +5697,7 @@
             ]
           }
         ],
-        "python_name": "get_transportation_type_name",
+        "python_name": "getTransportationTypeName",
         "section": "10.22",
         "service_group": "Support Services",
         "title": "Get Transportation Type Name service"
@@ -5736,7 +5736,7 @@
             ]
           }
         ],
-        "python_name": "get_update_rate_value",
+        "python_name": "getUpdateRateValue",
         "section": "10.13",
         "service_group": "Support Services",
         "title": "Get Update Rate Value service"
@@ -5777,7 +5777,7 @@
             ]
           }
         ],
-        "python_name": "get_update_rate_value_for_attribute",
+        "python_name": "getUpdateRateValueForAttribute",
         "section": "10.14",
         "service_group": "Support Services",
         "title": "Get Update Rate Value For Attribute service"
@@ -5822,7 +5822,7 @@
             ]
           }
         ],
-        "python_name": "is_attribute_owned_by_federate",
+        "python_name": "isAttributeOwnedByFederate",
         "section": "7.19",
         "service_group": "Ownership Management",
         "title": "Is Attribute Owned By Federate service"
@@ -5960,7 +5960,7 @@
             ]
           }
         ],
-        "python_name": "join_federation_execution",
+        "python_name": "joinFederationExecution",
         "section": "4.9",
         "service_group": "Federation Management",
         "title": "Join Federation Execution service"
@@ -5995,7 +5995,7 @@
             ]
           }
         ],
-        "python_name": "list_federation_executions",
+        "python_name": "listFederationExecutions",
         "section": "4.7",
         "service_group": "Federation Management",
         "title": "List Federation Executions service"
@@ -6042,7 +6042,7 @@
             ]
           }
         ],
-        "python_name": "local_delete_object_instance",
+        "python_name": "localDeleteObjectInstance",
         "section": "6.16",
         "service_group": "Object Management",
         "title": "Local Delete Object Instance service"
@@ -6089,7 +6089,7 @@
             ]
           }
         ],
-        "python_name": "modify_lookahead",
+        "python_name": "modifyLookahead",
         "section": "8.19",
         "service_group": "Time Management",
         "title": "Modify Lookahead service"
@@ -6138,7 +6138,7 @@
             ]
           }
         ],
-        "python_name": "negotiated_attribute_ownership_divestiture",
+        "python_name": "negotiatedAttributeOwnershipDivestiture",
         "section": "7.3",
         "service_group": "Ownership Management",
         "title": "Negotiated Attribute Ownership Divestiture service"
@@ -6189,7 +6189,7 @@
             ]
           }
         ],
-        "python_name": "next_message_request",
+        "python_name": "nextMessageRequest",
         "section": "8.10",
         "service_group": "Time Management",
         "title": "Next Message Request service"
@@ -6240,7 +6240,7 @@
             ]
           }
         ],
-        "python_name": "next_message_request_available",
+        "python_name": "nextMessageRequestAvailable",
         "section": "8.11",
         "service_group": "Time Management",
         "title": "Next Message Request Available service"
@@ -6279,7 +6279,7 @@
             ]
           }
         ],
-        "python_name": "normalize_federate_handle",
+        "python_name": "normalizeFederateHandle",
         "section": "10.31",
         "service_group": "Support Services",
         "title": "Normalize Federate Handle service"
@@ -6318,7 +6318,7 @@
             ]
           }
         ],
-        "python_name": "normalize_service_group",
+        "python_name": "normalizeServiceGroup",
         "section": "10.32",
         "service_group": "Support Services",
         "title": "Normalize Service Group service"
@@ -6361,7 +6361,7 @@
             ]
           }
         ],
-        "python_name": "publish_interaction_class",
+        "python_name": "publishInteractionClass",
         "section": "5.4",
         "service_group": "Declaration Management",
         "title": "Publish Interaction Class service"
@@ -6406,7 +6406,7 @@
             ]
           }
         ],
-        "python_name": "publish_object_class_attributes",
+        "python_name": "publishObjectClassAttributes",
         "section": "5.2",
         "service_group": "Declaration Management",
         "title": "Publish Object Class Attributes service"
@@ -6451,7 +6451,7 @@
             ]
           }
         ],
-        "python_name": "query_attribute_ownership",
+        "python_name": "queryAttributeOwnership",
         "section": "7.17",
         "service_group": "Ownership Management",
         "title": "Query Attribute Ownership service"
@@ -6496,7 +6496,7 @@
             ]
           }
         ],
-        "python_name": "query_attribute_transportation_type",
+        "python_name": "queryAttributeTransportationType",
         "section": "6.25",
         "service_group": "Object Management",
         "title": "Query Attribute Transportation Type service"
@@ -6535,7 +6535,7 @@
             ]
           }
         ],
-        "python_name": "query_federation_restore_status",
+        "python_name": "queryFederationRestoreStatus",
         "section": "4.31",
         "service_group": "Federation Management",
         "title": "Query Federation Restore Status service"
@@ -6574,7 +6574,7 @@
             ]
           }
         ],
-        "python_name": "query_federation_save_status",
+        "python_name": "queryFederationSaveStatus",
         "section": "4.22",
         "service_group": "Federation Management",
         "title": "Query Federation Save Status service"
@@ -6615,7 +6615,7 @@
             ]
           }
         ],
-        "python_name": "query_galt",
+        "python_name": "queryGALT",
         "section": "8.16",
         "service_group": "Time Management",
         "title": "Query GALT service"
@@ -6658,7 +6658,7 @@
             ]
           }
         ],
-        "python_name": "query_interaction_transportation_type",
+        "python_name": "queryInteractionTransportationType",
         "section": "6.29",
         "service_group": "Object Management",
         "title": "Query Interaction Transportation Type service"
@@ -6699,7 +6699,7 @@
             ]
           }
         ],
-        "python_name": "query_lits",
+        "python_name": "queryLITS",
         "section": "8.18",
         "service_group": "Time Management",
         "title": "Query LITS service"
@@ -6740,7 +6740,7 @@
             ]
           }
         ],
-        "python_name": "query_logical_time",
+        "python_name": "queryLogicalTime",
         "section": "8.17",
         "service_group": "Time Management",
         "title": "Query Logical Time service"
@@ -6783,7 +6783,7 @@
             ]
           }
         ],
-        "python_name": "query_lookahead",
+        "python_name": "queryLookahead",
         "section": "8.20",
         "service_group": "Time Management",
         "title": "Query Lookahead service"
@@ -6858,7 +6858,7 @@
             ]
           }
         ],
-        "python_name": "register_federation_synchronization_point",
+        "python_name": "registerFederationSynchronizationPoint",
         "section": "4.11",
         "service_group": "Federation Management",
         "title": "Register Federation Synchronization Point service"
@@ -6943,7 +6943,7 @@
             ]
           }
         ],
-        "python_name": "register_object_instance",
+        "python_name": "registerObjectInstance",
         "section": "6.8",
         "service_group": "Object Management",
         "title": "Register Object Instance service"
@@ -7048,7 +7048,7 @@
             ]
           }
         ],
-        "python_name": "register_object_instance_with_regions",
+        "python_name": "registerObjectInstanceWithRegions",
         "section": "9.5",
         "service_group": "Data Distribution Management",
         "title": "Register Object Instance With Regions service"
@@ -7091,7 +7091,7 @@
             ]
           }
         ],
-        "python_name": "release_multiple_object_instance_name",
+        "python_name": "releaseMultipleObjectInstanceName",
         "section": "6.7",
         "service_group": "Object Management",
         "title": "Release Multiple Object Instance Names service"
@@ -7134,7 +7134,7 @@
             ]
           }
         ],
-        "python_name": "release_object_instance_name",
+        "python_name": "releaseObjectInstanceName",
         "section": "6.4",
         "service_group": "Object Management",
         "title": "Release Object Instance Name service"
@@ -7185,7 +7185,7 @@
             ]
           }
         ],
-        "python_name": "request_attribute_transportation_type_change",
+        "python_name": "requestAttributeTransportationTypeChange",
         "section": "6.23",
         "service_group": "Object Management",
         "title": "Request Attribute Transportation Type Change service"
@@ -7266,7 +7266,7 @@
             ]
           }
         ],
-        "python_name": "request_attribute_value_update",
+        "python_name": "requestAttributeValueUpdate",
         "section": "6.19",
         "service_group": "Object Management",
         "title": "Request Attribute Value Update service"
@@ -7317,7 +7317,7 @@
             ]
           }
         ],
-        "python_name": "request_attribute_value_update_with_regions",
+        "python_name": "requestAttributeValueUpdateWithRegions",
         "section": "9.13",
         "service_group": "Data Distribution Management",
         "title": "Request Attribute Value Update With Regions service"
@@ -7358,7 +7358,7 @@
             ]
           }
         ],
-        "python_name": "request_federation_restore",
+        "python_name": "requestFederationRestore",
         "section": "4.24",
         "service_group": "Federation Management",
         "title": "Request Federation Restore service"
@@ -7437,7 +7437,7 @@
             ]
           }
         ],
-        "python_name": "request_federation_save",
+        "python_name": "requestFederationSave",
         "section": "4.16",
         "service_group": "Federation Management",
         "title": "Request Federation Save service"
@@ -7486,7 +7486,7 @@
             ]
           }
         ],
-        "python_name": "request_interaction_transportation_type_change",
+        "python_name": "requestInteractionTransportationTypeChange",
         "section": "6.27",
         "service_group": "Object Management",
         "title": "Request Interaction Transportation Type Change service"
@@ -7531,7 +7531,7 @@
             ]
           }
         ],
-        "python_name": "reserve_multiple_object_instance_name",
+        "python_name": "reserveMultipleObjectInstanceName",
         "section": "6.5",
         "service_group": "Object Management",
         "title": "Reserve Multiple Object Instance Names service"
@@ -7574,7 +7574,7 @@
             ]
           }
         ],
-        "python_name": "reserve_object_instance_name",
+        "python_name": "reserveObjectInstanceName",
         "section": "6.2",
         "service_group": "Object Management",
         "title": "Reserve Object Instance Name service"
@@ -7619,7 +7619,7 @@
             ]
           }
         ],
-        "python_name": "resign_federation_execution",
+        "python_name": "resignFederationExecution",
         "section": "4.10",
         "service_group": "Federation Management",
         "title": "Resign Federation Execution service"
@@ -7753,7 +7753,7 @@
             ]
           }
         ],
-        "python_name": "send_interaction",
+        "python_name": "sendInteraction",
         "section": "6.12",
         "service_group": "Object Management",
         "title": "Send Interaction service"
@@ -7852,7 +7852,7 @@
             ]
           }
         ],
-        "python_name": "send_interaction_with_regions",
+        "python_name": "sendInteractionWithRegions",
         "section": "9.12",
         "service_group": "Data Distribution Management",
         "title": "Send Interaction With Regions service"
@@ -7891,7 +7891,7 @@
             ]
           }
         ],
-        "python_name": "set_automatic_resign_directive",
+        "python_name": "setAutomaticResignDirective",
         "section": "10.3",
         "service_group": "Support Services",
         "title": "Set Automatic Resign Directive service"
@@ -7940,7 +7940,7 @@
             ]
           }
         ],
-        "python_name": "set_range_bounds",
+        "python_name": "setRangeBounds",
         "section": "10.30",
         "service_group": "Support Services",
         "title": "Set Range Bounds service"
@@ -7985,7 +7985,7 @@
             ]
           }
         ],
-        "python_name": "subscribe_interaction_class",
+        "python_name": "subscribeInteractionClass",
         "section": "5.8",
         "service_group": "Declaration Management",
         "title": "Subscribe Interaction Class service"
@@ -8012,7 +8012,7 @@
             ]
           }
         ],
-        "python_name": "subscribe_interaction_class_passively",
+        "python_name": "subscribeInteractionClassPassively",
         "section": "5.8",
         "service_group": "Declaration Management",
         "title": "Subscribe Interaction Class service"
@@ -8042,7 +8042,7 @@
             ]
           }
         ],
-        "python_name": "subscribe_interaction_class_passively_with_regions",
+        "python_name": "subscribeInteractionClassPassivelyWithRegions",
         "section": "9.10",
         "service_group": "Data Distribution Management",
         "title": "Subscribe Interaction Class With Regions service"
@@ -8093,7 +8093,7 @@
             ]
           }
         ],
-        "python_name": "subscribe_interaction_class_with_regions",
+        "python_name": "subscribeInteractionClassWithRegions",
         "section": "9.10",
         "service_group": "Data Distribution Management",
         "title": "Subscribe Interaction Class With Regions service"
@@ -8158,7 +8158,7 @@
             ]
           }
         ],
-        "python_name": "subscribe_object_class_attributes",
+        "python_name": "subscribeObjectClassAttributes",
         "section": "5.6",
         "service_group": "Declaration Management",
         "title": "Subscribe Object Class Attributes service"
@@ -8204,7 +8204,7 @@
             ]
           }
         ],
-        "python_name": "subscribe_object_class_attributes_passively",
+        "python_name": "subscribeObjectClassAttributesPassively",
         "section": "5.6",
         "service_group": "Declaration Management",
         "title": "Subscribe Object Class Attributes service"
@@ -8256,7 +8256,7 @@
             ]
           }
         ],
-        "python_name": "subscribe_object_class_attributes_passively_with_regions",
+        "python_name": "subscribeObjectClassAttributesPassivelyWithRegions",
         "section": "9.8",
         "service_group": "Data Distribution Management",
         "title": "Subscribe Object Class Attributes With Regions service"
@@ -8330,7 +8330,7 @@
             ]
           }
         ],
-        "python_name": "subscribe_object_class_attributes_with_regions",
+        "python_name": "subscribeObjectClassAttributesWithRegions",
         "section": "9.8",
         "service_group": "Data Distribution Management",
         "title": "Subscribe Object Class Attributes With Regions service"
@@ -8390,7 +8390,7 @@
             ]
           }
         ],
-        "python_name": "synchronization_point_achieved",
+        "python_name": "synchronizationPointAchieved",
         "section": "4.14",
         "service_group": "Federation Management",
         "title": "Synchronization Point Achieved service"
@@ -8441,7 +8441,7 @@
             ]
           }
         ],
-        "python_name": "time_advance_request",
+        "python_name": "timeAdvanceRequest",
         "section": "8.8",
         "service_group": "Time Management",
         "title": "Time Advance Request service"
@@ -8492,7 +8492,7 @@
             ]
           }
         ],
-        "python_name": "time_advance_request_available",
+        "python_name": "timeAdvanceRequestAvailable",
         "section": "8.9",
         "service_group": "Time Management",
         "title": "Time Advance Request Available service"
@@ -8541,7 +8541,7 @@
             ]
           }
         ],
-        "python_name": "unassociate_regions_for_updates",
+        "python_name": "unassociateRegionsForUpdates",
         "section": "9.7",
         "service_group": "Data Distribution Management",
         "title": "Unassociate Regions For Updates service"
@@ -8588,7 +8588,7 @@
             ]
           }
         ],
-        "python_name": "unconditional_attribute_ownership_divestiture",
+        "python_name": "unconditionalAttributeOwnershipDivestiture",
         "section": "7.2",
         "service_group": "Ownership Management",
         "title": "Unconditional Attribute Ownership Divestiture service"
@@ -8631,7 +8631,7 @@
             ]
           }
         ],
-        "python_name": "unpublish_interaction_class",
+        "python_name": "unpublishInteractionClass",
         "section": "5.5",
         "service_group": "Declaration Management",
         "title": "Unpublish Interaction Class service"
@@ -8676,7 +8676,7 @@
             ]
           }
         ],
-        "python_name": "unpublish_object_class",
+        "python_name": "unpublishObjectClass",
         "section": "5.3",
         "service_group": "Declaration Management",
         "title": "Unpublish Object Class Attributes service"
@@ -8723,7 +8723,7 @@
             ]
           }
         ],
-        "python_name": "unpublish_object_class_attributes",
+        "python_name": "unpublishObjectClassAttributes",
         "section": "5.3",
         "service_group": "Declaration Management",
         "title": "Unpublish Object Class Attributes service"
@@ -8766,7 +8766,7 @@
             ]
           }
         ],
-        "python_name": "unsubscribe_interaction_class",
+        "python_name": "unsubscribeInteractionClass",
         "section": "5.9",
         "service_group": "Declaration Management",
         "title": "Unsubscribe Interaction Class service"
@@ -8813,7 +8813,7 @@
             ]
           }
         ],
-        "python_name": "unsubscribe_interaction_class_with_regions",
+        "python_name": "unsubscribeInteractionClassWithRegions",
         "section": "9.11",
         "service_group": "Data Distribution Management",
         "title": "Unsubscribe Interaction Class With Regions service"
@@ -8856,7 +8856,7 @@
             ]
           }
         ],
-        "python_name": "unsubscribe_object_class",
+        "python_name": "unsubscribeObjectClass",
         "section": "5.7",
         "service_group": "Declaration Management",
         "title": "Unsubscribe Object Class Attributes service"
@@ -8901,7 +8901,7 @@
             ]
           }
         ],
-        "python_name": "unsubscribe_object_class_attributes",
+        "python_name": "unsubscribeObjectClassAttributes",
         "section": "5.7",
         "service_group": "Declaration Management",
         "title": "Unsubscribe Object Class Attributes service"
@@ -8950,7 +8950,7 @@
             ]
           }
         ],
-        "python_name": "unsubscribe_object_class_attributes_with_regions",
+        "python_name": "unsubscribeObjectClassAttributesWithRegions",
         "section": "9.9",
         "service_group": "Data Distribution Management",
         "title": "Unsubscribe Object Class Attributes With Regions service"
@@ -9037,7 +9037,7 @@
             ]
           }
         ],
-        "python_name": "update_attribute_values",
+        "python_name": "updateAttributeValues",
         "section": "6.10",
         "service_group": "Object Management",
         "title": "Update Attribute Values service"
