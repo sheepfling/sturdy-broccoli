@@ -15,6 +15,19 @@ from hla2010_repo_internal.traceability import (
 
 ROOT = Path(__file__).resolve().parents[2]
 EDITIONLESS_STANDARD_RE = re.compile(r"IEEE 1516(?:\.1|\.2)?-2010(?! \(2010 edition\))")
+EDITIONLESS_HLA_STANDARD_RE = re.compile(r"\bHLA 1516(?:\.1|\.2)?(?:-2010)?\b")
+PUBLIC_STANDARD_LABEL_PATHS = (
+    ROOT / "README.md",
+    ROOT / "docs" / "README.md",
+    ROOT / "requirements" / "README.md",
+    ROOT / "docs" / "requirements_authoring_map.md",
+    ROOT / "docs" / "requirements_crud.md",
+    ROOT / "docs" / "requirements_edit_one_row.md",
+    ROOT / "docs" / "requirements_trace_one_method.md",
+    ROOT / "docs" / "requirements_traceability.md",
+    ROOT / "analysis" / "compliance" / "python_final_requirements_report.md",
+    ROOT / "analysis" / "compliance" / "python_boss_capability_brief.md",
+)
 
 
 def test_active_traceability_refs_resolve() -> None:
@@ -52,11 +65,10 @@ def test_authored_requirement_rows_use_exact_edition_qualified_source_documents(
 
 
 def test_requirement_csv_json_surfaces_do_not_use_editionless_ieee_2010_labels() -> None:
-    surface_dirs = (
-        ROOT / "requirements",
-        ROOT / "analysis" / "compliance",
-        ROOT / "analysis" / "traceability",
-    )
+    # Keep this scan on the authored/source-oriented requirements surfaces.
+    # Generated compliance packets are covered separately by packet-specific tests
+    # so this check does not fail on unrelated packet churn in a dirty workspace.
+    surface_dirs = (ROOT / "requirements", ROOT / "analysis" / "traceability")
     violations: list[str] = []
     for directory in surface_dirs:
         for path in sorted(directory.rglob("*")):
@@ -68,4 +80,15 @@ def test_requirement_csv_json_surfaces_do_not_use_editionless_ieee_2010_labels()
                 continue
             line = text[: match.start()].count("\n") + 1
             violations.append(f"{path.relative_to(ROOT).as_posix()}:{line}: {match.group(0)}")
+    assert not violations, "\n".join(violations)
+
+
+def test_public_standard_label_surfaces_do_not_use_editionless_hla_or_ieee_2010_labels() -> None:
+    violations: list[str] = []
+    for path in PUBLIC_STANDARD_LABEL_PATHS:
+        text = path.read_text(encoding="utf-8")
+        for pattern in (EDITIONLESS_STANDARD_RE, EDITIONLESS_HLA_STANDARD_RE):
+            for match in pattern.finditer(text):
+                line = text[: match.start()].count("\n") + 1
+                violations.append(f"{path.relative_to(ROOT).as_posix()}:{line}: {match.group(0)}")
     assert not violations, "\n".join(violations)

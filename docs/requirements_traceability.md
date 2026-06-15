@@ -63,7 +63,7 @@ Traceability depends on a small set of surfaces:
 ### createFederationExecution
 
 - Requirement row: `REQ-RTI-FM-4_5-createFederationExecution`
-- Spec reference: `IEEE 1516.1-2010 §4.5`
+- Spec reference: `IEEE 1516.1-2010 (2010 edition) §4.5`
 - Python public method: `createFederationExecution` / `create_federation_execution`
 - Backend service: `hla2010_rti_python.backend.PythonRTIBackend._svc_createFederationExecution`
 - Implementation file: `packages/hla2010-rti-python/src/hla2010_rti_python/backend.py`
@@ -74,7 +74,7 @@ Traceability depends on a small set of surfaces:
 ### timeAdvanceRequest
 
 - Requirement row: `REQ-RTI-TM-8_8-timeAdvanceRequest`
-- Spec reference: `IEEE 1516.1-2010 §8.8`
+- Spec reference: `IEEE 1516.1-2010 (2010 edition) §8.8`
 - Python public method: `timeAdvanceRequest` / `time_advance_request`
 - Backend service: `hla2010_rti_python.backend.PythonRTIBackend._svc_timeAdvanceRequest`
 - Implementation file: `packages/hla2010-rti-python/src/hla2010_rti_python/backend.py`
@@ -85,7 +85,7 @@ Traceability depends on a small set of surfaces:
 ### reflectAttributeValues
 
 - Requirement row: `REQ-FED-OM-6_11-reflectAttributeValues`
-- Spec reference: `IEEE 1516.1-2010 §6.11`
+- Spec reference: `IEEE 1516.1-2010 (2010 edition) §6.11`
 - Python public method: `reflectAttributeValues` / `reflect_attribute_values`
 - Callback surface: `RecordingFederateAmbassador callback + snake_case alias`
 - Implementation file: `packages/hla2010-spec/src/hla2010/ambassadors.py`

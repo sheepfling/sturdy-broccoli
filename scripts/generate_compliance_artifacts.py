@@ -10,7 +10,7 @@ import re
 import sys
 import tomllib
 from collections import defaultdict
-from dataclasses import asdict, dataclass
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
@@ -40,6 +40,26 @@ from hla2010_repo_internal.conformance import (
     write_service_conformance_csv,
     write_service_conformance_json,
 )
+from hla2010_repo_internal.requirements_source import (
+    format_requirement_clause_key,
+    format_requirement_section_ref,
+    requirement_document_matches_binding,
+    requirement_document_title_for_binding,
+)
+from hla2010_repo_internal.verification.compliance_artifact_defs import (
+    BACKEND_DISPOSITION_ARTIFACT_META,
+    SUPPORTED_SUBSET_POLICY_DEFS,
+    BackendRequirementDispositionRow,
+    CompletionChecklistRow,
+    CoreBackendMatrixRow,
+    GapSectionSummary,
+    NegativePathLedgerRow,
+    PitchRequirementDispositionRow,
+    PublicClassInventoryRow,
+    Section8BackendMatrixRow,
+    SectionComplianceSummary,
+    UnfinishedWorkRow,
+)
 from hla2010_repo_internal.verification.backend_compliance_discovery import write_vendor_discovery_backlog_artifacts
 from hla2010_repo_internal.verification.asset_plan import (
     write_traceability_csv,
@@ -57,193 +77,23 @@ from hla2010_repo_internal.verification.requirements_matrix_artifacts import (
 
 OUTPUT_DIR = REPO_ROOT / "analysis" / "compliance"
 
-
-@dataclass(frozen=True)
-class SectionComplianceSummary:
-    section_ref: str
-    interface_counts: dict[str, int]
-    implementation_status_counts: dict[str, int]
-    verification_status_counts: dict[str, int]
-    exact_requirement_evidence_rows: int
-    no_requirement_evidence_rows: int
-    known_gap_rows: int
-    methods: tuple[str, ...]
+_REQUIREMENTS_MATRIX_DOCUMENT_BINDINGS = (
+    "framework_rules",
+    "federate_interface",
+    "omt",
+)
 
 
-@dataclass(frozen=True)
-class PublicClassInventoryRow:
-    module: str
-    class_name: str
-    exported_via_package: bool
-    mapping_status: str
-    rationale: str
+def _requirements_matrix_source_label() -> str:
+    titles = tuple(
+        requirement_document_title_for_binding(binding)
+        for binding in _REQUIREMENTS_MATRIX_DOCUMENT_BINDINGS
+    )
+    return " / ".join(title for title in titles if title)
 
 
-@dataclass(frozen=True)
-class GapSectionSummary:
-    section_root: str
-    section_label: str
-    row_count: int
-    core_priority: int
-    representative_methods: tuple[str, ...]
-
-
-@dataclass(frozen=True)
-class NegativePathLedgerRow:
-    section_ref: str
-    interface: str
-    method_name: str
-    verification_status: str
-    negative_path_status: str
-    declared_exception_count: int
-    actionable_exception_count: int
-    negative_executed_count: int
-    declared_exceptions: tuple[str, ...]
-    rationale: str
-
-
-@dataclass(frozen=True)
-class Section8BackendMatrixRow:
-    backend_id: str
-    backend_family: str
-    section_ref: str
-    method_name: str
-    status: str
-    scope: str
-    session_status: str
-    supports_immediate_inline: bool
-    evidence_tests: tuple[str, ...]
-    notes: str
-
-
-@dataclass(frozen=True)
-class CoreBackendMatrixRow:
-    backend_id: str
-    backend_family: str
-    slice_id: str
-    section_refs: tuple[str, ...]
-    status: str
-    scope: str
-    session_status: str
-    evidence_tests: tuple[str, ...]
-    notes: str
-
-
-@dataclass(frozen=True)
-class CompletionChecklistRow:
-    checklist_id: str
-    area: str
-    status: str
-    evidence: tuple[str, ...]
-    rationale: str
-
-
-@dataclass(frozen=True)
-class UnfinishedWorkRow:
-    priority: str
-    claim_value_rank: int
-    work_id: str
-    area: str
-    current_state: str
-    target_state: str
-    evidence: tuple[str, ...]
-    rationale: str
-
-
-@dataclass(frozen=True)
-class PitchRequirementDispositionRow:
-    matrix_id: str
-    requirement_id: str
-    document: str
-    section_ref: str
-    clause_root: str
-    kind: str
-    title: str
-    python_runtime_status: str
-    pitch_runtime_status: str
-    pitch_disposition: str
-    pitch_jpype_disposition: str
-    pitch_py4j_disposition: str
-    applicability: str
-    evidence_refs: tuple[str, ...]
-    pitch_jpype_evidence_refs: tuple[str, ...]
-    pitch_py4j_evidence_refs: tuple[str, ...]
-    notes: str
-
-
-@dataclass(frozen=True)
-class BackendRequirementDispositionRow:
-    matrix_id: str
-    requirement_id: str
-    document: str
-    section_ref: str
-    clause_root: str
-    kind: str
-    title: str
-    runtime_status: str
-    runtime_disposition: str
-    evidence_refs: tuple[str, ...]
-    notes: str
-
-
-_BACKEND_DISPOSITION_ARTIFACT_META: dict[str, dict[str, str]] = {
-    "python": {
-        "disposition_field": "python_runtime_disposition",
-        "status_field": "python_runtime_status",
-        "title": "Python Requirement Disposition",
-        "label": "python",
-        "output_stem": "python_requirement_disposition",
-    },
-    "certi": {
-        "disposition_field": "certi_runtime_disposition",
-        "status_field": "certi_runtime_status",
-        "title": "CERTI Requirement Disposition",
-        "label": "certi",
-        "output_stem": "certi_requirement_disposition",
-    },
-    "portico": {
-        "disposition_field": "portico_runtime_disposition",
-        "status_field": "portico_runtime_status",
-        "title": "Portico Requirement Disposition",
-        "label": "portico",
-        "output_stem": "portico_requirement_disposition",
-    },
-}
-
-
-_SUPPORTED_SUBSET_POLICY_DEFS: dict[str, dict[str, str]] = {
-    "logical-time-update-rate-only": {
-        "title": "Logical-time update-rate subset",
-        "supported_behavior": (
-            "Update-rate reduction is implemented as logical-time-based throttling. "
-            "Explicit and FOM-declared update-rate designators apply across direct, inherited, "
-            "and regioned subscriptions when there is a logical-time basis."
-        ),
-        "broad_gap": (
-            "The backend does not invent a wall-clock or unmanaged receive-order throttling policy, "
-            "so broader vendor-style update-rate semantics remain out of scope."
-        ),
-    },
-    "reliable-best-effort-transport-only": {
-        "title": "Reliable and best-effort transport subset",
-        "supported_behavior": (
-            "Transportation semantics are implemented for the standard HLAreliable and HLAbestEffort pair, "
-            "including FOM-defined defaults, explicit overrides, callback/query reporting, and restore persistence."
-        ),
-        "broad_gap": (
-            "The backend does not model arbitrary custom transportation-type behavior beyond the reliable/best-effort subset."
-        ),
-    },
-    "unbatched-callback-delivery-only": {
-        "title": "Unbatched callback delivery subset",
-        "supported_behavior": (
-            "The backend preserves externally visible delivery semantics with direct unbatched callbacks."
-        ),
-        "broad_gap": (
-            "Message combination, packaging, and passelization are not explicitly modeled, so the permissive broad row stays partial by policy."
-        ),
-    },
-}
+def _requirements_matrix_source_phrase() -> str:
+    return f"shared {_requirements_matrix_source_label()} requirements matrix"
 
 
 _SCENARIO_EVIDENCE_REGISTRY: dict[str, tuple[str, ...]] = {
@@ -1152,76 +1002,62 @@ _CERTI_NOTE_OVERRIDES: dict[str, str] = {
     ),
 }
 
+def _portico_thin_wrapper_rows(
+    rows: dict[str, str],
+    *,
+    scenario_id: str,
+    wrapper_test: str,
+    scenario_label: str,
+) -> dict[str, tuple[tuple[str, ...], str]]:
+    evidence = _SCENARIO_EVIDENCE_REGISTRY[scenario_id] + (wrapper_test,)
+    note_suffix = (
+        " is attached to explicit backend-neutral + Portico-owned evidence even though the family remains "
+        "classification-required until a dedicated Portico runtime lane is promoted."
+    )
+    return {
+        requirement_id: (
+            evidence,
+            f"Portico now has an optional real-runtime thin wrapper for the shared {scenario_label} scenario, so {subject}{note_suffix}",
+        )
+        for requirement_id, subject in rows.items()
+    }
+
+
 _PORTICO_REQUIREMENT_EVIDENCE: dict[str, tuple[tuple[str, ...], str]] = {
-    "REQ-RTI-FM-4_2-connect": (
-        _SCENARIO_EVIDENCE_REGISTRY["federation-lifecycle"]
-        + ("tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix",),
-        "Portico now has an optional real-runtime thin wrapper for the shared two-federate exchange scenario, so connection setup is attached to explicit backend-neutral + Portico-owned evidence even though the family remains classification-required until a dedicated Portico runtime lane is promoted.",
+    **_portico_thin_wrapper_rows(
+        {
+            "REQ-RTI-FM-4_2-connect": "connection setup",
+            "REQ-RTI-FM-4_5-createFederationExecution": "federation creation",
+            "REQ-RTI-FM-4_9-joinFederationExecution": "federation join",
+        },
+        scenario_id="federation-lifecycle",
+        wrapper_test="tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix",
+        scenario_label="two-federate exchange",
     ),
-    "REQ-RTI-FM-4_5-createFederationExecution": (
-        _SCENARIO_EVIDENCE_REGISTRY["federation-lifecycle"]
-        + ("tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix",),
-        "Portico now has an optional real-runtime thin wrapper for the shared two-federate exchange scenario, so federation creation is attached to explicit backend-neutral + Portico-owned evidence even though the family remains classification-required until a dedicated Portico runtime lane is promoted.",
+    **_portico_thin_wrapper_rows(
+        {
+            "REQ-RTI-FM-4_11-registerFederationSynchronizationPoint": "synchronization-point registration",
+            "REQ-FED-FM-4_12-synchronizationPointRegistrationSucceeded": "registration-success callbacks",
+            "REQ-FED-FM-4_13-announceSynchronizationPoint": "synchronization announcement callbacks",
+            "REQ-RTI-FM-4_14-synchronizationPointAchieved": "synchronization completion participation",
+            "REQ-FED-FM-4_15-federationSynchronized": "federation-synchronized callbacks",
+        },
+        scenario_id="synchronization",
+        wrapper_test="tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_synchronization_matrix",
+        scenario_label="synchronization",
     ),
-    "REQ-RTI-FM-4_9-joinFederationExecution": (
-        _SCENARIO_EVIDENCE_REGISTRY["federation-lifecycle"]
-        + ("tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix",),
-        "Portico now has an optional real-runtime thin wrapper for the shared two-federate exchange scenario, so federation join is attached to explicit backend-neutral + Portico-owned evidence even though the family remains classification-required until a dedicated Portico runtime lane is promoted.",
-    ),
-    "REQ-RTI-FM-4_11-registerFederationSynchronizationPoint": (
-        _SCENARIO_EVIDENCE_REGISTRY["synchronization"]
-        + ("tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_synchronization_matrix",),
-        "Portico now has an optional real-runtime thin wrapper for the shared synchronization scenario, so synchronization-point registration is attached to explicit backend-neutral + Portico-owned evidence even though the family remains classification-required until a dedicated Portico runtime lane is promoted.",
-    ),
-    "REQ-FED-FM-4_12-synchronizationPointRegistrationSucceeded": (
-        _SCENARIO_EVIDENCE_REGISTRY["synchronization"]
-        + ("tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_synchronization_matrix",),
-        "Portico now has an optional real-runtime thin wrapper for the shared synchronization scenario, so registration-success callbacks are attached to explicit backend-neutral + Portico-owned evidence even though the family remains classification-required until a dedicated Portico runtime lane is promoted.",
-    ),
-    "REQ-FED-FM-4_13-announceSynchronizationPoint": (
-        _SCENARIO_EVIDENCE_REGISTRY["synchronization"]
-        + ("tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_synchronization_matrix",),
-        "Portico now has an optional real-runtime thin wrapper for the shared synchronization scenario, so synchronization announcement callbacks are attached to explicit backend-neutral + Portico-owned evidence even though the family remains classification-required until a dedicated Portico runtime lane is promoted.",
-    ),
-    "REQ-RTI-FM-4_14-synchronizationPointAchieved": (
-        _SCENARIO_EVIDENCE_REGISTRY["synchronization"]
-        + ("tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_synchronization_matrix",),
-        "Portico now has an optional real-runtime thin wrapper for the shared synchronization scenario, so synchronization completion participation is attached to explicit backend-neutral + Portico-owned evidence even though the family remains classification-required until a dedicated Portico runtime lane is promoted.",
-    ),
-    "REQ-FED-FM-4_15-federationSynchronized": (
-        _SCENARIO_EVIDENCE_REGISTRY["synchronization"]
-        + ("tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_synchronization_matrix",),
-        "Portico now has an optional real-runtime thin wrapper for the shared synchronization scenario, so federation-synchronized callbacks are attached to explicit backend-neutral + Portico-owned evidence even though the family remains classification-required until a dedicated Portico runtime lane is promoted.",
-    ),
-    "REQ-RTI-OM-6_8-registerObjectInstance": (
-        _SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"]
-        + ("tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix",),
-        "Portico now has an optional real-runtime thin wrapper for the shared two-federate exchange scenario, so object-instance registration is attached to explicit backend-neutral + Portico-owned evidence even though the family remains classification-required until a dedicated Portico runtime lane is promoted.",
-    ),
-    "REQ-FED-OM-6_9-discoverObjectInstance": (
-        _SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"]
-        + ("tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix",),
-        "Portico now has an optional real-runtime thin wrapper for the shared two-federate exchange scenario, so discovery callbacks are attached to explicit backend-neutral + Portico-owned evidence even though the family remains classification-required until a dedicated Portico runtime lane is promoted.",
-    ),
-    "REQ-RTI-OM-6_10-updateAttributeValues": (
-        _SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"]
-        + ("tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix",),
-        "Portico now has an optional real-runtime thin wrapper for the shared two-federate exchange scenario, so attribute updates are attached to explicit backend-neutral + Portico-owned evidence even though the family remains classification-required until a dedicated Portico runtime lane is promoted.",
-    ),
-    "REQ-FED-OM-6_11-reflectAttributeValues": (
-        _SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"]
-        + ("tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix",),
-        "Portico now has an optional real-runtime thin wrapper for the shared two-federate exchange scenario, so attribute reflection callbacks are attached to explicit backend-neutral + Portico-owned evidence even though the family remains classification-required until a dedicated Portico runtime lane is promoted.",
-    ),
-    "REQ-RTI-OM-6_12-sendInteraction": (
-        _SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"]
-        + ("tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix",),
-        "Portico now has an optional real-runtime thin wrapper for the shared two-federate exchange scenario, so interactions are attached to explicit backend-neutral + Portico-owned evidence even though the family remains classification-required until a dedicated Portico runtime lane is promoted.",
-    ),
-    "REQ-FED-OM-6_13-receiveInteraction": (
-        _SCENARIO_EVIDENCE_REGISTRY["two-federate-exchange"]
-        + ("tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix",),
-        "Portico now has an optional real-runtime thin wrapper for the shared two-federate exchange scenario, so receive-interaction callbacks are attached to explicit backend-neutral + Portico-owned evidence even though the family remains classification-required until a dedicated Portico runtime lane is promoted.",
+    **_portico_thin_wrapper_rows(
+        {
+            "REQ-RTI-OM-6_8-registerObjectInstance": "object-instance registration",
+            "REQ-FED-OM-6_9-discoverObjectInstance": "discovery callbacks",
+            "REQ-RTI-OM-6_10-updateAttributeValues": "attribute updates",
+            "REQ-FED-OM-6_11-reflectAttributeValues": "attribute reflection callbacks",
+            "REQ-RTI-OM-6_12-sendInteraction": "interactions",
+            "REQ-FED-OM-6_13-receiveInteraction": "receive-interaction callbacks",
+        },
+        scenario_id="two-federate-exchange",
+        wrapper_test="tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix",
+        scenario_label="two-federate exchange",
     ),
 }
 
@@ -2645,7 +2481,7 @@ _PITCH_REQUIREMENT_EVIDENCE["HLA1516.2-OMT-6-001"] = (
     "verified",
     (
         "docs/verification/requirements_hierarchy.md",
-        "requirements/hla1516_2_priority_omt.csv",
+        "requirements/reference/hla1516_2_priority_omt.csv",
         "tests/verification/test_requirement_traceability_1516_2_v013.py",
     ),
     "Pitch parity for this 1516.2 conformance row is satisfied by repo-level artifact evidence that explicitly distinguishes supported versus unsupported OMT behavior in the requirements hierarchy and verifies that traceability contract.",
@@ -2655,7 +2491,7 @@ _PITCH_REQUIREMENT_EVIDENCE["REQ-OMT-6-conformance"] = (
     "not-applicable",
     (
         "docs/verification/requirements_hierarchy.md",
-        "requirements/hla1516_2_priority_omt.csv",
+        "requirements/reference/hla1516_2_priority_omt.csv",
         "tests/verification/test_requirement_traceability_1516_2_v013.py",
     ),
     "This OMT area row is a planning umbrella rather than an executable backend-parity requirement. The concrete extracted 1516.2 conformance requirement is tracked separately as HLA1516.2-OMT-6-001.",
@@ -3664,708 +3500,501 @@ _SECTION8_HOSTED_METHODS = frozenset(
     }
 )
 
-_SECTION8_CERTI_METHODS = frozenset(
-    {
-        "enableTimeRegulation",
-        "enableTimeConstrained",
-        "timeAdvanceRequest",
-        "flushQueueRequest",
-        "queryGALT",
-        "queryLITS",
-        "timeRegulationEnabled",
-        "timeConstrainedEnabled",
-        "timeAdvanceGrant",
+_SECTION8_CERTI_METHODS = frozenset({"enableTimeRegulation", "enableTimeConstrained", "timeAdvanceRequest", "flushQueueRequest", "queryGALT", "queryLITS", "timeRegulationEnabled", "timeConstrainedEnabled", "timeAdvanceGrant"})
+_SECTION8_PITCH_METHODS = frozenset({"enableTimeRegulation", "enableTimeConstrained", "timeAdvanceGrant"})
+_PYTHON_BACKEND_EXTENDED_TESTS = ("tests/backends/test_python_backend_federation_extended.py", "tests/backends/test_python_backend_time_ddm_extended.py", "tests/backends/test_python_backend_object_ownership_extended.py")
+_CERTI_REAL_BACKEND_MATRIX_TESTS = ("tests/vendors/test_certi_real_backend_exchange_matrix.py", "tests/vendors/test_certi_real_backend_time_matrix.py", "tests/vendors/test_certi_real_backend_ownership_matrix.py")
+
+
+def _profile(backend_id: str, backend_family: str, status: str, scope: str, session_status: str, evidence_tests: tuple[str, ...], notes: str, *, method_set: frozenset[str] | None = None, supports_immediate_inline: bool = False) -> dict[str, Any]:
+    return {
+        "backend_id": backend_id,
+        "backend_family": backend_family,
+        "status": status,
+        "scope": scope,
+        "session_status": session_status,
+        "supports_immediate_inline": supports_immediate_inline,
+        "method_set": method_set,
+        "evidence_tests": evidence_tests,
+        "notes": notes,
     }
-)
 
-_SECTION8_PITCH_METHODS = frozenset(
-    {
-        "enableTimeRegulation",
-        "enableTimeConstrained",
-        "timeAdvanceGrant",
-    }
-)
 
-_PYTHON_BACKEND_EXTENDED_TESTS = (
-    "tests/backends/test_python_backend_federation_extended.py",
-    "tests/backends/test_python_backend_time_ddm_extended.py",
-    "tests/backends/test_python_backend_object_ownership_extended.py",
-)
+def _slice(slice_id: str, section_refs: tuple[str, ...], *profiles: dict[str, Any]) -> dict[str, Any]:
+    return {"slice_id": slice_id, "section_refs": section_refs, "profiles": tuple(profiles)}
 
-_CERTI_REAL_BACKEND_MATRIX_TESTS = (
-    "tests/vendors/test_certi_real_backend_exchange_matrix.py",
-    "tests/vendors/test_certi_real_backend_time_matrix.py",
-    "tests/vendors/test_certi_real_backend_ownership_matrix.py",
-)
+
+def _python_reference_profile(status: str, session_status: str, evidence_tests: tuple[str, ...], notes: str, *, scope: str = "core scenario slice") -> dict[str, Any]:
+    return _profile("python-inmemory", "python-reference", status, scope, session_status, evidence_tests, notes)
+
+
+def _hosted_python_profile(transport: str, session_status: str, notes: str, *, scope: str, status: str = "positive-path-passing", evidence_tests: tuple[str, ...] | None = None, method_set: frozenset[str] | None = None, supports_immediate_inline: bool = False) -> dict[str, Any]:
+    backend_by_transport = {"rest": "rest-hosted-python", "grpc": "grpc-hosted-python"}
+    family_by_transport = {"rest": "hosted-python-rest", "grpc": "hosted-python-grpc"}
+    default_tests = {"rest": ("tests/transport/test_rest_transport.py",), "grpc": ("tests/transport/test_grpc_transport_python_server.py",)}
+    return _profile(
+        backend_by_transport[transport],
+        family_by_transport[transport],
+        status,
+        scope,
+        session_status,
+        default_tests[transport] if evidence_tests is None else evidence_tests,
+        notes,
+        method_set=method_set,
+        supports_immediate_inline=supports_immediate_inline,
+    )
+
+
+def _java_shim_profile(bridge: str, status: str, session_status: str, notes: str, *, scope: str, evidence_tests: tuple[str, ...] = ("tests/vendors/test_java_profile_backend_matrix.py",)) -> dict[str, Any]:
+    return _profile(
+        f"java-shim-{bridge}",
+        "java-shim",
+        status,
+        scope,
+        session_status,
+        evidence_tests,
+        notes,
+    )
+
+
+def _certi_profile(variant: str, status: str, session_status: str, evidence_tests: tuple[str, ...], notes: str, *, scope: str, method_set: frozenset[str] | None = None) -> dict[str, Any]:
+    family = "vendor-certi" if variant == "native" else "vendor-certi-java-bridge"
+    return _profile(
+        f"certi-{variant}",
+        family,
+        status,
+        scope,
+        session_status,
+        evidence_tests,
+        notes,
+        method_set=method_set,
+    )
+
+
+def _pitch_profile(bridge: str, status: str, session_status: str, evidence_tests: tuple[str, ...], notes: str, *, scope: str, method_set: frozenset[str] | None = None) -> dict[str, Any]:
+    return _profile(
+        f"pitch-{bridge}",
+        "vendor-pitch-java-bridge",
+        status,
+        scope,
+        session_status,
+        evidence_tests,
+        notes,
+        method_set=method_set,
+    )
+
 
 _CORE_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
-    {
-        "slice_id": "federation-sync",
-        "section_refs": ("IEEE 1516.1-2010 §4.25", "IEEE 1516.1-2010 §4.26"),
-        "profiles": (
-            {
-                "backend_id": "python-inmemory",
-                "backend_family": "python-reference",
-                "status": "reference-passing",
-                "scope": "core scenario slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_java_profile_backend_matrix.py",),
-                "notes": "Reference backend semantics are exercised indirectly through shared scenario helpers and broader federation tests.",
-            },
-            {
-                "backend_id": "rest-hosted-python",
-                "backend_family": "hosted-python-rest",
-                "status": "positive-path-passing",
-                "scope": "hosted core scenario slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/transport/test_rest_transport.py",),
-                "notes": "REST-hosted Python RTI now has explicit synchronization end-to-end coverage.",
-            },
-            {
-                "backend_id": "grpc-hosted-python",
-                "backend_family": "hosted-python-grpc",
-                "status": "positive-path-passing",
-                "scope": "hosted core scenario slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/transport/test_grpc_transport_python_server.py",),
-                "notes": "gRPC-hosted Python RTI has explicit synchronization end-to-end coverage.",
-            },
-            {
-                "backend_id": "java-shim-jpype",
-                "backend_family": "java-shim",
-                "status": "positive-path-passing",
-                "scope": "in-process Java shim slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_java_profile_backend_matrix.py",),
-                "notes": "JPype Java shim has explicit synchronization coverage.",
-            },
-            {
-                "backend_id": "java-shim-py4j",
-                "backend_family": "java-shim",
-                "status": "positive-path-passing",
-                "scope": "in-process Java shim slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_java_profile_backend_matrix.py",),
-                "notes": "Py4J Java shim has explicit synchronization coverage.",
-            },
-            {
-                "backend_id": "certi-native",
-                "backend_family": "vendor-certi",
-                "status": "env-gated-positive",
-                "scope": "real-vendor core scenario slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
-                "notes": "CERTI synchronization matrix exists but was not rerun in this session.",
-            },
-            {
-                "backend_id": "certi-jpype",
-                "backend_family": "vendor-certi-java-bridge",
-                "status": "env-gated-positive",
-                "scope": "real-vendor core scenario slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
-                "notes": "CERTI JPype synchronization matrix exists but was not rerun in this session.",
-            },
-            {
-                "backend_id": "certi-py4j",
-                "backend_family": "vendor-certi-java-bridge",
-                "status": "env-gated-positive",
-                "scope": "real-vendor core scenario slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
-                "notes": "CERTI Py4J synchronization matrix exists but was not rerun in this session.",
-            },
+    _slice(
+        "federation-sync",
+        ("IEEE 1516.1-2010 §4.25", "IEEE 1516.1-2010 §4.26"),
+        _python_reference_profile(
+            "reference-passing",
+            "not-run-in-this-session",
+            ("tests/vendors/test_java_profile_backend_matrix.py",),
+            "Reference backend semantics are exercised indirectly through shared scenario helpers and broader federation tests.",
         ),
-    },
-    {
-        "slice_id": "exchange",
-        "section_refs": ("IEEE 1516.1-2010 §5.2", "IEEE 1516.1-2010 §6.9"),
-        "profiles": (
-            {
-                "backend_id": "python-inmemory",
-                "backend_family": "python-reference",
-                "status": "reference-passing",
-                "scope": "core scenario slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/time/test_section8_backend_matrix.py",),
-                "notes": "Reference backend exchange behavior is exercised heavily through the Section 8 and scenario suites.",
-            },
-            {
-                "backend_id": "rest-hosted-python",
-                "backend_family": "hosted-python-rest",
-                "status": "positive-path-passing",
-                "scope": "hosted core scenario slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/transport/test_rest_transport.py",),
-                "notes": "REST-hosted Python RTI has explicit exchange end-to-end coverage.",
-            },
-            {
-                "backend_id": "grpc-hosted-python",
-                "backend_family": "hosted-python-grpc",
-                "status": "positive-path-passing",
-                "scope": "hosted core scenario slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/transport/test_grpc_transport_python_server.py",),
-                "notes": "gRPC-hosted Python RTI has explicit exchange end-to-end coverage.",
-            },
-            {
-                "backend_id": "java-shim-jpype",
-                "backend_family": "java-shim",
-                "status": "positive-path-passing",
-                "scope": "in-process Java shim slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_java_profile_backend_matrix.py",),
-                "notes": "JPype Java shim has explicit exchange coverage including timed exchange.",
-            },
-            {
-                "backend_id": "java-shim-py4j",
-                "backend_family": "java-shim",
-                "status": "positive-path-passing",
-                "scope": "in-process Java shim slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_java_profile_backend_matrix.py",),
-                "notes": "Py4J Java shim has explicit exchange coverage including timed exchange.",
-            },
-            {
-                "backend_id": "certi-native",
-                "backend_family": "vendor-certi",
-                "status": "verified-in-this-session",
-                "scope": "real-vendor core scenario slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
-                "notes": "CERTI native exchange and cross-facade parity slices passed in this session.",
-            },
-            {
-                "backend_id": "certi-jpype",
-                "backend_family": "vendor-certi-java-bridge",
-                "status": "verified-in-this-session",
-                "scope": "real-vendor core scenario slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
-                "notes": "CERTI JPype exchange and cross-facade parity slices passed in this session.",
-            },
-            {
-                "backend_id": "certi-py4j",
-                "backend_family": "vendor-certi-java-bridge",
-                "status": "verified-in-this-session",
-                "scope": "real-vendor core scenario slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
-                "notes": "CERTI Py4J exchange and cross-facade parity slices passed in this session.",
-            },
+        _hosted_python_profile(
+            "rest",
+            "passing-in-this-session",
+            "REST-hosted Python RTI now has explicit synchronization end-to-end coverage.",
+            scope="hosted core scenario slice",
         ),
-    },
-    {
-        "slice_id": "ownership",
-        "section_refs": ("IEEE 1516.1-2010 §7.2", "IEEE 1516.1-2010 §7.18"),
-        "profiles": (
-            {
-                "backend_id": "python-inmemory",
-                "backend_family": "python-reference",
-                "status": "reference-passing",
-                "scope": "core scenario slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/backends/test_python_backend_object_ownership_extended.py",),
-                "notes": "Reference backend ownership semantics are covered in the Python backend suite.",
-            },
-            {
-                "backend_id": "rest-hosted-python",
-                "backend_family": "hosted-python-rest",
-                "status": "positive-path-passing",
-                "scope": "hosted core scenario slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/transport/test_rest_transport.py",),
-                "notes": "REST-hosted Python RTI now has explicit ownership end-to-end coverage.",
-            },
-            {
-                "backend_id": "grpc-hosted-python",
-                "backend_family": "hosted-python-grpc",
-                "status": "positive-path-passing",
-                "scope": "hosted core scenario slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/transport/test_grpc_transport_python_server.py",),
-                "notes": "gRPC-hosted Python RTI has explicit ownership and negotiated ownership coverage.",
-            },
-            {
-                "backend_id": "java-shim-jpype",
-                "backend_family": "java-shim",
-                "status": "positive-path-passing",
-                "scope": "in-process Java shim slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_java_profile_backend_matrix.py",),
-                "notes": "JPype Java shim has explicit ownership coverage.",
-            },
-            {
-                "backend_id": "java-shim-py4j",
-                "backend_family": "java-shim",
-                "status": "positive-path-passing",
-                "scope": "in-process Java shim slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_java_profile_backend_matrix.py",),
-                "notes": "Py4J Java shim has explicit ownership coverage.",
-            },
-            {
-                "backend_id": "certi-native",
-                "backend_family": "vendor-certi",
-                "status": "verified-in-this-session",
-                "scope": "real-vendor core scenario slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
-                "notes": "CERTI native plain ownership slice passed in this session.",
-            },
-            {
-                "backend_id": "certi-jpype",
-                "backend_family": "vendor-certi-java-bridge",
-                "status": "verified-in-this-session",
-                "scope": "real-vendor core scenario slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
-                "notes": "CERTI JPype plain ownership slice passed in this session.",
-            },
-            {
-                "backend_id": "certi-py4j",
-                "backend_family": "vendor-certi-java-bridge",
-                "status": "verified-in-this-session",
-                "scope": "real-vendor core scenario slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
-                "notes": "CERTI Py4J plain ownership slice passed in this session.",
-            },
+        _hosted_python_profile(
+            "grpc",
+            "not-run-in-this-session",
+            "gRPC-hosted Python RTI has explicit synchronization end-to-end coverage.",
+            scope="hosted core scenario slice",
         ),
-    },
-    {
-        "slice_id": "negotiated-ownership",
-        "section_refs": ("IEEE 1516.1-2010 §7.3", "IEEE 1516.1-2010 §7.15"),
-        "profiles": (
-            {
-                "backend_id": "python-inmemory",
-                "backend_family": "python-reference",
-                "status": "reference-passing",
-                "scope": "core scenario slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/backends/test_python_backend_object_ownership_extended.py",),
-                "notes": "Reference backend negotiated ownership semantics are covered in the Python backend suite.",
-            },
-            {
-                "backend_id": "rest-hosted-python",
-                "backend_family": "hosted-python-rest",
-                "status": "positive-path-passing",
-                "scope": "hosted core scenario slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/transport/test_rest_transport.py",),
-                "notes": "REST-hosted Python RTI has explicit negotiated ownership end-to-end coverage.",
-            },
-            {
-                "backend_id": "grpc-hosted-python",
-                "backend_family": "hosted-python-grpc",
-                "status": "positive-path-passing",
-                "scope": "hosted core scenario slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/transport/test_grpc_transport_python_server.py",),
-                "notes": "gRPC-hosted Python RTI has explicit negotiated ownership end-to-end coverage.",
-            },
-            {
-                "backend_id": "java-shim-jpype",
-                "backend_family": "java-shim",
-                "status": "positive-path-passing",
-                "scope": "in-process Java shim slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/vendors/test_java_profile_backend_matrix.py",),
-                "notes": "JPype Java shim has explicit negotiated ownership coverage.",
-            },
-            {
-                "backend_id": "java-shim-py4j",
-                "backend_family": "java-shim",
-                "status": "positive-path-passing",
-                "scope": "in-process Java shim slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/vendors/test_java_profile_backend_matrix.py",),
-                "notes": "Py4J Java shim has explicit negotiated ownership coverage.",
-            },
-            {
-                "backend_id": "certi-native",
-                "backend_family": "vendor-certi",
-                "status": "vendor-divergent",
-                "scope": "real-vendor core scenario slice",
-                "session_status": "failing-in-this-session",
-                "evidence_tests": ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
-                "notes": (
-                    "CERTI native negotiated ownership failed in this session because the "
-                    "runtime never produced the expected release/acquisition handshake."
-                ),
-            },
-            {
-                "backend_id": "certi-jpype",
-                "backend_family": "vendor-certi-java-bridge",
-                "status": "vendor-divergent",
-                "scope": "real-vendor core scenario slice",
-                "session_status": "failing-in-this-session",
-                "evidence_tests": ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
-                "notes": (
-                    "CERTI JPype negotiated ownership failed in this session because the "
-                    "runtime never produced the expected release/acquisition handshake."
-                ),
-            },
-            {
-                "backend_id": "certi-py4j",
-                "backend_family": "vendor-certi-java-bridge",
-                "status": "vendor-divergent",
-                "scope": "real-vendor core scenario slice",
-                "session_status": "failing-in-this-session",
-                "evidence_tests": ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
-                "notes": (
-                    "CERTI Py4J negotiated ownership failed in this session because the "
-                    "runtime never produced the expected release/acquisition handshake."
-                ),
-            },
+        _java_shim_profile(
+            "jpype",
+            "positive-path-passing",
+            "not-run-in-this-session",
+            "JPype Java shim has explicit synchronization coverage.",
+            scope="in-process Java shim slice",
         ),
-    },
+        _java_shim_profile(
+            "py4j",
+            "positive-path-passing",
+            "not-run-in-this-session",
+            "Py4J Java shim has explicit synchronization coverage.",
+            scope="in-process Java shim slice",
+        ),
+        _certi_profile(
+            "native",
+            "env-gated-positive",
+            "not-run-in-this-session",
+            ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
+            "CERTI synchronization matrix exists but was not rerun in this session.",
+            scope="real-vendor core scenario slice",
+        ),
+        _certi_profile(
+            "jpype",
+            "env-gated-positive",
+            "not-run-in-this-session",
+            ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
+            "CERTI JPype synchronization matrix exists but was not rerun in this session.",
+            scope="real-vendor core scenario slice",
+        ),
+        _certi_profile(
+            "py4j",
+            "env-gated-positive",
+            "not-run-in-this-session",
+            ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
+            "CERTI Py4J synchronization matrix exists but was not rerun in this session.",
+            scope="real-vendor core scenario slice",
+        ),
+    ),
+    _slice(
+        "exchange",
+        ("IEEE 1516.1-2010 §5.2", "IEEE 1516.1-2010 §6.9"),
+        _python_reference_profile(
+            "reference-passing",
+            "passing-in-this-session",
+            ("tests/time/test_section8_backend_matrix.py",),
+            "Reference backend exchange behavior is exercised heavily through the Section 8 and scenario suites.",
+        ),
+        _hosted_python_profile(
+            "rest",
+            "not-run-in-this-session",
+            "REST-hosted Python RTI has explicit exchange end-to-end coverage.",
+            scope="hosted core scenario slice",
+        ),
+        _hosted_python_profile(
+            "grpc",
+            "not-run-in-this-session",
+            "gRPC-hosted Python RTI has explicit exchange end-to-end coverage.",
+            scope="hosted core scenario slice",
+        ),
+        _java_shim_profile(
+            "jpype",
+            "positive-path-passing",
+            "not-run-in-this-session",
+            "JPype Java shim has explicit exchange coverage including timed exchange.",
+            scope="in-process Java shim slice",
+        ),
+        _java_shim_profile(
+            "py4j",
+            "positive-path-passing",
+            "not-run-in-this-session",
+            "Py4J Java shim has explicit exchange coverage including timed exchange.",
+            scope="in-process Java shim slice",
+        ),
+        _certi_profile(
+            "native",
+            "verified-in-this-session",
+            "passing-in-this-session",
+            ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
+            "CERTI native exchange and cross-facade parity slices passed in this session.",
+            scope="real-vendor core scenario slice",
+        ),
+        _certi_profile(
+            "jpype",
+            "verified-in-this-session",
+            "passing-in-this-session",
+            ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
+            "CERTI JPype exchange and cross-facade parity slices passed in this session.",
+            scope="real-vendor core scenario slice",
+        ),
+        _certi_profile(
+            "py4j",
+            "verified-in-this-session",
+            "passing-in-this-session",
+            ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
+            "CERTI Py4J exchange and cross-facade parity slices passed in this session.",
+            scope="real-vendor core scenario slice",
+        ),
+    ),
+    _slice(
+        "ownership",
+        ("IEEE 1516.1-2010 §7.2", "IEEE 1516.1-2010 §7.18"),
+        _python_reference_profile(
+            "reference-passing",
+            "not-run-in-this-session",
+            ("tests/backends/test_python_backend_object_ownership_extended.py",),
+            "Reference backend ownership semantics are covered in the Python backend suite.",
+        ),
+        _hosted_python_profile(
+            "rest",
+            "passing-in-this-session",
+            "REST-hosted Python RTI now has explicit ownership end-to-end coverage.",
+            scope="hosted core scenario slice",
+        ),
+        _hosted_python_profile(
+            "grpc",
+            "not-run-in-this-session",
+            "gRPC-hosted Python RTI has explicit ownership and negotiated ownership coverage.",
+            scope="hosted core scenario slice",
+        ),
+        _java_shim_profile(
+            "jpype",
+            "positive-path-passing",
+            "not-run-in-this-session",
+            "JPype Java shim has explicit ownership coverage.",
+            scope="in-process Java shim slice",
+        ),
+        _java_shim_profile(
+            "py4j",
+            "positive-path-passing",
+            "not-run-in-this-session",
+            "Py4J Java shim has explicit ownership coverage.",
+            scope="in-process Java shim slice",
+        ),
+        _certi_profile(
+            "native",
+            "verified-in-this-session",
+            "passing-in-this-session",
+            ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
+            "CERTI native plain ownership slice passed in this session.",
+            scope="real-vendor core scenario slice",
+        ),
+        _certi_profile(
+            "jpype",
+            "verified-in-this-session",
+            "passing-in-this-session",
+            ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
+            "CERTI JPype plain ownership slice passed in this session.",
+            scope="real-vendor core scenario slice",
+        ),
+        _certi_profile(
+            "py4j",
+            "verified-in-this-session",
+            "passing-in-this-session",
+            ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
+            "CERTI Py4J plain ownership slice passed in this session.",
+            scope="real-vendor core scenario slice",
+        ),
+    ),
+    _slice(
+        "negotiated-ownership",
+        ("IEEE 1516.1-2010 §7.3", "IEEE 1516.1-2010 §7.15"),
+        _python_reference_profile(
+            "reference-passing",
+            "not-run-in-this-session",
+            ("tests/backends/test_python_backend_object_ownership_extended.py",),
+            "Reference backend negotiated ownership semantics are covered in the Python backend suite.",
+        ),
+        _hosted_python_profile(
+            "rest",
+            "passing-in-this-session",
+            "REST-hosted Python RTI has explicit negotiated ownership end-to-end coverage.",
+            scope="hosted core scenario slice",
+        ),
+        _hosted_python_profile(
+            "grpc",
+            "not-run-in-this-session",
+            "gRPC-hosted Python RTI has explicit negotiated ownership end-to-end coverage.",
+            scope="hosted core scenario slice",
+        ),
+        _java_shim_profile(
+            "jpype",
+            "positive-path-passing",
+            "passing-in-this-session",
+            "JPype Java shim has explicit negotiated ownership coverage.",
+            scope="in-process Java shim slice",
+        ),
+        _java_shim_profile(
+            "py4j",
+            "positive-path-passing",
+            "passing-in-this-session",
+            "Py4J Java shim has explicit negotiated ownership coverage.",
+            scope="in-process Java shim slice",
+        ),
+        _certi_profile(
+            "native",
+            "vendor-divergent",
+            "failing-in-this-session",
+            ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
+            "CERTI native negotiated ownership failed in this session because the runtime never produced the expected release/acquisition handshake.",
+            scope="real-vendor core scenario slice",
+        ),
+        _certi_profile(
+            "jpype",
+            "vendor-divergent",
+            "failing-in-this-session",
+            ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
+            "CERTI JPype negotiated ownership failed in this session because the runtime never produced the expected release/acquisition handshake.",
+            scope="real-vendor core scenario slice",
+        ),
+        _certi_profile(
+            "py4j",
+            "vendor-divergent",
+            "failing-in-this-session",
+            ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
+            "CERTI Py4J negotiated ownership failed in this session because the runtime never produced the expected release/acquisition handshake.",
+            scope="real-vendor core scenario slice",
+        ),
+    ),
 )
 
 _SECTION10_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
-    {
-        "slice_id": "support-lookups",
-        "section_refs": ("IEEE 1516.1-2010 §10.4", "IEEE 1516.1-2010 §10.32"),
-        "profiles": (
-            {
-                "backend_id": "python-inmemory",
-                "backend_family": "python-reference",
-                "status": "complete-actionable",
-                "scope": "reference support lookup slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": (
-                    "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
-                    "tests/scenarios/test_support_services_backend_matrix.py",
-                    "tests/verification/test_spec_traceability_and_extended_python_rti.py",
-                ),
-                "notes": "Reference backend now has a shared-harness support factory/decode matrix plus existing traceability coverage for the broader support lookup surface.",
-            },
-            {
-                "backend_id": "rest-hosted-python",
-                "backend_family": "hosted-python-rest",
-                "status": "partial",
-                "scope": "hosted support lookup slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": (
-                    "tests/transport/test_rest_transport.py",
-                ),
-                "notes": "REST transport exercises hosted Python positive-path federation/object/time flows, but the current CERTI-style transport facade does not expose the full support-service lookup surface such as getFederateHandle, so this slice remains only partially matrixed.",
-            },
-            {
-                "backend_id": "grpc-hosted-python",
-                "backend_family": "hosted-python-grpc",
-                "status": "partial",
-                "scope": "hosted support lookup slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": (
-                    "tests/transport/test_grpc_transport_python_server.py",
-                ),
-                "notes": "gRPC transport exercises hosted Python positive-path federation/object/time flows, but the current CERTI-style transport facade does not expose the full support-service lookup surface such as getFederateHandle, so this slice remains only partially matrixed.",
-            },
-            {
-                "backend_id": "java-shim-jpype",
-                "backend_family": "java-shim",
-                "status": "complete-actionable",
-                "scope": "java shim support lookup slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": (
-                    "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
-                    "tests/vendors/test_java_profile_backend_matrix.py::test_inprocess_java_shim_support_factory_and_decode_scenario",
-                ),
-                "notes": "Java shim JPype now runs the shared support-services scenario in-process for the lookup subset it implements, giving executable Section 10 support-lookup coverage without vendor runtime dependencies.",
-            },
-            {
-                "backend_id": "java-shim-py4j",
-                "backend_family": "java-shim",
-                "status": "complete-actionable",
-                "scope": "java shim support lookup slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": (
-                    "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
-                    "tests/vendors/test_java_profile_backend_matrix.py::test_inprocess_java_shim_support_factory_and_decode_scenario",
-                ),
-                "notes": "Java shim Py4J now runs the shared support-services scenario in-process for the lookup subset it implements, giving executable Section 10 support-lookup coverage without vendor runtime dependencies.",
-            },
-            {
-                "backend_id": "certi-native",
-                "backend_family": "vendor-certi",
-                "status": "smoke-gated-wrapper",
-                "scope": "vendor support lookup slice",
-                "session_status": "skipped-in-this-session",
-                "evidence_tests": (
-                    "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_support_factory_and_decode_matrix",
-                ),
-                "notes": "CERTI native now has a thin real-runtime wrapper for the shared support-services scenario over the lookup subset exposed by the current facade, but local proof is still gated on enabling real vendor smoke and preflight.",
-            },
-            {
-                "backend_id": "pitch-jpype",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "smoke-gated-wrapper",
-                "scope": "vendor support lookup slice",
-                "session_status": "skipped-in-this-session",
-                "evidence_tests": (
-                    "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",
-                ),
-                "notes": "Pitch JPype now has a thin real-runtime wrapper for the shared support factory/decode scenario, but local proof is still gated on enabling real vendor smoke and preflight.",
-            },
-            {
-                "backend_id": "pitch-py4j",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "smoke-gated-wrapper",
-                "scope": "vendor support lookup slice",
-                "session_status": "skipped-in-this-session",
-                "evidence_tests": (
-                    "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",
-                ),
-                "notes": "Pitch Py4J now has a thin real-runtime wrapper for the shared support factory/decode scenario, but local proof is still gated on enabling real vendor smoke and preflight.",
-            },
+    _slice(
+        "support-lookups",
+        ("IEEE 1516.1-2010 §10.4", "IEEE 1516.1-2010 §10.32"),
+        _python_reference_profile(
+            "complete-actionable",
+            "passing-in-this-session",
+            (
+                "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
+                "tests/scenarios/test_support_services_backend_matrix.py",
+                "tests/verification/test_spec_traceability_and_extended_python_rti.py",
+            ),
+            "Reference backend now has a shared-harness support factory/decode matrix plus existing traceability coverage for the broader support lookup surface.",
+            scope="reference support lookup slice",
         ),
-    },
-    {
-        "slice_id": "support-callback-control",
-        "section_refs": ("IEEE 1516.1-2010 §10.41", "IEEE 1516.1-2010 §10.44"),
-        "profiles": (
-            {
-                "backend_id": "python-inmemory",
-                "backend_family": "python-reference",
-                "status": "complete-actionable",
-                "scope": "reference callback-control slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/backends/test_python_backend_object_ownership_extended.py",),
-                "notes": "Reference backend now enforces save/restore callback-control blocking and within-callback evoke rejection.",
-            },
-            {
-                "backend_id": "rest-hosted-python",
-                "backend_family": "hosted-python-rest",
-                "status": "partial",
-                "scope": "hosted callback-control slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/transport/test_rest_transport.py",),
-                "notes": "REST transport exercises evoke paths positively, but the support callback-control slice is not yet matrixed to the same depth.",
-            },
-            {
-                "backend_id": "grpc-hosted-python",
-                "backend_family": "hosted-python-grpc",
-                "status": "partial",
-                "scope": "hosted callback-control slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/transport/test_grpc_transport_python_server.py",),
-                "notes": "gRPC transport exercises evoke paths positively, but the support callback-control slice is not yet matrixed to the same depth.",
-            },
+        _hosted_python_profile(
+            "rest",
+            "not-run-in-this-session",
+            "REST transport exercises hosted Python positive-path federation/object/time flows, but the current CERTI-style transport facade does not expose the full support-service lookup surface such as getFederateHandle, so this slice remains only partially matrixed.",
+            scope="hosted support lookup slice",
+            status="partial",
         ),
-    },
-    {
-        "slice_id": "support-advisories",
-        "section_refs": ("IEEE 1516.1-2010 §10.33", "IEEE 1516.1-2010 §10.40"),
-        "profiles": (
-            {
-                "backend_id": "python-inmemory",
-                "backend_family": "python-reference",
-                "status": "complete-actionable",
-                "scope": "reference advisory-switch slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/backends/test_python_backend_object_ownership_extended.py",),
-                "notes": "Reference backend has explicit advisory on/off and save/restore negative coverage.",
-            },
+        _hosted_python_profile(
+            "grpc",
+            "not-run-in-this-session",
+            "gRPC transport exercises hosted Python positive-path federation/object/time flows, but the current CERTI-style transport facade does not expose the full support-service lookup surface such as getFederateHandle, so this slice remains only partially matrixed.",
+            scope="hosted support lookup slice",
+            status="partial",
         ),
-    },
-    {
-        "slice_id": "support-factories",
-        "section_refs": ("IEEE 1516.1-2010 §10.44",),
-        "profiles": (
-            {
-                "backend_id": "python-inmemory",
-                "backend_family": "python-reference",
-                "status": "complete-actionable",
-                "scope": "reference factory slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/backends/test_python_backend_object_ownership_extended.py",),
-                "notes": "Reference backend factory getters now have explicit connected vs joined negative coverage.",
-            },
+        _java_shim_profile(
+            "jpype",
+            "complete-actionable",
+            "passing-in-this-session",
+            "Java shim JPype now runs the shared support-services scenario in-process for the lookup subset it implements, giving executable Section 10 support-lookup coverage without vendor runtime dependencies.",
+            scope="java shim support lookup slice",
+            evidence_tests=(
+                "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
+                "tests/vendors/test_java_profile_backend_matrix.py::test_inprocess_java_shim_support_factory_and_decode_scenario",
+            ),
         ),
-    },
+        _java_shim_profile(
+            "py4j",
+            "complete-actionable",
+            "passing-in-this-session",
+            "Java shim Py4J now runs the shared support-services scenario in-process for the lookup subset it implements, giving executable Section 10 support-lookup coverage without vendor runtime dependencies.",
+            scope="java shim support lookup slice",
+            evidence_tests=(
+                "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
+                "tests/vendors/test_java_profile_backend_matrix.py::test_inprocess_java_shim_support_factory_and_decode_scenario",
+            ),
+        ),
+        _certi_profile(
+            "native",
+            "smoke-gated-wrapper",
+            "skipped-in-this-session",
+            ("tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_support_factory_and_decode_matrix",),
+            "CERTI native now has a thin real-runtime wrapper for the shared support-services scenario over the lookup subset exposed by the current facade, but local proof is still gated on enabling real vendor smoke and preflight.",
+            scope="vendor support lookup slice",
+        ),
+        _pitch_profile(
+            "jpype",
+            "smoke-gated-wrapper",
+            "skipped-in-this-session",
+            ("tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",),
+            "Pitch JPype now has a thin real-runtime wrapper for the shared support factory/decode scenario, but local proof is still gated on enabling real vendor smoke and preflight.",
+            scope="vendor support lookup slice",
+        ),
+        _pitch_profile(
+            "py4j",
+            "smoke-gated-wrapper",
+            "skipped-in-this-session",
+            ("tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",),
+            "Pitch Py4J now has a thin real-runtime wrapper for the shared support factory/decode scenario, but local proof is still gated on enabling real vendor smoke and preflight.",
+            scope="vendor support lookup slice",
+        ),
+    ),
+    _slice(
+        "support-callback-control",
+        ("IEEE 1516.1-2010 §10.41", "IEEE 1516.1-2010 §10.44"),
+        _python_reference_profile(
+            "complete-actionable",
+            "passing-in-this-session",
+            ("tests/backends/test_python_backend_object_ownership_extended.py",),
+            "Reference backend now enforces save/restore callback-control blocking and within-callback evoke rejection.",
+            scope="reference callback-control slice",
+        ),
+        _hosted_python_profile(
+            "rest",
+            "not-run-in-this-session",
+            "REST transport exercises evoke paths positively, but the support callback-control slice is not yet matrixed to the same depth.",
+            scope="hosted callback-control slice",
+            status="partial",
+        ),
+        _hosted_python_profile(
+            "grpc",
+            "not-run-in-this-session",
+            "gRPC transport exercises evoke paths positively, but the support callback-control slice is not yet matrixed to the same depth.",
+            scope="hosted callback-control slice",
+            status="partial",
+        ),
+    ),
+    _slice(
+        "support-advisories",
+        ("IEEE 1516.1-2010 §10.33", "IEEE 1516.1-2010 §10.40"),
+        _python_reference_profile(
+            "complete-actionable",
+            "passing-in-this-session",
+            ("tests/backends/test_python_backend_object_ownership_extended.py",),
+            "Reference backend has explicit advisory on/off and save/restore negative coverage.",
+            scope="reference advisory-switch slice",
+        ),
+    ),
+    _slice(
+        "support-factories",
+        ("IEEE 1516.1-2010 §10.44",),
+        _python_reference_profile(
+            "complete-actionable",
+            "passing-in-this-session",
+            ("tests/backends/test_python_backend_object_ownership_extended.py",),
+            "Reference backend factory getters now have explicit connected vs joined negative coverage.",
+            scope="reference factory slice",
+        ),
+    ),
 )
 
 _PITCH_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
-    {
-        "slice_id": "lifecycle",
-        "section_refs": ("IEEE 1516.1-2010 §4.1", "IEEE 1516.1-2010 §4.10"),
-        "profiles": (
-            {
-                "backend_id": "pitch-jpype",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "positive-path-passing",
-                "scope": "real-vendor lifecycle slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_real_vendor_runtime_smoke.py",),
-                "notes": "Pitch JPype lifecycle smoke exists through the Docker-backed CRC/FedPro route.",
-            },
-            {
-                "backend_id": "pitch-py4j",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "positive-path-passing",
-                "scope": "real-vendor lifecycle slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_real_vendor_runtime_smoke.py",),
-                "notes": "Pitch Py4J lifecycle smoke exists through the Docker-backed CRC/FedPro route.",
-            },
-        ),
-    },
-    {
-        "slice_id": "exchange",
-        "section_refs": ("IEEE 1516.1-2010 §6.9", "IEEE 1516.1-2010 §8.13"),
-        "profiles": (
-            {
-                "backend_id": "pitch-jpype",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "positive-path-passing",
-                "scope": "real-vendor exchange/time slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
-                "notes": "Pitch JPype exchange matrix covers receive and timestamped flows.",
-            },
-            {
-                "backend_id": "pitch-py4j",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "positive-path-passing",
-                "scope": "real-vendor exchange/time slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
-                "notes": "Pitch Py4J exchange matrix covers receive and timestamped flows.",
-            },
-        ),
-    },
-    {
-        "slice_id": "synchronization",
-        "section_refs": ("IEEE 1516.1-2010 §4.11", "IEEE 1516.1-2010 §4.15"),
-        "profiles": (
-            {
-                "backend_id": "pitch-jpype",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "positive-path-passing",
-                "scope": "real-vendor synchronization slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
-                "notes": "Pitch JPype synchronization matrix exists.",
-            },
-            {
-                "backend_id": "pitch-py4j",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "positive-path-passing",
-                "scope": "real-vendor synchronization slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
-                "notes": "Pitch Py4J synchronization matrix exists.",
-            },
-        ),
-    },
-    {
-        "slice_id": "lost-federate",
-        "section_refs": ("IEEE 1516.1-2010 §4.1.5",),
-        "profiles": (
-            {
-                "backend_id": "pitch-jpype",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "not-yet-matrixed",
-                "scope": "real-vendor lost-federate slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": (
-                    "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
-                ),
-                "notes": "Pitch JPype now has a child-process probe path, but executed real-runtime runs still auto-resume the dropped FedPro session instead of yielding observer-visible lost-federate evidence.",
-            },
-            {
-                "backend_id": "pitch-py4j",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "blocked-runtime",
-                "scope": "real-vendor lost-federate slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": (
-                    "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
-                    "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
-                ),
-                "notes": "Pitch Py4J now has a shared-harness lost-federate wrapper that terminates the victim gateway JVM, but executed real-runtime runs still do not surface the observer-visible lost-federate report.",
-            },
-        ),
-    },
-    {
-        "slice_id": "ownership",
-        "section_refs": ("IEEE 1516.1-2010 §7.2", "IEEE 1516.1-2010 §7.19"),
-        "profiles": (
-            {
-                "backend_id": "pitch-jpype",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "positive-path-passing",
-                "scope": "real-vendor ownership slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
-                "notes": "Pitch JPype plain ownership slice exists.",
-            },
-            {
-                "backend_id": "pitch-py4j",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "positive-path-passing",
-                "scope": "real-vendor ownership slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
-                "notes": "Pitch Py4J plain ownership slice exists.",
-            },
-        ),
-    },
-    {
-        "slice_id": "negotiated-ownership",
-        "section_refs": ("IEEE 1516.1-2010 §7.3", "IEEE 1516.1-2010 §7.16"),
-        "profiles": (
-            {
-                "backend_id": "pitch-jpype",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "vendor-divergent",
-                "scope": "real-vendor negotiated ownership slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": (
-                    "tests/vendors/test_pitch_real_backend_matrix.py",
-                    "docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",
-                ),
-                "notes": "Pitch JPype negotiated ownership is currently bridge-divergent.",
-            },
-            {
-                "backend_id": "pitch-py4j",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "vendor-divergent",
-                "scope": "real-vendor negotiated ownership slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": (
-                    "tests/vendors/test_pitch_real_backend_matrix.py",
-                    "docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",
-                ),
-                "notes": "Pitch Py4J negotiated ownership is currently bridge-divergent.",
-            },
-        ),
-    },
-    {
-        "slice_id": "time-profile",
-        "section_refs": ("IEEE 1516.1-2010 §8.2", "IEEE 1516.1-2010 §8.24"),
-        "profiles": (
-            {
-                "backend_id": "pitch-jpype",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "positive-path-passing",
-                "scope": "real-vendor time-profile slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
-                "notes": "Pitch JPype time-profile and exchange/time parity slice exists.",
-            },
-            {
-                "backend_id": "pitch-py4j",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "positive-path-passing",
-                "scope": "real-vendor time-profile slice",
-                "session_status": "not-run-in-this-session",
-                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
-                "notes": "Pitch Py4J time-profile and exchange/time parity slice exists.",
-            },
-        ),
-    },
+    _slice(
+        "lifecycle",
+        ("IEEE 1516.1-2010 §4.1", "IEEE 1516.1-2010 §4.10"),
+        _pitch_profile("jpype", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_real_vendor_runtime_smoke.py",), "Pitch JPype lifecycle smoke exists through the Docker-backed CRC/FedPro route.", scope="real-vendor lifecycle slice"),
+        _pitch_profile("py4j", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_real_vendor_runtime_smoke.py",), "Pitch Py4J lifecycle smoke exists through the Docker-backed CRC/FedPro route.", scope="real-vendor lifecycle slice"),
+    ),
+    _slice(
+        "exchange",
+        ("IEEE 1516.1-2010 §6.9", "IEEE 1516.1-2010 §8.13"),
+        _pitch_profile("jpype", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py",), "Pitch JPype exchange matrix covers receive and timestamped flows.", scope="real-vendor exchange/time slice"),
+        _pitch_profile("py4j", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py",), "Pitch Py4J exchange matrix covers receive and timestamped flows.", scope="real-vendor exchange/time slice"),
+    ),
+    _slice(
+        "synchronization",
+        ("IEEE 1516.1-2010 §4.11", "IEEE 1516.1-2010 §4.15"),
+        _pitch_profile("jpype", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py",), "Pitch JPype synchronization matrix exists.", scope="real-vendor synchronization slice"),
+        _pitch_profile("py4j", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py",), "Pitch Py4J synchronization matrix exists.", scope="real-vendor synchronization slice"),
+    ),
+    _slice(
+        "lost-federate",
+        ("IEEE 1516.1-2010 §4.1.5",),
+        _pitch_profile("jpype", "not-yet-matrixed", "not-run-in-this-session", ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",), "Pitch JPype now has a child-process probe path, but executed real-runtime runs still auto-resume the dropped FedPro session instead of yielding observer-visible lost-federate evidence.", scope="real-vendor lost-federate slice"),
+        _pitch_profile("py4j", "blocked-runtime", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix", "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md"), "Pitch Py4J now has a shared-harness lost-federate wrapper that terminates the victim gateway JVM, but executed real-runtime runs still do not surface the observer-visible lost-federate report.", scope="real-vendor lost-federate slice"),
+    ),
+    _slice(
+        "ownership",
+        ("IEEE 1516.1-2010 §7.2", "IEEE 1516.1-2010 §7.19"),
+        _pitch_profile("jpype", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py",), "Pitch JPype plain ownership slice exists.", scope="real-vendor ownership slice"),
+        _pitch_profile("py4j", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py",), "Pitch Py4J plain ownership slice exists.", scope="real-vendor ownership slice"),
+    ),
+    _slice(
+        "negotiated-ownership",
+        ("IEEE 1516.1-2010 §7.3", "IEEE 1516.1-2010 §7.16"),
+        _pitch_profile("jpype", "vendor-divergent", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py", "docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"), "Pitch JPype negotiated ownership is currently bridge-divergent.", scope="real-vendor negotiated ownership slice"),
+        _pitch_profile("py4j", "vendor-divergent", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py", "docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"), "Pitch Py4J negotiated ownership is currently bridge-divergent.", scope="real-vendor negotiated ownership slice"),
+    ),
+    _slice(
+        "time-profile",
+        ("IEEE 1516.1-2010 §8.2", "IEEE 1516.1-2010 §8.24"),
+        _pitch_profile("jpype", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py",), "Pitch JPype time-profile and exchange/time parity slice exists.", scope="real-vendor time-profile slice"),
+        _pitch_profile("py4j", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py",), "Pitch Py4J time-profile and exchange/time parity slice exists.", scope="real-vendor time-profile slice"),
+    ),
 )
 
 _SECTION8_BACKEND_PROFILES: tuple[dict[str, Any], ...] = (
@@ -4472,93 +4101,71 @@ _SECTION8_BACKEND_PROFILES: tuple[dict[str, Any], ...] = (
 )
 
 _LOOKAHEAD_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
-    {
-        "slice_id": "lookahead-window",
-        "section_refs": ("IEEE 1516.1-2010 §8.2", "IEEE 1516.1-2010 §8.17"),
-        "profiles": (
-            {
-                "backend_id": "python-inmemory",
-                "backend_family": "python-reference",
-                "status": "complete-actionable",
-                "scope": "reference lookahead slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": (
-                    "tests/time/test_lookahead_backend_matrix.py",
-                    "tests/time/test_mom_mim_and_time_semantics_v010.py",
-                ),
-                "notes": "Python reference lookahead is exercised directly and through the Section 8 matrix.",
-            },
-            {
-                "backend_id": "rest-hosted-python",
-                "backend_family": "hosted-python-rest",
-                "status": "positive-path-passing",
-                "scope": "hosted lookahead slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": (
-                    "tests/time/test_lookahead_backend_matrix.py",
-                    "tests/transport/test_rest_transport.py",
-                ),
-                "notes": "REST-hosted Python RTI has explicit lookahead query/modify and early-send coverage.",
-            },
-            {
-                "backend_id": "grpc-hosted-python",
-                "backend_family": "hosted-python-grpc",
-                "status": "positive-path-passing",
-                "scope": "hosted lookahead slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": (
-                    "tests/time/test_lookahead_backend_matrix.py",
-                    "tests/transport/test_grpc_transport_python_server.py",
-                ),
-                "notes": "gRPC-hosted Python RTI has explicit lookahead query/modify and early-send coverage.",
-            },
-            {
-                "backend_id": "certi-native",
-                "backend_family": "vendor-certi",
-                "status": "vendor-divergent",
-                "scope": "real-vendor lookahead slice",
-                "session_status": "failing-in-this-session",
-                "evidence_tests": ("tests/vendors/test_certi_real_backend_time_matrix.py",),
-                "notes": "CERTI native lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
-            },
-            {
-                "backend_id": "certi-jpype",
-                "backend_family": "vendor-certi-java-bridge",
-                "status": "vendor-divergent",
-                "scope": "real-vendor lookahead slice",
-                "session_status": "failing-in-this-session",
-                "evidence_tests": ("tests/vendors/test_certi_real_backend_time_matrix.py",),
-                "notes": "CERTI JPype lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
-            },
-            {
-                "backend_id": "certi-py4j",
-                "backend_family": "vendor-certi-java-bridge",
-                "status": "vendor-divergent",
-                "scope": "real-vendor lookahead slice",
-                "session_status": "failing-in-this-session",
-                "evidence_tests": ("tests/vendors/test_certi_real_backend_time_matrix.py",),
-                "notes": "CERTI Py4J lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
-            },
-            {
-                "backend_id": "pitch-jpype",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "verified-in-this-session",
-                "scope": "real-vendor lookahead slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
-                "notes": "Pitch JPype lookahead query/modify and early-send assertions passed against the Docker-backed real runtime in this session.",
-            },
-            {
-                "backend_id": "pitch-py4j",
-                "backend_family": "vendor-pitch-java-bridge",
-                "status": "verified-in-this-session",
-                "scope": "real-vendor lookahead slice",
-                "session_status": "passing-in-this-session",
-                "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
-                "notes": "Pitch Py4J lookahead query/modify and early-send assertions passed against the Docker-backed real runtime in this session.",
-            },
+    _slice(
+        "lookahead-window",
+        ("IEEE 1516.1-2010 §8.2", "IEEE 1516.1-2010 §8.17"),
+        _python_reference_profile(
+            "complete-actionable",
+            "passing-in-this-session",
+            ("tests/time/test_lookahead_backend_matrix.py", "tests/time/test_mom_mim_and_time_semantics_v010.py"),
+            "Python reference lookahead is exercised directly and through the Section 8 matrix.",
+            scope="reference lookahead slice",
         ),
-    },
+        _hosted_python_profile(
+            "rest",
+            "passing-in-this-session",
+            "REST-hosted Python RTI has explicit lookahead query/modify and early-send coverage.",
+            scope="hosted lookahead slice",
+            evidence_tests=("tests/time/test_lookahead_backend_matrix.py", "tests/transport/test_rest_transport.py"),
+        ),
+        _hosted_python_profile(
+            "grpc",
+            "passing-in-this-session",
+            "gRPC-hosted Python RTI has explicit lookahead query/modify and early-send coverage.",
+            scope="hosted lookahead slice",
+            evidence_tests=("tests/time/test_lookahead_backend_matrix.py", "tests/transport/test_grpc_transport_python_server.py"),
+        ),
+        _certi_profile(
+            "native",
+            "vendor-divergent",
+            "failing-in-this-session",
+            ("tests/vendors/test_certi_real_backend_time_matrix.py",),
+            "CERTI native lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
+            scope="real-vendor lookahead slice",
+        ),
+        _certi_profile(
+            "jpype",
+            "vendor-divergent",
+            "failing-in-this-session",
+            ("tests/vendors/test_certi_real_backend_time_matrix.py",),
+            "CERTI JPype lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
+            scope="real-vendor lookahead slice",
+        ),
+        _certi_profile(
+            "py4j",
+            "vendor-divergent",
+            "failing-in-this-session",
+            ("tests/vendors/test_certi_real_backend_time_matrix.py",),
+            "CERTI Py4J lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
+            scope="real-vendor lookahead slice",
+        ),
+        _pitch_profile(
+            "jpype",
+            "verified-in-this-session",
+            "passing-in-this-session",
+            ("tests/vendors/test_pitch_real_backend_matrix.py",),
+            "Pitch JPype lookahead query/modify and early-send assertions passed against the Docker-backed real runtime in this session.",
+            scope="real-vendor lookahead slice",
+        ),
+        _pitch_profile(
+            "py4j",
+            "verified-in-this-session",
+            "passing-in-this-session",
+            ("tests/vendors/test_pitch_real_backend_matrix.py",),
+            "Pitch Py4J lookahead query/modify and early-send assertions passed against the Docker-backed real runtime in this session.",
+            scope="real-vendor lookahead slice",
+        ),
+    ),
 )
 
 
@@ -4697,9 +4304,10 @@ def _gap_section_summaries(rows: tuple[ServiceConformanceRow, ...]) -> list[GapS
         grouped[row.section.split(".", 1)[0] if row.section else "unmapped"].append(row)
 
     summaries: list[GapSectionSummary] = []
+    federate_interface_document = requirement_document_title_for_binding("federate_interface")
     for root, group_rows in grouped.items():
         core_priority = 0 if root in {"4", "5", "6", "7", "8", "9"} else 1
-        section_label = f"IEEE 1516.1-2010 §{root}" if root != "unmapped" else "unmapped"
+        section_label = format_requirement_section_ref(federate_interface_document, root)
         representative_methods = tuple(sorted(f"{row.interface}.{row.method_name}" for row in group_rows)[:8])
         summaries.append(
             GapSectionSummary(
@@ -4851,7 +4459,7 @@ def _write_supported_subset_policy_artifacts() -> None:
         grouped_rows[str(row.get("policy_basis") or "unclassified")].append(row)
 
     policy_rows: list[dict[str, Any]] = []
-    for policy_id, definition in sorted(_SUPPORTED_SUBSET_POLICY_DEFS.items()):
+    for policy_id, definition in sorted(SUPPORTED_SUBSET_POLICY_DEFS.items()):
         policy_group = grouped_rows.get(policy_id, [])
         broad_rows = [row for row in policy_group if str(row.get("claim_scope") or "broad-spec") == "broad-spec"]
         subset_rows = [row for row in policy_group if str(row.get("claim_scope") or "") == "supported-subset"]
@@ -5580,7 +5188,11 @@ def _pitch_evidence_refs(source_row: dict[str, Any], *, clause_root: str) -> tup
     requirement_id = str(source_row.get("requirement_id") or source_row.get("matrix_id") or "")
     mapped_evidence = _PITCH_REQUIREMENT_EVIDENCE.get(requirement_id, ("", (), ""))[1]
     vendor_evidence = tuple(str(ref) for ref in source_row.get("vendor_evidence_refs", []) if str(ref))
-    if mapped_evidence and str(source_row.get("document", "")) == "IEEE 1516.1-2010" and clause_root in {"4", "6", "7", "8", "9"}:
+    if (
+        mapped_evidence
+        and requirement_document_matches_binding(str(source_row.get("document", "")), "federate_interface")
+        and clause_root in {"4", "6", "7", "8", "9"}
+    ):
         return _normalized_evidence_refs(mapped_evidence)
     return _normalized_evidence_refs(vendor_evidence + mapped_evidence)
 
@@ -5685,18 +5297,30 @@ def _family_requirement_notes(source_row: dict[str, Any], *, backend: str, dispo
         if vendor_notes and "pitch" not in lowered and "python" not in lowered:
             return vendor_notes
         if runtime_status:
-            return f"CERTI runtime status is marked {runtime_status} in the shared 2010 requirements matrix."
+            return (
+                f"CERTI runtime status is marked {runtime_status} "
+                f"in the {_requirements_matrix_source_phrase()}."
+            )
         if disposition:
-            return f"CERTI runtime disposition is generated as {disposition} from the shared 2010 requirements matrix."
+            return (
+                f"CERTI runtime disposition is generated as {disposition} "
+                f"from the {_requirements_matrix_source_phrase()}."
+            )
         return generic_notes
 
     if backend == "portico":
         if requirement_id in _PORTICO_REQUIREMENT_EVIDENCE:
             return _PORTICO_REQUIREMENT_EVIDENCE[requirement_id][1]
         if runtime_status:
-            return f"Portico runtime status is marked {runtime_status} in the shared 2010 requirements matrix."
+            return (
+                f"Portico runtime status is marked {runtime_status} "
+                f"in the {_requirements_matrix_source_phrase()}."
+            )
         if disposition:
-            return f"Portico runtime disposition is generated as {disposition} from the shared 2010 requirements matrix."
+            return (
+                f"Portico runtime disposition is generated as {disposition} "
+                f"from the {_requirements_matrix_source_phrase()}."
+            )
         return generic_notes
 
     return vendor_notes or generic_notes
@@ -5713,14 +5337,21 @@ def _pitch_requirement_disposition(row: dict[str, Any]) -> tuple[str, str]:
     kind = str(row.get("kind", ""))
     section_root = _clause_root(str(row.get("section_ref", "")))
     if pitch_status == "yes":
-        return "verified", "Pitch runtime status is marked yes in the shared 2010 requirements matrix."
+        return "verified", (
+            f"Pitch runtime status is marked yes in the {_requirements_matrix_source_phrase()}."
+        )
     if pitch_status == "blocked":
-        return "blocked", "Pitch runtime status is blocked in the shared 2010 requirements matrix."
+        return "blocked", (
+            f"Pitch runtime status is blocked in the {_requirements_matrix_source_phrase()}."
+        )
     if pitch_status:
-        return pitch_status, f"Pitch runtime status is marked {pitch_status} in the shared 2010 requirements matrix."
+        return pitch_status, (
+            f"Pitch runtime status is marked {pitch_status} "
+            f"in the {_requirements_matrix_source_phrase()}."
+        )
     if kind in {"section-area", "curated-seed"}:
         return "not-applicable", "Section summary and seed rows are planning rows, not executable Pitch runtime parity requirements."
-    if str(row.get("document")) == "IEEE 1516.1-2010" and section_root in {"4", "6", "7", "8", "9", "10"}:
+    if requirement_document_matches_binding(str(row.get("document", "")), "federate_interface") and section_root in {"4", "6", "7", "8", "9", "10"}:
         return "not-yet-tested", "Pitch runtime/service requirement is applicable but does not yet have an explicit Pitch outcome."
     return (
         "classification-required",
@@ -5781,12 +5412,12 @@ def _write_pitch_requirement_disposition_artifacts() -> None:
         document = str(source_row.get("document", ""))
         section_ref = str(source_row.get("section_ref", ""))
         clause_root = _clause_root(section_ref)
-        clause_key = f"{document} §{clause_root}" if clause_root != "unknown" else f"{document} unknown"
+        clause_key = format_requirement_clause_key(document, clause_root)
         disposition, disposition_note = _pitch_requirement_disposition(source_row)
         applicability = _pitch_requirement_applicability(source_row)
         evidence_refs = _pitch_evidence_refs(source_row, clause_root=clause_root)
         if (
-            document == "IEEE 1516.1-2010"
+            requirement_document_matches_binding(document, "federate_interface")
             and clause_root == "10"
             and disposition == "not-yet-tested"
             and "analysis/compliance/section10_backend_matrix.json" not in evidence_refs
@@ -5879,7 +5510,7 @@ def _write_pitch_requirement_disposition_artifacts() -> None:
     md_lines = [
         "# Pitch Requirement Disposition",
         "",
-        "This audit projects the shared HLA 2010 requirements matrix onto Pitch so every row has an explicit generated `pitch` disposition.",
+        f"This audit projects the {_requirements_matrix_source_phrase()} onto Pitch so every row has an explicit generated `pitch` disposition.",
         "",
         "## Profile Summary",
         "",
@@ -5980,27 +5611,23 @@ def _write_pitch_requirement_disposition_artifacts() -> None:
     _write_markdown(OUTPUT_DIR / "pitch_requirement_disposition.md", md_lines)
 
 
-def _write_pitch_profile_requirement_disposition_artifacts(profile: str) -> None:
-    if profile not in {"pitch-jpype", "pitch-py4j"}:
-        raise ValueError(f"unsupported pitch profile: {profile}")
-
-    pitch_disposition_path = OUTPUT_DIR / "pitch_requirement_disposition.json"
-    if not pitch_disposition_path.exists():
-        return
-
-    payload = json.loads(pitch_disposition_path.read_text(encoding="utf-8"))
-    disposition_key = f"{profile.replace('-', '_')}_disposition"
-    evidence_key = f"{profile.replace('-', '_')}_evidence_refs"
+def _build_profile_requirement_disposition_rows(
+    payload_rows: list[dict[str, Any]],
+    *,
+    disposition_field: str,
+    evidence_field: str,
+    runtime_status_field: str = "",
+) -> tuple[list[BackendRequirementDispositionRow], dict[str, dict[str, int]], dict[str, int]]:
     rows: list[BackendRequirementDispositionRow] = []
     clause_counts: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
     disposition_counts: dict[str, int] = defaultdict(int)
 
-    for source_row in payload.get("rows", []):
+    for source_row in payload_rows:
         document = str(source_row.get("document", ""))
         section_ref = str(source_row.get("section_ref", ""))
         clause_root = _clause_root(section_ref)
-        clause_key = f"{document} §{clause_root}" if clause_root != "unknown" else f"{document} unknown"
-        disposition = str(source_row.get(disposition_key, "")).strip()
+        clause_key = format_requirement_clause_key(document, clause_root)
+        disposition = str(source_row.get(disposition_field, "")).strip()
         if not disposition:
             continue
         rows.append(
@@ -6012,9 +5639,9 @@ def _write_pitch_profile_requirement_disposition_artifacts(profile: str) -> None
                 clause_root=clause_root,
                 kind=str(source_row.get("kind", "")),
                 title=str(source_row.get("title", "")),
-                runtime_status="",
+                runtime_status=str(source_row.get(runtime_status_field, "")) if runtime_status_field else "",
                 runtime_disposition=disposition,
-                evidence_refs=tuple(str(item) for item in source_row.get(evidence_key, ())),
+                evidence_refs=tuple(str(item) for item in source_row.get(evidence_field, ())),
                 notes=str(source_row.get("notes", "")),
             )
         )
@@ -6035,16 +5662,40 @@ def _write_pitch_profile_requirement_disposition_artifacts(profile: str) -> None
         clause: dict(sorted(counts.items()))
         for clause, counts in sorted(clause_counts.items(), key=lambda item: item[0])
     }
-    output_stem = f"{profile}_requirement_disposition"
+    return sorted_rows, clause_summary, dict(sorted(disposition_counts.items()))
+
+
+def _write_profile_requirement_disposition_artifacts(
+    profile: str,
+    *,
+    input_filename: str,
+    output_stem: str,
+    source_artifact: str,
+    disposition_field: str,
+    evidence_field: str,
+    intro: str,
+    runtime_status_field: str = "",
+) -> None:
+    payload_path = OUTPUT_DIR / input_filename
+    if not payload_path.exists():
+        return
+
+    payload = json.loads(payload_path.read_text(encoding="utf-8"))
+    sorted_rows, clause_summary, disposition_counts = _build_profile_requirement_disposition_rows(
+        list(payload.get("rows", [])),
+        disposition_field=disposition_field,
+        evidence_field=evidence_field,
+        runtime_status_field=runtime_status_field,
+    )
     _write_json(
         OUTPUT_DIR / f"{output_stem}.json",
         {
             "summary": {
                 "backend": profile,
                 "row_count": len(sorted_rows),
-                "disposition_counts": dict(sorted(disposition_counts.items())),
+                "disposition_counts": disposition_counts,
                 "clause_summary": clause_summary,
-                "source_artifact": "analysis/compliance/pitch_requirement_disposition.json",
+                "source_artifact": source_artifact,
             },
             "rows": [asdict(row) for row in sorted_rows],
         },
@@ -6053,9 +5704,9 @@ def _write_pitch_profile_requirement_disposition_artifacts(profile: str) -> None
     md_lines = [
         f"# {profile} Requirement Disposition",
         "",
-        f"This audit projects the shared HLA 2010 requirements matrix onto `{profile}` so every row has an explicit generated `{profile}` disposition.",
+        f"This audit projects the {_requirements_matrix_source_phrase()} onto `{profile}` so every row has an explicit generated `{profile}` disposition.",
         "",
-        "This profile currently inherits the Pitch family-level requirement disposition because the JPype and Py4J routes are adapter profiles over the same generated Pitch requirement packet, with profile-specific evidence carried through the family artifact fields.",
+        intro,
         "",
         "## Summary",
         "",
@@ -6086,218 +5737,64 @@ def _write_pitch_profile_requirement_disposition_artifacts(profile: str) -> None
             f"{row.runtime_disposition} | {row.kind} | {row.title} |"
         )
     _write_markdown(OUTPUT_DIR / f"{output_stem}.md", md_lines)
+
+
+def _write_pitch_profile_requirement_disposition_artifacts(profile: str) -> None:
+    if profile not in {"pitch-jpype", "pitch-py4j"}:
+        raise ValueError(f"unsupported pitch profile: {profile}")
+
+    disposition_key = f"{profile.replace('-', '_')}_disposition"
+    evidence_key = f"{profile.replace('-', '_')}_evidence_refs"
+    _write_profile_requirement_disposition_artifacts(
+        profile,
+        input_filename="pitch_requirement_disposition.json",
+        output_stem=f"{profile}_requirement_disposition",
+        source_artifact="analysis/compliance/pitch_requirement_disposition.json",
+        disposition_field=disposition_key,
+        evidence_field=evidence_key,
+        intro=(
+            "This profile currently inherits the Pitch family-level requirement disposition because the "
+            "JPype and Py4J routes are adapter profiles over the same generated Pitch requirement packet, "
+            "with profile-specific evidence carried through the family artifact fields."
+        ),
+    )
 
 
 def _write_certi_profile_requirement_disposition_artifacts(profile: str) -> None:
     if profile not in {"certi-native", "certi-jpype", "certi-py4j"}:
         raise ValueError(f"unsupported certi profile: {profile}")
-
-    certi_disposition_path = OUTPUT_DIR / "certi_requirement_disposition.json"
-    if not certi_disposition_path.exists():
-        return
-
-    payload = json.loads(certi_disposition_path.read_text(encoding="utf-8"))
-    rows: list[BackendRequirementDispositionRow] = []
-    clause_counts: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
-    disposition_counts: dict[str, int] = defaultdict(int)
-
-    for source_row in payload.get("rows", []):
-        document = str(source_row.get("document", ""))
-        section_ref = str(source_row.get("section_ref", ""))
-        clause_root = _clause_root(section_ref)
-        clause_key = f"{document} §{clause_root}" if clause_root != "unknown" else f"{document} unknown"
-        disposition = str(source_row.get("runtime_disposition", "")).strip()
-        if not disposition:
-            continue
-        rows.append(
-            BackendRequirementDispositionRow(
-                matrix_id=str(source_row.get("matrix_id", "")),
-                requirement_id=str(source_row.get("requirement_id", "")),
-                document=document,
-                section_ref=section_ref,
-                clause_root=clause_root,
-                kind=str(source_row.get("kind", "")),
-                title=str(source_row.get("title", "")),
-                runtime_status=str(source_row.get("runtime_status", "")),
-                runtime_disposition=disposition,
-                evidence_refs=tuple(str(item) for item in source_row.get("evidence_refs", ())),
-                notes=str(source_row.get("notes", "")),
-            )
-        )
-        clause_counts[clause_key][disposition] += 1
-        clause_counts[clause_key]["total"] += 1
-        disposition_counts[disposition] += 1
-
-    sorted_rows = sorted(
-        rows,
-        key=lambda row: (
-            row.document,
-            int(row.clause_root) if row.clause_root.isdigit() else 999,
-            row.section_ref,
-            row.requirement_id or row.matrix_id,
+    _write_profile_requirement_disposition_artifacts(
+        profile,
+        input_filename="certi_requirement_disposition.json",
+        output_stem=f"{profile}_requirement_disposition",
+        source_artifact="analysis/compliance/certi_requirement_disposition.json",
+        disposition_field="runtime_disposition",
+        evidence_field="evidence_refs",
+        runtime_status_field="runtime_status",
+        intro=(
+            "This profile currently inherits the CERTI family-level requirement disposition because the "
+            "JPype and Py4J routes are documented as Java-profile facades over the same native CERTI runtime path."
         ),
     )
-    clause_summary = {
-        clause: dict(sorted(counts.items()))
-        for clause, counts in sorted(clause_counts.items(), key=lambda item: item[0])
-    }
-    output_stem = f"{profile}_requirement_disposition"
-    _write_json(
-        OUTPUT_DIR / f"{output_stem}.json",
-        {
-            "summary": {
-                "backend": profile,
-                "row_count": len(sorted_rows),
-                "disposition_counts": dict(sorted(disposition_counts.items())),
-                "clause_summary": clause_summary,
-                "source_artifact": "analysis/compliance/certi_requirement_disposition.json",
-            },
-            "rows": [asdict(row) for row in sorted_rows],
-        },
-    )
-
-    md_lines = [
-        f"# {profile} Requirement Disposition",
-        "",
-        f"This audit projects the shared HLA 2010 requirements matrix onto `{profile}` so every row has an explicit generated `{profile}` disposition.",
-        "",
-        "This profile currently inherits the CERTI family-level requirement disposition because the JPype and Py4J routes are documented as Java-profile facades over the same native CERTI runtime path.",
-        "",
-        "## Summary",
-        "",
-        "| Document clause | Total | Verified | Blocked | Vendor divergent | Not yet tested | Not applicable | Classification required |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|",
-    ]
-    for clause, counts in clause_summary.items():
-        md_lines.append(
-            f"| {clause} | {counts.get('total', 0)} | {counts.get('verified', 0)} | "
-            f"{counts.get('blocked', 0)} | {counts.get('vendor-divergent', 0)} | "
-            f"{counts.get('not-yet-tested', 0)} | {counts.get('not-applicable', 0)} | "
-            f"{counts.get('classification-required', 0)} |"
-        )
-    md_lines.extend(
-        [
-            "",
-            "## Non-Verified Rows",
-            "",
-            "| Document | Clause | Requirement | Disposition | Kind | Title |",
-            "|---|---|---|---|---|---|",
-        ]
-    )
-    for row in sorted_rows:
-        if row.runtime_disposition == "verified":
-            continue
-        md_lines.append(
-            f"| {row.document} | {row.clause_root} | {row.requirement_id or row.matrix_id} | "
-            f"{row.runtime_disposition} | {row.kind} | {row.title} |"
-        )
-    _write_markdown(OUTPUT_DIR / f"{output_stem}.md", md_lines)
 
 
 def _write_portico_profile_requirement_disposition_artifacts(profile: str) -> None:
     if profile not in {"portico-jpype", "portico-py4j"}:
         raise ValueError(f"unsupported portico profile: {profile}")
-
-    portico_disposition_path = OUTPUT_DIR / "portico_requirement_disposition.json"
-    if not portico_disposition_path.exists():
-        return
-
-    payload = json.loads(portico_disposition_path.read_text(encoding="utf-8"))
-    rows: list[BackendRequirementDispositionRow] = []
-    clause_counts: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
-    disposition_counts: dict[str, int] = defaultdict(int)
-
-    for source_row in payload.get("rows", []):
-        document = str(source_row.get("document", ""))
-        section_ref = str(source_row.get("section_ref", ""))
-        clause_root = _clause_root(section_ref)
-        clause_key = f"{document} §{clause_root}" if clause_root != "unknown" else f"{document} unknown"
-        disposition = str(source_row.get("runtime_disposition", "")).strip()
-        if not disposition:
-            continue
-        rows.append(
-            BackendRequirementDispositionRow(
-                matrix_id=str(source_row.get("matrix_id", "")),
-                requirement_id=str(source_row.get("requirement_id", "")),
-                document=document,
-                section_ref=section_ref,
-                clause_root=clause_root,
-                kind=str(source_row.get("kind", "")),
-                title=str(source_row.get("title", "")),
-                runtime_status=str(source_row.get("runtime_status", "")),
-                runtime_disposition=disposition,
-                evidence_refs=tuple(str(item) for item in source_row.get("evidence_refs", ())),
-                notes=str(source_row.get("notes", "")),
-            )
-        )
-        clause_counts[clause_key][disposition] += 1
-        clause_counts[clause_key]["total"] += 1
-        disposition_counts[disposition] += 1
-
-    sorted_rows = sorted(
-        rows,
-        key=lambda row: (
-            row.document,
-            int(row.clause_root) if row.clause_root.isdigit() else 999,
-            row.section_ref,
-            row.requirement_id or row.matrix_id,
+    _write_profile_requirement_disposition_artifacts(
+        profile,
+        input_filename="portico_requirement_disposition.json",
+        output_stem=f"{profile}_requirement_disposition",
+        source_artifact="analysis/compliance/portico_requirement_disposition.json",
+        disposition_field="runtime_disposition",
+        evidence_field="evidence_refs",
+        runtime_status_field="runtime_status",
+        intro=(
+            "This profile currently inherits the Portico family-level requirement disposition because the "
+            "JPype and Py4J routes are install-dependent Java adapter profiles over the same Portico runtime "
+            "family and no profile-specific requirement evidence is generated yet."
         ),
     )
-    clause_summary = {
-        clause: dict(sorted(counts.items()))
-        for clause, counts in sorted(clause_counts.items(), key=lambda item: item[0])
-    }
-    output_stem = f"{profile}_requirement_disposition"
-    _write_json(
-        OUTPUT_DIR / f"{output_stem}.json",
-        {
-            "summary": {
-                "backend": profile,
-                "row_count": len(sorted_rows),
-                "disposition_counts": dict(sorted(disposition_counts.items())),
-                "clause_summary": clause_summary,
-                "source_artifact": "analysis/compliance/portico_requirement_disposition.json",
-            },
-            "rows": [asdict(row) for row in sorted_rows],
-        },
-    )
-
-    md_lines = [
-        f"# {profile} Requirement Disposition",
-        "",
-        f"This audit projects the shared HLA 2010 requirements matrix onto `{profile}` so every row has an explicit generated `{profile}` disposition.",
-        "",
-        "This profile currently inherits the Portico family-level requirement disposition because the JPype and Py4J routes are install-dependent Java adapter profiles over the same Portico runtime family and no profile-specific requirement evidence is generated yet.",
-        "",
-        "## Summary",
-        "",
-        "| Document clause | Total | Verified | Blocked | Vendor divergent | Not yet tested | Not applicable | Classification required |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|",
-    ]
-    for clause, counts in clause_summary.items():
-        md_lines.append(
-            f"| {clause} | {counts.get('total', 0)} | {counts.get('verified', 0)} | "
-            f"{counts.get('blocked', 0)} | {counts.get('vendor-divergent', 0)} | "
-            f"{counts.get('not-yet-tested', 0)} | {counts.get('not-applicable', 0)} | "
-            f"{counts.get('classification-required', 0)} |"
-        )
-    md_lines.extend(
-        [
-            "",
-            "## Non-Verified Rows",
-            "",
-            "| Document | Clause | Requirement | Disposition | Kind | Title |",
-            "|---|---|---|---|---|---|",
-        ]
-    )
-    for row in sorted_rows:
-        if row.runtime_disposition == "verified":
-            continue
-        md_lines.append(
-            f"| {row.document} | {row.clause_root} | {row.requirement_id or row.matrix_id} | "
-            f"{row.runtime_disposition} | {row.kind} | {row.title} |"
-        )
-    _write_markdown(OUTPUT_DIR / f"{output_stem}.md", md_lines)
 
 
 def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
@@ -6355,6 +5852,7 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
         "HLA1516.1-FM-4.27-001": "verified",
         "HLA1516.1-FM-4.31-001": "verified",
         "HLA1516.1-FM-4.32-001": "verified",
+        "REQ-RTI-OWN-7_6-confirmDivestiture": "not-yet-tested",
     }
     certi_requirement_overrides.update(_CERTI_DISPOSITION_OVERRIDES)
 
@@ -6377,9 +5875,9 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
                 return "not-applicable"
             document = str(row.get("document", "")).strip()
             clause_root = _clause_root(str(row.get("section_ref", "")))
-            if document == "IEEE 1516.1-2010" and clause_root in {"4", "5", "6", "7", "8", "9", "10", "11", "12"}:
+            if requirement_document_matches_binding(document, "federate_interface") and clause_root in {"4", "5", "6", "7", "8", "9", "10", "11", "12"}:
                 return "classification-required"
-            if document == "IEEE 1516.2-2010":
+            if requirement_document_matches_binding(document, "omt"):
                 return "classification-required"
             return "not-applicable"
         legacy_status = legacy_status.strip()
@@ -6409,7 +5907,7 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
             if matrix_status == "fail":
                 return "blocked"
             return "classification-required"
-        if document == "IEEE 1516.1-2010" and clause_root in {"4", "5", "6", "7", "8", "9", "10", "11", "12"}:
+        if requirement_document_matches_binding(document, "federate_interface") and clause_root in {"4", "5", "6", "7", "8", "9", "10", "11", "12"}:
             if matrix_status in {"planned", "not-evidenced"}:
                 return "not-yet-tested"
             if matrix_status == "fail":
@@ -6523,7 +6021,7 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
 
 
 def _write_family_requirement_disposition_artifacts(backend: str) -> None:
-    if backend not in _BACKEND_DISPOSITION_ARTIFACT_META:
+    if backend not in BACKEND_DISPOSITION_ARTIFACT_META:
         raise ValueError(f"unsupported family disposition backend: {backend}")
 
     requirements_json_path = OUTPUT_DIR / "requirements_matrix_2010.json"
@@ -6531,7 +6029,7 @@ def _write_family_requirement_disposition_artifacts(backend: str) -> None:
         return
 
     payload = json.loads(requirements_json_path.read_text(encoding="utf-8"))
-    meta = _BACKEND_DISPOSITION_ARTIFACT_META[backend]
+    meta = BACKEND_DISPOSITION_ARTIFACT_META[backend]
     disposition_field = meta["disposition_field"]
     status_field = meta["status_field"]
     rows: list[BackendRequirementDispositionRow] = []
@@ -6597,7 +6095,7 @@ def _write_family_requirement_disposition_artifacts(backend: str) -> None:
     md_lines = [
         f"# {meta['title']}",
         "",
-        f"This audit projects the shared HLA 2010 requirements matrix onto `{meta['label']}` so every row has an explicit generated `{meta['label']}` disposition.",
+        f"This audit projects the {_requirements_matrix_source_phrase()} onto `{meta['label']}` so every row has an explicit generated `{meta['label']}` disposition.",
         "",
     ]
     if backend == "portico":

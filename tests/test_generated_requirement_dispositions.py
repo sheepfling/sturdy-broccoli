@@ -9,18 +9,68 @@ from conftest import (
     load_json_fixture,
 )
 from tests.compliance_row_models import RequirementDispositionRow
-from tests.requirement_label_helpers import standard_document_titles
+from tests.requirement_label_helpers import requirements_matrix_source_label, standard_document_titles
 
 ROOT = REPO_ROOT
 STANDARD_DOCUMENTS = standard_document_titles()
-POLICY = load_json_fixture("generated_requirement_dispositions_policy.json")
-ALLOWED_DISPOSITIONS = set(POLICY["allowed_dispositions"])
-DISPOSITION_FIELDS_BY_ARTIFACT = POLICY["disposition_fields_by_artifact"]
-MARKDOWN_INTRO_FRAGMENTS_BY_ARTIFACT = POLICY["markdown_intro_fragments_by_artifact"]
-BACKEND_DOC_PREFIXES_BY_ARTIFACT = POLICY["backend_doc_prefixes_by_artifact"]
-PROFILE_INHERITANCE_ARTIFACTS = POLICY["profile_inheritance_artifacts"]
-EXPECTED_SOURCE_ARTIFACTS = POLICY["expected_source_artifacts"]
-SUMMARY_DISPOSITION_FIELD_BY_ARTIFACT = POLICY["summary_disposition_field_by_artifact"]
+REQUIREMENTS_MATRIX_SOURCE_LABEL = requirements_matrix_source_label()
+AMBIGUOUS_REQUIREMENTS_MATRIX_PHRASES = (
+    "shared HLA 2010 requirements matrix",
+    "shared 2010 requirements matrix",
+)
+
+
+@dataclass(frozen=True)
+class GeneratedRequirementDispositionPolicy:
+    allowed_dispositions: frozenset[str]
+    disposition_fields_by_artifact: dict[str, tuple[str, ...]]
+    markdown_intro_fragments_by_artifact: dict[str, tuple[str, ...]]
+    backend_doc_prefixes_by_artifact: dict[str, tuple[str, ...]]
+    profile_inheritance_artifacts: dict[str, dict[str, object]]
+    expected_source_artifacts: dict[str, str]
+    summary_disposition_field_by_artifact: dict[str, str]
+
+    @classmethod
+    def from_mapping(cls, payload: dict[str, object]) -> GeneratedRequirementDispositionPolicy:
+        return cls(
+            allowed_dispositions=frozenset(str(item) for item in payload["allowed_dispositions"]),
+            disposition_fields_by_artifact={
+                str(key): tuple(str(item) for item in value)
+                for key, value in payload["disposition_fields_by_artifact"].items()
+            },
+            markdown_intro_fragments_by_artifact={
+                str(key): tuple(str(item) for item in value)
+                for key, value in payload["markdown_intro_fragments_by_artifact"].items()
+            },
+            backend_doc_prefixes_by_artifact={
+                str(key): tuple(str(item) for item in value)
+                for key, value in payload["backend_doc_prefixes_by_artifact"].items()
+            },
+            profile_inheritance_artifacts={
+                str(key): value
+                for key, value in payload["profile_inheritance_artifacts"].items()
+            },
+            expected_source_artifacts={
+                str(key): str(value)
+                for key, value in payload["expected_source_artifacts"].items()
+            },
+            summary_disposition_field_by_artifact={
+                str(key): str(value)
+                for key, value in payload["summary_disposition_field_by_artifact"].items()
+            },
+        )
+
+
+POLICY = GeneratedRequirementDispositionPolicy.from_mapping(
+    load_json_fixture("generated_requirement_dispositions_policy.json")
+)
+ALLOWED_DISPOSITIONS = POLICY.allowed_dispositions
+DISPOSITION_FIELDS_BY_ARTIFACT = POLICY.disposition_fields_by_artifact
+MARKDOWN_INTRO_FRAGMENTS_BY_ARTIFACT = POLICY.markdown_intro_fragments_by_artifact
+BACKEND_DOC_PREFIXES_BY_ARTIFACT = POLICY.backend_doc_prefixes_by_artifact
+PROFILE_INHERITANCE_ARTIFACTS = POLICY.profile_inheritance_artifacts
+EXPECTED_SOURCE_ARTIFACTS = POLICY.expected_source_artifacts
+SUMMARY_DISPOSITION_FIELD_BY_ARTIFACT = POLICY.summary_disposition_field_by_artifact
 
 
 @dataclass(frozen=True)
@@ -42,6 +92,11 @@ def _load_rows(filename: str) -> list[RequirementDispositionRow]:
 
 def _load_payload(filename: str) -> dict[str, object]:
     return load_compliance_json(filename)
+
+
+def _load_payload_rows(filename: str) -> tuple[dict[str, object], list[RequirementDispositionRow]]:
+    payload = _load_payload(filename)
+    return payload, [RequirementDispositionRow.from_mapping(row) for row in payload["rows"]]
 
 
 def _markdown_section_table(filename: str, heading: str) -> list[dict[str, str]]:
@@ -125,6 +180,29 @@ def _stringify_pitch_backend_split_row(row: RequirementDispositionRow) -> dict[s
     }
 
 
+def _count_dispositions(rows: list[RequirementDispositionRow], field_name: str) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for row in rows:
+        value = row.disposition_for(field_name)
+        counts[value] = counts.get(value, 0) + 1
+    return dict(sorted(counts.items()))
+
+
+def _clause_summary_from_rows(
+    rows: list[RequirementDispositionRow],
+    field_name: str,
+) -> dict[str, dict[str, int]]:
+    observed: dict[str, dict[str, int]] = {}
+    for row in rows:
+        clause_key = row.clause_key
+        disposition = row.disposition_for(field_name)
+        observed.setdefault(clause_key, {})
+        observed[clause_key][disposition] = observed[clause_key].get(disposition, 0) + 1
+    for counts in observed.values():
+        counts["total"] = sum(counts.values())
+    return observed
+
+
 def test_generated_requirement_disposition_artifacts_use_only_allowed_states() -> None:
     failures: list[str] = []
 
@@ -177,6 +255,28 @@ def test_generated_requirement_disposition_markdown_packets_keep_explicit_genera
             assert fragment in text, (filename, fragment)
 
 
+def test_generated_requirement_disposition_artifacts_use_edition_qualified_matrix_labels() -> None:
+    for filename in DISPOSITION_FIELDS_BY_ARTIFACT:
+        payload, rows = _load_payload_rows(filename)
+        markdown_filename = filename.replace(".json", ".md")
+        markdown_text = load_compliance_text(markdown_filename)
+
+        assert REQUIREMENTS_MATRIX_SOURCE_LABEL in markdown_text, markdown_filename
+        for phrase in AMBIGUOUS_REQUIREMENTS_MATRIX_PHRASES:
+            assert phrase not in markdown_text, (markdown_filename, phrase)
+
+        summary_source = str(payload.get("summary", {}).get("source_artifact", "")).strip()
+        assert summary_source == EXPECTED_SOURCE_ARTIFACTS[filename], filename
+
+        for row in rows:
+            note = row.notes.strip()
+            if "requirements matrix" not in note:
+                continue
+            assert REQUIREMENTS_MATRIX_SOURCE_LABEL in note, (filename, row.requirement_id, note)
+            for phrase in AMBIGUOUS_REQUIREMENTS_MATRIX_PHRASES:
+                assert phrase not in note, (filename, row.requirement_id, phrase)
+
+
 def test_generated_requirement_disposition_markdown_summary_tables_match_json_packets() -> None:
     for json_filename in DISPOSITION_FIELDS_BY_ARTIFACT:
         markdown_filename = json_filename.replace(".json", ".md")
@@ -185,25 +285,17 @@ def test_generated_requirement_disposition_markdown_summary_tables_match_json_pa
 
         if json_filename == "pitch_requirement_disposition.json":
             expected_profile_rows = [
-                _stringify_disposition_counts(
-                    "pitch-jpype",
-                    payload["summary"]["profile_disposition_counts"]["pitch-jpype"],
-                ),
-                _stringify_disposition_counts(
-                    "pitch-py4j",
-                    payload["summary"]["profile_disposition_counts"]["pitch-py4j"],
-                ),
+                _stringify_disposition_counts(profile_name, payload["summary"]["profile_disposition_counts"][profile_name])
+                for profile_name in ("pitch-jpype", "pitch-py4j")
             ]
             assert _markdown_section_table(markdown_filename, "## Profile Summary") == expected_profile_rows
             assert _markdown_section_table(markdown_filename, "## Clause Summary") == _stringify_summary_counts(
                 summary["clause_summary"]
             )
-            assert _markdown_section_table(markdown_filename, "### pitch-jpype") == _stringify_summary_counts(
-                summary["profile_clause_summary"]["pitch-jpype"]
-            )
-            assert _markdown_section_table(markdown_filename, "### pitch-py4j") == _stringify_summary_counts(
-                summary["profile_clause_summary"]["pitch-py4j"]
-            )
+            for profile_name in ("pitch-jpype", "pitch-py4j"):
+                assert _markdown_section_table(markdown_filename, f"### {profile_name}") == _stringify_summary_counts(
+                    summary["profile_clause_summary"][profile_name]
+                )
             continue
 
         assert _markdown_section_table(markdown_filename, "## Summary") == _stringify_summary_counts(
@@ -214,33 +306,22 @@ def test_generated_requirement_disposition_markdown_summary_tables_match_json_pa
 def test_generated_requirement_disposition_markdown_row_tables_match_json_packets() -> None:
     for json_filename in DISPOSITION_FIELDS_BY_ARTIFACT:
         markdown_filename = json_filename.replace(".json", ".md")
-        payload = _load_payload(json_filename)
-        rows = [RequirementDispositionRow.from_mapping(row) for row in payload["rows"]]
+        _payload, rows = _load_payload_rows(json_filename)
 
         if json_filename == "pitch_requirement_disposition.json":
-            expected_backend_split_rows = [
-                _stringify_pitch_backend_split_row(row)
-                for row in rows
-                if row.pitch_jpype_disposition != row.pitch_py4j_disposition
-            ]
-            assert _markdown_section_table(markdown_filename, "## Backend-Split Rows") == expected_backend_split_rows
-
-            expected_not_yet_tested_rows = [
-                _stringify_pitch_family_subset_row(row)
-                for row in rows
-                if row.pitch_disposition == "not-yet-tested"
-            ]
-            assert _markdown_section_table(markdown_filename, "## Not Yet Tested Rows") == expected_not_yet_tested_rows
-
-            expected_classification_required_rows = [
-                _stringify_pitch_family_subset_row(row)
-                for row in rows
-                if row.pitch_disposition == "classification-required"
-            ]
-            assert _markdown_section_table(
-                markdown_filename,
-                "## Classification Required Rows",
-            ) == expected_classification_required_rows
+            pitch_section_cases = (
+                ("## Backend-Split Rows", lambda row: row.pitch_jpype_disposition != row.pitch_py4j_disposition, _stringify_pitch_backend_split_row),
+                ("## Not Yet Tested Rows", lambda row: row.pitch_disposition == "not-yet-tested", _stringify_pitch_family_subset_row),
+                (
+                    "## Classification Required Rows",
+                    lambda row: row.pitch_disposition == "classification-required",
+                    _stringify_pitch_family_subset_row,
+                ),
+            )
+            for heading, predicate, render_row in pitch_section_cases:
+                assert _markdown_section_table(markdown_filename, heading) == [
+                    render_row(row) for row in rows if predicate(row)
+                ]
             continue
 
         expected_nonverified_rows = [
@@ -253,8 +334,7 @@ def test_generated_requirement_disposition_markdown_row_tables_match_json_packet
 
 def test_generated_requirement_disposition_summary_metadata_matches_rows() -> None:
     for filename, expected_source_artifact in EXPECTED_SOURCE_ARTIFACTS.items():
-        payload = load_compliance_json(filename)
-        rows = [RequirementDispositionRow.from_mapping(row) for row in payload["rows"]]
+        payload, rows = _load_payload_rows(filename)
         summary = payload["summary"]
 
         assert summary["row_count"] == len(rows), filename
@@ -270,9 +350,8 @@ def test_generated_requirement_disposition_summary_metadata_matches_rows() -> No
         summary_counts = summary["disposition_counts"]
         actual_counts: dict[str, int] = {}
         for field in disposition_fields:
-            for row in rows:
-                value = row.disposition_for(field)
-                actual_counts[value] = actual_counts.get(value, 0) + 1
+            for value, count in _count_dispositions(rows, field).items():
+                actual_counts[value] = actual_counts.get(value, 0) + count
 
         assert dict(sorted(actual_counts.items())) == summary_counts, filename
 
@@ -315,44 +394,21 @@ def test_generated_profile_requirement_disposition_artifacts_inherit_family_rows
 
 def test_generated_requirement_disposition_clause_summaries_match_row_level_counts() -> None:
     for filename in DISPOSITION_FIELDS_BY_ARTIFACT:
-        payload = load_compliance_json(filename)
-        rows = [RequirementDispositionRow.from_mapping(row) for row in payload["rows"]]
+        payload, rows = _load_payload_rows(filename)
         summary = payload["summary"]
 
         if filename == "pitch_requirement_disposition.json":
-            family_counts: dict[str, dict[str, int]] = {}
-            for row in rows:
-                clause_key = row.clause_key
-                disposition = row.pitch_disposition
-                family_counts.setdefault(clause_key, {})
-                family_counts[clause_key][disposition] = family_counts[clause_key].get(disposition, 0) + 1
-            for counts in family_counts.values():
-                counts["total"] = sum(counts.values())
-            assert family_counts == summary["clause_summary"], filename
+            assert _clause_summary_from_rows(rows, "pitch_disposition") == summary["clause_summary"], filename
 
             profile_clause_summary = summary["profile_clause_summary"]
-            profile_fields = {
-                "pitch-jpype": "pitch_jpype_disposition",
-                "pitch-py4j": "pitch_py4j_disposition",
-            }
-            for profile_name, field in profile_fields.items():
-                observed: dict[str, dict[str, int]] = {}
-                for row in rows:
-                    clause_key = row.clause_key
-                    disposition = row.disposition_for(field)
-                    observed.setdefault(clause_key, {})
-                    observed[clause_key][disposition] = observed[clause_key].get(disposition, 0) + 1
-                for counts in observed.values():
-                    counts["total"] = sum(counts.values())
-                assert observed == profile_clause_summary[profile_name], (filename, profile_name)
+            for profile_name, field in (
+                ("pitch-jpype", "pitch_jpype_disposition"),
+                ("pitch-py4j", "pitch_py4j_disposition"),
+            ):
+                assert _clause_summary_from_rows(rows, field) == profile_clause_summary[profile_name], (
+                    filename,
+                    profile_name,
+                )
             continue
 
-        observed: dict[str, dict[str, int]] = {}
-        for row in rows:
-            clause_key = row.clause_key
-            disposition = row.runtime_disposition
-            observed.setdefault(clause_key, {})
-            observed[clause_key][disposition] = observed[clause_key].get(disposition, 0) + 1
-        for counts in observed.values():
-            counts["total"] = sum(counts.values())
-        assert observed == summary["clause_summary"], filename
+        assert _clause_summary_from_rows(rows, "runtime_disposition") == summary["clause_summary"], filename

@@ -1,6 +1,6 @@
 # hla2010-python
 
-This repository is an unofficial IEEE 1516.1-2010 HLA workspace centered on a
+This repository is an unofficial IEEE 1516.1-2010 (2010 edition) HLA workspace centered on a
 clean Python spec surface plus pluggable RTI backends.
 
 The supported runtime front door is:
@@ -14,11 +14,11 @@ The supported runtime front door is:
 If you want the shortest path to "something runs", start with the pure Python
 backend and the Target/Radar example.
 
-This root `README` is for:
+This root `README` owns only three jobs:
 
-- what the repo is for
-- the shortest run/edit/scaffold/trace path
-- the canonical operator entrypoints
+- show the shortest runnable path
+- point to the primary edit and trace lanes
+- name the supported operator entrypoints
 
 It is not the full architecture catalog, backend inventory, or package-family
 map. Those live under `docs/` and `packages/`.
@@ -39,25 +39,12 @@ source .venv/bin/activate
 That creates or refreshes the repo-local virtual environment and installs the
 workspace in editable mode.
 
-If you want the broader local QA environment instead of the lean operator
-bootstrap, use:
+For the broader local QA environment instead of the lean operator bootstrap:
 
 ```bash
 HLA2010_BOOTSTRAP_EXTRAS=qa ./tools/bootstrap python
 source .venv/bin/activate
 ```
-
-For the full environment and install order, read
-[`docs/python_environment.md`](docs/python_environment.md).
-
-If you want the shortest single walkthrough, use
-[`docs/first_run.md`](docs/first_run.md).
-
-If you want the networked Python RTI guide, use
-[`docs/networked_rti_python.md`](docs/networked_rti_python.md).
-
-If you want the Target/Radar package guide, use
-[`packages/hla2010-fom-target-radar/README.md`](packages/hla2010-fom-target-radar/README.md).
 
 If you want an executable setup check first, run:
 
@@ -84,6 +71,7 @@ Start with:
 
 ```bash
 ./tools/human-editability front-doors python-rti-service
+./tools/human-editability trace-summary getHLAversion
 ./tools/human-editability trace getHLAversion
 ```
 
@@ -99,6 +87,7 @@ That is the shortest maintainer lane for changing one concrete backend service.
 
 ```bash
 ./tools/human-editability front-doors requirements-trace
+./tools/human-editability trace-summary getHLAversion
 ./tools/human-editability trace getHLAversion
 ```
 
@@ -130,7 +119,7 @@ These are the primary newcomer lanes:
 - trace one method: [`docs/requirements_trace_one_method.md`](docs/requirements_trace_one_method.md)
 - understand ownership: [`packages/README.md`](packages/README.md)
 
-If you need the vendor flows, use the `tools/` operator surface:
+If you need vendor flows, stay on the `tools/` operator surface:
 
 ```bash
 ./tools/certi-easy preflight
@@ -149,9 +138,9 @@ If you need the vendor flows, use the `tools/` operator surface:
 ## What This Repo Is For
 
 The main import surface is `hla2010`, with the clean contract at
-`hla2010.spec`. The `packages/hla2010-spec/src/hla2010/` tree stays limited to the abstract/core API,
-backend-neutral types and contracts, FOM/MOM helpers, and the one documented
-temporary split-package facade `hla2010.rti`.
+`hla2010.spec`. The `packages/hla2010-spec/src/hla2010/` tree stays limited to
+the abstract/core API, backend-neutral types and contracts, FOM/MOM helpers,
+and the one documented temporary split-package facade `hla2010.rti`.
 
 Concrete backend implementations now live in package-owned source trees such as:
 
@@ -178,10 +167,10 @@ The repo is intended to make it easy to:
 
 For the shortest deeper maps after this page:
 
+- setup and install order: [`docs/python_environment.md`](docs/python_environment.md)
 - examples and first run: [`docs/first_run.md`](docs/first_run.md)
 - package ownership: [`packages/README.md`](packages/README.md)
 - workspace areas: [`docs/workspace_layout.md`](docs/workspace_layout.md)
-- package-family boundaries: [`docs/package_layout.md`](docs/package_layout.md)
 - backend maturity and routes: [`docs/backend_route_inventory.md`](docs/backend_route_inventory.md)
 - full docs index: [`docs/README.md`](docs/README.md)
 
@@ -204,20 +193,16 @@ If you only need the shortest "what works right now?" answer, use:
 
 ## Reference
 
-- [`docs/README.md`](docs/README.md) for the documentation index
-- [`docs/first_run.md`](docs/first_run.md) for the shortest new-machine-to-first-example path
-- [`docs/python_environment.md`](docs/python_environment.md) for environment setup and install order
-- [`docs/top_to_bottom_green.md`](docs/top_to_bottom_green.md) for the explicit finish definition and green acceptance contract
-- [`docs/install_matrix.md`](docs/install_matrix.md) for extras, bridge deps, and vendor-runtime ordering
-- [`docs/agent_runbook.md`](docs/agent_runbook.md) for the agent/automation startup sequence
-- [`docs/workspace_layout.md`](docs/workspace_layout.md) for the top-level workspace area split
-- [`docs/python_api_spec.md`](docs/python_api_spec.md) for the clean Python spec package
-- [`tools/README.md`](tools/README.md) for the supported operator command surface
-- [`scripts/README.md`](scripts/README.md) for implementation helpers and wrappers
-- [`docs/documentation_hierarchy.md`](docs/documentation_hierarchy.md) for the doc structure
-- [`requirements/README.md`](requirements/README.md) for the seeded requirements catalog
-- [`packages/hla2010-rti-certi/docs/certi_section8_runbook.md`](packages/hla2010-rti-certi/docs/certi_section8_runbook.md) for the CERTI operator runbook
-- [`packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md`](packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md) for Pitch selection and troubleshooting
+Use these only after the start path is clear:
+
+- [`docs/README.md`](docs/README.md): full documentation map
+- [`tools/README.md`](tools/README.md): supported operator command surface
+- [`requirements/README.md`](requirements/README.md): requirement surface classification
+- [`docs/python_api_spec.md`](docs/python_api_spec.md): clean Python spec package and compatibility split
+- [`docs/top_to_bottom_green.md`](docs/top_to_bottom_green.md): explicit green finish definition
+- [`docs/install_matrix.md`](docs/install_matrix.md): extras, bridge deps, and vendor-runtime ordering
+- [`packages/hla2010-rti-certi/docs/certi_section8_runbook.md`](packages/hla2010-rti-certi/docs/certi_section8_runbook.md): CERTI operator runbook
+- [`packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md`](packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md): Pitch selection and troubleshooting
 
 ## Historical / Provenance
 
