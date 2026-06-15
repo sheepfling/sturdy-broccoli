@@ -522,6 +522,7 @@ def test_vendor_green_emits_runtime_status_and_preserves_delegate_failure(tmp_pa
     )
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
     env["HLA2010_PREFLIGHT_ARTIFACT_DIR"] = str(tmp_path / "preflight")
     env["HLA2010_VENDOR_RUNTIME_STATUS_DIR"] = str(tmp_path / "runtime-status")
     env["HLA2010_VENDOR_PARITY_ARTIFACT_DIR"] = str(tmp_path / "parity")
@@ -642,6 +643,7 @@ def test_vendor_green_pitch_smoke_uses_profile_named_status_directory(tmp_path: 
     )
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
     env["HLA2010_PREFLIGHT_ARTIFACT_DIR"] = str(tmp_path / "preflight")
     env["HLA2010_VENDOR_RUNTIME_STATUS_DIR"] = str(tmp_path / "runtime-status")
     env["HLA2010_VENDOR_PARITY_ARTIFACT_DIR"] = str(tmp_path / "parity")
@@ -671,6 +673,7 @@ def test_vendor_green_certi_ddm_probe_uses_profile_named_status_directory(tmp_pa
     )
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
     env["HLA2010_PREFLIGHT_ARTIFACT_DIR"] = str(tmp_path / "preflight")
     env["HLA2010_VENDOR_RUNTIME_STATUS_DIR"] = str(tmp_path / "runtime-status")
     env["HLA2010_VENDOR_PARITY_ARTIFACT_DIR"] = str(tmp_path / "parity")
