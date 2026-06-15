@@ -12,6 +12,8 @@ import re
 from pathlib import Path
 from typing import Any
 
+from hla2010_repo_internal.requirements_source import requirement_document_matches_binding
+
 
 _BACKLOG_PRIORITY_RULES: tuple[tuple[str, int, str], ...] = (
     ("vendor-divergent", 1, "investigate or isolate with focused vendor test"),
@@ -332,7 +334,7 @@ def build_backend_compliance_catalog(project_root: str | Path | None = None) -> 
         "vendor_profile_bucket_counts": {},
     }
     for row in requirements["rows"]:
-        if str(row.get("document")) != "IEEE 1516.1-2010":
+        if not requirement_document_matches_binding(str(row.get("document", "")), "federate_interface"):
             continue
         for field, summary_key in (
             ("python_runtime_status", "python_runtime_status_counts"),

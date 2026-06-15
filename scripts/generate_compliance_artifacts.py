@@ -949,7 +949,21 @@ def _pitch_subject_rows(
     template: str,
     status: str = "verified",
 ) -> dict[str, tuple[str, tuple[str, ...], str]]:
-    evidence = _SCENARIO_EVIDENCE_REGISTRY[scenario_id]
+    return _pitch_subject_evidence_rows(
+        rows,
+        evidence=_SCENARIO_EVIDENCE_REGISTRY[scenario_id],
+        template=template,
+        status=status,
+    )
+
+
+def _pitch_subject_evidence_rows(
+    rows: dict[str, str],
+    *,
+    evidence: tuple[str, ...],
+    template: str,
+    status: str = "verified",
+) -> dict[str, tuple[str, tuple[str, ...], str]]:
     return {
         requirement_id: (status, evidence, template.format(subject=subject))
         for requirement_id, subject in rows.items()
@@ -1249,52 +1263,39 @@ _PITCH_REQUIREMENT_EVIDENCE: dict[str, tuple[str, tuple[str, ...], str]] = {
         _SCENARIO_EVIDENCE_REGISTRY["request-attribute-value-update"],
         "Shared request-attribute-value-update scenario verifies service-driven provide-value callbacks to the owning federate.",
     ),
-    "REQ-RTI-OM-6_23-requestAttributeTransportationTypeChange": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["transportation-type"]
+    **_pitch_subject_evidence_rows(
+        {
+            "REQ-RTI-OM-6_23-requestAttributeTransportationTypeChange": "attribute transportation change requests together with explicit override persistence across save/restore",
+            "REQ-RTI-OM-6_27-requestInteractionTransportationTypeChange": "interaction transportation change requests together with explicit override persistence across save/restore",
+        },
+        evidence=_SCENARIO_EVIDENCE_REGISTRY["transportation-type"]
         + _SCENARIO_EVIDENCE_REGISTRY["transportation-type-restore-persistence"],
-        "Shared transportation scenarios verify attribute transportation change requests together with explicit override persistence across save/restore.",
+        template="Shared transportation scenarios verify {subject}.",
     ),
-    "REQ-FED-OM-6_24-confirmAttributeTransportationTypeChange": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["transportation-type"],
-        "Shared transportation-type scenario verifies attribute transportation change confirmations.",
+    **_pitch_subject_rows(
+        {
+            "REQ-FED-OM-6_24-confirmAttributeTransportationTypeChange": "attribute transportation change confirmations",
+            "REQ-RTI-OM-6_25-queryAttributeTransportationType": "attribute transportation queries",
+            "REQ-FED-OM-6_26-reportAttributeTransportationType": "attribute transportation reports",
+            "REQ-FED-OM-6_28-confirmInteractionTransportationTypeChange": "interaction transportation change confirmations",
+            "REQ-RTI-OM-6_29-queryInteractionTransportationType": "interaction transportation queries",
+            "REQ-FED-OM-6_30-reportInteractionTransportationType": "interaction transportation reports",
+        },
+        scenario_id="transportation-type",
+        template="Shared transportation-type scenario verifies {subject}.",
     ),
-    "REQ-RTI-OM-6_25-queryAttributeTransportationType": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["transportation-type"],
-        "Shared transportation-type scenario verifies attribute transportation queries.",
-    ),
-    "REQ-FED-OM-6_26-reportAttributeTransportationType": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["transportation-type"],
-        "Shared transportation-type scenario verifies attribute transportation reports.",
-    ),
-    "REQ-RTI-OM-6_27-requestInteractionTransportationTypeChange": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["transportation-type"]
-        + _SCENARIO_EVIDENCE_REGISTRY["transportation-type-restore-persistence"],
-        "Shared transportation scenarios verify interaction transportation change requests together with explicit override persistence across save/restore.",
-    ),
-    "REQ-FED-OM-6_28-confirmInteractionTransportationTypeChange": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["transportation-type"],
-        "Shared transportation-type scenario verifies interaction transportation change confirmations.",
-    ),
-    "REQ-RTI-OM-6_29-queryInteractionTransportationType": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["transportation-type"],
-        "Shared transportation-type scenario verifies interaction transportation queries.",
-    ),
-    "REQ-FED-OM-6_30-reportInteractionTransportationType": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["transportation-type"],
-        "Shared transportation-type scenario verifies interaction transportation reports.",
-    ),
-    "REQ-RTI-OWN-7_2-unconditionalAttributeOwnershipDivestiture": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "Shared ownership scenario verifies unconditional divestiture, acquisition-if-available, and ownership query callbacks.",
+    **_pitch_subject_rows(
+        {
+            "REQ-RTI-OWN-7_2-unconditionalAttributeOwnershipDivestiture": "unconditional divestiture, acquisition-if-available, and ownership query callbacks",
+            "REQ-FED-OWN-7_7-attributeOwnershipAcquisitionNotification": "acquisition-notification callbacks after acquisition-if-available succeeds",
+            "REQ-RTI-OWN-7_9-attributeOwnershipAcquisitionIfAvailable": "acquisition-if-available against divested attributes",
+            "REQ-RTI-OWN-7_17-queryAttributeOwnership": "query-ownership reporting before and after transfer",
+            "REQ-FED-OWN-7_18-attributeIsNotOwned": "the attribute-is-not-owned callback after unconditional divestiture",
+            "REQ-FED-OWN-7_18-informAttributeOwnership": "inform-attribute-ownership callbacks after transfer",
+            "REQ-RTI-OWN-7_19-isAttributeOwnedByFederate": "portable is-attribute-owned-by-federate checks before and after transfer",
+        },
+        scenario_id="ownership",
+        template="Shared ownership scenario verifies {subject}.",
     ),
     "REQ-RTI-OWN-7_3-negotiatedAttributeOwnershipDivestiture": (
         "vendor-divergent",
@@ -1319,20 +1320,10 @@ _PITCH_REQUIREMENT_EVIDENCE: dict[str, tuple[str, tuple[str, ...], str]] = {
         + ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
         "Pitch negotiated ownership never reaches a promotable confirm-divestiture transfer sequence across both bridges.",
     ),
-    "REQ-FED-OWN-7_7-attributeOwnershipAcquisitionNotification": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "Shared ownership scenario verifies acquisition-notification callbacks after acquisition-if-available succeeds.",
-    ),
     "REQ-RTI-OWN-7_8-attributeOwnershipAcquisition": (
         "verified",
         _SCENARIO_EVIDENCE_REGISTRY["ownership-release-request"],
         "Shared release-request ownership scenario verifies acquisition requests against owned attributes and the resulting transfer path.",
-    ),
-    "REQ-RTI-OWN-7_9-attributeOwnershipAcquisitionIfAvailable": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "Shared ownership scenario verifies acquisition-if-available against divested attributes.",
     ),
     "REQ-FED-OWN-7_11-requestAttributeOwnershipRelease": (
         "verified",
@@ -1362,30 +1353,10 @@ _PITCH_REQUIREMENT_EVIDENCE: dict[str, tuple[str, tuple[str, ...], str]] = {
         + ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
         "Pitch negotiated ownership continuation remains bridge-divergent before acquisition-cancellation confirmation is stable.",
     ),
-    "REQ-RTI-OWN-7_17-queryAttributeOwnership": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "Shared ownership scenario verifies query-ownership reporting before and after transfer.",
-    ),
-    "REQ-FED-OWN-7_18-attributeIsNotOwned": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "Shared ownership scenario verifies the attribute-is-not-owned callback after unconditional divestiture.",
-    ),
     "REQ-FED-OWN-7_18-attributeIsOwnedByRTI": (
         "verified",
         _SCENARIO_EVIDENCE_REGISTRY["ownership-query-callbacks"],
         "Shared ownership query callback probe verifies the attribute-is-owned-by-RTI callback surface.",
-    ),
-    "REQ-FED-OWN-7_18-informAttributeOwnership": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "Shared ownership scenario verifies inform-attribute-ownership callbacks after transfer.",
-    ),
-    "REQ-RTI-OWN-7_19-isAttributeOwnedByFederate": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "Shared ownership scenario verifies portable is-attribute-owned-by-federate checks before and after transfer.",
     ),
     "REQ-FED-OWN-7_10-attributeOwnershipUnavailable": (
         "verified",
@@ -1397,70 +1368,54 @@ _PITCH_REQUIREMENT_EVIDENCE: dict[str, tuple[str, tuple[str, ...], str]] = {
         _SCENARIO_EVIDENCE_REGISTRY["ownership-release-denied"],
         "Shared release-denied ownership scenario verifies explicit denial preserves the original owner and suppresses acquisition completion.",
     ),
-    "HLA1516.1-OWN-7.1-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "Shared ownership scenario verifies ownership state transitions through divestiture, reacquisition, and subsequent queries.",
+    **_pitch_subject_rows(
+        {
+            "HLA1516.1-OWN-7.1-001": "ownership state transitions through divestiture, reacquisition, and subsequent queries",
+            "HLA1516.1-OWN-7.1-002": "transfer semantics where ownership leaves the original federate before the acquiring federate becomes owner",
+            "HLA1516.1-OWN-7.2-001": "unconditional divestiture, acquisition-if-available transfer, and the resulting ownership state transitions",
+            "HLA1516.1-OWN-7.6-001": "acquisition-if-available against divested attributes",
+            "HLA1516.1-OWN-7.7-001": "acquisition notification callbacks after successful transfer",
+            "HLA1516.1-OWN-7.9-001": "acquisition-if-available can complete only after the current owner divests ownership and the acquiring federate becomes the new owner",
+            "HLA1516.1-OWN-7.12-001": "ownership-query reporting before and after transfer",
+        },
+        scenario_id="ownership",
+        template="Shared ownership scenario verifies {subject}.",
     ),
-    "HLA1516.1-OWN-7.1-002": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "Shared ownership scenario verifies transfer semantics where ownership leaves the original federate before the acquiring federate becomes owner.",
+    **_pitch_subject_rows(
+        {
+            "HLA1516.1-OWN-7.5-001": "acquisition requests against currently owned attributes",
+        },
+        scenario_id="ownership-release-request",
+        template="Shared release-request ownership scenario verifies {subject}.",
     ),
-    "HLA1516.1-OWN-7.1-003": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership-non-owner-update-rejection"],
-        "Shared non-owner update rejection scenario verifies that a non-owning federate cannot update another federate's attribute.",
+    **_pitch_subject_rows(
+        {
+            "HLA1516.1-OWN-7.7-002": "acquisition notification is not emitted when the owner denies release",
+        },
+        scenario_id="ownership-release-denied",
+        template="Shared release-denied ownership scenario verifies {subject}.",
     ),
-    "HLA1516.1-OWN-7.2-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "Shared ownership scenario verifies unconditional divestiture, acquisition-if-available transfer, and the resulting ownership state transitions.",
+    **_pitch_subject_rows(
+        {
+            "HLA1516.1-OWN-7.8-001": "acquisition failure callbacks when acquisition-if-available cannot proceed",
+            "HLA1516.1-OWN-7.9-002": "requestAttributeOwnershipRelease is not emitted when acquisition-if-available cannot proceed because ownership remains unavailable",
+        },
+        scenario_id="ownership-unavailable",
+        template="Shared ownership-unavailable scenario verifies {subject}.",
     ),
-    "HLA1516.1-OWN-7.5-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership-release-request"],
-        "Shared release-request ownership scenario verifies acquisition requests against currently owned attributes.",
+    **_pitch_subject_rows(
+        {
+            "HLA1516.1-OWN-7.13-001": "the owned-by-federate, unowned, and RTI-owned notification callback surfaces",
+        },
+        scenario_id="ownership-query-callbacks",
+        template="Shared ownership query callback probe verifies {subject}.",
     ),
-    "HLA1516.1-OWN-7.6-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "Shared ownership scenario verifies acquisition-if-available against divested attributes.",
-    ),
-    "HLA1516.1-OWN-7.7-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "Shared ownership scenario verifies acquisition notification callbacks after successful transfer.",
-    ),
-    "HLA1516.1-OWN-7.7-002": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership-release-denied"],
-        "Shared release-denied ownership scenario verifies acquisition notification is not emitted when the owner denies release.",
-    ),
-    "HLA1516.1-OWN-7.8-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership-unavailable"],
-        "Shared ownership-unavailable scenario verifies acquisition failure callbacks when acquisition-if-available cannot proceed.",
-    ),
-    "HLA1516.1-OWN-7.9-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "Shared ownership scenario verifies acquisition-if-available can complete only after the current owner divests ownership and the acquiring federate becomes the new owner.",
-    ),
-    "HLA1516.1-OWN-7.9-002": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership-unavailable"],
-        "Shared ownership-unavailable scenario verifies requestAttributeOwnershipRelease is not emitted when acquisition-if-available cannot proceed because ownership remains unavailable.",
-    ),
-    "HLA1516.1-OWN-7.12-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership"],
-        "Shared ownership scenario verifies ownership-query reporting before and after transfer.",
-    ),
-    "HLA1516.1-OWN-7.13-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ownership-query-callbacks"],
-        "Shared ownership query callback probe verifies the owned-by-federate, unowned, and RTI-owned notification callback surfaces.",
+    **_pitch_subject_rows(
+        {
+            "HLA1516.1-OWN-7.1-003": "that a non-owning federate cannot update another federate's attribute",
+        },
+        scenario_id="ownership-non-owner-update-rejection",
+        template="Shared non-owner update rejection scenario verifies {subject}.",
     ),
     "HLA1516.1-OWN-7.3-001": (
         "vendor-divergent",
@@ -1486,220 +1441,104 @@ _PITCH_REQUIREMENT_EVIDENCE: dict[str, tuple[str, tuple[str, ...], str]] = {
         + ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
         "Pitch negotiated ownership continuation remains bridge-divergent before cancellation confirmation semantics can be promoted.",
     ),
-    "HLA1516.1-DDM-9.1-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-region-routing"],
-        "Shared DDM region-routing scenario verifies end-to-end region-based routing through the Pitch backend matrix, including constrained delivery under declared routing-space dimensions.",
+    **_pitch_subject_rows(
+        {
+            "HLA1516.1-DDM-9.1-001": "end-to-end region-based routing through the Pitch backend matrix, including constrained delivery under declared routing-space dimensions",
+            "HLA1516.1-DDM-9.1-002": "that DDM routing uses the FOM-declared routing dimension carried by the shared VendorSmokeFOM profile",
+            "HLA1516.1-DDM-9.1-003": "overlap-based relevance by suppressing far-region interaction delivery and admitting the overlapping near-region delivery",
+            "REQ-RTI-DDM-9_2-createRegion": "Pitch creates sender and receiver regions for the declared routing-space dimension and uses them in the subsequent routed interaction flow",
+            "REQ-RTI-DDM-9_3-commitRegionModifications": "Pitch commits region bound changes and applies those committed ranges when routing later timestamped interaction delivery",
+            "REQ-RTI-DDM-9_10-subscribeInteractionClassWithRegions": "Pitch supports active interaction-class subscription with regions and filters delivery by region overlap",
+            "REQ-RTI-DDM-9_12-sendInteractionWithRegions": "Pitch sends timestamped interactions with regions and delivers only the overlap-matching payload",
+            "HLA1516.1-DDM-9.2-001": "Pitch creates sender and receiver regions for the declared routing-space dimension and uses them in the subsequent routed interaction flow",
+            "HLA1516.1-DDM-9.3-001": "Pitch commits region bound changes and applies those committed ranges when routing later timestamped interaction delivery",
+            "HLA1516.1-DDM-9.10-001": "Pitch supports active interaction-class subscription with regions and filters delivery by region overlap",
+            "HLA1516.1-DDM-9.12-001": "Pitch sends timestamped interactions with regions and delivers only the overlap-matching payload",
+        },
+        scenario_id="ddm-region-routing",
+        template="Shared DDM region-routing scenario verifies {subject}.",
     ),
-    "HLA1516.1-DDM-9.1-002": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-region-routing"],
-        "Shared DDM region-routing scenario verifies that DDM routing uses the FOM-declared routing dimension carried by the shared VendorSmokeFOM profile.",
+    **_pitch_subject_rows(
+        {
+            "REQ-RTI-DDM-9_4-deleteRegion": "Pitch deletes regions after subscription teardown without breaking the surrounding region-scoped lifecycle flow",
+            "REQ-RTI-DDM-9_5-registerObjectInstanceWithRegions": "Pitch registers object instances with regions and discovers them through overlapping region-scoped subscriptions",
+            "REQ-RTI-DDM-9_6-associateRegionsForUpdates": "Pitch associates regions for updates and restores the update-region binding after an explicit unassociate step",
+            "REQ-RTI-DDM-9_7-unassociateRegionsForUpdates": "Pitch unassociates regions for updates before re-associating them on the same object instance",
+            "REQ-RTI-DDM-9_8-subscribeObjectClassAttributesWithRegions": "Pitch supports active object-class attribute subscription with regions and the resulting overlapping-bounds discovery flow",
+            "REQ-RTI-DDM-9_9-unsubscribeObjectClassAttributesWithRegions": "Pitch unsubscribes object-class attributes with regions during teardown of the region-scoped object lifecycle",
+            "REQ-RTI-DDM-9_11-unsubscribeInteractionClassWithRegions": "Pitch unsubscribes interaction classes with regions and suppresses subsequent delivery on that path",
+            "REQ-RTI-DDM-9_13-requestAttributeValueUpdateWithRegions": "Pitch routes requestAttributeValueUpdateWithRegions to the provider callback path for the overlapping regional subscription",
+            "HLA1516.1-DDM-9.4-001": "Pitch deletes regions after subscription teardown without breaking the surrounding region-scoped lifecycle flow",
+            "HLA1516.1-DDM-9.5-001": "Pitch registers object instances with regions and discovers them through overlapping region-scoped subscriptions",
+            "HLA1516.1-DDM-9.6-001": "Pitch associates regions for updates and restores the update-region binding after an explicit unassociate step",
+            "HLA1516.1-DDM-9.7-001": "Pitch unassociates regions for updates before re-associating them on the same object instance",
+            "HLA1516.1-DDM-9.8-001": "Pitch supports active object-class attribute subscription with regions and the resulting overlapping-bounds discovery flow",
+            "HLA1516.1-DDM-9.9-001": "Pitch unsubscribes object-class attributes with regions during teardown of the region-scoped object lifecycle",
+            "HLA1516.1-DDM-9.11-001": "Pitch unsubscribes interaction classes with regions and suppresses subsequent delivery on that path",
+            "HLA1516.1-DDM-9.13-001": "Pitch routes requestAttributeValueUpdateWithRegions to the provider callback path for the overlapping regional subscription",
+        },
+        scenario_id="ddm-object-region-lifecycle",
+        template="Shared DDM object-region lifecycle scenario verifies {subject}.",
     ),
-    "HLA1516.1-DDM-9.1-003": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-region-routing"],
-        "Shared DDM region-routing scenario verifies overlap-based relevance by suppressing far-region interaction delivery and admitting the overlapping near-region delivery.",
-    ),
-    "REQ-RTI-DDM-9_2-createRegion": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-region-routing"],
-        "Shared DDM region-routing scenario verifies Pitch creates sender and receiver regions for the declared routing-space dimension and uses them in the subsequent routed interaction flow.",
-    ),
-    "REQ-RTI-DDM-9_3-commitRegionModifications": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-region-routing"],
-        "Shared DDM region-routing scenario verifies Pitch commits region bound changes and applies those committed ranges when routing later timestamped interaction delivery.",
-    ),
-    "REQ-RTI-DDM-9_10-subscribeInteractionClassWithRegions": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-region-routing"],
-        "Shared DDM region-routing scenario verifies Pitch supports active interaction-class subscription with regions and filters delivery by region overlap.",
-    ),
-    "REQ-RTI-DDM-9_12-sendInteractionWithRegions": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-region-routing"],
-        "Shared DDM region-routing scenario verifies Pitch sends timestamped interactions with regions and delivers only the overlap-matching payload.",
-    ),
-    "HLA1516.1-DDM-9.2-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-region-routing"],
-        "Shared DDM region-routing scenario verifies Pitch creates sender and receiver regions for the declared routing-space dimension and uses them in the subsequent routed interaction flow.",
-    ),
-    "HLA1516.1-DDM-9.3-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-region-routing"],
-        "Shared DDM region-routing scenario verifies Pitch commits region bound changes and applies those committed ranges when routing later timestamped interaction delivery.",
-    ),
-    "HLA1516.1-DDM-9.10-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-region-routing"],
-        "Shared DDM region-routing scenario verifies Pitch supports active interaction-class subscription with regions and filters delivery by region overlap.",
-    ),
-    "HLA1516.1-DDM-9.12-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-region-routing"],
-        "Shared DDM region-routing scenario verifies Pitch sends timestamped interactions with regions and delivers only the overlap-matching payload.",
-    ),
-    "REQ-RTI-DDM-9_4-deleteRegion": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-object-region-lifecycle"],
-        "Shared DDM object-region lifecycle scenario verifies Pitch deletes regions after subscription teardown without breaking the surrounding region-scoped lifecycle flow.",
-    ),
-    "REQ-RTI-DDM-9_5-registerObjectInstanceWithRegions": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-object-region-lifecycle"],
-        "Shared DDM object-region lifecycle scenario verifies Pitch registers object instances with regions and discovers them through overlapping region-scoped subscriptions.",
-    ),
-    "REQ-RTI-DDM-9_6-associateRegionsForUpdates": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-object-region-lifecycle"],
-        "Shared DDM object-region lifecycle scenario verifies Pitch associates regions for updates and restores the update-region binding after an explicit unassociate step.",
-    ),
-    "REQ-RTI-DDM-9_7-unassociateRegionsForUpdates": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-object-region-lifecycle"],
-        "Shared DDM object-region lifecycle scenario verifies Pitch unassociates regions for updates before re-associating them on the same object instance.",
-    ),
-    "REQ-RTI-DDM-9_8-subscribeObjectClassAttributesWithRegions": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-object-region-lifecycle"],
-        "Shared DDM object-region lifecycle scenario verifies Pitch supports active object-class attribute subscription with regions and the resulting overlapping-bounds discovery flow.",
-    ),
-    "REQ-RTI-DDM-9_9-unsubscribeObjectClassAttributesWithRegions": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-object-region-lifecycle"],
-        "Shared DDM object-region lifecycle scenario verifies Pitch unsubscribes object-class attributes with regions during teardown of the region-scoped object lifecycle.",
-    ),
-    "REQ-RTI-DDM-9_11-unsubscribeInteractionClassWithRegions": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-object-region-lifecycle"],
-        "Shared DDM object-region lifecycle scenario verifies Pitch unsubscribes interaction classes with regions and suppresses subsequent delivery on that path.",
-    ),
-    "REQ-RTI-DDM-9_13-requestAttributeValueUpdateWithRegions": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-object-region-lifecycle"],
-        "Shared DDM object-region lifecycle scenario verifies Pitch routes requestAttributeValueUpdateWithRegions to the provider callback path for the overlapping regional subscription.",
-    ),
-    "HLA1516.1-DDM-9.4-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-object-region-lifecycle"],
-        "Shared DDM object-region lifecycle scenario verifies Pitch deletes regions after subscription teardown without breaking the surrounding region-scoped lifecycle flow.",
-    ),
-    "HLA1516.1-DDM-9.5-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-object-region-lifecycle"],
-        "Shared DDM object-region lifecycle scenario verifies Pitch registers object instances with regions and discovers them through overlapping region-scoped subscriptions.",
-    ),
-    "HLA1516.1-DDM-9.6-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-object-region-lifecycle"],
-        "Shared DDM object-region lifecycle scenario verifies Pitch associates regions for updates and restores the update-region binding after an explicit unassociate step.",
-    ),
-    "HLA1516.1-DDM-9.7-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-object-region-lifecycle"],
-        "Shared DDM object-region lifecycle scenario verifies Pitch unassociates regions for updates before re-associating them on the same object instance.",
-    ),
-    "HLA1516.1-DDM-9.8-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-object-region-lifecycle"],
-        "Shared DDM object-region lifecycle scenario verifies Pitch supports active object-class attribute subscription with regions and the resulting overlapping-bounds discovery flow.",
-    ),
-    "HLA1516.1-DDM-9.9-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-object-region-lifecycle"],
-        "Shared DDM object-region lifecycle scenario verifies Pitch unsubscribes object-class attributes with regions during teardown of the region-scoped object lifecycle.",
-    ),
-    "HLA1516.1-DDM-9.11-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-object-region-lifecycle"],
-        "Shared DDM object-region lifecycle scenario verifies Pitch unsubscribes interaction classes with regions and suppresses subsequent delivery on that path.",
-    ),
-    "HLA1516.1-DDM-9.13-001": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-object-region-lifecycle"],
-        "Shared DDM object-region lifecycle scenario verifies Pitch routes requestAttributeValueUpdateWithRegions to the provider callback path for the overlapping regional subscription.",
-    ),
-    "REQ-RTI-DDM-9_8-subscribeObjectClassAttributesPassivelyWithRegions": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-passive-region-subscriptions"],
-        "Shared passive DDM region subscription scenario verifies Pitch supports passive object-class attribute subscription with regions and later discovery under overlapping bounds.",
-    ),
-    "REQ-RTI-DDM-9_10-subscribeInteractionClassPassivelyWithRegions": (
-        "verified",
-        _SCENARIO_EVIDENCE_REGISTRY["ddm-passive-region-subscriptions"],
-        "Shared passive DDM region subscription scenario verifies Pitch supports passive interaction-class subscription with regions and overlap-filtered delivery.",
+    **_pitch_subject_rows(
+        {
+            "REQ-RTI-DDM-9_8-subscribeObjectClassAttributesPassivelyWithRegions": "Pitch supports passive object-class attribute subscription with regions and later discovery under overlapping bounds",
+            "REQ-RTI-DDM-9_10-subscribeInteractionClassPassivelyWithRegions": "Pitch supports passive interaction-class subscription with regions and overlap-filtered delivery",
+        },
+        scenario_id="ddm-passive-region-subscriptions",
+        template="Shared passive DDM region subscription scenario verifies {subject}.",
     ),
     "HLA1516.1-TM-8.1-001": (
         "vendor-divergent",
         _SCENARIO_EVIDENCE_REGISTRY["section8-state-services"] + _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF,
         "Pitch dedicated Section 8 state-services probes diverge from the shared harness expectation because the real Java bridge path does not surface the expected timeRegulationEnabled/timeConstrainedEnabled callback evidence in this matrix scenario.",
     ),
-    "HLA1516.1-TM-8.1-002": (
-        "vendor-divergent",
-        _SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-queries"] + _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF,
-        "Pitch dedicated Section 8 next-message probes diverge from the shared harness expectation because the real Java bridge path does not reproduce the expected timestamp-ordered next-message delivery sequence in this matrix scenario.",
+    **_pitch_subject_evidence_rows(
+        {
+            "HLA1516.1-TM-8.1-002": "the expected timestamp-ordered next-message delivery sequence",
+            "HLA1516.1-TM-8.1.1-001": "the expected timestamp-ordered next-message delivery sequence",
+            "HLA1516.1-TM-8.1.2-004": "the expected timestamp-ordered next-message delivery sequence",
+            "HLA1516.1-TM-8.1.3-002": "the expected timestamp-ordered next-message delivery sequence",
+            "HLA1516.1-TM-8.1.3-003": "the expected timestamp-ordered next-message delivery sequence",
+            "HLA1516.1-TM-8.1.5-001": "the expected timestamp-ordered next-message delivery sequence",
+            "HLA1516.1-TM-8.1.6-001": "the expected timestamp-ordered next-message delivery sequence",
+            "HLA1516.1-TM-8.1.7-001": "the expected timestamp-ordered next-message delivery sequence",
+            "REQ-TIME-ORDER-001": "the expected timestamp-order delivery sequence",
+        },
+        evidence=_SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-queries"]
+        + _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF,
+        template="Pitch dedicated Section 8 next-message probes diverge from the shared harness expectation because the real Java bridge path does not reproduce {subject} in this matrix scenario.",
+        status="vendor-divergent",
     ),
-    "HLA1516.1-TM-8.1.1-001": (
-        "vendor-divergent",
-        _SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-queries"] + _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF,
-        "Pitch dedicated Section 8 next-message probes diverge from the shared harness expectation because the real Java bridge path does not reproduce the expected timestamp-ordered next-message delivery sequence in this matrix scenario.",
-    ),
-    "HLA1516.1-TM-8.1.2-001": (
-        "vendor-divergent",
-        _SCENARIO_EVIDENCE_REGISTRY["section8-order-override"] + _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF,
-        "Pitch dedicated Section 8 order-override probes diverge from the shared harness expectation because the real Java bridge path does not surface the expected receive-order callback evidence in this matrix scenario.",
-    ),
-    "HLA1516.1-TM-8.1.2-002": (
-        "vendor-divergent",
-        _SCENARIO_EVIDENCE_REGISTRY["section8-order-override"] + _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF,
-        "Pitch dedicated Section 8 order-override probes diverge from the shared harness expectation because the real Java bridge path does not surface the expected receive-order callback evidence in this matrix scenario.",
-    ),
-    "HLA1516.1-TM-8.1.2-003": (
-        "vendor-divergent",
-        _SCENARIO_EVIDENCE_REGISTRY["section8-order-override"] + _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF,
-        "Pitch dedicated Section 8 order-override probes diverge from the shared harness expectation because the real Java bridge path does not surface the expected receive-order callback evidence in this matrix scenario.",
-    ),
-    "HLA1516.1-TM-8.1.2-004": (
-        "vendor-divergent",
-        _SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-queries"] + _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF,
-        "Pitch dedicated Section 8 next-message probes diverge from the shared harness expectation because the real Java bridge path does not reproduce the expected timestamp-ordered next-message delivery sequence in this matrix scenario.",
+    **_pitch_subject_evidence_rows(
+        {
+            "HLA1516.1-TM-8.1.2-001": "the expected receive-order callback evidence",
+            "HLA1516.1-TM-8.1.2-002": "the expected receive-order callback evidence",
+            "HLA1516.1-TM-8.1.2-003": "the expected receive-order callback evidence",
+        },
+        evidence=_SCENARIO_EVIDENCE_REGISTRY["section8-order-override"]
+        + _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF,
+        template="Pitch dedicated Section 8 order-override probes diverge from the shared harness expectation because the real Java bridge path does not surface {subject} in this matrix scenario.",
+        status="vendor-divergent",
     ),
     "HLA1516.1-TM-8.1.3-001": (
         "blocked",
         _SCENARIO_EVIDENCE_REGISTRY["section8-state-services"],
         "Shared Section 8 state-services scenario exists, but Pitch does not yet complete the dedicated time-regulation/constrained callback probe cleanly.",
     ),
-    "HLA1516.1-TM-8.1.3-002": (
-        "vendor-divergent",
-        _SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-queries"] + _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF,
-        "Pitch dedicated Section 8 next-message probes diverge from the shared harness expectation because the real Java bridge path does not reproduce the expected timestamp-ordered next-message delivery sequence in this matrix scenario.",
-    ),
-    "HLA1516.1-TM-8.1.3-003": (
-        "vendor-divergent",
-        _SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-queries"] + _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF,
-        "Pitch dedicated Section 8 next-message probes diverge from the shared harness expectation because the real Java bridge path does not reproduce the expected timestamp-ordered next-message delivery sequence in this matrix scenario.",
-    ),
     "HLA1516.1-TM-8.1.4-001": (
         "blocked",
         _SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-queries"],
         "Shared Section 8 ordering/query scenario exists, but Pitch does not yet complete the dedicated next-message ordering probe cleanly.",
     ),
-    "HLA1516.1-TM-8.1.4-002": (
-        "blocked",
-        _SCENARIO_EVIDENCE_REGISTRY["section8-lookahead"],
-        "Shared lookahead scenario exists, but broader Pitch Clause 8 parity remains incomplete and the dedicated time probe set is not fully promotable.",
-    ),
-    "HLA1516.1-TM-8.1.4-003": (
-        "blocked",
-        _SCENARIO_EVIDENCE_REGISTRY["section8-lookahead"],
-        "Shared lookahead scenario exists, but broader Pitch Clause 8 parity remains incomplete and the dedicated time probe set is not fully promotable.",
-    ),
-    "HLA1516.1-TM-8.1.5-001": (
-        "vendor-divergent",
-        _SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-queries"] + _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF,
-        "Pitch dedicated Section 8 next-message probes diverge from the shared harness expectation because the real Java bridge path does not reproduce the expected timestamp-ordered next-message delivery sequence in this matrix scenario.",
+    **_pitch_subject_rows(
+        {
+            "HLA1516.1-TM-8.1.4-002": "but broader Pitch Clause 8 parity remains incomplete and the dedicated time probe set is not fully promotable",
+            "HLA1516.1-TM-8.1.4-003": "but broader Pitch Clause 8 parity remains incomplete and the dedicated time probe set is not fully promotable",
+        },
+        scenario_id="section8-lookahead",
+        template="Shared lookahead scenario exists, {subject}.",
+        status="blocked",
     ),
     "HLA1516.1-TM-8.1.5-002": (
         "blocked",
@@ -1710,21 +1549,6 @@ _PITCH_REQUIREMENT_EVIDENCE: dict[str, tuple[str, tuple[str, ...], str]] = {
         "blocked",
         _SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-queries"],
         "Shared Section 8 ordering/query scenario exists, but Pitch does not yet complete the dedicated query-LITS probe cleanly.",
-    ),
-    "HLA1516.1-TM-8.1.6-001": (
-        "vendor-divergent",
-        _SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-queries"] + _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF,
-        "Pitch dedicated Section 8 next-message probes diverge from the shared harness expectation because the real Java bridge path does not reproduce the expected timestamp-ordered next-message delivery sequence in this matrix scenario.",
-    ),
-    "HLA1516.1-TM-8.1.7-001": (
-        "vendor-divergent",
-        _SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-queries"] + _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF,
-        "Pitch dedicated Section 8 next-message probes diverge from the shared harness expectation because the real Java bridge path does not reproduce the expected timestamp-ordered next-message delivery sequence in this matrix scenario.",
-    ),
-    "REQ-TIME-ORDER-001": (
-        "vendor-divergent",
-        _SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-queries"] + _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF,
-        "Pitch dedicated Section 8 next-message probes diverge from the shared harness expectation because the real Java bridge path does not reproduce the expected timestamp-order delivery sequence in this matrix scenario.",
     ),
 }
 
@@ -3314,6 +3138,44 @@ def _hosted_python_profile(transport: str, session_status: str, notes: str, *, s
     )
 
 
+def _hosted_python_pair(
+    rest_session_status: str,
+    rest_notes: str,
+    grpc_session_status: str,
+    grpc_notes: str,
+    *,
+    scope: str,
+    rest_status: str = "positive-path-passing",
+    grpc_status: str = "positive-path-passing",
+    rest_evidence_tests: tuple[str, ...] | None = None,
+    grpc_evidence_tests: tuple[str, ...] | None = None,
+    method_set: frozenset[str] | None = None,
+    supports_immediate_inline: bool = False,
+) -> tuple[dict[str, Any], ...]:
+    return (
+        _hosted_python_profile(
+            "rest",
+            rest_session_status,
+            rest_notes,
+            scope=scope,
+            status=rest_status,
+            evidence_tests=rest_evidence_tests,
+            method_set=method_set,
+            supports_immediate_inline=supports_immediate_inline,
+        ),
+        _hosted_python_profile(
+            "grpc",
+            grpc_session_status,
+            grpc_notes,
+            scope=scope,
+            status=grpc_status,
+            evidence_tests=grpc_evidence_tests,
+            method_set=method_set,
+            supports_immediate_inline=supports_immediate_inline,
+        ),
+    )
+
+
 def _java_shim_profile(bridge: str, status: str, session_status: str, notes: str, *, scope: str, evidence_tests: tuple[str, ...] = ("tests/vendors/test_java_profile_backend_matrix.py",)) -> dict[str, Any]:
     return _profile(
         f"java-shim-{bridge}",
@@ -3323,6 +3185,28 @@ def _java_shim_profile(bridge: str, status: str, session_status: str, notes: str
         session_status,
         evidence_tests,
         notes,
+    )
+
+
+def _java_shim_bridge_profiles(
+    status: str,
+    session_status: str,
+    *,
+    scope: str,
+    note_template: str,
+    evidence_tests: tuple[str, ...] = ("tests/vendors/test_java_profile_backend_matrix.py",),
+) -> tuple[dict[str, Any], ...]:
+    labels = {"jpype": "JPype", "py4j": "Py4J"}
+    return tuple(
+        _java_shim_profile(
+            bridge,
+            status,
+            session_status,
+            note_template.format(bridge_label=labels[bridge]),
+            scope=scope,
+            evidence_tests=evidence_tests,
+        )
+        for bridge in ("jpype", "py4j")
     )
 
 
@@ -3353,6 +3237,54 @@ def _pitch_profile(bridge: str, status: str, session_status: str, evidence_tests
     )
 
 
+def _certi_variant_profiles(
+    status: str,
+    session_status: str,
+    evidence_tests: tuple[str, ...],
+    *,
+    scope: str,
+    note_template: str,
+    method_set: frozenset[str] | None = None,
+) -> tuple[dict[str, Any], ...]:
+    labels = {"native": "CERTI native", "jpype": "CERTI JPype", "py4j": "CERTI Py4J"}
+    return tuple(
+        _certi_profile(
+            variant,
+            status,
+            session_status,
+            evidence_tests,
+            note_template.format(variant_label=labels[variant]),
+            scope=scope,
+            method_set=method_set,
+        )
+        for variant in ("native", "jpype", "py4j")
+    )
+
+
+def _pitch_bridge_profiles(
+    status: str,
+    session_status: str,
+    evidence_tests: tuple[str, ...],
+    *,
+    scope: str,
+    note_template: str,
+    method_set: frozenset[str] | None = None,
+) -> tuple[dict[str, Any], ...]:
+    labels = {"jpype": "Pitch JPype", "py4j": "Pitch Py4J"}
+    return tuple(
+        _pitch_profile(
+            bridge,
+            status,
+            session_status,
+            evidence_tests,
+            note_template.format(bridge_label=labels[bridge]),
+            scope=scope,
+            method_set=method_set,
+        )
+        for bridge in ("jpype", "py4j")
+    )
+
+
 _CORE_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     _slice(
         "federation-sync",
@@ -3363,55 +3295,25 @@ _CORE_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
             ("tests/vendors/test_java_profile_backend_matrix.py",),
             "Reference backend semantics are exercised indirectly through shared scenario helpers and broader federation tests.",
         ),
-        _hosted_python_profile(
-            "rest",
+        *_hosted_python_pair(
             "passing-in-this-session",
             "REST-hosted Python RTI now has explicit synchronization end-to-end coverage.",
-            scope="hosted core scenario slice",
-        ),
-        _hosted_python_profile(
-            "grpc",
             "not-run-in-this-session",
             "gRPC-hosted Python RTI has explicit synchronization end-to-end coverage.",
             scope="hosted core scenario slice",
         ),
-        _java_shim_profile(
-            "jpype",
+        *_java_shim_bridge_profiles(
             "positive-path-passing",
             "not-run-in-this-session",
-            "JPype Java shim has explicit synchronization coverage.",
             scope="in-process Java shim slice",
+            note_template="{bridge_label} Java shim has explicit synchronization coverage.",
         ),
-        _java_shim_profile(
-            "py4j",
-            "positive-path-passing",
-            "not-run-in-this-session",
-            "Py4J Java shim has explicit synchronization coverage.",
-            scope="in-process Java shim slice",
-        ),
-        _certi_profile(
-            "native",
+        *_certi_variant_profiles(
             "env-gated-positive",
             "not-run-in-this-session",
             ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
-            "CERTI synchronization matrix exists but was not rerun in this session.",
             scope="real-vendor core scenario slice",
-        ),
-        _certi_profile(
-            "jpype",
-            "env-gated-positive",
-            "not-run-in-this-session",
-            ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
-            "CERTI JPype synchronization matrix exists but was not rerun in this session.",
-            scope="real-vendor core scenario slice",
-        ),
-        _certi_profile(
-            "py4j",
-            "env-gated-positive",
-            "not-run-in-this-session",
-            ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
-            "CERTI Py4J synchronization matrix exists but was not rerun in this session.",
-            scope="real-vendor core scenario slice",
+            note_template="{variant_label} synchronization matrix exists but was not rerun in this session.",
         ),
     ),
     _slice(
@@ -3423,55 +3325,25 @@ _CORE_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
             ("tests/time/test_section8_backend_matrix.py",),
             "Reference backend exchange behavior is exercised heavily through the Section 8 and scenario suites.",
         ),
-        _hosted_python_profile(
-            "rest",
+        *_hosted_python_pair(
             "not-run-in-this-session",
             "REST-hosted Python RTI has explicit exchange end-to-end coverage.",
-            scope="hosted core scenario slice",
-        ),
-        _hosted_python_profile(
-            "grpc",
             "not-run-in-this-session",
             "gRPC-hosted Python RTI has explicit exchange end-to-end coverage.",
             scope="hosted core scenario slice",
         ),
-        _java_shim_profile(
-            "jpype",
+        *_java_shim_bridge_profiles(
             "positive-path-passing",
             "not-run-in-this-session",
-            "JPype Java shim has explicit exchange coverage including timed exchange.",
             scope="in-process Java shim slice",
+            note_template="{bridge_label} Java shim has explicit exchange coverage including timed exchange.",
         ),
-        _java_shim_profile(
-            "py4j",
-            "positive-path-passing",
-            "not-run-in-this-session",
-            "Py4J Java shim has explicit exchange coverage including timed exchange.",
-            scope="in-process Java shim slice",
-        ),
-        _certi_profile(
-            "native",
+        *_certi_variant_profiles(
             "verified-in-this-session",
             "passing-in-this-session",
             ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
-            "CERTI native exchange and cross-facade parity slices passed in this session.",
             scope="real-vendor core scenario slice",
-        ),
-        _certi_profile(
-            "jpype",
-            "verified-in-this-session",
-            "passing-in-this-session",
-            ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
-            "CERTI JPype exchange and cross-facade parity slices passed in this session.",
-            scope="real-vendor core scenario slice",
-        ),
-        _certi_profile(
-            "py4j",
-            "verified-in-this-session",
-            "passing-in-this-session",
-            ("tests/vendors/test_certi_real_backend_exchange_matrix.py",),
-            "CERTI Py4J exchange and cross-facade parity slices passed in this session.",
-            scope="real-vendor core scenario slice",
+            note_template="{variant_label} exchange and cross-facade parity slices passed in this session.",
         ),
     ),
     _slice(
@@ -3483,55 +3355,25 @@ _CORE_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
             ("tests/backends/test_python_backend_object_ownership_extended.py",),
             "Reference backend ownership semantics are covered in the Python backend suite.",
         ),
-        _hosted_python_profile(
-            "rest",
+        *_hosted_python_pair(
             "passing-in-this-session",
             "REST-hosted Python RTI now has explicit ownership end-to-end coverage.",
-            scope="hosted core scenario slice",
-        ),
-        _hosted_python_profile(
-            "grpc",
             "not-run-in-this-session",
             "gRPC-hosted Python RTI has explicit ownership and negotiated ownership coverage.",
             scope="hosted core scenario slice",
         ),
-        _java_shim_profile(
-            "jpype",
+        *_java_shim_bridge_profiles(
             "positive-path-passing",
             "not-run-in-this-session",
-            "JPype Java shim has explicit ownership coverage.",
             scope="in-process Java shim slice",
+            note_template="{bridge_label} Java shim has explicit ownership coverage.",
         ),
-        _java_shim_profile(
-            "py4j",
-            "positive-path-passing",
-            "not-run-in-this-session",
-            "Py4J Java shim has explicit ownership coverage.",
-            scope="in-process Java shim slice",
-        ),
-        _certi_profile(
-            "native",
+        *_certi_variant_profiles(
             "verified-in-this-session",
             "passing-in-this-session",
             ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
-            "CERTI native plain ownership slice passed in this session.",
             scope="real-vendor core scenario slice",
-        ),
-        _certi_profile(
-            "jpype",
-            "verified-in-this-session",
-            "passing-in-this-session",
-            ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
-            "CERTI JPype plain ownership slice passed in this session.",
-            scope="real-vendor core scenario slice",
-        ),
-        _certi_profile(
-            "py4j",
-            "verified-in-this-session",
-            "passing-in-this-session",
-            ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
-            "CERTI Py4J plain ownership slice passed in this session.",
-            scope="real-vendor core scenario slice",
+            note_template="{variant_label} plain ownership slice passed in this session.",
         ),
     ),
     _slice(
@@ -3543,55 +3385,25 @@ _CORE_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
             ("tests/backends/test_python_backend_object_ownership_extended.py",),
             "Reference backend negotiated ownership semantics are covered in the Python backend suite.",
         ),
-        _hosted_python_profile(
-            "rest",
+        *_hosted_python_pair(
             "passing-in-this-session",
             "REST-hosted Python RTI has explicit negotiated ownership end-to-end coverage.",
-            scope="hosted core scenario slice",
-        ),
-        _hosted_python_profile(
-            "grpc",
             "not-run-in-this-session",
             "gRPC-hosted Python RTI has explicit negotiated ownership end-to-end coverage.",
             scope="hosted core scenario slice",
         ),
-        _java_shim_profile(
-            "jpype",
+        *_java_shim_bridge_profiles(
             "positive-path-passing",
             "passing-in-this-session",
-            "JPype Java shim has explicit negotiated ownership coverage.",
             scope="in-process Java shim slice",
+            note_template="{bridge_label} Java shim has explicit negotiated ownership coverage.",
         ),
-        _java_shim_profile(
-            "py4j",
-            "positive-path-passing",
-            "passing-in-this-session",
-            "Py4J Java shim has explicit negotiated ownership coverage.",
-            scope="in-process Java shim slice",
-        ),
-        _certi_profile(
-            "native",
+        *_certi_variant_profiles(
             "vendor-divergent",
             "failing-in-this-session",
             ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
-            "CERTI native negotiated ownership failed in this session because the runtime never produced the expected release/acquisition handshake.",
             scope="real-vendor core scenario slice",
-        ),
-        _certi_profile(
-            "jpype",
-            "vendor-divergent",
-            "failing-in-this-session",
-            ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
-            "CERTI JPype negotiated ownership failed in this session because the runtime never produced the expected release/acquisition handshake.",
-            scope="real-vendor core scenario slice",
-        ),
-        _certi_profile(
-            "py4j",
-            "vendor-divergent",
-            "failing-in-this-session",
-            ("tests/vendors/test_certi_real_backend_ownership_matrix.py",),
-            "CERTI Py4J negotiated ownership failed in this session because the runtime never produced the expected release/acquisition handshake.",
-            scope="real-vendor core scenario slice",
+            note_template="{variant_label} negotiated ownership failed in this session because the runtime never produced the expected release/acquisition handshake.",
         ),
     ),
 )
@@ -3611,37 +3423,20 @@ _SECTION10_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
             "Reference backend now has a shared-harness support factory/decode matrix plus existing traceability coverage for the broader support lookup surface.",
             scope="reference support lookup slice",
         ),
-        _hosted_python_profile(
-            "rest",
+        *_hosted_python_pair(
             "not-run-in-this-session",
             "REST transport exercises hosted Python positive-path federation/object/time flows, but the current CERTI-style transport facade does not expose the full support-service lookup surface such as getFederateHandle, so this slice remains only partially matrixed.",
-            scope="hosted support lookup slice",
-            status="partial",
-        ),
-        _hosted_python_profile(
-            "grpc",
             "not-run-in-this-session",
             "gRPC transport exercises hosted Python positive-path federation/object/time flows, but the current CERTI-style transport facade does not expose the full support-service lookup surface such as getFederateHandle, so this slice remains only partially matrixed.",
             scope="hosted support lookup slice",
-            status="partial",
+            rest_status="partial",
+            grpc_status="partial",
         ),
-        _java_shim_profile(
-            "jpype",
+        *_java_shim_bridge_profiles(
             "complete-actionable",
             "passing-in-this-session",
-            "Java shim JPype now runs the shared support-services scenario in-process for the lookup subset it implements, giving executable Section 10 support-lookup coverage without vendor runtime dependencies.",
             scope="java shim support lookup slice",
-            evidence_tests=(
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
-                "tests/vendors/test_java_profile_backend_matrix.py::test_inprocess_java_shim_support_factory_and_decode_scenario",
-            ),
-        ),
-        _java_shim_profile(
-            "py4j",
-            "complete-actionable",
-            "passing-in-this-session",
-            "Java shim Py4J now runs the shared support-services scenario in-process for the lookup subset it implements, giving executable Section 10 support-lookup coverage without vendor runtime dependencies.",
-            scope="java shim support lookup slice",
+            note_template="Java shim {bridge_label} now runs the shared support-services scenario in-process for the lookup subset it implements, giving executable Section 10 support-lookup coverage without vendor runtime dependencies.",
             evidence_tests=(
                 "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
                 "tests/vendors/test_java_profile_backend_matrix.py::test_inprocess_java_shim_support_factory_and_decode_scenario",
@@ -3655,21 +3450,12 @@ _SECTION10_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
             "CERTI native now has a thin real-runtime wrapper for the shared support-services scenario over the lookup subset exposed by the current facade, but local proof is still gated on enabling real vendor smoke and preflight.",
             scope="vendor support lookup slice",
         ),
-        _pitch_profile(
-            "jpype",
+        *_pitch_bridge_profiles(
             "smoke-gated-wrapper",
             "skipped-in-this-session",
             ("tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",),
-            "Pitch JPype now has a thin real-runtime wrapper for the shared support factory/decode scenario, but local proof is still gated on enabling real vendor smoke and preflight.",
             scope="vendor support lookup slice",
-        ),
-        _pitch_profile(
-            "py4j",
-            "smoke-gated-wrapper",
-            "skipped-in-this-session",
-            ("tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix",),
-            "Pitch Py4J now has a thin real-runtime wrapper for the shared support factory/decode scenario, but local proof is still gated on enabling real vendor smoke and preflight.",
-            scope="vendor support lookup slice",
+            note_template="{bridge_label} now has a thin real-runtime wrapper for the shared support factory/decode scenario, but local proof is still gated on enabling real vendor smoke and preflight.",
         ),
     ),
     _slice(
@@ -3682,19 +3468,14 @@ _SECTION10_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
             "Reference backend now enforces save/restore callback-control blocking and within-callback evoke rejection.",
             scope="reference callback-control slice",
         ),
-        _hosted_python_profile(
-            "rest",
+        *_hosted_python_pair(
             "not-run-in-this-session",
             "REST transport exercises evoke paths positively, but the support callback-control slice is not yet matrixed to the same depth.",
-            scope="hosted callback-control slice",
-            status="partial",
-        ),
-        _hosted_python_profile(
-            "grpc",
             "not-run-in-this-session",
             "gRPC transport exercises evoke paths positively, but the support callback-control slice is not yet matrixed to the same depth.",
             scope="hosted callback-control slice",
-            status="partial",
+            rest_status="partial",
+            grpc_status="partial",
         ),
     ),
     _slice(
@@ -3725,20 +3506,35 @@ _PITCH_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     _slice(
         "lifecycle",
         ("IEEE 1516.1-2010 §4.1", "IEEE 1516.1-2010 §4.10"),
-        _pitch_profile("jpype", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_real_vendor_runtime_smoke.py",), "Pitch JPype lifecycle smoke exists through the Docker-backed CRC/FedPro route.", scope="real-vendor lifecycle slice"),
-        _pitch_profile("py4j", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_real_vendor_runtime_smoke.py",), "Pitch Py4J lifecycle smoke exists through the Docker-backed CRC/FedPro route.", scope="real-vendor lifecycle slice"),
+        *_pitch_bridge_profiles(
+            "positive-path-passing",
+            "not-run-in-this-session",
+            ("tests/vendors/test_real_vendor_runtime_smoke.py",),
+            scope="real-vendor lifecycle slice",
+            note_template="{bridge_label} lifecycle smoke exists through the Docker-backed CRC/FedPro route.",
+        ),
     ),
     _slice(
         "exchange",
         ("IEEE 1516.1-2010 §6.9", "IEEE 1516.1-2010 §8.13"),
-        _pitch_profile("jpype", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py",), "Pitch JPype exchange matrix covers receive and timestamped flows.", scope="real-vendor exchange/time slice"),
-        _pitch_profile("py4j", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py",), "Pitch Py4J exchange matrix covers receive and timestamped flows.", scope="real-vendor exchange/time slice"),
+        *_pitch_bridge_profiles(
+            "positive-path-passing",
+            "not-run-in-this-session",
+            ("tests/vendors/test_pitch_real_backend_matrix.py",),
+            scope="real-vendor exchange/time slice",
+            note_template="{bridge_label} exchange matrix covers receive and timestamped flows.",
+        ),
     ),
     _slice(
         "synchronization",
         ("IEEE 1516.1-2010 §4.11", "IEEE 1516.1-2010 §4.15"),
-        _pitch_profile("jpype", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py",), "Pitch JPype synchronization matrix exists.", scope="real-vendor synchronization slice"),
-        _pitch_profile("py4j", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py",), "Pitch Py4J synchronization matrix exists.", scope="real-vendor synchronization slice"),
+        *_pitch_bridge_profiles(
+            "positive-path-passing",
+            "not-run-in-this-session",
+            ("tests/vendors/test_pitch_real_backend_matrix.py",),
+            scope="real-vendor synchronization slice",
+            note_template="{bridge_label} synchronization matrix exists.",
+        ),
     ),
     _slice(
         "lost-federate",
@@ -3749,20 +3545,35 @@ _PITCH_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
     _slice(
         "ownership",
         ("IEEE 1516.1-2010 §7.2", "IEEE 1516.1-2010 §7.19"),
-        _pitch_profile("jpype", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py",), "Pitch JPype plain ownership slice exists.", scope="real-vendor ownership slice"),
-        _pitch_profile("py4j", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py",), "Pitch Py4J plain ownership slice exists.", scope="real-vendor ownership slice"),
+        *_pitch_bridge_profiles(
+            "positive-path-passing",
+            "not-run-in-this-session",
+            ("tests/vendors/test_pitch_real_backend_matrix.py",),
+            scope="real-vendor ownership slice",
+            note_template="{bridge_label} plain ownership slice exists.",
+        ),
     ),
     _slice(
         "negotiated-ownership",
         ("IEEE 1516.1-2010 §7.3", "IEEE 1516.1-2010 §7.16"),
-        _pitch_profile("jpype", "vendor-divergent", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py", "docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"), "Pitch JPype negotiated ownership is currently bridge-divergent.", scope="real-vendor negotiated ownership slice"),
-        _pitch_profile("py4j", "vendor-divergent", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py", "docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"), "Pitch Py4J negotiated ownership is currently bridge-divergent.", scope="real-vendor negotiated ownership slice"),
+        *_pitch_bridge_profiles(
+            "vendor-divergent",
+            "not-run-in-this-session",
+            ("tests/vendors/test_pitch_real_backend_matrix.py", "docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"),
+            scope="real-vendor negotiated ownership slice",
+            note_template="{bridge_label} negotiated ownership is currently bridge-divergent.",
+        ),
     ),
     _slice(
         "time-profile",
         ("IEEE 1516.1-2010 §8.2", "IEEE 1516.1-2010 §8.24"),
-        _pitch_profile("jpype", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py",), "Pitch JPype time-profile and exchange/time parity slice exists.", scope="real-vendor time-profile slice"),
-        _pitch_profile("py4j", "positive-path-passing", "not-run-in-this-session", ("tests/vendors/test_pitch_real_backend_matrix.py",), "Pitch Py4J time-profile and exchange/time parity slice exists.", scope="real-vendor time-profile slice"),
+        *_pitch_bridge_profiles(
+            "positive-path-passing",
+            "not-run-in-this-session",
+            ("tests/vendors/test_pitch_real_backend_matrix.py",),
+            scope="real-vendor time-profile slice",
+            note_template="{bridge_label} time-profile and exchange/time parity slice exists.",
+        ),
     ),
 )
 
@@ -3784,89 +3595,30 @@ _SECTION8_BACKEND_PROFILES: tuple[dict[str, Any], ...] = (
         ),
         "notes": "Python in-memory backend has complete actionable Section 8 negative-path coverage plus explicit HLA_IMMEDIATE evidence.",
     },
-    {
-        "backend_id": "rest-hosted-python",
-        "backend_family": "hosted-python-rest",
-        "method_set": _SECTION8_HOSTED_METHODS,
-        "status": "positive-path-passing",
-        "scope": "hosted backend positive-path matrix",
-        "session_status": "passing-in-this-session",
-        "supports_immediate_inline": False,
-        "evidence_tests": (
-            "tests/time/test_section8_backend_matrix.py",
-            "tests/transport/test_rest_transport.py",
-        ),
-        "notes": "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
-    },
-    {
-        "backend_id": "grpc-hosted-python",
-        "backend_family": "hosted-python-grpc",
-        "method_set": _SECTION8_HOSTED_METHODS,
-        "status": "positive-path-passing",
-        "scope": "hosted backend positive-path matrix",
-        "session_status": "passing-in-this-session",
-        "supports_immediate_inline": False,
-        "evidence_tests": (
-            "tests/time/test_section8_backend_matrix.py",
-            "tests/transport/test_grpc_transport_python_server.py",
-        ),
-        "notes": "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
-    },
-    {
-        "backend_id": "certi-native",
-        "backend_family": "vendor-certi",
-        "method_set": _SECTION8_CERTI_METHODS,
-        "status": "verified-in-this-session",
-        "scope": "real-vendor positive-path matrix",
-        "session_status": "passing-in-this-session",
-        "supports_immediate_inline": False,
-        "evidence_tests": _CERTI_REAL_BACKEND_MATRIX_TESTS,
-        "notes": "CERTI native time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
-    },
-    {
-        "backend_id": "certi-jpype",
-        "backend_family": "vendor-certi-java-bridge",
-        "method_set": _SECTION8_CERTI_METHODS,
-        "status": "verified-in-this-session",
-        "scope": "real-vendor positive-path matrix",
-        "session_status": "passing-in-this-session",
-        "supports_immediate_inline": False,
-        "evidence_tests": _CERTI_REAL_BACKEND_MATRIX_TESTS,
-        "notes": "CERTI JPype time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
-    },
-    {
-        "backend_id": "certi-py4j",
-        "backend_family": "vendor-certi-java-bridge",
-        "method_set": _SECTION8_CERTI_METHODS,
-        "status": "verified-in-this-session",
-        "scope": "real-vendor positive-path matrix",
-        "session_status": "passing-in-this-session",
-        "supports_immediate_inline": False,
-        "evidence_tests": _CERTI_REAL_BACKEND_MATRIX_TESTS,
-        "notes": "CERTI Py4J time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
-    },
-    {
-        "backend_id": "pitch-jpype",
-        "backend_family": "vendor-pitch-java-bridge",
-        "method_set": _SECTION8_PITCH_METHODS,
-        "status": "vendor-divergent",
-        "scope": "real-vendor dedicated Section 8 probe",
-        "session_status": "xfail-in-this-session",
-        "supports_immediate_inline": False,
-        "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
-        "notes": "Pitch JPype has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
-    },
-    {
-        "backend_id": "pitch-py4j",
-        "backend_family": "vendor-pitch-java-bridge",
-        "method_set": _SECTION8_PITCH_METHODS,
-        "status": "vendor-divergent",
-        "scope": "real-vendor dedicated Section 8 probe",
-        "session_status": "xfail-in-this-session",
-        "supports_immediate_inline": False,
-        "evidence_tests": ("tests/vendors/test_pitch_real_backend_matrix.py",),
-        "notes": "Pitch Py4J has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
-    },
+    *_hosted_python_pair(
+        "passing-in-this-session",
+        "REST-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+        "passing-in-this-session",
+        "gRPC-hosted Python RTI is exercised through the dedicated Section 8 suite and transport end-to-end checks.",
+        scope="hosted backend positive-path matrix",
+        method_set=_SECTION8_HOSTED_METHODS,
+    ),
+    *_certi_variant_profiles(
+        "verified-in-this-session",
+        "passing-in-this-session",
+        _CERTI_REAL_BACKEND_MATRIX_TESTS,
+        scope="real-vendor positive-path matrix",
+        note_template="{variant_label} time-query and FQR slices passed in this session after the logical-time type-fidelity fix.",
+        method_set=_SECTION8_CERTI_METHODS,
+    ),
+    *_pitch_bridge_profiles(
+        "vendor-divergent",
+        "xfail-in-this-session",
+        ("tests/vendors/test_pitch_real_backend_matrix.py",),
+        scope="real-vendor dedicated Section 8 probe",
+        note_template="{bridge_label} has dedicated Section 8 probes; time regulation/constrained callbacks and timestamp-ordered delivery/retraction behavior diverge from the shared harness expectations.",
+        method_set=_SECTION8_PITCH_METHODS,
+    ),
 )
 
 _LOOKAHEAD_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
@@ -3880,59 +3632,28 @@ _LOOKAHEAD_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
             "Python reference lookahead is exercised directly and through the Section 8 matrix.",
             scope="reference lookahead slice",
         ),
-        _hosted_python_profile(
-            "rest",
+        *_hosted_python_pair(
             "passing-in-this-session",
             "REST-hosted Python RTI has explicit lookahead query/modify and early-send coverage.",
-            scope="hosted lookahead slice",
-            evidence_tests=("tests/time/test_lookahead_backend_matrix.py", "tests/transport/test_rest_transport.py"),
-        ),
-        _hosted_python_profile(
-            "grpc",
             "passing-in-this-session",
             "gRPC-hosted Python RTI has explicit lookahead query/modify and early-send coverage.",
             scope="hosted lookahead slice",
-            evidence_tests=("tests/time/test_lookahead_backend_matrix.py", "tests/transport/test_grpc_transport_python_server.py"),
+            rest_evidence_tests=("tests/time/test_lookahead_backend_matrix.py", "tests/transport/test_rest_transport.py"),
+            grpc_evidence_tests=("tests/time/test_lookahead_backend_matrix.py", "tests/transport/test_grpc_transport_python_server.py"),
         ),
-        _certi_profile(
-            "native",
+        *_certi_variant_profiles(
             "vendor-divergent",
             "failing-in-this-session",
             ("tests/vendors/test_certi_real_backend_time_matrix.py",),
-            "CERTI native lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
             scope="real-vendor lookahead slice",
+            note_template="{variant_label} lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
         ),
-        _certi_profile(
-            "jpype",
-            "vendor-divergent",
-            "failing-in-this-session",
-            ("tests/vendors/test_certi_real_backend_time_matrix.py",),
-            "CERTI JPype lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
-            scope="real-vendor lookahead slice",
-        ),
-        _certi_profile(
-            "py4j",
-            "vendor-divergent",
-            "failing-in-this-session",
-            ("tests/vendors/test_certi_real_backend_time_matrix.py",),
-            "CERTI Py4J lookahead reaches the helper bridge, but queryLookahead returns RTIinternalError: Not yet implemented in this runtime.",
-            scope="real-vendor lookahead slice",
-        ),
-        _pitch_profile(
-            "jpype",
+        *_pitch_bridge_profiles(
             "verified-in-this-session",
             "passing-in-this-session",
             ("tests/vendors/test_pitch_real_backend_matrix.py",),
-            "Pitch JPype lookahead query/modify and early-send assertions passed against the Docker-backed real runtime in this session.",
             scope="real-vendor lookahead slice",
-        ),
-        _pitch_profile(
-            "py4j",
-            "verified-in-this-session",
-            "passing-in-this-session",
-            ("tests/vendors/test_pitch_real_backend_matrix.py",),
-            "Pitch Py4J lookahead query/modify and early-send assertions passed against the Docker-backed real runtime in this session.",
-            scope="real-vendor lookahead slice",
+            note_template="{bridge_label} lookahead query/modify and early-send assertions passed against the Docker-backed real runtime in this session.",
         ),
     ),
 )
@@ -5638,6 +5359,9 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
             return python_requirement_overrides[requirement_id]
         if backend == "certi" and requirement_id in certi_requirement_overrides:
             return certi_requirement_overrides[requirement_id]
+        if backend == "certi" and requirement_id in _CERTI_REQUIREMENT_EVIDENCE:
+            note = _CERTI_REQUIREMENT_EVIDENCE[requirement_id][1].lower()
+            return "vendor-divergent" if "vendor-divergent" in note else "verified"
         if backend == "portico":
             kind = str(row.get("kind", "")).strip()
             if kind in {"section-area", "omt-area", "verification-slice", "curated-seed"}:

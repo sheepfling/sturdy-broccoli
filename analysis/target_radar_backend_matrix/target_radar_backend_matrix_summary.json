@@ -1,33 +1,13 @@
 {
   "dt": 1.0,
   "failed": 0,
-  "passed": 2,
+  "passed": 1,
   "results": [
     {
       "backend": "python",
       "backend_kinds": [
         "python/in-memory",
         "python/in-memory"
-      ],
-      "final_time_seconds": 4.0,
-      "first_range_m": 10493.969696925944,
-      "last_range_m": 11236.298322846364,
-      "range_delta_m": 742.3286259204197,
-      "reason": null,
-      "status": "passed",
-      "track_ids": [
-        "TRK-001",
-        "TRK-002",
-        "TRK-003",
-        "TRK-004"
-      ],
-      "track_reports": 4
-    },
-    {
-      "backend": "python-grpc",
-      "backend_kinds": [
-        "native/certi",
-        "native/certi"
       ],
       "final_time_seconds": 4.0,
       "first_range_m": 10493.969696925944,

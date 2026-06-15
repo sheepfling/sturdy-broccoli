@@ -1,18 +1,15 @@
 # Vendor Runtime Status
 
 - lane: `vendor-green`
-- overall classification: `environment-blocked`
-- exit code: `1`
+- overall classification: `vendor-green`
+- exit code: `0`
 - artifact dir: `analysis/preflight_artifacts`
 
 ## Vendors
 
 | Vendor | Classification | Environment | Exit | Blocked Reason | Artifact | Note |
 | --- | --- | --- | ---: | --- | --- | --- |
-| certi | environment-blocked | loopback-blocked | 1 | loopback_bind | analysis/preflight_artifacts/certi-preflight.json | host/runtime prerequisites are blocked on this surface |
-
-Blocked checks for `certi`:
-- `loopback_bind`: loopback_bind: blocked: Local socket bind is not permitted for 127.0.0.1. Run `./tools/certi-easy preflight` to verify local CERTI prerequisites. Real RTI smoke needs loopback TCP bind/connect permission for 127.0.0.1.
+| certi | ready | loopback-ok | 0 |  | analysis/preflight_artifacts/certi-preflight.json | vendor runtime prerequisites are ready |
 
 Required markers for `certi`:
 - `active_build_root`: `<repo>/.local/certi/patched/build/libRTI/ieee1516-2010`
@@ -23,5 +20,5 @@ Required markers for `certi`:
 - `upstream_prefix`: `<repo>/.local/certi/upstream/install/bin/rtig`
 
 Next steps for `certi`:
-- `fix the blocked prerequisite above`
-- `./tools/certi-easy preflight`
+- `./tools/certi-easy smoke compare`
+- `HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q tests/vendors/test_certi_real_backend_exchange_matrix.py tests/vendors/test_certi_real_backend_time_matrix.py tests/vendors/test_certi_real_backend_ownership_matrix.py`

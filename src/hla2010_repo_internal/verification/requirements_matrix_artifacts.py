@@ -7,6 +7,10 @@ from typing import Any
 
 from hla2010.spec_refs import FOM_REFERENCES, SERVICE_AREAS
 
+from ..requirements_source import (
+    format_requirement_section_ref,
+    requirement_document_title_for_binding,
+)
 from .asset_plan import build_verification_plan
 from .curated_requirement_rows import load_curated_requirement_rows
 from .extracted_clause_requirements import get_extracted_requirements_1516_1_clauses_5_6
@@ -27,6 +31,8 @@ def require_project_root(project_root: str | Path | None) -> Path:
 def build_requirements_matrix_2010(project_root: str | Path | None = None, *, version: str = "0.13.0") -> dict[str, Any]:
     """Return a whole-spec requirements matrix spanning section areas, service rows, and verification slices."""
     repo_root = require_project_root(project_root)
+    federate_interface_document = requirement_document_title_for_binding("federate_interface")
+    omt_document = requirement_document_title_for_binding("omt")
     ledger = build_requirements_ledger(version=version)
     plan = build_verification_plan(version)
     vendor_rows_by_clause = load_backend_conformance_vendor_rows(repo_root)
@@ -70,6 +76,20 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
             return "pass"
         return "planned"
 
+    def _normalize_section_ref(section_ref: str, *, default_document: str) -> str:
+        normalized = str(section_ref).strip()
+        if not normalized or "§" not in normalized:
+            return normalized
+        return format_requirement_section_ref(default_document, normalized.split("§", 1)[1].strip())
+
+    def _normalize_known_section_ref(section_ref: str) -> str:
+        normalized = str(section_ref).strip()
+        if normalized.startswith(("1516.1-2010 §", "IEEE 1516.1-2010 §")):
+            return _normalize_section_ref(normalized, default_document=federate_interface_document)
+        if normalized.startswith(("1516.2-2010 §", "IEEE 1516.2-2010 §")):
+            return _normalize_section_ref(normalized, default_document=omt_document)
+        return normalized
+
     section_area_inputs: dict[str, list[str]] = {}
     omt_area_inputs: dict[str, list[str]] = {}
     for row in ledger["rows"]:
@@ -84,8 +104,8 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
                 {
                     "matrix_id": f"AREA-1516.1-{ref.section}",
                     "kind": "section-area",
-                    "document": ref.document,
-                    "section_ref": f"{ref.document} §{ref.section}",
+                    "document": federate_interface_document,
+                    "section_ref": format_requirement_section_ref(federate_interface_document, ref.section),
                     "title": ref.title,
                     "requirement_id": "",
                     "service_group": ref.title,
@@ -112,8 +132,8 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
                 {
                     "matrix_id": requirement_id,
                     "kind": "omt-area",
-                    "document": ref.document,
-                    "section_ref": f"{ref.document} §{ref.section}",
+                    "document": omt_document,
+                    "section_ref": format_requirement_section_ref(omt_document, ref.section),
                     "title": ref.title,
                     "requirement_id": requirement_id,
                     "service_group": "OMT/FOM",
@@ -154,8 +174,8 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
                 {
                     "matrix_id": row["requirement_id"],
                     "kind": "service-requirement",
-                    "document": "IEEE 1516.1-2010",
-                    "section_ref": row["section"],
+                    "document": federate_interface_document,
+                    "section_ref": _normalize_section_ref(str(row["section"]), default_document=federate_interface_document),
                     "title": row["title"],
                     "requirement_id": row["requirement_id"],
                     "service_group": row["service_group"],
@@ -251,8 +271,8 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
                 {
                     "matrix_id": spec["requirement_id"],
                     "kind": "extracted-requirement",
-                    "document": "IEEE 1516.1-2010",
-                    "section_ref": spec["section_ref"],
+                    "document": federate_interface_document,
+                    "section_ref": _normalize_section_ref(str(spec["section_ref"]), default_document=federate_interface_document),
                     "title": spec["title"],
                     "requirement_id": spec["requirement_id"],
                     "service_group": spec["service_group"],
@@ -284,7 +304,7 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
             "matrix_id": asset.asset_id,
             "kind": "verification-slice",
             "document": "multi-section",
-            "section_ref": "; ".join(asset.section_refs),
+            "section_ref": "; ".join(_normalize_known_section_ref(section_ref) for section_ref in asset.section_refs),
             "title": asset.title,
             "requirement_id": asset.asset_id,
             "service_group": asset.asset_type,
@@ -303,11 +323,12 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
         verification_slice_rows.append(asset_row)
         rows.append(asset_row)
         for section_ref in asset.section_refs:
-            if section_ref.startswith("1516.1-2010 §"):
-                section = section_ref.split("§", 1)[1].split(".", 1)[0].strip()
+            normalized_section_ref = _normalize_known_section_ref(section_ref)
+            if normalized_section_ref.startswith(f"{federate_interface_document} §"):
+                section = normalized_section_ref.split("§", 1)[1].split(".", 1)[0].strip()
                 section_area_inputs.setdefault(section, []).append(asset.status)
-            elif section_ref.startswith("1516.2-2010 §"):
-                section = section_ref.split("§", 1)[1].strip()
+            elif normalized_section_ref.startswith(f"{omt_document} §"):
+                section = normalized_section_ref.split("§", 1)[1].strip()
                 omt_area_inputs.setdefault(section, []).append(asset.status)
 
     for row in rows:
@@ -319,7 +340,7 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
             source_key = row["source"]
             matching_assets = [
                 item for item in verification_slice_rows
-                if f"1516.2-2010 §{section}" in item["section_ref"].split("; ")
+                if format_requirement_section_ref(omt_document, section) in item["section_ref"].split("; ")
             ]
             row["status"] = _aggregate_status(omt_area_inputs.get(section, []))
             row["implementation_refs"] = [item for asset in matching_assets for item in asset["implementation_refs"]]

@@ -76,7 +76,7 @@ def test_generated_mom_negative_matrix_is_materialized_as_pytest_cases():
     assert summary["executable_case_count"] >= 230
     assert summary["planned_semantic_case_count"] >= 30
     assert summary["case_kind_counts"]["missing_required_parameter"] >= 80
-    assert "1516.1-2010 §11.4.1" in summary["section_refs"]
+    assert any("§11.4.1" in section_ref for section_ref in summary["section_refs"])
 
 
 @pytest.mark.parametrize("case", RTI_STRICT_CASES, ids=_pytest_case_id)

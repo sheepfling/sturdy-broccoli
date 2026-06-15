@@ -8,33 +8,20 @@ This audit projects the shared IEEE 1516-2010 (2010 edition) / IEEE 1516.1-2010 
 |---|---:|---:|---:|---:|---:|---:|---:|
 | IEEE 1516-2010 (2010 edition) unknown | 2 | 0 | 0 | 2 | 0 | 0 | 0 |
 | IEEE 1516-2010 (2010 edition) §12 | 21 | 21 | 0 | 0 | 0 | 0 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §10 | 21 | 20 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §11 | 36 | 35 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §4 | 242 | 214 | 0 | 27 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §5 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §6 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §7 | 18 | 17 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §8 | 37 | 36 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 (2010 edition) §9 | 16 | 15 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 §10 | 63 | 62 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 §11 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 §12 | 10 | 9 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 §4 | 39 | 38 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 §5 | 51 | 49 | 0 | 1 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 §6 | 109 | 107 | 0 | 1 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 §7 | 21 | 20 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 §8 | 24 | 23 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.1-2010 §9 | 15 | 14 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.2-2010 (2010 edition) unknown | 13 | 13 | 0 | 0 | 0 | 0 | 0 |
-| IEEE 1516.2-2010 (2010 edition) §4 | 84 | 84 | 0 | 0 | 0 | 0 | 0 |
-| IEEE 1516.2-2010 (2010 edition) §5 | 1 | 1 | 0 | 0 | 0 | 0 | 0 |
-| IEEE 1516.2-2010 (2010 edition) §6 | 1 | 1 | 0 | 0 | 0 | 0 | 0 |
-| IEEE 1516.2-2010 (2010 edition) §7 | 12 | 12 | 0 | 0 | 0 | 0 | 0 |
-| IEEE 1516.2-2010 unknown | 2 | 0 | 0 | 0 | 0 | 2 | 0 |
-| IEEE 1516.2-2010 §4 | 15 | 0 | 0 | 0 | 0 | 15 | 0 |
-| IEEE 1516.2-2010 §5 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.2-2010 §6 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
-| IEEE 1516.2-2010 §7 | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §10 | 84 | 82 | 0 | 0 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §11 | 37 | 35 | 0 | 0 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §12 | 10 | 9 | 0 | 0 | 0 | 1 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §4 | 281 | 252 | 0 | 27 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §5 | 52 | 49 | 0 | 1 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §6 | 110 | 97 | 0 | 11 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §7 | 39 | 37 | 0 | 0 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §8 | 61 | 59 | 0 | 0 | 0 | 2 | 0 |
+| IEEE 1516.1-2010 (2010 edition) §9 | 31 | 29 | 0 | 0 | 0 | 2 | 0 |
+| IEEE 1516.2-2010 (2010 edition) unknown | 15 | 13 | 0 | 0 | 0 | 2 | 0 |
+| IEEE 1516.2-2010 (2010 edition) §4 | 99 | 84 | 0 | 0 | 0 | 15 | 0 |
+| IEEE 1516.2-2010 (2010 edition) §5 | 2 | 1 | 0 | 0 | 0 | 1 | 0 |
+| IEEE 1516.2-2010 (2010 edition) §6 | 2 | 1 | 0 | 0 | 0 | 1 | 0 |
+| IEEE 1516.2-2010 (2010 edition) §7 | 13 | 12 | 0 | 0 | 0 | 1 | 0 |
 | multi-section unknown | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
 | multi-section §11 | 6 | 0 | 0 | 0 | 0 | 6 | 0 |
 | multi-section §12 | 4 | 0 | 0 | 0 | 0 | 4 | 0 |
@@ -50,17 +37,7 @@ This audit projects the shared IEEE 1516-2010 (2010 edition) / IEEE 1516.1-2010 
 |---|---|---|---|---|---|
 | IEEE 1516-2010 (2010 edition) | unknown | HLA1516-RULE-001 | vendor-divergent | extracted-requirement | Federation rules |
 | IEEE 1516-2010 (2010 edition) | unknown | HLA1516-FW-001 | vendor-divergent | extracted-requirement | Framework concepts |
-| IEEE 1516.1-2010 | 4 | AREA-1516.1-4 | not-applicable | section-area | Federation management |
-| IEEE 1516.1-2010 | 5 | AREA-1516.1-5 | not-applicable | section-area | Declaration management |
-| IEEE 1516.1-2010 | 5 | HLA1516.1-DM-5.1.6-001 | vendor-divergent | extracted-requirement | RTI shall support subscribing with update rate reduction where applicable. |
-| IEEE 1516.1-2010 | 6 | AREA-1516.1-6 | not-applicable | section-area | Object management |
-| IEEE 1516.1-2010 | 6 | HLA1516.1-OM-6.1.11-001 | vendor-divergent | extracted-requirement | RTI may combine, package, or passelize messages without changing externally visible semantics. |
-| IEEE 1516.1-2010 | 7 | AREA-1516.1-7 | not-applicable | section-area | Ownership management |
-| IEEE 1516.1-2010 | 8 | AREA-1516.1-8 | not-applicable | section-area | Time management |
-| IEEE 1516.1-2010 | 9 | AREA-1516.1-9 | not-applicable | section-area | Data distribution management |
-| IEEE 1516.1-2010 | 10 | AREA-1516.1-10 | not-applicable | section-area | Support services |
-| IEEE 1516.1-2010 | 11 | AREA-1516.1-11 | not-applicable | section-area | Management object model |
-| IEEE 1516.1-2010 | 12 | AREA-1516.1-12 | not-applicable | section-area | Programming language mappings |
+| IEEE 1516.1-2010 (2010 edition) | 4 | AREA-1516.1-4 | not-applicable | section-area | Federation management |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-001 | not-applicable | curated-seed | Federation Management |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.10-EFF-001 | vendor-divergent | extracted-requirement | Successful Resign Federation Execution shall remove the federate from federation membership, remove or divest owned objects as directed by the resign action, remove synchronization-point participation, refresh time advancement processing, and clear local publication and subscription state. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.11-EFF-001 | vendor-divergent | extracted-requirement | Successful Register Federation Synchronization Point processing shall update federation synchronization or save/restore state consistently for the participating federates. |
@@ -89,33 +66,53 @@ This audit projects the shared IEEE 1516-2010 (2010 edition) / IEEE 1516.1-2010 
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.32-EXC-001 | vendor-divergent | extracted-requirement | The triggering path for Federation Restore Status Response shall distinguish the clause-defined success and failure categories visible through callback payloads instead of collapsing them into generic behavior. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.5-EFF-001 | vendor-divergent | extracted-requirement | Successful Create Federation Execution shall install the federation, resolve and merge the supplied FOM modules, supply the standard MIM by default when needed, and choose a logical time factory compatible with the merged model. |
 | IEEE 1516.1-2010 (2010 edition) | 4 | HLA1516.1-FM-4.9-EFF-001 | vendor-divergent | extracted-requirement | Successful Join Federation Execution shall allocate a federate handle, bind the federate to the target federation, initialize logical time and lookahead state, merge any accepted additional FOM modules, and register the federate in the federation state. |
+| IEEE 1516.1-2010 (2010 edition) | 5 | AREA-1516.1-5 | not-applicable | section-area | Declaration management |
 | IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-001 | not-applicable | extracted-requirement | The RTI shall implement declaration-management services for publication |
+| IEEE 1516.1-2010 (2010 edition) | 5 | HLA1516.1-DM-5.1.6-001 | vendor-divergent | extracted-requirement | RTI shall support subscribing with update rate reduction where applicable. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | AREA-1516.1-6 | not-applicable | section-area | Object management |
 | IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-001 | not-applicable | extracted-requirement | The RTI shall implement object-management services for registration |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.10-001 | vendor-divergent | extracted-requirement | RTI shall use transportation types for object updates and interactions as defined by the FDD and service arguments. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.11-001 | vendor-divergent | extracted-requirement | RTI may combine, package, or passelize messages without changing externally visible semantics. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.1.12-001 | vendor-divergent | extracted-requirement | RTI shall honor update-rate reduction when reflecting attribute updates. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.23-001 | vendor-divergent | extracted-requirement | RTI shall provide Request Attribute Transportation Type Change across the full transportation semantic space defined by the standard. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.24-001 | vendor-divergent | extracted-requirement | RTI shall invoke Confirm Attribute Transportation Type Change across the full transportation semantic space. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.25-001 | vendor-divergent | extracted-requirement | RTI shall provide Query Attribute Transportation Type across the full transportation semantic space defined by the standard. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.26-001 | vendor-divergent | extracted-requirement | RTI shall invoke Report Attribute Transportation Type across the full transportation semantic space. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.27-001 | vendor-divergent | extracted-requirement | RTI shall provide Request Interaction Transportation Type Change across the full transportation semantic space defined by the standard. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.28-001 | vendor-divergent | extracted-requirement | RTI shall invoke Confirm Interaction Transportation Type Change across the full transportation semantic space. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.29-001 | vendor-divergent | extracted-requirement | RTI shall provide Query Interaction Transportation Type across the full transportation semantic space defined by the standard. |
+| IEEE 1516.1-2010 (2010 edition) | 6 | HLA1516.1-OM-6.30-001 | vendor-divergent | extracted-requirement | RTI shall invoke Report Interaction Transportation Type across the full transportation semantic space. |
+| IEEE 1516.1-2010 (2010 edition) | 7 | AREA-1516.1-7 | not-applicable | section-area | Ownership management |
 | IEEE 1516.1-2010 (2010 edition) | 7 | HLA1516.1-OWN-001 | not-applicable | curated-seed | Ownership Management |
+| IEEE 1516.1-2010 (2010 edition) | 8 | AREA-1516.1-8 | not-applicable | section-area | Time management |
 | IEEE 1516.1-2010 (2010 edition) | 8 | HLA1516.1-TM-001 | not-applicable | curated-seed | Time Management |
+| IEEE 1516.1-2010 (2010 edition) | 9 | AREA-1516.1-9 | not-applicable | section-area | Data distribution management |
 | IEEE 1516.1-2010 (2010 edition) | 9 | HLA1516.1-DDM-001 | not-applicable | curated-seed | Data Distribution Management |
+| IEEE 1516.1-2010 (2010 edition) | 10 | AREA-1516.1-10 | not-applicable | section-area | Support services |
 | IEEE 1516.1-2010 (2010 edition) | 10 | HLA1516.1-SUP-001 | not-applicable | curated-seed | Support Services |
+| IEEE 1516.1-2010 (2010 edition) | 11 | AREA-1516.1-11 | not-applicable | section-area | Management object model |
 | IEEE 1516.1-2010 (2010 edition) | 11 | HLA1516.1-MOM-001 | not-applicable | curated-seed | Management Object Model behavior |
-| IEEE 1516.2-2010 | 4 | REQ-OMT-4-omt_components | not-applicable | omt-area | HLA OMT components |
-| IEEE 1516.2-2010 | 4 | REQ-OMT-4_1-object_model_identification | not-applicable | omt-area | Object model identification |
-| IEEE 1516.2-2010 | 4 | REQ-OMT-4_10-transportation_type_table | not-applicable | omt-area | Transportation type table |
-| IEEE 1516.2-2010 | 4 | REQ-OMT-4_11-update_rate_table | not-applicable | omt-area | Update rate table |
-| IEEE 1516.2-2010 | 4 | REQ-OMT-4_12-switches_table | not-applicable | omt-area | Switches table |
-| IEEE 1516.2-2010 | 4 | REQ-OMT-4_13-datatype_table | not-applicable | omt-area | Datatype tables |
-| IEEE 1516.2-2010 | 4 | REQ-OMT-4_14-notes_table | not-applicable | omt-area | Notes table |
-| IEEE 1516.2-2010 | 4 | REQ-OMT-4_2-object_class_structure | not-applicable | omt-area | Object class structure table |
-| IEEE 1516.2-2010 | 4 | REQ-OMT-4_3-interaction_class_structure | not-applicable | omt-area | Interaction class structure table |
-| IEEE 1516.2-2010 | 4 | REQ-OMT-4_4-attribute_table | not-applicable | omt-area | Attribute table |
-| IEEE 1516.2-2010 | 4 | REQ-OMT-4_5-parameter_table | not-applicable | omt-area | Parameter table |
-| IEEE 1516.2-2010 | 4 | REQ-OMT-4_6-dimension_table | not-applicable | omt-area | Dimension table |
-| IEEE 1516.2-2010 | 4 | REQ-OMT-4_7-time_representation_table | not-applicable | omt-area | Time representation table |
-| IEEE 1516.2-2010 | 4 | REQ-OMT-4_8-user_supplied_tag_table | not-applicable | omt-area | User-supplied tag table |
-| IEEE 1516.2-2010 | 4 | REQ-OMT-4_9-synchronization_table | not-applicable | omt-area | Synchronization table |
-| IEEE 1516.2-2010 | 5 | REQ-OMT-5-lexicon | not-applicable | omt-area | FOM/SOM lexicon |
-| IEEE 1516.2-2010 | 6 | REQ-OMT-6-conformance | not-applicable | omt-area | Conformance |
-| IEEE 1516.2-2010 | 7 | REQ-OMT-7-merging_rules | not-applicable | omt-area | FOM module/SOM module merging rules |
-| IEEE 1516.2-2010 | unknown | REQ-OMT-Annex_D-dif | not-applicable | omt-area | OMT data interchange format |
-| IEEE 1516.2-2010 | unknown | REQ-OMT-Annex_E-schema | not-applicable | omt-area | OMT conformance XML Schema |
+| IEEE 1516.1-2010 (2010 edition) | 12 | AREA-1516.1-12 | not-applicable | section-area | Programming language mappings |
+| IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4-omt_components | not-applicable | omt-area | HLA OMT components |
+| IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_1-object_model_identification | not-applicable | omt-area | Object model identification |
+| IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_10-transportation_type_table | not-applicable | omt-area | Transportation type table |
+| IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_11-update_rate_table | not-applicable | omt-area | Update rate table |
+| IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_12-switches_table | not-applicable | omt-area | Switches table |
+| IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_13-datatype_table | not-applicable | omt-area | Datatype tables |
+| IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_14-notes_table | not-applicable | omt-area | Notes table |
+| IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_2-object_class_structure | not-applicable | omt-area | Object class structure table |
+| IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_3-interaction_class_structure | not-applicable | omt-area | Interaction class structure table |
+| IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_4-attribute_table | not-applicable | omt-area | Attribute table |
+| IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_5-parameter_table | not-applicable | omt-area | Parameter table |
+| IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_6-dimension_table | not-applicable | omt-area | Dimension table |
+| IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_7-time_representation_table | not-applicable | omt-area | Time representation table |
+| IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_8-user_supplied_tag_table | not-applicable | omt-area | User-supplied tag table |
+| IEEE 1516.2-2010 (2010 edition) | 4 | REQ-OMT-4_9-synchronization_table | not-applicable | omt-area | Synchronization table |
+| IEEE 1516.2-2010 (2010 edition) | 5 | REQ-OMT-5-lexicon | not-applicable | omt-area | FOM/SOM lexicon |
+| IEEE 1516.2-2010 (2010 edition) | 6 | REQ-OMT-6-conformance | not-applicable | omt-area | Conformance |
+| IEEE 1516.2-2010 (2010 edition) | 7 | REQ-OMT-7-merging_rules | not-applicable | omt-area | FOM module/SOM module merging rules |
+| IEEE 1516.2-2010 (2010 edition) | unknown | REQ-OMT-Annex_D-dif | not-applicable | omt-area | OMT data interchange format |
+| IEEE 1516.2-2010 (2010 edition) | unknown | REQ-OMT-Annex_E-schema | not-applicable | omt-area | OMT conformance XML Schema |
 | multi-section | 4 | REQ-SAVE-RESTORE-001 | not-applicable | verification-slice | Save/restore coordinates with time-state and restores logical-time state |
 | multi-section | 4 | SCENARIO-TARGET-RADAR-001 | not-applicable | verification-slice | Two-federate Target/Radar simulation runs over Python RTI and Java shim profiles |
 | multi-section | 4 | REQ-OMT-PARSE-001 | not-applicable | verification-slice | FOM/MIM XML parsing and name-bearing OMT catalog extraction cover the active 1516.2 object, interaction, attribute, parameter, dimension, and time tables |

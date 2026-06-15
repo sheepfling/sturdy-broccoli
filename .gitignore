@@ -32,6 +32,10 @@ dist
 # Generated project outputs
 analysis
 verification
+!src/hla2010_repo_internal/verification/
+!src/hla2010_repo_internal/verification/**
+src/hla2010_repo_internal/verification/__pycache__/
+src/hla2010_repo_internal/verification/*.py[cod]
 downloads
 build/generated/
 hla2010/generated/

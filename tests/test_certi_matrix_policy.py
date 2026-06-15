@@ -86,7 +86,7 @@ def _clause7_certi_vendor_divergent_rows() -> list[RequirementDispositionRow]:
     return [
         row
         for row in _certi_requirement_rows("certi_requirement_disposition.json")
-        if row.document == FEDERATE_INTERFACE_DOCUMENT
+        if row.document in {FEDERATE_INTERFACE_DOCUMENT, f"{FEDERATE_INTERFACE_DOCUMENT} (2010 edition)"}
         and row.clause_root == "7"
         and row.runtime_disposition == "vendor-divergent"
     ]
@@ -174,27 +174,20 @@ def test_certi_clause7_vendor_divergent_rows_stay_explicit_negotiated_ownership_
         "HLA1516.1-OWN-7.3-001",
         "HLA1516.1-OWN-7.4-001",
         "HLA1516.1-OWN-7.10-001",
-        "REQ-FED-OWN-7_10-attributeOwnershipUnavailable",
     }
     assert {row.requirement_id for row in rows} == expected_ids
 
-    explicit_negotiated_ids = expected_ids - {"REQ-FED-OWN-7_10-attributeOwnershipUnavailable"}
     for row in rows:
-        requirement_id = row.requirement_id
         refs = set(row.evidence_refs)
-        if requirement_id in explicit_negotiated_ids:
-            assert CERTI_NEGOTIATED_OWNERSHIP_FINDINGS in refs
-            assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
-                "scenario_ownership.py::run_negotiated_attribute_ownership_scenario"
-            ) in refs
-            assert (
-                "tests/vendors/test_certi_real_backend_ownership_matrix.py::"
-                "test_certi_backend_negotiated_ownership_matrix"
-            ) in refs
-        else:
-            assert requirement_id == "REQ-FED-OWN-7_10-attributeOwnershipUnavailable"
-            assert not refs
+        assert CERTI_NEGOTIATED_OWNERSHIP_FINDINGS in refs
+        assert (
+            "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+            "scenario_ownership.py::run_negotiated_attribute_ownership_scenario"
+        ) in refs
+        assert (
+            "tests/vendors/test_certi_real_backend_ownership_matrix.py::"
+            "test_certi_backend_negotiated_ownership_matrix"
+        ) in refs
 
 
 def test_generated_certi_profile_requirement_disposition_markdown_keeps_inheritance_note_explicit() -> None:

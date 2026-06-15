@@ -81,13 +81,13 @@
 ## Preflight
 
 - `certi`: result `real CERTI runnable`, environment `loopback-ok`, exit `0`, file `analysis/preflight_artifacts/certi-preflight.json`
-- `pitch`: result `ready to run ./tools/pitch install or ./tools/pitch all`, environment `ready`, exit `0`, file `analysis/preflight_artifacts/pitch-preflight.json`
+- `pitch`: result `not ready; fix the blocked prerequisite(s) above and rerun`, environment `ports-blocked`, exit `1`, file `analysis/preflight_artifacts/pitch-preflight.json`
 
 ## Runtime Status
 
 - repo-green: `repo-green` (exit `0`)
 - certi vendor-green: `vendor-green` (exit `0`)
-- pitch vendor-green: `vendor-green` (exit `0`)
+- pitch vendor-green: `environment-blocked` (exit `1`)
 
 Required markers for `certi` in `repo-green`:
 - `active_build_root`: `<repo>/.local/certi/patched/build/libRTI/ieee1516-2010`
@@ -101,8 +101,8 @@ Required markers for `pitch` in `repo-green`:
 - `runtime_home`: `third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar`
 
 Required ports for `pitch` in `repo-green`:
-- `crc`: `127.0.0.1:8989` [ok]
-- `fedpro`: `127.0.0.1:15164` [ok]
+- `crc`: `127.0.0.1:8989` [blocked]
+- `fedpro`: `127.0.0.1:15164` [blocked]
 
 Required markers for `certi` in `certi vendor-green`:
 - `active_build_root`: `<repo>/.local/certi/patched/build/libRTI/ieee1516-2010`
@@ -116,8 +116,8 @@ Required markers for `pitch` in `pitch vendor-green`:
 - `runtime_home`: `third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar`
 
 Required ports for `pitch` in `pitch vendor-green`:
-- `crc`: `127.0.0.1:8989` [ok]
-- `fedpro`: `127.0.0.1:15164` [ok]
+- `crc`: `127.0.0.1:8989` [blocked]
+- `fedpro`: `127.0.0.1:15164` [blocked]
 
 ## Known Gaps
 

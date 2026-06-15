@@ -119,7 +119,7 @@
       "evidence_tests": [
         "tests/vendors/test_certi_real_backend_exchange_matrix.py"
       ],
-      "notes": "CERTI synchronization matrix exists but was not rerun in this session.",
+      "notes": "CERTI native synchronization matrix exists but was not rerun in this session.",
       "scope": "real-vendor core scenario slice",
       "section_refs": [
         "IEEE 1516.1-2010 \u00a74.25",

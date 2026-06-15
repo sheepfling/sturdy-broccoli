@@ -4,7 +4,7 @@
 - target radar FOM: `<repo>/packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/resources/foms/TargetRadarFOMmodule.xml`
 - steps: `4`
 - dt: `1.0`
-- passed: `2`
+- passed: `1`
 - skipped: `0`
 - failed: `0`
 
@@ -13,7 +13,6 @@
 | Backend | Status | Track reports | Final range (m) | Final time | Reason |
 | --- | --- | ---: | ---: | ---: | --- |
 | python | passed | 4 | 11236.298322846364 | 4.0 |  |
-| python-grpc | passed | 4 | 11236.298322846364 | 4.0 |  |
 
 ## How To Re-run
 

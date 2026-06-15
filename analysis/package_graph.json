@@ -26,7 +26,6 @@
       "backend_names": [],
       "declared_external_dependencies": [],
       "declared_internal_dependencies": [
-        "hla2010-rti-backend-common",
         "hla2010-rti-runtime-common",
         "hla2010-spec",
         "hla2010-verification-harness"
@@ -37,7 +36,6 @@
       "manifest_role": "fom-example",
       "manifest_status": "implementation-moved",
       "may_depend_on": [
-        "hla2010-rti-backend-common",
         "hla2010-rti-runtime-common",
         "hla2010-spec",
         "hla2010-verification-harness"
@@ -113,7 +111,6 @@
       "manifest_status": "implementation-moved",
       "may_depend_on": [
         "hla2010-rti-backend-common",
-        "hla2010-rti-transport-common",
         "hla2010-spec"
       ],
       "role": "java-support",
@@ -306,6 +303,7 @@
       "manifest_status": "implementation-moved",
       "may_depend_on": [
         "hla2010-rti-backend-common",
+        "hla2010-rti-transport-common",
         "hla2010-spec"
       ],
       "role": "rti-backend",

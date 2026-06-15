@@ -19,40 +19,40 @@
       "status": "ok"
     },
     {
-      "detail": "ok: 127.0.0.1:8989 is available",
+      "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 48] Address already in use",
       "name": "crc_port",
-      "ok": true,
-      "status": "ok"
+      "ok": false,
+      "status": "blocked"
     },
     {
-      "detail": "ok: 127.0.0.1:15164 is available",
+      "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 48] Address already in use",
       "name": "fedpro_port",
-      "ok": true,
-      "status": "ok"
+      "ok": false,
+      "status": "blocked"
     }
   ],
-  "environment": "ready",
-  "exit_code": 0,
-  "next_step": "./tools/pitch install or ./tools/pitch all",
+  "environment": "ports-blocked",
+  "exit_code": 1,
+  "next_step": "fix the blocked prerequisite(s) above and rerun",
   "platform": "Darwin 25.5.0 arm64",
   "ports": {
     "crc": {
-      "detail": "ok: 127.0.0.1:8989 is available",
+      "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 48] Address already in use",
       "host": "127.0.0.1",
       "port": 8989,
-      "status": "ok"
+      "status": "blocked"
     },
     "fedpro": {
-      "detail": "ok: 127.0.0.1:15164 is available",
+      "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 48] Address already in use",
       "host": "127.0.0.1",
       "port": 15164,
-      "status": "ok"
+      "status": "blocked"
     }
   },
   "required_markers": {
     "runtime_home": "third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
   },
-  "result": "ready to run ./tools/pitch install or ./tools/pitch all",
+  "result": "not ready; fix the blocked prerequisite(s) above and rerun",
   "runtime": {
     "container_name": "hla2010-pitch-crc",
     "home": "third_party/pitch/PITCH-prti1516e-manual",

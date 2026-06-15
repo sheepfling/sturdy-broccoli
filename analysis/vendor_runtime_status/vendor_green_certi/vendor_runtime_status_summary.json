@@ -1,43 +1,36 @@
 {
   "artifact_dir": "analysis/preflight_artifacts",
-  "blocked_vendors": [
-    "certi"
-  ],
-  "exit_code": 1,
+  "blocked_vendors": [],
+  "exit_code": 0,
   "lane": "vendor-green",
   "missing_vendors": [],
-  "overall_classification": "environment-blocked",
-  "ready_vendors": [],
+  "overall_classification": "vendor-green",
+  "ready_vendors": [
+    "certi"
+  ],
   "recommended_next_steps": {
     "certi": [
-      "fix the blocked prerequisite above",
-      "./tools/certi-easy preflight"
+      "./tools/certi-easy smoke compare",
+      "HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q tests/vendors/test_certi_real_backend_exchange_matrix.py tests/vendors/test_certi_real_backend_time_matrix.py tests/vendors/test_certi_real_backend_ownership_matrix.py"
     ]
   },
   "suite_name": "vendor-runtime-status",
   "unexpected_failure_vendors": [],
   "vendors": [
     {
-      "actionable": false,
+      "actionable": true,
       "artifact_path": "analysis/preflight_artifacts/certi-preflight.json",
-      "blocked_checks": [
-        {
-          "detail": null,
-          "message": "loopback_bind: blocked: Local socket bind is not permitted for 127.0.0.1. Run `./tools/certi-easy preflight` to verify local CERTI prerequisites. Real RTI smoke needs loopback TCP bind/connect permission for 127.0.0.1.",
-          "name": "loopback_bind",
-          "status": null
-        }
-      ],
-      "blocked_reason": "loopback_bind",
-      "classification": "environment-blocked",
-      "environment": "loopback-blocked",
-      "exit_code": 1,
-      "lane_ok": false,
+      "blocked_checks": [],
+      "blocked_reason": null,
+      "classification": "ready",
+      "environment": "loopback-ok",
+      "exit_code": 0,
+      "lane_ok": true,
       "next_steps": [
-        "fix the blocked prerequisite above",
-        "./tools/certi-easy preflight"
+        "./tools/certi-easy smoke compare",
+        "HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q tests/vendors/test_certi_real_backend_exchange_matrix.py tests/vendors/test_certi_real_backend_time_matrix.py tests/vendors/test_certi_real_backend_ownership_matrix.py"
       ],
-      "note": "host/runtime prerequisites are blocked on this surface",
+      "note": "vendor runtime prerequisites are ready",
       "present": true,
       "required_markers": {
         "active_build_root": "<repo>/.local/certi/patched/build/libRTI/ieee1516-2010",
@@ -48,7 +41,7 @@
         "upstream_prefix": "<repo>/.local/certi/upstream/install/bin/rtig"
       },
       "required_ports": {},
-      "result": "real CERTI will skip",
+      "result": "real CERTI runnable",
       "tool": "certi-preflight",
       "vendor": "certi"
     }

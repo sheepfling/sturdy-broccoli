@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+"""Traceability tests for the IEEE/HLA 2010 editorial-edition requirement surfaces."""
+
 import re
 from pathlib import Path
 

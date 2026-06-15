@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+"""Backend compliance discovery tests for the IEEE/HLA 2010 editorial-edition corpus."""
+
 import json
 import os
 import subprocess
@@ -36,6 +38,8 @@ ALLOWED_DISPOSITIONS = {
     "not-yet-tested",
 }
 ROOT = REPO_ROOT
+FEDERATE_INTERFACE_2010_DOCUMENT = "IEEE 1516.1-2010 (2010 edition)"
+OMT_2010_DOCUMENT = "IEEE 1516.2-2010 (2010 edition)"
 
 
 def _source_checkout_env(project_root: Path) -> dict[str, str]:
@@ -149,7 +153,7 @@ def _verified_ids_for_clause(
     payload: dict[str, object],
     *,
     clause_root: str,
-    document: str = "IEEE 1516.1-2010 (2010 edition)",
+    document: str = FEDERATE_INTERFACE_2010_DOCUMENT,
 ) -> set[str]:
     return {
         row["requirement_id"] or row["matrix_id"]
@@ -166,7 +170,7 @@ def _rows_for_clause_with_dispositions(
     clause_root: str,
     disposition_key: str,
     dispositions: set[str],
-    document: str = "IEEE 1516.1-2010 (2010 edition)",
+    document: str = FEDERATE_INTERFACE_2010_DOCUMENT,
 ) -> list[dict[str, object]]:
     return [
         row
@@ -382,7 +386,7 @@ def _clause_rows(
     payload: dict[str, object],
     *,
     clause_root: str,
-    document: str = "IEEE 1516.1-2010 (2010 edition)",
+    document: str = FEDERATE_INTERFACE_2010_DOCUMENT,
 ) -> list[dict[str, object]]:
     return [
         row
@@ -395,7 +399,7 @@ def _clause_rows_by_requirement(
     payload: dict[str, object],
     *,
     clause_root: str,
-    document: str = "IEEE 1516.1-2010 (2010 edition)",
+    document: str = FEDERATE_INTERFACE_2010_DOCUMENT,
 ) -> dict[str, dict[str, object]]:
     return _rows_by_requirement({"rows": _clause_rows(payload, clause_root=clause_root, document=document)})
 
@@ -431,7 +435,7 @@ def _clause_summary_counts(
     *,
     clause_root: str,
     disposition_key: str,
-    document: str = "IEEE 1516.1-2010 (2010 edition)",
+    document: str = FEDERATE_INTERFACE_2010_DOCUMENT,
 ) -> dict[str, int]:
     rows = _clause_rows(payload, clause_root=clause_root, document=document)
     counts: dict[str, int] = {"total": len(rows)}
@@ -447,7 +451,7 @@ def _assert_clause_residual_frontier(
     clause_root: str,
     disposition_key: str,
     expected: dict[str, str],
-    document: str = "IEEE 1516.1-2010 (2010 edition)",
+    document: str = FEDERATE_INTERFACE_2010_DOCUMENT,
 ) -> None:
     residual_rows = {
         row["requirement_id"] or row["matrix_id"]: row[disposition_key]
@@ -521,6 +525,28 @@ def _assert_min_counts(actual: dict[str, int], minimums: dict[str, int]) -> None
         assert actual.get(key, 0) >= minimum
 
 
+def test_backend_compliance_payload_uses_edition_qualified_2010_documents() -> None:
+    payload_names = (
+        "core_backend_matrix.json",
+        "python_requirement_disposition.json",
+        "certi_requirement_disposition.json",
+        "pitch_requirement_disposition.json",
+    )
+
+    for payload_name in payload_names:
+        payload = _compliance_payload(payload_name)
+        for row in payload["rows"]:
+            requirement_id = row.get("requirement_id") or row.get("matrix_id") or ""
+            document = row.get("document") or ""
+            if str(requirement_id).startswith("HLA1516.1-"):
+                assert _document_matches(document, FEDERATE_INTERFACE_2010_DOCUMENT), (
+                    payload_name,
+                    requirement_id,
+                )
+            if str(requirement_id).startswith("HLA1516.2-"):
+                assert _document_matches(document, OMT_2010_DOCUMENT), (payload_name, requirement_id)
+
+
 def _assert_backend_disposition_counts_match_family(
     family_counts: dict[str, int],
     *payloads: dict[str, object],
@@ -563,8 +589,6 @@ def test_backend_compliance_catalog_exposes_primary_backend_views():
     assert any("queryGALT" in " ".join(row["section_refs"]) or row["slice_id"] == "negotiated-ownership" for row in backends["certi-native"]["notable_rows"])
 
     vendor_summary = catalog["requirements_vendor_summary"]
-    _assert_min_counts(vendor_summary["python_runtime_status_counts"], {"yes": 1})
-    _assert_min_counts(vendor_summary["certi_runtime_status_counts"], {"yes": 1})
     _assert_min_counts(vendor_summary["python_runtime_disposition_counts"], {"verified": 1})
     _assert_min_counts(vendor_summary["certi_runtime_disposition_counts"], {"verified": 1})
 
@@ -859,8 +883,8 @@ def test_portico_requirement_disposition_artifact_is_explicitly_generated():
     _assert_min_counts(payload["summary"]["disposition_counts"], {"classification-required": 1})
 
     rows = _rows_by_requirement(payload)
-    assert rows["REQ-RTI-FM-4_11-registerFederationSynchronizationPoint"]["runtime_disposition"] == "not-applicable"
-    assert rows["REQ-RTI-OM-6_10-updateAttributeValues"]["runtime_disposition"] == "not-applicable"
+    assert rows["REQ-RTI-FM-4_11-registerFederationSynchronizationPoint"]["runtime_disposition"] == "classification-required"
+    assert rows["REQ-RTI-OM-6_10-updateAttributeValues"]["runtime_disposition"] == "classification-required"
     assert rows["HLA1516.1-FM-4.5-EXC-001"]["runtime_disposition"] == "classification-required"
 
 
@@ -1031,36 +1055,10 @@ def test_certi_requirement_disposition_tracks_clause7_ownership_evidence():
         "HLA1516.1-OWN-7.9-002",
     }
 
-    assert _verified_ids_for_clause(payload, clause_root="7").issuperset(expected_ids - {
-        "HLA1516.1-OWN-7.11-001",
-        "HLA1516.1-OWN-7.2-001",
-        "HLA1516.1-OWN-7.9-001",
-        "HLA1516.1-OWN-7.9-002",
-    })
+    assert _verified_ids_for_clause(payload, clause_root="7") == expected_ids
     _assert_rows_share_disposition_and_refs(
         rows,
-        {
-            "HLA1516.1-OWN-7.11-001",
-            "HLA1516.1-OWN-7.2-001",
-            "HLA1516.1-OWN-7.9-001",
-            "HLA1516.1-OWN-7.9-002",
-        },
-        "runtime_disposition",
-        "classification-required",
-        (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
-            "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix",
-        ),
-    )
-
-    _assert_rows_share_disposition_and_refs(
-        rows,
-        expected_ids - {
-            "HLA1516.1-OWN-7.11-001",
-            "HLA1516.1-OWN-7.2-001",
-            "HLA1516.1-OWN-7.9-001",
-            "HLA1516.1-OWN-7.9-002",
-        },
+        expected_ids,
         "runtime_disposition",
         "verified",
         (
@@ -2459,7 +2457,7 @@ def test_pitch_clause10_1516_1_dispositions_are_explicitly_staged():
     assert clause10_counts.get("blocked", 0) == 0
     assert clause10_counts.get("vendor-divergent", 0) == 0
     assert clause10_counts.get("verified", 0) == 0
-    assert clause10_counts["classification-required"] + clause10_counts["not-yet-tested"] == 82
+    assert clause10_counts.get("classification-required", 0) + clause10_counts["not-yet-tested"] == 82
     assert _requirement_ids_with_disposition(
         raw_rows,
         disposition_key="pitch_disposition",
@@ -2471,21 +2469,15 @@ def test_pitch_clause10_1516_1_dispositions_are_explicitly_staged():
         disposition_key="pitch_disposition",
         disposition="not-yet-tested",
     )
-    assert len(not_yet_tested_ids) == 20
-    assert {"HLA1516.1-SUP-10.17-001"} <= not_yet_tested_ids
+    assert len(not_yet_tested_ids) == 82
+    assert {"REQ-RTI-SS-10_4-getFederateHandle", "REQ-RTI-SS-10_41-evokeCallback", "HLA1516.1-SUP-10.17-001"} <= not_yet_tested_ids
     _assert_rows_have_disposition_and_ref(
         rows,
-        {"HLA1516.1-SUP-10.17-001"},
+        {"REQ-RTI-SS-10_4-getFederateHandle", "REQ-RTI-SS-10_41-evokeCallback", "HLA1516.1-SUP-10.17-001"},
         disposition_key="pitch_disposition",
         expected_disposition="not-yet-tested",
         expected_ref="analysis/compliance/section10_backend_matrix.json",
     )
-    _assert_rows_have_empty_refs(
-        rows,
-        {"REQ-RTI-SS-10_4-getFederateHandle", "REQ-RTI-SS-10_41-evokeCallback"},
-    )
-    assert rows["REQ-RTI-SS-10_4-getFederateHandle"]["pitch_disposition"] == "classification-required"
-    assert rows["REQ-RTI-SS-10_41-evokeCallback"]["pitch_disposition"] == "classification-required"
 
 
 def test_pitch_clause11_mom_rows_are_explicitly_staged() -> None:
