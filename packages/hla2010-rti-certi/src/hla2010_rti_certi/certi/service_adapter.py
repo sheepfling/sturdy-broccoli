@@ -10,14 +10,17 @@ from hla2010.exceptions import RTIexception, RTIinternalError, resolve_rti_excep
 from hla2010.handles import (
     AttributeHandle,
     AttributeHandleSet,
+    DimensionHandle,
     FederateHandle,
     InteractionClassHandle,
     MessageRetractionHandle,
     ObjectClassHandle,
     ObjectInstanceHandle,
     ParameterHandle,
+    RegionHandle,
+    RegionHandleSet,
 )
-from hla2010.types import MessageRetractionReturn, TimeQueryReturn
+from hla2010.types import AttributeRegionAssociation, MessageRetractionReturn, TimeQueryReturn
 from hla2010_rti_java_common import BackendInfo, BackendUnavailableError, Invocation, RTIBackend, UnsupportedBackendService
 from hla2010_rti_transport_common import RTITransport, SubprocessLineTransport, TransportError, TransportRequest
 from hla2010_rti_certi.real_rti_certi import CERTIRuntime, RuntimeProcess, discover_certi_runtime, launch_certi_rtig
@@ -43,6 +46,21 @@ from .runtime import (
 )
 
 _FEDERATION_LOGICAL_TIME_HINTS: dict[str, str] = {}
+
+
+def _region_handle_set_spec(values: Any) -> str:
+    return ",".join(str(int(value.value)) for value in values)
+
+
+def _decode_region_handle_set(spec: str) -> RegionHandleSet:
+    return decode_handle_set(spec, RegionHandle, RegionHandleSet)
+
+
+def _attribute_region_association_spec(values: Sequence[AttributeRegionAssociation]) -> str:
+    parts: list[str] = []
+    for value in values:
+        parts.append(f"{handle_set_spec(value.attributes)}@{_region_handle_set_spec(value.regions)}")
+    return ";".join(parts)
 
 
 class CERTIBackend(RTIBackend):
@@ -204,6 +222,8 @@ class CERTIBackend(RTIBackend):
                 return self._request_value("GET_OBJECT_CLASS_NAME", invocation.args[0].value)
             case "getAttributeHandle":
                 return AttributeHandle(int(self._request_value("GET_ATTRIBUTE_HANDLE", invocation.args[0].value, invocation.args[1])))
+            case "getDimensionHandle":
+                return DimensionHandle(int(self._request_value("GET_DIMENSION_HANDLE", invocation.args[0])))
             case "getAttributeName":
                 return self._request_value("GET_ATTRIBUTE_NAME", invocation.args[0].value, invocation.args[1].value)
             case "publishObjectClassAttributes":
@@ -214,6 +234,8 @@ class CERTIBackend(RTIBackend):
                 if object_class is None or attributes is None:
                     raise UnsupportedBackendService("publishObjectClassAttributes requires object class and attribute set")
                 return self._request_value("PUBLISH_OBJECT_CLASS_ATTRIBUTES", object_class.value, handle_set_spec(attributes))
+            case "unpublishObjectClassAttributes":
+                return self._request_value("UNPUBLISH_OBJECT_CLASS_ATTRIBUTES", invocation.args[0].value, handle_set_spec(invocation.args[1]))
             case "subscribeObjectClassAttributes":
                 object_class = invocation.args[0] if invocation.args else get_keyword(invocation.kwargs, "whichClass", "theClass", "which_class", "the_class")
                 attributes = (
@@ -222,6 +244,20 @@ class CERTIBackend(RTIBackend):
                 if object_class is None or attributes is None:
                     raise UnsupportedBackendService("subscribeObjectClassAttributes requires object class and attribute set")
                 return self._request_value("SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES", object_class.value, handle_set_spec(attributes))
+            case "unsubscribeObjectClassAttributes":
+                return self._request_value("UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES", invocation.args[0].value, handle_set_spec(invocation.args[1]))
+            case "subscribeObjectClassAttributesWithRegions":
+                return self._request_value(
+                    "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS",
+                    invocation.args[0].value,
+                    _attribute_region_association_spec(invocation.args[1]),
+                )
+            case "unsubscribeObjectClassAttributesWithRegions":
+                return self._request_value(
+                    "UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS",
+                    invocation.args[0].value,
+                    _attribute_region_association_spec(invocation.args[1]),
+                )
             case "getInteractionClassHandle":
                 return InteractionClassHandle(int(self._request_value("GET_INTERACTION_CLASS_HANDLE", invocation.args[0])))
             case "getInteractionClassName":
@@ -232,8 +268,24 @@ class CERTIBackend(RTIBackend):
                 return self._request_value("GET_PARAMETER_NAME", invocation.args[0].value, invocation.args[1].value)
             case "publishInteractionClass":
                 return self._request_value("PUBLISH_INTERACTION_CLASS", invocation.args[0].value)
+            case "unpublishInteractionClass":
+                return self._request_value("UNPUBLISH_INTERACTION_CLASS", invocation.args[0].value)
             case "subscribeInteractionClass":
                 return self._request_value("SUBSCRIBE_INTERACTION_CLASS", invocation.args[0].value)
+            case "unsubscribeInteractionClass":
+                return self._request_value("UNSUBSCRIBE_INTERACTION_CLASS", invocation.args[0].value)
+            case "subscribeInteractionClassWithRegions":
+                return self._request_value(
+                    "SUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS",
+                    invocation.args[0].value,
+                    _region_handle_set_spec(invocation.args[1]),
+                )
+            case "unsubscribeInteractionClassWithRegions":
+                return self._request_value(
+                    "UNSUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS",
+                    invocation.args[0].value,
+                    _region_handle_set_spec(invocation.args[1]),
+                )
             case _:
                 return NotImplemented
 
@@ -242,6 +294,48 @@ class CERTIBackend(RTIBackend):
         match invocation.method_name:
             case "registerObjectInstance":
                 return self._invoke_register_object_instance(args)
+            case "createRegion":
+                return RegionHandle(int(self._request_value("CREATE_REGION", handle_set_spec(args[0]))))
+            case "setRangeBounds":
+                return self._request_value(
+                    "SET_RANGE_BOUNDS",
+                    args[0].value,
+                    args[1].value,
+                    args[2].lower_bound,
+                    args[2].upper_bound,
+                )
+            case "commitRegionModifications":
+                return self._request_value("COMMIT_REGION_MODIFICATIONS", _region_handle_set_spec(args[0]))
+            case "deleteRegion":
+                return self._request_value("DELETE_REGION", args[0].value)
+            case "registerObjectInstanceWithRegions":
+                if len(args) >= 3:
+                    value = self._request_value(
+                        "REGISTER_OBJECT_INSTANCE_WITH_REGIONS",
+                        args[0].value,
+                        _attribute_region_association_spec(args[1]),
+                        args[2],
+                    )
+                else:
+                    value = self._request_value(
+                        "REGISTER_OBJECT_INSTANCE_WITH_REGIONS",
+                        args[0].value,
+                        _attribute_region_association_spec(args[1]),
+                        "",
+                    )
+                return ObjectInstanceHandle(int(value))
+            case "associateRegionsForUpdates":
+                return self._request_value(
+                    "ASSOCIATE_REGIONS_FOR_UPDATES",
+                    args[0].value,
+                    _attribute_region_association_spec(args[1]),
+                )
+            case "unassociateRegionsForUpdates":
+                return self._request_value(
+                    "UNASSOCIATE_REGIONS_FOR_UPDATES",
+                    args[0].value,
+                    _attribute_region_association_spec(args[1]),
+                )
             case "getObjectInstanceHandle":
                 return ObjectInstanceHandle(int(self._request_value("GET_OBJECT_INSTANCE_HANDLE", args[0])))
             case "getObjectInstanceName":
@@ -284,6 +378,13 @@ class CERTIBackend(RTIBackend):
                     handle_set_spec(request_args[1]),
                     encode_bytes(request_args[2]),
                 )
+            case "requestAttributeValueUpdateWithRegions":
+                return self._request_value(
+                    "REQUEST_ATTRIBUTE_VALUE_UPDATE_WITH_REGIONS",
+                    args[0].value,
+                    _attribute_region_association_spec(args[1]),
+                    encode_bytes(args[2]),
+                )
             case "changeAttributeOrderType":
                 change_args = cast(tuple[Any, Any, Any], args[:3])
                 return self._request_value(
@@ -313,6 +414,15 @@ class CERTIBackend(RTIBackend):
                     send_args[0].value,
                     handle_value_map_spec(send_args[1]),
                     encode_bytes(send_args[2]),
+                )
+            case "sendInteractionWithRegions":
+                send_args = cast(tuple[Any, Any, Any, Any], args[:4])
+                return self._request_value(
+                    "SEND_INTERACTION_WITH_REGIONS",
+                    send_args[0].value,
+                    handle_value_map_spec(send_args[1]),
+                    _region_handle_set_spec(send_args[2]),
+                    encode_bytes(send_args[3]),
                 )
             case "changeInteractionOrderType":
                 change_args = cast(tuple[Any, Any], args[:2])

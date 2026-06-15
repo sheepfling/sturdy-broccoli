@@ -9,7 +9,6 @@ from hla2010_rti_backend_common import RecordingFederateAmbassador
 from hla2010_fom_target_radar.scenarios import run_target_radar_scenario
 from hla2010.enums import OrderType, ResignAction
 from hla2010.time import HLAinteger64Interval, HLAinteger64Time
-from hla2010.types import RangeBounds
 from hla2010_verification_harness import (
     DdmObjectRegionLifecycleScenarioConfig,
     DeclarationManagementScenarioConfig,
