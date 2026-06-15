@@ -8,13 +8,14 @@ from importlib import import_module
 from importlib import resources
 from typing import Any
 
-from hla2010_rti_backend_common import BackendUnavailableError
-
-
 def target_radar_fom_path() -> str:
     """Return the packaged target/radar FOM module path."""
 
     return str(resources.files("hla2010_fom_target_radar.resources.foms").joinpath("TargetRadarFOMmodule.xml"))
+
+
+class TargetRadarBackendUnavailableError(RuntimeError):
+    """Raised when an example-selected backend is unavailable in this workspace."""
 
 
 @dataclass
@@ -69,11 +70,11 @@ def make_target_radar_factory(
             target_server = start_python_grpc_server(engine=engine)
             radar_server = start_python_grpc_server(engine=engine)
         except ModuleNotFoundError as exc:
-            raise BackendUnavailableError(
+            raise TargetRadarBackendUnavailableError(
                 "python-grpc requires the hla2010 gRPC transport dependencies; rerun ./tools/bootstrap python"
             ) from exc
-        except (BackendUnavailableError, ImportError, OSError, RuntimeError) as exc:
-            raise BackendUnavailableError(
+        except (ImportError, OSError, RuntimeError) as exc:
+            raise TargetRadarBackendUnavailableError(
                 f"python-grpc could not start a loopback gRPC host: {exc}"
             ) from exc
 
@@ -139,4 +140,9 @@ def make_target_radar_factory(
     return TargetRadarFactory(factory)
 
 
-__all__ = ["TargetRadarFactory", "make_target_radar_factory", "target_radar_fom_path"]
+__all__ = [
+    "TargetRadarBackendUnavailableError",
+    "TargetRadarFactory",
+    "make_target_radar_factory",
+    "target_radar_fom_path",
+]

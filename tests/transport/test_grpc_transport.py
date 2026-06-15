@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from concurrent import futures
 
-import grpc
 import pytest
+grpc = pytest.importorskip("grpc")
 
 from hla2010.spec import FederateAmbassadorSpec
 from hla2010_rti_backend_common import make_rti_ambassador

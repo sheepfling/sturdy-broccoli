@@ -43,7 +43,7 @@ Create or refresh the local Python virtual environment and install the split
 workspace packages in editable mode.
 
 Supported extras via HLA2010_BOOTSTRAP_EXTRAS:
-  test   lean core workspace packages plus pytest
+  test   lean core workspace packages plus pytest and matplotlib
   jpype  core workspace plus the JPype bridge packages
   py4j   core workspace plus the Py4J bridge packages
   java   core workspace plus both bridge families and Portico
@@ -99,9 +99,10 @@ for raw_token in "${extras_tokens[@]}"; do
   esac
 done
 
+build_helper_deps=("setuptools>=68" "wheel" "packaging>=24")
 helper_deps=()
 if [[ "$want_pytest" == "1" ]]; then
-  helper_deps+=("pytest")
+  helper_deps+=("pytest" "matplotlib" "grpcio" "protobuf")
 fi
 if [[ "$want_qa" == "1" ]]; then
   helper_deps+=("ruff" "pyright")
@@ -169,50 +170,100 @@ if ! hla2010_shell_have "$PYTHON_BIN"; then
 fi
 
 VENV_DIR="$ROOT_DIR/.venv"
+ROOT_ALIAS_DIR="/private/tmp/hla2010-workspace-$(id -un)"
+ROOT_ALIAS_PATH="$ROOT_ALIAS_DIR/repo"
+VENV_ALIAS_DIR="$ROOT_ALIAS_PATH/.venv"
 
-if [[ ! -d "$VENV_DIR" ]]; then
-  hla2010_shell_log "creating venv at $VENV_DIR"
-  "$PYTHON_BIN" -m venv --system-site-packages "$VENV_DIR"
+ensure_root_alias() {
+  mkdir -p "$ROOT_ALIAS_DIR"
+  if [[ -L "$ROOT_ALIAS_PATH" ]]; then
+    local current_target
+    current_target="$(readlink "$ROOT_ALIAS_PATH")"
+    if [[ "$current_target" == "$ROOT_DIR" ]]; then
+      return
+    fi
+    rm -f "$ROOT_ALIAS_PATH"
+  elif [[ -e "$ROOT_ALIAS_PATH" ]]; then
+    rm -rf "$ROOT_ALIAS_PATH"
+  fi
+  ln -s "$ROOT_DIR" "$ROOT_ALIAS_PATH"
+}
+
+ensure_root_alias
+if [[ -x "$VENV_DIR/bin/python" ]]; then
+  hla2010_shell_log "reusing existing venv at $VENV_DIR"
 else
-  hla2010_shell_log "upgrading venv at $VENV_DIR"
-  "$PYTHON_BIN" -m venv --system-site-packages --upgrade "$VENV_DIR"
+  if [[ -d "$VENV_DIR" ]]; then
+    hla2010_shell_log "removing broken venv at $VENV_DIR"
+    "$PYTHON_BIN" -c 'from pathlib import Path; import shutil, sys; shutil.rmtree(Path(sys.argv[1]), ignore_errors=True)' "$VENV_DIR"
+  fi
+  hla2010_shell_log "creating venv via alias path $VENV_ALIAS_DIR"
+  "$PYTHON_BIN" -m venv "$VENV_ALIAS_DIR"
 fi
 
-# shellcheck disable=SC1091
-source "$VENV_DIR/bin/activate"
+# Create the venv through an alias path with no spaces, then switch back to the
+# canonical repo-local path so downstream tooling sees the expected workspace
+# location.
+export VIRTUAL_ENV="$VENV_DIR"
+export PATH="$VENV_DIR/bin:$PATH"
+VENV_PYTHON="$VENV_DIR/bin/python"
+
+run_venv_python() {
+  local python_bin="$VENV_DIR/bin/python"
+  local status=0
+  local attempt
+  for attempt in 1 2 3; do
+    if [[ ! -x "$python_bin" ]]; then
+      sleep 1
+      continue
+    fi
+    if "$python_bin" "$@"; then
+      return 0
+    fi
+    status=$?
+    if [[ "$status" -ne 127 ]]; then
+      return "$status"
+    fi
+    hash -r
+    sleep 1
+  done
+  return "$status"
+}
+
+site_packages_dir="$(run_venv_python -c 'import site; print(next(path for path in site.getsitepackages() if path.endswith("site-packages")))' )"
+
+hla2010_shell_log "removing stale editable dist-info entries"
+run_venv_python -c 'from pathlib import Path; import shutil, sys; site_packages = Path(sys.argv[1]); removed = []; 
+for dist_info in sorted(site_packages.glob("*.dist-info")):
+    metadata = dist_info / "METADATA"
+    if metadata.exists():
+        continue
+    shutil.rmtree(dist_info, ignore_errors=True); removed.append(dist_info.name)
+for stale_path in sorted(site_packages.glob("__editable__.* *.pth")):
+    stale_path.unlink(missing_ok=True); removed.append(stale_path.name)
+for stale_path in sorted(site_packages.glob("__editable___*_finder *.py")):
+    stale_path.unlink(missing_ok=True); removed.append(stale_path.name)
+print("\n".join(removed))' "$site_packages_dir"
+
 hla2010_shell_log "installing helper dependencies profile=${hyperspec}"
-python -m ensurepip --upgrade
-python -m pip install --no-build-isolation "${helper_deps[@]}"
+run_venv_python -m ensurepip --upgrade
+run_venv_python -m pip install --no-build-isolation "${build_helper_deps[@]}"
+if [[ "${#helper_deps[@]}" -gt 0 ]]; then
+  run_venv_python -m pip install --no-build-isolation "${helper_deps[@]}"
+fi
 hyperspec_count="${#workspace_packages[@]}"
 hla2010_shell_log "installing editable split packages count=${hyperspec_count}"
-editable_args=()
 for package_dir in "${workspace_packages[@]}"; do
-  editable_args+=("-e" "$ROOT_DIR/$package_dir")
+  hla2010_shell_log "installing editable package ${package_dir}"
+  run_venv_python -c 'from pathlib import Path; import shutil, sys, tomllib; pyproject_path = Path(sys.argv[1]); site_packages = Path(sys.argv[2]); project = tomllib.loads(pyproject_path.read_text(encoding="utf-8")); project_name = project["project"]["name"]; normalized = project_name.replace("-", "_"); finder_prefix = normalized.replace(".", "_");
+for path in sorted(site_packages.glob(f"{normalized}-*.dist-info")):
+    shutil.rmtree(path, ignore_errors=True)
+for path in sorted(site_packages.glob(f"__editable__.{normalized}-*.pth")):
+    path.unlink(missing_ok=True)
+for path in sorted(site_packages.glob(f"__editable___{finder_prefix}_*_finder.py")):
+    path.unlink(missing_ok=True)' "$ROOT_DIR/$package_dir/pyproject.toml" "$site_packages_dir"
+  run_venv_python -m pip install --no-build-isolation --no-deps -e "$ROOT_DIR/$package_dir"
 done
-python -m pip install --no-build-isolation "${editable_args[@]}"
 
-workspace_pythonpath="$("$ROOT_DIR/.venv/bin/python" - "$ROOT_DIR" <<'PY'
-import tomllib
-from pathlib import Path
-import sys
-
-root = Path(sys.argv[1])
-pyproject = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
-for rel in pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]:
-    print(root / rel)
-PY
-)"
-
-site_packages_dir="$("$ROOT_DIR/.venv/bin/python" - <<'PY'
-import site
-
-for path in site.getsitepackages():
-    if path.endswith("site-packages"):
-        print(path)
-        break
-PY
-)"
-
-workspace_pth="$site_packages_dir/hla2010_workspace_roots.pth"
-printf '%s\n' "$workspace_pythonpath" > "$workspace_pth"
-hla2010_shell_log "wrote workspace roots file $workspace_pth"
+run_venv_python -c 'import sys, tomllib; from pathlib import Path; root = Path(sys.argv[1]); site_packages_dir = Path(sys.argv[2]); workspace_pth = site_packages_dir / "hla2010_workspace_roots.pth"; pyproject = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8")); pythonpath_entries = [str(root / rel) for rel in pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]]; workspace_pth.write_text("\n".join(pythonpath_entries) + "\n", encoding="utf-8"); print(workspace_pth)' "$ROOT_DIR" "$site_packages_dir"
+hla2010_shell_log "wrote workspace roots file $site_packages_dir/hla2010_workspace_roots.pth"

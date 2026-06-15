@@ -3,7 +3,12 @@ from __future__ import annotations
 import contextlib
 import importlib
 import json
+import os
+import shutil
+import subprocess
 import socket
+import sys
+import tomllib
 from pathlib import Path
 from typing import Any, Callable
 
@@ -44,6 +49,90 @@ def load_traceability_json(name: str) -> dict[str, Any]:
 
 def load_traceability_text(name: str) -> str:
     return (TRACEABILITY_ROOT / name).read_text(encoding="utf-8")
+
+
+def bootstrap_test_env() -> dict[str, str]:
+    env = {
+        "PATH": os.environ.get("PATH", ""),
+        "HOME": os.environ.get("HOME", ""),
+        "HLA2010_BOOTSTRAP_EXTRAS": "test",
+    }
+    for name in ("TMPDIR", "TMP", "TEMP"):
+        value = os.environ.get(name)
+        if value:
+            env[name] = value
+    return env
+
+
+def workspace_python_env() -> dict[str, str]:
+    env = os.environ.copy()
+    pyproject = tomllib.loads((REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    source_roots = [str(REPO_ROOT / rel) for rel in pyproject["tool"]["pytest"]["ini_options"]["pythonpath"]]
+    env["PYTHONPATH"] = os.pathsep.join([*source_roots, env.get("PYTHONPATH", "")]).rstrip(os.pathsep)
+    return env
+
+
+def workspace_python_bin() -> Path:
+    return Path(sys.executable)
+
+
+def materialize_fresh_checkout(destination: Path) -> Path:
+    destination.mkdir(parents=True, exist_ok=True)
+    result = subprocess.run(
+        ["git", "-C", str(REPO_ROOT), "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
+        capture_output=True,
+        text=False,
+        check=True,
+    )
+    for raw_path in result.stdout.split(b"\0"):
+        if not raw_path:
+            continue
+        relative_path = Path(raw_path.decode("utf-8"))
+        if "__pycache__" in relative_path.parts or relative_path.suffix in {".pyc", ".pyo"}:
+            continue
+        source = REPO_ROOT / relative_path
+        if not source.exists():
+            continue
+        target = destination / relative_path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if source.is_symlink():
+            target.symlink_to(os.readlink(source))
+            continue
+        shutil.copy2(source, target)
+    return destination
+
+
+def ensure_bootstrapped_python_workspace() -> Path:
+    python_bin = REPO_ROOT / ".venv" / "bin" / "python"
+    check = subprocess.run(
+        [
+            str(python_bin),
+            "-c",
+            (
+                "import hla2010;"
+                "import hla2010.spec;"
+                "import hla2010_rti_backend_common;"
+                "import hla2010_rti_python;"
+                "import hla2010_fom_target_radar;"
+                "import hla2010_fom_minimal_demo"
+            ),
+        ],
+        cwd=REPO_ROOT,
+        env=bootstrap_test_env(),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if check.returncode != 0:
+        subprocess.run(
+            ["bash", "./tools/bootstrap", "python"],
+            cwd=REPO_ROOT,
+            env=bootstrap_test_env(),
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    return python_bin
 
 
 def _can_bind_loopback_server() -> bool:

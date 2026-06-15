@@ -3,6 +3,7 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
+from conftest import workspace_python_bin, workspace_python_env
 from hla2010.fom import parse_fom_xml
 from hla2010_fom_minimal_demo.scenarios import (
     make_minimal_demo_factory,
@@ -55,17 +56,11 @@ def test_minimal_demo_records_publish_subscribe_callbacks() -> None:
 
 
 def test_minimal_demo_example_script_runs() -> None:
-    python_bin = ROOT / ".venv" / "bin" / "python"
-    subprocess.run(
-        ["bash", "./tools/bootstrap", "python"],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=True,
-    )
+    python_bin = workspace_python_bin()
     result = subprocess.run(
         [str(python_bin), "examples/minimal_fom_demo.py", "--backend", "python"],
         cwd=ROOT,
+        env=workspace_python_env(),
         capture_output=True,
         text=True,
         check=False,
@@ -77,10 +72,11 @@ def test_minimal_demo_example_script_runs() -> None:
 
 
 def test_minimal_demo_example_accepts_in_memory_factory_alias() -> None:
-    python_bin = ROOT / ".venv" / "bin" / "python"
+    python_bin = workspace_python_bin()
     result = subprocess.run(
         [str(python_bin), "examples/minimal_fom_demo.py", "--backend", "in-memory"],
         cwd=ROOT,
+        env=workspace_python_env(),
         capture_output=True,
         text=True,
         check=False,

@@ -78,7 +78,9 @@
       "id": "local_verification_commands",
       "path": "docs/local_verification_commands.md",
       "must_contain": [
-        "./tools/lint"
+        "./tools/lint",
+        "./tools/test-surface recommend",
+        "./tools/python verify-fast"
       ],
       "must_not_contain": [
         "./scripts/ci/lint.sh"

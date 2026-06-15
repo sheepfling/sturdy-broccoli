@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Callable
 
 import pytest
+from conftest import bootstrap_test_env, materialize_fresh_checkout
 from tests.typed_json_models import (
     BackendDiscoveryOutput,
     BootstrapDoctorOutput,
@@ -299,6 +300,21 @@ def test_package_deps_top_level_wrapper_check_bootstraps_source_checkout(tmp_pat
     assert "package dependency tree artifacts are current" in check.stdout
 
 
+def test_package_deps_top_level_wrapper_runs_inside_fresh_checkout(tmp_path: Path) -> None:
+    fresh_root = materialize_fresh_checkout(tmp_path / "fresh-checkout")
+    result = subprocess.run(
+        ["bash", "./tools/package-deps", "check"],
+        cwd=fresh_root,
+        env=bootstrap_test_env(),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "package dependency tree artifacts are current" in result.stdout
+
+
 def test_compliance_top_level_wrapper_generate_bootstraps_workspace_pythonpath(tmp_path: Path) -> None:
     env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
     result = subprocess.run(
@@ -312,6 +328,24 @@ def test_compliance_top_level_wrapper_generate_bootstraps_workspace_pythonpath(t
 
     assert result.returncode == 0, result.stderr
     summary_path = tmp_path / "analysis" / "compliance" / "requirements_matrix_2010.json"
+    assert summary_path.exists()
+    payload = ComplianceArtifactOutput.from_mapping(json.loads(summary_path.read_text(encoding="utf-8")))
+    assert payload.summary.row_count is not None and payload.summary.row_count > 0
+
+
+def test_compliance_top_level_wrapper_generate_runs_inside_fresh_checkout(tmp_path: Path) -> None:
+    fresh_root = materialize_fresh_checkout(tmp_path / "fresh-checkout")
+    result = subprocess.run(
+        ["bash", "./tools/compliance", "generate"],
+        cwd=fresh_root,
+        env=bootstrap_test_env(),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    summary_path = fresh_root / "analysis" / "compliance" / "requirements_matrix_2010.json"
     assert summary_path.exists()
     payload = ComplianceArtifactOutput.from_mapping(json.loads(summary_path.read_text(encoding="utf-8")))
     assert payload.summary.row_count is not None and payload.summary.row_count > 0
@@ -624,6 +658,29 @@ def test_bootstrap_top_level_wrapper_doctor_bootstraps_source_checkout(tmp_path:
     assert payload.repo_root == str(tmp_path)
     assert payload.check("repo_root").status == "fail"
     assert payload.summary in {"fail", "warn"}
+
+
+def test_bootstrap_and_test_top_level_wrappers_run_inside_fresh_checkout(tmp_path: Path) -> None:
+    fresh_root = materialize_fresh_checkout(tmp_path / "fresh-checkout")
+    bootstrap = subprocess.run(
+        ["bash", "./tools/bootstrap", "python"],
+        cwd=fresh_root,
+        env=bootstrap_test_env(),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert bootstrap.returncode == 0, bootstrap.stderr
+
+    result = subprocess.run(
+        ["bash", "./tools/test", "tests/architecture/test_package_graph_artifacts.py::test_package_deps_check_passes"],
+        cwd=fresh_root,
+        env=bootstrap_test_env(),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
 
 
 def test_test_top_level_wrapper_prints_help() -> None:

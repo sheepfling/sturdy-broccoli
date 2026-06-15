@@ -25,6 +25,7 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 
 - `./tools/bootstrap` canonical workspace bootstrap and doctor flow
 - `./tools/python` canonical Python / repo-green verification flow
+- `./tools/test-surface` canonical test-lane inventory, recommendation, preflight, and lane runner flow
 - `./tools/certi-easy` canonical CERTI install, doctor, build, run, smoke/compare, and best-effort verify flow
 - `./tools/pitch` canonical Pitch Docker-backed install, start, strict smoke/verify, best-effort smoke/verify, and support flow
 - `./tools/vendor-green` canonical strict vendor-runtime verification flow
@@ -87,7 +88,9 @@ Operator guide links:
 - `scripts/check_vendor_runner_template_drift.py`: CI helper that verifies the runner provisioning template, validator profiles, and workflow env contracts stay aligned
 - `scripts/ci/vendor_runtime_smoke.sh`: implementation wrapper behind the vendor-runtime lane; it runs mandatory vendor preflight first, writes standard JSON artifacts under `analysis/preflight_artifacts/`, and can still classify/skip blocked vendor runs even when the repo virtualenv has not been activated yet
 - `./tools/python verify`: canonical Python / repo-green wrapper around the default full verification lane
+- `./tools/python verify-fast`: canonical fast Python/operator verification wrapper
 - `./tools/vendor-green [profile]`: strict vendor-runtime gate for dedicated real-runtime runners; under CI it self-validates the dedicated runner contract before trying the runtime lane
+- `./tools/test-surface recommend`: canonical "what should I run here?" selector for users and agents
 - `scripts/ci/vendor_probe_stability.sh`: repeated probe implementation used by the promotion-review flow; under CI it validates the dedicated runner contract once before collecting repeated-run evidence and disables redundant per-attempt revalidation inside the loop
 - `./tools/vendor-probe-review <profile> [repeat-count]`: canonical repeated-run probe review wrapper over the promotion path
 - `./tools/vendor-probe-review promotion-review`: canonical promotion-review artifact generator

@@ -4,6 +4,7 @@ import os
 import uuid
 
 import pytest
+pytest.importorskip("grpc")
 
 from hla2010_rti_backend_common import RecordingFederateAmbassador
 from hla2010_rti_backend_common import BackendUnavailableError

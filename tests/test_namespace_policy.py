@@ -141,6 +141,7 @@ ALLOWLISTED_SELF_LOCATING_SCRIPTS = {
     "scripts/run_target_radar_proof.py",
     "scripts/run_two_federate_suite.py",
     "scripts/run_vendor_parity_artifacts.py",
+    "scripts/test_surface.py",
     "scripts/update_rti_options_matrix.py",
     "scripts/validate_package_graph.py",
     "scripts/write_vendor_gap_profile.py",

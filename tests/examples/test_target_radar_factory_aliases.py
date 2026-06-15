@@ -3,19 +3,13 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
+from conftest import workspace_python_bin, workspace_python_env
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_target_radar_example_accepts_in_memory_factory_alias() -> None:
-    python_bin = ROOT / ".venv" / "bin" / "python"
-    subprocess.run(
-        ["bash", "./tools/bootstrap", "python"],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=True,
-    )
+    python_bin = workspace_python_bin()
     result = subprocess.run(
         [
             str(python_bin),
@@ -26,6 +20,7 @@ def test_target_radar_example_accepts_in_memory_factory_alias() -> None:
             "2",
         ],
         cwd=ROOT,
+        env=workspace_python_env(),
         capture_output=True,
         text=True,
         check=False,

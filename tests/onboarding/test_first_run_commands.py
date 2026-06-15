@@ -4,7 +4,17 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
-from conftest import REPO_ROOT, load_json_fixture, read_repo_text
+import pytest
+
+from conftest import (
+    REPO_ROOT,
+    bootstrap_test_env,
+    load_json_fixture,
+    materialize_fresh_checkout,
+    read_repo_text,
+    workspace_python_bin,
+    workspace_python_env,
+)
 
 
 ROOT = REPO_ROOT
@@ -64,6 +74,7 @@ def test_bootstrap_plan_includes_required_split_packages() -> None:
     result = subprocess.run(
         ["./tools/bootstrap", "python", "plan"],
         cwd=ROOT,
+        env=bootstrap_test_env(),
         capture_output=True,
         text=True,
         check=False,
@@ -73,17 +84,19 @@ def test_bootstrap_plan_includes_required_split_packages() -> None:
         assert snippet in result.stdout
 
 
-def test_first_run_examples_import_after_bootstrap() -> None:
+def test_first_run_examples_import_after_bootstrap(tmp_path: Path) -> None:
+    fresh_root = materialize_fresh_checkout(tmp_path / "fresh-checkout")
     subprocess.run(
         ["bash", "./tools/bootstrap", "python"],
-        cwd=ROOT,
+        cwd=fresh_root,
+        env=bootstrap_test_env(),
         capture_output=True,
         text=True,
         check=True,
     )
     result = subprocess.run(
         [
-            str(ROOT / ".venv" / "bin" / "python"),
+            str(fresh_root / ".venv" / "bin" / "python"),
             "-c",
             (
                 "import hla2010;"
@@ -93,7 +106,7 @@ def test_first_run_examples_import_after_bootstrap() -> None:
                 "import hla2010_fom_target_radar"
             ),
         ],
-        cwd=ROOT,
+        cwd=fresh_root,
         capture_output=True,
         text=True,
         check=False,
@@ -102,9 +115,7 @@ def test_first_run_examples_import_after_bootstrap() -> None:
 
 
 def test_expected_output_shape_matches_live_example() -> None:
-    python_bin = ROOT / ".venv" / "bin" / "python"
-    if not python_bin.exists():
-        raise AssertionError(".venv/bin/python is missing; run ./tools/bootstrap python")
+    python_bin = workspace_python_bin()
     result = subprocess.run(
         [
             str(python_bin),
@@ -115,6 +126,7 @@ def test_expected_output_shape_matches_live_example() -> None:
             "5",
         ],
         cwd=ROOT,
+        env=workspace_python_env(),
         capture_output=True,
         text=True,
         check=False,

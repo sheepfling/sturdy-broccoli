@@ -4,6 +4,7 @@ import json
 import subprocess
 from pathlib import Path
 
+from conftest import workspace_python_bin, workspace_python_env
 from tests.typed_json_models import FactorySelectionOutput
 
 
@@ -11,17 +12,11 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_rti_factory_selection_example_script_runs() -> None:
-    python_bin = ROOT / ".venv" / "bin" / "python"
-    subprocess.run(
-        ["bash", "./tools/bootstrap", "python"],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=True,
-    )
+    python_bin = workspace_python_bin()
     result = subprocess.run(
         [str(python_bin), "examples/rti_factory_selection.py", "--name", "in-memory"],
         cwd=ROOT,
+        env=workspace_python_env(),
         capture_output=True,
         text=True,
         check=False,
@@ -33,10 +28,11 @@ def test_rti_factory_selection_example_script_runs() -> None:
 
 
 def test_rti_factory_selection_example_script_json_probe_output() -> None:
-    python_bin = ROOT / ".venv" / "bin" / "python"
+    python_bin = workspace_python_bin()
     result = subprocess.run(
         [str(python_bin), "examples/rti_factory_selection.py", "--name", "python", "--probe", "--json"],
         cwd=ROOT,
+        env=workspace_python_env(),
         capture_output=True,
         text=True,
         check=False,

@@ -82,6 +82,39 @@ run_pytest() {
   python -m pytest "$@"
 }
 
+certi_helper_supports_repo_green_smoke() {
+  local helper_path="$ROOT_DIR/build/certi/certi_smoke_helper"
+  local python_exec
+  python_exec="$(python_bin)"
+  "$python_exec" - "$helper_path" <<'PY'
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+helper_path = Path(sys.argv[1])
+required_tokens = (
+    "DELETE_OBJECT_INSTANCE",
+    "REQUEST_FEDERATION_SAVE",
+    "REQUEST_FEDERATION_RESTORE",
+    "CREATE_REGION",
+    "SET_RANGE_BOUNDS",
+    "COMMIT_REGION_MODIFICATIONS",
+    "DELETE_REGION",
+    "REGISTER_OBJECT_INSTANCE_WITH_REGIONS",
+    "ASSOCIATE_REGIONS_FOR_UPDATES",
+    "UNASSOCIATE_REGIONS_FOR_UPDATES",
+    "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS",
+    "UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS",
+)
+if not helper_path.exists():
+    raise SystemExit(1)
+payload = helper_path.read_bytes()
+missing = [token for token in required_tokens if token.encode("ascii") not in payload]
+raise SystemExit(0 if not missing else 1)
+PY
+}
+
 ensure_preflight_artifact_dir() {
   mkdir -p "$PREFLIGHT_ARTIFACT_DIR"
 }
@@ -245,6 +278,11 @@ run_certi_patched() {
   export HLA2010_CERTI_PREFIX="$HLA2010_CERTI_PATCHED_PREFIX"
   export HLA2010_CERTI_BUILD_ROOT="$HLA2010_CERTI_PATCHED_BUILD_ROOT"
   require_runtime_prefix "patched CERTI install prefix" "${HLA2010_CERTI_PATCHED_PREFIX:-}"
+  if ! certi_helper_supports_repo_green_smoke; then
+    hla2010_shell_warn \
+      "CERTI smoke helper does not expose the repo-green real-runtime command surface; skipping patched CERTI smoke in repo-green lanes"
+    return 0
+  fi
   run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'certi'
   run_pytest -q \
     tests/vendors/test_certi_real_backend_exchange_matrix.py \

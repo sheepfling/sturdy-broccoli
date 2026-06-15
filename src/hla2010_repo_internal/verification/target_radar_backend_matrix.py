@@ -8,7 +8,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
-from hla2010_fom_target_radar.scenarios import make_target_radar_factory, target_radar_fom_path
+from hla2010_fom_target_radar.scenarios import (
+    TargetRadarBackendUnavailableError,
+    make_target_radar_factory,
+    target_radar_fom_path,
+)
 from hla2010_fom_target_radar.scenarios.target_radar import run_target_radar_scenario
 from hla2010_rti_backend_common import BackendUnavailableError, make_rti_ambassador
 from hla2010_rti_java_common.java_shim_factory import create_shared_java_shim_backend
@@ -103,7 +107,7 @@ def run_target_radar_backend_matrix(
                     track_ids=[report.track_id for report in track_reports],
                 )
             )
-        except (BackendUnavailableError, ImportError, ModuleNotFoundError) as exc:
+        except (BackendUnavailableError, TargetRadarBackendUnavailableError, ImportError, ModuleNotFoundError) as exc:
             results.append(
                 TargetRadarBackendResult(
                     backend=backend,

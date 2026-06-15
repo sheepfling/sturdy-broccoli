@@ -32,6 +32,10 @@ TARGET_RADAR_FOM = str((RESOURCE_ROOT / "TargetRadarFOMmodule.xml").resolve())
 STANDARD_MIM_FOM = str((RESOURCE_ROOT / "HLAstandardMIM.xml").resolve())
 
 
+def _require_lxml_schema_validation() -> None:
+    pytest.importorskip("lxml.etree")
+
+
 def test_parse_fom_xml_extracts_identification_names_and_reference_datatypes():
     module = parse_fom_xml(TARGET_RADAR_FOM)
 
@@ -347,6 +351,7 @@ def test_parse_fom_xml_recognizes_standard_omt_component_tables_across_fom_som_a
 
 
 def test_standard_annex_f_and_g_example_modules_are_maintained_as_parser_regression_fixtures():
+    pytest.importorskip("lxml.etree")
     som_module = parse_fom_xml(
         "CERTI/xml/ieee1516-2010/1516_2-2010/RestaurantSOMmodule.xml",
         validate_schema=True,
@@ -1323,11 +1328,13 @@ def test_serialize_fom_module_preserves_metadata_subset_across_round_trip(tmp_pa
 
 
 def test_parse_fom_xml_with_schema_validation_accepts_standard_target_radar_module():
+    _require_lxml_schema_validation()
     module = parse_fom_xml(TARGET_RADAR_FOM, validate_schema=True)
     assert module.name == "Target Radar FOM Module"
 
 
 def test_parse_fom_xml_with_schema_validation_rejects_schema_invalid_document(tmp_path: Path):
+    _require_lxml_schema_validation()
     xml_path = tmp_path / "schema-invalid.xml"
     xml_path.write_text(
         """<?xml version="1.0" encoding="utf-8"?>
@@ -1352,6 +1359,7 @@ def test_parse_fom_xml_with_schema_validation_rejects_schema_invalid_document(tm
 
 
 def test_serialize_fom_module_emits_schema_valid_xml_and_preserves_identification(tmp_path: Path):
+    _require_lxml_schema_validation()
     module = FOMModule(
         source="schema",
         uri="schema",
@@ -1390,6 +1398,7 @@ def test_serialize_fom_module_emits_schema_valid_xml_and_preserves_identificatio
 
 
 def test_serialize_fom_module_round_trips_object_interaction_and_dimension_tables(tmp_path: Path):
+    _require_lxml_schema_validation()
     module = FOMModule(
         source="tables",
         uri="tables",
@@ -1675,6 +1684,7 @@ def test_merge_fom_modules_preserves_dimension_and_datatype_consistency(tmp_path
 
 
 def test_parse_fom_xml_with_omt_schema_validation_accepts_restaurant_reference_module_and_rejects_invalid_document(tmp_path: Path):
+    _require_lxml_schema_validation()
     valid = tmp_path / "valid-omt.xml"
     valid.write_text(
         """<?xml version="1.0" encoding="utf-8"?>
@@ -1773,6 +1783,7 @@ def test_parse_fom_xml_with_omt_schema_validation_accepts_restaurant_reference_m
 
 
 def test_parse_fom_xml_preserves_dimension_normalization_metadata(tmp_path: Path):
+    _require_lxml_schema_validation()
     valid = tmp_path / "normalization-omt.xml"
     valid.write_text(
         """<?xml version="1.0" encoding="utf-8"?>
@@ -1862,6 +1873,7 @@ def test_parse_fom_xml_preserves_dimension_normalization_metadata(tmp_path: Path
 def test_assess_omt_conformance_classifies_conforming_partial_and_nonconforming_documents(
     tmp_path: Path,
 ):
+    _require_lxml_schema_validation()
     valid = tmp_path / "conforming-omt.xml"
     valid.write_text(
         """<?xml version="1.0" encoding="utf-8"?>

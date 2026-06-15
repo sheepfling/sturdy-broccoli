@@ -6,7 +6,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-import yaml
+import pytest
+
+yaml = pytest.importorskip("yaml")
 
 from hla2010_repo_internal.verification.vendor_runner_template_drift import (
     build_vendor_runner_template_drift,

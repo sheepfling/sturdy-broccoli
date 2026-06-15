@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import subprocess
 from pathlib import Path
-
 from tests.typed_json_models import FactorySelectionOutput
 
 
@@ -11,13 +10,6 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_examples_tool_wrapper_runs_workspace_backed_factory_selection() -> None:
-    subprocess.run(
-        ["bash", "./tools/bootstrap", "python"],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=True,
-    )
     result = subprocess.run(
         ["bash", "./tools/examples", "rti-factory-selection", "--name", "in-memory", "--probe", "--json"],
         cwd=ROOT,

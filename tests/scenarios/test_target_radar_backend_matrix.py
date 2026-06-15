@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import importlib.util
 import json
 import os
 import subprocess
@@ -88,4 +89,7 @@ def test_target_radar_backend_matrix_can_include_python_grpc_route(tmp_path):
     summary = TargetRadarBackendMatrixSummary.from_mapping(json.loads(paths.summary_json.read_text()))
     statuses = {row.backend: row.status for row in summary.results}
     assert statuses["python"] == "passed"
-    assert statuses["python-grpc"] == "passed"
+    if importlib.util.find_spec("grpc") is None:
+        assert statuses["python-grpc"] == "skipped"
+    else:
+        assert statuses["python-grpc"] == "passed"

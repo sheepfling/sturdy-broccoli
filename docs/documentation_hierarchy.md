@@ -30,6 +30,7 @@ The intended reading order for a new contributor is:
 - [docs/java_backends_quickstart.md](java_backends_quickstart.md): secondary Java route quickstart after Python RTI
 - [docs/networked_rti_python.md](networked_rti_python.md): hosted Python RTI and Target/Radar extension path
 - [docs/python_environment.md](python_environment.md): Python environment setup and install order
+- [docs/test_surface.md](test_surface.md): canonical verification lanes and machine-readable discovery flow
 - [docs/two_federate_quickstart.md](two_federate_quickstart.md): first artifact-producing two-federate example
 - [docs/install_matrix.md](install_matrix.md): extras, bridge deps, and vendor-runtime install order
 - [docs/agent_runbook.md](agent_runbook.md): startup sequence for agents and automation
