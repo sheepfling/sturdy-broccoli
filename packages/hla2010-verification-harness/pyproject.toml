@@ -30,3 +30,10 @@ role = "verification-harness"
 source_roots = [
   "packages/hla2010-verification-harness/src/hla2010_verification_harness",
 ]
+
+[tool.hla.package-split]
+status = "implementation-moved"
+role = "verification-harness"
+source_roots = [
+  "packages/hla2010-verification-harness/src/hla2010_verification_harness",
+]

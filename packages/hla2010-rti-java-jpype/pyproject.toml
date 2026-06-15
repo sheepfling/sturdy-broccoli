@@ -13,6 +13,9 @@ dependencies = ["hla2010-spec==0.13.0", "hla2010-rti-java-common==0.13.0", "jpyp
 [project.optional-dependencies]
 test = ["pytest"]
 
+[project.entry-points."hla.rti_backends"]
+jpype = "hla2010_rti_java_jpype.plugin:plugin"
+
 [project.entry-points."hla2010.rti_backends"]
 jpype = "hla2010_rti_java_jpype.plugin:plugin"
 
@@ -24,6 +27,15 @@ where = ["src"]
 include = ["hla2010_rti_java_jpype*"]
 
 [tool.hla2010.package-split]
+status = "implementation-moved"
+role = "java-bridge"
+backend_names = ["jpype"]
+backend_aliases = ["java-jpype"]
+source_roots = [
+  "packages/hla2010-rti-java-jpype/src/hla2010_rti_java_jpype",
+]
+
+[tool.hla.package-split]
 status = "implementation-moved"
 role = "java-bridge"
 backend_names = ["jpype"]

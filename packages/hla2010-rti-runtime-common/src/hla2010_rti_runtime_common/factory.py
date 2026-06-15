@@ -7,7 +7,12 @@ from importlib import metadata
 from typing import Any, Mapping
 
 from hla2010_rti_backend_common import DelegatingRTIAmbassador, RTIBackendPlugin, RTIBackendSpec, make_rti_ambassador
-from hla2010_rti_backend_common.plugin_api import BACKEND_ENTRY_POINT_GROUP, RTIBackendDiscovery, RTITransportSpec
+from hla2010_rti_backend_common.plugin_api import (
+    BACKEND_ENTRY_POINT_GROUP,
+    BACKEND_ENTRY_POINT_GROUPS,
+    RTIBackendDiscovery,
+    RTITransportSpec,
+)
 from hla2010_rti_transport_common import coerce_transport_spec as _coerce_transport_spec
 from hla2010_rti_transport_common import register_transport_factory
 
@@ -107,20 +112,25 @@ def _load_backend_plugins() -> None:
 
 def _iter_entry_point_backend_plugins() -> list[RTIBackendPlugin]:
     plugins: list[RTIBackendPlugin] = []
+    seen_entry_points: set[tuple[str, str]] = set()
     try:
         entry_points = metadata.entry_points()
-        selected = entry_points.select(group=BACKEND_ENTRY_POINT_GROUP)
     except Exception:
         return plugins
-    for entry_point in selected:
-        try:
-            loaded = entry_point.load()
-        except ModuleNotFoundError:
-            continue
-        plugin = loaded() if callable(loaded) else loaded
-        if not isinstance(plugin, RTIBackendPlugin):
-            raise TypeError(f"Backend entry point {entry_point.name!r} did not return RTIBackendPlugin")
-        plugins.append(plugin)
+    for group_name in BACKEND_ENTRY_POINT_GROUPS:
+        for entry_point in entry_points.select(group=group_name):
+            identity = (entry_point.name, entry_point.value)
+            if identity in seen_entry_points:
+                continue
+            seen_entry_points.add(identity)
+            try:
+                loaded = entry_point.load()
+            except ModuleNotFoundError:
+                continue
+            plugin = loaded() if callable(loaded) else loaded
+            if not isinstance(plugin, RTIBackendPlugin):
+                raise TypeError(f"Backend entry point {entry_point.name!r} did not return RTIBackendPlugin")
+            plugins.append(plugin)
     return plugins
 
 

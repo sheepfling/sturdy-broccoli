@@ -62,6 +62,17 @@ Treat it as regular hygiene after changes to:
 - route-parity fixtures, docs, or operator wrappers
 - hosted Python example or Target/Radar route selection
 
+## Wire Evolution
+
+If you are preparing a future protobuf redesign, keep these seams distinct:
+
+- `TransportRequest` / `TransportResponse` remain the backend-neutral transport envelope
+- `HostedRTICommandProcessor` and `HostedRTIBackend` remain the semantic contract
+- `hla2010_rti_transport_grpc.wire_adapter.TransportWireAdapter` owns mapping that envelope onto the current protobuf schema
+
+That lets a future typed-proto PR replace the protobuf message shape without
+rewriting the hosted RTI semantics or route-parity suite in the same change.
+
 ## Typical Example Flow
 
 For a full runnable example, start with:

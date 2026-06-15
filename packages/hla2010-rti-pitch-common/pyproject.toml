@@ -26,3 +26,10 @@ role = "runtime-common"
 source_roots = [
   "packages/hla2010-rti-pitch-common/src/hla2010_rti_pitch_common",
 ]
+
+[tool.hla.package-split]
+status = "implementation-moved"
+role = "runtime-common"
+source_roots = [
+  "packages/hla2010-rti-pitch-common/src/hla2010_rti_pitch_common",
+]

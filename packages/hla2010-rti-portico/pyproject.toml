@@ -18,6 +18,10 @@ dependencies = [
 [project.optional-dependencies]
 test = ["pytest"]
 
+[project.entry-points."hla.rti_backends"]
+portico-jpype = "hla2010_rti_portico.plugin:portico_jpype_plugin"
+portico-py4j = "hla2010_rti_portico.plugin:portico_py4j_plugin"
+
 [project.entry-points."hla2010.rti_backends"]
 portico-jpype = "hla2010_rti_portico.plugin:portico_jpype_plugin"
 portico-py4j = "hla2010_rti_portico.plugin:portico_py4j_plugin"
@@ -30,6 +34,15 @@ where = ["src"]
 include = ["hla2010_rti_portico*"]
 
 [tool.hla2010.package-split]
+status = "implementation-moved"
+role = "rti-backend"
+backend_names = ["portico-jpype", "portico-py4j"]
+backend_aliases = ["portico", "java-portico-jpype", "java-portico-py4j"]
+source_roots = [
+  "packages/hla2010-rti-portico/src/hla2010_rti_portico",
+]
+
+[tool.hla.package-split]
 status = "implementation-moved"
 role = "rti-backend"
 backend_names = ["portico-jpype", "portico-py4j"]

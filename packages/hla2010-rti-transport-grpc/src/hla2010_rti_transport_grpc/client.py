@@ -7,10 +7,12 @@ from typing import Any, Mapping, cast
 from hla2010_rti_transport_common import TransportError, TransportRequest, TransportResponse
 import hla2010_rti_transport_grpc.rti_transport_pb2 as pb2
 
+from .wire_adapter import TransportWireAdapter
+
 _pb2 = cast(Any, pb2)
 
 
-class GrpcTransportClientAdapter:
+class GrpcTransportClientAdapter(TransportWireAdapter):
     """Map typed transport envelopes onto generated protobuf client objects."""
 
     @staticmethod

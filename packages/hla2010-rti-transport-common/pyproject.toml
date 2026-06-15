@@ -29,3 +29,10 @@ role = "transport-support"
 source_roots = [
   "packages/hla2010-rti-transport-common/src/hla2010_rti_transport_common",
 ]
+
+[tool.hla.package-split]
+status = "implementation-moved"
+role = "transport-support"
+source_roots = [
+  "packages/hla2010-rti-transport-common/src/hla2010_rti_transport_common",
+]

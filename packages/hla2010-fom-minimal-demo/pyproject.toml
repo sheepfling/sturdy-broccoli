@@ -33,3 +33,10 @@ role = "fom-example"
 source_roots = [
   "packages/hla2010-fom-minimal-demo/src/hla2010_fom_minimal_demo",
 ]
+
+[tool.hla.package-split]
+status = "implementation-owned"
+role = "fom-example"
+source_roots = [
+  "packages/hla2010-fom-minimal-demo/src/hla2010_fom_minimal_demo",
+]

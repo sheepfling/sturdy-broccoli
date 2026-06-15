@@ -36,3 +36,10 @@ role = "fom-example"
 source_roots = [
   "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar",
 ]
+
+[tool.hla.package-split]
+status = "implementation-moved"
+role = "fom-example"
+source_roots = [
+  "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar",
+]

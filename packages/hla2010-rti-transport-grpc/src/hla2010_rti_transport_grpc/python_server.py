@@ -13,6 +13,7 @@ from hla2010_rti_runtime_common import create_rti_ambassador
 from hla2010_rti_runtime_common.real_rti_process import reserve_tcp_port
 
 from .client import GrpcTransportClientAdapter
+from .wire_adapter import TransportWireAdapter
 
 grpc: Any | None
 pb2_grpc: Any | None
@@ -36,6 +37,7 @@ class PythonRTIGrpcServerConfig:
     max_workers: int = 4
     engine: Any | None = None
     python_config: Any | None = None
+    wire_adapter: TransportWireAdapter | None = None
 
 
 @dataclass(frozen=True)
@@ -44,6 +46,7 @@ class CERTIRTIGrpcServerConfig:
     port: int = 0
     max_workers: int = 4
     backend_options: Mapping[str, Any] = field(default_factory=dict)
+    wire_adapter: TransportWireAdapter | None = None
 
 
 if TYPE_CHECKING:
@@ -57,8 +60,8 @@ else:
 
 
 class _RTITransportServicer(_RTI_TRANSPORT_SERVICER_BASE):
-    def __init__(self, rti: Any) -> None:
-        self.adapter = GrpcTransportClientAdapter()
+    def __init__(self, rti: Any, *, wire_adapter: TransportWireAdapter | None = None) -> None:
+        self.adapter = wire_adapter or GrpcTransportClientAdapter()
         self.processor = HostedRTICommandProcessor(rti)
 
     def Request(self, request, context):  # noqa: N802 - grpc generated naming
@@ -81,7 +84,8 @@ class PythonRTIGrpcServer:
             raise RuntimeError("gRPC server requested, but grpcio is not installed") from _GRPC_IMPORT_ERROR
         self.config = config
         self.servicer = _RTITransportServicer(
-            create_rti_ambassador("python", engine=config.engine, config=config.python_config)
+            create_rti_ambassador("python", engine=config.engine, config=config.python_config),
+            wire_adapter=config.wire_adapter,
         )
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=config.max_workers))
         assert pb2_grpc is not None
@@ -114,7 +118,10 @@ class CERTIRTIGrpcServer:
         if grpc is None:  # pragma: no cover - optional dependency guard
             raise RuntimeError("gRPC server requested, but grpcio is not installed") from _GRPC_IMPORT_ERROR
         self.config = config
-        self.servicer = _RTITransportServicer(create_rti_ambassador("certi", **dict(config.backend_options)))
+        self.servicer = _RTITransportServicer(
+            create_rti_ambassador("certi", **dict(config.backend_options)),
+            wire_adapter=config.wire_adapter,
+        )
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=config.max_workers))
         assert pb2_grpc is not None
         pb2_grpc.add_RTITransportServiceServicer_to_server(self.servicer, self.server)
@@ -147,9 +154,16 @@ def start_python_grpc_server(
     python_config: Any | None = None,
     host: str = "127.0.0.1",
     port: int = 0,
+    wire_adapter: TransportWireAdapter | None = None,
 ) -> PythonRTIGrpcServer:
     return PythonRTIGrpcServer(
-        PythonRTIGrpcServerConfig(host=host, port=port, engine=engine, python_config=python_config)
+        PythonRTIGrpcServerConfig(
+            host=host,
+            port=port,
+            engine=engine,
+            python_config=python_config,
+            wire_adapter=wire_adapter,
+        )
     ).start()
 
 
@@ -157,10 +171,16 @@ def start_certi_grpc_server(
     *,
     host: str = "127.0.0.1",
     port: int = 0,
+    wire_adapter: TransportWireAdapter | None = None,
     **backend_options: Any,
 ) -> CERTIRTIGrpcServer:
     return CERTIRTIGrpcServer(
-        CERTIRTIGrpcServerConfig(host=host, port=port, backend_options=dict(backend_options))
+        CERTIRTIGrpcServerConfig(
+            host=host,
+            port=port,
+            backend_options=dict(backend_options),
+            wire_adapter=wire_adapter,
+        )
     ).start()
 
 

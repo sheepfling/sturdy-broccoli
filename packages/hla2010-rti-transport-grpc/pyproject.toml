@@ -36,3 +36,11 @@ transport_names = ["grpc"]
 source_roots = [
   "packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc",
 ]
+
+[tool.hla.package-split]
+status = "implementation-moved"
+role = "transport"
+transport_names = ["grpc"]
+source_roots = [
+  "packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc",
+]

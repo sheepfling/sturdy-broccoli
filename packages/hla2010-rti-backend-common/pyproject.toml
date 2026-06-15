@@ -26,3 +26,10 @@ role = "backend-support"
 source_roots = [
   "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common",
 ]
+
+[tool.hla.package-split]
+status = "implementation-moved"
+role = "backend-support"
+source_roots = [
+  "packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common",
+]

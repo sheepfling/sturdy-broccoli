@@ -4,6 +4,8 @@ import inspect
 import json
 import subprocess
 
+import hla
+import hla.editions.ed2010 as hla_ed2010
 import hla2010
 import hla2010.spec as hla_spec
 import hla2010.rti as rti_module
@@ -155,13 +157,14 @@ def test_root_rti_facade_stays_narrow():
 def test_backend_entry_point_loader_skips_unimportable_optional_plugins(monkeypatch):
     class _BrokenEntryPoint:
         name = "broken"
+        value = "missing_optional_backend:plugin"
 
         def load(self):
             raise ModuleNotFoundError("missing_optional_backend")
 
     class _EntryPoints:
         def select(self, *, group):
-            assert group == "hla2010.rti_backends"
+            assert group in {"hla.rti_backends", "hla2010.rti_backends"}
             return (_BrokenEntryPoint(),)
 
     monkeypatch.setattr(runtime_factory.metadata, "entry_points", lambda: _EntryPoints())
@@ -173,7 +176,7 @@ def test_backend_entry_point_loader_skips_unimportable_optional_plugins(monkeypa
 def test_runtime_factory_falls_back_to_source_checkout_plugins(monkeypatch):
     class _EntryPoints:
         def select(self, *, group):
-            assert group == "hla2010.rti_backends"
+            assert group in {"hla.rti_backends", "hla2010.rti_backends"}
             return ()
 
     monkeypatch.setattr(runtime_factory.metadata, "entry_points", lambda: _EntryPoints())
@@ -189,6 +192,14 @@ def test_top_level_package_defaults_to_the_clean_spec_layer():
     assert not hasattr(hla2010, "NullFederateAmbassador")
     assert not hasattr(hla2010, "RTIambassadorSpec")
     assert not hasattr(hla2010, "FederateAmbassadorSpec")
+
+
+def test_neutral_namespace_routes_to_explicit_2010_surface() -> None:
+    assert hla.__version__ == hla2010.__version__
+    assert hla_ed2010.edition_year == 2010
+    assert hla_ed2010.legacy_namespace == "hla2010"
+    assert hla_ed2010.spec.RTIambassadorSpec is RTIambassadorSpec
+    assert hla_ed2010.rti.create_rti_ambassador is create_rti_ambassador
 
 
 def test_standalone_spec_package_is_public():

@@ -4,10 +4,13 @@ from importlib import resources
 from pathlib import Path
 
 import pytest
-pytest.importorskip("grpc")
+grpc = pytest.importorskip("grpc")
 
 from hla2010_rti_backend_common import RecordingFederateAmbassador
 from hla2010_rti_backend_common import BackendUnavailableError
+from hla2010_rti_transport_grpc.client import GrpcTransportClientAdapter
+from hla2010_rti_transport_grpc import rti_transport_pb2 as pb2
+from hla2010_rti_transport_grpc import rti_transport_pb2_grpc as pb2_grpc
 from hla2010_rti_transport_grpc.python_server import start_python_grpc_server
 from hla2010_rti_python import InMemoryRTIEngine
 from hla2010.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveFailureReason, SaveStatus
@@ -31,6 +34,20 @@ RESOURCE_ROOT = Path(str(resources.files("hla2010").joinpath("resources", "foms"
 VENDOR_SMOKE_FOM = str((RESOURCE_ROOT / "VendorSmokeFOM.xml").resolve())
 
 
+class _RecordingWireAdapter(GrpcTransportClientAdapter):
+    def __init__(self) -> None:
+        self.decode_request_calls = 0
+        self.encode_response_calls = 0
+
+    def decode_request(self, request):
+        self.decode_request_calls += 1
+        return super().decode_request(request)
+
+    def encode_response(self, response):
+        self.encode_response_calls += 1
+        return super().encode_response(response)
+
+
 def _start_grpc_pair():
     engine = InMemoryRTIEngine()
     left_server = start_python_grpc_server(engine=engine)
@@ -48,6 +65,24 @@ def test_grpc_transport_host_reports_loopback_unavailable(monkeypatch: pytest.Mo
 
     with pytest.raises(BackendUnavailableError, match="Local socket bind is not permitted"):
         start_python_grpc_server(engine=InMemoryRTIEngine())
+
+
+def test_grpc_transport_python_server_accepts_injected_wire_adapter():
+    server = None
+    channel = None
+    wire_adapter = _RecordingWireAdapter()
+    try:
+        server = start_python_grpc_server(engine=InMemoryRTIEngine(), wire_adapter=wire_adapter)
+        channel = grpc.insecure_channel(server.target)
+        pb2_grpc.RTITransportServiceStub(channel).Request(pb2.TransportRequest(command="GET_HLA_VERSION"))
+
+        assert wire_adapter.decode_request_calls == 1
+        assert wire_adapter.encode_response_calls == 1
+    finally:
+        if channel is not None:
+            channel.close()
+        if server is not None:
+            server.close()
 
 
 def _exchange_time_profile(time_factory_name: str) -> dict[str, object]:

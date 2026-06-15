@@ -7,6 +7,7 @@ from typing import Any, Mapping, Sequence, cast
 from hla2010_rti_backend_common import BackendUnavailableError
 from hla2010_rti_transport_common import RTITransport, TransportError, TransportRequest, TransportResponse, register_transport_factory
 from .client import GrpcTransportClientAdapter
+from .wire_adapter import GRPC_TRANSPORT_REQUEST_PATH, TransportWireAdapter
 
 grpc: Any | None
 
@@ -29,6 +30,7 @@ class GrpcTransportConfig:
     metadata: Mapping[str, str] = field(default_factory=dict)
     channel_options: Sequence[tuple[str, Any]] = field(default_factory=tuple)
     secure: bool = False
+    wire_adapter: TransportWireAdapter | None = None
 
 
 class GrpcTransport(RTITransport):
@@ -40,7 +42,7 @@ class GrpcTransport(RTITransport):
         self.config = config
         self._channel = None
         self._stub = None
-        self.client_adapter = GrpcTransportClientAdapter()
+        self.client_adapter = config.wire_adapter or GrpcTransportClientAdapter()
 
     def start(self) -> "GrpcTransport":
         if self._channel is None:
@@ -67,6 +69,10 @@ class GrpcTransport(RTITransport):
             return self.client_adapter.decode_response(response)
         except TransportError:
             raise
+
+    @property
+    def rpc_path(self) -> str:
+        return GRPC_TRANSPORT_REQUEST_PATH
 
     def close(self) -> None:
         self._stub = None

@@ -7,6 +7,7 @@ grpc = pytest.importorskip("grpc")
 
 from hla2010.spec import FederateAmbassadorSpec
 from hla2010_rti_backend_common import make_rti_ambassador
+from hla2010_rti_transport_grpc.client import GrpcTransportClientAdapter
 from hla2010_rti_transport_grpc import GrpcTransport, GrpcTransportConfig
 from hla2010_rti_transport_grpc import rti_transport_pb2 as pb2
 from hla2010_rti_transport_grpc import rti_transport_pb2_grpc as pb2_grpc
@@ -34,6 +35,20 @@ class _GrpcServicer(pb2_grpc.RTITransportServiceServicer):
         )
 
 
+class _RecordingWireAdapter(GrpcTransportClientAdapter):
+    def __init__(self) -> None:
+        self.encode_request_calls = 0
+        self.decode_response_calls = 0
+
+    def encode_request(self, request):
+        self.encode_request_calls += 1
+        return super().encode_request(request)
+
+    def decode_response(self, response):
+        self.decode_response_calls += 1
+        return super().decode_response(response)
+
+
 def _start_server() -> tuple[grpc.Server, str]:
     _GrpcServicer.requests = []
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=2))
@@ -56,6 +71,24 @@ def test_grpc_transport_round_trips_typed_envelopes():
 
         direct = transport.request(TransportRequest(command="CONNECT", fields=(CallbackModel.HLA_EVOKED.name, "")))
         assert direct.fields == ()
+    finally:
+        if transport is not None:
+            transport.close()
+        server.stop(0).wait()
+
+
+def test_grpc_transport_accepts_injected_wire_adapter():
+    server, target = _start_server()
+    transport = None
+    wire_adapter = _RecordingWireAdapter()
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=target, wire_adapter=wire_adapter)).start()
+        response = transport.request(TransportRequest(command="GET_HLA_VERSION", fields=("ignored",)))
+
+        assert response.fields == ("HLA 1516.1-2010",)
+        assert wire_adapter.encode_request_calls == 1
+        assert wire_adapter.decode_response_calls == 1
+        assert transport.rpc_path == "/hla2010.backends.grpc_transport.RTITransportService/Request"
     finally:
         if transport is not None:
             transport.close()

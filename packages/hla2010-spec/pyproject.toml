@@ -19,7 +19,7 @@ test = ["pytest"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["hla2010*"]
+include = ["hla*", "hla2010*"]
 exclude = ["hla2010.testing*", "hla2010_repo_internal*"]
 
 [tool.setuptools.package-data]
@@ -30,4 +30,12 @@ status = "implementation-owned"
 role = "core-spec"
 source_roots = [
   "packages/hla2010-spec/src/hla2010",
+]
+
+[tool.hla.package-split]
+status = "implementation-owned"
+role = "core-spec"
+source_roots = [
+  "packages/hla2010-spec/src/hla2010",
+  "packages/hla2010-spec/src/hla",
 ]

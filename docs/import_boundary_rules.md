@@ -167,7 +167,7 @@ directly. Removed root compatibility paths such as `hla2010.java_runtime`
 must not be reintroduced.
 
 For packages marked `implementation-moved`, the declared
-`tool.hla2010.package-split.source_roots` must point only at files under that
+`tool.hla.package-split.source_roots` must point only at files under that
 package's own `packages/<name>/src/...` tree. Compatibility facades under
 `packages/hla2010-spec/src/hla2010/` are package-owned spec surface, not
 workspace-only implementation overflow for concrete backends.

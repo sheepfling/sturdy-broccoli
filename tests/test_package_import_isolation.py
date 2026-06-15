@@ -4,7 +4,7 @@ import ast
 import tomllib
 from pathlib import Path
 
-from hla2010_repo_internal.package_graph import load_package_graph, package_import_allowlists
+from hla2010_repo_internal.package_graph import load_package_graph, package_import_allowlists, package_split_config
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,7 +39,7 @@ def _iter_imported_modules(path: Path) -> list[str]:
 
 
 def _scan_package_source(package_dir_name: str, package_import_root: str) -> list[tuple[Path, str]]:
-    split = _load_pyproject(package_dir_name)["tool"]["hla2010"]["package-split"]  # type: ignore[index]
+    split = package_split_config(_load_pyproject(package_dir_name))
     source_roots = split["source_roots"]  # type: ignore[index]
     allowed_roots = PACKAGE_IMPORT_ALLOWLISTS[package_import_root]
     issues: list[tuple[Path, str]] = []

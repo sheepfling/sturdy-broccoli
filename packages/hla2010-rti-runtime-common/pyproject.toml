@@ -30,3 +30,10 @@ role = "runtime-support"
 source_roots = [
   "packages/hla2010-rti-runtime-common/src/hla2010_rti_runtime_common",
 ]
+
+[tool.hla.package-split]
+status = "implementation-moved"
+role = "runtime-support"
+source_roots = [
+  "packages/hla2010-rti-runtime-common/src/hla2010_rti_runtime_common",
+]

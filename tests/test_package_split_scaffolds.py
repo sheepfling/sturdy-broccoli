@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from conftest import REPO_ROOT, load_json_fixture
+from hla2010_repo_internal.package_graph import BACKEND_ENTRY_POINT_GROUPS, package_split_config
 
 ROOT = REPO_ROOT
 PACKAGES = ROOT / "packages"
@@ -88,7 +89,7 @@ def _load_project(package_name: str) -> dict:
 
 
 def _package_import_roots(package_name: str) -> set[str]:
-    source_roots = _load_project(package_name)["tool"]["hla2010"]["package-split"]["source_roots"]
+    source_roots = package_split_config(_load_project(package_name))["source_roots"]
     import_roots: set[str] = set()
     prefix = f"packages/{package_name}/src/"
     for source_root in source_roots:
@@ -134,7 +135,7 @@ def test_package_split_scaffolds_are_declared():
 
 def test_split_packages_use_package_owned_src_roots():
     for package_name, expected in EXPECTED_PACKAGES.items():
-        split = _load_project(package_name)["tool"]["hla2010"]["package-split"]
+        split = package_split_config(_load_project(package_name))
         source_roots = split["source_roots"]
         assert source_roots
         if expected.status == "implementation-moved":
@@ -145,11 +146,15 @@ def test_split_packages_use_package_owned_src_roots():
 
 def test_split_package_source_roots_resolve_to_real_package_owned_paths() -> None:
     for package_name in EXPECTED_PACKAGES:
-        split = _load_project(package_name)["tool"]["hla2010"]["package-split"]
+        split = package_split_config(_load_project(package_name))
         source_roots = split["source_roots"]
         if package_name == "hla2010-spec":
-            assert source_roots == ["packages/hla2010-spec/src/hla2010"]
+            assert source_roots == [
+                "packages/hla2010-spec/src/hla2010",
+                "packages/hla2010-spec/src/hla",
+            ]
             assert (ROOT / "packages" / "hla2010-spec" / "src" / "hla2010").is_dir()
+            assert (ROOT / "packages" / "hla2010-spec" / "src" / "hla").is_dir()
             continue
 
         expected_prefix = f"packages/{package_name}/src/"
@@ -176,13 +181,16 @@ def test_split_package_source_roots_resolve_to_real_package_owned_paths() -> Non
 
 def test_split_package_source_roots_use_single_owned_directory_root() -> None:
     for package_name in EXPECTED_PACKAGES:
-        split = _load_project(package_name)["tool"]["hla2010"]["package-split"]
+        split = package_split_config(_load_project(package_name))
         source_roots = split["source_roots"]
+        if package_name == "hla2010-spec":
+            assert source_roots == [
+                "packages/hla2010-spec/src/hla2010",
+                "packages/hla2010-spec/src/hla",
+            ]
+            continue
         assert len(source_roots) == 1, package_name
         source_root = source_roots[0]
-        if package_name == "hla2010-spec":
-            assert source_root == "packages/hla2010-spec/src/hla2010"
-            continue
         expected_import_roots = _package_import_roots(package_name)
         assert len(expected_import_roots) == 1, package_name
         expected_import_root = next(iter(expected_import_roots))
@@ -278,15 +286,18 @@ def test_split_packages_do_not_publish_package_local_cli_entrypoints() -> None:
 
 
 def test_hla2010_spec_manifest_owns_exact_root_package_tree() -> None:
-    split = _load_project("hla2010-spec")["tool"]["hla2010"]["package-split"]
-    assert split["source_roots"] == ["packages/hla2010-spec/src/hla2010"]
+    split = package_split_config(_load_project("hla2010-spec"))
+    assert split["source_roots"] == [
+        "packages/hla2010-spec/src/hla2010",
+        "packages/hla2010-spec/src/hla",
+    ]
 
     package_dir = _load_project("hla2010-spec")["tool"]["setuptools"]["package-dir"]
     assert package_dir == {"": "src"}
 
     package_find = _load_project("hla2010-spec")["tool"]["setuptools"]["packages"]["find"]
     assert package_find["where"] == ["src"]
-    assert package_find["include"] == ["hla2010*"]
+    assert package_find["include"] == ["hla*", "hla2010*"]
     assert "hla2010_repo_internal*" in package_find["exclude"]
     assert _live_root_python_files() == PACKAGE_SPLIT_MANIFEST.root_surface
 
@@ -323,7 +334,7 @@ def test_package_split_pyprojects_have_expected_boundaries():
     for package_name, expected in EXPECTED_PACKAGES.items():
         data = _load_project(package_name)
         project = data["project"]
-        split = data["tool"]["hla2010"]["package-split"]
+        split = package_split_config(data)
 
         assert project["name"] == package_name
         assert project["requires-python"] == ">=3.10"
@@ -333,7 +344,12 @@ def test_package_split_pyprojects_have_expected_boundaries():
         if split["status"] in {"transition-wrapper", "implementation-moved"}:
             assert (PACKAGES / package_name / "MIGRATION.md").exists()
 
-        entry_points = data.get("project", {}).get("entry-points", {}).get("hla2010.rti_backends", {})
+        groups = data.get("project", {}).get("entry-points", {})
+        entry_points = {}
+        for group_name in BACKEND_ENTRY_POINT_GROUPS:
+            group_values = groups.get(group_name, {})
+            if isinstance(group_values, dict):
+                entry_points.update(group_values)
         assert set(entry_points) == expected.entry_points
         if package_name == "hla2010-rti-python":
             assert entry_points["python"] == "hla2010_rti_python.plugin:plugin"

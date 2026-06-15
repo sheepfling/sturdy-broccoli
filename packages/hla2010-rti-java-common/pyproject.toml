@@ -26,3 +26,10 @@ role = "java-support"
 source_roots = [
   "packages/hla2010-rti-java-common/src/hla2010_rti_java_common",
 ]
+
+[tool.hla.package-split]
+status = "implementation-moved"
+role = "java-support"
+source_roots = [
+  "packages/hla2010-rti-java-common/src/hla2010_rti_java_common",
+]

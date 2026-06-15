@@ -59,7 +59,8 @@ Rules for the split:
 - `hla2010-rti-runtime-common` owns runtime-process and loopback support.
 - `hla2010-rti-transport-common` owns transport-neutral hosted request handling.
 - RTI packages own one backend family and register through the
-  `hla2010.rti_backends` entry point group.
+  neutral `hla.rti_backends` entry point group, with
+  `hla2010.rti_backends` retained as the 2010 compatibility alias.
 - `hla2010-verification-harness` is the only supported public verification package.
 - FOM/example packages own concrete resources and scenario helpers, not public testing namespaces.
 - Vendor runtime packages own their own runbooks and vendor-specific findings under `packages/<name>/docs/`.

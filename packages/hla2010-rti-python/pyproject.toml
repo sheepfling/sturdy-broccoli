@@ -15,6 +15,9 @@ lint = ["ruff>=0.5"]
 typecheck = ["pyright>=1.1.408"]
 test = ["pytest"]
 
+[project.entry-points."hla.rti_backends"]
+python = "hla2010_rti_python.plugin:plugin"
+
 [project.entry-points."hla2010.rti_backends"]
 python = "hla2010_rti_python.plugin:plugin"
 
@@ -26,6 +29,15 @@ where = ["src"]
 include = ["hla2010_rti_python*"]
 
 [tool.hla2010.package-split]
+status = "implementation-moved"
+role = "rti-backend"
+backend_names = ["python"]
+backend_aliases = ["inmemory", "in-memory", "python-inmemory", "python-in-memory"]
+source_roots = [
+  "packages/hla2010-rti-python/src/hla2010_rti_python",
+]
+
+[tool.hla.package-split]
 status = "implementation-moved"
 role = "rti-backend"
 backend_names = ["python"]

@@ -32,3 +32,11 @@ transport_names = ["rest", "http-json"]
 source_roots = [
   "packages/hla2010-rti-transport-rest/src/hla2010_rti_transport_rest",
 ]
+
+[tool.hla.package-split]
+status = "implementation-moved"
+role = "transport"
+transport_names = ["rest", "http-json"]
+source_roots = [
+  "packages/hla2010-rti-transport-rest/src/hla2010_rti_transport_rest",
+]

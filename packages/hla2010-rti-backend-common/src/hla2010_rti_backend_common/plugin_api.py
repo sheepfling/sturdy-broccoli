@@ -5,7 +5,12 @@ from dataclasses import dataclass, field
 from typing import Any, Callable, Mapping, Protocol, runtime_checkable
 
 
-BACKEND_ENTRY_POINT_GROUP = "hla2010.rti_backends"
+BACKEND_ENTRY_POINT_GROUP = "hla.rti_backends"
+LEGACY_BACKEND_ENTRY_POINT_GROUP = "hla2010.rti_backends"
+BACKEND_ENTRY_POINT_GROUPS = (
+    BACKEND_ENTRY_POINT_GROUP,
+    LEGACY_BACKEND_ENTRY_POINT_GROUP,
+)
 
 
 @dataclass(frozen=True)
@@ -104,6 +109,8 @@ class RTIBackendPluginLike(Protocol):
 
 __all__ = [
     "BACKEND_ENTRY_POINT_GROUP",
+    "BACKEND_ENTRY_POINT_GROUPS",
+    "LEGACY_BACKEND_ENTRY_POINT_GROUP",
     "RTIBackendDiscovery",
     "RTIBackendLike",
     "RTIBackendPlugin",

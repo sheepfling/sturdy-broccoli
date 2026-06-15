@@ -177,7 +177,8 @@ facade for backend discovery and ambassador creation.
   `hla2010_rti_runtime_common` directly.
 - Shared plugin contract types should import from
   `hla2010_rti_backend_common`.
-- Backend packages register through the `hla2010.rti_backends` entry point
+- Backend packages register through the neutral `hla.rti_backends` entry point
+  group, while `hla2010.rti_backends` remains as the 2010 compatibility alias.
   group.
 
 The root facade must stay narrow. It should not become the place where backend

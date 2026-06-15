@@ -11,6 +11,8 @@ from pathlib import Path
 
 from setuptools import find_packages
 
+from hla2010_repo_internal.package_graph import BACKEND_ENTRY_POINT_GROUPS, package_split_config
+
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGES = ROOT / "packages"
@@ -135,10 +137,13 @@ def test_installable_package_excludes_repo_internal_testing_helpers():
     packages = set(
         find_packages(
             where="packages/hla2010-spec/src",
-            include=["hla2010*"],
+            include=["hla*", "hla2010*"],
             exclude=["hla2010.testing*"],
         )
     )
+    assert "hla" in packages
+    assert "hla.editions" in packages
+    assert "hla.editions.ed2010" in packages
     assert "hla2010" in packages
     assert "hla2010.backends" not in packages
     assert "hla2010.testing" not in packages
@@ -149,7 +154,7 @@ def _load_project(package_name: str) -> dict:
 
 
 def _package_import_roots(package_name: str) -> set[str]:
-    source_roots = _load_project(package_name)["tool"]["hla2010"]["package-split"]["source_roots"]
+    source_roots = package_split_config(_load_project(package_name))["source_roots"]
     import_roots: set[str] = set()
     prefix = f"packages/{package_name}/src/"
     for source_root in source_roots:
@@ -408,7 +413,12 @@ def test_backend_split_packages_import_cleanly_without_unrelated_vendor_family_l
 def test_declared_backend_entrypoint_modules_import_under_declared_split_package_closure(tmp_path: Path):
     for manifest_name, forbidden_prefixes in BACKEND_ENTRYPOINT_CASES.items():
         manifest = _load_project(manifest_name)
-        entry_points = manifest["project"]["entry-points"]["hla2010.rti_backends"]
+        groups = manifest["project"]["entry-points"]
+        entry_points = {}
+        for group_name in BACKEND_ENTRY_POINT_GROUPS:
+            group_values = groups.get(group_name, {})
+            if isinstance(group_values, dict):
+                entry_points.update(group_values)
 
         for backend_name, target in entry_points.items():
             module_name, symbol_name = target.split(":", 1)

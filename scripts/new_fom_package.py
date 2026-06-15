@@ -668,7 +668,7 @@ include = ["{module_name}*"]
 [tool.setuptools.package-data]
 {module_name} = ["resources/foms/*.xml"]
 
-[tool.hla2010.package-split]
+[tool.hla.package-split]
 status = "implementation-owned"
 role = "fom-example"
 source_roots = [

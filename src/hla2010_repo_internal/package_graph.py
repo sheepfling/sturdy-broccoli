@@ -9,7 +9,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGES_DIR = ROOT / "packages"
 PACKAGE_GRAPH_PATH = PACKAGES_DIR / "package_graph.yaml"
-BACKEND_ENTRY_POINT_GROUP = "hla2010.rti_backends"
+BACKEND_ENTRY_POINT_GROUP = "hla.rti_backends"
+LEGACY_BACKEND_ENTRY_POINT_GROUP = "hla2010.rti_backends"
+BACKEND_ENTRY_POINT_GROUPS = (
+    BACKEND_ENTRY_POINT_GROUP,
+    LEGACY_BACKEND_ENTRY_POINT_GROUP,
+)
 DEP_NAME_RE = re.compile(r"^([A-Za-z0-9_.-]+)")
 
 
@@ -52,6 +57,19 @@ def external_dependencies(manifest: dict[str, object], internal_names: set[str])
     return sorted(name for name in external if name not in internal_names)
 
 
+def package_split_config(manifest: dict[str, object]) -> dict[str, object]:
+    tool = manifest["tool"]  # type: ignore[index]
+    if isinstance(tool, dict):
+        for namespace in ("hla", "hla2010"):
+            config = tool.get(namespace)
+            if not isinstance(config, dict):
+                continue
+            split = config.get("package-split")
+            if isinstance(split, dict):
+                return split
+    raise KeyError("manifest missing tool.hla.package-split or tool.hla2010.package-split")
+
+
 def import_root_to_package(graph: dict[str, dict[str, object]]) -> dict[str, str]:
     return {
         str(entry["import_root"]): package_name
@@ -74,32 +92,36 @@ def package_import_allowlists(graph: dict[str, dict[str, object]]) -> dict[str, 
 
 
 def package_source_roots(manifest: dict[str, object]) -> list[str]:
-    split = manifest["tool"]["hla2010"]["package-split"]  # type: ignore[index]
+    split = package_split_config(manifest)
     return [str(path) for path in split["source_roots"]]  # type: ignore[index]
 
 
 def package_role(manifest: dict[str, object]) -> str:
-    split = manifest["tool"]["hla2010"]["package-split"]  # type: ignore[index]
+    split = package_split_config(manifest)
     return str(split["role"])
 
 
 def package_status(manifest: dict[str, object]) -> str:
-    split = manifest["tool"]["hla2010"]["package-split"]  # type: ignore[index]
+    split = package_split_config(manifest)
     return str(split["status"])
 
 
 def package_backend_names(manifest: dict[str, object]) -> list[str]:
-    split = manifest["tool"]["hla2010"]["package-split"]  # type: ignore[index]
+    split = package_split_config(manifest)
     return sorted(str(name) for name in split.get("backend_names", []))  # type: ignore[union-attr]
 
 
 def backend_entry_points(manifest: dict[str, object]) -> list[str]:
     project = manifest["project"]  # type: ignore[index]
     groups = project.get("entry-points", {})  # type: ignore[assignment]
-    backends = groups.get(BACKEND_ENTRY_POINT_GROUP, {}) if isinstance(groups, dict) else {}
-    if not isinstance(backends, dict):
+    if not isinstance(groups, dict):
         return []
-    return sorted(str(name) for name in backends)
+    names: set[str] = set()
+    for group_name in BACKEND_ENTRY_POINT_GROUPS:
+        backends = groups.get(group_name, {})
+        if isinstance(backends, dict):
+            names.update(str(name) for name in backends)
+    return sorted(names)
 
 
 def expected_import_root(package_name: str) -> str:
