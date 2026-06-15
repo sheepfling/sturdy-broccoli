@@ -172,7 +172,8 @@ fi
 VENV_DIR="$ROOT_DIR/.venv"
 ROOT_REALPATH="$("$PYTHON_BIN" -c 'import os, sys; print(os.path.realpath(sys.argv[1]))' "$ROOT_DIR")"
 ROOT_ALIAS_KEY="$("$PYTHON_BIN" -c 'import hashlib, sys; print(hashlib.sha256(sys.argv[1].encode("utf-8")).hexdigest()[:12])' "$ROOT_REALPATH")"
-ROOT_ALIAS_DIR="/private/tmp/hla2010-workspace-$(id -un)-${ROOT_ALIAS_KEY}"
+ROOT_ALIAS_BASE="$("$PYTHON_BIN" -c 'import pathlib, tempfile; print(pathlib.Path(tempfile.gettempdir()).resolve())')"
+ROOT_ALIAS_DIR="${ROOT_ALIAS_BASE}/hla2010-workspace-$(id -un)-${ROOT_ALIAS_KEY}"
 ROOT_ALIAS_PATH="$ROOT_ALIAS_DIR/repo"
 VENV_ALIAS_DIR="$ROOT_ALIAS_PATH/.venv"
 

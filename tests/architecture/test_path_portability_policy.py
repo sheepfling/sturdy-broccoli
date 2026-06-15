@@ -67,7 +67,11 @@ def test_shell_sources_do_not_hardcode_repo_tempfiles_under_tmp() -> None:
     violations: list[str] = []
     for path in _shell_files():
         text = path.read_text(encoding="utf-8")
-        if "/tmp/hla2010_" in text or "TMPDIR:-/private/tmp" in text:
+        if (
+            "/tmp/hla2010_" in text
+            or "TMPDIR:-/private/tmp" in text
+            or 'ROOT_ALIAS_DIR="/private/tmp/' in text
+        ):
             violations.append(path.relative_to(ROOT).as_posix())
     assert not violations, "\n".join(violations)
 
