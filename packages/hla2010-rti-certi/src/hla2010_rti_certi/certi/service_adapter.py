@@ -5,8 +5,10 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Sequence, cast
 
+from hla2010 import handles as hla_handles
 from hla2010.enums import CallbackModel, OrderType, ResignAction
-from hla2010.exceptions import RTIexception, RTIinternalError, resolve_rti_exception_type
+from hla2010.exceptions import InvalidResignAction, RTIexception, RTIinternalError, resolve_rti_exception_type
+from hla2010.time import get_logical_time_factory
 from hla2010.handles import (
     AttributeHandle,
     AttributeHandleSet,
@@ -19,6 +21,7 @@ from hla2010.handles import (
     ParameterHandle,
     RegionHandle,
     RegionHandleSet,
+    TransportationTypeHandle,
 )
 from hla2010.types import AttributeRegionAssociation, MessageRetractionReturn, TimeQueryReturn
 from hla2010_rti_java_common import BackendInfo, BackendUnavailableError, Invocation, RTIBackend, UnsupportedBackendService
@@ -145,6 +148,7 @@ class CERTIBackend(RTIBackend):
             self._invoke_object_and_interaction_service,
             self._invoke_time_management_service,
             self._invoke_sync_and_ownership_service,
+            self._invoke_support_service,
             self._invoke_callback_service,
         ):
             result = dispatcher(invocation)
@@ -161,11 +165,18 @@ class CERTIBackend(RTIBackend):
                 return self._request_value("CONNECT", callback_model.name, local_settings or "")
             case "disconnect":
                 return self._request_value("DISCONNECT")
+            case "listFederationExecutions":
+                return self._request_value("LIST_FEDERATION_EXECUTIONS")
             case "createFederationExecution":
                 if len(args) >= 3 and args[2] is not None:
                     self._logical_time_hint = str(args[2])
                     _FEDERATION_LOGICAL_TIME_HINTS[str(args[0])] = self._logical_time_hint
                 return self._invoke_create(args)
+            case "createFederationExecutionWithMIM":
+                if len(args) >= 3 and args[2] is not None:
+                    self._logical_time_hint = str(args[2])
+                    _FEDERATION_LOGICAL_TIME_HINTS[str(args[0])] = self._logical_time_hint
+                return self._invoke_create_with_mim(args)
             case "destroyFederationExecution":
                 _FEDERATION_LOGICAL_TIME_HINTS.pop(str(args[0]), None)
                 return self._request_value("DESTROY", args[0])
@@ -173,7 +184,13 @@ class CERTIBackend(RTIBackend):
                 return self._invoke_join(args)
             case "resignFederationExecution":
                 action = args[0] if args else ResignAction.NO_ACTION
-                return self._request_value("RESIGN", action.name if isinstance(action, ResignAction) else action)
+                if isinstance(action, ResignAction):
+                    action_name = action.name
+                else:
+                    action_name = str(action)
+                    if action_name not in ResignAction.__members__:
+                        raise InvalidResignAction(repr(action))
+                return self._request_value("RESIGN", action_name)
             case "requestFederationSave":
                 if len(args) >= 2 and args[1] is not None:
                     request_args = cast(tuple[Any, Any], args[:2])
@@ -252,6 +269,12 @@ class CERTIBackend(RTIBackend):
                     invocation.args[0].value,
                     _attribute_region_association_spec(invocation.args[1]),
                 )
+            case "subscribeObjectClassAttributesPassivelyWithRegions":
+                return self._request_value(
+                    "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS",
+                    invocation.args[0].value,
+                    _attribute_region_association_spec(invocation.args[1]),
+                )
             case "unsubscribeObjectClassAttributesWithRegions":
                 return self._request_value(
                     "UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS",
@@ -275,6 +298,12 @@ class CERTIBackend(RTIBackend):
             case "unsubscribeInteractionClass":
                 return self._request_value("UNSUBSCRIBE_INTERACTION_CLASS", invocation.args[0].value)
             case "subscribeInteractionClassWithRegions":
+                return self._request_value(
+                    "SUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS",
+                    invocation.args[0].value,
+                    _region_handle_set_spec(invocation.args[1]),
+                )
+            case "subscribeInteractionClassPassivelyWithRegions":
                 return self._request_value(
                     "SUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS",
                     invocation.args[0].value,
@@ -309,20 +338,19 @@ class CERTIBackend(RTIBackend):
             case "deleteRegion":
                 return self._request_value("DELETE_REGION", args[0].value)
             case "registerObjectInstanceWithRegions":
-                if len(args) >= 3:
-                    value = self._request_value(
-                        "REGISTER_OBJECT_INSTANCE_WITH_REGIONS",
-                        args[0].value,
-                        _attribute_region_association_spec(args[1]),
-                        args[2],
+                if len(args) < 2:
+                    raise UnsupportedBackendService(
+                        "registerObjectInstanceWithRegions requires an object class and attribute-region associations"
                     )
-                else:
-                    value = self._request_value(
-                        "REGISTER_OBJECT_INSTANCE_WITH_REGIONS",
-                        args[0].value,
-                        _attribute_region_association_spec(args[1]),
-                        "",
-                    )
+                object_class = args[0]
+                associations = args[1]
+                object_name = args[2] if len(args) >= 3 else ""
+                value = self._request_value(
+                    "REGISTER_OBJECT_INSTANCE_WITH_REGIONS",
+                    object_class.value,
+                    _attribute_region_association_spec(associations),
+                    object_name,
+                )
                 return ObjectInstanceHandle(int(value))
             case "associateRegionsForUpdates":
                 return self._request_value(
@@ -385,6 +413,19 @@ class CERTIBackend(RTIBackend):
                     _attribute_region_association_spec(args[1]),
                     encode_bytes(args[2]),
                 )
+            case "requestAttributeTransportationTypeChange":
+                return self._request_value(
+                    "REQUEST_ATTRIBUTE_TRANSPORTATION_TYPE_CHANGE",
+                    args[0].value,
+                    handle_set_spec(args[1]),
+                    args[2].value,
+                )
+            case "queryAttributeTransportationType":
+                return self._request_value(
+                    "QUERY_ATTRIBUTE_TRANSPORTATION_TYPE",
+                    args[0].value,
+                    args[1].value,
+                )
             case "changeAttributeOrderType":
                 change_args = cast(tuple[Any, Any, Any], args[:3])
                 return self._request_value(
@@ -431,6 +472,23 @@ class CERTIBackend(RTIBackend):
                     change_args[0].value,
                     change_args[1].name if isinstance(change_args[1], OrderType) else change_args[1],
                 )
+            case "requestInteractionTransportationTypeChange":
+                return self._request_value(
+                    "REQUEST_INTERACTION_TRANSPORTATION_TYPE_CHANGE",
+                    args[0].value,
+                    args[1].value,
+                )
+            case "queryInteractionTransportationType":
+                if not args:
+                    raise UnsupportedBackendService("queryInteractionTransportationType requires an interaction class handle")
+                interaction_class = args[0]
+                if len(args) >= 2:
+                    return self._request_value(
+                        "QUERY_INTERACTION_TRANSPORTATION_TYPE",
+                        interaction_class.value,
+                        args[1].value,
+                    )
+                return self._request_value("QUERY_INTERACTION_TRANSPORTATION_TYPE", interaction_class.value)
             case _:
                 return NotImplemented
 
@@ -455,6 +513,8 @@ class CERTIBackend(RTIBackend):
             case "queryLookahead":
                 parts = self._request_parts("QUERY_LOOKAHEAD")
                 return decode_logical_interval(parts[0], parts[1])
+            case "getTimeFactory":
+                return get_logical_time_factory(self._logical_time_hint)
             case "modifyLookahead":
                 return self._request_value(
                     "MODIFY_LOOKAHEAD",
@@ -552,6 +612,80 @@ class CERTIBackend(RTIBackend):
                 return self._request_value("QUERY_ATTRIBUTE_OWNERSHIP", invocation.args[0].value, invocation.args[1].value)
             case "isAttributeOwnedByFederate":
                 return self._request_value("IS_ATTRIBUTE_OWNED_BY_FEDERATE", invocation.args[0].value, invocation.args[1].value) == "1"
+            case "normalizeFederateHandle":
+                return invocation.args[0]
+            case _:
+                return NotImplemented
+
+    def _invoke_support_service(self, invocation: Invocation) -> Any:
+        match invocation.method_name:
+            case "getTransportationTypeHandle":
+                value = invocation.args[0] if invocation.args else None
+                return TransportationTypeHandle(int(self._request_value("GET_TRANSPORTATION_TYPE_HANDLE", value)))
+            case "getTransportationTypeName":
+                return self._request_value("GET_TRANSPORTATION_TYPE_NAME", invocation.args[0].value)
+            case "getTransportationType":
+                value = invocation.args[0] if invocation.args else None
+                return TransportationTypeHandle(int(self._request_value("GET_TRANSPORTATION_TYPE_HANDLE", value)))
+            case "getTransportationName":
+                return self._request_value("GET_TRANSPORTATION_TYPE_NAME", invocation.args[0].value)
+            case "getOrderName":
+                return cast(OrderType, invocation.args[0]).name
+            case "getOrderType":
+                normalized = str(invocation.args[0]).replace("HLA", "").replace("_", "").replace(" ", "").upper()
+                if normalized in {"RECEIVE", "RECEIVEORDER"}:
+                    return OrderType.RECEIVE
+                if normalized in {"TIMESTAMP", "TIMESTAMPORDER", "TSO"}:
+                    return OrderType.TIMESTAMP
+                raise RTIinternalError(f"Unsupported order type name: {invocation.args[0]}")
+            case "getAttributeHandleFactory":
+                return hla_handles.AttributeHandleFactory()
+            case "getAttributeHandleSetFactory":
+                return hla_handles.AttributeHandleSetFactory()
+            case "getAttributeHandleValueMapFactory":
+                return hla_handles.AttributeHandleValueMapFactory()
+            case "getAttributeSetRegionSetPairListFactory":
+                return hla_handles.AttributeSetRegionSetPairListFactory()
+            case "getDimensionHandleFactory":
+                return hla_handles.DimensionHandleFactory()
+            case "getDimensionHandleSetFactory":
+                return hla_handles.DimensionHandleSetFactory()
+            case "getFederateHandleFactory":
+                return hla_handles.FederateHandleFactory()
+            case "getFederateHandleSetFactory":
+                return hla_handles.FederateHandleSetFactory()
+            case "getInteractionClassHandleFactory":
+                return hla_handles.InteractionClassHandleFactory()
+            case "getObjectClassHandleFactory":
+                return hla_handles.ObjectClassHandleFactory()
+            case "getObjectInstanceHandleFactory":
+                return hla_handles.ObjectInstanceHandleFactory()
+            case "getParameterHandleFactory":
+                return hla_handles.ParameterHandleFactory()
+            case "getParameterHandleValueMapFactory":
+                return hla_handles.ParameterHandleValueMapFactory()
+            case "getRegionHandleSetFactory":
+                return hla_handles.RegionHandleSetFactory()
+            case "getTransportationTypeHandleFactory":
+                return hla_handles.TransportationTypeHandleFactory()
+            case "decodeFederateHandle":
+                return FederateHandle.decode(invocation.args[0])
+            case "decodeObjectClassHandle":
+                return ObjectClassHandle.decode(invocation.args[0])
+            case "decodeInteractionClassHandle":
+                return InteractionClassHandle.decode(invocation.args[0])
+            case "decodeObjectInstanceHandle":
+                return ObjectInstanceHandle.decode(invocation.args[0])
+            case "decodeAttributeHandle":
+                return AttributeHandle.decode(invocation.args[0])
+            case "decodeParameterHandle":
+                return ParameterHandle.decode(invocation.args[0])
+            case "decodeDimensionHandle":
+                return DimensionHandle.decode(invocation.args[0])
+            case "decodeMessageRetractionHandle":
+                return MessageRetractionHandle.decode(invocation.args[0])
+            case "decodeRegionHandle":
+                return RegionHandle.decode(invocation.args[0])
             case _:
                 return NotImplemented
 
@@ -577,6 +711,18 @@ class CERTIBackend(RTIBackend):
         if len(args) > 3:
             raise UnsupportedBackendService("CERTI backend does not implement MIM-specific create overloads")
         return self._request_value("CREATE", federation_name, logical_time_name, *fom_modules)
+
+    def _invoke_create_with_mim(self, args: tuple[Any, ...]) -> None:
+        if len(args) < 2:
+            raise UnsupportedBackendService("createFederationExecutionWithMIM requires federation name and FOM modules")
+        federation_name = args[0]
+        fom_modules = resolve_certi_module_paths(args[1])
+        logical_time_name = ""
+        if len(args) >= 3 and args[2] is not None:
+            logical_time_name = str(args[2])
+        if len(args) > 3:
+            raise UnsupportedBackendService("CERTI backend does not implement createWithMIM overloads beyond logical time")
+        return self._request_value("CREATE_WITH_MIM", federation_name, logical_time_name, *fom_modules)
 
     def _invoke_join(self, args: tuple[Any, ...]) -> FederateHandle:
         if len(args) not in {2, 3, 4}:

@@ -33,7 +33,7 @@ from .codecs import (
     decode_order,
 )
 from .runtime import decode_logical_time
-from hla2010.types import FederateHandleSaveStatusPair, FederateRestoreStatus
+from hla2010.types import FederateHandleSaveStatusPair, FederateRestoreStatus, FederationExecutionInformation
 
 
 def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_hint: str | None = None) -> None:
@@ -49,6 +49,19 @@ def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_
             ObjectClassHandle(int(parts[2])),
             parts[3],
         )
+        return
+    if kind == "REPORT_FEDERATION_EXECUTIONS":
+        infos: list[FederationExecutionInformation] = []
+        if len(parts) >= 2 and parts[1]:
+            for item in parts[1].split(";"):
+                federation_name, logical_time_name = item.split("|", 1)
+                infos.append(
+                    FederationExecutionInformation(
+                        federation_name,
+                        logical_time_name or None,
+                    )
+                )
+        invoke_federate_callback(ambassador, "reportFederationExecutions", infos)
         return
     if kind == "REFLECT":
         invoke_federate_callback(
@@ -208,6 +221,41 @@ def dispatch_helper_callback(ambassador: Any, parts: list[str], *, logical_time_
             "removeObjectInstance",
             ObjectInstanceHandle(int(parts[1])),
             decode_bytes(parts[2]),
+        )
+        return
+    if kind == "CONFIRM_ATTRIBUTE_TRANSPORTATION_TYPE_CHANGE":
+        invoke_federate_callback(
+            ambassador,
+            "confirmAttributeTransportationTypeChange",
+            ObjectInstanceHandle(int(parts[1])),
+            decode_handle_set(parts[2], AttributeHandle, AttributeHandleSet),
+            TransportationTypeHandle(int(parts[3])),
+        )
+        return
+    if kind == "REPORT_ATTRIBUTE_TRANSPORTATION_TYPE":
+        invoke_federate_callback(
+            ambassador,
+            "reportAttributeTransportationType",
+            ObjectInstanceHandle(int(parts[1])),
+            AttributeHandle(int(parts[2])),
+            TransportationTypeHandle(int(parts[3])),
+        )
+        return
+    if kind == "CONFIRM_INTERACTION_TRANSPORTATION_TYPE_CHANGE":
+        invoke_federate_callback(
+            ambassador,
+            "confirmInteractionTransportationTypeChange",
+            InteractionClassHandle(int(parts[1])),
+            TransportationTypeHandle(int(parts[2])),
+        )
+        return
+    if kind == "REPORT_INTERACTION_TRANSPORTATION_TYPE":
+        invoke_federate_callback(
+            ambassador,
+            "reportInteractionTransportationType",
+            FederateHandle(int(parts[1])),
+            InteractionClassHandle(int(parts[2])),
+            TransportationTypeHandle(int(parts[3])),
         )
         return
     if kind == "SYNC_POINT_REGISTRATION_SUCCEEDED":

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from concurrent import futures
 from dataclasses import dataclass, field
-from typing import Any, Mapping
+from typing import TYPE_CHECKING, Any, Mapping
 
 from hla2010_rti_transport_common.hosted_server import HostedRTICommandProcessor
 
@@ -12,16 +12,21 @@ from hla2010_rti_backend_common import BackendUnavailableError
 from hla2010_rti_runtime_common import create_rti_ambassador
 from hla2010_rti_runtime_common.real_rti_process import reserve_tcp_port
 
-import hla2010_rti_transport_grpc.rti_transport_pb2_grpc as pb2_grpc
 from .client import GrpcTransportClientAdapter
 
+grpc: Any | None
+pb2_grpc: Any | None
+
 try:  # pragma: no cover - import guarded for optional dependency
-    import grpc
+    import grpc as _grpc
 except Exception as exc:  # pragma: no cover - optional dependency
-    grpc = None  # type: ignore[assignment]
+    grpc = None
     _GRPC_IMPORT_ERROR = exc
+    pb2_grpc = None
 else:
+    grpc = _grpc
     _GRPC_IMPORT_ERROR = None
+    import hla2010_rti_transport_grpc.rti_transport_pb2_grpc as pb2_grpc
 
 
 @dataclass(frozen=True)
@@ -41,7 +46,17 @@ class CERTIRTIGrpcServerConfig:
     backend_options: Mapping[str, Any] = field(default_factory=dict)
 
 
-class _RTITransportServicer(pb2_grpc.RTITransportServiceServicer):
+if TYPE_CHECKING:
+    class _RTI_TRANSPORT_SERVICER_BASE:
+        pass
+elif pb2_grpc is not None:
+    _RTI_TRANSPORT_SERVICER_BASE = pb2_grpc.RTITransportServiceServicer
+else:
+    class _RTI_TRANSPORT_SERVICER_BASE:
+        pass
+
+
+class _RTITransportServicer(_RTI_TRANSPORT_SERVICER_BASE):
     def __init__(self, rti: Any) -> None:
         self.adapter = GrpcTransportClientAdapter()
         self.processor = HostedRTICommandProcessor(rti)
@@ -69,6 +84,7 @@ class PythonRTIGrpcServer:
             create_rti_ambassador("python", engine=config.engine, config=config.python_config)
         )
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=config.max_workers))
+        assert pb2_grpc is not None
         pb2_grpc.add_RTITransportServiceServicer_to_server(self.servicer, self.server)
         requested_port = int(config.port) if int(config.port) != 0 else reserve_tcp_port(config.host)
         try:
@@ -100,6 +116,7 @@ class CERTIRTIGrpcServer:
         self.config = config
         self.servicer = _RTITransportServicer(create_rti_ambassador("certi", **dict(config.backend_options)))
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=config.max_workers))
+        assert pb2_grpc is not None
         pb2_grpc.add_RTITransportServiceServicer_to_server(self.servicer, self.server)
         requested_port = int(config.port) if int(config.port) != 0 else reserve_tcp_port(config.host)
         try:

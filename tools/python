@@ -7,10 +7,11 @@ hla2010_shell_init "tools/python"
 
 usage() {
   cat <<'EOF'
-usage: ./tools/python [verify|verify-routes|verify-routes-preflight|help]
+usage: ./tools/python [verify|verify-fast|verify-routes|verify-routes-preflight|help]
 
 Canonical Python / repo-green operator flow:
   ./tools/python verify                  # run the repo-green verification lane
+  ./tools/python verify-fast             # run the fast Python/operator lane
   ./tools/python verify-routes           # run Python direct-vs-gRPC route parity checks
   ./tools/python verify-routes-preflight # report whether python-grpc is runnable here
 
@@ -26,6 +27,13 @@ case "${1:-verify}" in
   verify)
     shift
     exec bash "$ROOT_DIR/scripts/ci/repo_green.sh" "$@"
+    ;;
+  verify-fast)
+    shift
+    if [[ -n "${HLA2010_PYTHON_VERIFY_FAST_DELEGATE:-}" ]]; then
+      exec "${HLA2010_PYTHON_VERIFY_FAST_DELEGATE}" "$@"
+    fi
+    exec bash "$ROOT_DIR/scripts/ci/python_fast.sh" "$@"
     ;;
   verify-routes)
     shift

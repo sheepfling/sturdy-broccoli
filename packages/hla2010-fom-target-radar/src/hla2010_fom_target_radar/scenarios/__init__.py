@@ -9,11 +9,16 @@ from .target_radar import (
     create_python_target_radar_pair,
     run_target_radar_scenario,
 )
-from .target_radar_factory import make_target_radar_factory, target_radar_fom_path
+from .target_radar_factory import (
+    TargetRadarBackendUnavailableError,
+    make_target_radar_factory,
+    target_radar_fom_path,
+)
 
 __all__ = [
     "RadarFederate",
     "ScenarioResult",
+    "TargetRadarBackendUnavailableError",
     "TargetFederate",
     "TrackReport",
     "Vec3",

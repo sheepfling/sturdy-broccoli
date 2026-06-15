@@ -6,15 +6,17 @@ from typing import Any, Mapping, Sequence, cast
 
 from hla2010_rti_backend_common import BackendUnavailableError
 from hla2010_rti_transport_common import RTITransport, TransportError, TransportRequest, TransportResponse, register_transport_factory
-import hla2010_rti_transport_grpc.rti_transport_pb2_grpc as pb2_grpc
 from .client import GrpcTransportClientAdapter
 
+grpc: Any | None
+
 try:  # pragma: no cover - import guarded for optional dependency
-    import grpc
+    import grpc as _grpc
 except Exception as exc:  # pragma: no cover - optional dependency
-    grpc = None  # type: ignore[assignment]
+    grpc = None
     _GRPC_IMPORT_ERROR = exc
 else:
+    grpc = _grpc
     _GRPC_IMPORT_ERROR = None
 
 
@@ -44,6 +46,8 @@ class GrpcTransport(RTITransport):
         if self._channel is None:
             if self.config.secure:
                 raise BackendUnavailableError("Secure gRPC transport is not configured in this workspace")
+            import hla2010_rti_transport_grpc.rti_transport_pb2_grpc as pb2_grpc
+
             grpc_runtime = cast(Any, grpc)
             self._channel = grpc_runtime.insecure_channel(self.config.target, options=list(self.config.channel_options))
             grpc_runtime.channel_ready_future(self._channel).result(timeout=self.config.timeout)

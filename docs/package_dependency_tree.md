@@ -39,7 +39,6 @@ Check it with:
 graph TD
     hla2010_rti_runtime_common[hla2010-rti-runtime-common] --> hla2010_fom_minimal_demo[hla2010-fom-minimal-demo]
     hla2010_spec[hla2010-spec] --> hla2010_fom_minimal_demo[hla2010-fom-minimal-demo]
-    hla2010_rti_backend_common[hla2010-rti-backend-common] --> hla2010_fom_target_radar[hla2010-fom-target-radar]
     hla2010_rti_runtime_common[hla2010-rti-runtime-common] --> hla2010_fom_target_radar[hla2010-fom-target-radar]
     hla2010_spec[hla2010-spec] --> hla2010_fom_target_radar[hla2010-fom-target-radar]
     hla2010_verification_harness[hla2010-verification-harness] --> hla2010_fom_target_radar[hla2010-fom-target-radar]
@@ -49,7 +48,6 @@ graph TD
     hla2010_rti_transport_common[hla2010-rti-transport-common] --> hla2010_rti_certi[hla2010-rti-certi]
     hla2010_spec[hla2010-spec] --> hla2010_rti_certi[hla2010-rti-certi]
     hla2010_rti_backend_common[hla2010-rti-backend-common] --> hla2010_rti_java_common[hla2010-rti-java-common]
-    hla2010_rti_transport_common[hla2010-rti-transport-common] --> hla2010_rti_java_common[hla2010-rti-java-common]
     hla2010_spec[hla2010-spec] --> hla2010_rti_java_common[hla2010-rti-java-common]
     hla2010_rti_java_common[hla2010-rti-java-common] --> hla2010_rti_java_jpype[hla2010-rti-java-jpype]
     hla2010_spec[hla2010-spec] --> hla2010_rti_java_jpype[hla2010-rti-java-jpype]
@@ -71,6 +69,7 @@ graph TD
     hla2010_rti_java_py4j[hla2010-rti-java-py4j] --> hla2010_rti_portico[hla2010-rti-portico]
     hla2010_spec[hla2010-spec] --> hla2010_rti_portico[hla2010-rti-portico]
     hla2010_rti_backend_common[hla2010-rti-backend-common] --> hla2010_rti_python[hla2010-rti-python]
+    hla2010_rti_transport_common[hla2010-rti-transport-common] --> hla2010_rti_python[hla2010-rti-python]
     hla2010_spec[hla2010-spec] --> hla2010_rti_python[hla2010-rti-python]
     hla2010_rti_backend_common[hla2010-rti-backend-common] --> hla2010_rti_runtime_common[hla2010-rti-runtime-common]
     hla2010_rti_transport_common[hla2010-rti-transport-common] --> hla2010_rti_runtime_common[hla2010-rti-runtime-common]
@@ -96,7 +95,7 @@ graph TD
 | Package | Layer | Role | Internal deps | External deps |
 | --- | --- | --- | --- | --- |
 | `hla2010-fom-minimal-demo` | `5` | `fom-example` | `hla2010-rti-runtime-common, hla2010-spec` | `-` |
-| `hla2010-fom-target-radar` | `5` | `fom-example` | `hla2010-rti-backend-common, hla2010-rti-runtime-common, hla2010-spec, hla2010-verification-harness` | `-` |
+| `hla2010-fom-target-radar` | `5` | `fom-example` | `hla2010-rti-runtime-common, hla2010-spec, hla2010-verification-harness` | `-` |
 | `hla2010-rti-backend-common` | `1` | `backend-support` | `hla2010-spec` | `-` |
 | `hla2010-rti-certi` | `4` | `rti-backend` | `hla2010-rti-java-common, hla2010-rti-runtime-common, hla2010-rti-transport-common, hla2010-spec` | `-` |
 | `hla2010-rti-java-common` | `2` | `java-support` | `hla2010-rti-backend-common, hla2010-spec` | `-` |

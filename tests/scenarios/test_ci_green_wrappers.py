@@ -437,10 +437,10 @@ def test_tools_python_verify_routes_resolves_python_command_from_path(tmp_path: 
     fake_bin_dir = tmp_path / "bin"
     fake_bin_dir.mkdir()
     fake_python = fake_bin_dir / "python3"
+    fake_impl = fake_bin_dir / "python3_impl.py"
     log_path = tmp_path / "calls.jsonl"
-    fake_python.write_text(
-        f"""#!{sys.executable}
-from __future__ import annotations
+    fake_impl.write_text(
+        """from __future__ import annotations
 
 import json
 import os
@@ -451,8 +451,14 @@ log_path = Path(os.environ["HLA2010_TEST_LOG_PATH"])
 argv = sys.argv[1:]
 log_path.parent.mkdir(parents=True, exist_ok=True)
 with log_path.open("a", encoding="utf-8") as handle:
-    handle.write(json.dumps({{"argv": argv, "pythonpath": os.environ.get("PYTHONPATH", "")}}) + "\\n")
+    handle.write(json.dumps({"argv": argv, "pythonpath": os.environ.get("PYTHONPATH", "")}) + "\\n")
 raise SystemExit(0)
+""",
+        encoding="utf-8",
+    )
+    fake_python.write_text(
+        f"""#!/bin/sh
+exec "{sys.executable}" "{fake_impl}" "$@"
 """,
         encoding="utf-8",
     )

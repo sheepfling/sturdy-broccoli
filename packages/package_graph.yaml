@@ -20,8 +20,7 @@
       "role": "java-support",
       "may_depend_on": [
         "hla2010-spec",
-        "hla2010-rti-backend-common",
-        "hla2010-rti-transport-common"
+        "hla2010-rti-backend-common"
       ]
     },
     "hla2010-rti-python": {
@@ -33,7 +32,8 @@
       ],
       "may_depend_on": [
         "hla2010-spec",
-        "hla2010-rti-backend-common"
+        "hla2010-rti-backend-common",
+        "hla2010-rti-transport-common"
       ]
     },
     "hla2010-rti-transport-common": {
@@ -159,7 +159,6 @@
       "may_depend_on": [
         "hla2010-spec",
         "hla2010-verification-harness",
-        "hla2010-rti-backend-common",
         "hla2010-rti-runtime-common"
       ]
     },
