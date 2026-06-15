@@ -91,10 +91,57 @@ emit_json_payload() {
   PITCH_CRC_PORT="$CRC_PORT" \
   PITCH_FEDPRO_PORT="$FEDPRO_PORT" \
   PITCH_NEXT_STEP="$next_step" \
+  ROOT_DIR="$ROOT_DIR" \
   "$python_bin" - <<'PY'
 import json
 import os
 import sys
+import tempfile
+from pathlib import Path
+
+REPO_ROOT = Path(os.environ.get("ROOT_DIR", ".")).resolve()
+TMPDIR = Path(tempfile.gettempdir()).resolve()
+TMP_ROOTS = tuple(
+    dict.fromkeys(
+        [
+            str(TMPDIR),
+            tempfile.gettempdir(),
+            "/tmp",
+            "/private/tmp",
+            "/var/tmp",
+        ]
+        + ([f"/private{TMPDIR}"] if str(TMPDIR).startswith("/var/") else [])
+    )
+)
+
+
+def render_path(raw: str | None) -> str | None:
+    if not raw:
+        return raw
+    path = Path(raw).expanduser()
+    if not path.is_absolute():
+        return path.as_posix()
+    try:
+        resolved = path.resolve()
+    except OSError:
+        resolved = path
+    try:
+        return resolved.relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        pass
+    for root_string in TMP_ROOTS:
+        root = Path(root_string)
+        try:
+            return f"<tmp>/{resolved.relative_to(root).as_posix()}"
+        except ValueError:
+            continue
+    return resolved.as_posix()
+
+
+def sanitize_text(raw: str | None) -> str | None:
+    if raw is None:
+        return None
+    return raw.replace(str(REPO_ROOT), "<repo>")
 
 payload = {
     "tool": "pitch-preflight",
@@ -112,13 +159,13 @@ payload = {
             "name": "pitch_bundle",
             "ok": os.environ.get("PITCH_BUNDLE_STATUS") == "ok",
             "status": os.environ.get("PITCH_BUNDLE_STATUS"),
-            "detail": os.environ.get("PITCH_BUNDLE_DETAIL"),
+            "detail": sanitize_text(os.environ.get("PITCH_BUNDLE_DETAIL")),
         },
         {
             "name": "pitch_user_home",
             "ok": bool(os.environ.get("PITCH_USER_HOME")),
             "status": "ok" if os.environ.get("PITCH_USER_HOME") else "missing",
-            "detail": os.environ.get("PITCH_USER_HOME") or "missing user.home",
+            "detail": render_path(os.environ.get("PITCH_USER_HOME")) or "missing user.home",
         },
         {
             "name": "crc_port",
@@ -134,14 +181,14 @@ payload = {
         },
     ],
     "runtime": {
-        "home": os.environ.get("PITCH_RUNTIME_HOME"),
-        "required_marker": os.environ.get("PITCH_RUNTIME_MARKER"),
-        "user_home": os.environ.get("PITCH_USER_HOME"),
+        "home": render_path(os.environ.get("PITCH_RUNTIME_HOME")),
+        "required_marker": render_path(os.environ.get("PITCH_RUNTIME_MARKER")),
+        "user_home": render_path(os.environ.get("PITCH_USER_HOME")),
         "image_name": os.environ.get("PITCH_IMAGE_NAME"),
         "container_name": os.environ.get("PITCH_CONTAINER_NAME"),
     },
     "required_markers": {
-        "runtime_home": os.environ.get("PITCH_RUNTIME_MARKER"),
+        "runtime_home": render_path(os.environ.get("PITCH_RUNTIME_MARKER")),
     },
     "ports": {
         "crc": {
@@ -276,28 +323,31 @@ if [[ -d "${resolved_home:-}" && "$bundle_status" == "ok" ]]; then
   fi
 fi
 
+crc_port_check_file="$(mktemp "${TMPDIR:-/tmp}/hla2010_pitch_crc_port_check.XXXXXX")"
+fedpro_port_check_file="$(mktemp "${TMPDIR:-/tmp}/hla2010_pitch_fedpro_port_check.XXXXXX")"
+
 if [[ "$managed_container_running" -eq 1 ]]; then
   crc_port_detail="ok: managed container $CONTAINER_NAME is already running on 127.0.0.1:$CRC_PORT"
   fedpro_port_detail="ok: managed container $CONTAINER_NAME is already running on 127.0.0.1:$FEDPRO_PORT"
-elif check_port_available "$CRC_PORT" >/tmp/hla2010_pitch_crc_port_check.$$ 2>&1; then
+elif check_port_available "$CRC_PORT" >"$crc_port_check_file" 2>&1; then
   crc_port_detail="ok: 127.0.0.1:$CRC_PORT is available"
 else
   status=1
   crc_port_status="blocked"
-  crc_port_detail="blocked: 127.0.0.1:$CRC_PORT is not available: $(cat /tmp/hla2010_pitch_crc_port_check.$$)"
+  crc_port_detail="blocked: 127.0.0.1:$CRC_PORT is not available: $(cat "$crc_port_check_file")"
 fi
-rm -f /tmp/hla2010_pitch_crc_port_check.$$
+rm -f "$crc_port_check_file"
 
 if [[ "$managed_container_running" -eq 1 ]]; then
   :
-elif check_port_available "$FEDPRO_PORT" >/tmp/hla2010_pitch_fedpro_port_check.$$ 2>&1; then
+elif check_port_available "$FEDPRO_PORT" >"$fedpro_port_check_file" 2>&1; then
   fedpro_port_detail="ok: 127.0.0.1:$FEDPRO_PORT is available"
 else
   status=1
   fedpro_port_status="blocked"
-  fedpro_port_detail="blocked: 127.0.0.1:$FEDPRO_PORT is not available: $(cat /tmp/hla2010_pitch_fedpro_port_check.$$)"
+  fedpro_port_detail="blocked: 127.0.0.1:$FEDPRO_PORT is not available: $(cat "$fedpro_port_check_file")"
 fi
-rm -f /tmp/hla2010_pitch_fedpro_port_check.$$
+rm -f "$fedpro_port_check_file"
 
 if [[ "$OUTPUT_JSON" -eq 0 ]]; then
   show_hint "crc port" "$crc_port_detail"

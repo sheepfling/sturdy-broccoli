@@ -30,6 +30,7 @@ from hla2010_rti_certi.real_rti_certi import (
     discover_certi_smoke_fom,
 )
 from hla2010_rti_runtime_common.real_rti_process import reserve_tcp_port
+from hla2010_repo_internal.verification.path_rendering import jsonable as portable_jsonable
 
 LOCAL_STATE_ROOT = Path(os.environ.get("HLA2010_LOCAL_STATE_ROOT", str(ROOT_DIR / ".local")))
 
@@ -211,6 +212,7 @@ def main() -> int:
             "next_steps": next_steps,
             "exit_code": 0 if result == "real CERTI runnable" else 1,
         }
+        payload = portable_jsonable(payload)
         json.dump(payload, sys.stdout, indent=2, sort_keys=True)
         sys.stdout.write("\n")
         if args.json_file is not None:
@@ -235,6 +237,7 @@ def main() -> int:
             "next_steps": next_steps,
             "exit_code": 0 if result == "real CERTI runnable" else 1,
         }
+        payload = portable_jsonable(payload)
         args.json_file.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
 
     for item in checks:

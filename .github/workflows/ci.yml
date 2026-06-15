@@ -90,7 +90,7 @@ jobs:
           HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
         run: ./scripts/ci/install_python.sh
       - name: Run optional bridge checks
-        run: ./scripts/ci/test.sh tests/test_optional_real_java_bridges.py
+        run: ./scripts/ci/test.sh tests/runtime/test_optional_real_java_bridges.py
 
   target-radar-backend-matrix:
     runs-on: ubuntu-latest

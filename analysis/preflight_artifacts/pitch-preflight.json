@@ -1,64 +1,64 @@
 {
   "checks": [
     {
-      "detail": "blocked: Docker CLI exists but the daemon is not reachable",
+      "detail": "ok: /usr/local/bin/docker",
       "name": "docker",
-      "ok": false,
-      "status": "blocked"
+      "ok": true,
+      "status": "ok"
     },
     {
-      "detail": "ok: /Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual",
+      "detail": "ok: <repo>/third_party/pitch/PITCH-prti1516e-manual",
       "name": "pitch_bundle",
       "ok": true,
       "status": "ok"
     },
     {
-      "detail": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/pitch/user-home",
+      "detail": ".local/pitch/user-home",
       "name": "pitch_user_home",
       "ok": true,
       "status": "ok"
     },
     {
-      "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 1] Operation not permitted",
+      "detail": "ok: 127.0.0.1:8989 is available",
       "name": "crc_port",
-      "ok": false,
-      "status": "blocked"
+      "ok": true,
+      "status": "ok"
     },
     {
-      "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 1] Operation not permitted",
+      "detail": "ok: 127.0.0.1:15164 is available",
       "name": "fedpro_port",
-      "ok": false,
-      "status": "blocked"
+      "ok": true,
+      "status": "ok"
     }
   ],
-  "environment": "docker-blocked",
-  "exit_code": 1,
-  "next_step": "fix the blocked prerequisite(s) above and rerun",
+  "environment": "ready",
+  "exit_code": 0,
+  "next_step": "./tools/pitch install or ./tools/pitch all",
   "platform": "Darwin 25.5.0 arm64",
   "ports": {
     "crc": {
-      "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 1] Operation not permitted",
+      "detail": "ok: 127.0.0.1:8989 is available",
       "host": "127.0.0.1",
       "port": 8989,
-      "status": "blocked"
+      "status": "ok"
     },
     "fedpro": {
-      "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 1] Operation not permitted",
+      "detail": "ok: 127.0.0.1:15164 is available",
       "host": "127.0.0.1",
       "port": 15164,
-      "status": "blocked"
+      "status": "ok"
     }
   },
   "required_markers": {
-    "runtime_home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
+    "runtime_home": "third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
   },
-  "result": "not ready; fix the blocked prerequisite(s) above and rerun",
+  "result": "ready to run ./tools/pitch install or ./tools/pitch all",
   "runtime": {
     "container_name": "hla2010-pitch-crc",
-    "home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual",
+    "home": "third_party/pitch/PITCH-prti1516e-manual",
     "image_name": "hla2010-pitch-prti-free-crc:5.5.10",
-    "required_marker": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar",
-    "user_home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/pitch/user-home"
+    "required_marker": "third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar",
+    "user_home": ".local/pitch/user-home"
   },
   "tool": "pitch-preflight"
 }

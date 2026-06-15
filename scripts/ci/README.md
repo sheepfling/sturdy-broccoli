@@ -25,8 +25,10 @@ The rule is simple:
 - `test.sh`: pytest wrapper for the selected test set
 - `time.sh`: dedicated HLA 1516.1-2010 time-management suite gate
 - `full_sequence.sh`: full verification sequence, including type annotations
+- `check_generated_compliance_artifacts.sh`: fail when `analysis/compliance/` is stale relative to `scripts/generate_compliance_artifacts.py`
 - `repo_green.sh`: explicit repo-green wrapper around `full_sequence.sh`
 - `seed_suite.sh`: default local seed suite
+- `github_ci_local.sh`: run GitHub CI lanes locally from top to bottom, with explicit modes for the default Ubuntu stack, required vendor lanes, vendor-edge matrix, probe-review matrix, vendor-smoke workflow, or the full combined sequence
 - `vendor_runtime_smoke.sh`: CERTI and Pitch smoke/profile runner with mandatory preflight and default JSON artifact emission
 - `vendor_green.sh`: strict vendor-runtime gate for dedicated real-runtime runners
 - `vendor_edge_matrix.sh`: explicit high-value vendor probe packet across time-query, negotiated ownership, save/restore, and DDM slices
@@ -46,6 +48,8 @@ The rule is simple:
 - `full_sequence.sh` stays repo-green friendly: blocked vendor prerequisites
   short-circuit cleanly after preflight instead of failing late inside pytest.
 - `repo_green.sh` is the named operator/CI entrypoint for that repo-green lane.
+- `seed_suite.sh` now includes the generated compliance-artifact freshness gate so
+  CI fails directly when `analysis/compliance/` drifts from the generator.
 - `vendor_green.sh` is the strict real-runtime path: it sets
   `HLA2010_VENDOR_PREFLIGHT_STRICT=1` and fails immediately when CERTI or Pitch
   prerequisites are missing or blocked.
@@ -60,6 +64,11 @@ The rule is simple:
   `vendor-runner-contract` runs `python3 scripts/check_vendor_runner_template_drift.py`;
   `repo-green` runs `./scripts/ci/repo_green.sh`, while the vendor-runtime jobs
   run `./scripts/ci/vendor_green.sh ...`.
+  For local reruns, `./scripts/ci/github_ci_local.sh` now supports explicit
+  modes. `./scripts/ci/github_ci_local.sh` runs the lightweight contract guard
+  plus the default Ubuntu stack in order; `./scripts/ci/github_ci_local.sh all`
+  adds the dedicated real-runtime vendor lanes on top when the machine is
+  configured for them.
 
 ### Docs / Generated Artifacts
 

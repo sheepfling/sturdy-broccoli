@@ -2,9 +2,48 @@ from __future__ import annotations
 
 import contextlib
 import importlib
+import json
 import socket
+from pathlib import Path
+from typing import Any, Callable
 
 import pytest
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+TESTS_ROOT = REPO_ROOT / "tests"
+FIXTURES_ROOT = TESTS_ROOT / "fixtures"
+COMPLIANCE_ROOT = REPO_ROOT / "analysis" / "compliance"
+TRACEABILITY_ROOT = REPO_ROOT / "analysis" / "traceability"
+
+
+def _resolve_repo_path(path: str | Path) -> Path:
+    candidate = Path(path)
+    return candidate if candidate.is_absolute() else REPO_ROOT / candidate
+
+
+def read_repo_text(path: str | Path) -> str:
+    return _resolve_repo_path(path).read_text(encoding="utf-8")
+
+
+def load_json_fixture(name: str) -> dict[str, Any]:
+    return json.loads((FIXTURES_ROOT / name).read_text(encoding="utf-8"))
+
+
+def load_compliance_json(name: str) -> dict[str, Any]:
+    return json.loads((COMPLIANCE_ROOT / name).read_text(encoding="utf-8"))
+
+
+def load_compliance_text(name: str) -> str:
+    return (COMPLIANCE_ROOT / name).read_text(encoding="utf-8")
+
+
+def load_traceability_json(name: str) -> dict[str, Any]:
+    return json.loads((TRACEABILITY_ROOT / name).read_text(encoding="utf-8"))
+
+
+def load_traceability_text(name: str) -> str:
+    return (TRACEABILITY_ROOT / name).read_text(encoding="utf-8")
 
 
 def _can_bind_loopback_server() -> bool:
@@ -59,3 +98,43 @@ def pytest_configure(config: pytest.Config) -> None:
 def pytest_runtest_setup(item: pytest.Item) -> None:
     if "requires_loopback_server" in item.keywords and not _LOOPBACK_SERVER_AVAILABLE:
         pytest.skip("loopback server sockets are unavailable in this environment")
+
+
+@pytest.fixture(scope="session")
+def repo_root() -> Path:
+    return REPO_ROOT
+
+
+@pytest.fixture(scope="session")
+def tests_root() -> Path:
+    return TESTS_ROOT
+
+
+@pytest.fixture(scope="session")
+def fixture_json_loader() -> Callable[[str], dict[str, Any]]:
+    return load_json_fixture
+
+
+@pytest.fixture(scope="session")
+def compliance_json_loader() -> Callable[[str], dict[str, Any]]:
+    return load_compliance_json
+
+
+@pytest.fixture(scope="session")
+def compliance_text_loader() -> Callable[[str], str]:
+    return load_compliance_text
+
+
+@pytest.fixture(scope="session")
+def traceability_json_loader() -> Callable[[str], dict[str, Any]]:
+    return load_traceability_json
+
+
+@pytest.fixture(scope="session")
+def traceability_text_loader() -> Callable[[str], str]:
+    return load_traceability_text
+
+
+@pytest.fixture(scope="session")
+def repo_text_reader() -> Callable[[str | Path], str]:
+    return read_repo_text

@@ -16,6 +16,11 @@ Start here:
 The `scripts/` tree is implementation and CI plumbing, not the primary
 human-facing operator surface.
 
+If you are trying to decide what to run by hand:
+
+- use `tools/` first
+- use this page only when you need implementation details, CI wiring, or lower-level debugging
+
 Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 
 - `./tools/bootstrap` canonical workspace bootstrap and doctor flow
@@ -114,7 +119,9 @@ Compatibility aliases that remain for implementation and migration support:
 - `./scripts/certi_easy.sh`
 - `./scripts/pitch_docker_easy.sh`
 
-Script families:
+## Script Families
+
+These are reference families, not parallel front doors.
 
 ### Bootstrap
 

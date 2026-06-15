@@ -161,6 +161,40 @@ python examples/target_radar_simulation.py --backend python --steps 5
 
 If those commands work, the base environment is healthy.
 
+## Hosted Python gRPC Authorization
+
+The hosted Python gRPC route needs one extra capability beyond the direct
+in-process Python backend: the current execution surface must be allowed to
+open a loopback TCP listener on `127.0.0.1`.
+
+Check that first with:
+
+```bash
+./tools/python verify-routes-preflight
+```
+
+Supported interpretation:
+
+- `python-grpc: runnable`: hosted Python gRPC may run here
+- `python-grpc: blocked`: the current sandbox or runner policy denied loopback
+  sockets
+
+The required permission is local TCP `bind`, `listen` / `accept`, and
+`connect` on `127.0.0.1` ephemeral ports.
+
+When you are running through Codex or another managed sandbox, repo changes do
+not grant that capability. You must either:
+
+- approve unsandboxed execution for the hosted-route commands in that session
+- run the commands on a dedicated runner that already permits loopback sockets
+
+Once authorized, use:
+
+```bash
+./tools/python verify-routes
+python examples/target_radar_simulation.py --backend python-grpc --steps 5
+```
+
 ## Vendor Runtime Order
 
 Once the Python path is working:

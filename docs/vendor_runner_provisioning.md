@@ -140,6 +140,19 @@ Matrix / vendor-edge runner:
 - patched and upstream installs must stay fixed between runs
 - do not point these variables at ad hoc per-shell scratch paths
 
+For Codex or other managed-agent surfaces, this is the same capability that
+must be authorized before hosted transport checks can run. The minimum allowed
+operations are:
+
+- TCP `bind(("127.0.0.1", 0))`
+- TCP `listen()` / `accept()` on that loopback listener
+- TCP `connect()` back to the listener
+
+Use `./tools/python verify-routes-preflight --json` or
+`./tools/certi-easy preflight --json` as the first probe. If either reports
+`loopback-blocked`, fix the runner or sandbox policy first; do not treat the
+result as a backend defect.
+
 ## Pitch
 
 ### Required Variables

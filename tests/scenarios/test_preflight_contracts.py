@@ -6,6 +6,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from tests.typed_json_models import CertiPreflightOutput, PitchPreflightOutput
+
 
 ROOT = Path(__file__).resolve().parents[2]
 def _fake_docker_bin(tmp_path: Path) -> Path:
@@ -54,13 +56,12 @@ def test_certi_preflight_reports_missing_active_build_root_marker(tmp_path: Path
     )
 
     assert result.returncode == 1
-    payload = json.loads(result.stdout)
-    checks = {row["name"]: row for row in payload["checks"]}
-    assert checks["active_prefix"]["ok"] is True
-    assert checks["active_build_root"]["ok"] is False
-    assert "libRTI/ieee1516-2010" in checks["active_build_root"]["message"]
-    assert payload["runtime_profiles"]["active"]["build_root"]["marker_exists"] is False
-    assert payload["required_markers"]["active_build_root"].endswith("/libRTI/ieee1516-2010")
+    payload = CertiPreflightOutput.from_mapping(json.loads(result.stdout))
+    assert payload.check("active_prefix").ok is True
+    assert payload.check("active_build_root").ok is False
+    assert "libRTI/ieee1516-2010" in payload.check("active_build_root").message
+    assert payload.runtime_profiles.active.build_root.marker_exists is False
+    assert payload.required_markers["active_build_root"].endswith("/libRTI/ieee1516-2010")
 
 
 def test_certi_preflight_shell_json_path_bootstraps_source_checkout(tmp_path: Path) -> None:
@@ -88,11 +89,10 @@ def test_certi_preflight_shell_json_path_bootstraps_source_checkout(tmp_path: Pa
     )
 
     assert result.returncode == 1
-    payload = json.loads(result.stdout)
-    checks = {row["name"]: row for row in payload["checks"]}
-    assert checks["active_prefix"]["ok"] is True
-    assert checks["active_build_root"]["ok"] is False
-    assert "libRTI/ieee1516-2010" in checks["active_build_root"]["message"]
+    payload = CertiPreflightOutput.from_mapping(json.loads(result.stdout))
+    assert payload.check("active_prefix").ok is True
+    assert payload.check("active_build_root").ok is False
+    assert "libRTI/ieee1516-2010" in payload.check("active_build_root").message
 
 
 def test_pitch_preflight_requires_prtifull_marker_in_runtime_home(tmp_path: Path) -> None:
@@ -116,10 +116,9 @@ def test_pitch_preflight_requires_prtifull_marker_in_runtime_home(tmp_path: Path
     )
 
     assert result.returncode == 1
-    payload = json.loads(result.stdout)
-    checks = {row["name"]: row for row in payload["checks"]}
-    assert checks["docker"]["ok"] is True
-    assert checks["pitch_bundle"]["ok"] is False
-    assert "prtifull.jar" in checks["pitch_bundle"]["detail"]
-    assert payload["runtime"]["required_marker"].endswith("/lib/prtifull.jar")
-    assert payload["required_markers"]["runtime_home"].endswith("/lib/prtifull.jar")
+    payload = PitchPreflightOutput.from_mapping(json.loads(result.stdout))
+    assert payload.check("docker").ok is True
+    assert payload.check("pitch_bundle").ok is False
+    assert "prtifull.jar" in payload.check("pitch_bundle").detail
+    assert payload.runtime.required_marker.endswith("/lib/prtifull.jar")
+    assert payload.required_markers["runtime_home"].endswith("/lib/prtifull.jar")
