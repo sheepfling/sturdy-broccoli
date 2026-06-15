@@ -266,7 +266,9 @@
   },
   "package_readme_fragments": {
     "hla2010-spec": [
-      "canonical runtime namespace from `hla2010`",
+      "neutral edition-qualified",
+      "`hla.editions.ed2010`",
+      "`hla2010`",
       "`hla2010.rti`",
       "`tests/test_package_split_scaffolds.py`",
       "`tests/test_root_facade_policy.py`",
