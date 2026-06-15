@@ -124,7 +124,7 @@ def _shim_profile(bridge: str, implementation: str | None) -> str | None:
 
 
 def _create_java_shim_backend(profile: str, options: dict[str, Any]) -> Any:
-    from .java_shim_factory import create_java_shim_backend, create_shared_java_shim_backend
+    from hla2010_rti_java_common.java_shim_factory import create_java_shim_backend, create_shared_java_shim_backend
 
     kernel = options.pop("kernel", None)
     shared = options.pop("shared", kernel is not None)

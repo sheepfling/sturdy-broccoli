@@ -8,9 +8,16 @@ import pytest
 from hla2010.enums import CallbackModel
 from hla2010.spec import FederateAmbassadorSpec
 from hla2010_rti_backend_common import BackendInfo, RTIBackend
-from hla2010_rti_java_common import create_java_backend, create_java_rti_ambassador, discover_java_rti
+from hla2010_rti_java import (
+    JavaRTI2010Implementation,
+    JavaRTIImplementation,
+    create_java_backend,
+    create_java_rti_ambassador,
+    debug_java_rti_implementation,
+    discover_java_rti,
+    java_2010_rti_ambassador,
+)
 from hla2010_rti_java_common.java_shim_kernel import SharedJavaShimKernel
-from hla2010_rti_java_jpype import JavaRTI2010Implementation, JavaRTIImplementation, debug_java_rti_implementation, java_2010_rti_ambassador
 from hla2010_verification_harness import run_basic_federate_scenario
 
 

@@ -29,7 +29,6 @@ from .java_runtime import discover_java_home, discover_java_tool, ensure_java_ho
 from .py4j_support import reset_py4j_callback_client
 from .java_shim_backend import InProcessJavaRTIShim, ShimJavaBridge
 from .java_shim_factory import create_java_shim_backend, create_shared_java_shim_backend
-from .java_factory_selection import JavaRTIDiscoveryReport, JavaRTIFactorySelection, create_java_backend, create_java_rti_ambassador, discover_java_rti
 from .java_shim_kernel import SharedJavaShimKernel
 from .java_shim_runtime import SharedInProcessJavaRTIShim
 from .java_shim_types import JavaByteArray, JavaLikeException, JavaLikeObject
@@ -57,13 +56,8 @@ __all__ = [
     "SharedJavaShimKernel",
     "ShimJavaBridge",
     "UnsupportedBackendService",
-    "JavaRTIDiscoveryReport",
-    "JavaRTIFactorySelection",
     "create_java_shim_backend",
-    "create_java_backend",
-    "create_java_rti_ambassador",
     "create_shared_java_shim_backend",
-    "discover_java_rti",
     "discover_java_home",
     "discover_java_tool",
     "ensure_java_home",

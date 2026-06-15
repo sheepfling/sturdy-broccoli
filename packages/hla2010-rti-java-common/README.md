@@ -15,45 +15,15 @@ Boundary and import-isolation guard coverage lives in
 This package does not own human operator entrypoints; repo-local operator flows
 stay under `./tools/`.
 
-## Bridge-neutral factory selection
+## Adapter Boundary
 
-Use `create_java_rti_ambassador` when caller code should choose the Java bridge
-and vendor RTI implementation at runtime:
-
-```python
-from hla2010_rti_java_common import create_java_rti_ambassador, discover_java_rti
-
-rti = create_java_rti_ambassador(
-    bridge="jpype",
-    implementation="com.vendor.hla.RtiFactory",
-    classpath=("vendor-rti.jar",),
-    connect_local_settings_designator="crcHost=localhost",
-)
-
-report = discover_java_rti(
-    bridge="jpype",
-    implementation="com.vendor.hla.RtiFactory",
-    classpath=("vendor-rti.jar",),
-)
-```
-
-The `implementation` string is forwarded to
-`hla.rti1516e.RtiFactoryFactory.getRtiFactory(implementation)` by the selected
-bridge package. Use `bridge="py4j"` with Py4J gateway options to select the
-Py4J-backed adapter instead. `discover_java_rti` returns a
-`JavaRTIDiscoveryReport` with factory name/version, reported HLA version,
-runtime class name, visible Java interface names, warnings, and any bridge
-failure details.
-
-For the in-process Java-shaped 2010 shim, use the same entry point with the
-reserved shim implementation name:
+This package deliberately does not choose JPype vs. Py4J or select a vendor
+implementation string. Use `hla2010-rti-java` for the standard Java RTI
+selector package:
 
 ```python
-rti = create_java_rti_ambassador(
-    bridge="jpype",  # or "py4j"
-    implementation="java-shim",
-)
+from hla2010_rti_java import create_java_rti_ambassador, discover_java_rti
 ```
 
-The shorthand bridge names `java-shim-jpype` and `java-shim-py4j` select the
-same shim profiles without requiring a separate vendor factory string.
+`hla2010-rti-java-common` owns only shared Java adapter mechanics: call
+conversion, callback dispatch, Java-shaped shim types, and `JavaRTIBackend`.

@@ -11,6 +11,7 @@ pythonpath = [
   "packages/hla2010-rti-certi/src",
   "packages/hla2010-rti-backend-common/src",
   "packages/hla2010-rti-java-common/src",
+  "packages/hla2010-rti-java/src",
   "packages/hla2010-rti-runtime-common/src",
   "packages/hla2010-rti-java-jpype/src",
   "packages/hla2010-rti-java-py4j/src",

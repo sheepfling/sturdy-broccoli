@@ -30,10 +30,10 @@ Then add the JPype bridge extras:
 HLA2010_BOOTSTRAP_EXTRAS=jpype ./tools/bootstrap python
 ```
 
-Minimal import shape:
+Minimal standard-Java RTI import shape:
 
 ```python
-from hla2010_rti_java_jpype import java_2010_rti_ambassador
+from hla2010_rti_java import java_2010_rti_ambassador
 
 rti = java_2010_rti_ambassador(
     "com.vendor.hla.RtiFactory",
@@ -45,7 +45,7 @@ rti = java_2010_rti_ambassador(
 Easy configurable shape:
 
 ```python
-from hla2010_rti_java_jpype import JavaRTIImplementation
+from hla2010_rti_java import JavaRTIImplementation
 
 implementation = JavaRTIImplementation(
     "com.vendor.hla.RtiFactory",
@@ -61,7 +61,7 @@ rti = implementation.create_rti_ambassador()
 Debug/discovery-only shape:
 
 ```python
-from hla2010_rti_java_jpype import debug_java_rti_implementation
+from hla2010_rti_java import debug_java_rti_implementation
 
 report = debug_java_rti_implementation(
     "com.vendor.hla.RtiFactory",
@@ -94,8 +94,9 @@ Expected not-configured-yet behavior:
 - a Java/classpath/factory failure if the bridge loads but the real RTI jars are
   not present
 
-Use this package for generic bridge mechanics. For the broader route choice and
-install order, see:
+Use `hla2010-rti-java-jpype` for generic JPype bridge mechanics. Use
+`hla2010-rti-java` for standard Java RTI implementation selection. For the
+broader route choice and install order, see:
 
 - [`../../docs/java_backends_quickstart.md`](../../docs/java_backends_quickstart.md)
 - [`../../docs/install_matrix.md`](../../docs/install_matrix.md)

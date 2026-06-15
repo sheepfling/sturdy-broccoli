@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from typing import Any, Sequence
 
 from hla2010_rti_backend_common import DelegatingRTIAmbassador
-from hla2010_rti_java_common import JavaRTIDiscoveryReport, create_java_backend, create_java_rti_ambassador, discover_java_rti
+from .factory_selection import JavaRTIDiscoveryReport, create_java_backend, create_java_rti_ambassador, discover_java_rti
 from hla2010_rti_java_common.java_common import JavaRTIBackend
 
 
