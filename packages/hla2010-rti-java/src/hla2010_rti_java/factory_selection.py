@@ -2,10 +2,18 @@
 from __future__ import annotations
 
 import importlib
+import warnings
 from dataclasses import dataclass, field
 from typing import Any
 
 from hla2010_rti_backend_common import DelegatingRTIAmbassador, make_rti_ambassador
+
+
+_DEPRECATION_MESSAGE = (
+    "Direct Java backend factory helpers are deprecated for application code. "
+    "Use JavaRTIImplementation(...).create_rti_ambassador(), "
+    "java_2010_rti_ambassador(...), or debug_java_rti_implementation(...) instead."
+)
 
 
 @dataclass(frozen=True)
@@ -167,25 +175,23 @@ def create_java_backend(
 ) -> Any:
     """Create a Java RTI backend using a selected bridge and implementation.
 
+    Deprecated for application code. Prefer ``JavaRTIImplementation`` from the
+    package root; this helper remains for bridge/package internals.
+
     ``implementation`` is the HLA Java RTI factory implementation string. When
     supplied, it becomes the bridge config's ``rti_factory_name``. Passing both
     ``implementation`` and ``rti_factory_name`` with different values is
     rejected so callers do not accidentally select two vendor factories.
     """
 
-    if implementation is not None and rti_factory_name is not None and implementation != rti_factory_name:
-        raise ValueError("implementation and rti_factory_name select different Java RTI factories")
-
-    selected_implementation = implementation if implementation is not None else rti_factory_name
-    shim_profile = _shim_profile(bridge, selected_implementation)
-    if shim_profile is not None:
-        if config is not None:
-            raise ValueError("config is only supported for real Java bridge factories, not the in-process Java shim")
-        return _create_java_shim_backend(shim_profile, dict(options))
-
-    factory, module, resolved_config = _configured_bridge_factory(bridge, selected_implementation, config, dict(options))
-    create_backend = getattr(module, factory.create_backend_name)
-    return create_backend(resolved_config)
+    warnings.warn(_DEPRECATION_MESSAGE, DeprecationWarning, stacklevel=2)
+    return _create_java_backend(
+        bridge=bridge,
+        implementation=implementation,
+        config=config,
+        rti_factory_name=rti_factory_name,
+        **options,
+    )
 
 
 def _interface_names(bridge_instance: Any, java_rti: Any) -> tuple[str, ...]:
@@ -310,10 +316,15 @@ def create_java_rti_ambassador(
     rti_factory_name: str | None = None,
     **options: Any,
 ) -> DelegatingRTIAmbassador:
-    """Create a backend-neutral RTI ambassador backed by a Java RTI."""
+    """Create a backend-neutral RTI ambassador backed by a Java RTI.
 
+    Deprecated for application code. Prefer ``JavaRTIImplementation`` or
+    ``java_2010_rti_ambassador`` from the package root.
+    """
+
+    warnings.warn(_DEPRECATION_MESSAGE, DeprecationWarning, stacklevel=2)
     return make_rti_ambassador(
-        create_java_backend(
+        _create_java_backend(
             bridge=bridge,
             implementation=implementation,
             config=config,
@@ -321,6 +332,29 @@ def create_java_rti_ambassador(
             **options,
         )
     )
+
+
+def _create_java_backend(
+    bridge: str = "jpype",
+    implementation: str | None = None,
+    *,
+    config: Any | None = None,
+    rti_factory_name: str | None = None,
+    **options: Any,
+) -> Any:
+    if implementation is not None and rti_factory_name is not None and implementation != rti_factory_name:
+        raise ValueError("implementation and rti_factory_name select different Java RTI factories")
+
+    selected_implementation = implementation if implementation is not None else rti_factory_name
+    shim_profile = _shim_profile(bridge, selected_implementation)
+    if shim_profile is not None:
+        if config is not None:
+            raise ValueError("config is only supported for real Java bridge factories, not the in-process Java shim")
+        return _create_java_shim_backend(shim_profile, dict(options))
+
+    factory, module, resolved_config = _configured_bridge_factory(bridge, selected_implementation, config, dict(options))
+    create_backend = getattr(module, factory.create_backend_name)
+    return create_backend(resolved_config)
 
 
 __all__ = [

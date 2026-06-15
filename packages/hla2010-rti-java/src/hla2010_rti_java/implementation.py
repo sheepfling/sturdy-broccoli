@@ -1,12 +1,20 @@
 """Easy standard Java RTI implementation facade."""
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass, field
 from typing import Any, Sequence
 
 from hla2010_rti_backend_common import DelegatingRTIAmbassador
-from .factory_selection import JavaRTIDiscoveryReport, create_java_backend, create_java_rti_ambassador, discover_java_rti
+from .factory_selection import JavaRTIDiscoveryReport, _create_java_backend, discover_java_rti
 from hla2010_rti_java_common.java_common import JavaRTIBackend
+
+
+_BACKEND_HELPER_DEPRECATION = (
+    "Direct Java backend helper functions are deprecated for application code. "
+    "Use JavaRTIImplementation(...).create_rti_ambassador() or "
+    "java_2010_rti_ambassador(...) instead."
+)
 
 
 def _normalize_bridge(bridge: str) -> str:
@@ -73,7 +81,7 @@ class JavaRTIImplementation:
         """Create the wrapped Java RTI backend."""
 
         self._require_supported_edition()
-        return create_java_backend(
+        return _create_java_backend(
             bridge=self.bridge,
             implementation=self.implementation,
             **self._explicit_bridge_options(),
@@ -83,11 +91,9 @@ class JavaRTIImplementation:
         """Create a backend-neutral RTI ambassador for the selected Java RTI."""
 
         self._require_supported_edition()
-        return create_java_rti_ambassador(
-            bridge=self.bridge,
-            implementation=self.implementation,
-            **self._explicit_bridge_options(),
-        )
+        from hla2010_rti_backend_common import make_rti_ambassador
+
+        return make_rti_ambassador(self.create_backend())
 
     def discover(self) -> JavaRTIDiscoveryReport:
         """Probe the selected factory and return debug metadata."""
@@ -191,8 +197,46 @@ def create_java_backend_for_edition(
     callback_server_parameters: dict[str, Any] | None = None,
     shutdown_gateway_on_close: bool = False,
 ) -> JavaRTIBackend:
-    """Create a standard Java RTI backend for a supported HLA edition."""
+    """Create a standard Java RTI backend for a supported HLA edition.
 
+    Deprecated for application code. Prefer ``JavaRTIImplementation`` and
+    ``create_rti_ambassador``.
+    """
+
+    warnings.warn(_BACKEND_HELPER_DEPRECATION, DeprecationWarning, stacklevel=2)
+    return _create_java_backend_for_edition(
+        implementation,
+        bridge=bridge,
+        edition=edition,
+        classpath=classpath,
+        jvm_args=jvm_args,
+        connect_local_settings_designator=connect_local_settings_designator,
+        start_jvm=start_jvm,
+        shutdown_jvm_on_close=shutdown_jvm_on_close,
+        convert_strings=convert_strings,
+        gateway=gateway,
+        gateway_parameters=gateway_parameters,
+        callback_server_parameters=callback_server_parameters,
+        shutdown_gateway_on_close=shutdown_gateway_on_close,
+    )
+
+
+def _create_java_backend_for_edition(
+    implementation: str,
+    *,
+    bridge: str = "jpype",
+    edition: str = "2010",
+    classpath: Sequence[str] = (),
+    jvm_args: Sequence[str] = (),
+    connect_local_settings_designator: str | None = None,
+    start_jvm: bool = True,
+    shutdown_jvm_on_close: bool = False,
+    convert_strings: bool = False,
+    gateway: Any | None = None,
+    gateway_parameters: dict[str, Any] | None = None,
+    callback_server_parameters: dict[str, Any] | None = None,
+    shutdown_gateway_on_close: bool = False,
+) -> JavaRTIBackend:
     return _implementation(
         implementation,
         bridge=bridge,
@@ -255,9 +299,13 @@ def create_java_2010_backend(
     shutdown_jvm_on_close: bool = False,
     convert_strings: bool = False,
 ) -> JavaRTIBackend:
-    """Create a JPype-backed standard Java HLA 1516-2010 RTI backend."""
+    """Create a JPype-backed standard Java HLA 1516-2010 RTI backend.
 
-    return create_java_backend_for_edition(
+    Deprecated for application code. Prefer ``java_2010_rti_ambassador``.
+    """
+
+    warnings.warn(_BACKEND_HELPER_DEPRECATION, DeprecationWarning, stacklevel=2)
+    return _create_java_backend_for_edition(
         implementation,
         bridge="jpype",
         edition="2010",
