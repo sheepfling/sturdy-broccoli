@@ -7,6 +7,7 @@ from pathlib import Path
 from hla2010.raw_api import API_METADATA
 from hla2010.spec_inventory import FEDERATE_AMBASSADOR_METHODS, RTIAMBASSADOR_METHODS
 from hla2010.spec_refs import METHOD_REFERENCES
+from tests.typed_json_models import ApiMetadataSource, ApiMethodMetadata
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -18,15 +19,12 @@ SPEC_REFS_PATH = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "spec_
 SPEC_SOURCES_PATH = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "spec_sources.py"
 
 
-def _source_payload() -> dict[str, object]:
-    return json.loads(SOURCE_PATH.read_text(encoding="utf-8"))
+def _source_payload() -> ApiMetadataSource:
+    return ApiMetadataSource.from_mapping(json.loads(SOURCE_PATH.read_text(encoding="utf-8")))
 
 
-def _interfaces() -> dict[str, dict[str, dict[str, object]]]:
-    payload = _source_payload()
-    interfaces = payload["interfaces"]
-    assert isinstance(interfaces, dict)
-    return interfaces  # type: ignore[return-value]
+def _interfaces() -> dict[str, dict[str, ApiMethodMetadata]]:
+    return _source_payload().interfaces
 
 
 def test_api_metadata_source_parses() -> None:
@@ -38,16 +36,13 @@ def test_api_metadata_source_parses() -> None:
 def test_every_method_has_python_name() -> None:
     for methods in _interfaces().values():
         for method_name, metadata in methods.items():
-            python_name = metadata.get("python_name")
-            assert isinstance(python_name, str) and python_name, method_name
+            assert metadata.python_name, method_name
 
 
 def test_every_method_has_section_or_explicit_no_section_reason() -> None:
     for methods in _interfaces().values():
         for method_name, metadata in methods.items():
-            section = metadata.get("section")
-            no_section_reason = metadata.get("no_section_reason")
-            assert section or no_section_reason, method_name
+            assert metadata.section or metadata.no_section_reason, method_name
 
 
 def test_generated_inventory_matches_source() -> None:
@@ -59,14 +54,13 @@ def test_generated_inventory_matches_source() -> None:
 def test_generated_refs_match_source() -> None:
     for methods in _interfaces().values():
         for method_name, metadata in methods.items():
-            section = metadata.get("section")
-            if not section:
+            if not metadata.section:
                 continue
             ref = METHOD_REFERENCES.get(method_name)
             assert ref is not None, method_name
-            assert ref.section == section
-            assert ref.title == metadata.get("title")
-            assert ref.service_group == metadata.get("service_group")
+            assert ref.section == metadata.section
+            assert ref.title == metadata.title
+            assert ref.service_group == metadata.service_group
 
 
 def test_generated_raw_api_matches_source() -> None:
@@ -74,7 +68,7 @@ def test_generated_raw_api_matches_source() -> None:
     for interface_name, methods in interfaces.items():
         assert set(API_METADATA[interface_name]) == set(methods)
         for method_name, metadata in methods.items():
-            assert API_METADATA[interface_name][method_name] == metadata["overloads"]
+            assert API_METADATA[interface_name][method_name] == metadata.overload_mappings()
 
 
 def test_generated_files_are_current() -> None:
@@ -107,7 +101,7 @@ def test_generated_api_metadata_resource_matches_source() -> None:
     for interface_name, methods in interfaces.items():
         assert set(payload[interface_name]) == set(methods)
         for method_name, metadata in methods.items():
-            assert payload[interface_name][method_name] == metadata["overloads"]
+            assert payload[interface_name][method_name] == metadata.overload_mappings()
 
 
 def test_raw_api_is_a_thin_metadata_loader() -> None:

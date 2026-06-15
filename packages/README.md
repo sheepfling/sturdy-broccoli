@@ -16,6 +16,12 @@ environment from the repo root:
 The canonical environment and install-order guide is
 [`../docs/python_environment.md`](../docs/python_environment.md).
 
+If you only need the shortest package-edit path:
+
+1. use [`../docs/onboarding.md`](../docs/onboarding.md) for the ordered repo path
+2. come back here to decide which package owns the change
+3. open that package README before reading broader architecture docs
+
 ## Reference
 
 Architecturally, `hla2010-spec` is the one installable root. The
@@ -89,10 +95,22 @@ Suggested move order:
 15. `hla2010-fom-target-radar`
 16. trim `hla2010-spec` to the final core surface
 
+## Edit Here First
+
+Use these ownership cards when you want to know where a human should safely
+start editing without tracing the whole package graph first.
+
+The rule is simple:
+
+- spec contract or FOM model change: start at `hla2010-spec`
+- concrete in-memory backend behavior: start at `hla2010-rti-python`
+- shared backend adapter behavior: start at `hla2010-rti-backend-common`
+- factory selection or runtime helper behavior: start at `hla2010-rti-runtime-common`
+- package-owned example or FOM logic: start at `hla2010-fom-*`
+
 ## Ownership Cards
 
-Use these cards when you want to know where a human should safely start
-editing.
+Use these cards when you need the shortest safe edit boundary.
 
 ### `hla2010-spec`
 
@@ -141,7 +159,9 @@ editing.
 
 ## Read Next
 
-1. [`../docs/package_dependency_tree.md`](../docs/package_dependency_tree.md)
-2. [`../docs/package_layout.md`](../docs/package_layout.md)
-3. [`../docs/create_federate_and_fom.md`](../docs/create_federate_and_fom.md)
-4. [`../docs/import_boundary_rules.md`](../docs/import_boundary_rules.md)
+1. [`hla2010-spec/README.md`](hla2010-spec/README.md)
+2. [`hla2010-rti-python/README.md`](hla2010-rti-python/README.md)
+3. [`../docs/package_layout.md`](../docs/package_layout.md)
+4. [`../docs/package_dependency_tree.md`](../docs/package_dependency_tree.md)
+5. [`../docs/create_federate_and_fom.md`](../docs/create_federate_and_fom.md)
+6. [`../docs/import_boundary_rules.md`](../docs/import_boundary_rules.md)

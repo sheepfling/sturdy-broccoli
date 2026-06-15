@@ -50,7 +50,7 @@ source .venv/bin/activate
 ## Python Usage Shape
 
 ```python
-from hla2010.rti import get_rti_factory, iter_rti_factories
+from hla2010_rti_runtime_common import get_rti_factory, iter_rti_factories
 
 for factory in iter_rti_factories():
     print(factory.name, factory.selectable_names)

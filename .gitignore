@@ -46,6 +46,7 @@ service-report*.jsonl
 # Local archives
 *.zip
 !specs/ieee-1516-2010/*.zip
+specs/ieee-1516-2010/hla2010_python_v0_3/
 
 # Local intake and vendor payloads
 INBOX/*

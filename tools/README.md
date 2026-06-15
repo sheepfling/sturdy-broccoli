@@ -2,9 +2,14 @@
 
 This directory is the canonical home for human-facing operator entrypoints.
 
-Use:
+If you are deciding what command to run, start here, not in `scripts/`.
+
+Core operator entrypoints:
 
 - `./tools/python`
+- `./tools/bootstrap`
+- `./tools/test`
+- `./tools/lint`
 - `./tools/certi-easy`
 - `./tools/pitch`
 - `./tools/vendor-green`
@@ -23,14 +28,21 @@ Use:
 - `./tools/package-deps`
 - `./tools/section8-gate`
 - `./tools/target-radar`
-- `./tools/lint`
-- `./tools/bootstrap`
 - `./tools/two-federate`
-- `./tools/test`
 
 The `scripts/` tree remains implementation and CI plumbing. Compatibility
 wrappers may still exist under `scripts/`, but operator docs, workflows, tests,
 and generated guidance should point at `tools/`.
+
+Shortest common paths:
+
+- bootstrap and activate: `./tools/bootstrap python`
+- run one example: `./tools/examples target-radar --backend in-memory --steps 5`
+- inspect factories: `./tools/rti-factories list`
+- trace one method: `./tools/human-editability trace timeAdvanceRequest`
+- run the default test wrapper: `./tools/test`
+- run Python direct-vs-gRPC parity: `./tools/python verify-routes`
+- check whether hosted Python gRPC is runnable here: `./tools/python verify-routes-preflight`
 
 Useful `./tools/human-editability` entrypoints:
 

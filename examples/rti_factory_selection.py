@@ -4,7 +4,7 @@ import argparse
 import json
 from typing import Any
 
-from hla2010.rti import get_rti_factory, iter_rti_factories
+from hla2010_rti_runtime_common import get_rti_factory, iter_rti_factories
 
 
 def _factory_payload(factory_name: str, *, include_probe: bool) -> dict[str, Any]:

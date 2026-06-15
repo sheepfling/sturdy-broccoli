@@ -1,19 +1,44 @@
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import re
 import shutil
+import subprocess
+import sys
 import zipfile
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-ROOT = Path('/mnt/data')
-SPEC = ROOT/'hla_specs'
-JAVA_ROOT = SPEC/'apis/java/java/src/hla/rti1516e'
-CPP_ROOT = SPEC/'apis/cpp/cpp/src/RTI'
-OUT = ROOT/'hla2010_python_v0_3'
-ZIP = ROOT/'hla2010_python_v0_3.zip'
+SCRIPT_PATH = Path(__file__).resolve()
+
+
+def discover_default_root() -> Path:
+    repo_candidate = SCRIPT_PATH.parents[1] / "specs" / "ieee-1516-2010"
+    if repo_candidate.exists():
+        return repo_candidate
+    return Path.cwd()
+
+
+DEFAULT_ROOT = discover_default_root()
+ROOT = DEFAULT_ROOT
+SPEC = ROOT / 'hla_specs'
+JAVA_ROOT = SPEC / 'apis/java/java/src/hla/rti1516e'
+CPP_ROOT = SPEC / 'apis/cpp/cpp/src/RTI'
+OUT = ROOT / 'hla2010_python_v0_3'
+ZIP = ROOT / 'hla2010_python_v0_3.zip'
+
+
+def configure_paths(*, root: Path, output_dir: Path | None = None, zip_path: Path | None = None) -> None:
+    global ROOT, SPEC, JAVA_ROOT, CPP_ROOT, OUT, ZIP
+
+    ROOT = root.resolve()
+    SPEC = ROOT / 'hla_specs'
+    JAVA_ROOT = SPEC / 'apis/java/java/src/hla/rti1516e'
+    CPP_ROOT = SPEC / 'apis/cpp/cpp/src/RTI'
+    OUT = (output_dir or (ROOT / 'hla2010_python_v0_3')).resolve()
+    ZIP = (zip_path or (ROOT / 'hla2010_python_v0_3.zip')).resolve()
 
 @dataclass
 class Method:
@@ -216,13 +241,13 @@ def py_str(obj) -> str:
     return repr(obj)
 
 def make_enums_py(enums: dict[str, list[tuple[str,int|None]]]) -> str:
-    chunks = [f'''"""Enumerations derived from the public IEEE 1516.1-2010 Java/C++ API files.
+    chunks = ['''"""Enumerations derived from the public IEEE 1516.1-2010 Java/C++ API files.
 
 """
 from __future__ import annotations
 from enum import Enum, auto
 
-    ''']
+''']
     for name in sorted(enums):
         chunks.append(f'class {name}(Enum):\n')
         for const, val in enums[name]:
@@ -717,6 +742,38 @@ class RTIambassador(RawRTIambassador):
     )
     return body
 
+
+def make_spec_impl_py() -> str:
+    return '''"""Compatibility aliases for the generated raw API scaffold."""
+from __future__ import annotations
+
+from .raw_api import FederateAmbassador as FederateAmbassadorSpec
+from .raw_api import RTIambassador as RTIambassadorSpec
+
+__all__ = ["RTIambassadorSpec", "FederateAmbassadorSpec"]
+'''
+
+
+def make_runtime_api_py() -> str:
+    return '''"""Compatibility facade for the generated Pythonic API layer."""
+from __future__ import annotations
+
+from .api import FederateAmbassador, NullFederateAmbassador, RTIAmbassador, RTIambassador
+
+__all__ = ["RTIambassador", "RTIAmbassador", "FederateAmbassador", "NullFederateAmbassador"]
+'''
+
+
+def make_spec_package_init_py() -> str:
+    return '''"""Generated spec-facing aliases for the standalone HLA scaffold."""
+from __future__ import annotations
+
+from .._spec_impl import FederateAmbassadorSpec, RTIambassadorSpec
+
+__all__ = ["RTIambassadorSpec", "FederateAmbassadorSpec"]
+'''
+
+
 def make_init_py(enums, handles, exceptions) -> str:
     return f'''"""Unofficial Python scaffold for IEEE 1516.1-2010 HLA APIs.
 
@@ -800,7 +857,7 @@ Source material: official public API ZIPs from `1516.1-2010_downloads.zip` and s
         manifest += f'- {key}: {val}\n'
     return comparison, manifest, json.dumps(api_inventory, indent=2, sort_keys=True)
 
-def build():
+def build() -> dict[str, object]:
     ensure_specs_unpacked()
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -865,7 +922,10 @@ include = ["hla2010*"]
     write(OUT/'hla2010/types.py', make_types_py())
     write(OUT/'hla2010/encoding.py', make_encoding_py())
     write(OUT/'hla2010/raw_api.py', make_raw_api_py(java_methods, cpp_methods))
+    write(OUT/'hla2010/_spec_impl.py', make_spec_impl_py())
     write(OUT/'hla2010/api.py', make_api_py(java_methods, cpp_methods))
+    write(OUT/'hla2010/runtime_api.py', make_runtime_api_py())
+    write(OUT/'hla2010/spec/__init__.py', make_spec_package_init_py())
     write(OUT/'hla2010/__init__.py', make_init_py(enums, handles, exceptions))
     write(OUT/'analysis/api_inventory.json', inventory_json)
     write(OUT/'analysis/java_methods.json', json.dumps([asdict(m) for m in java_methods], indent=2, sort_keys=True))
@@ -927,12 +987,14 @@ class MinimalFederate(FederateAmbassador):
 # A real federate will obtain a vendor-backed or local RTIAmbassador adapter.
 # rti.connect(MinimalFederate(), CallbackModel.HLA_EVOKED)
 ''')
-    write(OUT/'tools/analyze_specs.py', Path('/tmp/build_hla2010_package.py').read_text())
+    write(OUT/'tools/analyze_specs.py', SCRIPT_PATH.read_text(encoding='utf-8'))
     # validation
-    os.system(f'PYTHONPATH={OUT} python -m compileall -q {OUT}/hla2010')
+    subprocess.run(
+        [sys.executable, '-m', 'compileall', '-q', str(OUT / 'hla2010')],
+        env={**os.environ, 'PYTHONPATH': str(OUT)},
+        check=True,
+    )
     # import smoke test
-    import subprocess
-    import sys
     subprocess.run(
         [
             sys.executable,
@@ -945,7 +1007,36 @@ class MinimalFederate(FederateAmbassador):
     )
     # zip
     shutil.make_archive(str(ZIP.with_suffix('')), 'zip', OUT)
-    print(json.dumps({'out': str(OUT), 'zip': str(ZIP), **api_inventory}, indent=2))
+    return {'out': str(OUT), 'zip': str(ZIP), **api_inventory}
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        description='Generate a standalone Python HLA API scaffold from unpacked IEEE spec ZIPs.'
+    )
+    parser.add_argument(
+        '--root',
+        type=Path,
+        default=DEFAULT_ROOT,
+        help='working root containing the downloaded IEEE ZIPs and hla_specs/ tree (default: current directory)',
+    )
+    parser.add_argument(
+        '--output-dir',
+        type=Path,
+        help='output directory for the generated scaffold (default: <root>/hla2010_python_v0_3)',
+    )
+    parser.add_argument(
+        '--zip-path',
+        type=Path,
+        help='zip archive path for the generated scaffold (default: <root>/hla2010_python_v0_3.zip)',
+    )
+    args = parser.parse_args(argv)
+
+    configure_paths(root=args.root, output_dir=args.output_dir, zip_path=args.zip_path)
+    payload = build()
+    print(json.dumps(payload, indent=2))
+    return 0
+
 
 if __name__ == '__main__':
-    build()
+    raise SystemExit(main())

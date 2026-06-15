@@ -4,6 +4,8 @@ import json
 import subprocess
 from pathlib import Path
 
+from tests.typed_json_models import FactorySelectionOutput
+
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -40,8 +42,8 @@ def test_rti_factory_selection_example_script_json_probe_output() -> None:
         check=False,
     )
     assert result.returncode == 0, result.stderr
-    payload = json.loads(result.stdout)
-    assert payload["selected_name"] == "python"
-    assert "in-memory" in payload["selectable_names"]
-    assert payload["backend_info"]["kind"] == "python/in-memory"
-    assert payload["probe"]["available"] is True
+    payload = FactorySelectionOutput.from_mapping(json.loads(result.stdout))
+    assert payload.selected_name == "python"
+    assert "in-memory" in payload.selectable_names
+    assert payload.backend_info.kind == "python/in-memory"
+    assert payload.probe.available is True

@@ -22,6 +22,18 @@ Guard coverage for this boundary lives in
 `tests/test_package_split_scaffolds.py`, `tests/test_root_facade_policy.py`,
 `tests/test_namespace_policy.py`, and `tests/test_python_api_spec.py`.
 
+## Start Here
+
+Use this package when you need to change the public contract or shared spec-side
+behavior.
+
+Shortest path:
+
+1. open `src/hla2010/spec/__init__.py` for public spec ownership
+2. open `src/hla2010/runtime_api.py` for the Pythonic runtime layer
+3. open `src/hla2010/fom.py` for FOM entrypoints
+4. only then read the broader spec maps if the ownership is still unclear
+
 ## Ownership Card
 
 - Edit here for: public RTI method surface, callback contracts, shared exceptions, FOM parsing and merge behavior
@@ -32,6 +44,8 @@ Guard coverage for this boundary lives in
 - Quick tests:
   `python3 -m pytest tests/test_python_api_spec.py tests/factories/test_fom_omt_parsing.py -q`
 
-If you want the user-facing package map, read
-[`../../docs/package_layout.md`](../../docs/package_layout.md) and
-[`../../docs/python_api_spec.md`](../../docs/python_api_spec.md).
+## Read Next
+
+1. [`../../docs/spec_reading_map.md`](../../docs/spec_reading_map.md)
+2. [`../../docs/python_api_spec.md`](../../docs/python_api_spec.md)
+3. [`../../docs/package_layout.md`](../../docs/package_layout.md)

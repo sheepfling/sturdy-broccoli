@@ -21,7 +21,11 @@ def method_source_summary(method_name: str) -> str | None:
     seen: set[str] = set()
     for class_name in ("RTIambassador", "FederateAmbassador"):
         for item in API_METADATA[class_name].get(method_name, ()):
-            language = _LANGUAGE_LABELS.get(item.get("language", ""), item.get("language", "source"))
+            language_key = item.get("language")
+            if isinstance(language_key, str):
+                language = _LANGUAGE_LABELS.get(language_key, language_key)
+            else:
+                language = "source"
             source_file = item.get("source_file")
             source_line = item.get("source_line")
             if not source_file or source_line is None:
