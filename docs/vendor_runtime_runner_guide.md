@@ -7,6 +7,7 @@ Use it when:
 
 - `./tools/certi-easy preflight` reports `environment: loopback-blocked`
 - `./tools/pitch preflight` reports `environment: docker-blocked`
+- `./tools/python verify-routes-preflight` reports `python-grpc: blocked`
 - you need stable real-runtime evidence rather than repo-green coverage
 - you are configuring CI runners for vendor runtime proof
 
@@ -19,6 +20,47 @@ The key split is simple:
   vendor runtime prerequisites skip cleanly
 - `./tools/vendor-green ...`: vendor-green, vendor preflight mandatory,
   blocked prerequisites fail immediately
+
+## Codex Authorization Contract
+
+When this repository runs inside a managed agent sandbox, hosted transports can
+be blocked even when the machine itself is healthy.
+
+The current Python hosted-gRPC signal is:
+
+```bash
+./tools/python verify-routes-preflight --json
+```
+
+Interpret it this way:
+
+- `loopback: ok` means the current execution surface may bind and listen on
+  `127.0.0.1`
+- `loopback: blocked` means the sandbox or runner policy denied local loopback
+  sockets
+- `python_grpc: runnable` means the hosted Python gRPC route may run in this
+  session
+- `python_grpc: blocked` means the route is blocked by session policy, not by
+  repo code
+
+Required capability for hosted Python gRPC:
+
+- TCP `bind` on `127.0.0.1`
+- TCP `listen` / `accept` on that loopback listener
+- TCP `connect` back to that listener
+- ephemeral local ports are sufficient; no fixed port reservation is required
+
+Commands that require that authorization:
+
+- `./tools/python verify-routes-preflight`
+- `./tools/python verify-routes`
+- `python3 -m pytest -q tests/scenarios/test_python_route_parity.py -k grpc`
+- `./tools/target-radar matrix`
+
+If you are using Codex interactively, the supported way to unblock those
+commands is to run them outside the managed sandbox through an approved
+escalated execution. If you are provisioning CI, grant the same loopback socket
+permission on the runner itself.
 
 ## Supported Execution Surfaces
 

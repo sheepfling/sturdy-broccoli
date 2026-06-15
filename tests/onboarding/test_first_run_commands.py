@@ -1,52 +1,62 @@
 from __future__ import annotations
 
 import subprocess
+from dataclasses import dataclass
 from pathlib import Path
 
+from conftest import REPO_ROOT, load_json_fixture, read_repo_text
 
-ROOT = Path(__file__).resolve().parents[2]
+
+ROOT = REPO_ROOT
 FIRST_RUN_DOC = ROOT / "docs" / "first_run.md"
 EXPECTED_OUTPUT = ROOT / "docs" / "examples" / "target_radar_python_expected_output.txt"
 
 
+@dataclass(frozen=True)
+class FirstRunPolicy:
+    doc_contains: tuple[str, ...]
+    doc_absent: tuple[str, ...]
+    existing_paths: tuple[str, ...]
+    bootstrap_plan_contains: tuple[str, ...]
+    expected_output_contains: tuple[str, ...]
+
+    @classmethod
+    def from_mapping(cls, payload: dict[str, object]) -> FirstRunPolicy:
+        return cls(
+            doc_contains=tuple(str(item) for item in payload["doc_contains"]),
+            doc_absent=tuple(str(item) for item in payload["doc_absent"]),
+            existing_paths=tuple(str(item) for item in payload["existing_paths"]),
+            bootstrap_plan_contains=tuple(str(item) for item in payload["bootstrap_plan_contains"]),
+            expected_output_contains=tuple(str(item) for item in payload["expected_output_contains"]),
+        )
+
+
+POLICY = FirstRunPolicy.from_mapping(load_json_fixture("first_run_policy.json"))
+
+
 def _read(path: Path) -> str:
-    return path.read_text(encoding="utf-8")
+    return read_repo_text(path)
 
 
 def test_first_run_doc_uses_canonical_bootstrap_path() -> None:
     text = _read(FIRST_RUN_DOC)
-    assert "./tools/bootstrap doctor" in text
-    assert "./tools/bootstrap python" in text
-    assert "source .venv/bin/activate" in text
-    assert "./tools/rti-factories show in-memory --probe" in text
-    assert "./tools/examples backend-recording" in text
-    assert "./tools/examples target-radar --backend in-memory --steps 5" in text
-    assert "python -m pip install --no-build-isolation" not in text
-    assert "do not use `pip install -e .`" in text
-    assert "manual `pip install -e ...` recovery commands" in text
-    assert "workspace_imports: ok" in text
+    for snippet in POLICY.doc_contains:
+        assert snippet in text
+    for snippet in POLICY.doc_absent:
+        assert snippet not in text
 
 
 def test_first_run_doc_references_expected_output_artifact() -> None:
     text = _read(FIRST_RUN_DOC)
     assert "examples/target_radar_python_expected_output.txt" in text
     expected = _read(EXPECTED_OUTPUT)
-    assert expected.startswith("backend=python/in-memory,python/in-memory")
-    assert "tracks=5" in expected
-    assert "TRK-005" in expected
+    for snippet in POLICY.expected_output_contains:
+        assert snippet in expected
 
 
 def test_first_run_commands_exist() -> None:
-    expected_paths = (
-        ROOT / "tools" / "bootstrap",
-        ROOT / "tools" / "examples",
-        ROOT / "tools" / "rti-factories",
-        ROOT / "examples" / "backend_recording.py",
-        ROOT / "examples" / "rti_factory_selection.py",
-        ROOT / "examples" / "target_radar_simulation.py",
-        EXPECTED_OUTPUT,
-    )
-    for path in expected_paths:
+    for rel_path in POLICY.existing_paths:
+        path = ROOT / rel_path
         assert path.exists(), path.relative_to(ROOT)
 
 
@@ -59,11 +69,8 @@ def test_bootstrap_plan_includes_required_split_packages() -> None:
         check=False,
     )
     assert result.returncode == 0, result.stderr
-    assert "packages/hla2010-spec" in result.stdout
-    assert "packages/hla2010-rti-backend-common" in result.stdout
-    assert "packages/hla2010-rti-python" in result.stdout
-    assert "packages/hla2010-verification-harness" in result.stdout
-    assert "packages/hla2010-fom-target-radar" in result.stdout
+    for snippet in POLICY.bootstrap_plan_contains:
+        assert snippet in result.stdout
 
 
 def test_first_run_examples_import_after_bootstrap() -> None:
