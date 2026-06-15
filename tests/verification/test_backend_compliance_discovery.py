@@ -26,7 +26,7 @@ from tests.pitch_clause4_policy_helpers import (
     PITCH_CLAUSE4_RESIDUAL_FRONTIER,
 )
 from tests.conftest import REPO_ROOT, load_compliance_json, load_compliance_text, load_json_fixture
-from tests.verification.evidence_bundles import bundle
+from .evidence_bundles import bundle
 
 
 ALLOWED_DISPOSITIONS = {

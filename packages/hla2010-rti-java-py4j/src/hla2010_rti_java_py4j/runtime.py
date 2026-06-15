@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from typing import Any, Mapping
 
 from hla2010.fom import module_uri
-from hla2010_rti_java_common import CALLBACK_METHOD_NAMES, BackendUnavailableError
+from hla2010_rti_java_common import CALLBACK_METHOD_NAMES, BackendUnavailableError, reset_py4j_callback_client
 from hla2010.types import RangeBounds
 from hla2010_rti_java_common.java_common import (
     JavaBridge,
@@ -228,6 +228,7 @@ class Py4JBridge(JavaBridge):
 
         if config.gateway is not None:
             self.gateway = config.gateway
+            reset_py4j_callback_client(self.gateway)
             return
 
         try:
@@ -241,6 +242,10 @@ class Py4JBridge(JavaBridge):
             gateway_parameters=gateway_parameters,
             callback_server_parameters=callback_parameters,
         )
+        start_callback_server = getattr(self.gateway, "start_callback_server", None)
+        if callable(start_callback_server):
+            start_callback_server()
+        reset_py4j_callback_client(self.gateway)
         self.owns_gateway = True
 
     def call(self, obj: Any, method_name: str, *args: Any) -> Any:

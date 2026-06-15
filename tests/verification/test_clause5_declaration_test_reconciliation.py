@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections import Counter
 from pathlib import Path
 
-from tests.verification.reconciliation_helpers import (
+from .reconciliation_helpers import (
     assert_mapped_test_rows_with_companions,
     read_csv_rows,
     status_counts,

@@ -4,7 +4,7 @@ from collections import Counter
 from pathlib import Path
 
 from hla2010_repo_internal.requirements_packet import load_imported_hla_packet
-from tests.verification.reconciliation_helpers import read_csv_rows, rows_by_id, status_counts
+from .reconciliation_helpers import read_csv_rows, rows_by_id, status_counts
 
 
 RECONCILIATION_PATH = (

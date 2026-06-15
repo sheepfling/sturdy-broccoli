@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import sys
+import types
+
 from hla2010_rti_backend_common import RTIBackendPlugin
 
 
@@ -44,3 +47,51 @@ def test_split_java_plugin_packages_export_generic_plugin_descriptors():
     assert py4j_descriptor.name == "py4j"
     assert jpype_descriptor.family == "java"
     assert py4j_descriptor.family == "java"
+
+
+def test_generic_py4j_bridge_resets_callback_client_for_provided_gateway(monkeypatch):
+    from hla2010_rti_java_py4j.runtime import Py4JBridge, Py4JConfig
+
+    gateway = object()
+    captured: list[object] = []
+    monkeypatch.setattr(
+        "hla2010_rti_java_py4j.runtime.reset_py4j_callback_client",
+        lambda actual_gateway: captured.append(actual_gateway),
+    )
+
+    bridge = Py4JBridge(Py4JConfig(gateway=gateway))
+
+    assert bridge.gateway is gateway
+    assert captured == [gateway]
+
+
+def test_generic_py4j_bridge_starts_and_resets_owned_gateway(monkeypatch):
+    from hla2010_rti_java_py4j.runtime import Py4JBridge, Py4JConfig
+
+    captured: dict[str, object] = {}
+
+    class FakeGateway:
+        def __init__(self, *, gateway_parameters, callback_server_parameters):
+            self.gateway_parameters = gateway_parameters
+            self.callback_server_parameters = callback_server_parameters
+            self.started = False
+
+        def start_callback_server(self):
+            self.started = True
+
+    fake_py4j = types.ModuleType("py4j.java_gateway")
+    fake_py4j.CallbackServerParameters = lambda **kwargs: ("callback", kwargs)
+    fake_py4j.GatewayParameters = lambda **kwargs: ("gateway", kwargs)
+    fake_py4j.JavaGateway = FakeGateway
+    monkeypatch.setitem(sys.modules, "py4j.java_gateway", fake_py4j)
+    monkeypatch.setattr(
+        "hla2010_rti_java_py4j.runtime.reset_py4j_callback_client",
+        lambda gateway: captured.setdefault("gateway", gateway),
+    )
+
+    bridge = Py4JBridge(Py4JConfig())
+
+    assert isinstance(bridge.gateway, FakeGateway)
+    assert bridge.owns_gateway is True
+    assert bridge.gateway.started is True
+    assert captured["gateway"] is bridge.gateway
