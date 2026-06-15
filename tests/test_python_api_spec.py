@@ -165,8 +165,22 @@ def test_backend_entry_point_loader_skips_unimportable_optional_plugins(monkeypa
             return (_BrokenEntryPoint(),)
 
     monkeypatch.setattr(runtime_factory.metadata, "entry_points", lambda: _EntryPoints())
+    monkeypatch.setattr(runtime_factory, "_SOURCE_CHECKOUT_PLUGIN_MODULES", ())
 
     assert runtime_factory._iter_entry_point_backend_plugins() == []
+
+
+def test_runtime_factory_falls_back_to_source_checkout_plugins(monkeypatch):
+    class _EntryPoints:
+        def select(self, *, group):
+            assert group == "hla2010.rti_backends"
+            return ()
+
+    monkeypatch.setattr(runtime_factory.metadata, "entry_points", lambda: _EntryPoints())
+
+    plugins = runtime_factory._iter_source_checkout_backend_plugins()
+    names = {plugin.name for plugin in plugins}
+    assert "python" in names
 
 
 def test_top_level_package_defaults_to_the_clean_spec_layer():
