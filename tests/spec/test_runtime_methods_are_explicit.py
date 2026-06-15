@@ -62,7 +62,7 @@ def test_all_callback_methods_are_defined_on_recording_federate_ambassador() -> 
         assert snake_name in RecordingFederateAmbassador.__dict__
 
 
-def test_snake_case_alias_routes_to_same_backend_invocation() -> None:
+def test_snake_case_method_routes_to_same_backend_invocation() -> None:
     backend = RecordingBackend(results={"timeAdvanceRequest": "ok"})
     rti = make_rti_ambassador(backend)
 

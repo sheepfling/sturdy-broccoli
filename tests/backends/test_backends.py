@@ -20,7 +20,7 @@ def test_delegating_ambassador_is_concrete():
     assert backend.calls[-1].method_name == "getFederateName"
 
 
-def test_snake_case_alias_forwards_to_source_method():
+def test_snake_case_method_forwards_to_service_key():
     backend = RecordingBackend(results={"createRegion": "region"})
     rti = make_rti_ambassador(backend)
     assert rti.create_region("space", {"dimension"}) == "region"
