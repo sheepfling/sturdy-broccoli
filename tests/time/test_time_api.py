@@ -7,6 +7,11 @@ from hla2010.enums import CallbackModel
 from hla2010.handles import MessageRetractionHandle
 from hla2010.types import TimeQueryReturn
 from hla2010_rti_python import InMemoryRTIEngine, rti_ambassador
+from tests.requirement_marker_groups import (
+    TM_ADVANCE_AND_GRANT_REQUIREMENTS,
+    TM_REQUEST_RETRACTION_REQUIREMENTS,
+    TM_TIME_QUERY_API_REQUIREMENTS,
+)
 
 
 def _drain(*rtis, rounds: int = 20) -> None:
@@ -29,12 +34,7 @@ def _joined_pair(name: str):
     return left, right, left_fed, right_fed
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-TM-8.16-QUERYGALT-TEST-001",
-    "HLA1516.1-TM-8.17-QUERYLOGICALTIME-TEST-001",
-    "HLA1516.1-TM-8.18-QUERYLITS-TEST-001",
-    "HLA1516.1-TM-8.19-MODIFYLOOKAHEAD-TEST-001",
-)
+@pytest.mark.requirements(*TM_TIME_QUERY_API_REQUIREMENTS)
 def test_time_query_api_reports_galt_lits_logical_time_and_lookahead():
     regulator, constrained, regulator_fed, constrained_fed = _joined_pair("time-api-query-fed")
     factory = regulator.get_time_factory()
@@ -55,13 +55,7 @@ def test_time_query_api_reports_galt_lits_logical_time_and_lookahead():
     assert constrained.query_lits().time == factory.make_time(1.0)
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-TM-8.8-TIMEADVANCEREQUEST-TEST-001",
-    "HLA1516.1-TM-8.9-TIMEADVANCEREQUESTAVAILABLE-TEST-001",
-    "HLA1516.1-TM-8.10-NEXTMESSAGEREQUEST-TEST-001",
-    "HLA1516.1-TM-8.11-NEXTMESSAGEREQUESTAVAILABLE-TEST-001",
-    "HLA1516.1-TM-8.12-FLUSHQUEUEREQUEST-TEST-001",
-)
+@pytest.mark.requirements(*TM_ADVANCE_AND_GRANT_REQUIREMENTS)
 def test_time_advance_api_delivers_tso_callbacks_before_or_with_grants():
     sender, receiver, sender_fed, receiver_fed = _joined_pair("time-api-advance-fed")
     factory = sender.get_time_factory()
@@ -93,7 +87,7 @@ def test_time_advance_api_delivers_tso_callbacks_before_or_with_grants():
     assert receiver_fed.last_callback("timeAdvanceGrant").args[0] == factory.make_time(3.0)
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.22-REQUESTRETRACTION-TEST-001")
+@pytest.mark.requirements(*TM_REQUEST_RETRACTION_REQUIREMENTS)
 def test_time_api_retraction_before_delivery_removes_queued_tso_callback():
     sender, receiver, _sender_fed, receiver_fed = _joined_pair("time-api-retract-fed")
     factory = sender.get_time_factory()
@@ -115,4 +109,3 @@ def test_time_api_retraction_before_delivery_removes_queued_tso_callback():
 
     assert not receiver_fed.callbacks_named("receiveInteraction")
     assert receiver_fed.last_callback("timeAdvanceGrant").args[0] == factory.make_time(5.0)
-

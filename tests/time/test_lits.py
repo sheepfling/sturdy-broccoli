@@ -5,10 +5,11 @@ import pytest
 from hla2010.time import HLAinteger64Time
 from hla2010_rti_backend_common.time_management import compute_lits, queued_tso_messages
 
+from tests.requirement_marker_groups import TM_QUERY_LITS_REQUIREMENTS
 from tests.time._time_algorithm_support import DummyMessage, federation, regulating_federate, target_federate
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.18-QUERYLITS-TEST-001")
+@pytest.mark.requirements(*TM_QUERY_LITS_REQUIREMENTS)
 def test_compute_lits_returns_invalid_without_galt_or_queued_tso_and_message_only_when_no_galt():
     target = target_federate()
     fed = federation(("target", target))
@@ -23,7 +24,7 @@ def test_compute_lits_returns_invalid_without_galt_or_queued_tso_and_message_onl
     assert message_only.time == HLAinteger64Time(7)
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.18-QUERYLITS-TEST-001")
+@pytest.mark.requirements(*TM_QUERY_LITS_REQUIREMENTS)
 def test_compute_lits_is_minimum_of_valid_galt_and_recipient_tso_queue():
     regulator = regulating_federate(current_time=4, lookahead=2)
     target = target_federate()
@@ -36,7 +37,7 @@ def test_compute_lits_is_minimum_of_valid_galt_and_recipient_tso_queue():
     assert compute_lits(fed, target).time == HLAinteger64Time(3)
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.18-QUERYLITS-TEST-001")
+@pytest.mark.requirements(*TM_QUERY_LITS_REQUIREMENTS)
 def test_lits_queue_filtering_ignores_retracted_delivered_and_wrong_recipient_messages():
     target = target_federate()
     other = target_federate()

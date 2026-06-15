@@ -20,6 +20,17 @@ from hla2010_rti_backend_common.time_management import (
     queued_tso_messages,
     valid_tso_lower_bound,
 )
+from tests.requirement_marker_groups import (
+    TM_ADVANCE_AND_GRANT_REQUIREMENTS,
+    TM_FLUSH_QUEUE_REQUIREMENTS,
+    TM_NEXT_MESSAGE_REQUIREMENTS,
+    TM_QUERY_GALT_AND_LITS_REQUIREMENTS,
+    TM_QUERY_GALT_REQUIREMENTS,
+    TM_QUERY_LITS_REQUIREMENTS,
+    TM_TIME_ADVANCE_REQUEST_REQUIREMENTS,
+    TM_TSO_QUEUE_REQUIREMENTS,
+    TM_VALID_TSO_LOWER_BOUND_REQUIREMENTS,
+)
 
 
 @dataclass
@@ -76,7 +87,7 @@ def _federation(*pairs: tuple[str, DummyFederate]) -> DummyFederation:
     return DummyFederation(federates={name: federate for name, federate in pairs})
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.1.6-TSOQUEUE-TEST-001")
+@pytest.mark.requirements(*TM_TSO_QUEUE_REQUIREMENTS)
 def test_tso_message_queue_enqueues_filters_and_lists_deliverable_messages_through_boundary():
     target = object()
     other = object()
@@ -97,7 +108,7 @@ def test_tso_message_queue_enqueues_filters_and_lists_deliverable_messages_throu
     assert queue.peek_deliverable(recipient=target, boundary=HLAinteger64Time(5)).sequence == 2
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.1.6-TSOQUEUE-TEST-001")
+@pytest.mark.requirements(*TM_TSO_QUEUE_REQUIREMENTS)
 def test_tso_message_queue_retracts_before_delivery_and_rejects_retraction_after_delivery():
     target = object()
     queue = TSOMessageQueue(
@@ -118,7 +129,7 @@ def test_tso_message_queue_retracts_before_delivery_and_rejects_retraction_after
     assert queue.active_messages(target) == ()
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.1.6-TSOQUEUE-TEST-001")
+@pytest.mark.requirements(*TM_TSO_QUEUE_REQUIREMENTS)
 def test_tso_message_queue_pop_supports_exclusive_boundary_and_earliest_only_modes():
     target = object()
     queue = TSOMessageQueue(
@@ -147,7 +158,7 @@ def test_tso_message_queue_pop_supports_exclusive_boundary_and_earliest_only_mod
     assert [message.sequence for message in queue.active_messages(target)] == [4]
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.1.6-TSOQUEUE-TEST-001")
+@pytest.mark.requirements(*TM_TSO_QUEUE_REQUIREMENTS)
 def test_tso_message_queue_matches_recipient_handles_and_ignores_delivered_messages():
     recipient = DummyFederate()
     other = DummyFederate()
@@ -163,7 +174,7 @@ def test_tso_message_queue_matches_recipient_handles_and_ignores_delivered_messa
     assert [message.sequence for message in queue.active_messages(recipient)] == [3]
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.16-QUERYGALT-TEST-001")
+@pytest.mark.requirements(*TM_QUERY_GALT_REQUIREMENTS)
 def test_compute_galt_returns_invalid_without_regulating_contributors_and_minimum_of_other_regulators():
     target = _target_federate()
     federation = _federation(("target", target))
@@ -182,7 +193,7 @@ def test_compute_galt_returns_invalid_without_regulating_contributors_and_minimu
     assert galt.time == HLAinteger64Time(4)
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.1.4-LOWERBOUND-TEST-001")
+@pytest.mark.requirements(*TM_VALID_TSO_LOWER_BOUND_REQUIREMENTS)
 def test_non_regulating_federates_do_not_contribute_valid_tso_lower_bounds():
     fed = DummyFederate(
         current_time=HLAinteger64Time(4),
@@ -197,7 +208,7 @@ def test_non_regulating_federates_do_not_contribute_valid_tso_lower_bounds():
     assert compute_galt(federation, target).time_is_valid is False
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.16-QUERYGALT-TEST-001")
+@pytest.mark.requirements(*TM_QUERY_GALT_REQUIREMENTS)
 def test_compute_galt_excludes_querying_and_inactive_federates():
     target = _regulating_federate(current_time=1, lookahead=1)
     active = _regulating_federate(current_time=10, lookahead=2)
@@ -221,7 +232,7 @@ def test_compute_galt_excludes_querying_and_inactive_federates():
     assert self_included.time == HLAinteger64Time(2)
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.16-QUERYGALT-TEST-001")
+@pytest.mark.requirements(*TM_QUERY_GALT_REQUIREMENTS)
 def test_negative_lookahead_is_rejected_before_galt_contribution():
     target = _target_federate()
     bad = _regulating_federate(current_time=4, lookahead=-1)
@@ -231,7 +242,7 @@ def test_negative_lookahead_is_rejected_before_galt_contribution():
         compute_galt(federation, target)
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.16-QUERYGALT-TEST-001", "HLA1516.1-TM-8.18-QUERYLITS-TEST-001")
+@pytest.mark.requirements(*TM_QUERY_GALT_AND_LITS_REQUIREMENTS)
 def test_compute_lits_can_be_invalid_without_galt_or_messages_and_valid_from_messages_without_galt():
     target = _target_federate()
     federation = _federation(("target", target))
@@ -246,7 +257,7 @@ def test_compute_lits_can_be_invalid_without_galt_or_messages_and_valid_from_mes
     assert with_message.time == HLAinteger64Time(7)
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.18-QUERYLITS-TEST-001")
+@pytest.mark.requirements(*TM_QUERY_LITS_REQUIREMENTS)
 def test_compute_lits_uses_galt_and_queued_timestamp_order_messages():
     left = _regulating_federate(current_time=4, lookahead=2)
     right = _regulating_federate(current_time=8, lookahead=1, pending=3)
@@ -269,7 +280,7 @@ def test_compute_lits_uses_galt_and_queued_timestamp_order_messages():
     assert lits.time == HLAinteger64Time(2)
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.18-QUERYLITS-TEST-001")
+@pytest.mark.requirements(*TM_QUERY_LITS_REQUIREMENTS)
 def test_compute_lits_can_be_galt_only_and_takes_minimum_of_galt_and_messages():
     left = _regulating_federate(current_time=4, lookahead=2)
     target = _target_federate()
@@ -286,7 +297,7 @@ def test_compute_lits_can_be_galt_only_and_takes_minimum_of_galt_and_messages():
     assert compute_lits(federation, target).time == HLAinteger64Time(3)
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.18-QUERYLITS-TEST-001")
+@pytest.mark.requirements(*TM_QUERY_LITS_REQUIREMENTS)
 def test_queued_tso_messages_ignore_retracted_and_wrong_recipient_messages_and_preserve_sequence_order():
     target = _target_federate()
     other = _target_federate()
@@ -319,10 +330,7 @@ def test_queued_tso_messages_ignore_retracted_and_wrong_recipient_messages_and_p
     assert compute_lits(federation, target).time == HLAinteger64Time(4)
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-TM-8.10-NEXTMESSAGEREQUEST-TEST-001",
-    "HLA1516.1-TM-8.11-NEXTMESSAGEREQUESTAVAILABLE-TEST-001",
-)
+@pytest.mark.requirements(*TM_NEXT_MESSAGE_REQUIREMENTS)
 def test_next_message_request_strictly_rejects_equal_galt_while_available_request_can_grant_it():
     sender = _regulating_federate(current_time=4, lookahead=1)
     target = _target_federate(time_constrained_enabled=True)
@@ -425,7 +433,7 @@ def test_valid_tso_lower_bound_uses_pending_advance_base_for_lookahead():
     assert valid_tso_lower_bound(fed) == HLAinteger64Time(4)
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.8-TIMEADVANCEREQUEST-TEST-001")
+@pytest.mark.requirements(*TM_TIME_ADVANCE_REQUEST_REQUIREMENTS)
 def test_compute_grant_decision_rejects_unknown_modes_and_past_requested_times():
     target = DummyFederate(current_time=HLAinteger64Time(5), time_constrained_enabled=True)
     federation = _federation(("target", target))
@@ -447,13 +455,7 @@ def test_compute_grant_decision_rejects_unknown_modes_and_past_requested_times()
     assert past.reason == "requested time is before current time"
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-TM-8.8-TIMEADVANCEREQUEST-TEST-001",
-    "HLA1516.1-TM-8.9-TIMEADVANCEREQUESTAVAILABLE-TEST-001",
-    "HLA1516.1-TM-8.10-NEXTMESSAGEREQUEST-TEST-001",
-    "HLA1516.1-TM-8.11-NEXTMESSAGEREQUESTAVAILABLE-TEST-001",
-    "HLA1516.1-TM-8.12-FLUSHQUEUEREQUEST-TEST-001",
-)
+@pytest.mark.requirements(*TM_ADVANCE_AND_GRANT_REQUIREMENTS)
 @pytest.mark.parametrize(
     ("mode", "requested", "expected_can_grant", "expected_grant"),
     [
@@ -485,7 +487,7 @@ def test_compute_grant_decision_galt_boundary_matrix(mode, requested, expected_c
         assert decision.grant_time == HLAinteger64Time(expected_grant)
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.8-TIMEADVANCEREQUEST-TEST-001")
+@pytest.mark.requirements(*TM_TIME_ADVANCE_REQUEST_REQUIREMENTS)
 def test_compute_grant_decision_no_galt_respects_non_regulated_grant_switch():
     target = DummyFederate(
         current_time=HLAinteger64Time(3),
@@ -520,13 +522,7 @@ def test_compute_grant_decision_no_galt_respects_non_regulated_grant_switch():
     assert disabled_current.grant_time == HLAinteger64Time(3)
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-TM-8.8-TIMEADVANCEREQUEST-TEST-001",
-    "HLA1516.1-TM-8.9-TIMEADVANCEREQUESTAVAILABLE-TEST-001",
-    "HLA1516.1-TM-8.10-NEXTMESSAGEREQUEST-TEST-001",
-    "HLA1516.1-TM-8.11-NEXTMESSAGEREQUESTAVAILABLE-TEST-001",
-    "HLA1516.1-TM-8.12-FLUSHQUEUEREQUEST-TEST-001",
-)
+@pytest.mark.requirements(*TM_ADVANCE_AND_GRANT_REQUIREMENTS)
 @pytest.mark.parametrize(
     ("mode", "expected_grant", "expected_sequences"),
     [
@@ -662,7 +658,7 @@ def test_time_advance_requests_deliver_all_messages_through_requested_time_when_
     assert [msg.sequence for msg in available.deliverable_messages] == [1, 2, 3]
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.8-TIMEADVANCEREQUEST-TEST-001")
+@pytest.mark.requirements(*TM_TIME_ADVANCE_REQUEST_REQUIREMENTS)
 def test_time_advance_request_blocked_by_galt_does_not_deliver_pre_galt_messages():
     regulator = _regulating_federate(current_time=4, lookahead=1)
     target = _target_federate(time_constrained_enabled=True)
@@ -680,7 +676,7 @@ def test_time_advance_request_blocked_by_galt_does_not_deliver_pre_galt_messages
     assert decision.reason == "requested time is beyond GALT"
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.12-FLUSHQUEUEREQUEST-TEST-001")
+@pytest.mark.requirements(*TM_FLUSH_QUEUE_REQUIREMENTS)
 def test_flush_queue_request_limited_by_galt_before_queued_messages_grants_without_delivery():
     regulator = _regulating_federate(current_time=4, lookahead=1)
     target = _target_federate(time_constrained_enabled=True)
@@ -705,7 +701,7 @@ def test_flush_queue_request_limited_by_galt_before_queued_messages_grants_witho
     assert decision.deliverable_messages == ()
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.12-FLUSHQUEUEREQUEST-TEST-001")
+@pytest.mark.requirements(*TM_FLUSH_QUEUE_REQUIREMENTS)
 def test_flush_queue_request_delivers_messages_at_inclusive_galt_boundary():
     regulator = _regulating_federate(current_time=4, lookahead=1)
     target = _target_federate(time_constrained_enabled=True)
@@ -780,7 +776,7 @@ def test_compute_grant_decision_next_message_request_uses_earliest_eligible_time
     assert [msg.sequence for msg in flush.deliverable_messages] == [1]
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.12-FLUSHQUEUEREQUEST-TEST-001")
+@pytest.mark.requirements(*TM_FLUSH_QUEUE_REQUIREMENTS)
 def test_flush_queue_request_does_not_deliver_messages_past_the_request_or_grant_boundary():
     sender = _regulating_federate(current_time=9, lookahead=1)
     target = _target_federate(time_constrained_enabled=True)

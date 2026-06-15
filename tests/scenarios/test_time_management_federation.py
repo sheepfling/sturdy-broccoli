@@ -5,6 +5,11 @@ import pytest
 from hla2010_rti_backend_common import RecordingFederateAmbassador
 from hla2010.enums import CallbackModel, ResignAction
 from hla2010_rti_python import InMemoryRTIEngine, rti_ambassador
+from tests.requirement_marker_groups import (
+    TM_FLUSH_QUEUE_REQUIREMENTS,
+    TM_THREE_FEDERATE_SCENARIO_REQUIREMENTS,
+    TM_TWO_FEDERATE_SCENARIO_REQUIREMENTS,
+)
 
 
 def _drain(*rtis, rounds: int = 25) -> None:
@@ -31,11 +36,7 @@ def _track_interaction(rti):
     return interaction, track_id
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-TM-8.8-TIMEADVANCEREQUEST-TEST-001",
-    "HLA1516.1-TM-8.10-NEXTMESSAGEREQUEST-TEST-001",
-    "HLA1516.1-TM-8.18-QUERYLITS-TEST-001",
-)
+@pytest.mark.requirements(*TM_TWO_FEDERATE_SCENARIO_REQUIREMENTS)
 def test_two_federate_regulated_constrained_exchange_and_simultaneous_timestamp_delivery():
     (sender, receiver), (_sender_fed, receiver_fed) = _joined_group("scenario-two-fed-time", 2)
     factory = sender.get_time_factory()
@@ -60,10 +61,7 @@ def test_two_federate_regulated_constrained_exchange_and_simultaneous_timestamp_
     assert receiver_fed.last_callback("timeAdvanceGrant").args[0] == factory.make_time(2.0)
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-TM-8.16-QUERYGALT-TEST-001",
-    "HLA1516.1-TM-8.18-QUERYLITS-TEST-001",
-)
+@pytest.mark.requirements(*TM_THREE_FEDERATE_SCENARIO_REQUIREMENTS)
 def test_three_federate_mixed_regulating_non_regulating_galt_and_resign():
     (left, right, observer), (_left_fed, _right_fed, _observer_fed) = _joined_group("scenario-three-fed-time", 3)
     factory = left.get_time_factory()
@@ -82,7 +80,7 @@ def test_three_federate_mixed_regulating_non_regulating_galt_and_resign():
     assert observer.query_galt().time == factory.make_time(6.0)
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.12-FLUSHQUEUEREQUEST-TEST-001")
+@pytest.mark.requirements(*TM_FLUSH_QUEUE_REQUIREMENTS)
 def test_scenario_fqr_grants_at_earliest_boundary_and_does_not_flush_later_messages():
     (sender, receiver), (_sender_fed, receiver_fed) = _joined_group("scenario-fqr-fed", 2)
     factory = sender.get_time_factory()
@@ -104,4 +102,3 @@ def test_scenario_fqr_grants_at_earliest_boundary_and_does_not_flush_later_messa
     delivered = [record.args[2] for record in receiver_fed.callbacks_named("receiveInteraction")]
     assert delivered == [b"first"]
     assert receiver_fed.last_callback("timeAdvanceGrant").args[0] == factory.make_time(3.0)
-

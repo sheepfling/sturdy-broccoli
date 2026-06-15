@@ -5,10 +5,14 @@ import pytest
 from hla2010.time import HLAinteger64Time
 from hla2010_rti_backend_common.time_management import TAR, TimeAdvanceRequestState, compute_galt, valid_tso_lower_bound
 
+from tests.requirement_marker_groups import (
+    TM_QUERY_GALT_REQUIREMENTS,
+    TM_VALID_TSO_LOWER_BOUND_REQUIREMENTS,
+)
 from tests.time._time_algorithm_support import DummyFederate, federation, regulating_federate, target_federate
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.1.4-LOWERBOUND-TEST-001")
+@pytest.mark.requirements(*TM_VALID_TSO_LOWER_BOUND_REQUIREMENTS)
 def test_valid_tso_lower_bound_requires_time_regulation_and_uses_pending_minimum_base():
     disabled = regulating_federate(current_time=4, lookahead=2)
     disabled.time_regulation_enabled = False
@@ -21,7 +25,7 @@ def test_valid_tso_lower_bound_requires_time_regulation_and_uses_pending_minimum
     assert valid_tso_lower_bound(active) == HLAinteger64Time(4)
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.16-QUERYGALT-TEST-001")
+@pytest.mark.requirements(*TM_QUERY_GALT_REQUIREMENTS)
 def test_compute_galt_uses_other_active_regulators_only_and_returns_invalid_when_none_contribute():
     target = target_federate()
     assert compute_galt(federation(("target", target)), target).time_is_valid is False
@@ -47,7 +51,7 @@ def test_compute_galt_uses_other_active_regulators_only_and_returns_invalid_when
     assert result.time == HLAinteger64Time(10)
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.16-QUERYGALT-TEST-001")
+@pytest.mark.requirements(*TM_QUERY_GALT_REQUIREMENTS)
 def test_compute_galt_rejects_negative_lookahead_contribution():
     target = target_federate()
     bad = regulating_federate(current_time=4, lookahead=-1)

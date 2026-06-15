@@ -5,10 +5,11 @@ import pytest
 from hla2010.time import HLAinteger64Time
 from hla2010_rti_backend_common.time_management import TSOMessage, TSOMessageQueue
 
+from tests.requirement_marker_groups import TM_TSO_QUEUE_REQUIREMENTS
 from tests.time._time_algorithm_support import DummyFederate
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.1.6-TSOQUEUE-TEST-001")
+@pytest.mark.requirements(*TM_TSO_QUEUE_REQUIREMENTS)
 def test_tso_queue_orders_by_timestamp_then_sequence_and_filters_recipient():
     target = DummyFederate()
     other = DummyFederate()
@@ -31,7 +32,7 @@ def test_tso_queue_orders_by_timestamp_then_sequence_and_filters_recipient():
     ]
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.1.6-TSOQUEUE-TEST-001")
+@pytest.mark.requirements(*TM_TSO_QUEUE_REQUIREMENTS)
 def test_tso_queue_retracts_before_delivery_and_rejects_after_delivery():
     target = DummyFederate()
     queue = TSOMessageQueue(
@@ -51,7 +52,7 @@ def test_tso_queue_retracts_before_delivery_and_rejects_after_delivery():
     assert queue.retract("r2") is False
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8.1.6-TSOQUEUE-TEST-001")
+@pytest.mark.requirements(*TM_TSO_QUEUE_REQUIREMENTS)
 def test_tso_queue_supports_exclusive_boundaries_and_earliest_only_groups():
     target = DummyFederate()
     queue = TSOMessageQueue(
