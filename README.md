@@ -21,6 +21,15 @@ If you want to understand the package split, start here:
 - [`docs/package_dependency_tree.md`](docs/package_dependency_tree.md)
 - [`packages/README.md`](packages/README.md)
 
+This root `README` owns only three jobs:
+
+- show the shortest runnable path
+- point to the primary edit and trace lanes
+- name the supported operator entrypoints
+
+It is not the full architecture catalog, backend inventory, or package-family
+map. Those live under `docs/` and `packages/`.
+
 The repo is organized as a monorepo workspace:
 
 - `src/hla2010/` is the root Python package for the abstract/core API plus the documented temporary compatibility facade `hla2010.rti`
@@ -84,7 +93,7 @@ python examples/backend_recording.py
 ./tools/test
 ```
 
-If you need the vendor flows, use the `tools/` operator surface:
+If you need the vendor flows, stay on the `tools/` operator surface:
 
 ```bash
 ./tools/certi-easy preflight
@@ -96,9 +105,23 @@ If you need the vendor flows, use the `tools/` operator surface:
 ./tools/pitch smoke
 ./tools/pitch verify
 
+./tools/test-surface recommend
+./tools/python verify-routes-preflight
+./tools/python verify-routes
+./tools/python verify-fast
 ./tools/python verify
 ./tools/vendor-green matrix
 ```
+
+## Concrete Lanes
+
+These are the primary newcomer lanes:
+
+- run something: [`docs/first_run.md`](docs/first_run.md)
+- edit one service: [`docs/python_rti_edit_one_service.md`](docs/python_rti_edit_one_service.md)
+- create one FOM package: [`docs/create_federate_and_fom.md`](docs/create_federate_and_fom.md)
+- trace one method: [`docs/requirements_trace_one_method.md`](docs/requirements_trace_one_method.md)
+- understand ownership: [`packages/README.md`](packages/README.md)
 
 ## What This Repo Is For
 

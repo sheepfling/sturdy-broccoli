@@ -1,0 +1,190 @@
+{
+  "lanes": [
+    {
+      "id": "fast",
+      "title": "Fast Python/operator lane",
+      "description": "Low-cost contributor lane for operator wrappers, docs hygiene, and Python matrix policy checks.",
+      "owner_command": [
+        "./tools/python",
+        "verify-fast"
+      ],
+      "commands": [
+        [
+          "./tools/python",
+          "verify-fast"
+        ]
+      ],
+      "docs": [
+        "README.md",
+        "docs/test_surface.md",
+        "docs/local_verification_commands.md"
+      ],
+      "estimated_cost": "low",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "always-ready",
+        "reason": "Pure Python operator lane."
+      }
+    },
+    {
+      "id": "repo-green",
+      "title": "Repo-green lane",
+      "description": "Full repo-green verification path for the supported local Python workspace.",
+      "owner_command": [
+        "./tools/python",
+        "verify"
+      ],
+      "commands": [
+        [
+          "./tools/python",
+          "verify"
+        ]
+      ],
+      "docs": [
+        "README.md",
+        "docs/top_to_bottom_green.md",
+        "docs/vendor_runtime_runner_guide.md"
+      ],
+      "estimated_cost": "high",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "always-ready",
+        "reason": "Repo-green wrapper handles vendor blocking internally."
+      }
+    },
+    {
+      "id": "python-routes",
+      "title": "Hosted Python parity lane",
+      "description": "Direct-versus-hosted Python RTI verification lane for transport-boundary parity, hosted route examples, and loopback preflighted hygiene.",
+      "owner_command": [
+        "./tools/python",
+        "verify-routes"
+      ],
+      "commands": [
+        [
+          "./tools/python",
+          "verify-routes-preflight"
+        ],
+        [
+          "./tools/python",
+          "verify-routes"
+        ]
+      ],
+      "docs": [
+        "docs/networked_rti_python.md",
+        "docs/test_surface.md",
+        "docs/local_verification_commands.md"
+      ],
+      "estimated_cost": "medium",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "aggregate",
+        "policy": "all-ready",
+        "checks": [
+          {
+            "id": "python-routes",
+            "argv": [
+              "./tools/python",
+              "verify-routes-preflight",
+              "--json"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "vendor",
+      "title": "Strict vendor-runtime lane",
+      "description": "Dedicated real-runtime lane for CERTI and Pitch after explicit preflight.",
+      "owner_command": [
+        "./tools/vendor-green",
+        "matrix"
+      ],
+      "commands": [
+        [
+          "./tools/vendor-green",
+          "matrix"
+        ]
+      ],
+      "docs": [
+        "docs/vendor_runtime_runner_guide.md",
+        "docs/preflight_artifacts.md",
+        "docs/install_matrix.md"
+      ],
+      "estimated_cost": "high",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "aggregate",
+        "policy": "all-ready",
+        "checks": [
+          {
+            "id": "certi",
+            "argv": [
+              "./tools/certi-easy",
+              "preflight",
+              "--json"
+            ]
+          },
+          {
+            "id": "pitch",
+            "argv": [
+              "./tools/pitch",
+              "preflight",
+              "--json"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "matrix",
+      "title": "Compliance and matrix lane",
+      "description": "Regenerate compliance artifacts, discover backend coverage, and rerun the Section 8 backend gate.",
+      "owner_command": [
+        "./tools/test-surface",
+        "run",
+        "matrix"
+      ],
+      "commands": [
+        [
+          "./tools/compliance",
+          "generate"
+        ],
+        [
+          "./tools/compliance",
+          "discover",
+          "--show-backlog"
+        ],
+        [
+          "./tools/section8-gate"
+        ]
+      ],
+      "docs": [
+        "docs/backend_compliance_discovery.md",
+        "docs/rti_options_and_test_matrix.md",
+        "docs/test_surface.md"
+      ],
+      "estimated_cost": "medium",
+      "audience": [
+        "user",
+        "agent"
+      ],
+      "preflight": {
+        "kind": "always-ready",
+        "reason": "Generated-artifact lane stays within repo tooling."
+      }
+    }
+  ]
+}
