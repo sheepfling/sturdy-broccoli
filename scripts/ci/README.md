@@ -61,7 +61,7 @@ The rule is simple:
   it also runs a lightweight `vendor-runner-contract` guard so the runner
   template, validator profiles, and workflow env blocks do not drift apart.
   Specifically:
-  `vendor-runner-contract` runs `python3 scripts/check_vendor_runner_template_drift.py`;
+  `vendor-runner-contract` runs `./.venv/bin/python scripts/check_vendor_runner_template_drift.py`;
   `repo-green` runs `./scripts/ci/repo_green.sh`, while the vendor-runtime jobs
   run `./scripts/ci/vendor_green.sh ...`.
   For local reruns, `./scripts/ci/github_ci_local.sh` now supports explicit

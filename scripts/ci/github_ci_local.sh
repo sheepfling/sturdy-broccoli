@@ -72,7 +72,7 @@ lane_override_var() {
 run_default_mode() {
   run_lane vendor_runner_contract \
     HLA2010_GITHUB_CI_LOCAL_VENDOR_RUNNER_CONTRACT_CMD \
-    python3 "$ROOT_DIR/scripts/check_vendor_runner_template_drift.py"
+    "$ROOT_DIR/.venv/bin/python" "$ROOT_DIR/scripts/check_vendor_runner_template_drift.py"
   run_lane install_python \
     HLA2010_GITHUB_CI_LOCAL_INSTALL_PYTHON_CMD \
     bash "$ROOT_DIR/scripts/ci/install_python.sh"
