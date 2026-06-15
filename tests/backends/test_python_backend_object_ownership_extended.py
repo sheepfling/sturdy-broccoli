@@ -12,6 +12,20 @@ from hla2010.enums import OrderType, ResignAction, ServiceGroup
 from hla2010_verification_harness.section8_matrix import run_section8_request_retraction_case, section8_matrix_config
 from hla2010.types import AttributeRegionAssociation, RangeBounds
 from hla2010.exceptions import AttributeAlreadyBeingDivested, AttributeAlreadyOwned, AttributeNotPublished, InteractionClassNotPublished
+from tests.requirement_marker_groups import (
+    CLAUSE5_DECLARATION_ADMIN_NEGATIVE_REQUIREMENTS,
+    CLAUSE5_DECLARATION_NEGATIVE_REQUIREMENTS,
+    CLAUSE6_MOM_CALLBACK_SUMMARY_REQUIREMENTS,
+    CLAUSE6_MOM_SERVICE_REPORT_REQUIREMENTS,
+    CLAUSE7_MOM_SERVICE_REPORT_REQUIREMENTS,
+    CLAUSE7_NEGOTIATED_CALLBACK_SEQUENCE_REQUIREMENTS,
+    CLAUSE7_OWNERSHIP_UNAVAILABLE_CALLBACK_REQUIREMENTS,
+    CLAUSE8_ENABLE_AND_GRANT_CALLBACK_ORDER_REQUIREMENTS,
+    CLAUSE8_MOM_SERVICE_REPORT_REQUIREMENTS,
+    CLAUSE8_REQUEST_RETRACTION_CALLBACK_REQUIREMENTS,
+    CLAUSE9_MOM_SERVICE_REPORT_REQUIREMENTS,
+    CLAUSE10_MOM_SERVICE_REPORT_REQUIREMENTS,
+)
 
 def test_support_surface_negative_paths_cover_handle_validation_region_bounds_and_advisory_switches():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
@@ -228,12 +242,7 @@ def test_request_attribute_transportation_type_change_rejects_not_connected_not_
     owner.destroy_federation_execution("transport-negative-fed")
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-DM-5.2-001",
-    "HLA1516.1-DM-5.3-001",
-    "HLA1516.1-DM-5.6-001",
-    "HLA1516.1-DM-5.7-001",
-)
+@pytest.mark.requirements(*CLAUSE5_DECLARATION_NEGATIVE_REQUIREMENTS)
 def test_declaration_services_reject_not_connected_not_joined_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
@@ -357,12 +366,7 @@ def test_publish_unpublish_unsubscribe_and_interaction_subscription_tail_reject_
     owner.destroy_federation_execution("decl-tail-negative-fed")
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-DM-5.4-001",
-    "HLA1516.1-DM-5.5-001",
-    "HLA1516.1-DM-5.8-001",
-    "HLA1516.1-DM-5.9-001",
-)
+@pytest.mark.requirements(*CLAUSE5_DECLARATION_ADMIN_NEGATIVE_REQUIREMENTS)
 def test_publish_unpublish_and_unsubscribe_interaction_tail_reject_not_connected_not_joined_and_save_restore():
     rti = rti_ambassador(engine=InMemoryRTIEngine())
     with pytest.raises(NotConnected):
@@ -550,22 +554,7 @@ def test_declaration_services_are_observable_through_mom_service_invocation_repo
     owner.destroy_federation_execution("decl-mom-service-report-fed")
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-OM-6.2-001",
-    "HLA1516.1-OM-6.4-001",
-    "HLA1516.1-OM-6.5-001",
-    "HLA1516.1-OM-6.7-001",
-    "HLA1516.1-OM-6.8-001",
-    "HLA1516.1-OM-6.10-001",
-    "HLA1516.1-OM-6.12-001",
-    "HLA1516.1-OM-6.14-001",
-    "HLA1516.1-OM-6.16-001",
-    "HLA1516.1-OM-6.19-001",
-    "HLA1516.1-OM-6.23-002",
-    "HLA1516.1-OM-6.25-002",
-    "HLA1516.1-OM-6.27-002",
-    "HLA1516.1-OM-6.29-002",
-)
+@pytest.mark.requirements(*CLAUSE6_MOM_SERVICE_REPORT_REQUIREMENTS)
 def test_clause_6_federate_initiated_services_are_observable_through_mom_service_invocation_reporting():
     engine, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("om-mom-service-report-fed")
     witness = rti_ambassador(engine=engine)
@@ -659,23 +648,7 @@ def test_clause_6_federate_initiated_services_are_observable_through_mom_service
     owner.destroy_federation_execution("om-mom-service-report-fed")
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-OM-6.3-001",
-    "HLA1516.1-OM-6.6-001",
-    "HLA1516.1-OM-6.9-001",
-    "HLA1516.1-OM-6.11-001",
-    "HLA1516.1-OM-6.13-001",
-    "HLA1516.1-OM-6.15-001",
-    "HLA1516.1-OM-6.17-001",
-    "HLA1516.1-OM-6.18-001",
-    "HLA1516.1-OM-6.20-001",
-    "HLA1516.1-OM-6.21-001",
-    "HLA1516.1-OM-6.22-001",
-    "HLA1516.1-OM-6.24-002",
-    "HLA1516.1-OM-6.26-002",
-    "HLA1516.1-OM-6.28-002",
-    "HLA1516.1-OM-6.30-002",
-)
+@pytest.mark.requirements(*CLAUSE6_MOM_CALLBACK_SUMMARY_REQUIREMENTS)
 def test_clause_6_callback_activity_is_visible_in_mom_summary():
     _, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("om-mom-callback-summary-fed")
     cls = owner.get_object_class_handle("HLAobjectRoot.Target")
@@ -738,19 +711,7 @@ def test_clause_6_callback_activity_is_visible_in_mom_summary():
     owner.destroy_federation_execution("om-mom-callback-summary-fed")
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-OWN-7.2-001",
-    "HLA1516.1-OWN-7.3-001",
-    "HLA1516.1-OWN-7.6-001",
-    "HLA1516.1-OWN-7.8-001",
-    "HLA1516.1-OWN-7.9-001",
-    "HLA1516.1-OWN-7.12-001",
-    "HLA1516.1-OWN-7.13-001",
-    "HLA1516.1-OWN-7.14-001",
-    "HLA1516.1-OWN-7.15-001",
-    "HLA1516.1-OWN-7.17-001",
-    "HLA1516.1-OWN-7.19-001",
-)
+@pytest.mark.requirements(*CLAUSE7_MOM_SERVICE_REPORT_REQUIREMENTS)
 def test_clause_7_services_are_observable_through_mom_service_invocation_reporting():
     engine, owner, observer, _owner_fed, _observer_fed, _h1, h2 = joined_pair("own-mom-service-report-fed")
     witness = rti_ambassador(engine=engine)
@@ -866,25 +827,7 @@ def test_clause_7_services_are_observable_through_mom_service_invocation_reporti
     owner.destroy_federation_execution("own-mom-service-report-fed")
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-TM-8.2-001",
-    "HLA1516.1-TM-8.2-002",
-    "HLA1516.1-TM-8.2-003",
-    "HLA1516.1-TM-8.4-001",
-    "HLA1516.1-TM-8.5-001",
-    "HLA1516.1-TM-8.5-002",
-    "HLA1516.1-TM-8.5-003",
-    "HLA1516.1-TM-8.8-001",
-    "HLA1516.1-TM-8.8-002",
-    "HLA1516.1-TM-8.8-003",
-    "HLA1516.1-TM-8.10-001",
-    "HLA1516.1-TM-8.12-001",
-    "HLA1516.1-TM-8.16-001",
-    "HLA1516.1-TM-8.17-001",
-    "HLA1516.1-TM-8.18-001",
-    "HLA1516.1-TM-8.19-001",
-    "HLA1516.1-TM-8.21-001",
-)
+@pytest.mark.requirements(*CLAUSE8_MOM_SERVICE_REPORT_REQUIREMENTS)
 def test_clause_8_services_are_observable_through_mom_service_invocation_reporting():
     engine, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("tm-mom-service-report-fed")
     witness = rti_ambassador(engine=engine)
@@ -1008,51 +951,7 @@ def test_clause_8_services_are_observable_through_mom_service_invocation_reporti
     owner.destroy_federation_execution("tm-mom-service-report-fed")
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-SUP-10.2-001",
-    "HLA1516.1-SUP-10.3-001",
-    "HLA1516.1-SUP-10.4-001",
-    "HLA1516.1-SUP-10.5-001",
-    "HLA1516.1-SUP-10.6-001",
-    "HLA1516.1-SUP-10.7-001",
-    "HLA1516.1-SUP-10.8-001",
-    "HLA1516.1-SUP-10.9-001",
-    "HLA1516.1-SUP-10.10-001",
-    "HLA1516.1-SUP-10.11-001",
-    "HLA1516.1-SUP-10.12-001",
-    "HLA1516.1-SUP-10.13-001",
-    "HLA1516.1-SUP-10.14-001",
-    "HLA1516.1-SUP-10.15-001",
-    "HLA1516.1-SUP-10.16-001",
-    "HLA1516.1-SUP-10.17-001",
-    "HLA1516.1-SUP-10.18-001",
-    "HLA1516.1-SUP-10.19-001",
-    "HLA1516.1-SUP-10.20-001",
-    "HLA1516.1-SUP-10.21-001",
-    "HLA1516.1-SUP-10.22-001",
-    "HLA1516.1-SUP-10.23-001",
-    "HLA1516.1-SUP-10.24-001",
-    "HLA1516.1-SUP-10.25-001",
-    "HLA1516.1-SUP-10.26-001",
-    "HLA1516.1-SUP-10.27-001",
-    "HLA1516.1-SUP-10.28-001",
-    "HLA1516.1-SUP-10.29-001",
-    "HLA1516.1-SUP-10.30-001",
-    "HLA1516.1-SUP-10.31-001",
-    "HLA1516.1-SUP-10.32-001",
-    "HLA1516.1-SUP-10.33-001",
-    "HLA1516.1-SUP-10.34-001",
-    "HLA1516.1-SUP-10.35-001",
-    "HLA1516.1-SUP-10.36-001",
-    "HLA1516.1-SUP-10.37-001",
-    "HLA1516.1-SUP-10.38-001",
-    "HLA1516.1-SUP-10.39-001",
-    "HLA1516.1-SUP-10.40-001",
-    "HLA1516.1-SUP-10.41-001",
-    "HLA1516.1-SUP-10.42-001",
-    "HLA1516.1-SUP-10.43-001",
-    "HLA1516.1-SUP-10.44-001",
-)
+@pytest.mark.requirements(*CLAUSE10_MOM_SERVICE_REPORT_REQUIREMENTS)
 def test_clause_10_services_are_observable_through_mom_service_invocation_reporting():
     engine, owner, observer, _owner_fed, _observer_fed, h1, _h2 = joined_pair("sup-mom-service-report-fed")
     witness = rti_ambassador(engine=engine)
@@ -1205,14 +1104,7 @@ def test_clause_10_services_are_observable_through_mom_service_invocation_report
     owner.destroy_federation_execution("sup-mom-service-report-fed")
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-TM-8.2-002",
-    "HLA1516.1-TM-8.2-003",
-    "HLA1516.1-TM-8.5-002",
-    "HLA1516.1-TM-8.5-003",
-    "HLA1516.1-TM-8.8-002",
-    "HLA1516.1-TM-8.8-003",
-)
+@pytest.mark.requirements(*CLAUSE8_ENABLE_AND_GRANT_CALLBACK_ORDER_REQUIREMENTS)
 def test_clause_8_enable_and_grant_callbacks_arrive_in_expected_order():
     _, owner, observer, owner_fed, observer_fed, _h1, _h2 = joined_pair("tm-callback-order-fed")
     factory = owner.get_time_factory()
@@ -1246,7 +1138,7 @@ def test_clause_8_enable_and_grant_callbacks_arrive_in_expected_order():
     owner.destroy_federation_execution("tm-callback-order-fed")
 
 
-@pytest.mark.requirements("HLA1516.1-TM-8_22-REQUESTRETRACTION-CB-001")
+@pytest.mark.requirements(*CLAUSE8_REQUEST_RETRACTION_CALLBACK_REQUIREMENTS)
 def test_clause_8_request_retraction_callback_arrives_after_delivered_interaction():
     publisher = rti_ambassador(engine=InMemoryRTIEngine())
     subscriber = rti_ambassador(engine=publisher.backend.engine)
@@ -2216,20 +2108,7 @@ def test_clause_9_service_signature_metadata_matches_source_bindings():
         assert [record["params"] for record in java_records] == expected_params
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-DDM-9.2-001",
-    "HLA1516.1-DDM-9.3-001",
-    "HLA1516.1-DDM-9.4-001",
-    "HLA1516.1-DDM-9.5-001",
-    "HLA1516.1-DDM-9.6-001",
-    "HLA1516.1-DDM-9.7-001",
-    "HLA1516.1-DDM-9.8-001",
-    "HLA1516.1-DDM-9.9-001",
-    "HLA1516.1-DDM-9.10-001",
-    "HLA1516.1-DDM-9.11-001",
-    "HLA1516.1-DDM-9.12-001",
-    "HLA1516.1-DDM-9.13-001",
-)
+@pytest.mark.requirements(*CLAUSE9_MOM_SERVICE_REPORT_REQUIREMENTS)
 def test_clause_9_services_are_observable_through_mom_service_invocation_reporting():
     engine, owner, observer, _owner_fed, _observer_fed, _h1, _h2 = joined_pair("ddm-mom-service-report-fed")
     witness = rti_ambassador(engine=engine)
@@ -2926,13 +2805,7 @@ def test_python_rti_negotiated_ownership_tracks_divesting_and_candidate_flows():
     owner.destroy_federation_execution("negotiated-ownership-fed")
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-OWN-7.4-001",
-    "HLA1516.1-OWN-7.5-001",
-    "HLA1516.1-OWN-7.7-001",
-    "HLA1516.1-OWN-7.11-001",
-    "HLA1516.1-OWN-7.16-001",
-)
+@pytest.mark.requirements(*CLAUSE7_NEGOTIATED_CALLBACK_SEQUENCE_REQUIREMENTS)
 def test_ownership_callback_sequences_and_payloads_are_exact_for_negotiated_and_cancellation_flows():
     _, owner, acquirer, owner_fed, acquirer_fed, _h1, _h2 = joined_pair("ownership-callback-sequence-fed")
     cls = owner.get_object_class_handle("HLAobjectRoot.Target")
@@ -3600,10 +3473,7 @@ def test_python_rti_query_attribute_ownership_reports_not_owned_after_divestitur
     owner.destroy_federation_execution("query-unowned-fed")
 
 
-@pytest.mark.requirements(
-    "HLA1516.1-OWN-7.10-001",
-    "HLA1516.1-OWN-7.18-001",
-)
+@pytest.mark.requirements(*CLAUSE7_OWNERSHIP_UNAVAILABLE_CALLBACK_REQUIREMENTS)
 def test_ownership_unavailable_and_query_callbacks_are_isolated_and_exact():
     _, owner, acquirer, owner_fed, acquirer_fed, _h1, _h2 = joined_pair("ownership-callback-query-fed")
     cls = owner.get_object_class_handle("HLAobjectRoot.Target")
