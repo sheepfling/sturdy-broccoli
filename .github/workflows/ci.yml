@@ -171,7 +171,7 @@ jobs:
         run: ./scripts/ci/vendor_green.sh certi
       - name: Publish CERTI runtime-state summary
         if: always()
-        run: cat analysis/vendor_runtime_ci_state/certi/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
+        run: test ! -f analysis/vendor_runtime_ci_state/certi/vendor_runtime_ci_state_report.md || cat analysis/vendor_runtime_ci_state/certi/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
       - name: Publish CERTI vendor-green runtime summary
         if: always()
         run: python3 scripts/ci/write_vendor_runtime_job_summary.py --output "$GITHUB_STEP_SUMMARY"
@@ -213,7 +213,7 @@ jobs:
         run: ./scripts/ci/vendor_green.sh pitch
       - name: Publish Pitch runtime-state summary
         if: always()
-        run: cat analysis/vendor_runtime_ci_state/pitch/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
+        run: test ! -f analysis/vendor_runtime_ci_state/pitch/vendor_runtime_ci_state_report.md || cat analysis/vendor_runtime_ci_state/pitch/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
       - name: Publish Pitch vendor-green runtime summary
         if: always()
         run: python3 scripts/ci/write_vendor_runtime_job_summary.py --output "$GITHUB_STEP_SUMMARY"
@@ -261,7 +261,7 @@ jobs:
         run: ./scripts/ci/vendor_green.sh matrix
       - name: Publish real-profile matrix runtime-state summary
         if: always()
-        run: cat analysis/vendor_runtime_ci_state/matrix/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
+        run: test ! -f analysis/vendor_runtime_ci_state/matrix/vendor_runtime_ci_state_report.md || cat analysis/vendor_runtime_ci_state/matrix/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
       - name: Publish vendor-green matrix runtime summary
         if: always()
         run: python3 scripts/ci/write_vendor_runtime_job_summary.py --output "$GITHUB_STEP_SUMMARY"
@@ -313,7 +313,7 @@ jobs:
         run: ./scripts/ci/vendor_edge_matrix.sh ${{ matrix.profile }}
       - name: Publish vendor-edge runtime-state summary
         if: always()
-        run: cat analysis/vendor_runtime_ci_state/vendor_edge/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
+        run: test ! -f analysis/vendor_runtime_ci_state/vendor_edge/vendor_runtime_ci_state_report.md || cat analysis/vendor_runtime_ci_state/vendor_edge/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
       - name: Upload vendor edge matrix artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -375,7 +375,7 @@ jobs:
         run: ${{ matrix.command }}
       - name: Publish vendor probe stability runtime-state summary
         if: always()
-        run: cat analysis/vendor_runtime_ci_state/vendor_edge/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
+        run: test ! -f analysis/vendor_runtime_ci_state/vendor_edge/vendor_runtime_ci_state_report.md || cat analysis/vendor_runtime_ci_state/vendor_edge/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
       - name: Publish vendor probe stability runtime summary
         if: always()
         run: python3 scripts/ci/write_vendor_runtime_job_summary.py --output "$GITHUB_STEP_SUMMARY"

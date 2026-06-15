@@ -5,7 +5,6 @@ on:
 
 jobs:
   vendor-runtime-smoke:
-    if: ${{ runner.os == 'macOS' }}
     runs-on: macos-latest
     strategy:
       fail-fast: false
@@ -59,7 +58,7 @@ jobs:
         run: ${{ matrix.command }}
       - name: Publish vendor smoke runtime-state summary
         if: always()
-        run: cat analysis/vendor_runtime_ci_state/${{ matrix.ci_profile }}/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
+        run: test ! -f analysis/vendor_runtime_ci_state/${{ matrix.ci_profile }}/vendor_runtime_ci_state_report.md || cat analysis/vendor_runtime_ci_state/${{ matrix.ci_profile }}/vendor_runtime_ci_state_report.md >> "$GITHUB_STEP_SUMMARY"
       - name: Publish vendor runtime summary
         if: always()
         run: python3 scripts/ci/write_vendor_runtime_job_summary.py --output "$GITHUB_STEP_SUMMARY"

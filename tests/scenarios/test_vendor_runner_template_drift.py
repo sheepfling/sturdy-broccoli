@@ -79,7 +79,7 @@ def test_vendor_runtime_smoke_workflow_fans_out_explicit_probe_profiles() -> Non
     run_step = next(step for step in steps if step.get("name") == "Run explicit vendor-green smoke tests")
     assert run_step["run"] == "${{ matrix.command }}"
     publish_step = next(step for step in steps if step.get("name") == "Publish vendor smoke runtime-state summary")
-    assert publish_step["run"] == "cat analysis/vendor_runtime_ci_state/${{ matrix.ci_profile }}/vendor_runtime_ci_state_report.md >> \"$GITHUB_STEP_SUMMARY\""
+    assert publish_step["run"] == "test ! -f analysis/vendor_runtime_ci_state/${{ matrix.ci_profile }}/vendor_runtime_ci_state_report.md || cat analysis/vendor_runtime_ci_state/${{ matrix.ci_profile }}/vendor_runtime_ci_state_report.md >> \"$GITHUB_STEP_SUMMARY\""
     upload_step = next(step for step in steps if step.get("name") == "Upload vendor runtime smoke artifacts")
     assert upload_step["with"]["name"] == "vendor-runtime-smoke-${{ matrix.name }}-artifacts"
     upload_path = upload_step["with"]["path"]
