@@ -32,7 +32,7 @@ class CERTIRestServerConfig:
 
 
 class _TransportHTTPHandler(BaseHTTPRequestHandler):
-    server_ref: "_BaseRestServer"
+    server_ref: _BaseRestServer
 
     def do_POST(self):  # noqa: N802 - HTTP handler naming
         if self.path != self.server_ref.request_path:

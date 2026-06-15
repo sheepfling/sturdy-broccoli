@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from hla2010.spec import FederateAmbassadorSpec
+from hla2010.spec import FederateAmbassadorSpec, lower_camel_to_snake
 from hla2010_rti_java_common import make_rti_ambassador
 from hla2010_rti_java_common.java_common import invoke_java_federate_proxy_callback
 from hla2010_rti_certi.certi import CERTIConfig, create_certi_backend
@@ -368,7 +368,7 @@ class CERTIJavaRTIShim:
         self._java_proxy = None
 
     def _forward_service(self, method_name: str, *args: Any) -> Any:
-        target = getattr(self._rti, method_name)
+        target = getattr(self._rti, lower_camel_to_snake(method_name))
         py_args = tuple(from_java_like(arg) for arg in args)
         result = target(*py_args)
         return to_java_like(result)
@@ -866,7 +866,7 @@ class CERTIJavaRTIShim:
         self._rti.close()
 
     def getHLAversion(self) -> str:
-        return self._rti.getHLAversion()
+        return self._rti.get_hla_version()
 
 
 __all__ = ["CERTIJavaRTIShim", "_CERTIJavaFederateAdapter"]

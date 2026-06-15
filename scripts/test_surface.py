@@ -28,7 +28,7 @@ class Lane:
     preflight: dict[str, Any]
 
     @classmethod
-    def from_mapping(cls, payload: dict[str, Any]) -> "Lane":
+    def from_mapping(cls, payload: dict[str, Any]) -> Lane:
         return cls(
             lane_id=str(payload["id"]),
             title=str(payload["title"]),

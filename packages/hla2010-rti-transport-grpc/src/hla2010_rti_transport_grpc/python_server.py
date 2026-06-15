@@ -100,7 +100,7 @@ class PythonRTIGrpcServer:
         self.target = f"{config.host}:{self.port}"
         self._started = False
 
-    def start(self) -> "PythonRTIGrpcServer":
+    def start(self) -> PythonRTIGrpcServer:
         if not self._started:
             self.server.start()
             self._started = True
@@ -135,7 +135,7 @@ class CERTIRTIGrpcServer:
         self.target = f"{config.host}:{self.port}"
         self._started = False
 
-    def start(self) -> "CERTIRTIGrpcServer":
+    def start(self) -> CERTIRTIGrpcServer:
         if not self._started:
             self.server.start()
             self._started = True

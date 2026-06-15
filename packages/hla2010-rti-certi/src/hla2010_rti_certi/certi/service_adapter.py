@@ -83,7 +83,7 @@ class CERTIBackend(RTIBackend):
             details={"host": config.host, "tcp_port": config.tcp_port},
         )
 
-    def start(self) -> "CERTIBackend":
+    def start(self) -> CERTIBackend:
         if self.config.transport is not None:
             self.transport = self.config.transport.start()
             self.info = BackendInfo(

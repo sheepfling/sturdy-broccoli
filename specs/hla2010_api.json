@@ -95,7 +95,7 @@
             ]
           }
         ],
-        "python_name": "attribute_is_owned_by_r_t_i",
+        "python_name": "attribute_is_owned_by_rti",
         "section": "7.18",
         "service_group": "Ownership Management",
         "title": "Inform Attribute Ownership service"
@@ -2865,7 +2865,7 @@
             ]
           }
         ],
-        "python_name": "create_federation_execution_with_m_i_m",
+        "python_name": "create_federation_execution_with_mim",
         "section": "4.5",
         "service_group": "Federation Management",
         "title": "Create Federation Execution service"
@@ -4935,7 +4935,7 @@
             "throws": []
           }
         ],
-        "python_name": "get_h_l_aversion",
+        "python_name": "get_hla_version",
         "section": "10.44",
         "service_group": "Support Services",
         "title": "Disable Callbacks service"
@@ -6615,7 +6615,7 @@
             ]
           }
         ],
-        "python_name": "query_g_a_l_t",
+        "python_name": "query_galt",
         "section": "8.16",
         "service_group": "Time Management",
         "title": "Query GALT service"
@@ -6699,7 +6699,7 @@
             ]
           }
         ],
-        "python_name": "query_l_i_t_s",
+        "python_name": "query_lits",
         "section": "8.18",
         "service_group": "Time Management",
         "title": "Query LITS service"

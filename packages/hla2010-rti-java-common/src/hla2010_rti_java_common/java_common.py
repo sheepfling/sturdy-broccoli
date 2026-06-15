@@ -671,7 +671,7 @@ class JavaBridge(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def create_federate_proxy(self, dispatcher: "PythonFederateAmbassadorDispatcher") -> Any:
+    def create_federate_proxy(self, dispatcher: PythonFederateAmbassadorDispatcher) -> Any:
         """Create a Java-side FederateAmbassador proxy for ``dispatcher``."""
         raise NotImplementedError
 

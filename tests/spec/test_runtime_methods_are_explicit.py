@@ -29,9 +29,6 @@ def test_representative_runtime_and_callback_methods_are_owned_explicitly() -> N
         (
             DelegatingRTIAmbassador,
             (
-                "timeAdvanceRequest",
-                "createFederationExecution",
-                "getHLAversion",
                 "time_advance_request",
                 "create_federation_execution",
                 "get_hla_version",
@@ -54,9 +51,9 @@ def test_representative_runtime_and_callback_methods_are_owned_explicitly() -> N
 def test_all_runtime_methods_are_defined_on_delegating_rti_ambassador() -> None:
     for method_name in RTI_METHOD_NAMES:
         snake_name = lower_camel_to_snake(method_name)
-        assert method_name in DelegatingRTIAmbassador.__dict__
+        assert snake_name in DelegatingRTIAmbassador.__dict__
         if snake_name != method_name:
-            assert snake_name in DelegatingRTIAmbassador.__dict__
+            assert method_name not in DelegatingRTIAmbassador.__dict__
 
 
 def test_all_callback_methods_are_defined_on_recording_federate_ambassador() -> None:
@@ -73,12 +70,12 @@ def test_snake_case_alias_routes_to_same_backend_invocation() -> None:
     assert backend.calls[-1].method_name == "timeAdvanceRequest"
 
 
-def test_camelcase_method_routes_to_same_backend_invocation() -> None:
+def test_camelcase_method_is_not_part_of_python_runtime_surface() -> None:
     backend = RecordingBackend(results={"timeAdvanceRequest": "ok"})
     rti = make_rti_ambassador(backend)
 
-    assert rti.timeAdvanceRequest("t1") == "ok"
-    assert backend.calls[-1].method_name == "timeAdvanceRequest"
+    assert not hasattr(rti, "timeAdvanceRequest")
+    assert backend.calls == []
 
 
 def test_callback_recording_routes_without_dunder_magic() -> None:

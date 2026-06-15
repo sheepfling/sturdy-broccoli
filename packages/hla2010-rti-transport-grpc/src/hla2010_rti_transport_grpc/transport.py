@@ -44,7 +44,7 @@ class GrpcTransport(RTITransport):
         self._stub = None
         self.client_adapter = config.wire_adapter or GrpcTransportClientAdapter()
 
-    def start(self) -> "GrpcTransport":
+    def start(self) -> GrpcTransport:
         if self._channel is None:
             if self.config.secure:
                 raise BackendUnavailableError("Secure gRPC transport is not configured in this workspace")

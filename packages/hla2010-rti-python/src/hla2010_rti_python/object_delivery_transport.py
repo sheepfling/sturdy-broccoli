@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
 
 class _ObjectDeliveryContext(Protocol):
-    engine: "InMemoryRTIEngine"
+    engine: InMemoryRTIEngine
     state: FederateState
     config: Any
 

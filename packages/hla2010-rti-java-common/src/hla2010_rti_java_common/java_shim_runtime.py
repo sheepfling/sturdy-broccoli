@@ -35,7 +35,7 @@ if TYPE_CHECKING:
 
 
 class SharedInProcessJavaRTIShim:
-    def __init__(self, kernel: "SharedJavaShimKernel | None" = None) -> None:
+    def __init__(self, kernel: SharedJavaShimKernel | None = None) -> None:
         from .java_shim_kernel import SharedJavaShimKernel
 
         self.kernel = kernel or SharedJavaShimKernel()

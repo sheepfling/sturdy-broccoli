@@ -66,7 +66,8 @@ Find it with:
 
 That lands on:
 
-- public runtime method: `timeAdvanceRequest` / `time_advance_request`
+- public runtime method: `time_advance_request`
+- HLA service key: `timeAdvanceRequest`
 - registry row in `service_registry.py`
 - implementation in `packages/hla2010-rti-python/src/hla2010_rti_python/time_public_services.py`
 - requirement and test evidence from the generated trace

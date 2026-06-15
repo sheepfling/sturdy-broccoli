@@ -41,10 +41,10 @@ class HLAinteger64Interval:
     def is_epsilon(self) -> bool:
         return self.value == 1
 
-    def add(self, addend: "HLAinteger64Interval") -> "HLAinteger64Interval":
+    def add(self, addend: HLAinteger64Interval) -> HLAinteger64Interval:
         return HLAinteger64Interval(self.value + addend.value)
 
-    def subtract(self, subtrahend: "HLAinteger64Interval") -> "HLAinteger64Interval":
+    def subtract(self, subtrahend: HLAinteger64Interval) -> HLAinteger64Interval:
         return HLAinteger64Interval(self.value - subtrahend.value)
 
     def encoded_length(self) -> int:
@@ -58,7 +58,7 @@ class HLAinteger64Interval:
         return buffer
 
     @classmethod
-    def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> "HLAinteger64Interval":
+    def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> HLAinteger64Interval:
         return cls(struct.unpack(">q", bytes(data[offset : offset + 8]))[0])
 
 @dataclass(frozen=True, order=True)
@@ -74,13 +74,13 @@ class HLAinteger64Time:
     def is_final(self) -> bool:
         return self.value == self.FINAL
 
-    def add(self, val: HLAinteger64Interval) -> "HLAinteger64Time":
+    def add(self, val: HLAinteger64Interval) -> HLAinteger64Time:
         return HLAinteger64Time(self.value + val.value)
 
-    def subtract(self, val: HLAinteger64Interval) -> "HLAinteger64Time":
+    def subtract(self, val: HLAinteger64Interval) -> HLAinteger64Time:
         return HLAinteger64Time(self.value - val.value)
 
-    def distance(self, val: "HLAinteger64Time") -> HLAinteger64Interval:
+    def distance(self, val: HLAinteger64Time) -> HLAinteger64Interval:
         return HLAinteger64Interval(self.value - val.value)
 
     def encoded_length(self) -> int:
@@ -94,7 +94,7 @@ class HLAinteger64Time:
         return buffer
 
     @classmethod
-    def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> "HLAinteger64Time":
+    def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> HLAinteger64Time:
         return cls(struct.unpack(">q", bytes(data[offset : offset + 8]))[0])
 
 @dataclass(frozen=True, order=True)
@@ -107,10 +107,10 @@ class HLAfloat64Interval:
     def is_epsilon(self) -> bool:
         return self.value == math.ulp(1.0)
 
-    def add(self, addend: "HLAfloat64Interval") -> "HLAfloat64Interval":
+    def add(self, addend: HLAfloat64Interval) -> HLAfloat64Interval:
         return HLAfloat64Interval(self.value + addend.value)
 
-    def subtract(self, subtrahend: "HLAfloat64Interval") -> "HLAfloat64Interval":
+    def subtract(self, subtrahend: HLAfloat64Interval) -> HLAfloat64Interval:
         return HLAfloat64Interval(self.value - subtrahend.value)
 
     def encoded_length(self) -> int:
@@ -124,7 +124,7 @@ class HLAfloat64Interval:
         return buffer
 
     @classmethod
-    def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> "HLAfloat64Interval":
+    def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> HLAfloat64Interval:
         return cls(struct.unpack(">d", bytes(data[offset : offset + 8]))[0])
 
 @dataclass(frozen=True, order=True)
@@ -137,13 +137,13 @@ class HLAfloat64Time:
     def is_final(self) -> bool:
         return math.isinf(self.value) and self.value > 0
 
-    def add(self, val: HLAfloat64Interval) -> "HLAfloat64Time":
+    def add(self, val: HLAfloat64Interval) -> HLAfloat64Time:
         return HLAfloat64Time(self.value + val.value)
 
-    def subtract(self, val: HLAfloat64Interval) -> "HLAfloat64Time":
+    def subtract(self, val: HLAfloat64Interval) -> HLAfloat64Time:
         return HLAfloat64Time(self.value - val.value)
 
-    def distance(self, val: "HLAfloat64Time") -> HLAfloat64Interval:
+    def distance(self, val: HLAfloat64Time) -> HLAfloat64Interval:
         return HLAfloat64Interval(self.value - val.value)
 
     def encoded_length(self) -> int:
@@ -157,7 +157,7 @@ class HLAfloat64Time:
         return buffer
 
     @classmethod
-    def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> "HLAfloat64Time":
+    def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> HLAfloat64Time:
         return cls(struct.unpack(">d", bytes(data[offset : offset + 8]))[0])
 
 TTime = TypeVar("TTime")

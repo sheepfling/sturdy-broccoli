@@ -16,7 +16,7 @@ class _FakeFactory:
     def __init__(self) -> None:
         self.capacities: list[int | None] = []
 
-    def create(self, capacity: int | None = None) -> "_FakeCollection":
+    def create(self, capacity: int | None = None) -> _FakeCollection:
         self.capacities.append(capacity)
         return _FakeCollection()
 

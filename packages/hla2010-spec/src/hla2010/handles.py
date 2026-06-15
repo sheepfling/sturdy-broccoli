@@ -36,7 +36,7 @@ class Handle:
         return buffer
 
     @classmethod
-    def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> "Handle":
+    def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> Handle:
         raw = bytes(data[offset : offset + 8])
         if len(raw) != 8:
             raise ValueError(f"Need 8 bytes to decode {cls.__name__}; got {len(raw)}")

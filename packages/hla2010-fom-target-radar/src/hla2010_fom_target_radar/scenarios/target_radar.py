@@ -56,13 +56,13 @@ class Vec3:
     y: float
     z: float = 0.0
 
-    def add_scaled(self, velocity: "Vec3", dt: float) -> "Vec3":
+    def add_scaled(self, velocity: Vec3, dt: float) -> Vec3:
         return Vec3(self.x + velocity.x * dt, self.y + velocity.y * dt, self.z + velocity.z * dt)
 
-    def range_from(self, origin: "Vec3") -> float:
+    def range_from(self, origin: Vec3) -> float:
         return math.sqrt((self.x - origin.x) ** 2 + (self.y - origin.y) ** 2 + (self.z - origin.z) ** 2)
 
-    def bearing_from(self, origin: "Vec3") -> float:
+    def bearing_from(self, origin: Vec3) -> float:
         return math.atan2(self.y - origin.y, self.x - origin.x)
 
 

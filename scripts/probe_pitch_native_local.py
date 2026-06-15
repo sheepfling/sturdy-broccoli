@@ -203,7 +203,7 @@ def main(argv: list[str] | None = None) -> int:
                 result["bridge_result"] = {
                     "kind": kind,
                     "created": True,
-                    "hla_version": rti.getHLAversion(),
+                    "hla_version": rti.get_hla_version(),
                 }
             except BackendUnavailableError as exc:
                 result["bridge_result"] = {

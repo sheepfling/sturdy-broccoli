@@ -44,7 +44,7 @@ class RestTransport(RTITransport):
         self._started = False
         self.client_adapter = RestTransportClientAdapter()
 
-    def start(self) -> "RestTransport":
+    def start(self) -> RestTransport:
         self._started = True
         return self
 

@@ -16,7 +16,7 @@ def test_delegating_ambassador_is_concrete():
     backend = RecordingBackend(results={"getFederateName": "fed"})
     rti = make_rti_ambassador(backend)
     assert isinstance(rti, DelegatingRTIAmbassador)
-    assert rti.getFederateName() == "fed"
+    assert rti.get_federate_name() == "fed"
     assert backend.calls[-1].method_name == "getFederateName"
 
 

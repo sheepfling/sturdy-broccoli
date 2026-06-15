@@ -116,7 +116,7 @@ def test_rest_transport_registers_with_backend_factory():
         backend = create_backend("certi", transport={"kind": "rest", "base_url": base_url})
         rti = make_rti_ambassador(backend)
 
-        assert rti.getHLAversion() == "HLA 1516.1-2010"
+        assert rti.get_hla_version() == "HLA 1516.1-2010"
         rti.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
         assert _RestHandler.requests[0]["command"] == "GET_HLA_VERSION"
         assert _RestHandler.requests[1]["command"] == "CONNECT"

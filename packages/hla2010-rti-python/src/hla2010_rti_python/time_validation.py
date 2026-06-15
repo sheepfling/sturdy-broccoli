@@ -32,11 +32,11 @@ if TYPE_CHECKING:
 
 
 class _TimeValidationContext(Protocol):
-    engine: "InMemoryRTIEngine"
-    state: "FederateState"
-    config: "PythonRTIConfig"
+    engine: InMemoryRTIEngine
+    state: FederateState
+    config: PythonRTIConfig
 
-    def _require_joined(self) -> "FederationState": ...
+    def _require_joined(self) -> FederationState: ...
 
     def _coerce_time(self, value: Any) -> Any: ...
 
@@ -46,25 +46,25 @@ class _TimeValidationContext(Protocol):
 
     def _refresh_mom_federate_object(
         self,
-        federation: "FederationState",
-        federate: "FederateState",
+        federation: FederationState,
+        federate: FederateState,
         *,
         notify: bool = False,
     ) -> None: ...
 
-    def _process_time_advances(self, federation: "FederationState") -> None: ...
+    def _process_time_advances(self, federation: FederationState) -> None: ...
 
     def _deliver(
-        self, federate: "FederateState", method_name: str, *args: Any, **kwargs: Any
+        self, federate: FederateState, method_name: str, *args: Any, **kwargs: Any
     ) -> Any: ...
 
     def _find_object(
-        self, theObject: "ObjectInstanceHandle"
-    ) -> tuple["FederationState", "ObjectInstance"]: ...
+        self, theObject: ObjectInstanceHandle
+    ) -> tuple[FederationState, ObjectInstance]: ...
 
-    def _compute_galt(self, federation: "FederationState", federate: "FederateState") -> Any: ...
+    def _compute_galt(self, federation: FederationState, federate: FederateState) -> Any: ...
 
-    def _compute_lits(self, federation: "FederationState", federate: "FederateState") -> Any: ...
+    def _compute_lits(self, federation: FederationState, federate: FederateState) -> Any: ...
 
 
 if TYPE_CHECKING:

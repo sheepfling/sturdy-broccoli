@@ -34,9 +34,9 @@ if TYPE_CHECKING:
 
 
 class _SupportLookupContext(Protocol):
-    engine: "InMemoryRTIEngine"
-    state: "FederateState"
-    config: "PythonRTIConfig"
+    engine: InMemoryRTIEngine
+    state: FederateState
+    config: PythonRTIConfig
 
     def _require_joined(self) -> FederationState: ...
 

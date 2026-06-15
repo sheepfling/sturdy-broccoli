@@ -61,7 +61,7 @@ class PythonRTIObjectDeliveryControlMixin(PythonRTIObjectInteractionDeliveryMixi
 
     def _remove_object_with_producer(
         self,
-        federation: "FederationState",
+        federation: FederationState,
         instance: ObjectInstance,
         tag: bytes,
         *,
@@ -210,7 +210,7 @@ class PythonRTIObjectDeliveryControlMixin(PythonRTIObjectInteractionDeliveryMixi
 
     def _validate_turn_updates_designator(
         self,
-        federation: "FederationState",
+        federation: FederationState,
         updateRateDesignator: str | None,
     ) -> str | None:
         if updateRateDesignator in (None, ""):

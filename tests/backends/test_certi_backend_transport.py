@@ -19,7 +19,7 @@ class FakeTransport(RTITransport):
         self.started = False
         self.closed = False
 
-    def start(self) -> "FakeTransport":
+    def start(self) -> FakeTransport:
         self.started = True
         return self
 
@@ -36,7 +36,7 @@ class ErrorTransport(RTITransport):
         self.code = code
         self.message = message
 
-    def start(self) -> "ErrorTransport":
+    def start(self) -> ErrorTransport:
         return self
 
     def request(self, request: TransportRequest):
@@ -50,7 +50,7 @@ def test_certi_backend_can_run_against_an_injected_transport():
 
     assert backend.start() is backend
     assert transport.started is True
-    assert rti.getHLAversion() == "HLA 1516.1-2010"
+    assert rti.get_hla_version() == "HLA 1516.1-2010"
 
     rti.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
     assert transport.requests[0][0] == "GET_HLA_VERSION"

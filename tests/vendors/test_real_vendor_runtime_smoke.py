@@ -79,7 +79,7 @@ def test_pitch_java_real_lifecycle_smoke(kind: str):
         try:
             fed = RecordingFederateAmbassador()
             rti = create_rti_ambassador(kind)
-            _assert_hla_version(rti.getHLAversion(), vendor="pitch")
+            _assert_hla_version(rti.get_hla_version(), vendor="pitch")
             summary = run_federation_lifecycle_scenario(
                 rti,
                 config=FederationLifecycleScenarioConfig(
@@ -112,7 +112,7 @@ def test_certi_real_lifecycle_smoke():
         except BackendUnavailableError as exc:
             pytest.skip(str(exc))
         try:
-            _assert_hla_version(rti.getHLAversion(), vendor="certi")
+            _assert_hla_version(rti.get_hla_version(), vendor="certi")
             summary = run_federation_lifecycle_scenario(
                 rti,
                 config=FederationLifecycleScenarioConfig(
@@ -321,7 +321,7 @@ def test_certi_java_profile_real_lifecycle_smoke(kind: str):
         with reserve_udp_pair() as lease:
             (rti_udp_port, _) = lease.ports
         rti = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=rti_udp_port)
-        _assert_hla_version(rti.getHLAversion(), vendor="certi")
+        _assert_hla_version(rti.get_hla_version(), vendor="certi")
         summary = run_federation_lifecycle_scenario(
             rti,
             config=FederationLifecycleScenarioConfig(

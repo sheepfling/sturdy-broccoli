@@ -50,7 +50,7 @@ class RTITransport(ABC):
     """Generic request/response transport used by backend adapters."""
 
     @abstractmethod
-    def start(self) -> "RTITransport":
+    def start(self) -> RTITransport:
         raise NotImplementedError
 
     @abstractmethod
@@ -72,7 +72,7 @@ class SubprocessLineTransport(RTITransport):
     default_timeout: float | None = None
     process: subprocess.Popen[str] | None = field(default=None, init=False)
 
-    def start(self) -> "SubprocessLineTransport":
+    def start(self) -> SubprocessLineTransport:
         if self.process is not None:
             return self
         self.process = subprocess.Popen(

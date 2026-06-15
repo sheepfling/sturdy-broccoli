@@ -33,7 +33,7 @@ class PorticoRuntime:
     home: Path
     classpath: tuple[Path, ...]
 
-    def jpype_config(self, **overrides: Any) -> "JPypeConfig":
+    def jpype_config(self, **overrides: Any) -> JPypeConfig:
         from hla2010_rti_java_jpype import JPypeConfig
 
         config = {

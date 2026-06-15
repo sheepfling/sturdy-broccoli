@@ -45,7 +45,7 @@ class FederationStartupConfig:
         federation_name: str = "TargetRadarFederation",
         federate_name: str = "",
         federate_type: str = "PythonFederate",
-    ) -> "FederationStartupConfig":
+    ) -> FederationStartupConfig:
         """Return a config using the bundled Target/Radar FOM resource."""
 
         return cls(

@@ -14,7 +14,7 @@ Read these files in order:
 ## Why These Files
 
 - `spec/__init__.py`: clean abstract interface front door
-- `runtime_api.py`: explicit Python-friendly camelCase and snake_case runtime surface
+- `runtime_api.py`: Python-facing runtime aliases over the snake_case spec surface
 - `ambassadors.py`: explicit callback surface and recording ambassador helpers
 - `spec_inventory.py`: method inventory without generator noise
 - `spec_refs.py`: IEEE section and source-reference lookup helpers

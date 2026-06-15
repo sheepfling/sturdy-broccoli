@@ -17,11 +17,11 @@ if TYPE_CHECKING:
 
 
 class _DdmRegionContext(Protocol):
-    engine: "InMemoryRTIEngine"
+    engine: InMemoryRTIEngine
     state: FederateState
-    config: "PythonRTIConfig"
+    config: PythonRTIConfig
 
-    def _require_joined(self) -> "FederationState": ...
+    def _require_joined(self) -> FederationState: ...
 
     def _object_matches_subscription(self, actual_class: Any, subscribed_class: Any) -> bool: ...
 

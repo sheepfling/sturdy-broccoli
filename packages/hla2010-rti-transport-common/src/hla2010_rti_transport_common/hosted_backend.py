@@ -131,7 +131,7 @@ class HostedRTIBackend(RTIBackend):
             details={"transport": type(config.transport).__name__},
         )
 
-    def start(self) -> "HostedRTIBackend":
+    def start(self) -> HostedRTIBackend:
         self.transport = self.config.transport.start()
         self.info = BackendInfo(
             name=self.config.backend_name,
