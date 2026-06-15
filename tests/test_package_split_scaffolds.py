@@ -10,67 +10,33 @@ PACKAGES = ROOT / "packages"
 
 
 EXPECTED_PACKAGES = {
-    "hla2010-spec": {"role": "core-spec", "entry_points": set(), "status": "implementation-owned"},
-    "hla2010-rti-python": {"role": "rti-backend", "entry_points": {"python"}, "status": "implementation-moved"},
-    "hla2010-rti-certi": {
-        "role": "rti-backend",
-        "entry_points": {"certi", "certi-jpype", "certi-py4j"},
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-backend-common": {
-        "role": "backend-support",
-        "entry_points": set(),
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-java-common": {
-        "role": "java-support",
-        "entry_points": set(),
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-runtime-common": {
-        "role": "runtime-support",
-        "entry_points": set(),
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-transport-common": {
-        "role": "transport-support",
-        "entry_points": set(),
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-java-jpype": {
-        "role": "java-bridge",
-        "entry_points": {"jpype"},
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-java-py4j": {
-        "role": "java-bridge",
-        "entry_points": {"py4j"},
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-pitch-common": {
-        "role": "runtime-common",
-        "entry_points": set(),
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-pitch-jpype": {
-        "role": "rti-backend",
-        "entry_points": {"pitch-jpype"},
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-pitch-py4j": {
-        "role": "rti-backend",
-        "entry_points": {"pitch-py4j"},
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-portico": {
-        "role": "rti-backend",
-        "entry_points": {"portico-jpype", "portico-py4j"},
-        "status": "implementation-moved",
-    },
-    "hla2010-rti-transport-grpc": {"role": "transport", "entry_points": set(), "status": "implementation-moved"},
-    "hla2010-rti-transport-rest": {"role": "transport", "entry_points": set(), "status": "implementation-moved"},
-    "hla2010-fom-target-radar": {"role": "fom-example", "entry_points": set(), "status": "implementation-moved"},
-    "hla2010-verification-harness": {"role": "verification-harness", "entry_points": set(), "status": "implementation-moved"},
+    "hla2010-spec": PackageExpectation("core-spec", frozenset(), "implementation-owned"),
+    "hla2010-rti-python": PackageExpectation("rti-backend", frozenset({"python"}), "implementation-moved"),
+    "hla2010-rti-certi": PackageExpectation(
+        "rti-backend",
+        frozenset({"certi"}),
+        "implementation-moved",
+    ),
+    "hla2010-rti-backend-common": PackageExpectation("backend-support", frozenset(), "implementation-moved"),
+    "hla2010-rti-java-common": PackageExpectation("java-support", frozenset(), "implementation-moved"),
+    "hla2010-rti-java": PackageExpectation("java-rti-selector", frozenset(), "implementation-moved"),
+    "hla2010-rti-runtime-common": PackageExpectation("runtime-support", frozenset(), "implementation-moved"),
+    "hla2010-rti-transport-common": PackageExpectation("transport-support", frozenset(), "implementation-moved"),
+    "hla2010-rti-java-jpype": PackageExpectation("java-bridge", frozenset({"jpype"}), "implementation-moved"),
+    "hla2010-rti-java-py4j": PackageExpectation("java-bridge", frozenset({"py4j"}), "implementation-moved"),
+    "hla2010-rti-pitch-common": PackageExpectation("runtime-common", frozenset(), "implementation-moved"),
+    "hla2010-rti-pitch-jpype": PackageExpectation("rti-backend", frozenset({"pitch-jpype"}), "implementation-moved"),
+    "hla2010-rti-pitch-py4j": PackageExpectation("rti-backend", frozenset({"pitch-py4j"}), "implementation-moved"),
+    "hla2010-rti-portico": PackageExpectation(
+        "rti-backend",
+        frozenset({"portico-jpype", "portico-py4j"}),
+        "implementation-moved",
+    ),
+    "hla2010-rti-transport-grpc": PackageExpectation("transport", frozenset(), "implementation-moved"),
+    "hla2010-rti-transport-rest": PackageExpectation("transport", frozenset(), "implementation-moved"),
+    "hla2010-fom-target-radar": PackageExpectation("fom-example", frozenset(), "implementation-moved"),
+    "hla2010-fom-minimal-demo": PackageExpectation("fom-example", frozenset(), "implementation-owned"),
+    "hla2010-verification-harness": PackageExpectation("verification-harness", frozenset(), "implementation-moved"),
 }
 INTERNAL_PACKAGE_VERSION = "0.13.0"
 
@@ -895,7 +861,8 @@ def test_vendor_java_backend_packages_depend_on_generic_bridge_packages():
     assert "hla2010-rti-java-py4j==0.13.0" in portico_dependencies
     assert "hla2010-rti-backend-common==0.13.0" in python_dependencies
     assert "hla2010-rti-java-common==0.13.0" not in python_dependencies
-    assert "hla2010-rti-java-common==0.13.0" in certi_dependencies
+    assert "hla2010-rti-backend-common==0.13.0" in certi_dependencies
+    assert "hla2010-rti-java-common==0.13.0" not in certi_dependencies
     assert "hla2010-rti-transport-common==0.13.0" in certi_dependencies
     assert "jpype1" not in pitch_jpype_dependencies
     assert "py4j" not in pitch_py4j_dependencies

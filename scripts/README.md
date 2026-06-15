@@ -165,8 +165,6 @@ When `generate_compliance_artifacts.py` finishes, the best operator entrypoints 
 - `analysis/compliance/python_requirement_disposition.md`: generated Python backend requirement disposition packet
 - `analysis/compliance/certi_requirement_disposition.md`: generated aggregate CERTI family requirement disposition packet
 - `analysis/compliance/certi-native_requirement_disposition.md`: generated explicit CERTI native-runtime requirement disposition packet
-- `analysis/compliance/certi-jpype_requirement_disposition.md`: generated explicit CERTI JPype-profile requirement disposition packet
-- `analysis/compliance/certi-py4j_requirement_disposition.md`: generated explicit CERTI Py4J-profile requirement disposition packet
 - `analysis/compliance/pitch_requirement_disposition.md`: generated aggregate Pitch family requirement disposition packet
 - `analysis/compliance/pitch-jpype_requirement_disposition.md`: generated explicit Pitch JPype-profile requirement disposition packet
 - `analysis/compliance/pitch-py4j_requirement_disposition.md`: generated explicit Pitch Py4J-profile requirement disposition packet

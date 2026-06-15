@@ -154,12 +154,6 @@ These are only useful when you provide a Java RTI configuration explicitly.
 - `certi-native`
 - `native-certi`
 
-- `certi-jpype`
-- `java-certi-jpype`
-
-- `certi-py4j`
-- `java-certi-py4j`
-
 <!-- GENERATED_BACKEND_ALIASES_END -->
 
 ## Recommended Operational View
