@@ -24,6 +24,7 @@ Internal index:
 
 - [source_index.md](source_index.md)
 - [archive_index.md](archive_index.md)
+- [hla_interface_contracts.md](hla_interface_contracts.md)
 
 The ZIP is intentionally not unpacked here. The PDFs already exist in
 `../../specs/ieee-1516-2010/`, and maintaining a second extracted copy would

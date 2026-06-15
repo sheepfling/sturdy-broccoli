@@ -6,56 +6,63 @@ This tree uses one simple pattern:
 
 `start here -> reference -> historical/provenance`
 
-If you only need the shortest on-ramp:
+Use this page as the documentation index, not as a second front-door README.
+
+If you only need the shortest path:
 
 1. read [`../README.md`](../README.md)
 2. read [`onboarding.md`](onboarding.md)
 3. read [`first_run.md`](first_run.md)
-4. read [`networked_rti_python.md`](networked_rti_python.md) only if you need a hosted Python RTI route or its parity/hygiene lane
+4. read [`package_layout.md`](package_layout.md)
+5. read [`../packages/README.md`](../packages/README.md)
 
 ## Start Here
-
-Use this page as the documentation tree index, not as a second onboarding
-guide.
 
 Primary entrypoints:
 
 - [../README.md](../README.md): repo purpose, bootstrap, first commands, and operator entrypoints
 - [onboarding.md](onboarding.md): canonical ordered run/edit/scaffold/trace path
 - [first_run.md](first_run.md): shortest path from fresh checkout to one working pure-Python example
+- [package_layout.md](package_layout.md): canonical package hierarchy and family roles
+- [../packages/README.md](../packages/README.md): package ownership cards and where to edit first
+- [python_environment.md](python_environment.md): bootstrap, `.venv`, extras, and install order
+- [test_surface.md](test_surface.md): canonical verification lanes and discovery flow
 
 Concrete contributor lanes:
 
 - [python_rti_edit_one_service.md](python_rti_edit_one_service.md): edit one Python RTI service
 - [create_federate_and_fom.md](create_federate_and_fom.md): create one package-backed FOM and federate
 - [requirements_trace_one_method.md](requirements_trace_one_method.md): trace one method from requirement row to code and proof
-- [../packages/README.md](../packages/README.md): package ownership cards for the main edit families
 
-Reading maps and setup notes:
+Focused reading maps and setup notes:
 
-- [python_environment.md](python_environment.md): Python bootstrap, `.venv`, extras, and install order
-- [test_surface.md](test_surface.md): canonical verification lanes and machine-readable discovery flow
-- [codex_runner_authorization.md](codex_runner_authorization.md): draft loopback-socket authorization request for Codex verification sessions
 - [spec_reading_map.md](spec_reading_map.md): smallest practical reading path for the abstract/public spec surface
 - [fom_reading_map.md](fom_reading_map.md): smallest practical reading path for FOM parsing and merge behavior
 - [python_rti_reading_map.md](python_rti_reading_map.md): smallest practical reading path for Python RTI edits
 - [python_rti_backend.md](python_rti_backend.md): broader Python RTI backend map
 - [rti_factory_reading_map.md](rti_factory_reading_map.md): installed RTI factory listing, selection, and introspection
 - [two_federate_quickstart.md](two_federate_quickstart.md): first stop for the composite two-federate example
-- [requirements_edit_one_row.md](requirements_edit_one_row.md): use only when the traced active row itself is wrong
-- [requirements_traceability.md](requirements_traceability.md): broader requirement -> implementation -> test -> artifact model
-- [requirements_authoring_map.md](requirements_authoring_map.md): secondary ordered reading path for broader traceability maintenance
 - [networked_rti_python.md](networked_rti_python.md): hosted Python RTI over gRPC
 - [install_matrix.md](install_matrix.md): extras, backend families, and dependency order
 - [agent_runbook.md](agent_runbook.md): start-here sequence for agents and automation
+- [requirements_edit_one_row.md](requirements_edit_one_row.md): use only when the traced active row itself is wrong
+- [requirements_traceability.md](requirements_traceability.md): broader requirement -> implementation -> test -> artifact model
+- [requirements_authoring_map.md](requirements_authoring_map.md): secondary ordered reading path for broader traceability maintenance
+- [codex_runner_authorization.md](codex_runner_authorization.md): draft loopback-socket authorization request for Codex verification sessions
+
+## Package And Architecture
+
+Use these together:
+
+- [package_layout.md](package_layout.md): human-readable package hierarchy
+- [../packages/README.md](../packages/README.md): package ownership cards
+- [package_dependency_tree.md](package_dependency_tree.md): generated dependency evidence
+- [import_boundary_rules.md](import_boundary_rules.md): allowed dependency directions
+- [workspace_layout.md](workspace_layout.md): top-level workspace areas and ownership split
 
 ## Reference
 
 - [documentation_hierarchy.md](documentation_hierarchy.md): canonical doc flow and hierarchy
-- [workspace_layout.md](workspace_layout.md): top-level workspace areas and ownership split
-- [package_layout.md](package_layout.md): canonical human package hierarchy, family roles, and ownership map
-- [package_dependency_tree.md](package_dependency_tree.md): machine-derived installable package dependency tree and layer evidence
-- [import_boundary_rules.md](import_boundary_rules.md): package-family dependency guardrails and transport-versus-backend boundaries
 - [python_api_spec.md](python_api_spec.md): clean Python spec package and runtime facade split
 - [callback_model_guide.md](callback_model_guide.md): evoked vs immediate callback behavior, tests, and implementation entry points
 - [verification/run_sequence.md](verification/run_sequence.md): full verification sequence and run order

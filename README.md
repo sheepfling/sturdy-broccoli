@@ -1,250 +1,181 @@
 # hla2010-python
 
-This repository is an unofficial IEEE 1516.1-2010 (2010 edition) HLA workspace centered on a
-clean Python spec surface plus pluggable RTI backends.
+This repository is an unofficial IEEE 1516.1-2010 HLA workspace centered on:
 
-The neutral namespace path is:
+- a clean Python-facing HLA spec surface
+- split installable packages under `packages/`
+- pluggable RTI backends, transports, and verification tooling
 
-- `hla.spec` for the default selected HLA contract surface
-- `hla.runtime_api` for the default selected runtime convenience layer
-- `hla.select_edition("2010")` to select the current supported edition explicitly
-- `hla.editions.ed2010` for the explicit 2010-edition surface
+Use this page for only three things:
 
-The 2010 compatibility namespace remains:
+1. get to a working path quickly
+2. understand the package hierarchy at a glance
+3. find the next document to read
 
-- `hla2010.spec` for the clean interface contract
-- `hla2010.runtime_api` for the Pythonic convenience layer
+If you want the deep architecture map, use:
 
-The supported backend and scenario surfaces are:
-
-- `hla2010_rti_python` for the local in-memory RTI backend
-- `hla2010_rti_transport_grpc` for networked transport-hosted RTI routes
-- `hla2010_fom_target_radar.scenarios` for the Target/Radar example package
-
-If you want the shortest path to "something runs", start with the pure Python
-backend and the Target/Radar example.
-
-This root `README` owns only three jobs:
-
-- show the shortest runnable path
-- point to the primary edit and trace lanes
-- name the supported operator entrypoints
-
-It is not the full architecture catalog, backend inventory, or package-family
-map. Those live under `docs/` and `packages/`.
-
-`packages/hla2010-spec/src/hla2010/` is the package-owned root Python package
-for the 2010 compatibility surface, the abstract/core API, and the documented
-temporary compatibility facade `hla2010.rti`. `packages/hla2010-spec/src/hla/`
-owns the neutral edition-qualified umbrella namespace.
+- [`docs/package_layout.md`](docs/package_layout.md)
+- [`packages/README.md`](packages/README.md)
+- [`docs/package_dependency_tree.md`](docs/package_dependency_tree.md)
 
 ## Start Here
 
-Use this task-first path:
-
-1. Bootstrap the Python environment:
+1. Bootstrap the workspace:
 
 ```bash
 ./tools/bootstrap python
 source .venv/bin/activate
 ```
 
-That creates or refreshes the repo-local virtual environment and installs the
-workspace in editable mode.
-
-For the broader local QA environment instead of the lean operator bootstrap:
+If you want the broader local QA environment:
 
 ```bash
 HLA2010_BOOTSTRAP_EXTRAS=qa ./tools/bootstrap python
 source .venv/bin/activate
 ```
 
-If you want an executable setup check first, run:
-
-```bash
-./tools/bootstrap doctor
-```
-
-2. Run one working Python path:
+2. Run one working pure-Python path:
 
 ```bash
 python examples/target_radar_simulation.py --backend python --steps 5
 ```
 
-If you want the workspace-backed wrapper instead of calling the example
-directly, use:
+Wrapper form:
 
 ```bash
 ./tools/examples target-radar --backend in-memory --steps 5
 ```
 
-3. Edit one Python RTI service:
-
-Start with:
+3. Ask the repo what verification lane makes sense:
 
 ```bash
-./tools/human-editability front-doors python-rti-service
-./tools/human-editability trace-summary getHLAversion
-./tools/human-editability trace getHLAversion
+./tools/test-surface recommend
 ```
 
-That is the shortest maintainer lane for changing one concrete backend service.
-
-4. Scaffold one package-owned FOM and federate example:
-
-```bash
-./tools/new-fom-package your-demo
-```
-
-5. Trace one method from requirement row to implementation and proof:
-
-```bash
-./tools/human-editability front-doors requirements-trace
-./tools/human-editability trace-summary getHLAversion
-./tools/human-editability trace getHLAversion
-```
-
-6. Run the backend smoke example:
-
-```bash
-python examples/backend_recording.py
-```
-
-Or through the wrapper:
-
-```bash
-./tools/examples backend-recording
-```
-
-7. Run the default test wrapper:
+4. Run the default test wrapper:
 
 ```bash
 ./tools/test
 ```
 
-8. Run the hosted Python route hygiene lane when you touch Python RTI transport, hosted-route helpers, or backend parity:
+If you want one more concrete repo-backed smoke example, run:
 
 ```bash
-./tools/python verify-routes-preflight
-./tools/python verify-routes
+python examples/backend_recording.py
 ```
 
-9. Ask the repo which verification lane to run:
+## Package Hierarchy
 
-```bash
-./tools/test-surface recommend
+The installable package root is [`packages/`](packages/README.md). The
+repository root is tooling and workspace orchestration, not an installable
+Python package.
+
+Read the package tree this way:
+
+```text
+hla2010-spec
+  -> shared support packages
+    -> backend and transport families
+      -> verification and FOM/scenario leaf packages
 ```
 
-## Concrete Lanes
+The main families are:
 
-These are the primary newcomer lanes:
+- `hla2010-spec`
+  - architectural root package
+  - owns the public HLA surface, shared value types, FOM/MOM helpers, and the
+    narrow compatibility facade
+- shared support
+  - `hla2010-rti-backend-common`
+  - `hla2010-rti-runtime-common`
+  - `hla2010-rti-transport-common`
+  - `hla2010-rti-java-common`
+  - `hla2010-verification-harness`
+- backend families
+  - `hla2010-rti-python`
+  - `hla2010-rti-certi`
+  - `hla2010-rti-java-jpype`
+  - `hla2010-rti-java-py4j`
+  - `hla2010-rti-pitch-*`
+  - `hla2010-rti-portico`
+- transport families
+  - `hla2010-rti-transport-grpc`
+  - `hla2010-rti-transport-rest`
+- leaf packages
+  - `hla2010-fom-*`
+
+The canonical package docs are:
+
+- [`docs/package_layout.md`](docs/package_layout.md): human-readable hierarchy and family roles
+- [`packages/README.md`](packages/README.md): package ownership cards and where to edit first
+- [`docs/package_dependency_tree.md`](docs/package_dependency_tree.md): generated dependency evidence
+- [`docs/import_boundary_rules.md`](docs/import_boundary_rules.md): allowed dependency directions
+
+## Supported Python Surfaces
+
+Neutral namespace:
+
+- `hla.spec`
+- `hla.runtime_api`
+- `hla.editions.ed2010`
+
+2010 compatibility namespace:
+
+- `hla2010.spec`
+- `hla2010.runtime_api`
+
+Concrete package-owned examples of supported backend and scenario surfaces:
+
+- `hla2010_rti_python`
+- `hla2010_rti_transport_grpc`
+- `hla2010_fom_target_radar.scenarios`
+
+## Common Paths
+
+Shortest newcomer lanes:
 
 - run something: [`docs/first_run.md`](docs/first_run.md)
-- edit one service: [`docs/python_rti_edit_one_service.md`](docs/python_rti_edit_one_service.md)
+- run the backend recording smoke: [`examples/backend_recording.py`](examples/backend_recording.py)
+- understand the package split: [`docs/package_layout.md`](docs/package_layout.md)
+- decide where to edit: [`packages/README.md`](packages/README.md)
+- edit one Python RTI service: [`docs/python_rti_edit_one_service.md`](docs/python_rti_edit_one_service.md)
 - create one FOM package: [`docs/create_federate_and_fom.md`](docs/create_federate_and_fom.md)
-- trace one method: [`docs/requirements_trace_one_method.md`](docs/requirements_trace_one_method.md)
-- understand ownership: [`packages/README.md`](packages/README.md)
+- trace one requirement to code: [`docs/requirements_trace_one_method.md`](docs/requirements_trace_one_method.md)
+- understand verification lanes: [`docs/test_surface.md`](docs/test_surface.md)
 
-If you need vendor flows, stay on the `tools/` operator surface:
+## Operator Surface
+
+Stay on `tools/` for supported operator commands:
 
 ```bash
-./tools/certi-easy preflight
-./tools/certi-easy install
-./tools/certi-easy smoke compare
-
-./tools/pitch preflight
-./tools/pitch install
-./tools/pitch smoke
-./tools/pitch verify
-
+./tools/bootstrap python
+./tools/test
 ./tools/test-surface recommend
 ./tools/python verify-fast
-./tools/python verify-routes
 ./tools/python verify
-./tools/vendor-green matrix
+./tools/certi-easy preflight
+./tools/pitch preflight
 ```
 
-## What This Repo Is For
+For vendor and route-specific commands, use:
 
-The neutral import surface is `hla`, with the clean contract available at
-`hla.spec` and the current explicit edition available at
-`hla.editions.ed2010.spec`. Right now the neutral namespace selects only the
-2010 edition. The legacy `hla2010` import surface remains the 2010
-compatibility namespace. The
-`packages/hla2010-spec/src/hla2010/` tree stays limited to the abstract/core
-API, backend-neutral types and contracts, FOM/MOM helpers, and the one
-documented temporary split-package facade `hla2010.rti`.
-
-Concrete backend implementations now live in package-owned source trees such as:
-
-- `packages/hla2010-rti-python/src/hla2010_rti_python/`
-- `packages/hla2010-rti-certi/src/hla2010_rti_certi/`
-- `packages/hla2010-rti-java-jpype/src/hla2010_rti_java_jpype/`
-- `packages/hla2010-rti-java-py4j/src/hla2010_rti_java_py4j/`
-- `packages/hla2010-rti-portico/src/hla2010_rti_portico/`
-
-Namespace policy:
-
-- `hla` is the neutral runtime namespace with explicit edition selection
-- `hla.editions.ed2010` is the explicit neutral 2010-edition runtime namespace
-- `hla2010` is the supported 2010 compatibility runtime namespace
-- `hla2010_verification_harness` is the only supported public verification namespace
-- `hla2010_fom_target_radar.scenarios` is public scenario/FOM surface
-- `hla2010.testing` is not public API and is intentionally removed
-- repo-only proof, report, and suite orchestration helpers live under `src/hla2010_repo_internal/verification/`
-
-The repo is intended to make it easy to:
-
-- write federates against one API
-- swap backends without rewriting application logic
-- validate behavior against local, bridged, and real vendor runtimes
-- generate the evidence needed to understand what is supported today
-
-For the shortest deeper maps after this page:
-
-- setup and install order: [`docs/python_environment.md`](docs/python_environment.md)
-- examples and first run: [`docs/first_run.md`](docs/first_run.md)
-- package ownership: [`packages/README.md`](packages/README.md)
-- workspace areas: [`docs/workspace_layout.md`](docs/workspace_layout.md)
-- backend maturity and routes: [`docs/backend_route_inventory.md`](docs/backend_route_inventory.md)
-- full docs index: [`docs/README.md`](docs/README.md)
-
-If you only need the shortest "what works right now?" answer, use:
-
-```bash
-./tools/compliance generate
-./tools/compliance discover --show-backlog
-```
+- [`tools/README.md`](tools/README.md)
+- [`docs/backend_route_inventory.md`](docs/backend_route_inventory.md)
+- [`docs/rti_options_and_test_matrix.md`](docs/rti_options_and_test_matrix.md)
 
 ## Read Next
 
-1. [`docs/onboarding.md`](docs/onboarding.md) for the canonical run/edit/scaffold/trace onboarding path
-2. [`docs/first_run.md`](docs/first_run.md) for the shortest new-machine-to-first-example path
-3. [`docs/python_rti_edit_one_service.md`](docs/python_rti_edit_one_service.md) for the shortest maintainer service-edit lane
-4. [`docs/create_federate_and_fom.md`](docs/create_federate_and_fom.md) for the package-backed FOM/federate path
-5. [`docs/requirements_trace_one_method.md`](docs/requirements_trace_one_method.md) for the shortest requirement-to-code trace lane
-6. [`packages/README.md`](packages/README.md) for package ownership cards
-7. [`docs/README.md`](docs/README.md) for the full documentation map
-
-## Reference
-
-Use these only after the start path is clear:
-
-- [`docs/README.md`](docs/README.md): full documentation map
-- [`tools/README.md`](tools/README.md): supported operator command surface
-- [`requirements/README.md`](requirements/README.md): requirement surface classification
-- [`docs/python_api_spec.md`](docs/python_api_spec.md): clean Python spec package and compatibility split
-- [`docs/top_to_bottom_green.md`](docs/top_to_bottom_green.md): explicit green finish definition
-- [`docs/install_matrix.md`](docs/install_matrix.md): extras, bridge deps, and vendor-runtime ordering
-- [`packages/hla2010-rti-certi/docs/certi_section8_runbook.md`](packages/hla2010-rti-certi/docs/certi_section8_runbook.md): CERTI operator runbook
-- [`packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md`](packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md): Pitch selection and troubleshooting
+1. [`docs/onboarding.md`](docs/onboarding.md)
+2. [`docs/first_run.md`](docs/first_run.md)
+3. [`docs/package_layout.md`](docs/package_layout.md)
+4. [`packages/README.md`](packages/README.md)
+5. [`docs/python_environment.md`](docs/python_environment.md)
+6. [`docs/README.md`](docs/README.md)
 
 ## Historical / Provenance
 
-These are kept for audit and provenance, not for onboarding:
+These are for audit and provenance, not onboarding:
 
 - [`docs/source_documents.md`](docs/source_documents.md)
 - [`docs/reference/README.md`](docs/reference/README.md)
 - [`docs/evidence/README.md`](docs/evidence/README.md)
-
-The repository intentionally keeps generated artifacts out of version control when they can be reproduced from source.
