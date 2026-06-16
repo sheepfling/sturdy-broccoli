@@ -5,12 +5,12 @@ from .federate_ambassador import FederateAmbassador, NullFederateAmbassador
 from .rti_ambassador import RTIambassador
 
 RTIAmbassador = RTIambassador
-PythonicRTIAmbassadorMixin = RTIambassador
+RTIambassadorBase = RTIambassador
 
 __all__ = [
     "FederateAmbassador",
     "NullFederateAmbassador",
-    "PythonicRTIAmbassadorMixin",
     "RTIAmbassador",
+    "RTIambassadorBase",
     "RTIambassador",
 ]

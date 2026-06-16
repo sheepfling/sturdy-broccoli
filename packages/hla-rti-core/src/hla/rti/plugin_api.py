@@ -10,7 +10,7 @@ BACKEND_ENTRY_POINT_GROUP = "hla.rti_backends"
 TRANSPORT_ENTRY_POINT_GROUP = "hla.transports"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class HLASpec:
     """One standard-facing HLA API family."""
 
@@ -24,7 +24,7 @@ class HLASpec:
     capabilities: frozenset[str] = frozenset()
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class SpecPlugin:
     """Entry point descriptor for an installable HLA spec API."""
 
@@ -32,7 +32,7 @@ class SpecPlugin:
     description: str = ""
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class TransportRequest:
     """Transport selection for backends that expose a transport layer."""
 
@@ -40,7 +40,7 @@ class TransportRequest:
     options: Mapping[str, Any] = field(default_factory=dict)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class BackendRequest:
     """Backend selection bound to a concrete HLA spec."""
 
@@ -49,7 +49,7 @@ class BackendRequest:
     options: Mapping[str, Any] = field(default_factory=dict)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class RTIBackendSpec:
     """Legacy backend selection value accepted by compatibility call sites."""
 
@@ -57,7 +57,7 @@ class RTIBackendSpec:
     options: Mapping[str, Any] = field(default_factory=dict)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class RTITransportSpec:
     """Legacy transport selection value accepted by compatibility call sites."""
 
@@ -65,7 +65,7 @@ class RTITransportSpec:
     options: Mapping[str, Any] = field(default_factory=dict)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class RTIBackendPlugin:
     """Entry point descriptor for an installable RTI backend."""
 
@@ -78,7 +78,7 @@ class RTIBackendPlugin:
     discover: Callable[[], Any] | None = None
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class RTIBackendDiscovery:
     """Discovery status for one installed RTI backend plugin."""
 

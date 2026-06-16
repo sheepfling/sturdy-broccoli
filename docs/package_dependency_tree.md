@@ -3,12 +3,6 @@
 This page is generated from the `project.dependencies` fields in
 `packages/*/pyproject.toml`.
 
-Use this page to answer three practical questions:
-
-1. what is the architectural root package
-2. which packages are shared support versus concrete backends or leaves
-3. whether a new dependency is moving in the right direction
-
 Regenerate it with:
 
 ```bash
@@ -17,106 +11,107 @@ Regenerate it with:
 
 ## Summary
 
-- `hla-rti1516e` is the single true root package.
+- `hla-rti1516e` and `hla-rti1516-2025` are sibling versioned spec packages.
+- `hla-rti-core` is the cross-version discovery and factory package.
 - `hla-backend-common`, `hla-rti-core`, `hla-transport-common`, and `hla-verification` are the shared support layers.
 - Python and Java backend families are separated; `hla-backend-inmemory` depends on backend-common rather than on Java support packages.
-- transport packages depend on `hla-rti1516e`, `hla-backend-common`, `hla-transport-common`, and for hosted transports also `hla-rti-core`.
-- FOM and verification leaf packages depend only on `hla-rti1516e` and `hla-verification`.
-
-## How To Read It
-
-Read the page from top to bottom:
-
-1. summary for the mental model
-2. layers for package rank
-3. graph for direct edges
-4. table for manifest-level details
-
-If you need the policy behind the graph, read
-[`import_boundary_rules.md`](import_boundary_rules.md) and
-[`package_layout.md`](package_layout.md).
+- `hla-backend-shim` is the first 2025 runtime backend and depends on `hla-rti1516-2025` plus `hla-rti-core`.
+- existing transport packages remain 2010/FedPro-2010 shaped until a 2025 transport package is added.
+- FOM and verification leaf packages remain 2010-shaped unless they explicitly depend on `hla-rti1516-2025`.
+- current roots detected from metadata: `hla-rti-core, hla-rti1516e`.
 
 ## Dependency Layers
 
-- Layer 0: `hla-rti1516e`
-- Layer 1: `hla-backend-common`
-- Layer 2: `hla-bridge-java-common`, `hla-backend-inmemory`, `hla-transport-common`
-- Layer 3: `hla-bridge-java-jpype`, `hla-bridge-java-py4j`, `hla-rti-core`
-- Layer 4: `hla-backend-certi`, `hla-vendor-pitch`, `hla-vendor-portico`, `hla-transport-grpc`, `hla-transport-rest`, `hla-verification`
-- Layer 5: `hla-fom-target-radar`, `hla-vendor-pitch-jpype`, `hla-vendor-pitch-py4j`
+- Layer 0: `hla-rti-core`, `hla-rti1516e`
+- Layer 1: `hla-backend-common`, `hla-rti1516-2025`
+- Layer 2: `hla-backend-inmemory`, `hla-backend-shim`, `hla-bridge-java-common`, `hla-transport-common`, `hla-verification`
+- Layer 3: `hla-backend-certi`, `hla-bridge-java-jpype`, `hla-bridge-java-py4j`, `hla-fom-target-radar`, `hla-transport-grpc`, `hla-transport-rest`, `hla-vendor-pitch`
+- Layer 4: `hla-vendor-pitch-jpype`, `hla-vendor-pitch-py4j`, `hla-vendor-portico`
 
 ## Direct Graph
 
 ```mermaid
 graph TD
-    hla.rti[hla-rti-core] --> hla.foms.target_radar[hla-fom-target-radar]
-    hla2010_spec[hla-rti1516e] --> hla.foms.target_radar[hla-fom-target-radar]
-    hla.verification[hla-verification] --> hla.foms.target_radar[hla-fom-target-radar]
-    hla2010_spec[hla-rti1516e] --> hla.backends.common[hla-backend-common]
-    hla.bridges.java.common[hla-bridge-java-common] --> hla.backends.certi[hla-backend-certi]
-    hla.rti[hla-rti-core] --> hla.backends.certi[hla-backend-certi]
-    hla.transports.common[hla-transport-common] --> hla.backends.certi[hla-backend-certi]
-    hla2010_spec[hla-rti1516e] --> hla.backends.certi[hla-backend-certi]
-    hla.backends.common[hla-backend-common] --> hla.bridges.java.common[hla-bridge-java-common]
-    hla2010_spec[hla-rti1516e] --> hla.bridges.java.common[hla-bridge-java-common]
-    hla.bridges.java.common[hla-bridge-java-common] --> hla.bridges.java.jpype[hla-bridge-java-jpype]
-    hla2010_spec[hla-rti1516e] --> hla.bridges.java.jpype[hla-bridge-java-jpype]
-    hla.bridges.java.common[hla-bridge-java-common] --> hla.bridges.java.py4j[hla-bridge-java-py4j]
-    hla2010_spec[hla-rti1516e] --> hla.bridges.java.py4j[hla-bridge-java-py4j]
-    hla.bridges.java.common[hla-bridge-java-common] --> hla.vendors.pitch[hla-vendor-pitch]
-    hla.rti[hla-rti-core] --> hla.vendors.pitch[hla-vendor-pitch]
-    hla2010_spec[hla-rti1516e] --> hla.vendors.pitch[hla-vendor-pitch]
-    hla.bridges.java.common[hla-bridge-java-common] --> hla.vendors.pitch.jpype[hla-vendor-pitch-jpype]
-    hla.bridges.java.jpype[hla-bridge-java-jpype] --> hla.vendors.pitch.jpype[hla-vendor-pitch-jpype]
-    hla.vendors.pitch[hla-vendor-pitch] --> hla.vendors.pitch.jpype[hla-vendor-pitch-jpype]
-    hla2010_spec[hla-rti1516e] --> hla.vendors.pitch.jpype[hla-vendor-pitch-jpype]
-    hla.bridges.java.common[hla-bridge-java-common] --> hla.vendors.pitch.py4j[hla-vendor-pitch-py4j]
-    hla.bridges.java.py4j[hla-bridge-java-py4j] --> hla.vendors.pitch.py4j[hla-vendor-pitch-py4j]
-    hla.vendors.pitch[hla-vendor-pitch] --> hla.vendors.pitch.py4j[hla-vendor-pitch-py4j]
-    hla2010_spec[hla-rti1516e] --> hla.vendors.pitch.py4j[hla-vendor-pitch-py4j]
-    hla.bridges.java.common[hla-bridge-java-common] --> hla.vendors.portico[hla-vendor-portico]
-    hla.bridges.java.jpype[hla-bridge-java-jpype] --> hla.vendors.portico[hla-vendor-portico]
-    hla.bridges.java.py4j[hla-bridge-java-py4j] --> hla.vendors.portico[hla-vendor-portico]
-    hla2010_spec[hla-rti1516e] --> hla.vendors.portico[hla-vendor-portico]
-    hla.backends.common[hla-backend-common] --> hla.backends.inmemory[hla-backend-inmemory]
-    hla2010_spec[hla-rti1516e] --> hla.backends.inmemory[hla-backend-inmemory]
-    hla.backends.common[hla-backend-common] --> hla.rti[hla-rti-core]
-    hla.transports.common[hla-transport-common] --> hla.rti[hla-rti-core]
-    hla2010_spec[hla-rti1516e] --> hla.rti[hla-rti-core]
-    hla.backends.common[hla-backend-common] --> hla.transports.common[hla-transport-common]
-    hla2010_spec[hla-rti1516e] --> hla.transports.common[hla-transport-common]
-    hla.backends.common[hla-backend-common] --> hla.transports.grpc[hla-transport-grpc]
-    hla.rti[hla-rti-core] --> hla.transports.grpc[hla-transport-grpc]
-    hla.transports.common[hla-transport-common] --> hla.transports.grpc[hla-transport-grpc]
-    hla2010_spec[hla-rti1516e] --> hla.transports.grpc[hla-transport-grpc]
-    hla.backends.common[hla-backend-common] --> hla.transports.rest[hla-transport-rest]
-    hla.rti[hla-rti-core] --> hla.transports.rest[hla-transport-rest]
-    hla.transports.common[hla-transport-common] --> hla.transports.rest[hla-transport-rest]
-    hla2010_spec[hla-rti1516e] --> hla.transports.rest[hla-transport-rest]
-    hla2010_spec[hla-rti1516e]
-    hla.backends.common[hla-backend-common] --> hla.verification[hla-verification]
-    hla.rti[hla-rti-core] --> hla.verification[hla-verification]
-    hla2010_spec[hla-rti1516e] --> hla.verification[hla-verification]
+    hla_backend_common[hla-backend-common] --> hla_backend_certi[hla-backend-certi]
+    hla_rti_core[hla-rti-core] --> hla_backend_certi[hla-backend-certi]
+    hla_rti1516e[hla-rti1516e] --> hla_backend_certi[hla-backend-certi]
+    hla_transport_common[hla-transport-common] --> hla_backend_certi[hla-backend-certi]
+    hla_rti_core[hla-rti-core] --> hla_backend_common[hla-backend-common]
+    hla_rti1516e[hla-rti1516e] --> hla_backend_common[hla-backend-common]
+    hla_backend_common[hla-backend-common] --> hla_backend_inmemory[hla-backend-inmemory]
+    hla_rti_core[hla-rti-core] --> hla_backend_inmemory[hla-backend-inmemory]
+    hla_rti1516e[hla-rti1516e] --> hla_backend_inmemory[hla-backend-inmemory]
+    hla_rti_core[hla-rti-core] --> hla_backend_shim[hla-backend-shim]
+    hla_rti1516_2025[hla-rti1516-2025] --> hla_backend_shim[hla-backend-shim]
+    hla_backend_common[hla-backend-common] --> hla_bridge_java_common[hla-bridge-java-common]
+    hla_rti_core[hla-rti-core] --> hla_bridge_java_common[hla-bridge-java-common]
+    hla_rti1516e[hla-rti1516e] --> hla_bridge_java_common[hla-bridge-java-common]
+    hla_backend_common[hla-backend-common] --> hla_bridge_java_jpype[hla-bridge-java-jpype]
+    hla_bridge_java_common[hla-bridge-java-common] --> hla_bridge_java_jpype[hla-bridge-java-jpype]
+    hla_rti_core[hla-rti-core] --> hla_bridge_java_jpype[hla-bridge-java-jpype]
+    hla_rti1516e[hla-rti1516e] --> hla_bridge_java_jpype[hla-bridge-java-jpype]
+    hla_bridge_java_common[hla-bridge-java-common] --> hla_bridge_java_py4j[hla-bridge-java-py4j]
+    hla_rti_core[hla-rti-core] --> hla_bridge_java_py4j[hla-bridge-java-py4j]
+    hla_rti1516e[hla-rti1516e] --> hla_bridge_java_py4j[hla-bridge-java-py4j]
+    hla_rti_core[hla-rti-core] --> hla_fom_target_radar[hla-fom-target-radar]
+    hla_rti1516e[hla-rti1516e] --> hla_fom_target_radar[hla-fom-target-radar]
+    hla_verification[hla-verification] --> hla_fom_target_radar[hla-fom-target-radar]
+    hla_rti_core[hla-rti-core]
+    hla_rti_core[hla-rti-core] --> hla_rti1516_2025[hla-rti1516-2025]
+    hla_rti1516e[hla-rti1516e]
+    hla_backend_common[hla-backend-common] --> hla_transport_common[hla-transport-common]
+    hla_rti1516e[hla-rti1516e] --> hla_transport_common[hla-transport-common]
+    hla_backend_common[hla-backend-common] --> hla_transport_grpc[hla-transport-grpc]
+    hla_rti_core[hla-rti-core] --> hla_transport_grpc[hla-transport-grpc]
+    hla_rti1516e[hla-rti1516e] --> hla_transport_grpc[hla-transport-grpc]
+    hla_transport_common[hla-transport-common] --> hla_transport_grpc[hla-transport-grpc]
+    hla_backend_common[hla-backend-common] --> hla_transport_rest[hla-transport-rest]
+    hla_rti_core[hla-rti-core] --> hla_transport_rest[hla-transport-rest]
+    hla_rti1516e[hla-rti1516e] --> hla_transport_rest[hla-transport-rest]
+    hla_transport_common[hla-transport-common] --> hla_transport_rest[hla-transport-rest]
+    hla_bridge_java_common[hla-bridge-java-common] --> hla_vendor_pitch[hla-vendor-pitch]
+    hla_rti_core[hla-rti-core] --> hla_vendor_pitch[hla-vendor-pitch]
+    hla_rti1516e[hla-rti1516e] --> hla_vendor_pitch[hla-vendor-pitch]
+    hla_bridge_java_common[hla-bridge-java-common] --> hla_vendor_pitch_jpype[hla-vendor-pitch-jpype]
+    hla_bridge_java_jpype[hla-bridge-java-jpype] --> hla_vendor_pitch_jpype[hla-vendor-pitch-jpype]
+    hla_rti_core[hla-rti-core] --> hla_vendor_pitch_jpype[hla-vendor-pitch-jpype]
+    hla_rti1516e[hla-rti1516e] --> hla_vendor_pitch_jpype[hla-vendor-pitch-jpype]
+    hla_vendor_pitch[hla-vendor-pitch] --> hla_vendor_pitch_jpype[hla-vendor-pitch-jpype]
+    hla_bridge_java_common[hla-bridge-java-common] --> hla_vendor_pitch_py4j[hla-vendor-pitch-py4j]
+    hla_bridge_java_py4j[hla-bridge-java-py4j] --> hla_vendor_pitch_py4j[hla-vendor-pitch-py4j]
+    hla_rti_core[hla-rti-core] --> hla_vendor_pitch_py4j[hla-vendor-pitch-py4j]
+    hla_rti1516e[hla-rti1516e] --> hla_vendor_pitch_py4j[hla-vendor-pitch-py4j]
+    hla_vendor_pitch[hla-vendor-pitch] --> hla_vendor_pitch_py4j[hla-vendor-pitch-py4j]
+    hla_bridge_java_common[hla-bridge-java-common] --> hla_vendor_portico[hla-vendor-portico]
+    hla_bridge_java_jpype[hla-bridge-java-jpype] --> hla_vendor_portico[hla-vendor-portico]
+    hla_bridge_java_py4j[hla-bridge-java-py4j] --> hla_vendor_portico[hla-vendor-portico]
+    hla_rti_core[hla-rti-core] --> hla_vendor_portico[hla-vendor-portico]
+    hla_rti1516e[hla-rti1516e] --> hla_vendor_portico[hla-vendor-portico]
+    hla_backend_common[hla-backend-common] --> hla_verification[hla-verification]
+    hla_rti_core[hla-rti-core] --> hla_verification[hla-verification]
+    hla_rti1516e[hla-rti1516e] --> hla_verification[hla-verification]
 ```
 
 ## Direct Dependencies
 
 | Package | Internal deps | External deps |
 | --- | --- | --- |
+| `hla-backend-certi` | `hla-rti1516e, hla-backend-common, hla-rti-core, hla-transport-common` | `-` |
+| `hla-backend-common` | `hla-rti1516e, hla-rti-core` | `-` |
+| `hla-backend-inmemory` | `hla-rti1516e, hla-rti-core, hla-backend-common` | `-` |
+| `hla-backend-shim` | `hla-rti-core, hla-rti1516-2025` | `-` |
+| `hla-bridge-java-common` | `hla-rti1516e, hla-rti-core, hla-backend-common` | `-` |
+| `hla-bridge-java-jpype` | `hla-rti1516e, hla-rti-core, hla-backend-common, hla-bridge-java-common` | `jpype1` |
+| `hla-bridge-java-py4j` | `hla-rti1516e, hla-rti-core, hla-bridge-java-common` | `py4j` |
 | `hla-fom-target-radar` | `hla-rti1516e, hla-verification, hla-rti-core` | `-` |
-| `hla-backend-common` | `hla-rti1516e` | `-` |
-| `hla-backend-certi` | `hla-rti1516e, hla-bridge-java-common, hla-rti-core, hla-transport-common` | `-` |
-| `hla-bridge-java-common` | `hla-rti1516e, hla-backend-common` | `-` |
-| `hla-bridge-java-jpype` | `hla-rti1516e, hla-bridge-java-common` | `jpype1` |
-| `hla-bridge-java-py4j` | `hla-rti1516e, hla-bridge-java-common` | `py4j` |
-| `hla-vendor-pitch` | `hla-rti1516e, hla-bridge-java-common, hla-rti-core` | `-` |
-| `hla-vendor-pitch-jpype` | `hla-rti1516e, hla-bridge-java-common, hla-bridge-java-jpype, hla-vendor-pitch` | `-` |
-| `hla-vendor-pitch-py4j` | `hla-rti1516e, hla-bridge-java-common, hla-bridge-java-py4j, hla-vendor-pitch` | `-` |
-| `hla-vendor-portico` | `hla-rti1516e, hla-bridge-java-common, hla-bridge-java-jpype, hla-bridge-java-py4j` | `-` |
-| `hla-backend-inmemory` | `hla-rti1516e, hla-backend-common` | `-` |
-| `hla-rti-core` | `hla-rti1516e, hla-backend-common, hla-transport-common` | `-` |
+| `hla-rti-core` | `-` | `-` |
+| `hla-rti1516-2025` | `hla-rti-core` | `-` |
+| `hla-rti1516e` | `-` | `-` |
 | `hla-transport-common` | `hla-rti1516e, hla-backend-common` | `-` |
 | `hla-transport-grpc` | `hla-rti1516e, hla-backend-common, hla-transport-common, hla-rti-core` | `grpcio` |
 | `hla-transport-rest` | `hla-rti1516e, hla-backend-common, hla-transport-common, hla-rti-core` | `-` |
-| `hla-rti1516e` | `-` | `-` |
+| `hla-vendor-pitch` | `hla-rti1516e, hla-bridge-java-common, hla-rti-core` | `-` |
+| `hla-vendor-pitch-jpype` | `hla-rti1516e, hla-rti-core, hla-bridge-java-common, hla-bridge-java-jpype, hla-vendor-pitch` | `-` |
+| `hla-vendor-pitch-py4j` | `hla-rti1516e, hla-rti-core, hla-bridge-java-common, hla-bridge-java-py4j, hla-vendor-pitch` | `-` |
+| `hla-vendor-portico` | `hla-rti1516e, hla-rti-core, hla-bridge-java-common, hla-bridge-java-jpype, hla-bridge-java-py4j` | `-` |
 | `hla-verification` | `hla-rti1516e, hla-backend-common, hla-rti-core` | `-` |

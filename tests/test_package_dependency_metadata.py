@@ -11,6 +11,7 @@ ALLOWED_INTERNAL_DEPENDENCIES: dict[str, set[str]] = {
     "hla-rti1516e": set(),
     "hla-rti1516-2025": {"hla-rti-core"},
     "hla-backend-common": {"hla-rti1516e", "hla-rti-core"},
+    "hla-backend-shim": {"hla-rti1516-2025", "hla-rti-core"},
     "hla-bridge-java-common": {"hla-rti1516e", "hla-rti-core", "hla-backend-common"},
     "hla-backend-inmemory": {"hla-rti1516e", "hla-rti-core", "hla-backend-common"},
     "hla-rti-core": set(),

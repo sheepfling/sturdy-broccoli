@@ -26,6 +26,7 @@ EXPECTED_PACKAGES = {
     "hla-rti1516e": PackageExpectation("core-spec", frozenset(), "implementation-owned"),
     "hla-rti1516-2025": PackageExpectation("core-spec", frozenset(), "implementation-owned"),
     "hla-backend-inmemory": PackageExpectation("rti-backend", frozenset({"inmemory"}), "implementation-moved"),
+    "hla-backend-shim": PackageExpectation("rti-backend", frozenset({"shim"}), "implementation-owned"),
     "hla-backend-certi": PackageExpectation(
         "rti-backend",
         frozenset({"certi"}),
@@ -51,6 +52,10 @@ EXPECTED_PACKAGES = {
     "hla-verification": PackageExpectation("verification-harness", frozenset(), "implementation-moved"),
 }
 INTERNAL_PACKAGE_VERSION = "0.13.0"
+PACKAGE_PYTHON_REQUIRES = {
+    "hla-rti1516-2025": ">=3.11",
+    "hla-backend-shim": ">=3.11",
+}
 
 
 def _load_project(package_name: str) -> dict:
@@ -110,6 +115,24 @@ def _live_rti1516e_python_files() -> set[str]:
         path.relative_to(root).as_posix()
         for path in root.rglob("*.py")
         if "__pycache__" not in path.parts
+    }
+
+
+def _live_rti1516e_package_files() -> set[str]:
+    root = ROOT / "packages" / "hla-rti1516e" / "src" / "hla" / "rti1516e"
+    return {
+        path.relative_to(root).as_posix()
+        for path in root.iterdir()
+        if path.is_file()
+    }
+
+
+def _live_rti1516_2025_package_files() -> set[str]:
+    root = ROOT / "packages" / "hla-rti1516-2025" / "src" / "hla" / "rti1516_2025"
+    return {
+        path.relative_to(root).as_posix()
+        for path in root.iterdir()
+        if path.is_file()
     }
 
 
@@ -292,6 +315,41 @@ def test_rti1516e_spec_manifest_owns_exact_root_package_tree() -> None:
     }
     assert _live_rti1516e_python_files() == expected_root_surface
 
+    package_files = _live_rti1516e_package_files()
+    assert "encoding.pyi" in package_files
+    assert "federate_ambassador.pyi" in package_files
+    assert "rti_ambassador.pyi" in package_files
+    assert "py.typed" in package_files
+    assert "api_metadata.json" in package_files
+
+    package_data = _load_project("hla-rti1516e")["tool"]["setuptools"]["package-data"]["hla.rti1516e"]
+    assert "*.json" in package_data
+    assert "*.pyi" in package_data
+    assert "py.typed" in package_data
+
+
+def test_rti1516_2025_spec_manifest_packages_typed_surface() -> None:
+    split = _package_split("hla-rti1516-2025")
+    assert split["source_roots"] == ["packages/hla-rti1516-2025/src/hla/rti1516_2025"]
+
+    project = _load_project("hla-rti1516-2025")
+    package_dir = project["tool"]["setuptools"]["package-dir"]
+    assert package_dir == {"": "src"}
+
+    package_find = project["tool"]["setuptools"]["packages"]["find"]
+    assert package_find["where"] == ["src"]
+    assert package_find["include"] == ["hla.rti1516_2025*"]
+
+    package_files = _live_rti1516_2025_package_files()
+    assert "encoding.pyi" in package_files
+    assert "federate_ambassador.pyi" in package_files
+    assert "rti_ambassador.pyi" in package_files
+    assert "py.typed" in package_files
+
+    package_data = project["tool"]["setuptools"]["package-data"]["hla.rti1516_2025"]
+    assert "*.pyi" in package_data
+    assert "py.typed" in package_data
+
 
 def test_backend_family_packages_own_docs_and_verification_policy_surfaces() -> None:
     expected_docs = {
@@ -382,7 +440,7 @@ def test_package_root_readmes_describe_canonical_import_and_operator_boundary() 
         "hla-rti1516e": (
             "canonical `hla.rti1516e` standard-facing API",
             "`hla.rti1516e.RTIambassador`",
-            "old `_Spec` and runtime compatibility modules are removed",
+            "`hla.rti1516e.rti` for version-local backend discovery and ambassador creation",
             "`tests/test_package_split_scaffolds.py`",
             "`tests/test_root_facade_policy.py`",
             "`tests/test_namespace_policy.py`",
@@ -484,7 +542,7 @@ def test_package_root_readmes_describe_canonical_import_and_operator_boundary() 
             "package-local command",
         ),
         "hla-transport-grpc": (
-            "`hla.transports.grpc`",
+            "`hla.transports.grpc.fedpro2010`",
             "`tests/test_rti_transport_grpc_split_package.py`",
             "`tests/test_package_boundary.py`",
             "`tests/test_backend_wrapper_policy.py`",
@@ -492,7 +550,7 @@ def test_package_root_readmes_describe_canonical_import_and_operator_boundary() 
             "`./tools/`",
         ),
         "hla-transport-rest": (
-            "`hla.transports.rest`",
+            "REST/HTTP JSON transport package",
             "`tests/test_rti_transport_rest_split_package.py`",
             "`tests/test_package_boundary.py`",
             "does not own human operator entrypoints",
@@ -744,7 +802,7 @@ def test_core_spec_doc_index_describes_the_only_root_facade_boundary() -> None:
 
     assert "abstract HLA 2010 spec and core API surface" in text
     assert "`hla.rti1516e.rti`" in text
-    assert "temporary root facade" in text
+    assert "version-local backend-discovery and ambassador" in text
     assert "tests/test_package_split_scaffolds.py" in text
     assert "tests/test_root_facade_policy.py" in text
     assert "tests/test_namespace_policy.py" in text
@@ -777,7 +835,7 @@ def test_package_split_pyprojects_have_expected_boundaries():
         split = _package_split(package_name)
 
         assert project["name"] == package_name
-        assert project["requires-python"] == ">=3.10"
+        assert project["requires-python"] == PACKAGE_PYTHON_REQUIRES.get(package_name, ">=3.10")
         assert split["status"] == expected.get("status", "migration-scaffold")
         assert split["role"] == expected["role"]
         assert split["source_roots"]
@@ -831,11 +889,15 @@ def test_non_spec_split_packages_build_from_their_own_src_roots() -> None:
         assert set(package_find["include"]) == expected_include_patterns, package_name
 
 
-def test_backend_scaffolds_depend_on_core_spec_package():
+def test_backend_scaffolds_depend_on_their_edition_spec_package():
     for package_name, expected in EXPECTED_PACKAGES.items():
         if expected["role"] in {"core-spec", "runtime-support"}:
             continue
         dependencies = set(_load_project(package_name)["project"].get("dependencies", ()))
+        if package_name == "hla-backend-shim":
+            assert "hla-rti1516-2025==0.13.0" in dependencies
+            assert "hla-rti1516e==0.13.0" not in dependencies
+            continue
         assert "hla-rti1516e==0.13.0" in dependencies
 
 

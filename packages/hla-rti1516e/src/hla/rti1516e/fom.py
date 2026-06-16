@@ -663,6 +663,7 @@ def _walk_object_class(
     inherited_update_rates = dict(inherited_update_rates or {})
     full_name = _append_path(parent, name)
     declared_names: list[str] = []
+    declared_seen: dict[str, bool] = {}
     declared_datatypes: dict[str, str] = {}
     declared_transportations: dict[str, str] = {}
     declared_update_rates: dict[str, str] = {}
@@ -670,6 +671,8 @@ def _walk_object_class(
         attr_name = (_child_text(attr, "name") or "").strip()
         if not attr_name:
             continue
+        _require_unique_name(declared_seen, attr_name, "attribute", path=path)
+        declared_seen[attr_name] = True
         declared_names.append(attr_name)
         data_type = (_child_text(attr, "dataType") or "").strip()
         if data_type:
@@ -686,6 +689,11 @@ def _walk_object_class(
         if update_rate:
             declared_update_rates[attr_name] = update_rate
     declared = tuple(declared_names)
+    if path is not None:
+        inherited_names = set(inherited_attributes)
+        for attr_name in declared:
+            if attr_name in inherited_names:
+                raise FOMResolutionError(f"Duplicate attribute definition: {attr_name!r}")
     available = _stable_union(inherited_attributes, declared)
     datatypes = _stable_mapping_union(inherited_datatypes, declared_datatypes)
     transportations = _stable_mapping_union(inherited_transportations, declared_transportations)
@@ -729,16 +737,24 @@ def _walk_interaction_class(
         or inherited_transportation
     )
     declared_names: list[str] = []
+    declared_seen: dict[str, bool] = {}
     declared_datatypes: dict[str, str] = {}
     for param in _direct_children(element, "parameter"):
         param_name = (_child_text(param, "name") or "").strip()
         if not param_name:
             continue
+        _require_unique_name(declared_seen, param_name, "parameter", path=path)
+        declared_seen[param_name] = True
         declared_names.append(param_name)
         data_type = (_child_text(param, "dataType") or "").strip()
         if data_type:
             declared_datatypes[param_name] = data_type
     declared = tuple(declared_names)
+    if path is not None:
+        inherited_names = set(inherited_parameters)
+        for param_name in declared:
+            if param_name in inherited_names:
+                raise FOMResolutionError(f"Duplicate parameter definition: {param_name!r}")
     available = _stable_union(inherited_parameters, declared)
     datatypes = _stable_mapping_union(inherited_datatypes, declared_datatypes)
     result = [InteractionClassSpec(full_name, available, parent or None, declared, datatypes, transportation or None)]

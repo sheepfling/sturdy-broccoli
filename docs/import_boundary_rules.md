@@ -17,7 +17,9 @@ The package-owned roots are:
 
 Do not recreate `hla2010` as a conceptual root. Do not restore `_Spec` aliases
 or the removed `hla.rti1516e.spec` facade; canonical standard types are
-`hla.rti1516e.RTIambassador` and `hla.rti1516e.FederateAmbassador`.
+`hla.rti1516e.RTIambassador`, `hla.rti1516e.FederateAmbassador`,
+`hla.rti1516_2025.RTIambassador`, and
+`hla.rti1516_2025.FederateAmbassador`.
 
 This repository also has two distinct axes that must stay separate:
 
@@ -29,7 +31,7 @@ Those are not the same thing. A backend is `python`, `certi`, `jpype`, or
 
 The practical rule is:
 
-`versioned spec API -> shared support -> backend family or transport -> leaf package`
+`versioned spec API -> shared support or edition backend -> transport/vendor/leaf package`
 
 Not:
 
@@ -39,18 +41,18 @@ Not:
 
 ## Package Classes
 
-### Root
+### Spec Roots
 
 - `hla-rti1516e`
+- `hla-rti1516-2025`
 
 Owns:
 
-- clean spec surface
+- clean spec surfaces
 - shared HLA value types and exceptions
-- backend contract
-- backend registry contract
+- backend registry contract through `hla-rti-core`
 - source-derived overload metadata
-- backend-neutral transport codecs exposed through the workspace facade
+- edition-owned source trace and generated/doc-derived API metadata
 
 ### Shared Support
 
@@ -60,11 +62,14 @@ Owns:
 - `hla-verification`
 
 Shared support packages may depend only on `hla-rti1516e` and other shared
-support packages in the explicitly documented direction below.
+support packages in the explicitly documented direction below. New 2025 support
+must use `hla-rti1516-2025` or `hla-rti-core`, not import through the 2010 spec
+package.
 
 ### Backend Families
 
 - `hla-backend-inmemory`
+- `hla-backend-shim`
 - `hla-backend-certi`
 - `hla-bridge-java-jpype`
 - `hla-bridge-java-py4j`

@@ -56,7 +56,7 @@ class RecordingFederateAmbassador(NullFederateAmbassador):
     def record_callback(self, method_name: str, *args: Any, **kwargs: Any) -> Any:
         record = CallbackRecord(method_name, tuple(args), dict(kwargs), method_reference(method_name))
         self.records.append(record)
-        hook = getattr(self, f"on_{record.snake_name}", None)
+        hook = object.__getattribute__(self, f"on_{record.snake_name}") if hasattr(type(self), f"on_{record.snake_name}") else None
         if callable(hook):
             return hook(*args, **kwargs)
         return None

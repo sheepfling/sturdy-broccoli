@@ -28,6 +28,7 @@ _SOURCE_CHECKOUT_SPEC_PLUGIN_MODULES: tuple[str, ...] = (
 )
 _SOURCE_CHECKOUT_PLUGIN_MODULES: tuple[str, ...] = (
     "hla.backends.inmemory.plugin",
+    "hla.backends.shim.plugin",
     "hla.bridges.java.jpype.plugin",
     "hla.bridges.java.py4j.plugin",
     "hla.vendors.pitch.jpype.plugin",
@@ -72,9 +73,7 @@ def _load_spec_plugins() -> None:
     global _SPEC_PLUGINS_LOADED
     if _SPEC_PLUGINS_LOADED:
         return
-    loaded_plugins = _iter_entry_point_spec_plugins()
-    if not loaded_plugins:
-        loaded_plugins = _iter_source_checkout_spec_plugins()
+    loaded_plugins = [*_iter_entry_point_spec_plugins(), *_iter_source_checkout_spec_plugins()]
     for plugin in loaded_plugins:
         register_spec_plugin(plugin)
     _SPEC_PLUGINS_LOADED = True
@@ -84,9 +83,7 @@ def _load_backend_plugins() -> None:
     global _BACKEND_PLUGINS_LOADED
     if _BACKEND_PLUGINS_LOADED:
         return
-    loaded_plugins = _iter_entry_point_backend_plugins()
-    if not loaded_plugins:
-        loaded_plugins = _iter_source_checkout_backend_plugins()
+    loaded_plugins = [*_iter_entry_point_backend_plugins(), *_iter_source_checkout_backend_plugins()]
     for plugin in loaded_plugins:
         register_backend_plugin(plugin)
     _BACKEND_PLUGINS_LOADED = True
@@ -280,8 +277,12 @@ def create_rti_ambassador(
 ) -> Any:
     """Create a backend-neutral RTI ambassador."""
 
+    backend_instance = create_backend(backend, spec=spec, **options)
+    create_native_ambassador = getattr(backend_instance, "create_rti_ambassador", None)
+    if callable(create_native_ambassador):
+        return create_native_ambassador()
     make_rti_ambassador = importlib.import_module("hla.backends.common").make_rti_ambassador
-    return make_rti_ambassador(create_backend(backend, spec=spec, **options))
+    return make_rti_ambassador(backend_instance)
 
 
 def register_transport_factory(kind: str, factory: Any, *, aliases: tuple[str, ...] = ()) -> None:

@@ -135,11 +135,13 @@ def render_direct_table(packages: dict[str, list[str]], graph: dict[str, list[st
 def render_summary(graph: dict[str, list[str]]) -> str:
     root_nodes = roots(graph)
     lines = [
-        "- `hla-rti1516e` is the single true root package.",
+        "- `hla-rti1516e` and `hla-rti1516-2025` are sibling versioned spec packages.",
+        "- `hla-rti-core` is the cross-version discovery and factory package.",
         "- `hla-backend-common`, `hla-rti-core`, `hla-transport-common`, and `hla-verification` are the shared support layers.",
         "- Python and Java backend families are separated; `hla-backend-inmemory` depends on backend-common rather than on Java support packages.",
-        "- transport packages depend on `hla-rti1516e`, `hla-backend-common`, `hla-transport-common`, and for hosted transports also `hla-rti-core`.",
-        "- FOM and verification leaf packages depend only on `hla-rti1516e` and `hla-verification`.",
+        "- `hla-backend-shim` is the first 2025 runtime backend and depends on `hla-rti1516-2025` plus `hla-rti-core`.",
+        "- existing transport packages remain 2010/FedPro-2010 shaped until a 2025 transport package is added.",
+        "- FOM and verification leaf packages remain 2010-shaped unless they explicitly depend on `hla-rti1516-2025`.",
     ]
     if root_nodes != ["hla-rti1516e"]:
         lines.append(f"- current roots detected from metadata: `{', '.join(root_nodes)}`.")

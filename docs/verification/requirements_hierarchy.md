@@ -11,8 +11,10 @@ Use the hierarchy in this order:
 
 `L1 capability -> L2 feature -> L3 requirement -> positive test, negative test, or planned proof`
 
-The source-of-truth rows still live in `requirements/*.csv`. This page is the
-reader-facing index that groups them into capability trees.
+The source-of-truth rows still live in `requirements/*.csv`. The path-stable
+2010 block is mirrored under `requirements/2010/`, and the 2025 traceability
+block lives under `requirements/2025/`. This page is the reader-facing index
+that groups them into capability trees.
 
 ## Verification Features
 

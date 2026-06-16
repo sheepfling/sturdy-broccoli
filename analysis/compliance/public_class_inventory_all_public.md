@@ -4,7 +4,6 @@
 |---|---|---:|---|---|
 | hla.rti1516e.ambassadors | CallbackRecord | no | supporting-scaffold | Support or workflow scaffolding around the HLA surface rather than a direct header-spec type. |
 | hla.rti1516e.ambassadors | FederateAmbassadorMultiplexer | no | supporting-scaffold | Support or workflow scaffolding around the HLA surface rather than a direct header-spec type. |
-| hla.rti1516e.ambassadors | NullFederateAmbassador | yes | supporting-scaffold | Support or workflow scaffolding around the HLA surface rather than a direct header-spec type. |
 | hla.rti1516e.ambassadors | RecordingFederateAmbassador | no | supporting-scaffold | Support or workflow scaffolding around the HLA surface rather than a direct header-spec type. |
 | hla.rti1516e.encoding | DataElement | no | supporting-scaffold | Support or workflow scaffolding around the HLA surface rather than a direct header-spec type. |
 | hla.rti1516e.encoding | DecoderException | no | supporting-scaffold | Support or workflow scaffolding around the HLA surface rather than a direct header-spec type. |

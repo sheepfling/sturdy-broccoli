@@ -1,13 +1,6 @@
 {
-  "row_count": 8,
+  "row_count": 7,
   "rows": [
-    {
-      "class_name": "NullFederateAmbassador",
-      "exported_via_package": true,
-      "mapping_status": "supporting-scaffold",
-      "module": "hla.rti1516e.ambassadors",
-      "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
-    },
     {
       "class_name": "CallbackModel",
       "exported_via_package": true,

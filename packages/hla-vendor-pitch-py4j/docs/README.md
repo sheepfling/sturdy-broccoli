@@ -2,8 +2,7 @@
 
 Package-owned notes for the `pitch-py4j` backend live here.
 
-- This package owns the `pitch-py4j` plugin descriptor and retained
-  package-local compatibility facades under
+- This package owns the `pitch-py4j` plugin descriptor under
   `src/hla.vendors.pitch.py4j/`.
 - Package-owned verification/preflight policy for the runtime lane is shared
   deliberately through `hla.vendors.pitch.testing_policy`.

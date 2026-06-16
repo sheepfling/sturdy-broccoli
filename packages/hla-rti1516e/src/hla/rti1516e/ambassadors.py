@@ -2,26 +2,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-import re
 from typing import Any, Iterable
 
-from .federate_ambassador import FederateAmbassador
+from .federate_ambassador import FederateAmbassador, NullFederateAmbassador, lower_camel_to_snake
 from .spec_refs import SpecReference, method_reference
-
-
-def lower_camel_to_snake(name: str) -> str:
-    """Convert a source HLA lowerCamelCase method name to snake_case."""
-
-    name = name.replace("HLAversion", "HLAVersion")
-    s1 = re.sub(r"(.)([A-Z][a-z]+)", r"\1_\2", name)
-    s2 = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", s1)
-    return s2.lower()
-
-
-class NullFederateAmbassador(FederateAmbassador):
-    """No-op FederateAmbassador implementation for tests and simple clients."""
-
-    pass
 
 
 @dataclass(frozen=True)

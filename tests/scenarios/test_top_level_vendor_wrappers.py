@@ -192,7 +192,9 @@ def test_package_deps_top_level_wrapper_bootstraps_source_checkout(tmp_path: Pat
     assert result.returncode == 0, result.stderr
     doc_path = tmp_path / "docs" / "package_dependency_tree.md"
     assert doc_path.exists()
-    assert "`hla-rti1516e` is the single true root package." in doc_path.read_text(encoding="utf-8")
+    doc_text = doc_path.read_text(encoding="utf-8")
+    assert "`hla-rti1516e` and `hla-rti1516-2025` are sibling versioned spec packages." in doc_text
+    assert "`hla-rti-core` is the cross-version discovery and factory package." in doc_text
 
 
 def test_compliance_top_level_wrapper_generate_bootstraps_workspace_pythonpath(tmp_path: Path) -> None:

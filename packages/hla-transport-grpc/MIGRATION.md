@@ -15,6 +15,8 @@ The wire contract is the 2010 FedPro-style protobuf profile:
 - `HLA2010RTITransport.proto`
 
 Generated Python imports live under `hla.transports.grpc.fedpro2010`.
+The 2025 FedPro-compatible schema lives beside it under
+`hla.transports.grpc.fedpro2025`.
 
 Legacy compatibility imports have been removed. These paths must stay absent:
 

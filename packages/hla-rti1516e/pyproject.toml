@@ -27,7 +27,7 @@ namespaces = true
 exclude = ["hla.rti1516e.testing*"]
 
 [tool.setuptools.package-data]
-"hla.rti1516e" = ["*.pyi", "py.typed", "resources/foms/*.xml"]
+"hla.rti1516e" = ["*.json", "*.pyi", "py.typed", "resources/foms/*.xml"]
 
 [tool.hla.package]
 status = "implementation-owned"

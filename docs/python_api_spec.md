@@ -19,15 +19,15 @@ If you only need the supported import ladder, use:
 - versioned API root: `packages/hla-rti1516e/src/hla/rti1516e/`
 - package-owned implementations: `packages/*/src/...`
 
-The installable root owns the 2010 strict API surface and spec-facing support modules.
-cross-version discovery and factory selection live under `hla.rti`.
+The installable root owns the 2010 strict API surface and spec-facing support
+modules. Cross-version discovery and factory selection live under `hla.rti`.
 
 ## Canonical Files
 
 - [`../packages/hla-rti1516e/README.md`](../packages/hla-rti1516e/README.md): installable root package role
 - [`../packages/hla-rti1516e/src/hla/rti1516e/rti_ambassador.py`](../packages/hla-rti1516e/src/hla/rti1516e/rti_ambassador.py): strict source-shaped `RTIambassador` protocol
 - [`../packages/hla-rti1516e/src/hla/rti1516e/federate_ambassador.py`](../packages/hla-rti1516e/src/hla/rti1516e/federate_ambassador.py): strict source-shaped `FederateAmbassador` protocol and no-op callback sink
-- [`../packages/hla-rti1516e/src/hla/rti1516e/api.py`](../packages/hla-rti1516e/src/hla/rti1516e/api.py): compatibility shim that re-exports the strict surface
+- [`../packages/hla-rti1516e/src/hla/rti1516e/api.py`](../packages/hla-rti1516e/src/hla/rti1516e/api.py): convenience re-export module for the strict surface
 - [`../packages/hla-rti1516e/src/hla/rti1516e/spec_inventory.py`](../packages/hla-rti1516e/src/hla/rti1516e/spec_inventory.py): plain-text method inventory used by the spec layer
 - [`../packages/hla-rti1516e/src/hla/rti1516e/spec_sources.py`](../packages/hla-rti1516e/src/hla/rti1516e/spec_sources.py): readable Java/C++ source locations surfaced in docstrings
 - [`../packages/hla-rti1516e/src/hla/rti1516e/spec_refs.py`](../packages/hla-rti1516e/src/hla/rti1516e/spec_refs.py): clause and service references used for traceability
@@ -59,7 +59,7 @@ If you need an instantiable no-op callback sink:
 from hla.rti1516e import NullFederateAmbassador
 ```
 
-## Why This Split Exists
+## Why This Layout Exists
 
 - `hla-rti1516e` is the installable root package for the strict spec surface.
 - `packages/hla-rti1516e/src/hla/rti1516e/rti_ambassador.py` and `federate_ambassador.py` expose source-shaped protocols.

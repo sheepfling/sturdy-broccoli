@@ -8,12 +8,17 @@ __all__ = [
     "CERTIRTIGrpcServer",
     "CERTIRTIGrpcServerConfig",
     "FEDPRO2010_PROTO_DESCRIPTOR",
+    "FEDPRO2025_PROTO_DESCRIPTOR",
     "GrpcTransport",
     "GrpcTransportConfig",
+    "RTI2025GrpcServer",
+    "RTI2025GrpcServerConfig",
     "PythonRTIGrpcServer",
     "PythonRTIGrpcServerConfig",
     "create_grpc_transport",
     "fedpro2010",
+    "fedpro2025",
+    "start_2025_grpc_server",
     "start_certi_grpc_server",
     "start_python_grpc_server",
 ]
@@ -25,6 +30,9 @@ _EXPORT_MODULES = {
     "PythonRTIGrpcServerConfig": "hla.transports.grpc.python_server",
     "start_certi_grpc_server": "hla.transports.grpc.python_server",
     "start_python_grpc_server": "hla.transports.grpc.python_server",
+    "RTI2025GrpcServer": "hla.transports.grpc.python_server_2025",
+    "RTI2025GrpcServerConfig": "hla.transports.grpc.python_server_2025",
+    "start_2025_grpc_server": "hla.transports.grpc.python_server_2025",
     "GrpcTransport": "hla.transports.grpc.transport",
     "GrpcTransportConfig": "hla.transports.grpc.transport",
     "create_grpc_transport": "hla.transports.grpc.transport",
@@ -34,8 +42,12 @@ _EXPORT_MODULES = {
 def __getattr__(name: str) -> Any:
     if name == "fedpro2010":
         return importlib.import_module("hla.transports.grpc.fedpro2010")
+    if name == "fedpro2025":
+        return importlib.import_module("hla.transports.grpc.fedpro2025")
     if name == "FEDPRO2010_PROTO_DESCRIPTOR":
         return importlib.import_module("hla.transports.grpc.fedpro2010.RTIambassador_pb2").DESCRIPTOR
+    if name == "FEDPRO2025_PROTO_DESCRIPTOR":
+        return importlib.import_module("hla.transports.grpc.fedpro2025.RTIambassador_2025_pb2").DESCRIPTOR
     module_name = _EXPORT_MODULES.get(name)
     if module_name is None:
         raise AttributeError(name)

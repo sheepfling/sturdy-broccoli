@@ -5,8 +5,8 @@ clean Python spec surface plus pluggable RTI backends.
 
 The supported front door is:
 
-- `hla.rti1516e.spec` for the clean interface contract
-- `hla.rti1516e.runtime_api` for the Pythonic convenience layer
+- `hla.rti1516e` for the 2010 API package
+- `hla.rti` for cross-version discovery and ambassador creation
 - `hla.backends.inmemory` for the local in-memory RTI backend
 - `hla.transports.grpc` for networked transport-hosted RTI routes
 - `hla.foms.target_radar.scenarios` for the Target/Radar example package
@@ -139,7 +139,7 @@ Concrete backend implementations now live in package-owned source trees such as:
 
 Namespace policy:
 
-- `hla2010` is the supported runtime namespace
+- `hla` is the supported runtime namespace root
 - `hla.verification` is the only supported public verification namespace
 - `hla.foms.target_radar.scenarios` is public scenario/FOM surface
 - `hla.rti1516e.testing` is not public API and is intentionally removed
@@ -219,7 +219,8 @@ If you only need the shortest "what works right now?" answer, use:
 ## Repository Layout
 
 ```text
-src/hla2010/          core API layer plus the documented temporary compatibility facade hla.rti1516e.rti
+packages/hla-rti1516e/src/hla/rti1516e/    2010 API package
+packages/hla-rti-core/src/hla/rti/         cross-version discovery and ambassador creation
 packages/hla-verification/src/hla/verification/repo_internal/ verification/proof/report helpers kept out of public API
 packages/*/src/       package-owned backend and support implementation roots
 examples/             runnable example federates and scenario entrypoints
@@ -227,7 +228,7 @@ tests/                pytest coverage and smoke tests
 tools/                human-facing operator entrypoints
 scripts/              implementation helpers, CI wrappers, and plumbing
 docs/                 route inventories, runbooks, and verification docs
-packages/             installable workspace packages and migration metadata
+packages/             installable workspace packages
 specs/ieee-1516-2010/  retained IEEE reference PDFs and source ZIPs
 CERTI/                vendored CERTI source tree
 java_shims/           Java shim source for bridge validation

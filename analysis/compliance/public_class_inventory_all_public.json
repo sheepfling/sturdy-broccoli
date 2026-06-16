@@ -1,5 +1,5 @@
 {
-  "row_count": 224,
+  "row_count": 223,
   "rows": [
     {
       "class_name": "CallbackRecord",
@@ -11,13 +11,6 @@
     {
       "class_name": "FederateAmbassadorMultiplexer",
       "exported_via_package": false,
-      "mapping_status": "supporting-scaffold",
-      "module": "hla.rti1516e.ambassadors",
-      "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
-    },
-    {
-      "class_name": "NullFederateAmbassador",
-      "exported_via_package": true,
       "mapping_status": "supporting-scaffold",
       "module": "hla.rti1516e.ambassadors",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
