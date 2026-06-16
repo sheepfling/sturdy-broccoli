@@ -21,6 +21,7 @@ Core operator entrypoints:
 - `./tools/rti-options`
 - `./tools/compliance`
 - `./tools/fom-overview`
+- `./tools/fom-roundtrip`
 - `./tools/package-deps`
 - `./tools/section8-gate`
 - `./tools/target-radar`

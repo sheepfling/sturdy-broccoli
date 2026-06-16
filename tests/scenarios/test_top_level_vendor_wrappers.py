@@ -143,6 +143,30 @@ def test_fom_overview_top_level_wrapper_bootstraps_source_checkout(tmp_path: Pat
     assert len(md_files) == 1
 
 
+def test_fom_roundtrip_top_level_wrapper_bootstraps_source_checkout(tmp_path: Path) -> None:
+    env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
+    output_dir = tmp_path / "fom-roundtrip"
+    result = subprocess.run(
+        [
+            str(ROOT / "tools" / "fom-roundtrip"),
+            "2010",
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=tmp_path,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    json_files = sorted(output_dir.glob("*.json"))
+    md_files = sorted(output_dir.glob("*.md"))
+    assert len(json_files) == 1
+    assert len(md_files) == 1
+
+
 def test_rti_options_top_level_wrapper_bootstraps_source_checkout(tmp_path: Path) -> None:
     env = {"PATH": os.environ.get("PATH", ""), "HOME": os.environ.get("HOME", "")}
     docs_dir = tmp_path / "docs"

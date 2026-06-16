@@ -121,6 +121,15 @@ class SimpleDatatypeSpec:
 
 
 @dataclass(frozen=True)
+class ReferenceDatatypeSpec:
+    name: str
+    representation: str | None = None
+    reference_class: str | None = None
+    referenced_attribute: str | None = None
+    semantics: str | None = None
+
+
+@dataclass(frozen=True)
 class EnumeratorSpec:
     name: str
     values: tuple[str, ...] = ()
@@ -208,6 +217,7 @@ class FOMModule:
     datatype_names: tuple[str, ...] = ()
     basic_datatypes: Mapping[str, BasicDatatypeSpec] = field(default_factory=dict)
     simple_datatypes: Mapping[str, SimpleDatatypeSpec] = field(default_factory=dict)
+    reference_datatypes: Mapping[str, ReferenceDatatypeSpec] = field(default_factory=dict)
     enumerated_datatypes: Mapping[str, EnumeratedDatatypeSpec] = field(default_factory=dict)
     array_datatypes: Mapping[str, ArrayDatatypeSpec] = field(default_factory=dict)
     fixed_record_datatypes: Mapping[str, FixedRecordDatatypeSpec] = field(default_factory=dict)
@@ -235,6 +245,7 @@ class FOMModule:
             or self.datatype_names
             or self.basic_datatypes
             or self.simple_datatypes
+            or self.reference_datatypes
             or self.enumerated_datatypes
             or self.array_datatypes
             or self.fixed_record_datatypes
@@ -266,6 +277,7 @@ class FOMCatalog:
     datatype_names: frozenset[str] = field(default_factory=frozenset)
     basic_datatypes: Mapping[str, BasicDatatypeSpec] = field(default_factory=dict)
     simple_datatypes: Mapping[str, SimpleDatatypeSpec] = field(default_factory=dict)
+    reference_datatypes: Mapping[str, ReferenceDatatypeSpec] = field(default_factory=dict)
     enumerated_datatypes: Mapping[str, EnumeratedDatatypeSpec] = field(default_factory=dict)
     array_datatypes: Mapping[str, ArrayDatatypeSpec] = field(default_factory=dict)
     fixed_record_datatypes: Mapping[str, FixedRecordDatatypeSpec] = field(default_factory=dict)
@@ -310,6 +322,7 @@ class FOMCatalog:
             "datatype_names": sorted(self.datatype_names),
             "basic_datatypes": {key: _datatype_summary(spec) for key, spec in sorted(self.basic_datatypes.items())},
             "simple_datatypes": {key: _datatype_summary(spec) for key, spec in sorted(self.simple_datatypes.items())},
+            "reference_datatypes": {key: _datatype_summary(spec) for key, spec in sorted(self.reference_datatypes.items())},
             "enumerated_datatypes": {key: _datatype_summary(spec) for key, spec in sorted(self.enumerated_datatypes.items())},
             "array_datatypes": {key: _datatype_summary(spec) for key, spec in sorted(self.array_datatypes.items())},
             "fixed_record_datatypes": {key: _datatype_summary(spec) for key, spec in sorted(self.fixed_record_datatypes.items())},
@@ -347,6 +360,13 @@ def _datatype_summary(spec: Any) -> dict[str, Any]:
             "units": spec.units,
             "resolution": spec.resolution,
             "accuracy": spec.accuracy,
+            "semantics": spec.semantics,
+        }
+    if isinstance(spec, ReferenceDatatypeSpec):
+        return {
+            "representation": spec.representation,
+            "reference_class": spec.reference_class,
+            "referenced_attribute": spec.referenced_attribute,
             "semantics": spec.semantics,
         }
     if isinstance(spec, EnumeratedDatatypeSpec):
@@ -404,6 +424,7 @@ _STANDARD_TIME_BY_DATATYPE_HINT = {
     "HLAinteger64LE": "HLAinteger64Time",
 }
 _IEEE_1516_2010_NAMESPACE = "http://standards.ieee.org/IEEE1516-2010"
+_IEEE_1516_2025_NAMESPACE = "http://standards.ieee.org/IEEE1516-2025"
 _SISO_1516_2010_NAMESPACE = "http://www.sisostds.org/schemas/IEEE1516-2010"
 _XML_SCHEMA_INSTANCE_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance"
 _DEFAULT_SCHEMA_LOCATION = (
@@ -414,7 +435,7 @@ _DEFAULT_OMT_SCHEMA_LOCATION = (
     f"{_IEEE_1516_2010_NAMESPACE} "
     "http://standards.ieee.org/downloads/1516/1516.2-2010/IEEE1516-OMT-2010.xsd"
 )
-_ALLOWED_OMT_NAMESPACES = {_IEEE_1516_2010_NAMESPACE, _SISO_1516_2010_NAMESPACE}
+_ALLOWED_OMT_NAMESPACES = {_IEEE_1516_2010_NAMESPACE, _IEEE_1516_2025_NAMESPACE, _SISO_1516_2010_NAMESPACE}
 _STANDARD_TRANSPORTATION_TYPES = {"HLAreliable", "HLAbestEffort"}
 _STANDARD_UPDATE_RATE_DESIGNATORS = {"HLAdefault", "default"}
 _KNOWN_SWITCH_NAMES = {
@@ -830,6 +851,7 @@ def _extract_update_rates(root: ET.Element, *, path: Path) -> dict[str, str]:
 
 _DATATYPE_ENTRY_TAGS = {
     "simpleData",
+    "referenceDataType",
     "enumeratedData",
     "arrayData",
     "fixedRecordData",
@@ -912,6 +934,31 @@ def _extract_simple_datatypes(root: ET.Element, *, path: Path) -> dict[str, Simp
             semantics=(_child_text(child, "semantics") or "").strip() or None,
         )
     return simple_types
+
+
+def _extract_reference_datatypes(root: ET.Element, *, path: Path) -> dict[str, ReferenceDatatypeSpec]:
+    data_types_section = next((child for child in list(root) if _local_name(child.tag) == "dataTypes"), None)
+    if data_types_section is None:
+        return {}
+    container = next((child for child in list(data_types_section) if _local_name(child.tag) == "referenceDataTypes"), None)
+    if container is None:
+        return {}
+    reference_types: dict[str, ReferenceDatatypeSpec] = {}
+    for child in list(container):
+        if _local_name(child.tag) != "referenceDataType":
+            continue
+        name = (_child_text(child, "name") or "").strip()
+        if not name:
+            continue
+        _require_unique_name(reference_types, name, "reference datatype", path=path)
+        reference_types[name] = ReferenceDatatypeSpec(
+            name=name,
+            representation=(_child_text(child, "representation") or "").strip() or None,
+            reference_class=(_child_text(child, "referenceClass") or "").strip() or None,
+            referenced_attribute=(_child_text(child, "referencedAttribute") or "").strip() or None,
+            semantics=(_child_text(child, "semantics") or "").strip() or None,
+        )
+    return reference_types
 
 
 def _extract_enumerated_datatypes(root: ET.Element, *, path: Path) -> dict[str, EnumeratedDatatypeSpec]:
@@ -1074,6 +1121,7 @@ def _standard_mim_datatype_catalog() -> dict[str, Any]:
     return {
         **_extract_basic_datatypes(root, path=path),
         **_extract_simple_datatypes(root, path=path),
+        **_extract_reference_datatypes(root, path=path),
         **_extract_enumerated_datatypes(root, path=path),
         **_extract_array_datatypes(root, path=path),
         **_extract_fixed_record_datatypes(root, path=path),
@@ -1259,6 +1307,7 @@ def _validate_datatype_references(
     interaction_classes: Iterable[InteractionClassSpec],
     datatype_names: Iterable[str],
     simple_datatypes: Mapping[str, SimpleDatatypeSpec],
+    reference_datatypes: Mapping[str, ReferenceDatatypeSpec],
     enumerated_datatypes: Mapping[str, EnumeratedDatatypeSpec],
     array_datatypes: Mapping[str, ArrayDatatypeSpec],
     fixed_record_datatypes: Mapping[str, FixedRecordDatatypeSpec],
@@ -1270,7 +1319,7 @@ def _validate_datatype_references(
     *,
     path: Path,
 ) -> None:
-    valid_names = set(datatype_names) | set(_standard_mim_datatype_names())
+    valid_names = set(datatype_names) | set(reference_datatypes) | set(_standard_mim_datatype_names())
 
     def require_valid(name: str | None, context: str) -> None:
         if name is None:
@@ -1733,6 +1782,7 @@ def parse_fom_xml(
     datatype_names = _extract_datatype_names(root, path=path)
     basic_datatypes = _extract_basic_datatypes(root, path=path)
     simple_datatypes = _extract_simple_datatypes(root, path=path)
+    reference_datatypes = _extract_reference_datatypes(root, path=path)
     enumerated_datatypes = _extract_enumerated_datatypes(root, path=path)
     array_datatypes = _extract_array_datatypes(root, path=path)
     fixed_record_datatypes = _extract_fixed_record_datatypes(root, path=path)
@@ -1751,6 +1801,7 @@ def parse_fom_xml(
         interaction_classes,
         datatype_names,
         simple_datatypes,
+        reference_datatypes,
         enumerated_datatypes,
         array_datatypes,
         fixed_record_datatypes,
@@ -1776,6 +1827,7 @@ def parse_fom_xml(
         datatype_names=datatype_names,
         basic_datatypes=basic_datatypes,
         simple_datatypes=simple_datatypes,
+        reference_datatypes=reference_datatypes,
         enumerated_datatypes=enumerated_datatypes,
         array_datatypes=array_datatypes,
         fixed_record_datatypes=fixed_record_datatypes,
@@ -1811,6 +1863,7 @@ def merge_fom_modules(modules: Iterable[FOMModule], *, mim_module: FOMModule | N
     datatype_names: set[str] = set()
     basic_datatypes: dict[str, BasicDatatypeSpec] = {}
     simple_datatypes: dict[str, SimpleDatatypeSpec] = {}
+    reference_datatypes: dict[str, ReferenceDatatypeSpec] = {}
     enumerated_datatypes: dict[str, EnumeratedDatatypeSpec] = {}
     array_datatypes: dict[str, ArrayDatatypeSpec] = {}
     fixed_record_datatypes: dict[str, FixedRecordDatatypeSpec] = {}
@@ -1830,6 +1883,7 @@ def merge_fom_modules(modules: Iterable[FOMModule], *, mim_module: FOMModule | N
         datatype_names.update(module.datatype_names)
         basic_datatypes = _stable_spec_union(basic_datatypes, module.basic_datatypes, kind="basic datatype")
         simple_datatypes = _stable_spec_union(simple_datatypes, module.simple_datatypes, kind="simple datatype")
+        reference_datatypes = _stable_spec_union(reference_datatypes, module.reference_datatypes, kind="reference datatype")
         enumerated_datatypes = _stable_spec_union(enumerated_datatypes, module.enumerated_datatypes, kind="enumerated datatype")
         array_datatypes = _stable_spec_union(array_datatypes, module.array_datatypes, kind="array datatype")
         fixed_record_datatypes = _stable_spec_union(fixed_record_datatypes, module.fixed_record_datatypes, kind="fixed record datatype")
@@ -1897,6 +1951,7 @@ def merge_fom_modules(modules: Iterable[FOMModule], *, mim_module: FOMModule | N
         datatype_names=frozenset(datatype_names),
         basic_datatypes=dict(sorted(basic_datatypes.items())),
         simple_datatypes=dict(sorted(simple_datatypes.items())),
+        reference_datatypes=dict(sorted(reference_datatypes.items())),
         enumerated_datatypes=dict(sorted(enumerated_datatypes.items())),
         array_datatypes=dict(sorted(array_datatypes.items())),
         fixed_record_datatypes=dict(sorted(fixed_record_datatypes.items())),
@@ -1933,6 +1988,9 @@ def _serializer_referenced_datatype_names(module: FOMModule) -> tuple[str, ...]:
     for spec in module.simple_datatypes.values():
         register(spec.name)
         register(spec.representation)
+    for spec in module.reference_datatypes.values():
+        register(spec.name)
+        register(spec.representation)
     for spec in module.enumerated_datatypes.values():
         register(spec.name)
         register(spec.representation)
@@ -1956,6 +2014,7 @@ def _serializer_datatype_sections(
 ) -> tuple[
     dict[str, BasicDatatypeSpec],
     dict[str, SimpleDatatypeSpec],
+    dict[str, ReferenceDatatypeSpec],
     dict[str, EnumeratedDatatypeSpec],
     dict[str, ArrayDatatypeSpec],
     dict[str, FixedRecordDatatypeSpec],
@@ -1964,6 +2023,7 @@ def _serializer_datatype_sections(
     local_catalog: dict[str, Any] = {
         **dict(module.basic_datatypes),
         **dict(module.simple_datatypes),
+        **dict(module.reference_datatypes),
         **dict(module.enumerated_datatypes),
         **dict(module.array_datatypes),
         **dict(module.fixed_record_datatypes),
@@ -1973,6 +2033,7 @@ def _serializer_datatype_sections(
 
     basics: dict[str, BasicDatatypeSpec] = dict(module.basic_datatypes)
     simples: dict[str, SimpleDatatypeSpec] = dict(module.simple_datatypes)
+    references: dict[str, ReferenceDatatypeSpec] = dict(module.reference_datatypes)
     enumerateds: dict[str, EnumeratedDatatypeSpec] = dict(module.enumerated_datatypes)
     arrays: dict[str, ArrayDatatypeSpec] = dict(module.array_datatypes)
     fixed_records: dict[str, FixedRecordDatatypeSpec] = dict(module.fixed_record_datatypes)
@@ -2003,6 +2064,12 @@ def _serializer_datatype_sections(
             simples[spec.name] = spec
             pending.append(spec.representation or "")
             continue
+        if isinstance(spec, ReferenceDatatypeSpec):
+            if spec.name in references:
+                continue
+            references[spec.name] = spec
+            pending.append(spec.representation or "")
+            continue
         if isinstance(spec, EnumeratedDatatypeSpec):
             if spec.name in enumerateds:
                 continue
@@ -2028,7 +2095,7 @@ def _serializer_datatype_sections(
             pending.append(spec.data_type or "")
             pending.extend(alt.data_type or "" for alt in spec.alternatives)
 
-    return basics, simples, enumerateds, arrays, fixed_records, variant_records
+    return basics, simples, references, enumerateds, arrays, fixed_records, variant_records
 
 
 def serialize_fom_module(module: FOMModule) -> str:
@@ -2132,6 +2199,7 @@ def serialize_fom_module(module: FOMModule) -> str:
     (
         serializer_basic_datatypes,
         serializer_simple_datatypes,
+        serializer_reference_datatypes,
         serializer_enumerated_datatypes,
         serializer_array_datatypes,
         serializer_fixed_record_datatypes,
@@ -2167,6 +2235,20 @@ def serialize_fom_module(module: FOMModule) -> str:
             ET.SubElement(simple_data, f"{{{_IEEE_1516_2010_NAMESPACE}}}accuracy").text = spec.accuracy
         if spec.semantics:
             ET.SubElement(simple_data, f"{{{_IEEE_1516_2010_NAMESPACE}}}semantics").text = spec.semantics
+
+    if serializer_reference_datatypes:
+        reference_data_types = ET.SubElement(data_types, f"{{{_IEEE_1516_2010_NAMESPACE}}}referenceDataTypes")
+        for spec in serializer_reference_datatypes.values():
+            reference = ET.SubElement(reference_data_types, f"{{{_IEEE_1516_2010_NAMESPACE}}}referenceDataType")
+            ET.SubElement(reference, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = spec.name
+            if spec.representation:
+                ET.SubElement(reference, f"{{{_IEEE_1516_2010_NAMESPACE}}}representation").text = spec.representation
+            if spec.reference_class:
+                ET.SubElement(reference, f"{{{_IEEE_1516_2010_NAMESPACE}}}referenceClass").text = spec.reference_class
+            if spec.referenced_attribute:
+                ET.SubElement(reference, f"{{{_IEEE_1516_2010_NAMESPACE}}}referencedAttribute").text = spec.referenced_attribute
+            if spec.semantics:
+                ET.SubElement(reference, f"{{{_IEEE_1516_2010_NAMESPACE}}}semantics").text = spec.semantics
 
     enumerated_data_types = ET.SubElement(data_types, f"{{{_IEEE_1516_2010_NAMESPACE}}}enumeratedDataTypes")
     for spec in serializer_enumerated_datatypes.values():
