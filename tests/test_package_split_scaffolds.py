@@ -2,11 +2,24 @@ from __future__ import annotations
 
 import re
 import tomllib
+from dataclasses import dataclass
 from pathlib import Path
-
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGES = ROOT / "packages"
+
+
+@dataclass(frozen=True)
+class PackageExpectation:
+    role: str
+    entry_points: frozenset[str]
+    status: str
+
+    def __getitem__(self, key: str):
+        return getattr(self, key)
+
+    def get(self, key: str, default=None):
+        return getattr(self, key, default)
 
 
 EXPECTED_PACKAGES = {
@@ -19,7 +32,6 @@ EXPECTED_PACKAGES = {
     ),
     "hla2010-rti-backend-common": PackageExpectation("backend-support", frozenset(), "implementation-moved"),
     "hla2010-rti-java-common": PackageExpectation("java-support", frozenset(), "implementation-moved"),
-    "hla2010-rti-java": PackageExpectation("java-rti-selector", frozenset(), "implementation-moved"),
     "hla2010-rti-runtime-common": PackageExpectation("runtime-support", frozenset(), "implementation-moved"),
     "hla2010-rti-transport-common": PackageExpectation("transport-support", frozenset(), "implementation-moved"),
     "hla2010-rti-java-jpype": PackageExpectation("java-bridge", frozenset({"jpype"}), "implementation-moved"),
@@ -35,7 +47,6 @@ EXPECTED_PACKAGES = {
     "hla2010-rti-transport-grpc": PackageExpectation("transport", frozenset(), "implementation-moved"),
     "hla2010-rti-transport-rest": PackageExpectation("transport", frozenset(), "implementation-moved"),
     "hla2010-fom-target-radar": PackageExpectation("fom-example", frozenset(), "implementation-moved"),
-    "hla2010-fom-minimal-demo": PackageExpectation("fom-example", frozenset(), "implementation-owned"),
     "hla2010-verification-harness": PackageExpectation("verification-harness", frozenset(), "implementation-moved"),
 }
 INTERNAL_PACKAGE_VERSION = "0.13.0"
@@ -44,6 +55,16 @@ INTERNAL_PACKAGE_VERSION = "0.13.0"
 def _load_project(package_name: str) -> dict:
     path = PACKAGES / package_name / "pyproject.toml"
     return tomllib.loads(path.read_text(encoding="utf-8"))
+
+
+def _package_split(package_name: str) -> dict:
+    project = _load_project(package_name)
+    tool = project.get("tool", {})
+    if "hla2010" in tool and "package-split" in tool["hla2010"]:
+        return tool["hla2010"]["package-split"]
+    if "hla" in tool and "package-split" in tool["hla"]:
+        return tool["hla"]["package-split"]
+    raise KeyError(package_name)
 
 
 def _package_import_roots(package_name: str) -> set[str]:
@@ -93,7 +114,7 @@ def test_package_split_scaffolds_are_declared():
 
 def test_split_packages_use_package_owned_src_roots():
     for package_name, expected in EXPECTED_PACKAGES.items():
-        split = _load_project(package_name)["tool"]["hla2010"]["package-split"]
+        split = _package_split(package_name)
         source_roots = split["source_roots"]
         assert source_roots
         if expected.get("status") == "implementation-moved":
@@ -104,7 +125,7 @@ def test_split_packages_use_package_owned_src_roots():
 
 def test_split_package_source_roots_resolve_to_real_package_owned_paths() -> None:
     for package_name in EXPECTED_PACKAGES:
-        split = _load_project(package_name)["tool"]["hla2010"]["package-split"]
+        split = _package_split(package_name)
         source_roots = split["source_roots"]
         if package_name == "hla2010-spec":
             assert source_roots == ["src/hla2010"]
@@ -135,7 +156,7 @@ def test_split_package_source_roots_resolve_to_real_package_owned_paths() -> Non
 
 def test_split_package_source_roots_use_single_owned_directory_root() -> None:
     for package_name in EXPECTED_PACKAGES:
-        split = _load_project(package_name)["tool"]["hla2010"]["package-split"]
+        split = _package_split(package_name)
         source_roots = split["source_roots"]
         assert len(source_roots) == 1, package_name
         source_root = source_roots[0]

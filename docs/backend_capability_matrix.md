@@ -97,7 +97,7 @@ Primary anchors:
 - Real CERTI backend matrix:
   - [tests/vendors/README.md](../tests/vendors/README.md)
 - CERTI Java-profile callback forwarding and conversion:
-  - [test_certi_java_profile_callbacks.py](../tests/backends/test_certi_java_profile_callbacks.py)
+  - [test_certi_backend_callbacks.py](../tests/backends/test_certi_backend_callbacks.py)
 - Real vendor smoke:
   - [test_real_vendor_runtime_smoke.py](../tests/vendors/test_real_vendor_runtime_smoke.py)
 - Real Pitch backend matrix:
