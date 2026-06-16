@@ -8,6 +8,23 @@ from hla.backends.common import RecordingBackend, make_rti_ambassador
 import hla.rti.factory as runtime_factory
 from hla.rti1516e.rti import available_backend_plugins, create_rti_ambassador, discover_rti_backends, iter_rti_backend_plugins
 from hla.rti1516e import FederateAmbassador, NullFederateAmbassador, RTIambassador, lower_camel_to_snake
+from hla.rti1516e.federate_ambassador import UnimplementedFederateAmbassador
+from hla.rti1516e.rti_ambassador import UnimplementedRTIambassador
+
+
+def _public_callables(cls: type) -> dict[str, object]:
+    return {
+        name: value
+        for name, value in inspect.getmembers(cls, inspect.isfunction)
+        if not name.startswith("_")
+    }
+
+
+def _assert_no_generic_signature(cls: type) -> None:
+    for method_name, method in _public_callables(cls).items():
+        parameters = inspect.signature(method).parameters
+        assert "args" not in parameters, f"{cls.__name__}.{method_name} still accepts *args"
+        assert "kwargs" not in parameters, f"{cls.__name__}.{method_name} still accepts **kwargs"
 
 
 def test_spec_rti_is_abstract_and_pythonic():
@@ -16,6 +33,16 @@ def test_spec_rti_is_abstract_and_pythonic():
     assert hasattr(RTIambassador, "getHLAversion")
     assert lower_camel_to_snake("getHLAversion") == "get_hla_version"
     assert "Strict overloads live in the .pyi stub" in RTIambassador.__doc__
+
+
+def test_runtime_rti_signatures_are_not_generic():
+    _assert_no_generic_signature(RTIambassador)
+    _assert_no_generic_signature(UnimplementedRTIambassador)
+
+
+def test_runtime_federate_signatures_are_not_generic():
+    _assert_no_generic_signature(FederateAmbassador)
+    _assert_no_generic_signature(UnimplementedFederateAmbassador)
 
 
 def test_spec_federate_is_a_noop_prototype():

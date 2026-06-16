@@ -15,6 +15,8 @@ from tests.vendors.certi_real_backend_matrix_support import (
     _require_real_rti_smoke,
 )
 from hla.verification import (
+    JoinScenarioConfig,
+    run_join_precondition_scenario,
     run_section8_available_and_flush_case,
     run_section8_available_and_retraction_case,
     run_section8_duplicate_enable_rejection_case,
@@ -26,7 +28,22 @@ from hla.verification import (
     run_section8_time_bound_query_case,
     section8_matrix_config,
 )
-from tests.vendors.runtime_support import assert_all_terminated, cleanup_federation, close_all, reserve_udp_pair, terminate_all
+from hla.rti1516e.exceptions import (
+    FederateAlreadyExecutionMember,
+    FederateNameAlreadyInUse,
+    FederationExecutionDoesNotExist,
+    NotConnected,
+    RestoreInProgress,
+    SaveInProgress,
+)
+from tests.vendors.runtime_support import (
+    assert_all_terminated,
+    cleanup_federation,
+    close_all,
+    reserve_udp_pair,
+    reserve_udp_ports,
+    terminate_all,
+)
 
 
 def _run_certi_section8_pair(kind: str, time_factory_name: str, case_name: str, runner):
@@ -53,6 +70,19 @@ def _run_certi_section8_pair(kind: str, time_factory_name: str, case_name: str, 
         close_all(right, left)
         terminate_all(rtig)
         assert_all_terminated(rtig)
+
+
+def _certi_join_config(smoke_fom: str, federation_name: str, *, time_factory_name: str) -> JoinScenarioConfig:
+    return JoinScenarioConfig(
+        federation_name=federation_name,
+        fom_modules=(smoke_fom,),
+        logical_time_implementation_name=time_factory_name,
+        leader_name="Regulator",
+        wing_name="Constrained",
+        late_name="Late",
+        federate_type="TimeFederate",
+        save_name="CERTI-JOIN-BLOCK",
+    )
 
 @pytest.mark.parametrize("kind", ["certi"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
@@ -131,6 +161,56 @@ def test_certi_backend_time_query_and_fqr_matrix(kind: str, time_factory_name: s
         )
     finally:
         close_all(constrained, regulator)
+        terminate_all(rtig)
+        assert_all_terminated(rtig)
+
+
+@pytest.mark.parametrize("kind", ["certi"])
+@pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
+def test_certi_backend_join_precondition_matrix(kind: str, time_factory_name: str):
+    _require_real_rti_smoke()
+    try:
+        rtig = launch_certi_rtig(verbose=0)
+        smoke_fom = discover_certi_smoke_fom()
+    except BackendUnavailableError as exc:
+        pytest.skip(str(exc))
+
+    federation_name = f"{kind}-join-negative-{uuid.uuid4().hex[:8]}"
+    regulator_fed = RecordingFederateAmbassador()
+    constrained_fed = RecordingFederateAmbassador()
+    late_fed = RecordingFederateAmbassador()
+    regulator = None
+    constrained = None
+    late = None
+    try:
+        with reserve_udp_ports(3) as lease:
+            regulator_udp_port, constrained_udp_port, late_udp_port = lease.ports
+        regulator = create_rti_ambassador(
+            kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=regulator_udp_port
+        )
+        constrained = create_rti_ambassador(
+            kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=constrained_udp_port
+        )
+        late = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=late_udp_port)
+
+        summary = run_join_precondition_scenario(
+            regulator,
+            constrained,
+            late,
+            config=_certi_join_config(smoke_fom, federation_name, time_factory_name=time_factory_name),
+            leader_federate=regulator_fed,
+            wing_federate=constrained_fed,
+            late_federate=late_fed,
+        )
+
+        assert isinstance(summary["not_connected"], NotConnected)
+        assert isinstance(summary["missing_federation"], FederationExecutionDoesNotExist)
+        assert isinstance(summary["duplicate_name"], FederateNameAlreadyInUse)
+        assert isinstance(summary["already_joined"], FederateAlreadyExecutionMember)
+        assert isinstance(summary["save_in_progress"], SaveInProgress)
+        assert isinstance(summary["restore_in_progress"], RestoreInProgress)
+    finally:
+        close_all(late, constrained, regulator)
         terminate_all(rtig)
         assert_all_terminated(rtig)
 

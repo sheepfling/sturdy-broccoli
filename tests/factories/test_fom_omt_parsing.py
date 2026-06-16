@@ -1012,6 +1012,56 @@ def test_parse_fom_xml_rejects_duplicate_interaction_class_names_in_same_hierarc
         parse_fom_xml(xml_path)
 
 
+def test_parse_fom_xml_rejects_duplicate_attribute_names_in_same_hierarchy(tmp_path: Path):
+    xml_path = tmp_path / "duplicate-attribute.xml"
+    xml_path.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification><name>Duplicate Attribute</name><type>FOM</type></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Vehicle</name>
+        <attribute><name>Speed</name><dataType>HLAfloat64BE</dataType></attribute>
+        <attribute><name>Speed</name><dataType>HLAfloat64BE</dataType></attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(FOMResolutionError, match="Duplicate attribute definition"):
+        parse_fom_xml(xml_path)
+
+
+def test_parse_fom_xml_rejects_duplicate_parameter_names_in_same_hierarchy(tmp_path: Path):
+    xml_path = tmp_path / "duplicate-parameter.xml"
+    xml_path.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification><name>Duplicate Parameter</name><type>FOM</type></modelIdentification>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>Fire</name>
+        <parameter><name>Range</name><dataType>HLAfloat64BE</dataType></parameter>
+        <parameter><name>Range</name><dataType>HLAfloat64BE</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(FOMResolutionError, match="Duplicate parameter definition"):
+        parse_fom_xml(xml_path)
+
+
 def test_parse_fom_xml_rejects_multiple_top_level_object_classes(tmp_path: Path):
     xml_path = tmp_path / "multiple-object-roots.xml"
     xml_path.write_text(

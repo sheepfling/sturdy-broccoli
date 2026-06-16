@@ -1,0 +1,23 @@
+/*
+   Repo-owned transport service for the IEEE 1516.1(TM)-2025 FedPro
+   protobuf profile.
+
+   The request/response and callback payloads are defined by the supplied
+   2025 protobuf bundle. This file only binds those typed messages to a
+   gRPC service surface for this Python transport package.
+*/
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "hla.rti1516_2025.fedpro";
+
+package rti1516_2025.fedpro;
+
+import "RTIambassador_2025.proto";
+import "FederateAmbassador_2025.proto";
+
+service HLA2025FedProGateway {
+    rpc Call(CallRequest) returns (CallResponse);
+    rpc EvokeCallback(CallbackResponse) returns (CallbackRequest);
+}
