@@ -16,6 +16,9 @@ environment from the repo root:
 The canonical environment and install-order guide is
 [`../docs/python_environment.md`](../docs/python_environment.md).
 
+For the quickest package hierarchy and versioning answer, use
+[`../docs/package_hierarchy_and_versioning.md`](../docs/package_hierarchy_and_versioning.md).
+
 ## Reference
 
 Architecturally, `hla2010-spec` is the one installable root. The

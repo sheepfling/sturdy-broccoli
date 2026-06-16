@@ -14,6 +14,13 @@ The supported front door is:
 If you want the shortest path to "something runs", start with the pure Python
 backend and the Target/Radar example.
 
+If you want to understand the package split, start here:
+
+- [`docs/package_layout.md`](docs/package_layout.md)
+- [`docs/package_hierarchy_and_versioning.md`](docs/package_hierarchy_and_versioning.md)
+- [`docs/package_dependency_tree.md`](docs/package_dependency_tree.md)
+- [`packages/README.md`](packages/README.md)
+
 The repo is organized as a monorepo workspace:
 
 - `src/hla2010/` is the root Python package for the abstract/core API plus the documented temporary compatibility facade `hla2010.rti`

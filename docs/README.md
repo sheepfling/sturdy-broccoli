@@ -13,6 +13,12 @@ If you only need the shortest on-ramp:
 3. read [`networked_rti_python.md`](networked_rti_python.md) if you need a hosted Python RTI route
 4. read [`../packages/hla2010-fom-target-radar/README.md`](../packages/hla2010-fom-target-radar/README.md) if you are extending the Target/Radar example
 
+If you need the package hierarchy answer first, use:
+
+- [`package_layout.md`](package_layout.md)
+- [`package_hierarchy_and_versioning.md`](package_hierarchy_and_versioning.md)
+- [`package_dependency_tree.md`](package_dependency_tree.md)
+
 ## Start Here
 
 - [../README.md](../README.md): install, bootstrap, smoke, and operator commands
@@ -28,6 +34,7 @@ If you only need the shortest on-ramp:
 - [documentation_hierarchy.md](documentation_hierarchy.md): canonical doc flow and hierarchy
 - [workspace_layout.md](workspace_layout.md): top-level workspace areas and ownership split
 - [package_dependency_tree.md](package_dependency_tree.md): machine-derived installable package dependency tree
+- [package_hierarchy_and_versioning.md](package_hierarchy_and_versioning.md): simplified package dependency tree plus versioning status
 - [python_api_spec.md](python_api_spec.md): clean Python spec package and runtime facade split
 - [callback_model_guide.md](callback_model_guide.md): evoked vs immediate callback behavior, tests, and implementation entry points
 - [import_boundary_rules.md](import_boundary_rules.md): package-family import rules and transport-versus-backend boundaries

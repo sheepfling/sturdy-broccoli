@@ -9,6 +9,9 @@ For the stricter rule table about what may import what, use
 For the machine-derived installable package dependency graph, use
 [`package_dependency_tree.md`](package_dependency_tree.md).
 
+For the shortest answer to hierarchy plus versioning, use
+[`package_hierarchy_and_versioning.md`](package_hierarchy_and_versioning.md).
+
 This is a monorepo workspace with multiple installable package roots. The
 repository root is tooling-only: it keeps pytest, Ruff, and Pyright
 configuration, but it is not a Python distribution. The architectural root is
