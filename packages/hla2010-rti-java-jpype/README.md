@@ -97,6 +97,6 @@ Expected not-configured-yet behavior:
 Use this package for generic bridge mechanics. For the broader route choice and
 install order, see:
 
-- [`../../docs/java_backends_quickstart.md`](../../docs/java_backends_quickstart.md)
 - [`../../docs/install_matrix.md`](../../docs/install_matrix.md)
-- [`../../docs/backend_decision_tree.md`](../../docs/backend_decision_tree.md)
+- [`../../docs/backend_route_inventory.md`](../../docs/backend_route_inventory.md)
+- [`../../docs/networked_rti_python.md`](../../docs/networked_rti_python.md)
