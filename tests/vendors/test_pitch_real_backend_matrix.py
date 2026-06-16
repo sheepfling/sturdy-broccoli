@@ -10,10 +10,10 @@ from pathlib import Path
 
 import pytest
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010_rti_backend_common import BackendUnavailableError
-from hla2010.enums import CallbackModel, OrderType, ResignAction
-from hla2010.exceptions import (
+from hla.backends.common import RecordingFederateAmbassador
+from hla.backends.common import BackendUnavailableError
+from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
+from hla.rti1516e.exceptions import (
     AlreadyConnected,
     CouldNotOpenFDD,
     ErrorReadingFDD,
@@ -36,10 +36,10 @@ from hla2010.exceptions import (
     RTIexception,
     SaveInProgress,
 )
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_rti_java_common import JavaValueConverter, PythonFederateAmbassadorDispatcher
-from hla2010_rti_java_common.java_shim_backend import ShimJavaBridge
-from hla2010_verification_harness import (
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.bridges.java.common import JavaValueConverter, PythonFederateAmbassadorDispatcher
+from hla.bridges.java.common.java_shim_backend import ShimJavaBridge
+from hla.verification import (
     DeclarationManagementScenarioConfig,
     DiscoveryClassScenarioConfig,
     DdmDeclarationGatingScenarioConfig,
@@ -149,10 +149,10 @@ from hla2010_verification_harness import (
     write_update_rate_fom,
     section8_matrix_config,
 )
-from hla2010.time import HLAinteger64Interval, HLAinteger64Time
-from hla2010.types import RangeBounds
-from hla2010.types import TimeQueryReturn
-from hla2010_rti_pitch_common.real_rti_pitch import launch_pitch_runtime
+from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
+from hla.rti1516e.types import RangeBounds
+from hla.rti1516e.types import TimeQueryReturn
+from hla.vendors.pitch.real_rti_pitch import launch_pitch_runtime
 from tests.vendors.runtime_support import cleanup_federation, require_vendor_preflight, shutdown_runtime_resources
 
 
@@ -271,7 +271,7 @@ def _launch_pitch_jpype_lost_federate_session(config: LostFederateScenarioConfig
 def _pitch_sync_config(kind: str, name: str, **overrides):
     return SynchronizationScenarioConfig(
         federation_name=f"{kind}-{name}-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -283,7 +283,7 @@ def _pitch_sync_config(kind: str, name: str, **overrides):
 def _pitch_save_restore_config(kind: str, name: str, save_prefix: str, **overrides):
     return SaveRestoreScenarioConfig(
         federation_name=f"{kind}-{name}-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -296,7 +296,7 @@ def _pitch_save_restore_config(kind: str, name: str, save_prefix: str, **overrid
 def _pitch_lifecycle_config(kind: str, name: str, **overrides):
     return FederationLifecycleScenarioConfig(
         federation_name=f"{kind}-{name}-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         **overrides,
     )
@@ -305,7 +305,7 @@ def _pitch_lifecycle_config(kind: str, name: str, **overrides):
 def _pitch_resign_config(kind: str, name: str, **overrides):
     return ResignScenarioConfig(
         federation_name=f"{kind}-{name}-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -317,7 +317,7 @@ def _pitch_resign_config(kind: str, name: str, **overrides):
 def _pitch_join_config(kind: str, name: str, save_prefix: str, **overrides):
     return JoinScenarioConfig(
         federation_name=f"{kind}-{name}-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -339,7 +339,7 @@ def _pitch_discovery_class_config(kind: str, hierarchy_fom: str):
 def _pitch_name_reservation_config(kind: str):
     return NameReservationScenarioConfig(
         federation_name=f"{kind}-name-reservation-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         reserved_name=f"{kind}-Reserved-{uuid.uuid4().hex[:8]}",
         multiple_names=(
@@ -352,7 +352,7 @@ def _pitch_name_reservation_config(kind: str):
 def _pitch_declaration_config(kind: str, name: str, **overrides):
     params = {
         "federation_name": f"{kind}-{name}-{uuid.uuid4().hex[:8]}",
-        "fom_modules": ("hla2010:VendorSmokeFOM.xml",),
+        "fom_modules": ("resource:VendorSmokeFOM.xml",),
         "logical_time_implementation_name": "HLAinteger64Time",
         "object_class_name": "HLAobjectRoot.SmokeObject",
         "attribute_name": "Payload",
@@ -376,7 +376,7 @@ def _pitch_object_scope_config(kind: str, name: str):
 def _pitch_transport_config(kind: str, name: str, **overrides):
     params = {
         "federation_name": f"{kind}-{name}-{uuid.uuid4().hex[:8]}",
-        "fom_modules": ("hla2010:VendorSmokeFOM.xml",),
+        "fom_modules": ("resource:VendorSmokeFOM.xml",),
         "logical_time_implementation_name": "HLAinteger64Time",
         "object_instance_name": f"{kind}-{name}-{uuid.uuid4().hex[:8]}",
         "save_name": f"{kind}-{name.upper()}-{uuid.uuid4().hex[:8]}",
@@ -397,7 +397,7 @@ def _pitch_update_rate_config(kind: str, update_rate_fom: str):
 def _pitch_request_update_config(kind: str, name: str, request_tag: bytes):
     return RequestAttributeValueUpdateScenarioConfig(
         federation_name=f"{kind}-{name}-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_instance_name=f"{kind}-RAVU-{uuid.uuid4().hex[:8]}",
         request_tag=request_tag,
@@ -407,7 +407,7 @@ def _pitch_request_update_config(kind: str, name: str, request_tag: bytes):
 def _pitch_orphan_config(kind: str):
     return OrphanObjectScenarioConfig(
         federation_name=f"{kind}-orphan-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_instance_name=f"{kind}-Orphan-{uuid.uuid4().hex[:8]}",
     )
@@ -416,7 +416,7 @@ def _pitch_orphan_config(kind: str):
 def _pitch_timed_delete_config(kind: str):
     return TimedDeleteScenarioConfig(
         federation_name=f"{kind}-timed-delete-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_instance_name=f"{kind}-TimedDelete-{uuid.uuid4().hex[:8]}",
     )
@@ -425,7 +425,7 @@ def _pitch_timed_delete_config(kind: str):
 def _pitch_local_delete_config(kind: str):
     return LocalDeleteScenarioConfig(
         federation_name=f"{kind}-local-delete-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_instance_name=f"{kind}-LocalDelete-{uuid.uuid4().hex[:8]}",
     )
@@ -434,7 +434,7 @@ def _pitch_local_delete_config(kind: str):
 def _pitch_support_config(kind: str):
     return SupportServicesScenarioConfig(
         federation_name=f"{kind}-support-factory-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_instance_name=f"{kind}-support-{uuid.uuid4().hex[:8]}",
     )
@@ -443,7 +443,7 @@ def _pitch_support_config(kind: str):
 def _pitch_ownership_config(kind: str, name: str, **overrides):
     params = {
         "federation_name": f"{kind}-{name}-{uuid.uuid4().hex[:8]}",
-        "fom_modules": ("hla2010:VendorSmokeFOM.xml",),
+        "fom_modules": ("resource:VendorSmokeFOM.xml",),
         "logical_time_implementation_name": "HLAinteger64Time",
         "owner_name": "Owner",
         "acquirer_name": "Acquirer",
@@ -459,7 +459,7 @@ def _pitch_ownership_config(kind: str, name: str, **overrides):
 def _pitch_negotiated_ownership_config(kind: str, name: str, **overrides):
     params = {
         "federation_name": f"{kind}-{name}-{uuid.uuid4().hex[:8]}",
-        "fom_modules": ("hla2010:VendorSmokeFOM.xml",),
+        "fom_modules": ("resource:VendorSmokeFOM.xml",),
         "logical_time_implementation_name": "HLAinteger64Time",
         "owner_name": "Owner",
         "acquirer_name": "Acquirer",
@@ -478,7 +478,7 @@ def _pitch_negotiated_ownership_config(kind: str, name: str, **overrides):
 def _pitch_release_request_config(kind: str, name: str, request_tag: bytes, owner_action: str):
     return ReleaseRequestOwnershipScenarioConfig(
         federation_name=f"{kind}-{name}-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         owner_name="Owner",
         acquirer_name="Acquirer",
@@ -494,7 +494,7 @@ def _pitch_release_request_config(kind: str, name: str, request_tag: bytes, owne
 def _pitch_non_owner_update_config(kind: str):
     return NonOwnerUpdateScenarioConfig(
         federation_name=f"{kind}-non-owner-update-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         owner_name="Owner",
         observer_name="Observer",
@@ -508,7 +508,7 @@ def _pitch_non_owner_update_config(kind: str):
 def _pitch_ddm_config(kind: str, name: str):
     return {
         "federation_name": f"{kind}-{name}-{uuid.uuid4().hex[:8]}",
-        "fom_modules": ("hla2010:VendorSmokeFOM.xml",),
+        "fom_modules": ("resource:VendorSmokeFOM.xml",),
         "logical_time_implementation_name": "HLAinteger64Time",
         "lookahead": HLAinteger64Interval(1),
         "source_near": RangeBounds(10, 20),
@@ -1111,7 +1111,7 @@ def test_pitch_backend_local_delete_matrix(kind: str):
 def _pitch_exchange_config(federation_name: str, object_instance_name: str) -> TwoFederateExchangeConfig:
     return TwoFederateExchangeConfig(
         federation_name=federation_name,
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_class_name="HLAobjectRoot.SmokeObject",
         attribute_name="Payload",
@@ -1550,7 +1550,7 @@ def test_pitch_backend_disconnect_mom_cleanup_matrix(kind: str):
 def test_pitch_backend_lost_federate_mom_matrix(kind: str):
     config = LostFederateScenarioConfig(
         federation_name=f"{kind}-lost-federate-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         observer_name="Observer",
         victim_name="Victim",

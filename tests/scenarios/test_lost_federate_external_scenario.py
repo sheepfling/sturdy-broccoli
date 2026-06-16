@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from hla2010 import mom as hla_mom
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010.exceptions import ObjectInstanceNotKnown
-from hla2010.handles import AttributeHandle, FederateHandle, InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle, ParameterHandle
-from hla2010.time import HLAinteger64Time
-from hla2010_verification_harness import (
+from hla.rti1516e import mom as hla_mom
+from hla.backends.common import RecordingFederateAmbassador
+from hla.rti1516e.exceptions import ObjectInstanceNotKnown
+from hla.rti1516e.handles import AttributeHandle, FederateHandle, InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle, ParameterHandle
+from hla.rti1516e.time import HLAinteger64Time
+from hla.verification import (
     ExternalLostFederateVictimSession,
     LostFederateScenarioConfig,
     run_external_lost_federate_observer_scenario,

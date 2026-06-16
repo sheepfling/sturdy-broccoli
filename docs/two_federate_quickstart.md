@@ -15,7 +15,7 @@ That command:
 - writes artifacts under `analysis/two_federate_suite/`
 - exercises the pair-based scenario flow used by the verification packet
 - delegates into the shared runner at
-  `src/hla2010_repo_internal/verification/two_federate_suite_runner.py`
+  `packages/hla-verification/src/hla/verification/repo_internal/verification/two_federate_suite_runner.py`
 
 If you want a smaller or custom artifact set, the script also accepts:
 
@@ -31,7 +31,7 @@ source .venv/bin/activate
 If you are helping someone understand the example, start here:
 
 - [`./tools/two-federate`](../tools/two-federate)
-- [`src/hla2010_repo_internal/verification/two_federate_suite_runner.py`](../src/hla2010_repo_internal/verification/two_federate_suite_runner.py)
+- [`packages/hla-verification/src/hla/verification/repo_internal/verification/two_federate_suite_runner.py`](../packages/hla-verification/src/hla/verification/repo_internal/verification/two_federate_suite_runner.py)
 
 If you want the broader verification context, use:
 
@@ -57,4 +57,4 @@ This is the best entry point when you want to:
 The operator wrapper is implemented by
 [`scripts/run_two_federate_suite.py`](../scripts/run_two_federate_suite.py),
 which in turn uses the shared repo-internal runner at
-[`src/hla2010_repo_internal/verification/two_federate_suite_runner.py`](../src/hla2010_repo_internal/verification/two_federate_suite_runner.py).
+[`packages/hla-verification/src/hla/verification/repo_internal/verification/two_federate_suite_runner.py`](../packages/hla-verification/src/hla/verification/repo_internal/verification/two_federate_suite_runner.py).

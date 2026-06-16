@@ -2,12 +2,12 @@ import math
 
 import pytest
 
-from hla2010_rti_backend_common import make_rti_ambassador
-from hla2010_fom_target_radar.scenarios import run_target_radar_scenario
-from hla2010_rti_python import InMemoryRTIEngine
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_rti_java_common.java_shim_factory import create_shared_java_shim_backend
-from hla2010_rti_java_common.java_shim_kernel import SharedJavaShimKernel
+from hla.backends.common import make_rti_ambassador
+from hla.foms.target_radar.scenarios import run_target_radar_scenario
+from hla.backends.inmemory import InMemoryRTIEngine
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.bridges.java.common.java_shim_factory import create_shared_java_shim_backend
+from hla.bridges.java.common.java_shim_kernel import SharedJavaShimKernel
 
 
 def test_target_radar_runs_on_python_rti():

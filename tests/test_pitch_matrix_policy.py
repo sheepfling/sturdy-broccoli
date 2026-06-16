@@ -9,19 +9,19 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PITCH_MATRIX_PATH = ROOT / "tests" / "vendors" / "test_pitch_real_backend_matrix.py"
 PITCH_TRANSPORT_DIVERGENCE_NOTE = (
-    "packages/hla2010-rti-pitch-common/docs/evidence/"
+    "packages/hla-vendor-pitch/docs/evidence/"
     "pitch_transport_subset_vendor_divergence_2026-06-11.md"
 )
 PITCH_NEGOTIATED_OWNERSHIP_VENDOR_BUG_NOTE = (
-    "packages/hla2010-rti-pitch-common/docs/evidence/"
+    "packages/hla-vendor-pitch/docs/evidence/"
     "pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
 )
 PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_NOTE = (
-    "packages/hla2010-rti-pitch-common/docs/evidence/"
+    "packages/hla-vendor-pitch/docs/evidence/"
     "pitch_section8_time_management_vendor_divergence_2026-06-11.md"
 )
 PITCH_LOST_FEDERATE_GAP_NOTE = (
-    "packages/hla2010-rti-pitch-common/docs/evidence/"
+    "packages/hla-vendor-pitch/docs/evidence/"
     "pitch_clause4_lost_federate_gap_2026-06-11.md"
 )
 TARGET_FUNCTIONS = {
@@ -393,7 +393,7 @@ def test_clause6_pitch_vendor_divergent_rows_stay_explicit_transport_subset_poli
         refs = set(row["evidence_refs"])
         assert PITCH_TRANSPORT_DIVERGENCE_NOTE in refs
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+            "packages/hla-verification/src/hla.verification/"
             "scenario_transportation_type.py::run_transportation_type_scenario"
         ) in refs
         assert (
@@ -414,7 +414,7 @@ def test_clause6_pitch_vendor_divergent_rows_stay_explicit_transport_subset_poli
         refs = set(row["evidence_refs"])
         if str(row["requirement_id"]) in restore_subset_ids:
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+                "packages/hla-verification/src/hla.verification/"
                 "scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario"
             ) in refs
             assert (
@@ -460,7 +460,7 @@ def test_clause7_pitch_vendor_divergent_rows_stay_explicit_negotiated_ownership_
         assert PITCH_NEGOTIATED_OWNERSHIP_VENDOR_BUG_NOTE in refs
         if str(row["requirement_id"]) in offer_probe_ids:
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+                "packages/hla-verification/src/hla.verification/"
                 "scenario_ownership.py::probe_negotiated_attribute_ownership_offer"
             ) in refs
             assert (
@@ -474,7 +474,7 @@ def test_clause7_pitch_vendor_divergent_rows_stay_explicit_negotiated_ownership_
         else:
             assert str(row["requirement_id"]) in full_negotiated_ids
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+                "packages/hla-verification/src/hla.verification/"
                 "scenario_ownership.py::run_negotiated_attribute_ownership_scenario"
             ) in refs
             assert (
@@ -555,7 +555,7 @@ def test_clause8_pitch_vendor_divergent_rows_stay_explicit_shared_harness_policy
         assert PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_NOTE in refs
         if requirement_id in ordering_and_query_ids:
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+                "packages/hla-verification/src/hla.verification/"
                 "section8_matrix.py::run_section8_ordering_and_query_case"
             ) in refs
             assert (
@@ -568,7 +568,7 @@ def test_clause8_pitch_vendor_divergent_rows_stay_explicit_shared_harness_policy
             ) in refs
         elif requirement_id in available_and_retraction_ids:
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+                "packages/hla-verification/src/hla.verification/"
                 "section8_matrix.py::run_section8_available_and_retraction_case"
             ) in refs
             assert (
@@ -581,7 +581,7 @@ def test_clause8_pitch_vendor_divergent_rows_stay_explicit_shared_harness_policy
             ) in refs
         elif requirement_id in request_retraction_ids:
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+                "packages/hla-verification/src/hla.verification/"
                 "section8_matrix.py::run_section8_request_retraction_case"
             ) in refs
             assert (
@@ -594,7 +594,7 @@ def test_clause8_pitch_vendor_divergent_rows_stay_explicit_shared_harness_policy
             ) in refs
         elif requirement_id in state_services_ids:
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+                "packages/hla-verification/src/hla.verification/"
                 "section8_matrix.py::run_section8_state_services_case"
             ) in refs
             assert (
@@ -608,7 +608,7 @@ def test_clause8_pitch_vendor_divergent_rows_stay_explicit_shared_harness_policy
         else:
             assert requirement_id in order_override_ids
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+                "packages/hla-verification/src/hla.verification/"
                 "section8_matrix.py::run_section8_order_override_case"
             ) in refs
             assert (
@@ -687,15 +687,15 @@ def test_clause4_pitch_lost_federate_rows_keep_family_and_profile_blocked_eviden
             "vendor_runtime_status_report.md"
         ) in family_refs
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+            "packages/hla-verification/src/hla.verification/"
             "scenario_connection_lost.py::run_connection_lost_callback_scenario"
         ) in family_refs
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+            "packages/hla-verification/src/hla.verification/"
             "scenario_resign.py::run_disconnect_mom_cleanup_scenario"
         ) in family_refs
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+            "packages/hla-verification/src/hla.verification/"
             "scenario_lost_federate.py::run_lost_federate_mom_scenario"
         ) in family_refs
         assert (
@@ -704,7 +704,7 @@ def test_clause4_pitch_lost_federate_rows_keep_family_and_profile_blocked_eviden
 
         assert PITCH_LOST_FEDERATE_GAP_NOTE in jpype_refs
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+            "packages/hla-verification/src/hla.verification/"
             "scenario_lost_federate.py::run_external_lost_federate_observer_scenario"
         ) in jpype_refs
         assert (
@@ -718,7 +718,7 @@ def test_clause4_pitch_lost_federate_rows_keep_family_and_profile_blocked_eviden
 
         assert PITCH_LOST_FEDERATE_GAP_NOTE in py4j_refs
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+            "packages/hla-verification/src/hla.verification/"
             "scenario_lost_federate.py::run_lost_federate_mom_scenario"
         ) in py4j_refs
         assert (
@@ -814,10 +814,10 @@ def test_clause4_pitch_family_and_profiles_keep_exact_summary_counts() -> None:
 
 def test_clause4_pitch_family_and_profile_evidence_stays_on_allowed_surfaces() -> None:
     allowed_prefixes = (
-        "packages/hla2010-verification-harness/",
+        "packages/hla-verification/",
         "tests/scenarios/",
         "tests/vendors/",
-        "packages/hla2010-rti-pitch-common/docs/evidence/",
+        "packages/hla-vendor-pitch/docs/evidence/",
         "analysis/preflight_artifacts/",
         "analysis/vendor_runtime_status/",
         "tests/test_rti_pitch_split_packages.py::",

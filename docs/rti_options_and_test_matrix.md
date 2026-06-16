@@ -20,9 +20,9 @@ It separates three concerns that are easy to blur together:
 3. transport surface
 
 The Python federate should only need to care about the backend name passed to
-`hla2010_rti_runtime_common.create_rti_ambassador(...)`. Everything below that
+`hla.rti.create_rti_ambassador(...)`. Everything below that
 line is repo/runtime plumbing. The temporary root workspace facade
-`hla2010.rti` exposes the same helper during migration, but package-owned and
+`hla.rti1516e.rti` exposes the same helper during migration, but package-owned and
 new public examples should prefer the split runtime package directly.
 
 For the exhaustive route list, including named CERTI baselines and remote
@@ -47,12 +47,12 @@ Example:
   - transport surface: usually none explicit from the caller, but internally the
     CERTI helper can also be hosted behind `grpc` or `rest`
 
-- `hla2010_rti_runtime_common.create_rti_ambassador("certi", transport={"kind": "grpc", ...})`
+- `hla.rti.create_rti_ambassador("certi", transport={"kind": "grpc", ...})`
   - RTI runtime: `CERTI`
   - Python/Java interaction: none exposed to the caller
   - transport surface: `grpc`
 
-- `hla2010_rti_runtime_common.create_rti_ambassador("python")`
+- `hla.rti.create_rti_ambassador("python")`
   - RTI runtime: in-memory Python reference RTI
   - Python/Java interaction: none
   - transport surface: none
@@ -106,7 +106,7 @@ Current remote callback contract for both `grpc` and `rest`:
 ## Supported Backend Names
 
 These are the backend names currently recognized by
-[rti.py](../src/hla2010/rti.py).
+[rti.py](../packages/hla-rti1516e/src/hla/rti1516e/rti.py).
 
 This section is generated from `create_backend(...)` by
 [`./tools/rti-options generate`](../tools/rti-options).
@@ -242,7 +242,7 @@ Current CERTI qualifier:
   - `pitch-py4j` gets farther on the owned-attribute release-request branch
   - `pitch-jpype` gets farther on the negotiated-offer branch and shows explicit FedPro session-drop / failed-resume lines
 - See:
-  - [pitch_negotiated_ownership_vendor_bug_2026-06-07.md](../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)
+  - [pitch_negotiated_ownership_vendor_bug_2026-06-07.md](../packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)
   - [diagnostic_summary.md](../analysis/pitch_negotiated_ownership_2026-06-07/diagnostic_summary.md)
 
 ### Runtime discovery and local install assumptions
@@ -283,7 +283,7 @@ That gives one matrix that covers:
 ## Maintenance
 
 If backend aliases change in
-[rti.py](../src/hla2010/rti.py),
+[rti.py](../packages/hla-rti1516e/src/hla/rti1516e/rti.py),
 rerun:
 
 ```bash

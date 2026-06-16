@@ -29,7 +29,7 @@ def _base_env(tmp_path: Path) -> dict[str, str]:
     env["HLA2010_CERTI_UPSTREAM_PREFIX"] = str(tmp_path / "missing-certi-upstream-prefix")
     env["HLA2010_CERTI_UPSTREAM_BUILD_ROOT"] = str(tmp_path / "missing-certi-upstream-build")
     env["HLA2010_PITCH_HOME"] = str(tmp_path / "missing-pitch-home")
-    env["PATH"] = "/usr/bin:/bin"
+    env["PATH"] = os.pathsep.join(("/usr/bin", "/bin"))
     return env
 
 
@@ -184,7 +184,7 @@ def test_package_deps_top_level_wrapper_bootstraps_source_checkout(tmp_path: Pat
     assert result.returncode == 0, result.stderr
     doc_path = tmp_path / "docs" / "package_dependency_tree.md"
     assert doc_path.exists()
-    assert "`hla2010-spec` is the single true root package." in doc_path.read_text(encoding="utf-8")
+    assert "`hla-rti1516e` is the single true root package." in doc_path.read_text(encoding="utf-8")
 
 
 def test_compliance_top_level_wrapper_generate_bootstraps_workspace_pythonpath(tmp_path: Path) -> None:
@@ -435,7 +435,7 @@ def test_discover_backend_compliance_surfaces_portico_disposition_only_profiles(
     assert backend["backend_id"] == "portico-jpype"
     assert backend["backend_family"] == "vendor-portico-java-bridge"
     assert backend["matrices_present"] == ["requirement-disposition"]
-    assert backend["status_counts"]["classification-required"] > 0
+    assert backend["status_counts"]["not-applicable"] > 0
 
 
 def test_vendor_probe_review_promotion_review_bootstraps_source_checkout(tmp_path: Path) -> None:
@@ -492,8 +492,8 @@ def test_bootstrap_top_level_wrapper_forwards_python_plan_json() -> None:
     payload = json.loads(result.stdout)
     assert payload["extras"] == "test"
     assert payload["profile"] == "core"
-    assert "packages/hla2010-spec" in payload["workspace_packages"]
-    assert "packages/hla2010-rti-python" in payload["workspace_packages"]
+    assert "packages/hla-rti1516e" in payload["workspace_packages"]
+    assert "packages/hla-backend-inmemory" in payload["workspace_packages"]
 
 
 def test_bootstrap_top_level_wrapper_doctor_bootstraps_source_checkout(tmp_path: Path) -> None:

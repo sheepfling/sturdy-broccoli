@@ -59,7 +59,7 @@
       "asset_id": "REQ-MOM-SERVICE-001",
       "asset_type": "requirement",
       "evidence": [
-        "packages/hla2010-rti-python/src/hla2010_rti_python/mom_actions.py::_run_mom_service_action",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/mom_actions.py::_run_mom_service_action",
         "verification/mom_negative_matrix_v0_12.json"
       ],
       "gaps": [
@@ -212,7 +212,7 @@
       "asset_id": "REQ-SAVE-RESTORE-OBJECT-STATE-001",
       "asset_type": "requirement",
       "evidence": [
-        "packages/hla2010-rti-python/src/hla2010_rti_python/save_restore.py",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/save_restore.py",
         "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_object_values_names_and_ownership_state"
       ],
       "gaps": [
@@ -232,7 +232,7 @@
       "asset_id": "REQ-SAVE-RESTORE-FEDERATE-LOCAL-STATE-001",
       "asset_type": "requirement",
       "evidence": [
-        "packages/hla2010-rti-python/src/hla2010_rti_python/save_restore.py",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/save_restore.py",
         "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_federate_runtime_flags_and_lookahead_state",
         "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_federate_policy_reporting_and_conveyance_switches",
         "tests/verification/test_compliance_slice_v011.py::test_restore_reinstates_saved_attribute_and_interaction_order_overrides",
@@ -252,7 +252,7 @@
       "asset_id": "REQ-SAVE-RESTORE-CALLBACK-POLICY-001",
       "asset_type": "requirement",
       "evidence": [
-        "packages/hla2010-rti-python/src/hla2010_rti_python/save_restore.py",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/save_restore.py",
         "tests/verification/test_compliance_slice_v011.py::test_restore_treats_callback_enablement_as_runtime_policy_not_saved_state"
       ],
       "gaps": [],
@@ -268,7 +268,7 @@
       "asset_id": "REQ-SAVE-RESTORE-TRANSIENT-STATE-001",
       "asset_type": "requirement",
       "evidence": [
-        "packages/hla2010-rti-python/src/hla2010_rti_python/save_restore.py",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/save_restore.py",
         "tests/verification/test_compliance_slice_v011.py::test_restore_discards_pre_restore_callback_queue_and_retraction_bookkeeping"
       ],
       "gaps": [],
@@ -386,7 +386,7 @@
       "asset_id": "REQ-OM-SCOPE-CALLBACKS-001",
       "asset_type": "requirement",
       "evidence": [
-        "packages/hla2010-rti-python/src/hla2010_rti_python/subscriptions.py",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/subscriptions.py",
         "tests/backends/test_python_backend_time_ddm_extended.py::test_attributes_in_scope_and_out_of_scope_callbacks_track_region_scope_transitions"
       ],
       "gaps": [],

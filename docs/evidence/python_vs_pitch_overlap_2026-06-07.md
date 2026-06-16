@@ -95,7 +95,7 @@ ownership is currently bridge-divergent rather than uniformly absent. The
 Docker-backed runs show different partial callback sequences on `pitch-jpype`
 and `pitch-py4j`; see:
 
-- [pitch_negotiated_ownership_vendor_bug_2026-06-07.md](../../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)
+- [pitch_negotiated_ownership_vendor_bug_2026-06-07.md](../../packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)
 - [diagnostic_summary.md](../../analysis/pitch_negotiated_ownership_2026-06-07/diagnostic_summary.md)
 
 This is the important external evidence that the same Python-facing API can

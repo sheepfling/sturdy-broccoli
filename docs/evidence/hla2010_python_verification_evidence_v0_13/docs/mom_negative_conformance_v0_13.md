@@ -45,10 +45,10 @@ The 32 semantic rows are not marked complete. They require service-specific fede
 
 ## Service-by-service conformance matrix
 
-v0.13 adds `hla2010.verification.build_service_conformance_matrix`, derived from:
+v0.13 adds `hla.rti1516e.verification.build_service_conformance_matrix`, derived from:
 
-- generated Java/C++ API metadata in `hla2010.raw_api.API_METADATA`;
-- section references in `hla2010.spec_refs`;
+- generated Java/C++ API metadata in `hla.rti1516e.raw_api.API_METADATA`;
+- section references in `hla.rti1516e.spec_refs`;
 - pure-Python backend `_svc_*` entry points;
 - FederateAmbassador helper methods;
 - static evidence found in the test tree.
@@ -75,7 +75,7 @@ Every row includes interface, service name, Python alias, section anchor, servic
 
 ## Implementation notes
 
-`hla2010.mom_catalog` now includes:
+`hla.rti1516e.mom_catalog` now includes:
 
 - `negative_case_expectation`;
 - `flatten_negative_cases`;

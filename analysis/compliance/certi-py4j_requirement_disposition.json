@@ -342,7 +342,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_synchronization_matrix"
       ],
       "kind": "service-requirement",
@@ -371,7 +371,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_synchronization_matrix"
       ],
       "kind": "service-requirement",
@@ -387,7 +387,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_synchronization_matrix"
       ],
       "kind": "service-requirement",
@@ -403,7 +403,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_synchronization_matrix"
       ],
       "kind": "service-requirement",
@@ -419,7 +419,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_synchronization_matrix"
       ],
       "kind": "service-requirement",
@@ -435,7 +435,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "service-requirement",
@@ -451,7 +451,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "service-requirement",
@@ -467,7 +467,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "service-requirement",
@@ -535,7 +535,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "service-requirement",
@@ -564,7 +564,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "service-requirement",
@@ -580,7 +580,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "service-requirement",
@@ -596,7 +596,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "service-requirement",
@@ -625,7 +625,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "service-requirement",
@@ -641,7 +641,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "service-requirement",
@@ -657,7 +657,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "service-requirement",
@@ -712,7 +712,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "service-requirement",
@@ -754,7 +754,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "service-requirement",
@@ -770,7 +770,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "service-requirement",
@@ -1748,7 +1748,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "extracted-requirement",
@@ -1855,7 +1855,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "extracted-requirement",
@@ -1962,7 +1962,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "extracted-requirement",
@@ -2485,7 +2485,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "extracted-requirement",
@@ -2592,7 +2592,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "extracted-requirement",
@@ -2699,7 +2699,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "extracted-requirement",
@@ -2910,7 +2910,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "extracted-requirement",
@@ -3017,7 +3017,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "extracted-requirement",
@@ -3540,7 +3540,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "extracted-requirement",
@@ -3647,7 +3647,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke"
       ],
       "kind": "extracted-requirement",
@@ -4742,7 +4742,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_exchange_matrix"
       ],
       "kind": "service-requirement",
@@ -4771,7 +4771,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_exchange_matrix"
       ],
       "kind": "service-requirement",
@@ -5450,7 +5450,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_exchange_matrix"
       ],
       "kind": "extracted-requirement",
@@ -5466,7 +5466,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_exchange_matrix"
       ],
       "kind": "extracted-requirement",
@@ -5482,7 +5482,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_exchange_matrix"
       ],
       "kind": "extracted-requirement",
@@ -5498,7 +5498,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_exchange_matrix"
       ],
       "kind": "extracted-requirement",
@@ -5514,7 +5514,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_exchange_matrix"
       ],
       "kind": "extracted-requirement",
@@ -5556,7 +5556,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_exchange_matrix"
       ],
       "kind": "extracted-requirement",
@@ -5572,7 +5572,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_exchange_matrix"
       ],
       "kind": "extracted-requirement",
@@ -5588,7 +5588,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_exchange_matrix"
       ],
       "kind": "extracted-requirement",
@@ -5604,7 +5604,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_exchange_matrix"
       ],
       "kind": "extracted-requirement",
@@ -5620,7 +5620,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_exchange_matrix"
       ],
       "kind": "extracted-requirement",
@@ -6221,7 +6221,7 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix"
       ],
       "kind": "service-requirement",
@@ -6276,9 +6276,9 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_negotiated_ownership_matrix",
-        "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md"
+        "packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md"
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-OWN-7_15-cancelAttributeOwnershipAcquisition",
@@ -6293,9 +6293,9 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_negotiated_ownership_matrix",
-        "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md"
+        "packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md"
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-FED-OWN-7_16-confirmAttributeOwnershipAcquisitionCancellation",
@@ -6310,7 +6310,7 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix"
       ],
       "kind": "service-requirement",
@@ -6326,7 +6326,7 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix"
       ],
       "kind": "service-requirement",
@@ -6342,7 +6342,7 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix"
       ],
       "kind": "service-requirement",
@@ -6358,7 +6358,7 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix"
       ],
       "kind": "service-requirement",
@@ -6374,7 +6374,7 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix"
       ],
       "kind": "service-requirement",
@@ -6390,7 +6390,7 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix"
       ],
       "kind": "service-requirement",
@@ -6406,9 +6406,9 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_negotiated_ownership_matrix",
-        "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md"
+        "packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md"
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-RTI-OWN-7_3-negotiatedAttributeOwnershipDivestiture",
@@ -6423,9 +6423,9 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_negotiated_ownership_matrix",
-        "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md"
+        "packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md"
       ],
       "kind": "service-requirement",
       "matrix_id": "REQ-FED-OWN-7_4-requestAttributeOwnershipAssumption",
@@ -6492,7 +6492,7 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix"
       ],
       "kind": "service-requirement",
@@ -6573,9 +6573,9 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_negotiated_ownership_matrix",
-        "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md"
+        "packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md"
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-OWN-7.10-001",
@@ -6590,7 +6590,7 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix"
       ],
       "kind": "extracted-requirement",
@@ -6632,7 +6632,7 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix"
       ],
       "kind": "extracted-requirement",
@@ -6648,9 +6648,9 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_negotiated_ownership_matrix",
-        "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md"
+        "packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md"
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-OWN-7.3-001",
@@ -6665,9 +6665,9 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_negotiated_ownership_matrix",
-        "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md"
+        "packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md"
       ],
       "kind": "extracted-requirement",
       "matrix_id": "HLA1516.1-OWN-7.4-001",
@@ -6747,7 +6747,7 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix"
       ],
       "kind": "extracted-requirement",
@@ -6763,7 +6763,7 @@
       "clause_root": "7",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix"
       ],
       "kind": "extracted-requirement",
@@ -6779,7 +6779,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_ordering_and_query_matrix"
       ],
       "kind": "service-requirement",
@@ -6795,7 +6795,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_available_and_retraction_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_retraction_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_available_and_retraction_matrix"
       ],
       "kind": "service-requirement",
@@ -6811,7 +6811,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_available_and_flush_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_flush_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_available_and_flush_matrix"
       ],
       "kind": "service-requirement",
@@ -6827,7 +6827,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_available_and_flush_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_flush_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_available_and_flush_matrix"
       ],
       "kind": "service-requirement",
@@ -6843,7 +6843,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_toggle_services_matrix"
       ],
       "kind": "service-requirement",
@@ -6859,7 +6859,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_toggle_services_matrix"
       ],
       "kind": "service-requirement",
@@ -6875,7 +6875,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_time_bound_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_time_bound_query_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_time_bound_query_matrix"
       ],
       "kind": "service-requirement",
@@ -6891,7 +6891,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_logical_time_query_matrix"
       ],
       "kind": "service-requirement",
@@ -6907,7 +6907,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_time_bound_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_time_bound_query_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_time_bound_query_matrix"
       ],
       "kind": "service-requirement",
@@ -6923,7 +6923,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_toggle_services_matrix"
       ],
       "kind": "service-requirement",
@@ -6939,7 +6939,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_services_matrix"
       ],
       "kind": "service-requirement",
@@ -6955,7 +6955,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_toggle_services_matrix"
       ],
       "kind": "service-requirement",
@@ -6971,7 +6971,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_request_retraction_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_request_retraction_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_request_retraction_matrix"
       ],
       "kind": "service-requirement",
@@ -6987,7 +6987,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_request_retraction_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_request_retraction_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_request_retraction_matrix"
       ],
       "kind": "service-requirement",
@@ -7003,7 +7003,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_order_override_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_order_override_matrix"
       ],
       "kind": "service-requirement",
@@ -7019,7 +7019,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_order_override_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_order_override_matrix"
       ],
       "kind": "service-requirement",
@@ -7035,7 +7035,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_services_matrix"
       ],
       "kind": "service-requirement",
@@ -7051,7 +7051,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_toggle_services_matrix"
       ],
       "kind": "service-requirement",
@@ -7067,7 +7067,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_services_matrix"
       ],
       "kind": "service-requirement",
@@ -7083,7 +7083,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_services_matrix"
       ],
       "kind": "service-requirement",
@@ -7099,7 +7099,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_toggle_services_matrix"
       ],
       "kind": "service-requirement",
@@ -7115,7 +7115,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_ordering_and_query_matrix"
       ],
       "kind": "service-requirement",
@@ -7131,7 +7131,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_available_and_flush_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_flush_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_available_and_flush_matrix"
       ],
       "kind": "service-requirement",
@@ -7238,7 +7238,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_order_override_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_order_override_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7410,7 +7410,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_ordering_and_query_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7426,7 +7426,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_available_and_flush_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_flush_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_available_and_flush_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7442,7 +7442,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_time_bound_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_time_bound_query_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_time_bound_query_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7458,7 +7458,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_logical_time_query_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7474,7 +7474,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_time_bound_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_time_bound_query_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_time_bound_query_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7490,7 +7490,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_toggle_services_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7506,7 +7506,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_services_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7522,7 +7522,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_services_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7538,7 +7538,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_duplicate_enable_rejection_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_duplicate_enable_rejection_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_duplicate_enable_rejection_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7554,7 +7554,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_request_retraction_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_request_retraction_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_request_retraction_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7570,7 +7570,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_toggle_services_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7586,7 +7586,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_services_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7602,7 +7602,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_services_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7618,7 +7618,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_duplicate_enable_rejection_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_duplicate_enable_rejection_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_duplicate_enable_rejection_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7634,7 +7634,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_toggle_services_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7650,7 +7650,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_ordering_and_query_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7666,7 +7666,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_ordering_and_query_matrix"
       ],
       "kind": "extracted-requirement",
@@ -7682,7 +7682,7 @@
       "clause_root": "8",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_tar_galt_boundary_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_tar_galt_boundary_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_tar_galt_boundary_matrix"
       ],
       "kind": "extracted-requirement",

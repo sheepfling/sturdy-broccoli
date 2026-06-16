@@ -1,11 +1,11 @@
 from pathlib import Path
 
-from hla2010_rti_java_common.java_runtime import (
+from hla.bridges.java.common.java_runtime import (
     discover_java_home as package_discover_java_home,
     discover_java_tool as package_discover_java_tool,
     ensure_java_home as package_ensure_java_home,
 )
-from hla2010_rti_java_common import discover_java_home, discover_java_tool, ensure_java_home
+from hla.bridges.java.common import discover_java_home, discover_java_tool, ensure_java_home
 
 
 def test_java_home_can_be_discovered():

@@ -1,7 +1,7 @@
-from hla2010.runtime_api import FederateAmbassador
-from hla2010.backends.python_rti import InMemoryRTIEngine, rti_ambassador
-from hla2010.enums import CallbackModel, OrderType, ResignAction
-from hla2010.handles import ObjectInstanceHandle
+from hla.rti1516e.runtime_api import FederateAmbassador
+from hla.rti1516e.backends.python_rti import InMemoryRTIEngine, rti_ambassador
+from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
+from hla.rti1516e.handles import ObjectInstanceHandle
 
 
 class Receiver(FederateAmbassador):

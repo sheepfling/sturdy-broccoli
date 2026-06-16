@@ -8,7 +8,7 @@ This slice continues the pure-Python RTI toward HLA 1516.1-2010 conformance whil
 |---|---:|---|
 | MOM adjust/service-action semantics | IEEE 1516.1-2010 §11.4 and §11.5 | `HLAadjust.HLAsetSwitches`, `HLAadjust.HLAsetTiming`, `HLAadjust.HLAmodifyAttributeState`, and a first set of `HLAservice.*` action interactions now drive the same underlying RTI service methods used by normal federates. |
 | Service-report file behavior | IEEE 1516.1-2010 §11.5 and §11.5.2 | Added a structured JSONL service-report sink and MOM-controlled per-federate report files with an initial record plus service records containing section anchors, arguments, return values, success state, and exception name. |
-| Dedicated time-management module | IEEE 1516.1-2010 §8.1.4-§8.1.6 and §8.8-§8.13 | Moved grant-decision, GALT, LITS, LBTS, eligible-message, FQR, and scheduled-save time logic into `hla2010.time_management`. |
+| Dedicated time-management module | IEEE 1516.1-2010 §8.1.4-§8.1.6 and §8.8-§8.13 | Moved grant-decision, GALT, LITS, LBTS, eligible-message, FQR, and scheduled-save time logic into `hla.rti1516e.time_management`. |
 | Save/restore and temporal state coordination | IEEE 1516.1-2010 §4.16-§4.26 and §8 | Timed federation save now waits for constrained federates to reach the save time, snapshots logical-time state and object state, cancels pending time advances during restore, and reinstates saved time/object state after successful restore. |
 | DDM plus TSO interaction coverage | IEEE 1516.1-2010 §9.2-§9.13 and §6.12 | Region subscriptions and update/send regions now participate in filtering before RO/TSO delivery. Region-filtered TSO interactions are released by time-advance services in timestamp order. |
 | Fuller distributed GALT/LITS algorithm | IEEE 1516.1-2010 §8.16 and §8.18 | GALT now uses other regulating federates' lower-bound-on-timestamp contributions, including pending advance requests plus lookahead. LITS combines GALT with the recipient's queued incoming TSO messages. |
@@ -34,7 +34,7 @@ A compatibility shortcut remains for older smoke tests: an empty `HLAsetSwitches
 
 There are now two report-file paths:
 
-1. `PythonRTIConfig.service_report_file`: a backend-wide audit sink using `hla2010.service_reporting.ServiceReportSink` and `ServiceReportRecord`.
+1. `PythonRTIConfig.service_report_file`: a backend-wide audit sink using `hla.rti1516e.service_reporting.ServiceReportSink` and `ServiceReportRecord`.
 2. MOM-controlled per-federate files: enabled by `HLAsendServiceReportsToFile` or by the development shortcut above.
 
 Per-federate files contain:
@@ -46,7 +46,7 @@ The file format is JSON Lines to keep it simple to append, test, and feed into l
 
 ## Time management module
 
-`hla2010.time_management` is the new home for distributed time logic:
+`hla.rti1516e.time_management` is the new home for distributed time logic:
 
 - `compute_galt(...)` implements the current GALT calculation using regulating federates' lower-bound-on-timestamp contributions.
 - `compute_lits(...)` combines GALT and queued incoming TSO timestamps.

@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import uuid
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010.enums import OrderType, ResignAction
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_rti_python import InMemoryRTIEngine
-from hla2010_verification_harness import (
+from hla.backends.common import RecordingFederateAmbassador
+from hla.rti1516e.enums import OrderType, ResignAction
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.backends.inmemory import InMemoryRTIEngine
+from hla.verification import (
     SupportServicesScenarioConfig,
     run_support_factory_and_decode_scenario,
 )
@@ -18,7 +18,7 @@ def test_python_backend_support_factory_and_decode_matrix():
     rti = create_rti_ambassador("python", engine=engine)
     config = SupportServicesScenarioConfig(
         federation_name=f"python-support-factory-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_instance_name=f"python-support-{uuid.uuid4().hex[:8]}",
     )

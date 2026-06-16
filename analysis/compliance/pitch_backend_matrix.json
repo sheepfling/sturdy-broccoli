@@ -113,7 +113,7 @@
       "backend_family": "vendor-pitch-java-bridge",
       "backend_id": "pitch-jpype",
       "evidence_tests": [
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md"
       ],
       "notes": "Pitch JPype now has a child-process probe path, but executed real-runtime runs still auto-resume the dropped FedPro session instead of yielding observer-visible lost-federate evidence.",
       "scope": "real-vendor lost-federate slice",
@@ -129,7 +129,7 @@
       "backend_id": "pitch-py4j",
       "evidence_tests": [
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md"
       ],
       "notes": "Pitch Py4J now has a shared-harness lost-federate wrapper that terminates the victim gateway JVM, but executed real-runtime runs still do not surface the observer-visible lost-federate report.",
       "scope": "real-vendor lost-federate slice",

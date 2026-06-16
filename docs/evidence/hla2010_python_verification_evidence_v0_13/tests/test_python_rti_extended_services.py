@@ -1,9 +1,9 @@
-from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.backends.python_rti import InMemoryRTIEngine, rti_ambassador
-from hla2010.enums import CallbackModel, OrderType, ResignAction, SaveStatus
-from hla2010.handles import AttributeHandleSet, FederateHandleSet, MessageRetractionHandle
-from hla2010.spec_refs import method_reference, method_label
-from hla2010.types import RangeBounds, TimeQueryReturn
+from hla.rti1516e.ambassadors import RecordingFederateAmbassador
+from hla.rti1516e.backends.python_rti import InMemoryRTIEngine, rti_ambassador
+from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction, SaveStatus
+from hla.rti1516e.handles import AttributeHandleSet, FederateHandleSet, MessageRetractionHandle
+from hla.rti1516e.spec_refs import method_reference, method_label
+from hla.rti1516e.types import RangeBounds, TimeQueryReturn
 
 
 def drain(*rtis):

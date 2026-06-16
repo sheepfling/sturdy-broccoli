@@ -2,7 +2,7 @@
   "area": "lost_federate",
   "blocker_summary": "The canonical ./tools/pitch lost-federate-probe lane is currently blocked on this surface because Docker is unreachable and the required CRC/FedPro loopback ports are not permitted.",
   "classification": "known-gap",
-  "docs_ref": "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+  "docs_ref": "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
   "next_steps": [
     "./tools/pitch preflight",
     "./tools/pitch lost-federate-probe",

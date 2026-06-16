@@ -1,27 +1,28 @@
 # Root pyproject is intentionally tooling-only. Installable distributions live
-# under packages/*, with packages/hla2010-spec owning src/hla2010.
+# under packages/*, with packages/hla-rti1516e owning src/hla.rti1516e.
 
 [tool.pytest.ini_options]
 # Pytest mirrors the workspace package roots so source-checkout runs resolve the
 # same split packages that editable installs expose.
 pythonpath = [
-  "src",
-  "packages/hla2010-rti-python/src",
-  "packages/hla2010-rti-certi/src",
-  "packages/hla2010-rti-backend-common/src",
-  "packages/hla2010-rti-java-common/src",
-  "packages/hla2010-rti-runtime-common/src",
-  "packages/hla2010-rti-java-jpype/src",
-  "packages/hla2010-rti-java-py4j/src",
-  "packages/hla2010-rti-pitch-common/src",
-  "packages/hla2010-rti-pitch-jpype/src",
-  "packages/hla2010-rti-pitch-py4j/src",
-  "packages/hla2010-rti-portico/src",
-  "packages/hla2010-rti-transport-common/src",
-  "packages/hla2010-rti-transport-grpc/src",
-  "packages/hla2010-rti-transport-rest/src",
-  "packages/hla2010-fom-target-radar/src",
-  "packages/hla2010-verification-harness/src",
+  "packages/hla-rti1516e/src",
+  "packages/hla-rti1516-2025/src",
+  "packages/hla-backend-inmemory/src",
+  "packages/hla-backend-certi/src",
+  "packages/hla-backend-common/src",
+  "packages/hla-bridge-java-common/src",
+  "packages/hla-rti-core/src",
+  "packages/hla-bridge-java-jpype/src",
+  "packages/hla-bridge-java-py4j/src",
+  "packages/hla-vendor-pitch/src",
+  "packages/hla-vendor-pitch-jpype/src",
+  "packages/hla-vendor-pitch-py4j/src",
+  "packages/hla-vendor-portico/src",
+  "packages/hla-transport-common/src",
+  "packages/hla-transport-grpc/src",
+  "packages/hla-transport-rest/src",
+  "packages/hla-fom-target-radar/src",
+  "packages/hla-verification/src",
 ]
 testpaths = ["tests"]
 

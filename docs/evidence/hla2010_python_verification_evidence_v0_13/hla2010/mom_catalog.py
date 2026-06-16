@@ -1,7 +1,7 @@
 """Table-driven MOM/MIM exposure model derived from the active FDD catalog.
 
 The pure Python RTI loads the standard MIM before user FOM modules, then builds
-this view from the merged :class:`hla2010.fom.FOMCatalog`.  The resulting model
+this view from the merged :class:`hla.rti1516e.fom.FOMCatalog`.  The resulting model
 is the source of truth for MOM object attributes, interaction parameters,
 request/report pairing, RTI-send/RTI-receive direction, and strict negative-path
 validation.

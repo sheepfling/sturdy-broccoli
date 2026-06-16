@@ -6,12 +6,12 @@ from pathlib import Path
 
 import pytest
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010_rti_backend_common import BackendUnavailableError
-from hla2010.enums import ResignAction
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010.types import RangeBounds
-from hla2010_verification_harness import (
+from hla.backends.common import RecordingFederateAmbassador
+from hla.backends.common import BackendUnavailableError
+from hla.rti1516e.enums import ResignAction
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.rti1516e.types import RangeBounds
+from hla.verification import (
     FederationLifecycleScenarioConfig,
     SaveRestoreScenarioConfig,
     SuiteRecordingFederateAmbassador,
@@ -21,9 +21,9 @@ from hla2010_verification_harness import (
     run_suite_ddm_scenario,
     run_two_federate_exchange_scenario,
 )
-from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from hla2010_rti_certi.real_rti_certi import discover_certi_smoke_fom, launch_certi_rtig
-from hla2010_rti_pitch_common.real_rti_pitch import launch_pitch_runtime
+from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
+from hla.backends.certi.real_rti_certi import discover_certi_smoke_fom, launch_certi_rtig
+from hla.vendors.pitch.real_rti_pitch import launch_pitch_runtime
 from tests.vendors.runtime_support import (
     cleanup_federation,
     isolated_vendor_runtime_test_state,
@@ -70,7 +70,7 @@ def test_pitch_java_real_lifecycle_smoke(kind: str):
                     federation_name=federation_name,
                     federate_name=f"{kind}-SmokeFederate",
                     federate_type="SmokeFederate",
-                    fom_modules=("hla2010:VendorSmokeFOM.xml",),
+                    fom_modules=("resource:VendorSmokeFOM.xml",),
                     logical_time_implementation_name="HLAinteger64Time",
                 ),
                 federate=fed,
@@ -409,7 +409,7 @@ def test_pitch_java_real_save_restore_smoke(kind: str):
                 wing,
                 config=SaveRestoreScenarioConfig(
                     federation_name=federation_name,
-                    fom_modules=("hla2010:VendorSmokeFOM.xml",),
+                    fom_modules=("resource:VendorSmokeFOM.xml",),
                     logical_time_implementation_name="HLAinteger64Time",
                     save_name=f"PITCH-SAVE-{uuid.uuid4().hex[:8]}",
                 ),
@@ -456,7 +456,7 @@ def test_pitch_java_real_ddm_smoke(kind: str):
                 receiver,
                 config={
                     "federation_name": federation_name,
-                    "fom_modules": ("hla2010:VendorSmokeFOM.xml",),
+                    "fom_modules": ("resource:VendorSmokeFOM.xml",),
                     "logical_time_implementation_name": "HLAinteger64Time",
                     "lookahead": HLAinteger64Interval(1),
                     "source_near": RangeBounds(10, 20),
@@ -512,7 +512,7 @@ def test_pitch_java_real_exchange_smoke(kind: str):
                 subscriber,
                 config=TwoFederateExchangeConfig(
                     federation_name=federation_name,
-                    fom_modules=("hla2010:VendorSmokeFOM.xml",),
+                    fom_modules=("resource:VendorSmokeFOM.xml",),
                     logical_time_implementation_name="HLAinteger64Time",
                     object_class_name="HLAobjectRoot.SmokeObject",
                     attribute_name="Payload",

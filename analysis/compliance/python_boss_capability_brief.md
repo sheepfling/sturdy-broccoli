@@ -44,21 +44,21 @@ Put the divergent rows in an appendix or a secondary "intentional residuals" sli
 
 At a high level, the project now has:
 
-- a clean HLA 2010 specification surface in `hla2010-spec`
-- a pure Python RTI backend in `hla2010-rti-python`
-- a shared verification harness in `hla2010-verification-harness`
-- packaged FOM support, including `hla2010-fom-target-radar`
+- a clean HLA 2010 specification surface in `hla-rti1516e`
+- a pure Python RTI backend in `hla-backend-inmemory`
+- a shared verification harness in `hla-verification`
+- packaged FOM support, including `hla-fom-target-radar`
 - hosted transport layers for networked operation over REST and gRPC
 - bridge packages that keep the RTI/federate API surface from being tied only to an in-process Python federate
 
 The package split is intentional and visible in:
 
 - `docs/package_dependency_tree.md`
-- `packages/hla2010-rti-python/README.md`
-- `packages/hla2010-rti-transport-rest/README.md`
-- `packages/hla2010-rti-transport-grpc/README.md`
-- `packages/hla2010-rti-java-jpype/README.md`
-- `packages/hla2010-rti-java-py4j/README.md`
+- `packages/hla-backend-inmemory/README.md`
+- `packages/hla-transport-rest/README.md`
+- `packages/hla-transport-grpc/README.md`
+- `packages/hla-bridge-java-jpype/README.md`
+- `packages/hla-bridge-java-py4j/README.md`
 
 ## Spec Position By Boss Concern
 
@@ -112,7 +112,7 @@ The repo has direct shared-harness and backend-specific evidence for:
 Representative evidence:
 
 - `tests/scenarios/test_federation_management_backend_matrix.py`
-- `packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py`
+- `packages/hla-verification/src/hla.verification/scenario_sync.py`
 - `tests/scenarios/test_startup_sync_fom_java_translation_v09.py`
 
 There is also hosted-transport evidence showing synchronization still works when the Python RTI is served remotely:
@@ -138,13 +138,13 @@ Representative evidence:
 - `tests/factories/test_fom_omt_parsing.py`
 - `tests/backends/test_python_backend_federation_extended.py`
 - `tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_multi_module_fom_visibility_matrix`
-- `packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py`
+- `packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py`
 
 Target Radar is not just parsed; it is used in executable scenario proofs:
 
 - `analysis/target_radar_proof/target_radar_proof_summary.json`
 - `analysis/target_radar_backend_matrix/target_radar_backend_matrix_summary.json`
-- `packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/resources/foms/TargetRadarFOMmodule.xml`
+- `packages/hla-fom-target-radar/src/hla.foms.target_radar/resources/foms/TargetRadarFOMmodule.xml`
 
 What is **not** yet honestly claimed:
 
@@ -185,7 +185,7 @@ Representative evidence:
 - `tests/scenarios/test_time_management_federation.py`
 - `tests/time/test_section8_backend_matrix.py`
 - `tests/time/test_lookahead_backend_matrix.py`
-- `packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py`
+- `packages/hla-verification/src/hla.verification/section8_matrix.py`
 - `analysis/compliance/service_conformance.csv`
 
 Important nuance:
@@ -206,8 +206,8 @@ Representative evidence:
 
 - `tests/transport/test_rest_transport.py`
 - `tests/transport/test_grpc_transport_python_server.py`
-- `packages/hla2010-rti-transport-rest`
-- `packages/hla2010-rti-transport-grpc`
+- `packages/hla-transport-rest`
+- `packages/hla-transport-grpc`
 
 What has been shown:
 
@@ -239,8 +239,8 @@ The repo now separates:
 This is visible in:
 
 - `docs/package_dependency_tree.md`
-- `packages/hla2010-rti-java-jpype/docs/README.md`
-- `packages/hla2010-rti-java-py4j/docs/README.md`
+- `packages/hla-bridge-java-jpype/docs/README.md`
+- `packages/hla-bridge-java-py4j/docs/README.md`
 - `tests/test_rti_java_bridge_split_packages.py`
 
 What this means:
@@ -270,8 +270,8 @@ Evidence:
 - `tests/time/test_section8_backend_matrix.py`
 - `tests/time/test_lookahead_backend_matrix.py`
 - `tests/scenarios/test_time_management_federation.py`
-- `packages/hla2010-rti-python/src/hla2010_rti_python/time_queue_delivery.py`
-- `packages/hla2010-rti-python/src/hla2010_rti_python/time_queue_grants.py`
+- `packages/hla-backend-inmemory/src/hla/backends/inmemory/time_queue_delivery.py`
+- `packages/hla-backend-inmemory/src/hla/backends/inmemory/time_queue_grants.py`
 
 What is **not** yet honestly claimed:
 
@@ -293,10 +293,10 @@ Lookahead correctness is not just present as an API name. The repo has direct ev
 Representative evidence:
 
 - `tests/time/test_lookahead_backend_matrix.py`
-- `packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py`
-- `packages/hla2010-rti-python/src/hla2010_rti_python/state.py`
-- `packages/hla2010-rti-python/src/hla2010_rti_python/time_queue_delivery.py`
-- `packages/hla2010-rti-python/src/hla2010_rti_python/time_queue_grants.py`
+- `packages/hla-verification/src/hla.verification/section8_matrix.py`
+- `packages/hla-backend-inmemory/src/hla/backends/inmemory/state.py`
+- `packages/hla-backend-inmemory/src/hla/backends/inmemory/time_queue_delivery.py`
+- `packages/hla-backend-inmemory/src/hla/backends/inmemory/time_queue_grants.py`
 
 ## What Is Still Not Perfect
 

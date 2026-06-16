@@ -1,6 +1,6 @@
 # v0.12 verification asset plan
 
-This plan is generated from `hla2010.verification.build_verification_plan()` and is intended to separate implemented evidence from known gaps.
+This plan is generated from `hla.rti1516e.verification.build_verification_plan()` and is intended to separate implemented evidence from known gaps.
 
 Scope: **Pure Python RTI plus Java adapter/shim compatibility layer**
 

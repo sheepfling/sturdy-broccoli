@@ -4,7 +4,7 @@ import json
 import subprocess
 from pathlib import Path
 
-from hla2010_repo_internal.fom_overview import build_fom_overview, write_fom_overview, write_fom_overview_html
+from hla.verification.repo_internal.fom_overview import build_fom_overview, write_fom_overview, write_fom_overview_html
 
 
 def test_generate_fom_overview_writes_merged_target_radar_summary(tmp_path):

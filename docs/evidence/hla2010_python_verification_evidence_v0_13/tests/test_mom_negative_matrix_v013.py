@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from hla2010.exceptions import RTIexception
-from hla2010.testing.mom_negative import (
+from hla.rti1516e.exceptions import RTIexception
+from hla.rti1516e.testing.mom_negative import (
     decoded_mom_exception_texts,
     drain_callbacks,
     generate_mom_negative_cases,

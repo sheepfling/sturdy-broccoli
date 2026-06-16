@@ -10,8 +10,8 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_PATH = ROOT / "specs" / "hla2010_api.json"
-SPEC_IMPL_PATH = ROOT / "packages" / "hla2010-spec" / "src" / "hla2010" / "_spec_impl.py"
-BASE_PATH = ROOT / "packages" / "hla2010-rti-backend-common" / "src" / "hla2010_rti_backend_common" / "base.py"
+SPEC_IMPL_PATH = ROOT / "packages" / "hla-rti1516e" / "src" / "hla2010" / "_spec_impl.py"
+BASE_PATH = ROOT / "packages" / "hla-backend-common" / "src" / "hla.backends.common" / "base.py"
 DOC_PATH = ROOT / "docs" / "reference" / "hla_interface_contracts.md"
 
 GENERATED_HEADER = """# Generated from specs/hla2010_api.json.

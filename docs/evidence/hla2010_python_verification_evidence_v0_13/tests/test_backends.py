@@ -1,9 +1,9 @@
-from hla2010.backends import RecordingBackend, make_rti_ambassador
-from hla2010.backends.base import DelegatingRTIAmbassador, lower_camel_to_snake, snake_to_lower_camel
-from hla2010.backends.java_common import java_parameter_names, resolve_java_arguments
-from hla2010.raw_api import API_METADATA
-from hla2010.enums import CallbackModel
-from hla2010.runtime_api import FederateAmbassador
+from hla.rti1516e.backends import RecordingBackend, make_rti_ambassador
+from hla.rti1516e.backends.base import DelegatingRTIAmbassador, lower_camel_to_snake, snake_to_lower_camel
+from hla.rti1516e.backends.java_common import java_parameter_names, resolve_java_arguments
+from hla.rti1516e.raw_api import API_METADATA
+from hla.rti1516e.enums import CallbackModel
+from hla.rti1516e.runtime_api import FederateAmbassador
 
 
 def test_delegating_ambassador_is_concrete():
@@ -38,7 +38,7 @@ def test_connect_adapts_python_federate_ambassador():
 
 def test_keyword_resolution_uses_java_overload_metadata():
     overloads = tuple(API_METADATA["RTIambassador"]["destroyFederationExecution"])
-    from hla2010.backends.base import Invocation
+    from hla.rti1516e.backends.base import Invocation
 
     invocation = Invocation(
         method_name="destroyFederationExecution",
@@ -67,8 +67,8 @@ def test_case_conversion_helpers():
 
 
 def test_native_handle_registry_uses_java_hash_semantics():
-    from hla2010.backends.conversion import NativeHandleRegistry
-    from hla2010.handles import ObjectClassHandle
+    from hla.rti1516e.backends.conversion import NativeHandleRegistry
+    from hla.rti1516e.handles import ObjectClassHandle
 
     class JavaLikeHandle:
         def __init__(self, value):

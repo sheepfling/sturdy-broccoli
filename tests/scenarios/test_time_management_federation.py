@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010.enums import CallbackModel, ResignAction
-from hla2010_rti_python import InMemoryRTIEngine, rti_ambassador
+from hla.backends.common import RecordingFederateAmbassador
+from hla.rti1516e.enums import CallbackModel, ResignAction
+from hla.backends.inmemory import InMemoryRTIEngine, rti_ambassador
 
 
 def _drain(*rtis, rounds: int = 25) -> None:

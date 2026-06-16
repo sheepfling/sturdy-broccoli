@@ -20,7 +20,7 @@ Policy notes:
 
 Extraction note:
 
-- the Python source tracks section anchors through `hla2010.spec_refs` and
+- the Python source tracks section anchors through `hla.rti1516e.spec_refs` and
   related docstrings
 - generated verification packets and matrices are intentionally excluded from
   the clean repo seed

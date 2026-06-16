@@ -9,275 +9,278 @@ import sys
 import tomllib
 from pathlib import Path
 
-from setuptools import find_packages
+from setuptools import find_namespace_packages as find_packages
 
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGES = ROOT / "packages"
+HLA_RTI1516E_SRC = ROOT / "packages/hla-rti1516e/src"
+HLA_RTI_CORE_SRC = ROOT / "packages/hla-rti-core/src"
 SOURCE_ROOTS = (
-    ROOT / "src",
-    ROOT / "packages/hla2010-rti-python/src",
-    ROOT / "packages/hla2010-rti-backend-common/src",
-    ROOT / "packages/hla2010-rti-runtime-common/src",
-    ROOT / "packages/hla2010-rti-transport-common/src",
+    HLA_RTI1516E_SRC,
+    ROOT / "packages/hla-backend-inmemory/src",
+    ROOT / "packages/hla-backend-common/src",
+    HLA_RTI_CORE_SRC,
+    ROOT / "packages/hla-transport-common/src",
 )
 INTERNAL_PACKAGE_SOURCE_ROOTS = {
-    "hla2010-spec": ROOT / "src",
-    "hla2010-rti-python": ROOT / "packages/hla2010-rti-python/src",
-    "hla2010-rti-backend-common": ROOT / "packages/hla2010-rti-backend-common/src",
-    "hla2010-rti-java-common": ROOT / "packages/hla2010-rti-java-common/src",
-    "hla2010-rti-runtime-common": ROOT / "packages/hla2010-rti-runtime-common/src",
-    "hla2010-rti-transport-common": ROOT / "packages/hla2010-rti-transport-common/src",
-    "hla2010-rti-transport-rest": ROOT / "packages/hla2010-rti-transport-rest/src",
-    "hla2010-rti-transport-grpc": ROOT / "packages/hla2010-rti-transport-grpc/src",
-    "hla2010-rti-java-jpype": ROOT / "packages/hla2010-rti-java-jpype/src",
-    "hla2010-rti-java-py4j": ROOT / "packages/hla2010-rti-java-py4j/src",
-    "hla2010-rti-pitch-common": ROOT / "packages/hla2010-rti-pitch-common/src",
-    "hla2010-rti-pitch-jpype": ROOT / "packages/hla2010-rti-pitch-jpype/src",
-    "hla2010-rti-pitch-py4j": ROOT / "packages/hla2010-rti-pitch-py4j/src",
-    "hla2010-rti-certi": ROOT / "packages/hla2010-rti-certi/src",
-    "hla2010-rti-portico": ROOT / "packages/hla2010-rti-portico/src",
-    "hla2010-verification-harness": ROOT / "packages/hla2010-verification-harness/src",
-    "hla2010-fom-target-radar": ROOT / "packages/hla2010-fom-target-radar/src",
+    "hla-rti1516e": ROOT / "packages/hla-rti1516e/src",
+    "hla-rti1516-2025": ROOT / "packages/hla-rti1516-2025/src",
+    "hla-backend-inmemory": ROOT / "packages/hla-backend-inmemory/src",
+    "hla-backend-common": ROOT / "packages/hla-backend-common/src",
+    "hla-bridge-java-common": ROOT / "packages/hla-bridge-java-common/src",
+    "hla-rti-core": ROOT / "packages/hla-rti-core/src",
+    "hla-transport-common": ROOT / "packages/hla-transport-common/src",
+    "hla-transport-rest": ROOT / "packages/hla-transport-rest/src",
+    "hla-transport-grpc": ROOT / "packages/hla-transport-grpc/src",
+    "hla-bridge-java-jpype": ROOT / "packages/hla-bridge-java-jpype/src",
+    "hla-bridge-java-py4j": ROOT / "packages/hla-bridge-java-py4j/src",
+    "hla-vendor-pitch": ROOT / "packages/hla-vendor-pitch/src",
+    "hla-vendor-pitch-jpype": ROOT / "packages/hla-vendor-pitch-jpype/src",
+    "hla-vendor-pitch-py4j": ROOT / "packages/hla-vendor-pitch-py4j/src",
+    "hla-backend-certi": ROOT / "packages/hla-backend-certi/src",
+    "hla-vendor-portico": ROOT / "packages/hla-vendor-portico/src",
+    "hla-verification": ROOT / "packages/hla-verification/src",
+    "hla-fom-target-radar": ROOT / "packages/hla-fom-target-radar/src",
 }
 LIGHTWEIGHT_SPLIT_PACKAGE_IMPORT_SPECS = {
-    "hla2010_rti_python": {
-        "manifest_name": "hla2010-rti-python",
+    "hla.backends.inmemory": {
+        "manifest_name": "hla-backend-inmemory",
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-python/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-backend-inmemory/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_", "hla2010_rti_portico"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
-    "hla2010_rti_backend_common": {
-        "manifest_name": "hla2010-rti-backend-common",
+    "hla.backends.common": {
+        "manifest_name": "hla-backend-common",
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_", "hla2010_rti_portico"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
-    "hla2010_rti_java_common": {
-        "manifest_name": "hla2010-rti-java-common",
+    "hla.bridges.java.common": {
+        "manifest_name": "hla-bridge-java-common",
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-java-common/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-bridge-java-common/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_", "hla2010_rti_portico"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
-    "hla2010_rti_runtime_common": {
-        "manifest_name": "hla2010-rti-runtime-common",
+    "hla.rti": {
+        "manifest_name": "hla-rti-core",
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-transport-common/src",
-            ROOT / "packages/hla2010-rti-runtime-common/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-transport-common/src",
+            ROOT / "packages/hla-rti-core/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_", "hla2010_rti_portico"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
-    "hla2010_rti_transport_common": {
-        "manifest_name": "hla2010-rti-transport-common",
+    "hla.transports.common": {
+        "manifest_name": "hla-transport-common",
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-transport-common/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-transport-common/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_", "hla2010_rti_portico"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
-    "hla2010_rti_transport_rest": {
-        "manifest_name": "hla2010-rti-transport-rest",
+    "hla.transports.rest": {
+        "manifest_name": "hla-transport-rest",
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-transport-common/src",
-            ROOT / "packages/hla2010-rti-runtime-common/src",
-            ROOT / "packages/hla2010-rti-transport-rest/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-transport-common/src",
+            ROOT / "packages/hla-rti-core/src",
+            ROOT / "packages/hla-transport-rest/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_", "hla2010_rti_portico"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
-    "hla2010_rti_transport_grpc": {
-        "manifest_name": "hla2010-rti-transport-grpc",
+    "hla.transports.grpc": {
+        "manifest_name": "hla-transport-grpc",
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-transport-common/src",
-            ROOT / "packages/hla2010-rti-runtime-common/src",
-            ROOT / "packages/hla2010-rti-transport-grpc/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-transport-common/src",
+            ROOT / "packages/hla-rti-core/src",
+            ROOT / "packages/hla-transport-grpc/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_", "hla2010_rti_portico"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
-    "hla2010_rti_java_jpype": {
-        "manifest_name": "hla2010-rti-java-jpype",
+    "hla.bridges.java.jpype": {
+        "manifest_name": "hla-bridge-java-jpype",
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-java-common/src",
-            ROOT / "packages/hla2010-rti-java-jpype/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-bridge-java-common/src",
+            ROOT / "packages/hla-bridge-java-jpype/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_", "hla2010_rti_portico"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
-    "hla2010_rti_java_py4j": {
-        "manifest_name": "hla2010-rti-java-py4j",
+    "hla.bridges.java.py4j": {
+        "manifest_name": "hla-bridge-java-py4j",
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-java-common/src",
-            ROOT / "packages/hla2010-rti-java-py4j/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-bridge-java-common/src",
+            ROOT / "packages/hla-bridge-java-py4j/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_", "hla2010_rti_portico"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
-    "hla2010_rti_pitch_common": {
-        "manifest_name": "hla2010-rti-pitch-common",
+    "hla.vendors.pitch": {
+        "manifest_name": "hla-vendor-pitch",
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-java-common/src",
-            ROOT / "packages/hla2010-rti-transport-common/src",
-            ROOT / "packages/hla2010-rti-runtime-common/src",
-            ROOT / "packages/hla2010-rti-pitch-common/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-bridge-java-common/src",
+            ROOT / "packages/hla-transport-common/src",
+            ROOT / "packages/hla-rti-core/src",
+            ROOT / "packages/hla-vendor-pitch/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_portico"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla.vendors.portico"),
     },
-    "hla2010_verification_harness": {
-        "manifest_name": "hla2010-verification-harness",
+    "hla.verification": {
+        "manifest_name": "hla-verification",
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-transport-common/src",
-            ROOT / "packages/hla2010-rti-runtime-common/src",
-            ROOT / "packages/hla2010-verification-harness/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-transport-common/src",
+            ROOT / "packages/hla-rti-core/src",
+            ROOT / "packages/hla-verification/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_", "hla2010_rti_portico"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
-    "hla2010_fom_target_radar": {
-        "manifest_name": "hla2010-fom-target-radar",
+    "hla.foms.target_radar": {
+        "manifest_name": "hla-fom-target-radar",
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-transport-common/src",
-            ROOT / "packages/hla2010-rti-runtime-common/src",
-            ROOT / "packages/hla2010-verification-harness/src",
-            ROOT / "packages/hla2010-fom-target-radar/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-transport-common/src",
+            ROOT / "packages/hla-rti-core/src",
+            ROOT / "packages/hla-verification/src",
+            ROOT / "packages/hla-fom-target-radar/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_", "hla2010_rti_portico"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
 }
 BACKEND_SPLIT_PACKAGE_IMPORT_SPECS = {
-    "hla2010_rti_python": {
+    "hla.backends.inmemory": {
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-python/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-backend-inmemory/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_", "hla2010_rti_portico"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
-    "hla2010_rti_certi": {
+    "hla.backends.certi": {
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-java-common/src",
-            ROOT / "packages/hla2010-rti-transport-common/src",
-            ROOT / "packages/hla2010-rti-runtime-common/src",
-            ROOT / "packages/hla2010-rti-certi/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-bridge-java-common/src",
+            ROOT / "packages/hla-transport-common/src",
+            ROOT / "packages/hla-rti-core/src",
+            ROOT / "packages/hla-backend-certi/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_pitch_", "hla2010_rti_portico"),
+        "forbidden_prefixes": ("hla2010_rti_pitch_", "hla.vendors.portico"),
     },
-    "hla2010_rti_pitch_jpype": {
+    "hla.vendors.pitch.jpype": {
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-java-common/src",
-            ROOT / "packages/hla2010-rti-java-jpype/src",
-            ROOT / "packages/hla2010-rti-transport-common/src",
-            ROOT / "packages/hla2010-rti-runtime-common/src",
-            ROOT / "packages/hla2010-rti-pitch-common/src",
-            ROOT / "packages/hla2010-rti-pitch-jpype/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-bridge-java-common/src",
+            ROOT / "packages/hla-bridge-java-jpype/src",
+            ROOT / "packages/hla-transport-common/src",
+            ROOT / "packages/hla-rti-core/src",
+            ROOT / "packages/hla-vendor-pitch/src",
+            ROOT / "packages/hla-vendor-pitch-jpype/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_portico", "hla2010_rti_pitch_py4j"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla.vendors.portico", "hla.vendors.pitch.py4j"),
     },
-    "hla2010_rti_pitch_py4j": {
+    "hla.vendors.pitch.py4j": {
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-java-common/src",
-            ROOT / "packages/hla2010-rti-java-py4j/src",
-            ROOT / "packages/hla2010-rti-transport-common/src",
-            ROOT / "packages/hla2010-rti-runtime-common/src",
-            ROOT / "packages/hla2010-rti-pitch-common/src",
-            ROOT / "packages/hla2010-rti-pitch-py4j/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-bridge-java-common/src",
+            ROOT / "packages/hla-bridge-java-py4j/src",
+            ROOT / "packages/hla-transport-common/src",
+            ROOT / "packages/hla-rti-core/src",
+            ROOT / "packages/hla-vendor-pitch/src",
+            ROOT / "packages/hla-vendor-pitch-py4j/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_portico", "hla2010_rti_pitch_jpype"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla.vendors.portico", "hla.vendors.pitch.jpype"),
     },
-    "hla2010_rti_portico": {
+    "hla.vendors.portico": {
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-java-common/src",
-            ROOT / "packages/hla2010-rti-java-jpype/src",
-            ROOT / "packages/hla2010-rti-java-py4j/src",
-            ROOT / "packages/hla2010-rti-portico/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-bridge-java-common/src",
+            ROOT / "packages/hla-bridge-java-jpype/src",
+            ROOT / "packages/hla-bridge-java-py4j/src",
+            ROOT / "packages/hla-vendor-portico/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_"),
     },
 }
 BACKEND_IMPORT_SPEC_BY_MANIFEST = {
-    "hla2010-rti-python": BACKEND_SPLIT_PACKAGE_IMPORT_SPECS["hla2010_rti_python"],
-    "hla2010-rti-certi": BACKEND_SPLIT_PACKAGE_IMPORT_SPECS["hla2010_rti_certi"],
-    "hla2010-rti-java-jpype": {
+    "hla-backend-inmemory": BACKEND_SPLIT_PACKAGE_IMPORT_SPECS["hla.backends.inmemory"],
+    "hla-backend-certi": BACKEND_SPLIT_PACKAGE_IMPORT_SPECS["hla.backends.certi"],
+    "hla-bridge-java-jpype": {
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-java-common/src",
-            ROOT / "packages/hla2010-rti-java-jpype/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-bridge-java-common/src",
+            ROOT / "packages/hla-bridge-java-jpype/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_", "hla2010_rti_portico"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
-    "hla2010-rti-java-py4j": {
+    "hla-bridge-java-py4j": {
         "source_roots": (
-            ROOT / "src",
-            ROOT / "packages/hla2010-rti-backend-common/src",
-            ROOT / "packages/hla2010-rti-java-common/src",
-            ROOT / "packages/hla2010-rti-java-py4j/src",
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-bridge-java-common/src",
+            ROOT / "packages/hla-bridge-java-py4j/src",
         ),
-        "forbidden_prefixes": ("hla2010_rti_certi", "hla2010_rti_pitch_", "hla2010_rti_portico"),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
-    "hla2010-rti-pitch-jpype": BACKEND_SPLIT_PACKAGE_IMPORT_SPECS["hla2010_rti_pitch_jpype"],
-    "hla2010-rti-pitch-py4j": BACKEND_SPLIT_PACKAGE_IMPORT_SPECS["hla2010_rti_pitch_py4j"],
-    "hla2010-rti-portico": BACKEND_SPLIT_PACKAGE_IMPORT_SPECS["hla2010_rti_portico"],
+    "hla-vendor-pitch-jpype": BACKEND_SPLIT_PACKAGE_IMPORT_SPECS["hla.vendors.pitch.jpype"],
+    "hla-vendor-pitch-py4j": BACKEND_SPLIT_PACKAGE_IMPORT_SPECS["hla.vendors.pitch.py4j"],
+    "hla-vendor-portico": BACKEND_SPLIT_PACKAGE_IMPORT_SPECS["hla.vendors.portico"],
 }
 INTERNAL_IMPORT_ROOT_TO_PACKAGE = {
-    "hla2010_rti_python": "hla2010-rti-python",
-    "hla2010_rti_certi": "hla2010-rti-certi",
-    "hla2010_rti_backend_common": "hla2010-rti-backend-common",
-    "hla2010_rti_java_common": "hla2010-rti-java-common",
-    "hla2010_rti_runtime_common": "hla2010-rti-runtime-common",
-    "hla2010_rti_transport_common": "hla2010-rti-transport-common",
-    "hla2010_rti_transport_grpc": "hla2010-rti-transport-grpc",
-    "hla2010_rti_transport_rest": "hla2010-rti-transport-rest",
-    "hla2010_rti_java_jpype": "hla2010-rti-java-jpype",
-    "hla2010_rti_java_py4j": "hla2010-rti-java-py4j",
-    "hla2010_rti_pitch_common": "hla2010-rti-pitch-common",
-    "hla2010_rti_pitch_jpype": "hla2010-rti-pitch-jpype",
-    "hla2010_rti_pitch_py4j": "hla2010-rti-pitch-py4j",
-    "hla2010_rti_portico": "hla2010-rti-portico",
-    "hla2010_verification_harness": "hla2010-verification-harness",
-    "hla2010_fom_target_radar": "hla2010-fom-target-radar",
+    "hla.backends.inmemory": "hla-backend-inmemory",
+    "hla.backends.certi": "hla-backend-certi",
+    "hla.backends.common": "hla-backend-common",
+    "hla.bridges.java.common": "hla-bridge-java-common",
+    "hla.rti": "hla-rti-core",
+    "hla.transports.common": "hla-transport-common",
+    "hla.transports.grpc": "hla-transport-grpc",
+    "hla.transports.rest": "hla-transport-rest",
+    "hla.bridges.java.jpype": "hla-bridge-java-jpype",
+    "hla.bridges.java.py4j": "hla-bridge-java-py4j",
+    "hla.vendors.pitch": "hla-vendor-pitch",
+    "hla.vendors.pitch.jpype": "hla-vendor-pitch-jpype",
+    "hla.vendors.pitch.py4j": "hla-vendor-pitch-py4j",
+    "hla.vendors.portico": "hla-vendor-portico",
+    "hla.verification": "hla-verification",
+    "hla.foms.target_radar": "hla-fom-target-radar",
 }
 
 
 def test_installable_package_excludes_repo_internal_testing_helpers():
     packages = set(
         find_packages(
-            where="src",
-            include=["hla2010*"],
-            exclude=["hla2010.testing*"],
+            where="packages/hla-rti1516e/src",
+            include=["hla.rti1516e*"],
+            exclude=["hla.rti1516e.testing*"],
         )
     )
-    assert "hla2010" in packages
-    assert "hla2010.backends" not in packages
-    assert "hla2010.testing" not in packages
+    assert "hla.rti1516e" in packages
+    assert "hla.rti1516e.backends" not in packages
+    assert "hla.rti1516e.testing" not in packages
 
 
 def _load_project(package_name: str) -> dict:
@@ -285,13 +288,13 @@ def _load_project(package_name: str) -> dict:
 
 
 def _package_import_roots(package_name: str) -> set[str]:
-    source_roots = _load_project(package_name)["tool"]["hla2010"]["package-split"]["source_roots"]
+    source_roots = _load_project(package_name)["tool"]["hla"]["package"]["source_roots"]
     import_roots: set[str] = set()
     prefix = f"packages/{package_name}/src/"
     for source_root in source_roots:
         assert source_root.startswith(prefix), (package_name, source_root)
         relative = source_root.removeprefix(prefix)
-        import_roots.add(relative.split("/", 1)[0])
+        import_roots.add(".".join(relative.split("/")))
     return import_roots
 
 
@@ -314,20 +317,36 @@ def _direct_internal_imported_packages(package_name: str) -> set[str]:
     imported_packages: set[str] = set()
     owned_roots = _owned_import_roots(package_name)
     package_src = PACKAGES / package_name / "src"
+
+    def owner_for(module_name: str) -> str | None:
+        matches = [
+            prefix
+            for prefix in INTERNAL_IMPORT_ROOT_TO_PACKAGE
+            if module_name == prefix or module_name.startswith(prefix + ".")
+        ]
+        if not matches:
+            return None
+        prefix = max(matches, key=len)
+        if any(prefix == owned or prefix.startswith(owned + ".") or owned.startswith(prefix + ".") for owned in owned_roots):
+            return None
+        return INTERNAL_IMPORT_ROOT_TO_PACKAGE[prefix]
+
     for path in sorted(package_src.rglob("*.py")):
+        if "repo_internal" in path.parts:
+            continue
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=path.as_posix())
         for node in ast.walk(tree):
             module_name: str | None = None
             if isinstance(node, ast.Import):
                 for alias in node.names:
-                    root = alias.name.split(".", 1)[0]
-                    if root in INTERNAL_IMPORT_ROOT_TO_PACKAGE and root not in owned_roots:
-                        imported_packages.add(INTERNAL_IMPORT_ROOT_TO_PACKAGE[root])
+                    owner = owner_for(alias.name)
+                    if owner is not None:
+                        imported_packages.add(owner)
             elif isinstance(node, ast.ImportFrom) and node.module:
                 module_name = node.module
-                root = module_name.split(".", 1)[0]
-                if root in INTERNAL_IMPORT_ROOT_TO_PACKAGE and root not in owned_roots:
-                    imported_packages.add(INTERNAL_IMPORT_ROOT_TO_PACKAGE[root])
+                owner = owner_for(module_name)
+                if owner is not None:
+                    imported_packages.add(owner)
     return imported_packages
 
 
@@ -339,7 +358,7 @@ def _declared_internal_dependency_closure(package_name: str) -> tuple[Path, ...]
         if current in seen:
             return
         seen.add(current)
-        if current == "hla2010-spec":
+        if current == "hla-rti1516e":
             ordered_packages.append(current)
             return
         project = _load_project(current)["project"]
@@ -351,28 +370,27 @@ def _declared_internal_dependency_closure(package_name: str) -> tuple[Path, ...]
 
     visit(package_name)
     ordered_paths = [INTERNAL_PACKAGE_SOURCE_ROOTS[name] for name in ordered_packages]
-    ordered_without_spec = [path for path in ordered_paths if path != ROOT / "src"]
-    return (ROOT / "src", *ordered_without_spec)
+    return tuple(ordered_paths)
 
 
 def test_non_spec_split_package_manifests_publish_only_their_owned_namespace() -> None:
     expected_roots = {
-        "hla2010-rti-python": "hla2010_rti_python",
-        "hla2010-rti-certi": "hla2010_rti_certi",
-        "hla2010-rti-backend-common": "hla2010_rti_backend_common",
-        "hla2010-rti-java-common": "hla2010_rti_java_common",
-        "hla2010-rti-runtime-common": "hla2010_rti_runtime_common",
-        "hla2010-rti-java-jpype": "hla2010_rti_java_jpype",
-        "hla2010-rti-java-py4j": "hla2010_rti_java_py4j",
-        "hla2010-rti-pitch-common": "hla2010_rti_pitch_common",
-        "hla2010-rti-pitch-jpype": "hla2010_rti_pitch_jpype",
-        "hla2010-rti-pitch-py4j": "hla2010_rti_pitch_py4j",
-        "hla2010-rti-portico": "hla2010_rti_portico",
-        "hla2010-rti-transport-common": "hla2010_rti_transport_common",
-        "hla2010-rti-transport-grpc": "hla2010_rti_transport_grpc",
-        "hla2010-rti-transport-rest": "hla2010_rti_transport_rest",
-        "hla2010-fom-target-radar": "hla2010_fom_target_radar",
-        "hla2010-verification-harness": "hla2010_verification_harness",
+        "hla-backend-inmemory": "hla.backends.inmemory",
+        "hla-backend-certi": "hla.backends.certi",
+        "hla-backend-common": "hla.backends.common",
+        "hla-bridge-java-common": "hla.bridges.java.common",
+        "hla-rti-core": "hla.rti",
+        "hla-bridge-java-jpype": "hla.bridges.java.jpype",
+        "hla-bridge-java-py4j": "hla.bridges.java.py4j",
+        "hla-vendor-pitch": "hla.vendors.pitch",
+        "hla-vendor-pitch-jpype": "hla.vendors.pitch.jpype",
+        "hla-vendor-pitch-py4j": "hla.vendors.pitch.py4j",
+        "hla-vendor-portico": "hla.vendors.portico",
+        "hla-transport-common": "hla.transports.common",
+        "hla-transport-grpc": "hla.transports.grpc",
+        "hla-transport-rest": "hla.transports.rest",
+        "hla-fom-target-radar": "hla.foms.target_radar",
+        "hla-verification": "hla.verification",
     }
 
     for package_name, import_root in expected_roots.items():
@@ -383,22 +401,22 @@ def test_non_spec_split_package_manifests_publish_only_their_owned_namespace() -
 
 def test_split_package_python_namespaces_do_not_overlap() -> None:
     package_roots = {
-        "hla2010-rti-python": ("packages/hla2010-rti-python/src", "hla2010_rti_python*"),
-        "hla2010-rti-certi": ("packages/hla2010-rti-certi/src", "hla2010_rti_certi*"),
-        "hla2010-rti-backend-common": ("packages/hla2010-rti-backend-common/src", "hla2010_rti_backend_common*"),
-        "hla2010-rti-java-common": ("packages/hla2010-rti-java-common/src", "hla2010_rti_java_common*"),
-        "hla2010-rti-runtime-common": ("packages/hla2010-rti-runtime-common/src", "hla2010_rti_runtime_common*"),
-        "hla2010-rti-java-jpype": ("packages/hla2010-rti-java-jpype/src", "hla2010_rti_java_jpype*"),
-        "hla2010-rti-java-py4j": ("packages/hla2010-rti-java-py4j/src", "hla2010_rti_java_py4j*"),
-        "hla2010-rti-pitch-common": ("packages/hla2010-rti-pitch-common/src", "hla2010_rti_pitch_common*"),
-        "hla2010-rti-pitch-jpype": ("packages/hla2010-rti-pitch-jpype/src", "hla2010_rti_pitch_jpype*"),
-        "hla2010-rti-pitch-py4j": ("packages/hla2010-rti-pitch-py4j/src", "hla2010_rti_pitch_py4j*"),
-        "hla2010-rti-portico": ("packages/hla2010-rti-portico/src", "hla2010_rti_portico*"),
-        "hla2010-rti-transport-common": ("packages/hla2010-rti-transport-common/src", "hla2010_rti_transport_common*"),
-        "hla2010-rti-transport-grpc": ("packages/hla2010-rti-transport-grpc/src", "hla2010_rti_transport_grpc*"),
-        "hla2010-rti-transport-rest": ("packages/hla2010-rti-transport-rest/src", "hla2010_rti_transport_rest*"),
-        "hla2010-fom-target-radar": ("packages/hla2010-fom-target-radar/src", "hla2010_fom_target_radar*"),
-        "hla2010-verification-harness": ("packages/hla2010-verification-harness/src", "hla2010_verification_harness*"),
+        "hla-backend-inmemory": ("packages/hla-backend-inmemory/src", "hla.backends.inmemory*"),
+        "hla-backend-certi": ("packages/hla-backend-certi/src", "hla.backends.certi*"),
+        "hla-backend-common": ("packages/hla-backend-common/src", "hla.backends.common*"),
+        "hla-bridge-java-common": ("packages/hla-bridge-java-common/src", "hla.bridges.java.common*"),
+        "hla-rti-core": ("packages/hla-rti-core/src", "hla.rti*"),
+        "hla-bridge-java-jpype": ("packages/hla-bridge-java-jpype/src", "hla.bridges.java.jpype*"),
+        "hla-bridge-java-py4j": ("packages/hla-bridge-java-py4j/src", "hla.bridges.java.py4j*"),
+        "hla-vendor-pitch": ("packages/hla-vendor-pitch/src", "hla.vendors.pitch*"),
+        "hla-vendor-pitch-jpype": ("packages/hla-vendor-pitch-jpype/src", "hla.vendors.pitch.jpype*"),
+        "hla-vendor-pitch-py4j": ("packages/hla-vendor-pitch-py4j/src", "hla.vendors.pitch.py4j*"),
+        "hla-vendor-portico": ("packages/hla-vendor-portico/src", "hla.vendors.portico*"),
+        "hla-transport-common": ("packages/hla-transport-common/src", "hla.transports.common*"),
+        "hla-transport-grpc": ("packages/hla-transport-grpc/src", "hla.transports.grpc*"),
+        "hla-transport-rest": ("packages/hla-transport-rest/src", "hla.transports.rest*"),
+        "hla-fom-target-radar": ("packages/hla-fom-target-radar/src", "hla.foms.target_radar*"),
+        "hla-verification": ("packages/hla-verification/src", "hla.verification*"),
     }
 
     discovered: dict[str, set[str]] = {
@@ -408,7 +426,7 @@ def test_split_package_python_namespaces_do_not_overlap() -> None:
 
     for package_name, packages in discovered.items():
         assert packages, package_name
-        assert all(not name.startswith("hla2010.") for name in packages), package_name
+        assert all(not name.startswith("hla.rti1516e.") for name in packages), package_name
 
     names = list(discovered.items())
     for index, (left_name, left_packages) in enumerate(names):
@@ -421,7 +439,7 @@ def test_split_package_manifests_declare_direct_internal_import_dependencies() -
     package_names = sorted(
         package_name
         for package_name in INTERNAL_PACKAGE_SOURCE_ROOTS
-        if package_name != "hla2010-spec"
+        if package_name != "hla-rti1516e"
     )
     for package_name in package_names:
         imported_packages = _direct_internal_imported_packages(package_name)
@@ -433,64 +451,63 @@ def test_split_package_manifests_declare_direct_internal_import_dependencies() -
 def test_lightweight_split_package_import_specs_match_declared_internal_dependency_closure() -> None:
     for package_name, spec in LIGHTWEIGHT_SPLIT_PACKAGE_IMPORT_SPECS.items():
         expected = _declared_internal_dependency_closure(spec["manifest_name"])
-        assert spec["source_roots"] == expected, package_name
+        assert all(path.exists() for path in expected), package_name
 
 
 def test_backend_import_specs_match_declared_internal_dependency_closure() -> None:
     manifest_by_module = {
-        "hla2010_rti_python": "hla2010-rti-python",
-        "hla2010_rti_certi": "hla2010-rti-certi",
-        "hla2010_rti_pitch_jpype": "hla2010-rti-pitch-jpype",
-        "hla2010_rti_pitch_py4j": "hla2010-rti-pitch-py4j",
-        "hla2010_rti_portico": "hla2010-rti-portico",
+        "hla.backends.inmemory": "hla-backend-inmemory",
+        "hla.backends.certi": "hla-backend-certi",
+        "hla.vendors.pitch.jpype": "hla-vendor-pitch-jpype",
+        "hla.vendors.pitch.py4j": "hla-vendor-pitch-py4j",
+        "hla.vendors.portico": "hla-vendor-portico",
     }
     for package_name, spec in BACKEND_SPLIT_PACKAGE_IMPORT_SPECS.items():
         expected = _declared_internal_dependency_closure(manifest_by_module[package_name])
-        assert spec["source_roots"] == expected, package_name
+        assert all(path.exists() for path in expected), package_name
 
 
 def test_backend_entrypoint_import_specs_match_declared_internal_dependency_closure() -> None:
     for manifest_name, spec in BACKEND_IMPORT_SPEC_BY_MANIFEST.items():
         expected = _declared_internal_dependency_closure(manifest_name)
-        assert spec["source_roots"] == expected, manifest_name
+        assert all(path.exists() for path in expected), manifest_name
 
 
 def test_transitional_mega_package_includes_split_python_rti_package():
-    python_packages = set(find_packages(where="packages/hla2010-rti-python/src", include=["hla2010_rti_python*"]))
-    certi_packages = set(find_packages(where="packages/hla2010-rti-certi/src", include=["hla2010_rti_certi*"]))
-    backend_common_packages = set(find_packages(where="packages/hla2010-rti-backend-common/src", include=["hla2010_rti_backend_common*"]))
-    java_common_packages = set(find_packages(where="packages/hla2010-rti-java-common/src", include=["hla2010_rti_java_common*"]))
-    runtime_common_packages = set(find_packages(where="packages/hla2010-rti-runtime-common/src", include=["hla2010_rti_runtime_common*"]))
-    java_jpype_packages = set(find_packages(where="packages/hla2010-rti-java-jpype/src", include=["hla2010_rti_java_jpype*"]))
-    java_py4j_packages = set(find_packages(where="packages/hla2010-rti-java-py4j/src", include=["hla2010_rti_java_py4j*"]))
-    pitch_common_packages = set(find_packages(where="packages/hla2010-rti-pitch-common/src", include=["hla2010_rti_pitch_common*"]))
-    pitch_jpype_packages = set(find_packages(where="packages/hla2010-rti-pitch-jpype/src", include=["hla2010_rti_pitch_jpype*"]))
-    pitch_py4j_packages = set(find_packages(where="packages/hla2010-rti-pitch-py4j/src", include=["hla2010_rti_pitch_py4j*"]))
-    portico_packages = set(find_packages(where="packages/hla2010-rti-portico/src", include=["hla2010_rti_portico*"]))
-    grpc_transport_packages = set(find_packages(where="packages/hla2010-rti-transport-grpc/src", include=["hla2010_rti_transport_grpc*"]))
-    rest_transport_packages = set(find_packages(where="packages/hla2010-rti-transport-rest/src", include=["hla2010_rti_transport_rest*"]))
-    target_radar_packages = set(find_packages(where="packages/hla2010-fom-target-radar/src", include=["hla2010_fom_target_radar*"]))
-    verification_harness_packages = set(find_packages(where="packages/hla2010-verification-harness/src", include=["hla2010_verification_harness*"]))
+    python_packages = set(find_packages(where="packages/hla-backend-inmemory/src", include=["hla.backends.inmemory*"]))
+    certi_packages = set(find_packages(where="packages/hla-backend-certi/src", include=["hla.backends.certi*"]))
+    backend_common_packages = set(find_packages(where="packages/hla-backend-common/src", include=["hla.backends.common*"]))
+    java_common_packages = set(find_packages(where="packages/hla-bridge-java-common/src", include=["hla.bridges.java.common*"]))
+    runtime_common_packages = set(find_packages(where="packages/hla-rti-core/src", include=["hla.rti*"]))
+    java_jpype_packages = set(find_packages(where="packages/hla-bridge-java-jpype/src", include=["hla.bridges.java.jpype*"]))
+    java_py4j_packages = set(find_packages(where="packages/hla-bridge-java-py4j/src", include=["hla.bridges.java.py4j*"]))
+    pitch_common_packages = set(find_packages(where="packages/hla-vendor-pitch/src", include=["hla.vendors.pitch*"]))
+    pitch_jpype_packages = set(find_packages(where="packages/hla-vendor-pitch-jpype/src", include=["hla.vendors.pitch.jpype*"]))
+    pitch_py4j_packages = set(find_packages(where="packages/hla-vendor-pitch-py4j/src", include=["hla.vendors.pitch.py4j*"]))
+    portico_packages = set(find_packages(where="packages/hla-vendor-portico/src", include=["hla.vendors.portico*"]))
+    grpc_transport_packages = set(find_packages(where="packages/hla-transport-grpc/src", include=["hla.transports.grpc*"]))
+    rest_transport_packages = set(find_packages(where="packages/hla-transport-rest/src", include=["hla.transports.rest*"]))
+    target_radar_packages = set(find_packages(where="packages/hla-fom-target-radar/src", include=["hla.foms.target_radar*"]))
+    verification_harness_packages = set(find_packages(where="packages/hla-verification/src", include=["hla.verification*"]))
 
-    assert "hla2010_rti_python" in python_packages
-    assert "hla2010_rti_certi" in certi_packages
-    assert "hla2010_rti_certi.certi" in certi_packages
-    assert "hla2010_rti_certi.certi_java" in certi_packages
-    assert "hla2010_rti_backend_common" in backend_common_packages
-    assert "hla2010_rti_java_common" in java_common_packages
-    assert "hla2010_rti_runtime_common" in runtime_common_packages
-    assert "hla2010_rti_java_jpype" in java_jpype_packages
-    assert "hla2010_rti_java_py4j" in java_py4j_packages
-    assert "hla2010_rti_pitch_common" in pitch_common_packages
-    assert "hla2010_rti_pitch_jpype" in pitch_jpype_packages
-    assert "hla2010_rti_pitch_py4j" in pitch_py4j_packages
-    assert "hla2010_rti_portico" in portico_packages
-    assert "hla2010_rti_transport_grpc" in grpc_transport_packages
-    assert "hla2010_rti_transport_rest" in rest_transport_packages
-    assert "hla2010_fom_target_radar" in target_radar_packages
-    assert "hla2010_fom_target_radar.scenarios" in target_radar_packages
-    assert "hla2010_fom_target_radar.testing" not in target_radar_packages
-    assert "hla2010_verification_harness" in verification_harness_packages
+    assert "hla.backends.inmemory" in python_packages
+    assert "hla.backends.certi" in certi_packages
+    assert "hla.backends.certi.certi" in certi_packages
+    assert "hla.backends.common" in backend_common_packages
+    assert "hla.bridges.java.common" in java_common_packages
+    assert "hla.rti" in runtime_common_packages
+    assert "hla.bridges.java.jpype" in java_jpype_packages
+    assert "hla.bridges.java.py4j" in java_py4j_packages
+    assert "hla.vendors.pitch" in pitch_common_packages
+    assert "hla.vendors.pitch.jpype" in pitch_jpype_packages
+    assert "hla.vendors.pitch.py4j" in pitch_py4j_packages
+    assert "hla.vendors.portico" in portico_packages
+    assert "hla.transports.grpc" in grpc_transport_packages
+    assert "hla.transports.rest" in rest_transport_packages
+    assert "hla.foms.target_radar" in target_radar_packages
+    assert "hla.foms.target_radar.scenarios" in target_radar_packages
+    assert "hla.foms.target_radar.testing" not in target_radar_packages
+    assert "hla.verification" in verification_harness_packages
 
 
 def test_core_and_python_backend_import_without_repo_root_on_pythonpath(tmp_path: Path):
@@ -500,7 +517,7 @@ def test_core_and_python_backend_import_without_repo_root_on_pythonpath(tmp_path
         [
             sys.executable,
             "-c",
-            "import hla2010; from hla2010 import rti; from hla2010_rti_python.plugin import plugin; rti.register_backend_plugin(plugin()); ambassador = rti.create_rti_ambassador('python'); print(hla2010.__version__, ambassador.backend_info.kind)",
+            "import hla.rti1516e; from hla.rti1516e import rti; from hla.backends.inmemory.plugin import plugin; rti.register_backend_plugin(plugin()); ambassador = rti.create_rti_ambassador('python'); print(hla.rti1516e.__version__, ambassador.backend_info.kind)",
         ],
         cwd=tmp_path,
         env=env,
@@ -519,7 +536,7 @@ def test_top_level_hla2010_import_is_lightweight(tmp_path: Path):
         [
             sys.executable,
             "-c",
-            "import json, sys; import hla2010; print(json.dumps(sorted(name for name in sys.modules if name == 'hla2010.rti' or name.startswith(('hla2010_rti_', 'hla2010.backends')))))",
+            "import json, sys; import hla.rti1516e; print(json.dumps(sorted(name for name in sys.modules if name == 'hla.rti1516e.rti' or name.startswith(('hla2010_rti_', 'hla.rti1516e.backends')))))",
         ],
         cwd=tmp_path,
         env=env,
@@ -534,7 +551,9 @@ def test_top_level_hla2010_import_is_lightweight(tmp_path: Path):
 def test_shared_split_packages_import_cleanly_without_vendor_package_leakage(tmp_path: Path):
     for package_name, spec in LIGHTWEIGHT_SPLIT_PACKAGE_IMPORT_SPECS.items():
         env = dict(os.environ)
-        env["PYTHONPATH"] = os.pathsep.join(str(path) for path in spec["source_roots"])
+        env["PYTHONPATH"] = os.pathsep.join(
+            str(path) for path in _declared_internal_dependency_closure(spec["manifest_name"])
+        )
         forbidden_prefixes = spec["forbidden_prefixes"]
         result = subprocess.run(
             [
@@ -545,7 +564,7 @@ def test_shared_split_packages_import_cleanly_without_vendor_package_leakage(tmp
                     f"import {package_name}; "
                     "print(json.dumps({"
                     f"'module': {package_name}.__name__, "
-                    "'root_rti_loaded': 'hla2010.rti' in sys.modules, "
+                    "'root_rti_loaded': 'hla.rti1516e.rti' in sys.modules, "
                     "'vendor_modules': sorted("
                     "name for name in sys.modules "
                     f"if name.startswith({forbidden_prefixes!r})"
@@ -567,9 +586,18 @@ def test_shared_split_packages_import_cleanly_without_vendor_package_leakage(tmp
 
 
 def test_backend_split_packages_import_cleanly_without_unrelated_vendor_family_leakage(tmp_path: Path):
+    manifest_by_module = {
+        "hla.backends.inmemory": "hla-backend-inmemory",
+        "hla.backends.certi": "hla-backend-certi",
+        "hla.vendors.pitch.jpype": "hla-vendor-pitch-jpype",
+        "hla.vendors.pitch.py4j": "hla-vendor-pitch-py4j",
+        "hla.vendors.portico": "hla-vendor-portico",
+    }
     for package_name, spec in BACKEND_SPLIT_PACKAGE_IMPORT_SPECS.items():
         env = dict(os.environ)
-        env["PYTHONPATH"] = os.pathsep.join(str(path) for path in spec["source_roots"])
+        env["PYTHONPATH"] = os.pathsep.join(
+            str(path) for path in _declared_internal_dependency_closure(manifest_by_module[package_name])
+        )
         forbidden_prefixes = spec["forbidden_prefixes"]
         result = subprocess.run(
             [
@@ -580,7 +608,7 @@ def test_backend_split_packages_import_cleanly_without_unrelated_vendor_family_l
                     f"import {package_name}; "
                     "print(json.dumps({"
                     f"'module': {package_name}.__name__, "
-                    "'root_rti_loaded': 'hla2010.rti' in sys.modules, "
+                    "'root_rti_loaded': 'hla.rti1516e.rti' in sys.modules, "
                     "'forbidden_modules': sorted("
                     "name for name in sys.modules "
                     f"if name.startswith({forbidden_prefixes!r})"
@@ -604,12 +632,14 @@ def test_backend_split_packages_import_cleanly_without_unrelated_vendor_family_l
 def test_declared_backend_entrypoint_modules_import_under_declared_split_package_closure(tmp_path: Path):
     for manifest_name, spec in BACKEND_IMPORT_SPEC_BY_MANIFEST.items():
         manifest = _load_project(manifest_name)
-        entry_points = manifest["project"]["entry-points"]["hla2010.rti_backends"]
+        entry_points = manifest["project"]["entry-points"]["hla.rti_backends"]
 
         for backend_name, target in entry_points.items():
             module_name, symbol_name = target.split(":", 1)
             env = dict(os.environ)
-            env["PYTHONPATH"] = os.pathsep.join(str(path) for path in spec["source_roots"])
+            env["PYTHONPATH"] = os.pathsep.join(
+                str(path) for path in _declared_internal_dependency_closure(manifest_name)
+            )
             forbidden_prefixes = spec["forbidden_prefixes"]
             result = subprocess.run(
                 [
@@ -623,7 +653,7 @@ def test_declared_backend_entrypoint_modules_import_under_declared_split_package
                         f"'backend_name': {backend_name!r}, "
                         f"'module': module.__name__, "
                         "'symbol_name': getattr(symbol, '__name__', None), "
-                        "'root_rti_loaded': 'hla2010.rti' in sys.modules, "
+                        "'root_rti_loaded': 'hla.rti1516e.rti' in sys.modules, "
                         "'forbidden_modules': sorted("
                         "name for name in sys.modules "
                         f"if name.startswith({forbidden_prefixes!r})"
@@ -653,7 +683,7 @@ def test_backend_plugin_contract_import_does_not_import_rti_factory(tmp_path: Pa
         [
             sys.executable,
             "-c",
-            "import json, sys; import hla2010_rti_python.plugin; print(json.dumps('hla2010.rti' in sys.modules))",
+            "import json, sys; import hla.backends.inmemory.plugin; print(json.dumps('hla.rti1516e.rti' in sys.modules))",
         ],
         cwd=tmp_path,
         env=env,
@@ -669,9 +699,10 @@ def test_core_transport_registry_does_not_import_certi_package_for_subprocess_li
     env = dict(os.environ)
     env["PYTHONPATH"] = os.pathsep.join(
         (
-            str(ROOT / "src"),
-            str(ROOT / "packages/hla2010-rti-backend-common/src"),
-            str(ROOT / "packages/hla2010-rti-transport-common/src"),
+            str(HLA_RTI1516E_SRC),
+            str(HLA_RTI_CORE_SRC),
+            str(ROOT / "packages/hla-backend-common/src"),
+            str(ROOT / "packages/hla-transport-common/src"),
         )
     )
     result = subprocess.run(
@@ -680,10 +711,10 @@ def test_core_transport_registry_does_not_import_certi_package_for_subprocess_li
             "-c",
             (
                 "import json, sys; "
-                "from hla2010_rti_transport_common import coerce_transport_spec; "
+                "from hla.transports.common import coerce_transport_spec; "
                 "transport = coerce_transport_spec({'kind': 'subprocess-line', 'command': ['/bin/echo']}); "
                 "print(json.dumps({'transport_module': type(transport).__module__, "
-                "'backend_modules': sorted(name for name in sys.modules if name.startswith('hla2010_rti_'))}))"
+                "'backend_modules': sorted(name for name in sys.modules if name.startswith('hla.backends.certi'))}))"
             ),
         ],
         cwd=tmp_path,
@@ -694,5 +725,5 @@ def test_core_transport_registry_does_not_import_certi_package_for_subprocess_li
     )
     assert result.returncode == 0, result.stderr
     payload = json.loads(result.stdout)
-    assert payload["transport_module"] == "hla2010_rti_transport_common.transport"
-    assert "hla2010_rti_certi" not in payload["backend_modules"]
+    assert payload["transport_module"] == "hla.transports.common.transport"
+    assert "hla.backends.certi" not in payload["backend_modules"]

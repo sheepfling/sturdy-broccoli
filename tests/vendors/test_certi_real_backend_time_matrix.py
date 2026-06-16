@@ -14,7 +14,7 @@ from tests.vendors.certi_real_backend_matrix_support import (
     _logical_time_value,
     _require_real_rti_smoke,
 )
-from hla2010_verification_harness import (
+from hla.verification import (
     run_section8_available_and_flush_case,
     run_section8_available_and_retraction_case,
     run_section8_duplicate_enable_rejection_case,

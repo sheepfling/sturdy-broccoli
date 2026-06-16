@@ -1,4 +1,4 @@
-from hla2010.spec import FederateAmbassadorSpec as FederateAmbassador
+from hla.rti1516e.spec import FederateAmbassadorSpec as FederateAmbassador
 
 
 class MinimalFederate(FederateAmbassador):

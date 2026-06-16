@@ -7,7 +7,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from hla2010_repo_internal.requirements_packet import load_imported_hla_packet
+from hla.verification.repo_internal.requirements_packet import load_imported_hla_packet
 from scripts.generate_master_harmonization_index import FIELDNAMES, build_index_rows
 
 

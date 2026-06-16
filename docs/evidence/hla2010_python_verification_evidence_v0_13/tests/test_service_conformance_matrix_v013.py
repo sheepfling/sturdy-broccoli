@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from hla2010.raw_api import API_METADATA
-from hla2010.verification import (
+from hla.rti1516e.raw_api import API_METADATA
+from hla.rti1516e.verification import (
     build_service_conformance_matrix,
     build_verification_plan,
     write_service_conformance_matrix_csv,

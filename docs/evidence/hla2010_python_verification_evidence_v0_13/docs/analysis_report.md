@@ -36,7 +36,7 @@ The Java `FederateAmbassador` unique-name count includes four nested supplementa
 
 ## Main Java/C++ reconciliation points
 
-- **Naming:** Java and C++ use lowerCamelCase API names. The Python package preserves those in `hla2010.raw_api` and adds snake_case aliases in `hla2010.api`.
+- **Naming:** Java and C++ use lowerCamelCase API names. The Python package preserves those in `hla.rti1516e.raw_api` and adds snake_case aliases in `hla.rti1516e.api`.
 - **Overloads:** Java and C++ overload families do not map one-to-one into Python. The raw layer accepts `*args`/`**kwargs`; later typed adapter layers can expose explicit keyword signatures for common overload families.
 - **C++ output parameters:** Python should return data directly or return dataclasses instead of requiring mutable output parameters.
 - **Binary data:** Java `byte[]` and C++ `VariableLengthData` map to Python `bytes`.
@@ -48,13 +48,13 @@ The Java `FederateAmbassador` unique-name count includes four nested supplementa
 
 ## Python package contents
 
-- `hla2010.raw_api`: source-derived lowerCamelCase `RTIambassador` and `FederateAmbassador` surfaces plus overload metadata.
-- `hla2010.api`: Pythonic snake_case aliases layered over the raw API.
-- `hla2010.enums`: enum classes corresponding to the Java/C++ API vocabulary.
-- `hla2010.exceptions`: Python exception classes for the Java API exception set.
-- `hla2010.handles`: opaque handle objects and handle-set aliases.
-- `hla2010.time`: initial logical-time classes and factories for integer64 and float64 time.
-- `hla2010.encoding`: minimal HLA primitive/composite data element helpers.
+- `hla.rti1516e.raw_api`: source-derived lowerCamelCase `RTIambassador` and `FederateAmbassador` surfaces plus overload metadata.
+- `hla.rti1516e.api`: Pythonic snake_case aliases layered over the raw API.
+- `hla.rti1516e.enums`: enum classes corresponding to the Java/C++ API vocabulary.
+- `hla.rti1516e.exceptions`: Python exception classes for the Java API exception set.
+- `hla.rti1516e.handles`: opaque handle objects and handle-set aliases.
+- `hla.rti1516e.time`: initial logical-time classes and factories for integer64 and float64 time.
+- `hla.rti1516e.encoding`: minimal HLA primitive/composite data element helpers.
 - `analysis/java_methods.json` and `analysis/cpp_methods.json`: parsed method inventories with source-file and line references.
 - `analysis/api_comparison.md`: compact Java/C++ comparison notes.
 - `analysis/source_inventory.json`: extraction inventory and SHA-256 information for the uploaded ZIPs.

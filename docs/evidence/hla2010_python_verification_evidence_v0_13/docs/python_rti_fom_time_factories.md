@@ -15,7 +15,7 @@ The RTI adapter boundary therefore exposes the same service names and the same f
 
 ## FOM URL handling
 
-`hla2010.fom` now owns FOM/MIM source normalization and parsing.
+`hla.rti1516e.fom` now owns FOM/MIM source normalization and parsing.
 
 Supported source forms:
 
@@ -39,10 +39,10 @@ When a federation is created with FOM modules, the Python RTI marks the catalog 
 
 ## Logical-time factory handling
 
-`hla2010.time` now has a simple registry:
+`hla.rti1516e.time` now has a simple registry:
 
 ```python
-from hla2010.time import get_time_factory
+from hla.rti1516e.time import get_time_factory
 
 factory = get_time_factory("HLAfloat64Time")
 time = factory.make_time(1.5)
@@ -69,7 +69,7 @@ factory.decodeTime(encoded)
 
 ## Handle set and map factories
 
-`hla2010.handles` now includes typed containers and factories matching the Java API model:
+`hla.rti1516e.handles` now includes typed containers and factories matching the Java API model:
 
 ```python
 attribute_set = rti.get_attribute_handle_set_factory().create()

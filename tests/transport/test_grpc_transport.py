@@ -5,14 +5,14 @@ from concurrent import futures
 import grpc
 import pytest
 
-from hla2010.spec import FederateAmbassadorSpec
-from hla2010_rti_backend_common import make_rti_ambassador
-from hla2010_rti_transport_grpc import GrpcTransport, GrpcTransportConfig
-from hla2010_rti_transport_grpc import rti_transport_pb2 as pb2
-from hla2010_rti_transport_grpc import rti_transport_pb2_grpc as pb2_grpc
-from hla2010_rti_transport_common.transport import TransportRequest
-from hla2010.enums import CallbackModel
-from hla2010_rti_runtime_common import create_backend
+from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.backends.common import make_rti_ambassador
+from hla.transports.grpc import GrpcTransport, GrpcTransportConfig
+from hla.transports.grpc import rti_transport_pb2 as pb2
+from hla.transports.grpc import rti_transport_pb2_grpc as pb2_grpc
+from hla.transports.common.transport import TransportRequest
+from hla.rti1516e.enums import CallbackModel
+from hla.rti import create_backend
 
 pytestmark = pytest.mark.requires_loopback_server
 
@@ -66,7 +66,7 @@ def test_grpc_transport_registers_with_backend_factory():
     server, target = _start_server()
     backend = None
     try:
-        backend = create_backend("certi", transport={"kind": "grpc", "target": target})
+        backend = create_backend("certi", spec="rti1516e", transport={"kind": "grpc", "target": target})
         rti = make_rti_ambassador(backend)
 
         assert rti.getHLAversion() == "HLA 1516.1-2010"

@@ -3,12 +3,12 @@ from __future__ import annotations
 import uuid
 from pathlib import Path
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010.enums import OrderType, ResignAction
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010.time import HLAinteger64Interval, HLAinteger64Time
-from hla2010_rti_python import InMemoryRTIEngine
-from hla2010_verification_harness import (
+from hla.backends.common import RecordingFederateAmbassador
+from hla.rti1516e.enums import OrderType, ResignAction
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
+from hla.backends.inmemory import InMemoryRTIEngine
+from hla.verification import (
     DeclarationManagementScenarioConfig,
     DiscoveryClassScenarioConfig,
     LocalDeleteScenarioConfig,
@@ -54,7 +54,7 @@ def test_python_backend_exchange_matrix():
     subscriber_fed = RecordingFederateAmbassador()
     config = TwoFederateExchangeConfig(
         federation_name=f"python-exchange-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_class_name="HLAobjectRoot.SmokeObject",
         attribute_name="Payload",
@@ -162,7 +162,7 @@ def test_python_name_reservation_matrix():
     rival = create_rti_ambassador("python", engine=engine)
     config = NameReservationScenarioConfig(
         federation_name=f"python-name-reservation-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         reserved_name=f"Reserved-{uuid.uuid4().hex[:8]}",
         multiple_names=(
@@ -201,7 +201,7 @@ def test_python_backend_declaration_management_matrix():
     subscriber = create_rti_ambassador("python", engine=engine)
     config = DeclarationManagementScenarioConfig(
         federation_name=f"python-declaration-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_class_name="HLAobjectRoot.SmokeObject",
         attribute_name="Payload",
@@ -256,7 +256,7 @@ def test_python_backend_declaration_management_overload_matrix():
     subscriber = create_rti_ambassador("python", engine=engine)
     config = DeclarationManagementScenarioConfig(
         federation_name=f"python-declaration-overloads-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_class_name="HLAobjectRoot.SmokeObject",
         attribute_name="Payload",
@@ -313,7 +313,7 @@ def test_python_backend_declaration_invalid_attribute_publication_matrix():
     publisher = create_rti_ambassador("python", engine=engine)
     config = DeclarationManagementScenarioConfig(
         federation_name=f"python-declaration-invalid-attr-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_class_name="HLAobjectRoot.SmokeObject",
         attribute_name="Payload",
@@ -341,7 +341,7 @@ def test_python_backend_time_managed_declaration_independence_matrix():
     subscriber = create_rti_ambassador("python", engine=engine)
     config = DeclarationManagementScenarioConfig(
         federation_name=f"python-declaration-time-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_class_name="HLAobjectRoot.SmokeObject",
         attribute_name="Payload",
@@ -388,7 +388,7 @@ def test_python_backend_declaration_unpublish_rejection_matrix():
 
     config = DeclarationManagementScenarioConfig(
         federation_name=f"python-declaration-unpublish-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_class_name="HLAobjectRoot.SmokeObject",
         attribute_name="Payload",
@@ -481,7 +481,7 @@ def test_python_transportation_type_matrix():
     observer = create_rti_ambassador("python", engine=engine)
     config = TransportationTypeScenarioConfig(
         federation_name=f"python-transport-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_instance_name=f"Transport-{uuid.uuid4().hex[:8]}",
     )
@@ -564,7 +564,7 @@ def test_python_transportation_type_rejection_matrix():
     observer = create_rti_ambassador("python", engine=engine)
     config = TransportationTypeScenarioConfig(
         federation_name=f"python-transport-reject-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_instance_name=f"TransportReject-{uuid.uuid4().hex[:8]}",
         save_name=f"TRANSPORT-REJECT-{uuid.uuid4().hex[:8]}",
@@ -628,7 +628,7 @@ def test_python_request_attribute_value_update_matrix():
     requester = create_rti_ambassador("python", engine=engine)
     config = RequestAttributeValueUpdateScenarioConfig(
         federation_name=f"python-ravu-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_instance_name=f"RAVU-{uuid.uuid4().hex[:8]}",
         request_tag=b"python-ravu",
@@ -664,7 +664,7 @@ def test_python_request_attribute_value_update_routing_matrix():
     requester = create_rti_ambassador("python", engine=engine)
     config = RequestAttributeValueUpdateScenarioConfig(
         federation_name=f"python-ravu-routing-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_instance_name=f"python-RAVU-{uuid.uuid4().hex[:8]}",
         request_tag=b"object-only",
@@ -701,7 +701,7 @@ def test_python_orphan_object_lifecycle_matrix():
     late = create_rti_ambassador("python", engine=engine)
     config = OrphanObjectScenarioConfig(
         federation_name=f"python-orphan-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_instance_name=f"python-Orphan-{uuid.uuid4().hex[:8]}",
     )
@@ -736,7 +736,7 @@ def test_python_timed_delete_matrix():
     observer = create_rti_ambassador("python", engine=engine)
     config = TimedDeleteScenarioConfig(
         federation_name=f"python-timed-delete-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_instance_name=f"python-TimedDelete-{uuid.uuid4().hex[:8]}",
     )
@@ -768,7 +768,7 @@ def test_python_local_delete_matrix():
     observer = create_rti_ambassador("python", engine=engine)
     config = LocalDeleteScenarioConfig(
         federation_name=f"python-local-delete-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         object_instance_name=f"LocalDelete-{uuid.uuid4().hex[:8]}",
     )

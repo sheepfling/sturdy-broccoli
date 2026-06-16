@@ -2,9 +2,15 @@ from __future__ import annotations
 
 import csv
 import json
+import tempfile
 from pathlib import Path
 
-from hla2010_repo_internal.verification.vendor_parity_artifacts import write_vendor_parity_artifacts
+from hla.verification.repo_internal.verification.vendor_parity_artifacts import write_vendor_parity_artifacts
+
+TMP_ROOT = Path(tempfile.gettempdir())
+CERTI_PREFIX = TMP_ROOT / "certi" / "bin" / "rtig"
+CERTI_BUILD_ROOT = TMP_ROOT / "certi-build" / "libRTI" / "ieee1516-2010"
+PITCH_RUNTIME_HOME = TMP_ROOT / "pitch" / "lib" / "prtifull.jar"
 
 
 def _write_preflight(path: Path, *, tool: str, environment: str, result: str, exit_code: int) -> None:
@@ -16,12 +22,12 @@ def _write_preflight(path: Path, *, tool: str, environment: str, result: str, ex
     }
     if tool == "certi-preflight":
         payload["required_markers"] = {
-            "active_prefix": "/tmp/certi/bin/rtig",
-            "active_build_root": "/tmp/certi-build/libRTI/ieee1516-2010",
+            "active_prefix": str(CERTI_PREFIX),
+            "active_build_root": str(CERTI_BUILD_ROOT),
         }
     else:
         payload["required_markers"] = {
-            "runtime_home": "/tmp/pitch/lib/prtifull.jar",
+            "runtime_home": str(PITCH_RUNTIME_HOME),
         }
         payload["ports"] = {
             "crc": {
@@ -221,7 +227,7 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
                         "next_action": "resolve the documented bridge-divergent state before promotion; keep the lane at probe status",
                         "promotion_readiness": "candidate",
                         "review_decision": "candidate-review",
-                        "docs_ref": "packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md",
+                        "docs_ref": "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
                     }
                 ],
             },
@@ -285,7 +291,7 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
             "./tools/pitch lost-federate-probe",
             "./tools/pitch lost-federate-review 5",
         ]
-        assert summary["gap_profiles"]["pitch-save-restore"] is None
+        assert summary["gap_profiles"]["pitch-save-restore"]["classification"] == "known-gap"
         assert summary["probe_stability"]["pitch-negotiated-probe"]["stable"] is True
         assert summary["probe_stability"]["pitch-negotiated-probe"]["promotion_readiness"] == "candidate"
         assert summary["probe_stability"]["pitch-negotiated-probe"]["attempt_count"] == 5
@@ -301,7 +307,7 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         assert rows
         assert any(row["path"] == "tests/vendors/test_pitch_real_backend_matrix.py" for row in rows)
         assert any(
-            row["path"] == "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md"
+            row["path"] == "packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md"
             for row in rows
         )
         assert any(row["artifact_kind"] == "preflight" for row in rows)
@@ -349,9 +355,9 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         assert "repo-green" in report_text
         assert "./tools/pitch ddm" in report_text
         assert "Required markers for `certi` in `repo-green`:" in report_text
-        assert "`active_build_root`: `/tmp/certi-build/libRTI/ieee1516-2010`" in report_text
+        assert f"`active_build_root`: `{CERTI_BUILD_ROOT}`" in report_text
         assert "Required markers for `pitch` in `pitch vendor-green`:" in report_text
-        assert "`runtime_home`: `/tmp/pitch/lib/prtifull.jar`" in report_text
+        assert f"`runtime_home`: `{PITCH_RUNTIME_HOME}`" in report_text
         assert "Required ports for `pitch` in `pitch vendor-green`:" in report_text
         assert "`crc`: `127.0.0.1:8989` [blocked]" in report_text
     finally:

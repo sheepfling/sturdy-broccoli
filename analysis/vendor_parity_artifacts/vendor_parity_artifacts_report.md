@@ -3,7 +3,7 @@
 - suite: `vendor-parity-artifacts`
 - artifacts indexed: `34`
 - required artifacts: `19`
-- existing artifacts: `22`
+- existing artifacts: `25`
 - missing required artifacts: `0`
 
 ## Profiles
@@ -19,9 +19,9 @@
 | pitch | pitch-lost-federate-probe | probe | 1 | 0 | 0 | stability-summary |
 | certi | certi-save-restore | known-gap | 1 | 0 | 0 | gap-profile |
 | certi | certi-ddm | known-gap | 1 | 0 | 0 | gap-profile |
-| pitch | pitch-save-restore | known-gap | 1 | 0 | 0 | gap-profile |
-| pitch | pitch-ddm | known-gap | 1 | 0 | 0 | gap-profile |
-| pitch | pitch-negotiated | known-gap | 1 | 0 | 0 | gap-profile |
+| pitch | pitch-save-restore | known-gap | 1 | 1 | 0 | gap-profile |
+| pitch | pitch-ddm | known-gap | 1 | 1 | 0 | gap-profile |
+| pitch | pitch-negotiated | known-gap | 1 | 1 | 0 | gap-profile |
 | pitch | pitch-lost-federate | known-gap | 1 | 1 | 0 | gap-profile |
 | certi | certi-compare | promoted | 7 | 7 | 0 | test, support, doc |
 | pitch | pitch | promoted | 4 | 4 | 0 | test, doc |
@@ -83,52 +83,61 @@
 
 ## Preflight
 
-- `certi`: result `real CERTI will skip`, environment `loopback-blocked`, exit `1`, file `analysis/preflight_artifacts/certi-preflight.json`
-- `pitch`: result `not ready; fix the blocked prerequisite(s) above and rerun`, environment `docker-blocked`, exit `1`, file `analysis/preflight_artifacts/pitch-preflight.json`
+- `certi`: result `real CERTI runnable`, environment `loopback-ok`, exit `0`, file `analysis/preflight_artifacts/certi-preflight.json`
+- `pitch`: result `ready to run ./tools/pitch install or ./tools/pitch all`, environment `ready`, exit `0`, file `analysis/preflight_artifacts/pitch-preflight.json`
 
 ## Runtime Status
 
 - repo-green: `repo-green` (exit `0`)
-- certi vendor-green: `environment-blocked` (exit `1`)
-- pitch vendor-green: `environment-blocked` (exit `1`)
+- certi vendor-green: `vendor-green` (exit `0`)
+- pitch vendor-green: `vendor-green` (exit `0`)
 
 Required markers for `certi` in `repo-green`:
-- `active_build_root`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010`
-- `active_prefix`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig`
-- `patched_build_root`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010`
-- `patched_prefix`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig`
-- `upstream_build_root`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/build/libRTI/ieee1516-2010`
-- `upstream_prefix`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/install/bin/rtig`
+- `active_build_root`: `<repo>/.local/certi/patched/build/libRTI/ieee1516-2010`
+- `active_prefix`: `<repo>/.local/certi/patched/install/bin/rtig`
+- `patched_build_root`: `<repo>/.local/certi/patched/build/libRTI/ieee1516-2010`
+- `patched_prefix`: `<repo>/.local/certi/patched/install/bin/rtig`
+- `upstream_build_root`: `<repo>/.local/certi/upstream/build/libRTI/ieee1516-2010`
+- `upstream_prefix`: `<repo>/.local/certi/upstream/install/bin/rtig`
 
 Required markers for `pitch` in `repo-green`:
-- `runtime_home`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar`
+- `runtime_home`: `third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar`
 
 Required ports for `pitch` in `repo-green`:
-- `crc`: `127.0.0.1:8989` [blocked]
-- `fedpro`: `127.0.0.1:15164` [blocked]
+- `crc`: `127.0.0.1:8989` [ok]
+- `fedpro`: `127.0.0.1:15164` [ok]
 
 Required markers for `certi` in `certi vendor-green`:
-- `active_build_root`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010`
-- `active_prefix`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig`
-- `patched_build_root`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010`
-- `patched_prefix`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig`
-- `upstream_build_root`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/build/libRTI/ieee1516-2010`
-- `upstream_prefix`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/install/bin/rtig`
+- `active_build_root`: `<repo>/.local/certi/patched/build/libRTI/ieee1516-2010`
+- `active_prefix`: `<repo>/.local/certi/patched/install/bin/rtig`
+- `patched_build_root`: `<repo>/.local/certi/patched/build/libRTI/ieee1516-2010`
+- `patched_prefix`: `<repo>/.local/certi/patched/install/bin/rtig`
+- `upstream_build_root`: `<repo>/.local/certi/upstream/build/libRTI/ieee1516-2010`
+- `upstream_prefix`: `<repo>/.local/certi/upstream/install/bin/rtig`
 
 Required markers for `pitch` in `pitch vendor-green`:
-- `runtime_home`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar`
+- `runtime_home`: `third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar`
 
 Required ports for `pitch` in `pitch vendor-green`:
-- `crc`: `127.0.0.1:8989` [blocked]
-- `fedpro`: `127.0.0.1:15164` [blocked]
+- `crc`: `127.0.0.1:8989` [ok]
+- `fedpro`: `127.0.0.1:15164` [ok]
 
 ## Known Gaps
 
 - `certi-save-restore`: no known-gap artifact is currently present
 - `certi-ddm`: no known-gap artifact is currently present
-- `pitch-save-restore`: no known-gap artifact is currently present
-- `pitch-ddm`: no known-gap artifact is currently present
-- `pitch-negotiated`: no known-gap artifact is currently present
+- `pitch-save-restore`: classification `known-gap`, status `not-promoted`, file `analysis/vendor_gap_profiles/pitch-save-restore.json`
+  - next: `./tools/pitch preflight`
+  - next: `./tools/pitch save-restore-probe`
+  - next: `./tools/pitch save-restore-review 5`
+- `pitch-ddm`: classification `known-gap`, status `not-promoted`, file `analysis/vendor_gap_profiles/pitch-ddm.json`
+  - next: `./tools/pitch preflight`
+  - next: `./tools/pitch ddm-probe`
+  - next: `./tools/pitch ddm-review 5`
+- `pitch-negotiated`: classification `known-gap`, status `bridge-divergent`, file `analysis/vendor_gap_profiles/pitch-negotiated.json`
+  - next: `./tools/pitch preflight`
+  - next: `./tools/pitch negotiated-probe`
+  - next: `./tools/pitch negotiated-review 5`
 - `pitch-lost-federate`: classification `known-gap`, status `backend-split`, file `analysis/vendor_gap_profiles/pitch-lost-federate.json`
   - operator-state: `environment-blocked`
   - blocker: The canonical ./tools/pitch lost-federate-probe lane is currently blocked on this surface because Docker is unreachable and the required CRC/FedPro loopback ports are not permitted.

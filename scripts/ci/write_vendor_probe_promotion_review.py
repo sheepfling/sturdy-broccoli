@@ -20,7 +20,7 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_repo_internal.verification.vendor_probe_promotion_review import write_vendor_probe_promotion_review
+from hla.verification.repo_internal.verification.vendor_probe_promotion_review import write_vendor_probe_promotion_review
 
 
 def main(argv: list[str] | None = None) -> int:

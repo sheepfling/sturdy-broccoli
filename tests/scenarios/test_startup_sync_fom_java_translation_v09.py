@@ -2,27 +2,27 @@ from __future__ import annotations
 
 import pytest
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010_rti_java_common import JavaValueConverter
-from hla2010_rti_python import InMemoryRTIEngine, PythonRTIConfig
-from hla2010.enums import CallbackModel
-from hla2010.exceptions import NameNotFound
-from hla2010.handles import AttributeHandle, AttributeHandleValueMap, FederateHandleSet, ObjectInstanceHandle
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010.types import RangeBounds
-from hla2010_verification_harness import (
+from hla.backends.common import RecordingFederateAmbassador
+from hla.bridges.java.common import JavaValueConverter
+from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig
+from hla.rti1516e.enums import CallbackModel
+from hla.rti1516e.exceptions import NameNotFound
+from hla.rti1516e.handles import AttributeHandle, AttributeHandleValueMap, FederateHandleSet, ObjectInstanceHandle
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.rti1516e.types import RangeBounds
+from hla.verification import (
     SynchronizationScenarioConfig,
     run_failed_federate_synchronization_scenario,
     run_late_join_synchronization_scenario,
 )
-from hla2010_verification_harness.startup import (
+from hla.verification.startup import (
     FederationStartupConfig,
     connect_create_join,
     drain_callbacks,
     synchronize_ready_to_run,
 )
-from hla2010_rti_java_common.java_shim_backend import ShimJavaBridge
-from hla2010_rti_java_common.java_shim_types import JavaByteArray, JavaLikeObject, JavaRangeBounds
+from hla.bridges.java.common.java_shim_backend import ShimJavaBridge
+from hla.bridges.java.common.java_shim_types import JavaByteArray, JavaLikeObject, JavaRangeBounds
 
 
 def _python_rti(engine: InMemoryRTIEngine, *, config: PythonRTIConfig | None = None):
@@ -185,7 +185,7 @@ def test_join_fom_time_conflict_is_transactional(tmp_path):
         encoding="utf-8",
     )
 
-    from hla2010.exceptions import InconsistentFDD
+    from hla.rti1516e.exceptions import InconsistentFDD
 
     engine = InMemoryRTIEngine()
     r1, r2 = _python_rti(engine), _python_rti(engine)
@@ -205,7 +205,7 @@ def test_join_fom_time_conflict_is_transactional(tmp_path):
 
 
 def test_java_callback_dispatcher_uses_callback_metadata_for_typed_failed_set():
-    from hla2010_rti_java_common import PythonFederateAmbassadorDispatcher
+    from hla.bridges.java.common import PythonFederateAmbassadorDispatcher
 
     fed = RecordingFederateAmbassador()
     converter = JavaValueConverter(ShimJavaBridge("py4j"))

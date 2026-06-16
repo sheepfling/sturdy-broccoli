@@ -16,13 +16,13 @@
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_federateSaveBegun",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateSaveBegun",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -42,7 +42,7 @@
       ],
       "priority": "P1",
       "priority_rationale": "core federation-management negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_federateSaveBegun",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateSaveBegun",
       "python_name": "federate_save_begun",
       "requirement_id": "REQ-RTI-FM-4_18-federateSaveBegun",
       "section": "4.18",
@@ -72,13 +72,13 @@
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_federateSaveComplete",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateSaveComplete",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -98,7 +98,7 @@
       ],
       "priority": "P1",
       "priority_rationale": "core federation-management negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_federateSaveComplete",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateSaveComplete",
       "python_name": "federate_save_complete",
       "requirement_id": "REQ-RTI-FM-4_19-federateSaveComplete",
       "section": "4.19",
@@ -128,13 +128,13 @@
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_failure_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_failure_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_failure_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_failure_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_federateSaveNotComplete",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateSaveNotComplete",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -154,7 +154,7 @@
       ],
       "priority": "P1",
       "priority_rationale": "core federation-management negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_federateSaveNotComplete",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateSaveNotComplete",
       "python_name": "federate_save_not_complete",
       "requirement_id": "REQ-RTI-FM-4_19-federateSaveNotComplete",
       "section": "4.19",
@@ -184,13 +184,13 @@
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_federateRestoreComplete",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateRestoreComplete",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -210,7 +210,7 @@
       ],
       "priority": "P1",
       "priority_rationale": "core federation-management negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_federateRestoreComplete",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateRestoreComplete",
       "python_name": "federate_restore_complete",
       "requirement_id": "REQ-RTI-FM-4_28-federateRestoreComplete",
       "section": "4.28",
@@ -240,13 +240,13 @@
       "evidence": [
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py",
         "tests/scenarios/test_federation_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_failure_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_failure_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_failure_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_failure_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_federateRestoreNotComplete",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateRestoreNotComplete",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -266,7 +266,7 @@
       ],
       "priority": "P1",
       "priority_rationale": "core federation-management negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_federateRestoreNotComplete",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_federateRestoreNotComplete",
       "python_name": "federate_restore_not_complete",
       "requirement_id": "REQ-RTI-FM-4_28-federateRestoreNotComplete",
       "section": "4.28",
@@ -301,13 +301,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_passive_regions.py::run_ddm_passive_region_subscription_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ddm_passive_regions.py::run_ddm_passive_region_subscription_scenario",
         "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_passive_region_subscription_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_passive_region_subscription_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassivelyWithRegions",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassivelyWithRegions",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -326,7 +326,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassivelyWithRegions",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassivelyWithRegions",
       "python_name": "subscribe_object_class_attributes_passively_with_regions",
       "requirement_id": "REQ-RTI-DDM-9_8-subscribeObjectClassAttributesPassivelyWithRegions",
       "section": "9.8",
@@ -363,8 +363,8 @@
         "tests/verification/test_compliance_slice_v011.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_nextMessageRequest",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_nextMessageRequest",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -383,7 +383,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_nextMessageRequest",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_nextMessageRequest",
       "python_name": "next_message_request",
       "requirement_id": "REQ-RTI-TM-8_10-nextMessageRequest",
       "section": "8.10",
@@ -421,8 +421,8 @@
         "tests/verification/test_compliance_slice_v011.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_flushQueueRequest",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_flushQueueRequest",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -441,7 +441,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_flushQueueRequest",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_flushQueueRequest",
       "python_name": "flush_queue_request",
       "requirement_id": "REQ-RTI-TM-8_12-flushQueueRequest",
       "section": "8.12",
@@ -479,8 +479,8 @@
         "tests/verification/test_compliance_slice_v011.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_timeAdvanceRequestAvailable",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_timeAdvanceRequestAvailable",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -499,7 +499,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_timeAdvanceRequestAvailable",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_timeAdvanceRequestAvailable",
       "python_name": "time_advance_request_available",
       "requirement_id": "REQ-RTI-TM-8_9-timeAdvanceRequestAvailable",
       "section": "8.9",
@@ -533,13 +533,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_passive_regions.py::run_ddm_passive_region_subscription_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ddm_passive_regions.py::run_ddm_passive_region_subscription_scenario",
         "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_passive_region_subscription_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_passive_region_subscription_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeInteractionClassPassivelyWithRegions",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClassPassivelyWithRegions",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -558,7 +558,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeInteractionClassPassivelyWithRegions",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClassPassivelyWithRegions",
       "python_name": "subscribe_interaction_class_passively_with_regions",
       "requirement_id": "REQ-RTI-DDM-9_10-subscribeInteractionClassPassivelyWithRegions",
       "section": "9.10",
@@ -590,13 +590,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_ownership_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_negotiatedAttributeOwnershipDivestiture",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_negotiatedAttributeOwnershipDivestiture",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -615,7 +615,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_negotiatedAttributeOwnershipDivestiture",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_negotiatedAttributeOwnershipDivestiture",
       "python_name": "negotiated_attribute_ownership_divestiture",
       "requirement_id": "REQ-RTI-OWN-7_3-negotiatedAttributeOwnershipDivestiture",
       "section": "7.3",
@@ -648,13 +648,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
         "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_object_region_lifecycle_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_unassociateRegionsForUpdates",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unassociateRegionsForUpdates",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -673,7 +673,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_unassociateRegionsForUpdates",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_unassociateRegionsForUpdates",
       "python_name": "unassociate_regions_for_updates",
       "requirement_id": "REQ-RTI-DDM-9_7-unassociateRegionsForUpdates",
       "section": "9.7",
@@ -705,13 +705,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_unpublishObjectClassAttributes",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClassAttributes",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -730,7 +730,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_unpublishObjectClassAttributes",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClassAttributes",
       "python_name": "unpublish_object_class_attributes",
       "requirement_id": "REQ-RTI-DM-5_3-unpublishObjectClassAttributes",
       "section": "5.3",
@@ -762,13 +762,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -787,7 +787,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
       "python_name": "subscribe_object_class_attributes",
       "requirement_id": "REQ-RTI-DM-5_6-subscribeObjectClassAttributes",
       "section": "5.6",
@@ -819,13 +819,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassively",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassively",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -844,7 +844,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassively",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassively",
       "python_name": "subscribe_object_class_attributes_passively",
       "requirement_id": "REQ-RTI-DM-5_6-subscribeObjectClassAttributesPassively",
       "section": "5.6",
@@ -875,13 +875,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_ownership_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ownership_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_unconditionalAttributeOwnershipDivestiture",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unconditionalAttributeOwnershipDivestiture",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -900,7 +900,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_unconditionalAttributeOwnershipDivestiture",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_unconditionalAttributeOwnershipDivestiture",
       "python_name": "unconditional_attribute_ownership_divestiture",
       "requirement_id": "REQ-RTI-OWN-7_2-unconditionalAttributeOwnershipDivestiture",
       "section": "7.2",
@@ -936,8 +936,8 @@
         "tests/verification/test_compliance_slice_v011.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_retract",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_retract",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -956,7 +956,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_retract",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_retract",
       "python_name": "retract",
       "requirement_id": "REQ-RTI-TM-8_21-retract",
       "section": "8.21",
@@ -988,16 +988,16 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_ddm_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_passive_regions.py::run_ddm_passive_region_subscription_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ddm_passive_regions.py::run_ddm_passive_region_subscription_scenario",
         "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_object_region_lifecycle_matrix",
         "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_passive_region_subscription_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_passive_region_subscription_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_deleteRegion",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_deleteRegion",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1018,7 +1018,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_deleteRegion",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_deleteRegion",
       "python_name": "delete_region",
       "requirement_id": "REQ-RTI-DDM-9_4-deleteRegion",
       "section": "9.4",
@@ -1049,13 +1049,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_unpublishObjectClass",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClass",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1074,7 +1074,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_unpublishObjectClass",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClass",
       "python_name": "unpublish_object_class",
       "requirement_id": "REQ-RTI-DM-5_3-unpublishObjectClass",
       "section": "5.3",
@@ -1105,13 +1105,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1130,7 +1130,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
       "python_name": "unsubscribe_object_class_attributes",
       "requirement_id": "REQ-RTI-DM-5_7-unsubscribeObjectClassAttributes",
       "section": "5.7",
@@ -1161,13 +1161,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeInteractionClass",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1186,7 +1186,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeInteractionClass",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
       "python_name": "subscribe_interaction_class",
       "requirement_id": "REQ-RTI-DM-5_8-subscribeInteractionClass",
       "section": "5.8",
@@ -1217,13 +1217,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeInteractionClassPassively",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClassPassively",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1242,7 +1242,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_subscribeInteractionClassPassively",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClassPassively",
       "python_name": "subscribe_interaction_class_passively",
       "requirement_id": "REQ-RTI-DM-5_8-subscribeInteractionClassPassively",
       "section": "5.8",
@@ -1272,16 +1272,16 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_matrix",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_transportation_type_restore_persistence_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1302,7 +1302,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
       "python_name": "query_attribute_transportation_type",
       "requirement_id": "REQ-RTI-OM-6_25-queryAttributeTransportationType",
       "section": "6.25",
@@ -1333,13 +1333,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_ownership_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_query_callback_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_query_callback_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_attribute_ownership_query_callback_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_attribute_ownership_query_callback_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_isAttributeOwnedByFederate",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_isAttributeOwnedByFederate",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1358,7 +1358,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_isAttributeOwnedByFederate",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_isAttributeOwnedByFederate",
       "python_name": "is_attribute_owned_by_federate",
       "requirement_id": "REQ-RTI-OWN-7_19-isAttributeOwnedByFederate",
       "section": "7.19",
@@ -1397,8 +1397,8 @@
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_changeInteractionOrderType",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_changeInteractionOrderType",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1421,7 +1421,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_changeInteractionOrderType",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_changeInteractionOrderType",
       "python_name": "change_interaction_order_type",
       "requirement_id": "REQ-RTI-TM-8_24-changeInteractionOrderType",
       "section": "8.24",
@@ -1451,13 +1451,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_unpublishInteractionClass",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishInteractionClass",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1476,7 +1476,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_unpublishInteractionClass",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishInteractionClass",
       "python_name": "unpublish_interaction_class",
       "requirement_id": "REQ-RTI-DM-5_5-unpublishInteractionClass",
       "section": "5.5",
@@ -1506,13 +1506,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_unsubscribeObjectClass",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClass",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1531,7 +1531,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_unsubscribeObjectClass",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClass",
       "python_name": "unsubscribe_object_class",
       "requirement_id": "REQ-RTI-DM-5_7-unsubscribeObjectClass",
       "section": "5.7",
@@ -1561,13 +1561,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_object_management_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_unsubscribeInteractionClass",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeInteractionClass",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1586,7 +1586,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_unsubscribeInteractionClass",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeInteractionClass",
       "python_name": "unsubscribe_interaction_class",
       "requirement_id": "REQ-RTI-DM-5_9-unsubscribeInteractionClass",
       "section": "5.9",
@@ -1620,8 +1620,8 @@
         "tests/verification/test_compliance_slice_v011.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_queryLookahead",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryLookahead",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1640,7 +1640,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_queryLookahead",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryLookahead",
       "python_name": "query_lookahead",
       "requirement_id": "REQ-RTI-TM-8_20-queryLookahead",
       "section": "8.20",
@@ -1673,8 +1673,8 @@
         "tests/verification/test_compliance_slice_v011.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_queryGALT",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryGALT",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1693,7 +1693,7 @@
       ],
       "priority": "P2",
       "priority_rationale": "core RTI behavior negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_queryGALT",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryGALT",
       "python_name": "query_galt",
       "requirement_id": "REQ-RTI-TM-8_16-queryGALT",
       "section": "8.16",
@@ -1730,8 +1730,8 @@
         "tests/backends/test_python_backend_time_ddm_extended.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getDimensionHandleSet",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getDimensionHandleSet",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1753,7 +1753,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getDimensionHandleSet",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getDimensionHandleSet",
       "python_name": "get_dimension_handle_set",
       "requirement_id": "REQ-RTI-SS-10_28-getDimensionHandleSet",
       "section": "10.28",
@@ -1786,8 +1786,8 @@
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_enableObjectClassRelevanceAdvisorySwitch",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_enableObjectClassRelevanceAdvisorySwitch",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1805,7 +1805,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_enableObjectClassRelevanceAdvisorySwitch",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_enableObjectClassRelevanceAdvisorySwitch",
       "python_name": "enable_object_class_relevance_advisory_switch",
       "requirement_id": "REQ-RTI-SS-10_33-enableObjectClassRelevanceAdvisorySwitch",
       "section": "10.33",
@@ -1838,8 +1838,8 @@
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_disableObjectClassRelevanceAdvisorySwitch",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_disableObjectClassRelevanceAdvisorySwitch",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1857,7 +1857,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_disableObjectClassRelevanceAdvisorySwitch",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_disableObjectClassRelevanceAdvisorySwitch",
       "python_name": "disable_object_class_relevance_advisory_switch",
       "requirement_id": "REQ-RTI-SS-10_34-disableObjectClassRelevanceAdvisorySwitch",
       "section": "10.34",
@@ -1890,8 +1890,8 @@
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_enableAttributeRelevanceAdvisorySwitch",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_enableAttributeRelevanceAdvisorySwitch",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1909,7 +1909,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_enableAttributeRelevanceAdvisorySwitch",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_enableAttributeRelevanceAdvisorySwitch",
       "python_name": "enable_attribute_relevance_advisory_switch",
       "requirement_id": "REQ-RTI-SS-10_35-enableAttributeRelevanceAdvisorySwitch",
       "section": "10.35",
@@ -1942,8 +1942,8 @@
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_disableAttributeRelevanceAdvisorySwitch",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_disableAttributeRelevanceAdvisorySwitch",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -1961,7 +1961,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_disableAttributeRelevanceAdvisorySwitch",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_disableAttributeRelevanceAdvisorySwitch",
       "python_name": "disable_attribute_relevance_advisory_switch",
       "requirement_id": "REQ-RTI-SS-10_36-disableAttributeRelevanceAdvisorySwitch",
       "section": "10.36",
@@ -1994,8 +1994,8 @@
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_enableAttributeScopeAdvisorySwitch",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_enableAttributeScopeAdvisorySwitch",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2013,7 +2013,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_enableAttributeScopeAdvisorySwitch",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_enableAttributeScopeAdvisorySwitch",
       "python_name": "enable_attribute_scope_advisory_switch",
       "requirement_id": "REQ-RTI-SS-10_37-enableAttributeScopeAdvisorySwitch",
       "section": "10.37",
@@ -2046,8 +2046,8 @@
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_disableAttributeScopeAdvisorySwitch",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_disableAttributeScopeAdvisorySwitch",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2065,7 +2065,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_disableAttributeScopeAdvisorySwitch",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_disableAttributeScopeAdvisorySwitch",
       "python_name": "disable_attribute_scope_advisory_switch",
       "requirement_id": "REQ-RTI-SS-10_38-disableAttributeScopeAdvisorySwitch",
       "section": "10.38",
@@ -2097,8 +2097,8 @@
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getUpdateRateValueForAttribute",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getUpdateRateValueForAttribute",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2116,7 +2116,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getUpdateRateValueForAttribute",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getUpdateRateValueForAttribute",
       "python_name": "get_update_rate_value_for_attribute",
       "requirement_id": "REQ-RTI-SS-10_14-getUpdateRateValueForAttribute",
       "section": "10.14",
@@ -2147,8 +2147,8 @@
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getUpdateRateValue",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getUpdateRateValue",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2166,7 +2166,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getUpdateRateValue",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getUpdateRateValue",
       "python_name": "get_update_rate_value",
       "requirement_id": "REQ-RTI-SS-10_13-getUpdateRateValue",
       "section": "10.13",
@@ -2197,8 +2197,8 @@
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getTransportationType",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getTransportationType",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2216,7 +2216,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getTransportationType",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getTransportationType",
       "python_name": "get_transportation_type",
       "requirement_id": "REQ-RTI-SS-10_21-getTransportationType",
       "section": "10.21",
@@ -2246,8 +2246,8 @@
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getTransportationTypeName",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getTransportationTypeName",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2265,7 +2265,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getTransportationTypeName",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getTransportationTypeName",
       "python_name": "get_transportation_type_name",
       "requirement_id": "REQ-RTI-SS-10_22-getTransportationTypeName",
       "section": "10.22",
@@ -2295,8 +2295,8 @@
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_setAutomaticResignDirective",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_setAutomaticResignDirective",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2314,7 +2314,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_setAutomaticResignDirective",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_setAutomaticResignDirective",
       "python_name": "set_automatic_resign_directive",
       "requirement_id": "REQ-RTI-SS-10_3-setAutomaticResignDirective",
       "section": "10.3",
@@ -2345,8 +2345,8 @@
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_normalizeServiceGroup",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_normalizeServiceGroup",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2364,7 +2364,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_normalizeServiceGroup",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_normalizeServiceGroup",
       "python_name": "normalize_service_group",
       "requirement_id": "REQ-RTI-SS-10_32-normalizeServiceGroup",
       "section": "10.32",
@@ -2394,8 +2394,8 @@
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getAutomaticResignDirective",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getAutomaticResignDirective",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2413,7 +2413,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getAutomaticResignDirective",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getAutomaticResignDirective",
       "python_name": "get_automatic_resign_directive",
       "requirement_id": "REQ-RTI-SS-10_2-getAutomaticResignDirective",
       "section": "10.2",
@@ -2439,13 +2439,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getAttributeHandleFactory",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getAttributeHandleFactory",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2464,7 +2464,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getAttributeHandleFactory",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getAttributeHandleFactory",
       "python_name": "get_attribute_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getAttributeHandleFactory",
       "section": "10.44",
@@ -2489,13 +2489,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getAttributeHandleSetFactory",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getAttributeHandleSetFactory",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2514,7 +2514,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getAttributeHandleSetFactory",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getAttributeHandleSetFactory",
       "python_name": "get_attribute_handle_set_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getAttributeHandleSetFactory",
       "section": "10.44",
@@ -2539,13 +2539,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getAttributeHandleValueMapFactory",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getAttributeHandleValueMapFactory",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2564,7 +2564,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getAttributeHandleValueMapFactory",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getAttributeHandleValueMapFactory",
       "python_name": "get_attribute_handle_value_map_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getAttributeHandleValueMapFactory",
       "section": "10.44",
@@ -2589,13 +2589,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getAttributeSetRegionSetPairListFactory",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getAttributeSetRegionSetPairListFactory",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2614,7 +2614,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getAttributeSetRegionSetPairListFactory",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getAttributeSetRegionSetPairListFactory",
       "python_name": "get_attribute_set_region_set_pair_list_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getAttributeSetRegionSetPairListFactory",
       "section": "10.44",
@@ -2639,13 +2639,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getDimensionHandleFactory",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getDimensionHandleFactory",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2664,7 +2664,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getDimensionHandleFactory",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getDimensionHandleFactory",
       "python_name": "get_dimension_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getDimensionHandleFactory",
       "section": "10.44",
@@ -2689,13 +2689,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getDimensionHandleSetFactory",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getDimensionHandleSetFactory",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2714,7 +2714,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getDimensionHandleSetFactory",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getDimensionHandleSetFactory",
       "python_name": "get_dimension_handle_set_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getDimensionHandleSetFactory",
       "section": "10.44",
@@ -2739,13 +2739,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getFederateHandleFactory",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getFederateHandleFactory",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2764,7 +2764,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getFederateHandleFactory",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getFederateHandleFactory",
       "python_name": "get_federate_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getFederateHandleFactory",
       "section": "10.44",
@@ -2789,13 +2789,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getFederateHandleSetFactory",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getFederateHandleSetFactory",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2814,7 +2814,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getFederateHandleSetFactory",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getFederateHandleSetFactory",
       "python_name": "get_federate_handle_set_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getFederateHandleSetFactory",
       "section": "10.44",
@@ -2839,13 +2839,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getInteractionClassHandleFactory",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getInteractionClassHandleFactory",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2864,7 +2864,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getInteractionClassHandleFactory",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getInteractionClassHandleFactory",
       "python_name": "get_interaction_class_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getInteractionClassHandleFactory",
       "section": "10.44",
@@ -2889,13 +2889,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getObjectClassHandleFactory",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getObjectClassHandleFactory",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2914,7 +2914,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getObjectClassHandleFactory",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getObjectClassHandleFactory",
       "python_name": "get_object_class_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getObjectClassHandleFactory",
       "section": "10.44",
@@ -2939,13 +2939,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getObjectInstanceHandleFactory",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getObjectInstanceHandleFactory",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -2964,7 +2964,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getObjectInstanceHandleFactory",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getObjectInstanceHandleFactory",
       "python_name": "get_object_instance_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getObjectInstanceHandleFactory",
       "section": "10.44",
@@ -2989,13 +2989,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getParameterHandleFactory",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getParameterHandleFactory",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -3014,7 +3014,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getParameterHandleFactory",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getParameterHandleFactory",
       "python_name": "get_parameter_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getParameterHandleFactory",
       "section": "10.44",
@@ -3039,13 +3039,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getParameterHandleValueMapFactory",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getParameterHandleValueMapFactory",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -3064,7 +3064,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getParameterHandleValueMapFactory",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getParameterHandleValueMapFactory",
       "python_name": "get_parameter_handle_value_map_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getParameterHandleValueMapFactory",
       "section": "10.44",
@@ -3089,13 +3089,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getRegionHandleSetFactory",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getRegionHandleSetFactory",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -3114,7 +3114,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getRegionHandleSetFactory",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getRegionHandleSetFactory",
       "python_name": "get_region_handle_set_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getRegionHandleSetFactory",
       "section": "10.44",
@@ -3142,8 +3142,8 @@
         "tests/factories/test_fom_time_factories.py"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getTimeFactory",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getTimeFactory",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -3161,7 +3161,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getTimeFactory",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getTimeFactory",
       "python_name": "get_time_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getTimeFactory",
       "section": "10.44",
@@ -3187,13 +3187,13 @@
       "document": "IEEE 1516.1-2010",
       "evidence": [
         "tests/scenarios/test_support_services_backend_matrix.py",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_support_factory_and_decode_matrix"
       ],
       "implementation_refs": [
-        "hla2010_rti_python.backend.PythonRTIBackend._svc_getTransportationTypeHandleFactory",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_getTransportationTypeHandleFactory",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
       ],
       "implementation_status": "pure-python-reference-handler",
       "interface": "RTIambassador",
@@ -3212,7 +3212,7 @@
       ],
       "priority": "P3",
       "priority_rationale": "support-service negative path",
-      "python_entry_point": "hla2010_rti_python.backend.PythonRTIBackend._svc_getTransportationTypeHandleFactory",
+      "python_entry_point": "hla.backends.inmemory.backend.PythonRTIBackend._svc_getTransportationTypeHandleFactory",
       "python_name": "get_transportation_type_handle_factory",
       "requirement_id": "REQ-RTI-SS-10_44-getTransportationTypeHandleFactory",
       "section": "10.44",

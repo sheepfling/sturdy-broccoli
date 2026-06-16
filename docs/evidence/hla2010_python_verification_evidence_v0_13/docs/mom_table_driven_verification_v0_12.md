@@ -4,7 +4,7 @@ Version 0.12 moves the pure Python RTI away from hard-coded MOM report tables an
 
 ## Implemented in this slice
 
-- `hla2010.mom_catalog.MOMExposureModel` is built from `FOMCatalog` after the standard MIM is loaded.
+- `hla.rti1516e.mom_catalog.MOMExposureModel` is built from `FOMCatalog` after the standard MIM is loaded.
 - The model records MOM object classes, interaction classes, request/report pairs, RTI-send/RTI-receive direction, inherited parameters, declared parameters, required parameters, switch-choice parameters, and compatibility aliases.
 - `PythonRTIBackend.current_mom_summary()` exposes `mom_interaction_matrix` and `mom_object_matrix` so tests and humans can inspect what the active FDD says.
 - Strict MOM processing now has executable tests for missing required parameters, invalid boolean payloads, and attempts by a federate to send RTI-report interactions.

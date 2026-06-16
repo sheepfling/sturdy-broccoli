@@ -22,7 +22,7 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_repo_internal.requirements_packet import load_imported_hla_packet
+from hla.verification.repo_internal.requirements_packet import load_imported_hla_packet
 
 FIELDNAMES = [
     "master_requirement_id",

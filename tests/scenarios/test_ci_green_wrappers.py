@@ -427,9 +427,9 @@ raise SystemExit(0)
     for call, expected_argv in zip(calls, expected_suffixes, strict=True):
         assert call["argv"] == expected_argv
         pythonpath = call["pythonpath"]
-        assert str(ROOT / "src") in pythonpath
-        assert str(ROOT / "packages/hla2010-fom-target-radar/src") in pythonpath
-        assert str(ROOT / "packages/hla2010-rti-transport-grpc/src") in pythonpath
+        assert str(ROOT / "packages/hla-rti1516e/src") in pythonpath
+        assert str(ROOT / "packages/hla-fom-target-radar/src") in pythonpath
+        assert str(ROOT / "packages/hla-transport-grpc/src") in pythonpath
 
 
 def test_tools_python_verify_routes_preflight_can_delegate(tmp_path: Path) -> None:

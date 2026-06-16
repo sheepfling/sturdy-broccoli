@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla-backend-common"
+version = "0.13.0"
+description = "Shared backend conversion support package for hla-rti1516e"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["hla-rti1516e==0.13.0", "hla-rti-core==0.13.0"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["hla.backends.common*"]
+namespaces = true
+
+[tool.hla.package]
+status = "implementation-moved"
+role = "backend-support"
+source_roots = [
+  "packages/hla-backend-common/src/hla/backends/common",
+]

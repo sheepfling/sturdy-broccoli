@@ -4,8 +4,8 @@ from dataclasses import dataclass, field
 
 import pytest
 
-from hla2010.time import HLAinteger64Interval, HLAinteger64Time, HLAinteger64TimeFactory
-from hla2010_rti_backend_common.time_management import (
+from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time, HLAinteger64TimeFactory
+from hla.backends.common.time_management import (
     FQR,
     NMR,
     NMRA,

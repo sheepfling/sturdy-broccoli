@@ -6,7 +6,7 @@ from tests.vendors.certi_real_backend_matrix_support import (
     _normalized_exchange_profile,
     _require_real_rti_smoke,
 )
-from hla2010_verification_harness import (
+from hla.verification import (
     SupportServicesScenarioConfig,
     SynchronizationScenarioConfig,
     assert_two_federate_exchange_callback_history,

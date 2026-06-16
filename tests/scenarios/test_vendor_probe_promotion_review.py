@@ -6,7 +6,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from hla2010_repo_internal.verification.vendor_probe_promotion_review import write_vendor_probe_promotion_review
+from hla.verification.repo_internal.verification.vendor_probe_promotion_review import write_vendor_probe_promotion_review
 
 ROOT = Path(__file__).resolve().parents[2]
 

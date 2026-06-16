@@ -6,14 +6,14 @@ Java backend.
 
 ## Added runtime/test pieces
 
-- `hla2010.testing.java_shim_factory`, `java_shim_kernel`, `java_shim_backend`, `java_shim_types`
+- `hla.rti1516e.testing.java_shim_factory`, `java_shim_kernel`, `java_shim_backend`, `java_shim_types`
   - In-process Java-shaped RTI shim.
   - Exposes Java-looking handles, enums, byte arrays, exceptions, logical time,
     callback dispatch, and `getClass().getSimpleName()` behavior.
   - Feeds the existing `JavaRTIBackend` so the same conversion/callback path is
     used as the real JPype/Py4J backends.
 
-- `hla2010.testing.scenario_basic`
+- `hla.rti1516e.testing.scenario_basic`
   - `DemoFederate`: callback recorder.
   - `run_basic_federate_scenario`: backend-neutral federate scenario.
   - The scenario touches connection, federation lifecycle, handle lookup,

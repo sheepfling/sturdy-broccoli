@@ -8,9 +8,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOTS = (ROOT / "src", *(ROOT / "packages").glob("*/src"))
 SKIP_PATH_PARTS = {
-    "src/hla2010_repo_internal",
-    "packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc/rti_transport_pb2.py",
-    "packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc/rti_transport_pb2_grpc.py",
+    "src/hla.verification.repo_internal",
+    "packages/hla-transport-grpc/src/hla.transports.grpc/rti_transport_pb2.py",
+    "packages/hla-transport-grpc/src/hla.transports.grpc/rti_transport_pb2_grpc.py",
 }
 
 

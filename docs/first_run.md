@@ -27,7 +27,7 @@ From the repository root:
 ./tools/bootstrap doctor
 ./tools/bootstrap python
 source .venv/bin/activate
-python -m pip install --no-build-isolation -e packages/hla2010-spec -e packages/hla2010-rti-backend-common -e packages/hla2010-rti-python -e packages/hla2010-verification-harness -e packages/hla2010-fom-target-radar
+python -m pip install --no-build-isolation -e packages/hla-rti1516e -e packages/hla-backend-common -e packages/hla-backend-inmemory -e packages/hla-verification -e packages/hla-fom-target-radar
 python examples/backend_recording.py
 python examples/target_radar_simulation.py --backend python --steps 5
 ```

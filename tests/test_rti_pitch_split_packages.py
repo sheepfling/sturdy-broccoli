@@ -4,30 +4,30 @@ from pathlib import Path
 import ast
 import types
 
-from hla2010_rti_backend_common import RTIBackendPlugin
+from hla.backends.common import RTIBackendPlugin
 
 
 def test_split_pitch_jpype_package_exports_adapter_surface():
-    from hla2010_rti_pitch_jpype import JPypeConfig
-    from hla2010_rti_pitch_jpype.factory import create_jpype_backend
+    from hla.vendors.pitch.jpype import JPypeConfig
+    from hla.vendors.pitch.jpype.factory import create_jpype_backend
 
-    assert JPypeConfig.__module__.startswith("hla2010_rti_java_jpype")
-    assert create_jpype_backend.__module__.startswith("hla2010_rti_java_jpype")
+    assert JPypeConfig.__module__.startswith("hla.bridges.java.jpype")
+    assert create_jpype_backend.__module__.startswith("hla.bridges.java.jpype")
 
 
 def test_split_pitch_py4j_package_exports_adapter_surface():
-    from hla2010_rti_pitch_py4j import Py4JConfig
-    from hla2010_rti_pitch_py4j.factory import create_py4j_backend
+    from hla.vendors.pitch.py4j import Py4JConfig
+    from hla.vendors.pitch.py4j.factory import create_py4j_backend
 
-    assert Py4JConfig.__module__.startswith("hla2010_rti_java_py4j")
-    assert create_py4j_backend.__module__.startswith("hla2010_rti_java_py4j")
+    assert Py4JConfig.__module__.startswith("hla.bridges.java.py4j")
+    assert create_py4j_backend.__module__.startswith("hla.bridges.java.py4j")
 
 
 def _assert_thin_facade_module(path: Path) -> None:
     module = ast.parse(path.read_text(encoding="utf-8"))
     allowed_import_roots = {
-        "hla2010_rti_java_jpype",
-        "hla2010_rti_java_py4j",
+        "hla.bridges.java.jpype",
+        "hla.bridges.java.py4j",
     }
     for node in module.body:
         if isinstance(node, ast.Expr) and isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
@@ -53,8 +53,8 @@ def test_pitch_shim_packages_keep_only_expected_module_set() -> None:
     project_root = Path(__file__).resolve().parents[1]
     expected = {"__init__.py", "adapter.py", "factory.py", "plugin.py", "runtime.py"}
     for package_rel in (
-        "packages/hla2010-rti-pitch-jpype/src/hla2010_rti_pitch_jpype",
-        "packages/hla2010-rti-pitch-py4j/src/hla2010_rti_pitch_py4j",
+        "packages/hla-vendor-pitch-jpype/src/hla/vendors/pitch/jpype",
+        "packages/hla-vendor-pitch-py4j/src/hla/vendors/pitch/py4j",
     ):
         package_root = project_root / package_rel
         files = {path.name for path in package_root.glob("*.py")}
@@ -64,29 +64,29 @@ def test_pitch_shim_packages_keep_only_expected_module_set() -> None:
 def test_pitch_retained_facade_source_files_stay_thin_reexport_modules() -> None:
     project_root = Path(__file__).resolve().parents[1]
     for rel in (
-        "packages/hla2010-rti-pitch-jpype/src/hla2010_rti_pitch_jpype/adapter.py",
-        "packages/hla2010-rti-pitch-jpype/src/hla2010_rti_pitch_jpype/factory.py",
-        "packages/hla2010-rti-pitch-jpype/src/hla2010_rti_pitch_jpype/runtime.py",
-        "packages/hla2010-rti-pitch-py4j/src/hla2010_rti_pitch_py4j/adapter.py",
-        "packages/hla2010-rti-pitch-py4j/src/hla2010_rti_pitch_py4j/factory.py",
-        "packages/hla2010-rti-pitch-py4j/src/hla2010_rti_pitch_py4j/runtime.py",
+        "packages/hla-vendor-pitch-jpype/src/hla/vendors/pitch/jpype/adapter.py",
+        "packages/hla-vendor-pitch-jpype/src/hla/vendors/pitch/jpype/factory.py",
+        "packages/hla-vendor-pitch-jpype/src/hla/vendors/pitch/jpype/runtime.py",
+        "packages/hla-vendor-pitch-py4j/src/hla/vendors/pitch/py4j/adapter.py",
+        "packages/hla-vendor-pitch-py4j/src/hla/vendors/pitch/py4j/factory.py",
+        "packages/hla-vendor-pitch-py4j/src/hla/vendors/pitch/py4j/runtime.py",
     ):
         _assert_thin_facade_module(project_root / rel)
 
 
 def test_pitch_jpype_retained_facade_modules_are_thin_reexports():
-    from hla2010_rti_java_jpype.adapter import JPypeRTIBackend as GenericJPypeRTIBackend
-    from hla2010_rti_java_jpype.factory import (
+    from hla.bridges.java.jpype.adapter import JPypeRTIBackend as GenericJPypeRTIBackend
+    from hla.bridges.java.jpype.factory import (
         create_jpype_backend as generic_create_jpype_backend,
         rti_ambassador as generic_rti_ambassador,
     )
-    from hla2010_rti_java_jpype.runtime import (
+    from hla.bridges.java.jpype.runtime import (
         JPypeBridge as GenericJPypeBridge,
         JPypeConfig as GenericJPypeConfig,
     )
-    from hla2010_rti_pitch_jpype.adapter import JPypeRTIBackend
-    from hla2010_rti_pitch_jpype.factory import create_jpype_backend, rti_ambassador
-    from hla2010_rti_pitch_jpype.runtime import JPypeBridge, JPypeConfig
+    from hla.vendors.pitch.jpype.adapter import JPypeRTIBackend
+    from hla.vendors.pitch.jpype.factory import create_jpype_backend, rti_ambassador
+    from hla.vendors.pitch.jpype.runtime import JPypeBridge, JPypeConfig
 
     assert JPypeRTIBackend is GenericJPypeRTIBackend
     assert create_jpype_backend is generic_create_jpype_backend
@@ -96,22 +96,22 @@ def test_pitch_jpype_retained_facade_modules_are_thin_reexports():
 
 
 def test_pitch_py4j_retained_facade_modules_are_thin_reexports():
-    from hla2010_rti_java_py4j.adapter import (
+    from hla.bridges.java.py4j.adapter import (
         Py4JFederateAmbassadorProxy as GenericPy4JFederateAmbassadorProxy,
         Py4JRTIBackend as GenericPy4JRTIBackend,
     )
-    from hla2010_rti_java_py4j.factory import (
+    from hla.bridges.java.py4j.factory import (
         create_py4j_backend as generic_create_py4j_backend,
         rti_ambassador as generic_rti_ambassador,
     )
-    from hla2010_rti_java_py4j.runtime import (
+    from hla.bridges.java.py4j.runtime import (
         Py4JBridge as GenericPy4JBridge,
         Py4JConfig as GenericPy4JConfig,
         Py4JFederateAmbassadorProxy as GenericRuntimePy4JFederateAmbassadorProxy,
     )
-    from hla2010_rti_pitch_py4j.adapter import Py4JFederateAmbassadorProxy, Py4JRTIBackend
-    from hla2010_rti_pitch_py4j.factory import create_py4j_backend, rti_ambassador
-    from hla2010_rti_pitch_py4j.runtime import Py4JBridge, Py4JConfig, Py4JFederateAmbassadorProxy as RuntimeProxy
+    from hla.vendors.pitch.py4j.adapter import Py4JFederateAmbassadorProxy, Py4JRTIBackend
+    from hla.vendors.pitch.py4j.factory import create_py4j_backend, rti_ambassador
+    from hla.vendors.pitch.py4j.runtime import Py4JBridge, Py4JConfig, Py4JFederateAmbassadorProxy as RuntimeProxy
 
     assert Py4JFederateAmbassadorProxy is GenericPy4JFederateAmbassadorProxy
     assert Py4JRTIBackend is GenericPy4JRTIBackend
@@ -123,8 +123,8 @@ def test_pitch_py4j_retained_facade_modules_are_thin_reexports():
 
 
 def test_split_pitch_plugin_descriptors_are_registered():
-    from hla2010_rti_pitch_jpype.plugin import plugin as jpype_plugin
-    from hla2010_rti_pitch_py4j.plugin import plugin as py4j_plugin
+    from hla.vendors.pitch.jpype.plugin import plugin as jpype_plugin
+    from hla.vendors.pitch.py4j.plugin import plugin as py4j_plugin
 
     jpype_descriptor = jpype_plugin()
     py4j_descriptor = py4j_plugin()
@@ -140,7 +140,7 @@ def test_split_pitch_plugin_descriptors_are_registered():
 def test_pitch_py4j_factory_attaches_gateway_process(monkeypatch):
     import sys
 
-    from hla2010_rti_pitch_py4j import plugin as pitch_py4j_plugin
+    from hla.vendors.pitch.py4j import plugin as pitch_py4j_plugin
 
     gateway_process = object()
     captured: dict[str, object] = {}
@@ -166,7 +166,7 @@ def test_pitch_py4j_factory_attaches_gateway_process(monkeypatch):
         lambda gateway: captured.setdefault("reset_gateway", gateway),
     )
 
-    import hla2010_rti_pitch_common as pitch_common
+    import hla.vendors.pitch as pitch_common
 
     monkeypatch.setattr(
         pitch_common,
@@ -195,7 +195,7 @@ def test_pitch_py4j_factory_attaches_gateway_process(monkeypatch):
 
 
 def test_pitch_jpype_factory_uses_inprocess_runtime_without_gateway_process(monkeypatch):
-    from hla2010_rti_pitch_jpype import plugin as pitch_jpype_plugin
+    from hla.vendors.pitch.jpype import plugin as pitch_jpype_plugin
 
     captured: dict[str, object] = {}
 
@@ -210,7 +210,7 @@ def test_pitch_jpype_factory_uses_inprocess_runtime_without_gateway_process(monk
         lambda config: captured.setdefault("config", config),
     )
 
-    import hla2010_rti_pitch_common as pitch_common
+    import hla.vendors.pitch as pitch_common
 
     monkeypatch.setattr(pitch_common, "discover_pitch_runtime", lambda pitch_home=None: FakeRuntime())
     monkeypatch.setattr(

@@ -12,9 +12,9 @@ implementation that prove the behavior.
   service call when the backend supports inline immediate delivery.
 
 The Python backend makes this explicit in
-[`hla2010_rti_python/callbacks.py`](../packages/hla2010-rti-python/src/hla2010_rti_python/callbacks.py)
+[`hla.backends.inmemory/callbacks.py`](../packages/hla-backend-inmemory/src/hla/backends/inmemory/callbacks.py)
 and defaults to evoked delivery in
-[`hla2010_rti_python/state.py`](../packages/hla2010-rti-python/src/hla2010_rti_python/state.py).
+[`hla.backends.inmemory/state.py`](../packages/hla-backend-inmemory/src/hla/backends/inmemory/state.py).
 
 ## Where To Start
 

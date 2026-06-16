@@ -19,7 +19,7 @@ def _base_env(tmp_path: Path) -> dict[str, str]:
     env["HLA2010_CERTI_UPSTREAM_PREFIX"] = str(tmp_path / "missing-certi-upstream-prefix")
     env["HLA2010_CERTI_UPSTREAM_BUILD_ROOT"] = str(tmp_path / "missing-certi-upstream-build")
     env["HLA2010_PITCH_HOME"] = str(tmp_path / "missing-pitch-home")
-    env["PATH"] = "/usr/bin:/bin"
+    env["PATH"] = os.pathsep.join(("/usr/bin", "/bin"))
     return env
 
 

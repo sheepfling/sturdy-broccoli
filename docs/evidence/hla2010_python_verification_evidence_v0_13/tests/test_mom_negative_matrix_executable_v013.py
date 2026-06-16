@@ -2,18 +2,18 @@ from __future__ import annotations
 
 import pytest
 
-from hla2010 import mom as hla_mom
-from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.backends.python_rti import InMemoryRTIEngine, PythonRTIConfig
-from hla2010.enums import CallbackModel
-from hla2010.exceptions import RTIexception
-from hla2010.mom_negative_testing import (
+from hla.rti1516e import mom as hla_mom
+from hla.rti1516e.ambassadors import RecordingFederateAmbassador
+from hla.rti1516e.backends.python_rti import InMemoryRTIEngine, PythonRTIConfig
+from hla.rti1516e.enums import CallbackModel
+from hla.rti1516e.exceptions import RTIexception
+from hla.rti1516e.mom_negative_testing import (
     build_mom_negative_parameter_map,
     default_mom_model,
     executable_mom_negative_test_cases,
     mom_negative_case_report,
 )
-from hla2010.rti import create_rti_ambassador
+from hla.rti1516e.rti import create_rti_ambassador
 
 
 MODEL = default_mom_model()

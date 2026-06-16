@@ -43,7 +43,7 @@ The matching discovery commands are:
 
 Use `./tools/python verify-routes` as the normal hygiene lane when you change:
 
-- `hla2010_rti_python` backend behavior that should remain identical over the hosted route
+- `hla.backends.inmemory` backend behavior that should remain identical over the hosted route
 - hosted transport client/server wiring for Python RTI
 - Target/Radar hosted Python example selection
 - Python route parity fixtures, matrices, or artifacts

@@ -31,7 +31,7 @@ def _bootstrapped_env() -> dict[str, str]:
     env["PYTHONPATH"] = os.pathsep.join(sys.path)
     return env
 
-from hla2010_repo_internal.verification.backend_compliance_discovery import (
+from hla.verification.repo_internal.verification.backend_compliance_discovery import (
     build_discovery_payload,
     render_backend_compliance_catalog_text,
 )

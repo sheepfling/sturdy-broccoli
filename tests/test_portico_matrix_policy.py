@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PORTICO_POLICY_DOC = ROOT / "packages" / "hla2010-rti-portico" / "docs" / "portico_requirement_disposition_policy.md"
+PORTICO_POLICY_DOC = ROOT / "packages" / "hla-vendor-portico" / "docs" / "portico_requirement_disposition_policy.md"
 PORTICO_MATRIX_PATH = ROOT / "tests" / "vendors" / "test_portico_real_backend_matrix.py"
 SCENARIO_ENTRYPOINT_RE = re.compile(r"\b((?:run|probe)_[A-Za-z0-9_]+)\(")
 DIRECT_BACKEND_CALL_RE = re.compile(
@@ -105,7 +105,7 @@ def _scenario_entrypoints(source: str) -> list[str]:
 
 
 def test_portico_package_docs_keep_requirement_disposition_boundary_explicit() -> None:
-    text = (ROOT / "packages" / "hla2010-rti-portico" / "docs" / "README.md").read_text(encoding="utf-8")
+    text = (ROOT / "packages" / "hla-vendor-portico" / "docs" / "README.md").read_text(encoding="utf-8")
 
     assert "portico_requirement_disposition_policy.md" in text
     assert "analysis/compliance/portico_requirement_disposition.md" in text

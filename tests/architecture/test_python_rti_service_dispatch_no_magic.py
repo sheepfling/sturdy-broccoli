@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-BACKEND_PATH = ROOT / "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py"
+BACKEND_PATH = ROOT / "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
 
 
 def test_python_rti_backend_does_not_lookup_service_handlers_by_name_convention() -> None:

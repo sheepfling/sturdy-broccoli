@@ -7,47 +7,46 @@ interface without reading the full workspace layout first.
 
 If you only need the supported import ladder, use:
 
-- `from hla2010.spec import RTIambassadorSpec, FederateAmbassadorSpec`
-- `from hla2010.runtime_api import RTIambassador, FederateAmbassador`
-- `from hla2010_rti_python import rti_ambassador`
-- `from hla2010_fom_target_radar.scenarios import run_target_radar_scenario`
+- `from hla.rti1516e.spec import RTIambassadorSpec, FederateAmbassadorSpec`
+- `from hla.rti1516e.runtime_api import RTIambassador, FederateAmbassador`
+- `from hla.backends.inmemory import rti_ambassador`
+- `from hla.foms.target_radar.scenarios import run_target_radar_scenario`
 
 ## Package Reality
 
-- installable root: `hla2010-spec`
-- workspace facade: `src/hla2010/`
+- installable root: `hla-rti1516e`
+- versioned API root: `packages/hla-rti1516e/src/hla/rti1516e/`
 - package-owned implementations: `packages/*/src/...`
 
-The installable root owns the abstract API surface and spec-facing support
-modules. The workspace facade keeps stable imports and only narrow documented
-temporary compatibility routing across the split packages.
+The installable root owns the 2010 API surface and spec-facing support modules.
+cross-version discovery and factory selection live under `hla.rti`.
 
 ## Canonical Files
 
-- [`../packages/hla2010-spec/README.md`](../packages/hla2010-spec/README.md): installable root package role
-- [`../src/hla2010/spec/__init__.py`](../src/hla2010/spec/__init__.py): clean abstract/prototype spec surface
-- [`../src/hla2010/runtime_api.py`](../src/hla2010/runtime_api.py): runtime-facing convenience facade
-- [`../src/hla2010/api.py`](../src/hla2010/api.py): compatibility shim that re-exports the runtime layer
-- [`../src/hla2010/spec_inventory.py`](../src/hla2010/spec_inventory.py): plain-text method inventory used by the spec layer
-- [`../src/hla2010/spec_sources.py`](../src/hla2010/spec_sources.py): readable Java/C++ source locations surfaced in docstrings
-- [`../src/hla2010/spec_refs.py`](../src/hla2010/spec_refs.py): clause and service references used for traceability
-- [`../src/hla2010/rti.py`](../src/hla2010/rti.py): temporary backend-discovery and ambassador-factory compatibility facade over the split runtime-common package
+- [`../packages/hla-rti1516e/README.md`](../packages/hla-rti1516e/README.md): installable root package role
+- [`../packages/hla-rti1516e/src/hla/rti1516e/spec/__init__.py`](../packages/hla-rti1516e/src/hla/rti1516e/spec/__init__.py): clean abstract/prototype spec surface
+- [`../packages/hla-rti1516e/src/hla/rti1516e/runtime_api.py`](../packages/hla-rti1516e/src/hla/rti1516e/runtime_api.py): runtime-facing convenience facade
+- [`../packages/hla-rti1516e/src/hla/rti1516e/api.py`](../packages/hla-rti1516e/src/hla/rti1516e/api.py): compatibility shim that re-exports the runtime layer
+- [`../packages/hla-rti1516e/src/hla/rti1516e/spec_inventory.py`](../packages/hla-rti1516e/src/hla/rti1516e/spec_inventory.py): plain-text method inventory used by the spec layer
+- [`../packages/hla-rti1516e/src/hla/rti1516e/spec_sources.py`](../packages/hla-rti1516e/src/hla/rti1516e/spec_sources.py): readable Java/C++ source locations surfaced in docstrings
+- [`../packages/hla-rti1516e/src/hla/rti1516e/spec_refs.py`](../packages/hla-rti1516e/src/hla/rti1516e/spec_refs.py): clause and service references used for traceability
+- [`../packages/hla-rti1516e/src/hla/rti1516e/rti.py`](../packages/hla-rti1516e/src/hla/rti1516e/rti.py): version-local backend-discovery and ambassador-factory helper
 
 ## Import Table
 
 | Use case | Import |
 |---|---|
-| Abstract spec contracts | `from hla2010.spec import RTIambassadorSpec, FederateAmbassadorSpec` |
-| Runtime convenience facade | `from hla2010.runtime_api import RTIambassador, FederateAmbassador` |
-| Scenario / FOM entrypoint | `from hla2010_fom_target_radar.scenarios import run_target_radar_scenario` |
-| Verification harness | `from hla2010_verification_harness import run_basic_federate_scenario` |
+| Abstract spec contracts | `from hla.rti1516e.spec import RTIambassadorSpec, FederateAmbassadorSpec` |
+| Runtime convenience facade | `from hla.rti1516e.runtime_api import RTIambassador, FederateAmbassador` |
+| Scenario / FOM entrypoint | `from hla.foms.target_radar.scenarios import run_target_radar_scenario` |
+| Verification harness | `from hla.verification import run_basic_federate_scenario` |
 
 ## Recommended Imports
 
 For new Python code, prefer the spec module:
 
 ```python
-from hla2010.spec import RTIambassadorSpec, FederateAmbassadorSpec
+from hla.rti1516e.spec import RTIambassadorSpec, FederateAmbassadorSpec
 ```
 
 Use `RTIambassadorSpec` as the abstract contract for RTI implementations.
@@ -56,17 +55,16 @@ Use `FederateAmbassadorSpec` as the no-op prototype base for callback handlers.
 If you want the runtime convenience layer instead of the pure contract layer:
 
 ```python
-from hla2010.runtime_api import RTIambassador, FederateAmbassador
+from hla.rti1516e.runtime_api import RTIambassador, FederateAmbassador
 ```
 
 ## Why This Split Exists
 
-- `hla2010-spec` is the installable root package for the clean spec surface.
-- `src/hla2010/spec/__init__.py` exposes the abstract base classes and prototypes.
-- `src/hla2010/runtime_api.py` keeps the runtime adapters working without forcing callers onto raw source-derived names.
-- `src/hla2010/api.py` remains as a compatibility shim for older imports.
-- `src/hla2010/rti.py` remains only as a temporary documented compatibility facade for backend discovery, backend selection, and ambassador creation while backend contracts and runtime internals live in split packages.
-- `src/hla2010/spec_inventory.py`, `src/hla2010/spec_sources.py`, and `src/hla2010/spec_refs.py` keep source mappings readable rather than hiding them in opaque blobs.
+- `hla-rti1516e` is the installable root package for the clean spec surface.
+- `packages/hla-rti1516e/src/hla/rti1516e/spec/__init__.py` exposes the abstract base classes and prototypes.
+- `packages/hla-rti1516e/src/hla/rti1516e/runtime_api.py` keeps runtime adapters working without forcing callers onto raw source-derived names.
+- `packages/hla-rti1516e/src/hla/rti1516e/api.py` re-exports the runtime layer inside the versioned package.
+- `packages/hla-rti1516e/src/hla/rti1516e/spec_inventory.py`, `spec_sources.py`, and `spec_refs.py` keep source mappings readable rather than hiding them in opaque blobs.
 
 That keeps the spec-like surface clean while still preserving the source
 mapping needed for traceability.
@@ -74,7 +72,7 @@ mapping needed for traceability.
 ## Minimal Pattern
 
 ```python
-from hla2010.spec import FederateAmbassadorSpec
+from hla.rti1516e.spec import FederateAmbassadorSpec
 
 
 class MyFederate(FederateAmbassadorSpec):
@@ -89,4 +87,4 @@ snake_case overrides are the intended Python style.
 
 1. [`package_dependency_tree.md`](package_dependency_tree.md)
 2. [`package_layout.md`](package_layout.md)
-3. [`../packages/hla2010-spec/README.md`](../packages/hla2010-spec/README.md)
+3. [`../packages/hla-rti1516e/README.md`](../packages/hla-rti1516e/README.md)

@@ -213,7 +213,7 @@
     {
       "artifact_kind": "gap-profile",
       "evidence_tier": "known-gap",
-      "exists": false,
+      "exists": true,
       "note": "Optional machine-readable Pitch save/restore known-gap profile.",
       "path": "analysis/vendor_gap_profiles/pitch-save-restore.json",
       "profile": "pitch-save-restore",
@@ -224,7 +224,7 @@
     {
       "artifact_kind": "gap-profile",
       "evidence_tier": "known-gap",
-      "exists": false,
+      "exists": true,
       "note": "Optional machine-readable Pitch DDM known-gap profile.",
       "path": "analysis/vendor_gap_profiles/pitch-ddm.json",
       "profile": "pitch-ddm",
@@ -235,7 +235,7 @@
     {
       "artifact_kind": "gap-profile",
       "evidence_tier": "known-gap",
-      "exists": false,
+      "exists": true,
       "note": "Optional machine-readable Pitch negotiated-ownership known-gap profile.",
       "path": "analysis/vendor_gap_profiles/pitch-negotiated.json",
       "profile": "pitch-negotiated",
@@ -303,7 +303,7 @@
       "evidence_tier": "promoted",
       "exists": true,
       "note": "Operational runbook for CERTI compare workflows.",
-      "path": "packages/hla2010-rti-certi/docs/certi_section8_runbook.md",
+      "path": "packages/hla-backend-certi/docs/certi_section8_runbook.md",
       "profile": "certi-compare",
       "required": true,
       "role": "runbook",
@@ -314,7 +314,7 @@
       "evidence_tier": "promoted",
       "exists": true,
       "note": "Clause-level CERTI evidence and traceability context.",
-      "path": "packages/hla2010-rti-certi/docs/certi_spec_traceability.md",
+      "path": "packages/hla-backend-certi/docs/certi_spec_traceability.md",
       "profile": "certi-compare",
       "required": true,
       "role": "traceability note",
@@ -325,7 +325,7 @@
       "evidence_tier": "promoted",
       "exists": true,
       "note": "Current negotiated ownership divergence notes for CERTI.",
-      "path": "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md",
+      "path": "packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md",
       "profile": "certi-compare",
       "required": true,
       "role": "vendor findings",
@@ -347,7 +347,7 @@
       "evidence_tier": "promoted",
       "exists": true,
       "note": "Shortest supported Pitch runtime activation path.",
-      "path": "packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md",
+      "path": "packages/hla-vendor-pitch/docs/pitch_docker_quickstart.md",
       "profile": "pitch",
       "required": true,
       "role": "quickstart",
@@ -358,7 +358,7 @@
       "evidence_tier": "promoted",
       "exists": true,
       "note": "Pitch operator decision tree and environment branching.",
-      "path": "packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md",
+      "path": "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
       "profile": "pitch",
       "required": true,
       "role": "decision tree",
@@ -369,23 +369,40 @@
       "evidence_tier": "promoted",
       "exists": true,
       "note": "Current negotiated ownership divergence notes for Pitch.",
-      "path": "packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",
+      "path": "packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",
       "profile": "pitch",
       "required": true,
       "role": "vendor findings",
       "vendor_family": "pitch"
     }
   ],
-  "existing_count": 22,
+  "existing_count": 25,
   "gap_profiles": {
     "certi-ddm": null,
     "certi-save-restore": null,
-    "pitch-ddm": null,
+    "pitch-ddm": {
+      "area": "ddm",
+      "blocker_summary": null,
+      "classification": "known-gap",
+      "docs_ref": "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
+      "next_steps": [
+        "./tools/pitch preflight",
+        "./tools/pitch ddm-probe",
+        "./tools/pitch ddm-review 5"
+      ],
+      "operator_artifact_refs": [],
+      "operator_state": null,
+      "path": "analysis/vendor_gap_profiles/pitch-ddm.json",
+      "profile": "pitch-ddm",
+      "recommended_operator_route": "./tools/pitch ddm",
+      "status": "not-promoted",
+      "vendor": "pitch"
+    },
     "pitch-lost-federate": {
       "area": "lost_federate",
       "blocker_summary": "The canonical ./tools/pitch lost-federate-probe lane is currently blocked on this surface because Docker is unreachable and the required CRC/FedPro loopback ports are not permitted.",
       "classification": "known-gap",
-      "docs_ref": "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+      "docs_ref": "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
       "next_steps": [
         "./tools/pitch preflight",
         "./tools/pitch lost-federate-probe",
@@ -403,23 +420,57 @@
       "status": "backend-split",
       "vendor": "pitch"
     },
-    "pitch-negotiated": null,
-    "pitch-save-restore": null
+    "pitch-negotiated": {
+      "area": "negotiated_ownership",
+      "blocker_summary": null,
+      "classification": "known-gap",
+      "docs_ref": "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
+      "next_steps": [
+        "./tools/pitch preflight",
+        "./tools/pitch negotiated-probe",
+        "./tools/pitch negotiated-review 5"
+      ],
+      "operator_artifact_refs": [],
+      "operator_state": null,
+      "path": "analysis/vendor_gap_profiles/pitch-negotiated.json",
+      "profile": "pitch-negotiated",
+      "recommended_operator_route": "./tools/pitch negotiated",
+      "status": "bridge-divergent",
+      "vendor": "pitch"
+    },
+    "pitch-save-restore": {
+      "area": "save_restore",
+      "blocker_summary": null,
+      "classification": "known-gap",
+      "docs_ref": "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
+      "next_steps": [
+        "./tools/pitch preflight",
+        "./tools/pitch save-restore-probe",
+        "./tools/pitch save-restore-review 5"
+      ],
+      "operator_artifact_refs": [],
+      "operator_state": null,
+      "path": "analysis/vendor_gap_profiles/pitch-save-restore.json",
+      "profile": "pitch-save-restore",
+      "recommended_operator_route": "./tools/pitch save-restore",
+      "status": "not-promoted",
+      "vendor": "pitch"
+    }
   },
   "missing_required_count": 0,
   "preflight": {
     "certi": {
-      "environment": "loopback-blocked",
-      "exit_code": 1,
+      "environment": "loopback-ok",
+      "exit_code": 0,
       "path": "analysis/preflight_artifacts/certi-preflight.json",
-      "result": "real CERTI will skip",
+      "result": "real CERTI runnable",
       "tool": "certi-preflight"
     },
     "pitch": {
-      "environment": "docker-blocked",
-      "exit_code": 1,
+      "environment": "ready",
+      "exit_code": 0,
       "path": "analysis/preflight_artifacts/pitch-preflight.json",
-      "result": "not ready; fix the blocked prerequisite(s) above and rerun",
+      "result": "ready to run ./tools/pitch install or ./tools/pitch all",
       "tool": "pitch-preflight"
     }
   },
@@ -726,7 +777,7 @@
         "gap-profile"
       ],
       "evidence_tier": "known-gap",
-      "existing_count": 0,
+      "existing_count": 1,
       "missing_required_count": 0,
       "profile": "pitch-save-restore",
       "vendor_family": "pitch"
@@ -737,7 +788,7 @@
         "gap-profile"
       ],
       "evidence_tier": "known-gap",
-      "existing_count": 0,
+      "existing_count": 1,
       "missing_required_count": 0,
       "profile": "pitch-ddm",
       "vendor_family": "pitch"
@@ -748,7 +799,7 @@
         "gap-profile"
       ],
       "evidence_tier": "known-gap",
-      "existing_count": 0,
+      "existing_count": 1,
       "missing_required_count": 0,
       "profile": "pitch-negotiated",
       "vendor_family": "pitch"
@@ -794,113 +845,87 @@
   "runtime_status": {
     "repo_green": {
       "artifact_dir": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts",
-      "blocked_vendors": [
-        "certi",
-        "pitch"
-      ],
+      "blocked_vendors": [],
       "exit_code": 0,
       "lane": "repo-green",
       "missing_vendors": [],
       "overall_classification": "repo-green",
-      "ready_vendors": [],
+      "ready_vendors": [
+        "certi",
+        "pitch"
+      ],
       "recommended_next_steps": {
         "certi": [
-          "fix the blocked prerequisite above",
-          "./tools/certi-easy preflight"
+          "./tools/certi-easy smoke compare",
+          "HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q tests/vendors/test_certi_real_backend_exchange_matrix.py tests/vendors/test_certi_real_backend_time_matrix.py tests/vendors/test_certi_real_backend_ownership_matrix.py"
         ],
         "pitch": [
-          "fix the blocked prerequisite(s) above and rerun"
+          "./tools/pitch install or ./tools/pitch all"
         ]
       },
       "suite_name": "vendor-runtime-status",
       "unexpected_failure_vendors": [],
       "vendors": [
         {
-          "actionable": false,
+          "actionable": true,
           "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/certi-preflight.json",
-          "blocked_checks": [
-            {
-              "detail": null,
-              "message": "loopback_bind: blocked: Local socket bind is not permitted for 127.0.0.1. Run `./tools/certi-easy preflight` to verify local CERTI prerequisites. Real RTI smoke needs loopback TCP bind/connect permission for 127.0.0.1.",
-              "name": "loopback_bind",
-              "status": null
-            }
-          ],
-          "blocked_reason": "loopback_bind",
-          "classification": "environment-blocked",
-          "environment": "loopback-blocked",
-          "exit_code": 1,
+          "blocked_checks": [],
+          "blocked_reason": null,
+          "classification": "ready",
+          "environment": "loopback-ok",
+          "exit_code": 0,
           "lane_ok": true,
           "next_steps": [
-            "fix the blocked prerequisite above",
-            "./tools/certi-easy preflight"
+            "./tools/certi-easy smoke compare",
+            "HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q tests/vendors/test_certi_real_backend_exchange_matrix.py tests/vendors/test_certi_real_backend_time_matrix.py tests/vendors/test_certi_real_backend_ownership_matrix.py"
           ],
-          "note": "host/runtime prerequisites are blocked on this surface",
+          "note": "vendor runtime prerequisites are ready",
           "present": true,
           "required_markers": {
-            "active_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
-            "active_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
-            "patched_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
-            "patched_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
-            "upstream_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/build/libRTI/ieee1516-2010",
-            "upstream_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/install/bin/rtig"
+            "active_build_root": "<repo>/.local/certi/patched/build/libRTI/ieee1516-2010",
+            "active_prefix": "<repo>/.local/certi/patched/install/bin/rtig",
+            "patched_build_root": "<repo>/.local/certi/patched/build/libRTI/ieee1516-2010",
+            "patched_prefix": "<repo>/.local/certi/patched/install/bin/rtig",
+            "upstream_build_root": "<repo>/.local/certi/upstream/build/libRTI/ieee1516-2010",
+            "upstream_prefix": "<repo>/.local/certi/upstream/install/bin/rtig"
           },
           "required_ports": {},
-          "result": "real CERTI will skip",
+          "result": "real CERTI runnable",
           "tool": "certi-preflight",
           "vendor": "certi"
         },
         {
-          "actionable": false,
+          "actionable": true,
           "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/pitch-preflight.json",
-          "blocked_checks": [
-            {
-              "detail": "blocked: Docker CLI exists but the daemon is not reachable",
-              "message": null,
-              "name": "docker",
-              "status": "blocked"
-            },
-            {
-              "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 1] Operation not permitted",
-              "message": null,
-              "name": "crc_port",
-              "status": "blocked"
-            },
-            {
-              "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 1] Operation not permitted",
-              "message": null,
-              "name": "fedpro_port",
-              "status": "blocked"
-            }
-          ],
-          "blocked_reason": "docker",
-          "classification": "environment-blocked",
-          "environment": "docker-blocked",
-          "exit_code": 1,
+          "blocked_checks": [],
+          "blocked_reason": null,
+          "classification": "ready",
+          "environment": "ready",
+          "exit_code": 0,
           "lane_ok": true,
           "next_steps": [
-            "fix the blocked prerequisite(s) above and rerun"
+            "./tools/pitch install or ./tools/pitch all"
           ],
-          "note": "host/runtime prerequisites are blocked on this surface",
+          "note": "vendor runtime prerequisites are ready",
           "present": true,
           "required_markers": {
-            "runtime_home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
+            "runtime_home": "third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
           },
           "required_ports": {
             "crc": {
-              "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 1] Operation not permitted",
+              "detail": "ok: 127.0.0.1:8989 is available",
               "host": "127.0.0.1",
               "port": 8989,
-              "status": "blocked"
+              "status": "ok"
             },
             "fedpro": {
-              "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 1] Operation not permitted",
+              "detail": "ok: 127.0.0.1:15164 is available",
               "host": "127.0.0.1",
               "port": 15164,
-              "status": "blocked"
+              "status": "ok"
             }
           },
-          "result": "not ready; fix the blocked prerequisite(s) above and rerun",
+          "result": "ready to run ./tools/pitch install or ./tools/pitch all",
           "tool": "pitch-preflight",
           "vendor": "pitch"
         }
@@ -909,55 +934,48 @@
     "vendor_green": {
       "certi": {
         "artifact_dir": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts",
-        "blocked_vendors": [
-          "certi"
-        ],
-        "exit_code": 1,
+        "blocked_vendors": [],
+        "exit_code": 0,
         "lane": "vendor-green",
         "missing_vendors": [],
-        "overall_classification": "environment-blocked",
-        "ready_vendors": [],
+        "overall_classification": "vendor-green",
+        "ready_vendors": [
+          "certi"
+        ],
         "recommended_next_steps": {
           "certi": [
-            "fix the blocked prerequisite above",
-            "./tools/certi-easy preflight"
+            "./tools/certi-easy smoke compare",
+            "HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q tests/vendors/test_certi_real_backend_exchange_matrix.py tests/vendors/test_certi_real_backend_time_matrix.py tests/vendors/test_certi_real_backend_ownership_matrix.py"
           ]
         },
         "suite_name": "vendor-runtime-status",
         "unexpected_failure_vendors": [],
         "vendors": [
           {
-            "actionable": false,
+            "actionable": true,
             "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/certi-preflight.json",
-            "blocked_checks": [
-              {
-                "detail": null,
-                "message": "loopback_bind: blocked: Local socket bind is not permitted for 127.0.0.1. Run `./tools/certi-easy preflight` to verify local CERTI prerequisites. Real RTI smoke needs loopback TCP bind/connect permission for 127.0.0.1.",
-                "name": "loopback_bind",
-                "status": null
-              }
-            ],
-            "blocked_reason": "loopback_bind",
-            "classification": "environment-blocked",
-            "environment": "loopback-blocked",
-            "exit_code": 1,
-            "lane_ok": false,
+            "blocked_checks": [],
+            "blocked_reason": null,
+            "classification": "ready",
+            "environment": "loopback-ok",
+            "exit_code": 0,
+            "lane_ok": true,
             "next_steps": [
-              "fix the blocked prerequisite above",
-              "./tools/certi-easy preflight"
+              "./tools/certi-easy smoke compare",
+              "HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q tests/vendors/test_certi_real_backend_exchange_matrix.py tests/vendors/test_certi_real_backend_time_matrix.py tests/vendors/test_certi_real_backend_ownership_matrix.py"
             ],
-            "note": "host/runtime prerequisites are blocked on this surface",
+            "note": "vendor runtime prerequisites are ready",
             "present": true,
             "required_markers": {
-              "active_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
-              "active_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
-              "patched_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
-              "patched_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
-              "upstream_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/build/libRTI/ieee1516-2010",
-              "upstream_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/install/bin/rtig"
+              "active_build_root": "<repo>/.local/certi/patched/build/libRTI/ieee1516-2010",
+              "active_prefix": "<repo>/.local/certi/patched/install/bin/rtig",
+              "patched_build_root": "<repo>/.local/certi/patched/build/libRTI/ieee1516-2010",
+              "patched_prefix": "<repo>/.local/certi/patched/install/bin/rtig",
+              "upstream_build_root": "<repo>/.local/certi/upstream/build/libRTI/ieee1516-2010",
+              "upstream_prefix": "<repo>/.local/certi/upstream/install/bin/rtig"
             },
             "required_ports": {},
-            "result": "real CERTI will skip",
+            "result": "real CERTI runnable",
             "tool": "certi-preflight",
             "vendor": "certi"
           }
@@ -965,73 +983,54 @@
       },
       "pitch": {
         "artifact_dir": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts",
-        "blocked_vendors": [
-          "pitch"
-        ],
-        "exit_code": 1,
+        "blocked_vendors": [],
+        "exit_code": 0,
         "lane": "vendor-green",
         "missing_vendors": [],
-        "overall_classification": "environment-blocked",
-        "ready_vendors": [],
+        "overall_classification": "vendor-green",
+        "ready_vendors": [
+          "pitch"
+        ],
         "recommended_next_steps": {
           "pitch": [
-            "fix the blocked prerequisite(s) above and rerun"
+            "./tools/pitch install or ./tools/pitch all"
           ]
         },
         "suite_name": "vendor-runtime-status",
         "unexpected_failure_vendors": [],
         "vendors": [
           {
-            "actionable": false,
+            "actionable": true,
             "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/pitch-preflight.json",
-            "blocked_checks": [
-              {
-                "detail": "blocked: Docker CLI exists but the daemon is not reachable",
-                "message": null,
-                "name": "docker",
-                "status": "blocked"
-              },
-              {
-                "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 1] Operation not permitted",
-                "message": null,
-                "name": "crc_port",
-                "status": "blocked"
-              },
-              {
-                "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 1] Operation not permitted",
-                "message": null,
-                "name": "fedpro_port",
-                "status": "blocked"
-              }
-            ],
-            "blocked_reason": "docker",
-            "classification": "environment-blocked",
-            "environment": "docker-blocked",
-            "exit_code": 1,
-            "lane_ok": false,
+            "blocked_checks": [],
+            "blocked_reason": null,
+            "classification": "ready",
+            "environment": "ready",
+            "exit_code": 0,
+            "lane_ok": true,
             "next_steps": [
-              "fix the blocked prerequisite(s) above and rerun"
+              "./tools/pitch install or ./tools/pitch all"
             ],
-            "note": "host/runtime prerequisites are blocked on this surface",
+            "note": "vendor runtime prerequisites are ready",
             "present": true,
             "required_markers": {
-              "runtime_home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
+              "runtime_home": "third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar"
             },
             "required_ports": {
               "crc": {
-                "detail": "blocked: 127.0.0.1:8989 is not available: [Errno 1] Operation not permitted",
+                "detail": "ok: 127.0.0.1:8989 is available",
                 "host": "127.0.0.1",
                 "port": 8989,
-                "status": "blocked"
+                "status": "ok"
               },
               "fedpro": {
-                "detail": "blocked: 127.0.0.1:15164 is not available: [Errno 1] Operation not permitted",
+                "detail": "ok: 127.0.0.1:15164 is available",
                 "host": "127.0.0.1",
                 "port": 15164,
-                "status": "blocked"
+                "status": "ok"
               }
             },
-            "result": "not ready; fix the blocked prerequisite(s) above and rerun",
+            "result": "ready to run ./tools/pitch install or ./tools/pitch all",
             "tool": "pitch-preflight",
             "vendor": "pitch"
           }

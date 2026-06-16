@@ -54,8 +54,8 @@ Supported route:
 Primary references:
 
 - [vendor_runtime_runner_guide.md](vendor_runtime_runner_guide.md)
-- [../packages/hla2010-rti-certi/docs/certi_section8_runbook.md](../packages/hla2010-rti-certi/docs/certi_section8_runbook.md)
-- [../packages/hla2010-rti-certi/docs/certi_runtime_limitations.md](../packages/hla2010-rti-certi/docs/certi_runtime_limitations.md)
+- [../packages/hla-backend-certi/docs/certi_section8_runbook.md](../packages/hla-backend-certi/docs/certi_section8_runbook.md)
+- [../packages/hla-backend-certi/docs/certi_runtime_limitations.md](../packages/hla-backend-certi/docs/certi_runtime_limitations.md)
 
 ### Pitch
 
@@ -83,8 +83,8 @@ Supported route:
 Primary references:
 
 - [vendor_runtime_runner_guide.md](vendor_runtime_runner_guide.md)
-- [../packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md](../packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md)
-- [../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md](../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md)
+- [../packages/hla-vendor-pitch/docs/pitch_docker_quickstart.md](../packages/hla-vendor-pitch/docs/pitch_docker_quickstart.md)
+- [../packages/hla-vendor-pitch/docs/pitch_decision_tree.md](../packages/hla-vendor-pitch/docs/pitch_decision_tree.md)
 
 ## Current Vendor Runtime Status
 
@@ -108,8 +108,8 @@ Still incomplete:
 Primary references:
 
 - [backend_conformance_matrix.md](backend_conformance_matrix.md)
-- [../packages/hla2010-rti-certi/docs/certi_runtime_limitations.md](../packages/hla2010-rti-certi/docs/certi_runtime_limitations.md)
-- [../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md](../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md)
+- [../packages/hla-backend-certi/docs/certi_runtime_limitations.md](../packages/hla-backend-certi/docs/certi_runtime_limitations.md)
+- [../packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md](../packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md)
 
 ### Pitch
 
@@ -141,8 +141,8 @@ Supported explicit known-gap / probe routes:
 Primary references:
 
 - [backend_conformance_matrix.md](backend_conformance_matrix.md)
-- [../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md](../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md)
-- [../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md](../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)
+- [../packages/hla-vendor-pitch/docs/pitch_decision_tree.md](../packages/hla-vendor-pitch/docs/pitch_decision_tree.md)
+- [../packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md](../packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md)
 
 ## What To Do Next
 

@@ -1,11 +1,11 @@
 import pytest
 from pathlib import Path
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010_rti_python import InMemoryRTIEngine, rti_ambassador
-from hla2010.enums import CallbackModel
-from hla2010.enums import OrderType, ResignAction, ServiceGroup
-from hla2010.exceptions import (
+from hla.backends.common import RecordingFederateAmbassador
+from hla.backends.inmemory import InMemoryRTIEngine, rti_ambassador
+from hla.rti1516e.enums import CallbackModel
+from hla.rti1516e.enums import OrderType, ResignAction, ServiceGroup
+from hla.rti1516e.exceptions import (
     AttributeNotOwned,
     FederateHandleNotKnown,
     InvalidFederateHandle,
@@ -26,7 +26,7 @@ from hla2010.exceptions import (
     ObjectClassRelevanceAdvisorySwitchIsOn,
     ObjectClassRelevanceAdvisorySwitchIsOff,
 )
-from hla2010.handles import (
+from hla.rti1516e.handles import (
     AttributeHandleFactory,
     AttributeHandleSetFactory,
     AttributeHandleValueMapFactory,
@@ -44,7 +44,7 @@ from hla2010.handles import (
     RegionHandleSetFactory,
     TransportationTypeHandleFactory,
 )
-from hla2010.types import RangeBounds
+from hla.rti1516e.types import RangeBounds
 
 from tests.backends.python_backend_extended_support import drain, joined_pair
 

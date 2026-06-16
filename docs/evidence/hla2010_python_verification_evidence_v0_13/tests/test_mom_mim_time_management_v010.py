@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import pytest
 
-from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.backends.python_rti import InMemoryRTIEngine, PythonRTIConfig, rti_ambassador
-from hla2010.enums import CallbackModel, ResignAction
-from hla2010.exceptions import InvalidLogicalTime
-from hla2010.types import MessageRetractionReturn
+from hla.rti1516e.ambassadors import RecordingFederateAmbassador
+from hla.rti1516e.backends.python_rti import InMemoryRTIEngine, PythonRTIConfig, rti_ambassador
+from hla.rti1516e.enums import CallbackModel, ResignAction
+from hla.rti1516e.exceptions import InvalidLogicalTime
+from hla.rti1516e.types import MessageRetractionReturn
 
 
 def drain(*rtis, limit: int = 25) -> None:

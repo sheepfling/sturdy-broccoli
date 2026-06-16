@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from hla2010.time import HLAinteger64Time
-from hla2010_rti_backend_common.time_management import FQR, NMR, NMRA, TAR, TARA, TimeAdvanceRequestState, compute_grant_decision
+from hla.rti1516e.time import HLAinteger64Time
+from hla.backends.common.time_management import FQR, NMR, NMRA, TAR, TARA, TimeAdvanceRequestState, compute_grant_decision
 
 from tests.time._time_algorithm_support import DummyFederate, DummyMessage, federation, regulating_federate, target_federate
 

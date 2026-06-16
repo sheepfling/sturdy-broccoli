@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla-verification"
+version = "0.13.0"
+description = "Supported public verification harness helpers for hla2010"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "hla-rti1516e==0.13.0",
+  "hla-backend-common==0.13.0",
+  "hla-rti-core==0.13.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["hla.verification*"]
+namespaces = true
+
+[tool.hla.package]
+status = "implementation-moved"
+role = "verification-harness"
+source_roots = [
+  "packages/hla-verification/src/hla/verification",
+]

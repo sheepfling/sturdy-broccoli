@@ -19,7 +19,7 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_repo_internal.requirements_backlog import write_imported_hla_backlog
+from hla.verification.repo_internal.requirements_backlog import write_imported_hla_backlog
 
 REPO_ROOT = Path.cwd()
 

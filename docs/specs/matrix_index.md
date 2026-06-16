@@ -15,7 +15,7 @@ Primary entry points:
 - [../rti_options_and_test_matrix.md](../rti_options_and_test_matrix.md)
 - [../backend_capability_matrix.md](../backend_capability_matrix.md)
 - [../backend_conformance_matrix.md](../backend_conformance_matrix.md)
-- [../../packages/hla2010-rti-certi/docs/certi_spec_traceability.md](../../packages/hla2010-rti-certi/docs/certi_spec_traceability.md)
+- [../../packages/hla-backend-certi/docs/certi_spec_traceability.md](../../packages/hla-backend-certi/docs/certi_spec_traceability.md)
 
 Use this page when you want to compare backends side by side without jumping
 directly into the verification packet.

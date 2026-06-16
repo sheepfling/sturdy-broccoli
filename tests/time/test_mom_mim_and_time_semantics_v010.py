@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import pytest
 
-from hla2010 import mom
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010_rti_python import InMemoryRTIEngine, rti_ambassador
-from hla2010.enums import CallbackModel
-from hla2010.enums import ResignAction
-from hla2010.exceptions import (
+from hla.rti1516e import mom
+from hla.backends.common import RecordingFederateAmbassador
+from hla.backends.inmemory import InMemoryRTIEngine, rti_ambassador
+from hla.rti1516e.enums import CallbackModel
+from hla.rti1516e.enums import ResignAction
+from hla.rti1516e.exceptions import (
     InTimeAdvancingState,
     LogicalTimeAlreadyPassed,
     InvalidLookahead,
@@ -16,7 +16,7 @@ from hla2010.exceptions import (
     TimeRegulationAlreadyEnabled,
     TimeRegulationIsNotEnabled,
 )
-from hla2010.handles import MessageRetractionHandle
+from hla.rti1516e.handles import MessageRetractionHandle
 
 
 def drain(*rtis, rounds: int = 20):

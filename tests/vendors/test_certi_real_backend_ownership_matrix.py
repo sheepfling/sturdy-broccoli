@@ -1,7 +1,7 @@
 # ruff: noqa: F401,F403
 
 from tests.vendors.certi_real_backend_matrix_support import *
-from hla2010_verification_harness import (
+from hla.verification import (
     OwnershipScenarioConfig,
     run_attribute_ownership_scenario,
     run_negotiated_attribute_ownership_scenario,

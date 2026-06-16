@@ -5,29 +5,29 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 PYTHON_BIN="${HLA2010_PYTHON:-python3}"
 EXTRAS_RAW="${HLA2010_BOOTSTRAP_EXTRAS:-test}"
 CORE_WORKSPACE_PACKAGES=(
-  "packages/hla2010-spec"
-  "packages/hla2010-rti-backend-common"
-  "packages/hla2010-rti-runtime-common"
-  "packages/hla2010-rti-transport-common"
-  "packages/hla2010-rti-java-common"
-  "packages/hla2010-rti-python"
-  "packages/hla2010-rti-certi"
-  "packages/hla2010-rti-pitch-common"
-  "packages/hla2010-rti-transport-grpc"
-  "packages/hla2010-rti-transport-rest"
-  "packages/hla2010-verification-harness"
-  "packages/hla2010-fom-target-radar"
+  "packages/hla-rti1516e"
+  "packages/hla-backend-common"
+  "packages/hla-rti-core"
+  "packages/hla-transport-common"
+  "packages/hla-bridge-java-common"
+  "packages/hla-backend-inmemory"
+  "packages/hla-backend-certi"
+  "packages/hla-vendor-pitch"
+  "packages/hla-transport-grpc"
+  "packages/hla-transport-rest"
+  "packages/hla-verification"
+  "packages/hla-fom-target-radar"
 )
 JPYPE_WORKSPACE_PACKAGES=(
-  "packages/hla2010-rti-java-jpype"
-  "packages/hla2010-rti-pitch-jpype"
+  "packages/hla-bridge-java-jpype"
+  "packages/hla-vendor-pitch-jpype"
 )
 PY4J_WORKSPACE_PACKAGES=(
-  "packages/hla2010-rti-java-py4j"
-  "packages/hla2010-rti-pitch-py4j"
+  "packages/hla-bridge-java-py4j"
+  "packages/hla-vendor-pitch-py4j"
 )
 DUAL_BRIDGE_WORKSPACE_PACKAGES=(
-  "packages/hla2010-rti-portico"
+  "packages/hla-vendor-portico"
 )
 
 # shellcheck source=lib/shell.sh

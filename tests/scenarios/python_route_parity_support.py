@@ -6,9 +6,9 @@ from typing import Any, Iterator, Literal
 
 import pytest
 
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_rti_transport_grpc.python_server import start_python_grpc_server
-from hla2010_rti_python import InMemoryRTIEngine
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.transports.grpc.python_server import start_python_grpc_server
+from hla.backends.inmemory import InMemoryRTIEngine
 
 PythonRoute = Literal["python-direct", "python-grpc"]
 

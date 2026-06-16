@@ -1,11 +1,11 @@
 import pytest
 
-from hla2010.spec import FederateAmbassadorSpec
-from hla2010_rti_python import InMemoryRTIEngine, rti_ambassador
-from hla2010.encoding import HLAunicodeString
-from hla2010.enums import CallbackModel, OrderType, ResignAction
-from hla2010.exceptions import CouldNotDecode
-from hla2010.handles import ObjectInstanceHandle
+from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.backends.inmemory import InMemoryRTIEngine, rti_ambassador
+from hla.rti1516e.encoding import HLAunicodeString
+from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
+from hla.rti1516e.exceptions import CouldNotDecode
+from hla.rti1516e.handles import ObjectInstanceHandle
 
 
 class Receiver(FederateAmbassadorSpec):

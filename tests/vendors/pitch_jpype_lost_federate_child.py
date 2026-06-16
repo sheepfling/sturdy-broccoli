@@ -22,10 +22,10 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010.enums import CallbackModel, ResignAction
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_verification_harness import register_named_object_instance
+from hla.backends.common import RecordingFederateAmbassador
+from hla.rti1516e.enums import CallbackModel, ResignAction
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.verification import register_named_object_instance
 
 
 def _parse_args() -> argparse.Namespace:

@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from hla2010.testing.scenario_basic import run_basic_federate_scenario
+from hla.rti1516e.testing.scenario_basic import run_basic_federate_scenario
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 BUILD_SCRIPT = PROJECT_ROOT / "java_shims" / "hla-rti1516e-shim" / "tools" / "build_java_shim.py"
@@ -30,7 +30,7 @@ def test_java_shim_source_compiles(tmp_path):
 def test_optional_jpype_backend_can_run_against_java_shim_jar(tmp_path):
     jpype = pytest.importorskip("jpype")  # noqa: F841
     jar = _build_shim_jar(tmp_path)
-    from hla2010.backends.jpype import JPypeConfig, rti_ambassador
+    from hla.rti1516e.backends.jpype import JPypeConfig, rti_ambassador
 
     summary = run_basic_federate_scenario(
         lambda: rti_ambassador(JPypeConfig(classpath=[str(jar)], shutdown_jvm_on_close=False)),
@@ -44,7 +44,7 @@ def test_optional_py4j_backend_can_run_against_java_shim_jar(tmp_path):
     jar = _build_shim_jar(tmp_path)
 
     from py4j.java_gateway import CallbackServerParameters, GatewayParameters, JavaGateway, launch_gateway
-    from hla2010.backends.py4j import Py4JConfig, rti_ambassador
+    from hla.rti1516e.backends.py4j import Py4JConfig, rti_ambassador
 
     port = launch_gateway(classpath=str(jar), die_on_exit=True)
     gateway = JavaGateway(

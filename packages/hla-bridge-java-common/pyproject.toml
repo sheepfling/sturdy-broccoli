@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla-bridge-java-common"
+version = "0.13.0"
+description = "Shared Java RTI support package for hla-rti1516e"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["hla-rti1516e==0.13.0", "hla-rti-core==0.13.0", "hla-backend-common==0.13.0"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["hla.bridges.java.common*"]
+namespaces = true
+
+[tool.hla.package]
+status = "implementation-moved"
+role = "java-support"
+source_roots = [
+  "packages/hla-bridge-java-common/src/hla/bridges/java/common",
+]

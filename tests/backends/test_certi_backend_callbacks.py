@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010_rti_certi import CERTIBackend
-from hla2010.handles import AttributeHandle, AttributeHandleSet, FederateHandle, ObjectInstanceHandle
+from hla.backends.common import RecordingFederateAmbassador
+from hla.backends.certi import CERTIBackend
+from hla.rti1516e.handles import AttributeHandle, AttributeHandleSet, FederateHandle, ObjectInstanceHandle
 
 
 def test_certi_backend_dispatches_extended_ownership_callbacks():

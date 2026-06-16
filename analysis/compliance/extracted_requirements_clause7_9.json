@@ -912,8 +912,8 @@
         "../tests/backends/test_certi_backend_callbacks.py",
         "../tests/backends/test_certi_java_profile_callbacks.py",
         "../tests/vendors/test_pitch_real_backend_matrix.py",
-        "../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md",
-        "../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+        "../packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md",
+        "../packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
       "vendor_notes": "Python release-request path is exercised; direct CERTI probe now proves owner-side release callback delivery on owned-attribute acquisition; the current Pitch result is bridge-divergent because `pitch-py4j` reaches this callback on the release-request path while `pitch-jpype` does not",
       "vendor_profile_bucket": "Negotiated Ownership",
@@ -1091,8 +1091,8 @@
         "../tests/backends/test_python_backend_object_ownership_extended.py",
         "../tests/backends/test_python_backend_time_ddm_extended.py",
         "../tests/vendors/README.md",
-        "../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md",
-        "../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+        "../packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md",
+        "../packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
       "vendor_notes": "Python tracks divesting state and assumption callbacks; current CERTI native, JPype, and Py4J matrix runs still diverge before the expected negotiated release/acquisition handshake completes; Pitch is also bridge-divergent here, with `pitch-jpype` and `pitch-py4j` exposing different partial callback surfaces on the same Docker-backed runtime",
       "vendor_profile_bucket": "Negotiated Ownership",
@@ -1139,8 +1139,8 @@
         "../tests/vendors/README.md",
         "../tests/backends/test_certi_backend_callbacks.py",
         "../tests/backends/test_certi_java_profile_callbacks.py",
-        "../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md",
-        "../packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+        "../packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md",
+        "../packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
       "vendor_notes": "backend-neutral Python path is exercised; current CERTI runs show that negotiated ownership remains unstable end to end even though lower-level callback probes exist; both Pitch bridges reach the assumption callback on the offer path, but they diverge immediately after that point",
       "vendor_profile_bucket": "Negotiated Ownership",
@@ -1281,7 +1281,7 @@
       "certi_runtime_status": "no",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1408,7 +1408,7 @@
       "certi_runtime_status": "yes",
       "document": "IEEE 1516.1-2010",
       "implementation_refs": [
-        "packages/hla2010-rti-python/src/hla2010_rti_python/ownership.py"
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [

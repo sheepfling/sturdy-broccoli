@@ -2,8 +2,8 @@
 
 import pytest
 
-from hla2010.enums import CallbackModel, OrderType, ResignAction
-from hla2010.exceptions import (
+from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
+from hla.rti1516e.exceptions import (
     AttributeNotDefined,
     AttributeNotPublished,
     FederateNotExecutionMember,
@@ -22,13 +22,13 @@ from hla2010.exceptions import (
     RestoreInProgress,
     SaveInProgress,
 )
-from hla2010.handles import (
+from hla.rti1516e.handles import (
     AttributeSetRegionSetPairList,
     MessageRetractionHandle,
     ObjectInstanceHandle,
     TransportationTypeHandle,
 )
-from hla2010.types import (
+from hla.rti1516e.types import (
     AttributeHandleSet,
     AttributeRegionAssociation,
     RangeBounds,

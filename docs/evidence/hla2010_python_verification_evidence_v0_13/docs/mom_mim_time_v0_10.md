@@ -17,7 +17,7 @@ The implementation is still a development/reference RTI, not a certified RTI. Th
 
 `hla2010/resources/foms/HLAstandardMIM.xml` is now the real standard MIM extracted from the uploaded IEEE 1516.1-2010 download archive instead of a minimal placeholder.
 
-`hla2010.mom.create_standard_mim_module()` parses the bundled XML through the same `hla2010.fom.parse_fom_file()` path used for normal FOM modules. The fallback mini-MIM remains only as a defensive backup for unusual packaging environments.
+`hla.rti1516e.mom.create_standard_mim_module()` parses the bundled XML through the same `hla.rti1516e.fom.parse_fom_file()` path used for normal FOM modules. The fallback mini-MIM remains only as a defensive backup for unusual packaging environments.
 
 Federation creation now builds the current FDD in this order:
 

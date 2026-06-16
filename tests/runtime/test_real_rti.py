@@ -2,14 +2,14 @@ import os
 import subprocess
 from pathlib import Path
 
-import hla2010_rti_pitch_common.real_rti_pitch as pitch_runtime_module
+import hla.vendors.pitch.real_rti_pitch as pitch_runtime_module
 import pytest
-from hla2010_rti_backend_common import BackendUnavailableError
-from hla2010_rti_certi.real_rti_certi import (
+from hla.backends.common import BackendUnavailableError
+from hla.backends.certi.real_rti_certi import (
     discover_certi_runtime,
     discover_certi_runtime_profile,
 )
-from hla2010_rti_pitch_common.real_rti_pitch import (
+from hla.vendors.pitch.real_rti_pitch import (
     _parse_pitch_license_list,
     discover_pitch_runtime,
     list_pitch_licenses,

@@ -7,8 +7,8 @@ RTI adapter path through JPype and Py4J. Application federates use the same
 ## Backend choices
 
 ```python
-from hla2010.rti import create_rti_ambassador
-from hla2010.backends.python_rti import InMemoryRTIEngine
+from hla.rti1516e.rti import create_rti_ambassador
+from hla.rti1516e.backends.python_rti import InMemoryRTIEngine
 
 # Multiple federates in the same local Python RTI share one engine.
 engine = InMemoryRTIEngine()
@@ -67,7 +67,7 @@ PYTHONPATH=. python examples/target_radar_simulation.py --backend java-shim-py4j
 Programmatic use:
 
 ```python
-from hla2010.scenarios.target_radar import run_target_radar_scenario
+from hla.rti1516e.scenarios.target_radar import run_target_radar_scenario
 
 result = run_target_radar_scenario(steps=5, dt=1.0)
 for report in result.track_reports:

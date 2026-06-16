@@ -21,7 +21,7 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_repo_internal.verification.vendor_probe_stability import canonical_operator_command, write_vendor_probe_stability
+from hla.verification.repo_internal.verification.vendor_probe_stability import canonical_operator_command, write_vendor_probe_stability
 
 
 def _load_attempts(path: Path) -> list[dict[str, int]]:

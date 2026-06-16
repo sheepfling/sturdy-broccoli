@@ -7,7 +7,7 @@ import sys
 import tomllib
 from pathlib import Path
 
-from hla2010_repo_internal.verification.backend_compliance_discovery import (
+from hla.verification.repo_internal.verification.backend_compliance_discovery import (
     build_backend_compliance_catalog,
     build_discovery_payload,
     build_vendor_discovery_backlog,
@@ -290,11 +290,11 @@ def test_pitch_profile_requirement_disposition_artifacts_surface_profile_specifi
     assert jpype_rows["HLA1516.1-FM-4.1.5-001"]["runtime_disposition"] == "blocked"
     assert py4j_rows["HLA1516.1-FM-4.1.5-001"]["runtime_disposition"] == "blocked"
     assert (
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md"
         in jpype_rows["HLA1516.1-FM-4.1.5-001"]["evidence_refs"]
     )
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_lost_federate.py::run_lost_federate_mom_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_lost_federate_mom_scenario"
         in py4j_rows["HLA1516.1-FM-4.1.5-001"]["evidence_refs"]
     )
     for payload in (jpype_rows["HLA1516.1-FM-4.1.5-001"], py4j_rows["HLA1516.1-FM-4.1.5-001"]):
@@ -454,7 +454,7 @@ def test_certi_requirement_disposition_tracks_shared_save_restore_evidence():
     }:
         refs = rows[requirement_id]["evidence_refs"]
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario"
             in refs
         )
         assert "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke" in refs
@@ -478,7 +478,7 @@ def test_certi_requirement_disposition_tracks_shared_synchronization_evidence():
         refs = rows[requirement_id]["evidence_refs"]
         assert rows[requirement_id]["runtime_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario"
             in refs
         )
         assert "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_synchronization_matrix" in refs
@@ -520,7 +520,7 @@ def test_certi_requirement_disposition_tracks_clause6_exchange_evidence():
         row = rows[requirement_id]
         refs = row["evidence_refs"]
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario"
             in refs
         )
         assert "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_exchange_matrix" in refs
@@ -562,7 +562,7 @@ def test_certi_requirement_disposition_tracks_clause7_ownership_evidence():
         row = rows[requirement_id]
         refs = row["evidence_refs"]
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario"
             in refs
         )
         assert "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix" in refs
@@ -655,7 +655,7 @@ def test_certi_requirement_disposition_tracks_clause8_shared_harness_subset():
         refs = row["evidence_refs"]
         assert row["runtime_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case"
             in refs
         )
         assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_services_matrix" in refs
@@ -665,7 +665,7 @@ def test_certi_requirement_disposition_tracks_clause8_shared_harness_subset():
         refs = row["evidence_refs"]
         assert row["runtime_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case"
             in refs
         )
         assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_ordering_and_query_matrix" in refs
@@ -675,7 +675,7 @@ def test_certi_requirement_disposition_tracks_clause8_shared_harness_subset():
         refs = row["evidence_refs"]
         assert row["runtime_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_available_and_flush_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_flush_case"
             in refs
         )
         assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_available_and_flush_matrix" in refs
@@ -685,7 +685,7 @@ def test_certi_requirement_disposition_tracks_clause8_shared_harness_subset():
         refs = row["evidence_refs"]
         assert row["runtime_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_available_and_retraction_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_retraction_case"
             in refs
         )
         assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_available_and_retraction_matrix" in refs
@@ -695,7 +695,7 @@ def test_certi_requirement_disposition_tracks_clause8_shared_harness_subset():
         refs = row["evidence_refs"]
         assert row["runtime_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case"
             in refs
         )
         assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_logical_time_query_matrix" in refs
@@ -705,7 +705,7 @@ def test_certi_requirement_disposition_tracks_clause8_shared_harness_subset():
         refs = row["evidence_refs"]
         assert row["runtime_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case"
             in refs
         )
         assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_toggle_services_matrix" in refs
@@ -715,7 +715,7 @@ def test_certi_requirement_disposition_tracks_clause8_shared_harness_subset():
         refs = row["evidence_refs"]
         assert row["runtime_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_request_retraction_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_request_retraction_case"
             in refs
         )
         assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_request_retraction_matrix" in refs
@@ -725,7 +725,7 @@ def test_certi_requirement_disposition_tracks_clause8_shared_harness_subset():
         refs = row["evidence_refs"]
         assert row["runtime_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_order_override_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case"
             in refs
         )
         assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_order_override_matrix" in refs
@@ -735,7 +735,7 @@ def test_certi_requirement_disposition_tracks_clause8_shared_harness_subset():
         refs = row["evidence_refs"]
         assert row["runtime_disposition"] == "vendor-divergent"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_time_bound_query_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_time_bound_query_case"
             in refs
         )
         assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_time_bound_query_matrix" in refs
@@ -745,7 +745,7 @@ def test_certi_requirement_disposition_tracks_clause8_shared_harness_subset():
         refs = row["evidence_refs"]
         assert row["runtime_disposition"] == "vendor-divergent"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_order_override_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case"
             in refs
         )
         assert "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_order_override_matrix" in refs
@@ -755,7 +755,7 @@ def test_certi_requirement_disposition_tracks_clause8_shared_harness_subset():
         refs = row["evidence_refs"]
         assert row["runtime_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_duplicate_enable_rejection_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_duplicate_enable_rejection_case"
             in refs
         )
         assert (
@@ -768,7 +768,7 @@ def test_certi_requirement_disposition_tracks_clause8_shared_harness_subset():
         refs = row["evidence_refs"]
         assert row["runtime_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_tar_galt_boundary_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_tar_galt_boundary_case"
             in refs
         )
         assert (
@@ -881,7 +881,7 @@ def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_matrix" in row["evidence_refs"]
@@ -891,7 +891,7 @@ def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_listing_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_listing_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_listing_matrix" in row["evidence_refs"]
@@ -900,7 +900,7 @@ def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
     save_restore_time_state_row = rows["REQ-SAVE-RESTORE-001"]
     assert save_restore_time_state_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_scheduled_save_restore_time_state_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_scheduled_save_restore_time_state_scenario"
         in save_restore_time_state_row["evidence_refs"]
     )
     assert (
@@ -913,7 +913,7 @@ def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_fom_module_visibility_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_module_visibility_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_fom_module_visibility_matrix" in row["evidence_refs"]
@@ -922,7 +922,7 @@ def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
     mim_row = rows["REQ-RTI-FM-4_5-createFederationExecutionWithMIM"]
     assert mim_row["pitch_disposition"] == "vendor-divergent"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario"
         in mim_row["evidence_refs"]
     )
     assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_with_mim_matrix" in mim_row["evidence_refs"]
@@ -931,7 +931,7 @@ def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
     connection_lost = rows["REQ-FED-FM-4_4-connectionLost"]
     assert connection_lost["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_connection_lost.py::run_connection_lost_callback_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_connection_lost.py::run_connection_lost_callback_scenario"
         in connection_lost["evidence_refs"]
     )
     assert "tests/scenarios/test_federation_management_backend_matrix.py::test_python_connection_lost_callback_matrix" in connection_lost["evidence_refs"]
@@ -943,12 +943,12 @@ def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
         assert row["pitch_jpype_disposition"] == "blocked"
         assert row["pitch_py4j_disposition"] == "blocked"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_lost_federate.py::run_external_lost_federate_observer_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_external_lost_federate_observer_scenario"
             in row["pitch_jpype_evidence_refs"]
         )
         assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix" in row["pitch_jpype_evidence_refs"]
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_lost_federate.py::run_lost_federate_mom_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_lost_federate_mom_scenario"
             in row["pitch_py4j_evidence_refs"]
         )
         assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix" in row["pitch_py4j_evidence_refs"]
@@ -963,7 +963,7 @@ def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix" in row["evidence_refs"]
@@ -972,7 +972,7 @@ def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
     failure_row = rows["REQ-FED-FM-4_12-synchronizationPointRegistrationFailed"]
     assert failure_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_registration_failure_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_registration_failure_scenario"
         in failure_row["evidence_refs"]
     )
     assert (
@@ -983,48 +983,48 @@ def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
 
     sync_clause4_pairs = {
         "HLA1516.1-FM-4.11-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
         ),
         "HLA1516.1-FM-4.11-CB-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_registration_failure_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_registration_failure_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_registration_failure_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_registration_failure_matrix",
         ),
         "HLA1516.1-FM-4.11-EXC-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_registration_failure_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_registration_failure_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_registration_failure_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_registration_failure_matrix",
         ),
         "HLA1516.1-FM-4.13-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
         ),
         "HLA1516.1-FM-4.14-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
         ),
         "HLA1516.1-FM-4.14-EXC-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_multiple_synchronization_points_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_multiple_synchronization_points_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_multiple_synchronization_points_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_multiple_synchronization_points_matrix",
         ),
         "HLA1516.1-FM-4.15-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
         ),
         "HLA1516.1-FM-4.15-002": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
         ),
@@ -1049,7 +1049,7 @@ def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
     }:
         row = rows[requirement_id]
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_failed_federate_synchronization_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_sync.py::run_failed_federate_synchronization_scenario"
             in row["evidence_refs"]
         )
         assert (
@@ -1067,7 +1067,7 @@ def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_lifecycle_negative_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_negative_scenario"
             in row["evidence_refs"]
         )
         assert (
@@ -1079,7 +1079,7 @@ def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
     late_join_row = rows["HLA1516.1-FM-4.9-CB-001"]
     assert late_join_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_late_join_synchronization_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_late_join_synchronization_scenario"
         in late_join_row["evidence_refs"]
     )
     assert (
@@ -1091,7 +1091,7 @@ def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
     multi_sync_row = rows["HLA1516.1-FM-4.1.3-001"]
     assert multi_sync_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_multiple_synchronization_points_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_multiple_synchronization_points_scenario"
         in multi_sync_row["evidence_refs"]
     )
     assert (
@@ -1102,77 +1102,77 @@ def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
 
     save_restore_pairs = {
         "REQ-RTI-FM-4_16-requestFederationSave": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "REQ-FED-FM-4_17-initiateFederateSave": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "REQ-RTI-FM-4_18-federateSaveBegun": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "REQ-RTI-FM-4_19-federateSaveComplete": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "REQ-FED-FM-4_20-federationSaved": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "REQ-RTI-FM-4_22-queryFederationSaveStatus": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "REQ-FED-FM-4_23-federationSaveStatusResponse": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "REQ-RTI-FM-4_24-requestFederationRestore": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "REQ-FED-FM-4_25-requestFederationRestoreSucceeded": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "REQ-FED-FM-4_26-federationRestoreBegun": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "REQ-FED-FM-4_27-initiateFederateRestore": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "REQ-RTI-FM-4_28-federateRestoreComplete": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "REQ-FED-FM-4_29-federationRestored": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "REQ-RTI-FM-4_31-queryFederationRestoreStatus": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "REQ-FED-FM-4_32-federationRestoreStatusResponse": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
@@ -1218,7 +1218,7 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
     for row in verified_rows:
         refs = row["evidence_refs"]
         assert any(
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/" in ref
+            "packages/hla-verification/src/hla.verification/" in ref
             for ref in refs
         ), row["requirement_id"]
         assert any(
@@ -1230,7 +1230,7 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
     for requirement_id in blocked_ids | vendor_divergent_ids:
         refs = by_requirement_id[requirement_id]["evidence_refs"]
         assert any(
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/" in ref
+            "packages/hla-verification/src/hla.verification/" in ref
             for ref in refs
         ), requirement_id
         assert any(
@@ -1242,7 +1242,7 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
     save_abort_row = by_requirement_id["REQ-RTI-FM-4_21-abortFederationSave"]
     assert save_abort_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_abort_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_abort_scenario"
         in save_abort_row["evidence_refs"]
     )
     assert "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix" in save_abort_row["evidence_refs"]
@@ -1251,7 +1251,7 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
     restore_request_failure_row = by_requirement_id["REQ-FED-FM-4_25-requestFederationRestoreFailed"]
     assert restore_request_failure_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_request_failure_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_request_failure_scenario"
         in restore_request_failure_row["evidence_refs"]
     )
     assert (
@@ -1261,12 +1261,12 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
 
     restore_failure_pairs = {
         "REQ-FED-FM-4_29-federationNotRestored": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_failure_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_failure_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_failure_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_failure_matrix",
         ),
         "REQ-RTI-FM-4_30-abortFederationRestore": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_abort_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_abort_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_abort_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_abort_matrix",
         ),
@@ -1280,7 +1280,7 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
     restore_abort_exc_row = by_requirement_id["HLA1516.1-FM-4.30-EXC-001"]
     assert restore_abort_exc_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_abort_exception_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_abort_exception_scenario"
         in restore_abort_exc_row["evidence_refs"]
     )
     assert (
@@ -1292,7 +1292,7 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
     resign_callback_row = by_requirement_id["HLA1516.1-FM-4.10-CB-001"]
     assert resign_callback_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_resigned_federate_callback_silence_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_resigned_federate_callback_silence_scenario"
         in resign_callback_row["evidence_refs"]
     )
     assert (
@@ -1304,7 +1304,7 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
     resign_precondition_row = by_requirement_id["HLA1516.1-FM-4.10-PRE-001"]
     assert resign_precondition_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_resign.py::run_resign_precondition_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_resign.py::run_resign_precondition_scenario"
         in resign_precondition_row["evidence_refs"]
     )
     assert (
@@ -1316,7 +1316,7 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
     resign_exception_row = by_requirement_id["HLA1516.1-FM-4.10-EXC-001"]
     assert resign_exception_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_resign.py::run_resign_precondition_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_resign.py::run_resign_precondition_scenario"
         in resign_exception_row["evidence_refs"]
     )
     assert (
@@ -1328,7 +1328,7 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
     resign_mom_row = by_requirement_id["HLA1516.1-FM-4.10-MOM-001"]
     assert resign_mom_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_resign.py::run_resign_mom_cleanup_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_resign.py::run_resign_mom_cleanup_scenario"
         in resign_mom_row["evidence_refs"]
     )
     assert (
@@ -1340,7 +1340,7 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
     disconnect_mom_row = by_requirement_id["HLA1516.1-FM-4.3-MOM-001"]
     assert disconnect_mom_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_resign.py::run_disconnect_mom_cleanup_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_resign.py::run_disconnect_mom_cleanup_scenario"
         in disconnect_mom_row["evidence_refs"]
     )
     assert (
@@ -1352,7 +1352,7 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
     join_precondition_row = by_requirement_id["HLA1516.1-FM-4.9-PRE-001"]
     assert join_precondition_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_join.py::run_join_precondition_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_join.py::run_join_precondition_scenario"
         in join_precondition_row["evidence_refs"]
     )
     assert (
@@ -1365,7 +1365,7 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
         row = by_requirement_id[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_multi_participation_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_multi_participation_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_multi_participation_matrix" in row["evidence_refs"]
@@ -1375,7 +1375,7 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
         row = by_requirement_id[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_fom_integrity_negative_matrix" in row["evidence_refs"]
@@ -1384,7 +1384,7 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
     combined_fom_row = by_requirement_id["HLA1516.1-FM-4.1.4-001"]
     assert combined_fom_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_multi_module_fom_visibility_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_multi_module_fom_visibility_scenario"
         in combined_fom_row["evidence_refs"]
     )
     assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_multi_module_fom_visibility_matrix" in combined_fom_row["evidence_refs"]
@@ -1393,7 +1393,7 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
     auto_mim_row = by_requirement_id["HLA1516.1-FM-4.1.4-002"]
     assert auto_mim_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_fom_module_visibility_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_module_visibility_scenario"
         in auto_mim_row["evidence_refs"]
     )
     assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_fom_module_visibility_matrix" in auto_mim_row["evidence_refs"]
@@ -1411,10 +1411,10 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     rows = {row["requirement_id"]: row for row in payload["rows"] if row.get("requirement_id")}
     by_requirement_id = rows
     allowed_clause4_evidence_prefixes = (
-        "packages/hla2010-verification-harness/",
+        "packages/hla-verification/",
         "tests/scenarios/",
         "tests/vendors/",
-        "packages/hla2010-rti-pitch-common/docs/evidence/",
+        "packages/hla-vendor-pitch/docs/evidence/",
         "analysis/preflight_artifacts/",
         "analysis/vendor_runtime_status/",
         "tests/test_rti_pitch_split_packages.py::",
@@ -1463,7 +1463,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
         "HLA1516.1-FM-4.9-CB-001",
     }
     strict_milestone_evidence_prefixes = (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+        "packages/hla-verification/src/hla.verification/",
         "tests/scenarios/test_federation_management_backend_matrix.py::",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::",
         "tests/vendors/test_pitch_real_backend_matrix.py::",
@@ -1499,7 +1499,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
         row = by_requirement_id[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix" in row["evidence_refs"]
@@ -1508,7 +1508,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     queued_save_restore_row = by_requirement_id["HLA1516.1-FM-4.1.2-002"]
     assert queued_save_restore_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_queued_callback_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_queued_callback_scenario"
         in queued_save_restore_row["evidence_refs"]
     )
     assert (
@@ -1522,14 +1522,14 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
 
     for requirement_id, expected_refs in {
         "HLA1516.1-FM-4.17-EXC-001": {
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_failure_scenario",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_abort_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_failure_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_abort_scenario",
         },
         "HLA1516.1-FM-4.27-EXC-001": {
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_failure_scenario",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_abort_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_failure_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_abort_scenario",
         },
     }.items():
         row = by_requirement_id[requirement_id]
@@ -1540,7 +1540,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     save_status_exc_row = by_requirement_id["HLA1516.1-FM-4.22-EXC-001"]
     assert save_status_exc_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_status_exception_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_status_exception_scenario"
         in save_status_exc_row["evidence_refs"]
     )
     assert (
@@ -1552,8 +1552,8 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     create_exception_row = by_requirement_id["HLA1516.1-FM-4.5-EXC-001"]
     assert create_exception_row["pitch_disposition"] == "vendor-divergent"
     for expected_ref in {
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_lifecycle_negative_scenario",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_negative_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_lifecycle_with_mim_matrix",
     }:
         assert expected_ref in create_exception_row["evidence_refs"]
@@ -1561,8 +1561,8 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     join_exception_row = by_requirement_id["HLA1516.1-FM-4.9-EXC-001"]
     assert join_exception_row["pitch_disposition"] == "vendor-divergent"
     for expected_ref in {
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_join.py::run_join_precondition_scenario",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_join.py::run_join_precondition_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario",
     }:
         assert expected_ref in join_exception_row["evidence_refs"]
 
@@ -1599,13 +1599,13 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
         assert "Docker is unreachable" in row["notes"]
         assert "loopback ports are blocked" in row["notes"]
         for expected_ref in {
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_connection_lost.py::run_connection_lost_callback_scenario",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_lost_federate.py::run_lost_federate_mom_scenario",
-            "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+            "packages/hla-verification/src/hla.verification/scenario_connection_lost.py::run_connection_lost_callback_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_lost_federate_mom_scenario",
+            "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
             "analysis/preflight_artifacts/pitch-preflight.json",
             "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
             "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_resign.py::run_disconnect_mom_cleanup_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_resign.py::run_disconnect_mom_cleanup_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_lost_federate_mom_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
         }:
@@ -1613,7 +1613,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
         assert not any(ref.startswith("tests/backends/") for ref in row["evidence_refs"])
         assert not any(ref.startswith("tests/verification/") for ref in row["evidence_refs"])
         assert {
-            "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+            "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
             "analysis/preflight_artifacts/pitch-preflight.json",
             "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
             "tests/test_rti_pitch_split_packages.py::test_pitch_jpype_factory_uses_inprocess_runtime_without_gateway_process",
@@ -1622,10 +1622,10 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
             "analysis/preflight_artifacts/pitch-preflight.json",
             "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
             "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_lost_federate.py::run_lost_federate_mom_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_lost_federate_mom_scenario",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
             "tests/test_rti_pitch_split_packages.py::test_pitch_py4j_factory_attaches_gateway_process",
-            "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+            "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
         }:
             assert expected_ref in row["pitch_py4j_evidence_refs"]
 
@@ -1642,16 +1642,16 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     save_status_mom_row = by_requirement_id["HLA1516.1-FM-4.22-MOM-001"]
     assert save_status_mom_row["pitch_disposition"] == "verified"
     for expected_ref in {
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_failure_scenario",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_abort_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_failure_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_abort_scenario",
     }:
         assert expected_ref in save_status_mom_row["evidence_refs"]
 
     restore_abort_mom_row = by_requirement_id["HLA1516.1-FM-4.30-MOM-001"]
     assert restore_abort_mom_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_abort_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_abort_scenario"
         in restore_abort_mom_row["evidence_refs"]
     )
     assert "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_abort_matrix" in restore_abort_mom_row["evidence_refs"]
@@ -1660,7 +1660,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     sync_mom_row = by_requirement_id["HLA1516.1-FM-4.12-MOM-001"]
     assert sync_mom_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario"
         in sync_mom_row["evidence_refs"]
     )
     assert "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix" in sync_mom_row["evidence_refs"]
@@ -1670,14 +1670,14 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_resign.py::run_resign_mom_cleanup_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_resign.py::run_resign_mom_cleanup_scenario"
             in row["evidence_refs"]
         )
 
     destroy_mom_row = by_requirement_id["HLA1516.1-FM-4.6-MOM-001"]
     assert destroy_mom_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_listing_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_listing_scenario"
         in destroy_mom_row["evidence_refs"]
     )
     assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_listing_matrix" in destroy_mom_row["evidence_refs"]
@@ -1703,7 +1703,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix" in row["evidence_refs"]
@@ -1716,7 +1716,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_failure_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_failure_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_failure_matrix" in row["evidence_refs"]
@@ -1725,7 +1725,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     save_abort = by_requirement_id["REQ-RTI-FM-4_21-abortFederationSave"]
     assert save_abort["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_abort_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_abort_scenario"
         in save_abort["evidence_refs"]
     )
     assert "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix" in save_abort["evidence_refs"]
@@ -1734,7 +1734,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     failed_restore_request = by_requirement_id["REQ-FED-FM-4_25-requestFederationRestoreFailed"]
     assert failed_restore_request["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_request_failure_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_request_failure_scenario"
         in failed_restore_request["evidence_refs"]
     )
     assert (
@@ -1753,7 +1753,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_failure_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_failure_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_failure_matrix" in row["evidence_refs"]
@@ -1762,7 +1762,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     restore_abort = by_requirement_id["REQ-RTI-FM-4_30-abortFederationRestore"]
     assert restore_abort["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_abort_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_abort_scenario"
         in restore_abort["evidence_refs"]
     )
     assert "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_abort_matrix" in restore_abort["evidence_refs"]
@@ -1770,37 +1770,37 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
 
     broad_positive_rows = {
         "HLA1516.1-FM-4.16-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "HLA1516.1-FM-4.21-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_abort_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_abort_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_abort_matrix",
         ),
         "HLA1516.1-FM-4.23-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "HLA1516.1-FM-4.24-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "HLA1516.1-FM-4.26-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "HLA1516.1-FM-4.31-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
         "HLA1516.1-FM-4.32-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
         ),
@@ -1813,24 +1813,24 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
 
     broad_mixed_rows = {
         "HLA1516.1-FM-4.19-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_failure_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_failure_scenario",
         ),
         "HLA1516.1-FM-4.20-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_failure_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_failure_scenario",
         ),
         "HLA1516.1-FM-4.25-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_request_failure_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_request_failure_scenario",
         ),
         "HLA1516.1-FM-4.28-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_failure_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_failure_scenario",
         ),
         "HLA1516.1-FM-4.29-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_failure_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_failure_scenario",
         ),
     }
     for requirement_id, expected_refs in broad_mixed_rows.items():
@@ -1880,7 +1880,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     restore_status_exception = by_requirement_id["HLA1516.1-FM-4.31-EXC-001"]
     assert restore_status_exception["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_status_exception_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_status_exception_scenario"
         in restore_status_exception["evidence_refs"]
     )
     assert (
@@ -1895,7 +1895,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     save_request_exception = by_requirement_id["HLA1516.1-FM-4.16-EXC-001"]
     assert save_request_exception["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_request_precondition_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_request_precondition_scenario"
         in save_request_exception["evidence_refs"]
     )
     assert (
@@ -1910,7 +1910,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     restore_request_exception = by_requirement_id["HLA1516.1-FM-4.24-EXC-001"]
     assert restore_request_exception["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_request_precondition_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_request_precondition_scenario"
         in restore_request_exception["evidence_refs"]
     )
     assert (
@@ -1925,7 +1925,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     save_participant_exception = by_requirement_id["HLA1516.1-FM-4.18-EXC-001"]
     assert save_participant_exception["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_participant_exception_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_participant_exception_scenario"
         in save_participant_exception["evidence_refs"]
     )
     assert (
@@ -1940,7 +1940,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     abort_save_exception = by_requirement_id["HLA1516.1-FM-4.21-EXC-001"]
     assert abort_save_exception["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_abort_save_exception_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_abort_save_exception_scenario"
         in abort_save_exception["evidence_refs"]
     )
     assert (
@@ -1955,7 +1955,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     restore_participant_exception = by_requirement_id["HLA1516.1-FM-4.28-EXC-001"]
     assert restore_participant_exception["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_participant_exception_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_participant_exception_scenario"
         in restore_participant_exception["evidence_refs"]
     )
     assert (
@@ -2017,12 +2017,12 @@ def test_pitch_clause6_mapped_rows_prefer_shared_harness_evidence_only():
         if row["pitch_disposition"] in {"verified", "vendor-divergent"}
     ]
     strict_clause6_evidence_prefixes = (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+        "packages/hla-verification/src/hla.verification/",
         "tests/scenarios/test_object_management_backend_matrix.py::",
         "tests/vendors/test_pitch_real_backend_matrix.py::",
     )
     vendor_divergent_clause6_evidence_prefixes = strict_clause6_evidence_prefixes + (
-        "packages/hla2010-rti-pitch-common/docs/evidence/",
+        "packages/hla-vendor-pitch/docs/evidence/",
     )
 
     for row in runtime_rows:
@@ -2072,12 +2072,12 @@ def test_pitch_clause7_mapped_rows_prefer_shared_harness_evidence_only():
         if row["pitch_disposition"] in {"verified", "vendor-divergent"}
     ]
     strict_clause7_evidence_prefixes = (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+        "packages/hla-verification/src/hla.verification/",
         "tests/scenarios/test_ownership_management_backend_matrix.py::",
         "tests/vendors/test_pitch_real_backend_matrix.py::",
     )
     vendor_divergent_clause7_evidence_prefixes = strict_clause7_evidence_prefixes + (
-        "packages/hla2010-rti-pitch-common/docs/evidence/",
+        "packages/hla-vendor-pitch/docs/evidence/",
     )
 
     for row in runtime_rows:
@@ -2128,11 +2128,11 @@ def test_pitch_clause8_mapped_rows_prefer_shared_harness_evidence_only():
         if row["pitch_disposition"] in {"verified", "vendor-divergent"}
     ]
     strict_clause8_evidence_prefixes = (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::",
         "tests/time/test_section8_backend_matrix.py::",
         "tests/time/test_lookahead_backend_matrix.py::",
         "tests/vendors/test_pitch_real_backend_matrix.py::",
-        "packages/hla2010-rti-pitch-common/docs/evidence/",
+        "packages/hla-vendor-pitch/docs/evidence/",
     )
 
     for row in runtime_rows:
@@ -2178,7 +2178,7 @@ def test_pitch_clause9_mapped_rows_prefer_shared_harness_evidence_only():
         if row["pitch_disposition"] == "verified"
     ]
     strict_clause9_evidence_prefixes = (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+        "packages/hla-verification/src/hla.verification/",
         "tests/scenarios/test_ddm_backend_matrix.py::",
         "tests/vendors/test_pitch_real_backend_matrix.py::",
     )
@@ -2245,7 +2245,7 @@ def test_pitch_clause6_1516_1_dispositions_are_fully_classified_and_harness_back
     for row in verified_rows:
         refs = row["evidence_refs"]
         assert any(
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/" in ref
+            "packages/hla-verification/src/hla.verification/" in ref
             for ref in refs
         ), row["requirement_id"]
         assert any(ref.startswith("tests/scenarios/test_object_management_backend_matrix.py::") for ref in refs), row["requirement_id"]
@@ -2254,7 +2254,7 @@ def test_pitch_clause6_1516_1_dispositions_are_fully_classified_and_harness_back
     for requirement_id in vendor_divergent_ids:
         refs = rows[requirement_id]["evidence_refs"]
         assert any(
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/" in ref
+            "packages/hla-verification/src/hla.verification/" in ref
             for ref in refs
         ), requirement_id
         assert any(ref.startswith("tests/scenarios/test_object_management_backend_matrix.py::") for ref in refs), requirement_id
@@ -2300,7 +2300,7 @@ def test_pitch_clause7_1516_1_dispositions_are_fully_classified_and_harness_back
     for row in verified_rows:
         refs = row["evidence_refs"]
         assert any(
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/" in ref
+            "packages/hla-verification/src/hla.verification/" in ref
             for ref in refs
         ), row["requirement_id"]
         assert any(ref.startswith("tests/scenarios/test_ownership_management_backend_matrix.py::") for ref in refs), row["requirement_id"]
@@ -2309,7 +2309,7 @@ def test_pitch_clause7_1516_1_dispositions_are_fully_classified_and_harness_back
     for requirement_id in vendor_divergent_ids:
         refs = rows[requirement_id]["evidence_refs"]
         assert any(
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/" in ref
+            "packages/hla-verification/src/hla.verification/" in ref
             for ref in refs
         ), requirement_id
         assert any(ref.startswith("tests/scenarios/test_ownership_management_backend_matrix.py::") for ref in refs), requirement_id
@@ -2326,7 +2326,7 @@ def test_pitch_clause7_1516_1_dispositions_are_fully_classified_and_harness_back
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "vendor-divergent"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::probe_negotiated_attribute_ownership_offer"
+            "packages/hla-verification/src/hla.verification/scenario_ownership.py::probe_negotiated_attribute_ownership_offer"
             in row["evidence_refs"]
         )
         assert (
@@ -2345,7 +2345,7 @@ def test_pitch_clause7_1516_1_dispositions_are_fully_classified_and_harness_back
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "vendor-divergent"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix" in row["evidence_refs"]
@@ -2354,7 +2354,7 @@ def test_pitch_clause7_1516_1_dispositions_are_fully_classified_and_harness_back
     ownership_unavailable_row = rows["REQ-FED-OWN-7_10-attributeOwnershipUnavailable"]
     assert ownership_unavailable_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_unavailable_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_unavailable_scenario"
         in ownership_unavailable_row["evidence_refs"]
     )
     assert (
@@ -2412,7 +2412,7 @@ def test_pitch_clause8_1516_1_dispositions_are_fully_classified_and_harness_back
     for row in verified_rows:
         refs = row["evidence_refs"]
         assert any(
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::" in ref
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::" in ref
             for ref in refs
         ), row["requirement_id"]
         assert any(
@@ -2425,7 +2425,7 @@ def test_pitch_clause8_1516_1_dispositions_are_fully_classified_and_harness_back
     for requirement_id in vendor_divergent_ids | blocked_ids:
         refs = rows[requirement_id]["evidence_refs"]
         assert any(
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::" in ref
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::" in ref
             for ref in refs
         ), requirement_id
         assert any(ref.startswith("tests/time/test_section8_backend_matrix.py::") for ref in refs), requirement_id
@@ -2434,7 +2434,7 @@ def test_pitch_clause8_1516_1_dispositions_are_fully_classified_and_harness_back
     next_message_request_row = rows["REQ-RTI-TM-8_10-nextMessageRequest"]
     assert next_message_request_row["pitch_disposition"] == "vendor-divergent"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case"
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case"
         in next_message_request_row["evidence_refs"]
     )
     assert "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries" in next_message_request_row["evidence_refs"]
@@ -2443,7 +2443,7 @@ def test_pitch_clause8_1516_1_dispositions_are_fully_classified_and_harness_back
     query_galt_row = rows["REQ-RTI-TM-8_16-queryGALT"]
     assert query_galt_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_time_bound_query_case"
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_time_bound_query_case"
         in query_galt_row["evidence_refs"]
     )
     assert "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_time_bound_queries" in query_galt_row["evidence_refs"]
@@ -2507,7 +2507,7 @@ def test_pitch_clause9_1516_1_dispositions_are_fully_classified_and_harness_back
     for requirement_id in verified_ids | blocked_ids:
         refs = rows[requirement_id]["evidence_refs"]
         assert any(
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/" in ref
+            "packages/hla-verification/src/hla.verification/" in ref
             and (
                 "two_federate_suite_scenarios.py::run_suite_ddm_scenario" in ref
                 or "scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario" in ref
@@ -2521,7 +2521,7 @@ def test_pitch_clause9_1516_1_dispositions_are_fully_classified_and_harness_back
     suite_ddm_row = rows["HLA1516.1-DDM-9.1-001"]
     assert suite_ddm_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/two_federate_suite_scenarios.py::run_suite_ddm_scenario"
+        "packages/hla-verification/src/hla.verification/two_federate_suite_scenarios.py::run_suite_ddm_scenario"
         in suite_ddm_row["evidence_refs"]
     )
     assert "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_matrix" in suite_ddm_row["evidence_refs"]
@@ -2530,7 +2530,7 @@ def test_pitch_clause9_1516_1_dispositions_are_fully_classified_and_harness_back
     passive_region_row = rows["REQ-RTI-DDM-9_8-subscribeObjectClassAttributesPassivelyWithRegions"]
     assert passive_region_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_passive_regions.py::run_ddm_passive_region_subscription_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_ddm_passive_regions.py::run_ddm_passive_region_subscription_scenario"
         in passive_region_row["evidence_refs"]
     )
     assert (
@@ -2542,7 +2542,7 @@ def test_pitch_clause9_1516_1_dispositions_are_fully_classified_and_harness_back
     region_lifecycle_row = rows["REQ-RTI-DDM-9_5-registerObjectInstanceWithRegions"]
     assert region_lifecycle_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario"
         in region_lifecycle_row["evidence_refs"]
     )
     assert (
@@ -2632,7 +2632,7 @@ def test_pitch_clause12_designator_rows_are_explicitly_not_yet_tested():
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "not-yet-tested"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario"
             in row["evidence_refs"]
         )
         assert (
@@ -2653,7 +2653,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     save_restore_slice = rows["REQ-SAVE-RESTORE-001"]
     assert save_restore_slice["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario"
         in save_restore_slice["evidence_refs"]
     )
     assert "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix" in save_restore_slice["evidence_refs"]
@@ -2661,21 +2661,21 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
 
     supporting_restore_slices = {
         "REQ-SAVE-RESTORE-OBJECT-STATE-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_object_state_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_object_state_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_object_state_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_object_state_matrix",
         ),
         "REQ-SAVE-RESTORE-FEDERATE-LOCAL-STATE-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_federate_local_state_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_federate_local_state_scenario",
             "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_federate_local_state_matrix",
             "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_federate_local_state_matrix",
         ),
         "REQ-SAVE-RESTORE-CALLBACK-POLICY-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_callback_policy_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_callback_policy_scenario",
             "tests/verification/test_compliance_slice_v011.py::test_restore_treats_callback_enablement_as_runtime_policy_not_saved_state",
         ),
         "REQ-SAVE-RESTORE-TRANSIENT-STATE-001": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_transient_state_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_transient_state_scenario",
             "tests/verification/test_compliance_slice_v011.py::test_restore_discards_pre_restore_callback_queue_and_retraction_bookkeeping",
         ),
     }
@@ -2771,7 +2771,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix" in row["evidence_refs"]
@@ -2780,7 +2780,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     update_rate_declaration_row = rows["HLA1516.1-DM-5.1.6-001"]
     assert update_rate_declaration_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_update_rate.py::run_update_rate_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_update_rate.py::run_update_rate_scenario"
         in update_rate_declaration_row["evidence_refs"]
     )
     assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_update_rate_matrix" in update_rate_declaration_row["evidence_refs"]
@@ -2796,7 +2796,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario"
             in row["evidence_refs"]
         )
         assert (
@@ -2811,7 +2811,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     invalid_attribute_publication_row = rows["HLA1516.1-DM-5.2-003"]
     assert invalid_attribute_publication_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_invalid_attribute_publication_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_invalid_attribute_publication_scenario"
         in invalid_attribute_publication_row["evidence_refs"]
     )
     assert (
@@ -2826,7 +2826,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     declaration_time_independence_row = rows["HLA1516.1-DM-5.1-004"]
     assert declaration_time_independence_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_time_managed_declaration_independence_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_time_managed_declaration_independence_scenario"
         in declaration_time_independence_row["evidence_refs"]
     )
     assert (
@@ -2860,7 +2860,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     unpublish_object_row = rows["HLA1516.1-DM-5.3-002"]
     assert unpublish_object_row["pitch_disposition"] == "blocked"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_unpublish_rejection_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_unpublish_rejection_scenario"
         in unpublish_object_row["evidence_refs"]
     )
     assert (
@@ -2872,7 +2872,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     unpublish_interaction_row = rows["HLA1516.1-DM-5.5-002"]
     assert unpublish_interaction_row["pitch_disposition"] == "blocked"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_unpublish_rejection_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_unpublish_rejection_scenario"
         in unpublish_interaction_row["evidence_refs"]
     )
     assert (
@@ -2937,7 +2937,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         assert row["pitch_disposition"] == "verified"
         if requirement_id.startswith(("REQ-RTI-OM-6_23", "REQ-FED-OM-6_24", "REQ-RTI-OM-6_25", "REQ-FED-OM-6_26", "REQ-RTI-OM-6_27", "REQ-FED-OM-6_28", "REQ-RTI-OM-6_29", "REQ-FED-OM-6_30")):
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario"
+                "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario"
                 in row["evidence_refs"]
             )
             assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix" in row["evidence_refs"]
@@ -2947,7 +2947,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
                 "REQ-RTI-OM-6_27-requestInteractionTransportationTypeChange",
             }:
                 assert (
-                    "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario"
+                    "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario"
                     in row["evidence_refs"]
                 )
                 assert (
@@ -2960,42 +2960,42 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
                 )
         elif requirement_id == "REQ-RTI-OM-6_19-requestAttributeValueUpdate":
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_request_attribute_value_update.py::run_request_attribute_value_update_scenario"
+                "packages/hla-verification/src/hla.verification/scenario_request_attribute_value_update.py::run_request_attribute_value_update_scenario"
                 in row["evidence_refs"]
             )
             assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix" in row["evidence_refs"]
             assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix" in row["evidence_refs"]
         elif requirement_id == "REQ-RTI-OM-6_16-localDeleteObjectInstance":
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_local_delete.py::run_local_delete_scenario"
+                "packages/hla-verification/src/hla.verification/scenario_local_delete.py::run_local_delete_scenario"
                 in row["evidence_refs"]
             )
             assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_local_delete_matrix" in row["evidence_refs"]
             assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_local_delete_matrix" in row["evidence_refs"]
         elif requirement_id.startswith(("REQ-RTI-OM-6_2", "REQ-FED-OM-6_3", "REQ-RTI-OM-6_4", "REQ-RTI-OM-6_5", "REQ-FED-OM-6_6", "REQ-RTI-OM-6_7")):
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_name_reservation.py::run_name_reservation_scenario"
+                "packages/hla-verification/src/hla.verification/scenario_name_reservation.py::run_name_reservation_scenario"
                 in row["evidence_refs"]
             )
             assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix" in row["evidence_refs"]
             assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix" in row["evidence_refs"]
         elif requirement_id.startswith(("REQ-FED-OM-6_17", "REQ-FED-OM-6_18", "REQ-FED-OM-6_20", "REQ-FED-OM-6_21", "REQ-FED-OM-6_22")):
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_update_advisory.py::run_update_advisory_callback_scenario"
+                "packages/hla-verification/src/hla.verification/scenario_update_advisory.py::run_update_advisory_callback_scenario"
                 in row["evidence_refs"]
             )
             assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_update_advisory_callback_matrix" in row["evidence_refs"]
             assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_update_advisory_callback_matrix" in row["evidence_refs"]
         elif requirement_id.startswith("REQ-FED-OM-6_9-") and requirement_id != "REQ-FED-OM-6_9-discoverObjectInstance":
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_discovery_metadata.py::run_discovery_metadata_callback_scenario"
+                "packages/hla-verification/src/hla.verification/scenario_discovery_metadata.py::run_discovery_metadata_callback_scenario"
                 in row["evidence_refs"]
             )
             assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix" in row["evidence_refs"]
             assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_discovery_metadata_callback_matrix" in row["evidence_refs"]
         else:
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario"
+                "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario"
                 in row["evidence_refs"]
             )
             assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix" in row["evidence_refs"]
@@ -3014,7 +3014,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         assert row["pitch_disposition"] == "verified"
         if requirement_id == "REQ-FED-OWN-7_10-attributeOwnershipUnavailable":
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_unavailable_scenario"
+                "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_unavailable_scenario"
                 in row["evidence_refs"]
             )
             assert (
@@ -3024,7 +3024,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
             assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ownership_unavailable_matrix" in row["evidence_refs"]
         else:
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario"
+                "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario"
                 in row["evidence_refs"]
             )
             assert "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_matrix" in row["evidence_refs"]
@@ -3033,7 +3033,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     inform_row = rows["REQ-FED-OWN-7_18-informAttributeOwnership"]
     assert inform_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario"
         in inform_row["evidence_refs"]
     )
     assert "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_matrix" in inform_row["evidence_refs"]
@@ -3117,7 +3117,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix" in row["evidence_refs"]
@@ -3130,11 +3130,11 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario"
             in row["evidence_refs"]
         )
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix" in row["evidence_refs"]
@@ -3156,9 +3156,9 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     for requirement_id in vendor_divergent_clause6_rows:
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "vendor-divergent"
-        assert "packages/hla2010-rti-pitch-common/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md" in row["evidence_refs"]
+        assert "packages/hla-vendor-pitch/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md" in row["evidence_refs"]
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario"
             in row["evidence_refs"]
         )
         if requirement_id in {
@@ -3167,7 +3167,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
             "HLA1516.1-OM-6.27-001",
         }:
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario"
+                "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario"
                 in row["evidence_refs"]
             )
             assert (
@@ -3182,7 +3182,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     discovery_class_slice = rows["REQ-OM-DISCOVERY-CLASS-001"]
     assert discovery_class_slice["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_discovery_class.py::run_discovery_class_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_discovery_class.py::run_discovery_class_scenario"
         in discovery_class_slice["evidence_refs"]
     )
     assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_class_matrix" in discovery_class_slice["evidence_refs"]
@@ -3191,7 +3191,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     reflect_known_class_slice = rows["REQ-OM-REFLECT-KNOWN-CLASS-001"]
     assert reflect_known_class_slice["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_discovery_class.py::run_discovery_class_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_discovery_class.py::run_discovery_class_scenario"
         in reflect_known_class_slice["evidence_refs"]
     )
     assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_class_matrix" in reflect_known_class_slice["evidence_refs"]
@@ -3200,7 +3200,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     local_knowledge_slice = rows["REQ-OM-LOCAL-KNOWLEDGE-001"]
     assert local_knowledge_slice["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_local_delete.py::run_local_delete_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_local_delete.py::run_local_delete_scenario"
         in local_knowledge_slice["evidence_refs"]
     )
     assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_local_delete_matrix" in local_knowledge_slice["evidence_refs"]
@@ -3213,7 +3213,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_orphan_object.py::run_orphan_object_lifecycle_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_orphan_object.py::run_orphan_object_lifecycle_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_orphan_object_lifecycle_matrix" in row["evidence_refs"]
@@ -3222,7 +3222,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     timed_delete_slice = rows["REQ-OM-TIMED-DELETE-REMOVE-001"]
     assert timed_delete_slice["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_timed_delete.py::run_timed_delete_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_timed_delete.py::run_timed_delete_scenario"
         in timed_delete_slice["evidence_refs"]
     )
     assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_timed_delete_matrix" in timed_delete_slice["evidence_refs"]
@@ -3231,7 +3231,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     attribute_relevance_slice = rows["REQ-OM-ATTRIBUTE-RELEVANCE-001"]
     assert attribute_relevance_slice["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_object_scope.py::run_object_scope_relevance_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_object_scope.py::run_object_scope_relevance_scenario"
         in attribute_relevance_slice["evidence_refs"]
     )
     assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_object_scope_relevance_matrix" in attribute_relevance_slice["evidence_refs"]
@@ -3240,7 +3240,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     scope_callbacks_slice = rows["REQ-OM-SCOPE-CALLBACKS-001"]
     assert scope_callbacks_slice["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_object_scope.py::run_object_scope_relevance_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_object_scope.py::run_object_scope_relevance_scenario"
         in scope_callbacks_slice["evidence_refs"]
     )
     assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_object_scope_relevance_matrix" in scope_callbacks_slice["evidence_refs"]
@@ -3249,7 +3249,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     request_value_update_slice = rows["REQ-OM-REQUEST-VALUE-UPDATE-001"]
     assert request_value_update_slice["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_request_attribute_value_update.py::run_request_attribute_value_update_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_request_attribute_value_update.py::run_request_attribute_value_update_scenario"
         in request_value_update_slice["evidence_refs"]
     )
     assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix" in request_value_update_slice["evidence_refs"]
@@ -3258,7 +3258,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     request_value_update_routing_slice = rows["REQ-OM-REQUEST-VALUE-UPDATE-ROUTING-001"]
     assert request_value_update_routing_slice["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_request_attribute_value_update.py::run_request_attribute_value_update_routing_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_request_attribute_value_update.py::run_request_attribute_value_update_routing_scenario"
         in request_value_update_routing_slice["evidence_refs"]
     )
     assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_routing_matrix" in request_value_update_routing_slice["evidence_refs"]
@@ -3267,11 +3267,11 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     transport_report_slice = rows["REQ-OM-TRANSPORT-REPORT-001"]
     assert transport_report_slice["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario"
         in transport_report_slice["evidence_refs"]
     )
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_rejection_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_rejection_scenario"
         in transport_report_slice["evidence_refs"]
     )
     assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix" in transport_report_slice["evidence_refs"]
@@ -3282,7 +3282,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     transport_best_effort_slice = rows["REQ-OM-TRANSPORT-BEST-EFFORT-001"]
     assert transport_best_effort_slice["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario"
         in transport_best_effort_slice["evidence_refs"]
     )
     assert "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix" in transport_best_effort_slice["evidence_refs"]
@@ -3291,9 +3291,9 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     discovery_lifecycle_slice = rows["REQ-OM-DISCOVERY-LIFECYCLE-001"]
     assert discovery_lifecycle_slice["pitch_disposition"] == "verified"
     for harness_ref in (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_discovery_class.py::run_discovery_class_scenario",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_timed_delete.py::run_timed_delete_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_discovery_class.py::run_discovery_class_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_timed_delete.py::run_timed_delete_scenario",
     ):
         assert harness_ref in discovery_lifecycle_slice["evidence_refs"]
 
@@ -3309,11 +3309,11 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     transport_scope_slice = rows["REQ-OM-TRANSPORT-SCOPE-001"]
     assert transport_scope_slice["pitch_disposition"] == "vendor-divergent"
     for harness_ref in (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_object_scope.py::run_object_scope_relevance_scenario",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_local_delete.py::run_local_delete_scenario",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_object_scope.py::run_object_scope_relevance_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_local_delete.py::run_local_delete_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
     ):
         assert harness_ref in transport_scope_slice["evidence_refs"]
 
@@ -3409,7 +3409,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     explicit_mim_merge_row = rows["HLA1516.2-MERGE-7-002"]
     assert explicit_mim_merge_row["pitch_disposition"] == "vendor-divergent"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario"
         in explicit_mim_merge_row["evidence_refs"]
     )
     assert "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_with_mim_matrix" in explicit_mim_merge_row["evidence_refs"]
@@ -3441,7 +3441,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     rti_owned_row = rows["REQ-FED-OWN-7_18-attributeIsOwnedByRTI"]
     assert rti_owned_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_query_callback_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_query_callback_scenario"
         in rti_owned_row["evidence_refs"]
     )
     assert "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_attribute_ownership_query_callback_matrix" in rti_owned_row["evidence_refs"]
@@ -3455,7 +3455,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_release_request_ownership_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_release_request_ownership_scenario"
             in row["evidence_refs"]
         )
         assert (
@@ -3467,7 +3467,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     release_denied = rows["REQ-RTI-OWN-7_12-attributeOwnershipReleaseDenied"]
     assert release_denied["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_release_request_ownership_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_release_request_ownership_scenario"
         in release_denied["evidence_refs"]
     )
     assert (
@@ -3479,7 +3479,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     non_owner_update = rows["HLA1516.1-OWN-7.1-003"]
     assert non_owner_update["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_non_owner_update_rejection_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_non_owner_update_rejection_scenario"
         in non_owner_update["evidence_refs"]
     )
     assert (
@@ -3491,7 +3491,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     request_assumption = rows["REQ-FED-OWN-7_4-requestAttributeOwnershipAssumption"]
     assert request_assumption["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::probe_negotiated_attribute_ownership_offer"
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::probe_negotiated_attribute_ownership_offer"
         in request_assumption["evidence_refs"]
     )
     assert (
@@ -3509,7 +3509,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     for requirement_id in negotiated_ownership_rows:
         row = rows[requirement_id]
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario"
             in row["evidence_refs"]
         )
         assert (
@@ -3528,7 +3528,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     }:
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "vendor-divergent"
-        assert "packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md" in row["evidence_refs"]
+        assert "packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md" in row["evidence_refs"]
 
     for requirement_id in {
         "HLA1516.1-OWN-7.3-001",
@@ -3536,7 +3536,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     }:
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "vendor-divergent"
-        assert "packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md" in row["evidence_refs"]
+        assert "packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md" in row["evidence_refs"]
 
     residual_clause7_rows = {
         row["requirement_id"] or row["matrix_id"]: row["pitch_disposition"]
@@ -3590,14 +3590,14 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario"
             in row["evidence_refs"]
         )
 
     release_request_clause = rows["HLA1516.1-OWN-7.5-001"]
     assert release_request_clause["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_release_request_ownership_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_release_request_ownership_scenario"
         in release_request_clause["evidence_refs"]
     )
 
@@ -3612,14 +3612,14 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     unavailable_clause = rows["HLA1516.1-OWN-7.8-001"]
     assert unavailable_clause["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_unavailable_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_unavailable_scenario"
         in unavailable_clause["evidence_refs"]
     )
 
     unavailable_release_clause = rows["HLA1516.1-OWN-7.9-002"]
     assert unavailable_release_clause["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_unavailable_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_unavailable_scenario"
         in unavailable_release_clause["evidence_refs"]
     )
     assert (
@@ -3631,7 +3631,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     ownership_notify_clause = rows["HLA1516.1-OWN-7.13-001"]
     assert ownership_notify_clause["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_query_callback_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_query_callback_scenario"
         in ownership_notify_clause["evidence_refs"]
     )
     assert "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_attribute_ownership_query_callback_matrix" in ownership_notify_clause["evidence_refs"]
@@ -3645,7 +3645,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/two_federate_suite_scenarios.py::run_suite_ddm_scenario"
+            "packages/hla-verification/src/hla.verification/two_federate_suite_scenarios.py::run_suite_ddm_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_matrix" in row["evidence_refs"]
@@ -3668,7 +3668,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
             continue
         refs = row["evidence_refs"]
         assert any(
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/" in ref
+            "packages/hla-verification/src/hla.verification/" in ref
             for ref in refs
         ), row["requirement_id"] or row["matrix_id"]
         assert any(ref.startswith("tests/scenarios/test_ddm_backend_matrix.py::") for ref in refs), row["requirement_id"] or row["matrix_id"]
@@ -3687,7 +3687,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/two_federate_suite_scenarios.py::run_suite_ddm_scenario"
+            "packages/hla-verification/src/hla.verification/two_federate_suite_scenarios.py::run_suite_ddm_scenario"
             in row["evidence_refs"]
         )
         assert "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_matrix" in row["evidence_refs"]
@@ -3714,7 +3714,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario"
             in row["evidence_refs"]
         )
         assert (
@@ -3733,7 +3733,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_passive_regions.py::run_ddm_passive_region_subscription_scenario"
+            "packages/hla-verification/src/hla.verification/scenario_ddm_passive_regions.py::run_ddm_passive_region_subscription_scenario"
             in row["evidence_refs"]
         )
         assert (
@@ -3748,7 +3748,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     declaration_ddm_row = rows["HLA1516.1-DM-5.1.5-001"]
     assert declaration_ddm_row["pitch_disposition"] == "verified"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_declaration_gating_scenario"
+        "packages/hla-verification/src/hla.verification/scenario_ddm_object_regions.py::run_ddm_declaration_gating_scenario"
         in declaration_ddm_row["evidence_refs"]
     )
     assert (
@@ -3775,7 +3775,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case"
             in row["evidence_refs"]
         )
         assert "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services" in row["evidence_refs"]
@@ -3822,7 +3822,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case"
             in row["evidence_refs"]
         )
         assert "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries" in row["evidence_refs"]
@@ -3858,7 +3858,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_order_override_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case"
             in row["evidence_refs"]
         )
         assert "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_order_override_services" in row["evidence_refs"]
@@ -3870,7 +3870,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "verified"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_early_timestamp_send_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_early_timestamp_send_case"
             in row["evidence_refs"]
         )
         assert "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_early_timestamp_send_rejection" in row["evidence_refs"]
@@ -3882,7 +3882,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "vendor-divergent"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case"
             in row["evidence_refs"]
         )
         assert "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services" in row["evidence_refs"]
@@ -3904,7 +3904,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "vendor-divergent"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case"
             in row["evidence_refs"]
         )
         assert "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries" in row["evidence_refs"]
@@ -3918,7 +3918,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "vendor-divergent"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_available_and_retraction_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_retraction_case"
             in row["evidence_refs"]
         )
         assert "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_available_and_retraction" in row["evidence_refs"]
@@ -3927,7 +3927,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     request_retraction_row = rows["REQ-FED-TM-8_22-requestRetraction"]
     assert request_retraction_row["pitch_disposition"] == "vendor-divergent"
     assert (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_request_retraction_case"
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_request_retraction_case"
         in request_retraction_row["evidence_refs"]
     )
     assert (
@@ -3944,7 +3944,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         row = rows[requirement_id]
         assert row["pitch_disposition"] == "vendor-divergent"
         assert (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_order_override_case"
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case"
             in row["evidence_refs"]
         )
         assert "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_order_override_services" in row["evidence_refs"]
@@ -4138,25 +4138,25 @@ def test_python_tranche_clauses_4_6_7_8_9_use_shared_harness_evidence_only() -> 
 
     allowed_prefixes_by_clause = {
         "4": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+            "packages/hla-verification/src/hla.verification/",
             "tests/scenarios/test_federation_lifecycle_backend_matrix.py::",
             "tests/scenarios/test_federation_management_backend_matrix.py::",
         ),
         "6": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+            "packages/hla-verification/src/hla.verification/",
             "tests/scenarios/test_object_management_backend_matrix.py::",
         ),
         "7": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+            "packages/hla-verification/src/hla.verification/",
             "tests/scenarios/test_ownership_management_backend_matrix.py::",
         ),
         "8": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::",
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::",
             "tests/time/test_section8_backend_matrix.py::",
             "tests/time/test_lookahead_backend_matrix.py::",
         ),
         "9": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+            "packages/hla-verification/src/hla.verification/",
             "tests/scenarios/test_ddm_backend_matrix.py::",
         ),
     }
@@ -4187,32 +4187,32 @@ def test_pitch_tranche_clauses_4_6_7_8_9_use_shared_harness_evidence_only() -> N
 
     allowed_prefixes_by_clause = {
         "4": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+            "packages/hla-verification/src/hla.verification/",
             "tests/scenarios/test_federation_lifecycle_backend_matrix.py::",
             "tests/scenarios/test_federation_management_backend_matrix.py::",
             "tests/vendors/test_pitch_real_backend_matrix.py::",
         ),
         "6": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+            "packages/hla-verification/src/hla.verification/",
             "tests/scenarios/test_object_management_backend_matrix.py::",
             "tests/vendors/test_pitch_real_backend_matrix.py::",
-            "packages/hla2010-rti-pitch-common/docs/evidence/",
+            "packages/hla-vendor-pitch/docs/evidence/",
         ),
         "7": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+            "packages/hla-verification/src/hla.verification/",
             "tests/scenarios/test_ownership_management_backend_matrix.py::",
             "tests/vendors/test_pitch_real_backend_matrix.py::",
-            "packages/hla2010-rti-pitch-common/docs/evidence/",
+            "packages/hla-vendor-pitch/docs/evidence/",
         ),
         "8": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::",
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::",
             "tests/time/test_section8_backend_matrix.py::",
             "tests/time/test_lookahead_backend_matrix.py::",
             "tests/vendors/test_pitch_real_backend_matrix.py::",
-            "packages/hla2010-rti-pitch-common/docs/evidence/",
+            "packages/hla-vendor-pitch/docs/evidence/",
         ),
         "9": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+            "packages/hla-verification/src/hla.verification/",
             "tests/scenarios/test_ddm_backend_matrix.py::",
             "tests/vendors/test_pitch_real_backend_matrix.py::",
         ),
@@ -4274,22 +4274,22 @@ def test_python_tranche_clause_summaries_and_reclassified_rows_are_generated() -
     for requirement_id, harness_ref, backend_ref in (
         (
             "HLA1516.1-FM-4.1-005",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_multi_participation_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_multi_participation_scenario",
             "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_multi_participation_matrix",
         ),
         (
             "HLA1516.1-FM-4.1-006",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_multi_participation_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_multi_participation_scenario",
             "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_multi_participation_matrix",
         ),
         (
             "HLA1516.1-FM-4.1.4.1-002",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario",
             "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_fom_integrity_negative_matrix",
         ),
         (
             "HLA1516.1-TM-8.1.2-003",
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_order_override_case",
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case",
             "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_order_override_services",
         ),
     ):

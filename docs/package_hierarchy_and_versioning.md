@@ -16,36 +16,36 @@ For the generated dependency evidence, use
 Read the package families from top to bottom:
 
 ```text
-hla2010-spec
+hla-rti1516e
 └── shared support
-    ├── hla2010-rti-backend-common
-    ├── hla2010-rti-transport-common
-    ├── hla2010-rti-java-common
-    ├── hla2010-rti-runtime-common
-    └── hla2010-verification-harness
-        └── hla2010-fom-target-radar
+    ├── hla-backend-common
+    ├── hla-transport-common
+    ├── hla-bridge-java-common
+    ├── hla-rti-core
+    └── hla-verification
+        └── hla-fom-target-radar
 
-hla2010-spec
-└── hla2010-rti-backend-common
-    ├── hla2010-rti-python
-    ├── hla2010-rti-transport-common
-    │   ├── hla2010-rti-runtime-common
-    │   │   ├── hla2010-rti-certi
-    │   │   ├── hla2010-rti-pitch-common
-    │   │   ├── hla2010-rti-transport-grpc
-    │   │   ├── hla2010-rti-transport-rest
+hla-rti1516e
+└── hla-backend-common
+    ├── hla-backend-inmemory
+    ├── hla-transport-common
+    │   ├── hla-rti-core
+    │   │   ├── hla-backend-certi
+    │   │   ├── hla-vendor-pitch
+    │   │   ├── hla-transport-grpc
+    │   │   ├── hla-transport-rest
     │   │   ├── hla2010-fom-minimal-demo
-    │   │   └── hla2010-fom-target-radar
-    │   └── hla2010-rti-python
-    └── hla2010-rti-java-common
-        ├── hla2010-rti-java-jpype
-        │   ├── hla2010-rti-pitch-jpype
-        │   └── hla2010-rti-portico
-        ├── hla2010-rti-java-py4j
-        │   ├── hla2010-rti-pitch-py4j
-        │   └── hla2010-rti-portico
-        ├── hla2010-rti-pitch-common
-        └── hla2010-rti-certi
+    │   │   └── hla-fom-target-radar
+    │   └── hla-backend-inmemory
+    └── hla-bridge-java-common
+        ├── hla-bridge-java-jpype
+        │   ├── hla-vendor-pitch-jpype
+        │   └── hla-vendor-portico
+        ├── hla-bridge-java-py4j
+        │   ├── hla-vendor-pitch-py4j
+        │   └── hla-vendor-portico
+        ├── hla-vendor-pitch
+        └── hla-backend-certi
 ```
 
 That tree is intentionally simplified. It is meant to answer:
@@ -63,12 +63,12 @@ one in [`package_dependency_tree.md`](package_dependency_tree.md).
 
 The current machine-generated layer model is:
 
-- Layer 0: `hla2010-spec`
-- Layer 1: `hla2010-rti-backend-common`
-- Layer 2: `hla2010-rti-java-common`, `hla2010-rti-python`, `hla2010-rti-transport-common`
-- Layer 3: `hla2010-rti-java-jpype`, `hla2010-rti-java-py4j`, `hla2010-rti-runtime-common`
-- Layer 4: `hla2010-rti-certi`, `hla2010-rti-java`, `hla2010-rti-pitch-common`, `hla2010-rti-portico`, `hla2010-rti-transport-grpc`, `hla2010-rti-transport-rest`, `hla2010-verification-harness`
-- Layer 5: `hla2010-fom-minimal-demo`, `hla2010-fom-target-radar`, `hla2010-rti-pitch-jpype`, `hla2010-rti-pitch-py4j`
+- Layer 0: `hla-rti1516e`
+- Layer 1: `hla-backend-common`
+- Layer 2: `hla-bridge-java-common`, `hla-backend-inmemory`, `hla-transport-common`
+- Layer 3: `hla-bridge-java-jpype`, `hla-bridge-java-py4j`, `hla-rti-core`
+- Layer 4: `hla-backend-certi`, `hla2010-rti-java`, `hla-vendor-pitch`, `hla-vendor-portico`, `hla-transport-grpc`, `hla-transport-rest`, `hla-verification`
+- Layer 5: `hla2010-fom-minimal-demo`, `hla-fom-target-radar`, `hla-vendor-pitch-jpype`, `hla-vendor-pitch-py4j`
 
 Regenerate and check the dependency evidence with:
 
@@ -90,19 +90,19 @@ Current state:
 
 - every package is at `0.13.0`
 - internal package dependencies are pinned with exact versions such as
-  `hla2010-spec==0.13.0`
+  `hla-rti1516e==0.13.0`
 - that means the workspace behaves as a lockstep versioned package set
 
 Examples of the current policy:
 
-- `hla2010-rti-python` depends on:
-  - `hla2010-spec==0.13.0`
-  - `hla2010-rti-backend-common==0.13.0`
-  - `hla2010-rti-transport-common==0.13.0`
-- `hla2010-fom-target-radar` depends on:
-  - `hla2010-spec==0.13.0`
-  - `hla2010-verification-harness==0.13.0`
-  - `hla2010-rti-runtime-common==0.13.0`
+- `hla-backend-inmemory` depends on:
+  - `hla-rti1516e==0.13.0`
+  - `hla-backend-common==0.13.0`
+  - `hla-transport-common==0.13.0`
+- `hla-fom-target-radar` depends on:
+  - `hla-rti1516e==0.13.0`
+  - `hla-verification==0.13.0`
+  - `hla-rti-core==0.13.0`
 
 So the accurate answer is:
 
@@ -126,9 +126,9 @@ leaf packages first:
 
 The riskiest place to start is the shared core:
 
-- `hla2010-spec`
-- `hla2010-rti-backend-common`
-- `hla2010-rti-runtime-common`
+- `hla-rti1516e`
+- `hla-backend-common`
+- `hla-rti-core`
 
 ## Recommended Reading Order
 

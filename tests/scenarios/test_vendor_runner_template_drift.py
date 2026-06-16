@@ -8,7 +8,7 @@ from pathlib import Path
 
 import yaml
 
-from hla2010_repo_internal.verification.vendor_runner_template_drift import (
+from hla.verification.repo_internal.verification.vendor_runner_template_drift import (
     build_vendor_runner_template_drift,
     write_vendor_runner_template_drift,
 )

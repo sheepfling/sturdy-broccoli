@@ -1,9 +1,9 @@
 import pytest
 
-from hla2010.backends.base import make_rti_ambassador
-from hla2010.exceptions import FederationExecutionDoesNotExist
-from hla2010.testing.java_shim_factory import create_java_shim_backend
-from hla2010.testing.scenario_basic import run_basic_federate_scenario
+from hla.rti1516e.backends.base import make_rti_ambassador
+from hla.rti1516e.exceptions import FederationExecutionDoesNotExist
+from hla.rti1516e.testing.java_shim_factory import create_java_shim_backend
+from hla.rti1516e.testing.scenario_basic import run_basic_federate_scenario
 
 
 @pytest.mark.parametrize("profile", ["jpype", "py4j"])
@@ -35,8 +35,8 @@ def test_java_like_exceptions_translate_to_python_rti_exceptions():
     # Destroying a federation before connect should first show NotConnected.  We
     # then connect and ask for a missing federation to prove Java simple class
     # names map into the Python exception hierarchy.
-    from hla2010.runtime_api import FederateAmbassador
-    from hla2010.enums import CallbackModel
+    from hla.rti1516e.runtime_api import FederateAmbassador
+    from hla.rti1516e.enums import CallbackModel
 
     rti.connect(FederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederationExecutionDoesNotExist):

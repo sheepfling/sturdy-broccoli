@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla-rti1516-2025"
+version = "0.13.0"
+description = "Abstract Python API scaffold for IEEE 1516.1-2025 HLA"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["hla-rti-core==0.13.0"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.entry-points."hla.specs"]
+rti1516_2025 = "hla.rti1516_2025.plugin:plugin"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["hla.rti1516_2025*"]
+namespaces = true
+
+[tool.hla.package]
+status = "implementation-owned"
+role = "core-spec"
+source_roots = [
+  "packages/hla-rti1516-2025/src/hla/rti1516_2025",
+]

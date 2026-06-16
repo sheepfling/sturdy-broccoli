@@ -21,7 +21,7 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_repo_internal.verification.vendor_runner_template_drift import write_vendor_runner_template_drift
+from hla.verification.repo_internal.verification.vendor_runner_template_drift import write_vendor_runner_template_drift
 
 
 def main(argv: list[str] | None = None) -> int:

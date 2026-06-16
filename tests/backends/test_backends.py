@@ -1,5 +1,5 @@
-from hla2010.spec import FederateAmbassadorSpec
-from hla2010_rti_backend_common import (
+from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.backends.common import (
     DelegatingRTIAmbassador,
     Invocation,
     RecordingBackend,
@@ -7,9 +7,9 @@ from hla2010_rti_backend_common import (
     make_rti_ambassador,
     snake_to_lower_camel,
 )
-from hla2010_rti_java_common import java_parameter_names, resolve_java_arguments
-from hla2010.enums import CallbackModel
-from hla2010.raw_api import API_METADATA
+from hla.bridges.java.common import java_parameter_names, resolve_java_arguments
+from hla.rti1516e.enums import CallbackModel
+from hla.rti1516e.raw_api import API_METADATA
 
 
 def test_delegating_ambassador_is_concrete():
@@ -71,8 +71,8 @@ def test_case_conversion_helpers():
 
 
 def test_native_handle_registry_uses_java_hash_semantics():
-    from hla2010_rti_backend_common import NativeHandleRegistry
-    from hla2010.handles import ObjectClassHandle
+    from hla.backends.common import NativeHandleRegistry
+    from hla.rti1516e.handles import ObjectClassHandle
 
     class JavaLikeHandle:
         def __init__(self, value):

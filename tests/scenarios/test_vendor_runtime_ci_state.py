@@ -6,7 +6,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from hla2010_repo_internal.verification.vendor_runtime_ci_state import (
+from hla.verification.repo_internal.verification.vendor_runtime_ci_state import (
     build_vendor_runtime_ci_state,
     vendor_runtime_ci_profiles,
     vendor_runtime_ci_profile_spec,

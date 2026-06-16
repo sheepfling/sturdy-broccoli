@@ -5,7 +5,7 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_with_mim_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_lifecycle_with_mim_matrix"
       ],
@@ -27,13 +27,13 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_lifecycle_negative_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_negative_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_negative_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_lifecycle_negative_matrix",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_fom_integrity_negative_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_fom_integrity_negative_matrix",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_with_mim_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_lifecycle_with_mim_matrix"
       ],
@@ -55,10 +55,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_join.py::run_join_precondition_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_join.py::run_join_precondition_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_join_precondition_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_join_precondition_matrix",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_fom_integrity_negative_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_fom_integrity_negative_matrix"
       ],
@@ -80,19 +80,19 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_object_scope.py::run_object_scope_relevance_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_object_scope.py::run_object_scope_relevance_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_object_scope_relevance_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_local_delete.py::run_local_delete_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_local_delete.py::run_local_delete_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_local_delete_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_local_delete_matrix",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_rejection_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_rejection_matrix",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix"
       ],
@@ -114,13 +114,13 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -140,13 +140,13 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -166,10 +166,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -189,10 +189,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -212,10 +212,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -235,13 +235,13 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -261,10 +261,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -284,10 +284,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -307,10 +307,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -330,10 +330,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -353,10 +353,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -376,10 +376,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -399,10 +399,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -422,10 +422,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -445,10 +445,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -468,10 +468,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -491,10 +491,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -514,10 +514,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -639,10 +639,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -662,7 +662,7 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_with_mim_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_lifecycle_with_mim_matrix"
       ],
@@ -684,10 +684,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_ordering_and_queries_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -707,10 +707,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_available_and_retraction_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_retraction_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_available_and_retraction",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_available_and_retraction_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -730,10 +730,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_ordering_and_queries_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -753,10 +753,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_available_and_retraction_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_retraction_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_available_and_retraction",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_available_and_retraction_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -776,10 +776,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_request_retraction_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_request_retraction_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_request_retraction_callback",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_request_retraction_callback_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -799,10 +799,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_state_services_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -822,10 +822,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_ordering_and_queries_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -845,10 +845,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_ordering_and_queries_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -868,10 +868,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_order_override_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_order_override_services",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_order_override_services_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -891,10 +891,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_order_override_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_order_override_services",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_order_override_services_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -914,10 +914,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_order_override_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_order_override_services",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_order_override_services_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -937,10 +937,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_ordering_and_queries_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -960,10 +960,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_ordering_and_queries_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -983,10 +983,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_ordering_and_queries_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -1006,10 +1006,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_ordering_and_queries_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -1029,10 +1029,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_ordering_and_queries_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -1052,10 +1052,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_ordering_and_queries_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -1075,10 +1075,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_ordering_and_queries_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -1178,10 +1178,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "vendor-divergent",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_available_and_retraction_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_retraction_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_available_and_retraction",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_available_and_retraction_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md"
       ],
       "priority": "P1",
       "priority_rank": 1,
@@ -1241,11 +1241,11 @@
       "backend_id": "pitch-jpype",
       "current_status": "blocked",
       "evidence_tests": [
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+        "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
         "analysis/preflight_artifacts/pitch-preflight.json",
         "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
         "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_lost_federate.py::run_external_lost_federate_observer_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_external_lost_federate_observer_scenario",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
         "tests/test_rti_pitch_split_packages.py::test_pitch_jpype_factory_uses_inprocess_runtime_without_gateway_process"
       ],
@@ -1267,11 +1267,11 @@
       "backend_id": "pitch-jpype",
       "current_status": "blocked",
       "evidence_tests": [
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+        "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
         "analysis/preflight_artifacts/pitch-preflight.json",
         "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
         "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_lost_federate.py::run_external_lost_federate_observer_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_external_lost_federate_observer_scenario",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
         "tests/test_rti_pitch_split_packages.py::test_pitch_jpype_factory_uses_inprocess_runtime_without_gateway_process"
       ],
@@ -1296,10 +1296,10 @@
         "analysis/preflight_artifacts/pitch-preflight.json",
         "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
         "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_lost_federate.py::run_lost_federate_mom_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_lost_federate_mom_scenario",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
         "tests/test_rti_pitch_split_packages.py::test_pitch_py4j_factory_attaches_gateway_process",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md"
       ],
       "priority": "P2",
       "priority_rank": 2,
@@ -1322,10 +1322,10 @@
         "analysis/preflight_artifacts/pitch-preflight.json",
         "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
         "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_lost_federate.py::run_lost_federate_mom_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_lost_federate_mom_scenario",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
         "tests/test_rti_pitch_split_packages.py::test_pitch_py4j_factory_attaches_gateway_process",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md"
+        "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md"
       ],
       "priority": "P2",
       "priority_rank": 2,
@@ -1345,16 +1345,16 @@
       "backend_id": "pitch-requirements",
       "current_status": "blocked",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_connection_lost.py::run_connection_lost_callback_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_connection_lost.py::run_connection_lost_callback_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_connection_lost_callback_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_connection_lost_callback_matrix",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_resign.py::run_disconnect_mom_cleanup_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_resign.py::run_disconnect_mom_cleanup_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_disconnect_mom_cleanup_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_disconnect_mom_cleanup_matrix",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_lost_federate.py::run_lost_federate_mom_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_lost_federate_mom_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_lost_federate_mom_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+        "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
         "analysis/preflight_artifacts/pitch-preflight.json",
         "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
         "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md"
@@ -1377,16 +1377,16 @@
       "backend_id": "pitch-requirements",
       "current_status": "blocked",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_connection_lost.py::run_connection_lost_callback_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_connection_lost.py::run_connection_lost_callback_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_connection_lost_callback_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_connection_lost_callback_matrix",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_resign.py::run_disconnect_mom_cleanup_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_resign.py::run_disconnect_mom_cleanup_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_disconnect_mom_cleanup_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_disconnect_mom_cleanup_matrix",
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_lost_federate.py::run_lost_federate_mom_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_lost_federate_mom_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_lost_federate_mom_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+        "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
         "analysis/preflight_artifacts/pitch-preflight.json",
         "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
         "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md"
@@ -1469,7 +1469,7 @@
       "backend_id": "pitch-requirements",
       "current_status": "blocked",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_unpublish_rejection_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_unpublish_rejection_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_unpublish_rejection_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_unpublish_rejection_matrix"
       ],
@@ -1491,7 +1491,7 @@
       "backend_id": "pitch-requirements",
       "current_status": "blocked",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_unpublish_rejection_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_unpublish_rejection_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_unpublish_rejection_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_unpublish_rejection_matrix"
       ],
@@ -4877,10 +4877,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "not-yet-tested",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "src/hla2010/handles.py::Handle.decode",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
       "priority": "P3",
@@ -4901,10 +4901,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "not-yet-tested",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "src/hla2010/handles.py::Handle.decode",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
       "priority": "P3",
@@ -4925,10 +4925,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "not-yet-tested",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "src/hla2010/handles.py::Handle.decode",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
       "priority": "P3",
@@ -4949,10 +4949,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "not-yet-tested",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "src/hla2010/handles.py::Handle.decode",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
       "priority": "P3",
@@ -4973,10 +4973,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "not-yet-tested",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "src/hla2010/handles.py::Handle.decode",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
       "priority": "P3",
@@ -4997,10 +4997,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "not-yet-tested",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "src/hla2010/handles.py::Handle.decode",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
       "priority": "P3",
@@ -5021,10 +5021,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "not-yet-tested",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "src/hla2010/handles.py::Handle.decode",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
       "priority": "P3",
@@ -5045,10 +5045,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "not-yet-tested",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "src/hla2010/handles.py::Handle.decode",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
       "priority": "P3",
@@ -5069,10 +5069,10 @@
       "backend_id": "pitch-requirements",
       "current_status": "not-yet-tested",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
         "src/hla2010/handles.py::Handle.decode",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
+        "packages/hla-backend-inmemory/src/hla/backends/inmemory/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py"
       ],
       "priority": "P3",

@@ -1,13 +1,14 @@
 from __future__ import annotations
 
+from importlib import resources
 from pathlib import Path
 
 import pytest
 
-import hla2010.fom as fom_module
-from hla2010.encoding import HLAboolean, HLAfixedArray, HLAfixedRecord, HLAinteger32BE
-from hla2010.exceptions import CouldNotDecode
-from hla2010.fom import (
+import hla.rti1516e.fom as fom_module
+from hla.rti1516e.encoding import HLAboolean, HLAfixedArray, HLAfixedRecord, HLAinteger32BE
+from hla.rti1516e.exceptions import CouldNotDecode
+from hla.rti1516e.fom import (
     OMTConformanceAssessment,
     BasicDatatypeSpec,
     FOMMergeError,
@@ -25,9 +26,10 @@ from hla2010.fom import (
 )
 
 
-RESOURCE_ROOT = Path(__file__).resolve().parents[2] / "src" / "hla2010" / "resources" / "foms"
+RESOURCE_ROOT = Path(str(resources.files("hla.rti1516e").joinpath("resources", "foms")))
+TARGET_RADAR_RESOURCE_ROOT = Path(str(resources.files("hla.foms.target_radar").joinpath("resources", "foms")))
 VENDOR_SMOKE_FOM = str((RESOURCE_ROOT / "VendorSmokeFOM.xml").resolve())
-TARGET_RADAR_FOM = str((RESOURCE_ROOT / "TargetRadarFOMmodule.xml").resolve())
+TARGET_RADAR_FOM = str((TARGET_RADAR_RESOURCE_ROOT / "TargetRadarFOMmodule.xml").resolve())
 STANDARD_MIM_FOM = str((RESOURCE_ROOT / "HLAstandardMIM.xml").resolve())
 
 
@@ -2180,6 +2182,7 @@ def test_1516_2_hierarchy_doc_declares_omt_lexicon_and_conformance_boundary():
     assert "merge validation" in text
     assert "parse/serialize round-trip validation" in text
     assert "serviceUtilization" in text
-RESOURCE_ROOT = Path(__file__).resolve().parents[2] / "src" / "hla2010" / "resources" / "foms"
+RESOURCE_ROOT = Path(str(resources.files("hla.rti1516e").joinpath("resources", "foms")))
+TARGET_RADAR_RESOURCE_ROOT = Path(str(resources.files("hla.foms.target_radar").joinpath("resources", "foms")))
 VENDOR_SMOKE_FOM = str((RESOURCE_ROOT / "VendorSmokeFOM.xml").resolve())
-TARGET_RADAR_FOM = str((RESOURCE_ROOT / "TargetRadarFOMmodule.xml").resolve())
+TARGET_RADAR_FOM = str((TARGET_RADAR_RESOURCE_ROOT / "TargetRadarFOMmodule.xml").resolve())

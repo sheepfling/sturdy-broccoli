@@ -2,24 +2,24 @@ from __future__ import annotations
 
 import pytest
 
-from hla2010 import mom as hla_mom
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010.enums import CallbackModel
-from hla2010.exceptions import RTIexception
-from hla2010.exceptions import (
+from hla.rti1516e import mom as hla_mom
+from hla.backends.common import RecordingFederateAmbassador
+from hla.rti1516e.enums import CallbackModel
+from hla.rti1516e.exceptions import RTIexception
+from hla.rti1516e.exceptions import (
     RestoreNotRequested,
     SaveNotInitiated,
     TimeConstrainedAlreadyEnabled,
     TimeRegulationIsNotEnabled,
 )
-from hla2010_repo_internal.mom_negative_testing import (
+from hla.verification.repo_internal.mom_negative_testing import (
     build_mom_negative_parameter_map,
     build_mom_negative_test_cases,
     default_mom_model,
     mom_negative_case_report,
 )
-from hla2010_rti_python import InMemoryRTIEngine, PythonRTIConfig
-from hla2010_rti_runtime_common import create_rti_ambassador
+from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig
+from hla.rti1516e.factory import create_rti_ambassador
 
 
 MOM_MODEL = default_mom_model()

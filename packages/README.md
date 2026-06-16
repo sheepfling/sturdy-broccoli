@@ -21,48 +21,48 @@ For the quickest package hierarchy and versioning answer, use
 
 ## Reference
 
-Architecturally, `hla2010-spec` is the one installable root. The
-`src/hla2010/` tree is the workspace facade used for stable imports, abstract
-core API ownership, and only documented temporary compatibility routing.
-The remaining workspace facade is `hla2010.rti`.
+`hla` is a PEP 420 namespace package contributed by the installable
+distributions in this directory. `hla-rti1516e` owns `hla.rti1516e`,
+`hla-rti1516-2025` owns `hla.rti1516_2025`, and `hla-rti-core` owns the
+cross-version `hla.rti` discovery and factory layer.
 
 The target dependency direction is:
 
 ```text
-hla2010-spec
-  <- hla2010-rti-backend-common
-  <- hla2010-rti-runtime-common
-  <- hla2010-rti-transport-common
-  <- hla2010-verification-harness
-  <- hla2010-rti-java-common <- hla2010-rti-java-jpype <- hla2010-rti-pitch-jpype
-  <- hla2010-rti-java-common <- hla2010-rti-java-py4j <- hla2010-rti-pitch-py4j
-  <- hla2010-rti-backend-common <- hla2010-rti-python
-  <- hla2010-rti-runtime-common <- hla2010-rti-pitch-common
-  <- hla2010-rti-runtime-common <- hla2010-rti-certi
-  <- hla2010-rti-transport-common <- hla2010-rti-transport-grpc
-  <- hla2010-rti-transport-common <- hla2010-rti-transport-rest
-  <- hla2010-fom-target-radar
+hla-rti1516e
+  <- hla-backend-common
+  <- hla-rti-core
+  <- hla-transport-common
+  <- hla-verification
+  <- hla-bridge-java-common <- hla-bridge-java-jpype <- hla-vendor-pitch-jpype
+  <- hla-bridge-java-common <- hla-bridge-java-py4j <- hla-vendor-pitch-py4j
+  <- hla-backend-common <- hla-backend-inmemory
+  <- hla-rti-core <- hla-vendor-pitch
+  <- hla-rti-core <- hla-backend-certi
+  <- hla-transport-common <- hla-transport-grpc
+  <- hla-transport-common <- hla-transport-rest
+  <- hla-fom-target-radar
 
-hla2010-rti-java-jpype + hla2010-rti-java-py4j
-  <- hla2010-rti-portico
+hla-bridge-java-jpype + hla-bridge-java-py4j
+  <- hla-vendor-portico
 ```
 
 Rules for the split:
 
-- `hla2010-spec` owns the abstract API, shared HLA value types, exceptions,
+- `hla-rti1516e` owns the abstract API, shared HLA value types, exceptions,
   FOM/MOM helpers needed by federates, and backend plugin contract.
-- `hla2010-rti-backend-common` owns backend-neutral invocation resolution and
+- `hla-backend-common` owns backend-neutral invocation resolution and
   backend support utilities.
-- `hla2010-rti-runtime-common` owns runtime-process and loopback support.
-- `hla2010-rti-transport-common` owns transport-neutral hosted request handling.
+- `hla-rti-core` owns runtime-process and loopback support.
+- `hla-transport-common` owns transport-neutral hosted request handling.
 - RTI packages own one backend family and register through the
-  `hla2010.rti_backends` entry point group.
-- `hla2010-verification-harness` is the only supported public verification package.
+  `hla.rti_backends` entry point group.
+- `hla-verification` is the only supported public verification package.
 - FOM/example packages own concrete resources and scenario helpers, not public testing namespaces.
 - Vendor runtime packages own their own runbooks and vendor-specific findings under `packages/<name>/docs/`.
 - Transport packages own wire-format clients, hosted servers, and protocol assets for one transport family.
-- Backend packages may depend on `hla2010-spec` plus approved shared support
-  layers, but `hla2010-spec` must not import concrete backends, vendor runtime
+- Backend packages may depend on `hla-rti1516e` plus approved shared support
+  layers, but `hla-rti1516e` must not import concrete backends, vendor runtime
   discovery, test shims, or examples.
 - Python and Java backend families are intentionally separated.
 - Transport packages must not depend directly on concrete backend packages.
@@ -75,22 +75,22 @@ Rules for the split:
 
 Suggested move order:
 
-1. `hla2010-rti-python`
-2. `hla2010-rti-certi`
-3. `hla2010-rti-backend-common`
-4. `hla2010-rti-java-common`
-5. `hla2010-rti-runtime-common`
-6. `hla2010-rti-java-jpype`
-7. `hla2010-rti-java-py4j`
-8. `hla2010-rti-pitch-common`
-9. `hla2010-rti-pitch-jpype`
-10. `hla2010-rti-pitch-py4j`
-11. `hla2010-rti-portico`
-12. `hla2010-rti-transport-grpc`
-13. `hla2010-rti-transport-rest`
-14. `hla2010-verification-harness`
-15. `hla2010-fom-target-radar`
-16. trim `hla2010-spec` to the final core surface
+1. `hla-backend-inmemory`
+2. `hla-backend-certi`
+3. `hla-backend-common`
+4. `hla-bridge-java-common`
+5. `hla-rti-core`
+6. `hla-bridge-java-jpype`
+7. `hla-bridge-java-py4j`
+8. `hla-vendor-pitch`
+9. `hla-vendor-pitch-jpype`
+10. `hla-vendor-pitch-py4j`
+11. `hla-vendor-portico`
+12. `hla-transport-grpc`
+13. `hla-transport-rest`
+14. `hla-verification`
+15. `hla-fom-target-radar`
+16. trim `hla-rti1516e` to the final core surface
 
 ## Read Next
 

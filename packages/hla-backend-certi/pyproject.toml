@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla-backend-certi"
+version = "0.13.0"
+description = "CERTI RTI backend plugins for hla-rti1516e"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["hla-rti1516e==0.13.0", "hla-backend-common==0.13.0", "hla-rti-core==0.13.0", "hla-transport-common==0.13.0"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.entry-points."hla.rti_backends"]
+certi = "hla.backends.certi.certi.plugin:plugin"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["hla.backends.certi*"]
+namespaces = true
+
+
+[tool.hla.package]
+status = "implementation-moved"
+role = "rti-backend"
+backend_names = ["certi"]
+backend_aliases = ["certi-native", "native-certi"]
+source_roots = [
+  "packages/hla-backend-certi/src/hla/backends/certi",
+]

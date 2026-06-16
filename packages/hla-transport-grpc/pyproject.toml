@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla-transport-grpc"
+version = "0.13.0"
+description = "gRPC transport package for hla2010 RTI backend adapters"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "hla-rti1516e==0.13.0",
+  "hla-backend-common==0.13.0",
+  "hla-transport-common==0.13.0",
+  "hla-rti-core==0.13.0",
+  "grpcio",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["hla.transports.grpc*"]
+namespaces = true
+
+[tool.setuptools.package-data]
+"hla.transports.grpc" = ["*.proto"]
+
+[tool.hla.package]
+status = "implementation-moved"
+role = "transport"
+transport_names = ["grpc"]
+source_roots = [
+  "packages/hla-transport-grpc/src/hla/transports/grpc",
+]

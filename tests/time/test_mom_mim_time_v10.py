@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010_rti_python import InMemoryRTIEngine, PythonRTIConfig
-from hla2010.enums import CallbackModel, OrderType
-from hla2010.exceptions import InTimeAdvancingState, MessageCanNoLongerBeRetracted
-from hla2010.handles import ObjectInstanceHandle
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010.types import MessageRetractionReturn, TimeQueryReturn
+from hla.backends.common import RecordingFederateAmbassador
+from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig
+from hla.rti1516e.enums import CallbackModel, OrderType
+from hla.rti1516e.exceptions import InTimeAdvancingState, MessageCanNoLongerBeRetracted
+from hla.rti1516e.handles import ObjectInstanceHandle
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.rti1516e.types import MessageRetractionReturn, TimeQueryReturn
 
 
 def _rti(engine: InMemoryRTIEngine, *, config: PythonRTIConfig | None = None):

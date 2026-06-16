@@ -21,7 +21,7 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_repo_internal.verification.workspace_two_federate_suite import write_workspace_two_federate_suite_artifacts
+from hla.verification.repo_internal.verification.workspace_two_federate_suite import write_workspace_two_federate_suite_artifacts
 
 
 def main(argv: list[str] | None = None) -> int:

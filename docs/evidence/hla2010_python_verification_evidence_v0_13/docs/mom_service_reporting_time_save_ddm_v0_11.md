@@ -24,7 +24,7 @@ The service-reporting conflict rule is represented: a federate already subscribe
 
 Section anchors: IEEE 1516.1-2010 §11.5.1-§11.5.2.
 
-A new `hla2010.service_reporting` module provides the shared JSON-safe service-report file sink.  The pure-Python RTI now supports two sinks:
+A new `hla.rti1516e.service_reporting` module provides the shared JSON-safe service-report file sink.  The pure-Python RTI now supports two sinks:
 
 - a global audit sink configured by `PythonRTIConfig.service_report_file`; and
 - per-federate service-report files enabled by the MOM `HLAsendServiceReportsToFile` switch or by `service_report_file_on_by_default`.
@@ -37,7 +37,7 @@ Service-report file output is an audit sink, not a substitute for normal MOM vis
 
 Section anchors: IEEE 1516.1-2010 §8.1, §8.8-§8.21.
 
-The time logic is now consolidated in `hla2010.time_management`.  The backend still owns federation state and callback delivery, but the temporal calculations are isolated behind explicit functions:
+The time logic is now consolidated in `hla.rti1516e.time_management`.  The backend still owns federation state and callback delivery, but the temporal calculations are isolated behind explicit functions:
 
 - `compute_galt` calculates the current GALT bound from the temporal state of other regulating federates, including pending advance requests and lookahead.
 - `compute_lits` combines GALT and queued TSO-message timestamps.

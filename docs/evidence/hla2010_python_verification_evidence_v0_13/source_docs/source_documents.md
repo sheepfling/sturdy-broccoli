@@ -4,4 +4,4 @@ The `specs/ieee-1516-2010/` directory contains the IEEE standards PDFs and downl
 
 These files are included to preserve the local development context for this repo seed. Before publishing or redistributing the repository, review IEEE licensing and redistribution requirements.
 
-The Python source tracks section anchors through `hla2010.spec_refs` and related docstrings, but the repo seed excludes generated verification packets and matrices so the repository can start clean.
+The Python source tracks section anchors through `hla.rti1516e.spec_refs` and related docstrings, but the repo seed excludes generated verification packets and matrices so the repository can start clean.

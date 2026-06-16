@@ -1,6 +1,6 @@
 # Pure Python RTI traceability and ambassador coverage
 
-This release keeps federate code backend-neutral while expanding the pure Python RTI. Section links are engineering traceability IDs extracted from the uploaded IEEE 1516.1-2010 Java/C++ API metadata in `hla2010.raw_api.API_METADATA`.
+This release keeps federate code backend-neutral while expanding the pure Python RTI. Section links are engineering traceability IDs extracted from the uploaded IEEE 1516.1-2010 Java/C++ API metadata in `hla.rti1516e.raw_api.API_METADATA`.
 
 The Python RTI is a development/reference RTI, not a certified production RTI. Complex HLA services such as ownership negotiation, save/restore, advisory switches, and DDM routing use local-process reference semantics where noted.
 
@@ -10,7 +10,7 @@ The Python RTI is a development/reference RTI, not a certified production RTI. C
 |---|---:|---|
 | RTIambassador services | 162 / 162 | every source-derived method has a `PythonRTIBackend` handler |
 | FederateAmbassador callbacks | 55 / 55 | no-op base + recording + multiplexer helpers |
-| FOM/OMT references | 1516.2 section IDs | exposed through `hla2010.spec_refs.FOM_REFERENCES` |
+| FOM/OMT references | 1516.2 section IDs | exposed through `hla.rti1516e.spec_refs.FOM_REFERENCES` |
 
 ## Ambassador helpers
 
@@ -24,7 +24,7 @@ The Python RTI is a development/reference RTI, not a certified production RTI. C
 ## Example section lookup
 
 ```python
-from hla2010.spec_refs import method_reference
+from hla.rti1516e.spec_refs import method_reference
 assert method_reference("connect").section == "4.2"
 assert method_reference("create_federation_execution_with_mim").section == "4.5"
 assert method_reference("update_attribute_values").section == "6.10"

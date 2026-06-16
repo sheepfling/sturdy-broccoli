@@ -25,7 +25,7 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_rti_pitch_common.real_rti_pitch import (
+from hla.vendors.pitch.real_rti_pitch import (
     discover_pitch_runtime,
     prepare_pitch_user_home,
 )

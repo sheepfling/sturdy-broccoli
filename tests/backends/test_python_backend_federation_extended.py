@@ -2,11 +2,11 @@
 
 import pytest
 
-from hla2010 import mom as hla_mom
+from hla.rti1516e import mom as hla_mom
 from tests.backends.python_backend_extended_support import *
-from hla2010.fom import FOMModule
-from hla2010_rti_python import PythonRTIConfig
-from hla2010.enums import (
+from hla.rti1516e.fom import FOMModule
+from hla.backends.inmemory import PythonRTIConfig
+from hla.rti1516e.enums import (
     CallbackModel,
     ResignAction,
     RestoreFailureReason,
@@ -15,8 +15,8 @@ from hla2010.enums import (
     SaveStatus,
     SynchronizationPointFailureReason,
 )
-from hla2010.exceptions import *
-from hla2010.exceptions import (
+from hla.rti1516e.exceptions import *
+from hla.rti1516e.exceptions import (
     CouldNotCreateLogicalTimeFactory,
     CouldNotOpenFDD,
     CouldNotOpenMIM,
@@ -24,15 +24,15 @@ from hla2010.exceptions import (
     ErrorReadingMIM,
     InconsistentFDD,
 )
-from hla2010.handles import FederateHandleSet
-from hla2010.spec_refs import method_label, method_reference
+from hla.rti1516e.handles import FederateHandleSet
+from hla.rti1516e.spec_refs import method_label, method_reference
 
 def test_spec_references_link_services_to_clause_numbers():
     assert method_reference("connect").section == "4.2"
     assert method_reference("createFederationExecution").section == "4.5"
     assert method_reference("publishObjectClassAttributes").section == "5.2"
     assert method_reference("time_advance_grant").section == "8.13"
-    assert "IEEE 1516.1-2010 §6.10" in method_label("update_attribute_values")
+    assert "IEEE 1516.1-2010 (2010 edition) §6.10" in method_label("update_attribute_values")
 
 
 def test_recording_federate_ambassador_records_callback_references():

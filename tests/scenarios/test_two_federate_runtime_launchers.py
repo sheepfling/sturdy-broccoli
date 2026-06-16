@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from hla2010_repo_internal.verification.two_federate_runtime_launchers import (
+from hla.verification.repo_internal.verification.two_federate_runtime_launchers import (
     build_two_federate_runtime_launchers,
 )
-from hla2010_repo_internal.verification import workspace_two_federate_suite as facade_runner
+from hla.verification.repo_internal.verification import workspace_two_federate_suite as facade_runner
 
 
 def test_two_federate_runtime_launcher_registry_exposes_vendor_profiles() -> None:

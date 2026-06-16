@@ -31,8 +31,8 @@ _bootstrap_source_checkout()
 
 REPO_ROOT = Path.cwd()
 
-import hla2010
-from hla2010_repo_internal.conformance import (
+import hla.rti1516e
+from hla.verification.repo_internal.conformance import (
     ServiceConformanceRow,
     actionable_negative_expectation_count,
     build_service_conformance_matrix,
@@ -40,16 +40,16 @@ from hla2010_repo_internal.conformance import (
     write_service_conformance_csv,
     write_service_conformance_json,
 )
-from hla2010_repo_internal.verification.backend_compliance_discovery import write_vendor_discovery_backlog_artifacts
-from hla2010_repo_internal.verification.asset_plan import (
+from hla.verification.repo_internal.verification.backend_compliance_discovery import write_vendor_discovery_backlog_artifacts
+from hla.verification.repo_internal.verification.asset_plan import (
     write_traceability_csv,
     write_verification_assets,
 )
-from hla2010_repo_internal.verification.repo_seed_artifacts import (
+from hla.verification.repo_internal.verification.repo_seed_artifacts import (
     write_requirements_ledger_csv,
     write_requirements_ledger_json,
 )
-from hla2010_repo_internal.verification.requirements_matrix_artifacts import (
+from hla.verification.repo_internal.verification.requirements_matrix_artifacts import (
     build_requirements_matrix_2010,
     write_requirements_matrix_2010_csv,
     write_requirements_matrix_2010_json,
@@ -248,427 +248,427 @@ _SUPPORTED_SUBSET_POLICY_DEFS: dict[str, dict[str, str]] = {
 
 _SCENARIO_EVIDENCE_REGISTRY: dict[str, tuple[str, ...]] = {
     "federation-lifecycle": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_lifecycle_matrix",
     ),
     "federation-lifecycle-negative": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_lifecycle_negative_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_negative_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_negative_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_lifecycle_negative_matrix",
     ),
     "fom-integrity-negative": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_integrity_negative_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_fom_integrity_negative_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_fom_integrity_negative_matrix",
     ),
     "multi-participation": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_multi_participation_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_multi_participation_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_multi_participation_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_multi_participation_matrix",
     ),
     "federation-lifecycle-with-mim": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_with_mim_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_lifecycle_with_mim_matrix",
     ),
     "join-preconditions": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_join.py::run_join_precondition_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_join.py::run_join_precondition_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_join_precondition_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_join_precondition_matrix",
     ),
     "federation-listing": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_listing_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_listing_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_listing_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_listing_matrix",
     ),
     "fom-module-visibility": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_fom_module_visibility_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_fom_module_visibility_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_fom_module_visibility_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_fom_module_visibility_matrix",
     ),
     "fom-multi-module-visibility": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_multi_module_fom_visibility_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_multi_module_fom_visibility_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_multi_module_fom_visibility_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_multi_module_fom_visibility_matrix",
     ),
     "synchronization": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
     ),
     "synchronization-registration-failure": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_registration_failure_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_registration_failure_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_registration_failure_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_registration_failure_matrix",
     ),
     "synchronization-failed-federate": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_failed_federate_synchronization_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_failed_federate_synchronization_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_failed_federate_synchronization_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_failed_federate_synchronization_matrix",
     ),
     "synchronization-late-join": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_late_join_synchronization_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_late_join_synchronization_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_late_join_synchronization_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_late_join_synchronization_matrix",
     ),
     "synchronization-multiple-points": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_multiple_synchronization_points_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_multiple_synchronization_points_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_multiple_synchronization_points_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_multiple_synchronization_points_matrix",
     ),
     "save-restore": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_matrix",
     ),
     "save-restore-queued-callbacks": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_queued_callback_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_queued_callback_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_restore_queued_callback_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_restore_queued_callback_matrix",
     ),
     "save-restore-time-state": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_scheduled_save_restore_time_state_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_scheduled_save_restore_time_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_scheduled_save_restore_time_state_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_scheduled_save_restore_time_state_matrix",
     ),
     "save-restore-object-state": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_object_state_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_object_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_object_state_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_object_state_matrix",
     ),
     "save-restore-federate-local-state": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_federate_local_state_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_federate_local_state_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_federate_local_state_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_federate_local_state_matrix",
     ),
     "save-restore-callback-policy": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_callback_policy_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_callback_policy_scenario",
         "tests/verification/test_compliance_slice_v011.py::test_restore_treats_callback_enablement_as_runtime_policy_not_saved_state",
     ),
     "save-restore-transient-state": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_transient_state_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_transient_state_scenario",
         "tests/verification/test_compliance_slice_v011.py::test_restore_discards_pre_restore_callback_queue_and_retraction_bookkeeping",
     ),
     "save-failure": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_failure_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_failure_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_failure_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_failure_matrix",
     ),
     "restore-abort-exceptions": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_abort_exception_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_abort_exception_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_abort_exception_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_abort_exception_matrix",
     ),
     "save-status-exceptions": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_status_exception_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_status_exception_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_status_exception_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_status_exception_matrix",
     ),
     "save-request-preconditions": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_request_precondition_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_request_precondition_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_request_precondition_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_request_precondition_matrix",
     ),
     "save-participant-exceptions": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_participant_exception_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_participant_exception_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_participant_exception_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_participant_exception_matrix",
     ),
     "abort-save-exceptions": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_abort_save_exception_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_abort_save_exception_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_abort_save_exception_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_abort_save_exception_matrix",
     ),
     "restore-status-exceptions": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_status_exception_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_status_exception_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_status_exception_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_status_exception_matrix",
     ),
     "restore-request-preconditions": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_request_precondition_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_request_precondition_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_request_precondition_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_request_precondition_matrix",
     ),
     "restore-participant-exceptions": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_participant_exception_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_participant_exception_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_participant_exception_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_participant_exception_matrix",
     ),
     "resign-callback-silence": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_resigned_federate_callback_silence_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_resigned_federate_callback_silence_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_resigned_federate_callback_silence_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_resigned_federate_callback_silence_matrix",
     ),
     "resign-preconditions": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_resign.py::run_resign_precondition_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_resign.py::run_resign_precondition_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_resign_precondition_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_resign_precondition_matrix",
     ),
     "resign-mom-cleanup": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_resign.py::run_resign_mom_cleanup_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_resign.py::run_resign_mom_cleanup_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_resign_mom_cleanup_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_resign_mom_cleanup_matrix",
     ),
     "disconnect-mom-cleanup": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_resign.py::run_disconnect_mom_cleanup_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_resign.py::run_disconnect_mom_cleanup_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_disconnect_mom_cleanup_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_disconnect_mom_cleanup_matrix",
     ),
     "restore-request-failure": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_request_failure_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_request_failure_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_request_failure_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_request_failure_matrix",
     ),
     "restore-failure": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_failure_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_failure_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_failure_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_failure_matrix",
     ),
     "save-abort": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_abort_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_abort_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_save_abort_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_save_abort_matrix",
     ),
     "restore-abort": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_restore_abort_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_restore_abort_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_restore_abort_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_restore_abort_matrix",
     ),
     "connection-lost-callback": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_connection_lost.py::run_connection_lost_callback_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_connection_lost.py::run_connection_lost_callback_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_connection_lost_callback_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_connection_lost_callback_matrix",
     ),
     "lost-federate-mom": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_lost_federate.py::run_lost_federate_mom_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_lost_federate_mom_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_lost_federate_mom_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
     ),
     "declaration-management": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_matrix",
     ),
     "declaration-management-overloads": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_management_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_management_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_management_overload_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_management_overload_matrix",
     ),
     "declaration-invalid-attribute-publication": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_invalid_attribute_publication_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_invalid_attribute_publication_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_invalid_attribute_publication_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_invalid_attribute_publication_matrix",
     ),
     "declaration-time-independence": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_time_managed_declaration_independence_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_time_managed_declaration_independence_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_time_managed_declaration_independence_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_time_managed_declaration_independence_matrix",
     ),
     "declaration-unpublish-rejection": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_declaration.py::run_declaration_unpublish_rejection_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_declaration.py::run_declaration_unpublish_rejection_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_declaration_unpublish_rejection_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_declaration_unpublish_rejection_matrix",
     ),
     "discovery-metadata-callbacks": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_discovery_metadata.py::run_discovery_metadata_callback_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_discovery_metadata.py::run_discovery_metadata_callback_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_metadata_callback_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_discovery_metadata_callback_matrix",
     ),
     "discovery-class": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_discovery_class.py::run_discovery_class_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_discovery_class.py::run_discovery_class_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_discovery_class_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_discovery_class_matrix",
     ),
     "name-reservation": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_name_reservation.py::run_name_reservation_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_name_reservation.py::run_name_reservation_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_name_reservation_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_name_reservation_matrix",
     ),
     "local-delete": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_local_delete.py::run_local_delete_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_local_delete.py::run_local_delete_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_local_delete_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_local_delete_matrix",
     ),
     "orphan-object-lifecycle": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_orphan_object.py::run_orphan_object_lifecycle_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_orphan_object.py::run_orphan_object_lifecycle_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_orphan_object_lifecycle_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_orphan_object_lifecycle_matrix",
     ),
     "timed-delete": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_timed_delete.py::run_timed_delete_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_timed_delete.py::run_timed_delete_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_timed_delete_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_timed_delete_matrix",
     ),
     "request-attribute-value-update": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_request_attribute_value_update.py::run_request_attribute_value_update_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_request_attribute_value_update.py::run_request_attribute_value_update_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_matrix",
     ),
     "request-attribute-value-update-routing": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_request_attribute_value_update.py::run_request_attribute_value_update_routing_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_request_attribute_value_update.py::run_request_attribute_value_update_routing_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_request_attribute_value_update_routing_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_request_attribute_value_update_routing_matrix",
     ),
     "object-scope-relevance": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_object_scope.py::run_object_scope_relevance_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_object_scope.py::run_object_scope_relevance_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_object_scope_relevance_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_object_scope_relevance_matrix",
     ),
     "transportation-type": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_matrix",
     ),
     "transportation-type-restore-persistence": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_restore_persistence_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_restore_persistence_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_restore_persistence_matrix",
     ),
     "transportation-type-rejection": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_transportation_type.py::run_transportation_type_rejection_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_transportation_type_rejection_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_transportation_type_rejection_matrix",
     ),
     "update-advisory-callbacks": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_update_advisory.py::run_update_advisory_callback_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_update_advisory.py::run_update_advisory_callback_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_update_advisory_callback_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_update_advisory_callback_matrix",
     ),
     "support-factory-decode": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py::run_support_factory_and_decode_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py::run_support_factory_and_decode_scenario",
         "tests/scenarios/test_support_services_backend_matrix.py::test_python_backend_support_factory_and_decode_matrix",
     ),
     "update-rate": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_update_rate.py::run_update_rate_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_update_rate.py::run_update_rate_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_update_rate_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_update_rate_matrix",
     ),
     "two-federate-exchange": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
     ),
     "ownership": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ownership_matrix",
     ),
     "ownership-negotiated-offer-probe": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::probe_negotiated_attribute_ownership_offer",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_negotiated_divesting_offer_probe_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_negotiated_divesting_offer_probe",
     ),
     "ownership-negotiated": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_negotiated_ownership_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_negotiated_ownership_matrix",
     ),
     "ownership-release-request": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_release_request_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_release_request_ownership_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_request_ownership_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_release_request_owned_attribute_probe",
     ),
     "ownership-unavailable": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_unavailable_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_unavailable_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_ownership_unavailable_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ownership_unavailable_matrix",
     ),
     "ownership-release-denied": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_release_request_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_release_request_ownership_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_release_denied_ownership_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_release_denied_ownership_matrix",
     ),
     "ownership-non-owner-update-rejection": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_non_owner_update_rejection_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_non_owner_update_rejection_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_backend_non_owner_update_rejection_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_non_owner_update_rejection_matrix",
     ),
     "ownership-query-callbacks": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_query_callback_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_query_callback_scenario",
         "tests/scenarios/test_ownership_management_backend_matrix.py::test_python_attribute_ownership_query_callback_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_attribute_ownership_query_callback_matrix",
     ),
     "ddm-region-routing": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/two_federate_suite_scenarios.py::run_suite_ddm_scenario",
+        "packages/hla-verification/src/hla.verification/two_federate_suite_scenarios.py::run_suite_ddm_scenario",
         "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_matrix",
     ),
     "ddm-object-region-lifecycle": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ddm_object_regions.py::run_ddm_object_region_lifecycle_scenario",
         "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_object_region_lifecycle_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_object_region_lifecycle_matrix",
     ),
     "ddm-declaration-gating": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_object_regions.py::run_ddm_declaration_gating_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ddm_object_regions.py::run_ddm_declaration_gating_scenario",
         "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_declaration_gating_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_declaration_gating_matrix",
     ),
     "ddm-passive-region-subscriptions": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ddm_passive_regions.py::run_ddm_passive_region_subscription_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ddm_passive_regions.py::run_ddm_passive_region_subscription_scenario",
         "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_passive_region_subscription_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_passive_region_subscription_matrix",
     ),
     "section8-state-services": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_services",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_state_services_matrix",
     ),
     "section8-logical-time": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_logical_time_query",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_logical_time_query_matrix",
     ),
     "section8-state-toggles": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_state_toggle_services",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_state_toggle_services_matrix",
     ),
     "section8-time-bound-queries": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_time_bound_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_time_bound_query_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_time_bound_queries",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_time_bound_query_matrix",
     ),
     "section8-available-and-flush": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_available_and_flush_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_flush_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_available_and_flush_services",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_available_and_flush_matrix",
     ),
     "section8-early-timestamp-send": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_early_timestamp_send_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_early_timestamp_send_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_early_timestamp_send_rejection",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_early_timestamp_send_rejection_matrix",
     ),
     "section8-ordering-and-queries": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_ordering_and_queries",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_ordering_and_queries_matrix",
     ),
     "section8-available-and-retraction": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_available_and_retraction_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_retraction_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_available_and_retraction",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_available_and_retraction_matrix",
     ),
     "section8-order-override": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_order_override_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_order_override_services",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_order_override_services_matrix",
     ),
     "section8-request-retraction": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_request_retraction_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_request_retraction_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_request_retraction_callback",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_request_retraction_callback_matrix",
     ),
     "section8-duplicate-enable-rejection": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_duplicate_enable_rejection_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_duplicate_enable_rejection_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_duplicate_enable_rejection",
     ),
     "section8-tar-galt-boundary": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_tar_galt_boundary_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_tar_galt_boundary_case",
         "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_tar_galt_boundary",
     ),
     "section8-lookahead": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/time/test_lookahead_backend_matrix.py::test_lookahead_backend_matrix_state_services",
         "tests/time/test_lookahead_backend_matrix.py::test_lookahead_backend_matrix_blocks_early_timestamped_send",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lookahead_matrix",
@@ -677,63 +677,63 @@ _SCENARIO_EVIDENCE_REGISTRY: dict[str, tuple[str, ...]] = {
 
 _CERTI_SCENARIO_EVIDENCE_REGISTRY: dict[str, tuple[str, ...]] = {
     "synchronization": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_synchronization_matrix",
     ),
     "two-federate-exchange": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/vendors/test_certi_real_backend_exchange_matrix.py::test_certi_backend_exchange_matrix",
     ),
     "save-restore": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_save_restore.py::run_save_restore_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_save_restore.py::run_save_restore_scenario",
         "tests/vendors/test_real_vendor_runtime_smoke.py::test_certi_real_save_restore_smoke",
     ),
     "ownership": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_attribute_ownership_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_attribute_ownership_scenario",
         "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_ownership_matrix",
     ),
     "section8-state-services": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_services_matrix",
     ),
     "section8-ordering-and-query": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_ordering_and_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_ordering_and_query_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_ordering_and_query_matrix",
     ),
     "section8-available-and-flush": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_available_and_flush_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_flush_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_available_and_flush_matrix",
     ),
     "section8-available-and-retraction": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_available_and_retraction_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_available_and_retraction_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_available_and_retraction_matrix",
     ),
     "section8-logical-time-query": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_logical_time_query_matrix",
     ),
     "section8-state-toggles": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_state_services_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_state_services_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_state_toggle_services_matrix",
     ),
     "section8-time-bound-query": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_time_bound_query_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_time_bound_query_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_time_bound_query_matrix",
     ),
     "section8-order-override": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_order_override_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_order_override_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_order_override_matrix",
     ),
     "section8-request-retraction": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_request_retraction_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_request_retraction_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_request_retraction_matrix",
     ),
     "section8-duplicate-enable-rejection": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_duplicate_enable_rejection_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_duplicate_enable_rejection_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_duplicate_enable_rejection_matrix",
     ),
     "section8-tar-galt-boundary": (
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::run_section8_tar_galt_boundary_case",
+        "packages/hla-verification/src/hla.verification/section8_matrix.py::run_section8_tar_galt_boundary_case",
         "tests/vendors/test_certi_real_backend_time_matrix.py::test_certi_backend_section8_tar_galt_boundary_matrix",
     ),
 }
@@ -1236,9 +1236,9 @@ for requirement_id in (
 ):
     _CERTI_REQUIREMENT_EVIDENCE[requirement_id] = (
         (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
+            "packages/hla-verification/src/hla.verification/scenario_ownership.py::run_negotiated_attribute_ownership_scenario",
             "tests/vendors/test_certi_real_backend_ownership_matrix.py::test_certi_backend_negotiated_ownership_matrix",
-            "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md",
+            "packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md",
         ),
         "CERTI negotiated ownership remains vendor-divergent across native and Java-facade profiles; the shared negotiated ownership scenario and local findings note document the runtime-side handshake failure.",
     )
@@ -1281,7 +1281,7 @@ _PYTHON_REQUIREMENT_EVIDENCE: dict[str, tuple[tuple[str, ...], str]] = {
 
 
 _PITCH_SECTION8_TIME_MANAGEMENT_VENDOR_DIVERGENCE_REF = (
-    "packages/hla2010-rti-pitch-common/docs/evidence/"
+    "packages/hla-vendor-pitch/docs/evidence/"
     "pitch_section8_time_management_vendor_divergence_2026-06-11.md",
 )
 
@@ -1694,7 +1694,7 @@ _PITCH_REQUIREMENT_EVIDENCE: dict[str, tuple[str, tuple[str, ...], str]] = {
     "REQ-RTI-OWN-7_3-negotiatedAttributeOwnershipDivestiture": (
         "vendor-divergent",
         _SCENARIO_EVIDENCE_REGISTRY["ownership-negotiated-offer-probe"]
-        + ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
+        + ("packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
         "Pitch negotiated ownership offer handling remains bridge-divergent before the end-to-end negotiated transfer can be promoted.",
     ),
     "REQ-FED-OWN-7_4-requestAttributeOwnershipAssumption": (
@@ -1705,13 +1705,13 @@ _PITCH_REQUIREMENT_EVIDENCE: dict[str, tuple[str, tuple[str, ...], str]] = {
     "REQ-FED-OWN-7_5-requestDivestitureConfirmation": (
         "vendor-divergent",
         _SCENARIO_EVIDENCE_REGISTRY["ownership-negotiated-offer-probe"]
-        + ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
+        + ("packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
         "Pitch negotiated ownership offer handling does not deliver a stable cross-bridge divestiture-confirmation sequence.",
     ),
     "REQ-RTI-OWN-7_6-confirmDivestiture": (
         "vendor-divergent",
         _SCENARIO_EVIDENCE_REGISTRY["ownership-negotiated-offer-probe"]
-        + ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
+        + ("packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
         "Pitch negotiated ownership never reaches a promotable confirm-divestiture transfer sequence across both bridges.",
     ),
     "REQ-FED-OWN-7_7-attributeOwnershipAcquisitionNotification": (
@@ -1742,19 +1742,19 @@ _PITCH_REQUIREMENT_EVIDENCE: dict[str, tuple[str, tuple[str, ...], str]] = {
     "REQ-RTI-OWN-7_14-cancelNegotiatedAttributeOwnershipDivestiture": (
         "vendor-divergent",
         _SCENARIO_EVIDENCE_REGISTRY["ownership-negotiated-offer-probe"]
-        + ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
+        + ("packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
         "Pitch negotiated ownership never reaches a stable cross-bridge state where negotiated divestiture cancellation can be promoted.",
     ),
     "REQ-RTI-OWN-7_15-cancelAttributeOwnershipAcquisition": (
         "vendor-divergent",
         _SCENARIO_EVIDENCE_REGISTRY["ownership-negotiated"]
-        + ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
+        + ("packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
         "Pitch negotiated ownership continuation remains bridge-divergent before cancellation semantics can be promoted.",
     ),
     "REQ-FED-OWN-7_16-confirmAttributeOwnershipAcquisitionCancellation": (
         "vendor-divergent",
         _SCENARIO_EVIDENCE_REGISTRY["ownership-negotiated"]
-        + ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
+        + ("packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
         "Pitch negotiated ownership continuation remains bridge-divergent before acquisition-cancellation confirmation is stable.",
     ),
     "REQ-RTI-OWN-7_17-queryAttributeOwnership": (
@@ -1860,25 +1860,25 @@ _PITCH_REQUIREMENT_EVIDENCE: dict[str, tuple[str, tuple[str, ...], str]] = {
     "HLA1516.1-OWN-7.3-001": (
         "vendor-divergent",
         _SCENARIO_EVIDENCE_REGISTRY["ownership-negotiated-offer-probe"]
-        + ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
+        + ("packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
         "Pitch negotiated ownership remains bridge-divergent before a stable negotiated divestiture path can be promoted.",
     ),
     "HLA1516.1-OWN-7.4-001": (
         "vendor-divergent",
         _SCENARIO_EVIDENCE_REGISTRY["ownership-negotiated-offer-probe"]
-        + ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
+        + ("packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
         "Pitch negotiated ownership remains bridge-divergent before a stable negotiated assumption and divestiture path can be promoted.",
     ),
     "HLA1516.1-OWN-7.10-001": (
         "vendor-divergent",
         _SCENARIO_EVIDENCE_REGISTRY["ownership-negotiated"]
-        + ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
+        + ("packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
         "Pitch negotiated ownership continuation remains bridge-divergent before cancellation semantics can be promoted.",
     ),
     "HLA1516.1-OWN-7.11-001": (
         "vendor-divergent",
         _SCENARIO_EVIDENCE_REGISTRY["ownership-negotiated"]
-        + ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
+        + ("packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md",),
         "Pitch negotiated ownership continuation remains bridge-divergent before cancellation confirmation semantics can be promoted.",
     ),
     "HLA1516.1-DDM-9.1-001": (
@@ -2293,7 +2293,7 @@ _PITCH_REQUIREMENT_EVIDENCE["REQ-RTI-PLM-12_2-decodeAttributeHandle"] = (
     _SCENARIO_EVIDENCE_REGISTRY["support-factory-decode"]
     + (
         "src/hla2010/handles.py::Handle.decode",
-        "packages/hla2010-rti-python/src/hla2010_rti_python/support_factories.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/support_factories.py",
         "tests/verification/test_spec_traceability_all_methods.py",
     ),
     "Programming-language mapping designator decoding now has shared harness coverage in the Python reference backend, but dedicated Pitch runtime parity wrappers for the Clause 12 decode surface have not yet been added or executed, so the Pitch disposition is explicitly tracked as not-yet-tested.",
@@ -2792,7 +2792,7 @@ for requirement_id in (
     _PITCH_REQUIREMENT_EVIDENCE[requirement_id] = (
         "vendor-divergent",
         _SCENARIO_EVIDENCE_REGISTRY["section8-ordering-and-queries"]
-        + ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md",),
+        + ("packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md",),
         "Pitch dedicated Section 8 next-message probes diverge from the shared harness expectation because the real Java bridge path does not reproduce the expected next-message grant and timestamp-ordered release sequence in this matrix scenario.",
     )
 
@@ -2815,7 +2815,7 @@ for requirement_id in (
     _PITCH_REQUIREMENT_EVIDENCE[requirement_id] = (
         "vendor-divergent",
         _SCENARIO_EVIDENCE_REGISTRY["section8-available-and-retraction"]
-        + ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md",),
+        + ("packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md",),
         "Pitch dedicated Section 8 available/retraction probes diverge from the shared harness expectation because the real Java bridge path does not expose the expected Python-level retraction return semantics in this matrix scenario.",
     )
 
@@ -2835,7 +2835,7 @@ for requirement_id in (
     _PITCH_REQUIREMENT_EVIDENCE[requirement_id] = (
         "vendor-divergent",
         _SCENARIO_EVIDENCE_REGISTRY["section8-request-retraction"]
-        + ("packages/hla2010-rti-pitch-common/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md",),
+        + ("packages/hla-vendor-pitch/docs/evidence/pitch_section8_time_management_vendor_divergence_2026-06-11.md",),
         "Pitch dedicated Section 8 request-retraction probes diverge from the shared harness expectation because the real Java bridge path does not expose the expected Python-level retraction handle semantics in this matrix scenario.",
     )
 
@@ -3036,7 +3036,7 @@ _add_pitch_composite_evidence_rows(
 for requirement_id in ("HLA1516.1-FM-4.1.5-001", "HLA1516.1-FM-4.1.5-002"):
     evidence = list(_merge_scenario_evidence("connection-lost-callback", "disconnect-mom-cleanup", "lost-federate-mom"))
     for ref in (
-        "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+        "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
         "analysis/preflight_artifacts/pitch-preflight.json",
         "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
         "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
@@ -3465,7 +3465,7 @@ _add_pitch_composite_evidence_rows(
     ),
     status="vendor-divergent",
     scenario_ids=("transportation-type", "transportation-type-restore-persistence"),
-    extra_refs=("packages/hla2010-rti-pitch-common/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md",),
+    extra_refs=("packages/hla-vendor-pitch/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md",),
     note="Pitch real-runtime transportation coverage verifies the reliable/best-effort subset and override persistence only. The broader standard rows that speak for the full transportation semantic space remain vendor-divergent because arbitrary transport-type semantics beyond that subset are not modeled by this backend surface.",
 )
 
@@ -3480,7 +3480,7 @@ _add_pitch_evidence_rows(
     ),
     status="vendor-divergent",
     scenario_id="transportation-type",
-    extra_refs=("packages/hla2010-rti-pitch-common/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md",),
+    extra_refs=("packages/hla-vendor-pitch/docs/evidence/pitch_transport_subset_vendor_divergence_2026-06-11.md",),
     note="Pitch real-runtime transportation coverage verifies the reliable/best-effort subset only. The broader standard rows that speak for the full transportation semantic space remain vendor-divergent because arbitrary transport-type semantics beyond that subset are not modeled by this backend surface.",
 )
 
@@ -4034,7 +4034,7 @@ _SECTION10_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
                 "scope": "reference support lookup slice",
                 "session_status": "passing-in-this-session",
                 "evidence_tests": (
-                    "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
+                    "packages/hla-verification/src/hla.verification/scenario_support_services.py",
                     "tests/scenarios/test_support_services_backend_matrix.py",
                     "tests/verification/test_spec_traceability_and_extended_python_rti.py",
                 ),
@@ -4069,7 +4069,7 @@ _SECTION10_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
                 "scope": "java shim support lookup slice",
                 "session_status": "passing-in-this-session",
                 "evidence_tests": (
-                    "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
+                    "packages/hla-verification/src/hla.verification/scenario_support_services.py",
                     "tests/vendors/test_java_profile_backend_matrix.py::test_inprocess_java_shim_support_factory_and_decode_scenario",
                 ),
                 "notes": "Java shim JPype now runs the shared support-services scenario in-process for the lookup subset it implements, giving executable Section 10 support-lookup coverage without vendor runtime dependencies.",
@@ -4081,7 +4081,7 @@ _SECTION10_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
                 "scope": "java shim support lookup slice",
                 "session_status": "passing-in-this-session",
                 "evidence_tests": (
-                    "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
+                    "packages/hla-verification/src/hla.verification/scenario_support_services.py",
                     "tests/vendors/test_java_profile_backend_matrix.py::test_inprocess_java_shim_support_factory_and_decode_scenario",
                 ),
                 "notes": "Java shim Py4J now runs the shared support-services scenario in-process for the lookup subset it implements, giving executable Section 10 support-lookup coverage without vendor runtime dependencies.",
@@ -4270,7 +4270,7 @@ _PITCH_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
                 "scope": "real-vendor lost-federate slice",
                 "session_status": "not-run-in-this-session",
                 "evidence_tests": (
-                    "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+                    "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
                 ),
                 "notes": "Pitch JPype now has a child-process probe path, but executed real-runtime runs still auto-resume the dropped FedPro session instead of yielding observer-visible lost-federate evidence.",
             },
@@ -4282,7 +4282,7 @@ _PITCH_BACKEND_SLICE_PROFILES: tuple[dict[str, Any], ...] = (
                 "session_status": "not-run-in-this-session",
                 "evidence_tests": (
                     "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
-                    "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+                    "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
                 ),
                 "notes": "Pitch Py4J now has a shared-harness lost-federate wrapper that terminates the victim gateway JVM, but executed real-runtime runs still do not surface the observer-visible lost-federate report.",
             },
@@ -4617,46 +4617,46 @@ def _gap_priority(row: ServiceConformanceRow) -> tuple[str, str]:
 
 def _mapping_status(module_name: str, cls: type[Any]) -> tuple[str, str]:
     name = cls.__name__
-    if module_name == "hla2010.raw_api":
+    if module_name == "hla.rti1516e.raw_api":
         return ("close-1to1", "Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs.")
-    if module_name == "hla2010.handles":
+    if module_name == "hla.rti1516e.handles":
         return ("close-1to1", "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations.")
-    if module_name == "hla2010.time":
+    if module_name == "hla.rti1516e.time":
         return ("close-1to1", "Logical time, interval, and factory classes intentionally mirror the HLA logical-time families.")
-    if module_name == "hla2010.exceptions":
+    if module_name == "hla.rti1516e.exceptions":
         return ("close-1to1", "Exception class names intentionally mirror the HLA exception taxonomy.")
-    if module_name == "hla2010.api":
+    if module_name == "hla.rti1516e.api":
         if name in {"RTIambassador", "RTIAmbassador", "FederateAmbassador"}:
             return ("adapted", "Python-facing ambassador layer preserves the spec surface but adds snake_case conveniences and overload flattening.")
         return ("adapted", "Convenience layer on top of the raw spec-shaped API surface.")
-    if module_name == "hla2010.types":
+    if module_name == "hla.rti1516e.types":
         return ("adapted", "Python dataclass wrappers for HLA concepts and return values, not literal header-level classes.")
-    if module_name in {"hla2010.encoding", "hla2010.ambassadors", "hla2010.rti"}:
+    if module_name in {"hla.rti1516e.encoding", "hla.rti1516e.ambassadors", "hla.rti1516e.rti"}:
         return ("supporting-scaffold", "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type.")
-    if module_name.startswith("hla2010.backends"):
+    if module_name.startswith("hla.rti1516e.backends"):
         return ("supporting-scaffold", "Runtime/backend integration support, not a direct spec class mapping.")
     return ("adapted", "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type.")
 
 
 PUBLIC_CLASS_INVENTORY_MODULES = (
-    "hla2010.ambassadors",
-    "hla2010.api",
-    "hla2010.encoding",
-    "hla2010.enums",
-    "hla2010.exceptions",
-    "hla2010.fom",
-    "hla2010.handles",
-    "hla2010.mom",
-    "hla2010.raw_api",
-    "hla2010.rti",
-    "hla2010.runtime_api",
-    "hla2010.time",
-    "hla2010.types",
+    "hla.rti1516e.ambassadors",
+    "hla.rti1516e.api",
+    "hla.rti1516e.encoding",
+    "hla.rti1516e.enums",
+    "hla.rti1516e.exceptions",
+    "hla.rti1516e.fom",
+    "hla.rti1516e.handles",
+    "hla.rti1516e.mom",
+    "hla.rti1516e.raw_api",
+    "hla.rti1516e.rti",
+    "hla.rti1516e.runtime_api",
+    "hla.rti1516e.time",
+    "hla.rti1516e.types",
 )
 
 
 def _public_class_inventory() -> list[PublicClassInventoryRow]:
-    exported_names = set(getattr(hla2010, "__dict__", {}).keys())
+    exported_names = set(getattr(hla.rti1516e, "__dict__", {}).keys())
     rows: list[PublicClassInventoryRow] = []
 
     for module_name in PUBLIC_CLASS_INVENTORY_MODULES:
@@ -4724,7 +4724,7 @@ def _write_markdown(path: Path, lines: list[str]) -> None:
 
 
 def _extracted_requirement_rows_by_prefixes(prefixes: tuple[str, ...]) -> list[dict[str, Any]]:
-    matrix = build_requirements_matrix_2010(REPO_ROOT, version=hla2010.__version__)
+    matrix = build_requirements_matrix_2010(REPO_ROOT, version=hla.rti1516e.__version__)
     return [
         row
         for row in matrix["rows"]
@@ -4835,7 +4835,7 @@ def _write_clause79_extracted_requirements_artifacts() -> None:
 
 
 def _write_supported_subset_policy_artifacts() -> None:
-    matrix = build_requirements_matrix_2010(REPO_ROOT, version=hla2010.__version__)
+    matrix = build_requirements_matrix_2010(REPO_ROOT, version=hla.rti1516e.__version__)
     rows = [
         row
         for row in matrix["rows"]
@@ -4931,7 +4931,7 @@ def _write_supported_subset_policy_artifacts() -> None:
 
 
 def _write_defended_partials_index_artifacts() -> None:
-    matrix = build_requirements_matrix_2010(REPO_ROOT, version=hla2010.__version__)
+    matrix = build_requirements_matrix_2010(REPO_ROOT, version=hla.rti1516e.__version__)
     rows = [row for row in matrix["rows"] if row["kind"] == "extracted-requirement"]
     rows_by_id = {str(row["requirement_id"]): row for row in rows if row.get("requirement_id")}
     broad_partials = [
@@ -5597,13 +5597,13 @@ def _family_evidence_refs(source_row: dict[str, Any], *, backend: str, clause_ro
             if requirement_id in _CERTI_REQUIREMENT_EVIDENCE:
                 return _normalized_evidence_refs(_CERTI_REQUIREMENT_EVIDENCE[requirement_id][0])
             allowed_prefixes = (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+                "packages/hla-verification/src/hla.verification/",
                 "tests/vendors/test_certi_real_backend_exchange_matrix.py::",
                 "tests/vendors/test_certi_real_backend_ownership_matrix.py::",
                 "tests/vendors/test_certi_real_backend_time_matrix.py::",
                 "tests/vendors/test_real_vendor_runtime_smoke.py::",
                 "tests/vendors/test_java_profile_backend_matrix.py::",
-                "packages/hla2010-rti-certi/docs/evidence/",
+                "packages/hla-backend-certi/docs/evidence/",
             )
             filtered_vendor = tuple(ref for ref in vendor_evidence if ref.startswith(allowed_prefixes))
             return _normalized_evidence_refs(filtered_vendor)
@@ -5612,7 +5612,7 @@ def _family_evidence_refs(source_row: dict[str, Any], *, backend: str, clause_ro
             if requirement_id in _PORTICO_REQUIREMENT_EVIDENCE:
                 return _normalized_evidence_refs(_PORTICO_REQUIREMENT_EVIDENCE[requirement_id][0])
             allowed_prefixes = (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+                "packages/hla-verification/src/hla.verification/",
                 "tests/vendors/test_portico_real_backend_matrix.py::",
                 "tests/scenarios/test_ownership_management_backend_matrix.py::",
                 "tests/scenarios/test_object_management_backend_matrix.py::",
@@ -5629,29 +5629,29 @@ def _family_evidence_refs(source_row: dict[str, Any], *, backend: str, clause_ro
 
     allowed_prefixes_by_clause = {
         "4": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+            "packages/hla-verification/src/hla.verification/",
             "tests/scenarios/test_federation_lifecycle_backend_matrix.py::",
             "tests/scenarios/test_federation_management_backend_matrix.py::",
         ),
         "6": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+            "packages/hla-verification/src/hla.verification/",
             "tests/scenarios/test_object_management_backend_matrix.py::",
         ),
         "7": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+            "packages/hla-verification/src/hla.verification/",
             "tests/scenarios/test_ownership_management_backend_matrix.py::",
         ),
         "8": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/section8_matrix.py::",
+            "packages/hla-verification/src/hla.verification/section8_matrix.py::",
             "tests/time/test_section8_backend_matrix.py::",
             "tests/time/test_lookahead_backend_matrix.py::",
         ),
         "9": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+            "packages/hla-verification/src/hla.verification/",
             "tests/scenarios/test_ddm_backend_matrix.py::",
         ),
         "10": (
-            "packages/hla2010-verification-harness/src/hla2010_verification_harness/",
+            "packages/hla-verification/src/hla.verification/",
             "tests/scenarios/test_support_services_backend_matrix.py::",
         ),
     }
@@ -5744,11 +5744,11 @@ def _pitch_profile_requirement_views(
         views["pitch-jpype"] = (
             "blocked",
             (
-                "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+                "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
                 "analysis/preflight_artifacts/pitch-preflight.json",
                 "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
                 "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_lost_federate.py::run_external_lost_federate_observer_scenario",
+                "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_external_lost_federate_observer_scenario",
                 "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
                 "tests/test_rti_pitch_split_packages.py::test_pitch_jpype_factory_uses_inprocess_runtime_without_gateway_process",
             ),
@@ -5759,17 +5759,17 @@ def _pitch_profile_requirement_views(
                 "analysis/preflight_artifacts/pitch-preflight.json",
                 "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_summary.json",
                 "analysis/vendor_runtime_status/vendor_green_pitch_lost_federate_probe/vendor_runtime_status_report.md",
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_lost_federate.py::run_lost_federate_mom_scenario",
+                "packages/hla-verification/src/hla.verification/scenario_lost_federate.py::run_lost_federate_mom_scenario",
                 "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_lost_federate_mom_matrix",
                 "tests/test_rti_pitch_split_packages.py::test_pitch_py4j_factory_attaches_gateway_process",
-                "packages/hla2010-rti-pitch-common/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
+                "packages/hla-vendor-pitch/docs/evidence/pitch_clause4_lost_federate_gap_2026-06-11.md",
             ),
         )
     return views
 
 
 def _write_pitch_requirement_disposition_artifacts() -> None:
-    matrix = build_requirements_matrix_2010(REPO_ROOT, version=hla2010.__version__)
+    matrix = build_requirements_matrix_2010(REPO_ROOT, version=hla.rti1516e.__version__)
     rows: list[PitchRequirementDispositionRow] = []
     clause_counts: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
     profile_clause_counts: dict[str, dict[str, dict[str, int]]] = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
@@ -6651,13 +6651,13 @@ def main(argv: list[str] | None = None) -> int:
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    matrix = build_service_conformance_matrix(version=hla2010.__version__)
-    write_service_conformance_json(OUTPUT_DIR / "service_conformance.json", version=hla2010.__version__)
-    write_service_conformance_csv(OUTPUT_DIR / "service_conformance.csv", version=hla2010.__version__)
-    write_requirements_ledger_json(OUTPUT_DIR / "requirements_ledger.json", version=hla2010.__version__)
-    write_requirements_ledger_csv(OUTPUT_DIR / "requirements_ledger.csv", version=hla2010.__version__)
-    write_requirements_matrix_2010_json(OUTPUT_DIR / "requirements_matrix_2010.json", REPO_ROOT, version=hla2010.__version__)
-    write_requirements_matrix_2010_csv(OUTPUT_DIR / "requirements_matrix_2010.csv", REPO_ROOT, version=hla2010.__version__)
+    matrix = build_service_conformance_matrix(version=hla.rti1516e.__version__)
+    write_service_conformance_json(OUTPUT_DIR / "service_conformance.json", version=hla.rti1516e.__version__)
+    write_service_conformance_csv(OUTPUT_DIR / "service_conformance.csv", version=hla.rti1516e.__version__)
+    write_requirements_ledger_json(OUTPUT_DIR / "requirements_ledger.json", version=hla.rti1516e.__version__)
+    write_requirements_ledger_csv(OUTPUT_DIR / "requirements_ledger.csv", version=hla.rti1516e.__version__)
+    write_requirements_matrix_2010_json(OUTPUT_DIR / "requirements_matrix_2010.json", REPO_ROOT, version=hla.rti1516e.__version__)
+    write_requirements_matrix_2010_csv(OUTPUT_DIR / "requirements_matrix_2010.csv", REPO_ROOT, version=hla.rti1516e.__version__)
     _write_pitch_requirement_disposition_artifacts()
     _project_backend_dispositions_into_requirements_matrix_artifacts()
     _write_family_requirement_disposition_artifacts("python")
@@ -6674,8 +6674,8 @@ def main(argv: list[str] | None = None) -> int:
     _write_clause79_extracted_requirements_artifacts()
     _write_supported_subset_policy_artifacts()
     _write_defended_partials_index_artifacts()
-    write_verification_assets(OUTPUT_DIR / "verification_assets.json", version=hla2010.__version__)
-    write_traceability_csv(OUTPUT_DIR / "verification_traceability.csv", version=hla2010.__version__)
+    write_verification_assets(OUTPUT_DIR / "verification_assets.json", version=hla.rti1516e.__version__)
+    write_traceability_csv(OUTPUT_DIR / "verification_traceability.csv", version=hla.rti1516e.__version__)
     _write_section_summary_artifacts(matrix.rows)
     _write_public_class_inventory_artifacts()
     _write_gap_report_artifacts(matrix.rows)

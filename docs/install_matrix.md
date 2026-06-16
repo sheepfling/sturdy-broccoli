@@ -54,5 +54,5 @@ machine/workspace readiness check.
 - [`python_environment.md`](python_environment.md)
 - [`first_run.md`](first_run.md)
 - [`rti_options_and_test_matrix.md`](rti_options_and_test_matrix.md)
-- [`../packages/hla2010-rti-certi/docs/certi_section8_runbook.md`](../packages/hla2010-rti-certi/docs/certi_section8_runbook.md)
-- [`../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md`](../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md)
+- [`../packages/hla-backend-certi/docs/certi_section8_runbook.md`](../packages/hla-backend-certi/docs/certi_section8_runbook.md)
+- [`../packages/hla-vendor-pitch/docs/pitch_decision_tree.md`](../packages/hla-vendor-pitch/docs/pitch_decision_tree.md)

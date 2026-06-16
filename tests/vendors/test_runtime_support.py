@@ -7,7 +7,7 @@ import socket
 from pathlib import Path
 import pytest
 
-from hla2010.enums import ResignAction
+from hla.rti1516e.enums import ResignAction
 
 from tests.vendors.runtime_support import (
     assert_all_terminated,

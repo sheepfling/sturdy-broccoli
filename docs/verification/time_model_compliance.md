@@ -20,7 +20,7 @@ subset and the runtime paths that are backed by executable proof.
 
 The implementation is split across the time-management modules:
 
-- [`hla2010_rti_backend_common/time_management.py`](../../packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/time_management.py) defines the
+- [`hla.backends.common/time_management.py`](../../packages/hla-backend-common/src/hla/backends/common/time_management.py) defines the
   core rules:
   - `compute_galt(...)` computes GALT as the minimum lower-bound contribution
     from the other regulating federates
@@ -30,10 +30,10 @@ The implementation is split across the time-management modules:
     federate's timestamp-order sends
   - `galt_allows_requested_time(...)` and `compute_grant_decision(...)`
     normalize the time-advance request rules
-- [`hla2010_rti_python/time.py`](../../packages/hla2010-rti-python/src/hla2010_rti_python/time.py)
-  and [`hla2010_rti_python/time_queue.py`](../../packages/hla2010-rti-python/src/hla2010_rti_python/time_queue.py)
+- [`hla.backends.inmemory/time.py`](../../packages/hla-backend-inmemory/src/hla/backends/inmemory/time.py)
+  and [`hla.backends.inmemory/time_queue.py`](../../packages/hla-backend-inmemory/src/hla/backends/inmemory/time_queue.py)
   apply those rules to the in-memory Python backend state.
-- [`hla2010_rti_python/time_services.py`](../../packages/hla2010-rti-python/src/hla2010_rti_python/time_services.py)
+- [`hla.backends.inmemory/time_services.py`](../../packages/hla-backend-inmemory/src/hla/backends/inmemory/time_services.py)
   enforces the public service preconditions, including regulation/constrained
   state, lookahead validity, and outstanding request checks.
 
@@ -63,8 +63,8 @@ not just a fixed constant stored once at enable-time.
 
 The practical enforcement point is:
 
-- `valid_tso_lower_bound(...)` in [`hla2010_rti_backend_common/time_management.py`](../../packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/time_management.py)
-- `_validate_tso_send_time(...)` in [`hla2010_rti_python/time_services.py`](../../packages/hla2010-rti-python/src/hla2010_rti_python/time_services.py)
+- `valid_tso_lower_bound(...)` in [`hla.backends.common/time_management.py`](../../packages/hla-backend-common/src/hla/backends/common/time_management.py)
+- `_validate_tso_send_time(...)` in [`hla.backends.inmemory/time_services.py`](../../packages/hla-backend-inmemory/src/hla/backends/inmemory/time_services.py)
 
 The negative-path tests prove that a timestamp-order send below that bound is
 rejected.
@@ -99,7 +99,7 @@ The request/grant logic distinguishes strict and inclusive modes:
   the resulting boundary rules
 
 That logic lives in
-[`hla2010_rti_backend_common/time_management.py`](../../packages/hla2010-rti-backend-common/src/hla2010_rti_backend_common/time_management.py)
+[`hla.backends.common/time_management.py`](../../packages/hla-backend-common/src/hla/backends/common/time_management.py)
 and is exercised by the Python backend time queue/service mixins.
 
 ## What We Use As Proof
@@ -128,8 +128,8 @@ The main executable evidence is:
 The CERTI real-runtime notes also record the current promoted baseline behavior
 for `queryGALT`, `queryLITS`, and the available-grant services:
 
-- [`../certi_spec_traceability.md`](../../packages/hla2010-rti-certi/docs/certi_spec_traceability.md)
-- [`../certi_runtime_limitations.md`](../../packages/hla2010-rti-certi/docs/certi_runtime_limitations.md)
+- [`../certi_spec_traceability.md`](../../packages/hla-backend-certi/docs/certi_spec_traceability.md)
+- [`../certi_runtime_limitations.md`](../../packages/hla-backend-certi/docs/certi_runtime_limitations.md)
 
 ## Why This Counts As Compliant
 
@@ -150,4 +150,4 @@ That is compliant enough for the supported subset because:
 - [`../callback_model_compliance.md`](callback_model_compliance.md): callback delivery boundary
 - [`../backend_conformance_matrix.md`](../backend_conformance_matrix.md): clause-level service mapping
 - [`../requirements_hierarchy.md`](requirements_hierarchy.md): requirement hierarchy and proof anchors
-- [`../certi_runtime_limitations.md`](../../packages/hla2010-rti-certi/docs/certi_runtime_limitations.md): real-runtime GALT/LITS divergence notes
+- [`../certi_runtime_limitations.md`](../../packages/hla-backend-certi/docs/certi_runtime_limitations.md): real-runtime GALT/LITS divergence notes

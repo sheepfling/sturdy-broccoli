@@ -2,9 +2,9 @@
 
 The Python HLA surface now has three layers:
 
-1. **Spec-shaped API**: `hla2010.raw_api` and `hla2010.api` expose the IEEE-derived
+1. **Spec-shaped API**: `hla.rti1516e.raw_api` and `hla.rti1516e.api` expose the IEEE-derived
    `RTIambassador` and `FederateAmbassador` method names.
-2. **Backend-neutral façade**: `hla2010.backends.base.DelegatingRTIAmbassador`
+2. **Backend-neutral façade**: `hla.rti1516e.backends.base.DelegatingRTIAmbassador`
    provides a concrete ambassador and forwards every RTI service to an
    `RTIBackend`.
 3. **Runtime backends**: JPype, Py4J, pure Python, C++, or network adapters only

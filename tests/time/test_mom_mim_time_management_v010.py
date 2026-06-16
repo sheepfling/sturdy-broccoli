@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import pytest
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010 import mom as hla_mom
-from hla2010_rti_python import InMemoryRTIEngine, PythonRTIConfig, rti_ambassador
-from hla2010.enums import CallbackModel, ResignAction
-from hla2010.exceptions import InvalidLogicalTime
-from hla2010.types import MessageRetractionReturn
+from hla.backends.common import RecordingFederateAmbassador
+from hla.rti1516e import mom as hla_mom
+from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig, rti_ambassador
+from hla.rti1516e.enums import CallbackModel, ResignAction
+from hla.rti1516e.exceptions import InvalidLogicalTime
+from hla.rti1516e.types import MessageRetractionReturn
 
 
 def drain(*rtis, limit: int = 25) -> None:

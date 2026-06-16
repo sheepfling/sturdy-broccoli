@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import argparse
 
-from hla2010_fom_target_radar.scenarios import make_target_radar_factory, run_target_radar_scenario
+from hla.foms.target_radar.scenarios import make_target_radar_factory, run_target_radar_scenario
 
 
 def main(argv=None) -> int:

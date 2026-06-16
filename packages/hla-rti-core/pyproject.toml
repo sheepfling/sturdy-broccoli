@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla-rti-core"
+version = "0.13.0"
+description = "Shared vendor-runtime process helpers for hla-rti1516e"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["hla.rti*"]
+namespaces = true
+
+[tool.hla.package]
+status = "implementation-moved"
+role = "runtime-support"
+source_roots = [
+  "packages/hla-rti-core/src/hla/rti",
+]

@@ -24,12 +24,12 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_rti_backend_common import BackendUnavailableError, RecordingFederateAmbassador
-from hla2010.enums import ResignAction
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_verification_harness import TwoFederateExchangeConfig, run_two_federate_exchange_scenario
-from hla2010.time import HLAinteger64Interval, HLAinteger64Time
-from hla2010_rti_pitch_common.real_rti_pitch import launch_pitch_runtime
+from hla.backends.common import BackendUnavailableError, RecordingFederateAmbassador
+from hla.rti1516e.enums import ResignAction
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.verification import TwoFederateExchangeConfig, run_two_federate_exchange_scenario
+from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
+from hla.vendors.pitch.real_rti_pitch import launch_pitch_runtime
 
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -91,7 +91,7 @@ def main(argv: list[str] | None = None) -> int:
                 subscriber,
                 config=TwoFederateExchangeConfig(
                     federation_name=federation_name,
-                    fom_modules=("hla2010:VendorSmokeFOM.xml",),
+                    fom_modules=("resource:VendorSmokeFOM.xml",),
                     logical_time_implementation_name="HLAinteger64Time",
                     object_class_name="HLAobjectRoot.SmokeObject",
                     attribute_name="Payload",

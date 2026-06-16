@@ -3,9 +3,9 @@ from __future__ import annotations
 import uuid
 from importlib import resources
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010.enums import RestoreStatus, SaveStatus, SynchronizationPointFailureReason
-from hla2010.exceptions import (
+from hla.backends.common import RecordingFederateAmbassador
+from hla.rti1516e.enums import RestoreStatus, SaveStatus, SynchronizationPointFailureReason
+from hla.rti1516e.exceptions import (
     FederateAlreadyExecutionMember,
     FederateNameAlreadyInUse,
     FederateNotExecutionMember,
@@ -19,9 +19,9 @@ from hla2010.exceptions import (
     RestoreNotInProgress,
     SaveInProgress,
 )
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_rti_python import InMemoryRTIEngine
-from hla2010_verification_harness import (
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.backends.inmemory import InMemoryRTIEngine
+from hla.verification import (
     LostFederateScenarioConfig,
     SaveRestoreScenarioConfig,
     JoinScenarioConfig,
@@ -59,7 +59,7 @@ from hla2010_verification_harness import (
     run_synchronization_scenario,
 )
 
-_VENDOR_SMOKE_FOM = str(resources.files("hla2010").joinpath("resources", "foms", "VendorSmokeFOM.xml"))
+_VENDOR_SMOKE_FOM = str(resources.files("hla.rti1516e").joinpath("resources", "foms", "VendorSmokeFOM.xml"))
 
 
 def test_python_backend_synchronization_matrix():
@@ -68,7 +68,7 @@ def test_python_backend_synchronization_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = SynchronizationScenarioConfig(
         federation_name=f"python-sync-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -108,7 +108,7 @@ def test_python_backend_lost_federate_mom_matrix():
     victim = create_rti_ambassador("python", engine=engine)
     config = LostFederateScenarioConfig(
         federation_name=f"python-lost-federate-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         observer_name="Observer",
         victim_name="Victim",
@@ -136,7 +136,7 @@ def test_python_backend_synchronization_registration_failure_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = SynchronizationScenarioConfig(
         federation_name=f"python-sync-failure-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -166,7 +166,7 @@ def test_python_backend_failed_federate_synchronization_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = SynchronizationScenarioConfig(
         federation_name=f"python-sync-failed-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -197,7 +197,7 @@ def test_python_backend_late_join_synchronization_matrix():
     late = create_rti_ambassador("python", engine=engine)
     config = SynchronizationScenarioConfig(
         federation_name=f"python-sync-late-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -229,7 +229,7 @@ def test_python_backend_multiple_synchronization_points_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = SynchronizationScenarioConfig(
         federation_name=f"python-sync-multi-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -262,7 +262,7 @@ def test_python_backend_save_restore_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-save-restore-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -298,7 +298,7 @@ def test_python_backend_save_restore_queued_callback_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-save-restore-queued-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -330,7 +330,7 @@ def test_python_backend_scheduled_save_restore_time_state_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-scheduled-save-restore-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -417,7 +417,7 @@ def test_python_backend_save_failure_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-save-failure-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -447,7 +447,7 @@ def test_python_backend_restore_request_failure_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-restore-request-failure-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -477,7 +477,7 @@ def test_python_backend_restore_failure_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-restore-failure-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -507,7 +507,7 @@ def test_python_backend_save_abort_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-save-abort-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -537,7 +537,7 @@ def test_python_backend_restore_abort_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-restore-abort-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -567,7 +567,7 @@ def test_python_backend_restore_abort_exception_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-save-status-negative-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -622,7 +622,7 @@ def test_python_backend_save_request_precondition_matrix():
         wing,
         config=SaveRestoreScenarioConfig(
             federation_name=f"python-save-request-{uuid.uuid4().hex[:8]}",
-            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            fom_modules=("resource:VendorSmokeFOM.xml",),
             logical_time_implementation_name="HLAinteger64Time",
             leader_name="Leader",
             wing_name="Wing",
@@ -649,7 +649,7 @@ def test_python_backend_restore_request_precondition_matrix():
         wing,
         config=SaveRestoreScenarioConfig(
             federation_name=f"python-restore-request-{uuid.uuid4().hex[:8]}",
-            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            fom_modules=("resource:VendorSmokeFOM.xml",),
             logical_time_implementation_name="HLAinteger64Time",
             leader_name="Leader",
             wing_name="Wing",
@@ -676,7 +676,7 @@ def test_python_backend_save_participant_exception_matrix():
         wing,
         config=SaveRestoreScenarioConfig(
             federation_name=f"python-save-participant-{uuid.uuid4().hex[:8]}",
-            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            fom_modules=("resource:VendorSmokeFOM.xml",),
             logical_time_implementation_name="HLAinteger64Time",
             leader_name="Leader",
             wing_name="Wing",
@@ -717,7 +717,7 @@ def test_python_backend_restore_participant_exception_matrix():
         wing,
         config=SaveRestoreScenarioConfig(
             federation_name=f"python-restore-participant-{uuid.uuid4().hex[:8]}",
-            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            fom_modules=("resource:VendorSmokeFOM.xml",),
             logical_time_implementation_name="HLAinteger64Time",
             leader_name="Leader",
             wing_name="Wing",
@@ -740,7 +740,7 @@ def test_python_backend_resigned_federate_callback_silence_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = SaveRestoreScenarioConfig(
         federation_name=f"python-resign-callback-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -797,7 +797,7 @@ def test_python_backend_resign_mom_cleanup_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = ResignScenarioConfig(
         federation_name=f"python-resign-mom-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -823,7 +823,7 @@ def test_python_backend_disconnect_mom_cleanup_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = ResignScenarioConfig(
         federation_name=f"python-disconnect-mom-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",
@@ -850,7 +850,7 @@ def test_python_backend_join_precondition_matrix():
     late = create_rti_ambassador("python", engine=engine)
     config = JoinScenarioConfig(
         federation_name=f"python-join-negative-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         leader_name="Leader",
         wing_name="Wing",

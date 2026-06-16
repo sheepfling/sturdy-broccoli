@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import uuid
 
-from hla2010.enums import ResignAction
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010.time import HLAinteger64Interval, HLAinteger64Time
-from hla2010.types import RangeBounds
-from hla2010_rti_python import InMemoryRTIEngine
-from hla2010_verification_harness import (
+from hla.rti1516e.enums import ResignAction
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
+from hla.rti1516e.types import RangeBounds
+from hla.backends.inmemory import InMemoryRTIEngine
+from hla.verification import (
     DdmDeclarationGatingScenarioConfig,
     DdmObjectRegionLifecycleScenarioConfig,
     DdmPassiveRegionScenarioConfig,
@@ -33,7 +33,7 @@ def test_python_backend_ddm_matrix():
         receiver,
         config={
             "federation_name": federation_name,
-            "fom_modules": ("hla2010:VendorSmokeFOM.xml",),
+            "fom_modules": ("resource:VendorSmokeFOM.xml",),
             "logical_time_implementation_name": "HLAinteger64Time",
             "lookahead": HLAinteger64Interval(1),
             "source_near": RangeBounds(10, 20),

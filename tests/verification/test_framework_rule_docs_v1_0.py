@@ -20,5 +20,5 @@ def test_framework_docs_capture_product_set_scope_and_source_policy():
     assert "| Framework rules | Framework concepts | `HLA1516-FW-001` |" in hierarchy
     assert "Canonical working source material for this repo lives under:" in reference
     assert "../../specs/ieee-1516-2010/" in reference
-    assert "section anchors through `hla2010.spec_refs`" in source_policy
+    assert "section anchors through `hla.rti1516e.spec_refs`" in source_policy
     assert "bibliographic and archive-reference material as non-normative source" in source_policy

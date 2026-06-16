@@ -6,7 +6,7 @@ import os
 import subprocess
 from pathlib import Path
 
-from hla2010_repo_internal.verification.target_radar_backend_matrix import write_target_radar_backend_matrix_artifacts
+from hla.verification.repo_internal.verification.target_radar_backend_matrix import write_target_radar_backend_matrix_artifacts
 
 
 ROOT = Path(__file__).resolve().parents[2]

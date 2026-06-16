@@ -342,7 +342,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
         "tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_synchronization_matrix"
@@ -373,7 +373,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
         "tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_synchronization_matrix"
@@ -391,7 +391,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
         "tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_synchronization_matrix"
@@ -409,7 +409,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
         "tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_synchronization_matrix"
@@ -427,7 +427,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_sync.py::run_synchronization_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_sync.py::run_synchronization_scenario",
         "tests/scenarios/test_federation_management_backend_matrix.py::test_python_backend_synchronization_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_synchronization_matrix",
         "tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_synchronization_matrix"
@@ -510,7 +510,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_lifecycle_matrix",
         "tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix"
@@ -775,7 +775,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_lifecycle_matrix",
         "tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix"
@@ -845,7 +845,7 @@
       "clause_root": "4",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_federation_lifecycle.py::run_federation_lifecycle_scenario",
         "tests/scenarios/test_federation_lifecycle_backend_matrix.py::test_python_backend_federation_lifecycle_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_federation_lifecycle_matrix",
         "tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix"
@@ -4698,7 +4698,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix"
@@ -4716,7 +4716,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix"
@@ -4734,7 +4734,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix"
@@ -4752,7 +4752,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix"
@@ -5095,7 +5095,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix"
@@ -5113,7 +5113,7 @@
       "clause_root": "6",
       "document": "IEEE 1516.1-2010",
       "evidence_refs": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_exchange.py::run_two_federate_exchange_scenario",
+        "packages/hla-verification/src/hla.verification/scenario_exchange.py::run_two_federate_exchange_scenario",
         "tests/scenarios/test_object_management_backend_matrix.py::test_python_backend_exchange_matrix",
         "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_exchange_matrix",
         "tests/vendors/test_portico_real_backend_matrix.py::test_portico_backend_exchange_matrix"

@@ -20,7 +20,7 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_repo_internal.fom_overview import write_fom_overview, write_fom_overview_html
+from hla.verification.repo_internal.fom_overview import write_fom_overview, write_fom_overview_html
 
 
 DEFAULT_OUTPUT_DIR = Path.cwd() / "analysis" / "fom_overview"

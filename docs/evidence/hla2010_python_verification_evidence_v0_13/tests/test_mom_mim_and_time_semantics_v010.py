@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import pytest
 
-from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.backends.python_rti import InMemoryRTIEngine, PythonRTIConfig, rti_ambassador
-from hla2010.enums import CallbackModel, OrderType
-from hla2010.exceptions import LogicalTimeAlreadyPassed, MessageCanNoLongerBeRetracted, TimeConstrainedAlreadyEnabled, TimeRegulationAlreadyEnabled
-from hla2010.handles import MessageRetractionHandle
-from hla2010 import mom
+from hla.rti1516e.ambassadors import RecordingFederateAmbassador
+from hla.rti1516e.backends.python_rti import InMemoryRTIEngine, PythonRTIConfig, rti_ambassador
+from hla.rti1516e.enums import CallbackModel, OrderType
+from hla.rti1516e.exceptions import LogicalTimeAlreadyPassed, MessageCanNoLongerBeRetracted, TimeConstrainedAlreadyEnabled, TimeRegulationAlreadyEnabled
+from hla.rti1516e.handles import MessageRetractionHandle
+from hla.rti1516e import mom
 
 
 def drain(*rtis, rounds: int = 20):

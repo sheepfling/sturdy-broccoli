@@ -6,10 +6,10 @@ import uuid
 
 import pytest
 
-from hla2010_rti_transport_grpc.python_server import start_python_grpc_server
-from hla2010.enums import OrderType
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_verification_harness import (
+from hla.transports.grpc.python_server import start_python_grpc_server
+from hla.rti1516e.enums import OrderType
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.verification import (
     run_section8_available_and_flush_case,
     run_section8_available_and_retraction_case,
     run_section8_duplicate_enable_rejection_case,
@@ -22,9 +22,9 @@ from hla2010_verification_harness import (
     run_section8_tar_galt_boundary_case,
     section8_matrix_config,
 )
-from hla2010.types import TimeQueryReturn
-from hla2010_rti_python import InMemoryRTIEngine
-from hla2010_rti_transport_rest.rest_transport_host import start_python_rest_server
+from hla.rti1516e.types import TimeQueryReturn
+from hla.backends.inmemory import InMemoryRTIEngine
+from hla.transports.rest.rest_transport_host import start_python_rest_server
 
 
 @dataclass(frozen=True)

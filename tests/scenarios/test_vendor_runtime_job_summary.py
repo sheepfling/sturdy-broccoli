@@ -4,15 +4,19 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
-from hla2010_repo_internal.verification.vendor_runtime_job_summary import (
+from hla.verification.repo_internal.verification.vendor_runtime_job_summary import (
     VendorRuntimeJobSummaryPaths,
     build_vendor_runtime_job_summary,
 )
 
 
 ROOT = Path(__file__).resolve().parents[2]
+TMP_ROOT = Path(tempfile.gettempdir())
+CERTI_PREFIX = TMP_ROOT / "certi" / "bin" / "rtig"
+PITCH_RUNTIME_HOME = TMP_ROOT / "pitch" / "lib" / "prtifull.jar"
 
 
 def _write_status(path: Path, *, lane: str, overall_classification: str, vendors: list[dict[str, object]]) -> None:
@@ -48,7 +52,7 @@ def test_build_vendor_runtime_job_summary_renders_blocked_reason_and_next_steps(
                 "next_steps": ["./tools/pitch preflight", "./tools/pitch install"],
                 "blocked_checks": [{"name": "docker", "detail": "blocked: Docker CLI exists but the daemon is not reachable"}],
                 "required_markers": {
-                    "runtime_home": "/tmp/pitch/lib/prtifull.jar",
+                    "runtime_home": str(PITCH_RUNTIME_HOME),
                 },
                 "required_ports": {
                     "crc": {"host": "127.0.0.1", "port": 8989, "status": "blocked"},
@@ -72,7 +76,7 @@ def test_build_vendor_runtime_job_summary_renders_blocked_reason_and_next_steps(
                             "next_action": "resolve the documented bridge-divergent state before promotion; keep the lane at probe status",
                             "promotion_readiness": "candidate",
                             "review_decision": "candidate-review",
-                            "docs_ref": "packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md",
+                            "docs_ref": "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
                         }
                     ],
                 },
@@ -106,7 +110,7 @@ def test_build_vendor_runtime_job_summary_renders_blocked_reason_and_next_steps(
     assert "`./tools/pitch preflight`" in rendered
     assert "blocked: Docker CLI exists but the daemon is not reachable" in rendered
     assert "Required markers for `pitch`:" in rendered
-    assert "`runtime_home`: `/tmp/pitch/lib/prtifull.jar`" in rendered
+    assert f"`runtime_home`: `{PITCH_RUNTIME_HOME}`" in rendered
     assert "Required ports for `pitch`:" in rendered
     assert "`crc`: `127.0.0.1:8989` [blocked]" in rendered
     assert "## Parity Packet" in rendered
@@ -136,7 +140,7 @@ def test_job_summary_script_bootstraps_source_checkout_and_writes_output_file(tm
                 "next_steps": [],
                 "blocked_checks": [],
                 "required_markers": {
-                    "active_prefix": "/tmp/certi/bin/rtig",
+                    "active_prefix": str(CERTI_PREFIX),
                 },
                 "required_ports": {},
             }

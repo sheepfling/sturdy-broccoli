@@ -97,28 +97,28 @@ MARKDOWN_INTRO_FRAGMENTS_BY_ARTIFACT = {
 BACKEND_DOC_PREFIXES_BY_ARTIFACT = {
     "python_requirement_disposition.json": (),
     "certi_requirement_disposition.json": (
-        "packages/hla2010-rti-certi/docs/",
+        "packages/hla-backend-certi/docs/",
     ),
     "certi-native_requirement_disposition.json": (
-        "packages/hla2010-rti-certi/docs/",
+        "packages/hla-backend-certi/docs/",
     ),
     "certi-jpype_requirement_disposition.json": (
-        "packages/hla2010-rti-certi/docs/",
+        "packages/hla-backend-certi/docs/",
     ),
     "certi-py4j_requirement_disposition.json": (
-        "packages/hla2010-rti-certi/docs/",
+        "packages/hla-backend-certi/docs/",
     ),
     "portico_requirement_disposition.json": (),
     "pitch-jpype_requirement_disposition.json": (
-        "packages/hla2010-rti-pitch-common/docs/",
+        "packages/hla-vendor-pitch/docs/",
     ),
     "pitch-py4j_requirement_disposition.json": (
-        "packages/hla2010-rti-pitch-common/docs/",
+        "packages/hla-vendor-pitch/docs/",
     ),
     "portico-jpype_requirement_disposition.json": (),
     "portico-py4j_requirement_disposition.json": (),
     "pitch_requirement_disposition.json": (
-        "packages/hla2010-rti-pitch-common/docs/",
+        "packages/hla-vendor-pitch/docs/",
     ),
 }
 

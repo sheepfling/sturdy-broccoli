@@ -22,7 +22,7 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_repo_internal.verification.vendor_runtime_status import write_vendor_runtime_status
+from hla.verification.repo_internal.verification.vendor_runtime_status import write_vendor_runtime_status
 
 
 def main(argv: list[str] | None = None) -> int:

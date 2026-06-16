@@ -21,10 +21,10 @@ API surface.
 
 The Python backend implementation is explicit:
 
-- [`hla2010_rti_python/state.py`](../../packages/hla2010-rti-python/src/hla2010_rti_python/state.py)
+- [`hla.backends.inmemory/state.py`](../../packages/hla-backend-inmemory/src/hla/backends/inmemory/state.py)
   stores the callback model on each federate state and defaults to
   `HLA_EVOKED`.
-- [`hla2010_rti_python/callbacks.py`](../../packages/hla2010-rti-python/src/hla2010_rti_python/callbacks.py)
+- [`hla.backends.inmemory/callbacks.py`](../../packages/hla-backend-inmemory/src/hla/backends/inmemory/callbacks.py)
   routes callback delivery:
   - immediate callbacks are invoked inline when
     `immediate_callbacks_inline` is enabled

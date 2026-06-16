@@ -5,11 +5,11 @@ clean Python spec surface plus pluggable RTI backends.
 
 The supported front door is:
 
-- `hla2010.spec` for the clean interface contract
-- `hla2010.runtime_api` for the Pythonic convenience layer
-- `hla2010_rti_python` for the local in-memory RTI backend
-- `hla2010_rti_transport_grpc` for networked transport-hosted RTI routes
-- `hla2010_fom_target_radar.scenarios` for the Target/Radar example package
+- `hla.rti1516e.spec` for the clean interface contract
+- `hla.rti1516e.runtime_api` for the Pythonic convenience layer
+- `hla.backends.inmemory` for the local in-memory RTI backend
+- `hla.transports.grpc` for networked transport-hosted RTI routes
+- `hla.foms.target_radar.scenarios` for the Target/Radar example package
 
 If you want the shortest path to "something runs", start with the pure Python
 backend and the Target/Radar example.
@@ -32,7 +32,8 @@ map. Those live under `docs/` and `packages/`.
 
 The repo is organized as a monorepo workspace:
 
-- `src/hla2010/` is the root Python package for the abstract/core API plus the documented temporary compatibility facade `hla2010.rti`
+- `hla.rti1516e` is the IEEE 1516.1-2010 API package
+- `hla.rti` owns cross-version discovery and backend selection
 - `packages/*/src/` holds package-owned backend, FOM, transport, and support implementations
 - `tools/` is the canonical home for human-facing operator entrypoints
 - `examples/`, `scripts/`, `tests/`, and `docs/` stay repo-local
@@ -67,7 +68,7 @@ If you want the networked Python RTI guide, use
 [`docs/networked_rti_python.md`](docs/networked_rti_python.md).
 
 If you want the Target/Radar package guide, use
-[`packages/hla2010-fom-target-radar/README.md`](packages/hla2010-fom-target-radar/README.md).
+[`packages/hla-fom-target-radar/README.md`](packages/hla-fom-target-radar/README.md).
 
 If you want an executable setup check first, run:
 
@@ -125,26 +126,24 @@ These are the primary newcomer lanes:
 
 ## What This Repo Is For
 
-The main import surface is `hla2010`, with the clean contract at
-`hla2010.spec`. The `src/hla2010/` tree stays limited to the abstract/core API,
-backend-neutral types and contracts, FOM/MOM helpers, and the one documented
-temporary split-package facade `hla2010.rti`.
+The main 2010 import surface is `hla.rti1516e`, with cross-version discovery
+and factory selection under `hla.rti`.
 
 Concrete backend implementations now live in package-owned source trees such as:
 
-- `packages/hla2010-rti-python/src/hla2010_rti_python/`
-- `packages/hla2010-rti-certi/src/hla2010_rti_certi/`
-- `packages/hla2010-rti-java-jpype/src/hla2010_rti_java_jpype/`
-- `packages/hla2010-rti-java-py4j/src/hla2010_rti_java_py4j/`
-- `packages/hla2010-rti-portico/src/hla2010_rti_portico/`
+- `packages/hla-backend-inmemory/src/hla/backends/inmemory/`
+- `packages/hla-backend-certi/src/hla/backends/certi/`
+- `packages/hla-bridge-java-jpype/src/hla.bridges.java.jpype/`
+- `packages/hla-bridge-java-py4j/src/hla.bridges.java.py4j/`
+- `packages/hla-vendor-portico/src/hla/vendors/portico/`
 
 Namespace policy:
 
 - `hla2010` is the supported runtime namespace
-- `hla2010_verification_harness` is the only supported public verification namespace
-- `hla2010_fom_target_radar.scenarios` is public scenario/FOM surface
-- `hla2010.testing` is not public API and is intentionally removed
-- repo-only proof, report, and suite orchestration helpers live under `src/hla2010_repo_internal/verification/`
+- `hla.verification` is the only supported public verification namespace
+- `hla.foms.target_radar.scenarios` is public scenario/FOM surface
+- `hla.rti1516e.testing` is not public API and is intentionally removed
+- repo-only proof, report, and suite orchestration helpers live under `packages/hla-verification/src/hla/verification/repo_internal/verification/`
 
 The repo is intended to make it easy to:
 
@@ -170,11 +169,11 @@ Good starting points:
 
 For the Target/Radar example, the bundled FOM lives at:
 
-- `packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/resources/foms/TargetRadarFOMmodule.xml`
+- `packages/hla-fom-target-radar/src/hla.foms.target_radar/resources/foms/TargetRadarFOMmodule.xml`
 
 The `examples/` tree is for runnable entrypoints and thin example-only assets.
 Reusable runtime assets belong under their owning package roots. For
-Target/Radar that canonical owner is `hla2010-fom-target-radar`.
+Target/Radar that canonical owner is `hla-fom-target-radar`.
 
 ## Two-Federate Starter
 
@@ -220,8 +219,8 @@ If you only need the shortest "what works right now?" answer, use:
 ## Repository Layout
 
 ```text
-src/hla2010/          core API layer plus the documented temporary compatibility facade hla2010.rti
-src/hla2010_repo_internal/ verification/proof/report helpers kept out of public API
+src/hla2010/          core API layer plus the documented temporary compatibility facade hla.rti1516e.rti
+packages/hla-verification/src/hla/verification/repo_internal/ verification/proof/report helpers kept out of public API
 packages/*/src/       package-owned backend and support implementation roots
 examples/             runnable example federates and scenario entrypoints
 tests/                pytest coverage and smoke tests
@@ -256,8 +255,8 @@ analysis/             generated compliance and verification artifacts
 - [`scripts/README.md`](scripts/README.md) for implementation helpers and wrappers
 - [`docs/documentation_hierarchy.md`](docs/documentation_hierarchy.md) for the doc structure
 - [`requirements/README.md`](requirements/README.md) for the seeded requirements catalog
-- [`packages/hla2010-rti-certi/docs/certi_section8_runbook.md`](packages/hla2010-rti-certi/docs/certi_section8_runbook.md) for the CERTI operator runbook
-- [`packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md`](packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md) for Pitch selection and troubleshooting
+- [`packages/hla-backend-certi/docs/certi_section8_runbook.md`](packages/hla-backend-certi/docs/certi_section8_runbook.md) for the CERTI operator runbook
+- [`packages/hla-vendor-pitch/docs/pitch_decision_tree.md`](packages/hla-vendor-pitch/docs/pitch_decision_tree.md) for Pitch selection and troubleshooting
 
 ## Historical / Provenance
 

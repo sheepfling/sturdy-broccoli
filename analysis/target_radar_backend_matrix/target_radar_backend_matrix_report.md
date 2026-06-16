@@ -1,7 +1,7 @@
 # Target/Radar Backend Matrix
 
 - suite: `target-radar-backend-matrix`
-- target radar FOM: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/resources/foms/TargetRadarFOMmodule.xml`
+- target radar FOM: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/packages/hla-fom-target-radar/src/hla.foms.target_radar/resources/foms/TargetRadarFOMmodule.xml`
 - steps: `4`
 - dt: `1.0`
 - passed: `1`

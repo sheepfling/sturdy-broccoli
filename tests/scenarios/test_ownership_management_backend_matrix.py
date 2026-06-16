@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import uuid
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010.enums import ResignAction
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_rti_python import InMemoryRTIEngine
-from hla2010_verification_harness import (
+from hla.backends.common import RecordingFederateAmbassador
+from hla.rti1516e.enums import ResignAction
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.backends.inmemory import InMemoryRTIEngine
+from hla.verification import (
     NegotiatedOwnershipScenarioConfig,
     NonOwnerUpdateScenarioConfig,
     OwnershipScenarioConfig,
@@ -28,7 +28,7 @@ def test_python_backend_ownership_matrix():
     acquirer = create_rti_ambassador("python", engine=engine)
     config = OwnershipScenarioConfig(
         federation_name=f"python-ownership-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         owner_name="Owner",
         acquirer_name="Acquirer",
@@ -68,7 +68,7 @@ def test_python_negotiated_divesting_offer_probe_matrix():
     acquirer = create_rti_ambassador("python", engine=engine)
     config = NegotiatedOwnershipScenarioConfig(
         federation_name=f"python-negotiated-offer-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         owner_name="Owner",
         acquirer_name="Acquirer",
@@ -114,7 +114,7 @@ def test_python_backend_negotiated_ownership_matrix():
     acquirer = create_rti_ambassador("python", engine=engine)
     config = NegotiatedOwnershipScenarioConfig(
         federation_name=f"python-negotiated-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         owner_name="Owner",
         acquirer_name="Acquirer",
@@ -167,7 +167,7 @@ def test_python_backend_release_request_ownership_matrix():
     acquirer = create_rti_ambassador("python", engine=engine)
     config = ReleaseRequestOwnershipScenarioConfig(
         federation_name=f"python-release-request-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         owner_name="Owner",
         acquirer_name="Acquirer",
@@ -213,7 +213,7 @@ def test_python_backend_ownership_unavailable_matrix():
     acquirer = create_rti_ambassador("python", engine=engine)
     config = OwnershipScenarioConfig(
         federation_name=f"python-ownership-unavailable-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         owner_name="Owner",
         acquirer_name="Acquirer",
@@ -249,7 +249,7 @@ def test_python_backend_release_denied_ownership_matrix():
     acquirer = create_rti_ambassador("python", engine=engine)
     config = ReleaseRequestOwnershipScenarioConfig(
         federation_name=f"python-release-denied-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         owner_name="Owner",
         acquirer_name="Acquirer",
@@ -291,7 +291,7 @@ def test_python_backend_non_owner_update_rejection_matrix():
     observer = create_rti_ambassador("python", engine=engine)
     config = NonOwnerUpdateScenarioConfig(
         federation_name=f"python-non-owner-update-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         owner_name="Owner",
         observer_name="Observer",

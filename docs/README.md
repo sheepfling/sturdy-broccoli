@@ -56,16 +56,16 @@ Backend and runtime docs:
 - [backend_capability_matrix.md](backend_capability_matrix.md): backend feature coverage
 - [backend_conformance_matrix.md](backend_conformance_matrix.md): clause-level conformance and parity status
 - [vendor_runtime_gap_map.md](vendor_runtime_gap_map.md): promoted slices, blocked prerequisites, and remaining vendor/runtime gaps
-- [../packages/hla2010-rti-certi/docs/certi_spec_traceability.md](../packages/hla2010-rti-certi/docs/certi_spec_traceability.md): real CERTI sync/ownership coverage
-- [../packages/hla2010-rti-certi/docs/certi_runtime_limitations.md](../packages/hla2010-rti-certi/docs/certi_runtime_limitations.md): patched-vs-upstream CERTI baseline policy and runtime shortfalls
-- [../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md](../packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md): CERTI negotiated ownership investigation
-- [../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md](../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md): Pitch runtime selection and troubleshooting
-- [../packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md](../packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md): shortest Pitch operator path
+- [../packages/hla-backend-certi/docs/certi_spec_traceability.md](../packages/hla-backend-certi/docs/certi_spec_traceability.md): real CERTI sync/ownership coverage
+- [../packages/hla-backend-certi/docs/certi_runtime_limitations.md](../packages/hla-backend-certi/docs/certi_runtime_limitations.md): patched-vs-upstream CERTI baseline policy and runtime shortfalls
+- [../packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md](../packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md): CERTI negotiated ownership investigation
+- [../packages/hla-vendor-pitch/docs/pitch_decision_tree.md](../packages/hla-vendor-pitch/docs/pitch_decision_tree.md): Pitch runtime selection and troubleshooting
+- [../packages/hla-vendor-pitch/docs/pitch_docker_quickstart.md](../packages/hla-vendor-pitch/docs/pitch_docker_quickstart.md): shortest Pitch operator path
 - [vendor_runtime_runner_guide.md](vendor_runtime_runner_guide.md): repo-green versus vendor-green runner contract
 - [vendor_runner_provisioning.md](vendor_runner_provisioning.md): dedicated runner provisioning spec and CI variable checklist
 - [vendor_runner_provisioning_template.yaml](vendor_runner_provisioning_template.yaml): machine-readable runner provisioning template
 - [vendor_parity_artifacts.md](vendor_parity_artifacts.md): harmonized vendor artifact packet
-- [../packages/hla2010-rti-certi/docs/certi_section8_runbook.md](../packages/hla2010-rti-certi/docs/certi_section8_runbook.md): CERTI operator runbook
+- [../packages/hla-backend-certi/docs/certi_section8_runbook.md](../packages/hla-backend-certi/docs/certi_section8_runbook.md): CERTI operator runbook
 
 ## Historical / Provenance
 

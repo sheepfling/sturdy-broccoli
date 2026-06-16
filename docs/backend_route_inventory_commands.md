@@ -44,7 +44,7 @@ Simplest operator path:
 
 Quickstart:
 
-- [pitch_docker_quickstart.md](../packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md)
+- [pitch_docker_quickstart.md](../packages/hla-vendor-pitch/docs/pitch_docker_quickstart.md)
 
 ### Transport-hosted Python RTI
 

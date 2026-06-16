@@ -4,7 +4,7 @@ import json
 import re
 from pathlib import Path
 
-from hla2010_repo_internal.verification.backend_compliance_discovery import (
+from hla.verification.repo_internal.verification.backend_compliance_discovery import (
     build_discovery_payload,
     render_backend_compliance_catalog_text,
 )

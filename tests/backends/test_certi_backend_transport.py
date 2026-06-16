@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from hla2010.spec import FederateAmbassadorSpec
-from hla2010_rti_backend_common import make_rti_ambassador
-from hla2010_rti_certi import CERTIBackend, CERTIConfig
-from hla2010_rti_certi.certi.service_adapter import CERTIBackend as PackageCERTIBackend
-from hla2010_rti_certi.certi.transport import CERTITransport, CERTITransportProtocol
-from hla2010_rti_transport_common.transport import RTITransport, TransportRequest, TransportResponse
-from hla2010.enums import CallbackModel
-from hla2010_rti_runtime_common import RTITransportSpec, create_backend, register_transport_factory
+from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.backends.common import make_rti_ambassador
+from hla.backends.certi import CERTIBackend, CERTIConfig
+from hla.backends.certi.certi.service_adapter import CERTIBackend as PackageCERTIBackend
+from hla.backends.certi.certi.transport import CERTITransport, CERTITransportProtocol
+from hla.transports.common.transport import RTITransport, TransportRequest, TransportResponse
+from hla.rti1516e.enums import CallbackModel
+from hla.rti import RTITransportSpec, create_backend, register_transport_factory
 
 
 class FakeTransport(RTITransport):
@@ -54,7 +54,7 @@ def test_certi_package_split_is_explicit():
 
 def test_backend_factory_accepts_transport_specs_transparently():
     transport = FakeTransport({"GET_HLA_VERSION": ["HLA 1516.1-2010"]})
-    backend = create_backend("certi", transport=transport)
+    backend = create_backend("certi", spec="rti1516e", transport=transport)
     assert backend.config.transport is transport
 
     spec = RTITransportSpec(kind="subprocess-line", options={"command": ["/bin/echo"]})
@@ -74,5 +74,5 @@ def test_transport_registry_can_route_future_wire_kinds():
     transport = FakeTransport({"GET_HLA_VERSION": ["HLA 1516.1-2010"]})
     register_transport_factory("test-grpc-wire", lambda spec: transport)
 
-    backend = create_backend("certi", transport={"kind": "test-grpc-wire"})
+    backend = create_backend("certi", spec="rti1516e", transport={"kind": "test-grpc-wire"})
     assert backend.config.transport is transport

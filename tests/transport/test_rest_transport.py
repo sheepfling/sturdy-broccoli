@@ -1,20 +1,22 @@
 from __future__ import annotations
 
 import json
+from importlib import resources
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from threading import Thread
 
 import pytest
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010.spec import FederateAmbassadorSpec
-from hla2010_rti_backend_common import make_rti_ambassador
-from hla2010_rti_python import InMemoryRTIEngine
-from hla2010_rti_transport_common.transport import TransportRequest
-from hla2010.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveFailureReason, SaveStatus
-from hla2010_rti_runtime_common import create_backend, create_rti_ambassador
-from hla2010_verification_harness import (
+from hla.backends.common import RecordingFederateAmbassador
+from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.backends.common import make_rti_ambassador
+from hla.backends.inmemory import InMemoryRTIEngine
+from hla.transports.common.transport import TransportRequest
+from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveFailureReason, SaveStatus
+from hla.rti import create_backend
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.verification import (
     NegotiatedOwnershipScenarioConfig,
     OwnershipScenarioConfig,
     SynchronizationScenarioConfig,
@@ -25,13 +27,13 @@ from hla2010_verification_harness import (
     run_negotiated_attribute_ownership_scenario,
     run_synchronization_scenario,
 )
-from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from hla2010_rti_transport_rest import RestTransport, RestTransportConfig
-from hla2010_rti_transport_rest.rest_transport_host import start_python_rest_server
+from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
+from hla.transports.rest import RestTransport, RestTransportConfig
+from hla.transports.rest.rest_transport_host import start_python_rest_server
 
 pytestmark = pytest.mark.requires_loopback_server
 
-RESOURCE_ROOT = Path(__file__).resolve().parents[2] / "src" / "hla2010" / "resources" / "foms"
+RESOURCE_ROOT = Path(str(resources.files("hla.rti1516e").joinpath("resources", "foms")))
 VENDOR_SMOKE_FOM = str((RESOURCE_ROOT / "VendorSmokeFOM.xml").resolve())
 
 
@@ -112,7 +114,7 @@ def test_rest_transport_round_trips_typed_envelopes():
 def test_rest_transport_registers_with_backend_factory():
     server, base_url = _start_stub_server()
     try:
-        backend = create_backend("certi", transport={"kind": "rest", "base_url": base_url})
+        backend = create_backend("certi", spec="rti1516e", transport={"kind": "rest", "base_url": base_url})
         rti = make_rti_ambassador(backend)
 
         assert rti.getHLAversion() == "HLA 1516.1-2010"

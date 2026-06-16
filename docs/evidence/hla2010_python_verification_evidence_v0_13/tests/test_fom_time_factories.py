@@ -1,13 +1,13 @@
 from pathlib import Path
 
-from hla2010.runtime_api import FederateAmbassador
-from hla2010.backends.java_common import JavaBridge, JavaValueConverter, resolve_java_invocation
-from hla2010.backends.base import Invocation
-from hla2010.enums import CallbackModel, ResignAction
-from hla2010.handles import AttributeHandle, AttributeHandleSet, AttributeHandleValueMap, DimensionHandleSet
-from hla2010.raw_api import API_METADATA
-from hla2010.rti import create_rti_ambassador
-from hla2010.time import HLAfloat64Interval, HLAfloat64Time
+from hla.rti1516e.runtime_api import FederateAmbassador
+from hla.rti1516e.backends.java_common import JavaBridge, JavaValueConverter, resolve_java_invocation
+from hla.rti1516e.backends.base import Invocation
+from hla.rti1516e.enums import CallbackModel, ResignAction
+from hla.rti1516e.handles import AttributeHandle, AttributeHandleSet, AttributeHandleValueMap, DimensionHandleSet
+from hla.rti1516e.raw_api import API_METADATA
+from hla.rti1516e.rti import create_rti_ambassador
+from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 TARGET_RADAR_FOM = PROJECT_ROOT / "examples" / "target_radar" / "TargetRadarFOMmodule.xml"

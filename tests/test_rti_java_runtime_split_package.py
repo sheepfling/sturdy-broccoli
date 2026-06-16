@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from hla2010_rti_java_common import (
+from hla.bridges.java.common import (
     discover_java_home,
     discover_java_home as package_discover_java_home,
     discover_java_tool,
@@ -11,13 +11,13 @@ from hla2010_rti_java_common import (
 
 
 def test_split_java_common_package_exports_runtime_helpers():
-    from hla2010_rti_java_common.java_runtime import (
+    from hla.bridges.java.common.java_runtime import (
         discover_java_home as discover_java_home_from_module,
     )
-    from hla2010_rti_java_common.java_runtime import (
+    from hla.bridges.java.common.java_runtime import (
         discover_java_tool as discover_java_tool_from_module,
     )
-    from hla2010_rti_java_common.java_runtime import (
+    from hla.bridges.java.common.java_runtime import (
         ensure_java_home as ensure_java_home_from_module,
     )
 

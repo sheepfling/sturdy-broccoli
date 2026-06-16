@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from hla2010.handles import ParameterHandle
-from hla2010_verification_harness import decode_handle_value_map, jsonable
+from hla.rti1516e.handles import ParameterHandle
+from hla.verification import decode_handle_value_map, jsonable
 
 
 class _BrokenAsDict:

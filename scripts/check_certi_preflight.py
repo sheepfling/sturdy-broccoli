@@ -24,15 +24,24 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_rti_backend_common import BackendUnavailableError
-from hla2010_rti_certi.real_rti_certi import (
+from hla.backends.common import BackendUnavailableError
+from hla.backends.certi.real_rti_certi import (
     discover_certi_runtime,
     discover_certi_smoke_fom,
 )
-from hla2010_rti_runtime_common.real_rti_process import reserve_tcp_port
-from hla2010_repo_internal.verification.path_rendering import jsonable as portable_jsonable
+from hla.rti.real_rti_process import reserve_tcp_port
 
 LOCAL_STATE_ROOT = Path(os.environ.get("HLA2010_LOCAL_STATE_ROOT", str(ROOT_DIR / ".local")))
+
+
+def portable_jsonable(value):
+    if isinstance(value, Path):
+        return str(value)
+    if isinstance(value, dict):
+        return {str(key): portable_jsonable(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [portable_jsonable(item) for item in value]
+    return value
 
 
 def _local_state_path(*parts: str) -> Path:

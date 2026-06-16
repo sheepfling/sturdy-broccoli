@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from hla2010.verification import build_verification_plan, write_verification_assets
+from hla.rti1516e.verification import build_verification_plan, write_verification_assets
 
 
 def test_verification_plan_is_honest_about_progress_and_gaps(tmp_path):

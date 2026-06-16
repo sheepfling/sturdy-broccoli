@@ -7,12 +7,12 @@ from pathlib import Path
 
 import pytest
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010_rti_backend_common import BackendUnavailableError
-from hla2010.enums import CallbackModel, OrderType, ResignAction
-from hla2010.exceptions import AttributeDivestitureWasNotRequested, InvalidLogicalTime, RTIinternalError
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_verification_harness import (
+from hla.backends.common import RecordingFederateAmbassador
+from hla.backends.common import BackendUnavailableError
+from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
+from hla.rti1516e.exceptions import AttributeDivestitureWasNotRequested, InvalidLogicalTime, RTIinternalError
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.verification import (
     NegotiatedOwnershipScenarioConfig,
     ReleaseRequestOwnershipScenarioConfig,
     TwoFederateExchangeConfig,
@@ -20,9 +20,9 @@ from hla2010_verification_harness import (
     run_negotiated_attribute_ownership_scenario,
     run_release_request_ownership_scenario,
 )
-from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from hla2010.types import TimeQueryReturn
-from hla2010_rti_certi.real_rti_certi import (
+from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
+from hla.rti1516e.types import TimeQueryReturn
+from hla.backends.certi.real_rti_certi import (
     discover_certi_runtime_profile,
     discover_certi_smoke_fom,
     launch_certi_rtig,

@@ -5,15 +5,15 @@ from dataclasses import dataclass
 
 import pytest
 
-from hla2010_rti_transport_grpc.python_server import start_python_grpc_server
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_verification_harness.section8_matrix import (
+from hla.transports.grpc.python_server import start_python_grpc_server
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.verification.section8_matrix import (
     run_section8_early_timestamp_send_case,
     run_section8_state_services_case,
     section8_matrix_config,
 )
-from hla2010_rti_python import InMemoryRTIEngine
-from hla2010_rti_transport_rest.rest_transport_host import start_python_rest_server
+from hla.backends.inmemory import InMemoryRTIEngine
+from hla.transports.rest.rest_transport_host import start_python_rest_server
 
 
 @dataclass(frozen=True)

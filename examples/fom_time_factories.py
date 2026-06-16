@@ -6,10 +6,10 @@ Run from the project root:
 """
 from __future__ import annotations
 
-from hla2010.enums import CallbackModel, ResignAction
-from hla2010.spec import FederateAmbassadorSpec
-from hla2010_fom_target_radar.scenarios import target_radar_fom_path
-from hla2010_rti_runtime_common import create_rti_ambassador
+from hla.rti1516e.enums import CallbackModel, ResignAction
+from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.foms.target_radar.scenarios import target_radar_fom_path
+from hla.rti1516e.factory import create_rti_ambassador
 
 
 class PrinterFederate(FederateAmbassadorSpec):

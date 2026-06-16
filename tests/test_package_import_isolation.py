@@ -8,44 +8,59 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGES = ROOT / "packages"
 
-# Installable package families are allowed to depend on a small, explicit set
-# of sibling package roots. This keeps the split packages honest while still
-# allowing the transitional spec/runtime facade under `hla2010`.
-#
-# The architectural rule is:
-# - backend families depend on core plus narrow support packages
-# - transports depend on core plus narrow transport support packages
-# - FOM and verification packages depend only on the shared runtime surface
-#
-# See docs/import_boundary_rules.md for the prose version of the same rules.
-CORE_ONLY = {"hla2010"}
-BACKEND_COMMON = CORE_ONLY | {"hla2010_rti_backend_common"}
-JAVA_COMMON = CORE_ONLY | {"hla2010_rti_java_common"}
-RUNTIME_COMMON = CORE_ONLY | {"hla2010_rti_backend_common", "hla2010_rti_transport_common"}
-VERIFICATION_COMMON = CORE_ONLY | {"hla2010_rti_backend_common", "hla2010_rti_runtime_common"}
+OWNED_PREFIX_TO_PACKAGE = {
+    "hla.rti": "hla-rti-core",
+    "hla.rti1516e": "hla-rti1516e",
+    "hla.rti1516_2025": "hla-rti1516-2025",
+    "hla.backends.common": "hla-backend-common",
+    "hla.backends.inmemory": "hla-backend-inmemory",
+    "hla.backends.certi": "hla-backend-certi",
+    "hla.bridges.java.common": "hla-bridge-java-common",
+    "hla.bridges.java.jpype": "hla-bridge-java-jpype",
+    "hla.bridges.java.py4j": "hla-bridge-java-py4j",
+    "hla.vendors.pitch": "hla-vendor-pitch",
+    "hla.vendors.pitch.jpype": "hla-vendor-pitch-jpype",
+    "hla.vendors.pitch.py4j": "hla-vendor-pitch-py4j",
+    "hla.vendors.portico": "hla-vendor-portico",
+    "hla.transports.common": "hla-transport-common",
+    "hla.transports.grpc": "hla-transport-grpc",
+    "hla.transports.rest": "hla-transport-rest",
+    "hla.transports.fedpro": "hla-transport-fedpro",
+    "hla.foms.target_radar": "hla-fom-target-radar",
+    "hla.verification": "hla-verification",
+}
 
-PACKAGE_IMPORT_ALLOWLISTS: dict[str, set[str]] = {
-    "hla2010_rti_java_common": CORE_ONLY,
-    "hla2010_rti_python": BACKEND_COMMON,
-    "hla2010_verification_harness": VERIFICATION_COMMON,
-    "hla2010_rti_runtime_common": RUNTIME_COMMON,
-    "hla2010_rti_transport_common": BACKEND_COMMON,
-    "hla2010_rti_java_jpype": JAVA_COMMON,
-    "hla2010_rti_java_py4j": JAVA_COMMON,
-    "hla2010_rti_certi": JAVA_COMMON | {"hla2010_rti_runtime_common", "hla2010_rti_transport_common"},
-    "hla2010_rti_pitch_common": JAVA_COMMON | {"hla2010_rti_runtime_common"},
-    "hla2010_rti_pitch_jpype": JAVA_COMMON | {"hla2010_rti_java_jpype", "hla2010_rti_pitch_common"},
-    "hla2010_rti_pitch_py4j": JAVA_COMMON | {"hla2010_rti_java_py4j", "hla2010_rti_pitch_common"},
-    "hla2010_rti_portico": JAVA_COMMON | {"hla2010_rti_java_jpype", "hla2010_rti_java_py4j"},
-    "hla2010_rti_transport_grpc": CORE_ONLY | {"hla2010_rti_transport_common", "hla2010_rti_runtime_common"},
-    "hla2010_rti_transport_rest": CORE_ONLY | {"hla2010_rti_transport_common", "hla2010_rti_runtime_common"},
-    "hla2010_fom_target_radar": CORE_ONLY | {"hla2010_verification_harness", "hla2010_rti_runtime_common"},
+ALLOWED_PACKAGE_DEPENDENCIES: dict[str, set[str]] = {
+    "hla-rti-core": {"hla-backend-common", "hla-transport-common"},
+    "hla-rti1516e": {"hla-rti-core"},
+    "hla-rti1516-2025": {"hla-rti-core"},
+    "hla-backend-common": {"hla-rti1516e", "hla-rti-core"},
+    "hla-backend-inmemory": {"hla-rti1516e", "hla-backend-common", "hla-rti-core"},
+    "hla-backend-certi": {"hla-rti1516e", "hla-backend-common", "hla-rti-core", "hla-transport-common"},
+    "hla-bridge-java-common": {"hla-rti1516e", "hla-backend-common", "hla-rti-core"},
+    "hla-bridge-java-jpype": {"hla-rti1516e", "hla-backend-common", "hla-bridge-java-common", "hla-rti-core"},
+    "hla-bridge-java-py4j": {"hla-rti1516e", "hla-bridge-java-common", "hla-rti-core"},
+    "hla-vendor-pitch": {"hla-rti1516e", "hla-bridge-java-common", "hla-rti-core"},
+    "hla-vendor-pitch-jpype": {"hla-rti1516e", "hla-bridge-java-common", "hla-bridge-java-jpype", "hla-rti-core", "hla-vendor-pitch"},
+    "hla-vendor-pitch-py4j": {"hla-rti1516e", "hla-bridge-java-common", "hla-bridge-java-py4j", "hla-rti-core", "hla-vendor-pitch"},
+    "hla-vendor-portico": {"hla-rti1516e", "hla-bridge-java-common", "hla-bridge-java-jpype", "hla-bridge-java-py4j", "hla-rti-core"},
+    "hla-transport-common": {"hla-rti1516e", "hla-backend-common"},
+    "hla-transport-grpc": {"hla-rti1516e", "hla-backend-common", "hla-rti-core", "hla-transport-common"},
+    "hla-transport-rest": {"hla-rti1516e", "hla-backend-common", "hla-rti-core", "hla-transport-common"},
+    "hla-fom-target-radar": {"hla-rti1516e", "hla-rti-core", "hla-verification"},
+    "hla-verification": {
+        "hla-rti1516e",
+        "hla-backend-common",
+        "hla-backend-inmemory",
+        "hla-bridge-java-common",
+        "hla-fom-target-radar",
+        "hla-rti-core",
+    },
 }
 
 FORBIDDEN_IMPORT_PREFIXES = (
-    "hla2010.testing",
-    "hla2010_repo_internal",
-    "hla2010_fom_target_radar.testing",
+    "hla.rti1516e.testing",
+    "hla.foms.target_radar.testing",
 )
 
 
@@ -53,8 +68,13 @@ def _load_pyproject(package_name: str) -> dict[str, object]:
     return tomllib.loads((PACKAGES / package_name / "pyproject.toml").read_text(encoding="utf-8"))
 
 
-def _import_root(module_name: str) -> str:
-    return module_name.split(".", 1)[0]
+def ownership_prefix(module_name: str) -> str | None:
+    matches = [
+        prefix
+        for prefix in OWNED_PREFIX_TO_PACKAGE
+        if module_name == prefix or module_name.startswith(prefix + ".")
+    ]
+    return max(matches, key=len) if matches else None
 
 
 def _iter_imported_modules(path: Path) -> list[str]:
@@ -69,9 +89,9 @@ def _iter_imported_modules(path: Path) -> list[str]:
 
 
 def _scan_package_source(package_dir_name: str, package_import_root: str) -> list[tuple[Path, str]]:
-    split = _load_pyproject(package_dir_name)["tool"]["hla2010"]["package-split"]  # type: ignore[index]
+    split = _load_pyproject(package_dir_name)["tool"]["hla"]["package"]  # type: ignore[index]
     source_roots = split["source_roots"]  # type: ignore[index]
-    allowed_roots = PACKAGE_IMPORT_ALLOWLISTS[package_import_root]
+    allowed_packages = ALLOWED_PACKAGE_DEPENDENCIES[package_dir_name]
     issues: list[tuple[Path, str]] = []
     seen_paths: set[Path] = set()
     for source_root in source_roots:
@@ -90,9 +110,12 @@ def _scan_package_source(package_dir_name: str, package_import_root: str) -> lis
                 if any(module_name == prefix or module_name.startswith(f"{prefix}.") for prefix in FORBIDDEN_IMPORT_PREFIXES):
                     issues.append((path, f"forbidden import of {module_name!r}"))
                     continue
-                root = _import_root(module_name)
-                if root in PACKAGE_IMPORT_ALLOWLISTS and root not in allowed_roots and root != package_import_root:
-                    issues.append((path, f"import of sibling package root {root!r} is not allowed"))
+                imported_prefix = ownership_prefix(module_name)
+                if imported_prefix is None:
+                    continue
+                imported_package = OWNED_PREFIX_TO_PACKAGE[imported_prefix]
+                if imported_package != package_dir_name and imported_package not in allowed_packages:
+                    issues.append((path, f"import of sibling package {imported_package!r} via {imported_prefix!r} is not allowed"))
     return issues
 
 
@@ -105,9 +128,8 @@ def test_installable_package_roots_do_not_cross_import_outside_their_allowlist()
         pyproject = package_dir / "pyproject.toml"
         if not pyproject.exists():
             continue
-        package_import_root = package_dir.name.replace("-", "_")
-        if package_import_root not in PACKAGE_IMPORT_ALLOWLISTS:
+        if package_dir.name not in ALLOWED_PACKAGE_DEPENDENCIES:
             continue
-        issues.extend(_scan_package_source(package_dir.name, package_import_root))
+        issues.extend(_scan_package_source(package_dir.name, package_dir.name))
 
     assert not issues, "\n".join(f"{path}: {message}" for path, message in issues)

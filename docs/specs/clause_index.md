@@ -14,7 +14,7 @@ Primary entry points:
 - [../backend_route_inventory.md](../backend_route_inventory.md)
 - [../backend_capability_matrix.md](../backend_capability_matrix.md)
 - [../backend_conformance_matrix.md](../backend_conformance_matrix.md)
-- [../../packages/hla2010-rti-certi/docs/certi_spec_traceability.md](../../packages/hla2010-rti-certi/docs/certi_spec_traceability.md)
+- [../../packages/hla-backend-certi/docs/certi_spec_traceability.md](../../packages/hla-backend-certi/docs/certi_spec_traceability.md)
 - [../rti_options_and_test_matrix.md](../rti_options_and_test_matrix.md)
 
 Use this page when you want to answer: which runtime family owns this clause,

@@ -4,12 +4,17 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
-from hla2010_repo_internal.verification.vendor_runtime_status import build_vendor_runtime_status, write_vendor_runtime_status
+from hla.verification.repo_internal.verification.vendor_runtime_status import build_vendor_runtime_status, write_vendor_runtime_status
 
 
 ROOT = Path(__file__).resolve().parents[2]
+TMP_ROOT = Path(tempfile.gettempdir())
+CERTI_PREFIX = TMP_ROOT / "certi" / "bin" / "rtig"
+CERTI_BUILD_ROOT = TMP_ROOT / "certi-build" / "libRTI" / "ieee1516-2010"
+PITCH_RUNTIME_HOME = TMP_ROOT / "pitch" / "lib" / "prtifull.jar"
 
 
 def _write_payload(path: Path, *, tool: str, environment: str, result: str, exit_code: int) -> None:
@@ -30,12 +35,12 @@ def _write_payload(path: Path, *, tool: str, environment: str, result: str, exit
     }
     if tool == "certi-preflight":
         payload["required_markers"] = {
-            "active_prefix": "/tmp/certi/bin/rtig",
-            "active_build_root": "/tmp/certi-build/libRTI/ieee1516-2010",
+            "active_prefix": str(CERTI_PREFIX),
+            "active_build_root": str(CERTI_BUILD_ROOT),
         }
     else:
         payload["required_markers"] = {
-            "runtime_home": "/tmp/pitch/lib/prtifull.jar",
+            "runtime_home": str(PITCH_RUNTIME_HOME),
         }
         payload["ports"] = {
             "crc": {

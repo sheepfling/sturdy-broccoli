@@ -24,16 +24,16 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_rti_backend_common import BackendUnavailableError, RecordingFederateAmbassador
-from hla2010.enums import ResignAction
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_verification_harness import (
+from hla.backends.common import BackendUnavailableError, RecordingFederateAmbassador
+from hla.rti1516e.enums import ResignAction
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.verification import (
     NegotiatedOwnershipScenarioConfig,
     ReleaseRequestOwnershipScenarioConfig,
     probe_negotiated_attribute_ownership_offer,
     run_release_request_ownership_scenario,
 )
-from hla2010_rti_pitch_common.real_rti_pitch import launch_pitch_runtime
+from hla.vendors.pitch.real_rti_pitch import launch_pitch_runtime
 
 CALLBACK_FILTER = {
     "discoverObjectInstance",
@@ -167,7 +167,7 @@ def main() -> int:
                     acquirer,
                     config=NegotiatedOwnershipScenarioConfig(
                         federation_name=federation_name,
-                        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+                        fom_modules=("resource:VendorSmokeFOM.xml",),
                         logical_time_implementation_name="HLAinteger64Time",
                         owner_name="Owner",
                         acquirer_name="Acquirer",
@@ -188,7 +188,7 @@ def main() -> int:
                     acquirer,
                     config=ReleaseRequestOwnershipScenarioConfig(
                         federation_name=federation_name,
-                        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+                        fom_modules=("resource:VendorSmokeFOM.xml",),
                         logical_time_implementation_name="HLAinteger64Time",
                         owner_name="Owner",
                         acquirer_name="Acquirer",

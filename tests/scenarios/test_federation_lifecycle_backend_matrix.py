@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import uuid
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010.exceptions import (
+from hla.backends.common import RecordingFederateAmbassador
+from hla.rti1516e.exceptions import (
     AlreadyConnected,
     CouldNotOpenFDD,
     ErrorReadingFDD,
@@ -13,9 +13,9 @@ from hla2010.exceptions import (
     FederationExecutionDoesNotExist,
     InconsistentFDD,
 )
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_rti_python import InMemoryRTIEngine, PythonRTIConfig
-from hla2010_verification_harness import (
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig
+from hla.verification import (
     FederationLifecycleScenarioConfig,
     run_fom_integrity_negative_scenario,
     run_fom_module_visibility_scenario,
@@ -31,7 +31,7 @@ def test_python_backend_federation_lifecycle_matrix():
     rti = create_rti_ambassador("python")
     config = FederationLifecycleScenarioConfig(
         federation_name=f"python-lifecycle-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
     )
 
@@ -49,7 +49,7 @@ def test_python_backend_federation_lifecycle_with_mim_matrix():
     rti = create_rti_ambassador("python")
     config = FederationLifecycleScenarioConfig(
         federation_name=f"python-lifecycle-mim-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         use_mim_create=True,
     )
@@ -68,7 +68,7 @@ def test_python_backend_federation_listing_matrix():
     rti = create_rti_ambassador("python")
     config = FederationLifecycleScenarioConfig(
         federation_name=f"python-listing-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
     )
 
@@ -86,7 +86,7 @@ def test_python_backend_fom_module_visibility_matrix():
     rti = create_rti_ambassador("python")
     config = FederationLifecycleScenarioConfig(
         federation_name=f"python-fom-visibility-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
     )
 
@@ -106,7 +106,7 @@ def test_python_backend_federation_lifecycle_negative_matrix():
     wing = create_rti_ambassador("python", engine=engine)
     config = FederationLifecycleScenarioConfig(
         federation_name=f"python-lifecycle-negative-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
     )
 
@@ -133,7 +133,7 @@ def test_python_backend_multi_participation_matrix():
     config = FederationLifecycleScenarioConfig(
         federation_name=f"python-multi-participation-{uuid.uuid4().hex[:8]}",
         secondary_federation_name=f"python-multi-participation-secondary-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         logical_time_implementation_name="HLAinteger64Time",
         federate_name="Leader",
         second_federate_name="Wing",
@@ -171,7 +171,7 @@ def test_python_backend_fom_integrity_negative_matrix():
     )
     config = FederationLifecycleScenarioConfig(
         federation_name=f"python-fom-negative-{uuid.uuid4().hex[:8]}",
-        fom_modules=("hla2010:VendorSmokeFOM.xml",),
+        fom_modules=("resource:VendorSmokeFOM.xml",),
         federate_name="Leader",
         second_federate_name="Wing",
         federate_type="LifecycleType",

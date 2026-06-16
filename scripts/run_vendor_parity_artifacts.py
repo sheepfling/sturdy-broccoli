@@ -21,7 +21,7 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_repo_internal.verification.vendor_parity_artifacts import write_vendor_parity_artifacts
+from hla.verification.repo_internal.verification.vendor_parity_artifacts import write_vendor_parity_artifacts
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -6,22 +6,22 @@ This release moves the project closer to a compliant HLA 1516.1-2010 shape while
 
 | Area | HLA 1516.1-2010 section anchors | Implementation |
 |---|---|---|
-| Connect/disconnect startup | §4.2, §4.3 | `hla2010.startup.connect_create_join`, `PythonRTIBackend._svc_connect`, `_svc_disconnect` |
-| Federation creation and FDD loading | §4.1.4, §4.1.4.1, §4.1.4.2, §4.5 | `hla2010.fom.FOMResolver`, `merge_fom_modules`, `PythonRTIBackend._svc_createFederationExecution` |
+| Connect/disconnect startup | §4.2, §4.3 | `hla.rti1516e.startup.connect_create_join`, `PythonRTIBackend._svc_connect`, `_svc_disconnect` |
+| Federation creation and FDD loading | §4.1.4, §4.1.4.1, §4.1.4.2, §4.5 | `hla.rti1516e.fom.FOMResolver`, `merge_fom_modules`, `PythonRTIBackend._svc_createFederationExecution` |
 | Join and FOM module extension | §4.9 | `PythonRTIBackend._svc_joinFederationExecution` |
 | Synchronization points | §4.11-§4.15 | `SynchronizationPointState`, register/announce/achieve/federation-synchronized paths |
 | Java API FOM designators | Java binding uses `URL` / `URL[]` FOM designators | `module_uri`, `JavaBridge.fom_url`, `JavaValueConverter.to_backend(... expected_type_name="URL[]")` |
-| Handle set/map factories | Support service factory area in the Java binding | `hla2010.handles` factories and `JavaBridge.new_handle_set/new_handle_value_map` |
+| Handle set/map factories | Support service factory area in the Java binding | `hla.rti1516e.handles` factories and `JavaBridge.new_handle_set/new_handle_value_map` |
 | Java callback translation | RTI-initiated FederateAmbassador services | `PythonFederateAmbassadorDispatcher`, `expected_java_callback_parameter_types` |
 
 ## Startup helper
 
-`hla2010.startup` now provides a single readable startup path for examples and tests:
+`hla.rti1516e.startup` now provides a single readable startup path for examples and tests:
 
 ```python
-from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.rti import create_rti_ambassador
-from hla2010.startup import FederationStartupConfig, connect_create_join, synchronize_ready_to_run
+from hla.rti1516e.ambassadors import RecordingFederateAmbassador
+from hla.rti1516e.rti import create_rti_ambassador
+from hla.rti1516e.startup import FederationStartupConfig, connect_create_join, synchronize_ready_to_run
 
 rti = create_rti_ambassador("python")
 fed = RecordingFederateAmbassador()
@@ -52,7 +52,7 @@ For whole-federation synchronization points, federates that join after registrat
 
 ## FOM discovery and loading
 
-`hla2010.fom` now supports these FOM/MIM designator forms:
+`hla.rti1516e.fom` now supports these FOM/MIM designator forms:
 
 - absolute and relative filesystem paths
 - `file:` URLs
@@ -66,7 +66,7 @@ The Python RTI resolves local FOMs into a merged `FOMCatalog`; Java RTI backends
 Strict modes are opt-in:
 
 ```python
-from hla2010.backends.python_rti import PythonRTIConfig
+from hla.rti1516e.backends.python_rti import PythonRTIConfig
 
 config = PythonRTIConfig(
     strict_fom_loading=True,   # fail when a local FOM cannot be parsed

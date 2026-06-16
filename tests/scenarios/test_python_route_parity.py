@@ -5,11 +5,11 @@ import uuid
 
 import pytest
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010_fom_target_radar.scenarios import run_target_radar_scenario
-from hla2010.enums import OrderType, ResignAction
-from hla2010.time import HLAinteger64Interval, HLAinteger64Time
-from hla2010_verification_harness import (
+from hla.backends.common import RecordingFederateAmbassador
+from hla.foms.target_radar.scenarios import run_target_radar_scenario
+from hla.rti1516e.enums import OrderType, ResignAction
+from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
+from hla.verification import (
     FederationLifecycleScenarioConfig,
     OwnershipScenarioConfig,
     TwoFederateExchangeConfig,
@@ -46,7 +46,7 @@ def test_python_route_parity_federation_lifecycle(route) -> None:
     with python_single_rti(route) as rti:
         config = FederationLifecycleScenarioConfig(
             federation_name=f"python-lifecycle-{route}-{uuid.uuid4().hex[:8]}",
-            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            fom_modules=("resource:VendorSmokeFOM.xml",),
             logical_time_implementation_name="HLAinteger64Time",
         )
         summary = run_federation_lifecycle_scenario(
@@ -66,7 +66,7 @@ def test_python_route_parity_object_exchange(route) -> None:
         subscriber_fed = RecordingFederateAmbassador()
         config = TwoFederateExchangeConfig(
             federation_name=f"python-exchange-{route}-{uuid.uuid4().hex[:8]}",
-            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            fom_modules=("resource:VendorSmokeFOM.xml",),
             logical_time_implementation_name="HLAinteger64Time",
             object_class_name="HLAobjectRoot.SmokeObject",
             attribute_name="Payload",
@@ -125,7 +125,7 @@ def test_python_route_parity_ownership(route) -> None:
     with python_rti_pair(route) as pair:
         config = OwnershipScenarioConfig(
             federation_name=f"python-ownership-{route}-{uuid.uuid4().hex[:8]}",
-            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            fom_modules=("resource:VendorSmokeFOM.xml",),
             logical_time_implementation_name="HLAinteger64Time",
             owner_name="Owner",
             acquirer_name="Acquirer",

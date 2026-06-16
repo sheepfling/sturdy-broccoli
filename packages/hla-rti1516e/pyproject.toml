@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla-rti1516e"
+version = "0.13.0"
+description = "Abstract Python API and backend plugin contract for IEEE 1516.1-2010 HLA"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+lint = ["ruff>=0.5"]
+typecheck = ["pyright>=1.1.408"]
+test = ["pytest"]
+
+[project.entry-points."hla.specs"]
+rti1516e = "hla.rti1516e.plugin:plugin"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["hla.rti1516e*"]
+namespaces = true
+exclude = ["hla.rti1516e.testing*"]
+
+[tool.setuptools.package-data]
+"hla.rti1516e" = ["resources/foms/*.xml"]
+
+[tool.hla.package]
+status = "implementation-owned"
+role = "core-spec"
+source_roots = [
+  "packages/hla-rti1516e/src/hla/rti1516e",
+]

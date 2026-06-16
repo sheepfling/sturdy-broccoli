@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-CERTI_NEGOTIATED_OWNERSHIP_FINDINGS = "packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md"
+CERTI_NEGOTIATED_OWNERSHIP_FINDINGS = "packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md"
 SCENARIO_ENTRYPOINT_RE = re.compile(r"\b((?:run|probe)_[A-Za-z0-9_]+)\(")
 DIRECT_BACKEND_CALL_RE = re.compile(
     r"\b(?:leader|wing|owner|acquirer|publisher|subscriber|sender|receiver|left|right|regulator|constrained|rti)\.[A-Za-z_][A-Za-z0-9_]*\("
@@ -115,7 +115,7 @@ def test_certi_clause7_vendor_divergent_rows_stay_explicit_negotiated_ownership_
         if requirement_id in explicit_negotiated_ids:
             assert CERTI_NEGOTIATED_OWNERSHIP_FINDINGS in refs
             assert (
-                "packages/hla2010-verification-harness/src/hla2010_verification_harness/"
+                "packages/hla-verification/src/hla.verification/"
                 "scenario_ownership.py::run_negotiated_attribute_ownership_scenario"
             ) in refs
             assert (

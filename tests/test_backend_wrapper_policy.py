@@ -67,7 +67,7 @@ def _load_module(path: Path) -> ast.Module:
 def _top_level_harness_imports(module: ast.Module) -> set[str]:
     imports: set[str] = set()
     for node in module.body:
-        if isinstance(node, ast.ImportFrom) and node.module == "hla2010_verification_harness":
+        if isinstance(node, ast.ImportFrom) and node.module == "hla.verification":
             imports.update(alias.name for alias in node.names)
     return imports
 
@@ -77,7 +77,7 @@ def _forbidden_internal_harness_imports(module: ast.Module) -> list[str]:
     for node in module.body:
         if not isinstance(node, ast.ImportFrom) or node.module is None:
             continue
-        if node.module.startswith("hla2010_verification_harness.") and node.module != "hla2010_verification_harness":
+        if node.module.startswith("hla.verification.") and node.module != "hla.verification":
             imports.append(node.module)
     return imports
 

@@ -21,7 +21,7 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_repo_internal.verification.vendor_gap_profiles import write_vendor_gap_profile
+from hla.verification.repo_internal.verification.vendor_gap_profiles import write_vendor_gap_profile
 
 
 def main(argv: list[str] | None = None) -> int:

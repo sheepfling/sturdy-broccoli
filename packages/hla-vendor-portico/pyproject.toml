@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla-vendor-portico"
+version = "0.13.0"
+description = "Portico RTI backend plugins for hla-rti1516e"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "hla-rti1516e==0.13.0",
+  "hla-rti-core==0.13.0",
+  "hla-bridge-java-common==0.13.0",
+  "hla-bridge-java-jpype==0.13.0",
+  "hla-bridge-java-py4j==0.13.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.entry-points."hla.rti_backends"]
+portico-jpype = "hla.vendors.portico.plugin:portico_jpype_plugin"
+portico-py4j = "hla.vendors.portico.plugin:portico_py4j_plugin"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["hla.vendors.portico*"]
+namespaces = true
+
+[tool.hla.package]
+status = "implementation-moved"
+role = "rti-backend"
+backend_names = ["portico-jpype", "portico-py4j"]
+backend_aliases = ["portico", "java-portico-jpype", "java-portico-py4j"]
+source_roots = [
+  "packages/hla-vendor-portico/src/hla/vendors/portico",
+]

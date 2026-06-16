@@ -5,9 +5,9 @@ host instead of directly in-process.
 
 The supported hosted route is:
 
-- `hla2010_rti_python` for the in-memory RTI implementation
-- `hla2010_rti_transport_grpc` for the transport host and client wiring
-- `hla2010_rti_runtime_common.create_rti_ambassador(...)` for backend selection
+- `hla.backends.inmemory` for the in-memory RTI implementation
+- `hla.transports.grpc` for the transport host and client wiring
+- `hla.rti.create_rti_ambassador(...)` for backend selection
 
 This is the cleanest networked path when you want:
 
@@ -20,8 +20,8 @@ This is the cleanest networked path when you want:
 Start a hosted Python RTI server:
 
 ```python
-from hla2010_rti_python import InMemoryRTIEngine
-from hla2010_rti_transport_grpc import start_python_grpc_server
+from hla.backends.inmemory import InMemoryRTIEngine
+from hla.transports.grpc import start_python_grpc_server
 
 engine = InMemoryRTIEngine()
 server = start_python_grpc_server(engine=engine)
@@ -31,7 +31,7 @@ print(server.target)
 Connect a federate to that host:
 
 ```python
-from hla2010_rti_runtime_common import create_rti_ambassador
+from hla.rti import create_rti_ambassador
 
 rti = create_rti_ambassador(
     "python",
@@ -67,7 +67,7 @@ Treat it as regular hygiene after changes to:
 For a full runnable example, start with:
 
 - [`../examples/target_radar_simulation.py`](../examples/target_radar_simulation.py)
-- [`../packages/hla2010-fom-target-radar/README.md`](../packages/hla2010-fom-target-radar/README.md)
+- [`../packages/hla-fom-target-radar/README.md`](../packages/hla-fom-target-radar/README.md)
 
 The Target/Radar package owns the reusable scenario helpers:
 
@@ -85,11 +85,11 @@ If you want to write your own runner, keep the shape simple:
 ## Extending The Example
 
 If you are adding a new Target/Radar variation, keep the reusable logic in
-`hla2010_fom_target_radar.scenarios` and keep the CLI wrapper thin.
+`hla.foms.target_radar.scenarios` and keep the CLI wrapper thin.
 
 Good extension points are:
 
-- a new scenario factory function in `packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/scenarios/`
+- a new scenario factory function in `packages/hla-fom-target-radar/src/hla.foms.target_radar/scenarios/`
 - a new example script under `examples/`
 - a new backend or transport test that reuses the same scenario helper
 
@@ -102,4 +102,4 @@ owning package root.
 - [`python_environment.md`](python_environment.md)
 - [`package_layout.md`](package_layout.md)
 - [`import_boundary_rules.md`](import_boundary_rules.md)
-- [`../packages/hla2010-rti-transport-grpc/README.md`](../packages/hla2010-rti-transport-grpc/README.md)
+- [`../packages/hla-transport-grpc/README.md`](../packages/hla-transport-grpc/README.md)

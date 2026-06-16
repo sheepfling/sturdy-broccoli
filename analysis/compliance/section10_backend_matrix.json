@@ -31,7 +31,7 @@
       "backend_family": "python-reference",
       "backend_id": "python-inmemory",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py",
         "tests/scenarios/test_support_services_backend_matrix.py",
         "tests/verification/test_spec_traceability_and_extended_python_rti.py"
       ],
@@ -81,7 +81,7 @@
       "backend_family": "java-shim",
       "backend_id": "java-shim-jpype",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py",
         "tests/vendors/test_java_profile_backend_matrix.py::test_inprocess_java_shim_support_factory_and_decode_scenario"
       ],
       "notes": "Java shim JPype now runs the shared support-services scenario in-process for the lookup subset it implements, giving executable Section 10 support-lookup coverage without vendor runtime dependencies.",
@@ -98,7 +98,7 @@
       "backend_family": "java-shim",
       "backend_id": "java-shim-py4j",
       "evidence_tests": [
-        "packages/hla2010-verification-harness/src/hla2010_verification_harness/scenario_support_services.py",
+        "packages/hla-verification/src/hla.verification/scenario_support_services.py",
         "tests/vendors/test_java_profile_backend_matrix.py::test_inprocess_java_shim_support_factory_and_decode_scenario"
       ],
       "notes": "Java shim Py4J now runs the shared support-services scenario in-process for the lookup subset it implements, giving executable Section 10 support-lookup coverage without vendor runtime dependencies.",

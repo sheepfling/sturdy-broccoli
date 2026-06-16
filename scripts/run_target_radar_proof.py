@@ -23,7 +23,7 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_repo_internal.verification.target_radar_proof import write_target_radar_proof_artifacts
+from hla.verification.repo_internal.verification.target_radar_proof import write_target_radar_proof_artifacts
 
 DEFAULT_BACKENDS = [
     "python",

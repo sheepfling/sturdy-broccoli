@@ -59,18 +59,18 @@ _LOOPBACK_SERVER_AVAILABLE = _can_bind_loopback_server()
 
 
 SOURCE_CHECKOUT_PLUGIN_MODULES = (
-    "hla2010_rti_python.plugin",
-    "hla2010_rti_java_jpype.plugin",
-    "hla2010_rti_java_py4j.plugin",
-    "hla2010_rti_pitch_jpype.plugin",
-    "hla2010_rti_pitch_py4j.plugin",
-    "hla2010_rti_portico.plugin",
-    "hla2010_rti_certi.certi.plugin",
+    "hla.backends.inmemory.plugin",
+    "hla.bridges.java.jpype.plugin",
+    "hla.bridges.java.py4j.plugin",
+    "hla.vendors.pitch.jpype.plugin",
+    "hla.vendors.pitch.py4j.plugin",
+    "hla.vendors.portico.plugin",
+    "hla.backends.certi.certi.plugin",
 )
 
 
 def _register_source_checkout_backend_plugins() -> None:
-    from hla2010_rti_runtime_common import register_backend_plugin
+    from hla.rti import register_backend_plugin
 
     for module_name in SOURCE_CHECKOUT_PLUGIN_MODULES:
         try:

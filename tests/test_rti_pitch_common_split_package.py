@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from hla2010_rti_pitch_common import (
+from hla.vendors.pitch import (
     PitchRuntime,
     launch_pitch_two_federate_profile,
     pitch_fedpro_local_settings_designator,
@@ -10,13 +10,13 @@ from hla2010_rti_pitch_common import (
 
 
 def test_split_pitch_common_package_exports_runtime_helpers():
-    from hla2010_rti_pitch_common.real_rti_pitch import (
+    from hla.vendors.pitch.real_rti_pitch import (
         PitchRuntime as RuntimeFromModule,
     )
-    from hla2010_rti_pitch_common.real_rti_pitch import (
+    from hla.vendors.pitch.real_rti_pitch import (
         pitch_fedpro_local_settings_designator as designator_from_module,
     )
-    from hla2010_rti_pitch_common.testing_policy import (
+    from hla.vendors.pitch.testing_policy import (
         launch_pitch_two_federate_profile as launch_profile_from_module,
     )
 
@@ -26,15 +26,15 @@ def test_split_pitch_common_package_exports_runtime_helpers():
 
 
 def test_pitch_plugins_import_common_runtime_helpers():
-    from hla2010_rti_pitch_jpype.plugin import plugin as jpype_plugin
-    from hla2010_rti_pitch_py4j.plugin import plugin as py4j_plugin
+    from hla.vendors.pitch.jpype.plugin import plugin as jpype_plugin
+    from hla.vendors.pitch.py4j.plugin import plugin as py4j_plugin
 
     assert jpype_plugin().name == "pitch-jpype"
     assert py4j_plugin().name == "pitch-py4j"
 
 
 def test_launch_pitch_py4j_gateway_can_return_process_handle(monkeypatch, tmp_path: Path):
-    from hla2010_rti_pitch_common import real_rti_pitch
+    from hla.vendors.pitch import real_rti_pitch
 
     runtime = PitchRuntime(
         home=tmp_path / "pitch",

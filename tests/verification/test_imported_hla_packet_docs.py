@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from hla2010_repo_internal.requirements_packet import write_imported_hla_packet_markdown_views
+from hla.verification.repo_internal.requirements_packet import write_imported_hla_packet_markdown_views
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]

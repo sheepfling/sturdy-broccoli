@@ -8,7 +8,7 @@ This release slice moves MOM/MIM handling away from handwritten name tables and 
 |---|---:|---|
 | MOM object exposure | 1516.1-2010 §11.2 | `MOMObjectClassRule` rows derived from `FOMCatalog.object_classes`; MOM object attribute reflections are filtered to the active catalog. |
 | MOM interaction direction | 1516.1-2010 §11.3 | `MOMInteractionRule.rti_direction` marks RTI-received adjust/request/service leaves and RTI-sent report leaves. Strict mode rejects federate-sent report interactions. |
-| MOM adjust/request/service parameters | 1516.1-2010 §11.4.1 | Required parameters, at-least-one switch groups, request/report pairing, and representative payload datatype checks come from `hla2010.mom_catalog`. |
+| MOM adjust/request/service parameters | 1516.1-2010 §11.4.1 | Required parameters, at-least-one switch groups, request/report pairing, and representative payload datatype checks come from `hla.rti1516e.mom_catalog`. |
 | Service reporting and diagnostics | 1516.1-2010 §11.5 | MOM exceptions and service-invocation reports are generated through catalog-filtered report payloads. Service report files remain JSONL for auditable development. |
 | Standard MIM basis | 1516.1-2010 Annex G | The bundled `HLAstandardMIM.xml` is parsed and merged before user FOM modules. |
 

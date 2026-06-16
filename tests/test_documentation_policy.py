@@ -53,7 +53,7 @@ EXPECTED_PATHS = {
     ROOT / "docs/two_federate_quickstart.md": (
         ROOT / "tools/two-federate",
         ROOT / "scripts/run_two_federate_suite.py",
-        ROOT / "src/hla2010_repo_internal/verification/two_federate_suite_runner.py",
+        ROOT / "packages/hla-verification/src/hla/verification/repo_internal/verification/two_federate_suite_runner.py",
     ),
 }
 
@@ -122,21 +122,20 @@ def test_repo_does_not_keep_duplicate_markdown_copies() -> None:
 def test_python_api_spec_matches_split_package_reality() -> None:
     path = ROOT / "docs/python_api_spec.md"
     text = _read(path)
-    assert "installable root: `hla2010-spec`" in text
-    assert "workspace facade: `src/hla2010/`" in text
+    assert "installable root: `hla-rti1516e`" in text
+    assert "versioned API root: `packages/hla-rti1516e/src/hla/rti1516e/`" in text
     assert "package-owned implementations: `packages/*/src/...`" in text
-    assert "temporary compatibility routing" in text
-    assert "temporary backend-discovery and ambassador-factory compatibility facade" in text
-    assert "../src/hla2010/spec/__init__.py" in text
-    assert "../packages/hla2010-spec/README.md" in text
+    assert "cross-version discovery and factory selection live under `hla.rti`" in text
+    assert "../packages/hla-rti1516e/src/hla/rti1516e/spec/__init__.py" in text
+    assert "../packages/hla-rti1516e/README.md" in text
     assert "../hla2010/spec/" not in text
-    assert "hla2010.testing" not in text
+    assert "hla.rti1516e.testing" not in text
 
 
 def test_repo_overview_docs_describe_root_namespace_as_core_plus_temporary_facades() -> None:
     readme = _read(ROOT / "README.md")
     packages_readme = _read(ROOT / "packages" / "README.md")
 
-    assert "`src/hla2010/` is the root Python package for the abstract/core API plus the documented temporary compatibility facade `hla2010.rti`" in readme
+    assert "`hla.rti1516e` is the IEEE 1516.1-2010 API package" in readme
     assert "`hla2010/` is a narrow top-level shim area for plugin-facing glue" not in readme
-    assert "`src/hla2010/` tree is the workspace facade used for stable imports, abstract\ncore API ownership, and only documented temporary compatibility routing." in packages_readme
+    assert "`hla` is a PEP 420 namespace package" in packages_readme

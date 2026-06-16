@@ -1,6 +1,6 @@
 """Executable MOM negative-test case generation from the active MIM/FOM catalog.
 
-The generated matrix in :mod:`hla2010.mom_catalog` is useful only if it can be
+The generated matrix in :mod:`hla.rti1516e.mom_catalog` is useful only if it can be
 turned into runnable checks.  This module provides that bridge for pytest and
 for future external conformance harnesses.
 
@@ -90,7 +90,7 @@ def default_mom_exposure_model() -> mom_catalog.MOMExposureModel:
 
 
 def generate_mom_negative_cases(model: mom_catalog.MOMExposureModel | None = None) -> tuple[MOMNegativeCase, ...]:
-    """Flatten :func:`hla2010.mom_catalog.build_negative_matrix` into cases."""
+    """Flatten :func:`hla.rti1516e.mom_catalog.build_negative_matrix` into cases."""
 
     model = model or default_mom_exposure_model()
     matrix = mom_catalog.build_negative_matrix(model)

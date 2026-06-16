@@ -115,7 +115,8 @@ When reading or writing requirement rows, use the lexicon with these expectation
 
 ## Conformance Claim Boundary
 
-This repo does not claim full IEEE 1516.2-2010 conformance.
+This repo does not claim full IEEE 1516.2-2010 conformance. More specifically,
+it does not claim full IEEE 1516.2-2010 (2010 edition) conformance.
 
 The current OMT document conformance labels used in this repo are:
 

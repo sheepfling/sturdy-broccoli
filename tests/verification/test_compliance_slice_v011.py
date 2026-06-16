@@ -5,15 +5,15 @@ from pathlib import Path
 
 import pytest
 
-from hla2010 import mom as hla_mom
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010.enums import CallbackModel, OrderType, ResignAction
-from hla2010.exceptions import FederateServiceInvocationsAreBeingReportedViaMOM
-from hla2010.types import RangeBounds
-from hla2010_rti_python import InMemoryRTIEngine, PythonRTIConfig
-from hla2010_rti_python.state import CallbackEvent
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_verification_harness import (
+from hla.rti1516e import mom as hla_mom
+from hla.backends.common import RecordingFederateAmbassador
+from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
+from hla.rti1516e.exceptions import FederateServiceInvocationsAreBeingReportedViaMOM
+from hla.rti1516e.types import RangeBounds
+from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig
+from hla.backends.inmemory.state import CallbackEvent
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.verification import (
     NegotiatedOwnershipScenarioConfig,
     ReleaseRequestOwnershipScenarioConfig,
     SaveRestoreScenarioConfig,
@@ -408,7 +408,7 @@ def test_restore_reinstates_saved_federate_policy_reporting_and_conveyance_switc
         r2,
         config=SaveRestoreScenarioConfig(
             federation_name="restore-switch-state-v011",
-            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            fom_modules=("resource:VendorSmokeFOM.xml",),
             leader_name="fed-0",
             wing_name="fed-1",
             federate_type="SaveRestoreFederate",
@@ -555,7 +555,7 @@ def test_restore_treats_callback_enablement_as_runtime_policy_not_saved_state():
         r2,
         config=SaveRestoreScenarioConfig(
             federation_name="restore-callback-policy-v011",
-            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            fom_modules=("resource:VendorSmokeFOM.xml",),
             leader_name="fed-0",
             wing_name="fed-1",
             federate_type="SaveRestoreFederate",

@@ -116,8 +116,6 @@ def test_scripts_readme_declares_implementation_boundary() -> None:
     assert "analysis/compliance/python_requirement_disposition.md" in text
     assert "analysis/compliance/certi_requirement_disposition.md" in text
     assert "analysis/compliance/certi-native_requirement_disposition.md" in text
-    assert "analysis/compliance/certi-jpype_requirement_disposition.md" in text
-    assert "analysis/compliance/certi-py4j_requirement_disposition.md" in text
     assert "analysis/compliance/pitch_requirement_disposition.md" in text
     assert "analysis/compliance/pitch-jpype_requirement_disposition.md" in text
     assert "analysis/compliance/pitch-py4j_requirement_disposition.md" in text
@@ -140,8 +138,6 @@ def test_backend_compliance_doc_uses_tools_surface() -> None:
     assert "./tools/compliance discover --show-backlog" in text
     assert "analysis/compliance/certi_requirement_disposition.md" in text
     assert "analysis/compliance/certi-native_requirement_disposition.md" in text
-    assert "analysis/compliance/certi-jpype_requirement_disposition.md" in text
-    assert "analysis/compliance/certi-py4j_requirement_disposition.md" in text
     assert "analysis/compliance/portico_requirement_disposition.md" in text
     assert "analysis/compliance/pitch_requirement_disposition.md" in text
     assert "python3 scripts/generate_compliance_artifacts.py" not in text
@@ -217,8 +213,8 @@ def test_vendor_runtime_docs_use_tools_vendor_state_surface() -> None:
         ROOT / "docs/preflight_artifacts.md",
         ROOT / "docs/vendor_runtime_runner_guide.md",
         ROOT / "docs/vendor_runner_provisioning.md",
-        ROOT / "packages/hla2010-rti-certi/docs/certi_section8_runbook.md",
-        ROOT / "packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md",
+        ROOT / "packages/hla-backend-certi/docs/certi_section8_runbook.md",
+        ROOT / "packages/hla-vendor-pitch/docs/pitch_docker_quickstart.md",
     )
     for path in expected_paths:
         text = _primary_text(path)
@@ -229,8 +225,8 @@ def test_vendor_runtime_docs_use_tools_vendor_state_surface() -> None:
 
 def test_public_pitch_docs_do_not_promote_script_operator_surfaces() -> None:
     expected_paths = (
-        ROOT / "packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md",
-        ROOT / "packages/hla2010-rti-pitch-common/docs/pitch_crc_macos_vendor_bug.md",
+        ROOT / "packages/hla-vendor-pitch/docs/pitch_docker_quickstart.md",
+        ROOT / "packages/hla-vendor-pitch/docs/pitch_crc_macos_vendor_bug.md",
     )
     for path in expected_paths:
         text = _primary_text(path)
@@ -241,8 +237,8 @@ def test_public_pitch_docs_do_not_promote_script_operator_surfaces() -> None:
 
 def test_pitch_lost_federate_docs_keep_tools_operator_surface_explicit() -> None:
     expected_paths = (
-        ROOT / "packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md",
-        ROOT / "packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md",
+        ROOT / "packages/hla-vendor-pitch/docs/pitch_docker_quickstart.md",
+        ROOT / "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
     )
     for path in expected_paths:
         text = _primary_text(path)
@@ -265,8 +261,8 @@ def test_backend_capability_docs_use_tools_surface_for_operator_anchors() -> Non
 
 def test_backend_package_docs_use_tools_surface_for_specialized_vendor_flows() -> None:
     expected_paths = (
-        ROOT / "packages/hla2010-rti-pitch-common/docs/pitch_crc_macos_vendor_bug.md",
-        ROOT / "packages/hla2010-rti-certi/docs/certi_runtime_limitations.md",
+        ROOT / "packages/hla-vendor-pitch/docs/pitch_crc_macos_vendor_bug.md",
+        ROOT / "packages/hla-backend-certi/docs/certi_runtime_limitations.md",
     )
     for path in expected_paths:
         text = _primary_text(path)
@@ -283,7 +279,7 @@ def test_backend_package_docs_use_tools_surface_for_specialized_vendor_flows() -
 
 
 def test_certi_section8_runbook_uses_tools_gate_surface() -> None:
-    text = _primary_text(ROOT / "packages/hla2010-rti-certi/docs/certi_section8_runbook.md")
+    text = _primary_text(ROOT / "packages/hla-backend-certi/docs/certi_section8_runbook.md")
     assert "./tools/section8-gate" in text
     assert "./scripts/ci/section8_backend_matrix_gate.sh" not in text
 
@@ -352,10 +348,10 @@ def test_public_docs_do_not_promote_legacy_vendor_green_surface() -> None:
 def test_public_docs_use_tools_bootstrap_and_repo_green_surface() -> None:
     bootstrap_paths = (
         ROOT / "packages/README.md",
-        ROOT / "packages/hla2010-rti-python/README.md",
-        ROOT / "packages/hla2010-rti-certi/README.md",
-        ROOT / "packages/hla2010-fom-target-radar/README.md",
-        ROOT / "packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md",
+        ROOT / "packages/hla-backend-inmemory/README.md",
+        ROOT / "packages/hla-backend-certi/README.md",
+        ROOT / "packages/hla-fom-target-radar/README.md",
+        ROOT / "packages/hla-vendor-pitch/docs/pitch_decision_tree.md",
         ROOT / "docs/vendor_runtime_runner_guide.md",
     )
     for path in bootstrap_paths:

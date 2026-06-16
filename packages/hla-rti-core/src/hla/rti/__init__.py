@@ -1,0 +1,63 @@
+"""Shared vendor-runtime process helper package."""
+from __future__ import annotations
+
+from .plugin_api import (
+    BACKEND_ENTRY_POINT_GROUP,
+    SPEC_ENTRY_POINT_GROUP,
+    TRANSPORT_ENTRY_POINT_GROUP,
+    BackendRequest,
+    HLASpec,
+    RTIBackendDiscovery,
+    RTIBackendPlugin,
+    RTIBackendSpec,
+    RTITransportSpec,
+    SpecPlugin,
+    TransportRequest,
+)
+from .real_rti_process import RuntimeProcess, reserve_tcp_port, wait_for_process_boot, wait_for_tcp_listener
+
+_FACTORY_EXPORTS = {
+    "available_spec_plugins",
+    "available_backend_plugins",
+    "create_backend",
+    "create_rti_ambassador",
+    "discover_specs",
+    "discover_rti_backends",
+    "iter_hla_spec_plugins",
+    "iter_rti_backend_plugins",
+    "register_backend_factory",
+    "register_backend_plugin",
+    "register_spec_plugin",
+    "register_transport_factory",
+    "resolve_spec",
+}
+
+
+def __getattr__(name: str):
+    if name in _FACTORY_EXPORTS:
+        from . import factory
+
+        value = getattr(factory, name)
+        globals()[name] = value
+        return value
+    raise AttributeError(name)
+
+
+__all__ = [
+    "BACKEND_ENTRY_POINT_GROUP",
+    "BackendRequest",
+    "HLASpec",
+    "RTIBackendDiscovery",
+    "RTIBackendPlugin",
+    "RTIBackendSpec",
+    "RTITransportSpec",
+    "RuntimeProcess",
+    "SPEC_ENTRY_POINT_GROUP",
+    "SpecPlugin",
+    "TRANSPORT_ENTRY_POINT_GROUP",
+    "TransportRequest",
+    *_FACTORY_EXPORTS,
+    "reserve_tcp_port",
+    "wait_for_process_boot",
+    "wait_for_tcp_listener",
+]

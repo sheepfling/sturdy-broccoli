@@ -3,9 +3,9 @@
 Run with:
     PYTHONPATH=. python examples/backend_recording.py
 """
-from hla2010_rti_backend_common import RecordingBackend, make_rti_ambassador
-from hla2010.enums import CallbackModel
-from hla2010.spec import FederateAmbassadorSpec
+from hla.backends.common import RecordingBackend, make_rti_ambassador
+from hla.rti1516e.enums import CallbackModel
+from hla.rti1516e.spec import FederateAmbassadorSpec
 
 
 class MyFederate(FederateAmbassadorSpec):

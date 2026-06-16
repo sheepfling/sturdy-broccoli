@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from hla2010.raw_api import API_METADATA
-from hla2010_repo_internal.verification.asset_plan import build_verification_plan
-from hla2010_repo_internal.verification.repo_seed_artifacts import (
+from hla.rti1516e.raw_api import API_METADATA
+from hla.verification.repo_internal.verification.asset_plan import build_verification_plan
+from hla.verification.repo_internal.verification.repo_seed_artifacts import (
     build_requirements_ledger,
     write_requirements_ledger_csv,
     write_requirements_ledger_json,
 )
-from hla2010_repo_internal.verification.requirements_matrix_artifacts import (
+from hla.verification.repo_internal.verification.requirements_matrix_artifacts import (
     build_requirements_matrix_2010,
     write_requirements_matrix_2010_csv,
 )
@@ -70,7 +70,7 @@ def test_requirements_ledger_covers_generated_api_surface(tmp_path: Path):
     assert by_method[("RTIambassador", "createFederationExecution")]["requirement_id"] == "REQ-RTI-FM-4_5-createFederationExecution"
     assert by_method[("RTIambassador", "enableTimeRegulation")]["requirement_id"] == "REQ-RTI-TM-8_2-enableTimeRegulation"
     assert by_method[("FederateAmbassador", "timeAdvanceGrant")]["requirement_id"] == "REQ-FED-TM-8_13-timeAdvanceGrant"
-    assert "packages/hla2010-rti-python/src/hla2010_rti_python/backend.py" in by_method[("RTIambassador", "enableTimeRegulation")]["implementation_refs"]
+    assert "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py" in by_method[("RTIambassador", "enableTimeRegulation")]["implementation_refs"]
     assert by_method[("RTIambassador", "enableTimeRegulation")]["positive_test_refs"]
     assert by_method[("RTIambassador", "sendInteraction")]["negative_test_refs"]
     assert by_method[("RTIambassador", "enableTimeRegulation")]["artifact_refs"]

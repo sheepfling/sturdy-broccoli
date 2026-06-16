@@ -20,7 +20,7 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-from hla2010_repo_internal.verification.vendor_runtime_job_summary import (
+from hla.verification.repo_internal.verification.vendor_runtime_job_summary import (
     VendorRuntimeJobSummaryPaths,
     build_vendor_runtime_job_summary,
 )

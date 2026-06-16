@@ -135,13 +135,13 @@ def render_direct_table(packages: dict[str, list[str]], graph: dict[str, list[st
 def render_summary(graph: dict[str, list[str]]) -> str:
     root_nodes = roots(graph)
     lines = [
-        "- `hla2010-spec` is the single true root package.",
-        "- `hla2010-rti-backend-common`, `hla2010-rti-runtime-common`, `hla2010-rti-transport-common`, and `hla2010-verification-harness` are the shared support layers.",
-        "- Python and Java backend families are separated; `hla2010-rti-python` depends on backend-common rather than on Java support packages.",
-        "- transport packages depend on `hla2010-spec`, `hla2010-rti-backend-common`, `hla2010-rti-transport-common`, and for hosted transports also `hla2010-rti-runtime-common`.",
-        "- FOM and verification leaf packages depend only on `hla2010-spec` and `hla2010-verification-harness`.",
+        "- `hla-rti1516e` is the single true root package.",
+        "- `hla-backend-common`, `hla-rti-core`, `hla-transport-common`, and `hla-verification` are the shared support layers.",
+        "- Python and Java backend families are separated; `hla-backend-inmemory` depends on backend-common rather than on Java support packages.",
+        "- transport packages depend on `hla-rti1516e`, `hla-backend-common`, `hla-transport-common`, and for hosted transports also `hla-rti-core`.",
+        "- FOM and verification leaf packages depend only on `hla-rti1516e` and `hla-verification`.",
     ]
-    if root_nodes != ["hla2010-spec"]:
+    if root_nodes != ["hla-rti1516e"]:
         lines.append(f"- current roots detected from metadata: `{', '.join(root_nodes)}`.")
     return "\n".join(lines)
 

@@ -8,19 +8,20 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 FORBIDDEN_IMPORT_LINES = (
-    "from hla2010.testing",
-    "import hla2010.testing",
-    "from hla2010_fom_target_radar.testing",
-    "import hla2010_fom_target_radar.testing",
+    "from hla.rti1516e.testing",
+    "import hla.rti1516e.testing",
+    "from hla.foms.target_radar.testing",
+    "import hla.foms.target_radar.testing",
 )
 CODE_DIRS = ("src", "packages", "scripts", "tests")
 PUBLIC_DOC_DIRS = ("README.md", "docs", "packages")
 SKIP_PATH_PARTS = {
     "docs/evidence",
-    "src/hla2010_repo_internal",
+    "packages/hla-verification/src/hla/verification/repo_internal",
     "tests/test_namespace_policy.py",
-    "packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc/rti_transport_pb2.py",
-    "packages/hla2010-rti-transport-grpc/src/hla2010_rti_transport_grpc/rti_transport_pb2_grpc.py",
+    "packages/hla-transport-grpc/src/hla/transports/grpc/rti_transport_pb2.py",
+    "packages/hla-transport-grpc/src/hla/transports/grpc/rti_transport_pb2_grpc.py",
+    "packages/hla-vendor-pitch/src/hla/vendors/pitch/__init__.py",
     "tests/test_rti_python_split_package.py",
     "tests/test_rti_transport_grpc_split_package.py",
 }
@@ -49,45 +50,45 @@ FORBIDDEN_WILDCARD_IMPORT_PATTERNS = (
     " import *",
 )
 FORBIDDEN_REMOVED_COMPAT_IMPORT_PATTERNS = (
-    "hla2010.backends.base",
-    "hla2010.backends.python",
-    "hla2010.backends.conversion",
-    "hla2010.backends.grpc_transport",
-    "hla2010.backends.java_plugins",
-    "hla2010.backends.transport",
-    "hla2010.java_runtime",
-    "hla2010.scenarios.target_radar",
-    "hla2010.transport_registry",
+    "hla.rti1516e.backends.base",
+    "hla.rti1516e.backends.python",
+    "hla.rti1516e.backends.conversion",
+    "hla.rti1516e.backends.grpc_transport",
+    "hla.rti1516e.backends.java_plugins",
+    "hla.rti1516e.backends.transport",
+    "hla.rti1516e.java_runtime",
+    "hla.rti1516e.scenarios.target_radar",
+    "hla.rti1516e.transport_registry",
 )
 PACKAGE_TRANSPORT_REGISTRY_IMPORTS_THROUGH_ROOT = (
-    "from hla2010.rti import register_transport_factory",
-    "from hla2010.rti import _coerce_transport_spec",
+    "from hla.rti1516e.rti import register_transport_factory",
+    "from hla.rti1516e.rti import _coerce_transport_spec",
 )
 PACKAGE_RTI_ROOT_IMPORT_PREFIXES = (
-    "from hla2010.rti import",
-    "import hla2010.rti",
+    "from hla.rti1516e.rti import",
+    "import hla.rti1516e.rti",
 )
 PACKAGE_ROOT_HELPER_IMPORT_PREFIXES = (
-    "from hla2010.ambassadors import",
-    "import hla2010.ambassadors",
-    "from hla2010.runtime_api import",
-    "import hla2010.runtime_api",
+    "from hla.rti1516e.ambassadors import",
+    "import hla.rti1516e.ambassadors",
+    "from hla.rti1516e.runtime_api import",
+    "import hla.rti1516e.runtime_api",
 )
 SCRIPT_RTI_ROOT_IMPORT_PREFIXES = (
-    "from hla2010.rti import",
-    "import hla2010.rti",
+    "from hla.rti1516e.rti import",
+    "import hla.rti1516e.rti",
 )
 FORBIDDEN_ROOT_VERIFICATION_FACADE_IMPORTS = (
-    "from hla2010.conformance import",
-    "import hla2010.conformance",
-    "from hla2010.verification import",
-    "import hla2010.verification",
-    "from hla2010.clause13_conformance import",
-    "import hla2010.clause13_conformance",
-    "from hla2010.requirements_packet import",
-    "import hla2010.requirements_packet",
-    "from hla2010.requirements_backlog import",
-    "import hla2010.requirements_backlog",
+    "from hla.rti1516e.conformance import",
+    "import hla.rti1516e.conformance",
+    "from hla.rti1516e.verification import",
+    "import hla.rti1516e.verification",
+    "from hla.rti1516e.clause13_conformance import",
+    "import hla.rti1516e.clause13_conformance",
+    "from hla.rti1516e.requirements_packet import",
+    "import hla.rti1516e.requirements_packet",
+    "from hla.rti1516e.requirements_backlog import",
+    "import hla.rti1516e.requirements_backlog",
 )
 FORBIDDEN_PACKAGE_ROOT_FACADE_IMPORTS = (
 )
@@ -179,7 +180,7 @@ def test_public_docs_do_not_recommend_removed_testing_namespaces() -> None:
 def test_removed_testing_source_trees_have_no_python_modules() -> None:
     legacy_roots = (
         ROOT / "src/hla2010/testing",
-        ROOT / "packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/testing",
+        ROOT / "packages/hla-fom-target-radar/src/hla.foms.target_radar/testing",
     )
     leftovers: list[str] = []
     for root in legacy_roots:
@@ -431,9 +432,9 @@ def test_repo_scripts_do_not_import_root_runtime_callback_facades() -> None:
         for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
             stripped = line.strip()
             if (
-                stripped.startswith("from hla2010.runtime_api import FederateAmbassador")
-                or stripped.startswith("from hla2010.ambassadors import")
-                or stripped.startswith("import hla2010.ambassadors")
+                stripped.startswith("from hla.rti1516e.runtime_api import FederateAmbassador")
+                or stripped.startswith("from hla.rti1516e.ambassadors import")
+                or stripped.startswith("import hla.rti1516e.ambassadors")
             ):
                 violations.append(f"{rel}:{lineno}: {stripped}")
     assert not violations, "\n".join(violations)
@@ -447,7 +448,7 @@ def test_examples_do_not_import_removed_root_scenario_facades() -> None:
         rel = path.relative_to(ROOT).as_posix()
         for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
             stripped = line.strip()
-            if "from hla2010.scenarios" in stripped or "import hla2010.scenarios" in stripped:
+            if "from hla.rti1516e.scenarios" in stripped or "import hla.rti1516e.scenarios" in stripped:
                 violations.append(f"{rel}:{lineno}: {stripped}")
     assert not violations, "\n".join(violations)
 
@@ -460,7 +461,7 @@ def test_examples_do_not_import_removed_root_backend_facades() -> None:
         rel = path.relative_to(ROOT).as_posix()
         for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
             stripped = line.strip()
-            if "from hla2010.backends." in stripped or "import hla2010.backends." in stripped:
+            if "from hla.rti1516e.backends." in stripped or "import hla.rti1516e.backends." in stripped:
                 violations.append(f"{rel}:{lineno}: {stripped}")
     assert not violations, "\n".join(violations)
 
@@ -474,7 +475,7 @@ def test_examples_and_public_docs_do_not_promote_root_rti_import_form() -> None:
         rel = path.relative_to(ROOT).as_posix()
         for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
             stripped = line.strip()
-            if stripped.startswith("from hla2010.rti import") or stripped.startswith("import hla2010.rti"):
+            if stripped.startswith("from hla.rti1516e.rti import") or stripped.startswith("import hla.rti1516e.rti"):
                 violations.append(f"{rel}:{lineno}: {stripped}")
     assert not violations, "\n".join(violations)
 
@@ -488,9 +489,9 @@ def test_examples_do_not_import_root_runtime_callback_facades() -> None:
         for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
             stripped = line.strip()
             if (
-                stripped.startswith("from hla2010.runtime_api import FederateAmbassador")
-                or stripped.startswith("from hla2010.ambassadors import")
-                or stripped.startswith("import hla2010.ambassadors")
+                stripped.startswith("from hla.rti1516e.runtime_api import FederateAmbassador")
+                or stripped.startswith("from hla.rti1516e.ambassadors import")
+                or stripped.startswith("import hla.rti1516e.ambassadors")
             ):
                 violations.append(f"{rel}:{lineno}: {stripped}")
     assert not violations, "\n".join(violations)
@@ -519,12 +520,12 @@ def test_core_package_contains_no_root_verification_or_work_packet_facades() -> 
 def test_root_hla2010_package_stays_split_package_free_except_for_hla2010_rti() -> None:
     root_package = ROOT / "src/hla2010"
     violations: list[str] = []
-    allowed_rti_import = "hla2010_rti_runtime_common"
+    allowed_rti_import = "hla.rti"
     forbidden_prefixes = (
         "hla2010_rti_",
-        "hla2010_verification_harness",
-        "hla2010_fom_target_radar",
-        "hla2010_repo_internal",
+        "hla.verification",
+        "hla.foms.target_radar",
+        "hla.verification.repo_internal",
     )
     for path in sorted(root_package.rglob("*.py")):
         rel = path.relative_to(ROOT).as_posix()

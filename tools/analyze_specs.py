@@ -4,6 +4,7 @@ import json
 import os
 import re
 import shutil
+import argparse
 import zipfile
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -765,8 +766,8 @@ Source material: official public API ZIPs from `1516.1-2010_downloads.zip` and s
 
 ## Mapping strategy for Python
 
-1. Preserve the raw lowerCamelCase API in `hla2010.raw_api` so Java/C++ method names remain searchable.
-2. Add snake_case aliases in `hla2010.api` for Python code.
+1. Preserve the raw lowerCamelCase API in `hla.rti1516e.raw_api` so Java/C++ method names remain searchable.
+2. Add snake_case aliases in `hla.rti1516e.api` for Python code.
 3. Collapse Java/C++ overloads into `*args`/`**kwargs` at the raw scaffold level;
    a later typed facade can turn the common overload families into explicit
    keyword signatures.
@@ -883,13 +884,13 @@ Unofficial Python API scaffold for HLA Evolved / IEEE 1516.1-2010-style interfac
 
 ## What this contains
 
-- `hla2010.raw_api`: source-derived lowerCamelCase API names from Java/C++.
-- `hla2010.api`: snake_case convenience layer for Python code.
-- `hla2010.enums`: enum classes derived from Java and C++ API files.
-- `hla2010.exceptions`: the 110 Java exception names as Python exception classes.
-- `hla2010.handles`: opaque handle value objects and collection aliases.
-- `hla2010.time`: initial `HLAinteger64Time` and `HLAfloat64Time` support.
-- `hla2010.encoding`: minimal HLA primitive/composite encoding elements for tests.
+- `hla.rti1516e.raw_api`: source-derived lowerCamelCase API names from Java/C++.
+- `hla.rti1516e.api`: snake_case convenience layer for Python code.
+- `hla.rti1516e.enums`: enum classes derived from Java and C++ API files.
+- `hla.rti1516e.exceptions`: the 110 Java exception names as Python exception classes.
+- `hla.rti1516e.handles`: opaque handle value objects and collection aliases.
+- `hla.rti1516e.time`: initial `HLAinteger64Time` and `HLAfloat64Time` support.
+- `hla.rti1516e.encoding`: minimal HLA primitive/composite encoding elements for tests.
 - `analysis/`: machine-readable method inventories and Java/C++ comparison notes.
 
 This is not a complete RTI. It is a starting API and adapter target for writing a Python binding or a Python-facing RTI wrapper.
@@ -906,8 +907,8 @@ This is not a complete RTI. It is a starting API and adapter target for writing 
 ## Minimal use
 
 ```python
-from hla2010 import CallbackModel
-from hla2010.spec import FederateAmbassadorSpec as FederateAmbassador
+from hla.rti1516e import CallbackModel
+from hla.rti1516e.spec import FederateAmbassadorSpec as FederateAmbassador
 
 class MyFederate(FederateAmbassador):
     def time_advance_grant(self, the_time):
@@ -918,8 +919,8 @@ class MyFederate(FederateAmbassador):
 
 See `analysis/api_comparison.md` for the Java/C++ differences that the Python surface needs to reconcile.
 ''')
-    write(OUT/'examples/minimal_federate.py', '''from hla2010 import CallbackModel
-from hla2010.spec import FederateAmbassadorSpec as FederateAmbassador
+    write(OUT/'examples/minimal_federate.py', '''from hla.rti1516e import CallbackModel
+from hla.rti1516e.spec import FederateAmbassadorSpec as FederateAmbassador
 
 class MinimalFederate(FederateAmbassador):
     def connection_lost(self, fault_description: str):
@@ -941,8 +942,8 @@ class MinimalFederate(FederateAmbassador):
         [
             sys.executable,
             '-c',
-            'import hla2010; from hla2010 import SaveFailureReason, RTIexception, AttributeHandle; '
-            'import hla2010.raw_api as r; print(hla2010.__version__, len(r.API_METADATA["RTIambassador"]))',
+            'import hla.rti1516e; from hla.rti1516e import SaveFailureReason, RTIexception, AttributeHandle; '
+            'import hla.rti1516e.raw_api as r; print(hla.rti1516e.__version__, len(r.API_METADATA["RTIambassador"]))',
         ],
         env={**os.environ, 'PYTHONPATH': str(OUT)},
         check=True,
@@ -951,5 +952,14 @@ class MinimalFederate(FederateAmbassador):
     shutil.make_archive(str(ZIP.with_suffix('')), 'zip', OUT)
     print(json.dumps({'out': str(OUT), 'zip': str(ZIP), **api_inventory}, indent=2))
 
-if __name__ == '__main__':
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Analyze HLA 1516.1-2010 source artifacts.")
+    parser.add_argument("--root", default=str(ROOT), help="Workspace containing unpacked/downloaded spec artifacts.")
+    parser.add_argument("--output-dir", default=str(OUT), help="Generated package output directory.")
+    parser.add_argument("--zip-path", default=str(ZIP), help="Generated package archive path.")
+    parser.parse_args()
     build()
+
+
+if __name__ == '__main__':
+    main()

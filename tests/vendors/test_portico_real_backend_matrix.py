@@ -5,10 +5,10 @@ import uuid
 
 import pytest
 
-from hla2010.enums import ResignAction
-from hla2010_rti_backend_common import BackendUnavailableError, RecordingFederateAmbassador
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_verification_harness import (
+from hla.rti1516e.enums import ResignAction
+from hla.backends.common import BackendUnavailableError, RecordingFederateAmbassador
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.verification import (
     SynchronizationScenarioConfig,
     TwoFederateExchangeConfig,
     assert_two_federate_exchange_callback_history,
@@ -42,7 +42,7 @@ def test_portico_backend_exchange_matrix(kind: str, time_factory_name: str) -> N
 
         config = TwoFederateExchangeConfig(
             federation_name=federation_name,
-            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            fom_modules=("resource:VendorSmokeFOM.xml",),
             logical_time_implementation_name=time_factory_name,
             object_instance_name=f"{kind}-{time_factory_name}-Object-1",
         )
@@ -98,7 +98,7 @@ def test_portico_backend_synchronization_matrix(kind: str) -> None:
 
         config = SynchronizationScenarioConfig(
             federation_name=federation_name,
-            fom_modules=("hla2010:VendorSmokeFOM.xml",),
+            fom_modules=("resource:VendorSmokeFOM.xml",),
             logical_time_implementation_name="HLAinteger64Time",
             label="ReadyToRun",
             tag=b"startup",

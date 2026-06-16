@@ -5,13 +5,13 @@ from typing import Any
 
 import pytest
 
-from hla2010.enums import CallbackModel
-from hla2010.spec import FederateAmbassadorSpec
-from hla2010_rti_backend_common import BackendInfo, RTIBackend
-from hla2010_rti_java_common import create_java_backend, create_java_rti_ambassador, discover_java_rti
-from hla2010_rti_java_common.java_shim_kernel import SharedJavaShimKernel
-from hla2010_rti_java_jpype import JavaRTI2010Implementation, JavaRTIImplementation, debug_java_rti_implementation, java_2010_rti_ambassador
-from hla2010_verification_harness import run_basic_federate_scenario
+from hla.rti1516e.enums import CallbackModel
+from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.backends.common import BackendInfo, RTIBackend
+from hla.bridges.java.common import create_java_backend, create_java_rti_ambassador, discover_java_rti
+from hla.bridges.java.common.java_shim_kernel import SharedJavaShimKernel
+from hla.bridges.java.jpype import JavaRTI2010Implementation, JavaRTIImplementation, debug_java_rti_implementation, java_2010_rti_ambassador
+from hla.verification import run_basic_federate_scenario
 
 
 @dataclass
@@ -27,7 +27,7 @@ class _FakeBackend(RTIBackend):
 
 
 def test_create_java_backend_forwards_implementation_to_jpype_config(monkeypatch: pytest.MonkeyPatch) -> None:
-    import hla2010_rti_java_jpype.factory as jpype_factory
+    import hla.bridges.java.jpype.factory as jpype_factory
 
     captured: dict[str, Any] = {}
 
@@ -51,7 +51,7 @@ def test_create_java_backend_forwards_implementation_to_jpype_config(monkeypatch
 
 
 def test_create_java_backend_forwards_implementation_to_py4j_config(monkeypatch: pytest.MonkeyPatch) -> None:
-    import hla2010_rti_java_py4j.factory as py4j_factory
+    import hla.bridges.java.py4j.factory as py4j_factory
 
     captured: dict[str, Any] = {}
 
@@ -68,7 +68,7 @@ def test_create_java_backend_forwards_implementation_to_py4j_config(monkeypatch:
 
 
 def test_create_java_rti_ambassador_wraps_selected_java_backend(monkeypatch: pytest.MonkeyPatch) -> None:
-    import hla2010_rti_java_jpype.factory as jpype_factory
+    import hla.bridges.java.jpype.factory as jpype_factory
 
     def fake_create_backend(config: Any) -> _FakeBackend:
         return _FakeBackend(BackendInfo(name=config.rti_factory_name, kind="java/jpype"))
@@ -134,7 +134,7 @@ def test_create_java_backend_shim_supports_shared_kernel_option() -> None:
 
 
 def test_java_2010_implementation_facade_is_jpype_first(monkeypatch: pytest.MonkeyPatch) -> None:
-    import hla2010_rti_java_jpype.factory as jpype_factory
+    import hla.bridges.java.jpype.factory as jpype_factory
 
     captured: dict[str, Any] = {}
 
@@ -179,7 +179,7 @@ def test_java_2010_implementation_facade_can_drive_java_shim_test_tool() -> None
 
 
 def test_java_implementation_facade_has_py4j_slot(monkeypatch: pytest.MonkeyPatch) -> None:
-    import hla2010_rti_java_py4j.factory as py4j_factory
+    import hla.bridges.java.py4j.factory as py4j_factory
 
     captured: dict[str, Any] = {}
 

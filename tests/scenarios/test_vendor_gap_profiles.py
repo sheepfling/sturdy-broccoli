@@ -5,7 +5,7 @@ import os
 import subprocess
 from pathlib import Path
 
-from hla2010_repo_internal.verification.vendor_gap_profiles import write_vendor_gap_profile
+from hla.verification.repo_internal.verification.vendor_gap_profiles import write_vendor_gap_profile
 
 
 ROOT = Path(__file__).resolve().parents[2]

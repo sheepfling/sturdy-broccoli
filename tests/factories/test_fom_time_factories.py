@@ -1,12 +1,12 @@
-from hla2010.spec import FederateAmbassadorSpec
-from hla2010_rti_backend_common import Invocation
-from hla2010_rti_java_common import JavaBridge, JavaValueConverter, resolve_java_invocation
-from hla2010_fom_target_radar.scenarios import target_radar_fom_path
-from hla2010.enums import CallbackModel, ResignAction
-from hla2010.handles import AttributeHandle, AttributeHandleSet, AttributeHandleValueMap, DimensionHandleSet
-from hla2010.raw_api import API_METADATA
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010.time import HLAfloat64Interval, HLAfloat64Time
+from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.backends.common import Invocation
+from hla.bridges.java.common import JavaBridge, JavaValueConverter, resolve_java_invocation
+from hla.foms.target_radar.scenarios import target_radar_fom_path
+from hla.rti1516e.enums import CallbackModel, ResignAction
+from hla.rti1516e.handles import AttributeHandle, AttributeHandleSet, AttributeHandleValueMap, DimensionHandleSet
+from hla.rti1516e.raw_api import API_METADATA
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time
 
 TARGET_RADAR_FOM = target_radar_fom_path()
 

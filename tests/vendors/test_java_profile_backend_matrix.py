@@ -5,13 +5,13 @@ import uuid
 
 import pytest
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010_rti_backend_common import BackendUnavailableError, make_rti_ambassador
-from hla2010.enums import ResignAction
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_rti_java_common.java_shim_factory import create_shared_java_shim_backend
-from hla2010_rti_java_common.java_shim_kernel import SharedJavaShimKernel
-from hla2010_verification_harness import (
+from hla.backends.common import RecordingFederateAmbassador
+from hla.backends.common import BackendUnavailableError, make_rti_ambassador
+from hla.rti1516e.enums import ResignAction
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.bridges.java.common.java_shim_factory import create_shared_java_shim_backend
+from hla.bridges.java.common.java_shim_kernel import SharedJavaShimKernel
+from hla.verification import (
     NegotiatedOwnershipScenarioConfig,
     OwnershipScenarioConfig,
     SupportServicesScenarioConfig,
@@ -24,8 +24,8 @@ from hla2010_verification_harness import (
     run_negotiated_attribute_ownership_scenario,
     run_synchronization_scenario,
 )
-from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from hla2010_rti_certi.real_rti_certi import discover_certi_smoke_fom, launch_certi_rtig
+from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
+from hla.backends.certi.real_rti_certi import discover_certi_smoke_fom, launch_certi_rtig
 from tests.vendors.runtime_support import cleanup_federation, close_all, require_vendor_preflight, terminate_all, udp_port_pair
 
 

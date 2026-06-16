@@ -19,8 +19,8 @@ def _bootstrap_source_checkout() -> None:
 
 _bootstrap_source_checkout()
 
-import hla2010
-from hla2010_repo_internal.verification.clause13_conformance import (
+import hla.rti1516e
+from hla.verification.repo_internal.verification.clause13_conformance import (
     write_clause13_conformance_packet_json,
     write_clause13_conformance_packet_markdown,
 )
@@ -32,12 +32,12 @@ def main() -> int:
     write_clause13_conformance_packet_json(
         OUTPUT_DIR / "clause13_conformance_packet.json",
         REPO_ROOT,
-        version=hla2010.__version__,
+        version=hla.rti1516e.__version__,
     )
     write_clause13_conformance_packet_markdown(
         OUTPUT_DIR / "clause13_conformance_packet.md",
         REPO_ROOT,
-        version=hla2010.__version__,
+        version=hla.rti1516e.__version__,
     )
     return 0
 

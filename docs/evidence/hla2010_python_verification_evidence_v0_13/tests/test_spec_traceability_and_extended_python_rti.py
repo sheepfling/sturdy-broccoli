@@ -1,11 +1,11 @@
-from hla2010.ambassadors import RecordingFederateAmbassador
-from hla2010.backends.base import DelegatingRTIAmbassador
-from hla2010.backends.python_rti import InMemoryRTIEngine, PythonRTIBackend, rti_ambassador
-from hla2010.enums import CallbackModel, OrderType, ResignAction, ServiceGroup
-from hla2010.handles import AttributeHandleSet, MessageRetractionHandle, RegionHandleSet
-from hla2010.raw_api import API_METADATA
-from hla2010.spec_refs import FOM_REFERENCES, method_reference
-from hla2010.types import AttributeRegionAssociation, RangeBounds
+from hla.rti1516e.ambassadors import RecordingFederateAmbassador
+from hla.rti1516e.backends.base import DelegatingRTIAmbassador
+from hla.rti1516e.backends.python_rti import InMemoryRTIEngine, PythonRTIBackend, rti_ambassador
+from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction, ServiceGroup
+from hla.rti1516e.handles import AttributeHandleSet, MessageRetractionHandle, RegionHandleSet
+from hla.rti1516e.raw_api import API_METADATA
+from hla.rti1516e.spec_refs import FOM_REFERENCES, method_reference
+from hla.rti1516e.types import AttributeRegionAssociation, RangeBounds
 
 
 def drain(*rtis):

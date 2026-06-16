@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from hla2010_repo_internal.verification.python_route_parity_matrix import (
+from hla.verification.repo_internal.verification.python_route_parity_matrix import (
     PYTHON_ROUTE_IDS,
     PYTHON_ROUTE_PARITY_SCENARIOS,
     write_python_route_parity_matrix,

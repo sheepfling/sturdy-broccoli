@@ -6,8 +6,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-import hla2010
-from hla2010_repo_internal.verification.clause13_conformance import (
+import hla.rti1516e
+from hla.verification.repo_internal.verification.clause13_conformance import (
     build_clause13_conformance_packet,
     write_clause13_conformance_packet_json,
     write_clause13_conformance_packet_markdown,
@@ -20,14 +20,14 @@ MD_PATH = REPO_ROOT / "docs" / "verification" / "clause13_conformance_packet.md"
 
 
 def test_clause13_conformance_packet_matches_generated_json():
-    expected = build_clause13_conformance_packet(REPO_ROOT, version=hla2010.__version__)
+    expected = build_clause13_conformance_packet(REPO_ROOT, version=hla.rti1516e.__version__)
     actual = json.loads(JSON_PATH.read_text(encoding="utf-8"))
 
     assert actual == expected
 
 
 def test_clause13_conformance_packet_backs_federate_and_rti_claims():
-    packet = build_clause13_conformance_packet(REPO_ROOT, version=hla2010.__version__)
+    packet = build_clause13_conformance_packet(REPO_ROOT, version=hla.rti1516e.__version__)
 
     assert packet["federate_conformance"]["claim_backed"] is True
     assert packet["rti_conformance"]["claim_backed"] is True
@@ -50,10 +50,10 @@ def test_clause13_conformance_packet_backs_federate_and_rti_claims():
 
 def test_clause13_conformance_packet_writers_emit_review_assets(tmp_path: Path):
     json_path = write_clause13_conformance_packet_json(
-        tmp_path / "clause13.json", REPO_ROOT, version=hla2010.__version__
+        tmp_path / "clause13.json", REPO_ROOT, version=hla.rti1516e.__version__
     )
     md_path = write_clause13_conformance_packet_markdown(
-        tmp_path / "clause13.md", REPO_ROOT, version=hla2010.__version__
+        tmp_path / "clause13.md", REPO_ROOT, version=hla.rti1516e.__version__
     )
 
     assert json.loads(json_path.read_text(encoding="utf-8"))["scope"].startswith(
@@ -68,7 +68,7 @@ def test_clause13_conformance_packet_writers_emit_review_assets(tmp_path: Path):
 def test_clause13_conformance_markdown_is_committed():
     text = MD_PATH.read_text(encoding="utf-8")
 
-    assert text.startswith(f"# Clause 13 Conformance Packet v{hla2010.__version__}")
+    assert text.startswith(f"# Clause 13 Conformance Packet v{hla.rti1516e.__version__}")
     assert "## Federate conformance" in text
     assert "## RTI conformance" in text
 

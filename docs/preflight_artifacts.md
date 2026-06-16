@@ -146,8 +146,8 @@ The richer payloads also make the selected runtime state explicit:
 
 If you want to understand the operator flow first, read:
 
-- [Pitch Decision Tree](../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md)
-- [CERTI Operator Runbook](../packages/hla2010-rti-certi/docs/certi_section8_runbook.md)
+- [Pitch Decision Tree](../packages/hla-vendor-pitch/docs/pitch_decision_tree.md)
+- [CERTI Operator Runbook](../packages/hla-backend-certi/docs/certi_section8_runbook.md)
 
 ## Classifying The Artifacts
 

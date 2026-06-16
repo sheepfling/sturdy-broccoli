@@ -1,15 +1,16 @@
 from __future__ import annotations
 
+from importlib import resources
 from pathlib import Path
 
 import pytest
 
-from hla2010_rti_backend_common import RecordingFederateAmbassador
-from hla2010_rti_transport_grpc.python_server import start_python_grpc_server
-from hla2010_rti_python import InMemoryRTIEngine
-from hla2010.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveFailureReason, SaveStatus
-from hla2010_rti_runtime_common import create_rti_ambassador
-from hla2010_verification_harness import (
+from hla.backends.common import RecordingFederateAmbassador
+from hla.transports.grpc.python_server import start_python_grpc_server
+from hla.backends.inmemory import InMemoryRTIEngine
+from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction, RestoreStatus, SaveFailureReason, SaveStatus
+from hla.rti1516e.factory import create_rti_ambassador
+from hla.verification import (
     NegotiatedOwnershipScenarioConfig,
     OwnershipScenarioConfig,
     SynchronizationScenarioConfig,
@@ -20,11 +21,11 @@ from hla2010_verification_harness import (
     run_negotiated_attribute_ownership_scenario,
     run_synchronization_scenario,
 )
-from hla2010.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
+from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
 
 pytestmark = pytest.mark.requires_loopback_server
 
-RESOURCE_ROOT = Path(__file__).resolve().parents[2] / "src" / "hla2010" / "resources" / "foms"
+RESOURCE_ROOT = Path(str(resources.files("hla.rti1516e").joinpath("resources", "foms")))
 VENDOR_SMOKE_FOM = str((RESOURCE_ROOT / "VendorSmokeFOM.xml").resolve())
 
 

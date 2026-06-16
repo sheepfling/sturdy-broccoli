@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from hla2010_rti_backend_common import RTIBackendPlugin
+from hla.backends.common import RTIBackendPlugin
 
 
 class _TransportStub:
@@ -12,15 +12,15 @@ class _TransportStub:
 
 
 def test_split_certi_package_exports_backend_surface():
-    from hla2010_rti_certi import (
+    from hla.backends.certi import (
         CERTIBackend,
         CERTIConfig,
         CERTITransport,
         prepare_certi_two_federate_profile,
     )
-    from hla2010_rti_certi.certi import CERTIBackend as PackageBackend
-    from hla2010_rti_certi.certi.transport import CERTITransport as PackageTransport
-    from hla2010_rti_certi.testing_policy import (
+    from hla.backends.certi.certi import CERTIBackend as PackageBackend
+    from hla.backends.certi.certi.transport import CERTITransport as PackageTransport
+    from hla.backends.certi.testing_policy import (
         prepare_certi_two_federate_profile as prepare_profile_from_module,
     )
 
@@ -31,7 +31,7 @@ def test_split_certi_package_exports_backend_surface():
 
 
 def test_split_certi_plugin_descriptors_create_transport_backends():
-    from hla2010_rti_certi.certi.plugin import backend_plugins, plugin
+    from hla.backends.certi.certi.plugin import backend_plugins, plugin
 
     descriptor = plugin()
     assert isinstance(descriptor, RTIBackendPlugin)

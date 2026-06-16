@@ -2,16 +2,16 @@
 
 import pytest
 
-from hla2010 import mom as hla_mom
+from hla.rti1516e import mom as hla_mom
 from tests.backends.python_backend_extended_support import *
-from hla2010.spec import RTIambassadorSpec, FederateAmbassadorSpec
-from hla2010.exceptions import *
-from hla2010.handles import *
-from hla2010.raw_api import API_METADATA
-from hla2010.enums import OrderType, ResignAction, ServiceGroup
-from hla2010_verification_harness.section8_matrix import run_section8_request_retraction_case, section8_matrix_config
-from hla2010.types import AttributeRegionAssociation, RangeBounds
-from hla2010.exceptions import AttributeAlreadyBeingDivested, AttributeAlreadyOwned, AttributeNotPublished, InteractionClassNotPublished
+from hla.rti1516e.spec import RTIambassadorSpec, FederateAmbassadorSpec
+from hla.rti1516e.exceptions import *
+from hla.rti1516e.handles import *
+from hla.rti1516e.raw_api import API_METADATA
+from hla.rti1516e.enums import OrderType, ResignAction, ServiceGroup
+from hla.verification.section8_matrix import run_section8_request_retraction_case, section8_matrix_config
+from hla.rti1516e.types import AttributeRegionAssociation, RangeBounds
+from hla.rti1516e.exceptions import AttributeAlreadyBeingDivested, AttributeAlreadyOwned, AttributeNotPublished, InteractionClassNotPublished
 
 def test_support_surface_negative_paths_cover_handle_validation_region_bounds_and_advisory_switches():
     rti = rti_ambassador(engine=InMemoryRTIEngine())

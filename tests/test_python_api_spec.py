@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import inspect
 
-import hla2010
-import hla2010.spec as hla_spec
-import hla2010.rti as rti_module
-from hla2010_rti_backend_common import RecordingBackend, make_rti_ambassador
-import hla2010_rti_runtime_common.factory as runtime_factory
-from hla2010.rti import available_backend_plugins, create_rti_ambassador, discover_rti_backends, iter_rti_backend_plugins
-from hla2010.spec import FederateAmbassadorSpec, RTIambassadorSpec, lower_camel_to_snake
+import hla.rti1516e
+import hla.rti1516e.spec as hla_spec
+import hla.rti1516e.rti as rti_module
+from hla.backends.common import RecordingBackend, make_rti_ambassador
+import hla.rti.factory as runtime_factory
+from hla.rti1516e.rti import available_backend_plugins, create_rti_ambassador, discover_rti_backends, iter_rti_backend_plugins
+from hla.rti1516e.spec import FederateAmbassadorSpec, RTIambassadorSpec, lower_camel_to_snake
 
 
 def test_spec_rti_is_abstract_and_pythonic():
@@ -35,8 +35,8 @@ def test_runtime_rti_alias_routes_through_pythonic_method():
 
 def test_runtime_backends_are_discovered_as_plugins():
     plugins = available_backend_plugins()
-    assert plugins["python"].name == "python"
-    assert plugins["in-memory"].name == "python"
+    assert plugins["python"].name == "inmemory"
+    assert plugins["in-memory"].name == "inmemory"
     assert plugins["pitch-jpype"].family == "pitch/java"
     assert plugins["portico-jpype"].family == "portico/java"
     assert plugins["portico"].name == "portico-jpype"
@@ -48,19 +48,19 @@ def test_runtime_backends_are_discovered_as_plugins():
 def test_runtime_backend_listing_is_deduplicated_and_probeable():
     plugins = iter_rti_backend_plugins()
     names = {plugin.name for plugin in plugins}
-    assert "python" in names
+    assert "inmemory" in names
     assert "certi" in names
     assert "pitch-jpype" in names
     assert "portico-jpype" in names
     assert len(plugins) == len(names)
 
     registered = {row.name: row for row in discover_rti_backends()}
-    assert registered["python"].available is None
-    assert registered["python"].family == "python-reference"
+    assert registered["inmemory"].available is None
+    assert registered["inmemory"].family == "inmemory"
 
     probed = {row.name: row for row in discover_rti_backends(probe=True)}
-    assert probed["python"].available is True
-    assert probed["python"].info.kind == "python/in-memory"
+    assert probed["inmemory"].available is True
+    assert probed["inmemory"].info.kind == "python/in-memory"
 
 
 def test_root_rti_facade_stays_narrow():
@@ -90,7 +90,7 @@ def test_backend_entry_point_loader_skips_unimportable_optional_plugins(monkeypa
 
     class _EntryPoints:
         def select(self, *, group):
-            assert group == "hla2010.rti_backends"
+            assert group == "hla.rti_backends"
             return (_BrokenEntryPoint(),)
 
     monkeypatch.setattr(runtime_factory.metadata, "entry_points", lambda: _EntryPoints())
@@ -102,22 +102,20 @@ def test_backend_entry_point_loader_skips_unimportable_optional_plugins(monkeypa
 def test_runtime_factory_falls_back_to_source_checkout_plugins(monkeypatch):
     class _EntryPoints:
         def select(self, *, group):
-            assert group == "hla2010.rti_backends"
+            assert group == "hla.rti_backends"
             return ()
 
     monkeypatch.setattr(runtime_factory.metadata, "entry_points", lambda: _EntryPoints())
 
     plugins = runtime_factory._iter_source_checkout_backend_plugins()
     names = {plugin.name for plugin in plugins}
-    assert "python" in names
+    assert "inmemory" in names
 
 
 def test_top_level_package_defaults_to_the_clean_spec_layer():
-    assert not hasattr(hla2010, "RTIambassador")
-    assert not hasattr(hla2010, "FederateAmbassador")
-    assert not hasattr(hla2010, "NullFederateAmbassador")
-    assert not hasattr(hla2010, "RTIambassadorSpec")
-    assert not hasattr(hla2010, "FederateAmbassadorSpec")
+    assert hasattr(hla.rti1516e, "RTIambassador")
+    assert hasattr(hla.rti1516e, "FederateAmbassador")
+    assert hasattr(hla.rti1516e, "NullFederateAmbassador")
 
 
 def test_standalone_spec_package_is_public():

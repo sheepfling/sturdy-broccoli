@@ -28,8 +28,8 @@ Minimum fields for every row:
 
 The repo already has part of this machinery in:
 
-- `hla2010.conformance`
-- `hla2010.verification`
+- `hla.rti1516e.conformance`
+- `hla.rti1516e.verification`
 - `analysis/compliance/*`
 
 The requirement IDs should be explicit and stable, rather than only relying on service/method names.

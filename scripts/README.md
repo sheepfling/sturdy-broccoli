@@ -25,6 +25,7 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 
 - `./tools/bootstrap` canonical workspace bootstrap and doctor flow
 - `./tools/python` canonical Python / repo-green verification flow
+- `./tools/test-surface` canonical verification lane discovery and recommendation flow
 - `./tools/certi-easy` canonical CERTI install, doctor, build, run, smoke/compare, and best-effort verify flow
 - `./tools/pitch` canonical Pitch Docker-backed install, start, strict smoke/verify, best-effort smoke/verify, and support flow
 - `./tools/vendor-green` canonical strict vendor-runtime verification flow
@@ -56,7 +57,7 @@ Normal setup order:
 
 The repository root is not an installable Python distribution. Python setup
 installs the split packages in editable mode, starting with
-`packages/hla2010-spec`. Do not use root `pip install -e .` and do not add
+`packages/hla-rti1516e`. Do not use root `pip install -e .` and do not add
 workspace source roots through `.pth` or `sys.path` injection.
 
 Python scripts assume the split packages are already importable. Run
@@ -71,8 +72,8 @@ for scripts that read or write repository artifacts from another directory.
 
 Operator guide links:
 
-- [../packages/hla2010-rti-certi/docs/certi_section8_runbook.md](../packages/hla2010-rti-certi/docs/certi_section8_runbook.md): CERTI operator runbook
-- [../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md](../packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md): Pitch selection and troubleshooting
+- [../packages/hla-backend-certi/docs/certi_section8_runbook.md](../packages/hla-backend-certi/docs/certi_section8_runbook.md): CERTI operator runbook
+- [../packages/hla-vendor-pitch/docs/pitch_decision_tree.md](../packages/hla-vendor-pitch/docs/pitch_decision_tree.md): Pitch selection and troubleshooting
 - [../docs/preflight_artifacts.md](../docs/preflight_artifacts.md): JSON preflight artifacts and inspection examples
 - `./tools/certi-easy preflight [--json] [--json-file FILE]`: CERTI readiness check before install or smoke
 - `./tools/pitch preflight [--json] [--json-file FILE]`: Pitch Docker readiness check before install or run

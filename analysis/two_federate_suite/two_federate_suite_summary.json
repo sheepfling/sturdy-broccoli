@@ -610,7 +610,7 @@
       },
       "federation_name": "TwoFederateSuiteDDM",
       "fom_modules": [
-        "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/resources/foms/TargetRadarFOMmodule.xml"
+        "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/packages/hla-fom-target-radar/src/hla/foms/target_radar/resources/foms/TargetRadarFOMmodule.xml"
       ],
       "grant_time": {
         "value": 5.0
@@ -2996,7 +2996,7 @@
             },
             "federation_name": "TwoFederateSuiteDDM",
             "fom_modules": [
-              "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/resources/foms/TargetRadarFOMmodule.xml"
+              "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/packages/hla-fom-target-radar/src/hla/foms/target_radar/resources/foms/TargetRadarFOMmodule.xml"
             ],
             "grant_time": {
               "value": 5.0
@@ -3828,7 +3828,7 @@
           }
         },
         "fom_modules": {
-          "target_radar": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/resources/foms/TargetRadarFOMmodule.xml",
+          "target_radar": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/packages/hla-fom-target-radar/src/hla/foms/target_radar/resources/foms/TargetRadarFOMmodule.xml",
           "vendor_smoke": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/src/hla2010/resources/foms/VendorSmokeFOM.xml"
         },
         "negotiated_ownership": {

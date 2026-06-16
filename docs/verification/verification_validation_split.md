@@ -28,7 +28,7 @@ Verification evidence in this repo already includes:
 
 - [../backend_conformance_matrix.md](../backend_conformance_matrix.md)
 - [../backend_capability_matrix.md](../backend_capability_matrix.md)
-- [../certi_spec_traceability.md](../../packages/hla2010-rti-certi/docs/certi_spec_traceability.md)
+- [../certi_spec_traceability.md](../../packages/hla-backend-certi/docs/certi_spec_traceability.md)
 - `analysis/compliance/*`
 - `tests/verification/*`
 - `tests/backends/*`

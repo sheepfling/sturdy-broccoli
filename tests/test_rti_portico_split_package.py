@@ -1,21 +1,21 @@
 from __future__ import annotations
 
-from hla2010_rti_backend_common import RTIBackendPlugin
+from hla.backends.common import RTIBackendPlugin
 
 
 def test_split_portico_package_exports_runtime_helpers():
-    from hla2010_rti_portico import (
+    from hla.vendors.portico import (
         PorticoRuntime,
         discover_portico_runtime,
         discover_portico_two_federate_profile,
     )
-    from hla2010_rti_portico.real_rti_portico import (
+    from hla.vendors.portico.real_rti_portico import (
         PorticoRuntime as RuntimeFromModule,
     )
-    from hla2010_rti_portico.real_rti_portico import (
+    from hla.vendors.portico.real_rti_portico import (
         discover_portico_runtime as discover_from_module,
     )
-    from hla2010_rti_portico.testing_policy import (
+    from hla.vendors.portico.testing_policy import (
         discover_portico_two_federate_profile as discover_profile_from_module,
     )
 
@@ -25,7 +25,7 @@ def test_split_portico_package_exports_runtime_helpers():
 
 
 def test_split_portico_plugin_descriptors_are_registered():
-    from hla2010_rti_portico.plugin import portico_jpype_plugin, portico_py4j_plugin
+    from hla.vendors.portico.plugin import portico_jpype_plugin, portico_py4j_plugin
 
     jpype_descriptor = portico_jpype_plugin()
     py4j_descriptor = portico_py4j_plugin()

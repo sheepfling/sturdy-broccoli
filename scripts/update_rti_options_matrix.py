@@ -26,7 +26,7 @@ _bootstrap_source_checkout()
 
 
 def _extract_alias_sets() -> list[tuple[str, list[str]]]:
-    from hla2010_rti_runtime_common.factory import iter_rti_backend_plugins
+    from hla.rti.factory import iter_rti_backend_plugins
 
     groups: list[tuple[str, list[str]]] = []
     for plugin in iter_rti_backend_plugins():

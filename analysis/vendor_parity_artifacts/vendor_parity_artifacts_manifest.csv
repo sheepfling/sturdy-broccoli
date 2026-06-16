@@ -18,18 +18,18 @@ pitch,pitch-lost-federate-probe,probe,stability-summary,probe stability summary,
 shared,shared,shared,promotion-review,probe promotion review summary,analysis/vendor_probe_promotion_review/vendor_probe_promotion_review_summary.json,False,False,Optional promotion-review summary comparing repeated-run probe evidence against documented conformance stance.
 certi,certi-save-restore,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/certi-save-restore.json,False,False,Optional machine-readable CERTI save/restore known-gap profile.
 certi,certi-ddm,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/certi-ddm.json,False,False,Optional machine-readable CERTI DDM known-gap profile.
-pitch,pitch-save-restore,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/pitch-save-restore.json,False,False,Optional machine-readable Pitch save/restore known-gap profile.
-pitch,pitch-ddm,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/pitch-ddm.json,False,False,Optional machine-readable Pitch DDM known-gap profile.
-pitch,pitch-negotiated,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/pitch-negotiated.json,False,False,Optional machine-readable Pitch negotiated-ownership known-gap profile.
+pitch,pitch-save-restore,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/pitch-save-restore.json,False,True,Optional machine-readable Pitch save/restore known-gap profile.
+pitch,pitch-ddm,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/pitch-ddm.json,False,True,Optional machine-readable Pitch DDM known-gap profile.
+pitch,pitch-negotiated,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/pitch-negotiated.json,False,True,Optional machine-readable Pitch negotiated-ownership known-gap profile.
 pitch,pitch-lost-federate,known-gap,gap-profile,known gap profile,analysis/vendor_gap_profiles/pitch-lost-federate.json,False,True,Optional machine-readable Pitch lost-federate known-gap profile.
 certi,certi-compare,promoted,test,exchange parity,tests/vendors/test_certi_real_backend_exchange_matrix.py,True,True,Real CERTI exchange scenario parity slice.
 certi,certi-compare,promoted,test,time parity,tests/vendors/test_certi_real_backend_time_matrix.py,True,True,Real CERTI time-management compare slice.
 certi,certi-compare,promoted,test,ownership parity,tests/vendors/test_certi_real_backend_ownership_matrix.py,True,True,Real CERTI ownership compare slice.
 certi,certi-compare,promoted,support,shared matrix helpers,tests/vendors/certi_real_backend_matrix_support.py,True,True,Shared CERTI runtime guards and helpers.
-certi,certi-compare,promoted,doc,runbook,packages/hla2010-rti-certi/docs/certi_section8_runbook.md,True,True,Operational runbook for CERTI compare workflows.
-certi,certi-compare,promoted,doc,traceability note,packages/hla2010-rti-certi/docs/certi_spec_traceability.md,True,True,Clause-level CERTI evidence and traceability context.
-certi,certi-compare,promoted,doc,vendor findings,packages/hla2010-rti-certi/docs/certi_negotiated_ownership_findings.md,True,True,Current negotiated ownership divergence notes for CERTI.
+certi,certi-compare,promoted,doc,runbook,packages/hla-backend-certi/docs/certi_section8_runbook.md,True,True,Operational runbook for CERTI compare workflows.
+certi,certi-compare,promoted,doc,traceability note,packages/hla-backend-certi/docs/certi_spec_traceability.md,True,True,Clause-level CERTI evidence and traceability context.
+certi,certi-compare,promoted,doc,vendor findings,packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md,True,True,Current negotiated ownership divergence notes for CERTI.
 pitch,pitch,promoted,test,exchange time ownership parity,tests/vendors/test_pitch_real_backend_matrix.py,True,True,"Real Pitch backend matrix across exchange, time, sync, and ownership slices."
-pitch,pitch,promoted,doc,quickstart,packages/hla2010-rti-pitch-common/docs/pitch_docker_quickstart.md,True,True,Shortest supported Pitch runtime activation path.
-pitch,pitch,promoted,doc,decision tree,packages/hla2010-rti-pitch-common/docs/pitch_decision_tree.md,True,True,Pitch operator decision tree and environment branching.
-pitch,pitch,promoted,doc,vendor findings,packages/hla2010-rti-pitch-common/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md,True,True,Current negotiated ownership divergence notes for Pitch.
+pitch,pitch,promoted,doc,quickstart,packages/hla-vendor-pitch/docs/pitch_docker_quickstart.md,True,True,Shortest supported Pitch runtime activation path.
+pitch,pitch,promoted,doc,decision tree,packages/hla-vendor-pitch/docs/pitch_decision_tree.md,True,True,Pitch operator decision tree and environment branching.
+pitch,pitch,promoted,doc,vendor findings,packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md,True,True,Current negotiated ownership divergence notes for Pitch.

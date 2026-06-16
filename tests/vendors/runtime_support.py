@@ -11,7 +11,7 @@ from typing import Any, Iterator, Sequence
 
 import pytest
 
-from hla2010.enums import ResignAction
+from hla.rti1516e.enums import ResignAction
 
 
 _VENDOR_PREFLIGHT_ENV = {
