@@ -65,7 +65,8 @@ from .logical_time import (
 class RTIambassador(Protocol):
     """Runtime protocol surface for the RTI ambassador.
 
-For strict overloads and per-method source trace, see rti_ambassador.pyi and SOURCE_TRACE.md.
+For strict overloads and per-method source trace, see
+rti_ambassador.pyi and requirements/2025/SOURCE_TRACE.md.
 """
 
     # ========= Federation Management Services =========

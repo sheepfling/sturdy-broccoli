@@ -2,6 +2,13 @@
 
 This directory is the source side of the verification package.
 
+The layout is intentionally edition-separated:
+
+- `requirements/` is the 2010 working corpus and mapping block.
+- `requirements/2010/` is a folder view of the same 2010 corpus for direct
+  path-based access and review.
+- `requirements/2025/` is the 2025 traceability and source-trace block.
+
 Use it to track the three standards as three requirement sources:
 
 - `hla1516_framework_rules.csv`: IEEE 1516-2010 framework and architecture rules

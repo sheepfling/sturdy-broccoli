@@ -38,7 +38,8 @@ from .logical_time import LogicalTime
 class FederateAmbassador(Protocol):
     """Runtime protocol surface for federate callback services.
 
-For strict overloads and per-method source trace, see federate_ambassador.pyi and SOURCE_TRACE.md.
+For strict overloads and per-method source trace, see
+federate_ambassador.pyi and requirements/2025/SOURCE_TRACE.md.
 """
     def connectionLost(self, faultDescription: str) -> None: ...
 

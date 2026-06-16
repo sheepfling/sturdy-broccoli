@@ -38,9 +38,9 @@ and protocols or use them as type-checking stubs.
 This build includes `.pyi` stub files for `rti_ambassador`, `federate_ambassador`, and `encoding`.
 Those stubs carry the strict overload sets derived from the Java/C++ 1516.1-2025 APIs while the `.py` files remain runtime-importable abstract/protocol surfaces.
 
-See `SOURCE_TRACE.md` for per-method Java/C++ source linkage, service section numbers, overload counts, and Java throws summaries.
+See [`../../requirements/2025/SOURCE_TRACE.md`](../../requirements/2025/SOURCE_TRACE.md) for per-method Java/C++ source linkage, service section numbers, overload counts, and Java throws summaries.
 
 
 ## Notice and source attribution
 
-See `NOTICE.md`. Source trace and overload provenance are in `SOURCE_TRACE.md`.
+See [`../../requirements/2025/NOTICE.md`](../../requirements/2025/NOTICE.md). Source trace and overload provenance are in [`../../requirements/2025/SOURCE_TRACE.md`](../../requirements/2025/SOURCE_TRACE.md).
