@@ -9,9 +9,6 @@ This package owns:
 - the supplied 2010 FedPro-style protobuf schema and checked-in Python stubs
 - hosted Python and CERTI gRPC transport servers
 
-The legacy `hla.rti1516e.backends.grpc_transport.*` modules have been removed.
-Import `hla.transports.grpc` and its submodules directly.
-
 Use this package when you need the networked RTI route:
 
 - `start_python_grpc_server(...)` to host the in-memory Python RTI behind gRPC

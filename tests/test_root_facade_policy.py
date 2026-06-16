@@ -25,14 +25,11 @@ DIRECT_RUNTIME_PREFERENCE_DOCS = (
     ROOT / "docs/import_boundary_rules.md",
 )
 REMOVED_ROOT_FACADE_MIGRATION_DOCS = {
-    ROOT / "packages/hla-vendor-pitch-jpype/README.md": "hla.rti1516e.backends.jpype",
-    ROOT / "packages/hla-vendor-pitch-py4j/README.md": "hla.rti1516e.backends.py4j",
     ROOT / "packages/hla-vendor-pitch-jpype/MIGRATION.md": "hla.rti1516e.backends.jpype",
     ROOT / "packages/hla-vendor-pitch-py4j/MIGRATION.md": "hla.rti1516e.backends.py4j",
     ROOT / "packages/hla-bridge-java-common/MIGRATION.md": "hla.rti1516e.backends.java_common",
     ROOT / "packages/hla-bridge-java-jpype/MIGRATION.md": "hla.rti1516e.backends.jpype",
     ROOT / "packages/hla-bridge-java-py4j/MIGRATION.md": "hla.rti1516e.backends.py4j",
-    ROOT / "packages/hla-transport-rest/README.md": "hla.rti1516e.backends.rest_transport",
     ROOT / "packages/hla-transport-rest/MIGRATION.md": "src/hla2010/backends/rest_transport/",
     ROOT / "packages/hla-fom-target-radar/MIGRATION.md": "src/hla2010/scenarios/",
 }

@@ -68,9 +68,9 @@ The testing package mirrors the same structure where feasible:
 
 The goal is the same as production code: keep scenario orchestration separate from dense helper mechanics and artifact writing.
 
-Compatibility imports that remain in tests are intentional when they verify
-migration aliases or workspace-facade behavior. They should not be mistaken for
-installable package dependencies.
+Compatibility checks that remain in tests are intentional when they assert that
+old import paths stay absent or that thin public facades remain narrow. They
+should not be mistaken for installable package dependencies.
 
 ## Factories And Registries
 
@@ -102,10 +102,10 @@ backend is pure Python, CERTI-backed, JPype-backed, or Py4J-backed. REST and
 gRPC are transport options underneath that backend-neutral surface, not separate
 application APIs.
 
-The remaining documented root facade is intentionally narrow: `hla.rti1516e.rti`
-stays as a temporary root-facing backend discovery and ambassador-creation
-compatibility surface, while shared adapter primitives and plugin contracts
-live only in `hla.backends.common`.
+The remaining documented version-local facade is intentionally narrow:
+`hla.rti1516e.rti` is the 2010-local backend discovery and ambassador-creation
+surface, while shared adapter primitives and plugin contracts live only in
+`hla.backends.common`.
 
 ### Transport Artifact Policy
 

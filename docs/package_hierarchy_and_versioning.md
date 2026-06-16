@@ -34,7 +34,6 @@ hla-rti1516e
     │   │   ├── hla-vendor-pitch
     │   │   ├── hla-transport-grpc
     │   │   ├── hla-transport-rest
-    │   │   ├── hla2010-fom-minimal-demo
     │   │   └── hla-fom-target-radar
     │   └── hla-backend-inmemory
     └── hla-bridge-java-common
@@ -67,8 +66,8 @@ The current machine-generated layer model is:
 - Layer 1: `hla-backend-common`
 - Layer 2: `hla-bridge-java-common`, `hla-backend-inmemory`, `hla-transport-common`
 - Layer 3: `hla-bridge-java-jpype`, `hla-bridge-java-py4j`, `hla-rti-core`
-- Layer 4: `hla-backend-certi`, `hla2010-rti-java`, `hla-vendor-pitch`, `hla-vendor-portico`, `hla-transport-grpc`, `hla-transport-rest`, `hla-verification`
-- Layer 5: `hla2010-fom-minimal-demo`, `hla-fom-target-radar`, `hla-vendor-pitch-jpype`, `hla-vendor-pitch-py4j`
+- Layer 4: `hla-backend-certi`, `hla-vendor-pitch`, `hla-vendor-portico`, `hla-transport-grpc`, `hla-transport-rest`, `hla-verification`
+- Layer 5: `hla-fom-target-radar`, `hla-vendor-pitch-jpype`, `hla-vendor-pitch-py4j`
 
 Regenerate and check the dependency evidence with:
 
@@ -121,8 +120,8 @@ To move from lockstep to real per-package versioning, the repo would need:
 If the repo ever moves in that direction, the safest starting point is the
 leaf packages first:
 
-- `hla2010-fom-*`
-- possibly `hla2010-rti-transport-*`
+- `hla-fom-*`
+- possibly transport leaf packages with limited reverse dependencies
 
 The riskiest place to start is the shared core:
 

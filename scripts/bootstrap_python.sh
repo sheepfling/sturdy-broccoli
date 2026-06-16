@@ -8,6 +8,8 @@ CORE_WORKSPACE_PACKAGES=(
   "packages/hla-rti1516e"
   "packages/hla-backend-common"
   "packages/hla-rti-core"
+  "packages/hla-rti1516-2025"
+  "packages/hla-backend-shim"
   "packages/hla-transport-common"
   "packages/hla-bridge-java-common"
   "packages/hla-backend-inmemory"

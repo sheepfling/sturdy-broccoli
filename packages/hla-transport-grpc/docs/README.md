@@ -12,7 +12,7 @@ Key owned surfaces:
 - `packages/hla-transport-grpc/proto/rti1516e/fedpro/`: authoritative proto
   source copied from the supplied 2010 bundle plus the repo-owned service
   binding.
-- `tests/test_rti_transport_grpc_split_package.py`: split-package guard
+- `tests/test_rti_transport_grpc_split_package.py`: import and boundary guard
   coverage for the gRPC transport package.
 - `tests/test_package_boundary.py`: subprocess import-isolation coverage for the
   installable gRPC transport boundary.

@@ -7,9 +7,6 @@ This package owns:
 - the typed REST transport client/runtime
 - hosted Python and CERTI REST transport servers
 
-The legacy `hla.rti1516e.backends.rest_transport*` modules have been removed and do
-not remain available.
-Import `hla.transports.rest` and its submodules directly.
 Boundary and import-isolation guard coverage lives in
 `tests/test_rti_transport_rest_split_package.py` and
 `tests/test_package_boundary.py`.

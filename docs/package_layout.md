@@ -37,9 +37,9 @@ Do not use `pip install -e .` at the repository root. Install the split
 packages directly, starting with `packages/hla-rti1516e`, or use
 `./tools/bootstrap python` to install the editable workspace package set.
 
-For packages whose split status is `implementation-moved`, the owning package's
-`pyproject.toml` should declare only package-owned `source_roots`. For
-`hla-rti1516e`, `packages/hla-rti1516e/src/hla/rti1516e/` is the owned implementation root.
+Each package's `pyproject.toml` should declare only package-owned
+`source_roots`. For `hla-rti1516e`,
+`packages/hla-rti1516e/src/hla/rti1516e/` is the owned implementation root.
 
 ## Core API
 
@@ -83,10 +83,10 @@ backend-neutral ambassador surface.
 - `packages/hla-vendor-pitch-jpype/src/hla.vendors.pitch.jpype/` and `packages/hla-vendor-pitch-py4j/src/hla.vendors.pitch.py4j/`: Pitch-specific plugin descriptors and compatibility exports for the generic Java bridge packages.
 - `packages/hla-vendor-portico/src/hla/vendors/portico/`: Portico runtime discovery and JPype/Py4J plugin descriptors.
 - `packages/hla-backend-certi/docs/`, `packages/hla-vendor-pitch/docs/`, and `packages/hla-vendor-portico/docs/`: vendor-owned runbooks, findings, and package-local operational notes.
-Java transport stubs generated from the RTI REST or gRPC transport contracts are not checked in and are currently out of scope. Java integration in this repo is through the backend families above, not through generated transport bindings.
-
-The legacy `src/hla2010/backends/grpc_transport/` modules have been removed.
-Import `hla.transports.grpc` directly.
+Java transport stubs generated from the RTI REST or gRPC transport contracts
+are not checked in and are currently out of scope. Java integration in this
+repo is through the backend families above, not through generated transport
+bindings.
 
 ## Backend Factories
 
@@ -110,7 +110,7 @@ plugin contract types or low-level transport registration helpers. Package-owned
 from `hla.rti`, and shared plugin contract types should
 import directly from `hla.backends.common`.
 
-The intended package split is:
+The current package set is:
 
 - `hla-rti1516e`: strict IEEE 1516.1-2010 spec surface, common HLA value types,
   exceptions, FOM/MOM helpers needed by federates, and the backend adapter
@@ -169,13 +169,10 @@ roots from `__file__`, or compute `__all__` from `globals()`.
 
 Backend plugin contracts now live in
 `hla.backends.common.plugin_api`. Runtime factory helpers now live in
-`hla.rti`, while `hla.rti1516e.rti` remains only as the
-documented temporary root-facing workspace compatibility facade for backend
-discovery and ambassador creation over that split package surface.
-Package-owned code should import runtime factory helpers from
-`hla.rti` directly; registry, transport, and private helper
-access must stay in the owning split packages instead of flowing back through
-`src/hla2010/`.
+`hla.rti`, while `hla.rti1516e.rti` remains a narrow 2010-local helper for
+backend discovery and ambassador creation. Package-owned code should import
+runtime factory helpers from `hla.rti` directly; registry, transport, and
+private helper access must stay in the owning split packages.
 
 Backend base implementation now lives in
 `hla.backends.common.base`, and the package root
@@ -201,10 +198,11 @@ package root.
 - `packages/hla-bridge-java-common/src/hla.bridges.java.common/java_shim_*.py`: Java-shaped shim support used by Java-profile backends and repo verification flows.
 - `packages/hla-verification/src/hla/verification/repo_internal/verification/`: repo-internal proof packets, backend matrices, vendor reports, and two-federate artifact writers.
 - `packages/hla-fom-target-radar/src/hla.foms.target_radar/scenarios/`: canonical Target/Radar scenario implementation and FOM helper entrypoints.
-- `examples/`: runnable scripts and example-only assets. Nothing under `examples/` is part of the installable `hla2010` package.
+- `examples/`: runnable scripts and example-only assets. Nothing under
+  `examples/` is part of the installable `hla` package set.
 - `examples/<scenario>/`: scenario-local scratch or notes only. Canonical reusable assets such as FOM XML live under their owning package roots.
-Testing is not part of the public `hla2010` runtime namespace. Repo-only proof
-and packet helpers now live under `packages/hla-verification/src/hla/verification/repo_internal/verification/`,
+Testing is not part of the public `hla` runtime namespace. Repo-only proof and
+packet helpers now live under `packages/hla-verification/src/hla/verification/repo_internal/verification/`,
 while `hla-verification` is the only supported public verification
 package. Scenario imports should target the owning split package directly
 rather than a root `hla.rti1516e.scenarios` facade.

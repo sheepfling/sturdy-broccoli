@@ -23,7 +23,7 @@ def plugin() -> RTIBackendPlugin:
         name="inmemory",
         aliases=("python", "in-memory", "python-inmemory", "python-in-memory"),
         family="inmemory",
-        supports=("rti1516e", "rti1516_2025"),
+        supports=("rti1516e",),
         description="Pure in-memory Python RTI backend.",
         create_backend=_create_backend,
         discover=lambda: BackendInfo(name="python-inmemory-rti", kind="python/in-memory"),

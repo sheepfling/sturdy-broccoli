@@ -2,8 +2,7 @@
 
 Package-owned notes for the `pitch-jpype` backend live here.
 
-- This package owns the `pitch-jpype` plugin descriptor and retained
-  package-local compatibility facades under
+- This package owns the `pitch-jpype` plugin descriptor under
   `src/hla.vendors.pitch.jpype/`.
 - Package-owned verification/preflight policy for the runtime lane is shared
   deliberately through `hla.vendors.pitch.testing_policy`.

@@ -7,6 +7,8 @@ from .enums import *
 from .handles import *
 from .logical_time import *
 
+def lower_camel_to_snake(name: str) -> str: ...
+
 class FederateAmbassador(Protocol):
     """Typed Python protocol for IEEE 1516.1-2010 FederateAmbassador.
 
@@ -189,3 +191,6 @@ class FederateAmbassador(Protocol):
 
     # Source: Java/C++ §8.22. Java overloads: 1; C++ overloads: 1. Throws: FederateInternalError.
     def requestRetraction(self, theHandle: MessageRetractionHandle) -> None: ...
+
+class NullFederateAmbassador(FederateAmbassador):
+    def __getattr__(self, name: str): ...

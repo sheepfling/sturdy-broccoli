@@ -6,9 +6,7 @@ This package is the public front door for the canonical `hla.rti1516e` standard-
 
 - `hla.rti1516e.RTIambassador` and `hla.rti1516e.FederateAmbassador` for the canonical strict protocol surface
 - `hla.rti1516e.rti_ambassador` and `hla.rti1516e.federate_ambassador` for the source-shaped interface modules
-- `hla.rti1516e.rti` only as the temporary workspace compatibility facade for
-  backend discovery and ambassador creation during the split-package migration
-- old `_Spec` and runtime compatibility modules are removed
+- `hla.rti1516e.rti` for version-local backend discovery and ambassador creation
 
 It also owns the shared HLA value types and traceability helpers:
 

@@ -153,6 +153,13 @@ These are only useful when you provide a Java RTI configuration explicitly.
 - `certi-native`
 - `native-certi`
 
+### Java Shim
+
+- `2025-shim`
+- `reference-shim`
+- `rti1516_2025-shim`
+- `shim`
+
 <!-- GENERATED_BACKEND_ALIASES_END -->
 
 ## Recommended Operational View
