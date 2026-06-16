@@ -5,6 +5,7 @@ import json
 import re
 from pathlib import Path
 
+from compliance_helpers import is_1516_1_2010_row
 
 ROOT = Path(__file__).resolve().parents[1]
 PORTICO_POLICY_DOC = ROOT / "packages" / "hla-vendor-portico" / "docs" / "portico_requirement_disposition_policy.md"
@@ -84,7 +85,7 @@ def _load_rows(filename: str) -> list[dict[str, object]]:
     return [
         row
         for row in payload["rows"]
-        if row.get("document") in {"IEEE 1516.1-2010", "IEEE 1516-2010"}
+        if is_1516_1_2010_row(row) or row.get("document") == "IEEE 1516-2010"
     ]
 
 

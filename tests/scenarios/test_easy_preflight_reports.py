@@ -43,6 +43,14 @@ class PreflightBlockedCase:
 
 def _base_env(tmp_path: Path) -> dict[str, str]:
     env = os.environ.copy()
+    for name in (
+        "HLA2010_PITCH_CRC_MODE",
+        "HLA2010_PITCH_CRC_PORT",
+        "HLA2010_PITCH_DOCKER_NAME",
+        "HLA2010_PITCH_FEDPRO_PORT",
+        "HLA2010_PITCH_USER_HOME",
+    ):
+        env.pop(name, None)
     env["HLA2010_PREFLIGHT_ARTIFACT_DIR"] = str(tmp_path / "preflight")
     env["HLA2010_VENDOR_RUNTIME_STATUS_DIR"] = str(tmp_path / "runtime-status")
     env["HLA2010_VENDOR_PARITY_ARTIFACT_DIR"] = str(tmp_path / "parity")

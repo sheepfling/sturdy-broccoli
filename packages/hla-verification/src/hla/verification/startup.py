@@ -19,8 +19,8 @@ from typing import Any, Iterable, Sequence
 
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import FederationExecutionAlreadyExists, RTIexception
+from hla.rti1516e import NullFederateAmbassador
 from hla.rti1516e.handles import FederateHandle
-from hla.rti1516e.spec import FederateAmbassadorSpec
 
 
 @dataclass(frozen=True)
@@ -102,7 +102,7 @@ def _call_service(rti: Any, snake_name: str, camel_name: str, *args: Any) -> Any
 
 def connect_create_join(
     rti: Any,
-    ambassador: FederateAmbassadorSpec,
+    ambassador: NullFederateAmbassador,
     config: FederationStartupConfig,
     *,
     create_federation: bool | None = None,

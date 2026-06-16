@@ -13,7 +13,7 @@
         "RTIambassador.getObjectInstanceName"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.10",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -31,7 +31,7 @@
         "RTIambassador.getAttributeHandle"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.11",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -49,7 +49,7 @@
         "RTIambassador.getAttributeName"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.12",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -67,7 +67,7 @@
         "RTIambassador.getUpdateRateValue"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.13",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -85,7 +85,7 @@
         "RTIambassador.getUpdateRateValueForAttribute"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.14",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -103,7 +103,7 @@
         "RTIambassador.getInteractionClassHandle"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.15",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.15",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -121,7 +121,7 @@
         "RTIambassador.getInteractionClassName"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.16",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -139,7 +139,7 @@
         "RTIambassador.getParameterHandle"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.17",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.17",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -157,7 +157,7 @@
         "RTIambassador.getParameterName"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.18",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -175,7 +175,7 @@
         "RTIambassador.getOrderType"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.19",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -193,7 +193,7 @@
         "RTIambassador.getAutomaticResignDirective"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.2",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -211,7 +211,7 @@
         "RTIambassador.getOrderName"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.20",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.20",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -230,7 +230,7 @@
         "RTIambassador.getTransportationTypeHandle"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.21",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.21",
       "verification_status_counts": {
         "focused-executable-tests": 2
       }
@@ -249,7 +249,7 @@
         "RTIambassador.getTransportationTypeName"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.22",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.22",
       "verification_status_counts": {
         "focused-executable-tests": 2
       }
@@ -267,7 +267,7 @@
         "RTIambassador.getAvailableDimensionsForClassAttribute"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.23",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.23",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -285,7 +285,7 @@
         "RTIambassador.getAvailableDimensionsForInteractionClass"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.24",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.24",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -303,7 +303,7 @@
         "RTIambassador.getDimensionHandle"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.25",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.25",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -321,7 +321,7 @@
         "RTIambassador.getDimensionName"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.26",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.26",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -339,7 +339,7 @@
         "RTIambassador.getDimensionUpperBound"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.27",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.27",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -357,7 +357,7 @@
         "RTIambassador.getDimensionHandleSet"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.28",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.28",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -375,7 +375,7 @@
         "RTIambassador.getRangeBounds"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.29",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.29",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -393,7 +393,7 @@
         "RTIambassador.setAutomaticResignDirective"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.3",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -411,7 +411,7 @@
         "RTIambassador.setRangeBounds"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.30",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.30",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -429,7 +429,7 @@
         "RTIambassador.normalizeFederateHandle"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.31",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.31",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -447,7 +447,7 @@
         "RTIambassador.normalizeServiceGroup"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.32",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.32",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -465,7 +465,7 @@
         "RTIambassador.enableObjectClassRelevanceAdvisorySwitch"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.33",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.33",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -483,7 +483,7 @@
         "RTIambassador.disableObjectClassRelevanceAdvisorySwitch"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.34",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.34",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -501,7 +501,7 @@
         "RTIambassador.enableAttributeRelevanceAdvisorySwitch"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.35",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.35",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -519,7 +519,7 @@
         "RTIambassador.disableAttributeRelevanceAdvisorySwitch"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.36",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.36",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -537,7 +537,7 @@
         "RTIambassador.enableAttributeScopeAdvisorySwitch"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.37",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.37",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -555,7 +555,7 @@
         "RTIambassador.disableAttributeScopeAdvisorySwitch"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.38",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.38",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -573,7 +573,7 @@
         "RTIambassador.enableInteractionRelevanceAdvisorySwitch"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.39",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.39",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -591,7 +591,7 @@
         "RTIambassador.getFederateHandle"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.4",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -609,7 +609,7 @@
         "RTIambassador.disableInteractionRelevanceAdvisorySwitch"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.40",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.40",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -627,7 +627,7 @@
         "RTIambassador.evokeCallback"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.41",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.41",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -645,7 +645,7 @@
         "RTIambassador.evokeMultipleCallbacks"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.42",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.42",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -663,7 +663,7 @@
         "RTIambassador.enableCallbacks"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.43",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.43",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -698,7 +698,7 @@
         "RTIambassador.getTransportationTypeHandleFactory"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.44",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.44",
       "verification_status_counts": {
         "focused-executable-tests": 18
       }
@@ -716,7 +716,7 @@
         "RTIambassador.getFederateName"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.5",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -734,7 +734,7 @@
         "RTIambassador.getObjectClassHandle"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.6",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -752,7 +752,7 @@
         "RTIambassador.getObjectClassName"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.7",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -770,7 +770,7 @@
         "RTIambassador.getKnownObjectClassHandle"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.8",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -788,7 +788,7 @@
         "RTIambassador.getObjectInstanceHandle"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a710.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a710.9",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -814,7 +814,7 @@
         "RTIambassador.decodeRegionHandle"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a712.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a712.2",
       "verification_status_counts": {
         "focused-executable-tests": 9
       }
@@ -832,7 +832,7 @@
         "RTIambassador.resignFederationExecution"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.10",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -850,7 +850,7 @@
         "RTIambassador.registerFederationSynchronizationPoint"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.11",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -869,7 +869,7 @@
         "FederateAmbassador.synchronizationPointRegistrationSucceeded"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.12",
       "verification_status_counts": {
         "callback-helper-covered": 2
       }
@@ -887,7 +887,7 @@
         "FederateAmbassador.announceSynchronizationPoint"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.13",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -905,7 +905,7 @@
         "RTIambassador.synchronizationPointAchieved"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.14",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -923,7 +923,7 @@
         "FederateAmbassador.federationSynchronized"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.15",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.15",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -941,7 +941,7 @@
         "RTIambassador.requestFederationSave"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.16",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -959,7 +959,7 @@
         "FederateAmbassador.initiateFederateSave"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.17",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.17",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -977,7 +977,7 @@
         "RTIambassador.federateSaveBegun"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.18",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -996,7 +996,7 @@
         "RTIambassador.federateSaveNotComplete"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.19",
       "verification_status_counts": {
         "focused-executable-tests": 2
       }
@@ -1014,7 +1014,7 @@
         "RTIambassador.connect"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.2",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1033,7 +1033,7 @@
         "FederateAmbassador.federationSaved"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.20",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.20",
       "verification_status_counts": {
         "callback-helper-covered": 2
       }
@@ -1051,7 +1051,7 @@
         "RTIambassador.abortFederationSave"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.21",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.21",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1069,7 +1069,7 @@
         "RTIambassador.queryFederationSaveStatus"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.22",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.22",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1087,7 +1087,7 @@
         "FederateAmbassador.federationSaveStatusResponse"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.23",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.23",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1105,7 +1105,7 @@
         "RTIambassador.requestFederationRestore"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.24",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.24",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1124,7 +1124,7 @@
         "FederateAmbassador.requestFederationRestoreSucceeded"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.25",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.25",
       "verification_status_counts": {
         "callback-helper-covered": 2
       }
@@ -1142,7 +1142,7 @@
         "FederateAmbassador.federationRestoreBegun"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.26",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.26",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1160,7 +1160,7 @@
         "FederateAmbassador.initiateFederateRestore"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.27",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.27",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1179,7 +1179,7 @@
         "RTIambassador.federateRestoreNotComplete"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.28",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.28",
       "verification_status_counts": {
         "focused-executable-tests": 2
       }
@@ -1198,7 +1198,7 @@
         "FederateAmbassador.federationRestored"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.29",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.29",
       "verification_status_counts": {
         "callback-helper-covered": 2
       }
@@ -1216,7 +1216,7 @@
         "RTIambassador.disconnect"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.3",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1234,7 +1234,7 @@
         "RTIambassador.abortFederationRestore"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.30",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.30",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1252,7 +1252,7 @@
         "RTIambassador.queryFederationRestoreStatus"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.31",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.31",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1270,7 +1270,7 @@
         "FederateAmbassador.federationRestoreStatusResponse"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.32",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.32",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1288,7 +1288,7 @@
         "FederateAmbassador.connectionLost"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.4",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1307,7 +1307,7 @@
         "RTIambassador.createFederationExecutionWithMIM"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.5",
       "verification_status_counts": {
         "focused-executable-tests": 2
       }
@@ -1325,7 +1325,7 @@
         "RTIambassador.destroyFederationExecution"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.6",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1343,7 +1343,7 @@
         "RTIambassador.listFederationExecutions"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.7",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1361,7 +1361,7 @@
         "FederateAmbassador.reportFederationExecutions"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.8",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1379,7 +1379,7 @@
         "RTIambassador.joinFederationExecution"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a74.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a74.9",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1397,7 +1397,7 @@
         "FederateAmbassador.startRegistrationForObjectClass"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a75.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.10",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1415,7 +1415,7 @@
         "FederateAmbassador.stopRegistrationForObjectClass"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a75.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.11",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1433,7 +1433,7 @@
         "FederateAmbassador.turnInteractionsOn"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a75.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.12",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1451,7 +1451,7 @@
         "FederateAmbassador.turnInteractionsOff"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a75.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.13",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1469,7 +1469,7 @@
         "RTIambassador.publishObjectClassAttributes"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a75.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.2",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1488,7 +1488,7 @@
         "RTIambassador.unpublishObjectClassAttributes"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a75.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.3",
       "verification_status_counts": {
         "focused-executable-tests": 2
       }
@@ -1506,7 +1506,7 @@
         "RTIambassador.publishInteractionClass"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a75.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.4",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1524,7 +1524,7 @@
         "RTIambassador.unpublishInteractionClass"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a75.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.5",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1543,7 +1543,7 @@
         "RTIambassador.subscribeObjectClassAttributesPassively"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a75.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.6",
       "verification_status_counts": {
         "focused-executable-tests": 2
       }
@@ -1562,7 +1562,7 @@
         "RTIambassador.unsubscribeObjectClassAttributes"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a75.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.7",
       "verification_status_counts": {
         "focused-executable-tests": 2
       }
@@ -1581,7 +1581,7 @@
         "RTIambassador.subscribeInteractionClassPassively"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a75.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.8",
       "verification_status_counts": {
         "focused-executable-tests": 2
       }
@@ -1599,7 +1599,7 @@
         "RTIambassador.unsubscribeInteractionClass"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a75.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.9",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1617,7 +1617,7 @@
         "RTIambassador.updateAttributeValues"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.10",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1635,7 +1635,7 @@
         "FederateAmbassador.reflectAttributeValues"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.11",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1653,7 +1653,7 @@
         "RTIambassador.sendInteraction"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.12",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1671,7 +1671,7 @@
         "FederateAmbassador.receiveInteraction"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.13",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1689,7 +1689,7 @@
         "RTIambassador.deleteObjectInstance"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.14",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1707,7 +1707,7 @@
         "FederateAmbassador.removeObjectInstance"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.15",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.15",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1725,7 +1725,7 @@
         "RTIambassador.localDeleteObjectInstance"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.16",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1743,7 +1743,7 @@
         "FederateAmbassador.attributesInScope"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.17",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.17",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1761,7 +1761,7 @@
         "FederateAmbassador.attributesOutOfScope"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.18",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1779,7 +1779,7 @@
         "RTIambassador.requestAttributeValueUpdate"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.19",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1797,7 +1797,7 @@
         "RTIambassador.reserveObjectInstanceName"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.2",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1815,7 +1815,7 @@
         "FederateAmbassador.provideAttributeValueUpdate"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.20",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.20",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1833,7 +1833,7 @@
         "FederateAmbassador.turnUpdatesOnForObjectInstance"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.21",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.21",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1851,7 +1851,7 @@
         "FederateAmbassador.turnUpdatesOffForObjectInstance"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.22",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.22",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1869,7 +1869,7 @@
         "RTIambassador.requestAttributeTransportationTypeChange"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.23",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1887,7 +1887,7 @@
         "FederateAmbassador.confirmAttributeTransportationTypeChange"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.24",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.24",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1905,7 +1905,7 @@
         "RTIambassador.queryAttributeTransportationType"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.25",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.25",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1923,7 +1923,7 @@
         "FederateAmbassador.reportAttributeTransportationType"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.26",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1941,7 +1941,7 @@
         "RTIambassador.requestInteractionTransportationTypeChange"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.27",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1959,7 +1959,7 @@
         "FederateAmbassador.confirmInteractionTransportationTypeChange"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.28",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.28",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -1977,7 +1977,7 @@
         "RTIambassador.queryInteractionTransportationType"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.29",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.29",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -1996,7 +1996,7 @@
         "FederateAmbassador.objectInstanceNameReservationSucceeded"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.3",
       "verification_status_counts": {
         "callback-helper-covered": 2
       }
@@ -2014,7 +2014,7 @@
         "FederateAmbassador.reportInteractionTransportationType"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.30",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -2032,7 +2032,7 @@
         "RTIambassador.releaseObjectInstanceName"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.4",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2050,7 +2050,7 @@
         "RTIambassador.reserveMultipleObjectInstanceName"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.5",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2069,7 +2069,7 @@
         "FederateAmbassador.multipleObjectInstanceNameReservationSucceeded"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.6",
       "verification_status_counts": {
         "callback-helper-covered": 2
       }
@@ -2087,7 +2087,7 @@
         "RTIambassador.releaseMultipleObjectInstanceName"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.7",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2105,7 +2105,7 @@
         "RTIambassador.registerObjectInstance"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.8",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2127,7 +2127,7 @@
         "FederateAmbassador.hasSentRegions"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
       "verification_status_counts": {
         "callback-helper-covered": 5
       }
@@ -2145,7 +2145,7 @@
         "FederateAmbassador.attributeOwnershipUnavailable"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.10",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -2163,7 +2163,7 @@
         "FederateAmbassador.requestAttributeOwnershipRelease"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.11",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -2181,7 +2181,7 @@
         "RTIambassador.attributeOwnershipReleaseDenied"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.12",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2199,7 +2199,7 @@
         "RTIambassador.attributeOwnershipDivestitureIfWanted"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.13",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2217,7 +2217,7 @@
         "RTIambassador.cancelNegotiatedAttributeOwnershipDivestiture"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.14",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2235,7 +2235,7 @@
         "RTIambassador.cancelAttributeOwnershipAcquisition"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.15",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.15",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2253,7 +2253,7 @@
         "FederateAmbassador.confirmAttributeOwnershipAcquisitionCancellation"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.16",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -2271,7 +2271,7 @@
         "RTIambassador.queryAttributeOwnership"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.17",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.17",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2291,7 +2291,7 @@
         "FederateAmbassador.informAttributeOwnership"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.18",
       "verification_status_counts": {
         "callback-helper-covered": 3
       }
@@ -2309,7 +2309,7 @@
         "RTIambassador.isAttributeOwnedByFederate"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.19",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2327,7 +2327,7 @@
         "RTIambassador.unconditionalAttributeOwnershipDivestiture"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.2",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2345,7 +2345,7 @@
         "RTIambassador.negotiatedAttributeOwnershipDivestiture"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.3",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2363,7 +2363,7 @@
         "FederateAmbassador.requestAttributeOwnershipAssumption"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.4",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -2381,7 +2381,7 @@
         "FederateAmbassador.requestDivestitureConfirmation"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.5",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -2399,7 +2399,7 @@
         "RTIambassador.confirmDivestiture"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.6",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2417,7 +2417,7 @@
         "FederateAmbassador.attributeOwnershipAcquisitionNotification"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.7",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -2435,7 +2435,7 @@
         "RTIambassador.attributeOwnershipAcquisition"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.8",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2453,7 +2453,7 @@
         "RTIambassador.attributeOwnershipAcquisitionIfAvailable"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a77.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.9",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2471,7 +2471,7 @@
         "RTIambassador.nextMessageRequest"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.10",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2489,7 +2489,7 @@
         "RTIambassador.nextMessageRequestAvailable"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.11",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2507,7 +2507,7 @@
         "RTIambassador.flushQueueRequest"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.12",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2525,7 +2525,7 @@
         "FederateAmbassador.timeAdvanceGrant"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.13",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -2543,7 +2543,7 @@
         "RTIambassador.enableAsynchronousDelivery"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.14",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2561,7 +2561,7 @@
         "RTIambassador.disableAsynchronousDelivery"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.15",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.15",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2579,7 +2579,7 @@
         "RTIambassador.queryGALT"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.16",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2597,7 +2597,7 @@
         "RTIambassador.queryLogicalTime"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.17",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.17",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2615,7 +2615,7 @@
         "RTIambassador.queryLITS"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.18",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2633,7 +2633,7 @@
         "RTIambassador.modifyLookahead"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.19",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2651,7 +2651,7 @@
         "RTIambassador.enableTimeRegulation"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.2",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2669,7 +2669,7 @@
         "RTIambassador.queryLookahead"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.20",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.20",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2687,7 +2687,7 @@
         "RTIambassador.retract"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.21",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.21",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2705,7 +2705,7 @@
         "FederateAmbassador.requestRetraction"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.22",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.22",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -2723,7 +2723,7 @@
         "RTIambassador.changeAttributeOrderType"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.23",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.23",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2741,7 +2741,7 @@
         "RTIambassador.changeInteractionOrderType"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.24",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.24",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2759,7 +2759,7 @@
         "FederateAmbassador.timeRegulationEnabled"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.3",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -2777,7 +2777,7 @@
         "RTIambassador.disableTimeRegulation"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.4",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2795,7 +2795,7 @@
         "RTIambassador.enableTimeConstrained"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.5",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2813,7 +2813,7 @@
         "FederateAmbassador.timeConstrainedEnabled"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.6",
       "verification_status_counts": {
         "callback-helper-covered": 1
       }
@@ -2831,7 +2831,7 @@
         "RTIambassador.disableTimeConstrained"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.7",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2849,7 +2849,7 @@
         "RTIambassador.timeAdvanceRequest"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.8",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2867,7 +2867,7 @@
         "RTIambassador.timeAdvanceRequestAvailable"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a78.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a78.9",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2886,7 +2886,7 @@
         "RTIambassador.subscribeInteractionClassWithRegions"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a79.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.10",
       "verification_status_counts": {
         "focused-executable-tests": 2
       }
@@ -2904,7 +2904,7 @@
         "RTIambassador.unsubscribeInteractionClassWithRegions"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a79.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.11",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2922,7 +2922,7 @@
         "RTIambassador.sendInteractionWithRegions"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a79.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.12",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2940,7 +2940,7 @@
         "RTIambassador.requestAttributeValueUpdateWithRegions"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a79.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.13",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2958,7 +2958,7 @@
         "RTIambassador.createRegion"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a79.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.2",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2976,7 +2976,7 @@
         "RTIambassador.commitRegionModifications"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a79.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.3",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -2994,7 +2994,7 @@
         "RTIambassador.deleteRegion"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a79.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.4",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -3012,7 +3012,7 @@
         "RTIambassador.registerObjectInstanceWithRegions"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a79.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.5",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -3030,7 +3030,7 @@
         "RTIambassador.associateRegionsForUpdates"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a79.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.6",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -3048,7 +3048,7 @@
         "RTIambassador.unassociateRegionsForUpdates"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a79.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.7",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }
@@ -3067,7 +3067,7 @@
         "RTIambassador.subscribeObjectClassAttributesWithRegions"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a79.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.8",
       "verification_status_counts": {
         "focused-executable-tests": 2
       }
@@ -3085,7 +3085,7 @@
         "RTIambassador.unsubscribeObjectClassAttributesWithRegions"
       ],
       "no_requirement_evidence_rows": 0,
-      "section_ref": "IEEE 1516.1-2010 \u00a79.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.9",
       "verification_status_counts": {
         "focused-executable-tests": 1
       }

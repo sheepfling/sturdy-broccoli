@@ -32,7 +32,7 @@ from .codecs import (
     decode_order,
 )
 from .runtime import decode_logical_time
-from hla.rti1516e.types import FederateHandleSaveStatusPair, FederateRestoreStatus
+from hla.rti1516e.datatypes import FederateHandleSaveStatusPair, FederateRestoreStatus
 
 
 def invoke_federate_callback(ambassador: Any, method_name: str, *args: Any) -> None:

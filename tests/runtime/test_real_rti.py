@@ -109,6 +109,7 @@ def test_launch_pitch_runtime_passes_ui_automation_env(tmp_path, monkeypatch):
     (home / "lib" / "prtifull.jar").write_text("")
 
     monkeypatch.setenv("HLA2010_PITCH_HOME", str(home))
+    monkeypatch.delenv("HLA2010_PITCH_USER_HOME", raising=False)
     captured: dict[str, object] = {}
 
     class FakeProcess:
@@ -141,6 +142,7 @@ def test_launch_pitch_runtime_passes_ui_automation_env(tmp_path, monkeypatch):
     runtime.terminate()
 
     assert any(env.get("HLA2010_PITCH_UI_AUTOMATION") == "1" for env in captured["envs"])
+    assert "HLA2010_PITCH_USER_HOME" not in os.environ
 
 
 def test_launch_pitch_runtime_can_use_docker_crc_mode(tmp_path, monkeypatch):

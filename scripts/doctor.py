@@ -77,7 +77,7 @@ import sys
 
 modules = {
     "hla2010": "hla2010",
-    "hla2010_spec": "hla.rti1516e.spec",
+    "hla_rti1516e": "hla.rti1516e",
     "hla.backends.inmemory": "hla.backends.inmemory",
     "pytest": "pytest",
     "jpype1": "jpype",
@@ -175,7 +175,7 @@ def check_workspace_imports(venv_python: Path) -> Check:
         return Check("workspace_imports", "fail", "workspace import probe malformed")
     required = (
         ("hla2010", "hla2010"),
-        ("hla2010_spec", "hla.rti1516e.spec"),
+        ("hla_rti1516e", "hla.rti1516e"),
         ("hla.backends.inmemory", "hla.backends.inmemory"),
     )
     missing = [display_name for key, display_name in required if not bool(modules.get(key))]

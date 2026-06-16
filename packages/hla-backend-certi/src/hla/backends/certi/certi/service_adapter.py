@@ -20,7 +20,7 @@ from hla.rti1516e.handles import (
     RegionHandle,
     RegionHandleSet,
 )
-from hla.rti1516e.types import AttributeRegionAssociation, MessageRetractionReturn, TimeQueryReturn
+from hla.rti1516e.datatypes import AttributeRegionAssociation, MessageRetractionReturn, TimeQueryReturn
 from hla.backends.common import BackendInfo, BackendUnavailableError, Invocation, RTIBackend, UnsupportedBackendService
 from hla.transports.common import RTITransport, SubprocessLineTransport, TransportError, TransportRequest
 from hla.backends.certi.real_rti_certi import CERTIRuntime, RuntimeProcess, discover_certi_runtime, launch_certi_rtig
@@ -356,7 +356,7 @@ class CERTIBackend(RTIBackend):
                     if not parts:
                         return None
                     handle_id = int(parts[0])
-                    return MessageRetractionReturn(MessageRetractionHandle(handle_id), update_args[3])
+                    return MessageRetractionReturn(True, MessageRetractionHandle(handle_id))
                 update_args = cast(tuple[Any, Any, Any], args[:3])
                 return self._request_value(
                     "UPDATE_ATTRIBUTE_VALUES",
@@ -407,7 +407,7 @@ class CERTIBackend(RTIBackend):
                     if not parts:
                         return None
                     handle_id = int(parts[0])
-                    return MessageRetractionReturn(MessageRetractionHandle(handle_id), send_args[3])
+                    return MessageRetractionReturn(True, MessageRetractionHandle(handle_id))
                 send_args = cast(tuple[Any, Any, Any], args[:3])
                 return self._request_value(
                     "SEND_INTERACTION",

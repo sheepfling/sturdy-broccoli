@@ -3,6 +3,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from compliance_helpers import (
+    IEEE_1516_1_2010,
+    IEEE_1516_2_2010,
+    compliance_document_key,
+    compliance_section_key,
+    is_1516_1_2010_row,
+    is_1516_2_2010_row,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 COMPLIANCE_DIR = ROOT / "analysis" / "compliance"
@@ -174,14 +182,22 @@ SUMMARY_DISPOSITION_FIELD_BY_ARTIFACT = {
     "pitch_requirement_disposition.json": "pitch_disposition",
 }
 
+ALLOWED_REQUIREMENT_DOCUMENTS = {
+    IEEE_1516_1_2010,
+    IEEE_1516_2_2010,
+    "IEEE 1516-2010",
+    "multi-section",
+}
+
 
 def _load_rows(filename: str) -> list[dict[str, object]]:
     payload = json.loads((COMPLIANCE_DIR / filename).read_text(encoding="utf-8"))
     return [
         row
         for row in payload["rows"]
-        if row.get("document")
-        in {"IEEE 1516.1-2010", "IEEE 1516-2010", "IEEE 1516.2-2010"}
+        if is_1516_1_2010_row(row)
+        or is_1516_2_2010_row(row)
+        or row.get("document") in {"IEEE 1516-2010", "multi-section"}
     ]
 
 
@@ -190,11 +206,12 @@ def _load_payload(filename: str) -> dict[str, object]:
 
 
 def _row_clause_key(row: dict[str, object]) -> str:
-    document = str(row.get("document", "")).strip()
+    document = compliance_document_key(row.get("document"))
     clause_root = str(row.get("clause_root", "")).strip()
     if clause_root.lower() == "unknown":
         clause_root = ""
-    return f"{document} §{clause_root}" if clause_root else f"{document} unknown"
+    section_ref = f"{document} §{clause_root}" if clause_root else f"{document} unknown"
+    return compliance_section_key(section_ref)
 
 
 def _markdown_section_table(filename: str, heading: str) -> list[dict[str, str]]:
@@ -239,6 +256,15 @@ def _stringify_disposition_counts(name: str, counts: dict[str, int]) -> dict[str
         "Not yet tested": str(counts.get("not-yet-tested", 0)),
         "Not applicable": str(counts.get("not-applicable", 0)),
         "Classification required": str(counts.get("classification-required", 0)),
+    }
+
+
+def _normalized_clause_summary(
+    summary_counts: dict[str, dict[str, int]],
+) -> dict[str, dict[str, int]]:
+    return {
+        compliance_section_key(section_ref): counts
+        for section_ref, counts in summary_counts.items()
     }
 
 
@@ -305,6 +331,33 @@ def test_generated_requirement_disposition_artifacts_keep_explicit_backend_cover
             assert values, (filename, field)
 
 
+def test_generated_requirement_disposition_artifacts_remain_2010_scoped() -> None:
+    foreign_tokens = ("2025", "rti1516_2025", "hla2025")
+
+    for filename in DISPOSITION_FIELDS_BY_ARTIFACT:
+        payload = _load_payload(filename)
+        for row in payload["rows"]:
+            requirement_id = row.get("requirement_id") or row.get("matrix_id")
+            document = compliance_document_key(row.get("document"))
+            assert document in ALLOWED_REQUIREMENT_DOCUMENTS, (
+                filename,
+                requirement_id,
+                row.get("document"),
+            )
+
+            scoped_fields = (
+                row.get("document", ""),
+                row.get("section_ref", ""),
+                row.get("requirement_id", ""),
+                row.get("matrix_id", ""),
+                row.get("package", ""),
+                row.get("backend", ""),
+            )
+            scoped_text = " ".join(str(value) for value in scoped_fields)
+            for token in foreign_tokens:
+                assert token not in scoped_text, (filename, requirement_id, token)
+
+
 def test_generated_requirement_disposition_artifacts_do_not_leak_foreign_backend_docs() -> None:
     failures: list[str] = []
 
@@ -313,7 +366,7 @@ def test_generated_requirement_disposition_artifacts_do_not_leak_foreign_backend
         for row in rows:
             for ref in row.get("evidence_refs", []):
                 ref_text = str(ref)
-                if "/docs/" not in ref_text:
+                if not ref_text.startswith("packages/") or "/docs/" not in ref_text:
                     continue
                 if not any(ref_text.startswith(prefix) for prefix in allowed_prefixes):
                     failures.append(
@@ -485,7 +538,7 @@ def test_generated_requirement_disposition_clause_summaries_match_row_level_coun
                 family_counts[clause_key][disposition] = family_counts[clause_key].get(disposition, 0) + 1
             for counts in family_counts.values():
                 counts["total"] = sum(counts.values())
-            assert family_counts == summary["clause_summary"], filename
+            assert family_counts == _normalized_clause_summary(summary["clause_summary"]), filename
 
             profile_clause_summary = summary["profile_clause_summary"]
             profile_fields = {
@@ -501,7 +554,10 @@ def test_generated_requirement_disposition_clause_summaries_match_row_level_coun
                     observed[clause_key][disposition] = observed[clause_key].get(disposition, 0) + 1
                 for counts in observed.values():
                     counts["total"] = sum(counts.values())
-                assert observed == profile_clause_summary[profile_name], (filename, profile_name)
+                assert observed == _normalized_clause_summary(profile_clause_summary[profile_name]), (
+                    filename,
+                    profile_name,
+                )
             continue
 
         observed: dict[str, dict[str, int]] = {}
@@ -512,4 +568,4 @@ def test_generated_requirement_disposition_clause_summaries_match_row_level_coun
             observed[clause_key][disposition] = observed[clause_key].get(disposition, 0) + 1
         for counts in observed.values():
             counts["total"] = sum(counts.values())
-        assert observed == summary["clause_summary"], filename
+        assert observed == _normalized_clause_summary(summary["clause_summary"]), filename

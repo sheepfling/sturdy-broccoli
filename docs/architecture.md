@@ -11,11 +11,12 @@ The stricter package dependency rules live in
 
 ## Facades
 
-- `hla2010/rti.py`: temporary top-level backend discovery and ambassador-creation compatibility facade.
-- `hla2010/runtime_api.py` and `hla2010/api.py`: root runtime-facing compatibility layer over the clean spec contracts.
+- `hla.rti`: neutral spec/backend discovery and ambassador-creation facade.
+- `hla.rti1516e`: canonical IEEE 1516.1-2010 Python API package.
+- `hla.rti1516_2025`: canonical IEEE 1516.1-2025 Python API package scaffold.
 
-These facade modules are workspace-stable import paths. They are not counted as
-package-owned implementation roots for packages marked `implementation-moved`.
+These facade modules are package-owned import paths under the shared PEP 420
+`hla` namespace. No package owns `src/hla/__init__.py`.
 
 ## Domain Modules And Mixins
 
@@ -74,7 +75,7 @@ installable package dependencies.
 ## Factories And Registries
 
 - `packages/hla-backend-inmemory/src/hla/backends/inmemory/factory.py`: pure-Python backend constructors.
-- `hla2010/rti.py`: workspace-facing backend discovery and ambassador-construction helpers.
+- `packages/hla-rti-core/src/hla/rti/`: workspace-facing backend discovery and ambassador-construction helpers.
 - `packages/hla-backend-certi/src/hla/backends/certi/certi/plugin.py`: CERTI backend plugin descriptors.
 
 The rule is that new backend kinds or transport kinds should register themselves instead of extending a central switchboard.
@@ -95,7 +96,11 @@ The rule is that new backend kinds or transport kinds should register themselves
 - `packages/hla-backend-certi/src/hla/backends/certi/certi_java/runtime.py`, `adapter.py`, and `factory.py`: Java-profile CERTI family over the real native CERTI path.
 - `packages/hla-vendor-pitch/src/hla.vendors.pitch/real_rti_pitch.py`, `packages/hla-vendor-portico/src/hla/vendors/portico/real_rti_portico.py`, and `packages/hla-rti-core/src/hla.rti/real_rti_process.py`: runtime discovery and process-launch helpers.
 
-The development goal is that a federate written against `hla2010` runs against the same ambassador API whether the backend is pure Python, CERTI-backed, JPype-backed, or Py4J-backed. REST and gRPC are transport options underneath that backend-neutral surface, not separate application APIs.
+The development goal is that a federate written against `hla.rti1516e` or
+`hla.rti1516_2025` runs against the same versioned ambassador API whether the
+backend is pure Python, CERTI-backed, JPype-backed, or Py4J-backed. REST and
+gRPC are transport options underneath that backend-neutral surface, not separate
+application APIs.
 
 The remaining documented root facade is intentionally narrow: `hla.rti1516e.rti`
 stays as a temporary root-facing backend discovery and ambassador-creation
@@ -104,10 +109,14 @@ live only in `hla.backends.common`.
 
 ### Transport Artifact Policy
 
-- gRPC is the only transport with checked-in generated client/server Python artifacts today:
-  - `rti_transport.proto`
-  - `rti_transport_pb2.py`
-  - `rti_transport_pb2_grpc.py`
+- gRPC owns the checked-in 2010 FedPro-style protobuf profile and generated
+  client/server Python artifacts today:
+  - `proto/rti1516e/fedpro/datatypes.proto`
+  - `proto/rti1516e/fedpro/RTIambassador.proto`
+  - `proto/rti1516e/fedpro/FederateAmbassador.proto`
+  - `proto/rti1516e/fedpro/HLA2010RTITransport.proto`
+  - `src/hla/transports/grpc/fedpro2010/*_pb2.py`
+  - `src/hla/transports/grpc/fedpro2010/*_pb2_grpc.py`
 - REST has a formal OpenAPI schema plus a checked-in Python adapter layer, but the repo does not currently check in OpenAPI-generated Python client code.
 - Java transport stubs for this RTI transport are currently out of scope. The Java-facing integration path in this repo is JPype, Py4J, and the CERTI Java-profile adapters, not generated REST or gRPC transport bindings.
 

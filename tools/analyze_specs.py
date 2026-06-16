@@ -731,9 +731,9 @@ from .enums import *
 from .exceptions import *
 from .handles import *
 from .time import *
-from .types import *
-from ._spec_impl import RTIambassadorSpec, FederateAmbassadorSpec
-from .runtime_api import RTIambassador, RTIAmbassador, FederateAmbassador, NullFederateAmbassador
+from .datatypes import *
+from .federate_ambassador import FederateAmbassador, NullFederateAmbassador
+from .rti_ambassador import RTIambassador
 
 __version__ = '0.3.0'
 '''
@@ -908,7 +908,7 @@ This is not a complete RTI. It is a starting API and adapter target for writing 
 
 ```python
 from hla.rti1516e import CallbackModel
-from hla.rti1516e.spec import FederateAmbassadorSpec as FederateAmbassador
+from hla.rti1516e import NullFederateAmbassador as FederateAmbassador
 
 class MyFederate(FederateAmbassador):
     def time_advance_grant(self, the_time):
@@ -920,7 +920,7 @@ class MyFederate(FederateAmbassador):
 See `analysis/api_comparison.md` for the Java/C++ differences that the Python surface needs to reconcile.
 ''')
     write(OUT/'examples/minimal_federate.py', '''from hla.rti1516e import CallbackModel
-from hla.rti1516e.spec import FederateAmbassadorSpec as FederateAmbassador
+from hla.rti1516e import NullFederateAmbassador as FederateAmbassador
 
 class MinimalFederate(FederateAmbassador):
     def connection_lost(self, fault_description: str):

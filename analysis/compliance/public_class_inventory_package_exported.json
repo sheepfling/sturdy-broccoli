@@ -1,4 +1,61 @@
 {
-  "row_count": 0,
-  "rows": []
+  "row_count": 8,
+  "rows": [
+    {
+      "class_name": "NullFederateAmbassador",
+      "exported_via_package": true,
+      "mapping_status": "supporting-scaffold",
+      "module": "hla.rti1516e.ambassadors",
+      "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
+    },
+    {
+      "class_name": "CallbackModel",
+      "exported_via_package": true,
+      "mapping_status": "adapted",
+      "module": "hla.rti1516e.enums",
+      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
+    },
+    {
+      "class_name": "OrderType",
+      "exported_via_package": true,
+      "mapping_status": "adapted",
+      "module": "hla.rti1516e.enums",
+      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
+    },
+    {
+      "class_name": "ResignAction",
+      "exported_via_package": true,
+      "mapping_status": "adapted",
+      "module": "hla.rti1516e.enums",
+      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
+    },
+    {
+      "class_name": "ServiceGroup",
+      "exported_via_package": true,
+      "mapping_status": "adapted",
+      "module": "hla.rti1516e.enums",
+      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
+    },
+    {
+      "class_name": "FederateAmbassador",
+      "exported_via_package": true,
+      "mapping_status": "close-1to1",
+      "module": "hla.rti1516e.raw_api",
+      "rationale": "Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs."
+    },
+    {
+      "class_name": "NullFederateAmbassador",
+      "exported_via_package": true,
+      "mapping_status": "close-1to1",
+      "module": "hla.rti1516e.raw_api",
+      "rationale": "Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs."
+    },
+    {
+      "class_name": "RTIambassador",
+      "exported_via_package": true,
+      "mapping_status": "close-1to1",
+      "module": "hla.rti1516e.raw_api",
+      "rationale": "Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs."
+    }
+  ]
 }

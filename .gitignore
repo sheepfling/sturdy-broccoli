@@ -14,6 +14,7 @@ __pycache__/
 .ipynb_checkpoints/
 .pytest_cache
 .pytest_cache/
+.pytest-runtime-state/
 .mypy_cache
 .mypy_cache/
 .ruff_cache

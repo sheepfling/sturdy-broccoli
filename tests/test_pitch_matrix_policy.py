@@ -5,6 +5,13 @@ import json
 import re
 from pathlib import Path
 
+from compliance_helpers import (
+    IEEE_1516_1_2010,
+    clause_summary_counts,
+    is_1516_1_2010_clause,
+    is_1516_1_2010_row,
+    is_1516_2_2010_row,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 PITCH_MATRIX_PATH = ROOT / "tests" / "vendors" / "test_pitch_real_backend_matrix.py"
@@ -156,7 +163,7 @@ def _clause6_pitch_compliance_wrapper_refs() -> set[str]:
     return {
         ref.split("::", 1)[1]
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "6"
+        if is_1516_1_2010_clause(row, "6")
         for ref in row["evidence_refs"]
         if ref.startswith("tests/vendors/test_pitch_real_backend_matrix.py::")
     }
@@ -167,7 +174,7 @@ def _clause6_pitch_vendor_divergent_rows() -> list[dict[str, object]]:
     return [
         row
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010"
+        if is_1516_1_2010_row(row)
         and row.get("clause_root") == "6"
         and row.get("pitch_disposition") == "vendor-divergent"
     ]
@@ -178,7 +185,7 @@ def _clause7_pitch_vendor_divergent_rows() -> list[dict[str, object]]:
     return [
         row
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010"
+        if is_1516_1_2010_row(row)
         and row.get("clause_root") == "7"
         and row.get("pitch_disposition") == "vendor-divergent"
     ]
@@ -189,7 +196,7 @@ def _clause8_pitch_vendor_divergent_rows() -> list[dict[str, object]]:
     return [
         row
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010"
+        if is_1516_1_2010_row(row)
         and row.get("clause_root") == "8"
         and row.get("pitch_disposition") == "vendor-divergent"
     ]
@@ -218,7 +225,7 @@ def _pitch_rows(filename: str) -> list[dict[str, object]]:
     return [
         row
         for row in payload["rows"]
-        if row.get("document") in {"IEEE 1516.1-2010", "IEEE 1516-2010", "IEEE 1516.2-2010", "multi-section"}
+        if is_1516_1_2010_row(row) or is_1516_2_2010_row(row) or row.get("document") in {"IEEE 1516-2010", "multi-section"}
     ]
 
 
@@ -226,7 +233,7 @@ def _pitch_clause_rows(filename: str, clause_root: str) -> list[dict[str, object
     return [
         row
         for row in _pitch_rows(filename)
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == clause_root
+        if is_1516_1_2010_clause(row, clause_root)
     ]
 
 
@@ -235,7 +242,7 @@ def _clause4_pitch_compliance_wrapper_refs() -> set[str]:
     return {
         ref.split("::", 1)[1]
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "4"
+        if is_1516_1_2010_clause(row, "4")
         for ref in row["evidence_refs"]
         if ref.startswith("tests/vendors/test_pitch_real_backend_matrix.py::")
     }
@@ -323,7 +330,7 @@ def test_pitch_tranche_clauses_4_6_7_8_9_have_no_not_yet_tested_rows_in_family_o
         clause_rows = [
             row
             for row in family_rows
-            if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == clause_root
+            if is_1516_1_2010_clause(row, clause_root)
         ]
         assert clause_rows, clause_root
         for disposition_key in ("pitch_disposition", "pitch_jpype_disposition", "pitch_py4j_disposition"):
@@ -807,9 +814,9 @@ def test_clause4_pitch_family_and_profiles_keep_exact_summary_counts() -> None:
         "vendor-divergent": 3,
         "verified": 274,
     }
-    assert payload["summary"]["clause_summary"]["IEEE 1516.1-2010 §4"] == expected
-    assert payload["summary"]["profile_clause_summary"]["pitch-jpype"]["IEEE 1516.1-2010 §4"] == expected
-    assert payload["summary"]["profile_clause_summary"]["pitch-py4j"]["IEEE 1516.1-2010 §4"] == expected
+    assert clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "4") == expected
+    assert clause_summary_counts(payload["summary"]["profile_clause_summary"]["pitch-jpype"], IEEE_1516_1_2010, "4") == expected
+    assert clause_summary_counts(payload["summary"]["profile_clause_summary"]["pitch-py4j"], IEEE_1516_1_2010, "4") == expected
 
 
 def test_clause4_pitch_family_and_profile_evidence_stays_on_allowed_surfaces() -> None:

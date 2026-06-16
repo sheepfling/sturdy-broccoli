@@ -14,21 +14,21 @@ For the shortest answer to hierarchy plus versioning, use
 
 This is a monorepo workspace with multiple installable package roots. The
 repository root is tooling-only: it keeps pytest, Ruff, and Pyright
-configuration, but it is not a Python distribution. The architectural root is
-`hla-rti1516e`, whose package manifest owns `src/hla2010/`. Concrete backend,
-transport, FOM, and support implementations live in package-owned directories
-under `packages/*/src`.
-Within `src/hla2010/`, `hla.rti1516e.rti` remains only as the documented temporary
-workspace facade into split packages. Everything else in that tree should stay
-abstract/core API rather than backend implementation.
+configuration, but it is not a Python distribution. The architectural namespace
+root is `hla`, contributed by PEP 420 namespace packages. The 2010 standard API
+is owned by `packages/hla-rti1516e/src/hla/rti1516e/`; cross-version factory and
+discovery logic is owned by `packages/hla-rti-core/src/hla/rti/`. Concrete
+backend, transport, FOM, and support implementations live in package-owned
+directories under `packages/*/src`.
 
 ## Front Door
 
 If you are trying to find the supported HLA entry points, start here:
 
-- `src/hla2010/spec/`: clean abstract spec surface
-- `src/hla2010/runtime_api.py`: Pythonic runtime convenience layer
-- `src/hla2010/rti.py`: temporary workspace facade for backend discovery and ambassador creation only
+- `packages/hla-rti1516e/src/hla/rti1516e/`: strict IEEE 1516.1-2010 API surface
+- `packages/hla-rti1516e/src/hla/rti1516e/rti_ambassador.py`: strict `RTIambassador` protocol
+- `packages/hla-rti1516e/src/hla/rti1516e/federate_ambassador.py`: strict `FederateAmbassador` protocol and no-op callback sink
+- `packages/hla-rti-core/src/hla/rti/`: cross-version backend/spec discovery and ambassador creation
 - `packages/hla-backend-inmemory/src/hla/backends/inmemory/`: in-memory Python RTI backend
 - `packages/hla-transport-grpc/src/hla.transports.grpc/`: hosted gRPC transport surface
 - `packages/hla-fom-target-radar/src/hla.foms.target_radar/scenarios/`: Target/Radar scenario and FOM entrypoints
@@ -39,18 +39,18 @@ packages directly, starting with `packages/hla-rti1516e`, or use
 
 For packages whose split status is `implementation-moved`, the owning package's
 `pyproject.toml` should declare only package-owned `source_roots`. For
-`hla-rti1516e`, `src/hla2010/` is the owned implementation root.
+`hla-rti1516e`, `packages/hla-rti1516e/src/hla/rti1516e/` is the owned implementation root.
 
 ## Core API
 
-- `src/hla2010/spec/`: standalone clean Python spec package.
-- `src/hla2010/spec_inventory.py`: plain-text method-name inventory used by the clean spec layer.
-- `src/hla2010/spec_sources.py`: readable Java/C++ source references used in the clean spec docstrings.
-- `src/hla2010/runtime_api.py`: explicit runtime-facing Pythonic convenience layer over the spec contract.
-- `src/hla2010/api.py`: compatibility shim that re-exports the runtime layer.
-- `src/hla2010/_spec_impl.py`: internal implementation module behind `hla.rti1516e.spec`.
-- `src/hla2010/handles.py`, `src/hla2010/types.py`, `src/hla2010/enums.py`, `src/hla2010/time.py`: shared HLA value types.
-- `src/hla2010/raw_api.py`: source-derived API scaffold.
+- `packages/hla-rti1516e/src/hla/rti1516e/__init__.py`: canonical package root exports for the 2010 API.
+- `packages/hla-rti1516e/src/hla/rti1516e/rti_ambassador.py`: strict source-shaped RTI protocol.
+- `packages/hla-rti1516e/src/hla/rti1516e/federate_ambassador.py`: strict source-shaped federate callback protocol.
+- `packages/hla-rti1516e/src/hla/rti1516e/spec_inventory.py`: plain-text method-name inventory used by the spec layer.
+- `packages/hla-rti1516e/src/hla/rti1516e/spec_sources.py`: readable Java/C++ source references.
+- `packages/hla-rti1516e/src/hla/rti1516e/spec_refs.py`: clause and service references.
+- `packages/hla-rti1516e/src/hla/rti1516e/handles.py`, `datatypes.py`, `logical_time.py`, `enums.py`, `time.py`: HLA value types and runtime value helpers.
+- `packages/hla-rti1516e/src/hla/rti1516e/raw_api.py`: source-derived metadata scaffold.
 
 ## Backend Abstractions
 
@@ -90,7 +90,8 @@ Import `hla.transports.grpc` directly.
 
 ## Backend Factories
 
-- `src/hla2010/rti.py`: temporary workspace compatibility facade that re-exports only backend discovery, backend selection, and ambassador-factory helpers from the split runtime-common package.
+- `packages/hla-rti-core/src/hla/rti/`: neutral spec/backend discovery and ambassador factory layer.
+- `packages/hla-rti1516e/src/hla/rti1516e/factory.py`: 2010-local factory helper that bakes in `spec="rti1516e"`.
 - `packages/hla-backend-inmemory/src/hla/backends/inmemory/factory.py`: pure-Python backend factories.
 - `packages/hla-backend-inmemory/src/hla/backends/inmemory/plugin.py`: pure-Python backend plugin descriptor.
 - `packages/hla-backend-certi/src/hla/backends/certi/certi/plugin.py`: CERTI backend plugin descriptors.
@@ -100,9 +101,9 @@ Installable backend packages register RTI implementations through the
 `hla.rti_backends` entry point group. Entry points must return an
 `hla.backends.common.RTIBackendPlugin` descriptor. The descriptor names the backend,
 its aliases, its backend family, and a lazy `create_backend(options)` callable.
-Workspace compatibility users may call
-`hla.rti1516e.rti.iter_rti_backend_plugins()` for a deduplicated list of installed
-backend plugins, and `hla.rti1516e.rti.discover_rti_backends(probe=True)` when
+Workspace users may call
+`hla.rti.discover_backends()` for a deduplicated list of installed
+backend plugins, and `hla.rti.discover_backends(probe=True)` when
 tooling needs to check whether optional vendor runtimes are actually
 configured on the local machine. The root facade intentionally does not own
 plugin contract types or low-level transport registration helpers. Package-owned code should import directly
@@ -111,7 +112,7 @@ import directly from `hla.backends.common`.
 
 The intended package split is:
 
-- `hla-rti1516e`: clean IEEE 1516.1-2010 spec surface, common HLA value types,
+- `hla-rti1516e`: strict IEEE 1516.1-2010 spec surface, common HLA value types,
   exceptions, FOM/MOM helpers needed by federates, and the backend adapter
   contract.
 - `hla-backend-inmemory`: pure in-memory Python RTI backend.

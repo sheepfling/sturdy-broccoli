@@ -7,14 +7,13 @@ from typing import Any
 __all__ = [
     "CERTIRTIGrpcServer",
     "CERTIRTIGrpcServerConfig",
+    "FEDPRO2010_PROTO_DESCRIPTOR",
     "GrpcTransport",
     "GrpcTransportConfig",
     "PythonRTIGrpcServer",
     "PythonRTIGrpcServerConfig",
-    "RTI_TRANSPORT_PROTO_DESCRIPTOR",
     "create_grpc_transport",
-    "rti_transport_pb2",
-    "rti_transport_pb2_grpc",
+    "fedpro2010",
     "start_certi_grpc_server",
     "start_python_grpc_server",
 ]
@@ -33,10 +32,10 @@ _EXPORT_MODULES = {
 
 
 def __getattr__(name: str) -> Any:
-    if name in {"rti_transport_pb2", "rti_transport_pb2_grpc"}:
-        return importlib.import_module(f"hla.transports.grpc.{name}")
-    if name == "RTI_TRANSPORT_PROTO_DESCRIPTOR":
-        return importlib.import_module("hla.transports.grpc.rti_transport_pb2").DESCRIPTOR
+    if name == "fedpro2010":
+        return importlib.import_module("hla.transports.grpc.fedpro2010")
+    if name == "FEDPRO2010_PROTO_DESCRIPTOR":
+        return importlib.import_module("hla.transports.grpc.fedpro2010.RTIambassador_pb2").DESCRIPTOR
     module_name = _EXPORT_MODULES.get(name)
     if module_name is None:
         raise AttributeError(name)

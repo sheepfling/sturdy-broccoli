@@ -19,8 +19,6 @@ SKIP_PATH_PARTS = {
     "docs/evidence",
     "packages/hla-verification/src/hla/verification/repo_internal",
     "tests/test_namespace_policy.py",
-    "packages/hla-transport-grpc/src/hla/transports/grpc/rti_transport_pb2.py",
-    "packages/hla-transport-grpc/src/hla/transports/grpc/rti_transport_pb2_grpc.py",
     "packages/hla-vendor-pitch/src/hla/vendors/pitch/__init__.py",
     "tests/test_rti_python_split_package.py",
     "tests/test_rti_transport_grpc_split_package.py",
@@ -93,8 +91,8 @@ FORBIDDEN_ROOT_VERIFICATION_FACADE_IMPORTS = (
 FORBIDDEN_PACKAGE_ROOT_FACADE_IMPORTS = (
 )
 FORBIDDEN_RUNTIME_CLASS_INJECTION_PATTERNS = (
-    "setattr(RTIambassadorSpec",
-    "setattr(FederateAmbassadorSpec",
+    "setattr(RTIambassador",
+    "setattr(NullFederateAmbassador",
     "setattr(PythonicRTIAmbassadorMixin",
     "setattr(DelegatingRTIAmbassador",
     "setattr(RecordingFederateAmbassador",

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Iterable, Mapping, Protocol, cast
 from hla.rti1516e import mom as hla_mom
 from hla.rti1516e.exceptions import InvalidRegion, InvalidRegionContext
 from hla.rti1516e.handles import AttributeHandle, DimensionHandle, InteractionClassHandle, RegionHandle
-from hla.rti1516e.types import RangeBounds
+from hla.rti1516e.datatypes import RangeBounds
 
 from .state import FederateState, ObjectInstance
 

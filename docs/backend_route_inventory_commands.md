@@ -56,8 +56,14 @@ python3 -m pytest -q tests/transport/test_rest_transport.py
 ### Transport-hosted CERTI
 
 ```bash
-python3 -m pytest -q tests/transport/test_grpc_transport_certi_server.py
+./tools/vendor-green certi-patched
+python3 -m pytest -q tests/transport/test_grpc_transport_certi_server.py::test_grpc_transport_can_host_certi_exchange_end_to_end
 python3 -m pytest -q tests/backends/test_certi_backend_transport.py
 ```
+
+`./tools/vendor-green certi-patched` promotes only the CERTI-hosted gRPC
+exchange scenario into the working baseline. Run the full
+`tests/transport/test_grpc_transport_certi_server.py` file only as a probe while
+CERTI gRPC synchronization and ownership remain unstable.
 
 Use this page when you want the runnable command set.

@@ -56,6 +56,16 @@ from hla.verification.repo_internal.verification.requirements_matrix_artifacts i
 )
 
 OUTPUT_DIR = REPO_ROOT / "analysis" / "compliance"
+IEEE_1516_1_2010_DOCUMENTS = {"IEEE 1516.1-2010", "IEEE 1516.1-2010 (2010 edition)"}
+IEEE_1516_2_2010_DOCUMENTS = {"IEEE 1516.2-2010", "IEEE 1516.2-2010 (2010 edition)"}
+
+
+def _is_ieee_1516_1_2010_document(document: object) -> bool:
+    return str(document).strip() in IEEE_1516_1_2010_DOCUMENTS
+
+
+def _is_ieee_1516_2_2010_document(document: object) -> bool:
+    return str(document).strip() in IEEE_1516_2_2010_DOCUMENTS
 
 
 @dataclass(frozen=True)
@@ -4629,7 +4639,7 @@ def _mapping_status(module_name: str, cls: type[Any]) -> tuple[str, str]:
         if name in {"RTIambassador", "RTIAmbassador", "FederateAmbassador"}:
             return ("adapted", "Python-facing ambassador layer preserves the spec surface but adds snake_case conveniences and overload flattening.")
         return ("adapted", "Convenience layer on top of the raw spec-shaped API surface.")
-    if module_name == "hla.rti1516e.types":
+    if module_name == "hla.rti1516e.datatypes":
         return ("adapted", "Python dataclass wrappers for HLA concepts and return values, not literal header-level classes.")
     if module_name in {"hla.rti1516e.encoding", "hla.rti1516e.ambassadors", "hla.rti1516e.rti"}:
         return ("supporting-scaffold", "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type.")
@@ -4649,9 +4659,8 @@ PUBLIC_CLASS_INVENTORY_MODULES = (
     "hla.rti1516e.mom",
     "hla.rti1516e.raw_api",
     "hla.rti1516e.rti",
-    "hla.rti1516e.runtime_api",
     "hla.rti1516e.time",
-    "hla.rti1516e.types",
+    "hla.rti1516e.datatypes",
 )
 
 
@@ -4718,9 +4727,18 @@ def _write_json(path: Path, payload: Any) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def _remove_duplicate_markdown_copies(path: Path) -> None:
+    duplicate_name = re.compile(rf"^{re.escape(path.stem)} \d+{re.escape(path.suffix)}$")
+    for sibling in path.parent.glob(f"{path.stem} *{path.suffix}"):
+        if sibling.is_file() and duplicate_name.fullmatch(sibling.name):
+            sibling.unlink()
+
+
 def _write_markdown(path: Path, lines: list[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    _remove_duplicate_markdown_copies(path)
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    _remove_duplicate_markdown_copies(path)
 
 
 def _extracted_requirement_rows_by_prefixes(prefixes: tuple[str, ...]) -> list[dict[str, Any]]:
@@ -5580,7 +5598,7 @@ def _pitch_evidence_refs(source_row: dict[str, Any], *, clause_root: str) -> tup
     requirement_id = str(source_row.get("requirement_id") or source_row.get("matrix_id") or "")
     mapped_evidence = _PITCH_REQUIREMENT_EVIDENCE.get(requirement_id, ("", (), ""))[1]
     vendor_evidence = tuple(str(ref) for ref in source_row.get("vendor_evidence_refs", []) if str(ref))
-    if mapped_evidence and str(source_row.get("document", "")) == "IEEE 1516.1-2010" and clause_root in {"4", "6", "7", "8", "9"}:
+    if mapped_evidence and _is_ieee_1516_1_2010_document(source_row.get("document", "")) and clause_root in {"4", "6", "7", "8", "9"}:
         return _normalized_evidence_refs(mapped_evidence)
     return _normalized_evidence_refs(vendor_evidence + mapped_evidence)
 
@@ -5720,7 +5738,7 @@ def _pitch_requirement_disposition(row: dict[str, Any]) -> tuple[str, str]:
         return pitch_status, f"Pitch runtime status is marked {pitch_status} in the shared 2010 requirements matrix."
     if kind in {"section-area", "curated-seed"}:
         return "not-applicable", "Section summary and seed rows are planning rows, not executable Pitch runtime parity requirements."
-    if str(row.get("document")) == "IEEE 1516.1-2010" and section_root in {"4", "6", "7", "8", "9", "10"}:
+    if _is_ieee_1516_1_2010_document(row.get("document")) and section_root in {"4", "6", "7", "8", "9", "10"}:
         return "not-yet-tested", "Pitch runtime/service requirement is applicable but does not yet have an explicit Pitch outcome."
     return (
         "classification-required",
@@ -5786,7 +5804,7 @@ def _write_pitch_requirement_disposition_artifacts() -> None:
         applicability = _pitch_requirement_applicability(source_row)
         evidence_refs = _pitch_evidence_refs(source_row, clause_root=clause_root)
         if (
-            document == "IEEE 1516.1-2010"
+            _is_ieee_1516_1_2010_document(document)
             and clause_root == "10"
             and disposition == "not-yet-tested"
             and "analysis/compliance/section10_backend_matrix.json" not in evidence_refs
@@ -6377,9 +6395,9 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
                 return "not-applicable"
             document = str(row.get("document", "")).strip()
             clause_root = _clause_root(str(row.get("section_ref", "")))
-            if document == "IEEE 1516.1-2010" and clause_root in {"4", "5", "6", "7", "8", "9", "10", "11", "12"}:
+            if _is_ieee_1516_1_2010_document(document) and clause_root in {"4", "5", "6", "7", "8", "9", "10", "11", "12"}:
                 return "classification-required"
-            if document == "IEEE 1516.2-2010":
+            if _is_ieee_1516_2_2010_document(document):
                 return "classification-required"
             return "not-applicable"
         legacy_status = legacy_status.strip()
@@ -6409,7 +6427,7 @@ def _project_backend_dispositions_into_requirements_matrix_artifacts() -> None:
             if matrix_status == "fail":
                 return "blocked"
             return "classification-required"
-        if document == "IEEE 1516.1-2010" and clause_root in {"4", "5", "6", "7", "8", "9", "10", "11", "12"}:
+        if _is_ieee_1516_1_2010_document(document) and clause_root in {"4", "5", "6", "7", "8", "9", "10", "11", "12"}:
             if matrix_status in {"planned", "not-evidenced"}:
                 return "not-yet-tested"
             if matrix_status == "fail":

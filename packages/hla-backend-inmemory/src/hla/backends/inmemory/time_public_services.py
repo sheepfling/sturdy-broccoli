@@ -25,7 +25,7 @@ from hla.rti1516e.handles import (
     MessageRetractionHandle,
     ObjectInstanceHandle,
 )
-from hla.rti1516e.types import TimeQueryReturn
+from hla.rti1516e.datatypes import TimeQueryReturn
 
 from .time_validation import PythonRTITimeValidationMixin, _time_value
 

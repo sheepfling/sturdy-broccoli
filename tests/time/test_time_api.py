@@ -5,7 +5,7 @@ import pytest
 from hla.backends.common import RecordingFederateAmbassador
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.handles import MessageRetractionHandle
-from hla.rti1516e.types import TimeQueryReturn
+from hla.rti1516e.datatypes import TimeQueryReturn
 from hla.backends.inmemory import InMemoryRTIEngine, rti_ambassador
 
 

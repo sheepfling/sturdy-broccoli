@@ -19,13 +19,13 @@
       "status": "ok"
     },
     {
-      "detail": "ok: 127.0.0.1:8989 is available",
+      "detail": "ok: managed container hla2010-pitch-crc is already running on 127.0.0.1:8989",
       "name": "crc_port",
       "ok": true,
       "status": "ok"
     },
     {
-      "detail": "ok: 127.0.0.1:15164 is available",
+      "detail": "ok: managed container hla2010-pitch-crc is already running on 127.0.0.1:15164",
       "name": "fedpro_port",
       "ok": true,
       "status": "ok"
@@ -37,13 +37,13 @@
   "platform": "Darwin 25.5.0 arm64",
   "ports": {
     "crc": {
-      "detail": "ok: 127.0.0.1:8989 is available",
+      "detail": "ok: managed container hla2010-pitch-crc is already running on 127.0.0.1:8989",
       "host": "127.0.0.1",
       "port": 8989,
       "status": "ok"
     },
     "fedpro": {
-      "detail": "ok: 127.0.0.1:15164 is available",
+      "detail": "ok: managed container hla2010-pitch-crc is already running on 127.0.0.1:15164",
       "host": "127.0.0.1",
       "port": 15164,
       "status": "ok"

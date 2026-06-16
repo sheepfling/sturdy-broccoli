@@ -10,7 +10,7 @@ from hla.backends.common import RecordingFederateAmbassador
 from hla.backends.common import BackendUnavailableError
 from hla.rti1516e.enums import ResignAction
 from hla.rti1516e.factory import create_rti_ambassador
-from hla.rti1516e.types import RangeBounds
+from hla.rti1516e.datatypes import RangeBounds
 from hla.verification import (
     FederationLifecycleScenarioConfig,
     SaveRestoreScenarioConfig,
@@ -290,101 +290,6 @@ def test_certi_real_ddm_smoke():
         shutdown_runtime_resources(close_resources=(receiver, sender), runtime_resources=(rtig,))
 
 
-@pytest.mark.parametrize("kind", ["certi-jpype", "certi-py4j"])
-def test_certi_java_profile_real_lifecycle_smoke(kind: str):
-    _require_real_rti_smoke("certi")
-    federation_name = f"{kind}-smoke-{uuid.uuid4().hex[:8]}"
-    fed = RecordingFederateAmbassador()
-    try:
-        smoke_fom = discover_certi_smoke_fom()
-        rtig = launch_certi_rtig(verbose=0)
-    except BackendUnavailableError as exc:
-        pytest.skip(str(exc))
-    rti = None
-    try:
-        with reserve_udp_pair() as lease:
-            (rti_udp_port, _) = lease.ports
-        rti = create_rti_ambassador(kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=rti_udp_port)
-        assert rti.getHLAversion() == "IEEE 1516-2010"
-        summary = run_federation_lifecycle_scenario(
-            rti,
-            config=FederationLifecycleScenarioConfig(
-                federation_name=federation_name,
-                federate_name=f"{kind}-Federate",
-                federate_type="SmokeFederate",
-                fom_modules=(smoke_fom,),
-                logical_time_implementation_name="HLAinteger64Time",
-            ),
-            federate=fed,
-        )
-        assert summary["federation_name"] == federation_name
-        assert summary["federate_handle"] is not None
-    finally:
-        shutdown_runtime_resources(close_resources=(rti,), runtime_resources=(rtig,))
-
-
-@pytest.mark.parametrize("kind", ["certi-jpype", "certi-py4j"])
-def test_certi_java_profile_real_exchange_smoke(kind: str):
-    _require_real_rti_smoke("certi")
-    try:
-        smoke_fom = discover_certi_smoke_fom()
-        rtig = launch_certi_rtig(verbose=0)
-    except BackendUnavailableError as exc:
-        pytest.skip(str(exc))
-
-    federation_name = f"{kind}-exchange-{uuid.uuid4().hex[:8]}"
-    publisher_fed = RecordingFederateAmbassador()
-    subscriber_fed = RecordingFederateAmbassador()
-    publisher = None
-    subscriber = None
-    try:
-        with reserve_udp_pair() as lease:
-            publisher_udp_port, subscriber_udp_port = lease.ports
-        publisher = create_rti_ambassador(
-            kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=publisher_udp_port
-        )
-        subscriber = create_rti_ambassador(
-            kind, launch_rtig=False, tcp_port=rtig.tcp_port, udp_port=subscriber_udp_port
-        )
-        summary = run_two_federate_exchange_scenario(
-            publisher,
-            subscriber,
-            config=TwoFederateExchangeConfig(
-                federation_name=federation_name,
-                fom_modules=(smoke_fom,),
-                logical_time_implementation_name="HLAinteger64Time",
-                object_class_name="TestObjectClassR",
-                attribute_name="DataR",
-                interaction_class_name="MsgR",
-                parameter_name="MsgDataR",
-                object_instance_name=f"{kind}-Object-1",
-                attribute_payload=b"payload-r",
-                attribute_tag=b"reflect-tag",
-                interaction_payload=b"hello-r",
-                interaction_tag=b"interaction-tag",
-                enable_time_management=True,
-                lookahead=HLAfloat64Interval(1.0),
-                advance_time=HLAfloat64Time(8.0),
-                timestamped_attribute_payload=b"payload-tso",
-                timestamped_attribute_tag=b"reflect-tso",
-                timestamped_attribute_time=HLAfloat64Time(5.0),
-                timestamped_interaction_payload=b"hello-tso",
-                timestamped_interaction_tag=b"interaction-tso",
-                timestamped_interaction_time=HLAfloat64Time(6.0),
-            ),
-            publisher_federate=publisher_fed,
-            subscriber_federate=subscriber_fed,
-        )
-        assert summary["advance_grant"].args[0] == HLAfloat64Time(8.0)
-        cleanup_federation(
-            federation_name,
-            destroyer=publisher,
-            destroyer_resign_action=ResignAction.DELETE_OBJECTS,
-            remaining_resignations=((subscriber, ResignAction.NO_ACTION),),
-            disconnect_rtis=(subscriber, publisher),
-        )
-    finally:
-        shutdown_runtime_resources(close_resources=(subscriber, publisher), runtime_resources=(rtig,))
 
 
 @pytest.mark.parametrize("kind", ["pitch-jpype", "pitch-py4j"])

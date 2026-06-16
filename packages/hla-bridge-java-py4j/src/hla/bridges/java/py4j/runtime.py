@@ -6,7 +6,7 @@ from typing import Any, Mapping
 
 from hla.rti1516e.fom import module_uri
 from hla.bridges.java.common import CALLBACK_METHOD_NAMES, BackendUnavailableError
-from hla.rti1516e.types import RangeBounds
+from hla.rti1516e.datatypes import RangeBounds
 from hla.bridges.java.common.java_common import JavaBridge, PythonFederateAmbassadorDispatcher
 
 

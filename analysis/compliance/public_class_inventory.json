@@ -1,1580 +1,1573 @@
 {
-  "all_public_row_count": 225,
-  "package_exported_row_count": 0,
+  "all_public_row_count": 224,
+  "package_exported_row_count": 8,
   "rows": [
     {
       "class_name": "CallbackRecord",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.ambassadors",
+      "module": "hla.rti1516e.ambassadors",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "FederateAmbassadorMultiplexer",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.ambassadors",
+      "module": "hla.rti1516e.ambassadors",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "NullFederateAmbassador",
-      "exported_via_package": false,
+      "exported_via_package": true,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.ambassadors",
+      "module": "hla.rti1516e.ambassadors",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "RecordingFederateAmbassador",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.ambassadors",
+      "module": "hla.rti1516e.ambassadors",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "DataElement",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "DecoderException",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "EncoderException",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAASCIIchar",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAASCIIstring",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAboolean",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAbyte",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAfixedArray",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAfixedRecord",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAfloat32BE",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAfloat32LE",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAfloat64BE",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAfloat64LE",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAinteger16BE",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAinteger16LE",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAinteger32BE",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAinteger32LE",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAinteger64BE",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAinteger64LE",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAoctet",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAoctetPairBE",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAoctetPairLE",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAopaqueData",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAunicodeChar",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAunicodeString",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "HLAvariableArray",
       "exported_via_package": false,
       "mapping_status": "supporting-scaffold",
-      "module": "hla2010.encoding",
+      "module": "hla.rti1516e.encoding",
       "rationale": "Support or workflow scaffolding around the HLA surface rather than a direct header-spec type."
     },
     {
       "class_name": "CallbackModel",
-      "exported_via_package": false,
+      "exported_via_package": true,
       "mapping_status": "adapted",
-      "module": "hla2010.enums",
+      "module": "hla.rti1516e.enums",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "OrderType",
-      "exported_via_package": false,
+      "exported_via_package": true,
       "mapping_status": "adapted",
-      "module": "hla2010.enums",
+      "module": "hla.rti1516e.enums",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "ResignAction",
-      "exported_via_package": false,
+      "exported_via_package": true,
       "mapping_status": "adapted",
-      "module": "hla2010.enums",
+      "module": "hla.rti1516e.enums",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "RestoreFailureReason",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.enums",
+      "module": "hla.rti1516e.enums",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "RestoreStatus",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.enums",
+      "module": "hla.rti1516e.enums",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "SaveFailureReason",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.enums",
+      "module": "hla.rti1516e.enums",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "SaveStatus",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.enums",
+      "module": "hla.rti1516e.enums",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "ServiceGroup",
-      "exported_via_package": false,
+      "exported_via_package": true,
       "mapping_status": "adapted",
-      "module": "hla2010.enums",
+      "module": "hla.rti1516e.enums",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "SynchronizationPointFailureReason",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.enums",
+      "module": "hla.rti1516e.enums",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "TransportationType",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.enums",
+      "module": "hla.rti1516e.enums",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "AlreadyConnected",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AsynchronousDeliveryAlreadyDisabled",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AsynchronousDeliveryAlreadyEnabled",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AttributeAcquisitionWasNotRequested",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AttributeAlreadyBeingAcquired",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AttributeAlreadyBeingChanged",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AttributeAlreadyBeingDivested",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AttributeAlreadyOwned",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AttributeDivestitureWasNotRequested",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AttributeNotDefined",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AttributeNotOwned",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AttributeNotPublished",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AttributeNotRecognized",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AttributeNotSubscribed",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AttributeRelevanceAdvisorySwitchIsOff",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AttributeRelevanceAdvisorySwitchIsOn",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AttributeScopeAdvisorySwitchIsOff",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "AttributeScopeAdvisorySwitchIsOn",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "CallNotAllowedFromWithinCallback",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "ConnectionFailed",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "CouldNotCreateLogicalTimeFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "CouldNotDecode",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "CouldNotEncode",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "CouldNotOpenFDD",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "CouldNotOpenMIM",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "DeletePrivilegeNotHeld",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "DesignatorIsHLAstandardMIM",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "ErrorReadingFDD",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "ErrorReadingMIM",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "FederateAlreadyExecutionMember",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "FederateHandleNotKnown",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "FederateHasNotBegunSave",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "FederateInternalError",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "FederateIsExecutionMember",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "FederateNameAlreadyInUse",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "FederateNotExecutionMember",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "FederateOwnsAttributes",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "FederateServiceInvocationsAreBeingReportedViaMOM",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "FederateUnableToUseTime",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "FederatesCurrentlyJoined",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "FederationExecutionAlreadyExists",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "FederationExecutionDoesNotExist",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "IllegalName",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "IllegalTimeArithmetic",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InTimeAdvancingState",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InconsistentFDD",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InteractionClassAlreadyBeingChanged",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InteractionClassNotDefined",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InteractionClassNotPublished",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InteractionParameterNotDefined",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InteractionRelevanceAdvisorySwitchIsOff",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InteractionRelevanceAdvisorySwitchIsOn",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidAttributeHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidDimensionHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidFederateHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidInteractionClassHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidLocalSettingsDesignator",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidLogicalTime",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidLogicalTimeInterval",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidLookahead",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidMessageRetractionHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidObjectClassHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidOrderName",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidOrderType",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidParameterHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidRangeBound",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidRegion",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidRegionContext",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidResignAction",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidServiceGroup",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidTransportationName",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidTransportationType",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "InvalidUpdateRateDesignator",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "LogicalTimeAlreadyPassed",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "MessageCanNoLongerBeRetracted",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "NameNotFound",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "NameSetWasEmpty",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "NoAcquisitionPending",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "NoRequestToEnableTimeConstrainedWasPending",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "NoRequestToEnableTimeRegulationWasPending",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "NotConnected",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "ObjectClassNotDefined",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "ObjectClassNotPublished",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "ObjectClassRelevanceAdvisorySwitchIsOff",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "ObjectClassRelevanceAdvisorySwitchIsOn",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "ObjectInstanceNameInUse",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "ObjectInstanceNameNotReserved",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "ObjectInstanceNotKnown",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "OwnershipAcquisitionPending",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "RTIException",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "RTIexception",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "RTIinternalError",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "RegionDoesNotContainSpecifiedDimension",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "RegionInUseForUpdateOrSubscription",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "RegionNotCreatedByThisFederate",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "RequestForTimeConstrainedPending",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "RequestForTimeRegulationPending",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "RestoreInProgress",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "RestoreNotInProgress",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "RestoreNotRequested",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "SaveInProgress",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "SaveNotInProgress",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "SaveNotInitiated",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "SynchronizationPointLabelNotAnnounced",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "TimeConstrainedAlreadyEnabled",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "TimeConstrainedIsNotEnabled",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "TimeRegulationAlreadyEnabled",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "TimeRegulationIsNotEnabled",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "UnableToPerformSave",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "UnknownName",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "UnsupportedCallbackModel",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.exceptions",
+      "module": "hla.rti1516e.exceptions",
       "rationale": "Exception class names intentionally mirror the HLA exception taxonomy."
     },
     {
       "class_name": "FOMCatalog",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.fom",
+      "module": "hla.rti1516e.fom",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "FOMMergeError",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.fom",
+      "module": "hla.rti1516e.fom",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "FOMModule",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.fom",
+      "module": "hla.rti1516e.fom",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "FOMResolutionError",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.fom",
+      "module": "hla.rti1516e.fom",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "FOMResolver",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.fom",
+      "module": "hla.rti1516e.fom",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "InteractionClassSpec",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.fom",
+      "module": "hla.rti1516e.fom",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "OMTConformanceAssessment",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.fom",
+      "module": "hla.rti1516e.fom",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "ObjectClassSpec",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.fom",
+      "module": "hla.rti1516e.fom",
       "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "AttributeHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "AttributeHandleFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "AttributeHandleSet",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "AttributeHandleSetFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "AttributeHandleValueMap",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "AttributeHandleValueMapFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "AttributeSetRegionSetPairList",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "AttributeSetRegionSetPairListFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "CollectionFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "DimensionHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "DimensionHandleFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "DimensionHandleSet",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "DimensionHandleSetFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "FederateHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "FederateHandleFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "FederateHandleSet",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "FederateHandleSetFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "Handle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "HandleFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "HandleValueMap",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "InteractionClassHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "InteractionClassHandleFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "InteractionClassHandleSet",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "MessageRetractionHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "MessageRetractionHandleFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "ObjectClassHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "ObjectClassHandleFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "ObjectInstanceHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "ObjectInstanceHandleFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "ParameterHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "ParameterHandleFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "ParameterHandleValueMap",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "ParameterHandleValueMapFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "RegionHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "RegionHandleFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "RegionHandleSet",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "RegionHandleSetFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "TransportationTypeHandle",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "TransportationTypeHandleFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "TypedHandleSet",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.handles",
+      "module": "hla.rti1516e.handles",
       "rationale": "Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations."
     },
     {
       "class_name": "FederateAmbassador",
-      "exported_via_package": false,
+      "exported_via_package": true,
       "mapping_status": "close-1to1",
-      "module": "hla2010.raw_api",
+      "module": "hla.rti1516e.raw_api",
       "rationale": "Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs."
     },
     {
       "class_name": "NullFederateAmbassador",
-      "exported_via_package": false,
+      "exported_via_package": true,
       "mapping_status": "close-1to1",
-      "module": "hla2010.raw_api",
+      "module": "hla.rti1516e.raw_api",
       "rationale": "Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs."
     },
     {
       "class_name": "RTIAmbassador",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.raw_api",
+      "module": "hla.rti1516e.raw_api",
       "rationale": "Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs."
     },
     {
       "class_name": "RTIambassador",
-      "exported_via_package": false,
+      "exported_via_package": true,
       "mapping_status": "close-1to1",
-      "module": "hla2010.raw_api",
+      "module": "hla.rti1516e.raw_api",
       "rationale": "Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs."
-    },
-    {
-      "class_name": "FederateAmbassador",
-      "exported_via_package": false,
-      "mapping_status": "adapted",
-      "module": "hla2010.runtime_api",
-      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
-    },
-    {
-      "class_name": "NullFederateAmbassador",
-      "exported_via_package": false,
-      "mapping_status": "adapted",
-      "module": "hla2010.runtime_api",
-      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
-    },
-    {
-      "class_name": "PythonicRTIAmbassadorMixin",
-      "exported_via_package": false,
-      "mapping_status": "adapted",
-      "module": "hla2010.runtime_api",
-      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
-    },
-    {
-      "class_name": "RTIAmbassador",
-      "exported_via_package": false,
-      "mapping_status": "adapted",
-      "module": "hla2010.runtime_api",
-      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
-    },
-    {
-      "class_name": "RTIambassador",
-      "exported_via_package": false,
-      "mapping_status": "adapted",
-      "module": "hla2010.runtime_api",
-      "rationale": "Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type."
     },
     {
       "class_name": "HLAfloat64Interval",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.time",
+      "module": "hla.rti1516e.time",
       "rationale": "Logical time, interval, and factory classes intentionally mirror the HLA logical-time families."
     },
     {
       "class_name": "HLAfloat64Time",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.time",
+      "module": "hla.rti1516e.time",
       "rationale": "Logical time, interval, and factory classes intentionally mirror the HLA logical-time families."
     },
     {
       "class_name": "HLAfloat64TimeFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.time",
+      "module": "hla.rti1516e.time",
       "rationale": "Logical time, interval, and factory classes intentionally mirror the HLA logical-time families."
     },
     {
       "class_name": "HLAinteger64Interval",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.time",
+      "module": "hla.rti1516e.time",
       "rationale": "Logical time, interval, and factory classes intentionally mirror the HLA logical-time families."
     },
     {
       "class_name": "HLAinteger64Time",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.time",
+      "module": "hla.rti1516e.time",
       "rationale": "Logical time, interval, and factory classes intentionally mirror the HLA logical-time families."
     },
     {
       "class_name": "HLAinteger64TimeFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.time",
+      "module": "hla.rti1516e.time",
       "rationale": "Logical time, interval, and factory classes intentionally mirror the HLA logical-time families."
     },
     {
       "class_name": "LogicalTime",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.time",
+      "module": "hla.rti1516e.time",
       "rationale": "Logical time, interval, and factory classes intentionally mirror the HLA logical-time families."
     },
     {
       "class_name": "LogicalTimeFactory",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.time",
+      "module": "hla.rti1516e.time",
       "rationale": "Logical time, interval, and factory classes intentionally mirror the HLA logical-time families."
     },
     {
       "class_name": "LogicalTimeInterval",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.time",
+      "module": "hla.rti1516e.time",
       "rationale": "Logical time, interval, and factory classes intentionally mirror the HLA logical-time families."
     },
     {
       "class_name": "TimeFactoryRegistry",
       "exported_via_package": false,
       "mapping_status": "close-1to1",
-      "module": "hla2010.time",
+      "module": "hla.rti1516e.time",
       "rationale": "Logical time, interval, and factory classes intentionally mirror the HLA logical-time families."
     },
     {
       "class_name": "AttributeRegionAssociation",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.types",
+      "module": "hla.rti1516e.datatypes",
       "rationale": "Python dataclass wrappers for HLA concepts and return values, not literal header-level classes."
     },
     {
       "class_name": "FederateHandleSaveStatusPair",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.types",
+      "module": "hla.rti1516e.datatypes",
       "rationale": "Python dataclass wrappers for HLA concepts and return values, not literal header-level classes."
     },
     {
       "class_name": "FederateRestoreStatus",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.types",
+      "module": "hla.rti1516e.datatypes",
       "rationale": "Python dataclass wrappers for HLA concepts and return values, not literal header-level classes."
     },
     {
       "class_name": "FederationExecutionInformation",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.types",
+      "module": "hla.rti1516e.datatypes",
+      "rationale": "Python dataclass wrappers for HLA concepts and return values, not literal header-level classes."
+    },
+    {
+      "class_name": "FederationExecutionInformationSet",
+      "exported_via_package": false,
+      "mapping_status": "adapted",
+      "module": "hla.rti1516e.datatypes",
       "rationale": "Python dataclass wrappers for HLA concepts and return values, not literal header-level classes."
     },
     {
       "class_name": "MessageRetractionReturn",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.types",
+      "module": "hla.rti1516e.datatypes",
       "rationale": "Python dataclass wrappers for HLA concepts and return values, not literal header-level classes."
     },
     {
       "class_name": "RangeBounds",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.types",
+      "module": "hla.rti1516e.datatypes",
+      "rationale": "Python dataclass wrappers for HLA concepts and return values, not literal header-level classes."
+    },
+    {
+      "class_name": "SupplementalReceiveInfo",
+      "exported_via_package": false,
+      "mapping_status": "adapted",
+      "module": "hla.rti1516e.datatypes",
+      "rationale": "Python dataclass wrappers for HLA concepts and return values, not literal header-level classes."
+    },
+    {
+      "class_name": "SupplementalReflectInfo",
+      "exported_via_package": false,
+      "mapping_status": "adapted",
+      "module": "hla.rti1516e.datatypes",
+      "rationale": "Python dataclass wrappers for HLA concepts and return values, not literal header-level classes."
+    },
+    {
+      "class_name": "SupplementalRemoveInfo",
+      "exported_via_package": false,
+      "mapping_status": "adapted",
+      "module": "hla.rti1516e.datatypes",
       "rationale": "Python dataclass wrappers for HLA concepts and return values, not literal header-level classes."
     },
     {
       "class_name": "TimeQueryReturn",
       "exported_via_package": false,
       "mapping_status": "adapted",
-      "module": "hla2010.types",
+      "module": "hla.rti1516e.datatypes",
       "rationale": "Python dataclass wrappers for HLA concepts and return values, not literal header-level classes."
     }
   ]

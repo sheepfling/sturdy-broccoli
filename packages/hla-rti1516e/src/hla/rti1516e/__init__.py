@@ -4,7 +4,8 @@ The canonical standard-facing API lives at this package root.
 """
 from __future__ import annotations
 
-from ._spec_impl import FederateAmbassador, NullFederateAmbassador, RTIambassador
+from .federate_ambassador import FederateAmbassador, NullFederateAmbassador, lower_camel_to_snake
+from .rti_ambassador import RTIambassador
 from .enums import CallbackModel, OrderType, ResignAction, ServiceGroup
 
 __version__ = "0.13.0"
@@ -28,4 +29,5 @@ __all__ = [
     "ServiceGroup",
     "__version__",
     "create_rti_ambassador",
+    "lower_camel_to_snake",
 ]

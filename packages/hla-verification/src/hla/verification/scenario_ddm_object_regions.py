@@ -6,7 +6,7 @@ from typing import Any
 
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.handles import AttributeHandleSet, RegionHandleSet
-from hla.rti1516e.types import AttributeRegionAssociation, RangeBounds
+from hla.rti1516e.datatypes import AttributeRegionAssociation, RangeBounds
 
 from .scenario_support import drain_callbacks_pair
 

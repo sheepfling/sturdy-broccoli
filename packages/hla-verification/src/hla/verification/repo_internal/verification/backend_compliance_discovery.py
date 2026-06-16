@@ -37,6 +37,8 @@ _BACKLOG_PRIORITY_LABELS = {
 _BACKLOG_INCLUDED_MATRIX_STATUSES = frozenset(
     {"vendor-divergent", "env-gated-positive", "not-yet-matrixed", "bridge-parity-positive", "positive-path-passing"}
 )
+_IEEE_1516_1_2010 = "IEEE 1516.1-2010 (2010 edition)"
+_IEEE_1516_2_2010 = "IEEE 1516.2-2010 (2010 edition)"
 
 
 def _repo_root() -> Path:
@@ -78,6 +80,13 @@ def _sorted_counts(values: dict[str, int]) -> dict[str, int]:
 def _section_root(section_ref: str) -> str:
     match = re.search(r"§\s*(\d+)", str(section_ref or ""))
     return match.group(1) if match else ""
+
+
+def _edition_qualified_section_ref(section_ref: object) -> str:
+    value = str(section_ref or "")
+    value = value.replace("IEEE 1516.1-2010 §", f"{_IEEE_1516_1_2010} §")
+    value = value.replace("IEEE 1516.2-2010 §", f"{_IEEE_1516_2_2010} §")
+    return value
 
 
 def _section_sort_key(section_ref: str) -> tuple[int, str]:
@@ -507,7 +516,7 @@ def build_vendor_discovery_backlog(project_root: str | Path | None = None) -> di
             if status == "positive-path-passing" and "hosted-python" not in str(row.get("backend_family", "")):
                 continue
             priority_rank, action = _BACKLOG_PRIORITY_BY_STATUS[status]
-            section_ref = str(row.get("section_ref") or ", ".join(row.get("section_refs", [])))
+            section_ref = _edition_qualified_section_ref(row.get("section_ref") or ", ".join(row.get("section_refs", [])))
             if matrix_kind == "pitch" and (str(row.get("backend_id", "")), section_ref) in pitch_requirement_targets:
                 continue
             evidence_tests = [str(item) for item in row.get("evidence_tests", [])]
@@ -555,7 +564,7 @@ def build_vendor_discovery_backlog(project_root: str | Path | None = None) -> di
                 "backend_id": "python-inmemory",
                 "backend_family": "python-reference",
                 "requirement_id": requirement_id,
-                "section_ref": str(row.get("section_ref", "")),
+                "section_ref": _edition_qualified_section_ref(row.get("section_ref", "")),
                 "section_root": _section_root(str(row.get("section_ref", ""))),
                 "current_status": "defended-partial",
                 "source_artifact": "analysis/compliance/requirements_matrix_2010.json",
@@ -574,7 +583,7 @@ def build_vendor_discovery_backlog(project_root: str | Path | None = None) -> di
         if status not in pitch_requirement_backlog_statuses:
             continue
         priority_rank, action = _BACKLOG_PRIORITY_BY_STATUS[status]
-        section_ref = str(row.get("section_ref", ""))
+        section_ref = _edition_qualified_section_ref(row.get("section_ref", ""))
         rows.append(
             {
                 "priority": _BACKLOG_PRIORITY_LABELS[priority_rank],
@@ -831,7 +840,7 @@ def render_backend_compliance_catalog_text(
         lines.append(f"- {profile}_requirement_dispositions: {rendered}")
     profile_clause_summary = pitch_disposition.get("profile_clause_summary", {})
     for profile in ("pitch-jpype", "pitch-py4j"):
-        clause4_counts = profile_clause_summary.get(profile, {}).get("IEEE 1516.1-2010 §4", {})
+        clause4_counts = profile_clause_summary.get(profile, {}).get(f"{_IEEE_1516_1_2010} §4", {})
         if clause4_counts:
             rendered = ", ".join(f"{name}={count}" for name, count in clause4_counts.items())
             lines.append(f"- {profile}_clause4_requirement_dispositions: {rendered}")

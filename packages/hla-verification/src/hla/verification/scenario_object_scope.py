@@ -7,8 +7,8 @@ from typing import Any
 from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import AttributeNotOwned
 from hla.rti1516e.handles import AttributeHandleSet, RegionHandleSet
-from hla.rti1516e.types import RangeBounds
-from hla.rti1516e.types import AttributeRegionAssociation
+from hla.rti1516e.datatypes import RangeBounds
+from hla.rti1516e.datatypes import AttributeRegionAssociation
 
 from .scenario_support import drain_callbacks_pair
 

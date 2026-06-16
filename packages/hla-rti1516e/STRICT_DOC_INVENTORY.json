@@ -1,0 +1,277 @@
+{
+  "package": "hla1516_2010",
+  "source_bundle": "1516.1-2010_downloads + 1516.2-2010_downloads",
+  "files": [
+    "MERGE_REPORT.md",
+    "NOTICE.md",
+    "README.md",
+    "SOURCE_TRACE.md",
+    "STRICT_DOC_INVENTORY.json",
+    "STRICT_DOC_REPORT.md",
+    "hla1516_2010/__init__.py",
+    "hla1516_2010/_byte_wrapper.py",
+    "hla1516_2010/datatypes.py",
+    "hla1516_2010/encoding.py",
+    "hla1516_2010/encoding.pyi",
+    "hla1516_2010/enums.py",
+    "hla1516_2010/exceptions.py",
+    "hla1516_2010/federate_ambassador.py",
+    "hla1516_2010/federate_ambassador.pyi",
+    "hla1516_2010/handle_factory.py",
+    "hla1516_2010/handles.py",
+    "hla1516_2010/logical_time.py",
+    "hla1516_2010/py.typed",
+    "hla1516_2010/rti_ambassador.py",
+    "hla1516_2010/rti_ambassador.pyi",
+    "hla1516_2010/rti_factory.py",
+    "pyproject.toml"
+  ],
+  "counts": {
+    "java_rti_declarations": 172,
+    "java_rti_unique_names": 150,
+    "cpp_rti_declarations": 151,
+    "cpp_rti_unique_names": 140,
+    "java_fed_declarations": 60,
+    "java_fed_unique_names": 51,
+    "cpp_fed_declarations": 60,
+    "cpp_fed_unique_names": 51,
+    "java_encoder_declarations": 45,
+    "java_encoder_unique_names": 24,
+    "rti_python_method_names": 162,
+    "fed_python_method_names": 51,
+    "rti_overload_groups": 17,
+    "fed_overload_groups": 6,
+    "encoder_overload_groups": 21,
+    "java_exception_classes": 110,
+    "cpp_exception_macros": 121,
+    "python_exception_classes_including_base": 122
+  },
+  "rti_overload_groups": {
+    "connect": [
+      "void connect(FederateAmbassador federateReference, CallbackModel callbackModel, String localSettingsDesignator) throws ConnectionFailed, InvalidLocalSettingsDesignator, UnsupportedCallbackModel, AlreadyConnected, CallNotAllowedFromWithinCallback, RTIinternalError;",
+      "void connect(FederateAmbassador federateReference, CallbackModel callbackModel) throws ConnectionFailed, InvalidLocalSettingsDesignator, UnsupportedCallbackModel, AlreadyConnected, CallNotAllowedFromWithinCallback, RTIinternalError;"
+    ],
+    "createFederationExecution": [
+      "void createFederationExecution(String federationExecutionName, URL[] fomModules, URL mimModule, String logicalTimeImplementationName) throws CouldNotCreateLogicalTimeFactory, InconsistentFDD, ErrorReadingFDD, CouldNotOpenFDD, ErrorReadingMIM, CouldNotOpenMIM, DesignatorIsHLAstandardMIM, FederationExecutionAlreadyExists, NotConnected, RTIinternalError;",
+      "void createFederationExecution(String federationExecutionName, URL[] fomModules, String logicalTimeImplementationName) throws CouldNotCreateLogicalTimeFactory, InconsistentFDD, ErrorReadingFDD, CouldNotOpenFDD, FederationExecutionAlreadyExists, NotConnected, RTIinternalError;",
+      "void createFederationExecution(String federationExecutionName, URL[] fomModules, URL mimModule) throws InconsistentFDD, ErrorReadingFDD, CouldNotOpenFDD, ErrorReadingMIM, CouldNotOpenMIM, DesignatorIsHLAstandardMIM, FederationExecutionAlreadyExists, NotConnected, RTIinternalError;",
+      "void createFederationExecution(String federationExecutionName, URL[] fomModules) throws InconsistentFDD, ErrorReadingFDD, CouldNotOpenFDD, FederationExecutionAlreadyExists, NotConnected, RTIinternalError;",
+      "void createFederationExecution(String federationExecutionName, URL fomModule) throws InconsistentFDD, ErrorReadingFDD, CouldNotOpenFDD, FederationExecutionAlreadyExists, NotConnected, RTIinternalError;"
+    ],
+    "joinFederationExecution": [
+      "FederateHandle joinFederationExecution(String federateName, String federateType, String federationExecutionName, URL[] additionalFomModules) throws CouldNotCreateLogicalTimeFactory, FederateNameAlreadyInUse, FederationExecutionDoesNotExist, InconsistentFDD, ErrorReadingFDD, CouldNotOpenFDD, SaveInProgress, RestoreInProgress, FederateAlreadyExecutionMember, NotConnected, CallNotAllowedFromWithinCallback, RTIinternalError;",
+      "FederateHandle joinFederationExecution(String federateType, String federationExecutionName, URL[] additionalFomModules) throws CouldNotCreateLogicalTimeFactory, FederationExecutionDoesNotExist, InconsistentFDD, ErrorReadingFDD, CouldNotOpenFDD, SaveInProgress, RestoreInProgress, FederateAlreadyExecutionMember, NotConnected, CallNotAllowedFromWithinCallback, RTIinternalError;",
+      "FederateHandle joinFederationExecution(String federateName, String federateType, String federationExecutionName) throws CouldNotCreateLogicalTimeFactory, FederateNameAlreadyInUse, FederationExecutionDoesNotExist, SaveInProgress, RestoreInProgress, FederateAlreadyExecutionMember, NotConnected, CallNotAllowedFromWithinCallback, RTIinternalError;",
+      "FederateHandle joinFederationExecution(String federateType, String federationExecutionName) throws CouldNotCreateLogicalTimeFactory, FederationExecutionDoesNotExist, SaveInProgress, RestoreInProgress, FederateAlreadyExecutionMember, NotConnected, CallNotAllowedFromWithinCallback, RTIinternalError;"
+    ],
+    "registerFederationSynchronizationPoint": [
+      "void registerFederationSynchronizationPoint(String synchronizationPointLabel, byte[] userSuppliedTag) throws SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;",
+      "void registerFederationSynchronizationPoint(String synchronizationPointLabel, byte[] userSuppliedTag, FederateHandleSet synchronizationSet) throws InvalidFederateHandle, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;"
+    ],
+    "synchronizationPointAchieved": [
+      "void synchronizationPointAchieved(String synchronizationPointLabel) throws SynchronizationPointLabelNotAnnounced, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;",
+      "void synchronizationPointAchieved(String synchronizationPointLabel, boolean successIndicator) throws SynchronizationPointLabelNotAnnounced, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;"
+    ],
+    "requestFederationSave": [
+      "void requestFederationSave(String label) throws SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;",
+      "void requestFederationSave(String label, LogicalTime theTime) throws LogicalTimeAlreadyPassed, InvalidLogicalTime, FederateUnableToUseTime, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;"
+    ],
+    "subscribeObjectClassAttributes": [
+      "void subscribeObjectClassAttributes(ObjectClassHandle theClass, AttributeHandleSet attributeList) throws AttributeNotDefined, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;",
+      "void subscribeObjectClassAttributes(ObjectClassHandle theClass, AttributeHandleSet attributeList, String updateRateDesignator) throws AttributeNotDefined, ObjectClassNotDefined, InvalidUpdateRateDesignator, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;"
+    ],
+    "subscribeObjectClassAttributesPassively": [
+      "void subscribeObjectClassAttributesPassively(ObjectClassHandle theClass, AttributeHandleSet attributeList) throws AttributeNotDefined, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;",
+      "void subscribeObjectClassAttributesPassively(ObjectClassHandle theClass, AttributeHandleSet attributeList, String updateRateDesignator) throws AttributeNotDefined, ObjectClassNotDefined, InvalidUpdateRateDesignator, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;"
+    ],
+    "registerObjectInstance": [
+      "ObjectInstanceHandle registerObjectInstance(ObjectClassHandle theClass) throws ObjectClassNotPublished, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;",
+      "ObjectInstanceHandle registerObjectInstance(ObjectClassHandle theClass, String theObjectName) throws ObjectInstanceNameInUse, ObjectInstanceNameNotReserved, ObjectClassNotPublished, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;"
+    ],
+    "updateAttributeValues": [
+      "void updateAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes, byte[] userSuppliedTag) throws AttributeNotOwned, AttributeNotDefined, ObjectInstanceNotKnown, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;",
+      "MessageRetractionReturn updateAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes, byte[] userSuppliedTag, LogicalTime theTime) throws InvalidLogicalTime, AttributeNotOwned, AttributeNotDefined, ObjectInstanceNotKnown, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;"
+    ],
+    "sendInteraction": [
+      "void sendInteraction(InteractionClassHandle theInteraction, ParameterHandleValueMap theParameters, byte[] userSuppliedTag) throws InteractionClassNotPublished, InteractionParameterNotDefined, InteractionClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;",
+      "MessageRetractionReturn sendInteraction(InteractionClassHandle theInteraction, ParameterHandleValueMap theParameters, byte[] userSuppliedTag, LogicalTime theTime) throws InvalidLogicalTime, InteractionClassNotPublished, InteractionParameterNotDefined, InteractionClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;"
+    ],
+    "deleteObjectInstance": [
+      "void deleteObjectInstance(ObjectInstanceHandle objectHandle, byte[] userSuppliedTag) throws DeletePrivilegeNotHeld, ObjectInstanceNotKnown, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;",
+      "MessageRetractionReturn deleteObjectInstance(ObjectInstanceHandle objectHandle, byte[] userSuppliedTag, LogicalTime theTime) throws InvalidLogicalTime, DeletePrivilegeNotHeld, ObjectInstanceNotKnown, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;"
+    ],
+    "requestAttributeValueUpdate": [
+      "void requestAttributeValueUpdate(ObjectInstanceHandle theObject, AttributeHandleSet theAttributes, byte[] userSuppliedTag) throws AttributeNotDefined, ObjectInstanceNotKnown, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;",
+      "void requestAttributeValueUpdate(ObjectClassHandle theClass, AttributeHandleSet theAttributes, byte[] userSuppliedTag) throws AttributeNotDefined, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;"
+    ],
+    "registerObjectInstanceWithRegions": [
+      "ObjectInstanceHandle registerObjectInstanceWithRegions(ObjectClassHandle theClass, AttributeSetRegionSetPairList attributesAndRegions) throws InvalidRegionContext, RegionNotCreatedByThisFederate, InvalidRegion, AttributeNotPublished, ObjectClassNotPublished, AttributeNotDefined, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;",
+      "ObjectInstanceHandle registerObjectInstanceWithRegions(ObjectClassHandle theClass, AttributeSetRegionSetPairList attributesAndRegions, String theObject) throws ObjectInstanceNameInUse, ObjectInstanceNameNotReserved, InvalidRegionContext, RegionNotCreatedByThisFederate, InvalidRegion, AttributeNotPublished, ObjectClassNotPublished, AttributeNotDefined, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;"
+    ],
+    "subscribeObjectClassAttributesWithRegions": [
+      "void subscribeObjectClassAttributesWithRegions(ObjectClassHandle theClass, AttributeSetRegionSetPairList attributesAndRegions) throws InvalidRegionContext, RegionNotCreatedByThisFederate, InvalidRegion, AttributeNotDefined, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;",
+      "void subscribeObjectClassAttributesWithRegions(ObjectClassHandle theClass, AttributeSetRegionSetPairList attributesAndRegions, String updateRateDesignator) throws InvalidRegionContext, RegionNotCreatedByThisFederate, InvalidRegion, AttributeNotDefined, ObjectClassNotDefined, InvalidUpdateRateDesignator, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;"
+    ],
+    "subscribeObjectClassAttributesPassivelyWithRegions": [
+      "void subscribeObjectClassAttributesPassivelyWithRegions(ObjectClassHandle theClass, AttributeSetRegionSetPairList attributesAndRegions) throws InvalidRegionContext, RegionNotCreatedByThisFederate, InvalidRegion, AttributeNotDefined, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;",
+      "void subscribeObjectClassAttributesPassivelyWithRegions(ObjectClassHandle theClass, AttributeSetRegionSetPairList attributesAndRegions, String updateRateDesignator) throws InvalidRegionContext, RegionNotCreatedByThisFederate, InvalidRegion, AttributeNotDefined, ObjectClassNotDefined, InvalidUpdateRateDesignator, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;"
+    ],
+    "sendInteractionWithRegions": [
+      "void sendInteractionWithRegions(InteractionClassHandle theInteraction, ParameterHandleValueMap theParameters, RegionHandleSet regions, byte[] userSuppliedTag) throws InvalidRegionContext, RegionNotCreatedByThisFederate, InvalidRegion, InteractionClassNotPublished, InteractionParameterNotDefined, InteractionClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;",
+      "MessageRetractionReturn sendInteractionWithRegions(InteractionClassHandle theInteraction, ParameterHandleValueMap theParameters, RegionHandleSet regions, byte[] userSuppliedTag, LogicalTime theTime) throws InvalidLogicalTime, InvalidRegionContext, RegionNotCreatedByThisFederate, InvalidRegion, InteractionClassNotPublished, InteractionParameterNotDefined, InteractionClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError;"
+    ]
+  },
+  "fed_overload_groups": {
+    "initiateFederateSave": [
+      "void initiateFederateSave(String label) throws FederateInternalError;",
+      "void initiateFederateSave(String label, LogicalTime time) throws FederateInternalError;"
+    ],
+    "discoverObjectInstance": [
+      "void discoverObjectInstance(ObjectInstanceHandle theObject, ObjectClassHandle theObjectClass, String objectName) throws FederateInternalError;",
+      "void discoverObjectInstance(ObjectInstanceHandle theObject, ObjectClassHandle theObjectClass, String objectName, FederateHandle producingFederate) throws FederateInternalError;"
+    ],
+    "reflectAttributeValues": [
+      "void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes, byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport, SupplementalReflectInfo reflectInfo) throws FederateInternalError;",
+      "void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes, byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport, LogicalTime theTime, OrderType receivedOrdering, SupplementalReflectInfo reflectInfo) throws FederateInternalError;",
+      "void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes, byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport, LogicalTime theTime, OrderType receivedOrdering, MessageRetractionHandle retractionHandle, SupplementalReflectInfo reflectInfo) throws FederateInternalError;"
+    ],
+    "receiveInteraction": [
+      "void receiveInteraction(InteractionClassHandle interactionClass, ParameterHandleValueMap theParameters, byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport, SupplementalReceiveInfo receiveInfo) throws FederateInternalError;",
+      "void receiveInteraction(InteractionClassHandle interactionClass, ParameterHandleValueMap theParameters, byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport, LogicalTime theTime, OrderType receivedOrdering, SupplementalReceiveInfo receiveInfo) throws FederateInternalError;",
+      "void receiveInteraction(InteractionClassHandle interactionClass, ParameterHandleValueMap theParameters, byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport, LogicalTime theTime, OrderType receivedOrdering, MessageRetractionHandle retractionHandle, SupplementalReceiveInfo receiveInfo) throws FederateInternalError;"
+    ],
+    "removeObjectInstance": [
+      "void removeObjectInstance(ObjectInstanceHandle theObject, byte[] userSuppliedTag, OrderType sentOrdering, SupplementalRemoveInfo removeInfo) throws FederateInternalError;",
+      "void removeObjectInstance(ObjectInstanceHandle theObject, byte[] userSuppliedTag, OrderType sentOrdering, LogicalTime theTime, OrderType receivedOrdering, SupplementalRemoveInfo removeInfo) throws FederateInternalError;",
+      "void removeObjectInstance(ObjectInstanceHandle theObject, byte[] userSuppliedTag, OrderType sentOrdering, LogicalTime theTime, OrderType receivedOrdering, MessageRetractionHandle retractionHandle, SupplementalRemoveInfo removeInfo) throws FederateInternalError;"
+    ],
+    "turnUpdatesOnForObjectInstance": [
+      "void turnUpdatesOnForObjectInstance(ObjectInstanceHandle theObject, AttributeHandleSet theAttributes) throws FederateInternalError;",
+      "void turnUpdatesOnForObjectInstance(ObjectInstanceHandle theObject, AttributeHandleSet theAttributes, String updateRateDesignator) throws FederateInternalError;"
+    ]
+  },
+  "encoder_overload_groups": {
+    "createHLAASCIIchar": [
+      "HLAASCIIchar createHLAASCIIchar();",
+      "HLAASCIIchar createHLAASCIIchar(byte b);"
+    ],
+    "createHLAASCIIstring": [
+      "HLAASCIIstring createHLAASCIIstring();",
+      "HLAASCIIstring createHLAASCIIstring(String s);"
+    ],
+    "createHLAboolean": [
+      "HLAboolean createHLAboolean();",
+      "HLAboolean createHLAboolean(boolean b);"
+    ],
+    "createHLAbyte": [
+      "HLAbyte createHLAbyte();",
+      "HLAbyte createHLAbyte(byte b);"
+    ],
+    "createHLAfixedArray": [
+      "<T extends DataElement> HLAfixedArray<T> createHLAfixedArray(DataElementFactory<T> factory, int size);",
+      "<T extends DataElement> HLAfixedArray<T> createHLAfixedArray(T... elements);"
+    ],
+    "createHLAfloat32BE": [
+      "HLAfloat32BE createHLAfloat32BE();",
+      "HLAfloat32BE createHLAfloat32BE(float f);"
+    ],
+    "createHLAfloat32LE": [
+      "HLAfloat32LE createHLAfloat32LE();",
+      "HLAfloat32LE createHLAfloat32LE(float f);"
+    ],
+    "createHLAfloat64BE": [
+      "HLAfloat64BE createHLAfloat64BE();",
+      "HLAfloat64BE createHLAfloat64BE(double d);"
+    ],
+    "createHLAfloat64LE": [
+      "HLAfloat64LE createHLAfloat64LE();",
+      "HLAfloat64LE createHLAfloat64LE(double d);"
+    ],
+    "createHLAinteger16BE": [
+      "HLAinteger16BE createHLAinteger16BE();",
+      "HLAinteger16BE createHLAinteger16BE(short s);"
+    ],
+    "createHLAinteger16LE": [
+      "HLAinteger16LE createHLAinteger16LE();",
+      "HLAinteger16LE createHLAinteger16LE(short s);"
+    ],
+    "createHLAinteger32BE": [
+      "HLAinteger32BE createHLAinteger32BE();",
+      "HLAinteger32BE createHLAinteger32BE(int i);"
+    ],
+    "createHLAinteger32LE": [
+      "HLAinteger32LE createHLAinteger32LE();",
+      "HLAinteger32LE createHLAinteger32LE(int i);"
+    ],
+    "createHLAinteger64BE": [
+      "HLAinteger64BE createHLAinteger64BE();",
+      "HLAinteger64BE createHLAinteger64BE(long l);"
+    ],
+    "createHLAinteger64LE": [
+      "HLAinteger64LE createHLAinteger64LE();",
+      "HLAinteger64LE createHLAinteger64LE(long l);"
+    ],
+    "createHLAoctet": [
+      "HLAoctet createHLAoctet();",
+      "HLAoctet createHLAoctet(byte b);"
+    ],
+    "createHLAoctetPairBE": [
+      "HLAoctetPairBE createHLAoctetPairBE();",
+      "HLAoctetPairBE createHLAoctetPairBE(short s);"
+    ],
+    "createHLAoctetPairLE": [
+      "HLAoctetPairLE createHLAoctetPairLE();",
+      "HLAoctetPairLE createHLAoctetPairLE(short s);"
+    ],
+    "createHLAopaqueData": [
+      "HLAopaqueData createHLAopaqueData();",
+      "HLAopaqueData createHLAopaqueData(byte[] b);"
+    ],
+    "createHLAunicodeChar": [
+      "HLAunicodeChar createHLAunicodeChar();",
+      "HLAunicodeChar createHLAunicodeChar(short c);"
+    ],
+    "createHLAunicodeString": [
+      "HLAunicodeString createHLAunicodeString();",
+      "HLAunicodeString createHLAunicodeString(String s);"
+    ]
+  },
+  "cpp_only_rti_methods": [
+    "createFederationExecutionWithMIM",
+    "decodeAttributeHandle",
+    "decodeDimensionHandle",
+    "decodeFederateHandle",
+    "decodeInteractionClassHandle",
+    "decodeMessageRetractionHandle",
+    "decodeObjectClassHandle",
+    "decodeObjectInstanceHandle",
+    "decodeParameterHandle",
+    "decodeRegionHandle",
+    "getTransportationName",
+    "getTransportationType"
+  ],
+  "java_only_rti_methods": [
+    "getAttributeHandleFactory",
+    "getAttributeHandleSetFactory",
+    "getAttributeHandleValueMapFactory",
+    "getAttributeSetRegionSetPairListFactory",
+    "getDimensionHandleFactory",
+    "getDimensionHandleSetFactory",
+    "getFederateHandleFactory",
+    "getFederateHandleSetFactory",
+    "getHLAversion",
+    "getInteractionClassHandleFactory",
+    "getObjectClassHandleFactory",
+    "getObjectInstanceHandleFactory",
+    "getParameterHandleFactory",
+    "getParameterHandleValueMapFactory",
+    "getRegionHandleSetFactory",
+    "getTransportationTypeHandle",
+    "getTransportationTypeHandleFactory",
+    "getTransportationTypeName",
+    "subscribeInteractionClassPassively",
+    "subscribeInteractionClassPassivelyWithRegions",
+    "subscribeObjectClassAttributesPassively",
+    "subscribeObjectClassAttributesPassivelyWithRegions"
+  ]
+}

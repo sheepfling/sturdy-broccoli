@@ -1,0 +1,23 @@
+/***********************************************************************
+   Repo-owned transport service for the IEEE 1516e-2010 FedPro-style
+   protobuf profile.
+
+   The request/response and callback payloads are defined by the supplied
+   2010 protobuf bundle. This file only binds those typed messages to a
+   gRPC service surface for this Python transport package.
+***********************************************************************/
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "hla.rti1516e.fedpro";
+
+package rti1516e.fedpro;
+
+import "RTIambassador.proto";
+import "FederateAmbassador.proto";
+
+service HLA2010FedProGateway {
+    rpc Call(CallRequest) returns (CallResponse);
+    rpc EvokeCallback(CallbackResponse) returns (CallbackRequest);
+}

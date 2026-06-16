@@ -28,7 +28,7 @@
     "skipped": 0,
     "steps": 4,
     "suite_name": "target-radar-backend-matrix",
-    "target_radar_fom": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/resources/foms/TargetRadarFOMmodule.xml"
+    "target_radar_fom": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/packages/hla-fom-target-radar/src/hla/foms/target_radar/resources/foms/TargetRadarFOMmodule.xml"
   },
   "dt": 1.0,
   "proof": {
@@ -264,5 +264,5 @@
   },
   "steps": 4,
   "suite_name": "target-radar-proof",
-  "target_radar_fom": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/packages/hla2010-fom-target-radar/src/hla2010_fom_target_radar/resources/foms/TargetRadarFOMmodule.xml"
+  "target_radar_fom": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/packages/hla-fom-target-radar/src/hla/foms/target_radar/resources/foms/TargetRadarFOMmodule.xml"
 }

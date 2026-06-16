@@ -4,6 +4,7 @@ import json
 import re
 from pathlib import Path
 
+from compliance_helpers import IEEE_1516_1_2010, has_section_ref
 from hla.verification.repo_internal.verification.backend_compliance_discovery import (
     build_discovery_payload,
     render_backend_compliance_catalog_text,
@@ -62,7 +63,7 @@ def test_discovery_catalog_surfaces_portico_disposition_only_backends() -> None:
         assert row["backend_family"] == "vendor-portico-java-bridge"
         assert row["matrices_present"] == ["requirement-disposition"]
         assert row["status_counts"]["classification-required"] > 0
-        assert "IEEE 1516.1-2010 §4" in row["section_refs"]
+        assert has_section_ref(row["section_refs"], IEEE_1516_1_2010, "4")
 
 
 def test_discovery_catalog_backend_filter_keeps_portico_disposition_only_profile() -> None:

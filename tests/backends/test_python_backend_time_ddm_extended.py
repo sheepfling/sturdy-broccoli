@@ -28,7 +28,7 @@ from hla.rti1516e.handles import (
     ObjectInstanceHandle,
     TransportationTypeHandle,
 )
-from hla.rti1516e.types import (
+from hla.rti1516e.datatypes import (
     AttributeHandleSet,
     AttributeRegionAssociation,
     RangeBounds,

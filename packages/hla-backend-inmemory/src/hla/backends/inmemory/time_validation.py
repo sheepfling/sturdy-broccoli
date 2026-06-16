@@ -21,7 +21,7 @@ from hla.rti1516e.handles import (
     ObjectInstanceHandle,
     TransportationTypeHandle,
 )
-from hla.rti1516e.types import MessageRetractionReturn
+from hla.rti1516e.datatypes import MessageRetractionReturn
 from hla.backends.common import time_management as tm
 
 from .state import TimeAdvanceRequestState
@@ -181,4 +181,4 @@ class PythonRTITimeValidationMixin(_TimeValidationMixinBase):
     def _make_retraction_return(self, timestamp: Any) -> MessageRetractionReturn:
         handle = self.engine._alloc(MessageRetractionHandle)
         self.state.retractable_messages[handle] = True
-        return MessageRetractionReturn(handle, timestamp)
+        return MessageRetractionReturn(True, handle)

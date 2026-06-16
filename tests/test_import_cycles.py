@@ -9,8 +9,6 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOTS = (ROOT / "src", *(ROOT / "packages").glob("*/src"))
 SKIP_PATH_PARTS = {
     "src/hla.verification.repo_internal",
-    "packages/hla-transport-grpc/src/hla.transports.grpc/rti_transport_pb2.py",
-    "packages/hla-transport-grpc/src/hla.transports.grpc/rti_transport_pb2_grpc.py",
 }
 
 

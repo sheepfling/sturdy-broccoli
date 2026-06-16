@@ -28,12 +28,27 @@ class Handle:
     def encoded_length(self) -> int:
         return 8
 
+    def encodedLength(self) -> int:  # noqa: N802 - standard API spelling
+        return self.encoded_length()
+
     def encode(self, buffer: bytearray | None = None, offset: int = 0) -> bytes | bytearray:
         data = self.encoded()
         if buffer is None:
             return data
         buffer[offset : offset + len(data)] = data
         return buffer
+
+    def equals(self, other: object) -> bool:
+        return self == other
+
+    def hashCode(self) -> int:  # noqa: N802 - standard API spelling
+        return hash(self)
+
+    def toString(self) -> str:  # noqa: N802 - standard API spelling
+        return str(self)
+
+    def isValid(self) -> bool:  # noqa: N802 - C++ handle affordance
+        return True
 
     @classmethod
     def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> "Handle":
@@ -43,6 +58,8 @@ class Handle:
         return cls(int.from_bytes(raw, byteorder="big", signed=False))
 
 T = TypeVar("T", bound=Handle)
+
+HandleKind = Handle
 
 class HandleFactory(Generic[T]):
     """Factory for decoding a specific handle type."""
@@ -121,6 +138,8 @@ class TypedHandleSet(set):
     def clone(self):
         return type(self)(self)
 
+HandleSet = TypedHandleSet
+
 class AttributeHandleSet(TypedHandleSet):
     handle_type = AttributeHandle
 
@@ -181,6 +200,8 @@ class HandleValueMap(dict):
 
     def getValueReference(self, key: Handle, byteWrapper: Any | None = None) -> bytes | None:  # noqa: N802 - Java API name
         return self.get_value_reference(key, byteWrapper)
+
+HandleMap = HandleValueMap
 
 class AttributeHandleValueMap(HandleValueMap):
     key_type = AttributeHandle

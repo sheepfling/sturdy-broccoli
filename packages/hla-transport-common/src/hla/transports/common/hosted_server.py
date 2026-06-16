@@ -40,7 +40,7 @@ from hla.rti1516e.handles import (
     RegionHandleSet,
 )
 from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from hla.rti1516e.types import AttributeRegionAssociation, FederateHandleSaveStatusPair, FederateRestoreStatus, RangeBounds
+from hla.rti1516e.datatypes import AttributeRegionAssociation, FederateHandleSaveStatusPair, FederateRestoreStatus, RangeBounds
 from hla.backends.common import RecordingFederateAmbassador
 
 

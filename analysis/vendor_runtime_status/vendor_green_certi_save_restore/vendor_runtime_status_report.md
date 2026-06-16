@@ -12,12 +12,12 @@
 | certi | ready | loopback-ok | 0 |  | /Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/analysis/preflight_artifacts/certi-preflight.json | vendor runtime prerequisites are ready |
 
 Required markers for `certi`:
-- `active_build_root`: `<repo>/.local/certi/patched/build/libRTI/ieee1516-2010`
-- `active_prefix`: `<repo>/.local/certi/patched/install/bin/rtig`
-- `patched_build_root`: `<repo>/.local/certi/patched/build/libRTI/ieee1516-2010`
-- `patched_prefix`: `<repo>/.local/certi/patched/install/bin/rtig`
-- `upstream_build_root`: `<repo>/.local/certi/upstream/build/libRTI/ieee1516-2010`
-- `upstream_prefix`: `<repo>/.local/certi/upstream/install/bin/rtig`
+- `active_build_root`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010`
+- `active_prefix`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig`
+- `patched_build_root`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010`
+- `patched_prefix`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig`
+- `upstream_build_root`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/build/libRTI/ieee1516-2010`
+- `upstream_prefix`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/install/bin/rtig`
 
 Next steps for `certi`:
 - `./tools/certi-easy smoke compare`

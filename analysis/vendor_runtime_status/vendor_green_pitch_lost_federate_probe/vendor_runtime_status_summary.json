@@ -37,12 +37,12 @@
       "note": "vendor runtime prerequisites are ready",
       "present": true,
       "required_markers": {
-        "active_build_root": "<repo>/.local/certi/patched/build/libRTI/ieee1516-2010",
-        "active_prefix": "<repo>/.local/certi/patched/install/bin/rtig",
-        "patched_build_root": "<repo>/.local/certi/patched/build/libRTI/ieee1516-2010",
-        "patched_prefix": "<repo>/.local/certi/patched/install/bin/rtig",
-        "upstream_build_root": "<repo>/.local/certi/upstream/build/libRTI/ieee1516-2010",
-        "upstream_prefix": "<repo>/.local/certi/upstream/install/bin/rtig"
+        "active_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
+        "active_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
+        "patched_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
+        "patched_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
+        "upstream_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/build/libRTI/ieee1516-2010",
+        "upstream_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/install/bin/rtig"
       },
       "required_ports": {},
       "result": "real CERTI runnable",
@@ -68,13 +68,13 @@
       },
       "required_ports": {
         "crc": {
-          "detail": "ok: 127.0.0.1:8989 is available",
+          "detail": "ok: managed container hla2010-pitch-crc is already running on 127.0.0.1:8989",
           "host": "127.0.0.1",
           "port": 8989,
           "status": "ok"
         },
         "fedpro": {
-          "detail": "ok: 127.0.0.1:15164 is available",
+          "detail": "ok: managed container hla2010-pitch-crc is already running on 127.0.0.1:15164",
           "host": "127.0.0.1",
           "port": 15164,
           "status": "ok"

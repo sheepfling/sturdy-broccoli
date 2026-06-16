@@ -14,7 +14,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ddm.py",
         "hla2010/backends/python/subscriptions.py",
@@ -34,7 +34,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DDM-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a79",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79",
       "service_group": "Data Distribution Management",
       "source": "requirements/hla1516_1_federate_interface.csv",
       "status": "planned",
@@ -52,7 +52,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ddm.py",
         "hla2010/backends/python/subscriptions.py"
@@ -71,7 +71,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.1-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.1",
       "service_group": "DDM",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -92,7 +92,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ddm.py",
         "hla2010/backends/python/support.py"
@@ -111,7 +111,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.1-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.1",
       "service_group": "DDM",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -132,7 +132,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ddm.py",
         "hla2010/backends/python/subscriptions.py",
@@ -152,7 +152,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.1-003",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.1",
       "service_group": "DDM",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -173,7 +173,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ddm.py",
         "hla2010/backends/python/declaration.py"
@@ -192,7 +192,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.10-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.10",
       "service_group": "DDM",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -216,7 +216,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ddm.py",
         "hla2010/backends/python/declaration.py"
@@ -235,7 +235,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.11-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.11",
       "service_group": "DDM",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -258,7 +258,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ddm.py",
         "hla2010/backends/python/object_delivery.py",
@@ -278,7 +278,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.12-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.12",
       "service_group": "DDM",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -298,7 +298,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ddm.py",
         "hla2010/backends/python/subscriptions.py"
@@ -317,7 +317,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.13-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.13",
       "service_group": "DDM",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -341,7 +341,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ddm.py"
       ],
@@ -359,7 +359,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.2-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.2",
       "service_group": "DDM",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -384,7 +384,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ddm.py"
       ],
@@ -402,7 +402,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.3-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.3",
       "service_group": "DDM",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -422,7 +422,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ddm.py"
       ],
@@ -440,7 +440,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.4-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.4",
       "service_group": "DDM",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -463,7 +463,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ddm.py"
       ],
@@ -481,7 +481,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.5-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.5",
       "service_group": "DDM",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -505,7 +505,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ddm.py"
       ],
@@ -523,7 +523,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.6-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.6",
       "service_group": "DDM",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -547,7 +547,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ddm.py"
       ],
@@ -565,7 +565,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.7-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.7",
       "service_group": "DDM",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -589,7 +589,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ddm.py",
         "hla2010/backends/python/declaration.py"
@@ -608,7 +608,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.8-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.8",
       "service_group": "DDM",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -632,7 +632,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ddm.py",
         "hla2010/backends/python/declaration.py"
@@ -651,7 +651,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-DDM-9.9-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a79.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a79.9",
       "service_group": "DDM",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -675,7 +675,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ownership.py",
         "hla2010/backends/python/object.py"
@@ -694,7 +694,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-OWN-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a77",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77",
       "service_group": "Ownership Management",
       "source": "requirements/hla1516_1_federate_interface.csv",
       "status": "planned",
@@ -714,7 +714,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ownership.py",
         "hla2010/backends/python/state.py"
@@ -733,7 +733,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.1-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.1",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -756,7 +756,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ownership.py"
       ],
@@ -774,7 +774,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.1-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.1",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -797,7 +797,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/object.py",
         "hla2010/backends/python/ownership.py"
@@ -816,7 +816,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.1-003",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.1",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -839,7 +839,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "partial",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ownership.py"
       ],
@@ -857,15 +857,14 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.10-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.10",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
       "title": "RTI shall support cancellation of ownership acquisition attempts",
       "vendor_evidence_refs": [
         "../tests/backends/test_python_backend_object_ownership_extended.py",
-        "../tests/backends/test_certi_backend_callbacks.py",
-        "../tests/backends/test_certi_java_profile_callbacks.py"
+        "../tests/backends/test_certi_backend_callbacks.py"
       ],
       "vendor_notes": "callback path covered in Python; real negotiated-flow parity is still vendor/runtime-dependent",
       "vendor_profile_bucket": "Negotiated Ownership",
@@ -881,7 +880,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "yes",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ownership.py"
       ],
@@ -899,7 +898,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.11-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.11",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -910,7 +909,6 @@
         "../tests/backends/test_python_backend_object_ownership_extended.py",
         "../tests/backends/test_python_backend_time_ddm_extended.py",
         "../tests/backends/test_certi_backend_callbacks.py",
-        "../tests/backends/test_certi_java_profile_callbacks.py",
         "../tests/vendors/test_pitch_real_backend_matrix.py",
         "../packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md",
         "../packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
@@ -929,7 +927,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ownership.py"
       ],
@@ -948,7 +946,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.12-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.12",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -971,7 +969,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ownership.py"
       ],
@@ -990,7 +988,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.13-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.13",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -1013,7 +1011,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "yes",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ownership.py"
       ],
@@ -1031,7 +1029,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.2-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.2",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -1062,7 +1060,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "partial",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ownership.py"
       ],
@@ -1080,7 +1078,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.3-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.3",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -1108,7 +1106,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "partial",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ownership.py"
       ],
@@ -1126,7 +1124,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.4-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.4",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -1138,7 +1136,6 @@
         "../tests/backends/test_python_backend_time_ddm_extended.py",
         "../tests/vendors/README.md",
         "../tests/backends/test_certi_backend_callbacks.py",
-        "../tests/backends/test_certi_java_profile_callbacks.py",
         "../packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md",
         "../packages/hla-vendor-pitch/docs/evidence/pitch_negotiated_ownership_vendor_bug_2026-06-07.md"
       ],
@@ -1156,7 +1153,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ownership.py"
       ],
@@ -1174,7 +1171,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.5-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.5",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -1197,7 +1194,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ownership.py"
       ],
@@ -1215,7 +1212,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.6-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.6",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -1238,7 +1235,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ownership.py"
       ],
@@ -1256,7 +1253,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.7-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.7",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -1279,9 +1276,9 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/ownership.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1297,7 +1294,7 @@
       "positive_test_refs": [],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.7-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.7",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -1320,7 +1317,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "no",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ownership.py"
       ],
@@ -1338,7 +1335,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.8-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.8",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -1361,7 +1358,7 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "yes",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/backends/python/ownership.py"
       ],
@@ -1379,7 +1376,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.9-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.9",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",
@@ -1406,9 +1403,9 @@
         "requirements/hla1516_1_priority_clauses_7_9_10.csv"
       ],
       "certi_runtime_status": "yes",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/ownership.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/ownership.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1424,7 +1421,7 @@
       "positive_test_refs": [],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OWN-7.9-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a77.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a77.9",
       "service_group": "OWN",
       "source": "requirements/hla1516_1_priority_clauses_7_9_10.csv",
       "status": "pass",

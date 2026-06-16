@@ -6,8 +6,11 @@ from typing import Any, Mapping, Sequence, cast
 
 from hla.backends.common import BackendUnavailableError
 from hla.transports.common import RTITransport, TransportError, TransportRequest, TransportResponse, register_transport_factory
-import hla.transports.grpc.rti_transport_pb2_grpc as pb2_grpc
+from hla.transports.grpc.fedpro2010 import HLA2010RTITransport_pb2_grpc as pb2_grpc
 from .client import GrpcTransportClientAdapter
+
+
+_CALLBACK_POLL_COMMANDS = frozenset({"EVOKE", "EVOKE_MANY"})
 
 try:  # pragma: no cover - import guarded for optional dependency
     import grpc
@@ -47,20 +50,27 @@ class GrpcTransport(RTITransport):
             grpc_runtime = cast(Any, grpc)
             self._channel = grpc_runtime.insecure_channel(self.config.target, options=list(self.config.channel_options))
             grpc_runtime.channel_ready_future(self._channel).result(timeout=self.config.timeout)
-            self._stub = pb2_grpc.RTITransportServiceStub(self._channel)
+            self._stub = pb2_grpc.HLA2010FedProGatewayStub(self._channel)
         return self
 
     def request(self, request: TransportRequest) -> TransportResponse:
         if self._stub is None:
             self.start()
         assert self._stub is not None
-        response = self._stub.Request(
+        if request.command in _CALLBACK_POLL_COMMANDS:
+            callback = self._stub.EvokeCallback(
+                self.client_adapter.encode_callback_poll(),
+                timeout=self.config.timeout,
+                metadata=tuple(self.config.metadata.items()),
+            )
+            return self.client_adapter.decode_callback_request(callback)
+        response = self._stub.Call(
             self.client_adapter.encode_request(request),
             timeout=self.config.timeout,
             metadata=tuple(self.config.metadata.items()),
         )
         try:
-            return self.client_adapter.decode_response(response)
+            return self.client_adapter.decode_response(request, response)
         except TransportError:
             raise
 

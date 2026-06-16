@@ -53,6 +53,10 @@ The rule is simple:
 - `vendor_green.sh` is the strict real-runtime path: it sets
   `HLA2010_VENDOR_PREFLIGHT_STRICT=1` and fails immediately when CERTI or Pitch
   prerequisites are missing or blocked.
+- The promoted CERTI working baseline is intentionally narrow: patched CERTI
+  lifecycle, patched CERTI direct exchange, and patched CERTI-hosted gRPC
+  exchange. CERTI gRPC synchronization and ownership remain probe-only until the
+  native runtime behavior is stable enough to promote.
 - Both wrappers now emit normalized post-run artifacts:
   - `analysis/vendor_runtime_status/...`
   - `analysis/vendor_parity_artifacts/...`

@@ -21,7 +21,7 @@ Java lowerCamelCase method names are preserved as canonical HLA service and call
 | `changeInteractionOrderType` | `change_interaction_order_type` | `change_interaction_order_type(the_class: InteractionClassHandle, the_type: OrderType)` | `None` |
 | `commitRegionModifications` | `commit_region_modifications` | `commit_region_modifications(regions: RegionHandleSet)` | `None` |
 | `confirmDivestiture` | `confirm_divestiture` | `confirm_divestiture(the_object: ObjectInstanceHandle, the_attributes: AttributeHandleSet, user_supplied_tag: VariableLengthDataLike)` | `None` |
-| `connect` | `connect` | `connect(federate_reference: FederateAmbassadorSpec, callback_model: CallbackModel, local_settings_designator: str | None = None)` | `None` |
+| `connect` | `connect` | `connect(federate_reference: NullFederateAmbassador, callback_model: CallbackModel, local_settings_designator: str | None = None)` | `None` |
 | `createFederationExecution` | `create_federation_execution` | `create_federation_execution(federation_execution_name: str, fom_modules: FomModuleLike, *, mim_module: URLLike | None = None, logical_time_implementation_name: str | None = None)` | `None` |
 | `createFederationExecutionWithMIM` | `create_federation_execution_with_mim` | `create_federation_execution_with_mim(federation_execution_name: str, fom_modules: Sequence[URLLike], mim_module: str, logical_time_implementation_name: str | None = None)` | `None` |
 | `createRegion` | `create_region` | `create_region(dimensions: DimensionHandleSet)` | `RegionHandle` |

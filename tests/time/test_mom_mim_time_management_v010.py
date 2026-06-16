@@ -7,7 +7,7 @@ from hla.rti1516e import mom as hla_mom
 from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig, rti_ambassador
 from hla.rti1516e.enums import CallbackModel, ResignAction
 from hla.rti1516e.exceptions import InvalidLogicalTime
-from hla.rti1516e.types import MessageRetractionReturn
+from hla.rti1516e.datatypes import MessageRetractionReturn
 
 
 def drain(*rtis, limit: int = 25) -> None:

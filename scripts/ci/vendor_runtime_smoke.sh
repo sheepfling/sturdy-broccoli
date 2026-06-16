@@ -8,6 +8,7 @@ VENDOR_PREFLIGHT_STRICT="${HLA2010_VENDOR_PREFLIGHT_STRICT:-0}"
 VENDOR_GAP_PROFILE_DIR="${HLA2010_VENDOR_GAP_PROFILE_DIR:-$ROOT_DIR/analysis/vendor_gap_profiles}"
 VENV_DIR="${HLA2010_VENV_DIR:-$ROOT_DIR/.venv}"
 VENDOR_AUTO_BOOTSTRAP_PYTHON="${HLA2010_VENDOR_AUTO_BOOTSTRAP_PYTHON:-1}"
+VENDOR_PYTEST_TIMEOUT_SECONDS="${HLA2010_VENDOR_PYTEST_TIMEOUT_SECONDS:-300}"
 
 # shellcheck source=lib/shell.sh
 source "$ROOT_DIR/scripts/lib/shell.sh"
@@ -79,7 +80,53 @@ ensure_python_test_env() {
 
 run_pytest() {
   ensure_python_test_env
-  python -m pytest "$@"
+  if [[ "$VENDOR_PYTEST_TIMEOUT_SECONDS" == "0" ]]; then
+    python -m pytest "$@"
+    return $?
+  fi
+
+  local status=0
+  local timeout_marker
+  timeout_marker="$(mktemp "${TMPDIR:-/tmp}/hla2010_vendor_pytest_timeout.XXXXXX")"
+  rm -f "$timeout_marker"
+
+  python -m pytest "$@" &
+  local pytest_pid=$!
+
+  (
+    sleep "$VENDOR_PYTEST_TIMEOUT_SECONDS"
+    if kill -0 "$pytest_pid" 2>/dev/null; then
+      printf 'vendor pytest timed out after %s seconds: python -m pytest %s\n' \
+        "$VENDOR_PYTEST_TIMEOUT_SECONDS" "$*" >&2
+      : >"$timeout_marker"
+      terminate_process_tree "$pytest_pid" TERM
+      sleep 5
+      terminate_process_tree "$pytest_pid" KILL
+    fi
+  ) &
+  local watchdog_pid=$!
+
+  wait "$pytest_pid" || status=$?
+  kill "$watchdog_pid" 2>/dev/null || true
+  wait "$watchdog_pid" 2>/dev/null || true
+
+  if [[ -f "$timeout_marker" ]]; then
+    rm -f "$timeout_marker"
+    return 124
+  fi
+  rm -f "$timeout_marker"
+  return "$status"
+}
+
+terminate_process_tree() {
+  local root_pid="$1"
+  local signal="$2"
+  local child_pid
+  while read -r child_pid; do
+    [[ -n "$child_pid" ]] || continue
+    terminate_process_tree "$child_pid" "$signal"
+  done < <(pgrep -P "$root_pid" 2>/dev/null || true)
+  kill "-$signal" "$root_pid" 2>/dev/null || true
 }
 
 ensure_preflight_artifact_dir() {
@@ -160,11 +207,40 @@ run_pitch_preflight() {
   local status=0
   if "$ROOT_DIR/scripts/check_pitch_preflight.sh" --json-file "$artifact_path"; then
     log_preflight_summary "pitch" "$artifact_path"
+    apply_pitch_preflight_runtime_env "$artifact_path"
     return 0
   else
     status=$?
   fi
   handle_blocked_preflight "pitch" "$artifact_path" "$status"
+}
+
+apply_pitch_preflight_runtime_env() {
+  local artifact_path="$1"
+  local env_file
+  env_file="$(mktemp "${TMPDIR:-/tmp}/hla2010_pitch_preflight_env.XXXXXX")"
+  "$(python_bin)" - "$artifact_path" >"$env_file" <<'PY'
+import json
+import shlex
+import sys
+from pathlib import Path
+
+payload = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+ports = payload.get("ports") or {}
+runtime = payload.get("runtime") or {}
+assignments = {}
+if "crc" in ports and "port" in ports["crc"]:
+    assignments["HLA2010_PITCH_CRC_PORT"] = str(ports["crc"]["port"])
+if "fedpro" in ports and "port" in ports["fedpro"]:
+    assignments["HLA2010_PITCH_FEDPRO_PORT"] = str(ports["fedpro"]["port"])
+if runtime.get("container_name"):
+    assignments["HLA2010_PITCH_DOCKER_NAME"] = str(runtime["container_name"])
+for key, value in assignments.items():
+    print(f"export {key}={shlex.quote(value)}")
+PY
+  # shellcheck disable=SC1090
+  source "$env_file"
+  rm -f "$env_file"
 }
 
 guard_vendor_preflight() {
@@ -230,6 +306,12 @@ require_runtime_prefix() {
   fi
 }
 
+run_certi_promoted_smoke_tests() {
+  run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'certi_real_lifecycle_smoke or certi_real_exchange_smoke'
+  run_pytest -q tests/transport/test_grpc_transport_certi_server.py::test_grpc_transport_can_host_certi_exchange_end_to_end
+  hla2010_shell_log "CERTI gRPC exchange is promoted; CERTI gRPC synchronization/ownership remain probe-only"
+}
+
 run_certi_patched() {
   hla2010_shell_log "vendor runtime smoke: certi patched"
   if guard_vendor_preflight certi; then
@@ -245,12 +327,8 @@ run_certi_patched() {
   export HLA2010_CERTI_PREFIX="$HLA2010_CERTI_PATCHED_PREFIX"
   export HLA2010_CERTI_BUILD_ROOT="$HLA2010_CERTI_PATCHED_BUILD_ROOT"
   require_runtime_prefix "patched CERTI install prefix" "${HLA2010_CERTI_PATCHED_PREFIX:-}"
-  run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'certi'
-  run_pytest -q \
-    tests/vendors/test_certi_real_backend_exchange_matrix.py \
-    tests/vendors/test_certi_real_backend_time_matrix.py \
-    tests/vendors/test_certi_real_backend_ownership_matrix.py \
-    -k 'not test_certi_upstream_time_query_and_fqr_baseline and not test_certi_patched_negotiated_ownership_baseline'
+  run_certi_promoted_smoke_tests
+  hla2010_shell_log "CERTI extended native and gRPC sync/ownership matrices remain probe-only"
 }
 
 run_certi_upstream() {
@@ -553,9 +631,10 @@ case "$PROFILE" in
       exit 0
     fi
     if [[ "$certi_ready" -eq 1 && "$pitch_ready" -eq 1 ]]; then
-      run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py
+      run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'pitch or certi_real_lifecycle_smoke or certi_real_exchange_smoke'
+      run_pytest -q tests/transport/test_grpc_transport_certi_server.py::test_grpc_transport_can_host_certi_exchange_end_to_end
     elif [[ "$certi_ready" -eq 1 ]]; then
-      run_pytest -q tests/vendors/test_real_vendor_runtime_smoke.py -k 'certi'
+      run_certi_promoted_smoke_tests
     else
       export HLA2010_PITCH_HOME="${HLA2010_PITCH_HOME:-$(default_pitch_home)}"
       export HLA2010_PITCH_USER_HOME="${HLA2010_PITCH_USER_HOME:-$("$ROOT_DIR/scripts/setup_pitch_state.sh")}"

@@ -17,7 +17,7 @@ from hla.rti1516e.handles import (
     ObjectInstanceHandle,
     TransportationTypeHandle,
 )
-from hla.rti1516e.types import MessageRetractionReturn
+from hla.rti1516e.datatypes import MessageRetractionReturn
 
 from .object_delivery_transport import PythonRTIObjectTransportMixin
 from .state import CallbackEvent, ObjectInstance, SupplementalReflectInfo

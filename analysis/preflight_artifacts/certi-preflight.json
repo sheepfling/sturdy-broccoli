@@ -1,27 +1,27 @@
 {
   "checks": [
     {
-      "message": "certi_runtime: ok: <repo>/.local/certi/patched/install",
+      "message": "certi_runtime: ok: /Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install",
       "name": "certi_runtime",
       "ok": true
     },
     {
-      "message": "active_prefix: ok: <repo>/.local/certi/patched/install/bin/rtig",
+      "message": "active_prefix: ok: /Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
       "name": "active_prefix",
       "ok": true
     },
     {
-      "message": "active_build_root: ok: <repo>/.local/certi/patched/build/libRTI/ieee1516-2010",
+      "message": "active_build_root: ok: /Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
       "name": "active_build_root",
       "ok": true
     },
     {
-      "message": "certi_smoke_fom: ok: <repo>/CERTI/test/InteractiveFederate/1516-2010/Certi-Test-02.xml",
+      "message": "certi_smoke_fom: ok: /Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/test/InteractiveFederate/1516-2010/Certi-Test-02.xml",
       "name": "certi_smoke_fom",
       "ok": true
     },
     {
-      "message": "loopback_bind: ok: reserved tcp port 56006",
+      "message": "loopback_bind: ok: reserved tcp port 54070",
       "name": "loopback_bind",
       "ok": true
     }
@@ -33,68 +33,68 @@
     "HLA2010_ENABLE_REAL_RTI_SMOKE=1 python3 -m pytest -q tests/vendors/test_certi_real_backend_exchange_matrix.py tests/vendors/test_certi_real_backend_time_matrix.py tests/vendors/test_certi_real_backend_ownership_matrix.py"
   ],
   "required_markers": {
-    "active_build_root": "<repo>/.local/certi/patched/build/libRTI/ieee1516-2010",
-    "active_prefix": "<repo>/.local/certi/patched/install/bin/rtig",
-    "patched_build_root": "<repo>/.local/certi/patched/build/libRTI/ieee1516-2010",
-    "patched_prefix": "<repo>/.local/certi/patched/install/bin/rtig",
-    "upstream_build_root": "<repo>/.local/certi/upstream/build/libRTI/ieee1516-2010",
-    "upstream_prefix": "<repo>/.local/certi/upstream/install/bin/rtig"
+    "active_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
+    "active_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
+    "patched_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
+    "patched_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
+    "upstream_build_root": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/build/libRTI/ieee1516-2010",
+    "upstream_prefix": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/install/bin/rtig"
   },
   "result": "real CERTI runnable",
   "runtime_profiles": {
     "active": {
       "build_root": {
         "exists": true,
-        "marker": "<repo>/.local/certi/patched/build/libRTI/ieee1516-2010",
+        "marker": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
         "marker_exists": true,
-        "path": "<repo>/.local/certi/patched/build"
+        "path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build"
       },
       "prefix": {
         "exists": true,
-        "marker": "<repo>/.local/certi/patched/install/bin/rtig",
+        "marker": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
         "marker_exists": true,
-        "path": "<repo>/.local/certi/patched/install"
+        "path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install"
       },
       "profile": "certi"
     },
     "patched": {
       "build_root": {
         "exists": true,
-        "marker": "<repo>/.local/certi/patched/build/libRTI/ieee1516-2010",
+        "marker": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010",
         "marker_exists": true,
-        "path": "<repo>/.local/certi/patched/build"
+        "path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build"
       },
       "prefix": {
         "exists": true,
-        "marker": "<repo>/.local/certi/patched/install/bin/rtig",
+        "marker": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig",
         "marker_exists": true,
-        "path": "<repo>/.local/certi/patched/install"
+        "path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install"
       },
       "profile": "certi-patched",
       "source": {
         "exists": true,
-        "marker": "<repo>/CERTI/test/InteractiveFederate/1516-2010/Certi-Test-02.xml",
+        "marker": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI/test/InteractiveFederate/1516-2010/Certi-Test-02.xml",
         "marker_exists": true,
-        "path": "<repo>/CERTI"
+        "path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/CERTI"
       }
     },
     "upstream": {
       "build_root": {
         "exists": true,
-        "marker": "<repo>/.local/certi/upstream/build/libRTI/ieee1516-2010",
+        "marker": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/build/libRTI/ieee1516-2010",
         "marker_exists": true,
-        "path": "<repo>/.local/certi/upstream/build"
+        "path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/build"
       },
       "prefix": {
         "exists": true,
-        "marker": "<repo>/.local/certi/upstream/install/bin/rtig",
+        "marker": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/install/bin/rtig",
         "marker_exists": true,
-        "path": "<repo>/.local/certi/upstream/install"
+        "path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/install"
       },
       "profile": "certi-upstream",
       "source": {
         "exists": true,
-        "path": "<repo>/.local/certi/upstream/source"
+        "path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/source"
       }
     }
   },

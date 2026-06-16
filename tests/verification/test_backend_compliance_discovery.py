@@ -4,9 +4,14 @@ import json
 import os
 import subprocess
 import sys
-import tomllib
 from pathlib import Path
 
+import tomllib
+from compliance_helpers import (
+    IEEE_1516_1_2010,
+    clause_summary_counts,
+    compliance_section_key,
+)
 from hla.verification.repo_internal.verification.backend_compliance_discovery import (
     build_backend_compliance_catalog,
     build_discovery_payload,
@@ -14,7 +19,6 @@ from hla.verification.repo_internal.verification.backend_compliance_discovery im
     render_backend_compliance_catalog_text,
     write_vendor_discovery_backlog_artifacts,
 )
-
 
 ALLOWED_DISPOSITIONS = {
     "verified",
@@ -126,12 +130,12 @@ def test_backend_compliance_catalog_exposes_primary_backend_views():
     assert profile_disposition["pitch-jpype"].get("blocked", 0) >= 2
     assert profile_disposition["pitch-py4j"].get("verified", 0) > 0
     clause_summary = catalog["pitch_requirement_disposition_summary"]["clause_summary"]
-    assert clause_summary["IEEE 1516.1-2010 §4"].get("not-yet-tested", 0) == 0
-    assert clause_summary["IEEE 1516.1-2010 §6"].get("not-yet-tested", 0) == 0
-    assert clause_summary["IEEE 1516.1-2010 §8"]["vendor-divergent"] > 0
+    assert clause_summary_counts(clause_summary, IEEE_1516_1_2010, "4").get("not-yet-tested", 0) == 0
+    assert clause_summary_counts(clause_summary, IEEE_1516_1_2010, "6").get("not-yet-tested", 0) == 0
+    assert clause_summary_counts(clause_summary, IEEE_1516_1_2010, "8")["vendor-divergent"] > 0
     profile_clause_summary = catalog["pitch_requirement_disposition_summary"]["profile_clause_summary"]
-    assert profile_clause_summary["pitch-jpype"]["IEEE 1516.1-2010 §4"]["blocked"] >= 2
-    assert profile_clause_summary["pitch-py4j"]["IEEE 1516.1-2010 §4"]["verified"] >= 2
+    assert clause_summary_counts(profile_clause_summary["pitch-jpype"], IEEE_1516_1_2010, "4")["blocked"] >= 2
+    assert clause_summary_counts(profile_clause_summary["pitch-py4j"], IEEE_1516_1_2010, "4")["verified"] >= 2
     assert "analysis/compliance/vendor_discovery_backlog.json" in catalog["source_artifacts"]
 
 
@@ -327,7 +331,7 @@ def test_pitch_clause4_profile_residual_frontier_is_exact():
         residuals = {
             row["requirement_id"]: row["runtime_disposition"]
             for row in payload["rows"]
-            if row.get("document") == "IEEE 1516.1-2010"
+            if row.get("document") == "IEEE 1516.1-2010 (2010 edition)"
             and row.get("clause_root") == "4"
             and row.get("requirement_id")
             and row["runtime_disposition"] != "verified"
@@ -510,7 +514,7 @@ def test_certi_requirement_disposition_tracks_clause6_exchange_evidence():
     verified_clause6_ids = {
         row["requirement_id"] or row["matrix_id"]
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010"
+        if row.get("document") == "IEEE 1516.1-2010 (2010 edition)"
         and row.get("clause_root") == "6"
         and row.get("runtime_disposition") == "verified"
     }
@@ -552,7 +556,7 @@ def test_certi_requirement_disposition_tracks_clause7_ownership_evidence():
     verified_clause7_ids = {
         row["requirement_id"] or row["matrix_id"]
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010"
+        if row.get("document") == "IEEE 1516.1-2010 (2010 edition)"
         and row.get("clause_root") == "7"
         and row.get("runtime_disposition") == "verified"
     }
@@ -575,7 +579,7 @@ def test_certi_requirement_disposition_tracks_clause8_shared_harness_subset():
     project_root = Path(__file__).resolve().parents[2]
     payload = json.loads((project_root / "analysis" / "compliance" / "certi_requirement_disposition.json").read_text(encoding="utf-8"))
     rows = {row["requirement_id"] or row["matrix_id"]: row for row in payload["rows"]}
-    assert payload["summary"]["clause_summary"]["IEEE 1516.1-2010 §8"] == {
+    assert clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "8") == {
         "classification-required": 17,
         "not-applicable": 2,
         "total": 61,
@@ -828,7 +832,7 @@ def test_vendor_discovery_backlog_covers_divergent_gated_matrixed_and_defended_r
     assert backlog["summary"]["status_counts"].get("defended-partial", 0) > 0
 
     by_backend_and_target = {
-        (row["backend_id"], row["requirement_id"] or row["section_ref"], row["current_status"]): row
+        (row["backend_id"], row["requirement_id"] or compliance_section_key(row["section_ref"]), row["current_status"]): row
         for row in backlog["rows"]
     }
     assert ("certi-native", "IEEE 1516.1-2010 §7.3, IEEE 1516.1-2010 §7.15", "vendor-divergent") in by_backend_and_target
@@ -856,7 +860,7 @@ def test_vendor_discovery_backlog_covers_divergent_gated_matrixed_and_defended_r
 def test_pitch_requirement_disposition_tracks_lifecycle_probe_evidence():
     project_root = Path(__file__).resolve().parents[2]
     payload = json.loads((project_root / "analysis" / "compliance" / "pitch_requirement_disposition.json").read_text(encoding="utf-8"))
-    clause4_summary = payload["summary"]["clause_summary"]["IEEE 1516.1-2010 §4"]
+    clause4_summary = clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "4")
     assert clause4_summary == {
         "blocked": 2,
         "not-applicable": 2,
@@ -1190,7 +1194,7 @@ def test_pitch_clause4_1516_1_dispositions_are_fully_classified_and_harness_back
     raw_rows = [
         row
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "4"
+        if row.get("document") == "IEEE 1516.1-2010 (2010 edition)" and row.get("clause_root") == "4"
     ]
     rows = {row["requirement_id"]: row for row in raw_rows if row.get("requirement_id")}
     by_requirement_id = rows
@@ -1406,7 +1410,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     raw_rows = [
         row
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "4"
+        if row.get("document") == "IEEE 1516.1-2010 (2010 edition)" and row.get("clause_root") == "4"
     ]
     rows = {row["requirement_id"]: row for row in payload["rows"] if row.get("requirement_id")}
     by_requirement_id = rows
@@ -1569,14 +1573,14 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     blocked_clause4_rows = {
         row["requirement_id"]
         for row in rows.values()
-        if row["document"] == "IEEE 1516.1-2010" and row["clause_root"] == "4" and row["pitch_disposition"] == "blocked"
+        if row["document"] == "IEEE 1516.1-2010 (2010 edition)" and row["clause_root"] == "4" and row["pitch_disposition"] == "blocked"
     }
     assert blocked_clause4_rows == {"HLA1516.1-FM-4.1.5-001", "HLA1516.1-FM-4.1.5-002"}
 
     residual_clause4_rows = {
         row["requirement_id"] or row["matrix_id"]: row["pitch_disposition"]
         for row in payload["rows"]
-        if row["document"] == "IEEE 1516.1-2010"
+        if row["document"] == "IEEE 1516.1-2010 (2010 edition)"
         and row["clause_root"] == "4"
         and row["pitch_disposition"] != "verified"
     }
@@ -1632,10 +1636,10 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     clause4_seed_row = next(
         row
         for row in raw_rows
-        if row["document"] == "IEEE 1516.1-2010"
+        if row["document"] == "IEEE 1516.1-2010 (2010 edition)"
         and row["clause_root"] == "4"
         and not row["requirement_id"]
-        and row["section_ref"] == "IEEE 1516.1-2010 §4"
+        and compliance_section_key(row["section_ref"]) == "IEEE 1516.1-2010 §4"
     )
     assert clause4_seed_row["pitch_disposition"] == "not-applicable"
 
@@ -1997,7 +2001,7 @@ def test_pitch_clause4_mapped_rows_prefer_shared_harness_evidence_only():
     clause4_not_yet_tested = [
         row
         for row in rows.values()
-        if row["document"] == "IEEE 1516.1-2010" and row["clause_root"] == "4" and row["pitch_disposition"] == "not-yet-tested"
+        if row["document"] == "IEEE 1516.1-2010 (2010 edition)" and row["clause_root"] == "4" and row["pitch_disposition"] == "not-yet-tested"
     ]
     assert len(clause4_not_yet_tested) == 0
 
@@ -2008,7 +2012,7 @@ def test_pitch_clause6_mapped_rows_prefer_shared_harness_evidence_only():
     raw_rows = [
         row
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "6"
+        if row.get("document") == "IEEE 1516.1-2010 (2010 edition)" and row.get("clause_root") == "6"
     ]
     rows = {row["requirement_id"]: row for row in raw_rows if row.get("requirement_id")}
     runtime_rows = [
@@ -2063,7 +2067,7 @@ def test_pitch_clause7_mapped_rows_prefer_shared_harness_evidence_only():
     raw_rows = [
         row
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "7"
+        if row.get("document") == "IEEE 1516.1-2010 (2010 edition)" and row.get("clause_root") == "7"
     ]
     rows = {row["requirement_id"]: row for row in raw_rows if row.get("requirement_id")}
     runtime_rows = [
@@ -2119,7 +2123,7 @@ def test_pitch_clause8_mapped_rows_prefer_shared_harness_evidence_only():
     raw_rows = [
         row
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "8"
+        if row.get("document") == "IEEE 1516.1-2010 (2010 edition)" and row.get("clause_root") == "8"
     ]
     rows = {row["requirement_id"]: row for row in raw_rows if row.get("requirement_id")}
     runtime_rows = [
@@ -2169,7 +2173,7 @@ def test_pitch_clause9_mapped_rows_prefer_shared_harness_evidence_only():
     raw_rows = [
         row
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "9"
+        if row.get("document") == "IEEE 1516.1-2010 (2010 edition)" and row.get("clause_root") == "9"
     ]
     rows = {row["requirement_id"]: row for row in raw_rows if row.get("requirement_id")}
     runtime_rows = [
@@ -2217,7 +2221,7 @@ def test_pitch_clause6_1516_1_dispositions_are_fully_classified_and_harness_back
     raw_rows = [
         row
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "6"
+        if row.get("document") == "IEEE 1516.1-2010 (2010 edition)" and row.get("clause_root") == "6"
     ]
     rows = {row["requirement_id"]: row for row in raw_rows if row.get("requirement_id")}
 
@@ -2267,7 +2271,7 @@ def test_pitch_clause7_1516_1_dispositions_are_fully_classified_and_harness_back
     raw_rows = [
         row
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "7"
+        if row.get("document") == "IEEE 1516.1-2010 (2010 edition)" and row.get("clause_root") == "7"
     ]
     rows = {row["requirement_id"]: row for row in raw_rows if row.get("requirement_id")}
 
@@ -2370,7 +2374,7 @@ def test_pitch_clause8_1516_1_dispositions_are_fully_classified_and_harness_back
     raw_rows = [
         row
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "8"
+        if row.get("document") == "IEEE 1516.1-2010 (2010 edition)" and row.get("clause_root") == "8"
     ]
     rows = {row["requirement_id"]: row for row in raw_rows if row.get("requirement_id")}
 
@@ -2456,7 +2460,7 @@ def test_pitch_clause9_1516_1_dispositions_are_fully_classified_and_harness_back
     raw_rows = [
         row
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "9"
+        if row.get("document") == "IEEE 1516.1-2010 (2010 edition)" and row.get("clause_root") == "9"
     ]
     rows = {row["requirement_id"]: row for row in raw_rows if row.get("requirement_id")}
 
@@ -2558,7 +2562,7 @@ def test_pitch_clause10_1516_1_dispositions_are_explicitly_staged():
     raw_rows = [
         row
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "10"
+        if row.get("document") == "IEEE 1516.1-2010 (2010 edition)" and row.get("clause_root") == "10"
     ]
     rows = {row["requirement_id"] or row["matrix_id"]: row for row in raw_rows if row.get("requirement_id") or row.get("matrix_id")}
 
@@ -2604,14 +2608,14 @@ def test_pitch_clause12_designator_rows_are_explicitly_not_yet_tested():
     raw_rows = [
         row
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "12"
+        if row.get("document") == "IEEE 1516.1-2010 (2010 edition)" and row.get("clause_root") == "12"
     ]
     rows = {row["requirement_id"] or row["matrix_id"]: row for row in raw_rows if row.get("requirement_id") or row.get("matrix_id")}
 
     assert len(raw_rows) == 10
     assert not {row["requirement_id"] for row in raw_rows if row["pitch_disposition"] == "classification-required"}
 
-    clause12_summary = payload["summary"]["clause_summary"]["IEEE 1516.1-2010 §12"]
+    clause12_summary = clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "12")
     assert clause12_summary == {
         "not-applicable": 1,
         "not-yet-tested": 9,
@@ -2716,11 +2720,11 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         for requirement_id, row in rows.items()
         if row["clause_root"] == "4"
         and row["pitch_disposition"] == "classification-required"
-        and row["document"] != "IEEE 1516.2-2010"
+        and row["document"] != "IEEE 1516.2-2010 (2010 edition)"
     }
     assert remaining_clause4_non_omt_classification_required == set()
 
-    clause5_summary = payload["summary"]["clause_summary"]["IEEE 1516.1-2010 §5"]
+    clause5_summary = clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "5")
     assert clause5_summary == {
         "blocked": 2,
         "not-applicable": 5,
@@ -2885,12 +2889,12 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         requirement_id
         for requirement_id, row in rows.items()
         if row["clause_root"] == "5"
-        and row["document"] == "IEEE 1516.1-2010"
+        and row["document"] == "IEEE 1516.1-2010 (2010 edition)"
         and row["pitch_disposition"] == "classification-required"
     }
     assert remaining_clause5_classification_required == set()
 
-    clause6_summary = payload["summary"]["clause_summary"]["IEEE 1516.1-2010 §6"]
+    clause6_summary = clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "6")
     assert clause6_summary == {
         "not-applicable": 2,
         "total": 110,
@@ -3335,7 +3339,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     residual_clause6_rows = {
         row["requirement_id"] or row["matrix_id"]: row["pitch_disposition"]
         for row in payload["rows"]
-        if row["document"] == "IEEE 1516.1-2010"
+        if row["document"] == "IEEE 1516.1-2010 (2010 edition)"
         and row["clause_root"] == "6"
         and row["pitch_disposition"] != "verified"
     }
@@ -3364,7 +3368,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         disposition: sum(
             1
             for row in payload["rows"]
-            if row["document"] == "IEEE 1516.1-2010"
+            if row["document"] == "IEEE 1516.1-2010 (2010 edition)"
             and row["clause_root"] == "6"
             and row["pitch_disposition"] == disposition
         )
@@ -3378,7 +3382,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         "vendor-divergent": 9,
     }
 
-    clause7_summary = payload["summary"]["clause_summary"]["IEEE 1516.1-2010 §7"]
+    clause7_summary = clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "7")
     assert clause7_summary == {
         "not-applicable": 2,
         "total": 39,
@@ -3541,7 +3545,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     residual_clause7_rows = {
         row["requirement_id"] or row["matrix_id"]: row["pitch_disposition"]
         for row in payload["rows"]
-        if row["document"] == "IEEE 1516.1-2010"
+        if row["document"] == "IEEE 1516.1-2010 (2010 edition)"
         and row["clause_root"] == "7"
         and row["pitch_disposition"] != "verified"
     }
@@ -3564,7 +3568,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         disposition: sum(
             1
             for row in payload["rows"]
-            if row["document"] == "IEEE 1516.1-2010"
+            if row["document"] == "IEEE 1516.1-2010 (2010 edition)"
             and row["clause_root"] == "7"
             and row["pitch_disposition"] == disposition
         )
@@ -3651,7 +3655,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         assert "tests/scenarios/test_ddm_backend_matrix.py::test_python_backend_ddm_matrix" in row["evidence_refs"]
         assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_backend_ddm_matrix" in row["evidence_refs"]
 
-    clause9_summary = payload["summary"]["clause_summary"]["IEEE 1516.1-2010 §9"]
+    clause9_summary = clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "9")
     assert clause9_summary == {
         "not-applicable": 2,
         "total": 31,
@@ -3661,7 +3665,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     clause9_rows = [
         row
         for row in payload["rows"]
-        if row["document"] == "IEEE 1516.1-2010" and row["clause_root"] == "9"
+        if row["document"] == "IEEE 1516.1-2010 (2010 edition)" and row["clause_root"] == "9"
     ]
     for row in clause9_rows:
         if row["pitch_disposition"] == "not-applicable":
@@ -3791,7 +3795,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         assert "tests/time/test_section8_backend_matrix.py::test_section8_backend_matrix_logical_time_query" in row["evidence_refs"]
         assert "tests/vendors/test_pitch_real_backend_matrix.py::test_pitch_section8_logical_time_query_matrix" in row["evidence_refs"]
 
-    clause8_summary = payload["summary"]["clause_summary"]["IEEE 1516.1-2010 §8"]
+    clause8_summary = clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "8")
     assert clause8_summary == {
         "not-applicable": 2,
         "total": 61,
@@ -3966,7 +3970,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     residual_clause8_rows = {
         row["requirement_id"] or row["matrix_id"]: row["pitch_disposition"]
         for row in payload["rows"]
-        if row["document"] == "IEEE 1516.1-2010"
+        if row["document"] == "IEEE 1516.1-2010 (2010 edition)"
         and row["clause_root"] == "8"
         and row["pitch_disposition"] != "verified"
     }
@@ -3997,7 +4001,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         disposition: sum(
             1
             for row in payload["rows"]
-            if row["document"] == "IEEE 1516.1-2010"
+            if row["document"] == "IEEE 1516.1-2010 (2010 edition)"
             and row["clause_root"] == "8"
             and row["pitch_disposition"] == disposition
         )
@@ -4014,7 +4018,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
     residual_clause9_rows = {
         row["requirement_id"] or row["matrix_id"]: row["pitch_disposition"]
         for row in payload["rows"]
-        if row["document"] == "IEEE 1516.1-2010"
+        if row["document"] == "IEEE 1516.1-2010 (2010 edition)"
         and row["clause_root"] == "9"
         and row["pitch_disposition"] != "verified"
     }
@@ -4027,7 +4031,7 @@ def test_pitch_requirement_disposition_tracks_supporting_slices_and_non_omt_clas
         disposition: sum(
             1
             for row in payload["rows"]
-            if row["document"] == "IEEE 1516.1-2010"
+            if row["document"] == "IEEE 1516.1-2010 (2010 edition)"
             and row["clause_root"] == "9"
             and row["pitch_disposition"] == disposition
         )
@@ -4165,7 +4169,7 @@ def test_python_tranche_clauses_4_6_7_8_9_use_shared_harness_evidence_only() -> 
         runtime_rows = [
             row
             for row in payload["rows"]
-            if row.get("document") == "IEEE 1516.1-2010"
+            if row.get("document") == "IEEE 1516.1-2010 (2010 edition)"
             and row.get("clause_root") == clause_root
             and row.get("runtime_disposition") in {"verified", "vendor-divergent"}
         ]
@@ -4222,7 +4226,7 @@ def test_pitch_tranche_clauses_4_6_7_8_9_use_shared_harness_evidence_only() -> N
         pitch_rows = [
             row
             for row in payload["rows"]
-            if row.get("document") == "IEEE 1516.1-2010"
+            if row.get("document") == "IEEE 1516.1-2010 (2010 edition)"
             and row.get("clause_root") == clause_root
             and row.get("pitch_disposition") in {"verified", "vendor-divergent"}
         ]
@@ -4242,29 +4246,29 @@ def test_python_tranche_clause_summaries_and_reclassified_rows_are_generated() -
     project_root = Path(__file__).resolve().parents[2]
     payload = json.loads((project_root / "analysis" / "compliance" / "python_requirement_disposition.json").read_text(encoding="utf-8"))
 
-    assert payload["summary"]["clause_summary"]["IEEE 1516.1-2010 §4"] == {
+    assert clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "4") == {
         "not-applicable": 2,
         "total": 281,
         "vendor-divergent": 4,
         "verified": 275,
     }
-    assert payload["summary"]["clause_summary"]["IEEE 1516.1-2010 §6"] == {
+    assert clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "6") == {
         "not-applicable": 2,
         "total": 110,
         "vendor-divergent": 1,
         "verified": 107,
     }
-    assert payload["summary"]["clause_summary"]["IEEE 1516.1-2010 §7"] == {
+    assert clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "7") == {
         "not-applicable": 2,
         "total": 39,
         "verified": 37,
     }
-    assert payload["summary"]["clause_summary"]["IEEE 1516.1-2010 §8"] == {
+    assert clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "8") == {
         "not-applicable": 2,
         "total": 61,
         "verified": 59,
     }
-    assert payload["summary"]["clause_summary"]["IEEE 1516.1-2010 §9"] == {
+    assert clause_summary_counts(payload["summary"]["clause_summary"], IEEE_1516_1_2010, "9") == {
         "not-applicable": 2,
         "total": 31,
         "verified": 29,

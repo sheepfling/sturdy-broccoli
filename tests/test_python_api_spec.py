@@ -3,29 +3,26 @@ from __future__ import annotations
 import inspect
 
 import hla.rti1516e
-import hla.rti1516e.spec as hla_spec
 import hla.rti1516e.rti as rti_module
 from hla.backends.common import RecordingBackend, make_rti_ambassador
 import hla.rti.factory as runtime_factory
 from hla.rti1516e.rti import available_backend_plugins, create_rti_ambassador, discover_rti_backends, iter_rti_backend_plugins
-from hla.rti1516e.spec import FederateAmbassadorSpec, RTIambassadorSpec, lower_camel_to_snake
+from hla.rti1516e import FederateAmbassador, NullFederateAmbassador, RTIambassador, lower_camel_to_snake
 
 
 def test_spec_rti_is_abstract_and_pythonic():
-    assert inspect.isabstract(RTIambassadorSpec)
-    assert hasattr(RTIambassadorSpec, "get_hla_version")
-    assert hasattr(RTIambassadorSpec, "getHLAversion")
+    assert getattr(RTIambassador, "_is_protocol", False)
+    assert not hasattr(RTIambassador, "get_hla_version")
+    assert hasattr(RTIambassador, "getHLAversion")
     assert lower_camel_to_snake("getHLAversion") == "get_hla_version"
-    assert "Java:" in RTIambassadorSpec.connect.__doc__
-    assert "C++:" in RTIambassadorSpec.connect.__doc__
+    assert "Strict overloads live in the .pyi stub" in RTIambassador.__doc__
 
 
 def test_spec_federate_is_a_noop_prototype():
-    fed = FederateAmbassadorSpec()
+    fed = NullFederateAmbassador()
     assert fed.announce_synchronization_point("label") is None
     assert fed.announceSynchronizationPoint("label") is None
-    assert "Java:" in FederateAmbassadorSpec.connection_lost.__doc__
-    assert "C++:" in FederateAmbassadorSpec.connection_lost.__doc__
+    assert NullFederateAmbassador.__name__ == "NullFederateAmbassador"
 
 
 def test_runtime_rti_alias_routes_through_pythonic_method():
@@ -118,9 +115,7 @@ def test_top_level_package_defaults_to_the_clean_spec_layer():
     assert hasattr(hla.rti1516e, "NullFederateAmbassador")
 
 
-def test_standalone_spec_package_is_public():
-    assert hla_spec.RTIambassadorSpec is RTIambassadorSpec
-    assert hla_spec.FederateAmbassadorSpec is FederateAmbassadorSpec
-    assert not hasattr(hla_spec, "RTIAmbassador")
-    assert not hasattr(hla_spec, "FederateAmbassador")
-    assert not hasattr(hla_spec, "NullFederateAmbassador")
+def test_standalone_spec_package_is_removed():
+    assert hla.rti1516e.RTIambassador is RTIambassador
+    assert hla.rti1516e.FederateAmbassador is FederateAmbassador
+    assert hla.rti1516e.NullFederateAmbassador is NullFederateAmbassador

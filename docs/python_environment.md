@@ -232,9 +232,9 @@ runner, use [vendor_runtime_runner_guide.md](vendor_runtime_runner_guide.md).
 
 The setup-relevant parts of this repo are:
 
-- `src/hla2010/`: root Python package, abstract/core API, and the temporary split-package facade `hla.rti1516e.rti`
-- `hla2010/`: narrow shim area for plugin-facing glue
-- `packages/*/src/`: package-owned backend, FOM, and support implementations
+- `packages/hla-rti1516e/src/hla/rti1516e/`: `hla.rti1516e`, the IEEE 1516.1-2010 API package
+- `packages/hla-rti-core/src/hla/rti/`: `hla.rti`, the cross-version discovery and factory package
+- `packages/*/src/`: package-owned backend, transport, bridge, FOM, and support implementations
 - `examples/`: runnable entrypoints
 - `tools/`: human-facing vendor/runtime operator entrypoints
 - `scripts/`: bootstrap, CI, and implementation wrappers

@@ -150,8 +150,8 @@ from hla.verification import (
     section8_matrix_config,
 )
 from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
-from hla.rti1516e.types import RangeBounds
-from hla.rti1516e.types import TimeQueryReturn
+from hla.rti1516e.datatypes import RangeBounds
+from hla.rti1516e.datatypes import TimeQueryReturn
 from hla.vendors.pitch.real_rti_pitch import launch_pitch_runtime
 from tests.vendors.runtime_support import cleanup_federation, require_vendor_preflight, shutdown_runtime_resources
 

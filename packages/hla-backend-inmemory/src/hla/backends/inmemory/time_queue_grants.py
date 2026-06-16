@@ -5,7 +5,7 @@ from typing import Any
 
 from hla.rti1516e.enums import OrderType
 from hla.rti1516e.handles import FederateHandle, MessageRetractionHandle
-from hla.rti1516e.types import MessageRetractionReturn, TimeQueryReturn
+from hla.rti1516e.datatypes import MessageRetractionReturn, TimeQueryReturn
 from hla.backends.common import time_management as tm
 
 from .state import CallbackEvent, FederateState, FederationState, TimeAdvanceRequestState, TimedMessage
@@ -45,7 +45,7 @@ class PythonRTITimeQueueGrantMixin:
     def _make_retraction_return(self, timestamp: Any) -> MessageRetractionReturn:
         handle = self.engine._alloc(MessageRetractionHandle)
         self.state.retractable_messages[handle] = True
-        return MessageRetractionReturn(handle, timestamp)
+        return MessageRetractionReturn(True, handle)
 
     def _queue_or_deliver_tso(
         self,

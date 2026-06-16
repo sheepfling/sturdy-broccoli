@@ -7,7 +7,7 @@ from typing import Any, Mapping
 from hla.rti1516e.enums import OrderType
 from hla.rti1516e.exceptions import InteractionClassNotPublished
 from hla.rti1516e.handles import InteractionClassHandle, ParameterHandle
-from hla.rti1516e.types import MessageRetractionReturn
+from hla.rti1516e.datatypes import MessageRetractionReturn
 
 from .object_delivery_attributes import PythonRTIObjectAttributeDeliveryMixin
 from .state import CallbackEvent, SupplementalReceiveInfo

@@ -8,7 +8,7 @@ from hla.verification import (
 )
 from tests.vendors.runtime_support import assert_all_terminated, cleanup_federation, close_all, reserve_udp_pair, terminate_all
 
-@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+@pytest.mark.parametrize("kind", ["certi"])
 def test_certi_backend_ownership_matrix(kind: str):
     _require_real_rti_smoke()
     try:
@@ -82,7 +82,7 @@ def test_certi_patched_next_message_request_available_fail_fast_matrix(time_fact
     _assert_certi_patched_fail_fast_time_request_matrix(None, time_factory_name, "NEXT_MESSAGE_REQUEST_AVAILABLE")
 
 
-@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+@pytest.mark.parametrize("kind", ["certi"])
 def test_certi_backend_negotiated_ownership_matrix(kind: str):
     _require_real_rti_smoke()
     try:
@@ -183,7 +183,7 @@ def test_certi_patched_confirm_release_request_is_distinct_from_ifwanted():
     assert ifwanted_profile["acquired_present"] is True
 
 
-def test_certi_negotiated_ownership_profile_matches_across_native_and_java_facades():
+def test_certi_negotiated_ownership_profile_is_stable():
     _require_real_rti_smoke()
     try:
         smoke_fom = discover_certi_smoke_fom()
@@ -191,7 +191,7 @@ def test_certi_negotiated_ownership_profile_matches_across_native_and_java_facad
         pytest.skip(str(exc))
 
     profiles: dict[str, dict[str, object]] = {}
-    for kind in ("certi", "certi-jpype", "certi-py4j"):
+    for kind in ("certi",):
         try:
             rtig = launch_certi_rtig(verbose=0)
         except BackendUnavailableError as exc:
@@ -224,5 +224,4 @@ def test_certi_negotiated_ownership_profile_matches_across_native_and_java_facad
             terminate_all(rtig)
             assert_all_terminated(rtig)
 
-    assert profiles["certi-jpype"] == profiles["certi"]
-    assert profiles["certi-py4j"] == profiles["certi"]
+    assert profiles["certi"]

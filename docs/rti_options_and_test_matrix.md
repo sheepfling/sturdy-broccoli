@@ -20,10 +20,9 @@ It separates three concerns that are easy to blur together:
 3. transport surface
 
 The Python federate should only need to care about the backend name passed to
-`hla.rti.create_rti_ambassador(...)`. Everything below that
-line is repo/runtime plumbing. The temporary root workspace facade
-`hla.rti1516e.rti` exposes the same helper during migration, but package-owned and
-new public examples should prefer the split runtime package directly.
+`hla.rti.create_rti_ambassador(...)`. Everything below that line is repo/runtime
+plumbing. `hla.rti` owns backend discovery and neutral ambassador construction;
+version-specific API types stay under `hla.rti1516e` or `hla.rti1516_2025`.
 
 For the exhaustive route list, including named CERTI baselines and remote
 transport-hosted variants, see

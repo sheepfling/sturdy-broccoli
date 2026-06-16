@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.rti1516e import NullFederateAmbassador
 from hla.rti1516e.spec_refs import SpecReference, method_reference
 
 from .base import CALLBACK_METHOD_NAMES, lower_camel_to_snake
@@ -12,6 +12,20 @@ from .base import CALLBACK_METHOD_NAMES, lower_camel_to_snake
 _CALLBACK_BY_SNAKE = {
     lower_camel_to_snake(method_name): method_name
     for method_name in CALLBACK_METHOD_NAMES
+}
+
+_EXTRA_CALLBACK_METHOD_NAMES = (
+    "hasProducingFederate",
+    "getProducingFederate",
+    "hasSentRegions",
+    "getSentRegions",
+)
+
+_RECORDABLE_CALLBACK_METHOD_NAMES = CALLBACK_METHOD_NAMES + _EXTRA_CALLBACK_METHOD_NAMES
+
+_RECORDABLE_CALLBACK_BY_SNAKE = {
+    lower_camel_to_snake(method_name): method_name
+    for method_name in _RECORDABLE_CALLBACK_METHOD_NAMES
 }
 
 
@@ -29,7 +43,7 @@ class CallbackRecord:
         return lower_camel_to_snake(self.method_name)
 
 
-class RecordingFederateAmbassador(FederateAmbassadorSpec):
+class RecordingFederateAmbassador(NullFederateAmbassador):
     """Federate ambassador that records callbacks with spec references."""
 
     def __init__(self) -> None:
@@ -68,16 +82,34 @@ class RecordingFederateAmbassador(FederateAmbassadorSpec):
         if name in {"records", "events", "record_callback", "clear", "callbacks_named", "last_callback", "__class__"}:
             return attr
 
-        method_name = name if name in CALLBACK_METHOD_NAMES else _CALLBACK_BY_SNAKE.get(name)
+        method_name = name if name in _RECORDABLE_CALLBACK_METHOD_NAMES else _RECORDABLE_CALLBACK_BY_SNAKE.get(name)
         if method_name is None:
             return attr
 
         owner_attr = getattr(type(self), name, None)
-        base_attr = getattr(FederateAmbassadorSpec, name, None)
+        base_attr = getattr(NullFederateAmbassador, name, None)
         if owner_attr is not None and owner_attr is not base_attr:
             return attr
 
         return lambda *args, **kwargs: self.record_callback(method_name, *args, **kwargs)
+
+
+def _recording_callback(method_name: str):
+    def _callback(self: RecordingFederateAmbassador, *args: Any, **kwargs: Any) -> Any:
+        return self.record_callback(method_name, *args, **kwargs)
+
+    _callback.__name__ = method_name
+    return _callback
+
+
+for _method_name in _RECORDABLE_CALLBACK_METHOD_NAMES:
+    _install_recording_callback = setattr
+    _install_recording_callback(RecordingFederateAmbassador, _method_name, _recording_callback(_method_name))
+    _install_recording_callback(
+        RecordingFederateAmbassador,
+        lower_camel_to_snake(_method_name),
+        _recording_callback(_method_name),
+    )
 
 
 __all__ = [

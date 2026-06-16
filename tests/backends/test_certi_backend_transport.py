@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.rti1516e import NullFederateAmbassador
 from hla.backends.common import make_rti_ambassador
 from hla.backends.certi import CERTIBackend, CERTIConfig
 from hla.backends.certi.certi.service_adapter import CERTIBackend as PackageCERTIBackend
@@ -38,7 +38,7 @@ def test_certi_backend_can_run_against_an_injected_transport():
     assert transport.started is True
     assert rti.getHLAversion() == "HLA 1516.1-2010"
 
-    rti.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
+    rti.connect(NullFederateAmbassador(), CallbackModel.HLA_EVOKED)
     assert transport.requests[0][0] == "GET_HLA_VERSION"
     assert transport.requests[1][0] == "CONNECT"
     assert transport.requests[1][1] == (CallbackModel.HLA_EVOKED.name, "")

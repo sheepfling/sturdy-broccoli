@@ -5,6 +5,7 @@ import json
 import re
 from pathlib import Path
 
+from compliance_helpers import is_1516_1_2010_row
 
 ROOT = Path(__file__).resolve().parents[1]
 CERTI_NEGOTIATED_OWNERSHIP_FINDINGS = "packages/hla-backend-certi/docs/certi_negotiated_ownership_findings.md"
@@ -67,7 +68,7 @@ def _clause7_certi_vendor_divergent_rows() -> list[dict[str, object]]:
     return [
         row
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010"
+        if is_1516_1_2010_row(row)
         and row.get("clause_root") == "7"
         and row.get("runtime_disposition") == "vendor-divergent"
     ]
@@ -78,7 +79,7 @@ def _certi_rows(filename: str) -> list[dict[str, object]]:
     return [
         row
         for row in payload["rows"]
-        if row.get("document") in {"IEEE 1516.1-2010", "IEEE 1516-2010"}
+        if is_1516_1_2010_row(row) or row.get("document") == "IEEE 1516-2010"
     ]
 
 

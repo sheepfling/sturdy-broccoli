@@ -93,12 +93,12 @@
 - pitch vendor-green: `vendor-green` (exit `0`)
 
 Required markers for `certi` in `repo-green`:
-- `active_build_root`: `<repo>/.local/certi/patched/build/libRTI/ieee1516-2010`
-- `active_prefix`: `<repo>/.local/certi/patched/install/bin/rtig`
-- `patched_build_root`: `<repo>/.local/certi/patched/build/libRTI/ieee1516-2010`
-- `patched_prefix`: `<repo>/.local/certi/patched/install/bin/rtig`
-- `upstream_build_root`: `<repo>/.local/certi/upstream/build/libRTI/ieee1516-2010`
-- `upstream_prefix`: `<repo>/.local/certi/upstream/install/bin/rtig`
+- `active_build_root`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010`
+- `active_prefix`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig`
+- `patched_build_root`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010`
+- `patched_prefix`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig`
+- `upstream_build_root`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/build/libRTI/ieee1516-2010`
+- `upstream_prefix`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/install/bin/rtig`
 
 Required markers for `pitch` in `repo-green`:
 - `runtime_home`: `third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar`
@@ -108,12 +108,12 @@ Required ports for `pitch` in `repo-green`:
 - `fedpro`: `127.0.0.1:15164` [ok]
 
 Required markers for `certi` in `certi vendor-green`:
-- `active_build_root`: `<repo>/.local/certi/patched/build/libRTI/ieee1516-2010`
-- `active_prefix`: `<repo>/.local/certi/patched/install/bin/rtig`
-- `patched_build_root`: `<repo>/.local/certi/patched/build/libRTI/ieee1516-2010`
-- `patched_prefix`: `<repo>/.local/certi/patched/install/bin/rtig`
-- `upstream_build_root`: `<repo>/.local/certi/upstream/build/libRTI/ieee1516-2010`
-- `upstream_prefix`: `<repo>/.local/certi/upstream/install/bin/rtig`
+- `active_build_root`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010`
+- `active_prefix`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig`
+- `patched_build_root`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/build/libRTI/ieee1516-2010`
+- `patched_prefix`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/patched/install/bin/rtig`
+- `upstream_build_root`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/build/libRTI/ieee1516-2010`
+- `upstream_prefix`: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.local/certi/upstream/install/bin/rtig`
 
 Required markers for `pitch` in `pitch vendor-green`:
 - `runtime_home`: `third_party/pitch/PITCH-prti1516e-manual/lib/prtifull.jar`

@@ -72,18 +72,17 @@ def build_requirements_matrix_2010(project_root: str | Path | None = None, *, ve
 
     def _edition_qualified_document(document: str) -> str:
         if document == "IEEE 1516.1-2010":
-            return "IEEE 1516.1-2010 (2010 edition)"
+            return IEEE_1516_1_2010
         if document == "IEEE 1516.2-2010":
             return "IEEE 1516.2-2010 (2010 edition)"
         return document
 
     def _edition_qualified_section_ref(section_ref: str) -> str:
-        return (
-            section_ref.replace("IEEE 1516.1-2010 §", "IEEE 1516.1-2010 (2010 edition) §")
-            .replace("IEEE 1516.2-2010 §", "IEEE 1516.2-2010 (2010 edition) §")
-            .replace("1516.1-2010 §", "1516.1-2010 (2010 edition) §")
-            .replace("1516.2-2010 §", "1516.2-2010 (2010 edition) §")
-        )
+        if section_ref.startswith("IEEE 1516.1-2010 §"):
+            return section_ref.replace("IEEE 1516.1-2010 §", f"{IEEE_1516_1_2010} §", 1)
+        if section_ref.startswith("IEEE 1516.2-2010 §"):
+            return section_ref.replace("IEEE 1516.2-2010 §", "IEEE 1516.2-2010 (2010 edition) §", 1)
+        return section_ref
 
     section_area_inputs: dict[str, list[str]] = {}
     omt_area_inputs: dict[str, list[str]] = {}

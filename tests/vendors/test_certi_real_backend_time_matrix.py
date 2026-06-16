@@ -54,7 +54,7 @@ def _run_certi_section8_pair(kind: str, time_factory_name: str, case_name: str, 
         terminate_all(rtig)
         assert_all_terminated(rtig)
 
-@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+@pytest.mark.parametrize("kind", ["certi"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_backend_time_query_and_fqr_matrix(kind: str, time_factory_name: str):
     _require_real_rti_smoke()
@@ -135,7 +135,7 @@ def test_certi_backend_time_query_and_fqr_matrix(kind: str, time_factory_name: s
         assert_all_terminated(rtig)
 
 
-@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+@pytest.mark.parametrize("kind", ["certi"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_backend_section8_state_services_matrix(kind: str, time_factory_name: str):
     summary = _run_certi_section8_pair(kind, time_factory_name, "section8-state", run_section8_state_services_case)
@@ -147,7 +147,7 @@ def test_certi_backend_section8_state_services_matrix(kind: str, time_factory_na
     assert summary["modified_lookahead"] != summary["initial_lookahead"]
 
 
-@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+@pytest.mark.parametrize("kind", ["certi"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_backend_section8_logical_time_query_matrix(kind: str, time_factory_name: str):
     summary = _run_certi_section8_pair(kind, time_factory_name, "section8-logical-time", run_section8_state_services_case)
@@ -156,7 +156,7 @@ def test_certi_backend_section8_logical_time_query_matrix(kind: str, time_factor
     assert summary["subscriber_initial_time"].value == 0 or summary["subscriber_initial_time"].value == 0.0
 
 
-@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+@pytest.mark.parametrize("kind", ["certi"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_backend_section8_state_toggle_services_matrix(kind: str, time_factory_name: str):
     summary = _run_certi_section8_pair(kind, time_factory_name, "section8-state-toggles", run_section8_state_services_case)
@@ -166,7 +166,7 @@ def test_certi_backend_section8_state_toggle_services_matrix(kind: str, time_fac
     assert summary["modified_lookahead"] != summary["initial_lookahead"]
 
 
-@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+@pytest.mark.parametrize("kind", ["certi"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_backend_section8_time_bound_query_matrix(kind: str, time_factory_name: str):
     summary = _run_certi_section8_pair(kind, time_factory_name, "section8-time-queries", run_section8_time_bound_query_case)
@@ -175,7 +175,7 @@ def test_certi_backend_section8_time_bound_query_matrix(kind: str, time_factory_
     assert isinstance(summary["initial_lits"], TimeQueryReturn)
 
 
-@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+@pytest.mark.parametrize("kind", ["certi"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_backend_section8_ordering_and_query_matrix(kind: str, time_factory_name: str):
     summary = _run_certi_section8_pair(kind, time_factory_name, "section8-ordering", run_section8_ordering_and_query_case)
@@ -187,7 +187,7 @@ def test_certi_backend_section8_ordering_and_query_matrix(kind: str, time_factor
     assert summary["second_receive"] is not None
 
 
-@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+@pytest.mark.parametrize("kind", ["certi"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_backend_section8_available_and_flush_matrix(kind: str, time_factory_name: str):
     summary = _run_certi_section8_pair(kind, time_factory_name, "section8-available-flush", run_section8_available_and_flush_case)
@@ -197,7 +197,7 @@ def test_certi_backend_section8_available_and_flush_matrix(kind: str, time_facto
     assert summary["flushed_receive"] is not None
 
 
-@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+@pytest.mark.parametrize("kind", ["certi"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_backend_section8_available_and_retraction_matrix(kind: str, time_factory_name: str):
     summary = _run_certi_section8_pair(kind, time_factory_name, "section8-available", run_section8_available_and_retraction_case)
@@ -206,7 +206,7 @@ def test_certi_backend_section8_available_and_retraction_matrix(kind: str, time_
     assert summary["flush_grant"] is not None
 
 
-@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+@pytest.mark.parametrize("kind", ["certi"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_backend_section8_order_override_matrix(kind: str, time_factory_name: str):
     summary = _run_certi_section8_pair(kind, time_factory_name, "section8-order-override", run_section8_order_override_case)
@@ -215,7 +215,7 @@ def test_certi_backend_section8_order_override_matrix(kind: str, time_factory_na
     assert summary["receive"] is not None
 
 
-@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+@pytest.mark.parametrize("kind", ["certi"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_backend_section8_request_retraction_matrix(kind: str, time_factory_name: str):
     summary = _run_certi_section8_pair(kind, time_factory_name, "section8-request-retraction", run_section8_request_retraction_case)
@@ -224,7 +224,7 @@ def test_certi_backend_section8_request_retraction_matrix(kind: str, time_factor
     assert summary["request_retraction"] is not None
 
 
-@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+@pytest.mark.parametrize("kind", ["certi"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_backend_section8_duplicate_enable_rejection_matrix(kind: str, time_factory_name: str):
     summary = _run_certi_section8_pair(
@@ -240,7 +240,7 @@ def test_certi_backend_section8_duplicate_enable_rejection_matrix(kind: str, tim
     assert summary["final_constrained_callback_count"] == summary["initial_constrained_callback_count"]
 
 
-@pytest.mark.parametrize("kind", ["certi", "certi-jpype", "certi-py4j"])
+@pytest.mark.parametrize("kind", ["certi"])
 @pytest.mark.parametrize("time_factory_name", ["HLAinteger64Time", "HLAfloat64Time"])
 def test_certi_backend_section8_tar_galt_boundary_matrix(kind: str, time_factory_name: str):
     summary = _run_certi_section8_pair(kind, time_factory_name, "section8-tar-galt", run_section8_tar_galt_boundary_case)

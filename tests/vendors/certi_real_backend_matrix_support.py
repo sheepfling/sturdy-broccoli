@@ -21,7 +21,7 @@ from hla.verification import (
     run_release_request_ownership_scenario,
 )
 from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from hla.rti1516e.types import TimeQueryReturn
+from hla.rti1516e.datatypes import TimeQueryReturn
 from hla.backends.certi.real_rti_certi import (
     discover_certi_runtime_profile,
     discover_certi_smoke_fom,

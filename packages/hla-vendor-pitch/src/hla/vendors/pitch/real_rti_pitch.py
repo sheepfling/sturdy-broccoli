@@ -467,6 +467,8 @@ def launch_pitch_runtime(
     selected_crc_mode = crc_mode or env.get("HLA2010_PITCH_CRC_MODE", "local")
     fedpro_listener_timeout = float(env.get("HLA2010_PITCH_FEDPRO_LISTENER_TIMEOUT_SECONDS", "20.0"))
     crc_listener_timeout = float(env.get("HLA2010_PITCH_CRC_LISTENER_TIMEOUT_SECONDS", "45.0"))
+    crc_port = int(env.get("HLA2010_PITCH_CRC_PORT", "8989"))
+    fedpro_port = int(env.get("HLA2010_PITCH_FEDPRO_PORT", "15164"))
     process_boot_timeout = float(env.get("HLA2010_PITCH_PROCESS_BOOT_TIMEOUT_SECONDS", "10.0"))
     startup_retries = int(env.get("HLA2010_PITCH_STARTUP_RETRIES", "1"))
     launcher_modes = _launcher_mode_attempts(launcher_mode, env)
@@ -512,7 +514,6 @@ def launch_pitch_runtime(
         launch_env["HLA2010_PITCH_LAUNCHER_MODE"] = selected_launcher_mode
         if ui_automation is not None:
             launch_env["HLA2010_PITCH_UI_AUTOMATION"] = "1" if ui_automation else "0"
-        os.environ["HLA2010_PITCH_USER_HOME"] = str(pitch_user_home)
 
         crc_command = [str(repo_root / "scripts" / crc_script), *args]
         crc_env = dict(launch_env)
@@ -554,8 +555,8 @@ def launch_pitch_runtime(
             _wait_for_process_boot(crc_process, timeout=process_boot_timeout)
             for child in children:
                 _wait_for_process_boot(child, timeout=process_boot_timeout)
-            _wait_for_tcp_listener("127.0.0.1", 15164, timeout=fedpro_listener_timeout)
-            _wait_for_tcp_listener("127.0.0.1", 8989, timeout=crc_listener_timeout)
+            _wait_for_tcp_listener("127.0.0.1", fedpro_port, timeout=fedpro_listener_timeout)
+            _wait_for_tcp_listener("127.0.0.1", crc_port, timeout=crc_listener_timeout)
             time.sleep(float(launch_env.get("HLA2010_PITCH_STARTUP_SETTLE_SECONDS", "1.0")))
             cleanup_paths = (isolated_home,) if isolated_home is not None else ()
             return RuntimeProcess(
@@ -563,7 +564,7 @@ def launch_pitch_runtime(
                 process=crc_process,
                 env=launch_env,
                 host="127.0.0.1",
-                tcp_port=15164,
+                tcp_port=fedpro_port,
                 children=children,
                 cleanup_paths=cleanup_paths,
             )

@@ -14,8 +14,8 @@ def test_split_grpc_transport_package_exports_transport_surface():
 
     assert hla.transports.grpc.GrpcTransport.__name__ == "GrpcTransport"
     assert hla.transports.grpc.GrpcTransportConfig.__name__ == "GrpcTransportConfig"
-    assert hasattr(hla.transports.grpc, "rti_transport_pb2")
-    assert hasattr(hla.transports.grpc, "rti_transport_pb2_grpc")
+    assert hasattr(hla.transports.grpc, "fedpro2010")
+    assert hasattr(hla.transports.grpc, "FEDPRO2010_PROTO_DESCRIPTOR")
 
 
 def test_legacy_grpc_transport_modules_are_removed():

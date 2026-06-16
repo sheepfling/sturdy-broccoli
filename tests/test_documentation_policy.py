@@ -126,7 +126,8 @@ def test_python_api_spec_matches_split_package_reality() -> None:
     assert "versioned API root: `packages/hla-rti1516e/src/hla/rti1516e/`" in text
     assert "package-owned implementations: `packages/*/src/...`" in text
     assert "cross-version discovery and factory selection live under `hla.rti`" in text
-    assert "../packages/hla-rti1516e/src/hla/rti1516e/spec/__init__.py" in text
+    assert "../packages/hla-rti1516e/src/hla/rti1516e/rti_ambassador.py" in text
+    assert "../packages/hla-rti1516e/src/hla/rti1516e/federate_ambassador.py" in text
     assert "../packages/hla-rti1516e/README.md" in text
     assert "../hla2010/spec/" not in text
     assert "hla.rti1516e.testing" not in text

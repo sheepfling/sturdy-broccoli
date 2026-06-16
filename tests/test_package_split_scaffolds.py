@@ -267,28 +267,29 @@ def test_rti1516e_spec_manifest_owns_exact_root_package_tree() -> None:
 
     expected_root_surface = {
         "__init__.py",
-        "_spec_impl.py",
+        "_byte_wrapper.py",
         "ambassadors.py",
         "api.py",
+        "datatypes.py",
         "encoding.py",
         "enums.py",
         "exceptions.py",
+        "federate_ambassador.py",
         "fom.py",
+        "handle_factory.py",
         "handles.py",
+        "logical_time.py",
         "mom.py",
         "raw_api.py",
         "rti.py",
-        "runtime_api.py",
-        "spec/__init__.py",
-        "spec_api.py",
+        "rti_ambassador.py",
         "spec_inventory.py",
-            "spec_refs.py",
-            "spec_sources.py",
-            "factory.py",
-            "plugin.py",
-            "time.py",
-            "types.py",
-        }
+        "spec_refs.py",
+        "spec_sources.py",
+        "factory.py",
+        "plugin.py",
+        "time.py",
+    }
     assert _live_rti1516e_python_files() == expected_root_surface
 
 
@@ -379,8 +380,9 @@ def test_backend_doc_indexes_describe_owned_policy_and_operator_surfaces() -> No
 def test_package_root_readmes_describe_canonical_import_and_operator_boundary() -> None:
     required_fragments = {
         "hla-rti1516e": (
-            "canonical runtime namespace from `hla2010`",
-            "`hla.rti1516e.rti`",
+            "canonical `hla.rti1516e` standard-facing API",
+            "`hla.rti1516e.RTIambassador`",
+            "old `_Spec` and runtime compatibility modules are removed",
             "`tests/test_package_split_scaffolds.py`",
             "`tests/test_root_facade_policy.py`",
             "`tests/test_namespace_policy.py`",

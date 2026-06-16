@@ -20,7 +20,7 @@ from hla.rti1516e.handles import (
     TransportationTypeHandle,
 )
 from hla.rti1516e.time import DEFAULT_TIME_FACTORY_REGISTRY, HLAfloat64TimeFactory, HLAinteger64Time, LogicalTimeFactory
-from hla.rti1516e.types import FederateHandleSaveStatusPair, FederateRestoreStatus, MessageRetractionReturn, RangeBounds, TimeQueryReturn
+from hla.rti1516e.datatypes import FederateHandleSaveStatusPair, FederateRestoreStatus, MessageRetractionReturn, RangeBounds, TimeQueryReturn
 
 
 @dataclass(frozen=True)

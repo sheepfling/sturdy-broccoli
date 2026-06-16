@@ -10,7 +10,6 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_PATH = ROOT / "specs" / "hla2010_api.json"
-SPEC_IMPL_PATH = ROOT / "packages" / "hla-rti1516e" / "src" / "hla2010" / "_spec_impl.py"
 BASE_PATH = ROOT / "packages" / "hla-backend-common" / "src" / "hla.backends.common" / "base.py"
 DOC_PATH = ROOT / "docs" / "reference" / "hla_interface_contracts.md"
 
@@ -33,7 +32,7 @@ JAVA_TYPE_MAP = {
     "DimensionHandleFactory": "DimensionHandleFactory",
     "DimensionHandleSet": "DimensionHandleSet",
     "DimensionHandleSetFactory": "DimensionHandleSetFactory",
-    "FederateAmbassador": "FederateAmbassadorSpec",
+    "FederateAmbassador": "NullFederateAmbassador",
     "FederateHandle": "FederateHandle",
     "FederateHandleFactory": "FederateHandleFactory",
     "FederateHandleSaveStatusPair[]": "Sequence[FederateHandleSaveStatusPair]",
@@ -500,7 +499,7 @@ def render_spec_impl() -> str:
         "    return _decorate",
         "",
         "",
-        "class RTIambassadorSpec(ABC):",
+        "class RTIambassador(ABC):",
         '    """Source-named abstract contract for an HLA RTI ambassador."""',
         "",
     ]
@@ -509,7 +508,7 @@ def render_spec_impl() -> str:
     lines.extend(
         [
             "",
-            "class FederateAmbassadorSpec:",
+            "class NullFederateAmbassador:",
             '    """No-op federate callback prototype with Java names and Python aliases."""',
             "",
         ]
@@ -518,14 +517,14 @@ def render_spec_impl() -> str:
         lines.extend(render_callback_method(method_name, interfaces["FederateAmbassador"][method_name]))
     lines.extend(
         [
-            'RTIAmbassadorSpec = RTIambassadorSpec',
-            'NullFederateAmbassadorSpec = FederateAmbassadorSpec',
+            'RTIAmbassadorSpec = RTIambassador',
+            'NullNullFederateAmbassador = NullFederateAmbassador',
             "",
             "__all__ = [",
-            '    "FederateAmbassadorSpec",',
-            '    "NullFederateAmbassadorSpec",',
+            '    "NullFederateAmbassador",',
+            '    "NullNullFederateAmbassador",',
             '    "RTIAmbassadorSpec",',
-            '    "RTIambassadorSpec",',
+            '    "RTIambassador",',
             '    "SupplementalReceiveInfo",',
             '    "SupplementalReflectInfo",',
             '    "SupplementalRemoveInfo",',
@@ -590,7 +589,6 @@ def expected_base_content() -> str:
 
 def expected_outputs() -> dict[Path, str]:
     return {
-        SPEC_IMPL_PATH: render_spec_impl(),
         DOC_PATH: render_docs(),
         BASE_PATH: expected_base_content(),
     }

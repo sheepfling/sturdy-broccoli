@@ -9,9 +9,9 @@ Policy notes:
 - keep the retained PDF archive in `docs/reference/`
 - keep generated verification packets, matrices, and reports under `analysis/`
   so they stay out of the tracked seed
-- keep reproducible code generation under `hla2010/generated/` or
-  `build/generated/` so source-derived files can be regenerated instead of
-  committed
+- keep reproducible code generation under package-local `_generated/`
+  directories or `build/generated/` so source-derived files can be regenerated
+  instead of committed
 - avoid duplicating the same archive in multiple repo-local locations
 - treat bibliographic and archive-reference material as non-normative source
   context unless another tracked artifact cites it as normative evidence
@@ -24,8 +24,7 @@ Extraction note:
   related docstrings
 - generated verification packets and matrices are intentionally excluded from
   the clean repo seed
-- `hla2010/raw_api.py` is the last source-derived compatibility file that still
-  lives in the tracked package root; new generated code should go into the
-  generated-code bucket above
+- `hla.rti1516e.raw_api` is retained source-derived metadata; new generated
+  standard API code should go into the package-local `_generated/` bucket above
 
 Use this page when you want the policy story rather than the inventory.

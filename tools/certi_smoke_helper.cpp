@@ -403,6 +403,11 @@ public:
         return parameter_handles_.intern(handle);
     }
 
+    int intern_dimension_handle(rti1516e::DimensionHandle handle)
+    {
+        return dimension_handles_.intern(handle);
+    }
+
     int intern_object_instance_handle(rti1516e::ObjectInstanceHandle handle)
     {
         return object_instance_handles_.intern(handle);
@@ -436,6 +441,11 @@ public:
     rti1516e::ParameterHandle resolve_parameter_handle(int id) const
     {
         return parameter_handles_.resolve(id);
+    }
+
+    rti1516e::DimensionHandle resolve_dimension_handle(int id) const
+    {
+        return dimension_handles_.resolve(id);
     }
 
     rti1516e::ObjectInstanceHandle resolve_object_instance_handle(int id) const
@@ -530,6 +540,18 @@ public:
         ok("IEEE 1516-2010");
     }
 
+    void request_federation_save(const std::vector<std::string>& fields)
+    {
+        const std::wstring label = widen_ascii(percent_decode(fields.at(1)));
+        if (fields.size() >= 4 && !percent_decode(fields.at(3)).empty()) {
+            RTI1516fedTime timestamp(parse_logical_time_argument(fields));
+            rti_->requestFederationSave(label, timestamp);
+        } else {
+            rti_->requestFederationSave(label);
+        }
+        ok();
+    }
+
     void get_federate_handle(const std::vector<std::string>& fields)
     {
         rti1516e::FederateHandle handle = rti_->getFederateHandle(widen_ascii(percent_decode(fields.at(1))));
@@ -565,6 +587,12 @@ public:
         ok(narrow_ascii(rti_->getAttributeName(
             resolve_object_class_handle(std::atoi(percent_decode(fields.at(1)).c_str())),
             resolve_attribute_handle(std::atoi(percent_decode(fields.at(2)).c_str())))));
+    }
+
+    void get_dimension_handle(const std::vector<std::string>& fields)
+    {
+        rti1516e::DimensionHandle handle = rti_->getDimensionHandle(widen_ascii(percent_decode(fields.at(1))));
+        ok(std::to_string(intern_dimension_handle(handle)));
     }
 
     void publish_object_class_attributes(const std::vector<std::string>& fields)
@@ -628,6 +656,14 @@ public:
             make_variable_length_data(hex_decode_string(percent_decode(fields.at(3)))),
             timestamp);
         ok(std::to_string(intern_retraction_handle(handle)));
+    }
+
+    void delete_object_instance(const std::vector<std::string>& fields)
+    {
+        rti_->deleteObjectInstance(
+            resolve_object_instance_handle(std::atoi(percent_decode(fields.at(1)).c_str())),
+            make_variable_length_data(hex_decode_string(percent_decode(fields.at(2)))));
+        ok();
     }
 
     void change_attribute_order_type(const std::vector<std::string>& fields)
@@ -1099,6 +1135,7 @@ private:
     HandleRegistry<rti1516e::AttributeHandle> attribute_handles_;
     HandleRegistry<rti1516e::InteractionClassHandle> interaction_class_handles_;
     HandleRegistry<rti1516e::ParameterHandle> parameter_handles_;
+    HandleRegistry<rti1516e::DimensionHandle> dimension_handles_;
     HandleRegistry<rti1516e::ObjectInstanceHandle> object_instance_handles_;
     HandleRegistry<rti1516e::MessageRetractionHandle> retraction_handles_;
     std::deque<PendingEvent> pending_events_;
@@ -1462,6 +1499,8 @@ int main()
                 session.disconnect();
             } else if (command == "GET_HLA_VERSION") {
                 session.get_hla_version();
+            } else if (command == "REQUEST_FEDERATION_SAVE") {
+                session.request_federation_save(fields);
             } else if (command == "GET_FEDERATE_HANDLE") {
                 session.get_federate_handle(fields);
             } else if (command == "GET_FEDERATE_NAME") {
@@ -1474,6 +1513,8 @@ int main()
                 session.get_attribute_handle(fields);
             } else if (command == "GET_ATTRIBUTE_NAME") {
                 session.get_attribute_name(fields);
+            } else if (command == "GET_DIMENSION_HANDLE") {
+                session.get_dimension_handle(fields);
             } else if (command == "PUBLISH_OBJECT_CLASS_ATTRIBUTES") {
                 session.publish_object_class_attributes(fields);
             } else if (command == "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES") {
@@ -1490,6 +1531,8 @@ int main()
                 session.update_attribute_values(fields);
             } else if (command == "UPDATE_ATTRIBUTE_VALUES_TIMESTAMP") {
                 session.update_attribute_values_timestamp(fields);
+            } else if (command == "DELETE_OBJECT_INSTANCE") {
+                session.delete_object_instance(fields);
             } else if (command == "CHANGE_ATTRIBUTE_ORDER_TYPE") {
                 session.change_attribute_order_type(fields);
             } else if (command == "GET_INTERACTION_CLASS_HANDLE") {
@@ -1591,9 +1634,12 @@ int main()
         HANDLE_RTI_EXCEPTION(FederateOwnsAttributes)
         HANDLE_RTI_EXCEPTION(FederateNotExecutionMember)
         HANDLE_RTI_EXCEPTION(NameNotFound)
+        HANDLE_RTI_EXCEPTION(LogicalTimeAlreadyPassed)
         HANDLE_RTI_EXCEPTION(ObjectInstanceNotKnown)
+        HANDLE_RTI_EXCEPTION(DeletePrivilegeNotHeld)
         HANDLE_RTI_EXCEPTION(InvalidObjectClassHandle)
         HANDLE_RTI_EXCEPTION(InvalidAttributeHandle)
+        HANDLE_RTI_EXCEPTION(InvalidDimensionHandle)
         HANDLE_RTI_EXCEPTION(AttributeNotDefined)
         HANDLE_RTI_EXCEPTION(InvalidInteractionClassHandle)
         HANDLE_RTI_EXCEPTION(InvalidParameterHandle)

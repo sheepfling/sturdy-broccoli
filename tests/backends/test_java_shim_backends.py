@@ -35,10 +35,10 @@ def test_java_like_exceptions_translate_to_python_rti_exceptions():
     # Destroying a federation before connect should first show NotConnected.  We
     # then connect and ask for a missing federation to prove Java simple class
     # names map into the Python exception hierarchy.
-    from hla.rti1516e.spec import FederateAmbassadorSpec
+    from hla.rti1516e import NullFederateAmbassador
     from hla.rti1516e.enums import CallbackModel
 
-    rti.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
+    rti.connect(NullFederateAmbassador(), CallbackModel.HLA_EVOKED)
     with pytest.raises(FederationExecutionDoesNotExist):
         rti.destroy_federation_execution("missing")
     rti.disconnect()

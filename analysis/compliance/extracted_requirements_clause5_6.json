@@ -14,7 +14,7 @@
         "requirements/hla1516_1_federate_interface.csv"
       ],
       "certi_runtime_status": "",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -28,7 +28,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75",
       "service_group": "Declaration Management",
       "source": "requirements/hla1516_1_federate_interface.csv",
       "status": "planned",
@@ -46,7 +46,7 @@
         "requirements/hla1516_1_federate_interface.csv"
       ],
       "certi_runtime_status": "",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -60,7 +60,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-OM-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76",
       "service_group": "Object Management",
       "source": "requirements/hla1516_1_federate_interface.csv",
       "status": "planned",
@@ -81,11 +81,11 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishInteractionClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -114,7 +114,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.1-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -134,14 +134,14 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishInteractionClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -177,7 +177,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.1-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -198,15 +198,15 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClassWithRegions",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -252,7 +252,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.1-003",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -272,14 +272,14 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla2010/time_management.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishInteractionClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/time_management.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -314,7 +314,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.1-004",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -332,7 +332,7 @@
       "artifact_refs": [],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla2010/fom.py::merge_fom_modules",
         "hla2010/fom.py::parse_fom_xml"
@@ -358,7 +358,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.1.1-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.1.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.1",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -378,12 +378,12 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla2010/fom.py::parse_fom_xml",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/fom.py::parse_fom_xml",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -412,7 +412,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.1.1-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.1.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.1",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -432,12 +432,12 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla2010/fom.py::parse_fom_xml",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishInteractionClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/fom.py::parse_fom_xml",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -466,7 +466,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.1.1-003",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.1.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.1",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -486,12 +486,12 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -523,7 +523,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.1.2-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.1.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.2",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -544,13 +544,13 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassively",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -578,7 +578,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.1.2-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.1.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.2",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -598,11 +598,11 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishInteractionClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishInteractionClass",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -631,7 +631,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.1.3-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.1.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.3",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -652,12 +652,12 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClassPassively",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeInteractionClass",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -684,7 +684,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.1.3-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.1.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.3",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -704,13 +704,13 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClassWithRegions",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -745,7 +745,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.1.5-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.1.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.5",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -765,13 +765,13 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassively",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassivelyWithRegions",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -809,7 +809,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.1.6-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.1.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.1.6",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "partial",
@@ -829,10 +829,10 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -855,7 +855,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.2-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.2",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -875,11 +875,11 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -912,7 +912,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.2-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.2",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -932,10 +932,10 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -958,7 +958,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.2-003",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.2",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -978,11 +978,11 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -1004,7 +1004,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.3-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.3",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1024,12 +1024,12 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1061,7 +1061,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.3-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.3",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1081,10 +1081,10 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishInteractionClass",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -1107,7 +1107,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.4-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.4",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1127,11 +1127,11 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishInteractionClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1164,7 +1164,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.4-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.4",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1184,10 +1184,10 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishInteractionClass",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -1206,7 +1206,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.5-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.5",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1226,11 +1226,11 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unpublishInteractionClass",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1259,7 +1259,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.5-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.5",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1279,11 +1279,11 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesPassively",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -1305,7 +1305,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.6-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.6",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1326,12 +1326,12 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1361,7 +1361,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.6-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.6",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1382,12 +1382,12 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1420,7 +1420,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.6-003",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.6",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1440,11 +1440,11 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -1466,7 +1466,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.7-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.7",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1486,13 +1486,13 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1520,7 +1520,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.7-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.7",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1540,11 +1540,11 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClassPassively",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -1566,7 +1566,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.8-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.8",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1587,12 +1587,12 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1618,7 +1618,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.8-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.8",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1638,10 +1638,10 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeInteractionClass",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -1660,7 +1660,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.9-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.9",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1680,7 +1680,7 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -1700,7 +1700,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.10-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.10",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1720,7 +1720,7 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -1740,7 +1740,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.11-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.11",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1760,7 +1760,7 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -1780,7 +1780,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.12-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.12",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1800,7 +1800,7 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -1820,7 +1820,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-DM-5.13-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a75.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a75.13",
       "service_group": "Declaration management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1841,13 +1841,13 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_deleteObjectInstance",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_localDeleteObjectInstance",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1888,7 +1888,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1914,12 +1914,12 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -1947,7 +1947,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -1973,13 +1973,13 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2012,7 +2012,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1.1-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.1",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -2038,12 +2038,12 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2075,7 +2075,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1.1-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.1",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -2101,7 +2101,7 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -2130,7 +2130,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1.1-003",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.1",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -2156,12 +2156,12 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2191,7 +2191,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1.1-004",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1.1",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.1",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -2216,12 +2216,12 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2254,7 +2254,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1.2-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.2",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -2280,13 +2280,13 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2324,7 +2324,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1.3-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.3",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -2349,7 +2349,7 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -2381,7 +2381,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1.4-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.4",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -2406,15 +2406,15 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_attributeOwnershipAcquisition",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_attributeOwnershipAcquisitionIfAvailable",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2453,7 +2453,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1.5-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.5",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -2478,13 +2478,13 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_deleteObjectInstance",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_localDeleteObjectInstance",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2524,7 +2524,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1.6-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.6",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -2550,13 +2550,13 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2587,7 +2587,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1.7-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.7",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -2612,7 +2612,7 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryInteractionTransportationType",
@@ -2620,7 +2620,7 @@
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestInteractionTransportationTypeChange",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2670,7 +2670,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1.10-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.10",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
@@ -2695,13 +2695,13 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryInteractionTransportationType",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestAttributeTransportationTypeChange",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestInteractionTransportationTypeChange",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2743,7 +2743,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1.10-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.10",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -2768,12 +2768,12 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/object_delivery.py",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/ddm.py",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/save_restore.py",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/state.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/ddm.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/save_restore.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/state.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2807,7 +2807,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1.10-003",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.10",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -2833,7 +2833,7 @@
       ],
       "certi_runtime_status": "",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -2861,7 +2861,7 @@
       ],
       "python_runtime_status": "",
       "requirement_id": "HLA1516.1-OM-6.1.11-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.11",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
@@ -2883,13 +2883,13 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributesWithRegions",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -2926,7 +2926,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.1.12-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.1.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.1.12",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
@@ -2951,10 +2951,10 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_reserveObjectInstanceName",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -2977,7 +2977,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.2-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.2",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.2",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3002,7 +3002,7 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -3022,7 +3022,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.3-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.3",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.3",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3047,10 +3047,10 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_releaseObjectInstanceName",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -3073,7 +3073,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.4-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.4",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.4",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3098,10 +3098,10 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_reserveMultipleObjectInstanceName",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -3124,7 +3124,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.5-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.5",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.5",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3149,7 +3149,7 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -3169,7 +3169,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.6-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.6",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.6",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3194,10 +3194,10 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_releaseMultipleObjectInstanceName",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -3220,7 +3220,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.7-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.7",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.7",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3245,10 +3245,10 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -3271,7 +3271,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.8-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.8",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3297,11 +3297,11 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -3336,7 +3336,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.8-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.8",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3362,10 +3362,10 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -3392,7 +3392,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.8-003",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.8",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3418,11 +3418,11 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_registerObjectInstance",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_reserveObjectInstanceName",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -3454,7 +3454,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.8-004",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.8",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.8",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3480,7 +3480,7 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -3507,7 +3507,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.9-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.9",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.9",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3532,10 +3532,10 @@
       ],
       "certi_runtime_status": "yes",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -3558,7 +3558,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.10-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.10",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3587,11 +3587,11 @@
       ],
       "certi_runtime_status": "yes",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -3619,7 +3619,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.10-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.10",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3649,13 +3649,13 @@
       ],
       "certi_runtime_status": "yes",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -3693,7 +3693,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.10-003",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.10",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3722,13 +3722,13 @@
       ],
       "certi_runtime_status": "yes",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
         "hla2010/ambassadors.py",
         "hla2010/time_management.py",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_updateAttributeValues",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -3757,7 +3757,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.10-004",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.10",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3786,10 +3786,10 @@
       ],
       "certi_runtime_status": "yes",
       "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/object_delivery.py",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/state.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/state.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -3811,7 +3811,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.10-005",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.10",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.10",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3840,7 +3840,7 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -3863,7 +3863,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.11-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.11",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3888,7 +3888,7 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py",
@@ -3922,7 +3922,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.11-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.11",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.11",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -3947,10 +3947,10 @@
       ],
       "certi_runtime_status": "yes",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -3973,7 +3973,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.12-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.12",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4002,11 +4002,11 @@
       ],
       "certi_runtime_status": "yes",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_publishInteractionClass",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -4034,7 +4034,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.12-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.12",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4063,11 +4063,11 @@
       ],
       "certi_runtime_status": "yes",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "hla2010/fom.py::parse_fom_xml",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/fom.py::parse_fom_xml",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4095,7 +4095,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.12-003",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.12",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4124,13 +4124,13 @@
       ],
       "certi_runtime_status": "yes",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
         "hla2010/ambassadors.py",
         "hla2010/time_management.py",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_sendInteraction",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4157,7 +4157,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.12-004",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.12",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4186,11 +4186,11 @@
       ],
       "certi_runtime_status": "yes",
       "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/object_delivery.py",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/ddm.py",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/state.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/ddm.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/state.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4212,7 +4212,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.12-005",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.12",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.12",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4242,12 +4242,12 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeInteractionClass",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4273,7 +4273,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.13-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.13",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.13",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4298,10 +4298,10 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_deleteObjectInstance",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -4328,7 +4328,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.14-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.14",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4353,13 +4353,13 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
+        "hla.backends.inmemory.backend.PythonRTIBackend._svc_deleteObjectInstance",
         "hla2010/ambassadors.py",
         "hla2010/time_management.py",
-        "hla.backends.inmemory.backend.PythonRTIBackend._svc_deleteObjectInstance",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4394,7 +4394,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.14-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.14",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.14",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4420,7 +4420,7 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -4449,7 +4449,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.15-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.15",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.15",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4474,10 +4474,10 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_localDeleteObjectInstance",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -4500,7 +4500,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.16-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.16",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4525,10 +4525,10 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_localDeleteObjectInstance",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4554,7 +4554,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.16-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.16",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.16",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4579,7 +4579,7 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -4603,7 +4603,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.17-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.17",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.17",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4628,7 +4628,7 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -4652,7 +4652,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.18-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.18",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.18",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4677,10 +4677,10 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestAttributeValueUpdate",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [],
@@ -4707,7 +4707,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.19-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.19",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4732,12 +4732,12 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestAttributeValueUpdate",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4771,7 +4771,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.19-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.19",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.19",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4796,13 +4796,13 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_subscribeObjectClassAttributes",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4828,7 +4828,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.21-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.21",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.21",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4853,7 +4853,7 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -4877,7 +4877,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.21-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.21",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.21",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4902,13 +4902,13 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
-        "hla2010/ambassadors.py",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_localDeleteObjectInstance",
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_unsubscribeObjectClassAttributes",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "hla2010/ambassadors.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4940,7 +4940,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.22-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.22",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.22",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -4965,10 +4965,10 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestAttributeTransportationTypeChange",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -4999,7 +4999,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.23-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.23",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
@@ -5024,11 +5024,11 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/object_delivery.py",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/save_restore.py",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/state.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/save_restore.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/state.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -5054,7 +5054,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.23-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.23",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.23",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -5079,7 +5079,7 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -5103,7 +5103,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.24-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.24",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.24",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
@@ -5128,9 +5128,9 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/object_delivery.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -5150,7 +5150,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.24-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.24",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.24",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -5175,9 +5175,9 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/object_delivery.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -5198,7 +5198,7 @@
       "positive_test_refs": [],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.24-003",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.24",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.24",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -5223,10 +5223,10 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryAttributeTransportationType",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -5251,7 +5251,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.25-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.25",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.25",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
@@ -5276,9 +5276,9 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/object_delivery.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -5301,7 +5301,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.25-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.25",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.25",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -5326,7 +5326,7 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -5351,7 +5351,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.26-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.26",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
@@ -5376,9 +5376,9 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/object_delivery.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -5398,7 +5398,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.26-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.26",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -5423,9 +5423,9 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/object_delivery.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -5446,7 +5446,7 @@
       "positive_test_refs": [],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.26-003",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.26",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.26",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -5471,10 +5471,10 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_requestInteractionTransportationTypeChange",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -5505,7 +5505,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.27-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.27",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
@@ -5530,12 +5530,12 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/object_delivery.py",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/ddm.py",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/save_restore.py",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/state.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/ddm.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/save_restore.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/state.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -5561,7 +5561,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.27-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.27",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.27",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -5586,7 +5586,7 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -5610,7 +5610,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.28-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.28",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.28",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
@@ -5635,9 +5635,9 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/object_delivery.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -5657,7 +5657,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.28-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.28",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.28",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -5682,9 +5682,9 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/object_delivery.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -5705,7 +5705,7 @@
       "positive_test_refs": [],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.28-003",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.28",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.28",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -5730,10 +5730,10 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "hla.backends.inmemory.backend.PythonRTIBackend._svc_queryInteractionTransportationType",
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/backend.py"
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/backend.py"
       ],
       "kind": "extracted-requirement",
       "linked_assets": [
@@ -5764,7 +5764,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.29-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.29",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.29",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
@@ -5789,9 +5789,9 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/object_delivery.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -5814,7 +5814,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.29-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.29",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.29",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -5839,7 +5839,7 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "broad-spec",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
         "RecordingFederateAmbassador callback + snake_case alias",
         "hla2010/ambassadors.py"
@@ -5864,7 +5864,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.30-001",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.30",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "partial",
@@ -5889,9 +5889,9 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/object_delivery.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -5911,7 +5911,7 @@
       ],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.30-002",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.30",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",
@@ -5936,9 +5936,9 @@
       ],
       "certi_runtime_status": "no",
       "claim_scope": "supported-subset",
-      "document": "IEEE 1516.1-2010",
+      "document": "IEEE 1516.1-2010 (2010 edition)",
       "implementation_refs": [
-        "packages/hla-backend-inmemory/src/hla/backends/inmemory/object_delivery.py",
+        "packages/hla-backend-inmemory/src/hla.backends.inmemory/object_delivery.py",
         "hla2010/ambassadors.py"
       ],
       "kind": "extracted-requirement",
@@ -5959,7 +5959,7 @@
       "positive_test_refs": [],
       "python_runtime_status": "yes",
       "requirement_id": "HLA1516.1-OM-6.30-003",
-      "section_ref": "IEEE 1516.1-2010 \u00a76.30",
+      "section_ref": "IEEE 1516.1-2010 (2010 edition) \u00a76.30",
       "service_group": "Object management",
       "source": "curated-clause5-6",
       "status": "pass",

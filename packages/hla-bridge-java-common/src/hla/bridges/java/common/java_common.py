@@ -43,9 +43,9 @@ from hla.backends.common.invocation import (
 from hla.rti1516e.exceptions import FederateInternalError, RTIexception, RTIinternalError
 from hla.rti1516e.fom import module_uri
 from hla.rti1516e.raw_api import API_METADATA
-from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.rti1516e import NullFederateAmbassador
 from hla.rti1516e.time import HLAfloat64Interval, HLAfloat64Time, HLAinteger64Interval, HLAinteger64Time
-from hla.rti1516e.types import FederationExecutionInformation, RangeBounds
+from hla.rti1516e.datatypes import FederationExecutionInformation, RangeBounds
 
 _PYTHON_ENUM_BY_JAVA_SIMPLE_NAME: dict[str, type[Enum]] = {
     name: value
@@ -330,6 +330,8 @@ class JavaValueConverter(ValueConverter):
                 rti_ambassador=self.rti_ambassador,
             )
 
+        if isinstance(value, RangeBounds):
+            return self.bridge.range_bounds(value)
         if isinstance(value, tuple):
             return tuple(self.to_backend(item) for item in value)
         if isinstance(value, list):
@@ -340,8 +342,6 @@ class JavaValueConverter(ValueConverter):
             return self.bridge.new_map([(self.to_backend(k), self.to_backend(v)) for k, v in value.items()])
         if isinstance(value, (HLAinteger64Time, HLAinteger64Interval, HLAfloat64Time, HLAfloat64Interval)):
             return self.bridge.logical_time(value, rti_ambassador=self.rti_ambassador)
-        if isinstance(value, RangeBounds):
-            return self.bridge.range_bounds(value)
         return super().to_backend(value)
 
     def to_backend_enum(self, value: Enum) -> Any:
@@ -567,7 +567,7 @@ def expected_java_callback_parameter_types(method_name: str, arg_count: int | No
 class PythonFederateAmbassadorDispatcher:
     """Dispatch Java FederateAmbassador callbacks to a Python ambassador."""
 
-    def __init__(self, ambassador: FederateAmbassadorSpec, converter: JavaValueConverter):
+    def __init__(self, ambassador: NullFederateAmbassador, converter: JavaValueConverter):
         self.ambassador = ambassador
         self.converter = converter
 
@@ -773,7 +773,7 @@ class JavaRTIBackend(RTIBackend):
         self.converter.rti_ambassador = java_rti_ambassador
         self.info = info or BackendInfo(name=bridge.name, kind="java")
         self.connect_local_settings_designator = connect_local_settings_designator
-        self._connected_ambassador_proxies: list[tuple[FederateAmbassadorSpec, PythonFederateAmbassadorDispatcher, Any]] = []
+        self._connected_ambassador_proxies: list[tuple[NullFederateAmbassador, PythonFederateAmbassadorDispatcher, Any]] = []
 
     def invoke(self, invocation: Invocation) -> Any:
         if (
@@ -793,7 +793,7 @@ class JavaRTIBackend(RTIBackend):
         result = self.bridge.call(self.java_rti_ambassador, invocation.method_name, *backend_args)
         return self.converter.from_backend(result, expected_type_name=expected_java_return_type(invocation))
 
-    def adapt_federate_ambassador(self, ambassador: FederateAmbassadorSpec) -> Any:
+    def adapt_federate_ambassador(self, ambassador: NullFederateAmbassador) -> Any:
         dispatcher = PythonFederateAmbassadorDispatcher(ambassador, self.converter)
         proxy = self.bridge.create_federate_proxy(dispatcher)
         # JPype and Py4J callback objects need a live Python-side reference or

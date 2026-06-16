@@ -9,7 +9,7 @@ from hla.rti1516e.enums import CallbackModel
 from hla.rti1516e.exceptions import NameNotFound
 from hla.rti1516e.handles import AttributeHandle, AttributeHandleValueMap, FederateHandleSet, ObjectInstanceHandle
 from hla.rti1516e.factory import create_rti_ambassador
-from hla.rti1516e.types import RangeBounds
+from hla.rti1516e.datatypes import RangeBounds
 from hla.verification import (
     SynchronizationScenarioConfig,
     run_failed_federate_synchronization_scenario,

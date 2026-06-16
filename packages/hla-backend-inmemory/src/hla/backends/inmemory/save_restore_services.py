@@ -5,7 +5,7 @@ from typing import Any
 
 from hla.rti1516e.enums import RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
 from hla.rti1516e.exceptions import LogicalTimeAlreadyPassed
-from hla.rti1516e.types import FederateHandleSaveStatusPair, FederateRestoreStatus
+from hla.rti1516e.datatypes import FederateHandleSaveStatusPair, FederateRestoreStatus
 
 from .save_restore_state import PythonRTISaveRestoreStateMixin
 

@@ -11,7 +11,7 @@ from hla.rti1516e.backends.python_rti import InMemoryRTIEngine, PythonRTIConfig
 from hla.rti1516e.enums import CallbackModel, OrderType
 from hla.rti1516e.exceptions import FederateServiceInvocationsAreBeingReportedViaMOM
 from hla.rti1516e.rti import create_rti_ambassador
-from hla.rti1516e.types import RangeBounds
+from hla.rti1516e.datatypes import RangeBounds
 
 
 def _rti(engine: InMemoryRTIEngine, *, config: PythonRTIConfig | None = None):

@@ -36,9 +36,9 @@ Do not assume:
 
 ## Repo Mental Model
 
-- `src/hla2010/` is the main Python package root
-- `hla2010/` is a narrow shim area
-- `packages/*/src/` owns split backend and support implementations
+- `packages/hla-rti1516e/src/hla/rti1516e/` owns the IEEE 1516.1-2010 API
+- `packages/hla-rti-core/src/hla/rti/` owns cross-version discovery and factories
+- `packages/*/src/` owns backend, transport, bridge, FOM, and support implementations
 - `examples/` contains runnable entrypoints
 - `tools/` contains the human-facing vendor/runtime entrypoints
 - `scripts/` contains bootstrap, CI, and implementation entrypoints

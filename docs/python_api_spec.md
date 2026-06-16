@@ -7,8 +7,9 @@ interface without reading the full workspace layout first.
 
 If you only need the supported import ladder, use:
 
-- `from hla.rti1516e.spec import RTIambassadorSpec, FederateAmbassadorSpec`
-- `from hla.rti1516e.runtime_api import RTIambassador, FederateAmbassador`
+- `from hla.rti1516e import RTIambassador, FederateAmbassador, NullFederateAmbassador`
+- `from hla.rti1516e.rti_ambassador import RTIambassador`
+- `from hla.rti1516e.federate_ambassador import FederateAmbassador`
 - `from hla.backends.inmemory import rti_ambassador`
 - `from hla.foms.target_radar.scenarios import run_target_radar_scenario`
 
@@ -18,15 +19,15 @@ If you only need the supported import ladder, use:
 - versioned API root: `packages/hla-rti1516e/src/hla/rti1516e/`
 - package-owned implementations: `packages/*/src/...`
 
-The installable root owns the 2010 API surface and spec-facing support modules.
+The installable root owns the 2010 strict API surface and spec-facing support modules.
 cross-version discovery and factory selection live under `hla.rti`.
 
 ## Canonical Files
 
 - [`../packages/hla-rti1516e/README.md`](../packages/hla-rti1516e/README.md): installable root package role
-- [`../packages/hla-rti1516e/src/hla/rti1516e/spec/__init__.py`](../packages/hla-rti1516e/src/hla/rti1516e/spec/__init__.py): clean abstract/prototype spec surface
-- [`../packages/hla-rti1516e/src/hla/rti1516e/runtime_api.py`](../packages/hla-rti1516e/src/hla/rti1516e/runtime_api.py): runtime-facing convenience facade
-- [`../packages/hla-rti1516e/src/hla/rti1516e/api.py`](../packages/hla-rti1516e/src/hla/rti1516e/api.py): compatibility shim that re-exports the runtime layer
+- [`../packages/hla-rti1516e/src/hla/rti1516e/rti_ambassador.py`](../packages/hla-rti1516e/src/hla/rti1516e/rti_ambassador.py): strict source-shaped `RTIambassador` protocol
+- [`../packages/hla-rti1516e/src/hla/rti1516e/federate_ambassador.py`](../packages/hla-rti1516e/src/hla/rti1516e/federate_ambassador.py): strict source-shaped `FederateAmbassador` protocol and no-op callback sink
+- [`../packages/hla-rti1516e/src/hla/rti1516e/api.py`](../packages/hla-rti1516e/src/hla/rti1516e/api.py): compatibility shim that re-exports the strict surface
 - [`../packages/hla-rti1516e/src/hla/rti1516e/spec_inventory.py`](../packages/hla-rti1516e/src/hla/rti1516e/spec_inventory.py): plain-text method inventory used by the spec layer
 - [`../packages/hla-rti1516e/src/hla/rti1516e/spec_sources.py`](../packages/hla-rti1516e/src/hla/rti1516e/spec_sources.py): readable Java/C++ source locations surfaced in docstrings
 - [`../packages/hla-rti1516e/src/hla/rti1516e/spec_refs.py`](../packages/hla-rti1516e/src/hla/rti1516e/spec_refs.py): clause and service references used for traceability
@@ -36,52 +37,50 @@ cross-version discovery and factory selection live under `hla.rti`.
 
 | Use case | Import |
 |---|---|
-| Abstract spec contracts | `from hla.rti1516e.spec import RTIambassadorSpec, FederateAmbassadorSpec` |
-| Runtime convenience facade | `from hla.rti1516e.runtime_api import RTIambassador, FederateAmbassador` |
+| Canonical 2010 spec contracts | `from hla.rti1516e import RTIambassador, FederateAmbassador` |
+| No-op callback base | `from hla.rti1516e import NullFederateAmbassador` |
 | Scenario / FOM entrypoint | `from hla.foms.target_radar.scenarios import run_target_radar_scenario` |
 | Verification harness | `from hla.verification import run_basic_federate_scenario` |
 
 ## Recommended Imports
 
-For new Python code, prefer the spec module:
+For new Python code, prefer the versioned package root:
 
 ```python
-from hla.rti1516e.spec import RTIambassadorSpec, FederateAmbassadorSpec
+from hla.rti1516e import FederateAmbassador, RTIambassador
 ```
 
-Use `RTIambassadorSpec` as the abstract contract for RTI implementations.
-Use `FederateAmbassadorSpec` as the no-op prototype base for callback handlers.
+Use `RTIambassador` as the protocol contract for RTI implementations.
+Use `FederateAmbassador` as the protocol contract for callback handlers.
 
-If you want the runtime convenience layer instead of the pure contract layer:
+If you need an instantiable no-op callback sink:
 
 ```python
-from hla.rti1516e.runtime_api import RTIambassador, FederateAmbassador
+from hla.rti1516e import NullFederateAmbassador
 ```
 
 ## Why This Split Exists
 
-- `hla-rti1516e` is the installable root package for the clean spec surface.
-- `packages/hla-rti1516e/src/hla/rti1516e/spec/__init__.py` exposes the abstract base classes and prototypes.
-- `packages/hla-rti1516e/src/hla/rti1516e/runtime_api.py` keeps runtime adapters working without forcing callers onto raw source-derived names.
-- `packages/hla-rti1516e/src/hla/rti1516e/api.py` re-exports the runtime layer inside the versioned package.
+- `hla-rti1516e` is the installable root package for the strict spec surface.
+- `packages/hla-rti1516e/src/hla/rti1516e/rti_ambassador.py` and `federate_ambassador.py` expose source-shaped protocols.
+- `packages/hla-rti1516e/src/hla/rti1516e/api.py` re-exports the strict surface inside the versioned package.
 - `packages/hla-rti1516e/src/hla/rti1516e/spec_inventory.py`, `spec_sources.py`, and `spec_refs.py` keep source mappings readable rather than hiding them in opaque blobs.
 
-That keeps the spec-like surface clean while still preserving the source
+That keeps the spec surface aligned with Java/C++ names while still preserving the source
 mapping needed for traceability.
 
 ## Minimal Pattern
 
 ```python
-from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.rti1516e import FederateAmbassador
 
 
-class MyFederate(FederateAmbassadorSpec):
-    def time_advance_grant(self, logical_time):
+class MyFederate(FederateAmbassador):
+    def timeAdvanceGrant(self, logical_time):
         print("granted", logical_time)
 ```
 
-The camelCase callback names remain available for compatibility, but the
-snake_case overrides are the intended Python style.
+The canonical callback names are the standard lowerCamelCase service names.
 
 ## Read Next
 

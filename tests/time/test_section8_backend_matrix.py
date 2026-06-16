@@ -22,7 +22,7 @@ from hla.verification import (
     run_section8_tar_galt_boundary_case,
     section8_matrix_config,
 )
-from hla.rti1516e.types import TimeQueryReturn
+from hla.rti1516e.datatypes import TimeQueryReturn
 from hla.backends.inmemory import InMemoryRTIEngine
 from hla.transports.rest.rest_transport_host import start_python_rest_server
 

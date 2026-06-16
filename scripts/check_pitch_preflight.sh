@@ -12,8 +12,17 @@ PITCH_ZIP="${ROOT_DIR}/third_party/pitch/HLA_PITCH_linux.zip"
 PITCH_LOCAL_ARCHIVE_DIR="${ROOT_DIR}/third_party/pitch/HLA_PITCH_linux"
 CONTAINER_NAME="${HLA2010_PITCH_DOCKER_NAME:-hla2010-pitch-crc}"
 IMAGE_NAME="${HLA2010_PITCH_DOCKER_IMAGE:-hla2010-pitch-prti-free-crc:5.5.10}"
+CRC_PORT_EXPLICIT=0
+FEDPRO_PORT_EXPLICIT=0
+if [[ -n "${HLA2010_PITCH_CRC_PORT+x}" ]]; then
+  CRC_PORT_EXPLICIT=1
+fi
+if [[ -n "${HLA2010_PITCH_FEDPRO_PORT+x}" ]]; then
+  FEDPRO_PORT_EXPLICIT=1
+fi
 CRC_PORT="${HLA2010_PITCH_CRC_PORT:-8989}"
 FEDPRO_PORT="${HLA2010_PITCH_FEDPRO_PORT:-15164}"
+AUTO_PORTS="${HLA2010_PITCH_AUTO_PORTS:-1}"
 OUTPUT_JSON=0
 OUTPUT_JSON_FILE=""
 NEXT_IS_JSON_FILE=0
@@ -43,6 +52,9 @@ resolve_pitch_home() {
   if [[ -n "${HLA2010_PITCH_HOME:-}" && -d "${HLA2010_PITCH_HOME:-}" ]]; then
     printf '%s\n' "$HLA2010_PITCH_HOME"
     return 0
+  fi
+  if [[ -n "${HLA2010_PITCH_HOME:-}" ]]; then
+    return 1
   fi
   if [[ -d "$ROOT_DIR/third_party/pitch/PITCH-prti1516e-manual" ]]; then
     printf '%s\n' "$ROOT_DIR/third_party/pitch/PITCH-prti1516e-manual"
@@ -236,6 +248,25 @@ raise SystemExit(0)
 PY
 }
 
+find_available_port() {
+  local python_bin
+  python_bin="$(hla2010_shell_python_bin)"
+  "$python_bin" - "$@" <<'PY'
+import socket
+import sys
+
+forbidden = {int(item) for item in sys.argv[1:] if item}
+for _ in range(128):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind(("127.0.0.1", 0))
+        port = int(sock.getsockname()[1])
+    if port not in forbidden:
+        print(port)
+        raise SystemExit(0)
+raise SystemExit(1)
+PY
+}
+
 status=0
 platform="$(uname -s -r -m)"
 docker_status="ok"
@@ -302,7 +333,9 @@ if resolved_home="$(resolve_pitch_home)"; then
 else
   status=1
   bundle_status="blocked"
-  if [[ -f "$PITCH_ZIP" ]]; then
+  if [[ -n "${HLA2010_PITCH_HOME:-}" ]]; then
+    bundle_detail="blocked: HLA2010_PITCH_HOME does not point at a Pitch runtime directory: $HLA2010_PITCH_HOME"
+  elif [[ -f "$PITCH_ZIP" ]]; then
     bundle_detail="blocked: archive exists at $PITCH_ZIP but extraction failed"
   elif [[ -d "$PITCH_LOCAL_ARCHIVE_DIR" ]]; then
     bundle_detail="blocked: extracted archive exists at $PITCH_LOCAL_ARCHIVE_DIR but $PITCH_BUNDLE_DIR is missing"
@@ -331,6 +364,10 @@ if [[ "$managed_container_running" -eq 1 ]]; then
   fedpro_port_detail="ok: managed container $CONTAINER_NAME is already running on 127.0.0.1:$FEDPRO_PORT"
 elif check_port_available "$CRC_PORT" >"$crc_port_check_file" 2>&1; then
   crc_port_detail="ok: 127.0.0.1:$CRC_PORT is available"
+elif [[ "$AUTO_PORTS" == "1" && "$CRC_PORT_EXPLICIT" -eq 0 ]]; then
+  old_crc_port="$CRC_PORT"
+  CRC_PORT="$(find_available_port "$FEDPRO_PORT")"
+  crc_port_detail="ok: 127.0.0.1:$old_crc_port was unavailable ($(cat "$crc_port_check_file")); selected alternate 127.0.0.1:$CRC_PORT"
 else
   status=1
   crc_port_status="blocked"
@@ -342,6 +379,10 @@ if [[ "$managed_container_running" -eq 1 ]]; then
   :
 elif check_port_available "$FEDPRO_PORT" >"$fedpro_port_check_file" 2>&1; then
   fedpro_port_detail="ok: 127.0.0.1:$FEDPRO_PORT is available"
+elif [[ "$AUTO_PORTS" == "1" && "$FEDPRO_PORT_EXPLICIT" -eq 0 ]]; then
+  old_fedpro_port="$FEDPRO_PORT"
+  FEDPRO_PORT="$(find_available_port "$CRC_PORT")"
+  fedpro_port_detail="ok: 127.0.0.1:$old_fedpro_port was unavailable ($(cat "$fedpro_port_check_file")); selected alternate 127.0.0.1:$FEDPRO_PORT"
 else
   status=1
   fedpro_port_status="blocked"

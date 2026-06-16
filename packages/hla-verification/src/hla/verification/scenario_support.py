@@ -5,13 +5,13 @@ import time
 from dataclasses import dataclass, field
 from typing import Any
 
+from hla.rti1516e import NullFederateAmbassador
 from hla.rti1516e.exceptions import CallNotAllowedFromWithinCallback, ObjectInstanceNameNotReserved, RTIexception
-from hla.rti1516e.spec import FederateAmbassadorSpec
 from hla.rti1516e.time import HLAinteger64Time
 
 
 @dataclass
-class DemoFederate(FederateAmbassadorSpec):
+class DemoFederate(NullFederateAmbassador):
     events: list[tuple[str, Any]] = field(default_factory=list)
 
     def discover_object_instance(self, the_object, the_object_class, object_name, *extra):

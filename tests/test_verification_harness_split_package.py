@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import json
 import re
-from hla.verification.repo_internal.conformance_evidence import focused_evidence_by_method
 from pathlib import Path
 
+from compliance_helpers import is_1516_1_2010_row
+from hla.verification.repo_internal.conformance_evidence import focused_evidence_by_method
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -16,7 +17,7 @@ def _compliance_harness_refs(*, backend: str, clauses: tuple[str, ...]) -> set[s
     return {
         ref
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") in clauses
+        if is_1516_1_2010_row(row) and row.get("clause_root") in clauses
         for ref in row["evidence_refs"]
         if ref.startswith("packages/hla-verification/src/hla.verification/")
     }
@@ -27,7 +28,7 @@ def _pitch_profile_compliance_harness_refs(*, clauses: tuple[str, ...]) -> set[s
     return {
         ref
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") in clauses
+        if is_1516_1_2010_row(row) and row.get("clause_root") in clauses
         for key in ("pitch_jpype_evidence_refs", "pitch_py4j_evidence_refs")
         for ref in row.get(key, [])
         if ref.startswith("packages/hla-verification/src/hla.verification/")
@@ -101,9 +102,9 @@ def test_verification_harness_exports_clause4_shared_scenarios() -> None:
         run_restore_callback_policy_scenario,
         run_restore_federate_local_state_scenario,
         run_restore_object_state_scenario,
-        run_scheduled_save_restore_time_state_scenario,
         run_restore_transient_state_scenario,
         run_save_restore_scenario,
+        run_scheduled_save_restore_time_state_scenario,
         run_synchronization_registration_failure_scenario,
         run_synchronization_scenario,
     )
@@ -156,9 +157,9 @@ def test_verification_harness_clause4_exports_resolve_to_package_modules() -> No
         run_restore_callback_policy_scenario,
         run_restore_federate_local_state_scenario,
         run_restore_object_state_scenario,
-        run_scheduled_save_restore_time_state_scenario,
         run_restore_transient_state_scenario,
         run_save_restore_scenario,
+        run_scheduled_save_restore_time_state_scenario,
         run_synchronization_registration_failure_scenario,
     )
 

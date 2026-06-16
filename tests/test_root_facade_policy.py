@@ -167,11 +167,11 @@ def test_only_documented_root_facades_import_split_packages() -> None:
     assert _root_modules_importing_split_packages() == {}
 
 
-def test_root_facade_docs_explicitly_name_the_remaining_split_package_facades() -> None:
+def test_root_facade_docs_explicitly_name_the_neutral_runtime_facade() -> None:
     required_fragments = (
-        "`hla.rti1516e.rti`",
-        "workspace facade",
-        "temporary",
+        "hla.rti",
+        "cross-version",
+        "PEP 420",
     )
     for path in ROOT_FACADE_DOCS:
         text = path.read_text(encoding="utf-8")
@@ -179,7 +179,7 @@ def test_root_facade_docs_explicitly_name_the_remaining_split_package_facades() 
             assert fragment in text, f"{path.relative_to(ROOT)} missing {fragment}"
 
 
-def test_high_level_docs_name_only_hla2010_rti_as_temporary_split_package_facade() -> None:
+def test_high_level_docs_name_versioned_specs_and_neutral_runtime_facade() -> None:
     required_fragments = (
         "hla.rti1516e",
         "hla.rti",
@@ -201,9 +201,8 @@ def test_high_level_docs_name_only_hla2010_rti_as_temporary_split_package_facade
 
 def test_runtime_discovery_docs_keep_direct_runtime_package_preferred_over_root_facade() -> None:
     required_fragments = (
-        "`hla.rti1516e.rti`",
-        "temporary",
         "hla.rti",
+        "backend discovery",
     )
 
     for path in DIRECT_RUNTIME_PREFERENCE_DOCS:
@@ -212,13 +211,13 @@ def test_runtime_discovery_docs_keep_direct_runtime_package_preferred_over_root_
             assert fragment in text, f"{path.relative_to(ROOT)} missing {fragment}"
 
     architecture_text = (ROOT / "docs/architecture.md").read_text(encoding="utf-8")
-    assert "temporary root-facing backend discovery and ambassador-creation" in architecture_text
+    assert "neutral spec/backend discovery and ambassador-creation facade" in architecture_text
 
     options_text = (ROOT / "docs/rti_options_and_test_matrix.md").read_text(encoding="utf-8")
-    assert "package-owned and\nnew public examples should prefer the split runtime package directly" in options_text
+    assert "hla.rti" in options_text
 
     import_boundary_text = (ROOT / "docs/import_boundary_rules.md").read_text(encoding="utf-8")
-    assert "Package-owned code should import runtime factory helpers from" in import_boundary_text
+    assert "Package-owned code should import runtime factory helpers" in import_boundary_text
 
 
 def test_package_migration_docs_do_not_claim_removed_root_compatibility_facades_remain() -> None:
@@ -290,12 +289,10 @@ def test_documented_root_workspace_facades_remain_available() -> None:
     import hla.rti1516e.ambassadors
     import hla.rti1516e.api
     import hla.rti1516e.rti
-    import hla.rti1516e.runtime_api
 
     assert hla.rti1516e.ambassadors.__name__ == "hla.rti1516e.ambassadors"
     assert hla.rti1516e.api.__name__ == "hla.rti1516e.api"
     assert hla.rti1516e.rti.__name__ == "hla.rti1516e.rti"
-    assert hla.rti1516e.runtime_api.__name__ == "hla.rti1516e.runtime_api"
 
 
 def test_root_rti_workspace_facade_is_only_used_by_deliberate_public_contract_tests() -> None:
@@ -333,10 +330,8 @@ def test_root_ambassadors_workspace_facade_is_only_used_by_deliberate_public_con
     assert hits == allowed
 
 
-def test_root_runtime_api_workspace_facade_is_only_used_by_deliberate_public_contract_tests() -> None:
-    allowed = {
-        "tests/test_root_facade_policy.py",
-    }
+def test_removed_runtime_api_workspace_facade_is_not_used_by_tests() -> None:
+    allowed: set[str] = set()
     import_pattern = re.compile(r"^\s*(from hla2010\.runtime_api import|import hla.rti1516e\.runtime_api\b)")
 
     hits: set[str] = set()

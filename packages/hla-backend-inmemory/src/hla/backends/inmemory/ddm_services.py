@@ -23,7 +23,7 @@ from hla.rti1516e.handles import (
     ParameterHandle,
     RegionHandle,
 )
-from hla.rti1516e.types import MessageRetractionReturn, RangeBounds
+from hla.rti1516e.datatypes import MessageRetractionReturn, RangeBounds
 
 from .ddm_regions import PythonRTIDdmRegionMixin
 from .state import CallbackEvent, SupplementalReceiveInfo

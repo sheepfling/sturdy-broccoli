@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from hla.rti1516e.time import HLAfloat64Time
-from hla.rti1516e.types import RangeBounds
+from hla.rti1516e.datatypes import RangeBounds
 from hla.foms.target_radar.scenarios import target_radar_fom_path
 from hla.foms.target_radar.scenarios.target_radar import run_target_radar_scenario
 

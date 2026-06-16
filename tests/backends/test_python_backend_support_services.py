@@ -44,7 +44,7 @@ from hla.rti1516e.handles import (
     RegionHandleSetFactory,
     TransportationTypeHandleFactory,
 )
-from hla.rti1516e.types import RangeBounds
+from hla.rti1516e.datatypes import RangeBounds
 
 from tests.backends.python_backend_extended_support import drain, joined_pair
 

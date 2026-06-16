@@ -9,7 +9,7 @@ from threading import Thread
 import pytest
 
 from hla.backends.common import RecordingFederateAmbassador
-from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.rti1516e import NullFederateAmbassador
 from hla.backends.common import make_rti_ambassador
 from hla.backends.inmemory import InMemoryRTIEngine
 from hla.transports.common.transport import TransportRequest
@@ -118,7 +118,7 @@ def test_rest_transport_registers_with_backend_factory():
         rti = make_rti_ambassador(backend)
 
         assert rti.getHLAversion() == "HLA 1516.1-2010"
-        rti.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
+        rti.connect(NullFederateAmbassador(), CallbackModel.HLA_EVOKED)
         assert _RestHandler.requests[0]["command"] == "GET_HLA_VERSION"
         assert _RestHandler.requests[1]["command"] == "CONNECT"
         assert _RestHandler.requests[1]["metadata"] == {"fields": {}}

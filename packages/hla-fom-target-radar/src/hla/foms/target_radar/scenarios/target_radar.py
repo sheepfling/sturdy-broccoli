@@ -20,7 +20,7 @@ from typing import Any, Callable, Iterable, Mapping, Protocol
 from hla.rti1516e.enums import CallbackModel, ResignAction
 from hla.rti1516e.exceptions import FederatesCurrentlyJoined, FederationExecutionAlreadyExists, FederationExecutionDoesNotExist, RTIexception
 from hla.rti1516e.handles import AttributeHandle, InteractionClassHandle, ObjectClassHandle, ObjectInstanceHandle, ParameterHandle
-from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.rti1516e import NullFederateAmbassador
 from hla.rti1516e.time import HLAinteger64Time
 
 TARGET_CLASS = "HLAobjectRoot.Target"
@@ -169,7 +169,7 @@ def _safe_payload(value: Any) -> Any:
     return repr(value)
 
 
-class TargetFederate(FederateAmbassadorSpec):
+class TargetFederate(NullFederateAmbassador):
     """Federate that owns one moving target object."""
 
     def __init__(
@@ -265,7 +265,7 @@ class RadarContact:
     rcs_square_meters: float | None = None
 
 
-class RadarFederate(FederateAmbassadorSpec):
+class RadarFederate(NullFederateAmbassador):
     """Federate that tracks targets and produces track data."""
 
     def __init__(self, *, name: str = "Radar-1", origin: Vec3 = Vec3(0.0, 0.0, 0.0)) -> None:

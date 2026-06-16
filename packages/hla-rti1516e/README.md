@@ -1,17 +1,18 @@
 # hla-rti1516e
 
-Clean IEEE 1516.1-2010 Python spec package.
+Strict IEEE 1516.1-2010 Python spec package.
 
-This package is the public front door for the canonical runtime namespace from `hla2010` and the abstract HLA interface surface:
+This package is the public front door for the canonical `hla.rti1516e` standard-facing API:
 
-- `hla.rti1516e.spec` for the clean contract layer
-- `hla.rti1516e.runtime_api` for the Pythonic runtime convenience layer
+- `hla.rti1516e.RTIambassador` and `hla.rti1516e.FederateAmbassador` for the canonical strict protocol surface
+- `hla.rti1516e.rti_ambassador` and `hla.rti1516e.federate_ambassador` for the source-shaped interface modules
 - `hla.rti1516e.rti` only as the temporary workspace compatibility facade for
   backend discovery and ambassador creation during the split-package migration
+- old `_Spec` and runtime compatibility modules are removed
 
 It also owns the shared HLA value types and traceability helpers:
 
-- `handles`, `types`, `enums`, `time`, `exceptions`
+- `handles`, `datatypes`, `logical_time`, `enums`, `time`, `exceptions`
 - FOM/MOM helpers and source-reference scaffolding
 - source-derived metadata used by the spec layer
 

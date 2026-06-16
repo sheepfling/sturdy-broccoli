@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import re
 from typing import Any, Iterable
 
-from .runtime_api import FederateAmbassador
+from .federate_ambassador import FederateAmbassador
 from .spec_refs import SpecReference, method_reference
 
 

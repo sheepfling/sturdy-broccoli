@@ -9,7 +9,7 @@ from typing import Any, Mapping, MutableMapping
 
 from hla.rti1516e.exceptions import CallNotAllowedFromWithinCallback, RTIexception, RTIinternalError
 from hla.rti1516e.raw_api import API_METADATA
-from hla.rti1516e.spec import FederateAmbassadorSpec, RTIambassadorSpec
+from hla.rti1516e import NullFederateAmbassador, RTIambassador
 
 RTI_METHOD_NAMES: tuple[str, ...] = tuple(API_METADATA["RTIambassador"].keys())
 CALLBACK_METHOD_NAMES: tuple[str, ...] = tuple(API_METADATA["FederateAmbassador"].keys())
@@ -83,7 +83,7 @@ class RTIBackend(ABC):
     def invoke(self, invocation: Invocation) -> Any:
         raise NotImplementedError
 
-    def adapt_federate_ambassador(self, ambassador: FederateAmbassadorSpec) -> Any:
+    def adapt_federate_ambassador(self, ambassador: NullFederateAmbassador) -> Any:
         return ambassador
 
     def close(self) -> None:
@@ -98,11 +98,18 @@ class RTIBackend(ABC):
         )
 
 
-class _SplitRuntimeRTIAmbassador(RTIambassadorSpec):
+class _SplitRuntimeRTIAmbassador(RTIambassador):
     """Split-package runtime facade with Pythonic snake_case aliases."""
 
     def __getattribute__(self, name: str) -> Any:
-        attr = super().__getattribute__(name)
+        try:
+            attr = super().__getattribute__(name)
+        except AttributeError:
+            method_name = _RTI_METHOD_BY_SNAKE.get(name)
+            if method_name is None:
+                raise
+            return lambda *args, **kwargs: getattr(self, method_name)(*args, **kwargs)
+
         if name == "__class__":
             return attr
 
@@ -111,7 +118,7 @@ class _SplitRuntimeRTIAmbassador(RTIambassadorSpec):
             return attr
 
         owner_attr = getattr(type(self), name, None)
-        base_attr = getattr(RTIambassadorSpec, name, None)
+        base_attr = getattr(RTIambassador, name, None)
         if owner_attr is not None and owner_attr is not base_attr:
             return attr
 
@@ -143,8 +150,7 @@ class DelegatingRTIAmbassador(_SplitRuntimeRTIAmbassador):
         adapted_args = tuple(args)
         if method_name == "connect" and adapted_args:
             first = adapted_args[0]
-            if isinstance(first, FederateAmbassadorSpec):
-                adapted_args = (self.backend.adapt_federate_ambassador(first), *adapted_args[1:])
+            adapted_args = (self.backend.adapt_federate_ambassador(first), *adapted_args[1:])
 
         invocation = Invocation(
             method_name=method_name,

@@ -2,19 +2,22 @@
 
 This repository now uses a strict layered package model.
 
-The installable root is `hla-rti1516e`.
+The shared namespace root is `hla`.
 
-The workspace facade is `src/hla2010/`.
+No package may own `src/hla/__init__.py`; `hla` is a PEP 420 namespace package.
 
-Those are not the same thing:
+The package-owned roots are:
 
-- `hla-rti1516e` owns the architectural root surface
-- `src/hla2010/` owns the abstract/core API plus only the documented workspace
-  compatibility facade: `hla.rti1516e.rti`
+- `hla-rti1516e`: `packages/hla-rti1516e/src/hla/rti1516e`
+- `hla-rti1516-2025`: `packages/hla-rti1516-2025/src/hla/rti1516_2025`
+- `hla-rti-core`: `packages/hla-rti-core/src/hla/rti`, including backend discovery and neutral factory selection
+- backend packages: `packages/hla-backend-*/src/hla/backends/...`
+- transport packages: `packages/hla-transport-*/src/hla/transports/...`
+- bridge/vendor packages: `packages/hla-bridge-*` and `packages/hla-vendor-*`
 
-Do not treat `src/hla2010/` as a second conceptual root.
-Do not add new root facades unless they are temporary, documented, and backed
-by a migration reason.
+Do not recreate `hla2010` as a conceptual root. Do not restore `_Spec` aliases
+or the removed `hla.rti1516e.spec` facade; canonical standard types are
+`hla.rti1516e.RTIambassador` and `hla.rti1516e.FederateAmbassador`.
 
 This repository also has two distinct axes that must stay separate:
 
@@ -26,7 +29,7 @@ Those are not the same thing. A backend is `python`, `certi`, `jpype`, or
 
 The practical rule is:
 
-`hla-rti1516e -> shared support -> backend family or transport -> leaf package`
+`versioned spec API -> shared support -> backend family or transport -> leaf package`
 
 Not:
 
@@ -140,11 +143,10 @@ Examples:
 - runtime process helpers belong in `hla-rti-core`
 - transport request processing and transport selection/coercion belong in `hla-transport-common`
 
-The same rule applies to `hla.rti1516e.rti`: it is a temporary documented root
-compatibility facade for backend discovery and ambassador creation, not a
-place to move package-owned backend logic back into `src/hla2010/`.
-Package-owned code should import runtime factory helpers from
-`hla.rti` directly rather than through `hla.rti1516e.rti`.
+The same rule applies to `hla.rti`: it owns cross-version discovery and
+ambassador creation, not version-specific API methods, backend execution, or
+transport wire code. Package-owned code should import runtime factory helpers
+from `hla.rti` directly.
 Do not import plugin contract types, backend registry internals, low-level
 transport registration helpers, private helpers, or transport coercion through
 that root module from package-owned code.
@@ -166,11 +168,8 @@ Package-owned implementation code must import the owning split package module
 directly. Removed root compatibility paths such as `hla.rti1516e.java_runtime`
 must not be reintroduced.
 
-For packages marked `implementation-moved`, the declared
-`tool.hla.package.source_roots` must point only at files under that
-package's own `packages/<name>/src/...` tree. Compatibility facades under
-`src/hla2010/` are workspace migration surface, not package-owned
-implementation.
+The declared `tool.hla.package.source_roots` must point only at files under that
+package's own `packages/<name>/src/...` tree.
 
 ## Enforcement
 

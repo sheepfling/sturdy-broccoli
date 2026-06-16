@@ -1,4 +1,4 @@
-from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.rti1516e import NullFederateAmbassador
 from hla.backends.common import Invocation
 from hla.bridges.java.common import JavaBridge, JavaValueConverter, resolve_java_invocation
 from hla.foms.target_radar.scenarios import target_radar_fom_path
@@ -13,7 +13,7 @@ TARGET_RADAR_FOM = target_radar_fom_path()
 
 def test_python_rti_resolves_fom_path_and_uses_requested_time_factory():
     rti = create_rti_ambassador("python")
-    rti.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
+    rti.connect(NullFederateAmbassador(), CallbackModel.HLA_EVOKED)
     rti.create_federation_execution("fom-time-fed", TARGET_RADAR_FOM, "HLAfloat64Time")
     rti.join_federation_execution("tester", "test", "fom-time-fed")
 
@@ -45,7 +45,7 @@ def test_python_rti_resolves_fom_path_and_uses_requested_time_factory():
 
 def test_python_rti_exposes_handle_set_and_map_factories():
     rti = create_rti_ambassador("python")
-    rti.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
+    rti.connect(NullFederateAmbassador(), CallbackModel.HLA_EVOKED)
     rti.create_federation_execution("factory-fed", "TargetRadarFOMmodule.xml")
     rti.join_federation_execution("tester", "test", "factory-fed")
 

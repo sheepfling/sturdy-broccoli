@@ -1,6 +1,6 @@
 import pytest
 
-from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.rti1516e import NullFederateAmbassador
 from hla.backends.inmemory import InMemoryRTIEngine, rti_ambassador
 from hla.rti1516e.encoding import HLAunicodeString
 from hla.rti1516e.enums import CallbackModel, OrderType, ResignAction
@@ -8,7 +8,7 @@ from hla.rti1516e.exceptions import CouldNotDecode
 from hla.rti1516e.handles import ObjectInstanceHandle
 
 
-class Receiver(FederateAmbassadorSpec):
+class Receiver(NullFederateAmbassador):
     def __init__(self):
         self.discoveries = []
         self.reflections = []

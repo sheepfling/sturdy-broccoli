@@ -6,7 +6,7 @@ from typing import Any
 import pytest
 
 from hla.rti1516e.enums import CallbackModel
-from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.rti1516e import NullFederateAmbassador
 from hla.backends.common import BackendInfo, RTIBackend
 from hla.bridges.java.common import create_java_backend, create_java_rti_ambassador, discover_java_rti
 from hla.bridges.java.common.java_shim_kernel import SharedJavaShimKernel
@@ -108,7 +108,7 @@ def test_create_java_rti_ambassador_routes_reserved_shim_implementation(bridge: 
     ambassador = create_java_rti_ambassador(bridge=bridge, implementation="java-shim")
     try:
         assert ambassador.backend_info.kind == expected_kind
-        ambassador.connect(FederateAmbassadorSpec(), CallbackModel.HLA_EVOKED)
+        ambassador.connect(NullFederateAmbassador(), CallbackModel.HLA_EVOKED)
         ambassador.disconnect()
     finally:
         ambassador.close()

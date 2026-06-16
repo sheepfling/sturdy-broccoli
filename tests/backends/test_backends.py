@@ -1,4 +1,4 @@
-from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.rti1516e import NullFederateAmbassador
 from hla.backends.common import (
     DelegatingRTIAmbassador,
     Invocation,
@@ -34,7 +34,7 @@ def test_connect_adapts_python_federate_ambassador():
         def adapt_federate_ambassador(self, ambassador):
             return ("adapted", ambassador)
 
-    federate = FederateAmbassadorSpec()
+    federate = NullFederateAmbassador()
     backend = Backend()
     rti = make_rti_ambassador(backend)
     rti.connect(federate, CallbackModel.HLA_EVOKED)

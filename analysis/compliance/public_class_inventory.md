@@ -1,13 +1,13 @@
 # Public Class Inventory
 
-- all public module classes: 225
-- package-exported classes: 0
+- all public module classes: 224
+- package-exported classes: 8
 
 | Module | Class | Exported via `hla2010` | Mapping status | Rationale |
 |---|---|---:|---|---|
 | hla.rti1516e.ambassadors | CallbackRecord | no | supporting-scaffold | Support or workflow scaffolding around the HLA surface rather than a direct header-spec type. |
 | hla.rti1516e.ambassadors | FederateAmbassadorMultiplexer | no | supporting-scaffold | Support or workflow scaffolding around the HLA surface rather than a direct header-spec type. |
-| hla.rti1516e.ambassadors | NullFederateAmbassador | no | supporting-scaffold | Support or workflow scaffolding around the HLA surface rather than a direct header-spec type. |
+| hla.rti1516e.ambassadors | NullFederateAmbassador | yes | supporting-scaffold | Support or workflow scaffolding around the HLA surface rather than a direct header-spec type. |
 | hla.rti1516e.ambassadors | RecordingFederateAmbassador | no | supporting-scaffold | Support or workflow scaffolding around the HLA surface rather than a direct header-spec type. |
 | hla.rti1516e.encoding | DataElement | no | supporting-scaffold | Support or workflow scaffolding around the HLA surface rather than a direct header-spec type. |
 | hla.rti1516e.encoding | DecoderException | no | supporting-scaffold | Support or workflow scaffolding around the HLA surface rather than a direct header-spec type. |
@@ -35,14 +35,14 @@
 | hla.rti1516e.encoding | HLAunicodeChar | no | supporting-scaffold | Support or workflow scaffolding around the HLA surface rather than a direct header-spec type. |
 | hla.rti1516e.encoding | HLAunicodeString | no | supporting-scaffold | Support or workflow scaffolding around the HLA surface rather than a direct header-spec type. |
 | hla.rti1516e.encoding | HLAvariableArray | no | supporting-scaffold | Support or workflow scaffolding around the HLA surface rather than a direct header-spec type. |
-| hla.rti1516e.enums | CallbackModel | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla.rti1516e.enums | OrderType | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla.rti1516e.enums | ResignAction | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
+| hla.rti1516e.enums | CallbackModel | yes | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
+| hla.rti1516e.enums | OrderType | yes | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
+| hla.rti1516e.enums | ResignAction | yes | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
 | hla.rti1516e.enums | RestoreFailureReason | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
 | hla.rti1516e.enums | RestoreStatus | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
 | hla.rti1516e.enums | SaveFailureReason | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
 | hla.rti1516e.enums | SaveStatus | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla.rti1516e.enums | ServiceGroup | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
+| hla.rti1516e.enums | ServiceGroup | yes | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
 | hla.rti1516e.enums | SynchronizationPointFailureReason | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
 | hla.rti1516e.enums | TransportationType | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
 | hla.rti1516e.exceptions | AlreadyConnected | no | close-1to1 | Exception class names intentionally mirror the HLA exception taxonomy. |
@@ -204,15 +204,10 @@
 | hla.rti1516e.handles | TransportationTypeHandle | no | close-1to1 | Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations. |
 | hla.rti1516e.handles | TransportationTypeHandleFactory | no | close-1to1 | Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations. |
 | hla.rti1516e.handles | TypedHandleSet | no | close-1to1 | Opaque handle family mirrors HLA handle categories, with Python dataclass/set/dict implementations. |
-| hla.rti1516e.raw_api | FederateAmbassador | no | close-1to1 | Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs. |
-| hla.rti1516e.raw_api | NullFederateAmbassador | no | close-1to1 | Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs. |
+| hla.rti1516e.raw_api | FederateAmbassador | yes | close-1to1 | Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs. |
+| hla.rti1516e.raw_api | NullFederateAmbassador | yes | close-1to1 | Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs. |
 | hla.rti1516e.raw_api | RTIAmbassador | no | close-1to1 | Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs. |
-| hla.rti1516e.raw_api | RTIambassador | no | close-1to1 | Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs. |
-| hla.rti1516e.runtime_api | FederateAmbassador | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla.rti1516e.runtime_api | NullFederateAmbassador | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla.rti1516e.runtime_api | PythonicRTIAmbassadorMixin | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla.rti1516e.runtime_api | RTIAmbassador | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
-| hla.rti1516e.runtime_api | RTIambassador | no | adapted | Public class is part of the package surface but is not a literal 1:1 reproduction of a Java/C++ header type. |
+| hla.rti1516e.raw_api | RTIambassador | yes | close-1to1 | Generated abstract service surface from spec-source API metadata; overloads are collapsed into *args/**kwargs. |
 | hla.rti1516e.time | HLAfloat64Interval | no | close-1to1 | Logical time, interval, and factory classes intentionally mirror the HLA logical-time families. |
 | hla.rti1516e.time | HLAfloat64Time | no | close-1to1 | Logical time, interval, and factory classes intentionally mirror the HLA logical-time families. |
 | hla.rti1516e.time | HLAfloat64TimeFactory | no | close-1to1 | Logical time, interval, and factory classes intentionally mirror the HLA logical-time families. |
@@ -223,10 +218,14 @@
 | hla.rti1516e.time | LogicalTimeFactory | no | close-1to1 | Logical time, interval, and factory classes intentionally mirror the HLA logical-time families. |
 | hla.rti1516e.time | LogicalTimeInterval | no | close-1to1 | Logical time, interval, and factory classes intentionally mirror the HLA logical-time families. |
 | hla.rti1516e.time | TimeFactoryRegistry | no | close-1to1 | Logical time, interval, and factory classes intentionally mirror the HLA logical-time families. |
-| hla.rti1516e.types | AttributeRegionAssociation | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
-| hla.rti1516e.types | FederateHandleSaveStatusPair | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
-| hla.rti1516e.types | FederateRestoreStatus | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
-| hla.rti1516e.types | FederationExecutionInformation | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
-| hla.rti1516e.types | MessageRetractionReturn | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
-| hla.rti1516e.types | RangeBounds | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
-| hla.rti1516e.types | TimeQueryReturn | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
+| hla.rti1516e.datatypes | AttributeRegionAssociation | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
+| hla.rti1516e.datatypes | FederateHandleSaveStatusPair | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
+| hla.rti1516e.datatypes | FederateRestoreStatus | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
+| hla.rti1516e.datatypes | FederationExecutionInformation | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
+| hla.rti1516e.datatypes | FederationExecutionInformationSet | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
+| hla.rti1516e.datatypes | MessageRetractionReturn | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
+| hla.rti1516e.datatypes | RangeBounds | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
+| hla.rti1516e.datatypes | SupplementalReceiveInfo | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
+| hla.rti1516e.datatypes | SupplementalReflectInfo | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
+| hla.rti1516e.datatypes | SupplementalRemoveInfo | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |
+| hla.rti1516e.datatypes | TimeQueryReturn | no | adapted | Python dataclass wrappers for HLA concepts and return values, not literal header-level classes. |

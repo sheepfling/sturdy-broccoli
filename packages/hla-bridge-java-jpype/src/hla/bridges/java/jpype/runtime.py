@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from typing import Any, Sequence
 
 from hla.rti1516e.fom import module_uri
-from hla.rti1516e.types import RangeBounds
+from hla.rti1516e.datatypes import RangeBounds
 from hla.bridges.java.common import BackendUnavailableError
 from hla.bridges.java.common.java_common import JavaBridge, PythonFederateAmbassadorDispatcher
 from hla.bridges.java.common.java_runtime import ensure_java_home

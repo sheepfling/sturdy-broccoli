@@ -15,7 +15,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Iterable, Sequence
 
-from hla.rti1516e.types import TimeQueryReturn
+from hla.rti1516e.datatypes import TimeQueryReturn
 
 TAR = "TAR"
 TARA = "TARA"

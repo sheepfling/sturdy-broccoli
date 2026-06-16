@@ -52,9 +52,46 @@ emit_pitch_runtime_reports() {
 }
 
 require_pitch_preflight() {
-  if ! preflight_pitch_docker; then
+  mkdir -p "$PREFLIGHT_ARTIFACT_DIR"
+  local artifact_path
+  artifact_path="$(pitch_preflight_artifact_path)"
+  if preflight_pitch_docker --json-file "$artifact_path"; then
+    apply_pitch_preflight_runtime_env "$artifact_path"
+    return 0
+  else
     return 1
   fi
+}
+
+apply_pitch_preflight_runtime_env() {
+  local artifact_path="$1"
+  local env_file
+  env_file="$(mktemp "${TMPDIR:-/tmp}/hla2010_pitch_preflight_env.XXXXXX")"
+  "$(python_cmd)" - "$artifact_path" >"$env_file" <<'PY'
+import json
+import shlex
+import sys
+from pathlib import Path
+
+payload = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+ports = payload.get("ports") or {}
+runtime = payload.get("runtime") or {}
+assignments = {}
+if "crc" in ports and "port" in ports["crc"]:
+    assignments["HLA2010_PITCH_CRC_PORT"] = str(ports["crc"]["port"])
+if "fedpro" in ports and "port" in ports["fedpro"]:
+    assignments["HLA2010_PITCH_FEDPRO_PORT"] = str(ports["fedpro"]["port"])
+if runtime.get("container_name"):
+    assignments["HLA2010_PITCH_DOCKER_NAME"] = str(runtime["container_name"])
+for key, value in assignments.items():
+    print(f"export {key}={shlex.quote(value)}")
+PY
+  # shellcheck disable=SC1090
+  source "$env_file"
+  rm -f "$env_file"
+  CRC_PORT="${HLA2010_PITCH_CRC_PORT:-8989}"
+  FEDPRO_PORT="${HLA2010_PITCH_FEDPRO_PORT:-15164}"
+  CONTAINER_NAME="${HLA2010_PITCH_DOCKER_NAME:-hla2010-pitch-crc}"
 }
 
 resolve_pitch_home() {
@@ -63,6 +100,10 @@ resolve_pitch_home() {
   if [[ -n "${HLA2010_PITCH_HOME:-}" && -d "${HLA2010_PITCH_HOME:-}" ]]; then
     printf '%s\n' "$HLA2010_PITCH_HOME"
     return 0
+  fi
+  if [[ -n "${HLA2010_PITCH_HOME:-}" ]]; then
+    echo "error: HLA2010_PITCH_HOME does not point at a Pitch runtime directory: $HLA2010_PITCH_HOME" >&2
+    return 1
   fi
   if [[ -d "$ROOT_DIR/third_party/pitch/PITCH-prti1516e-manual" ]]; then
     printf '%s\n' "$ROOT_DIR/third_party/pitch/PITCH-prti1516e-manual"

@@ -1,17 +1,11 @@
-"""Compatibility wrapper for the runtime-facing HLA API facade.
-
-New code should import the clean spec layer from :mod:`hla.rti1516e.spec` or the
-explicit runtime facade from :mod:`hla.rti1516e.runtime_api`.
-"""
+"""Compatibility wrapper for the standard-facing HLA API facade."""
 from __future__ import annotations
 
-from .runtime_api import (
-    FederateAmbassador,
-    NullFederateAmbassador,
-    PythonicRTIAmbassadorMixin,
-    RTIAmbassador,
-    RTIambassador,
-)
+from .federate_ambassador import FederateAmbassador, NullFederateAmbassador
+from .rti_ambassador import RTIambassador
+
+RTIAmbassador = RTIambassador
+PythonicRTIAmbassadorMixin = RTIambassador
 
 __all__ = [
     "FederateAmbassador",

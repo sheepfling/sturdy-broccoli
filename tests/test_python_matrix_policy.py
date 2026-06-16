@@ -5,6 +5,7 @@ import json
 import re
 from pathlib import Path
 
+from compliance_helpers import is_1516_1_2010_clause
 
 ROOT = Path(__file__).resolve().parents[1]
 SCENARIO_ENTRYPOINT_RE = re.compile(r"\b((?:run|probe)_[A-Za-z0-9_]+)\(")
@@ -144,7 +145,7 @@ def _clause6_python_compliance_wrapper_refs() -> set[str]:
     return {
         ref.split("::", 1)[1]
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "6"
+        if is_1516_1_2010_clause(row, "6")
         for ref in row["evidence_refs"]
         if ref.startswith("tests/scenarios/test_object_management_backend_matrix.py::")
     }
@@ -155,7 +156,7 @@ def _clause4_python_compliance_wrapper_refs() -> set[str]:
     return {
         ref.split("::", 1)[1]
         for row in payload["rows"]
-        if row.get("document") == "IEEE 1516.1-2010" and row.get("clause_root") == "4"
+        if is_1516_1_2010_clause(row, "4")
         for ref in row["evidence_refs"]
         if ref.startswith("tests/scenarios/test_federation_lifecycle_backend_matrix.py::")
         or ref.startswith("tests/scenarios/test_federation_management_backend_matrix.py::")

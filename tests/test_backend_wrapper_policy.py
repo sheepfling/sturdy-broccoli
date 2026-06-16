@@ -90,6 +90,36 @@ def _local_run_defs(module: ast.Module) -> list[str]:
     return defs
 
 
+def test_required_vendor_lane_promotes_only_certi_grpc_exchange() -> None:
+    source = (ROOT / "scripts" / "ci" / "vendor_runtime_smoke.sh").read_text(encoding="utf-8")
+
+    promoted = "tests/transport/test_grpc_transport_certi_server.py::test_grpc_transport_can_host_certi_exchange_end_to_end"
+    assert promoted in source
+    assert "CERTI gRPC exchange is promoted" in source
+
+    disallowed = (
+        "tests/transport/test_grpc_transport_certi_server.py::test_grpc_transport_can_host_certi_synchronization_end_to_end",
+        "tests/transport/test_grpc_transport_certi_server.py::test_grpc_transport_can_host_certi_ownership_end_to_end",
+    )
+    for node_id in disallowed:
+        assert node_id not in source
+
+
+def test_certi_grpc_working_baseline_is_documented() -> None:
+    route_text = (ROOT / "docs" / "backend_route_inventory_routes.md").read_text(encoding="utf-8")
+    command_text = (ROOT / "docs" / "backend_route_inventory_commands.md").read_text(encoding="utf-8")
+    ci_text = (ROOT / "scripts" / "ci" / "README.md").read_text(encoding="utf-8")
+
+    promoted = "test_grpc_transport_can_host_certi_exchange_end_to_end"
+    assert promoted in command_text
+    assert "./tools/vendor-green certi-patched" in route_text
+    assert "./tools/vendor-green certi-patched" in command_text
+    assert "patched CERTI-hosted gRPC" in ci_text
+    assert "exchange. CERTI gRPC synchronization" in ci_text
+    assert "gRPC synchronization and ownership remain probe-only" in route_text
+    assert "gRPC synchronization and ownership remain unstable" in command_text
+
+
 def _referenced_names(module: ast.Module) -> set[str]:
     names: set[str] = set()
     for node in ast.walk(module):

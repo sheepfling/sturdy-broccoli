@@ -5,10 +5,15 @@ The top level is intentionally split by ownership:
 
 `package -> entrypoints -> generated evidence -> local runtime state -> vendor trees -> provenance`
 
+The Python namespace root is `hla`, contributed by PEP 420 namespace packages.
+No distribution owns `src/hla/__init__.py`.
+
 ## Top-Level Areas
 
-- `src/hla2010/`: abstract/core API surface plus the one documented temporary split-package workspace facade `hla.rti1516e.rti`.
-- `packages/*/src/`: package-owned backend and support implementation roots.
+- `packages/hla-rti1516e/src/hla/rti1516e/`: IEEE 1516.1-2010 API package.
+- `packages/hla-rti1516-2025/src/hla/rti1516_2025/`: IEEE 1516.1-2025 API scaffold.
+- `packages/hla-rti-core/src/hla/rti/`: cross-version discovery and factory package.
+- `packages/*/src/`: package-owned backend, transport, bridge, FOM, verification, and support implementation roots.
 - `examples/`: runnable example entrypoints and thin scenario scripts.
 - `scripts/`: implementation helpers, CI wrappers, setup flows, and generated-artifact entrypoints.
 - `tools/`: canonical human-facing operator entrypoints.
@@ -25,9 +30,9 @@ The top level is intentionally split by ownership:
 
 ## Practical Guidance
 
-- Keep abstract/core API code and only the documented workspace-stable shims in `src/hla2010/`.
-- The remaining documented root compatibility facade into split packages is `hla.rti1516e.rti`, and it should be treated as temporary.
-- Package-owned implementation should prefer `hla.rti` over `hla.rti1516e.rti` when it needs backend discovery or ambassador-factory helpers.
+- Keep version-specific API code under `hla.rti1516e` or `hla.rti1516_2025`.
+- Keep cross-version discovery and ambassador-factory helpers under `hla.rti`.
+- Package-owned implementation should import `hla.rti` directly when it needs backend discovery or ambassador-factory helpers.
 - Keep concrete backend and support implementations in their owning `packages/<name>/src/` trees.
 - Keep runnable examples thin and repo-local under `examples/`.
 - Keep human-facing operator entrypoints in `tools/`.

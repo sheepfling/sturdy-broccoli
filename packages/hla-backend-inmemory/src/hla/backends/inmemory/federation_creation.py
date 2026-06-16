@@ -13,9 +13,9 @@ from hla.rti1516e.exceptions import (
     FederatesCurrentlyJoined,
 )
 from hla.rti1516e.fom import standard_mim_module
-from hla.rti1516e.spec import FederateAmbassadorSpec
+from hla.rti1516e import NullFederateAmbassador
 from hla.rti1516e.time import TimeFactoryRegistry
-from hla.rti1516e.types import FederationExecutionInformation
+from hla.rti1516e.datatypes import FederationExecutionInformation
 
 from . import mom_catalog as mom_table
 from .state import FederationState
@@ -77,7 +77,7 @@ class PythonRTIFederationCreationMixin:
 
     def _svc_connect(
         self,
-        federateReference: FederateAmbassadorSpec,
+        federateReference: NullFederateAmbassador,
         callbackModel: CallbackModel,
         localSettingsDesignator: str | None = None,
     ) -> None:

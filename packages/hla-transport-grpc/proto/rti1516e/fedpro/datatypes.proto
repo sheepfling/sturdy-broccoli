@@ -1,0 +1,280 @@
+/***********************************************************************
+   Non-normative invented protobuf model for the IEEE 1516.1(TM)-2010
+   High Level Architecture Interface Specification.
+
+   This file is a derivative engineering model created from the public
+   2010 Java API/WSDL artifacts and the 2025 FedPro protobuf style. It is
+   not an IEEE-published standard and is not wire-compatible with the 2025
+   FedPro package.
+
+   Attribution retained for derivative use of IEEE materials:
+   "Reprinted with permission from IEEE 1516.1(TM)-2010" and
+   "Reprinted with permission from IEEE 1516.1(TM)-2025".
+***********************************************************************/
+/***********************************************************************
+   File: datatypes.proto
+   Common opaque handles, HLA data containers, enums, and module carriers
+   for the invented IEEE 1516e-2010 FedPro-style protobuf mapping.
+***********************************************************************/
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "hla.rti1516e.fedpro";
+
+package rti1516e.fedpro;
+
+message ExceptionData {
+    string exceptionName = 1;
+    string details = 2;
+}
+
+// 2010 Java enum values are HLA_IMMEDIATE and HLA_EVOKED.
+enum CallbackModel {
+    HLA_IMMEDIATE = 0;
+    HLA_EVOKED = 1;
+}
+
+enum ResignAction {
+    UNCONDITIONALLY_DIVEST_ATTRIBUTES = 0;
+    DELETE_OBJECTS = 1;
+    CANCEL_PENDING_OWNERSHIP_ACQUISITIONS = 2;
+    DELETE_OBJECTS_THEN_DIVEST = 3;
+    CANCEL_THEN_DELETE_THEN_DIVEST = 4;
+    NO_ACTION = 5;
+}
+
+enum SynchronizationPointFailureReason {
+    SYNCHRONIZATION_POINT_LABEL_NOT_UNIQUE = 0;
+    SYNCHRONIZATION_SET_MEMBER_NOT_JOINED = 1;
+}
+
+enum SaveFailureReason {
+    RTI_UNABLE_TO_SAVE = 0;
+    FEDERATE_REPORTED_FAILURE_DURING_SAVE = 1;
+    FEDERATE_RESIGNED_DURING_SAVE = 2;
+    RTI_DETECTED_FAILURE_DURING_SAVE = 3;
+    SAVE_TIME_CANNOT_BE_HONORED = 4;
+    SAVE_ABORTED = 5;
+}
+
+enum RestoreFailureReason {
+    RTI_UNABLE_TO_RESTORE = 0;
+    FEDERATE_REPORTED_FAILURE_DURING_RESTORE = 1;
+    FEDERATE_RESIGNED_DURING_RESTORE = 2;
+    RTI_DETECTED_FAILURE_DURING_RESTORE = 3;
+    RESTORE_ABORTED = 4;
+}
+
+enum SaveStatus {
+    NO_SAVE_IN_PROGRESS = 0;
+    FEDERATE_INSTRUCTED_TO_SAVE = 1;
+    FEDERATE_SAVING = 2;
+    FEDERATE_WAITING_FOR_FEDERATION_TO_SAVE = 3;
+}
+
+enum RestoreStatus {
+    NO_RESTORE_IN_PROGRESS = 0;
+    FEDERATE_RESTORE_REQUEST_PENDING = 1;
+    FEDERATE_WAITING_FOR_RESTORE_TO_BEGIN = 2;
+    FEDERATE_PREPARED_TO_RESTORE = 3;
+    FEDERATE_RESTORING = 4;
+    FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE = 5;
+}
+
+message FederateHandle {
+    bytes data = 1; // opaque encoded 1516e FederateHandle
+}
+
+message ObjectClassHandle {
+    bytes data = 1; // opaque encoded 1516e ObjectClassHandle
+}
+
+message AttributeHandle {
+    bytes data = 1; // opaque encoded 1516e AttributeHandle
+}
+
+message InteractionClassHandle {
+    bytes data = 1; // opaque encoded 1516e InteractionClassHandle
+}
+
+message ParameterHandle {
+    bytes data = 1; // opaque encoded 1516e ParameterHandle
+}
+
+message ObjectInstanceHandle {
+    bytes data = 1; // opaque encoded 1516e ObjectInstanceHandle
+}
+
+message MessageRetractionHandle {
+    bytes data = 1; // opaque encoded 1516e MessageRetractionHandle
+}
+
+message LogicalTime {
+    bytes data = 1; // encoded LogicalTime
+}
+
+message LogicalTimeInterval {
+    bytes data = 1; // encoded LogicalTimeInterval
+}
+
+message TransportationTypeHandle {
+    bytes data = 1; // opaque encoded 1516e TransportationTypeHandle
+}
+
+message DimensionHandle {
+    bytes data = 1; // opaque encoded 1516e DimensionHandle
+}
+
+message RegionHandle {
+    bytes data = 1; // opaque encoded 1516e RegionHandle
+}
+
+message FederateRestoreStatus {
+    FederateHandle preRestoreHandle = 1;
+    FederateHandle postRestoreHandle = 2;
+    RestoreStatus restoreStatus = 3;
+}
+
+message FederateRestoreStatusArray {
+    repeated FederateRestoreStatus federateRestoreStatus = 1;
+}
+
+message FederationExecutionInformation {
+    string federationExecutionName = 1;
+    string logicalTimeImplementationName = 2;
+}
+
+// Set of FederationExecutionInformation elements.
+message FederationExecutionInformationSet {
+    repeated FederationExecutionInformation federationExecutionInformation = 1; // set semantics: no duplicates
+}
+
+message FederateHandleSaveStatusPair {
+    FederateHandle federateHandle = 1;
+    SaveStatus saveStatus = 2;
+}
+
+message FederateHandleSaveStatusPairArray {
+    repeated FederateHandleSaveStatusPair federateHandleSaveStatusPair = 1;
+}
+
+message AttributeHandleValue {
+    AttributeHandle attributeHandle = 1;
+    bytes value = 2; // encoded attribute value
+}
+
+// Map with AttributeHandle as key.
+message AttributeHandleValueMap {
+    repeated AttributeHandleValue attributeHandleValue = 1; // map semantics: unique AttributeHandle keys
+}
+
+message ParameterHandleValue {
+    ParameterHandle parameterHandle = 1;
+    bytes value = 2; // encoded parameter value
+}
+
+// Map with ParameterHandle as key.
+message ParameterHandleValueMap {
+    repeated ParameterHandleValue parameterHandleValue = 1; // map semantics: unique ParameterHandle keys
+}
+
+message MessageRetractionReturn {
+    bool retractionHandleIsValid = 1;
+    MessageRetractionHandle messageRetractionHandle = 2; // valid only when retractionHandleIsValid is true
+}
+
+message TimeQueryReturn {
+    bool logicalTimeIsValid = 1;
+    LogicalTime logicalTime = 2; // valid only when logicalTimeIsValid is true
+}
+
+// Set of FederateHandle elements.
+message FederateHandleSet {
+    repeated FederateHandle federateHandle = 1; // set semantics: no duplicates
+}
+
+// Set of DimensionHandle elements.
+message DimensionHandleSet {
+    repeated DimensionHandle dimensionHandle = 1; // set semantics: no duplicates
+}
+
+// Set of RegionHandle elements.
+message RegionHandleSet {
+    repeated RegionHandle regionHandle = 1; // set semantics: no duplicates
+}
+
+// Set of AttributeHandle elements.
+message AttributeHandleSet {
+    repeated AttributeHandle attributeHandle = 1; // set semantics: no duplicates
+}
+
+message AttributeSetRegionSetPair {
+    AttributeHandleSet attributeSet = 1;
+    RegionHandleSet regionSet = 2;
+}
+
+message AttributeSetRegionSetPairList {
+    repeated AttributeSetRegionSetPair attributeSetRegionSetPair = 1; // list semantics from the 2010 API
+}
+
+enum OrderType {
+    RECEIVE = 0;
+    TIMESTAMP = 1;
+}
+
+enum ServiceGroup {
+    FEDERATION_MANAGEMENT = 0;
+    DECLARATION_MANAGEMENT = 1;
+    OBJECT_MANAGEMENT = 2;
+    OWNERSHIP_MANAGEMENT = 3;
+    TIME_MANAGEMENT = 4;
+    DATA_DISTRIBUTION_MANAGEMENT = 5;
+    SUPPORT_SERVICES = 6;
+}
+
+message RangeBounds {
+    int64 lower = 1; // 2010 Java long / WSDL xsd:long
+    int64 upper = 2; // 2010 Java long / WSDL xsd:long
+}
+
+// 2010 FederateAmbassador.SupplementalReflectInfo.
+message SupplementalReflectInfo {
+    bool producingFederateIsValid = 1;
+    FederateHandle producingFederate = 2; // valid only when producingFederateIsValid is true
+    bool sentRegionsIsValid = 3;
+    RegionHandleSet sentRegions = 4; // valid only when sentRegionsIsValid is true
+}
+
+// 2010 FederateAmbassador.SupplementalReceiveInfo.
+message SupplementalReceiveInfo {
+    bool producingFederateIsValid = 1;
+    FederateHandle producingFederate = 2; // valid only when producingFederateIsValid is true
+    bool sentRegionsIsValid = 3;
+    RegionHandleSet sentRegions = 4; // valid only when sentRegionsIsValid is true
+}
+
+// 2010 FederateAmbassador.SupplementalRemoveInfo.
+message SupplementalRemoveInfo {
+    bool producingFederateIsValid = 1;
+    FederateHandle producingFederate = 2; // valid only when producingFederateIsValid is true
+}
+
+message FomModule {
+    oneof fomModule {
+        FileFomModule file = 1;
+        bytes compressedModule = 2;  // FOM/MIM module compressed as a Zip file (ISO/IEC 21320-1 style).
+        string url = 3;             // Strict 2010/WSDL mapping: URL/document designator.
+    }
+}
+
+message FileFomModule {
+    string name = 1; // file name
+    bytes content = 2; // raw file content; XML encoding is defined by the XML header
+}
+
+// Set of FomModule elements.
+message FomModuleSet {
+    repeated FomModule fomModule = 1; // set semantics: no duplicate modules
+}
+
