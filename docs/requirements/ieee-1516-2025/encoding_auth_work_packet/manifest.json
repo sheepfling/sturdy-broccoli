@@ -1,0 +1,22 @@
+{
+  "packet": "hla_encoding_auth_work_packet",
+  "created_for": "HLA-X encoding/authentication implementation and test planning",
+  "primary_gates": [
+    "EncodingContext paired with runtime factory",
+    "AuthenticationContext paired with runtime factory",
+    "FOM type repository",
+    "Primitive/composite codec tests",
+    "Edition-gated auth tests",
+    "Evidence emission"
+  ],
+  "does_not_include": [
+    "Uploaded standards PDFs",
+    "Full IEEE API source archives"
+  ],
+  "included_standards_subset": [
+    "IEEE1516-DIF-2025.xsd",
+    "IEEE1516-OMT-2025.xsd",
+    "IEEE1516-OMT-2010.xsd"
+  ],
+  "validation_notes": "EncodingSmokeTest-2025.xml was checked as well-formed XML and validates against IEEE1516-DIF-2025.xsd."
+}

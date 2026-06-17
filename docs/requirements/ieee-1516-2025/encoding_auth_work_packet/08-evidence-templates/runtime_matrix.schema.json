@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HLA-X Runtime Matrix",
+  "type": "object",
+  "required": [
+    "rows"
+  ],
+  "properties": {
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "edition",
+          "provider",
+          "transport",
+          "encoding",
+          "auth",
+          "status"
+        ],
+        "properties": {
+          "edition": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "transport": {
+            "type": "string"
+          },
+          "encoding": {
+            "type": "string"
+          },
+          "auth": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

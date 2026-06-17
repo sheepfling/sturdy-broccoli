@@ -1,0 +1,14 @@
+ID,Requirement,Priority
+ENC-001,"Runtime factory shall return an EncodingContext paired with the selected edition, provider, and transport.",MUST
+ENC-002,EncodingRegistry shall resolve codecs by HLA encoding name and expose deterministic capability reports.,MUST
+ENC-003,2010 and 2025 profiles shall include standard primitive encoding helper names.,MUST
+ENC-004,"FOM type resolver shall parse basic, simple, enumerated, reference, array, fixed record, and variant record data types.",MUST
+ENC-005,"Basic data resolver shall honor size, endian, and encoding metadata for custom basic representations.",MUST
+ENC-006,Simple and enumerated data types shall delegate to their representation codec; enumerated names shall map to encoded numeric values.,MUST
+ENC-007,"Fixed record codec shall preserve FOM field order and reject missing, unexpected, or incompatible fields.",MUST
+ENC-008,Array codec shall enforce fixed cardinality and support dynamic cardinality for variable arrays.,MUST
+ENC-009,"Variant record codec shall encode/decode discriminant and selected alternative, including HLAother fallback when declared.",MUST
+ENC-010,"Strict decode shall reject truncation, malformed data, trailing bytes, unknown discriminants, and unknown encoding names.",MUST
+ENC-011,Provider-specific codecs may register custom names without mutating built-in codec behavior.,SHOULD
+ENC-012,Provider oracle tests shall compare composite bytes against an available RTI EncoderFactory when configured.,SHOULD
+ENC-013,"Encoding evidence files shall be emitted for capabilities, type resolution, round trips, and negative tests.",MUST

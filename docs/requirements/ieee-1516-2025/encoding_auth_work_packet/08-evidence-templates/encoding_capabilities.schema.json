@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HLA-X Encoding Capabilities",
+  "type": "object",
+  "required": [
+    "edition",
+    "provider",
+    "transport",
+    "codecs"
+  ],
+  "properties": {
+    "edition": {
+      "type": "string"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "transport": {
+      "type": "string"
+    },
+    "codecs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "kind",
+          "supported",
+          "source"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "supported": {
+            "type": "boolean"
+          },
+          "source": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

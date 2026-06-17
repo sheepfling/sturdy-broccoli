@@ -1,0 +1,86 @@
+# Golden vectors for portable primitive tests.
+# Composite and string golden bytes should be frozen only after provider-oracle confirmation.
+
+HLAinteger16BE:
+  - value: 0
+    hex: '0000'
+  - value: 1
+    hex: '0001'
+  - value: -1
+    hex: 'ffff'
+  - value: 32767
+    hex: '7fff'
+  - value: -32768
+    hex: '8000'
+
+HLAinteger16LE:
+  - value: 1
+    hex: '0100'
+  - value: -1
+    hex: 'ffff'
+
+HLAinteger32BE:
+  - value: 0
+    hex: '00000000'
+  - value: 1
+    hex: '00000001'
+  - value: -1
+    hex: 'ffffffff'
+  - value: 2147483647
+    hex: '7fffffff'
+  - value: -2147483648
+    hex: '80000000'
+
+HLAinteger32LE:
+  - value: 1
+    hex: '01000000'
+  - value: -1
+    hex: 'ffffffff'
+
+HLAinteger64BE:
+  - value: 1
+    hex: '0000000000000001'
+  - value: -1
+    hex: 'ffffffffffffffff'
+
+HLAinteger64LE:
+  - value: 1
+    hex: '0100000000000000'
+  - value: -1
+    hex: 'ffffffffffffffff'
+
+HLAunsignedInteger16BE:
+  - value: 65535
+    hex: 'ffff'
+
+HLAunsignedInteger32BE:
+  - value: 4294967295
+    hex: 'ffffffff'
+
+HLAunsignedInteger64BE:
+  - value: 18446744073709551615
+    hex: 'ffffffffffffffff'
+
+HLAfloat32BE:
+  - value: 1.0
+    hex: '3f800000'
+  - value: -2.5
+    hex: 'c0200000'
+
+HLAfloat64BE:
+  - value: 1.0
+    hex: '3ff0000000000000'
+  - value: -2.5
+    hex: 'c004000000000000'
+
+HLAopaqueData:
+  - value_hex: 'deadbeef'
+  - value_hex: ''
+
+HLAASCIIstring:
+  - value: 'ABC'
+  - value: ''
+
+HLAunicodeString:
+  - value: 'こんにちは'
+  - value: ''

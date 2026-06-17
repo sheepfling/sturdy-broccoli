@@ -1,0 +1,27 @@
+truncated:
+  - codec: HLAinteger32BE
+    hex: '000001'
+    expected_error: MalformedEncodedData
+
+trailing_strict:
+  - codec: HLAinteger16BE
+    hex: '0001ff'
+    expected_error: TrailingEncodedData
+
+range_errors:
+  - codec: HLAunsignedInteger16BE
+    value: -1
+    expected_error: TypeMismatch
+  - codec: HLAinteger16BE
+    value: 32768
+    expected_error: TypeMismatch
+
+variant_errors:
+  - type: SensorContact
+    discriminant: Unknown
+    expected_error: UnknownVariantDiscriminant
+
+array_errors:
+  - type: FixedFourTrackIds
+    values: [1, 2, 3]
+    expected_error: InvalidCardinality

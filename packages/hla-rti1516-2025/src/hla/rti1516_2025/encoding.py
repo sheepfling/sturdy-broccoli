@@ -1102,6 +1102,28 @@ class CallableDataElementFactory(Generic[D]):
 class BasicEncoderFactory:
     """Default Python implementation of the IEEE 1516.1-2025 EncoderFactory surface."""
 
+    @classmethod
+    def registered_codecs(cls) -> tuple[str, ...]:
+        """Return deterministic HLA encoding helper names supported by this factory."""
+
+        return tuple(sorted((*_PRIMITIVE_FACTORIES, *_COMPOSITE_FACTORY_NAMES)))
+
+    def has(self, name: str) -> bool:
+        return name in self.registered_codecs()
+
+    def get(self, name: str) -> Callable[..., DataElement]:
+        method = getattr(self, f"create{name}", None)
+        if not callable(method):
+            raise KeyError(f"Unknown or unsupported HLA encoding name: {name}")
+        return method
+
+    def capability_report(self) -> dict[str, object]:
+        return {
+            "registry": "hla.rti1516_2025.BasicEncoderFactory",
+            "codecs": list(self.registered_codecs()),
+            "supports_extendable_variant_record": True,
+        }
+
     def createHLAfixedArray(self, factoryOrFirstElement: DataElementFactory[D] | D, sizeOrSecondElement: int | D | None = None, *elements: D) -> HLAfixedArray[D]:  # noqa: N802
         if isinstance(sizeOrSecondElement, int):
             factory = factoryOrFirstElement
@@ -1193,6 +1215,14 @@ _PRIMITIVE_FACTORIES: dict[str, type[_DataElement]] = {
         "HLAunicodeString": HLAunicodeString,
     }.items()
 }
+
+_COMPOSITE_FACTORY_NAMES: tuple[str, ...] = (
+    "HLAfixedArray",
+    "HLAvariableArray",
+    "HLAfixedRecord",
+    "HLAvariantRecord",
+    "HLAextendableVariantRecord",
+)
 
 
 def _install_primitive_factory(method_name: str, element_type: type[_DataElement]) -> None:

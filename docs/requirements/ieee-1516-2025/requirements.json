@@ -14,6 +14,25 @@
       {"source": "IEEE 1516.2-2025", "clause": "1.3", "page": 12}
     ]
   },
+  "imported_packets": [
+    {
+      "id": "hla-2025-executable-test-requirements-v3",
+      "path": "executable_tests/hla_2025_executable_test_requirements_v3.csv",
+      "summary_path": "executable_tests/hla_2025_executable_test_requirements_v3_summary.json",
+      "row_count": 1117,
+      "status": "imported"
+    },
+    {
+      "id": "hla-encoding-auth-work-packet",
+      "path": "encoding_auth_work_packet",
+      "requirements": [
+        "encoding_auth_work_packet/02-requirements/encoding_requirements.csv",
+        "encoding_auth_work_packet/02-requirements/auth_requirements.csv",
+        "encoding_auth_work_packet/02-requirements/traceability_matrix.csv"
+      ],
+      "status": "imported"
+    }
+  ],
   "requirements": [
     {
       "id": "HLA-X-2025-REQ-001",

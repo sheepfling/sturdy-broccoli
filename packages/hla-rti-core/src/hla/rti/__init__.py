@@ -28,10 +28,14 @@ from .standard_shims import (
 )
 
 _FACTORY_EXPORTS = {
+    "AuthenticationContext",
     "available_spec_plugins",
     "available_backend_plugins",
     "create_backend",
+    "CredentialProvider",
+    "EncodingContext",
     "HlaFactoryRegistry",
+    "HlaRuntimeContext",
     "create_hla_factory",
     "create_rti_ambassador",
     "discover_specs",

@@ -1,0 +1,53 @@
+# Expected FOM type graph from 05-example-foms/EncodingSmokeTest-2025.xml
+
+simple:
+  TrackId:
+    representation: HLAinteger32BE
+  Latitude:
+    representation: HLAfloat64BE
+  Longitude:
+    representation: HLAfloat64BE
+  Altitude:
+    representation: HLAfloat32BE
+
+enumerated:
+  SensorKind:
+    representation: HLAinteger32BE
+    enumerators:
+      Radar: 1
+      Iff: 2
+      Passive: 3
+
+arrays:
+  TrackHistory:
+    element_type: Position
+    cardinality: Dynamic
+    encoding: HLAvariableArray
+  FixedFourTrackIds:
+    element_type: TrackId
+    cardinality: 4
+    encoding: HLAfixedArray
+
+fixed_records:
+  Position:
+    encoding: HLAfixedRecord
+    fields:
+      - [Latitude, Latitude]
+      - [Longitude, Longitude]
+      - [Altitude, Altitude]
+  TrackState:
+    encoding: HLAfixedRecord
+    fields:
+      - [Id, TrackId]
+      - [Where, Position]
+      - [Name, HLAunicodeString]
+
+variant_records:
+  SensorContact:
+    discriminant: Kind
+    data_type: SensorKind
+    encoding: HLAvariantRecord
+    alternatives:
+      Radar: RadarContact
+      Iff: IffContact
+      HLAother: HLAopaqueData

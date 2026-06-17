@@ -1,0 +1,13 @@
+ID,Requirement,Priority
+AUTH-001,"Runtime factory shall return an AuthenticationContext paired with the selected edition, provider, and transport.",MUST
+AUTH-002,1516-2025 profiles shall support credential envelopes with type and bytes.,MUST
+AUTH-003,1516-2025 profiles shall support HLAnoCredentials and HLAplainTextPassword credential providers.,MUST
+AUTH-004,1516e-2010 standard profile shall report supports_standard_credentials=false unless a provider adapter explicitly adds support.,MUST
+AUTH-005,Authentication shall be applied only at connection/transport setup and shall not mutate RTI ambassador service semantics.,MUST
+AUTH-006,Invalid credentials shall fail before federation creation or join begins.,MUST
+AUTH-007,"Unauthorized, invalid credentials, authorization error, and transport connection failures shall be distinguishable.",MUST
+AUTH-008,"No raw secrets shall appear in logs, reprs, pytest messages, or evidence outputs.",MUST
+AUTH-009,Custom credential types shall be accepted only when the selected provider/authorizer advertises support.,MUST
+AUTH-010,AuthorizerProvider shall be implemented only for fake/in-process/proxy modes that host authorization decisions.,SHOULD
+AUTH-011,mTLS and token auth shall be modeled as provider/transport extensions rather than standard HLA credentials unless adapter requires typed credential bytes.,SHOULD
+AUTH-012,"Authentication evidence files shall be emitted for capabilities, matrix results, negative tests, and secret redaction.",MUST

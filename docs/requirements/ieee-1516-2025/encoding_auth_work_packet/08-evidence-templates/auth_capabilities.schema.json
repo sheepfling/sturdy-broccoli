@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HLA-X Auth Capabilities",
+  "type": "object",
+  "required": [
+    "edition",
+    "provider",
+    "transport",
+    "supports_standard_credentials",
+    "credential_types"
+  ],
+  "properties": {
+    "edition": {
+      "type": "string"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "transport": {
+      "type": "string"
+    },
+    "supports_standard_credentials": {
+      "type": "boolean"
+    },
+    "supports_authorizer_provider": {
+      "type": "boolean"
+    },
+    "credential_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "transport_auth_modes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

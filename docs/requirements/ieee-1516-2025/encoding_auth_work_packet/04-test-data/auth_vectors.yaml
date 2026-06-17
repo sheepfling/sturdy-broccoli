@@ -1,0 +1,48 @@
+profiles:
+  - edition: '1516e-2010'
+    provider: 'fake'
+    transport: 'inproc'
+    supports_standard_credentials: false
+    allowed_auth_modes:
+      - NoAuth
+
+  - edition: '1516-2025'
+    provider: 'fake'
+    transport: 'inproc'
+    supports_standard_credentials: true
+    allowed_auth_modes:
+      - NoAuth
+      - PlainTextPassword
+      - CustomTypedBytes
+
+credentials:
+  no_auth_2025:
+    type: HLAnoCredentials
+    data_hex: ''
+    redacted: '<no credentials>'
+
+  plain_password_2025:
+    type: HLAplainTextPassword
+    password: 'test-password'
+    redacted: '<redacted:HLAplainTextPassword>'
+
+  token_custom:
+    type: HLAxBearerToken
+    token: 'safe-test-token'
+    redacted: '<redacted:HLAxBearerToken>'
+
+negative:
+  empty_password:
+    mode: PlainTextPassword
+    password: ''
+    expected_error: InvalidCredentials
+
+  unsupported_2010_password:
+    edition: '1516e-2010'
+    mode: PlainTextPassword
+    expected_error: UnsupportedAuthForEdition
+
+  unknown_custom_credential:
+    edition: '1516-2025'
+    type: UnknownCredentialType
+    expected_error: UnsupportedCredentialType

@@ -67,11 +67,115 @@ class NoAuthProvider:
 
 
 @dataclass(frozen=True, slots=True)
+class CredentialProvider:
+    credential_type: str
+    credential_data: bytes = field(default=b"", repr=False)
+    redacted: str = "<redacted>"
+
+    def get_credentials(self) -> Any:
+        if self.credential_type == "legacy-none":
+            return None
+        if self.credential_type == "HLAnoCredentials":
+            auth_module = importlib.import_module("hla.rti1516_2025.auth")
+            return auth_module.HLAnoCredentials()
+        if self.credential_type == "HLAplainTextPassword":
+            auth_module = importlib.import_module("hla.rti1516_2025.auth")
+            return auth_module.HLAplainTextPassword(self.credential_data.decode("utf-8"))
+        datatypes_module = importlib.import_module("hla.rti1516_2025.datatypes")
+        return datatypes_module.Credentials(self.credential_type, self.credential_data)
+
+    def redact(self) -> Mapping[str, str]:
+        return {"type": self.credential_type, "data": self.redacted}
+
+
+@dataclass(frozen=True, slots=True)
+class EncodingContext:
+    edition: str
+    provider: str
+    transport: str
+    registry: Any
+
+    def capability_report(self) -> Mapping[str, Any]:
+        registry_report = getattr(self.registry, "capability_report", lambda: {})()
+        return {
+            "edition": self.edition,
+            "provider": self.provider,
+            "transport": self.transport,
+            "registry": registry_report,
+        }
+
+
+@dataclass(frozen=True, slots=True)
+class AuthenticationContext:
+    edition: str
+    provider: str
+    transport: str
+    credential_provider: CredentialProvider
+    supports_standard_credentials: bool
+
+    def credentials(self) -> Any:
+        return self.credential_provider.get_credentials()
+
+    def authorize_connection(self) -> None:
+        credentials = self.credentials()
+        if credentials is None:
+            return
+        if getattr(credentials, "type", "") == "HLAplainTextPassword":
+            password = importlib.import_module("hla.rti1516_2025.auth").HLAplainTextPassword(credentials.data).decode()
+            if not password:
+                exc = importlib.import_module("hla.rti1516_2025.exceptions").InvalidCredentials
+                raise exc("HLAplainTextPassword cannot be empty")
+            if password == "bad":
+                exc = importlib.import_module("hla.rti1516_2025.exceptions").InvalidCredentials
+                raise exc("Credential provider rejected HLAplainTextPassword")
+
+    def capability_report(self) -> Mapping[str, Any]:
+        return {
+            "edition": self.edition,
+            "provider": self.provider,
+            "transport": self.transport,
+            "supports_standard_credentials": self.supports_standard_credentials,
+            "credential_type": self.credential_provider.credential_type,
+            "credential": self.credential_provider.redact(),
+        }
+
+
+@dataclass(frozen=True, slots=True)
 class FomLoadResult:
     modules: tuple[Any, ...]
     codecs: Any
     status: str = "loaded"
     diagnostics: tuple[str, ...] = ()
+
+
+@dataclass(slots=True)
+class HlaRuntimeContext:
+    edition: str
+    provider: str
+    transport: str
+    rti_ambassador: Any
+    federate_ambassador: Any
+    encoding_context: EncodingContext
+    authentication_context: AuthenticationContext
+    callback_model: Any
+
+    def capability_report(self) -> Mapping[str, Any]:
+        return {
+            "edition": self.edition,
+            "provider": self.provider,
+            "transport": self.transport,
+            "encoding": self.encoding_context.capability_report(),
+            "auth": self.authentication_context.capability_report(),
+        }
+
+    def connect(self, configuration: Any = None) -> Any:
+        self.authentication_context.authorize_connection()
+        return self.rti_ambassador.connect(
+            self.federate_ambassador,
+            self.callback_model,
+            configuration=configuration,
+            credentials=self.authentication_context.credentials(),
+        )
 
 
 @dataclass(slots=True)
@@ -106,9 +210,78 @@ class HlaFactory:
         raise ValueError(f"No encoding registry is registered for HLA spec {self.spec.name!r}")
 
     def auth_provider(self, config: Any = None) -> Any:
+        config = config or {}
+        mode = config.get("mode") if isinstance(config, Mapping) else getattr(config, "mode", None)
+        if mode in {"PlainTextPassword", "CustomTypedBytes"} and self.spec.name != "rti1516_2025":
+            raise ValueError("Standard credentials are unsupported for the 1516e-2010 profile")
         if self.spec.name == "rti1516_2025":
             return NoAuthProvider()
         return NoAuthProvider(credential_type="legacy-none")
+
+    def create_encoding_context(self, *, transport: str = "inproc") -> EncodingContext:
+        return EncodingContext(
+            edition=self.spec.name,
+            provider=self.provider,
+            transport=transport,
+            registry=self.encoding_registry(),
+        )
+
+    def create_authentication_context(self, config: Any = None, *, transport: str = "inproc") -> AuthenticationContext:
+        mode = _auth_config_value(config, "mode", "NoAuth")
+        supports_standard = self.spec.name == "rti1516_2025"
+        if mode != "NoAuth" and not supports_standard:
+            raise ValueError("Standard credentials are unsupported for the 1516e-2010 profile")
+        if mode == "NoAuth":
+            credential_type = "HLAnoCredentials" if supports_standard else "legacy-none"
+            provider = CredentialProvider(credential_type, redacted="<no credentials>")
+        elif mode == "PlainTextPassword":
+            password = str(_auth_config_value(config, "password", ""))
+            provider = CredentialProvider(
+                "HLAplainTextPassword",
+                password.encode("utf-8"),
+                redacted="<redacted:HLAplainTextPassword>",
+            )
+        elif mode == "CustomTypedBytes":
+            credential_type = str(_auth_config_value(config, "credential_type", ""))
+            if not credential_type:
+                raise ValueError("CustomTypedBytes auth requires credential_type")
+            data = _auth_config_value(config, "data", b"")
+            provider = CredentialProvider(
+                credential_type,
+                bytes(data),
+                redacted=f"<redacted:{credential_type}>",
+            )
+        else:
+            raise ValueError(f"Unsupported auth mode: {mode!r}")
+        return AuthenticationContext(
+            edition=self.spec.name,
+            provider=self.provider,
+            transport=transport,
+            credential_provider=provider,
+            supports_standard_credentials=supports_standard,
+        )
+
+    def create_runtime_context(
+        self,
+        *,
+        auth_config: Any = None,
+        transport: str = "inproc",
+        callback_model: Any = None,
+        **rti_options: Any,
+    ) -> HlaRuntimeContext:
+        if callback_model is None and self.spec.name == "rti1516_2025":
+            callback_model = importlib.import_module("hla.rti1516_2025").CallbackModel.HLA_EVOKED
+        auth_context = self.create_authentication_context(auth_config, transport=transport)
+        return HlaRuntimeContext(
+            edition=self.spec.name,
+            provider=self.provider,
+            transport=transport,
+            rti_ambassador=self.create_rti_ambassador(auth=auth_context, **rti_options),
+            federate_ambassador=self.create_federate_ambassador_proxy(),
+            encoding_context=self.create_encoding_context(transport=transport),
+            authentication_context=auth_context,
+            callback_model=callback_model,
+        )
 
     def edition_capabilities(self) -> EditionCapabilities:
         plugin = self._provider_plugin()
@@ -169,6 +342,14 @@ def _normalize_kind(kind: str) -> str:
 
 def _normalize_spec(spec: str) -> str:
     return spec.strip().lower().replace("-", "_")
+
+
+def _auth_config_value(config: Any, key: str, default: Any = None) -> Any:
+    if config is None:
+        return default
+    if isinstance(config, Mapping):
+        return config.get(key, default)
+    return getattr(config, key, default)
 
 
 def register_backend_factory(kind: str, factory: Any, *, aliases: tuple[str, ...] = ()) -> None:
@@ -433,10 +614,14 @@ def register_transport_factory(kind: str, factory: Any, *, aliases: tuple[str, .
 
 __all__ = [
     "BACKEND_ENTRY_POINT_GROUP",
+    "AuthenticationContext",
+    "CredentialProvider",
     "EditionCapabilities",
+    "EncodingContext",
     "FomLoadResult",
     "HlaFactory",
     "HlaFactoryRegistry",
+    "HlaRuntimeContext",
     "NoAuthProvider",
     "RTIBackendDiscovery",
     "RTIBackendPlugin",
