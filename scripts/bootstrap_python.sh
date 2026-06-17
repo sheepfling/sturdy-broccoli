@@ -171,7 +171,8 @@ if ! hla2010_shell_have "$PYTHON_BIN"; then
 fi
 
 VENV_DIR="$ROOT_DIR/.venv"
-ROOT_ALIAS_DIR="/private/tmp/hla2010-workspace-$(id -un)"
+ROOT_ALIAS_BASE="${TMPDIR:-/tmp}"
+ROOT_ALIAS_DIR="${ROOT_ALIAS_BASE%/}/hla2010-workspace-$(id -un)"
 ROOT_ALIAS_PATH="$ROOT_ALIAS_DIR/repo"
 VENV_ALIAS_DIR="$ROOT_ALIAS_PATH/.venv"
 
