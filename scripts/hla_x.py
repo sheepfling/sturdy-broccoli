@@ -6,9 +6,9 @@ import json
 import os
 import subprocess
 import sys
-import tomllib
 from pathlib import Path
 
+import tomllib
 
 SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[1]
 JAVA_2010_REPORT = SCRIPT_REPO_ROOT / "docs/evidence/rosetta/java-standard-2010.json"
@@ -404,6 +404,22 @@ def _cpp_smoke_capsule(args: argparse.Namespace) -> int:
 
 
 def _demo(args: argparse.Namespace) -> int:
+    if args.name in {"fom-showcase", "simulation-showcase"}:
+        if args.edition != "2025":
+            raise SystemExit("fom-showcase currently runs the 2025 HLA-X FOM set plus the existing Target/Radar FOM")
+        _bootstrap_source_checkout()
+        from hla.verification.repo_internal.verification.hlax_fom_showcase import write_hlax_fom_showcase_artifacts
+
+        paths = write_hlax_fom_showcase_artifacts(args.output_dir, target_radar_steps=args.steps)
+        print(json.dumps({
+            "status": "lifecycle-green",
+            "summary_json": str(paths.summary_json),
+            "scenario_csv": str(paths.scenario_csv),
+            "report_markdown": str(paths.report_markdown),
+            "chart_manifest_json": str(paths.chart_manifest_json),
+            "observer_events_jsonl": str(paths.observer_events_jsonl),
+        }, indent=2, sort_keys=True))
+        return 0
     if args.name != "mixed-language-target-radar":
         raise SystemExit(f"unknown demo {args.name!r}")
     print(f"mixed-language-target-radar edition {args.edition}")
@@ -424,6 +440,8 @@ def main(argv: list[str] | None = None) -> int:
     demo = subparsers.add_parser("demo")
     demo.add_argument("name")
     demo.add_argument("--edition", choices=("2010", "2025"), required=True)
+    demo.add_argument("--output-dir", default=str(SCRIPT_REPO_ROOT / "analysis/hlax_fom_showcase"))
+    demo.add_argument("--steps", type=int, default=3, help="Target/Radar steps for showcase demos")
     demo.set_defaults(func=_demo)
 
     build = subparsers.add_parser("build")

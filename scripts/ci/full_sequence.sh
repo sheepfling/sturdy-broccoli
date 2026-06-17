@@ -44,5 +44,6 @@ python_bin="$(hla2010_shell_python_bin)"
 run_step "integration tests" "$python_bin" "$ROOT_DIR/scripts/run_two_federate_suite.py"
 run_step "other tests" "$ROOT_DIR/scripts/ci/target_radar_backend_matrix.sh"
 run_step "other tests" "$ROOT_DIR/scripts/ci/target_radar_proof.sh"
+run_step "HLA-X FOM showcase" "$ROOT_DIR/scripts/ci/hlax_fom_showcase.sh"
 run_step "compliance matrices" "$ROOT_DIR/scripts/ci/section8_backend_matrix_gate.sh"
 run_step "full backend matrixed compliance" "$ROOT_DIR/scripts/ci/vendor_runtime_smoke.sh" all

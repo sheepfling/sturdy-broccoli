@@ -18,8 +18,8 @@ import os
 import re
 import struct
 import xml.etree.ElementTree as ET
-from functools import lru_cache
 from dataclasses import dataclass, field
+from functools import lru_cache
 from importlib import resources
 from pathlib import Path
 from typing import Any, Iterable, Mapping
@@ -1046,15 +1046,15 @@ def _extract_fixed_record_datatypes(root: ET.Element, *, path: Path) -> dict[str
             continue
         _require_unique_name(fixed_records, name, "fixed record datatype", path=path)
         fields: list[FixedRecordFieldSpec] = []
-        for field in _direct_children(child, "field"):
-            field_name = (_child_text(field, "name") or "").strip()
+        for field_element in _direct_children(child, "field"):
+            field_name = (_child_text(field_element, "name") or "").strip()
             if not field_name:
                 continue
             fields.append(
                 FixedRecordFieldSpec(
                     name=field_name,
-                    data_type=(_child_text(field, "dataType") or "").strip() or None,
-                    semantics=(_child_text(field, "semantics") or "").strip() or None,
+                    data_type=(_child_text(field_element, "dataType") or "").strip() or None,
+                    semantics=(_child_text(field_element, "semantics") or "").strip() or None,
                 )
             )
         fixed_records[name] = FixedRecordDatatypeSpec(
@@ -1318,8 +1318,14 @@ def _validate_datatype_references(
     lookahead_datatype: str | None,
     *,
     path: Path,
+    additional_datatype_names: Iterable[str] = (),
 ) -> None:
-    valid_names = set(datatype_names) | set(reference_datatypes) | set(_standard_mim_datatype_names())
+    valid_names = (
+        set(datatype_names)
+        | set(reference_datatypes)
+        | set(additional_datatype_names)
+        | set(_standard_mim_datatype_names())
+    )
 
     def require_valid(name: str | None, context: str) -> None:
         if name is None:
@@ -1349,8 +1355,8 @@ def _validate_datatype_references(
     for name, spec in dict(array_datatypes).items():
         require_valid(spec.data_type, f"Array datatype {name}")
     for name, spec in dict(fixed_record_datatypes).items():
-        for field in spec.fields:
-            require_valid(field.data_type, f"Fixed record field {name}.{field.name}")
+        for record_field in spec.fields:
+            require_valid(record_field.data_type, f"Fixed record field {name}.{record_field.name}")
     for name, spec in dict(variant_record_datatypes).items():
         if spec.discriminant and not spec.data_type:
             raise FOMResolutionError(f"Variant record datatype {name!r} defines a discriminant without a datatype in {path}", kind="read")
@@ -1442,7 +1448,10 @@ def assess_omt_conformance(
             parsed=True,
             module_name=module.name,
             unsupported_features=tuple(unsupported_features),
-            rationale="The document satisfies current schema and parser validation, but it uses features that the repo still treats as a narrower supported subset.",
+            rationale=(
+                "The document satisfies current schema and parser validation, but it uses features "
+                "that the repo still treats as a narrower supported subset."
+            ),
         )
 
     return OMTConformanceAssessment(
@@ -1688,6 +1697,7 @@ def parse_fom_xml(
     source: Any | None = None,
     uri: str | None = None,
     validate_schema: str | bool = False,
+    additional_datatype_names: Iterable[str] = (),
 ) -> FOMModule:
     """Parse the useful name-bearing subset of an IEEE 1516.2 object model."""
 
@@ -1811,6 +1821,7 @@ def parse_fom_xml(
         time_stamp_datatype,
         lookahead_datatype,
         path=path,
+        additional_datatype_names=additional_datatype_names,
     )
     return FOMModule(
         source=source if source is not None else path,
@@ -1999,8 +2010,8 @@ def _serializer_referenced_datatype_names(module: FOMModule) -> tuple[str, ...]:
         register(spec.data_type)
     for spec in module.fixed_record_datatypes.values():
         register(spec.name)
-        for field in spec.fields:
-            register(field.data_type)
+        for record_field in spec.fields:
+            register(record_field.data_type)
     for spec in module.variant_record_datatypes.values():
         register(spec.name)
         register(spec.data_type)
@@ -2394,14 +2405,14 @@ class FOMResolver:
     parse_local_xml: bool = True
     require_local_parse: bool = False
 
-    def resolve(self, source: Any) -> FOMModule:
+    def resolve(self, source: Any, *, additional_datatype_names: Iterable[str] = ()) -> FOMModule:
         if isinstance(source, FOMModule):
             return source
         if str(source) == _STANDARD_MIM_NAME:
             return standard_mim_module()
         uri, path = normalize_module_uri(source, base_paths=self.base_paths)
         if path is not None and self.parse_local_xml and path.exists() and path.suffix.lower() in {".xml", ".fdd", ".fom"}:
-            return parse_fom_xml(path, source=source, uri=uri)
+            return parse_fom_xml(path, source=source, uri=uri, additional_datatype_names=additional_datatype_names)
         if self.require_local_parse and path is not None and not path.exists():
             raise FOMResolutionError(f"FOM module does not exist: {path}", kind="open")
         return FOMModule(source=source, uri=uri, path=path if path and path.exists() else None)
@@ -2414,7 +2425,13 @@ class FOMResolver:
         if isinstance(sources, (str, bytes, os.PathLike)):
             return (self.resolve(sources),)
         try:
-            return tuple(self.resolve(source) for source in sources)
+            resolved: list[FOMModule] = []
+            known_datatypes: set[str] = set()
+            for source in sources:
+                module = self.resolve(source, additional_datatype_names=known_datatypes)
+                resolved.append(module)
+                known_datatypes.update(module.datatype_names)
+            return tuple(resolved)
         except TypeError:
             return (self.resolve(sources),)
 

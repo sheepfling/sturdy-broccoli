@@ -24,6 +24,7 @@ Commands:
   ./tools/hla-x cpp certify-core --edition 2010 --artifact standard-shim --transports pybind,grpc
   ./tools/hla-x demo mixed-language-target-radar --edition 2010
   ./tools/hla-x demo mixed-language-target-radar --edition 2025
+  ./tools/hla-x demo fom-showcase --edition 2025 --output-dir analysis/hlax_fom_showcase
 EOF
 }
 
