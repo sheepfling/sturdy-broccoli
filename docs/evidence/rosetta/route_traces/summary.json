@@ -8,6 +8,15 @@
     "cpp-standard-2025-grpc"
   ],
   "scope": "MVP route proof, not full HLA conformance",
-  "status": "core-green",
-  "trace_count": 6
+  "status": "trace-green",
+  "trace_count": 6,
+  "status_vocabulary": [
+    "surface-backed",
+    "lifecycle-green",
+    "adapter-smoke-green",
+    "core-exchange-green",
+    "trace-green",
+    "full-interface-surface-complete",
+    "full-interface-behavior-complete"
+  ]
 }

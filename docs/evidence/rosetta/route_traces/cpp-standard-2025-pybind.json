@@ -2,7 +2,7 @@
   "edition": "2025",
   "route": "cpp-standard-2025-pybind",
   "scenario": "lifecycle-core",
-  "status": "core-green",
+  "status": "lifecycle-green",
   "trace": [
     {
       "backend": "cpp-standard-2025-pybind",
@@ -51,5 +51,12 @@
     {
       "event": "disconnect"
     }
+  ],
+  "requirements_exercised": [
+    "HLA-X-2025-REQ-002",
+    "HLA-X-2025-FR-004",
+    "HLA-X-2025-FI-001",
+    "HLA-X-2025-FI-005",
+    "HLA-X-2025-FI-006"
   ]
 }

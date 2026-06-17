@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[2]
 TRACE_DIR = ROOT / "docs/evidence/rosetta/route_traces"
 
@@ -15,7 +14,7 @@ def _load(route: str) -> dict[str, object]:
 def test_rosetta_route_trace_summary_lists_mvp_scope() -> None:
     summary = json.loads((TRACE_DIR / "summary.json").read_text(encoding="utf-8"))
 
-    assert summary["status"] == "core-green"
+    assert summary["status"] == "trace-green"
     assert summary["scope"] == "MVP route proof, not full HLA conformance"
     assert set(summary["routes"]) == {
         "cpp-standard-2010-pybind",
@@ -34,7 +33,8 @@ def test_rosetta_2010_cpp_traces_cover_exchange_callbacks() -> None:
 
         assert evidence["edition"] == "2010"
         assert evidence["scenario"] == "two-federate-core-exchange"
-        assert evidence["status"] == "core-green"
+        assert evidence["status"] == "core-exchange-green"
+        assert {"HLA-X-2025-FR-003", "HLA-X-2025-FR-004"} <= set(evidence["requirements_exercised"])
         assert {"discoverObjectInstance", "reflectAttributeValues", "receiveInteraction", "timeAdvanceGrant"} <= events
 
 
@@ -45,7 +45,8 @@ def test_rosetta_2025_traces_cover_lifecycle_core() -> None:
 
         assert evidence["edition"] == "2025"
         assert evidence["scenario"] == "lifecycle-core"
-        assert evidence["status"] == "core-green"
+        assert evidence["status"] == "lifecycle-green"
+        assert {"HLA-X-2025-FR-004", "HLA-X-2025-FI-005", "HLA-X-2025-FI-006"} <= set(evidence["requirements_exercised"])
         assert events == [
             "routeSelected",
             "getHLAversion",

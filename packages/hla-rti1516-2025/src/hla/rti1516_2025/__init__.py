@@ -1,3 +1,4 @@
+# ruff: noqa: I001
 """Best-of Python typing model for IEEE 1516.1-2025 HLA APIs.
 
 This package root exposes the canonical standard-facing type surface. Runtime
@@ -211,8 +212,12 @@ from .auth import (
 )
 
 from .encoding import (
+    BasicEncoderFactory,
+    CallableDataElementFactory,
     EncoderException,
     DecoderException,
+    SimpleByteWrapper,
+    SimpleVariableLengthData,
     VariableLengthData,
     DataElement,
     DataElementFactory,
@@ -261,6 +266,7 @@ from .encoding import (
     HLAlogicalTime,
     HLAlogicalTimeInterval,
     EncoderFactory,
+    create_encoder_factory,
 )
 
 __all__ = [
@@ -292,8 +298,10 @@ __all__ = [
     "Authorizer",
     "AuthorizerFactory",
     "AuthorizerFactoryFactory",
+    "BasicEncoderFactory",
     "CallNotAllowedFromWithinCallback",
     "CallbackModel",
+    "CallableDataElementFactory",
     "ConfigurationResult",
     "ConnectionFailed",
     "CouldNotCreateLogicalTimeFactory",
@@ -478,6 +486,8 @@ __all__ = [
     "SaveNotInitiated",
     "SaveStatus",
     "ServiceGroup",
+    "SimpleByteWrapper",
+    "SimpleVariableLengthData",
     "SynchronizationPointFailureReason",
     "SynchronizationPointLabelNotAnnounced",
     "TimeConstrainedAlreadyEnabled",
@@ -491,4 +501,5 @@ __all__ = [
     "ValueDataElement",
     "VariableLengthData",
     "__version__",
+    "create_encoder_factory",
 ]

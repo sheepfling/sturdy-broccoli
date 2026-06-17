@@ -11,22 +11,43 @@
   "routes": {
     "java-standard-2025-jpype": {
       "scenario": "lifecycle-core",
-      "status": "core-green",
-      "surface": "official Java 2025 API"
+      "status": "lifecycle-green",
+      "surface": "official Java 2025 API",
+      "requirements_exercised": [
+        "HLA-X-2025-REQ-002",
+        "HLA-X-2025-FR-004",
+        "HLA-X-2025-FI-001",
+        "HLA-X-2025-FI-005",
+        "HLA-X-2025-FI-006"
+      ]
     },
     "java-standard-2025-py4j": {
       "scenario": "lifecycle-core",
-      "status": "core-green",
-      "surface": "official Java 2025 API"
+      "status": "lifecycle-green",
+      "surface": "official Java 2025 API",
+      "requirements_exercised": [
+        "HLA-X-2025-REQ-002",
+        "HLA-X-2025-FR-004",
+        "HLA-X-2025-FI-001",
+        "HLA-X-2025-FI-005",
+        "HLA-X-2025-FI-006"
+      ]
     }
   },
   "scenario_evidence": {
     "scenarios": [
       "2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling"
     ],
-    "status": "lifecycle-core-green",
+    "status": "lifecycle-green",
     "tests": [
       "tests/backends/test_rosetta_standard_artifacts.py::test_standard_2025_routes_pass_lifecycle_core_when_built"
+    ],
+    "requirements_exercised": [
+      "HLA-X-2025-REQ-002",
+      "HLA-X-2025-FR-004",
+      "HLA-X-2025-FI-001",
+      "HLA-X-2025-FI-005",
+      "HLA-X-2025-FI-006"
     ]
   },
   "surface": "official IEEE 1516.1-2025 Java API",

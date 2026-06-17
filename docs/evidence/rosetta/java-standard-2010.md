@@ -4,14 +4,14 @@
 - jar: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/rosetta/java-standard-2010/hla-x-rti1516e-java-shim.jar`
 - compile status: `passed`
 - factory: `HLA-X Java 2010 Standard Shim`
-- status: `surface-backed + core-green`
+- status: `surface-backed + core-exchange-green`
 - scenario evidence: `tests/backends/test_java_standard_2010_artifact.py`
 - compatibility patch: `RtiFactoryFactory` uses `ServiceLoader` because the official 2010 helper's `ServiceRegistry` lookup is not accepted by modern JDKs
 
 ## Route Evidence
 
-- `java-standard-2010-jpype`: `core-green`
-- `java-standard-2010-py4j`: `core-green`
+- `java-standard-2010-jpype`: `core-exchange-green`
+- `java-standard-2010-py4j`: `core-exchange-green`
 
 ## Implemented Services
 

@@ -4,14 +4,13 @@ import json
 import shutil
 import subprocess
 import sys
-import tomllib
 from pathlib import Path
 
 import pytest
-
+import tomllib
 from hla.backends.cpp_shim.cpp_intake import CppSdkIntakeRequest, discover_cpp_sdk, generate_cpp_sdk_capsule, load_cpp_sdk_profile
-from hla.verification.cpp_intake_certification import certify_cpp_sdk_core, certify_cpp_standard_core
 from hla.rti import available_backend_plugins, create_rti_ambassador
+from hla.verification.cpp_intake_certification import certify_cpp_sdk_core, certify_cpp_standard_core
 
 CPP_2010_STANDARD_ARTIFACT = Path("build/rosetta/cpp-standard-2010/libhla_x_rti1516e_cpp_shim.a")
 
@@ -136,7 +135,7 @@ def test_cpp_standard_2010_certify_core_reaches_trace_green_when_built() -> None
 
     assert report.status == "trace-green"
     assert report.callback_status == "callback-green"
-    assert report.core_scenario_status == "core-green"
+    assert report.core_scenario_status == "core-exchange-green"
 
 
 def test_generic_cpp_sdk_routes_are_registered_separately_from_standard_shims() -> None:

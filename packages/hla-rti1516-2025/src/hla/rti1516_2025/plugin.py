@@ -13,7 +13,7 @@ def plugin() -> SpecPlugin:
             python_package="hla.rti1516_2025",
             java_package="hla.rti1516_2025",
             cpp_namespace="rti1516_2025",
-            aliases=("1516.1-2025", "1516-2025", "1516_2025", "2025", "hla4", "hla2025"),
+            aliases=("1516.1-2025", "1516-2025", "1516_2025", "2025", "hla4", "hla2025", "ieee1516e-2025"),
             capabilities=frozenset({"fdd", "mim", "encoding", "time", "auth", "fedpro", "grpc"}),
         ),
         description="IEEE 1516.1-2025 HLA API",

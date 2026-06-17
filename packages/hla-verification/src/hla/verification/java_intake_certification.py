@@ -4,18 +4,16 @@ from __future__ import annotations
 import json
 import os
 import re
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Sequence
 
 from hla.bridges.java.common.java_intake import (
-    JavaRtiIntakeReport,
     JavaRtiIntakeRequest,
     discover_java_rti_jar,
     java_api_profile,
 )
 from hla.rti import RTIBackendSpec
-
 
 REQUIRED_2010_TRACE_EVENTS = {
     "connect",
@@ -32,6 +30,8 @@ REQUIRED_2010_TRACE_EVENTS = {
     "destroyFederationExecution",
     "disconnect",
 }
+
+CORE_SCENARIO_GREEN_STATUSES = {"core-green", "core-exchange-green"}
 
 
 @dataclass(frozen=True, slots=True)
@@ -114,9 +114,9 @@ def certify_java_rti_core(request: JavaRtiIntakeRequest) -> JavaRtiCoreCertifica
         gateway = None
         gateway_port = request.gateway_port
         if request.bridge == "py4j" and gateway_port is None:
-            from py4j.java_gateway import CallbackServerParameters, GatewayParameters, JavaGateway, launch_gateway
-            from hla.bridges.java.common.py4j_support import reset_py4j_callback_client
             from hla.bridges.java.common.java_runtime import discover_java_tool
+            from hla.bridges.java.common.py4j_support import reset_py4j_callback_client
+            from py4j.java_gateway import CallbackServerParameters, GatewayParameters, JavaGateway, launch_gateway
 
             gateway_port = launch_gateway(
                 classpath=os.pathsep.join(request.classpath),
@@ -161,7 +161,7 @@ def certify_java_rti_core(request: JavaRtiIntakeRequest) -> JavaRtiCoreCertifica
             discovery=discovery_payload,
             connect_status="connect-green" if connect_green else "failed",
             callback_status="callback-green" if callback_green else "failed",
-            core_scenario_status="core-green" if evidence.get("status") == "core-green" else "failed",
+            core_scenario_status="core-exchange-green" if evidence.get("status") in CORE_SCENARIO_GREEN_STATUSES else "failed",
             trace_comparison_status=trace_status,
             status=trace_status,
             trace=trace,

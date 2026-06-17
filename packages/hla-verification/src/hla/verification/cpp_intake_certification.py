@@ -7,9 +7,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Sequence
 
+from hla.backends.cpp_shim.cpp_capsule_runtime import smoke_capsule
 from hla.backends.cpp_shim.cpp_intake import CppSdkIntakeRequest, generate_cpp_sdk_capsule
-from hla.backends.cpp_shim.cpp_capsule_runtime import CapsuleRuntimeResult, smoke_capsule
-
 
 REQUIRED_2010_TRACE_EVENTS = {
     "connect",
@@ -38,6 +37,8 @@ REQUIRED_2025_TRACE_EVENTS = {
     "destroyFederationExecution",
     "disconnect",
 }
+
+CORE_SCENARIO_GREEN_STATUSES = {"core-green", "core-exchange-green"}
 
 
 @dataclass(frozen=True, slots=True)
@@ -110,7 +111,7 @@ def certify_cpp_standard_core(edition: str, transport: str) -> CppRtiCoreCertifi
             artifact=artifact,
             connect_status="connect-green" if connect_green else "failed",
             callback_status=callback_status,
-            core_scenario_status="core-green" if evidence.get("status") == "core-green" else "failed",
+            core_scenario_status="core-exchange-green" if evidence.get("status") in CORE_SCENARIO_GREEN_STATUSES else "failed",
             trace_comparison_status=status,
             status=status,
             trace=trace,

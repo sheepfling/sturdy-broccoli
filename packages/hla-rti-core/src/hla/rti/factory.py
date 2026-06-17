@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib
+from dataclasses import dataclass, field
 from importlib import metadata
 from typing import Any, Mapping
 
@@ -9,6 +10,7 @@ from .plugin_api import (
     BACKEND_ENTRY_POINT_GROUP,
     SPEC_ENTRY_POINT_GROUP,
     BackendRequest,
+    FactoryComposition,
     HLASpec,
     RTIBackendDiscovery,
     RTIBackendPlugin,
@@ -38,6 +40,127 @@ _SOURCE_CHECKOUT_PLUGIN_MODULES: tuple[str, ...] = (
     "hla.vendors.portico.plugin",
     "hla.backends.certi.certi.plugin",
 )
+
+
+@dataclass(frozen=True, slots=True)
+class EditionCapabilities:
+    spec_name: str
+    year: int
+    provider: str
+    backend_family: str
+    capabilities: frozenset[str]
+    encoding: str
+    auth: str
+    fom: str
+    notes: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class NoAuthProvider:
+    """Default permissive auth provider for local/spec shim routes."""
+
+    name: str = "none"
+    credential_type: str = "HLAnoCredentials"
+
+    def authorize(self, credentials: Any = None, **context: Any) -> bool:
+        return True
+
+
+@dataclass(frozen=True, slots=True)
+class FomLoadResult:
+    modules: tuple[Any, ...]
+    codecs: Any
+    status: str = "loaded"
+    diagnostics: tuple[str, ...] = ()
+
+
+@dataclass(slots=True)
+class HlaFactory:
+    spec: HLASpec
+    provider: str
+    options: Mapping[str, Any] = field(default_factory=dict)
+
+    def create_rti_ambassador(self, **options: Any) -> Any:
+        merged = dict(self.options)
+        merged.update(options)
+        composition = self._composition()
+        merged.setdefault("factory_composition", composition)
+        return create_rti_ambassador(spec=self.spec, backend=self.provider, **merged)
+
+    def create_federate_ambassador_proxy(self, ambassador: Any = None, **options: Any) -> Any:
+        if ambassador is not None:
+            return ambassador
+        spec_package = importlib.import_module(self.spec.python_package)
+        null_ambassador = getattr(spec_package, "NullFederateAmbassador", None)
+        if null_ambassador is None:
+            null_ambassador = getattr(importlib.import_module(f"{self.spec.python_package}.federate_ambassador"), "NullFederateAmbassador", None)
+        if null_ambassador is None:
+            raise ValueError(f"HLA spec {self.spec.name!r} does not expose a null federate ambassador proxy")
+        return null_ambassador()
+
+    def encoding_registry(self) -> Any:
+        if self.spec.name == "rti1516_2025":
+            return importlib.import_module("hla.rti1516_2025").create_encoder_factory()
+        if self.spec.name == "rti1516e":
+            return importlib.import_module("hla.rti1516e.encoding")
+        raise ValueError(f"No encoding registry is registered for HLA spec {self.spec.name!r}")
+
+    def auth_provider(self, config: Any = None) -> Any:
+        if self.spec.name == "rti1516_2025":
+            return NoAuthProvider()
+        return NoAuthProvider(credential_type="legacy-none")
+
+    def edition_capabilities(self) -> EditionCapabilities:
+        plugin = self._provider_plugin()
+        notes: list[str] = []
+        if self.spec.name == "rti1516_2025":
+            notes.append("2025 factory composes BasicEncoderFactory and HLAnoCredentials auth by default")
+        return EditionCapabilities(
+            spec_name=self.spec.name,
+            year=self.spec.year,
+            provider=plugin.name,
+            backend_family=plugin.family,
+            capabilities=self.spec.capabilities,
+            encoding="hla.rti1516_2025.BasicEncoderFactory" if self.spec.name == "rti1516_2025" else "hla.rti1516e.encoding",
+            auth="HLAnoCredentials" if self.spec.name == "rti1516_2025" else "legacy-none",
+            fom="edition-scoped-loader",
+            notes=tuple(notes),
+        )
+
+    def load_fom(self, modules: Any, *, codecs: Any | None = None, **options: Any) -> FomLoadResult:
+        if isinstance(modules, (str, bytes)):
+            normalized = (modules,)
+        else:
+            normalized = tuple(modules)
+        return FomLoadResult(modules=normalized, codecs=codecs or self.encoding_registry())
+
+    def _composition(self) -> FactoryComposition:
+        capabilities = self.edition_capabilities()
+        return FactoryComposition(
+            encoding_registry=self.encoding_registry(),
+            auth_provider=self.auth_provider(),
+            capabilities={
+                "spec": capabilities.spec_name,
+                "provider": capabilities.provider,
+                "encoding": capabilities.encoding,
+                "auth": capabilities.auth,
+            },
+        )
+
+    def _provider_plugin(self) -> RTIBackendPlugin:
+        _load_backend_plugins()
+        plugin = _BACKEND_PLUGINS.get(_normalize_kind(self.provider))
+        if plugin is None:
+            raise ValueError(f"Unknown RTI provider: {self.provider!r}")
+        if self.spec.name not in plugin.supports:
+            raise ValueError(f"RTI provider {plugin.name!r} does not support HLA spec {self.spec.name!r}")
+        return plugin
+
+
+class HlaFactoryRegistry:
+    @staticmethod
+    def get(spec: str | HLASpec, *, provider: str = "inmemory", **options: Any) -> HlaFactory:
+        return create_hla_factory(spec=spec, provider=provider, **options)
 
 
 def _normalize_kind(kind: str) -> str:
@@ -268,7 +391,20 @@ def create_backend(
         raise ValueError(f"Unknown RTI backend kind: {backend!r}")
     if resolved_spec.name not in plugin.supports:
         raise ValueError(f"RTI backend {plugin.name!r} does not support HLA spec {resolved_spec.name!r}")
-    return plugin.create_backend(BackendRequest(spec=resolved_spec, options=dict(options)))
+    composition = options.pop("factory_composition", None)
+    return plugin.create_backend(BackendRequest(spec=resolved_spec, options=dict(options), composition=composition))
+
+
+def create_hla_factory(
+    *,
+    spec: str | HLASpec,
+    provider: str = "inmemory",
+    **options: Any,
+) -> HlaFactory:
+    resolved_spec = resolve_spec(spec)
+    factory = HlaFactory(spec=resolved_spec, provider=provider, options=dict(options))
+    factory._provider_plugin()
+    return factory
 
 
 def create_rti_ambassador(
@@ -297,6 +433,11 @@ def register_transport_factory(kind: str, factory: Any, *, aliases: tuple[str, .
 
 __all__ = [
     "BACKEND_ENTRY_POINT_GROUP",
+    "EditionCapabilities",
+    "FomLoadResult",
+    "HlaFactory",
+    "HlaFactoryRegistry",
+    "NoAuthProvider",
     "RTIBackendDiscovery",
     "RTIBackendPlugin",
     "RTIBackendSpec",
@@ -304,6 +445,7 @@ __all__ = [
     "available_spec_plugins",
     "available_backend_plugins",
     "create_backend",
+    "create_hla_factory",
     "create_rti_ambassador",
     "discover_specs",
     "discover_rti_backends",

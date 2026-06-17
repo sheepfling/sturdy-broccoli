@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[2]
 REQUIREMENTS = ROOT / "requirements"
 REQUIREMENTS_2010 = REQUIREMENTS / "2010"
@@ -15,6 +14,7 @@ REQUIREMENTS_2025_FILENAMES = {
     "SOURCE_TRACE.md",
     "STRICT_DOC_INVENTORY.json",
     "STRICT_DOC_REPORT.md",
+    "requirement_completion_backlog.csv",
 }
 
 

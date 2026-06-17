@@ -4,6 +4,25 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import Any
 
+LIFECYCLE_REQUIREMENTS_2025 = [
+    "HLA-X-2025-REQ-002",
+    "HLA-X-2025-FR-004",
+    "HLA-X-2025-FI-001",
+    "HLA-X-2025-FI-005",
+    "HLA-X-2025-FI-006",
+]
+
+CORE_EXCHANGE_REQUIREMENTS_2025 = [
+    "HLA-X-2025-FR-001",
+    "HLA-X-2025-FR-003",
+    "HLA-X-2025-FR-004",
+    "HLA-X-2025-FR-007",
+    "HLA-X-2025-FR-010",
+    "HLA-X-2025-FI-001",
+    "HLA-X-2025-FI-006",
+    "HLA-X-2025-FI-009",
+]
+
 
 def _jsonable(value: Any) -> Any:
     if value is None or isinstance(value, (bool, int, float, str)):
@@ -168,7 +187,8 @@ def run_standard_2010_exchange_trace(backend_name: Any) -> dict[str, Any]:
         "route": backend_label,
         "edition": "2010",
         "scenario": "two-federate-core-exchange",
-        "status": "core-green",
+        "status": "core-exchange-green",
+        "requirements_exercised": CORE_EXCHANGE_REQUIREMENTS_2025,
         "trace": trace,
     }
 
@@ -204,7 +224,8 @@ def run_standard_2025_lifecycle_trace(backend_name: str) -> dict[str, Any]:
         "route": backend_name,
         "edition": "2025",
         "scenario": "lifecycle-core",
-        "status": "core-green",
+        "status": "lifecycle-green",
+        "requirements_exercised": LIFECYCLE_REQUIREMENTS_2025,
         "trace": trace,
     }
 

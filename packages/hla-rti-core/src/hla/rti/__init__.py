@@ -1,11 +1,13 @@
 """Shared vendor-runtime process helper package."""
 from __future__ import annotations
 
+from .intake import INTAKE_STATUS_LADDER, IntakeArtifact, IntakeCheck, intake_status_from_checks
 from .plugin_api import (
     BACKEND_ENTRY_POINT_GROUP,
     SPEC_ENTRY_POINT_GROUP,
     TRANSPORT_ENTRY_POINT_GROUP,
     BackendRequest,
+    FactoryComposition,
     HLASpec,
     RTIBackendDiscovery,
     RTIBackendPlugin,
@@ -14,7 +16,6 @@ from .plugin_api import (
     SpecPlugin,
     TransportRequest,
 )
-from .intake import INTAKE_STATUS_LADDER, IntakeArtifact, IntakeCheck, intake_status_from_checks
 from .real_rti_process import RuntimeProcess, reserve_tcp_port, wait_for_process_boot, wait_for_tcp_listener
 from .standard_shims import (
     STANDARD_SHIM_ARTIFACTS,
@@ -30,6 +31,8 @@ _FACTORY_EXPORTS = {
     "available_spec_plugins",
     "available_backend_plugins",
     "create_backend",
+    "HlaFactoryRegistry",
+    "create_hla_factory",
     "create_rti_ambassador",
     "discover_specs",
     "discover_rti_backends",
@@ -56,6 +59,8 @@ def __getattr__(name: str):
 __all__ = [
     "BACKEND_ENTRY_POINT_GROUP",
     "BackendRequest",
+    "FactoryComposition",
+    "HlaFactoryRegistry",
     "HLASpec",
     "INTAKE_STATUS_LADDER",
     "IntakeArtifact",

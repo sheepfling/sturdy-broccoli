@@ -5,7 +5,13 @@ from dataclasses import dataclass, field
 from typing import Any, Callable
 
 from hla.rti.plugin_api import BackendRequest
-from hla.rti1516_2025.datatypes import ConfigurationResult
+from hla.rti1516_2025.datatypes import (
+    ConfigurationResult,
+    FederationExecutionInformation,
+    FederationExecutionInformationSet,
+    FederationExecutionMemberInformation,
+    FederationExecutionMemberInformationSet,
+)
 from hla.rti1516_2025.enums import AdditionalSettingsResultCode, CallbackModel, ResignAction
 from hla.rti1516_2025.exceptions import (
     AlreadyConnected,
@@ -20,7 +26,13 @@ from hla.rti1516_2025.exceptions import (
 from hla.rti1516_2025.federate_ambassador import FederateAmbassador
 
 
-_FEDERATION_REGISTRY: dict[str, set[str]] = {}
+@dataclass(slots=True)
+class _FederationRecord:
+    logical_time_implementation_name: str = ""
+    members: dict[str, str] = field(default_factory=dict)
+
+
+_FEDERATION_REGISTRY: dict[str, _FederationRecord] = {}
 
 
 @dataclass(frozen=True, slots=True)
@@ -90,31 +102,59 @@ class Shim2025RTIAmbassador:
         federation_name = self._extract_federation_name(args, kwargs)
         if federation_name in _FEDERATION_REGISTRY:
             raise FederationExecutionAlreadyExists(federation_name)
-        _FEDERATION_REGISTRY[federation_name] = set()
+        _FEDERATION_REGISTRY[federation_name] = _FederationRecord(
+            logical_time_implementation_name=self._extract_logical_time_implementation_name(args, kwargs)
+        )
 
     def destroyFederationExecution(self, *args: Any, **kwargs: Any) -> None:  # noqa: N802
         self._record("destroyFederationExecution", *args, **kwargs)
         federation_name = self._extract_federation_name(args, kwargs)
-        members = _FEDERATION_REGISTRY.get(federation_name)
-        if members is None:
+        federation = _FEDERATION_REGISTRY.get(federation_name)
+        if federation is None:
             raise FederationExecutionDoesNotExist(federation_name)
-        if members:
+        if federation.members:
             raise RTIinternalError(f"Cannot destroy federation {federation_name!r} while members remain joined")
         del _FEDERATION_REGISTRY[federation_name]
+
+    def listFederationExecutions(self) -> None:  # noqa: N802
+        self._record("listFederationExecutions")
+        self._require_connected("listFederationExecutions")
+        report = FederationExecutionInformationSet(
+            FederationExecutionInformation(
+                federationExecutionName=federation_name,
+                logicalTimeImplementationName=record.logical_time_implementation_name,
+            )
+            for federation_name, record in sorted(_FEDERATION_REGISTRY.items())
+        )
+        self._deliver_callback("reportFederationExecutions", report)
+
+    def listFederationExecutionMembers(self, federationName: str) -> None:  # noqa: N802
+        self._record("listFederationExecutionMembers", federationName)
+        self._require_connected("listFederationExecutionMembers")
+        federation = _FEDERATION_REGISTRY.get(federationName)
+        if federation is None:
+            self._deliver_callback("reportFederationExecutionDoesNotExist", federationName)
+            return
+        report = FederationExecutionMemberInformationSet(
+            FederationExecutionMemberInformation(federateName=name, federateType=federate_type)
+            for name, federate_type in sorted(federation.members.items())
+        )
+        self._deliver_callback("reportFederationExecutionMembers", federationName, report)
 
     def joinFederationExecution(self, *args: Any, **kwargs: Any):  # noqa: N802
         self._record("joinFederationExecution", *args, **kwargs)
         self._require_connected("joinFederationExecution")
         federation_name, federate_name = self._extract_join_names(args, kwargs)
-        members = _FEDERATION_REGISTRY.get(federation_name)
-        if members is None:
+        federation = _FEDERATION_REGISTRY.get(federation_name)
+        if federation is None:
             raise FederationExecutionDoesNotExist(federation_name)
         if self._joined:
             raise FederateAlreadyExecutionMember("2025 shim RTI ambassador is already joined")
-        if federate_name is not None and federate_name in members:
+        if federate_name is not None and federate_name in federation.members:
             raise FederateNameAlreadyInUse(federate_name)
+        federate_type = self._extract_federate_type(args, kwargs)
         if federate_name is not None:
-            members.add(federate_name)
+            federation.members[federate_name] = federate_type
         self._federation_name = federation_name
         self._federate_name = federate_name
         self._joined = True
@@ -178,6 +218,14 @@ class Shim2025RTIAmbassador:
     def _record(self, method_name: str, *args: Any, **kwargs: Any) -> None:
         self.calls.append((method_name, args, dict(kwargs)))
 
+    def _deliver_callback(self, method_name: str, *args: Any) -> None:
+        if self._federate_ambassador is None:
+            raise RTIinternalError(f"Cannot deliver {method_name} without a connected federate ambassador")
+        callback = getattr(self._federate_ambassador, method_name, None)
+        if callback is None:
+            raise RTIinternalError(f"Connected federate ambassador does not implement {method_name}")
+        callback(*args)
+
     def _require_connected(self, method_name: str) -> None:
         if not self._connected:
             raise NotConnected(f"Cannot call {method_name} before connect")
@@ -213,12 +261,34 @@ class Shim2025RTIAmbassador:
             raise RTIinternalError("2025 shim RTI ambassador requires federateName to be a string when provided")
         return federation_name, federate_name
 
+    def _extract_federate_type(self, args: tuple[Any, ...], kwargs: dict[str, Any]) -> str:
+        federate_type = kwargs.get("federateType")
+        if federate_type is None:
+            federate_type = kwargs.get("federate_type")
+        if federate_type is None and len(args) >= 2:
+            federate_type = args[1]
+        if not isinstance(federate_type, str) or not federate_type:
+            raise RTIinternalError("2025 shim RTI ambassador requires federateType to be a non-empty string")
+        return federate_type
+
+    def _extract_logical_time_implementation_name(self, args: tuple[Any, ...], kwargs: dict[str, Any]) -> str:
+        value = kwargs.get("logicalTimeImplementationName")
+        if value is None:
+            value = kwargs.get("logical_time_implementation_name")
+        if value is None and len(args) >= 4:
+            value = args[3]
+        if value is None:
+            return ""
+        if not isinstance(value, str):
+            raise RTIinternalError("2025 shim RTI ambassador requires logicalTimeImplementationName to be a string")
+        return value
+
     def _release_join(self) -> None:
         if self._federation_name is None or self._federate_name is None:
             return
-        members = _FEDERATION_REGISTRY.get(self._federation_name)
-        if members is not None:
-            members.discard(self._federate_name)
+        federation = _FEDERATION_REGISTRY.get(self._federation_name)
+        if federation is not None:
+            federation.members.pop(self._federate_name, None)
 
 
 class Shim2025Backend:

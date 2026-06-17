@@ -4,7 +4,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Callable, Mapping, Protocol, runtime_checkable
 
-
 SPEC_ENTRY_POINT_GROUP = "hla.specs"
 BACKEND_ENTRY_POINT_GROUP = "hla.rti_backends"
 TRANSPORT_ENTRY_POINT_GROUP = "hla.transports"
@@ -41,12 +40,22 @@ class TransportRequest:
 
 
 @dataclass(frozen=True, slots=True)
+class FactoryComposition:
+    """Provider-scoped helper composition passed to backend factories."""
+
+    encoding_registry: Any = None
+    auth_provider: Any = None
+    capabilities: Mapping[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True, slots=True)
 class BackendRequest:
     """Backend selection bound to a concrete HLA spec."""
 
     spec: HLASpec
     transport: TransportRequest | None = None
     options: Mapping[str, Any] = field(default_factory=dict)
+    composition: FactoryComposition | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -146,6 +155,7 @@ class RTIBackendPluginLike(Protocol):
 __all__ = [
     "BACKEND_ENTRY_POINT_GROUP",
     "BackendRequest",
+    "FactoryComposition",
     "HLASpec",
     "RTIBackendDiscovery",
     "RTIBackendLike",

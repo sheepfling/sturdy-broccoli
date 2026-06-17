@@ -61,12 +61,32 @@
   "official_api_source_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/specs/ieee-1516-2010/hla_specs/1516.1-2010_downloads/IEEE1516-2010_Java_API.zip",
   "routes": {
     "java-standard-2010-jpype": {
-      "status": "core-green",
-      "surface": "official Java 2010 API"
+      "status": "core-exchange-green",
+      "surface": "official Java 2010 API",
+      "requirements_exercised": [
+        "HLA-X-2025-FR-001",
+        "HLA-X-2025-FR-003",
+        "HLA-X-2025-FR-004",
+        "HLA-X-2025-FR-007",
+        "HLA-X-2025-FR-010",
+        "HLA-X-2025-FI-001",
+        "HLA-X-2025-FI-006",
+        "HLA-X-2025-FI-009"
+      ]
     },
     "java-standard-2010-py4j": {
-      "status": "core-green",
-      "surface": "official Java 2010 API"
+      "status": "core-exchange-green",
+      "surface": "official Java 2010 API",
+      "requirements_exercised": [
+        "HLA-X-2025-FR-001",
+        "HLA-X-2025-FR-003",
+        "HLA-X-2025-FR-004",
+        "HLA-X-2025-FR-007",
+        "HLA-X-2025-FR-010",
+        "HLA-X-2025-FI-001",
+        "HLA-X-2025-FI-006",
+        "HLA-X-2025-FI-009"
+      ]
     }
   },
   "scenario_evidence": {
@@ -74,8 +94,18 @@
       "basic lifecycle",
       "core object/interaction/time exchange"
     ],
-    "status": "core-green",
-    "test": "tests/backends/test_java_standard_2010_artifact.py"
+    "status": "core-exchange-green",
+    "test": "tests/backends/test_java_standard_2010_artifact.py",
+    "requirements_exercised": [
+      "HLA-X-2025-FR-001",
+      "HLA-X-2025-FR-003",
+      "HLA-X-2025-FR-004",
+      "HLA-X-2025-FR-007",
+      "HLA-X-2025-FR-010",
+      "HLA-X-2025-FI-001",
+      "HLA-X-2025-FI-006",
+      "HLA-X-2025-FI-009"
+    ]
   },
   "surface": "official IEEE 1516.1-2010 Java API",
   "unsupported_services": [

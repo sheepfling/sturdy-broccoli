@@ -2,7 +2,7 @@
   "edition": "2010",
   "route": "cpp-standard-2010-grpc",
   "scenario": "two-federate-core-exchange",
-  "status": "core-green",
+  "status": "core-exchange-green",
   "trace": [
     {
       "backend": "cpp-standard-2010-grpc",
@@ -113,5 +113,15 @@
         "target"
       ]
     }
+  ],
+  "requirements_exercised": [
+    "HLA-X-2025-FR-001",
+    "HLA-X-2025-FR-003",
+    "HLA-X-2025-FR-004",
+    "HLA-X-2025-FR-007",
+    "HLA-X-2025-FR-010",
+    "HLA-X-2025-FI-001",
+    "HLA-X-2025-FI-006",
+    "HLA-X-2025-FI-009"
   ]
 }

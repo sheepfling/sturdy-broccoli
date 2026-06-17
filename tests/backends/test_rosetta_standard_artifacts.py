@@ -8,7 +8,6 @@ from typing import Any
 
 import pytest
 
-
 ROOT = Path(__file__).resolve().parents[2]
 JAVA_2025_BUILD = ROOT / "java_shims/hla-rti1516-2025-standard-shim/tools/build_standard_shim.py"
 CPP_BUILD = ROOT / "cpp_shims/build_standard_shim.py"
@@ -107,7 +106,8 @@ def test_cpp_standard_2010_routes_pass_core_exchange_when_built(backend_name: st
 
     evidence = run_standard_2010_exchange_trace(backend_name)
     event_names = {event["event"] for event in evidence["trace"]}
-    assert evidence["status"] == "core-green"
+    assert evidence["status"] == "core-exchange-green"
+    assert "HLA-X-2025-FR-003" in evidence["requirements_exercised"]
     assert {"discoverObjectInstance", "reflectAttributeValues", "receiveInteraction", "timeAdvanceGrant"} <= event_names
 
 
@@ -130,7 +130,8 @@ def test_standard_2025_routes_pass_lifecycle_core_when_built(backend_name: str) 
 
     evidence = run_standard_2025_lifecycle_trace(backend_name)
     event_names = [event["event"] for event in evidence["trace"]]
-    assert evidence["status"] == "core-green"
+    assert evidence["status"] == "lifecycle-green"
+    assert "HLA-X-2025-FI-005" in evidence["requirements_exercised"]
     assert event_names == [
         "routeSelected",
         "getHLAversion",

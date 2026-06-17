@@ -5,13 +5,13 @@
 - jar: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/rosetta/java-standard-2025/hla-x-rti1516-2025-java-shim.jar`
 - compile status: `passed`
 - factory: `HLA-X Java 2025 Standard Shim`
-- status: `surface-backed + lifecycle-core-green`
+- status: `surface-backed + lifecycle-green`
 - scenario evidence: `tests/backends/test_rosetta_standard_artifacts.py`
 
 ## Route Evidence
 
-- `java-standard-2025-jpype`: `core-green` (`lifecycle-core`)
-- `java-standard-2025-py4j`: `core-green` (`lifecycle-core`)
+- `java-standard-2025-jpype`: `lifecycle-green` (`lifecycle-core`)
+- `java-standard-2025-py4j`: `lifecycle-green` (`lifecycle-core`)
 
 ## Implemented Services
 
