@@ -108,7 +108,7 @@ fi
 helper_deps+=("PyYAML")
 helper_deps+=("grpcio" "protobuf")
 if [[ "$want_qa" == "1" ]]; then
-  helper_deps+=("ruff" "pyright" "matplotlib")
+  helper_deps+=("ruff" "pyright" "matplotlib" "lxml")
 fi
 if [[ "$want_jpype" == "1" ]]; then
   helper_deps+=("jpype1")

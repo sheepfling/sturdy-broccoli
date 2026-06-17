@@ -54,6 +54,7 @@ def _base_env(tmp_path: Path) -> dict[str, str]:
     env["HLA2010_PREFLIGHT_ARTIFACT_DIR"] = str(tmp_path / "preflight")
     env["HLA2010_VENDOR_RUNTIME_STATUS_DIR"] = str(tmp_path / "runtime-status")
     env["HLA2010_VENDOR_PARITY_ARTIFACT_DIR"] = str(tmp_path / "parity")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
     env["HLA2010_CERTI_PREFIX"] = str(tmp_path / "missing-certi-prefix")
     env["HLA2010_CERTI_PATCHED_PREFIX"] = str(tmp_path / "missing-certi-prefix")
     env["HLA2010_CERTI_BUILD_ROOT"] = str(tmp_path / "missing-certi-build")

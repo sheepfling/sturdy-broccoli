@@ -111,6 +111,7 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
     certi_path = analysis_root / "certi-preflight.json"
     pitch_path = analysis_root / "pitch-preflight.json"
     certi_gap_path = gap_root / "certi-save-restore.json"
+    pitch_save_restore_gap_path = gap_root / "pitch-save-restore.json"
     pitch_gap_path = gap_root / "pitch-ddm.json"
     pitch_negotiated_gap_path = gap_root / "pitch-negotiated.json"
     pitch_lost_federate_gap_path = gap_root / "pitch-lost-federate.json"
@@ -126,6 +127,9 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
     certi_original = certi_path.read_text(encoding="utf-8") if certi_path.exists() else None
     pitch_original = pitch_path.read_text(encoding="utf-8") if pitch_path.exists() else None
     certi_gap_original = certi_gap_path.read_text(encoding="utf-8") if certi_gap_path.exists() else None
+    pitch_save_restore_gap_original = (
+        pitch_save_restore_gap_path.read_text(encoding="utf-8") if pitch_save_restore_gap_path.exists() else None
+    )
     pitch_gap_original = pitch_gap_path.read_text(encoding="utf-8") if pitch_gap_path.exists() else None
     pitch_negotiated_gap_original = (
         pitch_negotiated_gap_path.read_text(encoding="utf-8") if pitch_negotiated_gap_path.exists() else None
@@ -160,6 +164,12 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
         exit_code=1,
     )
     _write_gap_profile(certi_gap_path, profile="certi-save-restore", vendor="certi", area="save_restore")
+    _write_gap_profile(
+        pitch_save_restore_gap_path,
+        profile="pitch-save-restore",
+        vendor="pitch",
+        area="save_restore",
+    )
     _write_gap_profile(pitch_gap_path, profile="pitch-ddm", vendor="pitch", area="ddm")
     _write_gap_profile(
         pitch_negotiated_gap_path,
@@ -373,6 +383,10 @@ def test_vendor_parity_artifacts_are_generated(tmp_path):
             certi_gap_path.unlink(missing_ok=True)
         else:
             certi_gap_path.write_text(certi_gap_original, encoding="utf-8")
+        if pitch_save_restore_gap_original is None:
+            pitch_save_restore_gap_path.unlink(missing_ok=True)
+        else:
+            pitch_save_restore_gap_path.write_text(pitch_save_restore_gap_original, encoding="utf-8")
         if pitch_gap_original is None:
             pitch_gap_path.unlink(missing_ok=True)
         else:

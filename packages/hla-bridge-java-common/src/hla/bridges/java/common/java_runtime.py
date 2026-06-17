@@ -73,7 +73,7 @@ def discover_java_home_with_source() -> tuple[Path | None, str | None]:
 
 def ensure_java_home() -> Path | None:
     """Populate ``JAVA_HOME``/``JDK_HOME`` when a runtime can be discovered."""
-    home = discover_java_home()
+    home, _ = discover_java_home_with_source()
     if home is None:
         return None
     os.environ.setdefault("JAVA_HOME", str(home))
