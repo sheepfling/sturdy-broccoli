@@ -106,7 +106,7 @@ def test_bootstrap_python_plan_for_qa_matches_repo_green_workspace() -> None:
     payload = _bootstrap_plan(extras="qa")
 
     assert payload["profile"] == "full-java"
-    assert payload["helper_deps"] == ["pytest", "ruff", "pyright", "jpype1", "py4j"]
+    assert payload["helper_deps"] == ["pytest", "ruff", "pyright", "matplotlib", "jpype1", "py4j"]
     assert len(payload["workspace_packages"]) == 20
     for package in (
         "packages/hla-rti1516-2025",

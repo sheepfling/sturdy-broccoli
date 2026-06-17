@@ -49,7 +49,7 @@ Supported extras via HLA2010_BOOTSTRAP_EXTRAS:
   jpype  core workspace plus the JPype bridge packages
   py4j   core workspace plus the Py4J bridge packages
   java   core workspace plus both bridge families and Portico
-  qa     full repo-green workspace plus pytest, Ruff, and Pyright
+  qa     full repo-green workspace plus pytest, Ruff, Pyright, and plot rendering
 
 Combine values with commas when needed, for example:
   HLA2010_BOOTSTRAP_EXTRAS=qa,java ./scripts/bootstrap_python.sh
@@ -106,7 +106,7 @@ if [[ "$want_pytest" == "1" ]]; then
   helper_deps+=("pytest")
 fi
 if [[ "$want_qa" == "1" ]]; then
-  helper_deps+=("ruff" "pyright")
+  helper_deps+=("ruff" "pyright" "matplotlib")
 fi
 if [[ "$want_jpype" == "1" ]]; then
   helper_deps+=("jpype1")
