@@ -7,6 +7,7 @@ profile, probes the standard factory path, and reports what was discovered.
 from __future__ import annotations
 
 import json
+import importlib
 import os
 import re
 from dataclasses import asdict, dataclass, field
@@ -215,7 +216,9 @@ def _discover_jpype(request: JavaRtiIntakeRequest) -> JavaRtiIntakeReport:
     bridge = None
 
     try:
-        from hla.bridges.java.jpype.runtime import JPypeBridge, JPypeConfig
+        jpype_runtime = importlib.import_module("hla.bridges.java.jpype.runtime")
+        JPypeBridge = getattr(jpype_runtime, "JPypeBridge")
+        JPypeConfig = getattr(jpype_runtime, "JPypeConfig")
 
         bridge = JPypeBridge(
             JPypeConfig(

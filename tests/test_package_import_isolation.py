@@ -56,6 +56,7 @@ ALLOWED_PACKAGE_DEPENDENCIES: dict[str, set[str]] = {
         "hla-rti1516e",
         "hla-rti1516-2025",
         "hla-backend-common",
+        "hla-backend-cpp-shim",
         "hla-backend-inmemory",
         "hla-bridge-java-common",
         "hla-transport-grpc",

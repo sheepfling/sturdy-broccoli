@@ -54,7 +54,7 @@ ALLOWED_INTERNAL_DEPENDENCIES: dict[str, set[str]] = {
         "hla-transport-common",
         "hla-rti-core",
     },
-    "hla-verification": {"hla-rti1516e", "hla-rti1516-2025", "hla-backend-common", "hla-backend-inmemory", "hla-rti-core"},
+    "hla-verification": {"hla-rti1516e", "hla-rti1516-2025", "hla-backend-common", "hla-backend-inmemory", "hla-backend-cpp-shim", "hla-bridge-java-common", "hla-rti-core"},
     "hla-fom-target-radar": {"hla-rti1516e", "hla-verification", "hla-rti-core"},
 }
 
