@@ -18,7 +18,7 @@ fi
 # shellcheck disable=SC1091
 source "$ROOT_DIR/.venv/bin/activate"
 
-RUFF_TARGETS=(
+RUFF_CANDIDATE_TARGETS=(
   "src"
   "packages"
   "tests"
@@ -26,10 +26,17 @@ RUFF_TARGETS=(
   "tools"
 )
 
+RUFF_TARGETS=()
+for target in "${RUFF_CANDIDATE_TARGETS[@]}"; do
+    if [ -d "$ROOT_DIR/$target" ] && find "$ROOT_DIR/$target" -name '*.py' -print -quit | grep -q .; then
+        RUFF_TARGETS+=("$target")
+    fi
+done
+
 ruff check "${RUFF_TARGETS[@]}" --select E9,F63,F7,F82
 
 COMPILE_TARGETS=()
-for target in src packages tests scripts tools; do
+for target in "${RUFF_CANDIDATE_TARGETS[@]}"; do
     if [ -d "$ROOT_DIR/$target" ] && find "$ROOT_DIR/$target" -name '*.py' -print -quit | grep -q .; then
         COMPILE_TARGETS+=("$target")
     fi
