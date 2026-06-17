@@ -43,7 +43,7 @@ def test_bootstrap_python_plan_for_test_is_lean_core_workspace() -> None:
 
     assert payload["extras"] == "test"
     assert payload["profile"] == "core"
-    assert payload["helper_deps"] == ["pytest"]
+    assert payload["helper_deps"] == ["pytest", "PyYAML"]
     assert payload["workspace_packages"] == [
         "packages/hla-rti1516e",
         "packages/hla-backend-common",
@@ -67,7 +67,7 @@ def test_bootstrap_python_plan_for_jpype_adds_only_jpype_bridge_packages() -> No
     payload = _bootstrap_plan(extras="jpype")
 
     assert payload["profile"] == "jpype"
-    assert payload["helper_deps"] == ["pytest", "jpype1"]
+    assert payload["helper_deps"] == ["pytest", "PyYAML", "jpype1"]
     assert "packages/hla-bridge-java-jpype" in payload["workspace_packages"]
     assert "packages/hla-vendor-pitch-jpype" in payload["workspace_packages"]
     assert "packages/hla-bridge-java-py4j" not in payload["workspace_packages"]
@@ -79,7 +79,7 @@ def test_bootstrap_python_plan_for_py4j_adds_only_py4j_bridge_packages() -> None
     payload = _bootstrap_plan(extras="py4j")
 
     assert payload["profile"] == "py4j"
-    assert payload["helper_deps"] == ["pytest", "py4j"]
+    assert payload["helper_deps"] == ["pytest", "PyYAML", "py4j"]
     assert "packages/hla-bridge-java-py4j" in payload["workspace_packages"]
     assert "packages/hla-vendor-pitch-py4j" in payload["workspace_packages"]
     assert "packages/hla-bridge-java-jpype" not in payload["workspace_packages"]
@@ -91,7 +91,7 @@ def test_bootstrap_python_plan_for_java_adds_both_bridge_families_and_portico() 
     payload = _bootstrap_plan(extras="java")
 
     assert payload["profile"] == "full-java"
-    assert payload["helper_deps"] == ["pytest", "jpype1", "py4j"]
+    assert payload["helper_deps"] == ["pytest", "PyYAML", "jpype1", "py4j"]
     for package in (
         "packages/hla-bridge-java-jpype",
         "packages/hla-vendor-pitch-jpype",
@@ -106,7 +106,7 @@ def test_bootstrap_python_plan_for_qa_matches_repo_green_workspace() -> None:
     payload = _bootstrap_plan(extras="qa")
 
     assert payload["profile"] == "full-java"
-    assert payload["helper_deps"] == ["pytest", "ruff", "pyright", "matplotlib", "jpype1", "py4j"]
+    assert payload["helper_deps"] == ["pytest", "PyYAML", "ruff", "pyright", "matplotlib", "jpype1", "py4j"]
     assert len(payload["workspace_packages"]) == 20
     for package in (
         "packages/hla-rti1516-2025",
