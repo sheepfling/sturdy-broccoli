@@ -18,7 +18,7 @@ jobs:
           HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
         run: ./scripts/ci/install_python.sh
       - name: Check vendor runner contract drift
-        run: python3 scripts/check_vendor_runner_template_drift.py
+        run: ./.venv/bin/python scripts/check_vendor_runner_template_drift.py
       - name: Upload vendor runner contract artifacts
         if: always()
         uses: actions/upload-artifact@v4
