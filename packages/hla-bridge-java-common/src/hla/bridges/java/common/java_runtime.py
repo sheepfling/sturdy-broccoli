@@ -7,19 +7,22 @@ import subprocess
 from pathlib import Path
 
 
-def _candidate_java_homes() -> list[Path]:
-    candidates: list[Path] = []
+def _append_candidate(candidates: list[tuple[str, Path]], source: str, value: str | os.PathLike[str] | None) -> None:
+    if value:
+        candidates.append((source, Path(value).expanduser()))
+
+
+def _candidate_java_homes() -> list[tuple[str, Path]]:
+    candidates: list[tuple[str, Path]] = []
     for key in ("JAVA_HOME", "JDK_HOME"):
-        value = os.environ.get(key)
-        if value:
-            candidates.append(Path(value).expanduser())
+        _append_candidate(candidates, key, os.environ.get(key))
 
     try:
         import jdk4py
 
         java_home = getattr(jdk4py, "JAVA_HOME", None)
         if java_home:
-            candidates.append(Path(str(java_home)).expanduser())
+            _append_candidate(candidates, "jdk4py.JAVA_HOME", str(java_home))
     except Exception:
         pass
 
@@ -32,26 +35,40 @@ def _candidate_java_homes() -> list[Path]:
         )
         output = completed.stdout.strip()
         if completed.returncode == 0 and output:
-            candidates.append(Path(output))
+            _append_candidate(candidates, "/usr/libexec/java_home", output)
     except Exception:
         pass
 
-    deduped: list[Path] = []
+    deduped: list[tuple[str, Path]] = []
     seen: set[Path] = set()
-    for candidate in candidates:
+    for source, candidate in candidates:
         resolved = candidate.resolve()
         if resolved not in seen:
-            deduped.append(resolved)
+            deduped.append((source, resolved))
             seen.add(resolved)
     return deduped
 
 
 def discover_java_home() -> Path | None:
-    """Return a usable Java home, preferring explicit env vars then jdk4py."""
-    for home in _candidate_java_homes():
+    """Return a usable Java home from env vars, jdk4py, or `/usr/libexec/java_home`."""
+    for _, home in _candidate_java_homes():
         if (home / "bin" / "java").exists():
             return home
     return None
+
+
+def discover_java_home_with_source() -> tuple[Path | None, str | None]:
+    """Return a usable Java home and the discovery source used to find it."""
+    for source, home in _candidate_java_homes():
+        if (home / "bin" / "java").exists():
+            return home, source
+    direct = shutil.which("java")
+    if direct:
+        resolved = Path(direct).resolve()
+        java_home = resolved.parent.parent
+        if (java_home / "bin" / "java").exists():
+            return java_home, "PATH"
+    return None, None
 
 
 def ensure_java_home() -> Path | None:
@@ -77,4 +94,4 @@ def discover_java_tool(tool_name: str) -> str | None:
     return direct
 
 
-__all__ = ["discover_java_home", "discover_java_tool", "ensure_java_home"]
+__all__ = ["discover_java_home", "discover_java_home_with_source", "discover_java_tool", "ensure_java_home"]

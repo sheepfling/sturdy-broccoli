@@ -1,0 +1,33 @@
+{
+  "artifacts": [
+    {
+      "build_command": "./tools/hla-x build java-standard-2010",
+      "exists": true,
+      "key": "java-standard-2010",
+      "label": "Java 2010 standard shim jar",
+      "path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/rosetta/java-standard-2010/hla-x-rti1516e-java-shim.jar"
+    },
+    {
+      "build_command": "./tools/hla-x build java-standard-2025",
+      "exists": true,
+      "key": "java-standard-2025",
+      "label": "Java 2025 standard shim jar",
+      "path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/rosetta/java-standard-2025/hla-x-rti1516-2025-java-shim.jar"
+    }
+  ],
+  "discovery_source": "jdk4py.JAVA_HOME",
+  "jar": "/usr/bin/jar",
+  "jar_ok": true,
+  "java": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.venv/lib/python3.12/site-packages/jdk4py/java-runtime/bin/java",
+  "java_home": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/.venv/lib/python3.12/site-packages/jdk4py/java-runtime",
+  "java_home_env": null,
+  "java_ok": true,
+  "javac": "/usr/bin/javac",
+  "javac_ok": true,
+  "jdk_home_env": null,
+  "notes": [
+    "Java home discovered from jdk4py.JAVA_HOME"
+  ],
+  "status": "ready",
+  "warnings": []
+}

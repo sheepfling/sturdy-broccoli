@@ -26,6 +26,7 @@ Core operator entrypoints:
 - `./tools/section8-gate`
 - `./tools/target-radar`
 - `./tools/two-federate`
+- `./tools/hla-x`
 
 The `scripts/` tree remains implementation and CI plumbing. Compatibility
 wrappers may still exist under `scripts/`, but operator docs, workflows, tests,
@@ -41,6 +42,8 @@ Shortest common paths:
 - discover the canonical verification lanes: `./tools/test-surface recommend`
 - run Python direct-vs-gRPC parity: `./tools/python verify-routes`
 - check whether hosted Python gRPC is runnable here: `./tools/python verify-routes-preflight`
+- inspect the Rosetta standard-shim contract: `./tools/hla-x matrix --editions 2010,2025 --routes all`
+- inspect the Java toolchain inventory: `./tools/hla-x java doctor`
 
 Useful `./tools/human-editability` entrypoints:
 

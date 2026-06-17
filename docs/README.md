@@ -1,6 +1,7 @@
 # Docs
 
-Project documentation for the IEEE 1516-2010-focused workspace.
+Project documentation for the Python-first IEEE HLA 1516.1-2010 and
+1516.1-2025 workspace.
 
 This tree uses one simple parallel pattern:
 
@@ -20,6 +21,8 @@ If you only need the shortest on-ramp:
 - [first_run.md](first_run.md): shortest path from fresh checkout to a working pure-Python example
 - [networked_rti_python.md](networked_rti_python.md): hosted Python RTI over gRPC, with concrete entrypoints and usage shape
 - [python_environment.md](python_environment.md): Python bootstrap, `.venv`, extras, and install order
+- [hla_x_rosetta_release.md](hla_x_rosetta_release.md): standard-backed Java/C++ shim target and evidence contract
+- [java_toolchain.md](java_toolchain.md): Java discovery, required tools, and Rosetta jar inventory
 - [test_surface.md](test_surface.md): canonical verification lanes and machine-readable discovery flow
 - [codex_runner_authorization.md](codex_runner_authorization.md): draft loopback-socket authorization request for Codex verification sessions
 - [spec_reading_map.md](spec_reading_map.md): smallest practical reading path for the abstract/public spec surface

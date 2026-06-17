@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/hla-x"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/hla-x [matrix|build|evidence|demo|java|help]
+
+Rosetta compatibility-lab entry point.
+
+Commands:
+  ./tools/hla-x matrix --editions 2010,2025 --routes all
+  ./tools/hla-x build java-standard-2010
+  ./tools/hla-x evidence rosetta-routes
+  ./tools/hla-x java discover --edition 2010 --bridge jpype --classpath /path/to/rti.jar
+  ./tools/hla-x java doctor
+  ./tools/hla-x java certify-core --edition 2010 --bridges jpype,py4j --classpath /path/to/rti.jar
+  ./tools/hla-x demo mixed-language-target-radar --edition 2010
+  ./tools/hla-x demo mixed-language-target-radar --edition 2025
+EOF
+}
+
+python_bin="$(hla2010_shell_python_bin)"
+
+case "${1:-help}" in
+  help|-h|--help)
+    usage
+    ;;
+  matrix)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/hla_x.py" matrix "$@"
+    ;;
+  demo)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/hla_x.py" demo "$@"
+    ;;
+  build)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/hla_x.py" build "$@"
+    ;;
+  evidence)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/hla_x.py" evidence "$@"
+    ;;
+  java)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/hla_x.py" java "$@"
+    ;;
+  *)
+    echo "error: unknown subcommand: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

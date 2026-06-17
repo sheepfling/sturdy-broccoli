@@ -10,6 +10,12 @@ Use it when:
 - `./tools/python verify-routes-preflight` reports `python-grpc: blocked`
 - you need stable real-runtime evidence rather than repo-green coverage
 - you are configuring CI runners for vendor runtime proof
+- you need to confirm which local JDK, `javac`, and `jar` the Rosetta Java
+  routes will use
+
+For a single toolchain inventory, run [`./tools/hla-x java doctor`](../tools/hla-x).
+It reports the discovered Java home, tool availability, and Rosetta jar
+presence.
 
 If you need the explicit variable and marker checklist for those runners, use
 [vendor_runner_provisioning.md](vendor_runner_provisioning.md).
