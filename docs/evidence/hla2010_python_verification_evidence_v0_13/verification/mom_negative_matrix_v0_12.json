@@ -1,0 +1,2365 @@
+{
+  "entries": {
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAmodifyAttributeState": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAobjectInstance",
+        "HLAattribute",
+        "HLAattributeState"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAmodifyAttributeState",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAobjectInstance",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAattribute",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAattributeState",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAobjectInstance"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAobjectInstance",
+        "HLAattribute",
+        "HLAattributeState"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAobjectInstance",
+        "HLAattribute",
+        "HLAattributeState"
+      ],
+      "role": "HLAadjust",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetExceptionReporting": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAreportingState"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAsetExceptionReporting",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAreportingState",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_boolean_encoding",
+          "parameter": "HLAreportingState"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAreportingState"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAreportingState"
+      ],
+      "role": "HLAadjust",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAreportingState"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAsetServiceReporting",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAreportingState",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_boolean_encoding",
+          "parameter": "HLAreportingState"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAreportingState"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAreportingState"
+      ],
+      "role": "HLAadjust",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches": {
+      "at_least_one_of": [
+        "HLAconveyRegionDesignatorSets",
+        "HLAconveyProducingFederate"
+      ],
+      "declared_parameters": [
+        "HLAconveyRegionDesignatorSets",
+        "HLAconveyProducingFederate"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAsetSwitches",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_parameter_choice",
+          "parameters": [
+            "HLAconveyRegionDesignatorSets",
+            "HLAconveyProducingFederate"
+          ],
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_boolean_encoding",
+          "parameter": "HLAconveyRegionDesignatorSets"
+        },
+        {
+          "case": "bad_boolean_encoding",
+          "parameter": "HLAconveyProducingFederate"
+        }
+      ],
+      "optional_parameters": [
+        "HLAfederate",
+        "HLAconveyRegionDesignatorSets",
+        "HLAconveyProducingFederate"
+      ],
+      "parameters": [
+        "HLAfederate",
+        "HLAconveyRegionDesignatorSets",
+        "HLAconveyProducingFederate"
+      ],
+      "required_parameters": [],
+      "role": "HLAadjust",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetTiming": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAreportPeriod"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAsetTiming",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAreportPeriod",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_float_encoding",
+          "parameter": "HLAreportPeriod"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAreportPeriod"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAreportPeriod"
+      ],
+      "role": "HLAadjust",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAFOMmoduleIndicator"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLArequestFOMmoduleData",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAFOMmoduleIndicator",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAFOMmoduleIndicator"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAFOMmoduleIndicator"
+      ],
+      "role": "HLArequest",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsReceived": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLArequestInteractionsReceived",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLArequest",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsSent": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLArequestInteractionsSent",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLArequest",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAobjectInstance"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLArequestObjectInstanceInformation",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAobjectInstance",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAobjectInstance"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAobjectInstance"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAobjectInstance"
+      ],
+      "role": "HLArequest",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesReflected": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLArequestObjectInstancesReflected",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLArequest",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesThatCanBeDeleted": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLArequestObjectInstancesThatCanBeDeleted",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLArequest",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesUpdated": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLArequestObjectInstancesUpdated",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLArequest",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestPublications": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLArequestPublications",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLArequest",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestReflectionsReceived": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLArequestReflectionsReceived",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLArequest",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestSubscriptions": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLArequestSubscriptions",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLArequest",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestUpdatesSent": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLArequestUpdatesSent",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLArequest",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAchangeAttributeOrderType": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAobjectInstance",
+        "HLAattributeList",
+        "HLAsendOrder"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAchangeAttributeOrderType",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAobjectInstance",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAattributeList",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAsendOrder",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAobjectInstance"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAattributeList"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAchangeAttributeOrderType"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAobjectInstance",
+        "HLAattributeList",
+        "HLAsendOrder"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAobjectInstance",
+        "HLAattributeList",
+        "HLAsendOrder"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAchangeInteractionOrderType": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAinteractionClass",
+        "HLAsendOrder"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAchangeInteractionOrderType",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAinteractionClass",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAsendOrder",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAinteractionClass"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAchangeInteractionOrderType"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAinteractionClass",
+        "HLAsendOrder"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAinteractionClass",
+        "HLAsendOrder"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAdeleteObjectInstance": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAobjectInstance",
+        "HLAtag",
+        "HLAtimeStamp"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAdeleteObjectInstance",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAobjectInstance",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAobjectInstance"
+        },
+        {
+          "case": "bad_time_encoding",
+          "parameter": "HLAtimeStamp"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAdeleteObjectInstance"
+        }
+      ],
+      "optional_parameters": [
+        "HLAtag",
+        "HLAtimeStamp"
+      ],
+      "parameters": [
+        "HLAfederate",
+        "HLAobjectInstance",
+        "HLAtag",
+        "HLAtimeStamp"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAobjectInstance"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAdisableAsynchronousDelivery": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAdisableAsynchronousDelivery",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAdisableAsynchronousDelivery"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAdisableTimeConstrained": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAdisableTimeConstrained",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAdisableTimeConstrained"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAdisableTimeRegulation": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAdisableTimeRegulation",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAdisableTimeRegulation"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAenableAsynchronousDelivery": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAenableAsynchronousDelivery",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAenableAsynchronousDelivery"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAenableTimeConstrained": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAenableTimeConstrained",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAenableTimeConstrained"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAenableTimeRegulation": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAlookahead"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAenableTimeRegulation",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAlookahead",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_interval_encoding",
+          "parameter": "HLAlookahead"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAenableTimeRegulation"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAlookahead"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAlookahead"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAfederateRestoreComplete": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAsuccessIndicator"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAfederateRestoreComplete",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_boolean_encoding",
+          "parameter": "HLAsuccessIndicator"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAfederateRestoreComplete"
+        }
+      ],
+      "optional_parameters": [
+        "HLAsuccessIndicator"
+      ],
+      "parameters": [
+        "HLAfederate",
+        "HLAsuccessIndicator"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAfederateSaveBegun": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAfederateSaveBegun",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAfederateSaveBegun"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAfederateSaveComplete": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAsuccessIndicator"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAfederateSaveComplete",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_boolean_encoding",
+          "parameter": "HLAsuccessIndicator"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAfederateSaveComplete"
+        }
+      ],
+      "optional_parameters": [
+        "HLAsuccessIndicator"
+      ],
+      "parameters": [
+        "HLAfederate",
+        "HLAsuccessIndicator"
+      ],
+      "required_parameters": [
+        "HLAfederate"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAflushQueueRequest": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAtimeStamp"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAflushQueueRequest",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAtimeStamp",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_time_encoding",
+          "parameter": "HLAtimeStamp"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAflushQueueRequest"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAtimeStamp"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAtimeStamp"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAlocalDeleteObjectInstance": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAobjectInstance"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAlocalDeleteObjectInstance",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAobjectInstance",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAobjectInstance"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAlocalDeleteObjectInstance"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAobjectInstance"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAobjectInstance"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAmodifyLookahead": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAlookahead"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAmodifyLookahead",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAlookahead",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_interval_encoding",
+          "parameter": "HLAlookahead"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAmodifyLookahead"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAlookahead"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAlookahead"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAnextMessageRequest": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAtimeStamp"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAnextMessageRequest",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAtimeStamp",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_time_encoding",
+          "parameter": "HLAtimeStamp"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAnextMessageRequest"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAtimeStamp"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAtimeStamp"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAnextMessageRequestAvailable": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAtimeStamp"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAnextMessageRequestAvailable",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAtimeStamp",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_time_encoding",
+          "parameter": "HLAtimeStamp"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAnextMessageRequestAvailable"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAtimeStamp"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAtimeStamp"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLApublishInteractionClass": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAinteractionClass"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLApublishInteractionClass",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAinteractionClass",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAinteractionClass"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLApublishInteractionClass"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAinteractionClass"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAinteractionClass"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLApublishObjectClassAttributes": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAobjectClass",
+        "HLAattributeList"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLApublishObjectClassAttributes",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAobjectClass",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAattributeList",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAobjectClass"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAattributeList"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLApublishObjectClassAttributes"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAobjectClass",
+        "HLAattributeList"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAobjectClass",
+        "HLAattributeList"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLArequestAttributeTransportationTypeChange": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAobjectInstance",
+        "HLAattributeList",
+        "HLAtransportation"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLArequestAttributeTransportationTypeChange",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAobjectInstance",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAattributeList",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAtransportation",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAobjectInstance"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAattributeList"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAtransportation"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLArequestAttributeTransportationTypeChange"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAobjectInstance",
+        "HLAattributeList",
+        "HLAtransportation"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAobjectInstance",
+        "HLAattributeList",
+        "HLAtransportation"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLArequestInteractionTransportationTypeChange": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAinteractionClass",
+        "HLAtransportation"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLArequestInteractionTransportationTypeChange",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAinteractionClass",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAtransportation",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAinteractionClass"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAtransportation"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLArequestInteractionTransportationTypeChange"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAinteractionClass",
+        "HLAtransportation"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAinteractionClass",
+        "HLAtransportation"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAresignFederationExecution": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAresignAction"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAresignFederationExecution",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAresignAction",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAresignFederationExecution"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAresignAction"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAresignAction"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAsubscribeInteractionClass": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAinteractionClass",
+        "HLAactive"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAsubscribeInteractionClass",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAinteractionClass",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAinteractionClass"
+        },
+        {
+          "case": "bad_boolean_encoding",
+          "parameter": "HLAactive"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAsubscribeInteractionClass"
+        }
+      ],
+      "optional_parameters": [
+        "HLAactive"
+      ],
+      "parameters": [
+        "HLAfederate",
+        "HLAinteractionClass",
+        "HLAactive"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAinteractionClass"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAsubscribeObjectClassAttributes": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAobjectClass",
+        "HLAattributeList",
+        "HLAactive"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAsubscribeObjectClassAttributes",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAobjectClass",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAattributeList",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAobjectClass"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAattributeList"
+        },
+        {
+          "case": "bad_boolean_encoding",
+          "parameter": "HLAactive"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAsubscribeObjectClassAttributes"
+        }
+      ],
+      "optional_parameters": [
+        "HLAactive"
+      ],
+      "parameters": [
+        "HLAfederate",
+        "HLAobjectClass",
+        "HLAattributeList",
+        "HLAactive"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAobjectClass",
+        "HLAattributeList"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAsynchronizationPointAchieved": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAlabel"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAsynchronizationPointAchieved",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAlabel",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAsynchronizationPointAchieved"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAlabel"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAlabel"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAtimeAdvanceRequest": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAtimeStamp"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAtimeAdvanceRequest",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAtimeStamp",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_time_encoding",
+          "parameter": "HLAtimeStamp"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAtimeAdvanceRequest"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAtimeStamp"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAtimeStamp"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAtimeAdvanceRequestAvailable": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAtimeStamp"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAtimeAdvanceRequestAvailable",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAtimeStamp",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_time_encoding",
+          "parameter": "HLAtimeStamp"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAtimeAdvanceRequestAvailable"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAtimeStamp"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAtimeStamp"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAunconditionalAttributeOwnershipDivestiture": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAobjectInstance",
+        "HLAattributeList"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAunconditionalAttributeOwnershipDivestiture",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAobjectInstance",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAattributeList",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAobjectInstance"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAattributeList"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAunconditionalAttributeOwnershipDivestiture"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAobjectInstance",
+        "HLAattributeList"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAobjectInstance",
+        "HLAattributeList"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAunpublishInteractionClass": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAinteractionClass"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAunpublishInteractionClass",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAinteractionClass",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAinteractionClass"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAunpublishInteractionClass"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAinteractionClass"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAinteractionClass"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAunpublishObjectClassAttributes": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAobjectClass",
+        "HLAattributeList"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAunpublishObjectClassAttributes",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAobjectClass",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAobjectClass"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAattributeList"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAunpublishObjectClassAttributes"
+        }
+      ],
+      "optional_parameters": [
+        "HLAattributeList"
+      ],
+      "parameters": [
+        "HLAfederate",
+        "HLAobjectClass",
+        "HLAattributeList"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAobjectClass"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAunsubscribeInteractionClass": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAinteractionClass"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAunsubscribeInteractionClass",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAinteractionClass",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAinteractionClass"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAunsubscribeInteractionClass"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAinteractionClass"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAinteractionClass"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAunsubscribeObjectClassAttributes": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAobjectClass",
+        "HLAattributeList"
+      ],
+      "inherited_parameters": [
+        "HLAfederate"
+      ],
+      "leaf": "HLAunsubscribeObjectClassAttributes",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAfederate",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAobjectClass",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAattributeList",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAfederate"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAobjectClass"
+        },
+        {
+          "case": "bad_handle_encoding",
+          "parameter": "HLAattributeList"
+        },
+        {
+          "case": "unsupported_or_failed_service_action",
+          "service_leaf": "HLAunsubscribeObjectClassAttributes"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAfederate",
+        "HLAobjectClass",
+        "HLAattributeList"
+      ],
+      "required_parameters": [
+        "HLAfederate",
+        "HLAobjectClass",
+        "HLAattributeList"
+      ],
+      "role": "HLAservice",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederation.HLAadjust.HLAsetSwitches": {
+      "at_least_one_of": [
+        "HLAautoProvide"
+      ],
+      "declared_parameters": [
+        "HLAautoProvide"
+      ],
+      "inherited_parameters": [],
+      "leaf": "HLAsetSwitches",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_parameter_choice",
+          "parameters": [
+            "HLAautoProvide"
+          ],
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "bad_boolean_encoding",
+          "parameter": "HLAautoProvide"
+        }
+      ],
+      "optional_parameters": [
+        "HLAautoProvide"
+      ],
+      "parameters": [
+        "HLAautoProvide"
+      ],
+      "required_parameters": [],
+      "role": "HLAadjust",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestFOMmoduleData": {
+      "at_least_one_of": [],
+      "declared_parameters": [
+        "HLAFOMmoduleIndicator"
+      ],
+      "inherited_parameters": [],
+      "leaf": "HLArequestFOMmoduleData",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        },
+        {
+          "case": "missing_required_parameter",
+          "parameter": "HLAFOMmoduleIndicator",
+          "strict_mode": "strict_mom_parameter_decoding"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [
+        "HLAFOMmoduleIndicator"
+      ],
+      "required_parameters": [
+        "HLAFOMmoduleIndicator"
+      ],
+      "role": "HLArequest",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMdata": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [],
+      "leaf": "HLArequestMIMdata",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [],
+      "required_parameters": [],
+      "role": "HLArequest",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [],
+      "leaf": "HLArequestSynchronizationPointStatus",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [],
+      "required_parameters": [],
+      "role": "HLArequest",
+      "rti_direction": "rti-receives"
+    },
+    "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints": {
+      "at_least_one_of": [],
+      "declared_parameters": [],
+      "inherited_parameters": [],
+      "leaf": "HLArequestSynchronizationPoints",
+      "negative_cases": [
+        {
+          "case": "unexpected_parameter",
+          "strict_mode": "strict_mom_parameter_decoding"
+        }
+      ],
+      "optional_parameters": [],
+      "parameters": [],
+      "required_parameters": [],
+      "role": "HLArequest",
+      "rti_direction": "rti-receives"
+    }
+  },
+  "interaction_count": 84,
+  "receive_leaf_count": 53
+}

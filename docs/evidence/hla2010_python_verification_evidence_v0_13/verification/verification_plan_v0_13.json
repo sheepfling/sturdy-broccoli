@@ -1,0 +1,273 @@
+{
+  "assets": [
+    {
+      "asset_id": "REQ-MOM-TABLE-001",
+      "asset_type": "requirement",
+      "evidence": [
+        "hla2010/mom_catalog.py::build_mom_exposure_model",
+        "tests/test_mom_catalog_validation_v012.py::test_mom_catalog_is_derived_from_standard_mim_and_exposes_validation_matrix"
+      ],
+      "gaps": [],
+      "notes": "The active catalog now drives MOM object attributes, interaction parameters, request/report pairs, direction, and matrix output.",
+      "section_refs": [
+        "1516.1-2010 \u00a711.2",
+        "1516.1-2010 \u00a711.3",
+        "1516.1-2010 Annex G"
+      ],
+      "status": "implemented-slice",
+      "title": "MOM object and interaction exposure is derived from the active MIM/FOM catalog"
+    },
+    {
+      "asset_id": "REQ-MOM-NEG-001",
+      "asset_type": "requirement",
+      "evidence": [
+        "hla2010/mom_negative_testing.py::build_mom_negative_test_cases",
+        "tests/test_mom_negative_matrix_executable_v013.py::test_generated_mom_negative_matrix_case_executes",
+        "verification/mom_negative_matrix_v0_13.json"
+      ],
+      "gaps": [
+        "Semantic HLAservice precondition-negative rows remain planned separately because they require service-specific federation setup."
+      ],
+      "notes": "",
+      "section_refs": [
+        "1516.1-2010 \u00a711.4.1",
+        "1516.1-2010 \u00a711.5"
+      ],
+      "status": "implemented-slice",
+      "title": "Strict MOM decoding reports and raises through generated parameterized negative-path tests"
+    },
+    {
+      "asset_id": "REQ-MOM-REPORT-001",
+      "asset_type": "requirement",
+      "evidence": [
+        "tests/test_mom_catalog_validation_v012.py::test_mom_report_payload_uses_exact_mim_catalog_parameters"
+      ],
+      "gaps": [
+        "Report payload values are still local-process diagnostics for several specialized report classes."
+      ],
+      "notes": "",
+      "section_refs": [
+        "1516.1-2010 \u00a711.3",
+        "1516.1-2010 \u00a711.4.1",
+        "1516.1-2010 Annex G"
+      ],
+      "status": "implemented-slice",
+      "title": "MOM reports use the exact parameter names declared in the active MIM catalog"
+    },
+    {
+      "asset_id": "REQ-MOM-SERVICE-001",
+      "asset_type": "requirement",
+      "evidence": [
+        "hla2010/backends/python_rti.py::_run_mom_service_action",
+        "verification/mom_negative_matrix_v0_12.json"
+      ],
+      "gaps": [
+        "Not every Annex G service action has a complete semantic implementation yet."
+      ],
+      "notes": "",
+      "section_refs": [
+        "1516.1-2010 \u00a711.3",
+        "1516.1-2010 \u00a711.4.1"
+      ],
+      "status": "implemented-slice",
+      "title": "MOM HLAservice interactions are modeled as RTI-received actions with negative-path service failure reporting"
+    },
+    {
+      "asset_id": "REQ-SERVICE-FILE-001",
+      "asset_type": "requirement",
+      "evidence": [
+        "hla2010/service_reporting.py",
+        "tests/test_compliance_slice_v011.py::test_mom_service_reports_to_file_and_global_report_file"
+      ],
+      "gaps": [
+        "The current format is JSONL for auditability; exact vendor/report-file formatting is not claimed."
+      ],
+      "notes": "",
+      "section_refs": [
+        "1516.1-2010 \u00a711.5"
+      ],
+      "status": "implemented-slice",
+      "title": "Service-report file output contains initial and per-service records with section anchors"
+    },
+    {
+      "asset_id": "REQ-TIME-ORDER-001",
+      "asset_type": "requirement",
+      "evidence": [
+        "hla2010/time_management.py",
+        "tests/test_compliance_slice_v011.py::test_ddm_region_filtering_applies_before_timestamp_order_delivery"
+      ],
+      "gaps": [
+        "The distributed-time algorithm remains a local-process approximation, not a proven multi-process LBTS algorithm."
+      ],
+      "notes": "",
+      "section_refs": [
+        "1516.1-2010 \u00a78.1",
+        "1516.1-2010 \u00a78.13",
+        "1516.1-2010 \u00a78.16",
+        "1516.1-2010 \u00a78.18",
+        "1516.1-2010 \u00a79"
+      ],
+      "status": "implemented-slice",
+      "title": "Timestamp-order queues respect local GALT/LITS-style lower-bound rules and DDM filtering before delivery"
+    },
+    {
+      "asset_id": "REQ-SAVE-RESTORE-001",
+      "asset_type": "requirement",
+      "evidence": [
+        "tests/test_compliance_slice_v011.py::test_scheduled_save_waits_for_time_and_restore_reinstates_time_state"
+      ],
+      "gaps": [
+        "External persistent save-file interchange is not implemented."
+      ],
+      "notes": "",
+      "section_refs": [
+        "1516.1-2010 \u00a74.16-\u00a74.25",
+        "1516.1-2010 \u00a78"
+      ],
+      "status": "implemented-slice",
+      "title": "Save/restore coordinates with time-state and restores logical-time state"
+    },
+    {
+      "asset_id": "SCENARIO-TARGET-RADAR-001",
+      "asset_type": "scenario",
+      "evidence": [
+        "examples/target_radar_simulation.py",
+        "tests/test_target_radar_scenario.py",
+        "test_run_summary.txt"
+      ],
+      "gaps": [
+        "Scenario is a smoke demonstration, not a conformance test."
+      ],
+      "notes": "",
+      "section_refs": [
+        "1516.1-2010 \u00a74",
+        "1516.1-2010 \u00a75",
+        "1516.1-2010 \u00a76",
+        "1516.1-2010 \u00a78"
+      ],
+      "status": "implemented-smoke",
+      "title": "Two-federate Target/Radar simulation runs over Python RTI and Java shim profiles"
+    },
+    {
+      "asset_id": "ASSET-CONFORMANCE-MATRIX-001",
+      "asset_type": "verification-artifact",
+      "evidence": [
+        "hla2010/conformance.py::build_service_conformance_matrix",
+        "analysis/service_conformance_matrix_v0_13.json",
+        "analysis/service_conformance_matrix_v0_13.csv",
+        "tests/test_service_conformance_matrix_v013.py"
+      ],
+      "gaps": [
+        "Rows identify handlers and current evidence; several handler-only rows still need service-specific behavior/exception tests."
+      ],
+      "notes": "",
+      "section_refs": [
+        "1516.1-2010 \u00a74-\u00a711",
+        "1516.1-2010 Annex G"
+      ],
+      "status": "implemented-slice",
+      "title": "Service-by-service conformance matrix covering RTIambassador services and MOM receive interactions"
+    },
+    {
+      "asset_id": "ASSET-MOM-SERVICE-SEMANTIC-NEG-001",
+      "asset_type": "planned-artifact",
+      "evidence": [
+        "analysis/service_conformance_matrix_v0_13.json",
+        "verification/mom_negative_matrix_v0_13.json"
+      ],
+      "gaps": [
+        "The generated parameter-validation rows are executable; service-action rows still need per-service precondition setup so success paths are not misreported as negative evidence."
+      ],
+      "notes": "",
+      "section_refs": [
+        "1516.1-2010 \u00a711.4.1",
+        "1516.1-2010 Annex G"
+      ],
+      "status": "planned",
+      "title": "Bespoke semantic negative-path harnesses for every MOM HLAservice action"
+    },
+    {
+      "asset_id": "ASSET-CROSS-RTI-BRIDGE-001",
+      "asset_type": "planned-artifact",
+      "evidence": [
+        "tests/test_optional_real_java_bridges.py"
+      ],
+      "gaps": [
+        "No vendor RTI, jpype1, or py4j package is available in this sandbox."
+      ],
+      "notes": "",
+      "section_refs": [
+        "1516.1-2010 Java binding",
+        "1516.1-2010 \u00a74-\u00a710"
+      ],
+      "status": "gap",
+      "title": "Cross-run verification against at least one real Java RTI via JPype and Py4J"
+    },
+    {
+      "asset_id": "ASSET-NEGATIVE-MOM-MATRIX-001",
+      "asset_type": "verification-artifact",
+      "evidence": [
+        "verification/mom_negative_matrix_v0_13.json",
+        "analysis/mom_negative_matrix_v0_13.json",
+        "hla2010/mom_negative_testing.py::mom_negative_case_report",
+        "tests/test_mom_negative_matrix_executable_v013.py"
+      ],
+      "gaps": [
+        "Service-action semantic negative cases remain visible as planned rows until each has a bespoke precondition harness."
+      ],
+      "notes": "",
+      "section_refs": [
+        "1516.1-2010 \u00a711.4.1",
+        "1516.1-2010 Annex G"
+      ],
+      "status": "implemented-slice",
+      "title": "Generated MOM negative-path matrix with executable parameter-validation rows"
+    }
+  ],
+  "scope": "Pure Python RTI plus Java adapter/shim compatibility layer",
+  "summary": {
+    "asset_count": 12,
+    "gap_asset_ids": [
+      "REQ-MOM-NEG-001",
+      "REQ-MOM-REPORT-001",
+      "REQ-MOM-SERVICE-001",
+      "REQ-SERVICE-FILE-001",
+      "REQ-TIME-ORDER-001",
+      "REQ-SAVE-RESTORE-001",
+      "SCENARIO-TARGET-RADAR-001",
+      "ASSET-CONFORMANCE-MATRIX-001",
+      "ASSET-MOM-SERVICE-SEMANTIC-NEG-001",
+      "ASSET-CROSS-RTI-BRIDGE-001",
+      "ASSET-NEGATIVE-MOM-MATRIX-001"
+    ],
+    "scope": "Pure Python RTI plus Java adapter/shim compatibility layer",
+    "sections": [
+      "1516.1-2010 Annex G",
+      "1516.1-2010 Java binding",
+      "1516.1-2010 \u00a711.2",
+      "1516.1-2010 \u00a711.3",
+      "1516.1-2010 \u00a711.4.1",
+      "1516.1-2010 \u00a711.5",
+      "1516.1-2010 \u00a74",
+      "1516.1-2010 \u00a74-\u00a710",
+      "1516.1-2010 \u00a74-\u00a711",
+      "1516.1-2010 \u00a74.16-\u00a74.25",
+      "1516.1-2010 \u00a75",
+      "1516.1-2010 \u00a76",
+      "1516.1-2010 \u00a78",
+      "1516.1-2010 \u00a78.1",
+      "1516.1-2010 \u00a78.13",
+      "1516.1-2010 \u00a78.16",
+      "1516.1-2010 \u00a78.18",
+      "1516.1-2010 \u00a79"
+    ],
+    "status_counts": {
+      "gap": 1,
+      "implemented-slice": 9,
+      "implemented-smoke": 1,
+      "planned": 1
+    },
+    "version": "0.13.0"
+  },
+  "version": "0.13.0"
+}

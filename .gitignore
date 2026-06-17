@@ -30,7 +30,7 @@ dist
 
 # Generated project outputs
 analysis
-verification
+/verification
 downloads
 build/generated/
 hla2010/generated/
