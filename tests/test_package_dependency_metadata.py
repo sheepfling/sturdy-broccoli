@@ -12,8 +12,9 @@ ALLOWED_INTERNAL_DEPENDENCIES: dict[str, set[str]] = {
     "hla-rti1516-2025": {"hla-rti-core"},
     "hla-backend-common": {"hla-rti1516e", "hla-rti-core"},
     "hla-backend-shim": {"hla-rti1516-2025", "hla-rti-core"},
-    "hla-bridge-java-common": {"hla-rti1516e", "hla-rti-core", "hla-backend-common"},
+    "hla-bridge-java-common": {"hla-rti1516e", "hla-rti1516-2025", "hla-rti-core", "hla-backend-common", "hla-backend-shim"},
     "hla-backend-inmemory": {"hla-rti1516e", "hla-rti-core", "hla-backend-common"},
+    "hla-backend-cpp-shim": {"hla-rti1516e", "hla-rti1516-2025", "hla-rti-core", "hla-backend-common", "hla-backend-inmemory", "hla-backend-shim"},
     "hla-rti-core": set(),
     "hla-backend-certi": {"hla-rti1516e", "hla-backend-common", "hla-rti-core", "hla-transport-common"},
     "hla-bridge-java-jpype": {"hla-rti1516e", "hla-rti-core", "hla-backend-common", "hla-bridge-java-common"},
@@ -53,7 +54,7 @@ ALLOWED_INTERNAL_DEPENDENCIES: dict[str, set[str]] = {
         "hla-transport-common",
         "hla-rti-core",
     },
-    "hla-verification": {"hla-rti1516e", "hla-backend-common", "hla-rti-core"},
+    "hla-verification": {"hla-rti1516e", "hla-rti1516-2025", "hla-backend-common", "hla-backend-inmemory", "hla-rti-core"},
     "hla-fom-target-radar": {"hla-rti1516e", "hla-verification", "hla-rti-core"},
 }
 

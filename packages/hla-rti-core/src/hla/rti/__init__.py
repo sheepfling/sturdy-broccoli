@@ -15,6 +15,15 @@ from .plugin_api import (
     TransportRequest,
 )
 from .real_rti_process import RuntimeProcess, reserve_tcp_port, wait_for_process_boot, wait_for_tcp_listener
+from .standard_shims import (
+    STANDARD_SHIM_ARTIFACTS,
+    StandardShimArtifact,
+    StandardShimRoute,
+    iter_standard_shim_artifacts,
+    iter_standard_shim_routes,
+    official_api_bundle_paths,
+    standard_shim_route_names,
+)
 
 _FACTORY_EXPORTS = {
     "available_spec_plugins",
@@ -53,11 +62,18 @@ __all__ = [
     "RTITransportSpec",
     "RuntimeProcess",
     "SPEC_ENTRY_POINT_GROUP",
+    "STANDARD_SHIM_ARTIFACTS",
     "SpecPlugin",
+    "StandardShimArtifact",
+    "StandardShimRoute",
     "TRANSPORT_ENTRY_POINT_GROUP",
     "TransportRequest",
     *_FACTORY_EXPORTS,
+    "iter_standard_shim_artifacts",
+    "iter_standard_shim_routes",
+    "official_api_bundle_paths",
     "reserve_tcp_port",
+    "standard_shim_route_names",
     "wait_for_process_boot",
     "wait_for_tcp_listener",
 ]

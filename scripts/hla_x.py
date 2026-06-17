@@ -18,6 +18,7 @@ ROSETTA_REPORTS = {
     "cpp-2010": SCRIPT_REPO_ROOT / "docs/evidence/rosetta/cpp-standard-2010.json",
     "cpp-2025": SCRIPT_REPO_ROOT / "docs/evidence/rosetta/cpp-standard-2025.json",
 }
+JAVA_INTAKE_REPORT_DIR = SCRIPT_REPO_ROOT / "docs/evidence/java-intake"
 JAVA_TOOLCHAIN_REPORT_DIR = SCRIPT_REPO_ROOT / "docs/evidence/rosetta"
 
 
@@ -60,6 +61,40 @@ def _matrix(args: argparse.Namespace) -> int:
                 for route in artifact.routes
             )
         print(f"{artifact.artifact_name} | {artifact.edition} | {status} | {routes}")
+    print("")
+    print("Java RTI intake certification")
+    print("")
+    print("route | edition | discovery | callback | core | trace | status")
+    print("--- | --- | --- | --- | --- | --- | ---")
+    intake_rows = {
+        ("2010", "jpype"): "java-2010-jpype",
+        ("2010", "py4j"): "java-2010-py4j",
+        ("2025", "jpype"): "java-2025-jpype",
+        ("2025", "py4j"): "java-2025-py4j",
+    }
+    report_by_route: dict[tuple[str, str], dict[str, object]] = {}
+    if JAVA_INTAKE_REPORT_DIR.exists():
+        for path in JAVA_INTAKE_REPORT_DIR.glob("*.json"):
+            try:
+                report = json.loads(path.read_text(encoding="utf-8"))
+            except Exception:
+                continue
+            edition = str(report.get("edition", ""))
+            bridge = str(report.get("bridge", ""))
+            if (edition, bridge) in intake_rows:
+                report_by_route[(edition, bridge)] = report
+    for key, route_name in intake_rows.items():
+        edition, _bridge = key
+        if edition not in editions:
+            continue
+        report = report_by_route.get(key, {})
+        discovery = dict(report.get("discovery", {})) if isinstance(report.get("discovery"), dict) else {}
+        discovery_status = str(discovery.get("status", "intake"))
+        callback_status = str(report.get("callback_status", "intake"))
+        core_status = str(report.get("core_scenario_status", "opt"))
+        trace_status = str(report.get("trace_comparison_status", "opt"))
+        status = str(report.get("status", "intake"))
+        print(f"{route_name} | {edition} | {discovery_status} | {callback_status} | {core_status} | {trace_status} | {status}")
     print("")
     print("Status is generated from local standard-shim evidence reports. Routes without built artifacts remain planned or surface-only.")
     return 0

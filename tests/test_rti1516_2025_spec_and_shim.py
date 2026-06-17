@@ -29,8 +29,26 @@ def test_2025_spec_aliases_and_backend_discovery_are_spec_aware() -> None:
     assert spec.python_package == "hla.rti1516_2025"
 
     backends = {row.name: row for row in discover_rti_backends(spec="1516-2025")}
-    assert set(backends) == {"shim"}
+    assert set(backends) == {
+        "cpp-shim-grpc",
+        "cpp-shim-pybind",
+        "cpp-standard-2025-grpc",
+        "cpp-standard-2025-pybind",
+        "java-shim-jpype",
+        "java-shim-py4j",
+        "java-standard-2025-jpype",
+        "java-standard-2025-py4j",
+        "shim",
+    }
     assert backends["shim"].supports == ("rti1516_2025",)
+    assert backends["java-shim-jpype"].supports == ("rti1516e", "rti1516_2025")
+    assert backends["java-shim-py4j"].supports == ("rti1516e", "rti1516_2025")
+    assert backends["cpp-shim-pybind"].supports == ("rti1516e", "rti1516_2025")
+    assert backends["cpp-shim-grpc"].supports == ("rti1516e", "rti1516_2025")
+    assert backends["java-standard-2025-jpype"].supports == ("rti1516_2025",)
+    assert backends["java-standard-2025-py4j"].supports == ("rti1516_2025",)
+    assert backends["cpp-standard-2025-pybind"].supports == ("rti1516_2025",)
+    assert backends["cpp-standard-2025-grpc"].supports == ("rti1516_2025",)
 
 
 def test_2025_shim_is_first_green_runtime_path() -> None:

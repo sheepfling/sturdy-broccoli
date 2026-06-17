@@ -15,7 +15,7 @@ def main() -> int:
     args = parser.parse_args()
 
     root = Path(__file__).resolve().parents[1]
-    from hla.rti1516e.java_runtime import discover_java_tool, ensure_java_home
+    from hla.bridges.java.common.java_runtime import discover_java_tool, ensure_java_home
 
     src_root = root / "src" / "main" / "java"
     sources = sorted(str(path) for path in src_root.rglob("*.java"))

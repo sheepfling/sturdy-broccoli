@@ -1,11 +1,17 @@
-# hla2010-python
+# HLA-X
 
-This repository is an unofficial IEEE 1516.1-2010 HLA workspace centered on a
-clean Python spec surface plus pluggable RTI backends.
+This repository is an unofficial Python-first IEEE HLA workspace for
+1516.1-2010 and 1516.1-2025 APIs, pluggable RTI backends, and route-by-route
+verification evidence.
+
+The flag-plant direction is:
+
+> One HLA behavior model, three languages, two standards, reproducible evidence.
 
 The supported front door is:
 
 - `hla.rti1516e` for the 2010 API package
+- `hla.rti1516_2025` for the 2025 API package
 - `hla.rti` for cross-version discovery and ambassador creation
 - `hla.backends.inmemory` for the local in-memory RTI backend
 - `hla.transports.grpc` for networked transport-hosted RTI routes
@@ -19,6 +25,7 @@ If you want to understand the package split, start here:
 - [`docs/package_layout.md`](docs/package_layout.md)
 - [`docs/package_hierarchy_and_versioning.md`](docs/package_hierarchy_and_versioning.md)
 - [`docs/package_dependency_tree.md`](docs/package_dependency_tree.md)
+- [`docs/hla_x_rosetta_release.md`](docs/hla_x_rosetta_release.md)
 - [`packages/README.md`](packages/README.md)
 
 This root `README` owns only three jobs:
@@ -119,6 +126,7 @@ If you need the vendor flows, stay on the `tools/` operator surface:
 These are the primary newcomer lanes:
 
 - run something: [`docs/first_run.md`](docs/first_run.md)
+- understand the Rosetta standard-shim target: [`docs/hla_x_rosetta_release.md`](docs/hla_x_rosetta_release.md)
 - edit one service: [`docs/python_rti_edit_one_service.md`](docs/python_rti_edit_one_service.md)
 - create one FOM package: [`docs/create_federate_and_fom.md`](docs/create_federate_and_fom.md)
 - trace one method: [`docs/requirements_trace_one_method.md`](docs/requirements_trace_one_method.md)
@@ -197,6 +205,9 @@ The important part is that these are not all the same level of maturity:
 
 - `python` is the strongest local reference path
 - the Java shims are repo verification backends, not part of the public runtime surface
+- Rosetta `java-standard-*` and `cpp-standard-*` route names are reserved for
+  future standard-backed artifacts that compile against official IEEE Java/C++
+  API bundles
 - CERTI and Pitch are real vendor paths with their own launch and smoke flows
 - Portico wiring exists, but local evidence depends on installed runtime
 - `grpc` and `rest` are transport surfaces, not separate RTI families

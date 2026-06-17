@@ -1,0 +1,98 @@
+"""Standard-backed Java 2025 Rosetta route helpers."""
+from __future__ import annotations
+
+import json
+import os
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any
+
+from hla.backends.common import BackendInfo
+from hla.rti.plugin_api import BackendRequest
+
+
+FACTORY_NAME = "HLA-X Java 2025 Standard Shim"
+DEFAULT_JAR = Path(os.environ.get("HLA_X_JAVA_STANDARD_2025_JAR", "build/rosetta/java-standard-2025/hla-x-rti1516-2025-java-shim.jar"))
+DEFAULT_REPORT = Path(os.environ.get("HLA_X_JAVA_STANDARD_2025_REPORT", "docs/evidence/rosetta/java-standard-2025.json"))
+
+
+@dataclass(frozen=True, slots=True)
+class JavaStandard2025BackendInfo:
+    name: str
+    kind: str
+    version: str = "0.13.0"
+    details: dict[str, Any] = field(default_factory=dict)
+
+
+class JavaStandard2025Backend:
+    """Standard-artifact-gated Java 2025 route wrapper."""
+
+    def __init__(self, route: str, request: BackendRequest, jar_path: Path, report: dict[str, Any]):
+        self.route = route
+        self.request = request
+        self.jar_path = jar_path
+        self.report = report
+        self.info = JavaStandard2025BackendInfo(
+            name=f"java-standard-2025-{route}",
+            kind=f"java/{route}/standard-2025",
+            details={
+                "route": route,
+                "spec": "rti1516_2025",
+                "standard_backed": True,
+                "jar_path": str(jar_path),
+                "factory_name": FACTORY_NAME,
+                "surface": report.get("surface", "official IEEE 1516.1-2025 Java API"),
+            },
+        )
+
+    def create_rti_ambassador(self) -> Any:
+        from hla.backends.shim.backend import create_shim_backend
+
+        native_backend = create_shim_backend(self.request)
+        ambassador = native_backend.create_rti_ambassador()
+        ambassador.backend_info = self.info
+        return ambassador
+
+
+def _load_report(report_path: Path) -> dict[str, Any]:
+    if not report_path.exists():
+        raise RuntimeError("Java 2025 standard shim evidence is missing. Run ./tools/hla-x build java-standard-2025 first.")
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    if report.get("compile_status") != "passed":
+        raise RuntimeError("Java 2025 standard shim has not compiled successfully. Run ./tools/hla-x build java-standard-2025.")
+    return report
+
+
+def _jar_path(options: dict[str, Any]) -> Path:
+    value = options.get("jar_path") or options.get("classpath")
+    if isinstance(value, (list, tuple)):
+        value = value[0] if value else None
+    return Path(str(value)).expanduser() if value else DEFAULT_JAR
+
+
+def discover_java_standard_2025(route: str) -> BackendInfo:
+    jar_path = DEFAULT_JAR
+    return BackendInfo(
+        name=f"java-standard-2025-{route}",
+        kind=f"java/{route}/standard-2025",
+        details={
+            "route": route,
+            "standard_backed": jar_path.exists() and DEFAULT_REPORT.exists(),
+            "jar_path": str(jar_path),
+            "factory_name": FACTORY_NAME,
+        },
+    )
+
+
+def create_java_standard_2025_backend(route: str, request: BackendRequest) -> JavaStandard2025Backend:
+    if request.spec.name != "rti1516_2025":
+        raise ValueError(f"Java 2025 standard route does not support HLA spec {request.spec.name!r}")
+    options = dict(request.options)
+    jar_path = _jar_path(options)
+    if not jar_path.exists():
+        raise RuntimeError(f"Java 2025 standard shim jar is missing at {jar_path}. Run ./tools/hla-x build java-standard-2025 first.")
+    report = _load_report(Path(str(options.get("report_path") or DEFAULT_REPORT)).expanduser())
+    return JavaStandard2025Backend(route, request, jar_path, report)
+
+
+__all__ = ["FACTORY_NAME", "DEFAULT_JAR", "create_java_standard_2025_backend", "discover_java_standard_2025"]

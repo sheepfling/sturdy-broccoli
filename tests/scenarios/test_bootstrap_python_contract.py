@@ -53,6 +53,7 @@ def test_bootstrap_python_plan_for_test_is_lean_core_workspace() -> None:
         "packages/hla-transport-common",
         "packages/hla-bridge-java-common",
         "packages/hla-backend-inmemory",
+        "packages/hla-backend-cpp-shim",
         "packages/hla-backend-certi",
         "packages/hla-vendor-pitch",
         "packages/hla-transport-grpc",
@@ -106,7 +107,7 @@ def test_bootstrap_python_plan_for_qa_matches_repo_green_workspace() -> None:
 
     assert payload["profile"] == "full-java"
     assert payload["helper_deps"] == ["pytest", "ruff", "pyright", "jpype1", "py4j"]
-    assert len(payload["workspace_packages"]) == 19
+    assert len(payload["workspace_packages"]) == 20
     for package in (
         "packages/hla-rti1516-2025",
         "packages/hla-backend-shim",

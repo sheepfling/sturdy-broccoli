@@ -153,7 +153,37 @@ These are only useful when you provide a Java RTI configuration explicitly.
 - `certi-native`
 - `native-certi`
 
+### Standard Java Shim
+
+- `java-standard-2010-jpype`
+
+- `java-standard-2010-py4j`
+
+- `java-standard-2025-jpype`
+
+- `java-standard-2025-py4j`
+
+### C++ Shim
+
+- `cpp-shim-grpc`
+- `cpp-shim-sidecar`
+- `native-cpp-shim-grpc`
+
+- `cpp-shim`
+- `cpp-shim-native`
+- `cpp-shim-pybind`
+- `native-cpp-shim`
+
 ### Java Shim
+
+- `java-shim`
+- `java-shim-jpype`
+- `shim-jpype`
+
+- `java-shim-py4j`
+- `shim-py4j`
+
+### Spec Shim
 
 - `2025-shim`
 - `reference-shim`

@@ -28,7 +28,9 @@ _SOURCE_CHECKOUT_SPEC_PLUGIN_MODULES: tuple[str, ...] = (
 )
 _SOURCE_CHECKOUT_PLUGIN_MODULES: tuple[str, ...] = (
     "hla.backends.inmemory.plugin",
+    "hla.backends.cpp_shim.plugin",
     "hla.backends.shim.plugin",
+    "hla.bridges.java.common.java_shim_plugin",
     "hla.bridges.java.jpype.plugin",
     "hla.bridges.java.py4j.plugin",
     "hla.vendors.pitch.jpype.plugin",

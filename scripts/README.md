@@ -35,7 +35,9 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `./tools/vendor-probe-review` canonical repeated-run probe review and promotion-review artifact flow
 - `./tools/vendor-edge` canonical vendor edge matrix flow
 - `./tools/rti-options` canonical generated RTI route/options matrix flow
+- `./tools/hla-x` canonical Rosetta standard-shim contract and future mixed-language demo flow
 - `./tools/fom-overview` canonical merged FOM/MIM overview artifact flow
+- `./tools/fom-roundtrip` canonical FOM round-trip packet flow
 - `./tools/package-deps` canonical split-package dependency tree flow
 - `./tools/section8-gate` canonical Section 8 backend-matrix gate
 - `./tools/target-radar` canonical target/radar proof and backend-matrix artifact flow

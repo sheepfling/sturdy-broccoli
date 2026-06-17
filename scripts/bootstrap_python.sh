@@ -13,6 +13,7 @@ CORE_WORKSPACE_PACKAGES=(
   "packages/hla-transport-common"
   "packages/hla-bridge-java-common"
   "packages/hla-backend-inmemory"
+  "packages/hla-backend-cpp-shim"
   "packages/hla-backend-certi"
   "packages/hla-vendor-pitch"
   "packages/hla-transport-grpc"

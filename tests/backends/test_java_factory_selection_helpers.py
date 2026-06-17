@@ -127,6 +127,12 @@ def test_create_java_rti_ambassador_shim_runs_backend_neutral_scenario(bridge: s
     assert summary["event_names"].count("interaction") == 1
 
 
+@pytest.mark.parametrize("bridge", ["java-standard-shim-jpype", "java-standard-shim-py4j"])
+def test_create_java_backend_rejects_legacy_standard_shim_aliases(bridge: str) -> None:
+    with pytest.raises(ValueError, match="Unknown Java RTI bridge"):
+        create_java_backend(bridge=bridge, shared=True, kernel=SharedJavaShimKernel())
+
+
 def test_create_java_backend_shim_supports_shared_kernel_option() -> None:
     backend = create_java_backend(bridge="java-shim-py4j", shared=True, kernel=SharedJavaShimKernel())
 

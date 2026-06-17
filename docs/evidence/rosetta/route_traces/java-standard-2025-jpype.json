@@ -1,0 +1,55 @@
+{
+  "edition": "2025",
+  "route": "java-standard-2025-jpype",
+  "scenario": "lifecycle-core",
+  "status": "core-green",
+  "trace": [
+    {
+      "backend": "java-standard-2025-jpype",
+      "event": "routeSelected",
+      "spec": "rti1516_2025",
+      "standardBacked": true
+    },
+    {
+      "event": "getHLAversion",
+      "value": "IEEE 1516.1-2025"
+    },
+    {
+      "event": "connect",
+      "result": [
+        false,
+        false,
+        0,
+        "hla-backend-shim accepted the 2025 connection request"
+      ]
+    },
+    {
+      "event": "createFederationExecution",
+      "federation": "RosettaMvpJavastandard2025Jpype"
+    },
+    {
+      "event": "joinFederationExecution",
+      "federate": "python-federate",
+      "federation": "RosettaMvpJavastandard2025Jpype"
+    },
+    {
+      "delivered": false,
+      "event": "evokeCallback"
+    },
+    {
+      "delivered": false,
+      "event": "evokeMultipleCallbacks"
+    },
+    {
+      "action": 5,
+      "event": "resignFederationExecution"
+    },
+    {
+      "event": "destroyFederationExecution",
+      "federation": "RosettaMvpJavastandard2025Jpype"
+    },
+    {
+      "event": "disconnect"
+    }
+  ]
+}

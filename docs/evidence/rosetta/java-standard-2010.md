@@ -1,0 +1,170 @@
+# Java Standard 2010 Rosetta Artifact
+
+- official API source: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/specs/ieee-1516-2010/hla_specs/1516.1-2010_downloads/IEEE1516-2010_Java_API.zip`
+- jar: `/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/rosetta/java-standard-2010/hla-x-rti1516e-java-shim.jar`
+- compile status: `passed`
+- factory: `HLA-X Java 2010 Standard Shim`
+- status: `surface-backed + core-green`
+- scenario evidence: `tests/backends/test_java_standard_2010_artifact.py`
+- compatibility patch: `RtiFactoryFactory` uses `ServiceLoader` because the official 2010 helper's `ServiceRegistry` lookup is not accepted by modern JDKs
+
+## Route Evidence
+
+- `java-standard-2010-jpype`: `core-green`
+- `java-standard-2010-py4j`: `core-green`
+
+## Implemented Services
+
+- `commitRegionModifications`
+- `connect`
+- `createFederationExecution`
+- `createRegion`
+- `deleteRegion`
+- `destroyFederationExecution`
+- `disconnect`
+- `enableTimeConstrained`
+- `enableTimeRegulation`
+- `evokeCallback`
+- `evokeMultipleCallbacks`
+- `getAttributeHandle`
+- `getAttributeHandleSetFactory`
+- `getAttributeHandleValueMapFactory`
+- `getAttributeName`
+- `getDimensionHandle`
+- `getDimensionHandleSet`
+- `getDimensionHandleSetFactory`
+- `getDimensionName`
+- `getFederateHandle`
+- `getFederateHandleSetFactory`
+- `getFederateName`
+- `getHLAversion`
+- `getInteractionClassHandle`
+- `getInteractionClassName`
+- `getKnownObjectClassHandle`
+- `getObjectClassHandle`
+- `getObjectClassName`
+- `getObjectInstanceHandle`
+- `getObjectInstanceName`
+- `getParameterHandle`
+- `getParameterHandleValueMapFactory`
+- `getParameterName`
+- `getRegionHandleSetFactory`
+- `getTimeFactory`
+- `joinFederationExecution`
+- `publishInteractionClass`
+- `publishObjectClassAttributes`
+- `registerFederationSynchronizationPoint`
+- `registerObjectInstance`
+- `resignFederationExecution`
+- `sendInteraction`
+- `subscribeInteractionClass`
+- `subscribeObjectClassAttributes`
+- `synchronizationPointAchieved`
+- `timeAdvanceRequest`
+- `updateAttributeValues`
+
+## Unsupported Services
+
+- `abortFederationRestore`
+- `abortFederationSave`
+- `associateRegionsForUpdates`
+- `attributeOwnershipAcquisition`
+- `attributeOwnershipAcquisitionIfAvailable`
+- `attributeOwnershipDivestitureIfWanted`
+- `attributeOwnershipReleaseDenied`
+- `cancelAttributeOwnershipAcquisition`
+- `cancelNegotiatedAttributeOwnershipDivestiture`
+- `changeAttributeOrderType`
+- `changeInteractionOrderType`
+- `confirmDivestiture`
+- `deleteObjectInstance`
+- `disableAsynchronousDelivery`
+- `disableAttributeRelevanceAdvisorySwitch`
+- `disableAttributeScopeAdvisorySwitch`
+- `disableCallbacks`
+- `disableInteractionRelevanceAdvisorySwitch`
+- `disableObjectClassRelevanceAdvisorySwitch`
+- `disableTimeConstrained`
+- `disableTimeRegulation`
+- `enableAsynchronousDelivery`
+- `enableAttributeRelevanceAdvisorySwitch`
+- `enableAttributeScopeAdvisorySwitch`
+- `enableCallbacks`
+- `enableInteractionRelevanceAdvisorySwitch`
+- `enableObjectClassRelevanceAdvisorySwitch`
+- `federateRestoreComplete`
+- `federateRestoreNotComplete`
+- `federateSaveBegun`
+- `federateSaveComplete`
+- `federateSaveNotComplete`
+- `flushQueueRequest`
+- `getAttributeHandleFactory`
+- `getAttributeSetRegionSetPairListFactory`
+- `getAutomaticResignDirective`
+- `getAvailableDimensionsForClassAttribute`
+- `getAvailableDimensionsForInteractionClass`
+- `getDimensionHandleFactory`
+- `getDimensionUpperBound`
+- `getFederateHandleFactory`
+- `getInteractionClassHandleFactory`
+- `getObjectClassHandleFactory`
+- `getObjectInstanceHandleFactory`
+- `getOrderName`
+- `getOrderType`
+- `getParameterHandleFactory`
+- `getRangeBounds`
+- `getTransportationTypeHandle`
+- `getTransportationTypeHandleFactory`
+- `getTransportationTypeName`
+- `getUpdateRateValue`
+- `getUpdateRateValueForAttribute`
+- `isAttributeOwnedByFederate`
+- `listFederationExecutions`
+- `localDeleteObjectInstance`
+- `modifyLookahead`
+- `negotiatedAttributeOwnershipDivestiture`
+- `nextMessageRequest`
+- `nextMessageRequestAvailable`
+- `normalizeFederateHandle`
+- `normalizeServiceGroup`
+- `queryAttributeOwnership`
+- `queryAttributeTransportationType`
+- `queryFederationRestoreStatus`
+- `queryFederationSaveStatus`
+- `queryGALT`
+- `queryInteractionTransportationType`
+- `queryLITS`
+- `queryLogicalTime`
+- `queryLookahead`
+- `registerObjectInstanceWithRegions`
+- `releaseMultipleObjectInstanceName`
+- `releaseObjectInstanceName`
+- `requestAttributeTransportationTypeChange`
+- `requestAttributeValueUpdate`
+- `requestAttributeValueUpdateWithRegions`
+- `requestFederationRestore`
+- `requestFederationSave`
+- `requestInteractionTransportationTypeChange`
+- `reserveMultipleObjectInstanceName`
+- `reserveObjectInstanceName`
+- `retract`
+- `sendInteractionWithRegions`
+- `setAutomaticResignDirective`
+- `setRangeBounds`
+- `subscribeInteractionClassPassively`
+- `subscribeInteractionClassPassivelyWithRegions`
+- `subscribeInteractionClassWithRegions`
+- `subscribeObjectClassAttributesPassively`
+- `subscribeObjectClassAttributesPassivelyWithRegions`
+- `subscribeObjectClassAttributesWithRegions`
+- `timeAdvanceRequestAvailable`
+- `unassociateRegionsForUpdates`
+- `unconditionalAttributeOwnershipDivestiture`
+- `unpublishInteractionClass`
+- `unpublishObjectClass`
+- `unpublishObjectClassAttributes`
+- `unsubscribeInteractionClass`
+- `unsubscribeInteractionClassWithRegions`
+- `unsubscribeObjectClass`
+- `unsubscribeObjectClassAttributes`
+- `unsubscribeObjectClassAttributesWithRegions`

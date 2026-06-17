@@ -57,3 +57,7 @@ rti = create_java_rti_ambassador(
 
 The shorthand bridge names `java-shim-jpype` and `java-shim-py4j` select the
 same shim profiles without requiring a separate vendor factory string.
+
+The Rosetta `java-standard-*` names are reserved for future standard-backed
+shim jars that compile against the official IEEE Java API bundles. They are not
+aliases for the in-process Java-shaped test shim.

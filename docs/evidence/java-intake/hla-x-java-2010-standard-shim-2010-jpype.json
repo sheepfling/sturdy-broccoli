@@ -1,0 +1,159 @@
+{
+  "blocked_reason": null,
+  "bridge": "jpype",
+  "callback_status": "callback-green",
+  "classpath": [
+    "build/rosetta/java-standard-2010/hla-x-rti1516e-java-shim.jar"
+  ],
+  "connect_status": "connect-green",
+  "core_scenario_status": "core-green",
+  "discovery": {
+    "bridge": "jpype",
+    "classpath": [
+      "build/rosetta/java-standard-2010/hla-x-rti1516e-java-shim.jar"
+    ],
+    "edition": "2010",
+    "edition_match": true,
+    "errors": [],
+    "factory_found": true,
+    "factory_name": "HLA-X Java 2010 Standard Shim",
+    "factory_requested": "HLA-X Java 2010 Standard Shim",
+    "factory_version": "0.13.0-rosetta-java-2010",
+    "hla_version": "IEEE 1516.1-2010",
+    "rti_ambassador_class": "com.sheepfling.hla.rosetta.rti1516e.StandardShimRTIambassador",
+    "rti_ambassador_created": true,
+    "rti_ambassador_interfaces": [
+      "hla.rti1516e.RTIambassador"
+    ],
+    "status": "ambassador-green",
+    "warnings": []
+  },
+  "edition": "2010",
+  "errors": [],
+  "factory_requested": "HLA-X Java 2010 Standard Shim",
+  "missing_trace_events": [],
+  "status": "trace-green",
+  "trace": [
+    {
+      "backend": "java-2010-jpype",
+      "event": "routeSelected",
+      "spec": "rti1516e",
+      "standardBacked": null
+    },
+    {
+      "event": "connect",
+      "federates": [
+        "radar",
+        "target"
+      ]
+    },
+    {
+      "event": "createFederationExecution",
+      "federation": "RosettaMvpJava2010Jpype"
+    },
+    {
+      "event": "joinFederationExecution",
+      "federates": [
+        "radar",
+        "target"
+      ]
+    },
+    {
+      "attributes": [
+        {
+          "type": "AttributeHandle",
+          "value": 3
+        }
+      ],
+      "event": "publishSubscribeObject",
+      "objectClass": {
+        "type": "ObjectClassHandle",
+        "value": 2
+      }
+    },
+    {
+      "event": "publishSubscribeInteraction",
+      "interactionClass": {
+        "type": "InteractionClassHandle",
+        "value": 5
+      },
+      "parameters": [
+        {
+          "type": "ParameterHandle",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "event": "discoverObjectInstance",
+      "object": {
+        "type": "ObjectInstanceHandle",
+        "value": 4
+      },
+      "objectClass": {
+        "type": "ObjectClassHandle",
+        "value": 2
+      },
+      "objectName": "'DemoObject-1'"
+    },
+    {
+      "attributes": {
+        "{'type': 'AttributeHandle', 'value': 3}": "attribute-bytes"
+      },
+      "event": "reflectAttributeValues",
+      "object": {
+        "type": "ObjectInstanceHandle",
+        "value": 4
+      },
+      "order": "RECEIVE",
+      "tag": "update-tag"
+    },
+    {
+      "event": "receiveInteraction",
+      "interactionClass": {
+        "type": "InteractionClassHandle",
+        "value": 5
+      },
+      "order": "RECEIVE",
+      "parameters": {
+        "{'type': 'ParameterHandle', 'value': 6}": "hello"
+      },
+      "tag": "interaction-tag"
+    },
+    {
+      "event": "timeRegulationEnabled",
+      "time": {
+        "type": "HLAinteger64Time",
+        "value": 0
+      }
+    },
+    {
+      "event": "timeConstrainedEnabled",
+      "time": {
+        "type": "HLAinteger64Time",
+        "value": 0
+      }
+    },
+    {
+      "event": "timeAdvanceGrant",
+      "time": {
+        "type": "HLAinteger64Time",
+        "value": 10
+      }
+    },
+    {
+      "event": "destroyFederationExecution",
+      "federation": "RosettaMvpJava2010Jpype"
+    },
+    {
+      "event": "disconnect",
+      "federates": [
+        "radar",
+        "target"
+      ]
+    }
+  ],
+  "trace_comparison_status": "trace-green",
+  "unsupported_services": [],
+  "warnings": []
+}

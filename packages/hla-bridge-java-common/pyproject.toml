@@ -8,7 +8,13 @@ version = "0.13.0"
 description = "Shared Java RTI support package for hla-rti1516e"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["hla-rti1516e==0.13.0", "hla-rti-core==0.13.0", "hla-backend-common==0.13.0"]
+dependencies = [
+  "hla-rti1516e==0.13.0",
+  "hla-rti1516-2025==0.13.0",
+  "hla-rti-core==0.13.0",
+  "hla-backend-common==0.13.0",
+  "hla-backend-shim==0.13.0",
+]
 
 [project.optional-dependencies]
 test = ["pytest"]

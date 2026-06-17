@@ -1,0 +1,13 @@
+{
+  "routes": [
+    "cpp-standard-2010-pybind",
+    "cpp-standard-2010-grpc",
+    "java-standard-2025-jpype",
+    "java-standard-2025-py4j",
+    "cpp-standard-2025-pybind",
+    "cpp-standard-2025-grpc"
+  ],
+  "scope": "MVP route proof, not full HLA conformance",
+  "status": "core-green",
+  "trace_count": 6
+}

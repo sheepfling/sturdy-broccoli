@@ -26,6 +26,11 @@ EXPECTED_PACKAGES = {
     "hla-rti1516e": PackageExpectation("core-spec", frozenset(), "implementation-owned"),
     "hla-rti1516-2025": PackageExpectation("core-spec", frozenset(), "implementation-owned"),
     "hla-backend-inmemory": PackageExpectation("rti-backend", frozenset({"inmemory"}), "implementation-moved"),
+    "hla-backend-cpp-shim": PackageExpectation(
+        "rti-backend",
+        frozenset({"cpp-shim-pybind", "cpp-shim-grpc"}),
+        "implementation-moved",
+    ),
     "hla-backend-shim": PackageExpectation("rti-backend", frozenset({"shim"}), "implementation-owned"),
     "hla-backend-certi": PackageExpectation(
         "rti-backend",
@@ -55,6 +60,7 @@ INTERNAL_PACKAGE_VERSION = "0.13.0"
 PACKAGE_PYTHON_REQUIRES = {
     "hla-rti1516-2025": ">=3.11",
     "hla-backend-shim": ">=3.11",
+    "hla-backend-cpp-shim": ">=3.10",
 }
 
 

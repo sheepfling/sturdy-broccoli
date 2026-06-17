@@ -49,8 +49,14 @@ def _classify(aliases: list[str]) -> str | None:
         return "Portico"
     if any(alias.startswith("certi") or alias.endswith("certi") for alias in aliases):
         return "CERTI"
-    if any("shim" in alias for alias in aliases):
+    if any("cpp-shim" in alias or "native-cpp-shim" in alias for alias in aliases):
+        return "C++ Shim"
+    if any(alias.startswith("java-standard-") for alias in aliases):
+        return "Standard Java Shim"
+    if any("java-shim" in alias or alias.startswith("shim-") for alias in aliases):
         return "Java Shim"
+    if any("shim" in alias for alias in aliases):
+        return "Spec Shim"
     if "jpype" in alias_set or "java-jpype" in alias_set:
         return "Generic Java Adapter Paths"
     if "py4j" in alias_set or "java-py4j" in alias_set:
@@ -65,7 +71,10 @@ def _render_generated_section() -> str:
         "Pitch",
         "Portico",
         "CERTI",
+        "Standard Java Shim",
+        "C++ Shim",
         "Java Shim",
+        "Spec Shim",
     ]
     buckets: dict[str, list[list[str]]] = {key: [] for key in ordered_sections}
     for key, aliases in _extract_alias_sets():

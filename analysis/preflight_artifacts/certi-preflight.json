@@ -21,7 +21,7 @@
       "ok": true
     },
     {
-      "message": "loopback_bind: ok: reserved tcp port 62102",
+      "message": "loopback_bind: ok: reserved tcp port 50281",
       "name": "loopback_bind",
       "ok": true
     }
