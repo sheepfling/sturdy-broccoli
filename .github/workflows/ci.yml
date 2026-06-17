@@ -43,7 +43,7 @@ jobs:
           java-version: "21"
       - name: Run repo-green lane
         env:
-          HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
+          HLA2010_BOOTSTRAP_EXTRAS: qa
         run: ./scripts/ci/repo_green.sh
       - name: Publish repo-green runtime summary
         if: always()
