@@ -131,7 +131,7 @@ jobs:
           java-version: "21"
       - name: Install proof environment
         env:
-          HLA2010_BOOTSTRAP_EXTRAS: test,jpype,py4j
+          HLA2010_BOOTSTRAP_EXTRAS: qa
         run: ./scripts/ci/install_python.sh
       - name: Run target/radar proof packet
         run: ./scripts/ci/target_radar_proof.sh

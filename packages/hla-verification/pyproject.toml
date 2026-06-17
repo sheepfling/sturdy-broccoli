@@ -16,6 +16,7 @@ dependencies = [
   "hla-rti-core==0.13.0",
   "hla-backend-cpp-shim==0.13.0",
   "hla-bridge-java-common==0.13.0",
+  "PyYAML",
 ]
 
 [project.optional-dependencies]
