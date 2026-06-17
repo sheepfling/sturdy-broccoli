@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import importlib
+import json
 from dataclasses import dataclass, field
 from importlib import metadata
+from pathlib import Path
 from typing import Any, Mapping
 
 from .plugin_api import (
@@ -94,14 +96,17 @@ class EncodingContext:
     provider: str
     transport: str
     registry: Any
+    repository: Any = None
 
     def capability_report(self) -> Mapping[str, Any]:
         registry_report = getattr(self.registry, "capability_report", lambda: {})()
+        repository_report = getattr(self.repository, "capability_report", lambda: None)()
         return {
             "edition": self.edition,
             "provider": self.provider,
             "transport": self.transport,
             "registry": registry_report,
+            "repository": repository_report,
         }
 
 
@@ -130,11 +135,15 @@ class AuthenticationContext:
                 raise exc("Credential provider rejected HLAplainTextPassword")
 
     def capability_report(self) -> Mapping[str, Any]:
+        allowed_auth_modes = ["NoAuth"]
+        if self.supports_standard_credentials:
+            allowed_auth_modes.extend(["PlainTextPassword", "CustomTypedBytes"])
         return {
             "edition": self.edition,
             "provider": self.provider,
             "transport": self.transport,
             "supports_standard_credentials": self.supports_standard_credentials,
+            "allowed_auth_modes": allowed_auth_modes,
             "credential_type": self.credential_provider.credential_type,
             "credential": self.credential_provider.redact(),
         }
@@ -177,6 +186,28 @@ class HlaRuntimeContext:
             credentials=self.authentication_context.credentials(),
         )
 
+    def write_evidence(self, output_dir: str | Path) -> Mapping[str, str]:
+        directory = Path(output_dir)
+        directory.mkdir(parents=True, exist_ok=True)
+        artifacts = {
+            "encoding_capabilities": directory / "encoding_capabilities.json",
+            "auth_capabilities": directory / "auth_capabilities.json",
+            "runtime_matrix": directory / "runtime_matrix.json",
+        }
+        artifacts["encoding_capabilities"].write_text(
+            json.dumps(self.encoding_context.capability_report(), indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        artifacts["auth_capabilities"].write_text(
+            json.dumps(self.authentication_context.capability_report(), indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        artifacts["runtime_matrix"].write_text(
+            json.dumps(self.capability_report(), indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        return {key: str(path) for key, path in artifacts.items()}
+
 
 @dataclass(slots=True)
 class HlaFactory:
@@ -218,12 +249,21 @@ class HlaFactory:
             return NoAuthProvider()
         return NoAuthProvider(credential_type="legacy-none")
 
-    def create_encoding_context(self, *, transport: str = "inproc") -> EncodingContext:
+    def create_encoding_context(self, *, transport: str = "inproc", fom_modules: Any = None) -> EncodingContext:
+        repository = None
+        if self.spec.name == "rti1516_2025":
+            foms = importlib.import_module("hla.rti1516_2025.foms")
+            repository = (
+                foms.FomTypeRepository.empty()
+                if fom_modules is None
+                else foms.FomTypeRepository.from_modules(fom_modules)
+            )
         return EncodingContext(
             edition=self.spec.name,
             provider=self.provider,
             transport=transport,
             registry=self.encoding_registry(),
+            repository=repository,
         )
 
     def create_authentication_context(self, config: Any = None, *, transport: str = "inproc") -> AuthenticationContext:
@@ -236,6 +276,9 @@ class HlaFactory:
             provider = CredentialProvider(credential_type, redacted="<no credentials>")
         elif mode == "PlainTextPassword":
             password = str(_auth_config_value(config, "password", ""))
+            if not password:
+                exc = importlib.import_module("hla.rti1516_2025.exceptions").InvalidCredentials
+                raise exc("HLAplainTextPassword cannot be empty")
             provider = CredentialProvider(
                 "HLAplainTextPassword",
                 password.encode("utf-8"),
@@ -267,6 +310,7 @@ class HlaFactory:
         auth_config: Any = None,
         transport: str = "inproc",
         callback_model: Any = None,
+        fom_modules: Any = None,
         **rti_options: Any,
     ) -> HlaRuntimeContext:
         if callback_model is None and self.spec.name == "rti1516_2025":
@@ -278,7 +322,7 @@ class HlaFactory:
             transport=transport,
             rti_ambassador=self.create_rti_ambassador(auth=auth_context, **rti_options),
             federate_ambassador=self.create_federate_ambassador_proxy(),
-            encoding_context=self.create_encoding_context(transport=transport),
+            encoding_context=self.create_encoding_context(transport=transport, fom_modules=fom_modules),
             authentication_context=auth_context,
             callback_model=callback_model,
         )
