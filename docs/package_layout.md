@@ -31,7 +31,7 @@ If you are trying to find the supported HLA entry points, start here:
 - `packages/hla-rti-core/src/hla/rti/`: cross-version backend/spec discovery and ambassador creation
 - `packages/hla-backend-inmemory/src/hla/backends/inmemory/`: in-memory Python RTI backend
 - `packages/hla-transport-grpc/src/hla.transports.grpc/`: hosted gRPC transport surface
-- `packages/hla-fom-target-radar/src/hla.foms.target_radar/scenarios/`: Target/Radar scenario and FOM entrypoints
+- `./tools/target-radar` and `examples/target_radar_simulation.py`: Target/Radar operator/example entrypoints
 
 Do not use `pip install -e .` at the repository root. Install the split
 packages directly, starting with `packages/hla-rti1516e`, or use
@@ -132,6 +132,9 @@ The current package set is:
 - `hla-verification`: shared two-federate packet, timeline, summary, and writer helpers for repo-internal verification.
 - `hla-fom-target-radar`: concrete target/radar FOM resources and
   target/radar scenario/example package.
+- `hla-fom-hlax-message-test`: package-owned HLA-X MessageTest showcase runner.
+- `hla-fom-hlax-space-lite`: package-owned HLA-X SpaceLite showcase runner.
+- `hla-fom-hlax-time-mgmt-test`: package-owned HLA-X TimeMgmtTest showcase runner.
 
 ## Architecture Table
 
@@ -141,7 +144,7 @@ The current package set is:
 | `hla-backend-common` | shared | `hla-rti1516e` | backend, vendor, transport, leaf packages |
 | `hla-rti-core` | shared | `hla-rti1516e`, `hla-backend-common`, `hla-transport-common` | backend, vendor bridge, leaf packages |
 | `hla-transport-common` | shared | `hla-rti1516e` | concrete backend, vendor, leaf packages |
-| `hla-verification` | shared | `hla-rti1516e`, `hla-backend-common`, `hla-rti-core` | backend, vendor, transport packages |
+| `hla-verification` | shared | `hla-rti1516e`, `hla-backend-common`, `hla-rti-core`, `hla-fom-* showcase leaves` | backend, vendor, transport packages |
 | `hla-bridge-java-common` | vendor/common | `hla-rti1516e`, `hla-backend-common` | python backend, transport, leaf packages |
 | `hla-backend-inmemory` | backend | `hla-rti1516e`, `hla-backend-common` | java-common, vendor, transport, leaf packages |
 | `hla-backend-certi` | backend | `hla-rti1516e`, `hla-bridge-java-common`, `hla-rti-core` | python backend, transport, leaf packages |
@@ -153,7 +156,10 @@ The current package set is:
 | `hla-vendor-portico` | vendor | `hla-rti1516e`, `hla-bridge-java-common`, `hla-bridge-java-jpype`, `hla-bridge-java-py4j` | python backend, transport, leaf packages |
 | `hla-transport-grpc` | transport | `hla-rti1516e`, `hla-transport-common`, `hla-rti-core` | concrete backend and vendor packages |
 | `hla-transport-rest` | transport | `hla-rti1516e`, `hla-transport-common`, `hla-rti-core` | concrete backend and vendor packages |
-| `hla-fom-target-radar` | leaf | `hla-rti1516e`, `hla-verification`, `hla-rti-core` | concrete backend, vendor, transport packages |
+| `hla-fom-target-radar` | leaf | `hla-rti1516e`, `hla-rti-core` | concrete backend, vendor, transport packages |
+| `hla-fom-hlax-message-test` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory` | concrete backend, vendor, transport packages |
+| `hla-fom-hlax-space-lite` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory` | concrete backend, vendor, transport packages |
+| `hla-fom-hlax-time-mgmt-test` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory` | concrete backend, vendor, transport packages |
 
 Import isolation for the installable `packages/*` trees is enforced by
 [`tests/test_package_import_isolation.py`](../tests/test_package_import_isolation.py).
@@ -197,7 +203,7 @@ package root.
 - `packages/hla-verification/src/hla/verification/section8_matrix.py`: public Section 8 backend-matrix scenarios owned by the verification harness.
 - `packages/hla-bridge-java-common/src/hla.bridges.java.common/java_shim_*.py`: Java-shaped shim support used by Java-profile backends and repo verification flows.
 - `packages/hla-verification/src/hla/verification/repo_internal/verification/`: repo-internal proof packets, backend matrices, vendor reports, and two-federate artifact writers.
-- `packages/hla-fom-target-radar/src/hla.foms.target_radar/scenarios/`: canonical Target/Radar scenario implementation and FOM helper entrypoints.
+- `packages/hla-fom-target-radar/src/hla/foms/target_radar/_internal/`: canonical Target/Radar internal scenario implementation and FOM helper entrypoints.
 - `examples/`: runnable scripts and example-only assets. Nothing under
   `examples/` is part of the installable `hla` package set.
 - `examples/<scenario>/`: scenario-local scratch or notes only. Canonical reusable assets such as FOM XML live under their owning package roots.
@@ -236,7 +242,7 @@ Keep example entrypoints thin:
 - parse CLI arguments
 - construct a backend or scenario factory
 - call into the owning split package such as
-  `hla.foms.target_radar.scenarios.*` or another reusable package module
+  `hla.foms.target_radar._internal.*` or another reusable package module
 - load reusable data or FOM assets from an owning package root, not from a
   duplicate copy under `examples/`
 

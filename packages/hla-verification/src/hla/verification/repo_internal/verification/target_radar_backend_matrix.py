@@ -8,8 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
-from hla.foms.target_radar.scenarios import make_target_radar_factory, target_radar_fom_path
-from hla.foms.target_radar.scenarios.target_radar import run_target_radar_scenario
+from hla.foms.target_radar._internal import make_target_radar_factory, run_target_radar_scenario, target_radar_fom_path
 from hla.backends.common import BackendUnavailableError, make_rti_ambassador
 from hla.bridges.java.common.java_shim_factory import create_shared_java_shim_backend
 from hla.bridges.java.common.java_shim_kernel import SharedJavaShimKernel

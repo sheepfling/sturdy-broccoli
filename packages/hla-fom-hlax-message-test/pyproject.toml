@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hla-fom-hlax-message-test"
+version = "0.13.0"
+description = "HLA-X MessageTest showcase runner package for the workspace"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "hla-rti1516e==0.13.0",
+  "hla-rti1516-2025==0.13.0",
+  "hla-backend-common==0.13.0",
+  "hla-backend-inmemory==0.13.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["hla.foms.hlax_message_test*"]
+namespaces = true
+
+[tool.hla.package]
+status = "implementation-moved"
+role = "fom-example"
+source_roots = [
+  "packages/hla-fom-hlax-message-test/src/hla/foms/hlax_message_test",
+]

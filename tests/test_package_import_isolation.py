@@ -29,6 +29,9 @@ OWNED_PREFIX_TO_PACKAGE = {
     "hla.transports.rest": "hla-transport-rest",
     "hla.transports.fedpro": "hla-transport-fedpro",
     "hla.foms.target_radar": "hla-fom-target-radar",
+    "hla.foms.hlax_message_test": "hla-fom-hlax-message-test",
+    "hla.foms.hlax_space_lite": "hla-fom-hlax-space-lite",
+    "hla.foms.hlax_time_mgmt_test": "hla-fom-hlax-time-mgmt-test",
     "hla.verification": "hla-verification",
 }
 
@@ -51,7 +54,10 @@ ALLOWED_PACKAGE_DEPENDENCIES: dict[str, set[str]] = {
     "hla-transport-common": {"hla-rti1516e", "hla-backend-common"},
     "hla-transport-grpc": {"hla-rti1516e", "hla-backend-common", "hla-rti-core", "hla-transport-common"},
     "hla-transport-rest": {"hla-rti1516e", "hla-backend-common", "hla-rti-core", "hla-transport-common"},
-    "hla-fom-target-radar": {"hla-rti1516e", "hla-rti-core", "hla-verification"},
+    "hla-fom-target-radar": {"hla-rti1516e", "hla-rti-core"},
+    "hla-fom-hlax-message-test": {"hla-rti1516e", "hla-rti1516-2025", "hla-backend-common", "hla-backend-inmemory"},
+    "hla-fom-hlax-space-lite": {"hla-rti1516e", "hla-rti1516-2025", "hla-backend-common", "hla-backend-inmemory"},
+    "hla-fom-hlax-time-mgmt-test": {"hla-rti1516e", "hla-rti1516-2025", "hla-backend-common", "hla-backend-inmemory"},
     "hla-verification": {
         "hla-rti1516e",
         "hla-rti1516-2025",
@@ -60,6 +66,9 @@ ALLOWED_PACKAGE_DEPENDENCIES: dict[str, set[str]] = {
         "hla-backend-inmemory",
         "hla-bridge-java-common",
         "hla-transport-grpc",
+        "hla-fom-hlax-message-test",
+        "hla-fom-hlax-space-lite",
+        "hla-fom-hlax-time-mgmt-test",
         "hla-fom-target-radar",
         "hla-rti-core",
     },

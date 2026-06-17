@@ -12,6 +12,8 @@ FORBIDDEN_IMPORT_LINES = (
     "import hla.rti1516e.testing",
     "from hla.foms.target_radar.testing",
     "import hla.foms.target_radar.testing",
+    "from hla.foms.target_radar.scenarios",
+    "import hla.foms.target_radar.scenarios",
 )
 CODE_DIRS = ("src", "packages", "scripts", "tests")
 PUBLIC_DOC_DIRS = ("README.md", "docs", "packages")

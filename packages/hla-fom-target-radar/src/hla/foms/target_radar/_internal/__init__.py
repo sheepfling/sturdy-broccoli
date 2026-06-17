@@ -1,4 +1,4 @@
-"""Target/Radar scenario helpers."""
+"""Repo-internal Target/Radar scenario helpers."""
 
 from .target_radar import (
     RadarFederate,

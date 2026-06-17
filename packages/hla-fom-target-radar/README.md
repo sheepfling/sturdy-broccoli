@@ -1,25 +1,29 @@
 # hla-fom-target-radar
 
-Concrete Target/Radar FOM and scenario package for the `hla2010` workspace.
+Concrete Target/Radar FOM and internal example-support package for the `hla2010` workspace.
 
 This package now owns:
 
 - the packaged `TargetRadarFOMmodule.xml` resource
-- reusable target/radar scenario helpers
+- repo-internal target/radar scenario helpers
 - target/radar example runner factory helpers
 - target/radar backend-matrix and proof artifact generators
 - target/radar-owned two-federate suite helper slices
 - target/radar-owned two-federate suite artifact formatting
 - target/radar-owned two-federate vendor profile policy
 
-Import the canonical implementation from `hla.foms.target_radar`; the old
-root-level `hla.rti1516e.scenarios.target_radar` compatibility path has been
-removed.
+This package does not expose a supported public Python import surface. The old
+root-level `hla.rti1516e.scenarios.target_radar` compatibility path remains
+removed, and the package-owned scenario helpers now live under a private
+namespace.
+
+The `hla.foms.target_radar` namespace remains the owning package root for the
+bundled FOM resources and repo-internal example implementation.
 
 Use this package when you want:
 
 - the bundled Target/Radar FOM path
-- a reusable scenario runner for the example
+- the internal scenario runner used by repo examples and verification flows
 - a backend factory that can target local Python, JPype, Py4J, or the split
   runtime helper defaults
 - a stable place to extend the example without touching the generic HLA
@@ -44,15 +48,9 @@ source .venv/bin/activate
 Then run the scenario entrypoints. Full install order lives in
 [`../../docs/python_environment.md`](../../docs/python_environment.md).
 
-If you are extending the example, the useful imports are:
-
-```python
-from hla.foms.target_radar.scenarios import (
-    make_target_radar_factory,
-    run_target_radar_scenario,
-    target_radar_fom_path,
-)
-```
+If you are extending the example, keep human-facing usage on
+`./tools/target-radar` or the `examples/target_radar*` scripts and treat the
+package-owned helpers as repo-internal implementation detail.
 
 The package-local docs page is
 [`docs/README.md`](docs/README.md), and the broader walkthrough is in

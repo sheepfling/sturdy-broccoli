@@ -67,6 +67,9 @@ EXPECTED_PACKAGES = {
     "hla-transport-grpc": PackageExpectation("transport", frozenset(), "implementation-moved"),
     "hla-transport-rest": PackageExpectation("transport", frozenset(), "implementation-moved"),
     "hla-fom-target-radar": PackageExpectation("fom-example", frozenset(), "implementation-moved"),
+    "hla-fom-hlax-message-test": PackageExpectation("fom-example", frozenset(), "implementation-moved"),
+    "hla-fom-hlax-space-lite": PackageExpectation("fom-example", frozenset(), "implementation-moved"),
+    "hla-fom-hlax-time-mgmt-test": PackageExpectation("fom-example", frozenset(), "implementation-moved"),
     "hla-verification": PackageExpectation("verification-harness", frozenset(), "implementation-moved"),
 }
 INTERNAL_PACKAGE_VERSION = "0.13.0"
@@ -259,13 +262,13 @@ def test_internal_split_package_dependency_graph_is_acyclic() -> None:
     assert not cycles, "\n".join(cycles)
 
 
-def test_only_target_radar_package_depends_on_verification_harness_manifest() -> None:
+def test_no_split_package_manifest_depends_on_verification_harness_manifest() -> None:
     dependents = sorted(
         package_name
         for package_name in EXPECTED_PACKAGES
         if "hla-verification" in _declared_internal_dependency_names(package_name)
     )
-    assert dependents == ["hla-fom-target-radar"]
+    assert not dependents, dependents
 
 
 def test_no_split_package_manifest_depends_on_target_radar_example_package() -> None:
@@ -274,7 +277,7 @@ def test_no_split_package_manifest_depends_on_target_radar_example_package() -> 
         for package_name in EXPECTED_PACKAGES
         if "hla-fom-target-radar" in _declared_internal_dependency_names(package_name)
     )
-    assert not dependents, dependents
+    assert dependents == ["hla-verification"]
 
 
 def test_split_packages_do_not_publish_package_local_cli_entrypoints() -> None:
@@ -579,7 +582,25 @@ def test_package_root_readmes_describe_canonical_import_and_operator_boundary() 
             "`hla.foms.target_radar`",
             "`tests/test_fom_target_radar_split_package.py`",
             "`./tools/target-radar`",
-            "package-local command",
+            "does not expose a supported public Python import surface",
+        ),
+        "hla-fom-hlax-message-test": (
+            "`hla.foms.hlax_message_test`",
+            "`tests/test_fom_hlax_message_test_split_package.py`",
+            "`./tools/hla-x demo fom-showcase`",
+            "does not expose a supported public Python import surface",
+        ),
+        "hla-fom-hlax-space-lite": (
+            "`hla.foms.hlax_space_lite`",
+            "`tests/test_fom_hlax_space_lite_split_package.py`",
+            "`./tools/hla-x demo fom-showcase`",
+            "does not expose a supported public Python import surface",
+        ),
+        "hla-fom-hlax-time-mgmt-test": (
+            "`hla.foms.hlax_time_mgmt_test`",
+            "`tests/test_fom_hlax_time_mgmt_test_split_package.py`",
+            "`./tools/hla-x demo fom-showcase`",
+            "does not expose a supported public Python import surface",
         ),
         "hla-verification": (
             "`hla.verification`",
@@ -756,10 +777,16 @@ def test_verification_and_fom_packages_own_explicit_docs_and_split_test_surfaces
     expected_docs = {
         "hla-verification": PACKAGES / "hla-verification" / "docs" / "README.md",
         "hla-fom-target-radar": PACKAGES / "hla-fom-target-radar" / "docs" / "README.md",
+        "hla-fom-hlax-message-test": PACKAGES / "hla-fom-hlax-message-test" / "docs" / "README.md",
+        "hla-fom-hlax-space-lite": PACKAGES / "hla-fom-hlax-space-lite" / "docs" / "README.md",
+        "hla-fom-hlax-time-mgmt-test": PACKAGES / "hla-fom-hlax-time-mgmt-test" / "docs" / "README.md",
     }
     expected_test_surfaces = {
         "hla-verification": {ROOT / "tests" / "test_verification_harness_split_package.py"},
         "hla-fom-target-radar": {ROOT / "tests" / "test_fom_target_radar_split_package.py"},
+        "hla-fom-hlax-message-test": {ROOT / "tests" / "test_fom_hlax_message_test_split_package.py"},
+        "hla-fom-hlax-space-lite": {ROOT / "tests" / "test_fom_hlax_space_lite_split_package.py"},
+        "hla-fom-hlax-time-mgmt-test": {ROOT / "tests" / "test_fom_hlax_time_mgmt_test_split_package.py"},
     }
 
     for package_name, path in expected_docs.items():
@@ -786,6 +813,24 @@ def test_verification_and_fom_doc_indexes_describe_owned_non_backend_surfaces() 
             "example/FOM support reused by repo-internal proof",
             "does not own RTI backend implementations",
             "tests/test_fom_target_radar_split_package.py",
+        ),
+        "hla-fom-hlax-message-test": (
+            "MessageTest internal showcase runner",
+            "repo-internal combined HLA-X showcase orchestration layer",
+            "does not own RTI backend implementations",
+            "tests/test_fom_hlax_message_test_split_package.py",
+        ),
+        "hla-fom-hlax-space-lite": (
+            "SpaceLite internal showcase runner",
+            "repo-internal combined HLA-X showcase orchestration layer",
+            "does not own RTI backend implementations",
+            "tests/test_fom_hlax_space_lite_split_package.py",
+        ),
+        "hla-fom-hlax-time-mgmt-test": (
+            "TimeMgmtTest internal showcase runner",
+            "repo-internal combined HLA-X showcase orchestration layer",
+            "does not own RTI backend implementations",
+            "tests/test_fom_hlax_time_mgmt_test_split_package.py",
         ),
     }
 
@@ -998,12 +1043,11 @@ def test_transport_packages_depend_only_on_spec_and_transport_common():
     assert "hla-backend-certi==0.13.0" not in rest_dependencies
 
 
-def test_leaf_packages_depend_only_on_spec_and_verification_harness():
+def test_leaf_packages_depend_only_on_spec_and_shared_runtime_support():
     target_radar_dependencies = set(_load_project("hla-fom-target-radar")["project"].get("dependencies", ()))
     assert target_radar_dependencies == {
         "hla-rti1516e==0.13.0",
         "hla-rti-core==0.13.0",
-        "hla-verification==0.13.0",
     }
 
 

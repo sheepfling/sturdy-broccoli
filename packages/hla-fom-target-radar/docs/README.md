@@ -1,11 +1,11 @@
 # hla-fom-target-radar docs
 
-This package owns the concrete Target/Radar example FOM, scenario helpers, and
+This package owns the concrete Target/Radar example FOM, internal scenario helpers, and
 related example-specific verification support.
 
 Key owned surfaces:
 - `hla.foms.target_radar.resources.foms`: packaged Target/Radar FOM assets.
-- `hla.foms.target_radar.scenarios`: canonical Target/Radar scenario and
+- `hla.foms.target_radar._internal`: repo-internal Target/Radar scenario and
   factory helpers.
 - package-owned example/FOM support reused by repo-internal proof and backend
   matrix layers.

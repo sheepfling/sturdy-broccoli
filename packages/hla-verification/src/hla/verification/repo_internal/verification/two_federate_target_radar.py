@@ -6,8 +6,7 @@ from typing import Any
 
 from hla.rti1516e.time import HLAfloat64Time
 from hla.rti1516e.datatypes import RangeBounds
-from hla.foms.target_radar.scenarios import target_radar_fom_path
-from hla.foms.target_radar.scenarios.target_radar import run_target_radar_scenario
+from hla.foms.target_radar._internal import run_target_radar_scenario, target_radar_fom_path
 
 
 def build_two_federate_target_radar_summary(*, target_radar_steps: int = 4) -> dict[str, Any]:

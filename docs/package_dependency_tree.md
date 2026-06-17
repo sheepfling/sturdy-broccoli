@@ -25,7 +25,7 @@ Regenerate it with:
 - Layer 0: `hla-rti-core`, `hla-rti1516e`
 - Layer 1: `hla-backend-common`, `hla-rti1516-2025`
 - Layer 2: `hla-backend-inmemory`, `hla-backend-shim`, `hla-bridge-java-common`, `hla-transport-common`, `hla-verification`
-- Layer 3: `hla-backend-certi`, `hla-bridge-java-jpype`, `hla-bridge-java-py4j`, `hla-fom-target-radar`, `hla-transport-grpc`, `hla-transport-rest`, `hla-vendor-pitch`
+- Layer 3: `hla-backend-certi`, `hla-bridge-java-jpype`, `hla-bridge-java-py4j`, `hla-fom-target-radar`, `hla-fom-hlax-message-test`, `hla-fom-hlax-space-lite`, `hla-fom-hlax-time-mgmt-test`, `hla-transport-grpc`, `hla-transport-rest`, `hla-vendor-pitch`
 - Layer 4: `hla-vendor-pitch-jpype`, `hla-vendor-pitch-py4j`, `hla-vendor-portico`
 
 ## Direct Graph
@@ -55,7 +55,18 @@ graph TD
     hla_rti1516e[hla-rti1516e] --> hla_bridge_java_py4j[hla-bridge-java-py4j]
     hla_rti_core[hla-rti-core] --> hla_fom_target_radar[hla-fom-target-radar]
     hla_rti1516e[hla-rti1516e] --> hla_fom_target_radar[hla-fom-target-radar]
-    hla_verification[hla-verification] --> hla_fom_target_radar[hla-fom-target-radar]
+    hla_rti1516e[hla-rti1516e] --> hla_fom_hlax_message_test[hla-fom-hlax-message-test]
+    hla_rti1516_2025[hla-rti1516-2025] --> hla_fom_hlax_message_test[hla-fom-hlax-message-test]
+    hla_backend_common[hla-backend-common] --> hla_fom_hlax_message_test[hla-fom-hlax-message-test]
+    hla_backend_inmemory[hla-backend-inmemory] --> hla_fom_hlax_message_test[hla-fom-hlax-message-test]
+    hla_rti1516e[hla-rti1516e] --> hla_fom_hlax_space_lite[hla-fom-hlax-space-lite]
+    hla_rti1516_2025[hla-rti1516-2025] --> hla_fom_hlax_space_lite[hla-fom-hlax-space-lite]
+    hla_backend_common[hla-backend-common] --> hla_fom_hlax_space_lite[hla-fom-hlax-space-lite]
+    hla_backend_inmemory[hla-backend-inmemory] --> hla_fom_hlax_space_lite[hla-fom-hlax-space-lite]
+    hla_rti1516e[hla-rti1516e] --> hla_fom_hlax_time_mgmt_test[hla-fom-hlax-time-mgmt-test]
+    hla_rti1516_2025[hla-rti1516-2025] --> hla_fom_hlax_time_mgmt_test[hla-fom-hlax-time-mgmt-test]
+    hla_backend_common[hla-backend-common] --> hla_fom_hlax_time_mgmt_test[hla-fom-hlax-time-mgmt-test]
+    hla_backend_inmemory[hla-backend-inmemory] --> hla_fom_hlax_time_mgmt_test[hla-fom-hlax-time-mgmt-test]
     hla_rti_core[hla-rti-core]
     hla_rti_core[hla-rti-core] --> hla_rti1516_2025[hla-rti1516-2025]
     hla_rti1516e[hla-rti1516e]
@@ -90,6 +101,14 @@ graph TD
     hla_backend_common[hla-backend-common] --> hla_verification[hla-verification]
     hla_rti_core[hla-rti-core] --> hla_verification[hla-verification]
     hla_rti1516e[hla-rti1516e] --> hla_verification[hla-verification]
+    hla_rti1516_2025[hla-rti1516-2025] --> hla_verification[hla-verification]
+    hla_backend_inmemory[hla-backend-inmemory] --> hla_verification[hla-verification]
+    hla_backend_cpp_shim[hla-backend-cpp-shim] --> hla_verification[hla-verification]
+    hla_bridge_java_common[hla-bridge-java-common] --> hla_verification[hla-verification]
+    hla_fom_target_radar[hla-fom-target-radar] --> hla_verification[hla-verification]
+    hla_fom_hlax_message_test[hla-fom-hlax-message-test] --> hla_verification[hla-verification]
+    hla_fom_hlax_space_lite[hla-fom-hlax-space-lite] --> hla_verification[hla-verification]
+    hla_fom_hlax_time_mgmt_test[hla-fom-hlax-time-mgmt-test] --> hla_verification[hla-verification]
 ```
 
 ## Direct Dependencies
@@ -103,7 +122,10 @@ graph TD
 | `hla-bridge-java-common` | `hla-rti1516e, hla-rti-core, hla-backend-common` | `-` |
 | `hla-bridge-java-jpype` | `hla-rti1516e, hla-rti-core, hla-backend-common, hla-bridge-java-common` | `jpype1` |
 | `hla-bridge-java-py4j` | `hla-rti1516e, hla-rti-core, hla-bridge-java-common` | `py4j` |
-| `hla-fom-target-radar` | `hla-rti1516e, hla-verification, hla-rti-core` | `-` |
+| `hla-fom-target-radar` | `hla-rti1516e, hla-rti-core` | `-` |
+| `hla-fom-hlax-message-test` | `hla-rti1516e, hla-rti1516-2025, hla-backend-common, hla-backend-inmemory` | `-` |
+| `hla-fom-hlax-space-lite` | `hla-rti1516e, hla-rti1516-2025, hla-backend-common, hla-backend-inmemory` | `-` |
+| `hla-fom-hlax-time-mgmt-test` | `hla-rti1516e, hla-rti1516-2025, hla-backend-common, hla-backend-inmemory` | `-` |
 | `hla-rti-core` | `-` | `-` |
 | `hla-rti1516-2025` | `hla-rti-core` | `-` |
 | `hla-rti1516e` | `-` | `-` |

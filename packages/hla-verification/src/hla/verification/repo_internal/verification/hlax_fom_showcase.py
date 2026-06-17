@@ -8,11 +8,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
-from hla.backends.common import RecordingFederateAmbassador
-from hla.backends.inmemory import InMemoryRTIEngine, rti_ambassador
-from hla.foms.target_radar.scenarios import run_target_radar_scenario, target_radar_fom_path
-from hla.rti1516_2025.foms import scenario_fom_paths
-from hla.rti1516e.enums import CallbackModel, ResignAction
+from hla.foms.hlax_message_test._internal import run_message_test_showcase
+from hla.foms.hlax_space_lite._internal import run_space_lite_showcase
+from hla.foms.hlax_time_mgmt_test._internal import run_time_mgmt_test_showcase
+from hla.foms.target_radar._internal import run_target_radar_scenario, target_radar_fom_path
 
 
 @dataclass(frozen=True)
@@ -26,27 +25,6 @@ class ShowcasePaths:
     chart_manifest_json: Path
 
 
-@dataclass(frozen=True)
-class ScenarioSpec:
-    scenario: str
-    federation_name: str
-    publisher_name: str
-    subscriber_name: str
-    object_class_name: str
-    object_instance_name: str
-    attribute_payloads: Mapping[str, bytes]
-    interaction_class_name: str
-    parameter_payloads: Mapping[str, bytes]
-    expected_callback: str
-    outcome: str
-
-
-def _drain(*rtis: object, rounds: int = 25) -> None:
-    for _ in range(rounds):
-        for rti in rtis:
-            rti.evoke_multiple_callbacks(0.0, 0.0)
-
-
 def _jsonable(value: Any) -> Any:
     if isinstance(value, bytes):
         return value.decode("utf-8", errors="replace")
@@ -57,10 +35,6 @@ def _jsonable(value: Any) -> Any:
     if isinstance(value, (list, tuple, set)):
         return [_jsonable(item) for item in value]
     return repr(value)
-
-
-def _fom_names(paths: tuple[Path, ...]) -> list[str]:
-    return [path.name for path in paths]
 
 
 def _scenario_family(scenario: str) -> str:
@@ -76,220 +50,6 @@ def _write_csv(path: Path, fieldnames: list[str], rows: list[Mapping[str, Any]])
         for row in rows:
             writer.writerow({field: _jsonable(row.get(field, "")) for field in fieldnames})
     return path
-
-
-def _run_object_interaction_showcase(spec: ScenarioSpec) -> dict[str, Any]:
-    engine = InMemoryRTIEngine()
-    publisher = rti_ambassador(engine=engine)
-    subscriber = rti_ambassador(engine=engine)
-    publisher_fed = RecordingFederateAmbassador()
-    subscriber_fed = RecordingFederateAmbassador()
-    foms = scenario_fom_paths(spec.scenario)
-    federation_name = f"{spec.federation_name}-{uuid.uuid4().hex[:8]}"
-    lifecycle: list[str] = []
-
-    publisher.connect(publisher_fed, CallbackModel.HLA_EVOKED)
-    subscriber.connect(subscriber_fed, CallbackModel.HLA_EVOKED)
-    lifecycle.append("connected")
-    try:
-        publisher.create_federation_execution(federation_name, foms)
-        lifecycle.append("federation-created")
-        publisher.join_federation_execution(spec.publisher_name, "ShowcasePublisher", federation_name)
-        subscriber.join_federation_execution(spec.subscriber_name, "ShowcaseSubscriber", federation_name)
-        lifecycle.append("joined")
-
-        object_class = publisher.get_object_class_handle(spec.object_class_name)
-        attributes = {
-            attribute_name: publisher.get_attribute_handle(object_class, attribute_name)
-            for attribute_name in spec.attribute_payloads
-        }
-        publisher.publish_object_class_attributes(object_class, set(attributes.values()))
-        subscriber.subscribe_object_class_attributes(object_class, set(attributes.values()))
-        lifecycle.append("object-publication-subscription-ready")
-
-        object_handle = publisher.register_object_instance(object_class, spec.object_instance_name)
-        _drain(publisher, subscriber)
-        publisher.update_attribute_values(
-            object_handle,
-            {attributes[name]: payload for name, payload in spec.attribute_payloads.items()},
-            b"hlax-showcase-object-update",
-        )
-        _drain(publisher, subscriber)
-        lifecycle.append("object-update-reflected")
-
-        interaction_class = publisher.get_interaction_class_handle(spec.interaction_class_name)
-        parameters = {
-            parameter_name: publisher.get_parameter_handle(interaction_class, parameter_name)
-            for parameter_name in spec.parameter_payloads
-        }
-        publisher.publish_interaction_class(interaction_class)
-        subscriber.subscribe_interaction_class(interaction_class)
-        publisher.send_interaction(
-            interaction_class,
-            {parameters[name]: payload for name, payload in spec.parameter_payloads.items()},
-            b"hlax-showcase-interaction",
-        )
-        _drain(publisher, subscriber)
-        lifecycle.append("interaction-received")
-
-        discoveries = subscriber_fed.callbacks_named("discoverObjectInstance")
-        reflections = subscriber_fed.callbacks_named("reflectAttributeValues")
-        interactions = subscriber_fed.callbacks_named("receiveInteraction")
-        object_reflected = bool(reflections) and reflections[-1].args[2] == b"hlax-showcase-object-update"
-        interaction_received = bool(interactions) and interactions[-1].args[2] == b"hlax-showcase-interaction"
-        return {
-            "scenario": spec.scenario,
-            "status": "lifecycle-green" if object_reflected and interaction_received else "failed",
-            "federation_name": federation_name,
-            "fom_modules": _fom_names(foms),
-            "federates": [spec.publisher_name, spec.subscriber_name],
-            "lifecycle": lifecycle,
-            "object_class": spec.object_class_name,
-            "object_instance": spec.object_instance_name,
-            "interaction_class": spec.interaction_class_name,
-            "discoveries": len(discoveries),
-            "reflections": len(reflections),
-            "interactions": len(interactions),
-            "callbacks": len(publisher_fed.records) + len(subscriber_fed.records),
-            "key_outcome": spec.outcome,
-            "execution_complete": object_reflected and interaction_received,
-            "requirements_exercised": [
-                "HLA-X-2025-FR-001",
-                "HLA-X-2025-FR-003",
-                "HLA-X-2025-FR-004",
-                "HLA-X-2025-FI-001",
-                "HLA-X-2025-FI-008",
-            ],
-        }
-    finally:
-        for rti in (publisher, subscriber):
-            try:
-                rti.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-            except Exception:
-                pass
-        try:
-            publisher.destroy_federation_execution(federation_name)
-            lifecycle.append("federation-destroyed")
-        except Exception:
-            pass
-        for rti in (subscriber, publisher):
-            try:
-                rti.disconnect()
-            except Exception:
-                pass
-
-
-def _run_time_mgmt_showcase() -> dict[str, Any]:
-    engine = InMemoryRTIEngine()
-    source = rti_ambassador(engine=engine)
-    sink = rti_ambassador(engine=engine)
-    source_fed = RecordingFederateAmbassador()
-    sink_fed = RecordingFederateAmbassador()
-    foms = scenario_fom_paths("time-mgmt-test")
-    federation_name = f"HLAxTimeMgmtShowcase-{uuid.uuid4().hex[:8]}"
-    lifecycle: list[str] = []
-
-    source.connect(source_fed, CallbackModel.HLA_EVOKED)
-    sink.connect(sink_fed, CallbackModel.HLA_EVOKED)
-    lifecycle.append("connected")
-    try:
-        source.create_federation_execution(federation_name, foms)
-        lifecycle.append("federation-created")
-        source.join_federation_execution("EventSourceFederate", "TimeProducer", federation_name)
-        sink.join_federation_execution("EventSinkFederate", "TimeConsumer", federation_name)
-        lifecycle.append("joined")
-
-        participant_class = source.get_object_class_handle("HLAobjectRoot.HLAx.TimeMgmtTest.TimeParticipant")
-        federate_name_attr = source.get_attribute_handle(participant_class, "FederateName")
-        current_time_attr = source.get_attribute_handle(participant_class, "CurrentLogicalTime")
-        source.publish_object_class_attributes(participant_class, {federate_name_attr, current_time_attr})
-        sink.subscribe_object_class_attributes(participant_class, {federate_name_attr, current_time_attr})
-        participant = source.register_object_instance(participant_class, "EventSourceFederate-time-state")
-        _drain(source, sink)
-        source.update_attribute_values(
-            participant,
-            {federate_name_attr: b"EventSourceFederate", current_time_attr: b"0"},
-            b"hlax-time-participant-state",
-        )
-        _drain(source, sink)
-        lifecycle.append("time-participant-state-reflected")
-
-        event_interaction = source.get_interaction_class_handle("HLAinteractionRoot.HLAx.TimeMgmtTest.EmitEvent")
-        event_id = source.get_parameter_handle(event_interaction, "EventId")
-        sequence_number = source.get_parameter_handle(event_interaction, "SequenceNumber")
-        source.publish_interaction_class(event_interaction)
-        sink.subscribe_interaction_class(event_interaction)
-        factory = source.get_time_factory()
-        source.enable_time_regulation(factory.make_interval(1.0))
-        sink.enable_time_constrained()
-        _drain(source, sink)
-        lifecycle.append("time-management-enabled")
-
-        source.send_interaction(
-            event_interaction,
-            {event_id: b"evt-002", sequence_number: b"2"},
-            b"event-2",
-            factory.make_time(3.0),
-        )
-        source.send_interaction(
-            event_interaction,
-            {event_id: b"evt-001", sequence_number: b"1"},
-            b"event-1",
-            factory.make_time(2.0),
-        )
-        source.time_advance_request_available(factory.make_time(5.0))
-        sink.next_message_request(factory.make_time(10.0))
-        _drain(source, sink)
-        sink.next_message_request_available(factory.make_time(10.0))
-        _drain(source, sink)
-        lifecycle.append("timestamp-ordered-events-delivered")
-
-        received = sink_fed.callbacks_named("receiveInteraction")
-        grants = sink_fed.callbacks_named("timeAdvanceGrant")
-        delivered_tags = [record.args[2] for record in received]
-        timestamp_ordered = delivered_tags[-2:] == [b"event-1", b"event-2"]
-        grant_times = [getattr(record.args[0], "value", repr(record.args[0])) for record in grants]
-        return {
-            "scenario": "time-mgmt-test",
-            "status": "lifecycle-green" if timestamp_ordered and grants else "failed",
-            "federation_name": federation_name,
-            "fom_modules": _fom_names(foms),
-            "federates": ["EventSourceFederate", "EventSinkFederate"],
-            "lifecycle": lifecycle,
-            "object_class": "HLAobjectRoot.HLAx.TimeMgmtTest.TimeParticipant",
-            "interaction_class": "HLAinteractionRoot.HLAx.TimeMgmtTest.EmitEvent",
-            "discoveries": len(sink_fed.callbacks_named("discoverObjectInstance")),
-            "reflections": len(sink_fed.callbacks_named("reflectAttributeValues")),
-            "interactions": len(received),
-            "callbacks": len(source_fed.records) + len(sink_fed.records),
-            "grant_times": grant_times,
-            "delivered_tags": [_jsonable(tag) for tag in delivered_tags],
-            "key_outcome": "timestamp ordered events delivered with time advance grants",
-            "execution_complete": timestamp_ordered and bool(grants),
-            "requirements_exercised": [
-                "HLA-X-2025-FR-001",
-                "HLA-X-2025-FR-003",
-                "HLA-X-2025-FR-004",
-                "HLA-X-2025-FI-001",
-                "HLA-X-2025-FI-009",
-            ],
-        }
-    finally:
-        for rti in (source, sink):
-            try:
-                rti.resign_federation_execution(ResignAction.DELETE_OBJECTS)
-            except Exception:
-                pass
-        try:
-            source.destroy_federation_execution(federation_name)
-            lifecycle.append("federation-destroyed")
-        except Exception:
-            pass
-        for rti in (sink, source):
-            try:
-                rti.disconnect()
-            except Exception:
-                pass
 
 
 def _run_target_radar_showcase(*, target_radar_steps: int) -> dict[str, Any]:
@@ -324,41 +84,7 @@ def _run_target_radar_showcase(*, target_radar_steps: int) -> dict[str, Any]:
 def run_hlax_fom_showcase(*, target_radar_steps: int = 3) -> dict[str, Any]:
     """Run all packaged FOM examples plus the existing Target/Radar simulation."""
 
-    specs = [
-        ScenarioSpec(
-            scenario="message-test",
-            federation_name="HLAxMessageTestShowcase",
-            publisher_name="TestDesignFederate",
-            subscriber_name="TestExecutionFederate",
-            object_class_name="HLAobjectRoot.HLAx.MessageTest.TestSuite",
-            object_instance_name="EchoProtocolSmokeSuite",
-            attribute_payloads={"SuiteId": b"EchoProtocolSmoke", "Name": b"Echo Protocol Smoke", "Version": b"0.1"},
-            interaction_class_name="HLAinteractionRoot.HLAx.MessageTest.SendStimulus",
-            parameter_payloads={
-                "TestCaseId": b"case-valid-echo",
-                "StepId": b"step-001",
-                "DestinationEndpointId": b"sut-1",
-                "MessageType": b"EchoRequest",
-            },
-            expected_callback="receiveInteraction",
-            outcome="test suite state reflected and stimulus delivered",
-        ),
-        ScenarioSpec(
-            scenario="space-lite",
-            federation_name="HLAxSpaceLiteShowcase",
-            publisher_name="ReferenceFrameFederate",
-            subscriber_name="SensorFederate",
-            object_class_name="HLAobjectRoot.HLAx.SpaceLite.ReferenceFrame",
-            object_instance_name="EarthMJ2000EqFrame",
-            attribute_payloads={"FrameName": b"EarthMJ2000Eq", "ParentFrameName": b"SolarSystemBarycentric", "StateTime": b"100000000"},
-            interaction_class_name="HLAinteractionRoot.HLAx.SpaceLite.ReferenceFrameAnnouncement",
-            parameter_payloads={"FrameName": b"EarthMJ2000Eq", "ParentFrameName": b"SolarSystemBarycentric", "ProducerFederate": b"ReferenceFrameFederate"},
-            expected_callback="receiveInteraction",
-            outcome="reference frame state reflected and frame announcement delivered",
-        ),
-    ]
-    scenarios = [_run_object_interaction_showcase(spec) for spec in specs]
-    scenarios.append(_run_time_mgmt_showcase())
+    scenarios = [run_message_test_showcase(), run_space_lite_showcase(), run_time_mgmt_test_showcase()]
     scenarios.append(_run_target_radar_showcase(target_radar_steps=target_radar_steps))
     return {
         "suite_name": "hlax-fom-simulation-showcase",

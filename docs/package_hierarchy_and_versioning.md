@@ -23,7 +23,10 @@ hla-rti1516e
     ├── hla-bridge-java-common
     ├── hla-rti-core
     └── hla-verification
-        └── hla-fom-target-radar
+        ├── hla-fom-target-radar
+        ├── hla-fom-hlax-message-test
+        ├── hla-fom-hlax-space-lite
+        └── hla-fom-hlax-time-mgmt-test
 
 hla-rti1516e
 └── hla-backend-common
@@ -34,7 +37,10 @@ hla-rti1516e
     │   │   ├── hla-vendor-pitch
     │   │   ├── hla-transport-grpc
     │   │   ├── hla-transport-rest
-    │   │   └── hla-fom-target-radar
+    │   │   ├── hla-fom-target-radar
+    │   │   ├── hla-fom-hlax-message-test
+    │   │   ├── hla-fom-hlax-space-lite
+    │   │   └── hla-fom-hlax-time-mgmt-test
     │   └── hla-backend-inmemory
     └── hla-bridge-java-common
         ├── hla-bridge-java-jpype
@@ -67,7 +73,7 @@ The current machine-generated layer model is:
 - Layer 2: `hla-bridge-java-common`, `hla-backend-inmemory`, `hla-transport-common`
 - Layer 3: `hla-bridge-java-jpype`, `hla-bridge-java-py4j`, `hla-rti-core`
 - Layer 4: `hla-backend-certi`, `hla-vendor-pitch`, `hla-vendor-portico`, `hla-transport-grpc`, `hla-transport-rest`, `hla-verification`
-- Layer 5: `hla-fom-target-radar`, `hla-vendor-pitch-jpype`, `hla-vendor-pitch-py4j`
+- Layer 5: `hla-fom-target-radar`, `hla-fom-hlax-message-test`, `hla-fom-hlax-space-lite`, `hla-fom-hlax-time-mgmt-test`, `hla-vendor-pitch-jpype`, `hla-vendor-pitch-py4j`
 
 Regenerate and check the dependency evidence with:
 
@@ -100,7 +106,6 @@ Examples of the current policy:
   - `hla-transport-common==0.13.0`
 - `hla-fom-target-radar` depends on:
   - `hla-rti1516e==0.13.0`
-  - `hla-verification==0.13.0`
   - `hla-rti-core==0.13.0`
 
 So the accurate answer is:

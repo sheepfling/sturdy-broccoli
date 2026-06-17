@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
-from hla.foms.target_radar.scenarios.target_radar import TrackReport, Vec3, run_target_radar_scenario
+from hla.foms.target_radar._internal.target_radar import TrackReport, Vec3, run_target_radar_scenario
 from .target_radar_backend_matrix import _make_backend_factory, run_target_radar_backend_matrix
 
 

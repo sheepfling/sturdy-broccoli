@@ -42,6 +42,9 @@ INTERNAL_PACKAGE_SOURCE_ROOTS = {
     "hla-vendor-portico": ROOT / "packages/hla-vendor-portico/src",
     "hla-verification": ROOT / "packages/hla-verification/src",
     "hla-fom-target-radar": ROOT / "packages/hla-fom-target-radar/src",
+    "hla-fom-hlax-message-test": ROOT / "packages/hla-fom-hlax-message-test/src",
+    "hla-fom-hlax-space-lite": ROOT / "packages/hla-fom-hlax-space-lite/src",
+    "hla-fom-hlax-time-mgmt-test": ROOT / "packages/hla-fom-hlax-time-mgmt-test/src",
 }
 LIGHTWEIGHT_SPLIT_PACKAGE_IMPORT_SPECS = {
     "hla.backends.inmemory": {
@@ -166,6 +169,39 @@ LIGHTWEIGHT_SPLIT_PACKAGE_IMPORT_SPECS = {
         ),
         "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
     },
+    "hla.foms.hlax_message_test": {
+        "manifest_name": "hla-fom-hlax-message-test",
+        "source_roots": (
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-rti1516-2025/src",
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-backend-inmemory/src",
+            ROOT / "packages/hla-fom-hlax-message-test/src",
+        ),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
+    },
+    "hla.foms.hlax_space_lite": {
+        "manifest_name": "hla-fom-hlax-space-lite",
+        "source_roots": (
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-rti1516-2025/src",
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-backend-inmemory/src",
+            ROOT / "packages/hla-fom-hlax-space-lite/src",
+        ),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
+    },
+    "hla.foms.hlax_time_mgmt_test": {
+        "manifest_name": "hla-fom-hlax-time-mgmt-test",
+        "source_roots": (
+            HLA_RTI1516E_SRC,
+            ROOT / "packages/hla-rti1516-2025/src",
+            ROOT / "packages/hla-backend-common/src",
+            ROOT / "packages/hla-backend-inmemory/src",
+            ROOT / "packages/hla-fom-hlax-time-mgmt-test/src",
+        ),
+        "forbidden_prefixes": ("hla.backends.certi", "hla2010_rti_pitch_", "hla.vendors.portico"),
+    },
 }
 BACKEND_SPLIT_PACKAGE_IMPORT_SPECS = {
     "hla.backends.inmemory": {
@@ -267,6 +303,9 @@ INTERNAL_IMPORT_ROOT_TO_PACKAGE = {
     "hla.vendors.portico": "hla-vendor-portico",
     "hla.verification": "hla-verification",
     "hla.foms.target_radar": "hla-fom-target-radar",
+    "hla.foms.hlax_message_test": "hla-fom-hlax-message-test",
+    "hla.foms.hlax_space_lite": "hla-fom-hlax-space-lite",
+    "hla.foms.hlax_time_mgmt_test": "hla-fom-hlax-time-mgmt-test",
 }
 
 
@@ -390,6 +429,9 @@ def test_non_spec_split_package_manifests_publish_only_their_owned_namespace() -
         "hla-transport-grpc": "hla.transports.grpc",
         "hla-transport-rest": "hla.transports.rest",
         "hla-fom-target-radar": "hla.foms.target_radar",
+        "hla-fom-hlax-message-test": "hla.foms.hlax_message_test",
+        "hla-fom-hlax-space-lite": "hla.foms.hlax_space_lite",
+        "hla-fom-hlax-time-mgmt-test": "hla.foms.hlax_time_mgmt_test",
         "hla-verification": "hla.verification",
     }
 
@@ -416,6 +458,9 @@ def test_split_package_python_namespaces_do_not_overlap() -> None:
         "hla-transport-grpc": ("packages/hla-transport-grpc/src", "hla.transports.grpc*"),
         "hla-transport-rest": ("packages/hla-transport-rest/src", "hla.transports.rest*"),
         "hla-fom-target-radar": ("packages/hla-fom-target-radar/src", "hla.foms.target_radar*"),
+        "hla-fom-hlax-message-test": ("packages/hla-fom-hlax-message-test/src", "hla.foms.hlax_message_test*"),
+        "hla-fom-hlax-space-lite": ("packages/hla-fom-hlax-space-lite/src", "hla.foms.hlax_space_lite*"),
+        "hla-fom-hlax-time-mgmt-test": ("packages/hla-fom-hlax-time-mgmt-test/src", "hla.foms.hlax_time_mgmt_test*"),
         "hla-verification": ("packages/hla-verification/src", "hla.verification*"),
     }
 
@@ -488,6 +533,9 @@ def test_transitional_mega_package_includes_split_python_rti_package():
     grpc_transport_packages = set(find_packages(where="packages/hla-transport-grpc/src", include=["hla.transports.grpc*"]))
     rest_transport_packages = set(find_packages(where="packages/hla-transport-rest/src", include=["hla.transports.rest*"]))
     target_radar_packages = set(find_packages(where="packages/hla-fom-target-radar/src", include=["hla.foms.target_radar*"]))
+    message_test_packages = set(find_packages(where="packages/hla-fom-hlax-message-test/src", include=["hla.foms.hlax_message_test*"]))
+    space_lite_packages = set(find_packages(where="packages/hla-fom-hlax-space-lite/src", include=["hla.foms.hlax_space_lite*"]))
+    time_mgmt_packages = set(find_packages(where="packages/hla-fom-hlax-time-mgmt-test/src", include=["hla.foms.hlax_time_mgmt_test*"]))
     verification_harness_packages = set(find_packages(where="packages/hla-verification/src", include=["hla.verification*"]))
 
     assert "hla.backends.inmemory" in python_packages
@@ -505,8 +553,15 @@ def test_transitional_mega_package_includes_split_python_rti_package():
     assert "hla.transports.grpc" in grpc_transport_packages
     assert "hla.transports.rest" in rest_transport_packages
     assert "hla.foms.target_radar" in target_radar_packages
-    assert "hla.foms.target_radar.scenarios" in target_radar_packages
+    assert "hla.foms.target_radar._internal" in target_radar_packages
+    assert "hla.foms.target_radar.scenarios" not in target_radar_packages
     assert "hla.foms.target_radar.testing" not in target_radar_packages
+    assert "hla.foms.hlax_message_test" in message_test_packages
+    assert "hla.foms.hlax_message_test._internal" in message_test_packages
+    assert "hla.foms.hlax_space_lite" in space_lite_packages
+    assert "hla.foms.hlax_space_lite._internal" in space_lite_packages
+    assert "hla.foms.hlax_time_mgmt_test" in time_mgmt_packages
+    assert "hla.foms.hlax_time_mgmt_test._internal" in time_mgmt_packages
     assert "hla.verification" in verification_harness_packages
 
 

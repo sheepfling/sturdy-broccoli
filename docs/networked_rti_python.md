@@ -69,7 +69,7 @@ For a full runnable example, start with:
 - [`../examples/target_radar_simulation.py`](../examples/target_radar_simulation.py)
 - [`../packages/hla-fom-target-radar/README.md`](../packages/hla-fom-target-radar/README.md)
 
-The Target/Radar package owns the reusable scenario helpers:
+The Target/Radar package owns the repo-internal scenario helpers:
 
 - `target_radar_fom_path()`
 - `make_target_radar_factory(...)`
@@ -85,11 +85,11 @@ If you want to write your own runner, keep the shape simple:
 ## Extending The Example
 
 If you are adding a new Target/Radar variation, keep the reusable logic in
-`hla.foms.target_radar.scenarios` and keep the CLI wrapper thin.
+`hla.foms.target_radar._internal` and keep the CLI wrapper thin.
 
 Good extension points are:
 
-- a new scenario factory function in `packages/hla-fom-target-radar/src/hla.foms.target_radar/scenarios/`
+- a new scenario factory function in `packages/hla-fom-target-radar/src/hla/foms/target_radar/_internal/`
 - a new example script under `examples/`
 - a new backend or transport test that reuses the same scenario helper
 

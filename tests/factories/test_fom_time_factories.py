@@ -1,7 +1,7 @@
 from hla.rti1516e import NullFederateAmbassador
 from hla.backends.common import Invocation
 from hla.bridges.java.common import JavaBridge, JavaValueConverter, resolve_java_invocation
-from hla.foms.target_radar.scenarios import target_radar_fom_path
+from hla.foms.target_radar._internal import target_radar_fom_path
 from hla.rti1516e.enums import CallbackModel, ResignAction
 from hla.rti1516e.handles import AttributeHandle, AttributeHandleSet, AttributeHandleValueMap, DimensionHandleSet
 from hla.rti1516e.raw_api import API_METADATA

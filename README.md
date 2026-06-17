@@ -15,7 +15,7 @@ The supported front door is:
 - `hla.rti` for cross-version discovery and ambassador creation
 - `hla.backends.inmemory` for the local in-memory RTI backend
 - `hla.transports.grpc` for networked transport-hosted RTI routes
-- `hla.foms.target_radar.scenarios` for the Target/Radar example package
+- `./tools/target-radar` and `examples/target_radar_simulation.py` for the Target/Radar example flow
 
 If you want the shortest path to "something runs", start with the pure Python
 backend and the Target/Radar example.
@@ -150,7 +150,7 @@ Namespace policy:
 
 - `hla` is the supported runtime namespace root
 - `hla.verification` is the only supported public verification namespace
-- `hla.foms.target_radar.scenarios` is public scenario/FOM surface
+- `hla.foms.target_radar` owns package assets, not a supported public Python API surface
 - `hla.rti1516e.testing` is not public API and is intentionally removed
 - repo-only proof, report, and suite orchestration helpers live under `packages/hla-verification/src/hla/verification/repo_internal/verification/`
 

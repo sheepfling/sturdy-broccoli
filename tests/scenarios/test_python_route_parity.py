@@ -6,7 +6,7 @@ import uuid
 import pytest
 
 from hla.backends.common import RecordingFederateAmbassador
-from hla.foms.target_radar.scenarios import run_target_radar_scenario
+from hla.foms.target_radar._internal import run_target_radar_scenario
 from hla.rti1516e.enums import OrderType, ResignAction
 from hla.rti1516e.time import HLAinteger64Interval, HLAinteger64Time
 from hla.verification import (
@@ -157,4 +157,3 @@ def test_python_route_parity_ownership(route) -> None:
             remaining_resignations=((pair.right, ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES),),
             disconnect_rtis=(pair.right, pair.left),
         )
-
