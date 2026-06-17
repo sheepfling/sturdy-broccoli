@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import csv
-import subprocess
 from pathlib import Path
 
 
@@ -14,6 +13,17 @@ DOCS_DIR = REPO_ROOT / "docs" / "verification"
 def _rows(path: Path) -> list[dict[str, str]]:
     with path.open(newline="", encoding="utf-8") as fh:
         return list(csv.DictReader(fh))
+
+
+def _test_function_exists(test_id: str) -> bool:
+    needle = f"def {test_id}"
+    for path in (REPO_ROOT / "tests").rglob("*.py"):
+        try:
+            if needle in path.read_text(encoding="utf-8"):
+                return True
+        except UnicodeDecodeError:
+            continue
+    return False
 
 
 def test_1516_2_priority_rows_have_traceability_entries_with_matching_status():
@@ -75,13 +85,7 @@ def test_mapped_1516_2_rows_only_reference_real_test_ids():
         if not test_ids:
             continue
         for test_id in test_ids:
-            proc = subprocess.run(
-                ["rg", "-n", rf"def {test_id}\b", "tests"],
-                cwd=REPO_ROOT,
-                capture_output=True,
-                text=True,
-            )
-            if proc.returncode != 0:
+            if not _test_function_exists(test_id):
                 missing.append((row["requirement_id"], test_id))
 
     assert missing == []

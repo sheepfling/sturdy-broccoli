@@ -131,6 +131,7 @@ def test_certi_easy_save_restore_uses_known_gap_profile(tmp_path: Path) -> None:
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "./tools/certi-easy", "save-restore"],
@@ -152,6 +153,7 @@ def test_pitch_save_restore_uses_known_gap_profile(tmp_path: Path) -> None:
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "./tools/pitch", "save-restore"],
@@ -173,6 +175,7 @@ def test_certi_easy_ddm_uses_known_gap_profile(tmp_path: Path) -> None:
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "./tools/certi-easy", "ddm"],
@@ -194,6 +197,7 @@ def test_pitch_ddm_uses_known_gap_profile(tmp_path: Path) -> None:
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "./tools/pitch", "ddm"],
@@ -215,6 +219,7 @@ def test_pitch_ddm_probe_uses_probe_profile(tmp_path: Path) -> None:
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "./tools/pitch", "ddm-probe"],
@@ -236,6 +241,7 @@ def test_pitch_negotiated_uses_known_gap_profile(tmp_path: Path) -> None:
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "./tools/pitch", "negotiated"],
@@ -257,6 +263,7 @@ def test_pitch_lost_federate_uses_known_gap_profile(tmp_path: Path) -> None:
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "./tools/pitch", "lost-federate"],
@@ -278,6 +285,7 @@ def test_vendor_green_certi_save_restore_probe_profile_is_reachable(tmp_path: Pa
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "scripts/ci/vendor_green.sh", "certi-save-restore-probe"],
@@ -299,6 +307,7 @@ def test_certi_easy_save_restore_probe_uses_probe_profile(tmp_path: Path) -> Non
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "./tools/certi-easy", "save-restore-probe"],
@@ -320,6 +329,7 @@ def test_pitch_save_restore_probe_uses_probe_profile(tmp_path: Path) -> None:
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "./tools/pitch", "save-restore-probe"],
@@ -341,6 +351,7 @@ def test_vendor_green_pitch_save_restore_probe_profile_is_reachable(tmp_path: Pa
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "scripts/ci/vendor_green.sh", "pitch-save-restore-probe"],
@@ -362,6 +373,7 @@ def test_vendor_green_pitch_ddm_probe_profile_is_reachable(tmp_path: Path) -> No
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "scripts/ci/vendor_green.sh", "pitch-ddm-probe"],
@@ -383,6 +395,7 @@ def test_pitch_negotiated_probe_uses_probe_profile(tmp_path: Path) -> None:
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "./tools/pitch", "negotiated-probe"],
@@ -404,6 +417,7 @@ def test_vendor_green_pitch_negotiated_probe_profile_is_reachable(tmp_path: Path
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "scripts/ci/vendor_green.sh", "pitch-negotiated-probe"],
@@ -425,6 +439,7 @@ def test_pitch_lost_federate_probe_uses_probe_profile(tmp_path: Path) -> None:
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "./tools/pitch", "lost-federate-probe"],
@@ -446,6 +461,7 @@ def test_vendor_green_pitch_lost_federate_probe_profile_is_reachable(tmp_path: P
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "scripts/ci/vendor_green.sh", "pitch-lost-federate-probe"],
@@ -467,6 +483,7 @@ def test_certi_easy_ddm_probe_uses_probe_profile(tmp_path: Path) -> None:
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "./tools/certi-easy", "ddm-probe"],
@@ -488,6 +505,7 @@ def test_vendor_green_certi_ddm_probe_profile_is_reachable(tmp_path: Path) -> No
     env = os.environ.copy()
     env["HLA2010_VENDOR_GREEN_DELEGATE"] = str(delegate)
     env["HLA2010_TEST_RECORD_DIR"] = str(tmp_path / "record")
+    env["HLA2010_VENDOR_GREEN_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "scripts/ci/vendor_green.sh", "certi-ddm-probe"],

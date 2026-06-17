@@ -45,6 +45,8 @@ service-report*.jsonl
 # Local archives
 *.zip
 !specs/ieee-1516-2010/*.zip
+!specs/ieee-1516-2010/hla_specs/1516.1-2010_downloads/IEEE1516-2010_C++_API.zip
+!specs/ieee-1516-2010/hla_specs/1516.1-2010_downloads/IEEE1516-2010_Java_API.zip
 
 # Local intake and vendor payloads
 INBOX/*

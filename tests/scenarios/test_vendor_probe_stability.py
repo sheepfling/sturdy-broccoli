@@ -69,6 +69,7 @@ def test_vendor_probe_stability_reports_repeated_probe_success(tmp_path: Path) -
     env["HLA2010_TEST_RECORD_FILE"] = str(tmp_path / "record.json")
     env["HLA2010_TEST_STATE_FILE"] = str(tmp_path / "state.json")
     env["HLA2010_TEST_EXIT_CODES"] = "0,0,0"
+    env["HLA2010_VENDOR_PROBE_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "scripts/ci/vendor_probe_stability.sh", "pitch-negotiated-probe", "3"],
@@ -117,6 +118,7 @@ def test_vendor_probe_stability_reports_failure_when_any_attempt_fails(tmp_path:
     env["HLA2010_TEST_RECORD_FILE"] = str(tmp_path / "record.json")
     env["HLA2010_TEST_STATE_FILE"] = str(tmp_path / "state.json")
     env["HLA2010_TEST_EXIT_CODES"] = "0,7,0"
+    env["HLA2010_VENDOR_PROBE_REQUIRE_CI_STATE"] = "0"
 
     result = subprocess.run(
         ["bash", "scripts/ci/vendor_probe_stability.sh", "certi-ddm-probe", "3"],
