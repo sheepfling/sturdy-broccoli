@@ -20,6 +20,10 @@ def test_cpp_shim_package_exposes_two_route_plugins() -> None:
         "cpp-standard-2010-grpc",
         "cpp-standard-2025-pybind",
         "cpp-standard-2025-grpc",
+        "cpp-2010-sdk-pybind",
+        "cpp-2010-sdk-grpc",
+        "cpp-2025-sdk-pybind",
+        "cpp-2025-sdk-grpc",
     } <= names
     assert all(isinstance(plugin, RTIBackendPlugin) for plugin in plugins)
     assert {plugin.name: plugin.supports for plugin in plugins}["cpp-shim-pybind"] == ("rti1516e", "rti1516_2025")
@@ -34,6 +38,7 @@ def test_cpp_shim_routes_are_registered_for_source_checkout_discovery() -> None:
     assert plugins["cpp-shim-grpc"].family == "cpp-shim"
     assert plugins["cpp-standard-2010-pybind"].family == "standard/cpp"
     assert plugins["cpp-standard-2025-grpc"].family == "standard/cpp"
+    assert plugins["cpp-2010-sdk-grpc"].family == "intake/cpp"
     assert plugins["cpp-shim"].name == "cpp-shim-pybind"
 
 

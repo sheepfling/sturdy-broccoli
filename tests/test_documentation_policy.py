@@ -50,6 +50,9 @@ EXPECTED_PATHS = {
         ROOT / "tools/certi-easy",
         ROOT / "tools/pitch",
     ),
+    ROOT / "docs/vendor_runtime_runner_guide.md": (
+        ROOT / "tools/java",
+    ),
     ROOT / "docs/two_federate_quickstart.md": (
         ROOT / "tools/two-federate",
         ROOT / "scripts/run_two_federate_suite.py",
@@ -140,3 +143,8 @@ def test_repo_overview_docs_describe_root_namespace_as_core_plus_temporary_facad
     assert "`hla.rti1516e` is the IEEE 1516.1-2010 API package" in readme
     assert "`hla2010/` is a narrow top-level shim area for plugin-facing glue" not in readme
     assert "`hla` is a PEP 420 namespace package" in packages_readme
+
+
+def test_tools_readme_mentions_short_java_front_door() -> None:
+    text = _read(ROOT / "tools" / "README.md")
+    assert "./tools/java" in text

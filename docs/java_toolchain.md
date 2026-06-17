@@ -8,7 +8,7 @@ required for Rosetta builds and Java-route tests.
 Run:
 
 ```sh
-./tools/hla-x java doctor
+./tools/java
 ```
 
 That command reports:
@@ -56,6 +56,9 @@ run:
 
 - `./tools/hla-x build java-standard-2010`
 - `./tools/hla-x build java-standard-2025`
+
+`./tools/java` is the short operator front door. The longer Rosetta-lab alias
+remains `./tools/hla-x java doctor`.
 
 ## Related Docs
 

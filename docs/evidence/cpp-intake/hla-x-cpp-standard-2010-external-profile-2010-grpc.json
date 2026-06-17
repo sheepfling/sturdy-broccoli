@@ -1,0 +1,293 @@
+{
+  "artifact": {
+    "edition": "2010",
+    "kind": "cpp-sdk",
+    "name": "hla-x-cpp-standard-2010-external-profile",
+    "route": "cpp-2010-sdk-grpc"
+  },
+  "blocked_reason": "full core scenario through generated C++ SDK runtime capsule is not implemented yet",
+  "callback_status": "callback-poll-green",
+  "capsule_dir": "/private/tmp/hla-x-cpp-certify-capsules/hla-x-cpp-standard-2010-external-profile",
+  "connect_status": "connect-green",
+  "core_scenario_status": "blocked",
+  "discovery": {
+    "artifact": {
+      "edition": "2010",
+      "kind": "cpp-sdk",
+      "name": "hla-x-cpp-standard-2010-external-profile",
+      "route": "cpp-2010-sdk-grpc"
+    },
+    "capsule_dir": "/private/tmp/hla-x-cpp-certify-capsules/hla-x-cpp-standard-2010-external-profile",
+    "checks": [
+      {
+        "details": {
+          "factory_strategy": "standard"
+        },
+        "message": "profile parsed",
+        "name": "profile",
+        "status": "profile-valid"
+      },
+      {
+        "details": {
+          "paths": [
+            "build/rosetta/cpp-standard-2010/api/cpp/src"
+          ]
+        },
+        "message": "all paths exist",
+        "name": "include_dirs",
+        "status": "profile-valid"
+      },
+      {
+        "details": {
+          "paths": [
+            "build/rosetta/cpp-standard-2010"
+          ]
+        },
+        "message": "all paths exist",
+        "name": "library_dirs",
+        "status": "profile-valid"
+      },
+      {
+        "details": {
+          "header": "build/rosetta/cpp-standard-2010/api/cpp/src/RTI/RTIambassador.h"
+        },
+        "message": "standard C++ header found",
+        "name": "headers",
+        "status": "header-green"
+      },
+      {
+        "details": {
+          "libraries": [
+            "build/rosetta/cpp-standard-2010/libhla_x_rti1516e_cpp_shim.a"
+          ]
+        },
+        "message": "declared libraries found",
+        "name": "libraries",
+        "status": "link-green"
+      },
+      {
+        "details": null,
+        "message": "CMake configured capsule project",
+        "name": "capsule_configure",
+        "status": "compile-green"
+      },
+      {
+        "details": null,
+        "message": "C++ capsule compiled and linked",
+        "name": "capsule_build",
+        "status": "capsule-built"
+      }
+    ],
+    "edition": "2010",
+    "errors": [],
+    "profile": {
+      "adapter": {
+        "mode": "standard_shim",
+        "strategy": "hla_x_capsule_v1"
+      },
+      "artifact": {
+        "edition": "2010",
+        "kind": "cpp-sdk",
+        "name": "hla-x-cpp-standard-2010-external-profile",
+        "route": null
+      },
+      "cxx_standard": "14",
+      "defines": [
+        "RTI_USES_STD_WSTRING"
+      ],
+      "edition": "2010",
+      "factory": {
+        "options": {},
+        "strategy": "standard"
+      },
+      "headers": [],
+      "include_dirs": [
+        "build/rosetta/cpp-standard-2010/api/cpp/src"
+      ],
+      "kind": "cpp-sdk",
+      "libraries": [
+        "hla_x_rti1516e_cpp_shim"
+      ],
+      "library_dirs": [
+        "build/rosetta/cpp-standard-2010"
+      ],
+      "name": "hla-x-cpp-standard-2010-external-profile",
+      "runtime_env": {
+        "DYLD_LIBRARY_PATH": "build/rosetta/cpp-standard-2010"
+      }
+    },
+    "profile_path": "examples/cpp-sdk/hla-x-standard-2010.yml",
+    "route": "cpp-2010-sdk-grpc",
+    "status": "capsule-built",
+    "transport": "grpc",
+    "warnings": []
+  },
+  "edition": "2010",
+  "errors": [],
+  "missing_trace_events": [],
+  "route": "cpp-2010-sdk-grpc",
+  "runtime": {
+    "callback_count": 1,
+    "checks": {
+      "callback_poll": "pass",
+      "capsule_launch": "pass",
+      "connect_disconnect": "pass",
+      "create_ambassador": "pass",
+      "discover": "pass",
+      "unsupported_service": "pass"
+    },
+    "errors": [],
+    "invocation_count": 3,
+    "library_path": "/private/tmp/hla-x-cpp-certify-capsules/hla-x-cpp-standard-2010-external-profile/build/lib/libhla_x_hla_x_cpp_standard_2010_external_profile_capsule.dylib",
+    "process_pid": 77246,
+    "status": "adapter-smoke-green",
+    "trace": [
+      {
+        "event": "capsuleDiscover",
+        "metadata": {
+          "adapter_strategy": "hla_x_capsule_v1",
+          "contract": "hla_x_capsule_v1",
+          "edition": "2010",
+          "kind": "hla_x_cpp_capsule",
+          "ok": true,
+          "sdk_name": "hla-x-cpp-standard-2010-external-profile",
+          "unsupported_services": [
+            "requestFederationSave",
+            "requestFederationRestore",
+            "createRegion"
+          ]
+        },
+        "transport": "grpc"
+      },
+      {
+        "event": "createRtiAmbassador",
+        "result": {
+          "ambassador": "hla_x_capsule_v1",
+          "ok": true,
+          "session_id": "capsule-session-1"
+        }
+      },
+      {
+        "event": "connect",
+        "result": {
+          "method": "connect",
+          "ok": true
+        }
+      },
+      {
+        "event": "disconnect",
+        "result": {
+          "method": "disconnect",
+          "ok": true
+        }
+      },
+      {
+        "event": "unsupportedService",
+        "result": {
+          "error_type": "UnsupportedService",
+          "message": "requestFederationSave is not implemented by this capsule",
+          "method": "requestFederationSave",
+          "ok": false
+        }
+      },
+      {
+        "event": "callbackPoll",
+        "result": {
+          "callback_count": 1,
+          "events": [
+            {
+              "event": "capsuleCallbackPoll",
+              "label": "adapter-smoke"
+            }
+          ],
+          "ok": true
+        }
+      },
+      {
+        "event": "close"
+      }
+    ],
+    "transport": "grpc",
+    "unsupported_services": [
+      "requestFederationSave",
+      "requestFederationRestore",
+      "createRegion"
+    ],
+    "warnings": []
+  },
+  "status": "adapter-smoke-green",
+  "trace": [
+    {
+      "event": "capsuleDiscover",
+      "metadata": {
+        "adapter_strategy": "hla_x_capsule_v1",
+        "contract": "hla_x_capsule_v1",
+        "edition": "2010",
+        "kind": "hla_x_cpp_capsule",
+        "ok": true,
+        "sdk_name": "hla-x-cpp-standard-2010-external-profile",
+        "unsupported_services": [
+          "requestFederationSave",
+          "requestFederationRestore",
+          "createRegion"
+        ]
+      },
+      "transport": "grpc"
+    },
+    {
+      "event": "createRtiAmbassador",
+      "result": {
+        "ambassador": "hla_x_capsule_v1",
+        "ok": true,
+        "session_id": "capsule-session-1"
+      }
+    },
+    {
+      "event": "connect",
+      "result": {
+        "method": "connect",
+        "ok": true
+      }
+    },
+    {
+      "event": "disconnect",
+      "result": {
+        "method": "disconnect",
+        "ok": true
+      }
+    },
+    {
+      "event": "unsupportedService",
+      "result": {
+        "error_type": "UnsupportedService",
+        "message": "requestFederationSave is not implemented by this capsule",
+        "method": "requestFederationSave",
+        "ok": false
+      }
+    },
+    {
+      "event": "callbackPoll",
+      "result": {
+        "callback_count": 1,
+        "events": [
+          {
+            "event": "capsuleCallbackPoll",
+            "label": "adapter-smoke"
+          }
+        ],
+        "ok": true
+      }
+    },
+    {
+      "event": "close"
+    }
+  ],
+  "trace_comparison_status": "blocked",
+  "transport": "grpc",
+  "unsupported_services": [
+    "requestFederationSave",
+    "requestFederationRestore",
+    "createRegion"
+  ],
+  "warnings": []
+}

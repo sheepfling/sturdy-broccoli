@@ -23,6 +23,14 @@ test = ["pytest"]
 [project.entry-points."hla.rti_backends"]
 cpp-shim-pybind = "hla.backends.cpp_shim.plugin:pybind_plugin"
 cpp-shim-grpc = "hla.backends.cpp_shim.plugin:grpc_plugin"
+cpp-standard-2010-pybind = "hla.backends.cpp_shim.plugin:cpp_standard_2010_pybind_plugin"
+cpp-standard-2010-grpc = "hla.backends.cpp_shim.plugin:cpp_standard_2010_grpc_plugin"
+cpp-standard-2025-pybind = "hla.backends.cpp_shim.plugin:cpp_standard_2025_pybind_plugin"
+cpp-standard-2025-grpc = "hla.backends.cpp_shim.plugin:cpp_standard_2025_grpc_plugin"
+cpp-2010-sdk-pybind = "hla.backends.cpp_shim.plugin:cpp_2010_sdk_pybind_plugin"
+cpp-2010-sdk-grpc = "hla.backends.cpp_shim.plugin:cpp_2010_sdk_grpc_plugin"
+cpp-2025-sdk-pybind = "hla.backends.cpp_shim.plugin:cpp_2025_sdk_pybind_plugin"
+cpp-2025-sdk-grpc = "hla.backends.cpp_shim.plugin:cpp_2025_sdk_grpc_plugin"
 
 [tool.setuptools.package-dir]
 "" = "src"
@@ -35,7 +43,18 @@ namespaces = true
 [tool.hla.package]
 status = "implementation-moved"
 role = "rti-backend"
-backend_names = ["cpp-shim-pybind", "cpp-shim-grpc"]
+backend_names = [
+  "cpp-shim-pybind",
+  "cpp-shim-grpc",
+  "cpp-standard-2010-pybind",
+  "cpp-standard-2010-grpc",
+  "cpp-standard-2025-pybind",
+  "cpp-standard-2025-grpc",
+  "cpp-2010-sdk-pybind",
+  "cpp-2010-sdk-grpc",
+  "cpp-2025-sdk-pybind",
+  "cpp-2025-sdk-grpc",
+]
 backend_aliases = ["cpp-shim", "native-cpp-shim", "cpp-shim-native"]
 source_roots = [
   "packages/hla-backend-cpp-shim/src/hla/backends/cpp_shim",

@@ -28,7 +28,20 @@ EXPECTED_PACKAGES = {
     "hla-backend-inmemory": PackageExpectation("rti-backend", frozenset({"inmemory"}), "implementation-moved"),
     "hla-backend-cpp-shim": PackageExpectation(
         "rti-backend",
-        frozenset({"cpp-shim-pybind", "cpp-shim-grpc"}),
+        frozenset(
+            {
+                "cpp-shim-pybind",
+                "cpp-shim-grpc",
+                "cpp-standard-2010-pybind",
+                "cpp-standard-2010-grpc",
+                "cpp-standard-2025-pybind",
+                "cpp-standard-2025-grpc",
+                "cpp-2010-sdk-pybind",
+                "cpp-2010-sdk-grpc",
+                "cpp-2025-sdk-pybind",
+                "cpp-2025-sdk-grpc",
+            }
+        ),
         "implementation-moved",
     ),
     "hla-backend-shim": PackageExpectation("rti-backend", frozenset({"shim"}), "implementation-owned"),

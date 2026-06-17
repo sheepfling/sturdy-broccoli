@@ -77,6 +77,7 @@ def test_tools_readme_declares_canonical_operator_surface() -> None:
     assert "./tools/lint" in text
     assert "./tools/two-federate" in text
     assert "./tools/test" in text
+    assert "./tools/java" in text
 
 
 def test_tools_readme_inventory_matches_actual_top_level_tool_wrappers() -> None:
@@ -184,6 +185,7 @@ def test_public_docs_use_tools_surface_for_vendor_operator_flows() -> None:
         assert "./tools/python" in text, path.relative_to(ROOT)
         assert "./tools/certi-easy" in text, path.relative_to(ROOT)
         assert "./tools/pitch" in text, path.relative_to(ROOT)
+        assert "./tools/java" in text, path.relative_to(ROOT)
         assert "./tools/vendor-green" in text, path.relative_to(ROOT)
 
 

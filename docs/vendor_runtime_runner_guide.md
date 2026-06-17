@@ -13,7 +13,8 @@ Use it when:
 - you need to confirm which local JDK, `javac`, and `jar` the Rosetta Java
   routes will use
 
-For a single toolchain inventory, run [`./tools/hla-x java doctor`](../tools/hla-x).
+For a single toolchain inventory, run [`./tools/java`](../tools/java).
+If you want the longer Rosetta-lab alias, use [`./tools/hla-x java doctor`](../tools/hla-x).
 It reports the discovered Java home, tool availability, and Rosetta jar
 presence.
 

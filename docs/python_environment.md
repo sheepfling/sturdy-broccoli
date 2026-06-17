@@ -18,6 +18,9 @@ Optional later:
 - Docker if you want the Pitch Docker flow
 - a local CERTI build or install if you want the CERTI runtime paths
 
+If you need to inspect the local JDK, `javac`, `jar`, or Rosetta jar state,
+use `./tools/java`.
+
 ## The Shortest Working Path
 
 From the repository root:

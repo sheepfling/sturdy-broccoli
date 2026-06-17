@@ -127,6 +127,7 @@ These are the primary newcomer lanes:
 
 - run something: [`docs/first_run.md`](docs/first_run.md)
 - understand the Rosetta standard-shim target: [`docs/hla_x_rosetta_release.md`](docs/hla_x_rosetta_release.md)
+- inspect the Java toolchain inventory: [`./tools/java`](tools/java)
 - edit one service: [`docs/python_rti_edit_one_service.md`](docs/python_rti_edit_one_service.md)
 - create one FOM package: [`docs/create_federate_and_fom.md`](docs/create_federate_and_fom.md)
 - trace one method: [`docs/requirements_trace_one_method.md`](docs/requirements_trace_one_method.md)

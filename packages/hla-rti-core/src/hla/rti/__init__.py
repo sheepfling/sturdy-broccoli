@@ -14,6 +14,7 @@ from .plugin_api import (
     SpecPlugin,
     TransportRequest,
 )
+from .intake import INTAKE_STATUS_LADDER, IntakeArtifact, IntakeCheck, intake_status_from_checks
 from .real_rti_process import RuntimeProcess, reserve_tcp_port, wait_for_process_boot, wait_for_tcp_listener
 from .standard_shims import (
     STANDARD_SHIM_ARTIFACTS,
@@ -56,6 +57,9 @@ __all__ = [
     "BACKEND_ENTRY_POINT_GROUP",
     "BackendRequest",
     "HLASpec",
+    "INTAKE_STATUS_LADDER",
+    "IntakeArtifact",
+    "IntakeCheck",
     "RTIBackendDiscovery",
     "RTIBackendPlugin",
     "RTIBackendSpec",
@@ -71,6 +75,7 @@ __all__ = [
     *_FACTORY_EXPORTS,
     "iter_standard_shim_artifacts",
     "iter_standard_shim_routes",
+    "intake_status_from_checks",
     "official_api_bundle_paths",
     "reserve_tcp_port",
     "standard_shim_route_names",

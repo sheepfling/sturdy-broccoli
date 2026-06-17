@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import subprocess
 import sys
 from argparse import Namespace
 from pathlib import Path
@@ -101,3 +102,17 @@ def test_java_toolchain_inventory_reports_tools_and_artifacts(tmp_path: Path, mo
     assert "Java 2025 standard shim jar" in rendered
     assert "./tools/hla-x build java-standard-2010" in rendered
     assert "./tools/hla-x build java-standard-2025" in rendered
+
+
+def test_tools_java_wrapper_proxies_to_inventory_help() -> None:
+    result = subprocess.run(
+        ["bash", "tools/java", "--help"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    assert "./tools/java" in result.stdout
+    assert "doctor" in result.stdout

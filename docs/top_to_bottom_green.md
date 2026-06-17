@@ -53,6 +53,9 @@ Required outcome:
 - vendor prerequisites are still checked
 - blocked CERTI or Pitch runtime prerequisites do not fail the whole lane
 
+If you need to inspect the Java toolchain that backs Rosetta route evidence,
+use `./tools/java`.
+
 Canonical command:
 
 ```bash

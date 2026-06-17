@@ -32,8 +32,12 @@ def test_2025_spec_aliases_and_backend_discovery_are_spec_aware() -> None:
     assert set(backends) == {
         "cpp-shim-grpc",
         "cpp-shim-pybind",
+        "cpp-2025-sdk-grpc",
+        "cpp-2025-sdk-pybind",
         "cpp-standard-2025-grpc",
         "cpp-standard-2025-pybind",
+        "java-2025-jpype",
+        "java-2025-py4j",
         "java-shim-jpype",
         "java-shim-py4j",
         "java-standard-2025-jpype",
@@ -49,6 +53,10 @@ def test_2025_spec_aliases_and_backend_discovery_are_spec_aware() -> None:
     assert backends["java-standard-2025-py4j"].supports == ("rti1516_2025",)
     assert backends["cpp-standard-2025-pybind"].supports == ("rti1516_2025",)
     assert backends["cpp-standard-2025-grpc"].supports == ("rti1516_2025",)
+    assert backends["cpp-2025-sdk-pybind"].supports == ("rti1516_2025",)
+    assert backends["cpp-2025-sdk-grpc"].supports == ("rti1516_2025",)
+    assert backends["java-2025-jpype"].supports == ("rti1516_2025",)
+    assert backends["java-2025-py4j"].supports == ("rti1516_2025",)
 
 
 def test_2025_shim_is_first_green_runtime_path() -> None:

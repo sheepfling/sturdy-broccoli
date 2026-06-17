@@ -7,7 +7,7 @@ hla2010_shell_init "tools/hla-x"
 
 usage() {
   cat <<'EOF'
-usage: ./tools/hla-x [matrix|build|evidence|demo|java|help]
+usage: ./tools/hla-x [matrix|build|evidence|demo|java|cpp|help]
 
 Rosetta compatibility-lab entry point.
 
@@ -18,6 +18,10 @@ Commands:
   ./tools/hla-x java discover --edition 2010 --bridge jpype --classpath /path/to/rti.jar
   ./tools/hla-x java doctor
   ./tools/hla-x java certify-core --edition 2010 --bridges jpype,py4j --classpath /path/to/rti.jar
+  ./tools/hla-x cpp discover --profile /path/to/vendor-cpp-2010.hla-x.yaml
+  ./tools/hla-x cpp build-capsule --profile /path/to/vendor-cpp-2010.hla-x.yaml --transport grpc
+  ./tools/hla-x cpp smoke-capsule --profile /path/to/vendor-cpp-2010.hla-x.yaml --transport grpc
+  ./tools/hla-x cpp certify-core --edition 2010 --artifact standard-shim --transports pybind,grpc
   ./tools/hla-x demo mixed-language-target-radar --edition 2010
   ./tools/hla-x demo mixed-language-target-radar --edition 2025
 EOF
@@ -48,6 +52,10 @@ case "${1:-help}" in
   java)
     shift
     "$python_bin" "$ROOT_DIR/scripts/hla_x.py" java "$@"
+    ;;
+  cpp)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/hla_x.py" cpp "$@"
     ;;
   *)
     echo "error: unknown subcommand: $1" >&2

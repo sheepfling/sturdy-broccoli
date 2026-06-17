@@ -36,6 +36,7 @@ Supported human-facing entrypoints live under `tools/` for vendor/runtime work:
 - `./tools/vendor-edge` canonical vendor edge matrix flow
 - `./tools/rti-options` canonical generated RTI route/options matrix flow
 - `./tools/hla-x` canonical Rosetta standard-shim contract and future mixed-language demo flow
+- `./tools/java` canonical Java toolchain inventory front door
 - `./tools/fom-overview` canonical merged FOM/MIM overview artifact flow
 - `./tools/fom-roundtrip` canonical FOM round-trip packet flow
 - `./tools/package-deps` canonical split-package dependency tree flow
@@ -79,6 +80,7 @@ Operator guide links:
 - [../docs/preflight_artifacts.md](../docs/preflight_artifacts.md): JSON preflight artifacts and inspection examples
 - `./tools/certi-easy preflight [--json] [--json-file FILE]`: CERTI readiness check before install or smoke
 - `./tools/pitch preflight [--json] [--json-file FILE]`: Pitch Docker readiness check before install or run
+- `./tools/java`: Java toolchain inventory and Rosetta jar discovery front door
 - `./tools/vendor-state classify --lane repo-green|vendor-green [--vendor certi|pitch] [--json]`: classify preflight artifacts into ready vs blocked vs broken states
 - `./tools/vendor-state ci-state --profile ...`: validate dedicated CI runtime env/path state before vendor-green execution
 - `scripts/ci/write_vendor_runtime_job_summary.py`: CI helper that renders normalized vendor runtime status into GitHub-job-friendly Markdown

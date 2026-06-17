@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/java"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/java [doctor|help]
+
+Short front door for the Java toolchain inventory.
+
+Commands:
+  ./tools/java           # show the local Java toolchain inventory
+  ./tools/java doctor    # same as above, explicitly
+EOF
+}
+
+case "${1:-doctor}" in
+  help|-h|--help)
+    usage
+    ;;
+  doctor)
+    shift
+    exec "$ROOT_DIR/tools/hla-x" java doctor "$@"
+    ;;
+  *)
+    echo "error: unknown subcommand: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

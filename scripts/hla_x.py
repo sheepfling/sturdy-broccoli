@@ -19,6 +19,7 @@ ROSETTA_REPORTS = {
     "cpp-2025": SCRIPT_REPO_ROOT / "docs/evidence/rosetta/cpp-standard-2025.json",
 }
 JAVA_INTAKE_REPORT_DIR = SCRIPT_REPO_ROOT / "docs/evidence/java-intake"
+CPP_INTAKE_REPORT_DIR = SCRIPT_REPO_ROOT / "docs/evidence/cpp-intake"
 JAVA_TOOLCHAIN_REPORT_DIR = SCRIPT_REPO_ROOT / "docs/evidence/rosetta"
 
 
@@ -61,6 +62,50 @@ def _matrix(args: argparse.Namespace) -> int:
                 for route in artifact.routes
             )
         print(f"{artifact.artifact_name} | {artifact.edition} | {status} | {routes}")
+    print("")
+    print("C++ SDK intake")
+    print("")
+    print("route | edition | profile | header | compile | link | status")
+    print("--- | --- | --- | --- | --- | --- | ---")
+    cpp_rows = {
+        ("2010", "pybind"): "cpp-2010-sdk-pybind",
+        ("2010", "grpc"): "cpp-2010-sdk-grpc",
+        ("2025", "pybind"): "cpp-2025-sdk-pybind",
+        ("2025", "grpc"): "cpp-2025-sdk-grpc",
+    }
+    cpp_report_by_route: dict[tuple[str, str], dict[str, object]] = {}
+    if CPP_INTAKE_REPORT_DIR.exists():
+        for path in CPP_INTAKE_REPORT_DIR.glob("*.json"):
+            try:
+                report = json.loads(path.read_text(encoding="utf-8"))
+            except Exception:
+                continue
+            artifact = report.get("artifact", {})
+            if not isinstance(artifact, dict) or artifact.get("kind") != "cpp-sdk":
+                continue
+            edition = str(report.get("edition", ""))
+            transport = str(report.get("transport", ""))
+            if (edition, transport) in cpp_rows:
+                cpp_report_by_route[(edition, transport)] = report
+    for key, route_name in cpp_rows.items():
+        edition, _transport = key
+        if edition not in editions:
+            continue
+        report = cpp_report_by_route.get(key, {})
+        checks = report.get("checks", ())
+        if not checks and isinstance(report.get("discovery"), dict):
+            checks = dict(report["discovery"]).get("checks", ())
+        check_statuses = {
+            str(check.get("name")): str(check.get("status"))
+            for check in checks
+            if isinstance(check, dict)
+        } if isinstance(checks, list) else {}
+        profile_status = check_statuses.get("profile", "profile-required")
+        header_status = check_statuses.get("headers", "profile-required")
+        compile_status = check_statuses.get("capsule_configure", "profile-required")
+        link_status = check_statuses.get("capsule_build", check_statuses.get("libraries", "profile-required"))
+        status = str(report.get("status", "intake"))
+        print(f"{route_name} | {edition} | {profile_status} | {header_status} | {compile_status} | {link_status} | {status}")
     print("")
     print("Java RTI intake certification")
     print("")
@@ -239,6 +284,125 @@ def _java_certify_core(args: argparse.Namespace) -> int:
     return 2 if failed else 0
 
 
+def _cpp_discover(args: argparse.Namespace) -> int:
+    _bootstrap_source_checkout()
+    from hla.backends.cpp_shim.cpp_intake import CppSdkIntakeRequest, discover_cpp_sdk, write_cpp_intake_reports
+
+    request = CppSdkIntakeRequest(
+        profile_path=args.profile,
+        transport=args.transport,
+        timeout_seconds=args.timeout_seconds,
+    )
+    report = discover_cpp_sdk(request)
+    if args.edition and report.edition != "unknown" and report.edition != args.edition:
+        payload = report.to_json_dict()
+        mismatch = f"profile edition {report.edition} does not match requested edition {args.edition}"
+        payload["status"] = "failed"
+        payload["errors"] = [*payload.get("errors", []), mismatch]
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 2
+    json_path, md_path = write_cpp_intake_reports(report, args.output_dir)
+    payload = report.to_json_dict()
+    payload["evidence_json"] = str(json_path)
+    payload["evidence_markdown"] = str(md_path)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0 if not report.errors else 2
+
+
+def _cpp_build_capsule(args: argparse.Namespace) -> int:
+    _bootstrap_source_checkout()
+    from hla.backends.cpp_shim.cpp_intake import CppSdkIntakeRequest, generate_cpp_sdk_capsule, write_cpp_intake_reports
+
+    request = CppSdkIntakeRequest(
+        profile_path=args.profile,
+        transport=args.transport,
+        build_dir=args.build_dir,
+        timeout_seconds=args.timeout_seconds,
+    )
+    output_root = args.build_dir or str(SCRIPT_REPO_ROOT / ".build/hla-x/cpp-capsules")
+    report = generate_cpp_sdk_capsule(request, output_root)
+    if args.edition and report.edition != "unknown" and report.edition != args.edition:
+        payload = report.to_json_dict()
+        mismatch = f"profile edition {report.edition} does not match requested edition {args.edition}"
+        payload["status"] = "failed"
+        payload["errors"] = [*payload.get("errors", []), mismatch]
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 2
+    json_path, md_path = write_cpp_intake_reports(report, args.output_dir)
+    payload = report.to_json_dict()
+    payload["evidence_json"] = str(json_path)
+    payload["evidence_markdown"] = str(md_path)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0 if not report.errors else 2
+
+
+def _cpp_certify_core(args: argparse.Namespace) -> int:
+    _bootstrap_source_checkout()
+    from hla.backends.cpp_shim.cpp_intake import CppSdkIntakeRequest
+    from hla.verification.cpp_intake_certification import (
+        certify_cpp_sdk_core,
+        certify_cpp_standard_core,
+        write_certification_reports,
+    )
+
+    transports = tuple(item.strip() for item in args.transports.split(",") if item.strip())
+    if not transports:
+        raise SystemExit("--transports must name at least one transport")
+    reports = []
+    failed = False
+    for transport in transports:
+        if args.artifact == "standard-shim":
+            report = certify_cpp_standard_core(args.edition, transport)
+        else:
+            if not args.profile:
+                raise SystemExit("--profile is required unless --artifact standard-shim is used")
+            report = certify_cpp_sdk_core(
+                CppSdkIntakeRequest(
+                    profile_path=args.profile,
+                    transport=transport,
+                    build_dir=args.build_dir,
+                    timeout_seconds=args.timeout_seconds,
+                ),
+                args.build_dir,
+            )
+        json_path, md_path = write_certification_reports(report, args.output_dir)
+        payload = report.to_json_dict()
+        payload["evidence_json"] = str(json_path)
+        payload["evidence_markdown"] = str(md_path)
+        reports.append(payload)
+        if report.errors or report.status not in {"trace-green", "behavior-blocked", "adapter-smoke-green"}:
+            failed = True
+    print(json.dumps({"reports": reports}, indent=2, sort_keys=True))
+    return 2 if failed else 0
+
+
+def _cpp_smoke_capsule(args: argparse.Namespace) -> int:
+    _bootstrap_source_checkout()
+    from hla.backends.cpp_shim.cpp_intake import CppSdkIntakeRequest
+    from hla.verification.cpp_intake_certification import smoke_cpp_sdk_capsule, write_certification_reports
+
+    request = CppSdkIntakeRequest(
+        profile_path=args.profile,
+        transport=args.transport,
+        build_dir=args.build_dir,
+        timeout_seconds=args.timeout_seconds,
+    )
+    report = smoke_cpp_sdk_capsule(request, args.build_dir)
+    if args.edition and report.edition != "unknown" and report.edition != args.edition:
+        payload = report.to_json_dict()
+        mismatch = f"profile edition {report.edition} does not match requested edition {args.edition}"
+        payload["status"] = "failed"
+        payload["errors"] = [*payload.get("errors", []), mismatch]
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 2
+    json_path, md_path = write_certification_reports(report, args.output_dir)
+    payload = report.to_json_dict()
+    payload["evidence_json"] = str(json_path)
+    payload["evidence_markdown"] = str(md_path)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0 if not report.errors and report.status == "adapter-smoke-green" else 2
+
+
 def _demo(args: argparse.Namespace) -> int:
     if args.name != "mixed-language-target-radar":
         raise SystemExit(f"unknown demo {args.name!r}")
@@ -304,6 +468,45 @@ def main(argv: list[str] | None = None) -> int:
     java_certify.add_argument("--timeout-seconds", type=float, default=30.0)
     java_certify.add_argument("--output-dir", default=str(SCRIPT_REPO_ROOT / "docs/evidence/java-intake"))
     java_certify.set_defaults(func=_java_certify_core)
+
+    cpp = subparsers.add_parser("cpp")
+    cpp_subparsers = cpp.add_subparsers(dest="cpp_command", required=True)
+
+    cpp_discover = cpp_subparsers.add_parser("discover")
+    cpp_discover.add_argument("--profile", required=True, help="C++ SDK intake profile path")
+    cpp_discover.add_argument("--edition", choices=("2010", "2025"), default=None, help="Optional expected edition guard")
+    cpp_discover.add_argument("--transport", choices=("grpc", "pybind"), default="grpc")
+    cpp_discover.add_argument("--timeout-seconds", type=float, default=30.0)
+    cpp_discover.add_argument("--output-dir", default=str(SCRIPT_REPO_ROOT / "docs/evidence/cpp-intake"))
+    cpp_discover.set_defaults(func=_cpp_discover)
+
+    cpp_build_capsule = cpp_subparsers.add_parser("build-capsule")
+    cpp_build_capsule.add_argument("--profile", required=True, help="C++ SDK intake profile path")
+    cpp_build_capsule.add_argument("--edition", choices=("2010", "2025"), default=None, help="Optional expected edition guard")
+    cpp_build_capsule.add_argument("--transport", choices=("grpc", "pybind"), default="grpc")
+    cpp_build_capsule.add_argument("--build-dir", default=str(SCRIPT_REPO_ROOT / ".build/hla-x/cpp-capsules"))
+    cpp_build_capsule.add_argument("--timeout-seconds", type=float, default=30.0)
+    cpp_build_capsule.add_argument("--output-dir", default=str(SCRIPT_REPO_ROOT / "docs/evidence/cpp-intake"))
+    cpp_build_capsule.set_defaults(func=_cpp_build_capsule)
+
+    cpp_smoke = cpp_subparsers.add_parser("smoke-capsule")
+    cpp_smoke.add_argument("--profile", required=True, help="C++ SDK intake profile path")
+    cpp_smoke.add_argument("--edition", choices=("2010", "2025"), default=None, help="Optional expected edition guard")
+    cpp_smoke.add_argument("--transport", choices=("grpc", "pybind"), default="grpc")
+    cpp_smoke.add_argument("--build-dir", default=str(SCRIPT_REPO_ROOT / ".build/hla-x/cpp-capsules"))
+    cpp_smoke.add_argument("--timeout-seconds", type=float, default=30.0)
+    cpp_smoke.add_argument("--output-dir", default=str(SCRIPT_REPO_ROOT / "docs/evidence/cpp-intake"))
+    cpp_smoke.set_defaults(func=_cpp_smoke_capsule)
+
+    cpp_certify = cpp_subparsers.add_parser("certify-core")
+    cpp_certify.add_argument("--edition", choices=("2010", "2025"), required=True)
+    cpp_certify.add_argument("--artifact", choices=("standard-shim", "sdk"), default="sdk")
+    cpp_certify.add_argument("--profile", default=None, help="C++ SDK intake profile path")
+    cpp_certify.add_argument("--transports", default="pybind,grpc")
+    cpp_certify.add_argument("--build-dir", default=str(SCRIPT_REPO_ROOT / ".build/hla-x/cpp-capsules"))
+    cpp_certify.add_argument("--timeout-seconds", type=float, default=30.0)
+    cpp_certify.add_argument("--output-dir", default=str(SCRIPT_REPO_ROOT / "docs/evidence/cpp-intake"))
+    cpp_certify.set_defaults(func=_cpp_certify_core)
 
     args = parser.parse_args(argv)
     return args.func(args)

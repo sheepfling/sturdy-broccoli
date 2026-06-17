@@ -1,0 +1,21 @@
+kind: cpp-sdk
+edition: 2010
+name: hla-x-cpp-standard-2010-external-profile
+include_dirs:
+  - build/rosetta/cpp-standard-2010/api/cpp/src
+library_dirs:
+  - build/rosetta/cpp-standard-2010
+libraries:
+  - hla_x_rti1516e_cpp_shim
+defines:
+  - RTI_USES_STD_WSTRING
+cxx_standard: 14
+runtime_env:
+  DYLD_LIBRARY_PATH: build/rosetta/cpp-standard-2010
+factory:
+  strategy: standard
+adapter:
+  strategy: hla_x_capsule_v1
+  mode: standard_shim
+transport:
+  default: grpc
