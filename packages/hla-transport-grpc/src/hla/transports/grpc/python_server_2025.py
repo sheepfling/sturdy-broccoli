@@ -91,6 +91,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata": "403",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestPublications": "404",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication": "405",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestSubscriptions": "406",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassSubscription": "407",
         }
         self.interaction_names = {value: key for key, value in self.interactions.items()}
         self.parameters = {
@@ -104,6 +106,13 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             ("405", "HLAnumberOfClasses"): "507",
             ("405", "HLAobjectClass"): "508",
             ("405", "HLAattributeList"): "509",
+            ("406", "HLAfederate"): "510",
+            ("407", "HLAfederate"): "511",
+            ("407", "HLAnumberOfClasses"): "512",
+            ("407", "HLAobjectClass"): "513",
+            ("407", "HLAactive"): "514",
+            ("407", "HLAmaxUpdateRate"): "515",
+            ("407", "HLAattributeList"): "516",
         }
         self.parameter_names = {(interaction_class, value): name for (interaction_class, name), value in self.parameters.items()}
         self.dimensions = {"RoutingSpace": "300"}
@@ -823,6 +832,9 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestPublications"]:
                 self._queue_object_publication_report()
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
+            if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestSubscriptions"]:
+                self._queue_object_subscription_report()
+                return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if self._interaction_subscriber_matches(interaction_class, ()):
                 self.callback_queue.append(
                     callback_pb2.CallbackRequest(
@@ -1217,6 +1229,31 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 "HLAfederate": b"1",
                 "HLAnumberOfClasses": str(len(publication_rows)).encode("ascii"),
                 "HLAobjectClass": object_classes.encode("ascii"),
+                "HLAattributeList": attribute_lists.encode("ascii"),
+            },
+        )
+
+    def _queue_object_subscription_report(self) -> None:
+        report_class = self.interactions[
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassSubscription"
+        ]
+        if not self._interaction_subscriber_matches(report_class, ()):
+            return
+        subscription_rows = [
+            f"{object_class}:{','.join(sorted(attributes, key=int))}"
+            for object_class, attributes in sorted(self.subscribed_object_attributes.items(), key=lambda item: int(item[0]))
+            if attributes
+        ]
+        object_classes = ",".join(row.split(":", 1)[0] for row in subscription_rows)
+        attribute_lists = ";".join(subscription_rows)
+        self._queue_mom_report(
+            report_class,
+            {
+                "HLAfederate": b"1",
+                "HLAnumberOfClasses": str(len(subscription_rows)).encode("ascii"),
+                "HLAobjectClass": object_classes.encode("ascii"),
+                "HLAactive": b"HLAtrue",
+                "HLAmaxUpdateRate": b"",
                 "HLAattributeList": attribute_lists.encode("ascii"),
             },
         )
