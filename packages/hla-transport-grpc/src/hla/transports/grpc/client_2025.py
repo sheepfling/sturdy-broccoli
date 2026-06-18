@@ -84,7 +84,7 @@ _COMMAND_REQUESTS: Mapping[str, str] = {
     "SET_RANGE_BOUNDS": "setRangeBoundsRequest",
     "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES": "subscribeObjectClassAttributesRequest",
     "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS": "subscribeObjectClassAttributesWithRegionsRequest",
-    "SYNCHRONIZATION_POINT_ACHIEVED": "synchronizationPointAchievedWithSuccessRequest",
+    "SYNCHRONIZATION_POINT_ACHIEVED": "synchronizationPointAchievedRequest",
     "TIME_ADVANCE_REQUEST": "timeAdvanceRequestRequest",
     "TIME_ADVANCE_REQUEST_AVAILABLE": "timeAdvanceRequestAvailableRequest",
     "UNASSOCIATE_REGIONS_FOR_UPDATES": "unassociateRegionsForUpdatesRequest",

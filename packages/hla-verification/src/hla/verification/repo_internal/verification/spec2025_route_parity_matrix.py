@@ -378,7 +378,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "HLArequestMIMdata, reports FOM module data for HLArequestFOMmoduleData, reports object "
         "publication/subscription state for HLArequestPublications and HLArequestSubscriptions, reports object "
         "instance information and object-instance counts, reports activity counts for updates/reflections/interactions, "
-        "and round-trips 2025 switch services, not full MOM manager object/interaction routing.",
+        "reports synchronization points/status, and round-trips 2025 switch services, not full MOM manager "
+        "object/interaction routing.",
     ),
     _row(
         "support_services",

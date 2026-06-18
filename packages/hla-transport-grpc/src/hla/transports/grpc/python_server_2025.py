@@ -121,6 +121,10 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected": "423",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData": "424",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportFOMmoduleData": "425",
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints": "426",
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPoints": "427",
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus": "428",
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPointStatus": "429",
         }
         self.interaction_names = {value: key for key, value in self.interactions.items()}
         self.parameters = {
@@ -174,6 +178,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             ("425", "HLAfederate"): "547",
             ("425", "HLAFOMmoduleIndicator"): "548",
             ("425", "HLAFOMmoduleData"): "549",
+            ("427", "HLAsynchronizationPoints"): "550",
+            ("428", "HLAlabel"): "551",
+            ("429", "HLAlabel"): "552",
+            ("429", "HLAfederateList"): "553",
+            ("429", "HLAfederateSynchronizationStatusList"): "554",
         }
         self.parameter_names = {(interaction_class, value): name for (interaction_class, name), value in self.parameters.items()}
         self.dimensions = {"RoutingSpace": "300"}
@@ -232,6 +241,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.save_status: dict[str, int] = {}
         self.restore_label: str | None = None
         self.restore_status: dict[str, int] = {}
+        self.synchronization_points: dict[str, set[str]] = {}
         self.callback_queue: list[callback_pb2.CallbackRequest] = []
 
     def Call(self, request, context):  # noqa: N802 - grpc generated naming
@@ -403,6 +413,25 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             except KeyError:
                 return self._error("InteractionParameterNotDefined", parameter)
             return rti_pb2.CallResponse(getParameterNameResponse=rti_pb2.GetParameterNameResponse(result=name))
+        if request_kind in {
+            "registerFederationSynchronizationPointRequest",
+            "registerFederationSynchronizationPointWithSetRequest",
+        }:
+            payload = getattr(request, request_kind)
+            self.synchronization_points.setdefault(payload.synchronizationPointLabel, set())
+            if request_kind == "registerFederationSynchronizationPointWithSetRequest":
+                return rti_pb2.CallResponse(
+                    registerFederationSynchronizationPointWithSetResponse=rti_pb2.RegisterFederationSynchronizationPointWithSetResponse()
+                )
+            return rti_pb2.CallResponse(
+                registerFederationSynchronizationPointResponse=rti_pb2.RegisterFederationSynchronizationPointResponse()
+            )
+        if request_kind == "synchronizationPointAchievedRequest":
+            payload = request.synchronizationPointAchievedRequest
+            achieved = self.synchronization_points.setdefault(payload.synchronizationPointLabel, set())
+            if payload.successfully:
+                achieved.add("1")
+            return rti_pb2.CallResponse(synchronizationPointAchievedResponse=rti_pb2.SynchronizationPointAchievedResponse())
         if request_kind == "getDimensionHandleRequest":
             name = request.getDimensionHandleRequest.dimensionName
             try:
@@ -964,6 +993,12 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation"]:
                 self._queue_object_instance_information_report(payload.parameterValues)
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
+            if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints"]:
+                self._queue_synchronization_points_report()
+                return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
+            if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus"]:
+                self._queue_synchronization_point_status_report(payload.parameterValues)
+                return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if self._interaction_subscriber_matches(interaction_class, ()):
                 self.callback_queue.append(
                     callback_pb2.CallbackRequest(
@@ -1478,6 +1513,46 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self._queue_mom_report(
             report_class,
             {"HLAMIMdata": b"HLAstandardMIM-2025 HLAmanager HLArequestMIMdata HLAreportMIMdata"},
+        )
+
+    def _queue_synchronization_points_report(self) -> None:
+        report_class = self.interactions[
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPoints"
+        ]
+        if not self._interaction_subscriber_matches(report_class, ()):
+            return
+        labels = ",".join(sorted(self.synchronization_points))
+        self._queue_mom_report(report_class, {"HLAsynchronizationPoints": labels.encode("ascii")})
+
+    def _queue_synchronization_point_status_report(self, parameters: datatypes_pb2.ParameterHandleValueMap) -> None:
+        report_class = self.interactions[
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPointStatus"
+        ]
+        if not self._interaction_subscriber_matches(report_class, ()):
+            return
+        request_class = self.interactions[
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus"
+        ]
+        label_parameter = self.parameters[(request_class, "HLAlabel")]
+        requested_label = ""
+        for item in parameters.parameterHandleValue:
+            if item.parameterHandle.data.decode("ascii") == label_parameter:
+                requested_label = item.value.decode("ascii")
+                break
+        labels = [requested_label] if requested_label else sorted(self.synchronization_points)
+        status_rows = []
+        federates: set[str] = set()
+        for label in labels:
+            achieved = sorted(self.synchronization_points.get(label, ()), key=int)
+            federates.update(achieved)
+            status_rows.append(f"{label}:{','.join(achieved)}")
+        self._queue_mom_report(
+            report_class,
+            {
+                "HLAlabel": ",".join(labels).encode("ascii"),
+                "HLAfederateList": ",".join(sorted(federates, key=int)).encode("ascii"),
+                "HLAfederateSynchronizationStatusList": ";".join(status_rows).encode("ascii"),
+            },
         )
 
     def _queue_mom_report(self, report_class: str, parameter_values: dict[str, bytes]) -> None:

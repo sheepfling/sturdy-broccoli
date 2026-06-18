@@ -129,6 +129,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "object discovery, attribute reflection, interaction receipt" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert "basic DDM region-overlap filtering for object attributes" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert "MOM service-invocation report callbacks over FedPro" in slices["2025-fedpro-transport-contract"]["supported_scope"]
+    assert "synchronization point/status MOM reports over FedPro" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert "Full MOM action/request routing" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert "full RTI semantics remain outside this slice" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert slices["2025-ddm-default-attribute-policy"]["status"] == "implemented-slice"
@@ -155,6 +156,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "object instance information for HLArequestObjectInstanceInformation" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "object-instance counts for deletable/updated/reflected objects" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "activity counts for updates, reflections, interactions sent" in slices["2025-mom-service-report-serialization"]["supported_scope"]
+    assert "synchronization point/status reports" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "not full MOM manager interaction routing" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert slices["2025-wsdl-legacy-only"]["status"] == "legacy-only"
     assert "HLA2025-RET-003" in slices["2025-wsdl-legacy-only"]["requirements"]

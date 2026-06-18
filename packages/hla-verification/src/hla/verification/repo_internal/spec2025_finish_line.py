@@ -284,8 +284,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "callbacks, queued timestamped attribute reflection/interaction receipt with retraction handles and "
             "pre-delivery retract, object discovery, attribute reflection, interaction receipt, basic DDM "
             "region-overlap filtering for object attributes, service-reporting switch state, MOM service-invocation "
-            "report callbacks over FedPro, resign, destroy, and disconnect. Full MOM action/request routing and full "
-            "RTI semantics remain outside this slice."
+            "report callbacks over FedPro, synchronization point/status MOM reports over FedPro, resign, destroy, "
+            "and disconnect. Full MOM action/request routing and full RTI semantics remain outside this slice."
         ),
     },
     {
@@ -358,8 +358,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "publication/subscription state for HLArequestPublications and "
             "HLArequestSubscriptions, object instance information for HLArequestObjectInstanceInformation, "
             "object-instance counts for deletable/updated/reflected objects, plus activity counts for updates, "
-            "reflections, interactions sent, and "
-            "interactions received. This is not full MOM manager interaction routing or a conformance claim."
+            "reflections, interactions sent, and interactions received, plus synchronization point/status reports. "
+            "This is not full MOM manager interaction routing or a conformance claim."
         ),
     },
     {

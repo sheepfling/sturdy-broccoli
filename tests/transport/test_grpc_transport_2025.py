@@ -1263,6 +1263,109 @@ def test_2025_transport_server_reports_mim_data_for_mom_request_over_fedpro_sche
         server.close()
 
 
+def test_2025_transport_server_reports_synchronization_points_for_mom_requests_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-mom-sync-points"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "MomSync2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025Sync", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        assert transport.request(
+            TransportRequest(command="REGISTER_FEDERATION_SYNCHRONIZATION_POINT", fields=("ReadyToRun", "73796e63", "1"))
+        ).fields == ()
+        assert transport.request(
+            TransportRequest(command="SYNCHRONIZATION_POINT_ACHIEVED", fields=("ReadyToRun", "1"))
+        ).fields == ()
+
+        points_request_class = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints",),
+            )
+        ).fields[0]
+        points_report_class = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPoints",),
+            )
+        ).fields[0]
+        points_param = transport.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(points_report_class, "HLAsynchronizationPoints"))
+        ).fields[0]
+        assert transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(points_report_class,))).fields == ()
+
+        assert transport.request(
+            TransportRequest(command="SEND_INTERACTION", fields=(points_request_class, "", "73796e632d706f696e74732d726571"))
+        ).fields == ()
+        points_report = transport.request(TransportRequest(command="EVOKE")).fields
+        assert points_report[:3] == ("1", "INTERACTION", points_report_class)
+        points_payloads = dict(item.split(":", 1) for item in points_report[3].split(","))
+        assert bytes.fromhex(points_payloads[points_param]).decode("ascii") == "ReadyToRun"
+        assert points_report[4:] == ("4d4f4d", "1", "1")
+
+        status_request_class = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus",),
+            )
+        ).fields[0]
+        status_request_label = transport.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(status_request_class, "HLAlabel"))
+        ).fields[0]
+        status_report_class = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPointStatus",),
+            )
+        ).fields[0]
+        status_label = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(status_report_class, "HLAlabel"))).fields[0]
+        status_federates = transport.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(status_report_class, "HLAfederateList"))
+        ).fields[0]
+        status_list = transport.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(status_report_class, "HLAfederateSynchronizationStatusList"))
+        ).fields[0]
+        assert transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(status_report_class,))).fields == ()
+
+        assert transport.request(
+            TransportRequest(
+                command="SEND_INTERACTION",
+                fields=(status_request_class, f"{status_request_label}:5265616479546f52756e", "73796e632d7374617475732d726571"),
+            )
+        ).fields == ()
+        status_report = transport.request(TransportRequest(command="EVOKE")).fields
+        assert status_report[:3] == ("1", "INTERACTION", status_report_class)
+        status_payloads = dict(item.split(":", 1) for item in status_report[3].split(","))
+        assert bytes.fromhex(status_payloads[status_label]).decode("ascii") == "ReadyToRun"
+        assert bytes.fromhex(status_payloads[status_federates]).decode("ascii") == "1"
+        assert bytes.fromhex(status_payloads[status_list]).decode("ascii") == "ReadyToRun:1"
+        assert status_report[4:] == ("4d4f4d", "1", "1")
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "registerFederationSynchronizationPointWithSetRequest",
+            "synchronizationPointAchievedRequest",
+            "getInteractionClassHandleRequest",
+            "getParameterHandleRequest",
+            "subscribeInteractionClassRequest",
+            "sendInteractionRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_reports_fom_module_data_for_mom_request_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None
