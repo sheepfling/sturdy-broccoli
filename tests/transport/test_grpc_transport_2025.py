@@ -1401,90 +1401,75 @@ def test_2025_transport_server_reports_object_subscriptions_for_mom_request_over
         server.close()
 
 
-def test_2025_transport_server_reports_interaction_declarations_for_mom_requests_over_fedpro_schema():
+def test_2025_transport_server_reports_activity_counts_for_mom_requests_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None
-    federation_name = "fedpro-2025-mom-interactions"
+    federation_name = "fedpro-2025-mom-activity"
     try:
         transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
 
         assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
-        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "MomInteractions2025.xml"))).fields == ()
-        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025MomIx", "TestFederate", federation_name))).fields == (
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "MomActivity2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025MomActivity", "TestFederate", federation_name))).fields == (
             "1",
             "HLAinteger64Time",
         )
 
+        object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        attribute = transport.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
+        assert transport.request(TransportRequest(command="PUBLISH_OBJECT_CLASS_ATTRIBUTES", fields=(object_class, attribute))).fields == ()
+        assert transport.request(TransportRequest(command="SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES", fields=(object_class, attribute))).fields == ()
+        object_instance = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "MomActivityTarget"))).fields[0]
+        assert transport.request(TransportRequest(command="EVOKE")).fields[:2] == ("1", "DISCOVER")
+        assert transport.request(
+            TransportRequest(command="UPDATE_ATTRIBUTE_VALUES", fields=(object_instance, f"{attribute}:313233", "7570646174652d746167"))
+        ).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields[:3] == ("1", "REFLECT", object_instance)
+
         interaction_class = transport.request(TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))).fields[0]
+        parameter = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(interaction_class, "TrackId"))).fields[0]
         assert transport.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
         assert transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
-
-        publication_request = transport.request(
-            TransportRequest(
-                command="GET_INTERACTION_CLASS_HANDLE",
-                fields=("HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsSent",),
-            )
-        ).fields[0]
-        publication_request_federate = transport.request(
-            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(publication_request, "HLAfederate"))
-        ).fields[0]
-        publication_report = transport.request(
-            TransportRequest(
-                command="GET_INTERACTION_CLASS_HANDLE",
-                fields=("HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionPublication",),
-            )
-        ).fields[0]
-        publication_report_federate = transport.request(
-            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(publication_report, "HLAfederate"))
-        ).fields[0]
-        publication_list = transport.request(
-            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(publication_report, "HLAinteractionClassList"))
-        ).fields[0]
-        assert transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(publication_report,))).fields == ()
-
         assert transport.request(
-            TransportRequest(command="SEND_INTERACTION", fields=(publication_request, f"{publication_request_federate}:31", "69782d7075622d726571"))
+            TransportRequest(command="SEND_INTERACTION", fields=(interaction_class, f"{parameter}:747261636b2d31", "696e746572616374696f6e2d746167"))
         ).fields == ()
-        report = transport.request(TransportRequest(command="EVOKE")).fields
-        assert report[:3] == ("1", "INTERACTION", publication_report)
-        payloads = dict(item.split(":", 1) for item in report[3].split(","))
-        assert bytes.fromhex(payloads[publication_report_federate]).decode("ascii") == "1"
-        assert bytes.fromhex(payloads[publication_list]).decode("ascii") == interaction_class
+        assert transport.request(TransportRequest(command="EVOKE")).fields[:3] == ("1", "INTERACTION", interaction_class)
 
-        subscription_request = transport.request(
-            TransportRequest(
-                command="GET_INTERACTION_CLASS_HANDLE",
-                fields=("HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsReceived",),
-            )
-        ).fields[0]
-        subscription_request_federate = transport.request(
-            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(subscription_request, "HLAfederate"))
-        ).fields[0]
-        subscription_report = transport.request(
-            TransportRequest(
-                command="GET_INTERACTION_CLASS_HANDLE",
-                fields=("HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionSubscription",),
-            )
-        ).fields[0]
-        subscription_report_federate = transport.request(
-            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(subscription_report, "HLAfederate"))
-        ).fields[0]
-        subscription_list = transport.request(
-            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(subscription_report, "HLAinteractionClassList"))
-        ).fields[0]
-        assert transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(subscription_report,))).fields == ()
-
-        assert transport.request(
-            TransportRequest(command="SEND_INTERACTION", fields=(subscription_request, f"{subscription_request_federate}:31", "69782d7375622d726571"))
-        ).fields == ()
-        report = transport.request(TransportRequest(command="EVOKE")).fields
-        assert report[:3] == ("1", "INTERACTION", subscription_report)
-        payloads = dict(item.split(":", 1) for item in report[3].split(","))
-        assert bytes.fromhex(payloads[subscription_report_federate]).decode("ascii") == "1"
-        subscribed_interactions = bytes.fromhex(payloads[subscription_list]).decode("ascii").split(",")
-        assert interaction_class in subscribed_interactions
-        assert subscription_report in subscribed_interactions
-        assert report[4:] == ("4d4f4d", "1", "1")
+        for request_name, report_name, count_name, expected in (
+            ("HLArequestUpdatesSent", "HLAreportUpdatesSent", "HLAupdatesSent", "1"),
+            ("HLArequestReflectionsReceived", "HLAreportReflectionsReceived", "HLAreflectionsReceived", "1"),
+            ("HLArequestInteractionsSent", "HLAreportInteractionsSent", "HLAinteractionsSent", "1"),
+            ("HLArequestInteractionsReceived", "HLAreportInteractionsReceived", "HLAinteractionsReceived", "1"),
+        ):
+            request_class = transport.request(
+                TransportRequest(
+                    command="GET_INTERACTION_CLASS_HANDLE",
+                    fields=(f"HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.{request_name}",),
+                )
+            ).fields[0]
+            request_federate_param = transport.request(
+                TransportRequest(command="GET_PARAMETER_HANDLE", fields=(request_class, "HLAfederate"))
+            ).fields[0]
+            report_class = transport.request(
+                TransportRequest(
+                    command="GET_INTERACTION_CLASS_HANDLE",
+                    fields=(f"HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.{report_name}",),
+                )
+            ).fields[0]
+            report_federate_param = transport.request(
+                TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAfederate"))
+            ).fields[0]
+            count_param = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, count_name))).fields[0]
+            assert transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(report_class,))).fields == ()
+            assert transport.request(
+                TransportRequest(command="SEND_INTERACTION", fields=(request_class, f"{request_federate_param}:31", "6d6f6d2d636f756e74"))
+            ).fields == ()
+            report = transport.request(TransportRequest(command="EVOKE")).fields
+            assert report[:3] == ("1", "INTERACTION", report_class)
+            payloads = dict(item.split(":", 1) for item in report[3].split(","))
+            assert bytes.fromhex(payloads[report_federate_param]).decode("ascii") == "1"
+            assert bytes.fromhex(payloads[count_param]).decode("ascii") == expected
+            assert report[4:] == ("4d4f4d", "1", "1")
 
         assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()

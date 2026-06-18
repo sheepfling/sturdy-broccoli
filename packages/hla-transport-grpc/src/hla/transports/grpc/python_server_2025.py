@@ -94,9 +94,13 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestSubscriptions": "406",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassSubscription": "407",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsSent": "408",
-            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionPublication": "409",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsSent": "409",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsReceived": "410",
-            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionSubscription": "411",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsReceived": "411",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestUpdatesSent": "412",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent": "413",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestReflectionsReceived": "414",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived": "415",
         }
         self.interaction_names = {value: key for key, value in self.interactions.items()}
         self.parameters = {
@@ -119,10 +123,16 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             ("407", "HLAattributeList"): "516",
             ("408", "HLAfederate"): "517",
             ("409", "HLAfederate"): "518",
-            ("409", "HLAinteractionClassList"): "519",
+            ("409", "HLAinteractionsSent"): "519",
             ("410", "HLAfederate"): "520",
             ("411", "HLAfederate"): "521",
-            ("411", "HLAinteractionClassList"): "522",
+            ("411", "HLAinteractionsReceived"): "522",
+            ("412", "HLAfederate"): "523",
+            ("413", "HLAfederate"): "524",
+            ("413", "HLAupdatesSent"): "525",
+            ("414", "HLAfederate"): "526",
+            ("415", "HLAfederate"): "527",
+            ("415", "HLAreflectionsReceived"): "528",
         }
         self.parameter_names = {(interaction_class, value): name for (interaction_class, name), value in self.parameters.items()}
         self.dimensions = {"RoutingSpace": "300"}
@@ -167,6 +177,10 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.time_regulating = False
         self.time_constrained = False
         self.asynchronous_delivery_enabled = False
+        self.updates_sent = 0
+        self.reflections_received = 0
+        self.interactions_sent = 0
+        self.interactions_received = 0
         self.queued_tso_callbacks: dict[str, tuple[float, callback_pb2.CallbackRequest]] = {}
         self.delivered_retractions: set[str] = set()
         self.saved_labels: set[str] = set()
@@ -758,6 +772,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             return rti_pb2.CallResponse(unassociateRegionsForUpdatesResponse=rti_pb2.UnassociateRegionsForUpdatesResponse())
         if request_kind == "updateAttributeValuesRequest":
             payload = request.updateAttributeValuesRequest
+            self.updates_sent += 1
             object_instance = payload.objectInstance.data.decode("ascii")
             record = self.object_instances.get(object_instance)
             if record is None:
@@ -788,9 +803,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                         )
                     )
                 )
+                self.reflections_received += 1
             return rti_pb2.CallResponse(updateAttributeValuesResponse=rti_pb2.UpdateAttributeValuesResponse())
         if request_kind == "updateAttributeValuesWithTimeRequest":
             payload = request.updateAttributeValuesWithTimeRequest
+            self.updates_sent += 1
             object_instance = payload.objectInstance.data.decode("ascii")
             record = self.object_instances.get(object_instance)
             if record is None:
@@ -846,10 +863,32 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 self._queue_object_subscription_report()
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsSent"]:
-                self._queue_interaction_publication_report()
+                self._queue_activity_count_report(
+                    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsSent",
+                    "HLAinteractionsSent",
+                    self.interactions_sent,
+                )
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsReceived"]:
-                self._queue_interaction_subscription_report()
+                self._queue_activity_count_report(
+                    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsReceived",
+                    "HLAinteractionsReceived",
+                    self.interactions_received,
+                )
+                return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
+            if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestUpdatesSent"]:
+                self._queue_activity_count_report(
+                    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent",
+                    "HLAupdatesSent",
+                    self.updates_sent,
+                )
+                return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
+            if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestReflectionsReceived"]:
+                self._queue_activity_count_report(
+                    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived",
+                    "HLAreflectionsReceived",
+                    self.reflections_received,
+                )
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if self._interaction_subscriber_matches(interaction_class, ()):
                 self.callback_queue.append(
@@ -863,6 +902,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                         )
                     )
                 )
+                self.interactions_received += 1
+            self.interactions_sent += 1
             return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
         if request_kind == "sendInteractionWithRegionsRequest":
             payload = request.sendInteractionWithRegionsRequest
@@ -881,6 +922,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                         )
                     )
                 )
+                self.interactions_received += 1
+            self.interactions_sent += 1
             return rti_pb2.CallResponse(sendInteractionWithRegionsResponse=rti_pb2.SendInteractionWithRegionsResponse())
         if request_kind == "sendInteractionWithTimeRequest":
             payload = request.sendInteractionWithTimeRequest
@@ -904,6 +947,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                         )
                     ),
                 )
+                self.interactions_received += 1
+            self.interactions_sent += 1
             return rti_pb2.CallResponse(
                 sendInteractionWithTimeResponse=rti_pb2.SendInteractionWithTimeResponse(
                     result=self._message_retraction_return(retraction_handle)
@@ -1274,33 +1319,15 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             },
         )
 
-    def _queue_interaction_publication_report(self) -> None:
-        report_class = self.interactions[
-            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionPublication"
-        ]
+    def _queue_activity_count_report(self, report_name: str, count_parameter: str, count: int) -> None:
+        report_class = self.interactions[report_name]
         if not self._interaction_subscriber_matches(report_class, ()):
             return
-        interactions = ",".join(sorted(self.published_interactions, key=int))
         self._queue_mom_report(
             report_class,
             {
                 "HLAfederate": b"1",
-                "HLAinteractionClassList": interactions.encode("ascii"),
-            },
-        )
-
-    def _queue_interaction_subscription_report(self) -> None:
-        report_class = self.interactions[
-            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionSubscription"
-        ]
-        if not self._interaction_subscriber_matches(report_class, ()):
-            return
-        interactions = ",".join(sorted(self.subscribed_interactions, key=int))
-        self._queue_mom_report(
-            report_class,
-            {
-                "HLAfederate": b"1",
-                "HLAinteractionClassList": interactions.encode("ascii"),
+                count_parameter: str(count).encode("ascii"),
             },
         )
 
