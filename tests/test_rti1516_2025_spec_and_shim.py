@@ -513,6 +513,107 @@ def test_2025_shim_rejects_invalid_join_fom_modules_and_destroy_while_joined(tmp
     wing.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-MOD-002", "HLA2025-MOD-003", "HLA2025-FI-008", "HLA2025-OMT-007")
+def test_2025_shim_distinguishes_fom_mim_open_read_invalid_and_merge_errors(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel
+    from hla.rti1516_2025.exceptions import (
+        CouldNotOpenFOM,
+        CouldNotOpenMIM,
+        ErrorReadingFOM,
+        ErrorReadingMIM,
+        InconsistentFOM,
+        InvalidFOM,
+        InvalidMIM,
+    )
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    def write_module(path: Path, name: str, representation: str) -> Path:
+        path.write_text(
+            f"""<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification><name>{name}</name><type>FOM</type></modelIdentification>
+  <dataTypes>
+    <simpleDataTypes>
+      <simpleData><name>SharedType</name><representation>{representation}</representation></simpleData>
+    </simpleDataTypes>
+  </dataTypes>
+</objectModel>
+""",
+            encoding="utf-8",
+        )
+        return path
+
+    rti = create_rti_ambassador(backend="shim")
+    rti.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+
+    with pytest.raises(CouldNotOpenFOM):
+        rti.createFederationExecution(
+            federationName=f"missing-fom-{uuid.uuid4().hex[:8]}",
+            fomModule=tmp_path / "missing-fom.xml",
+        )
+    with pytest.raises(CouldNotOpenMIM):
+        rti.createFederationExecutionWithMIM(
+            federationName=f"missing-mim-{uuid.uuid4().hex[:8]}",
+            fomModules=["TargetRadarFOMmodule.xml"],
+            mimModule=tmp_path / "missing-mim.xml",
+        )
+
+    bad_fom = tmp_path / "bad-fom.xml"
+    bad_fom.write_text("<not-an-object-model/>", encoding="utf-8")
+    with pytest.raises(ErrorReadingFOM):
+        rti.createFederationExecution(
+            federationName=f"bad-fom-{uuid.uuid4().hex[:8]}",
+            fomModule=bad_fom,
+        )
+
+    bad_mim = tmp_path / "bad-mim.xml"
+    bad_mim.write_text("<not-an-object-model/>", encoding="utf-8")
+    with pytest.raises(ErrorReadingMIM):
+        rti.createFederationExecutionWithMIM(
+            federationName=f"bad-mim-{uuid.uuid4().hex[:8]}",
+            fomModules=["TargetRadarFOMmodule.xml"],
+            mimModule=bad_mim,
+        )
+
+    invalid_name_fom = tmp_path / "invalid-name-fom.xml"
+    invalid_name_fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification><name>Invalid Name FOM</name><type>FOM</type></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass><name>hlaReservedUserClass</name></objectClass>
+    </objectClass>
+  </objects>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+    with pytest.raises(InvalidFOM, match="reserved"):
+        rti.createFederationExecution(
+            federationName=f"invalid-fom-{uuid.uuid4().hex[:8]}",
+            fomModule=invalid_name_fom,
+        )
+
+    with pytest.raises(InvalidMIM):
+        rti.createFederationExecutionWithMIM(
+            federationName=f"invalid-mim-{uuid.uuid4().hex[:8]}",
+            fomModules=["TargetRadarFOMmodule.xml"],
+            mimModule=None,
+        )
+
+    conflict_a = write_module(tmp_path / "conflict-a.xml", "Conflict A", "HLAinteger32BE")
+    conflict_b = write_module(tmp_path / "conflict-b.xml", "Conflict B", "HLAinteger64BE")
+    with pytest.raises(InconsistentFOM, match="Conflicting simple datatype definition"):
+        rti.createFederationExecution(
+            federationName=f"conflicting-fom-{uuid.uuid4().hex[:8]}",
+            fomModules=[conflict_a, conflict_b],
+        )
+
+    rti.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FR-010", "HLA2025-FI-005", "HLA2025-FI-009")
 def test_2025_shim_uses_selected_logical_time_factory_for_queries_and_grants() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction

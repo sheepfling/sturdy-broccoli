@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from importlib import import_module
+from pathlib import Path
 from typing import Any, Callable
 
 from hla.rti.plugin_api import BackendRequest
@@ -641,7 +642,7 @@ class Shim2025RTIAmbassador:
     def _normalize_module_sources(value: Any) -> tuple[Any, ...]:
         if value is None:
             return ()
-        if isinstance(value, (str, bytes, bytearray, memoryview)):
+        if isinstance(value, (str, bytes, bytearray, memoryview, Path)):
             return (value,)
         return tuple(value)
 
@@ -708,7 +709,7 @@ class Shim2025RTIAmbassador:
     def _resolve_fom_modules(sources: tuple[Any, ...], *, mim: bool) -> tuple[Any, ...]:
         fom = import_module("hla.rti1516e.fom")
         try:
-            modules = fom.FOMResolver().resolve_many(sources)
+            modules = fom.FOMResolver(require_local_parse=True).resolve_many(sources)
             if not mim:
                 validation = import_module("hla.rti1516_2025.validation")
                 issues = validation.validate_fom_modules(modules)

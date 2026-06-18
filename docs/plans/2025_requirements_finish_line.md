@@ -8,7 +8,7 @@ partial slices, and planned work without using HLA conformance language.
 - Initial curated registry rows: 28
 - Imported executable-test rows: 1117
 - Completion-backlog rows: 27
-- High-priority rows still open: 19
+- High-priority rows still open: 17
 
 ## Implemented Evidence Slices
 
@@ -22,6 +22,7 @@ partial slices, and planned work without using HLA conformance language.
 | 2025-fom-showcase | implemented-slice | HLA2025-FR-001, HLA2025-FR-003, HLA2025-FR-004 | tests/scenarios/test_proto2025_fom_showcase.py, packages/hla-verification/src/hla/verification/repo_internal/verification/proto2025_fom_showcase.py |
 | 2025-handle-normalization | implemented-slice | HLA2025-NEW-005, HLA2025-FI-001 | tests/test_rti1516_2025_spec_and_shim.py, packages/hla-rti1516-2025/src/hla/rti1516_2025/handles.py, packages/hla-backend-shim/src/hla/backends/shim/backend.py |
 | 2025-switch-inquiry-control | implemented-slice | HLA2025-MOD-008, HLA2025-RET-001, HLA2025-FI-001 | tests/test_rti1516_2025_spec_and_shim.py, packages/hla-backend-shim/src/hla/backends/shim/backend.py |
+| 2025-fom-mim-error-taxonomy | implemented-slice | HLA2025-MOD-002, HLA2025-MOD-003, HLA2025-FI-008, HLA2025-OMT-007 | tests/test_rti1516_2025_spec_and_shim.py, packages/hla-backend-shim/src/hla/backends/shim/backend.py |
 
 ## Highest-Priority Open Work
 
@@ -29,8 +30,6 @@ partial slices, and planned work without using HLA conformance language.
 |---|---|---|---|---|
 | HLA2025-MOD-004 | Callback context parameters | very-high | planned | Callback signature inspection plus object/interaction delivery tests with populated context |
 | HLA2025-NEW-001 | Directed interactions | very-high | planned | Two-federate directed interaction tests plus FOM/OMT parser fixture |
-| HLA2025-MOD-002 | Create and join federation FOM handling | very-high | partial | Positive FOM module smoke test and negative module-resolution matrix |
-| HLA2025-MOD-003 | FOM and MIM module loading | very-high | partial | XML/MIM fixture tests for parser validator and loader error taxonomy |
 | HLA2025-MOD-006 | Time management and flush queue grant | very-high | partial | Python RTI time matrix plus Java/C++ signature conformance checks |
 | HLA2025-NEW-006 | OMT reference data types and valueRequired | very-high | partial | OMT fixture parser validator round-trip and generated model check |
 | HLA2025-BLG-001 | Renumbered service utilization rows | high | planned | CSV check comparing 2010_section_or_location and 2025_section_or_location for carry-forward rows |

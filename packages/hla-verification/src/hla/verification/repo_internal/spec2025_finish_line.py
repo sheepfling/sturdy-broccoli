@@ -88,12 +88,21 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
         ),
     },
+    {
+        "id": "2025-fom-mim-error-taxonomy",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-MOD-002", "HLA2025-MOD-003", "HLA2025-FI-008", "HLA2025-OMT-007"),
+        "evidence": (
+            "tests/test_rti1516_2025_spec_and_shim.py",
+            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+        ),
+    },
 )
 
 BACKLOG_STATUS_BY_ROW = {
     "HLA2025-MOD-001": "implemented-slice",
-    "HLA2025-MOD-002": "partial",
-    "HLA2025-MOD-003": "partial",
+    "HLA2025-MOD-002": "implemented-slice",
+    "HLA2025-MOD-003": "implemented-slice",
     "HLA2025-MOD-006": "partial",
     "HLA2025-MOD-008": "implemented-slice",
     "HLA2025-NEW-002": "implemented-slice",
