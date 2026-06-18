@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import tomllib
 from pathlib import Path
 
 from tests.typed_json_models import (
@@ -13,6 +14,27 @@ from tests.typed_json_models import (
 
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_repo_green_default_suite_includes_2010_and_2025_grpc_route_tests() -> None:
+    pyproject = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    testpaths = pyproject["tool"]["pytest"]["ini_options"]["testpaths"]
+    assert "tests" in testpaths
+
+    full_sequence = (ROOT / "scripts/ci/full_sequence.sh").read_text(encoding="utf-8")
+    assert 'run_step "unit tests" "$ROOT_DIR/scripts/ci/test.sh"' in full_sequence
+
+    test_script = (ROOT / "scripts/ci/test.sh").read_text(encoding="utf-8")
+    assert "python -m pytest -q" in test_script
+
+    default_suite_files = [
+        ROOT / "tests/transport/test_grpc_transport.py",
+        ROOT / "tests/transport/test_grpc_transport_2025.py",
+        ROOT / "tests/backends/test_standard_shim_artifacts.py",
+        ROOT / "tests/backends/test_standard_java_shim_routes.py",
+    ]
+    for path in default_suite_files:
+        assert path.exists(), path.relative_to(ROOT)
 
 
 def test_repo_green_help_describes_repo_green_lane() -> None:
