@@ -30,14 +30,30 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
 
     backlog = snapshot["completion_backlog"]
     assert backlog["by_bucket"]["new-2025-requirements"] == 7
-    assert backlog["by_current_status"]["implemented-slice"] >= 3
+    assert backlog["by_current_status"]["implemented-slice"] >= 20
     assert backlog["by_current_status"]["partial"] >= 1
-    assert backlog["by_current_status"]["planned"] >= 10
-    assert backlog["by_current_status"]["unsupported-boundary"] >= 1
-    assert backlog["high_priority_open_count"] > 10
+    assert "planned" not in backlog["by_current_status"]
+    assert backlog["by_current_status"]["unsupported-boundary"] >= 5
+    assert backlog["by_current_status"]["legacy-only"] == 1
+    assert backlog["high_priority_open_count"] == 0
 
     open_ids = {row["id"] for row in backlog["high_priority_open"]}
-    assert {"HLA2025-BND-001", "HLA2025-BND-002"} <= open_ids
+    assert not open_ids
+    for row_id in (
+        "HLA2025-BLG-001",
+        "HLA2025-BLG-002",
+        "HLA2025-BND-001",
+        "HLA2025-BND-002",
+        "HLA2025-BND-003",
+        "HLA2025-MOD-005",
+        "HLA2025-MOD-007",
+        "HLA2025-MOD-009",
+        "HLA2025-MOD-010",
+        "HLA2025-NEW-004",
+        "HLA2025-NEW-007",
+        "HLA2025-RET-003",
+    ):
+        assert row_id not in open_ids
     assert "HLA2025-NEW-001" not in open_ids
     assert "HLA2025-NEW-002" not in open_ids
     assert "HLA2025-NEW-005" not in open_ids
@@ -72,11 +88,25 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "HLA2025-NEW-001" in slices["2025-directed-interaction-boundary"]["requirements"]
     assert slices["2025-omt-reference-value-required"]["status"] == "implemented-slice"
     assert "HLA2025-NEW-006" in slices["2025-omt-reference-value-required"]["requirements"]
+    assert slices["2025-carry-forward-cleanup"]["status"] == "implemented-slice"
+    assert "HLA2025-BLG-001" in slices["2025-carry-forward-cleanup"]["requirements"]
+    assert slices["2025-exception-and-logical-time-deltas"]["status"] == "implemented-slice"
+    assert "HLA2025-MOD-010" in slices["2025-exception-and-logical-time-deltas"]["requirements"]
+    assert slices["2025-java-binding-source-trace"]["status"] == "implemented-slice"
+    assert "full Java behavior conformance" in slices["2025-java-binding-source-trace"]["supported_scope"]
+    assert slices["2025-cpp-binding-source-trace"]["status"] == "implemented-slice"
+    assert "full C++ RTI behavior pass" in slices["2025-cpp-binding-source-trace"]["supported_scope"]
+    assert slices["2025-fedpro-transport-contract"]["status"] == "implemented-slice"
+    assert "Full FedPro session behavior" in slices["2025-fedpro-transport-contract"]["supported_scope"]
+    assert slices["2025-tail-unsupported-behavior-boundaries"]["status"] == "unsupported-boundary"
+    assert "HLA2025-MOD-005" in slices["2025-tail-unsupported-behavior-boundaries"]["requirements"]
+    assert slices["2025-wsdl-legacy-only"]["status"] == "legacy-only"
+    assert "HLA2025-RET-003" in slices["2025-wsdl-legacy-only"]["requirements"]
 
     markdown = "\n".join(build_spec2025_finish_line_markdown(ROOT))
     assert "HLA conformance" in markdown
     assert "Highest-Priority Open Work" in markdown
-    assert "HLA2025-NEW-001" in markdown
+    assert "2025-wsdl-legacy-only" in markdown
     assert "Do not promote `partial` rows" in markdown
 
 

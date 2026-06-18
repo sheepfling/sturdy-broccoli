@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 HIGH_PRIORITIES = frozenset({"high", "very-high"})
-CLOSED_STATUSES = frozenset({"implemented-slice", "unsupported-boundary"})
+CLOSED_STATUSES = frozenset({"implemented-slice", "unsupported-boundary", "legacy-only"})
 
 IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
     {
@@ -146,22 +146,144 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "serializer round-trips the metadata, and 2025 validation rejects invalid valueRequired values."
         ),
     },
+    {
+        "id": "2025-carry-forward-cleanup",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-BLG-001", "HLA2025-BLG-002", "HLA2025-REQ-001"),
+        "evidence": (
+            "tests/requirements/test_2025_tail_backlog_evidence.py",
+            "requirements/2025/differentials/HLA_1516_2025_vs_2010_Differential_Set.csv",
+            "requirements/2025/differentials/HLA_1516_2025_vs_2010_Code_Reuse_Disposition.csv",
+            "tests/test_rti1516_2025_validation.py",
+            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+        ),
+        "supported_scope": (
+            "Renumbered service-utilization rows preserve behavior claims while updating clause references. "
+            "Common FOM/SOM object-model parsing remains shared and preserves nullable 2025 metadata."
+        ),
+    },
+    {
+        "id": "2025-exception-and-logical-time-deltas",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-MOD-009", "HLA2025-MOD-010", "HLA2025-VER-002"),
+        "evidence": (
+            "tests/requirements/test_2025_tail_backlog_evidence.py",
+            "tests/test_rti1516_2025_validation.py",
+            "requirements/2025/STRICT_DOC_INVENTORY.json",
+            "packages/hla-rti1516e/src/hla/rti1516e/fom.py",
+        ),
+        "supported_scope": (
+            "Native 2025 exception inventory uses the 2025 FOM/MIM/auth names without FDD-era exception names. "
+            "OMT XML parsing accepts 2025 logicalTime/logicalTimeInterval and serializer emits those names for 2025."
+        ),
+    },
+    {
+        "id": "2025-java-binding-source-trace",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-BND-001", "HLA2025-FI-003", "HLA2025-FI-004"),
+        "evidence": (
+            "tests/requirements/test_2025_tail_backlog_evidence.py",
+            "requirements/2025/STRICT_DOC_INVENTORY.json",
+            "requirements/2025/SOURCE_TRACE.md",
+            "docs/evidence/java-intake/java-2025-standard-shim-2025-jpype.json",
+            "docs/evidence/java-intake/java-2025-standard-shim-2025-py4j.json",
+        ),
+        "supported_scope": (
+            "Java 2025 package, RTI/federate/encoder declaration inventory, source trace, and intake evidence "
+            "are separated from common behavior rows. This is surface/intake evidence, not full Java behavior conformance."
+        ),
+    },
+    {
+        "id": "2025-cpp-binding-source-trace",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-BND-002", "HLA2025-FI-003", "HLA2025-FI-004"),
+        "evidence": (
+            "tests/requirements/test_2025_tail_backlog_evidence.py",
+            "requirements/2025/SOURCE_TRACE.md",
+            "docs/evidence/cpp-intake/cpp-standard-2025-2025-pybind.json",
+            "docs/evidence/cpp-intake/cpp-standard-2025-2025-grpc.json",
+            "docs/evidence/shim_routes/cpp-standard-2025.json",
+        ),
+        "supported_scope": (
+            "C++ 2025 namespace/source trace and route evidence are recorded separately from common behavior rows. "
+            "This is source-trace/intake evidence, not a full C++ RTI behavior pass."
+        ),
+    },
+    {
+        "id": "2025-fedpro-transport-contract",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-BND-003", "HLA2025-FI-004"),
+        "evidence": (
+            "tests/requirements/test_2025_tail_backlog_evidence.py",
+            "tests/transport/test_grpc_transport_2025.py",
+            "packages/hla-transport-grpc/proto/rti1516_2025/fedpro/HLA2025RTITransport.proto",
+            "packages/hla-transport-grpc/proto/rti1516_2025/fedpro/RTIambassador_2025.proto",
+            "packages/hla-transport-grpc/proto/rti1516_2025/fedpro/FederateAmbassador_2025.proto",
+        ),
+        "supported_scope": (
+            "2025 FedPro protobuf package, gRPC service binding, typed request/callback oneofs, and loopback "
+            "transport smoke tests are present. Full FedPro session behavior remains outside this slice."
+        ),
+    },
+    {
+        "id": "2025-tail-unsupported-behavior-boundaries",
+        "status": "unsupported-boundary",
+        "requirements": ("HLA2025-MOD-005", "HLA2025-MOD-007", "HLA2025-NEW-004", "HLA2025-NEW-007", "HLA2025-REQ-002"),
+        "evidence": (
+            "tests/test_rti1516_2025_spec_and_shim.py",
+            "tests/requirements/test_2025_tail_backlog_evidence.py",
+            "packages/hla-rti1516-2025/src/hla/rti1516_2025/rti_ambassador.py",
+            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+        ),
+        "supported_scope": (
+            "Ownership tag/set callbacks, DDM dimension lookup behavior, default attribute transportation/order "
+            "policy behavior, and detailed MOM service-report serialization are recorded as explicit Python shim "
+            "unsupported boundaries. Service surfaces and differential rows are traceable; behavior is not claimed complete."
+        ),
+    },
+    {
+        "id": "2025-wsdl-legacy-only",
+        "status": "legacy-only",
+        "requirements": ("HLA2025-RET-003", "HLA2025-BND-003", "HLA2025-REQ-002"),
+        "evidence": (
+            "tests/requirements/test_2025_tail_backlog_evidence.py",
+            "requirements/2025/differentials/HLA_1516_2025_vs_2010_Code_Reuse_Disposition.csv",
+            "CERTI/xml/ieee1516-2010/1516_1-2010/hla1516e.wsdl",
+            "packages/hla-transport-grpc/proto/rti1516_2025/fedpro/HLA2025RTITransport.proto",
+        ),
+        "supported_scope": (
+            "The 2010 WSDL binding remains legacy-only and is not counted as a native 2025 common behavior row. "
+            "2025 transport work is isolated under FedPro/protobuf."
+        ),
+    },
 )
 
 BACKLOG_STATUS_BY_ROW = {
+    "HLA2025-BLG-001": "implemented-slice",
+    "HLA2025-BLG-002": "implemented-slice",
+    "HLA2025-BND-001": "implemented-slice",
+    "HLA2025-BND-002": "implemented-slice",
+    "HLA2025-BND-003": "implemented-slice",
     "HLA2025-MOD-001": "implemented-slice",
     "HLA2025-MOD-002": "implemented-slice",
     "HLA2025-MOD-003": "implemented-slice",
     "HLA2025-MOD-004": "implemented-slice",
+    "HLA2025-MOD-005": "unsupported-boundary",
     "HLA2025-MOD-006": "implemented-slice",
+    "HLA2025-MOD-007": "unsupported-boundary",
     "HLA2025-MOD-008": "implemented-slice",
+    "HLA2025-MOD-009": "implemented-slice",
+    "HLA2025-MOD-010": "implemented-slice",
     "HLA2025-NEW-001": "unsupported-boundary",
     "HLA2025-NEW-002": "implemented-slice",
     "HLA2025-NEW-003": "implemented-slice",
+    "HLA2025-NEW-004": "unsupported-boundary",
     "HLA2025-NEW-005": "implemented-slice",
     "HLA2025-NEW-006": "implemented-slice",
+    "HLA2025-NEW-007": "unsupported-boundary",
     "HLA2025-RET-001": "implemented-slice",
     "HLA2025-RET-002": "implemented-slice",
+    "HLA2025-RET-003": "legacy-only",
     "HLA2025-VER-001": "partial",
     "HLA2025-VER-002": "implemented-slice",
 }

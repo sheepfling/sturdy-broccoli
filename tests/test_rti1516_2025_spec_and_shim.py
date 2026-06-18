@@ -229,6 +229,96 @@ def test_2025_shim_records_directed_interaction_services_as_explicit_unsupported
     rti.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-MOD-005", "HLA2025-MOD-007", "HLA2025-NEW-004", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_records_tail_services_as_explicit_unsupported_boundaries() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.exceptions import RTIinternalError
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.handles import (
+        AttributeHandle,
+        DimensionHandle,
+        ObjectClassHandle,
+        ObjectInstanceHandle,
+        TransportationTypeHandle,
+    )
+
+    federation_name = f"shim-tail-boundary-{uuid.uuid4().hex[:8]}"
+    rti = create_rti_ambassador(backend="shim")
+    rti.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    rti.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    rti.joinFederationExecution(
+        federateName="BoundaryFederate",
+        federateType="TestFederate",
+        federationName=federation_name,
+    )
+
+    object_class = ObjectClassHandle(11)
+    object_instance = ObjectInstanceHandle(12)
+    attributes = {AttributeHandle(13)}
+    transportation = TransportationTypeHandle(14)
+    dimension = DimensionHandle(15)
+
+    unsupported_calls = [
+        (
+            "unconditionalAttributeOwnershipDivestiture",
+            (object_instance, attributes, b"ownership-tag"),
+            {},
+        ),
+        (
+            "attributeOwnershipAcquisitionIfAvailable",
+            (object_instance, attributes, b"ownership-tag"),
+            {},
+        ),
+        ("getAvailableDimensionsForObjectClass", (object_class,), {}),
+        ("getDimensionUpperBound", (dimension,), {}),
+        (
+            "changeDefaultAttributeTransportationType",
+            (object_class, attributes, transportation),
+            {},
+        ),
+        ("changeDefaultAttributeOrderType", (object_class, attributes, OrderType.TIMESTAMP), {}),
+    ]
+
+    for method_name, args, kwargs in unsupported_calls:
+        with pytest.raises(RTIinternalError, match=method_name):
+            getattr(rti, method_name)(*args, **kwargs)
+
+    assert rti.getServiceReportingSwitch() is False
+    rti.setServiceReportingSwitch(True)
+    assert rti.getServiceReportingSwitch() is True
+    with pytest.raises(RTIinternalError, match="serializeMOMServiceReport"):
+        rti.serializeMOMServiceReport(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches",
+            result="unsupported-boundary",
+        )
+
+    boundary_names = {
+        "unconditionalAttributeOwnershipDivestiture",
+        "attributeOwnershipAcquisitionIfAvailable",
+        "getAvailableDimensionsForObjectClass",
+        "getDimensionUpperBound",
+        "changeDefaultAttributeTransportationType",
+        "changeDefaultAttributeOrderType",
+        "serializeMOMServiceReport",
+    }
+    assert [call[0] for call in rti.calls if call[0] in boundary_names] == [
+        "unconditionalAttributeOwnershipDivestiture",
+        "attributeOwnershipAcquisitionIfAvailable",
+        "getAvailableDimensionsForObjectClass",
+        "getDimensionUpperBound",
+        "changeDefaultAttributeTransportationType",
+        "changeDefaultAttributeOrderType",
+        "serializeMOMServiceReport",
+    ]
+
+    rti.resignFederationExecution(ResignAction.NO_ACTION)
+    rti.destroyFederationExecution(federationName=federation_name)
+    rti.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-005")
 def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
