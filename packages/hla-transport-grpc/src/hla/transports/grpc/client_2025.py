@@ -359,6 +359,8 @@ def _decode_response_payload(payload: Message) -> tuple[str, ...]:
                     result_fields.append("0")
             elif field.message_type.name == "JoinResult":
                 result_fields.extend((_opaque_text(value.federateHandle.data), value.logicalTimeImplementationName))
+            elif field.message_type.name == "RangeBounds":
+                result_fields.extend((str(value.lower), str(value.upper)))
             else:
                 result_fields.append(_decode_message_value(value))
         elif field.type == FieldDescriptor.TYPE_BOOL:

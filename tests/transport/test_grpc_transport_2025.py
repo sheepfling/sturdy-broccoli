@@ -1029,6 +1029,85 @@ def test_2025_transport_server_round_trips_2025_switch_services_over_fedpro_sche
         server.close()
 
 
+def test_2025_transport_server_round_trips_support_services_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-support"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "Support2025.xml"))).fields == ()
+        join_fields = transport.request(TransportRequest(command="JOIN", fields=("FedPro2025Support", "TestFederate", federation_name))).fields
+        federate_handle = join_fields[0]
+
+        assert transport.request(TransportRequest(command="GET_FEDERATE_HANDLE", fields=("FedPro2025Support",))).fields == (federate_handle,)
+        assert transport.request(TransportRequest(command="GET_FEDERATE_NAME", fields=(federate_handle,))).fields == ("FedPro2025Support",)
+        assert transport.request(TransportRequest(command="NORMALIZE_FEDERATE_HANDLE", fields=(federate_handle,))).fields == (federate_handle,)
+        assert transport.request(TransportRequest(command="NORMALIZE_SERVICE_GROUP", fields=("FEDERATION_MANAGEMENT",))).fields == ("0",)
+
+        object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        assert transport.request(TransportRequest(command="GET_OBJECT_CLASS_NAME", fields=(object_class,))).fields == ("HLAobjectRoot.Target",)
+        assert transport.request(TransportRequest(command="NORMALIZE_OBJECT_CLASS_HANDLE", fields=(object_class,))).fields == (object_class,)
+        attribute = transport.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
+        assert transport.request(TransportRequest(command="GET_ATTRIBUTE_NAME", fields=(object_class, attribute))).fields == ("Position",)
+        object_instance = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProSupportTarget-1"))).fields[0]
+        assert transport.request(TransportRequest(command="GET_KNOWN_OBJECT_CLASS_HANDLE", fields=(object_instance,))).fields == (object_class,)
+        assert transport.request(TransportRequest(command="NORMALIZE_OBJECT_INSTANCE_HANDLE", fields=(object_instance,))).fields == (object_instance,)
+
+        interaction_class = transport.request(TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))).fields[0]
+        assert transport.request(TransportRequest(command="GET_INTERACTION_CLASS_NAME", fields=(interaction_class,))).fields == (
+            "HLAinteractionRoot.TrackReport",
+        )
+        assert transport.request(TransportRequest(command="NORMALIZE_INTERACTION_CLASS_HANDLE", fields=(interaction_class,))).fields == (interaction_class,)
+        parameter = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(interaction_class, "TrackId"))).fields[0]
+        assert transport.request(TransportRequest(command="GET_PARAMETER_NAME", fields=(interaction_class, parameter))).fields == ("TrackId",)
+
+        dimension = transport.request(TransportRequest(command="GET_DIMENSION_HANDLE", fields=("RoutingSpace",))).fields[0]
+        assert transport.request(TransportRequest(command="GET_DIMENSION_NAME", fields=(dimension,))).fields == ("RoutingSpace",)
+        region = transport.request(TransportRequest(command="CREATE_REGION", fields=(dimension,))).fields[0]
+        assert transport.request(TransportRequest(command="GET_DIMENSION_HANDLE_SET", fields=(region,))).fields == (dimension,)
+        assert transport.request(TransportRequest(command="SET_RANGE_BOUNDS", fields=(region, dimension, "12:34"))).fields == ()
+        assert transport.request(TransportRequest(command="GET_RANGE_BOUNDS", fields=(region, dimension))).fields == ("12", "34")
+
+        transportation = transport.request(TransportRequest(command="GET_TRANSPORTATION_TYPE_HANDLE", fields=("HLAbestEffort",))).fields[0]
+        assert transport.request(TransportRequest(command="GET_TRANSPORTATION_TYPE_NAME", fields=(transportation,))).fields == ("HLAbestEffort",)
+        assert transport.request(TransportRequest(command="GET_ORDER_TYPE", fields=("HLAtimestamp",))).fields == ("TIMESTAMP",)
+        assert transport.request(TransportRequest(command="GET_ORDER_NAME", fields=("TIMESTAMP",))).fields == ("HLAtimestamp",)
+        assert transport.request(TransportRequest(command="GET_UPDATE_RATE_VALUE", fields=("HLAdefaultUpdateRate",))).fields == ("1.0",)
+        assert transport.request(TransportRequest(command="GET_UPDATE_RATE_VALUE_FOR_ATTRIBUTE", fields=(object_instance, attribute))).fields == ("1.0",)
+
+        assert transport.request(TransportRequest(command="MODIFY_LOOKAHEAD", fields=("HLAinteger64Interval", "3"))).fields == ()
+        assert transport.request(TransportRequest(command="QUERY_LOOKAHEAD")).fields == ("HLAinteger64Interval", "3")
+        assert transport.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "18"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "18")
+        assert transport.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "18")
+        assert transport.request(TransportRequest(command="QUERY_LITS")).fields == ("1", "HLAinteger64Time", "18")
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "getFederateHandleRequest",
+            "getFederateNameRequest",
+            "getAttributeNameRequest",
+            "getParameterNameRequest",
+            "getDimensionNameRequest",
+            "getTransportationTypeNameRequest",
+            "getOrderTypeRequest",
+            "getOrderNameRequest",
+            "normalizeServiceGroupRequest",
+            "normalizeObjectInstanceHandleRequest",
+            "queryGALTRequest",
+            "queryLITSRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_runs_lifecycle_session_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None

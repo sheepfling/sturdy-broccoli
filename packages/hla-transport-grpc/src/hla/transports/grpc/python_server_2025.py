@@ -83,6 +83,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.object_classes = {"HLAobjectRoot.RouteTarget": "100", "HLAobjectRoot.Target": "101"}
         self.object_class_names = {value: key for key, value in self.object_classes.items()}
         self.attributes = {("100", "Position"): "200", ("101", "Position"): "201"}
+        self.attribute_names = {(object_class, value): name for (object_class, name), value in self.attributes.items()}
         self.interactions = {
             "HLAinteractionRoot.TrackReport": "400",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation": "401",
@@ -94,8 +95,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             ("401", "HLAservice"): "502",
             ("401", "HLAserialNumber"): "503",
         }
+        self.parameter_names = {(interaction_class, value): name for (interaction_class, name), value in self.parameters.items()}
         self.dimensions = {"RoutingSpace": "300"}
+        self.dimension_names = {value: key for key, value in self.dimensions.items()}
         self.transportations = {"HLAreliable": "1", "HLAbestEffort": "2"}
+        self.transportation_names = {value: key for key, value in self.transportations.items()}
         self.object_instances: dict[str, dict[str, str]] = {}
         self.published_object_attributes: dict[str, set[str]] = {}
         self.subscribed_object_attributes: dict[str, set[str]] = {}
@@ -130,6 +134,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.service_report_serial = 1
         self.next_retraction_handle = 1
         self.current_time = datatypes_pb2.LogicalTime(data=b"HLAinteger64Time:0")
+        self.lookahead = datatypes_pb2.LogicalTimeInterval(data=b"HLAinteger64Interval:1")
         self.queued_tso_callbacks: dict[str, tuple[float, callback_pb2.CallbackRequest]] = {}
         self.delivered_retractions: set[str] = set()
         self.saved_labels: set[str] = set()
@@ -198,7 +203,27 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             self.federations.discard(payload.federationName)
             return rti_pb2.CallResponse(destroyFederationExecutionResponse=rti_pb2.DestroyFederationExecutionResponse())
         if request_kind == "getFederateHandleRequest":
-            return rti_pb2.CallResponse(getFederateHandleResponse=rti_pb2.GetFederateHandleResponse(result=datatypes_pb2.FederateHandle(data=b"42")))
+            name = request.getFederateHandleRequest.federateName
+            for handle, federate_name in self.joined_federate_handles.items():
+                if federate_name == name:
+                    return rti_pb2.CallResponse(
+                        getFederateHandleResponse=rti_pb2.GetFederateHandleResponse(
+                            result=_handle(datatypes_pb2.FederateHandle, handle)
+                        )
+                    )
+            if not self.joined_federate_handles:
+                return rti_pb2.CallResponse(
+                    getFederateHandleResponse=rti_pb2.GetFederateHandleResponse(
+                        result=_handle(datatypes_pb2.FederateHandle, "42")
+                    )
+                )
+            return self._error("NameNotFound", name)
+        if request_kind == "getFederateNameRequest":
+            handle = request.getFederateNameRequest.federate.data.decode("ascii")
+            try:
+                return rti_pb2.CallResponse(getFederateNameResponse=rti_pb2.GetFederateNameResponse(result=self.joined_federate_handles[handle]))
+            except KeyError:
+                return self._error("FederateNotExecutionMember", handle)
         if request_kind == "getObjectClassHandleRequest":
             name = request.getObjectClassHandleRequest.objectClassName
             try:
@@ -246,6 +271,15 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     result=_handle(datatypes_pb2.AttributeHandle, handle)
                 )
             )
+        if request_kind == "getAttributeNameRequest":
+            payload = request.getAttributeNameRequest
+            object_class = payload.objectClass.data.decode("ascii")
+            attribute = payload.attribute.data.decode("ascii")
+            try:
+                name = self.attribute_names[(object_class, attribute)]
+            except KeyError:
+                return self._error("AttributeNotDefined", attribute)
+            return rti_pb2.CallResponse(getAttributeNameResponse=rti_pb2.GetAttributeNameResponse(result=name))
         if request_kind == "getInteractionClassHandleRequest":
             name = request.getInteractionClassHandleRequest.interactionClassName
             try:
@@ -274,8 +308,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             payload = request.getParameterNameRequest
             interaction_class = payload.interactionClass.data.decode("ascii")
             parameter = payload.parameter.data.decode("ascii")
-            names = {value: key for (class_handle, key), value in self.parameters.items() if class_handle == interaction_class}
-            return rti_pb2.CallResponse(getParameterNameResponse=rti_pb2.GetParameterNameResponse(result=names.get(parameter, "")))
+            try:
+                name = self.parameter_names[(interaction_class, parameter)]
+            except KeyError:
+                return self._error("InteractionParameterNotDefined", parameter)
+            return rti_pb2.CallResponse(getParameterNameResponse=rti_pb2.GetParameterNameResponse(result=name))
         if request_kind == "getDimensionHandleRequest":
             name = request.getDimensionHandleRequest.dimensionName
             try:
@@ -283,6 +320,12 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             except KeyError:
                 return self._error("NameNotFound", name)
             return rti_pb2.CallResponse(getDimensionHandleResponse=rti_pb2.GetDimensionHandleResponse(result=_handle(datatypes_pb2.DimensionHandle, handle)))
+        if request_kind == "getDimensionNameRequest":
+            handle = request.getDimensionNameRequest.dimension.data.decode("ascii")
+            try:
+                return rti_pb2.CallResponse(getDimensionNameResponse=rti_pb2.GetDimensionNameResponse(result=self.dimension_names[handle]))
+            except KeyError:
+                return self._error("InvalidDimensionHandle", handle)
         if request_kind == "getAvailableDimensionsForObjectClassRequest":
             return rti_pb2.CallResponse(
                 getAvailableDimensionsForObjectClassResponse=rti_pb2.GetAvailableDimensionsForObjectClassResponse(
@@ -346,6 +389,81 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             return rti_pb2.CallResponse(
                 getTransportationTypeHandleResponse=rti_pb2.GetTransportationTypeHandleResponse(
                     result=_handle(datatypes_pb2.TransportationTypeHandle, handle)
+                )
+            )
+        if request_kind == "getTransportationTypeNameRequest":
+            handle = request.getTransportationTypeNameRequest.transportationType.data.decode("ascii")
+            try:
+                return rti_pb2.CallResponse(
+                    getTransportationTypeNameResponse=rti_pb2.GetTransportationTypeNameResponse(
+                        result=self.transportation_names[handle]
+                    )
+                )
+            except KeyError:
+                return self._error("InvalidTransportationType", handle)
+        if request_kind == "getOrderTypeRequest":
+            name = request.getOrderTypeRequest.orderTypeName
+            if name == "HLAreceive":
+                return rti_pb2.CallResponse(getOrderTypeResponse=rti_pb2.GetOrderTypeResponse(result=datatypes_pb2.RECEIVE))
+            if name == "HLAtimestamp":
+                return rti_pb2.CallResponse(getOrderTypeResponse=rti_pb2.GetOrderTypeResponse(result=datatypes_pb2.TIMESTAMP))
+            return self._error("InvalidOrderName", name)
+        if request_kind == "getOrderNameRequest":
+            order = request.getOrderNameRequest.orderType
+            name = "HLAtimestamp" if order == datatypes_pb2.TIMESTAMP else "HLAreceive"
+            return rti_pb2.CallResponse(getOrderNameResponse=rti_pb2.GetOrderNameResponse(result=name))
+        if request_kind == "getUpdateRateValueRequest":
+            value = 1.0 if request.getUpdateRateValueRequest.updateRateDesignator == "HLAdefaultUpdateRate" else 0.0
+            return rti_pb2.CallResponse(getUpdateRateValueResponse=rti_pb2.GetUpdateRateValueResponse(result=value))
+        if request_kind == "getUpdateRateValueForAttributeRequest":
+            return rti_pb2.CallResponse(getUpdateRateValueForAttributeResponse=rti_pb2.GetUpdateRateValueForAttributeResponse(result=1.0))
+        if request_kind == "getKnownObjectClassHandleRequest":
+            object_instance = request.getKnownObjectClassHandleRequest.objectInstance.data.decode("ascii")
+            record = self.object_instances.get(object_instance)
+            if record is None:
+                return self._error("ObjectInstanceNotKnown", object_instance)
+            return rti_pb2.CallResponse(
+                getKnownObjectClassHandleResponse=rti_pb2.GetKnownObjectClassHandleResponse(
+                    result=_handle(datatypes_pb2.ObjectClassHandle, record["objectClass"])
+                )
+            )
+        if request_kind == "normalizeServiceGroupRequest":
+            return rti_pb2.CallResponse(
+                normalizeServiceGroupResponse=rti_pb2.NormalizeServiceGroupResponse(
+                    result=request.normalizeServiceGroupRequest.serviceGroup
+                )
+            )
+        if request_kind == "normalizeFederateHandleRequest":
+            return rti_pb2.CallResponse(
+                normalizeFederateHandleResponse=rti_pb2.NormalizeFederateHandleResponse(result=int(request.normalizeFederateHandleRequest.federate.data.decode("ascii")))
+            )
+        if request_kind == "normalizeObjectClassHandleRequest":
+            return rti_pb2.CallResponse(
+                normalizeObjectClassHandleResponse=rti_pb2.NormalizeObjectClassHandleResponse(result=int(request.normalizeObjectClassHandleRequest.objectClass.data.decode("ascii")))
+            )
+        if request_kind == "normalizeInteractionClassHandleRequest":
+            return rti_pb2.CallResponse(
+                normalizeInteractionClassHandleResponse=rti_pb2.NormalizeInteractionClassHandleResponse(result=int(request.normalizeInteractionClassHandleRequest.interactionClass.data.decode("ascii")))
+            )
+        if request_kind == "normalizeObjectInstanceHandleRequest":
+            return rti_pb2.CallResponse(
+                normalizeObjectInstanceHandleResponse=rti_pb2.NormalizeObjectInstanceHandleResponse(result=int(request.normalizeObjectInstanceHandleRequest.objectInstance.data.decode("ascii")))
+            )
+        if request_kind == "modifyLookaheadRequest":
+            self.lookahead.CopyFrom(request.modifyLookaheadRequest.lookahead)
+            return rti_pb2.CallResponse(modifyLookaheadResponse=rti_pb2.ModifyLookaheadResponse())
+        if request_kind == "queryLookaheadRequest":
+            return rti_pb2.CallResponse(queryLookaheadResponse=rti_pb2.QueryLookaheadResponse(result=self.lookahead))
+        if request_kind == "queryGALTRequest":
+            return rti_pb2.CallResponse(
+                queryGALTResponse=rti_pb2.QueryGALTResponse(
+                    result=datatypes_pb2.TimeQueryReturn(logicalTimeIsValid=True, logicalTime=self.current_time)
+                )
+            )
+        if request_kind == "queryLITSRequest":
+            return rti_pb2.CallResponse(
+                queryLITSResponse=rti_pb2.QueryLITSResponse(
+                    result=datatypes_pb2.TimeQueryReturn(logicalTimeIsValid=True, logicalTime=self.current_time)
                 )
             )
         if request_kind == "getServiceReportingSwitchRequest":

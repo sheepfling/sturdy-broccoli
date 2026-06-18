@@ -54,8 +54,10 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert rows[("mom", "python-2025-fedpro-grpc")].status == PARTIAL
     assert "round-trips 2025 switch services" in rows[("mom", "python-2025-fedpro-grpc")].notes
     assert "not full MOM manager object/interaction routing" in rows[("mom", "python-2025-fedpro-grpc")].notes
-    assert rows[("support_services", "python-2025-fedpro-grpc")].status == PARTIAL
+    assert rows[("support_services", "python-2025-fedpro-grpc")].status == PARITY_COVERED
+    assert rows[("support_services", "python-2025-fedpro-grpc")].evidence_scope == "scenario-parity"
     assert "2025 switch get/set services" in rows[("support_services", "python-2025-fedpro-grpc")].notes
+    assert "logical-time query" in rows[("support_services", "python-2025-fedpro-grpc")].notes
     assert rows[("save_restore", "python-2025-fedpro-grpc")].status == PARITY_COVERED
     assert rows[("save_restore", "python-2025-fedpro-grpc")].evidence_scope == "scenario-parity"
     assert "status callbacks" in rows[("save_restore", "python-2025-fedpro-grpc")].notes

@@ -386,10 +386,11 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "support_services",
         "python-2025-fedpro-grpc",
-        PARTIAL,
+        PARITY_COVERED,
         ("HLA2025-FI-001", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
-        "Hosted FedPro 2025 route covers FOM handle, dimension, transportation, and 2025 switch get/set services.",
+        "Hosted FedPro 2025 route covers FOM handle/name round trips, dimension/range, transportation/order, "
+        "update-rate, normalization, logical-time query, and 2025 switch get/set services.",
     ),
 )
 
