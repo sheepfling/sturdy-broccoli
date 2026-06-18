@@ -185,21 +185,25 @@ from .datatypes import (
     FederationExecutionMemberInformationSet,
     FederateHandleSaveStatusPair,
     FederateRestoreStatus,
+    TimeQueryReturn,
 )
 
 from .logical_time import (
     LogicalTimeInterval,
     LogicalTime,
+    LogicalTimeFactory,
+    LogicalTimeFactoryFactory,
+    HLAlogicalTimeFactoryFactory,
+)
+
+from .time import (
     HLAinteger64Interval,
     HLAfloat64Interval,
     HLAinteger64Time,
     HLAfloat64Time,
-    LogicalTimeFactory,
     HLAinteger64TimeFactory,
     HLAfloat64TimeFactory,
-    LogicalTimeFactoryFactory,
-    HLAlogicalTimeFactoryFactory,
-    TimeQueryReturn,
+    get_logical_time_factory,
 )
 
 from .auth import (
@@ -510,6 +514,7 @@ __all__ = [
     "VariableLengthData",
     "__version__",
     "create_encoder_factory",
+    "get_logical_time_factory",
     "validate_fom_module",
     "validate_fom_modules",
     "validate_hla_name",

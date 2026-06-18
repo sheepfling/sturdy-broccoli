@@ -19,6 +19,15 @@ class Recording2025FederateAmbassador:
     def reportFederationExecutionDoesNotExist(self, federationName) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("reportFederationExecutionDoesNotExist", (federationName,)))
 
+    def timeRegulationEnabled(self, time) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("timeRegulationEnabled", (time,)))
+
+    def timeConstrainedEnabled(self, time) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("timeConstrainedEnabled", (time,)))
+
+    def timeAdvanceGrant(self, time) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("timeAdvanceGrant", (time,)))
+
     def last_callback(self, method_name: str) -> tuple[object, ...] | None:
         for recorded_name, args in reversed(self.callbacks):
             if recorded_name == method_name:
@@ -350,6 +359,55 @@ def test_2025_shim_rejects_invalid_join_fom_modules_and_destroy_while_joined(tmp
 
     leader.disconnect()
     wing.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-FR-010", "HLA2025-FI-005", "HLA2025-FI-009")
+def test_2025_shim_uses_selected_logical_time_factory_for_queries_and_grants() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import TimeRegulationIsNotEnabled
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAfloat64Interval, HLAfloat64Time
+
+    federation_name = f"shim-time-{uuid.uuid4().hex[:8]}"
+    federate = Recording2025FederateAmbassador()
+    rti = create_rti_ambassador(backend="shim")
+    rti.connect(federate, CallbackModel.HLA_EVOKED)
+    rti.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+        logicalTimeImplementationName="HLAfloat64Time",
+    )
+    rti.joinFederationExecution(
+        federateName="Clock",
+        federateType="TestFederate",
+        federationName=federation_name,
+    )
+
+    time_factory = rti.getTimeFactory()
+    assert time_factory.getName() == "HLAfloat64Time"
+    assert rti.queryLogicalTime() == HLAfloat64Time(0.0)
+    assert rti.queryGALT().timeIsValid is True
+    assert rti.queryGALT().time == HLAfloat64Time(0.0)
+    assert rti.queryLITS().time == HLAfloat64Time(0.0)
+
+    with pytest.raises(TimeRegulationIsNotEnabled):
+        rti.queryLookahead()
+
+    rti.enableTimeRegulation(HLAfloat64Interval(0.5))
+    rti.enableTimeConstrained()
+    assert rti.queryLookahead() == HLAfloat64Interval(0.5)
+    rti.modifyLookahead(HLAfloat64Interval(0.25))
+    assert rti.queryLookahead() == HLAfloat64Interval(0.25)
+
+    rti.timeAdvanceRequest(HLAfloat64Time(12.5))
+    assert rti.queryLogicalTime() == HLAfloat64Time(12.5)
+    assert federate.last_callback("timeRegulationEnabled") == (HLAfloat64Time(0.0),)
+    assert federate.last_callback("timeConstrainedEnabled") == (HLAfloat64Time(0.0),)
+    assert federate.last_callback("timeAdvanceGrant") == (HLAfloat64Time(12.5),)
+
+    rti.resignFederationExecution(ResignAction.NO_ACTION)
+    rti.destroyFederationExecution(federationName=federation_name)
+    rti.disconnect()
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-REQ-002")

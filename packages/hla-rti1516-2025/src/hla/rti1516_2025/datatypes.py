@@ -10,6 +10,7 @@ from typing import NamedTuple, Self
 
 from .enums import AdditionalSettingsResultCode, RestoreStatus, SaveStatus
 from .handles import FederateHandle, MessageRetractionHandle
+from .logical_time import LogicalTime
 
 
 class RangeBounds(NamedTuple):
@@ -122,3 +123,8 @@ class FederateRestoreStatus(NamedTuple):
     preRestoreHandle: FederateHandle
     postRestoreHandle: FederateHandle
     status: RestoreStatus
+
+
+class TimeQueryReturn(NamedTuple):
+    timeIsValid: bool
+    time: LogicalTime | None = None

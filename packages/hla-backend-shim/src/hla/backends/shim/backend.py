@@ -12,6 +12,7 @@ from hla.rti1516_2025.datatypes import (
     FederationExecutionInformationSet,
     FederationExecutionMemberInformation,
     FederationExecutionMemberInformationSet,
+    TimeQueryReturn,
 )
 from hla.rti1516_2025.enums import AdditionalSettingsResultCode, CallbackModel, ResignAction
 from hla.rti1516_2025.exceptions import (
@@ -31,9 +32,13 @@ from hla.rti1516_2025.exceptions import (
     InconsistentFOM,
     InvalidCredentials,
     InvalidFOM,
+    InvalidLogicalTime,
+    InvalidLookahead,
     InvalidMIM,
+    LogicalTimeAlreadyPassed,
     NotConnected,
     RTIinternalError,
+    TimeRegulationIsNotEnabled,
     Unauthorized,
     UnsupportedCallbackModel,
 )
@@ -80,6 +85,12 @@ class Shim2025RTIAmbassador:
         self._federate_name: str | None = None
         self._federate_ambassador: FederateAmbassador | None = None
         self._callback_model: CallbackModel | None = None
+        self._logical_time_implementation_name = _DEFAULT_LOGICAL_TIME_IMPLEMENTATION
+        self._logical_time_factory = self._get_time_factory(_DEFAULT_LOGICAL_TIME_IMPLEMENTATION)
+        self._logical_time = self._logical_time_factory.makeInitial()
+        self._lookahead = self._logical_time_factory.makeZero()
+        self._time_regulation_enabled = False
+        self._time_constrained_enabled = False
         self.calls: list[tuple[str, tuple[Any, ...], dict[str, Any]]] = []
 
     @property
@@ -123,6 +134,12 @@ class Shim2025RTIAmbassador:
         self._federate_name = None
         self._federate_ambassador = None
         self._callback_model = None
+        self._logical_time_implementation_name = _DEFAULT_LOGICAL_TIME_IMPLEMENTATION
+        self._logical_time_factory = self._get_time_factory(_DEFAULT_LOGICAL_TIME_IMPLEMENTATION)
+        self._logical_time = self._logical_time_factory.makeInitial()
+        self._lookahead = self._logical_time_factory.makeZero()
+        self._time_regulation_enabled = False
+        self._time_constrained_enabled = False
 
     def createFederationExecution(self, *args: Any, **kwargs: Any) -> None:  # noqa: N802
         self._record("createFederationExecution", *args, **kwargs)
@@ -143,6 +160,7 @@ class Shim2025RTIAmbassador:
             mim_module=mim_module,
             fom_catalog=fom_catalog,
         )
+        self._select_logical_time_implementation(logical_time_name)
 
     def createFederationExecutionWithMIM(self, *args: Any, **kwargs: Any) -> None:  # noqa: N802
         self._record("createFederationExecutionWithMIM", *args, **kwargs)
@@ -168,6 +186,7 @@ class Shim2025RTIAmbassador:
             mim_module=resolved_mim,
             fom_catalog=fom_catalog,
         )
+        self._select_logical_time_implementation(logical_time_name)
 
     def destroyFederationExecution(self, *args: Any, **kwargs: Any) -> None:  # noqa: N802
         self._record("destroyFederationExecution", *args, **kwargs)
@@ -227,6 +246,7 @@ class Shim2025RTIAmbassador:
         federate_type = self._extract_federate_type(args, kwargs)
         if federate_name is not None:
             federation.members[federate_name] = federate_type
+        self._select_logical_time_implementation(federation.logical_time_implementation_name)
         self._federation_name = federation_name
         self._federate_name = federate_name
         self._joined = True
@@ -261,6 +281,65 @@ class Shim2025RTIAmbassador:
     def disableCallbacks(self) -> None:  # noqa: N802
         self._record("disableCallbacks")
         self._require_connected("disableCallbacks")
+
+    def enableTimeRegulation(self, lookahead: Any) -> None:  # noqa: N802
+        self._record("enableTimeRegulation", lookahead)
+        self._require_joined("enableTimeRegulation")
+        self._lookahead = self._coerce_interval(lookahead)
+        self._time_regulation_enabled = True
+        if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "timeRegulationEnabled"):
+            self._deliver_callback("timeRegulationEnabled", self._logical_time)
+
+    def enableTimeConstrained(self) -> None:  # noqa: N802
+        self._record("enableTimeConstrained")
+        self._require_joined("enableTimeConstrained")
+        self._time_constrained_enabled = True
+        if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "timeConstrainedEnabled"):
+            self._deliver_callback("timeConstrainedEnabled", self._logical_time)
+
+    def timeAdvanceRequest(self, time: Any) -> None:  # noqa: N802
+        self._record("timeAdvanceRequest", time)
+        self._require_joined("timeAdvanceRequest")
+        requested_time = self._coerce_time(time)
+        if requested_time < self._logical_time:
+            raise LogicalTimeAlreadyPassed(str(requested_time))
+        self._logical_time = requested_time
+        if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "timeAdvanceGrant"):
+            self._deliver_callback("timeAdvanceGrant", self._logical_time)
+
+    def queryGALT(self) -> TimeQueryReturn:  # noqa: N802
+        self._record("queryGALT")
+        self._require_joined("queryGALT")
+        return TimeQueryReturn(True, self._logical_time)
+
+    def queryLogicalTime(self) -> Any:  # noqa: N802
+        self._record("queryLogicalTime")
+        self._require_joined("queryLogicalTime")
+        return self._logical_time
+
+    def queryLITS(self) -> TimeQueryReturn:  # noqa: N802
+        self._record("queryLITS")
+        self._require_joined("queryLITS")
+        return TimeQueryReturn(True, self._logical_time)
+
+    def modifyLookahead(self, lookahead: Any) -> None:  # noqa: N802
+        self._record("modifyLookahead", lookahead)
+        self._require_joined("modifyLookahead")
+        if not self._time_regulation_enabled:
+            raise TimeRegulationIsNotEnabled("Cannot modify lookahead before enableTimeRegulation")
+        self._lookahead = self._coerce_interval(lookahead)
+
+    def queryLookahead(self) -> Any:  # noqa: N802
+        self._record("queryLookahead")
+        self._require_joined("queryLookahead")
+        if not self._time_regulation_enabled:
+            raise TimeRegulationIsNotEnabled("Cannot query lookahead before enableTimeRegulation")
+        return self._lookahead
+
+    def getTimeFactory(self) -> Any:  # noqa: N802
+        self._record("getTimeFactory")
+        self._require_connected("getTimeFactory")
+        return self._logical_time_factory
 
     def getHLAversion(self) -> str:  # noqa: N802
         self._record("getHLAversion")
@@ -427,6 +506,30 @@ class Shim2025RTIAmbassador:
         except Exception as exc:
             raise UnsupportedCallbackModel(repr(value)) from exc
 
+    def _coerce_time(self, value: Any) -> Any:
+        factory = self._logical_time_factory
+        time_type = getattr(factory, "time_type", None)
+        if time_type is not None and isinstance(value, time_type):
+            return value
+        if hasattr(value, "getValue"):
+            value = value.getValue()
+        try:
+            return factory.makeTime(value)
+        except Exception as exc:
+            raise InvalidLogicalTime(repr(value)) from exc
+
+    def _coerce_interval(self, value: Any) -> Any:
+        factory = self._logical_time_factory
+        interval_type = getattr(factory, "interval_type", None)
+        if interval_type is not None and isinstance(value, interval_type):
+            return value
+        if hasattr(value, "getValue"):
+            value = value.getValue()
+        try:
+            return factory.makeInterval(value)
+        except Exception as exc:
+            raise InvalidLookahead(repr(value)) from exc
+
     @staticmethod
     def _validate_credentials(credentials: Any | None) -> None:
         if credentials is None:
@@ -494,6 +597,19 @@ class Shim2025RTIAmbassador:
     def _standard_mim_module() -> Any:
         fom = import_module("hla.rti1516e.fom")
         return fom.standard_mim_module()
+
+    @staticmethod
+    def _get_time_factory(name: str) -> Any:
+        time = import_module("hla.rti1516_2025.time")
+        return time.get_logical_time_factory(name)
+
+    def _select_logical_time_implementation(self, name: str) -> None:
+        self._logical_time_implementation_name = name
+        self._logical_time_factory = self._get_time_factory(name)
+        self._logical_time = self._logical_time_factory.makeInitial()
+        self._lookahead = self._logical_time_factory.makeZero()
+        self._time_regulation_enabled = False
+        self._time_constrained_enabled = False
 
     def _release_join(self) -> None:
         if self._federation_name is None or self._federate_name is None:
