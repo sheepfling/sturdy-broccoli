@@ -2849,6 +2849,21 @@ class Shim2025RTIAmbassador:
             else:
                 target.federateRestoreNotComplete()
             return True
+        if leaf == "HLAenableTimeRegulation":
+            target.enableTimeRegulation(target._mom_interval(params.get("HLAlookahead"), "HLAlookahead"))
+            return True
+        if leaf == "HLAenableTimeConstrained":
+            target.enableTimeConstrained()
+            return True
+        if leaf == "HLAtimeAdvanceRequest":
+            target.timeAdvanceRequest(target._mom_time(params.get("HLAtimeStamp"), "HLAtimeStamp"))
+            return True
+        if leaf == "HLAflushQueueRequest":
+            target.flushQueueRequest(target._mom_time(params.get("HLAtimeStamp"), "HLAtimeStamp"))
+            return True
+        if leaf == "HLAmodifyLookahead":
+            target.modifyLookahead(target._mom_interval(params.get("HLAlookahead"), "HLAlookahead"))
+            return True
         if leaf == "HLApublishObjectClassAttributes":
             target.publishObjectClassAttributes(
                 ObjectClassHandle(self._mom_int(params.get("HLAobjectClass"), "HLAobjectClass")),
@@ -2997,6 +3012,22 @@ class Shim2025RTIAmbassador:
         if value is None:
             raise RTIinternalError(f"Missing MOM parameter {field_name}")
         return value.decode("utf-8")
+
+    def _mom_time(self, value: bytes | None, field_name: str) -> Any:
+        return self._coerce_time(self._mom_number(value, field_name))
+
+    def _mom_interval(self, value: bytes | None, field_name: str) -> Any:
+        return self._coerce_interval(self._mom_number(value, field_name))
+
+    @staticmethod
+    def _mom_number(value: bytes | None, field_name: str) -> int | float:
+        if value is None:
+            raise RTIinternalError(f"Missing MOM parameter {field_name}")
+        text = value.decode("ascii", errors="ignore").strip()
+        try:
+            return float(text) if any(char in text for char in ".eE") else int(text)
+        except ValueError as exc:
+            raise RTIinternalError(f"Invalid MOM numeric value for {field_name}") from exc
 
     @classmethod
     def _mom_resign_action(cls, value: bytes | None) -> ResignAction:

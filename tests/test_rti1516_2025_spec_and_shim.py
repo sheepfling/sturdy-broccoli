@@ -2283,6 +2283,61 @@ def test_2025_shim_routes_mom_federation_management_service_interactions() -> No
     controller.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-009", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_routes_mom_time_management_service_interactions() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-mom-time-service-{uuid.uuid4().hex[:8]}"
+    target_callbacks = Recording2025FederateAmbassador()
+    controller = create_rti_ambassador(backend="shim")
+    target = create_rti_ambassador(backend="shim")
+    controller.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    target.connect(target_callbacks, CallbackModel.HLA_EVOKED)
+    controller.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    controller.joinFederationExecution("TimeServiceController", "TestFederate", federation_name)
+    target_handle = target.joinFederationExecution("TimeServiceTarget", "TestFederate", federation_name)
+
+    def mom_service(name: str):  # noqa: ANN202
+        return controller.getInteractionClassHandle(f"HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.{name}")
+
+    def send_service(name: str, parameters: dict[str, bytes]) -> None:
+        interaction = mom_service(name)
+        payload = {controller.getParameterHandle(interaction, "HLAfederate"): str(target_handle.value).encode("ascii")}
+        payload.update({controller.getParameterHandle(interaction, key): value for key, value in parameters.items()})
+        controller.sendInteraction(interaction, payload, f"mom-{name}".encode("ascii"))
+
+    send_service("HLAenableTimeRegulation", {"HLAlookahead": b"2"})
+    assert target.queryLookahead() == target.getTimeFactory().makeInterval(2)
+    assert target_callbacks.last_callback("timeRegulationEnabled") == (target.getTimeFactory().makeInitial(),)
+
+    send_service("HLAenableTimeConstrained", {})
+    assert target_callbacks.last_callback("timeConstrainedEnabled") == (target.getTimeFactory().makeInitial(),)
+
+    send_service("HLAtimeAdvanceRequest", {"HLAtimeStamp": b"10"})
+    assert target.queryLogicalTime() == target.getTimeFactory().makeTime(10)
+    assert target_callbacks.last_callback("timeAdvanceGrant") == (target.getTimeFactory().makeTime(10),)
+
+    send_service("HLAmodifyLookahead", {"HLAlookahead": b"3"})
+    assert target.queryLookahead() == target.getTimeFactory().makeInterval(3)
+
+    send_service("HLAflushQueueRequest", {"HLAtimeStamp": b"12"})
+    assert target.queryLogicalTime() == target.getTimeFactory().makeTime(12)
+    assert target_callbacks.last_callback("flushQueueGrant") == (
+        target.getTimeFactory().makeTime(12),
+        target.getTimeFactory().makeTime(12),
+    )
+
+    target.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.destroyFederationExecution(federationName=federation_name)
+    target.disconnect()
+    controller.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-005")
 def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
