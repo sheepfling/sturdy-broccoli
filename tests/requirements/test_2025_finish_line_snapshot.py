@@ -112,8 +112,9 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "basic ownership divest/acquire callbacks" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert "time-regulation/time-constrained/time-advance callbacks" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert "object discovery, attribute reflection, interaction receipt" in slices["2025-fedpro-transport-contract"]["supported_scope"]
-    assert "DDM region routing" in slices["2025-fedpro-transport-contract"]["supported_scope"]
+    assert "basic DDM region-overlap filtering for object attributes" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert "MOM-over-FedPro" in slices["2025-fedpro-transport-contract"]["supported_scope"]
+    assert "full RTI semantics remain outside this slice" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert slices["2025-ddm-default-attribute-policy"]["status"] == "implemented-slice"
     assert "HLA2025-MOD-007" in slices["2025-ddm-default-attribute-policy"]["requirements"]
     assert "basic createRegion/setRangeBounds/subscribeObjectClassAttributesWithRegions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]

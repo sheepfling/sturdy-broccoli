@@ -59,6 +59,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.joined_federates: dict[str, str] = {}
         self.next_federate_handle = 1
         self.next_object_instance_handle = 1000
+        self.next_region_handle = 700
         self.object_classes = {"HLAobjectRoot.RouteTarget": "100", "HLAobjectRoot.Target": "101"}
         self.object_class_names = {value: key for key, value in self.object_classes.items()}
         self.attributes = {("100", "Position"): "200", ("101", "Position"): "201"}
@@ -70,6 +71,10 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.object_instances: dict[str, dict[str, str]] = {}
         self.published_object_attributes: dict[str, set[str]] = {}
         self.subscribed_object_attributes: dict[str, set[str]] = {}
+        self.subscribed_object_regions: dict[str, dict[str, set[str]]] = {}
+        self.object_update_regions: dict[str, dict[str, set[str]]] = {}
+        self.regions: dict[str, set[str]] = {}
+        self.region_bounds: dict[str, dict[str, tuple[int, int]]] = {}
         self.published_interactions: set[str] = set()
         self.subscribed_interactions: set[str] = set()
         self.unowned_attributes: set[tuple[str, str]] = set()
@@ -207,6 +212,46 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             )
         if request_kind == "getDimensionUpperBoundRequest":
             return rti_pb2.CallResponse(getDimensionUpperBoundResponse=rti_pb2.GetDimensionUpperBoundResponse(result=1024))
+        if request_kind == "createRegionRequest":
+            payload = request.createRegionRequest
+            handle = str(self.next_region_handle)
+            self.next_region_handle += 1
+            dimensions = {dimension.data.decode("ascii") for dimension in payload.dimensions.dimensionHandle}
+            self.regions[handle] = dimensions
+            self.region_bounds[handle] = {dimension: (0, 1024) for dimension in dimensions}
+            return rti_pb2.CallResponse(
+                createRegionResponse=rti_pb2.CreateRegionResponse(
+                    result=_handle(datatypes_pb2.RegionHandle, handle)
+                )
+            )
+        if request_kind == "getDimensionHandleSetRequest":
+            region = request.getDimensionHandleSetRequest.region.data.decode("ascii")
+            return rti_pb2.CallResponse(
+                getDimensionHandleSetResponse=rti_pb2.GetDimensionHandleSetResponse(
+                    result=_dimension_set(tuple(sorted(self.regions.get(region, ()))))
+                )
+            )
+        if request_kind == "setRangeBoundsRequest":
+            payload = request.setRangeBoundsRequest
+            region = payload.region.data.decode("ascii")
+            dimension = payload.dimension.data.decode("ascii")
+            self.region_bounds.setdefault(region, {})[dimension] = (
+                int(payload.rangeBounds.lower),
+                int(payload.rangeBounds.upper),
+            )
+            return rti_pb2.CallResponse(setRangeBoundsResponse=rti_pb2.SetRangeBoundsResponse())
+        if request_kind == "getRangeBoundsRequest":
+            payload = request.getRangeBoundsRequest
+            region = payload.region.data.decode("ascii")
+            dimension = payload.dimension.data.decode("ascii")
+            lower, upper = self.region_bounds.get(region, {}).get(dimension, (0, 1024))
+            return rti_pb2.CallResponse(
+                getRangeBoundsResponse=rti_pb2.GetRangeBoundsResponse(
+                    result=datatypes_pb2.RangeBounds(lower=lower, upper=upper)
+                )
+            )
+        if request_kind == "commitRegionModificationsRequest":
+            return rti_pb2.CallResponse(commitRegionModificationsResponse=rti_pb2.CommitRegionModificationsResponse())
         if request_kind == "getTransportationTypeHandleRequest":
             name = request.getTransportationTypeHandleRequest.transportationTypeName
             try:
@@ -248,6 +293,19 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 if record["objectClass"] == object_class:
                     self._queue_discovery(object_instance, object_class, record["name"])
             return rti_pb2.CallResponse(subscribeObjectClassAttributesResponse=rti_pb2.SubscribeObjectClassAttributesResponse())
+        if request_kind == "subscribeObjectClassAttributesWithRegionsRequest":
+            payload = request.subscribeObjectClassAttributesWithRegionsRequest
+            object_class = payload.objectClass.data.decode("ascii")
+            region_map = self.subscribed_object_regions.setdefault(object_class, {})
+            for attribute, regions in self._attribute_region_pairs(payload.attributesAndRegions):
+                self.subscribed_object_attributes.setdefault(object_class, set()).add(attribute)
+                region_map.setdefault(attribute, set()).update(regions)
+            for object_instance, record in self.object_instances.items():
+                if record["objectClass"] == object_class and self._reflectable_attribute_names(object_instance, object_class):
+                    self._queue_discovery(object_instance, object_class, record["name"])
+            return rti_pb2.CallResponse(
+                subscribeObjectClassAttributesWithRegionsResponse=rti_pb2.SubscribeObjectClassAttributesWithRegionsResponse()
+            )
         if request_kind == "publishInteractionClassRequest":
             interaction_class = request.publishInteractionClassRequest.interactionClass.data.decode("ascii")
             self.published_interactions.add(interaction_class)
@@ -272,6 +330,13 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             )
             response_type = getattr(rti_pb2, response_kind[0].upper() + response_kind[1:])
             return rti_pb2.CallResponse(**{response_kind: response_type(result=_handle(datatypes_pb2.ObjectInstanceHandle, handle))})
+        if request_kind == "associateRegionsForUpdatesRequest":
+            payload = request.associateRegionsForUpdatesRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            update_regions = self.object_update_regions.setdefault(object_instance, {})
+            for attribute, regions in self._attribute_region_pairs(payload.attributesAndRegions):
+                update_regions.setdefault(attribute, set()).update(regions)
+            return rti_pb2.CallResponse(associateRegionsForUpdatesResponse=rti_pb2.AssociateRegionsForUpdatesResponse())
         if request_kind == "updateAttributeValuesRequest":
             payload = request.updateAttributeValuesRequest
             object_instance = payload.objectInstance.data.decode("ascii")
@@ -284,6 +349,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 item
                 for item in payload.attributeValues.attributeHandleValue
                 if item.attributeHandle.data.decode("ascii") in subscribed
+                and self._attribute_regions_overlap(object_instance, object_class, item.attributeHandle.data.decode("ascii"))
             ]
             if reflected:
                 values = datatypes_pb2.AttributeHandleValueMap()
@@ -299,6 +365,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                             userSuppliedTag=payload.userSuppliedTag,
                             transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
                             producingFederate=_handle(datatypes_pb2.FederateHandle, "1"),
+                            optionalSentRegions=self._conveyed_regions_for(object_instance, reflected),
                         )
                     )
                 )
@@ -396,6 +463,63 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 )
             )
         )
+
+    @staticmethod
+    def _attribute_region_pairs(attributes_and_regions) -> tuple[tuple[str, set[str]], ...]:
+        pairs: list[tuple[str, set[str]]] = []
+        for pair in attributes_and_regions.AttributeSetRegionSetPair:
+            regions = {region.data.decode("ascii") for region in pair.regionSet.regionHandle}
+            for attribute in pair.attributeSet.attributeHandle:
+                pairs.append((attribute.data.decode("ascii"), set(regions)))
+        return tuple(pairs)
+
+    @staticmethod
+    def _ranges_overlap(left: tuple[int, int], right: tuple[int, int]) -> bool:
+        return left[0] <= right[1] and right[0] <= left[1]
+
+    def _regions_overlap(self, source_region: str, target_region: str) -> bool:
+        common = self.regions.get(source_region, set()) & self.regions.get(target_region, set())
+        if not common:
+            return False
+        for dimension in common:
+            source_bounds = self.region_bounds.get(source_region, {}).get(dimension, (0, 1024))
+            target_bounds = self.region_bounds.get(target_region, {}).get(dimension, (0, 1024))
+            if not self._ranges_overlap(source_bounds, target_bounds):
+                return False
+        return True
+
+    def _attribute_regions_overlap(self, object_instance: str, object_class: str, attribute: str) -> bool:
+        target_regions = self.subscribed_object_regions.get(object_class, {}).get(attribute, set())
+        if not target_regions:
+            return attribute in self.subscribed_object_attributes.get(object_class, set())
+        source_regions = self.object_update_regions.get(object_instance, {}).get(attribute, set())
+        if not source_regions:
+            return True
+        return any(self._regions_overlap(source_region, target_region) for source_region in source_regions for target_region in target_regions)
+
+    def _reflectable_attribute_names(self, object_instance: str, object_class: str) -> set[str]:
+        return {
+            attribute
+            for attribute in self.subscribed_object_attributes.get(object_class, set())
+            if self._attribute_regions_overlap(object_instance, object_class, attribute)
+        }
+
+    def _conveyed_regions_for(self, object_instance: str, reflected) -> datatypes_pb2.ConveyedRegionSet:
+        result = datatypes_pb2.ConveyedRegionSet()
+        region_values = {
+            region
+            for item in reflected
+            for region in self.object_update_regions.get(object_instance, {}).get(item.attributeHandle.data.decode("ascii"), set())
+        }
+        for region_value in sorted(region_values):
+            conveyed = result.conveyedRegions.add()
+            for dimension in sorted(self.regions.get(region_value, ())):
+                row = conveyed.dimensionAndRange.add()
+                row.dimensionHandle.data = dimension.encode("ascii")
+                lower, upper = self.region_bounds.get(region_value, {}).get(dimension, (0, 1024))
+                row.rangeBounds.lower = lower
+                row.rangeBounds.upper = upper
+        return result
 
 
 class RTI2025GrpcServer:

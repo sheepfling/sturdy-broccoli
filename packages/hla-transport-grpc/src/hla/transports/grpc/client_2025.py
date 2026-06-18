@@ -233,6 +233,18 @@ def _copy_message_field(target: Message, field: FieldDescriptor, value: Any) -> 
                 modules.add(url=str(item))
         return
     if message_name == "AttributeSetRegionSetPairList":
+        pairs = getattr(target, field.name).AttributeSetRegionSetPair
+        for pair_spec in str(value).split(";"):
+            if not pair_spec:
+                continue
+            attribute_spec, region_spec = pair_spec.split("|", 1)
+            pair = pairs.add()
+            for attribute in attribute_spec.split(","):
+                if attribute:
+                    pair.attributeSet.attributeHandle.add(data=_opaque(attribute))
+            for region in region_spec.split(","):
+                if region:
+                    pair.regionSet.regionHandle.add(data=_opaque(region))
         return
     if message_name == "RangeBounds":
         bounds = getattr(target, field.name)
@@ -379,6 +391,13 @@ def _decode_request_value(field: FieldDescriptor, value: Any) -> Any:
             return value.url or value.file.name
         if field.message_type.name == "RangeBounds":
             return f"{value.lower}:{value.upper}"
+        if field.message_type.name == "AttributeSetRegionSetPairList":
+            pairs = []
+            for pair in value.AttributeSetRegionSetPair:
+                attributes = ",".join(_opaque_text(item.data) for item in pair.attributeSet.attributeHandle)
+                regions = ",".join(_opaque_text(item.data) for item in pair.regionSet.regionHandle)
+                pairs.append(f"{attributes}|{regions}")
+            return ";".join(pairs)
         return value
     if field.type == FieldDescriptor.TYPE_BYTES:
         return bytes(value).hex()

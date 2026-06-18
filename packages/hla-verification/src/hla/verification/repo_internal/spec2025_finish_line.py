@@ -261,8 +261,9 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "loopback runtime session are present for connect, create federation, join, FOM handle lookup, "
             "available-dimension and dimension-bound queries, default attribute transportation/order policy calls, "
             "object registration, basic ownership divest/acquire callbacks, time-regulation/time-constrained/time-advance "
-            "callbacks, object discovery, attribute reflection, interaction receipt, resign, destroy, and disconnect. "
-            "DDM region routing, MOM-over-FedPro behavior, and full RTI semantics remain outside this slice."
+            "callbacks, object discovery, attribute reflection, interaction receipt, basic DDM region-overlap "
+            "filtering for object attributes, resign, destroy, and disconnect. MOM-over-FedPro behavior and full "
+            "RTI semantics remain outside this slice."
         ),
     },
     {

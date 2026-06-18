@@ -186,6 +186,122 @@ def test_2025_transport_server_runs_object_and_interaction_exchange_over_fedpro_
         server.close()
 
 
+def test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-ddm"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "RegionDDM2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025DDM", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        attribute = transport.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
+        dimension = transport.request(TransportRequest(command="GET_DIMENSION_HANDLE", fields=("RoutingSpace",))).fields[0]
+        assert transport.request(TransportRequest(command="PUBLISH_OBJECT_CLASS_ATTRIBUTES", fields=(object_class, attribute))).fields == ()
+
+        publisher_region = transport.request(TransportRequest(command="CREATE_REGION", fields=(dimension,))).fields[0]
+        subscriber_region = transport.request(TransportRequest(command="CREATE_REGION", fields=(dimension,))).fields[0]
+        assert transport.request(TransportRequest(command="SET_RANGE_BOUNDS", fields=(publisher_region, dimension, "0:10"))).fields == ()
+        assert transport.request(TransportRequest(command="SET_RANGE_BOUNDS", fields=(subscriber_region, dimension, "50:60"))).fields == ()
+        assert transport.request(TransportRequest(command="COMMIT_REGION_MODIFICATIONS", fields=(f"{publisher_region},{subscriber_region}",))).fields == ()
+
+        object_instance = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProDDMTarget-1"))).fields[0]
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="ASSOCIATE_REGIONS_FOR_UPDATES",
+                    fields=(object_instance, f"{attribute}|{publisher_region}"),
+                )
+            ).fields
+            == ()
+        )
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS",
+                    fields=(object_class, f"{attribute}|{subscriber_region}", "1"),
+                )
+            ).fields
+            == ()
+        )
+
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="UPDATE_ATTRIBUTE_VALUES",
+                    fields=(object_instance, f"{attribute}:6f757473696465", "6f7574736964652d746167"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "TIME_ADVANCE_GRANT",
+            "HLAinteger64Time",
+            "7",
+        )
+
+        assert transport.request(TransportRequest(command="SET_RANGE_BOUNDS", fields=(subscriber_region, dimension, "5:15"))).fields == ()
+        assert transport.request(TransportRequest(command="COMMIT_REGION_MODIFICATIONS", fields=(subscriber_region,))).fields == ()
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS",
+                    fields=(object_class, f"{attribute}|{subscriber_region}", "1"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "DISCOVER",
+            object_instance,
+            object_class,
+            "FedProDDMTarget-1",
+        )
+
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="UPDATE_ATTRIBUTE_VALUES",
+                    fields=(object_instance, f"{attribute}:696e73696465", "696e736964652d746167"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "REFLECT",
+            object_instance,
+            f"{attribute}:696e73696465",
+            "696e736964652d746167",
+            "1",
+            "1",
+        )
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "createRegionRequest",
+            "setRangeBoundsRequest",
+            "commitRegionModificationsRequest",
+            "associateRegionsForUpdatesRequest",
+            "subscribeObjectClassAttributesWithRegionsRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_runs_lifecycle_session_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None
