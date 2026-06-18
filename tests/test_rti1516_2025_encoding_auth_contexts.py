@@ -187,6 +187,17 @@ def test_2010_profile_does_not_gain_2025_auth_or_repository_surface() -> None:
     assert not hasattr(rti1516e, "Credentials")
 
 
+@pytest.mark.requirements("AUTH-004")
+def test_2010_runtime_context_keeps_auth_out_of_backend_options() -> None:
+    factory = HlaFactoryRegistry.get("rti1516e", provider="inmemory")
+
+    runtime = factory.create_runtime_context(auth_config={"mode": "NoAuth"})
+
+    assert runtime.provider == "inmemory"
+    assert runtime.authentication_context.credentials() is None
+    assert hasattr(runtime.rti_ambassador, "connect")
+
+
 @pytest.mark.requirements("HLA2025-OMT-002", "HLA2025-OMT-006")
 def test_encoding_smoke_fom_resolves_expected_datatype_graph() -> None:
     path = encoding_smoke_fom_path()

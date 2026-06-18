@@ -320,7 +320,7 @@ class HlaFactory:
             edition=self.spec.name,
             provider=self.provider,
             transport=transport,
-            rti_ambassador=self.create_rti_ambassador(auth=auth_context, **rti_options),
+            rti_ambassador=self.create_rti_ambassador(**rti_options),
             federate_ambassador=self.create_federate_ambassador_proxy(),
             encoding_context=self.create_encoding_context(transport=transport, fom_modules=fom_modules),
             authentication_context=auth_context,
