@@ -417,6 +417,24 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "Hosted FedPro 2025 route covers FOM handle/name round trips, dimension/range, transportation/order, "
         "update-rate, normalization, logical-time query, and 2025 switch get/set services.",
     ),
+    _row(
+        "support_services",
+        "cpp-standard-2025-pybind",
+        PARITY_COVERED,
+        ("HLA2025-FI-001", "HLA2025-MOD-007", "HLA2025-BND-002"),
+        _STANDARD_SHIM_TESTS,
+        "C++ 2025 pybind standard route runs the support-services runtime trace: federate/object/name "
+        "lookups, known-class and dimension/transport/order lookups, logical-time factory lookup, and 2025 switch round trips.",
+    ),
+    _row(
+        "support_services",
+        "cpp-standard-2025-grpc",
+        PARITY_COVERED,
+        ("HLA2025-FI-001", "HLA2025-MOD-007", "HLA2025-BND-002"),
+        _STANDARD_SHIM_TESTS,
+        "C++ 2025 gRPC standard route runs the support-services runtime trace: federate/object/name "
+        "lookups, known-class and dimension/transport/order lookups, logical-time factory lookup, and 2025 switch round trips.",
+    ),
 )
 
 

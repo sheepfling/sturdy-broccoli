@@ -334,6 +334,57 @@ def test_standard_2025_routes_pass_ddm_when_built(backend_name: str) -> None:
         "cpp-standard-2025-grpc",
     ],
 )
+def test_standard_2025_routes_pass_support_services_when_built(backend_name: str) -> None:
+    if "java-standard-2025" in backend_name and not JAVA_2025_JAR.exists():
+        pytest.skip("Java 2025 standard shim jar has not been built")
+    if "cpp-standard-2025" in backend_name and not CPP_2025_LIB.exists():
+        pytest.skip("C++ 2025 standard shim artifact has not been built")
+
+    from hla.verification.shim_route_evidence import run_standard_2025_support_services_trace
+
+    evidence = run_standard_2025_support_services_trace(backend_name)
+    event_names = {event["event"] for event in evidence["trace"]}
+    lookups = next(event for event in evidence["trace"] if event["event"] == "supportLookupRoundTrip")
+    switches = next(event for event in evidence["trace"] if event["event"] == "supportSwitchRoundTrip")
+
+    assert evidence["status"] == "trace-green"
+    assert evidence["scenario"] == "support-services-runtime"
+    assert "HLA2025-FI-001" in evidence["requirements_exercised"]
+    assert {
+        "routeSelected",
+        "connect",
+        "createFederationExecution",
+        "joinFederationExecution",
+        "supportLookupRoundTrip",
+        "supportSwitchRoundTrip",
+        "disconnect",
+    } <= event_names
+    assert lookups["federateName"] == "route-support"
+    assert lookups["objectClassName"] == "HLAobjectRoot.RouteTarget"
+    assert lookups["attributeName"] == "Position"
+    assert lookups["objectInstanceName"].startswith("RouteSupportTarget-")
+    assert lookups["dimensionName"] == "RoutingSpace"
+    assert lookups["dimensionUpperBound"] == 1024
+    assert lookups["transportationName"] == "HLAreliable"
+    assert lookups["orderName"] == "HLAreceive"
+    assert lookups["timeFactoryName"] == "HLAinteger64Time"
+    assert switches == {
+        "event": "supportSwitchRoundTrip",
+        "serviceReporting": True,
+        "exceptionReporting": False,
+        "conveyRegionDesignatorSets": False,
+    }
+
+
+@pytest.mark.parametrize(
+    "backend_name",
+    [
+        "java-standard-2025-jpype",
+        "java-standard-2025-py4j",
+        "cpp-standard-2025-pybind",
+        "cpp-standard-2025-grpc",
+    ],
+)
 def test_standard_2025_routes_pass_runtime_capability_when_built(backend_name: str) -> None:
     if "java-standard-2025" in backend_name and not JAVA_2025_JAR.exists():
         pytest.skip("Java 2025 standard shim jar has not been built")

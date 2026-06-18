@@ -2081,6 +2081,72 @@ class Shim2025RTIAmbassador:
         attribute_name = self._attribute_names_from_handles(record.object_class_name, {attribute})[0]
         return record.attribute_owners.get(attribute_name) == self._federate_handle
 
+    def getFederateHandle(self, federateName: str) -> FederateHandle:  # noqa: N802
+        self._record("getFederateHandle", federateName)
+        self._require_joined("getFederateHandle")
+        federation = self._federation_record()
+        try:
+            return federation.member_handles[str(federateName)]
+        except KeyError as exc:
+            raise NameNotFound(str(federateName)) from exc
+
+    def getFederateName(self, federate: Any) -> str:  # noqa: N802
+        self._record("getFederateName", federate)
+        self._require_joined("getFederateName")
+        federate_value = self._normalize_handle(federate, FederateHandle, InvalidFederateHandle)
+        federation = self._federation_record()
+        names_by_handle = {handle.value: name for name, handle in federation.member_handles.items()}
+        try:
+            return names_by_handle[federate_value]
+        except KeyError as exc:
+            raise InvalidFederateHandle(str(federate)) from exc
+
+    def getKnownObjectClassHandle(self, objectInstance: Any) -> ObjectClassHandle:  # noqa: N802
+        self._record("getKnownObjectClassHandle", objectInstance)
+        self._require_joined("getKnownObjectClassHandle")
+        record = self._object_instance_record(objectInstance)
+        return ObjectClassHandle(self._object_class_handles()[record.object_class_name])
+
+    def getObjectInstanceHandle(self, objectInstanceName: str) -> ObjectInstanceHandle:  # noqa: N802
+        self._record("getObjectInstanceHandle", objectInstanceName)
+        self._require_joined("getObjectInstanceHandle")
+        federation = self._federation_record()
+        try:
+            return ObjectInstanceHandle(federation.object_instance_names[str(objectInstanceName)])
+        except KeyError as exc:
+            raise ObjectInstanceNotKnown(str(objectInstanceName)) from exc
+
+    def getObjectInstanceName(self, objectInstance: Any) -> str:  # noqa: N802
+        self._record("getObjectInstanceName", objectInstance)
+        self._require_joined("getObjectInstanceName")
+        record = self._object_instance_record(objectInstance)
+        if record.object_instance_name is None:
+            raise ObjectInstanceNotKnown(str(objectInstance))
+        return record.object_instance_name
+
+    def getOrderType(self, orderTypeName: str) -> OrderType:  # noqa: N802
+        self._record("getOrderType", orderTypeName)
+        self._require_joined("getOrderType")
+        normalized = str(orderTypeName).strip().lower()
+        if normalized in {"hlareceive", "receive", "ro"}:
+            return OrderType.RECEIVE
+        if normalized in {"hlatimestamp", "timestamp", "tso"}:
+            return OrderType.TIMESTAMP
+        raise InvalidOrderType(str(orderTypeName))
+
+    def getOrderName(self, orderType: Any) -> str:  # noqa: N802
+        self._record("getOrderName", orderType)
+        self._require_joined("getOrderName")
+        try:
+            coerced = orderType if isinstance(orderType, OrderType) else OrderType(orderType)
+        except Exception as exc:
+            raise InvalidOrderType(str(orderType)) from exc
+        if coerced is OrderType.RECEIVE:
+            return "HLAreceive"
+        if coerced is OrderType.TIMESTAMP:
+            return "HLAtimestamp"
+        raise InvalidOrderType(str(orderType))
+
     def getTimeFactory(self) -> Any:  # noqa: N802
         self._record("getTimeFactory")
         self._require_connected("getTimeFactory")

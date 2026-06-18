@@ -49,6 +49,11 @@ DDM_REQUIREMENTS_2025 = [
     "HLA2025-FI-001",
 ]
 
+SUPPORT_SERVICES_REQUIREMENTS_2025 = [
+    "HLA2025-FI-001",
+    "HLA2025-MOD-007",
+]
+
 RUNTIME_CAPABILITY_REQUIREMENTS_2025 = [
     "HLA2025-FR-001",
     "HLA2025-FR-004",
@@ -1091,6 +1096,101 @@ def run_standard_2025_ddm_trace(backend_name: str) -> dict[str, Any]:
     }
 
 
+def run_standard_2025_support_services_trace(backend_name: str) -> dict[str, Any]:
+    """Run a focused 2025 support-services lookup/control trace for a standard route."""
+
+    from hla.rti import create_rti_ambassador
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+
+    temp_dir, fom_module = _write_2025_runtime_capability_fom()
+    federation_name = f"ShimRouteSupport{backend_name.replace('-', '').title()}{uuid.uuid4().hex[:8]}"
+    federate = _Recording2025FederateAmbassador()
+    rti = create_rti_ambassador(spec="2025", backend=backend_name)
+    trace = [
+        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=rti.backend_info.details.get("standard_backed")),
+        _event("getHLAversion", value=rti.getHLAversion()),
+    ]
+    connected = False
+    joined = False
+    federation_created = False
+    try:
+        rti.connect(federate, CallbackModel.HLA_EVOKED)
+        connected = True
+        trace.append(_event("connect", callbackModel=CallbackModel.HLA_EVOKED))
+        rti.createFederationExecution(federationName=federation_name, fomModule=str(fom_module))
+        federation_created = True
+        trace.append(_event("createFederationExecution", federation=federation_name, fomModule=fom_module.name))
+        federate_handle = rti.joinFederationExecution("route-support", "route-support", federation_name)
+        joined = True
+        trace.append(_event("joinFederationExecution", federateHandle=federate_handle))
+
+        object_class = rti.getObjectClassHandle("HLAobjectRoot.RouteTarget")
+        attribute = rti.getAttributeHandle(object_class, "Position")
+        rti.publishObjectClassAttributes(object_class, {attribute})
+        object_instance_name = f"RouteSupportTarget-{uuid.uuid4().hex[:8]}"
+        object_instance = rti.registerObjectInstance(object_class, object_instance_name)
+        dimension = rti.getDimensionHandle("RoutingSpace")
+        transportation = rti.getTransportationTypeHandle("HLAreliable")
+
+        trace.append(
+            _event(
+                "supportLookupRoundTrip",
+                federateHandle=rti.getFederateHandle("route-support"),
+                federateName=rti.getFederateName(federate_handle),
+                normalizedFederateHandle=rti.normalizeFederateHandle(federate_handle),
+                objectClassName=rti.getObjectClassName(object_class),
+                attributeName=rti.getAttributeName(object_class, attribute),
+                objectInstanceName=rti.getObjectInstanceName(object_instance),
+                objectInstanceHandle=rti.getObjectInstanceHandle(object_instance_name),
+                knownObjectClass=rti.getKnownObjectClassHandle(object_instance),
+                dimensionName=rti.getDimensionName(dimension),
+                dimensionUpperBound=rti.getDimensionUpperBound(dimension),
+                availableDimensions=rti.getAvailableDimensionsForObjectClass(object_class),
+                transportationName=rti.getTransportationTypeName(transportation),
+                orderName=rti.getOrderName(OrderType.RECEIVE),
+                orderType=rti.getOrderType("HLAtimestamp"),
+                timeFactoryName=rti.getTimeFactory().getName(),
+            )
+        )
+
+        rti.setServiceReportingSwitch(True)
+        rti.setExceptionReportingSwitch(False)
+        rti.setConveyRegionDesignatorSetsSwitch(False)
+        trace.append(
+            _event(
+                "supportSwitchRoundTrip",
+                serviceReporting=rti.getServiceReportingSwitch(),
+                exceptionReporting=rti.getExceptionReportingSwitch(),
+                conveyRegionDesignatorSets=rti.getConveyRegionDesignatorSetsSwitch(),
+            )
+        )
+    finally:
+        try:
+            if joined:
+                rti.resignFederationExecution(ResignAction.NO_ACTION)
+                trace.append(_event("resignFederationExecution", action=ResignAction.NO_ACTION))
+            if federation_created:
+                rti.destroyFederationExecution(federation_name)
+                trace.append(_event("destroyFederationExecution", federation=federation_name))
+            if connected:
+                rti.disconnect()
+                trace.append(_event("disconnect"))
+        finally:
+            close = getattr(rti, "close", None)
+            if callable(close):
+                close()
+            shutil.rmtree(temp_dir, ignore_errors=True)
+
+    return {
+        "route": backend_name,
+        "edition": "2025",
+        "scenario": "support-services-runtime",
+        "status": "trace-green",
+        "requirements_exercised": SUPPORT_SERVICES_REQUIREMENTS_2025,
+        "trace": trace,
+    }
+
+
 __all__ = [
     "run_2025_time_management_trace",
     "run_standard_2010_exchange_trace",
@@ -1099,4 +1199,5 @@ __all__ = [
     "run_standard_2025_object_exchange_trace",
     "run_standard_2025_ownership_trace",
     "run_standard_2025_runtime_capability_trace",
+    "run_standard_2025_support_services_trace",
 ]
