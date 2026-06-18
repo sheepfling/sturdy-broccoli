@@ -2338,6 +2338,123 @@ def test_2025_shim_routes_mom_time_management_service_interactions() -> None:
     controller.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FR-005", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_routes_mom_object_and_ownership_service_interactions() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-mom-object-service-{uuid.uuid4().hex[:8]}"
+    target_callbacks = Recording2025FederateAmbassador()
+    observer_callbacks = Recording2025FederateAmbassador()
+    acquirer_callbacks = Recording2025FederateAmbassador()
+    controller = create_rti_ambassador(backend="shim")
+    target = create_rti_ambassador(backend="shim")
+    observer = create_rti_ambassador(backend="shim")
+    acquirer = create_rti_ambassador(backend="shim")
+    controller.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    target.connect(target_callbacks, CallbackModel.HLA_EVOKED)
+    observer.connect(observer_callbacks, CallbackModel.HLA_EVOKED)
+    acquirer.connect(acquirer_callbacks, CallbackModel.HLA_EVOKED)
+    controller.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    controller.joinFederationExecution("ObjectServiceController", "TestFederate", federation_name)
+    target_handle = target.joinFederationExecution("ObjectServiceTarget", "TestFederate", federation_name)
+    observer.joinFederationExecution("ObjectServiceObserver", "TestFederate", federation_name)
+    acquirer.joinFederationExecution("ObjectServiceAcquirer", "TestFederate", federation_name)
+
+    object_class = target.getObjectClassHandle("HLAobjectRoot.Target")
+    attribute = target.getAttributeHandle(object_class, "Position")
+    interaction_class = target.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    target.publishObjectClassAttributes(object_class, {attribute})
+    target.publishInteractionClass(interaction_class)
+    observer.subscribeObjectClassAttributes(object_class, {attribute})
+    object_instance = target.registerObjectInstance(object_class, "MOM-Object-Service-Target")
+
+    def mom_service(name: str):  # noqa: ANN202
+        return controller.getInteractionClassHandle(f"HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.{name}")
+
+    def send_service(name: str, parameters: dict[str, bytes]) -> None:
+        interaction = mom_service(name)
+        payload = {controller.getParameterHandle(interaction, "HLAfederate"): str(target_handle.value).encode("ascii")}
+        payload.update({controller.getParameterHandle(interaction, key): value for key, value in parameters.items()})
+        controller.sendInteraction(interaction, payload, f"mom-{name}".encode("ascii"))
+
+    send_service(
+        "HLArequestAttributeTransportationTypeChange",
+        {
+            "HLAobjectInstance": str(object_instance.value).encode("ascii"),
+            "HLAattributeList": str(attribute.value).encode("ascii"),
+            "HLAtransportation": b"HLAbestEffort",
+        },
+    )
+    assert target_callbacks.last_callback("confirmAttributeTransportationTypeChange") == (
+        object_instance,
+        {attribute},
+        target.getTransportationTypeHandle("HLAbestEffort"),
+    )
+
+    send_service(
+        "HLArequestInteractionTransportationTypeChange",
+        {
+            "HLAinteractionClass": str(interaction_class.value).encode("ascii"),
+            "HLAtransportation": b"HLAbestEffort",
+        },
+    )
+    assert target_callbacks.last_callback("confirmInteractionTransportationTypeChange") == (
+        interaction_class,
+        target.getTransportationTypeHandle("HLAbestEffort"),
+    )
+
+    assert target.isAttributeOwnedByFederate(object_instance, attribute) is True
+    send_service(
+        "HLAunconditionalAttributeOwnershipDivestiture",
+        {
+            "HLAobjectInstance": str(object_instance.value).encode("ascii"),
+            "HLAattributeList": str(attribute.value).encode("ascii"),
+        },
+    )
+    assert target.isAttributeOwnedByFederate(object_instance, attribute) is False
+    acquirer.attributeOwnershipAcquisitionIfAvailable(object_instance, {attribute}, b"after-mom-divest")
+    assert acquirer_callbacks.last_callback("attributeOwnershipAcquisitionNotification") == (
+        object_instance,
+        {attribute},
+        b"after-mom-divest",
+    )
+
+    object_instance_to_delete = target.registerObjectInstance(object_class, "MOM-Object-Service-Delete")
+    send_service(
+        "HLAdeleteObjectInstance",
+        {
+            "HLAobjectInstance": str(object_instance_to_delete.value).encode("ascii"),
+            "HLAtag": b"mom-delete-object",
+        },
+    )
+    assert observer_callbacks.last_callback("removeObjectInstance") is not None
+    assert observer_callbacks.last_callback("removeObjectInstance")[0] == object_instance_to_delete
+    with pytest.raises(ObjectInstanceNotKnown):
+        target.deleteObjectInstance(object_instance_to_delete, b"already-deleted")
+
+    object_instance_to_forget = target.registerObjectInstance(object_class, "MOM-Object-Service-Local")
+    send_service(
+        "HLAlocalDeleteObjectInstance",
+        {"HLAobjectInstance": str(object_instance_to_forget.value).encode("ascii")},
+    )
+    assert target.isAttributeOwnedByFederate(object_instance_to_forget, attribute) is True
+
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    target.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.destroyFederationExecution(federationName=federation_name)
+    acquirer.disconnect()
+    observer.disconnect()
+    target.disconnect()
+    controller.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-005")
 def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction

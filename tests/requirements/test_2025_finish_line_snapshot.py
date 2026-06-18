@@ -158,6 +158,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "declaration-management MOM service actions" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "federation-management MOM service actions" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "supported time-management MOM service actions" in slices["2025-mom-service-report-serialization"]["supported_scope"]
+    assert "supported object-management and ownership MOM service actions" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "reports standard MIM data for HLArequestMIMdata" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "FOM module data for HLArequestFOMmoduleData" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "object publication/subscription state" in slices["2025-mom-service-report-serialization"]["supported_scope"]

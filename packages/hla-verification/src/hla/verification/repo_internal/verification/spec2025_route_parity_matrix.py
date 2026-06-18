@@ -370,7 +370,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "synchronization point MOM request/report interactions, and service/exception reporting MOM adjust "
         "interactions plus exposed HLAsetSwitches adjust interactions and declaration-management MOM service "
         "actions plus federation-management MOM service actions and supported time-management MOM service actions, "
-        "not full MOM manager action routing.",
+        "supported object-management MOM service actions, and supported ownership MOM service actions, not full "
+        "MOM manager action routing.",
     ),
     _row(
         "mom",

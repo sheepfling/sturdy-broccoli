@@ -2864,6 +2864,39 @@ class Shim2025RTIAmbassador:
         if leaf == "HLAmodifyLookahead":
             target.modifyLookahead(target._mom_interval(params.get("HLAlookahead"), "HLAlookahead"))
             return True
+        if leaf == "HLAdeleteObjectInstance":
+            time = target._mom_time(params.get("HLAtimeStamp"), "HLAtimeStamp") if params.get("HLAtimeStamp") else None
+            target.deleteObjectInstance(
+                ObjectInstanceHandle(self._mom_int(params.get("HLAobjectInstance"), "HLAobjectInstance")),
+                bytes(params.get("HLAtag", b"MOM")),
+                time,
+            )
+            return True
+        if leaf == "HLAlocalDeleteObjectInstance":
+            target.localDeleteObjectInstance(
+                ObjectInstanceHandle(self._mom_int(params.get("HLAobjectInstance"), "HLAobjectInstance"))
+            )
+            return True
+        if leaf == "HLArequestAttributeTransportationTypeChange":
+            target.requestAttributeTransportationTypeChange(
+                ObjectInstanceHandle(self._mom_int(params.get("HLAobjectInstance"), "HLAobjectInstance")),
+                self._mom_attribute_handles(params.get("HLAattributeList")),
+                target._mom_transportation_handle(params.get("HLAtransportation"), "HLAtransportation"),
+            )
+            return True
+        if leaf == "HLArequestInteractionTransportationTypeChange":
+            target.requestInteractionTransportationTypeChange(
+                InteractionClassHandle(self._mom_int(params.get("HLAinteractionClass"), "HLAinteractionClass")),
+                target._mom_transportation_handle(params.get("HLAtransportation"), "HLAtransportation"),
+            )
+            return True
+        if leaf == "HLAunconditionalAttributeOwnershipDivestiture":
+            target.unconditionalAttributeOwnershipDivestiture(
+                ObjectInstanceHandle(self._mom_int(params.get("HLAobjectInstance"), "HLAobjectInstance")),
+                self._mom_attribute_handles(params.get("HLAattributeList")),
+                b"MOM",
+            )
+            return True
         if leaf == "HLApublishObjectClassAttributes":
             target.publishObjectClassAttributes(
                 ObjectClassHandle(self._mom_int(params.get("HLAobjectClass"), "HLAobjectClass")),
@@ -3012,6 +3045,9 @@ class Shim2025RTIAmbassador:
         if value is None:
             raise RTIinternalError(f"Missing MOM parameter {field_name}")
         return value.decode("utf-8")
+
+    def _mom_transportation_handle(self, value: bytes | None, field_name: str) -> TransportationTypeHandle:
+        return self.getTransportationTypeHandle(self._mom_text(value, field_name))
 
     def _mom_time(self, value: bytes | None, field_name: str) -> Any:
         return self._coerce_time(self._mom_number(value, field_name))
