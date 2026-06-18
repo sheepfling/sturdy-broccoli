@@ -291,9 +291,9 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "supported_scope": (
             "Python 2025 shim supports FOM-backed object instance registration, initial attribute ownership by "
             "the registering federate, unconditional divestiture with ownership validation, acquire-if-available "
-            "with 2025 user-supplied tags, ownership unavailable/acquisition callbacks, ownership query callbacks, "
-            "and isAttributeOwnedByFederate. Negotiated ownership and resign-time ownership policies remain later "
-            "behavior work."
+            "with 2025 user-supplied tags, negotiated ownership offers, pending acquisition cancellation, "
+            "divestiture-if-wanted transfer, ownership unavailable/acquisition callbacks, ownership query "
+            "callbacks, and isAttributeOwnedByFederate. Resign-time ownership policies remain later behavior work."
         ),
     },
     {

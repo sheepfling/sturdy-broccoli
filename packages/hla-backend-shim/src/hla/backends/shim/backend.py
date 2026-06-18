@@ -20,7 +20,11 @@ from hla.rti1516_2025.datatypes import (
 from hla.rti1516_2025.enums import AdditionalSettingsResultCode, CallbackModel, OrderType, ResignAction, ServiceGroup
 from hla.rti1516_2025.exceptions import (
     AlreadyConnected,
+    AttributeAcquisitionWasNotRequested,
+    AttributeAlreadyBeingAcquired,
+    AttributeAlreadyBeingDivested,
     AttributeAlreadyOwned,
+    AttributeDivestitureWasNotRequested,
     AttributeNotDefined,
     AttributeNotOwned,
     CouldNotCreateLogicalTimeFactory,
@@ -53,6 +57,7 @@ from hla.rti1516_2025.exceptions import (
     InvalidTransportationTypeHandle,
     LogicalTimeAlreadyPassed,
     NameNotFound,
+    NoAcquisitionPending,
     NotConnected,
     ObjectClassNotDefined,
     ObjectInstanceNameInUse,
@@ -115,6 +120,8 @@ class _ObjectInstanceRecord:
     object_class_name: str
     object_instance_name: str | None
     attribute_owners: dict[str, FederateHandle | None] = field(default_factory=dict)
+    attribute_divesting: set[str] = field(default_factory=set)
+    attribute_candidates: dict[str, list[tuple[FederateHandle, bytes]]] = field(default_factory=dict)
 
 
 _FEDERATION_REGISTRY: dict[str, _FederationRecord] = {}
@@ -642,7 +649,133 @@ class Shim2025RTIAmbassador:
             if record.attribute_owners.get(attribute_name) != self._federate_handle:
                 raise AttributeNotOwned(attribute_name)
         for attribute_name in attribute_names:
-            record.attribute_owners[attribute_name] = None
+            candidate = self._pop_attribute_candidate(record, attribute_name)
+            if candidate is None:
+                record.attribute_owners[attribute_name] = None
+                record.attribute_divesting.discard(attribute_name)
+                continue
+            new_owner, acquisition_tag = candidate
+            record.attribute_owners[attribute_name] = new_owner
+            record.attribute_divesting.discard(attribute_name)
+            attribute_handle = AttributeHandle(self._attribute_handles(record.object_class_name)[attribute_name])
+            self._deliver_to_federate_handle(new_owner, "attributeOwnershipAcquisitionNotification", objectInstance, {attribute_handle}, acquisition_tag)
+
+    def negotiatedAttributeOwnershipDivestiture(  # noqa: N802
+        self,
+        objectInstance: Any,
+        attributes: Any,
+        userSuppliedTag: bytes,
+    ) -> None:
+        self._record("negotiatedAttributeOwnershipDivestiture", objectInstance, attributes, userSuppliedTag)
+        self._require_joined("negotiatedAttributeOwnershipDivestiture")
+        record = self._object_instance_record(objectInstance)
+        attribute_names = self._attribute_names_from_handles(record.object_class_name, attributes)
+        for attribute_name in attribute_names:
+            if record.attribute_owners.get(attribute_name) != self._federate_handle:
+                raise AttributeNotOwned(attribute_name)
+            if attribute_name in record.attribute_divesting:
+                raise AttributeAlreadyBeingDivested(attribute_name)
+
+        attribute_handles_by_name = self._attribute_handles(record.object_class_name)
+        for attribute_name in attribute_names:
+            candidate = self._pop_attribute_candidate(record, attribute_name)
+            attribute_handle = AttributeHandle(attribute_handles_by_name[attribute_name])
+            if candidate is not None:
+                new_owner, _candidate_tag = candidate
+                record.attribute_owners[attribute_name] = new_owner
+                record.attribute_divesting.discard(attribute_name)
+                self._deliver_callback("requestDivestitureConfirmation", objectInstance, {attribute_handle}, bytes(userSuppliedTag))
+                self._deliver_to_federate_handle(
+                    new_owner,
+                    "attributeOwnershipAcquisitionNotification",
+                    objectInstance,
+                    {attribute_handle},
+                    bytes(userSuppliedTag),
+                )
+                continue
+
+            record.attribute_divesting.add(attribute_name)
+            for federate_handle in self._other_member_handles():
+                self._deliver_to_federate_handle(
+                    federate_handle,
+                    "requestAttributeOwnershipAssumption",
+                    objectInstance,
+                    {attribute_handle},
+                    bytes(userSuppliedTag),
+                )
+
+    def confirmDivestiture(self, objectInstance: Any, confirmedAttributes: Any, userSuppliedTag: bytes) -> None:  # noqa: N802
+        self._record("confirmDivestiture", objectInstance, confirmedAttributes, userSuppliedTag)
+        self._require_joined("confirmDivestiture")
+        record = self._object_instance_record(objectInstance)
+        attribute_names = self._attribute_names_from_handles(record.object_class_name, confirmedAttributes)
+        attribute_handles_by_name = self._attribute_handles(record.object_class_name)
+        for attribute_name in attribute_names:
+            if record.attribute_owners.get(attribute_name) != self._federate_handle:
+                raise AttributeNotOwned(attribute_name)
+            if attribute_name not in record.attribute_divesting:
+                raise AttributeDivestitureWasNotRequested(attribute_name)
+            if not record.attribute_candidates.get(attribute_name):
+                raise NoAcquisitionPending(attribute_name)
+
+        for attribute_name in attribute_names:
+            new_owner, _candidate_tag = self._pop_attribute_candidate(record, attribute_name) or (None, b"")
+            if new_owner is None:
+                raise NoAcquisitionPending(attribute_name)
+            record.attribute_owners[attribute_name] = new_owner
+            record.attribute_divesting.discard(attribute_name)
+            attribute_handle = AttributeHandle(attribute_handles_by_name[attribute_name])
+            self._deliver_to_federate_handle(
+                new_owner,
+                "attributeOwnershipAcquisitionNotification",
+                objectInstance,
+                {attribute_handle},
+                bytes(userSuppliedTag),
+            )
+
+    def attributeOwnershipAcquisition(  # noqa: N802
+        self,
+        objectInstance: Any,
+        desiredAttributes: Any,
+        userSuppliedTag: bytes,
+    ) -> None:
+        self._record("attributeOwnershipAcquisition", objectInstance, desiredAttributes, userSuppliedTag)
+        self._require_joined("attributeOwnershipAcquisition")
+        record = self._object_instance_record(objectInstance)
+        attribute_names = self._attribute_names_from_handles(record.object_class_name, desiredAttributes)
+        attribute_handles_by_name = self._attribute_handles(record.object_class_name)
+        for attribute_name in attribute_names:
+            current_owner = record.attribute_owners.get(attribute_name)
+            if current_owner == self._federate_handle:
+                raise AttributeAlreadyOwned(attribute_name)
+            if self._has_attribute_candidate(record, attribute_name, self._federate_handle):
+                raise AttributeAlreadyBeingAcquired(attribute_name)
+
+        for attribute_name in attribute_names:
+            attribute_handle = AttributeHandle(attribute_handles_by_name[attribute_name])
+            current_owner = record.attribute_owners.get(attribute_name)
+            if current_owner is None or attribute_name in record.attribute_divesting:
+                old_owner = current_owner
+                record.attribute_owners[attribute_name] = self._federate_handle
+                record.attribute_divesting.discard(attribute_name)
+                if old_owner is not None:
+                    self._deliver_to_federate_handle(
+                        old_owner,
+                        "requestDivestitureConfirmation",
+                        objectInstance,
+                        {attribute_handle},
+                        bytes(userSuppliedTag),
+                    )
+                self._deliver_callback("attributeOwnershipAcquisitionNotification", objectInstance, {attribute_handle}, bytes(userSuppliedTag))
+            else:
+                self._add_attribute_candidate(record, attribute_name, self._federate_handle, bytes(userSuppliedTag))
+                self._deliver_to_federate_handle(
+                    current_owner,
+                    "requestAttributeOwnershipRelease",
+                    objectInstance,
+                    {attribute_handle},
+                    bytes(userSuppliedTag),
+                )
 
     def attributeOwnershipAcquisitionIfAvailable(  # noqa: N802
         self,
@@ -661,6 +794,8 @@ class Shim2025RTIAmbassador:
             attribute_handle = AttributeHandle(attribute_handles_by_name[attribute_name])
             if current_owner == self._federate_handle:
                 raise AttributeAlreadyOwned(attribute_name)
+            if self._has_attribute_candidate(record, attribute_name, self._federate_handle):
+                raise AttributeAlreadyBeingAcquired(attribute_name)
             if current_owner is None:
                 record.attribute_owners[attribute_name] = self._federate_handle
                 available.add(attribute_handle)
@@ -670,6 +805,65 @@ class Shim2025RTIAmbassador:
             self._deliver_callback("attributeOwnershipAcquisitionNotification", objectInstance, available, userSuppliedTag)
         if unavailable:
             self._deliver_callback("attributeOwnershipUnavailable", objectInstance, unavailable, userSuppliedTag)
+
+    def attributeOwnershipReleaseDenied(self, objectInstance: Any, attributes: Any) -> None:  # noqa: N802
+        self._record("attributeOwnershipReleaseDenied", objectInstance, attributes)
+        self._require_joined("attributeOwnershipReleaseDenied")
+        record = self._object_instance_record(objectInstance)
+        for attribute_name in self._attribute_names_from_handles(record.object_class_name, attributes):
+            if record.attribute_owners.get(attribute_name) != self._federate_handle:
+                raise AttributeNotOwned(attribute_name)
+            record.attribute_candidates.pop(attribute_name, None)
+
+    def attributeOwnershipDivestitureIfWanted(self, objectInstance: Any, attributes: Any) -> set[AttributeHandle]:  # noqa: N802
+        self._record("attributeOwnershipDivestitureIfWanted", objectInstance, attributes)
+        self._require_joined("attributeOwnershipDivestitureIfWanted")
+        record = self._object_instance_record(objectInstance)
+        attribute_names = self._attribute_names_from_handles(record.object_class_name, attributes)
+        attribute_handles_by_name = self._attribute_handles(record.object_class_name)
+        for attribute_name in attribute_names:
+            if record.attribute_owners.get(attribute_name) != self._federate_handle:
+                raise AttributeNotOwned(attribute_name)
+            if not record.attribute_candidates.get(attribute_name):
+                raise NoAcquisitionPending(attribute_name)
+
+        divested: set[AttributeHandle] = set()
+        for attribute_name in attribute_names:
+            new_owner, _candidate_tag = self._pop_attribute_candidate(record, attribute_name) or (None, b"")
+            if new_owner is None:
+                raise NoAcquisitionPending(attribute_name)
+            record.attribute_owners[attribute_name] = new_owner
+            record.attribute_divesting.discard(attribute_name)
+            attribute_handle = AttributeHandle(attribute_handles_by_name[attribute_name])
+            divested.add(attribute_handle)
+            self._deliver_to_federate_handle(new_owner, "attributeOwnershipAcquisitionNotification", objectInstance, {attribute_handle}, b"")
+        return divested
+
+    def cancelNegotiatedAttributeOwnershipDivestiture(self, objectInstance: Any, attributes: Any) -> None:  # noqa: N802
+        self._record("cancelNegotiatedAttributeOwnershipDivestiture", objectInstance, attributes)
+        self._require_joined("cancelNegotiatedAttributeOwnershipDivestiture")
+        record = self._object_instance_record(objectInstance)
+        for attribute_name in self._attribute_names_from_handles(record.object_class_name, attributes):
+            if record.attribute_owners.get(attribute_name) != self._federate_handle:
+                raise AttributeNotOwned(attribute_name)
+            if attribute_name not in record.attribute_divesting:
+                raise AttributeDivestitureWasNotRequested(attribute_name)
+            record.attribute_divesting.discard(attribute_name)
+
+    def cancelAttributeOwnershipAcquisition(self, objectInstance: Any, attributes: Any) -> None:  # noqa: N802
+        self._record("cancelAttributeOwnershipAcquisition", objectInstance, attributes)
+        self._require_joined("cancelAttributeOwnershipAcquisition")
+        record = self._object_instance_record(objectInstance)
+        attribute_handles_by_name = self._attribute_handles(record.object_class_name)
+        cancelled: set[AttributeHandle] = set()
+        for attribute_name in self._attribute_names_from_handles(record.object_class_name, attributes):
+            if record.attribute_owners.get(attribute_name) == self._federate_handle:
+                raise AttributeAlreadyOwned(attribute_name)
+            if not self._has_attribute_candidate(record, attribute_name, self._federate_handle):
+                raise AttributeAcquisitionWasNotRequested(attribute_name)
+            self._remove_attribute_candidate(record, attribute_name, self._federate_handle)
+            cancelled.add(AttributeHandle(attribute_handles_by_name[attribute_name]))
+        self._deliver_callback("confirmAttributeOwnershipAcquisitionCancellation", objectInstance, cancelled)
 
     def queryAttributeOwnership(self, objectInstance: Any, attributes: Any) -> None:  # noqa: N802
         self._record("queryAttributeOwnership", objectInstance, attributes)
@@ -849,6 +1043,72 @@ class Shim2025RTIAmbassador:
         if callback is None:
             raise RTIinternalError(f"Connected federate ambassador does not implement {method_name}")
         callback(*args)
+
+    def _deliver_to_federate_handle(self, federate_handle: FederateHandle, method_name: str, *args: Any) -> None:
+        federation = self._federation_record()
+        ambassador = federation.member_ambassadors.get(federate_handle.value)
+        if ambassador is None:
+            raise InvalidFederateHandle(f"Unknown federate handle {federate_handle!r}")
+        callback = getattr(ambassador, method_name, None)
+        if callback is None:
+            raise RTIinternalError(f"Federate ambassador {federate_handle!r} does not implement {method_name}")
+        callback(*args)
+
+    def _other_member_handles(self) -> tuple[FederateHandle, ...]:
+        if self._federate_handle is None:
+            raise FederateNotExecutionMember("Current federate handle is not available")
+        return tuple(
+            handle
+            for handle in self._federation_record().member_handles.values()
+            if handle != self._federate_handle
+        )
+
+    @staticmethod
+    def _has_attribute_candidate(
+        record: _ObjectInstanceRecord,
+        attribute_name: str,
+        federate_handle: FederateHandle | None,
+    ) -> bool:
+        return any(candidate == federate_handle for candidate, _tag in record.attribute_candidates.get(attribute_name, ()))
+
+    @staticmethod
+    def _add_attribute_candidate(
+        record: _ObjectInstanceRecord,
+        attribute_name: str,
+        federate_handle: FederateHandle | None,
+        user_supplied_tag: bytes,
+    ) -> None:
+        if federate_handle is None:
+            raise FederateNotExecutionMember("Current federate handle is not available")
+        candidates = record.attribute_candidates.setdefault(attribute_name, [])
+        candidates[:] = [(candidate, tag) for candidate, tag in candidates if candidate != federate_handle]
+        candidates.append((federate_handle, bytes(user_supplied_tag)))
+
+    @staticmethod
+    def _remove_attribute_candidate(
+        record: _ObjectInstanceRecord,
+        attribute_name: str,
+        federate_handle: FederateHandle | None,
+    ) -> None:
+        candidates = record.attribute_candidates.get(attribute_name)
+        if candidates is None:
+            return
+        candidates[:] = [(candidate, tag) for candidate, tag in candidates if candidate != federate_handle]
+        if not candidates:
+            record.attribute_candidates.pop(attribute_name, None)
+
+    @staticmethod
+    def _pop_attribute_candidate(
+        record: _ObjectInstanceRecord,
+        attribute_name: str,
+    ) -> tuple[FederateHandle, bytes] | None:
+        candidates = record.attribute_candidates.get(attribute_name)
+        if not candidates:
+            return None
+        candidate = candidates.pop(0)
+        if not candidates:
+            record.attribute_candidates.pop(attribute_name, None)
+        return candidate
 
     def _require_connected(self, method_name: str) -> None:
         if not self._connected:

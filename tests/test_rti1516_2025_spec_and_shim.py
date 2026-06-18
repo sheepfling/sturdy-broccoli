@@ -47,6 +47,18 @@ class Recording2025FederateAmbassador:
     def attributeOwnershipUnavailable(self, objectInstance, attributes, userSuppliedTag) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("attributeOwnershipUnavailable", (objectInstance, attributes, userSuppliedTag)))
 
+    def requestAttributeOwnershipAssumption(self, objectInstance, offeredAttributes, userSuppliedTag) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("requestAttributeOwnershipAssumption", (objectInstance, offeredAttributes, userSuppliedTag)))
+
+    def requestDivestitureConfirmation(self, objectInstance, releasedAttributes, userSuppliedTag) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("requestDivestitureConfirmation", (objectInstance, releasedAttributes, userSuppliedTag)))
+
+    def requestAttributeOwnershipRelease(self, objectInstance, candidateAttributes, userSuppliedTag) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("requestAttributeOwnershipRelease", (objectInstance, candidateAttributes, userSuppliedTag)))
+
+    def confirmAttributeOwnershipAcquisitionCancellation(self, objectInstance, attributes) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("confirmAttributeOwnershipAcquisitionCancellation", (objectInstance, attributes)))
+
     def informAttributeOwnership(self, objectInstance, attributes, owner) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("informAttributeOwnership", (objectInstance, attributes, owner)))
 
@@ -475,6 +487,136 @@ def test_2025_shim_implements_basic_ownership_divest_acquire_and_query_callbacks
     owner.resignFederationExecution(ResignAction.NO_ACTION)
     owner.destroyFederationExecution(federationName=federation_name)
     acquiring.disconnect()
+    owner.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-MOD-005", "HLA2025-FI-001", "HLA2025-FI-005")
+def test_2025_shim_negotiated_ownership_matches_python_parity_flow(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import (
+        AttributeAcquisitionWasNotRequested,
+        AttributeAlreadyBeingDivested,
+        NoAcquisitionPending,
+    )
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "NegotiatedOwnership2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Negotiated Ownership 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-18</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused negotiated ownership fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>OwnableTarget</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-negotiated-ownership-{uuid.uuid4().hex[:8]}"
+    owner_callbacks = Recording2025FederateAmbassador()
+    acquirer_callbacks = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    acquirer = create_rti_ambassador(backend="shim")
+
+    owner.connect(owner_callbacks, CallbackModel.HLA_EVOKED)
+    acquirer.connect(acquirer_callbacks, CallbackModel.HLA_EVOKED)
+    owner.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+    owner.joinFederationExecution("Owner", "TestFederate", federation_name)
+    acquirer.joinFederationExecution("Acquirer", "TestFederate", federation_name)
+
+    object_class = owner.getObjectClassHandle("HLAobjectRoot.OwnableTarget")
+    attribute = owner.getAttributeHandle(object_class, "Position")
+
+    offered = owner.registerObjectInstance(object_class, "Negotiated-1")
+    owner.negotiatedAttributeOwnershipDivestiture(offered, {attribute}, b"offer-tag")
+    assert acquirer_callbacks.last_callback("requestAttributeOwnershipAssumption") == (
+        offered,
+        {attribute},
+        b"offer-tag",
+    )
+    with pytest.raises(AttributeAlreadyBeingDivested):
+        owner.negotiatedAttributeOwnershipDivestiture(offered, {attribute}, b"second-offer")
+    assert owner.isAttributeOwnedByFederate(offered, attribute) is True
+
+    acquirer.attributeOwnershipAcquisition(offered, {attribute}, b"acquire-tag")
+    assert owner_callbacks.last_callback("requestDivestitureConfirmation") == (
+        offered,
+        {attribute},
+        b"acquire-tag",
+    )
+    assert acquirer_callbacks.last_callback("attributeOwnershipAcquisitionNotification") == (
+        offered,
+        {attribute},
+        b"acquire-tag",
+    )
+    assert acquirer.isAttributeOwnedByFederate(offered, attribute) is True
+
+    pending = owner.registerObjectInstance(object_class, "Pending-1")
+    acquirer.attributeOwnershipAcquisition(pending, {attribute}, b"request-tag")
+    assert owner_callbacks.last_callback("requestAttributeOwnershipRelease") == (
+        pending,
+        {attribute},
+        b"request-tag",
+    )
+    acquirer.cancelAttributeOwnershipAcquisition(pending, {attribute})
+    assert acquirer_callbacks.last_callback("confirmAttributeOwnershipAcquisitionCancellation") == (
+        pending,
+        {attribute},
+    )
+    with pytest.raises(AttributeAcquisitionWasNotRequested):
+        acquirer.cancelAttributeOwnershipAcquisition(pending, {attribute})
+
+    acquirer.attributeOwnershipAcquisition(pending, {attribute}, b"retry-tag")
+    divested = owner.attributeOwnershipDivestitureIfWanted(pending, {attribute})
+    assert divested == {attribute}
+    assert acquirer_callbacks.last_callback("attributeOwnershipAcquisitionNotification") == (
+        pending,
+        {attribute},
+        b"",
+    )
+    assert acquirer.isAttributeOwnedByFederate(pending, attribute) is True
+
+    no_candidate = owner.registerObjectInstance(object_class, "NoCandidate-1")
+    with pytest.raises(NoAcquisitionPending):
+        owner.attributeOwnershipDivestitureIfWanted(no_candidate, {attribute})
+
+    cancellable = owner.registerObjectInstance(object_class, "Cancelable-1")
+    owner.negotiatedAttributeOwnershipDivestiture(cancellable, {attribute}, b"cancel-offer")
+    owner.cancelNegotiatedAttributeOwnershipDivestiture(cancellable, {attribute})
+    assert owner.isAttributeOwnedByFederate(cancellable, attribute) is True
+    owner.unconditionalAttributeOwnershipDivestiture(cancellable, {attribute}, b"final-divest")
+    assert owner.isAttributeOwnedByFederate(cancellable, attribute) is False
+
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution(federationName=federation_name)
+    acquirer.disconnect()
     owner.disconnect()
 
 

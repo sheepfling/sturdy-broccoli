@@ -113,7 +113,8 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Full DDM region routing" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
     assert slices["2025-ownership-basic-tag-callbacks"]["status"] == "implemented-slice"
     assert "HLA2025-MOD-005" in slices["2025-ownership-basic-tag-callbacks"]["requirements"]
-    assert "Negotiated ownership" in slices["2025-ownership-basic-tag-callbacks"]["supported_scope"]
+    assert "negotiated ownership offers" in slices["2025-ownership-basic-tag-callbacks"]["supported_scope"]
+    assert "Resign-time ownership policies remain later behavior work" in slices["2025-ownership-basic-tag-callbacks"]["supported_scope"]
     assert slices["2025-mom-service-report-serialization"]["status"] == "implemented-slice"
     assert "HLA2025-NEW-007" in slices["2025-mom-service-report-serialization"]["requirements"]
     assert "not full MOM interaction routing" in slices["2025-mom-service-report-serialization"]["supported_scope"]
