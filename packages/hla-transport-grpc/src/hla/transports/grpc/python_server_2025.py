@@ -96,6 +96,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.published_interactions: set[str] = set()
         self.subscribed_interactions: set[str] = set()
         self.unowned_attributes: set[tuple[str, str]] = set()
+        self.offered_attributes: set[tuple[str, str]] = set()
+        self.pending_attribute_acquisitions: dict[tuple[str, str], bytes] = {}
         self.default_attribute_transportation: dict[tuple[str, str], str] = {}
         self.default_attribute_order: dict[tuple[str, str], int] = {}
         self.service_reporting = False
@@ -635,30 +637,202 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             return rti_pb2.CallResponse(unconditionalAttributeOwnershipDivestitureResponse=rti_pb2.UnconditionalAttributeOwnershipDivestitureResponse())
         if request_kind == "queryAttributeOwnershipRequest":
             payload = request.queryAttributeOwnershipRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            unowned = []
+            owned = []
+            for attribute in payload.attributes.attributeHandle:
+                attribute_value = attribute.data.decode("ascii")
+                if (object_instance, attribute_value) in self.unowned_attributes:
+                    unowned.append(attribute_value)
+                else:
+                    owned.append(attribute_value)
+            if unowned:
+                self.callback_queue.append(
+                    callback_pb2.CallbackRequest(
+                        attributeIsNotOwned=callback_pb2.AttributeIsNotOwned(
+                            objectInstance=payload.objectInstance,
+                            attributes=_attribute_set(tuple(unowned)),
+                        )
+                    )
+                )
+            if owned:
+                self.callback_queue.append(
+                    callback_pb2.CallbackRequest(
+                        informAttributeOwnership=callback_pb2.InformAttributeOwnership(
+                            objectInstance=payload.objectInstance,
+                            attributes=_attribute_set(tuple(owned)),
+                            federate=_handle(datatypes_pb2.FederateHandle, self._current_federate_handle()),
+                        )
+                    )
+                )
+            return rti_pb2.CallResponse(queryAttributeOwnershipResponse=rti_pb2.QueryAttributeOwnershipResponse())
+        if request_kind == "attributeOwnershipAcquisitionIfAvailableRequest":
+            payload = request.attributeOwnershipAcquisitionIfAvailableRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            available = []
+            unavailable = []
+            for attribute in payload.desiredAttributes.attributeHandle:
+                attribute_value = attribute.data.decode("ascii")
+                key = (object_instance, attribute_value)
+                if key in self.unowned_attributes:
+                    self.unowned_attributes.discard(key)
+                    available.append(attribute_value)
+                else:
+                    unavailable.append(attribute_value)
+            if available:
+                self.callback_queue.append(
+                    callback_pb2.CallbackRequest(
+                        attributeOwnershipAcquisitionNotification=callback_pb2.AttributeOwnershipAcquisitionNotification(
+                            objectInstance=payload.objectInstance,
+                            securedAttributes=_attribute_set(tuple(available)),
+                            userSuppliedTag=payload.userSuppliedTag,
+                        )
+                    )
+                )
+            if unavailable:
+                self.callback_queue.append(
+                    callback_pb2.CallbackRequest(
+                        attributeOwnershipUnavailable=callback_pb2.AttributeOwnershipUnavailable(
+                            objectInstance=payload.objectInstance,
+                            attributes=_attribute_set(tuple(unavailable)),
+                            userSuppliedTag=payload.userSuppliedTag,
+                        )
+                    )
+                )
+            return rti_pb2.CallResponse(attributeOwnershipAcquisitionIfAvailableResponse=rti_pb2.AttributeOwnershipAcquisitionIfAvailableResponse())
+        if request_kind == "negotiatedAttributeOwnershipDivestitureRequest":
+            payload = request.negotiatedAttributeOwnershipDivestitureRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            for attribute in payload.attributes.attributeHandle:
+                self.offered_attributes.add((object_instance, attribute.data.decode("ascii")))
             self.callback_queue.append(
                 callback_pb2.CallbackRequest(
-                    attributeIsNotOwned=callback_pb2.AttributeIsNotOwned(
+                    requestAttributeOwnershipAssumption=callback_pb2.RequestAttributeOwnershipAssumption(
+                        objectInstance=payload.objectInstance,
+                        offeredAttributes=payload.attributes,
+                        userSuppliedTag=payload.userSuppliedTag,
+                    )
+                )
+            )
+            return rti_pb2.CallResponse(negotiatedAttributeOwnershipDivestitureResponse=rti_pb2.NegotiatedAttributeOwnershipDivestitureResponse())
+        if request_kind == "attributeOwnershipAcquisitionRequest":
+            payload = request.attributeOwnershipAcquisitionRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            offered = []
+            requested = []
+            for attribute in payload.desiredAttributes.attributeHandle:
+                attribute_value = attribute.data.decode("ascii")
+                key = (object_instance, attribute_value)
+                self.pending_attribute_acquisitions[key] = payload.userSuppliedTag
+                if key in self.offered_attributes:
+                    offered.append(attribute_value)
+                else:
+                    requested.append(attribute_value)
+            if offered:
+                self.callback_queue.append(
+                    callback_pb2.CallbackRequest(
+                        requestDivestitureConfirmation=callback_pb2.RequestDivestitureConfirmation(
+                            objectInstance=payload.objectInstance,
+                            releasedAttributes=_attribute_set(tuple(offered)),
+                            userSuppliedTag=payload.userSuppliedTag,
+                        )
+                    )
+                )
+            if requested:
+                self.callback_queue.append(
+                    callback_pb2.CallbackRequest(
+                        requestAttributeOwnershipRelease=callback_pb2.RequestAttributeOwnershipRelease(
+                            objectInstance=payload.objectInstance,
+                            candidateAttributes=_attribute_set(tuple(requested)),
+                            userSuppliedTag=payload.userSuppliedTag,
+                        )
+                    )
+                )
+            return rti_pb2.CallResponse(attributeOwnershipAcquisitionResponse=rti_pb2.AttributeOwnershipAcquisitionResponse())
+        if request_kind == "confirmDivestitureRequest":
+            payload = request.confirmDivestitureRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            confirmed = []
+            for attribute in payload.confirmedAttributes.attributeHandle:
+                attribute_value = attribute.data.decode("ascii")
+                key = (object_instance, attribute_value)
+                self.offered_attributes.discard(key)
+                self.unowned_attributes.discard(key)
+                self.pending_attribute_acquisitions.pop(key, None)
+                confirmed.append(attribute_value)
+            self.callback_queue.append(
+                callback_pb2.CallbackRequest(
+                    attributeOwnershipAcquisitionNotification=callback_pb2.AttributeOwnershipAcquisitionNotification(
+                        objectInstance=payload.objectInstance,
+                        securedAttributes=_attribute_set(tuple(confirmed)),
+                        userSuppliedTag=payload.userSuppliedTag,
+                    )
+                )
+            )
+            return rti_pb2.CallResponse(confirmDivestitureResponse=rti_pb2.ConfirmDivestitureResponse())
+        if request_kind == "attributeOwnershipDivestitureIfWantedRequest":
+            payload = request.attributeOwnershipDivestitureIfWantedRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            divested = []
+            for attribute in payload.attributes.attributeHandle:
+                attribute_value = attribute.data.decode("ascii")
+                key = (object_instance, attribute_value)
+                if key in self.pending_attribute_acquisitions:
+                    self.pending_attribute_acquisitions.pop(key, None)
+                    self.unowned_attributes.discard(key)
+                    divested.append(attribute_value)
+            if divested:
+                self.callback_queue.append(
+                    callback_pb2.CallbackRequest(
+                        attributeOwnershipAcquisitionNotification=callback_pb2.AttributeOwnershipAcquisitionNotification(
+                            objectInstance=payload.objectInstance,
+                            securedAttributes=_attribute_set(tuple(divested)),
+                            userSuppliedTag=payload.userSuppliedTag,
+                        )
+                    )
+                )
+            return rti_pb2.CallResponse(
+                attributeOwnershipDivestitureIfWantedResponse=rti_pb2.AttributeOwnershipDivestitureIfWantedResponse(
+                    result=_attribute_set(tuple(divested))
+                )
+            )
+        if request_kind == "attributeOwnershipReleaseDeniedRequest":
+            payload = request.attributeOwnershipReleaseDeniedRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            for attribute in payload.attributes.attributeHandle:
+                self.pending_attribute_acquisitions.pop((object_instance, attribute.data.decode("ascii")), None)
+            self.callback_queue.append(
+                callback_pb2.CallbackRequest(
+                    attributeOwnershipUnavailable=callback_pb2.AttributeOwnershipUnavailable(
+                        objectInstance=payload.objectInstance,
+                        attributes=payload.attributes,
+                        userSuppliedTag=payload.userSuppliedTag,
+                    )
+                )
+            )
+            return rti_pb2.CallResponse(attributeOwnershipReleaseDeniedResponse=rti_pb2.AttributeOwnershipReleaseDeniedResponse())
+        if request_kind == "cancelAttributeOwnershipAcquisitionRequest":
+            payload = request.cancelAttributeOwnershipAcquisitionRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            for attribute in payload.attributes.attributeHandle:
+                self.pending_attribute_acquisitions.pop((object_instance, attribute.data.decode("ascii")), None)
+            self.callback_queue.append(
+                callback_pb2.CallbackRequest(
+                    confirmAttributeOwnershipAcquisitionCancellation=callback_pb2.ConfirmAttributeOwnershipAcquisitionCancellation(
                         objectInstance=payload.objectInstance,
                         attributes=payload.attributes,
                     )
                 )
             )
-            return rti_pb2.CallResponse(queryAttributeOwnershipResponse=rti_pb2.QueryAttributeOwnershipResponse())
-        if request_kind == "attributeOwnershipAcquisitionIfAvailableRequest":
-            payload = request.attributeOwnershipAcquisitionIfAvailableRequest
+            return rti_pb2.CallResponse(cancelAttributeOwnershipAcquisitionResponse=rti_pb2.CancelAttributeOwnershipAcquisitionResponse())
+        if request_kind == "cancelNegotiatedAttributeOwnershipDivestitureRequest":
+            payload = request.cancelNegotiatedAttributeOwnershipDivestitureRequest
             object_instance = payload.objectInstance.data.decode("ascii")
-            for attribute in payload.desiredAttributes.attributeHandle:
-                self.unowned_attributes.discard((object_instance, attribute.data.decode("ascii")))
-            self.callback_queue.append(
-                callback_pb2.CallbackRequest(
-                    attributeOwnershipAcquisitionNotification=callback_pb2.AttributeOwnershipAcquisitionNotification(
-                        objectInstance=payload.objectInstance,
-                        securedAttributes=payload.desiredAttributes,
-                        userSuppliedTag=payload.userSuppliedTag,
-                    )
-                )
+            for attribute in payload.attributes.attributeHandle:
+                self.offered_attributes.discard((object_instance, attribute.data.decode("ascii")))
+            return rti_pb2.CallResponse(
+                cancelNegotiatedAttributeOwnershipDivestitureResponse=rti_pb2.CancelNegotiatedAttributeOwnershipDivestitureResponse()
             )
-            return rti_pb2.CallResponse(attributeOwnershipAcquisitionIfAvailableResponse=rti_pb2.AttributeOwnershipAcquisitionIfAvailableResponse())
         if request_kind == "enableTimeRegulationRequest":
             self.callback_queue.append(callback_pb2.CallbackRequest(timeRegulationEnabled=callback_pb2.TimeRegulationEnabled(time=datatypes_pb2.LogicalTime(data=b"HLAinteger64Time:0"))))
             return rti_pb2.CallResponse(enableTimeRegulationResponse=rti_pb2.EnableTimeRegulationResponse())

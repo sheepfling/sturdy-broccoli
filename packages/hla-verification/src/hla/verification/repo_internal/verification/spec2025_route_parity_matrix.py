@@ -168,7 +168,9 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARTIAL,
         ("HLA2025-FR-005", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
-        "Hosted FedPro 2025 route covers basic divest/acquire/query callbacks, not the full negotiated ownership matrix.",
+        "Hosted FedPro 2025 route covers basic divest/acquire/query callbacks, negotiated divestiture, release requests, "
+        "release denial, acquisition cancellation, divestiture-if-wanted, and cancel-negotiated-offer callbacks; "
+        "resign-time ownership policy remains in-process only.",
     ),
     _row(
         "ownership",

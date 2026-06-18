@@ -35,6 +35,9 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert rows[("object_exchange", "python-2025-fedpro-grpc")].status == PARITY_COVERED
     assert rows[("time_management", "python-2025-fedpro-grpc")].status == PARTIAL
     assert "queued TSO delivery" in rows[("time_management", "python-2025-fedpro-grpc")].notes
+    assert rows[("ownership", "python-2025-fedpro-grpc")].status == PARTIAL
+    assert "negotiated divestiture" in rows[("ownership", "python-2025-fedpro-grpc")].notes
+    assert "resign-time ownership policy remains in-process only" in rows[("ownership", "python-2025-fedpro-grpc")].notes
     assert rows[("save_restore", "python-2025-fedpro-grpc")].status == PARTIAL
     assert "status callbacks" in rows[("save_restore", "python-2025-fedpro-grpc")].notes
     assert "rollback remains in-process only" in rows[("save_restore", "python-2025-fedpro-grpc")].notes

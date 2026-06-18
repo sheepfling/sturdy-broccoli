@@ -598,6 +598,7 @@ _CALLBACK_RESPONSE_FIELDS = {
         "ATTRIBUTE_OWNERSHIP_UNAVAILABLE",
         _opaque_text(value.objectInstance.data),
         ",".join(_opaque_text(item.data) for item in value.attributes.attributeHandle),
+        bytes(value.userSuppliedTag).hex(),
     ),
     "requestAttributeOwnershipRelease": lambda value: (
         "REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE",
@@ -608,7 +609,8 @@ _CALLBACK_RESPONSE_FIELDS = {
     "requestDivestitureConfirmation": lambda value: (
         "REQUEST_DIVESTITURE_CONFIRMATION",
         _opaque_text(value.objectInstance.data),
-        ",".join(_opaque_text(item.data) for item in value.offeredAttributes.attributeHandle),
+        ",".join(_opaque_text(item.data) for item in value.releasedAttributes.attributeHandle),
+        bytes(value.userSuppliedTag).hex(),
     ),
     "confirmAttributeOwnershipAcquisitionCancellation": lambda value: (
         "CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION",
