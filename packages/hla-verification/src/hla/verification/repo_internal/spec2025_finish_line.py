@@ -257,18 +257,19 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
-        "id": "2025-tail-unsupported-behavior-boundaries",
-        "status": "unsupported-boundary",
+        "id": "2025-mom-service-report-serialization",
+        "status": "implemented-slice",
         "requirements": ("HLA2025-NEW-007", "HLA2025-REQ-002"),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/requirements/test_2025_tail_backlog_evidence.py",
-            "packages/hla-rti1516-2025/src/hla/rti1516_2025/rti_ambassador.py",
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
         ),
         "supported_scope": (
-            "Detailed MOM service-report serialization is recorded as an explicit Python shim unsupported boundary. "
-            "Service surfaces and differential rows are traceable; behavior is not claimed complete."
+            "Python 2025 shim serializes structured MOM service report records with service names, federate and "
+            "federation context, serial numbers, success/exception fields, JSON-safe arguments and returned values, "
+            "and active service-reporting switches. This is local serialization evidence, not full MOM interaction "
+            "routing or a conformance claim."
         ),
     },
     {
@@ -310,7 +311,7 @@ BACKLOG_STATUS_BY_ROW = {
     "HLA2025-NEW-004": "implemented-slice",
     "HLA2025-NEW-005": "implemented-slice",
     "HLA2025-NEW-006": "implemented-slice",
-    "HLA2025-NEW-007": "unsupported-boundary",
+    "HLA2025-NEW-007": "implemented-slice",
     "HLA2025-RET-001": "implemented-slice",
     "HLA2025-RET-002": "implemented-slice",
     "HLA2025-RET-003": "legacy-only",

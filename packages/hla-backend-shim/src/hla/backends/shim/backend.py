@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from importlib import import_module
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, Mapping
 
 from hla.rti.plugin_api import BackendRequest
 from hla.rti1516_2025.datatypes import (
@@ -149,6 +150,8 @@ class Shim2025RTIAmbassador:
         self._switches = dict(_SWITCH_DEFAULTS)
         self._default_attribute_transportation: dict[tuple[str, str], str] = {}
         self._default_attribute_order: dict[tuple[str, str], OrderType] = {}
+        self._service_report_serial_number = 0
+        self._service_report_records: list[dict[str, Any]] = []
         self.calls: list[tuple[str, tuple[Any, ...], dict[str, Any]]] = []
 
     @property
@@ -202,6 +205,8 @@ class Shim2025RTIAmbassador:
         self._switches = dict(_SWITCH_DEFAULTS)
         self._default_attribute_transportation.clear()
         self._default_attribute_order.clear()
+        self._service_report_serial_number = 0
+        self._service_report_records.clear()
 
     def createFederationExecution(self, *args: Any, **kwargs: Any) -> None:  # noqa: N802
         self._record("createFederationExecution", *args, **kwargs)
@@ -548,6 +553,54 @@ class Shim2025RTIAmbassador:
             },
             "order": {f"{object_class}.{attribute}": order.name for (object_class, attribute), order in sorted(self._default_attribute_order.items())},
         }
+
+    def serializeMOMServiceReport(  # noqa: N802
+        self,
+        serviceName: str,
+        *,
+        success: bool = True,
+        exception: str | None = None,
+        arguments: Mapping[str, Any] | None = None,
+        returned: Mapping[str, Any] | None = None,
+        result: Any = None,
+    ) -> dict[str, Any]:
+        self._record(
+            "serializeMOMServiceReport",
+            serviceName,
+            success=success,
+            exception=exception,
+            arguments=arguments,
+            returned=returned,
+            result=result,
+        )
+        self._require_joined("serializeMOMServiceReport")
+        if not isinstance(serviceName, str) or not serviceName:
+            raise RTIinternalError("serializeMOMServiceReport requires a non-empty serviceName")
+        self._service_report_serial_number += 1
+        returned_payload: Mapping[str, Any] = returned or ({"value": result} if result is not None else {})
+        record = {
+            "recordType": "MOMServiceReport",
+            "spec": "IEEE 1516.1-2025",
+            "serialNumber": self._service_report_serial_number,
+            "timestampUTC": datetime.now(timezone.utc).isoformat(),
+            "federationName": self._federation_name,
+            "federateName": self._federate_name,
+            "federateHandle": self._federate_handle.value if self._federate_handle is not None else None,
+            "service": serviceName,
+            "success": bool(success),
+            "exception": exception or "",
+            "arguments": {str(key): self._safe_report_arg(value) for key, value in dict(arguments or {}).items()},
+            "returned": {str(key): self._safe_report_arg(value) for key, value in dict(returned_payload).items()},
+            "serviceReportingEnabled": self._switches["service_reporting"],
+            "sendServiceReportsToFile": self._switches["send_service_reports_to_file"],
+        }
+        self._service_report_records.append(record)
+        return dict(record)
+
+    def serviceReportRecordsSnapshot(self) -> tuple[dict[str, Any], ...]:  # noqa: N802
+        self._record("serviceReportRecordsSnapshot")
+        self._require_joined("serviceReportRecordsSnapshot")
+        return tuple(dict(record) for record in self._service_report_records)
 
     def registerObjectInstance(  # noqa: N802
         self,
@@ -1155,6 +1208,19 @@ class Shim2025RTIAmbassador:
             except KeyError as exc:
                 raise InvalidAttributeHandle(str(attribute)) from exc
         return tuple(names)
+
+    def _safe_report_arg(self, value: Any) -> Any:
+        if isinstance(value, (str, int, float, bool)) or value is None:
+            return value
+        if isinstance(value, bytes):
+            return value.hex()
+        if isinstance(value, Mapping):
+            return {str(key): self._safe_report_arg(item) for key, item in value.items()}
+        if isinstance(value, (set, frozenset, list, tuple)):
+            return [self._safe_report_arg(item) for item in value]
+        if hasattr(value, "value") and isinstance(value.value, int):
+            return {"type": type(value).__name__, "value": value.value}
+        return repr(value)
 
     def _get_switch(self, method_name: str, name: str) -> bool:
         self._require_joined(method_name)

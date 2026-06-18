@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import inspect
+import json
 import uuid
 from pathlib import Path
 
@@ -477,13 +478,13 @@ def test_2025_shim_implements_basic_ownership_divest_acquire_and_query_callbacks
     owner.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-NEW-007", "HLA2025-REQ-002")
-def test_2025_shim_records_tail_services_as_explicit_unsupported_boundaries() -> None:
+@pytest.mark.requirements("HLA2025-NEW-007", "HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002")
+def test_2025_shim_serializes_mom_service_reports_without_overclaiming_conformance() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
-    from hla.rti1516_2025.exceptions import RTIinternalError
     from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.handles import AttributeHandle
 
-    federation_name = f"shim-tail-boundary-{uuid.uuid4().hex[:8]}"
+    federation_name = f"shim-mom-report-{uuid.uuid4().hex[:8]}"
     rti = create_rti_ambassador(backend="shim")
     rti.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
     rti.createFederationExecution(
@@ -499,13 +500,39 @@ def test_2025_shim_records_tail_services_as_explicit_unsupported_boundaries() ->
     assert rti.getServiceReportingSwitch() is False
     rti.setServiceReportingSwitch(True)
     assert rti.getServiceReportingSwitch() is True
-    with pytest.raises(RTIinternalError, match="serializeMOMServiceReport"):
-        rti.serializeMOMServiceReport(
-            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches",
-            result="unsupported-boundary",
-        )
 
-    assert [call[0] for call in rti.calls if call[0] == "serializeMOMServiceReport"] == ["serializeMOMServiceReport"]
+    report = rti.serializeMOMServiceReport(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches",
+        arguments={"HLAserviceReporting": True, "tag": b"mom-tag", "attrs": {AttributeHandle(7)}},
+        result={"status": "serialized"},
+    )
+    assert report["recordType"] == "MOMServiceReport"
+    assert report["spec"] == "IEEE 1516.1-2025"
+    assert report["serialNumber"] == 1
+    assert report["federationName"] == federation_name
+    assert report["federateName"] == "BoundaryFederate"
+    assert report["federateHandle"] == 1
+    assert report["service"] == "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches"
+    assert report["success"] is True
+    assert report["exception"] == ""
+    assert report["serviceReportingEnabled"] is True
+    assert report["sendServiceReportsToFile"] is False
+    assert report["arguments"]["HLAserviceReporting"] is True
+    assert report["arguments"]["tag"] == "6d6f6d2d746167"
+    assert report["arguments"]["attrs"] == [{"type": "AttributeHandle", "value": 7}]
+    assert report["returned"] == {"value": {"status": "serialized"}}
+    json.dumps(report, sort_keys=True)
+
+    failed = rti.serializeMOMServiceReport(
+        "queryLogicalTime",
+        success=False,
+        exception="FederateNotExecutionMember",
+        returned={"value": None},
+    )
+    assert failed["serialNumber"] == 2
+    assert failed["success"] is False
+    assert failed["exception"] == "FederateNotExecutionMember"
+    assert rti.serviceReportRecordsSnapshot() == (report, failed)
 
     rti.resignFederationExecution(ResignAction.NO_ACTION)
     rti.destroyFederationExecution(federationName=federation_name)

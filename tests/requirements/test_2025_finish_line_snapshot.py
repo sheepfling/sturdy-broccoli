@@ -33,7 +33,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert backlog["by_current_status"]["implemented-slice"] >= 20
     assert backlog["by_current_status"]["partial"] >= 1
     assert "planned" not in backlog["by_current_status"]
-    assert backlog["by_current_status"]["unsupported-boundary"] >= 2
+    assert backlog["by_current_status"]["unsupported-boundary"] >= 1
     assert backlog["by_current_status"]["legacy-only"] == 1
     assert backlog["high_priority_open_count"] == 0
 
@@ -104,9 +104,9 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert slices["2025-ownership-basic-tag-callbacks"]["status"] == "implemented-slice"
     assert "HLA2025-MOD-005" in slices["2025-ownership-basic-tag-callbacks"]["requirements"]
     assert "Negotiated ownership" in slices["2025-ownership-basic-tag-callbacks"]["supported_scope"]
-    assert slices["2025-tail-unsupported-behavior-boundaries"]["status"] == "unsupported-boundary"
-    assert "HLA2025-MOD-005" not in slices["2025-tail-unsupported-behavior-boundaries"]["requirements"]
-    assert "HLA2025-MOD-007" not in slices["2025-tail-unsupported-behavior-boundaries"]["requirements"]
+    assert slices["2025-mom-service-report-serialization"]["status"] == "implemented-slice"
+    assert "HLA2025-NEW-007" in slices["2025-mom-service-report-serialization"]["requirements"]
+    assert "not full MOM interaction routing" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert slices["2025-wsdl-legacy-only"]["status"] == "legacy-only"
     assert "HLA2025-RET-003" in slices["2025-wsdl-legacy-only"]["requirements"]
 
