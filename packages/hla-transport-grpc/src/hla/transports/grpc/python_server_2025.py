@@ -30,12 +30,45 @@ def _callback_request() -> callback_pb2.CallbackRequest:
     return callback_pb2.CallbackRequest(timeAdvanceGrant=callback_pb2.TimeAdvanceGrant(time=datatypes_pb2.LogicalTime(data=b"HLAinteger64Time:7")))
 
 
+def _handle(handle_type: type, value: str | int):
+    return handle_type(data=str(value).encode("ascii"))
+
+
+def _attribute_set(values: list[str] | tuple[str, ...] | str) -> datatypes_pb2.AttributeHandleSet:
+    result = datatypes_pb2.AttributeHandleSet()
+    items = values.split(",") if isinstance(values, str) else values
+    for item in items:
+        if item:
+            result.attributeHandle.add(data=str(item).encode("ascii"))
+    return result
+
+
+def _dimension_set(values: list[str] | tuple[str, ...] | str) -> datatypes_pb2.DimensionHandleSet:
+    result = datatypes_pb2.DimensionHandleSet()
+    items = values.split(",") if isinstance(values, str) else values
+    for item in items:
+        if item:
+            result.dimensionHandle.add(data=str(item).encode("ascii"))
+    return result
+
+
 class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
     def __init__(self) -> None:
         self.calls: list[str] = []
         self.federations: set[str] = set()
         self.joined_federates: dict[str, str] = {}
         self.next_federate_handle = 1
+        self.next_object_instance_handle = 1000
+        self.object_classes = {"HLAobjectRoot.RouteTarget": "100", "HLAobjectRoot.Target": "101"}
+        self.object_class_names = {value: key for key, value in self.object_classes.items()}
+        self.attributes = {("100", "Position"): "200", ("101", "Position"): "201"}
+        self.dimensions = {"RoutingSpace": "300"}
+        self.transportations = {"HLAreliable": "1", "HLAbestEffort": "2"}
+        self.object_instances: dict[str, dict[str, str]] = {}
+        self.unowned_attributes: set[tuple[str, str]] = set()
+        self.default_attribute_transportation: dict[tuple[str, str], str] = {}
+        self.default_attribute_order: dict[tuple[str, str], int] = {}
+        self.callback_queue: list[callback_pb2.CallbackRequest] = []
 
     def Call(self, request, context):  # noqa: N802 - grpc generated naming
         request_kind = request.WhichOneof("callRequest")
@@ -92,9 +125,128 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             return rti_pb2.CallResponse(destroyFederationExecutionResponse=rti_pb2.DestroyFederationExecutionResponse())
         if request_kind == "getFederateHandleRequest":
             return rti_pb2.CallResponse(getFederateHandleResponse=rti_pb2.GetFederateHandleResponse(result=datatypes_pb2.FederateHandle(data=b"42")))
+        if request_kind == "getObjectClassHandleRequest":
+            name = request.getObjectClassHandleRequest.objectClassName
+            try:
+                handle = self.object_classes[name]
+            except KeyError:
+                return self._error("NameNotFound", name)
+            return rti_pb2.CallResponse(getObjectClassHandleResponse=rti_pb2.GetObjectClassHandleResponse(result=_handle(datatypes_pb2.ObjectClassHandle, handle)))
+        if request_kind == "getObjectClassNameRequest":
+            handle = request.getObjectClassNameRequest.objectClass.data.decode("ascii")
+            return rti_pb2.CallResponse(getObjectClassNameResponse=rti_pb2.GetObjectClassNameResponse(result=self.object_class_names.get(handle, "")))
+        if request_kind == "getAttributeHandleRequest":
+            payload = request.getAttributeHandleRequest
+            object_class = payload.objectClass.data.decode("ascii")
+            try:
+                handle = self.attributes[(object_class, payload.attributeName)]
+            except KeyError:
+                return self._error("NameNotFound", payload.attributeName)
+            return rti_pb2.CallResponse(getAttributeHandleResponse=rti_pb2.GetAttributeHandleResponse(result=_handle(datatypes_pb2.AttributeHandle, handle)))
+        if request_kind == "getDimensionHandleRequest":
+            name = request.getDimensionHandleRequest.dimensionName
+            try:
+                handle = self.dimensions[name]
+            except KeyError:
+                return self._error("NameNotFound", name)
+            return rti_pb2.CallResponse(getDimensionHandleResponse=rti_pb2.GetDimensionHandleResponse(result=_handle(datatypes_pb2.DimensionHandle, handle)))
+        if request_kind == "getAvailableDimensionsForObjectClassRequest":
+            return rti_pb2.CallResponse(
+                getAvailableDimensionsForObjectClassResponse=rti_pb2.GetAvailableDimensionsForObjectClassResponse(
+                    result=_dimension_set(("300",))
+                )
+            )
+        if request_kind == "getDimensionUpperBoundRequest":
+            return rti_pb2.CallResponse(getDimensionUpperBoundResponse=rti_pb2.GetDimensionUpperBoundResponse(result=1024))
+        if request_kind == "getTransportationTypeHandleRequest":
+            name = request.getTransportationTypeHandleRequest.transportationTypeName
+            try:
+                handle = self.transportations[name]
+            except KeyError:
+                return self._error("NameNotFound", name)
+            return rti_pb2.CallResponse(
+                getTransportationTypeHandleResponse=rti_pb2.GetTransportationTypeHandleResponse(
+                    result=_handle(datatypes_pb2.TransportationTypeHandle, handle)
+                )
+            )
+        if request_kind == "changeDefaultAttributeTransportationTypeRequest":
+            payload = request.changeDefaultAttributeTransportationTypeRequest
+            object_class = payload.objectClass.data.decode("ascii")
+            transportation = payload.transportationType.data.decode("ascii")
+            for attribute in payload.attributes.attributeHandle:
+                self.default_attribute_transportation[(object_class, attribute.data.decode("ascii"))] = transportation
+            return rti_pb2.CallResponse(changeDefaultAttributeTransportationTypeResponse=rti_pb2.ChangeDefaultAttributeTransportationTypeResponse())
+        if request_kind == "changeDefaultAttributeOrderTypeRequest":
+            payload = request.changeDefaultAttributeOrderTypeRequest
+            object_class = payload.theObjectClass.data.decode("ascii")
+            for attribute in payload.attributes.attributeHandle:
+                self.default_attribute_order[(object_class, attribute.data.decode("ascii"))] = payload.orderType
+            return rti_pb2.CallResponse(changeDefaultAttributeOrderTypeResponse=rti_pb2.ChangeDefaultAttributeOrderTypeResponse())
+        if request_kind in {"registerObjectInstanceRequest", "registerObjectInstanceWithNameRequest"}:
+            payload = getattr(request, request_kind)
+            object_class = payload.objectClass.data.decode("ascii")
+            handle = str(self.next_object_instance_handle)
+            self.next_object_instance_handle += 1
+            object_name = getattr(payload, "objectInstanceName", "") or f"fedpro-object-{handle}"
+            self.object_instances[handle] = {"name": object_name, "objectClass": object_class}
+            response_kind = "registerObjectInstanceWithNameResponse" if request_kind == "registerObjectInstanceWithNameRequest" else "registerObjectInstanceResponse"
+            response_type = getattr(rti_pb2, response_kind[0].upper() + response_kind[1:])
+            return rti_pb2.CallResponse(**{response_kind: response_type(result=_handle(datatypes_pb2.ObjectInstanceHandle, handle))})
+        if request_kind == "isAttributeOwnedByFederateRequest":
+            payload = request.isAttributeOwnedByFederateRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            attribute = payload.attribute.data.decode("ascii")
+            return rti_pb2.CallResponse(
+                isAttributeOwnedByFederateResponse=rti_pb2.IsAttributeOwnedByFederateResponse(
+                    result=(object_instance, attribute) not in self.unowned_attributes
+                )
+            )
+        if request_kind == "unconditionalAttributeOwnershipDivestitureRequest":
+            payload = request.unconditionalAttributeOwnershipDivestitureRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            for attribute in payload.attributes.attributeHandle:
+                self.unowned_attributes.add((object_instance, attribute.data.decode("ascii")))
+            return rti_pb2.CallResponse(unconditionalAttributeOwnershipDivestitureResponse=rti_pb2.UnconditionalAttributeOwnershipDivestitureResponse())
+        if request_kind == "queryAttributeOwnershipRequest":
+            payload = request.queryAttributeOwnershipRequest
+            self.callback_queue.append(
+                callback_pb2.CallbackRequest(
+                    attributeIsNotOwned=callback_pb2.AttributeIsNotOwned(
+                        objectInstance=payload.objectInstance,
+                        attributes=payload.attributes,
+                    )
+                )
+            )
+            return rti_pb2.CallResponse(queryAttributeOwnershipResponse=rti_pb2.QueryAttributeOwnershipResponse())
+        if request_kind == "attributeOwnershipAcquisitionIfAvailableRequest":
+            payload = request.attributeOwnershipAcquisitionIfAvailableRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            for attribute in payload.desiredAttributes.attributeHandle:
+                self.unowned_attributes.discard((object_instance, attribute.data.decode("ascii")))
+            self.callback_queue.append(
+                callback_pb2.CallbackRequest(
+                    attributeOwnershipAcquisitionNotification=callback_pb2.AttributeOwnershipAcquisitionNotification(
+                        objectInstance=payload.objectInstance,
+                        securedAttributes=payload.desiredAttributes,
+                        userSuppliedTag=payload.userSuppliedTag,
+                    )
+                )
+            )
+            return rti_pb2.CallResponse(attributeOwnershipAcquisitionIfAvailableResponse=rti_pb2.AttributeOwnershipAcquisitionIfAvailableResponse())
+        if request_kind == "enableTimeRegulationRequest":
+            self.callback_queue.append(callback_pb2.CallbackRequest(timeRegulationEnabled=callback_pb2.TimeRegulationEnabled(time=datatypes_pb2.LogicalTime(data=b"HLAinteger64Time:0"))))
+            return rti_pb2.CallResponse(enableTimeRegulationResponse=rti_pb2.EnableTimeRegulationResponse())
+        if request_kind == "enableTimeConstrainedRequest":
+            self.callback_queue.append(callback_pb2.CallbackRequest(timeConstrainedEnabled=callback_pb2.TimeConstrainedEnabled(time=datatypes_pb2.LogicalTime(data=b"HLAinteger64Time:0"))))
+            return rti_pb2.CallResponse(enableTimeConstrainedResponse=rti_pb2.EnableTimeConstrainedResponse())
+        if request_kind == "timeAdvanceRequestRequest":
+            self.callback_queue.append(callback_pb2.CallbackRequest(timeAdvanceGrant=callback_pb2.TimeAdvanceGrant(time=request.timeAdvanceRequestRequest.time)))
+            return rti_pb2.CallResponse(timeAdvanceRequestResponse=rti_pb2.TimeAdvanceRequestResponse())
         return self._error("RTIinternalError", f"Unsupported 2025 test call: {request_kind}")
 
     def EvokeCallback(self, request, context):  # noqa: N802 - grpc generated naming
+        if self.callback_queue:
+            return self.callback_queue.pop(0)
         return _callback_request()
 
     @staticmethod

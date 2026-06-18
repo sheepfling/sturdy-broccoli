@@ -567,13 +567,13 @@ _CALLBACK_RESPONSE_FIELDS = {
     "informAttributeOwnership": lambda value: (
         "INFORM_ATTRIBUTE_OWNERSHIP",
         _opaque_text(value.objectInstance.data),
-        _opaque_text(value.attribute.data),
+        ",".join(_opaque_text(item.data) for item in value.attributes.attributeHandle),
         _opaque_text(value.federate.data),
     ),
     "attributeIsNotOwned": lambda value: (
         "ATTRIBUTE_IS_NOT_OWNED",
         _opaque_text(value.objectInstance.data),
-        _opaque_text(value.attribute.data),
+        ",".join(_opaque_text(item.data) for item in value.attributes.attributeHandle),
     ),
     "attributeOwnershipUnavailable": lambda value: (
         "ATTRIBUTE_OWNERSHIP_UNAVAILABLE",

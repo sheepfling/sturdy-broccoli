@@ -258,9 +258,11 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "supported_scope": (
             "2025 FedPro protobuf package, gRPC service binding, typed request/callback oneofs, and a hosted "
-            "loopback lifecycle session are present for connect, create federation, join, callback evoke, resign, "
-            "destroy, and disconnect. Full object exchange, ownership, DDM, and MOM-over-FedPro behavior remain "
-            "outside this slice."
+            "loopback runtime session are present for connect, create federation, join, FOM handle lookup, "
+            "available-dimension and dimension-bound queries, default attribute transportation/order policy calls, "
+            "object registration, basic ownership divest/acquire callbacks, time-regulation/time-constrained/time-advance "
+            "callbacks, resign, destroy, and disconnect. Full object exchange, DDM region routing, MOM-over-FedPro "
+            "behavior, and full RTI semantics remain outside this slice."
         ),
     },
     {

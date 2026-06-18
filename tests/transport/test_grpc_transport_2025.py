@@ -142,3 +142,106 @@ def test_2025_transport_server_runs_lifecycle_session_over_fedpro_schema():
         if transport is not None:
             transport.close()
         server.close()
+
+
+def test_2025_transport_server_runs_runtime_capability_session_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-runtime"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "RouteCapability2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025Federate", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.RouteTarget",))).fields[0]
+        attribute = transport.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
+        dimension = transport.request(TransportRequest(command="GET_DIMENSION_HANDLE", fields=("RoutingSpace",))).fields[0]
+        assert transport.request(TransportRequest(command="GET_AVAILABLE_DIMENSIONS_FOR_OBJECT_CLASS", fields=(object_class,))).fields == (dimension,)
+        assert transport.request(TransportRequest(command="GET_DIMENSION_UPPER_BOUND", fields=(dimension,))).fields == ("1024",)
+
+        best_effort = transport.request(TransportRequest(command="GET_TRANSPORTATION_TYPE_HANDLE", fields=("HLAbestEffort",))).fields[0]
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="CHANGE_DEFAULT_ATTRIBUTE_TRANSPORTATION_TYPE",
+                    fields=(object_class, attribute, best_effort),
+                )
+            ).fields
+            == ()
+        )
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="CHANGE_DEFAULT_ATTRIBUTE_ORDER_TYPE",
+                    fields=(object_class, attribute, "TIMESTAMP"),
+                )
+            ).fields
+            == ()
+        )
+
+        object_instance = transport.request(
+            TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProRouteTarget-1"))
+        ).fields[0]
+        assert transport.request(TransportRequest(command="IS_ATTRIBUTE_OWNED_BY_FEDERATE", fields=(object_instance, attribute))).fields == ("1",)
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE",
+                    fields=(object_instance, attribute, "72756e74696d652d646976657374"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="IS_ATTRIBUTE_OWNED_BY_FEDERATE", fields=(object_instance, attribute))).fields == ("0",)
+        assert transport.request(TransportRequest(command="QUERY_ATTRIBUTE_OWNERSHIP", fields=(object_instance, attribute))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "ATTRIBUTE_IS_NOT_OWNED", object_instance, attribute)
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE",
+                    fields=(object_instance, attribute, "72756e74696d652d636c61696d"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "OWNERSHIP_ACQUIRED",
+            object_instance,
+            attribute,
+            "72756e74696d652d636c61696d",
+        )
+
+        assert transport.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Time", "1"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
+        assert transport.request(TransportRequest(command="ENABLE_TIME_CONSTRAINED")).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
+        assert transport.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "9"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "9")
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "getObjectClassHandleRequest",
+            "getAttributeHandleRequest",
+            "getAvailableDimensionsForObjectClassRequest",
+            "changeDefaultAttributeTransportationTypeRequest",
+            "changeDefaultAttributeOrderTypeRequest",
+            "registerObjectInstanceWithNameRequest",
+            "unconditionalAttributeOwnershipDivestitureRequest",
+            "attributeOwnershipAcquisitionIfAvailableRequest",
+            "timeAdvanceRequestRequest",
+        } <= set(server.servicer.calls)
+        assert server.servicer.default_attribute_transportation == {(object_class, attribute): best_effort}
+        assert server.servicer.default_attribute_order == {(object_class, attribute): datatypes_pb2.TIMESTAMP}
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()

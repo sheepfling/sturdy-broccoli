@@ -103,8 +103,11 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "Java runtime evidence runs when the Java 2025 shim jar is built" in slices["2025-standard-route-runtime-capability"]["supported_scope"]
     assert "not full Java/C++ behavior conformance or object exchange" in slices["2025-standard-route-runtime-capability"]["supported_scope"]
     assert slices["2025-fedpro-transport-contract"]["status"] == "implemented-slice"
-    assert "hosted loopback lifecycle session" in slices["2025-fedpro-transport-contract"]["supported_scope"]
+    assert "hosted loopback runtime session" in slices["2025-fedpro-transport-contract"]["supported_scope"]
+    assert "basic ownership divest/acquire callbacks" in slices["2025-fedpro-transport-contract"]["supported_scope"]
+    assert "time-regulation/time-constrained/time-advance callbacks" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert "Full object exchange" in slices["2025-fedpro-transport-contract"]["supported_scope"]
+    assert "MOM-over-FedPro" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert slices["2025-ddm-default-attribute-policy"]["status"] == "implemented-slice"
     assert "HLA2025-MOD-007" in slices["2025-ddm-default-attribute-policy"]["requirements"]
     assert "Full DDM region routing" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
