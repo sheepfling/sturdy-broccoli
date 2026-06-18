@@ -198,6 +198,20 @@ def test_2010_runtime_context_keeps_auth_out_of_backend_options() -> None:
     assert hasattr(runtime.rti_ambassador, "connect")
 
 
+@pytest.mark.requirements("AUTH-004", "HLA2025-REQ-001")
+def test_2010_runtime_context_does_not_forward_auth_context_to_inmemory_backend() -> None:
+    factory = HlaFactoryRegistry.get("rti1516e", provider="inmemory")
+
+    runtime = factory.create_runtime_context(
+        auth_config={"mode": "NoAuth"},
+        transport="inproc",
+    )
+
+    assert runtime.provider == "inmemory"
+    assert runtime.authentication_context.credentials() is None
+    assert runtime.rti_ambassador.backend_info.kind == "python/in-memory"
+
+
 @pytest.mark.requirements("HLA2025-OMT-002", "HLA2025-OMT-006")
 def test_encoding_smoke_fom_resolves_expected_datatype_graph() -> None:
     path = encoding_smoke_fom_path()

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from pathlib import Path
 
 import pytest
 
@@ -124,7 +125,10 @@ def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
     for rti in (leader, wing, late):
         rti.connect(object(), CallbackModel.HLA_EVOKED)
 
-    leader.createFederationExecution(federationName=federation_name)
+    leader.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
     with pytest.raises(FederationExecutionAlreadyExists):
         leader.createFederationExecution(federationName=federation_name)
 
@@ -175,6 +179,7 @@ def test_2025_shim_reports_federation_executions_and_members() -> None:
     wing.connect(wing_fed, CallbackModel.HLA_EVOKED)
     leader.createFederationExecution(
         federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
         logicalTimeImplementationName="HLAinteger64Time",
     )
 
@@ -217,6 +222,134 @@ def test_2025_shim_reports_federation_executions_and_members() -> None:
     leader.destroyFederationExecution(federationName=federation_name)
     wing.disconnect()
     leader.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-FI-005", "HLA2025-FI-006")
+def test_2025_shim_validates_callback_model_and_credentials_at_connect() -> None:
+    from hla.rti1516_2025.auth import HLAplainTextPassword
+    from hla.rti1516_2025.datatypes import Credentials
+    from hla.rti1516_2025.enums import CallbackModel
+    from hla.rti1516_2025.exceptions import InvalidCredentials, UnsupportedCallbackModel
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    rti = create_rti_ambassador(backend="shim")
+    with pytest.raises(UnsupportedCallbackModel):
+        rti.connect(object(), 99)
+
+    with pytest.raises(InvalidCredentials, match="cannot be empty"):
+        rti.connect(object(), CallbackModel.HLA_EVOKED, credentials=HLAplainTextPassword(""))
+
+    with pytest.raises(InvalidCredentials, match="rejected"):
+        rti.connect(object(), CallbackModel.HLA_EVOKED, credentials=HLAplainTextPassword("bad"))
+
+    rti.connect(object(), CallbackModel.HLA_IMMEDIATE, credentials=Credentials("Proto2025Bearer", b"token"))
+    assert rti.connected is True
+    rti.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-005", "HLA2025-FI-008", "HLA2025-FI-009")
+def test_2025_shim_requires_valid_fom_modules_and_default_logical_time() -> None:
+    from hla.rti1516_2025.enums import CallbackModel
+    from hla.rti1516_2025.exceptions import CouldNotCreateLogicalTimeFactory, InvalidFOM
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-fom-{uuid.uuid4().hex[:8]}"
+    rti = create_rti_ambassador(backend="shim")
+    rti.connect(object(), CallbackModel.HLA_EVOKED)
+
+    with pytest.raises(InvalidFOM, match="At least one FOM module"):
+        rti.createFederationExecution(federationName=f"{federation_name}-missing-fom")
+
+    with pytest.raises(CouldNotCreateLogicalTimeFactory, match="NoSuchTimeFactory"):
+        rti.createFederationExecution(
+            federationName=f"{federation_name}-bad-time",
+            fomModule="TargetRadarFOMmodule.xml",
+            logicalTimeImplementationName="NoSuchTimeFactory",
+        )
+
+    rti.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    reporter = Recording2025FederateAmbassador()
+    observer = create_rti_ambassador(backend="shim")
+    observer.connect(reporter, CallbackModel.HLA_EVOKED)
+    observer.listFederationExecutions()
+
+    execution_report = reporter.last_callback("reportFederationExecutions")
+    assert execution_report is not None
+    assert any(
+        row.federationExecutionName == federation_name
+        and row.logicalTimeImplementationName == "HLAinteger64Time"
+        for row in execution_report[0]
+    )
+
+    rti.destroyFederationExecution(federationName=federation_name)
+    observer.disconnect()
+    rti.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-FI-005", "HLA2025-FI-008", "HLA2025-OMT-007")
+def test_2025_shim_rejects_invalid_join_fom_modules_and_destroy_while_joined(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel
+    from hla.rti1516_2025.exceptions import DesignatorIsHLAstandardMIM, ErrorReadingFOM, FederatesCurrentlyJoined
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    broken_fom = tmp_path / "BrokenProto2025.xml"
+    broken_fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification><name>Broken Proto2025</name><type>FOM</type></modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>BrokenEntity</name>
+        <attribute><name>BadField</name><dataType>DoesNotExist</dataType></attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-join-fom-{uuid.uuid4().hex[:8]}"
+    leader = create_rti_ambassador(backend="shim")
+    wing = create_rti_ambassador(backend="shim")
+    leader.connect(object(), CallbackModel.HLA_EVOKED)
+    wing.connect(object(), CallbackModel.HLA_EVOKED)
+
+    with pytest.raises(DesignatorIsHLAstandardMIM):
+        leader.createFederationExecutionWithMIM(
+            federationName=f"{federation_name}-bad-mim",
+            fomModules=["TargetRadarFOMmodule.xml"],
+            mimModule="HLAstandardMIM",
+        )
+
+    leader.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    leader.joinFederationExecution(
+        federateName="Leader",
+        federateType="TestFederate",
+        federationName=federation_name,
+    )
+
+    with pytest.raises(ErrorReadingFOM):
+        wing.joinFederationExecution(
+            federateName="Wing",
+            federateType="TestFederate",
+            federationName=federation_name,
+            additionalFomModules=[broken_fom],
+        )
+
+    with pytest.raises(FederatesCurrentlyJoined):
+        leader.destroyFederationExecution(federationName=federation_name)
+
+    leader.disconnect()
+    wing.disconnect()
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-REQ-002")

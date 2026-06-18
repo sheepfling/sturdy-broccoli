@@ -32,11 +32,17 @@ def test_hla_factory_registry_composes_2025_helpers_without_ambassador_ownership
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FR-001", "HLA2025-OMT-002")
 def test_2025_version_local_factory_uses_same_composition_layer() -> None:
     from hla.rti1516_2025.factory import create_hla_factory
+    from hla.rti1516_2025.foms import scenario_fom_paths
 
     factory = create_hla_factory(provider="shim")
     assert factory.spec.name == "rti1516_2025"
     assert factory.provider == "shim"
-    assert factory.load_fom(["TargetRadarFOMmodule.xml"]).modules == ("TargetRadarFOMmodule.xml",)
+    result = factory.load_fom(scenario_fom_paths("message-test"))
+
+    assert result.status == "validated"
+    assert result.repository is not None
+    assert result.repository.has("Proto2025Verdict")
+    assert any(entry == "modules=2" for entry in result.diagnostics)
 
 
 @pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-REQ-002")

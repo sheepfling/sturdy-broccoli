@@ -211,6 +211,13 @@ from .auth import (
     HLAplainTextPassword,
 )
 
+from .validation import (
+    ValidationIssue,
+    validate_fom_module,
+    validate_fom_modules,
+    validate_hla_name,
+)
+
 from .encoding import (
     BasicEncoderFactory,
     CallableDataElementFactory,
@@ -498,8 +505,12 @@ __all__ = [
     "TransportationTypeHandle",
     "Unauthorized",
     "UnsupportedCallbackModel",
+    "ValidationIssue",
     "ValueDataElement",
     "VariableLengthData",
     "__version__",
     "create_encoder_factory",
+    "validate_fom_module",
+    "validate_fom_modules",
+    "validate_hla_name",
 ]

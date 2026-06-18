@@ -200,6 +200,7 @@ def run_standard_2025_lifecycle_trace(backend_name: str) -> dict[str, Any]:
     from hla.rti1516_2025 import CallbackModel, ResignAction
 
     federation_name = f"ShimRouteMvp{backend_name.replace('-', '').title()}"
+    fom_module = "TargetRadarFOMmodule.xml"
     rti = create_rti_ambassador(spec="2025", backend=backend_name)
     trace = [
         _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=rti.backend_info.details.get("standard_backed")),
@@ -207,8 +208,8 @@ def run_standard_2025_lifecycle_trace(backend_name: str) -> dict[str, Any]:
     ]
     result = rti.connect(object(), CallbackModel.HLA_EVOKED)
     trace.append(_event("connect", result=result))
-    rti.createFederationExecution(federation_name)
-    trace.append(_event("createFederationExecution", federation=federation_name))
+    rti.createFederationExecution(federation_name, fom_module)
+    trace.append(_event("createFederationExecution", federation=federation_name, fomModule=fom_module))
     rti.joinFederationExecution("python-federate", "demo", federation_name)
     trace.append(_event("joinFederationExecution", federate="python-federate", federation=federation_name))
     trace.append(_event("evokeCallback", delivered=rti.evokeCallback(0.0)))

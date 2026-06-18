@@ -153,6 +153,7 @@ class AuthenticationContext:
 class FomLoadResult:
     modules: tuple[Any, ...]
     codecs: Any
+    repository: Any = None
     status: str = "loaded"
     diagnostics: tuple[str, ...] = ()
 
@@ -349,7 +350,26 @@ class HlaFactory:
             normalized = (modules,)
         else:
             normalized = tuple(modules)
-        return FomLoadResult(modules=normalized, codecs=codecs or self.encoding_registry())
+        active_codecs = codecs or self.encoding_registry()
+        if self.spec.name == "rti1516_2025":
+            validation_module = importlib.import_module("hla.rti1516_2025.validation")
+            repository = importlib.import_module("hla.rti1516_2025.foms").FomTypeRepository.from_modules(normalized)
+            issues = validation_module.validate_fom_modules(repository.modules)
+            diagnostics = (
+                f"modules={len(repository.modules)}",
+                f"datatypes={len(getattr(repository.catalog, 'datatype_names', ())) if repository.catalog is not None else 0}",
+                f"object_classes={len(getattr(repository.catalog, 'object_classes', {})) if repository.catalog is not None else 0}",
+                f"interaction_classes={len(getattr(repository.catalog, 'interaction_classes', {})) if repository.catalog is not None else 0}",
+                f"validation_issues={len(issues)}",
+            )
+            return FomLoadResult(
+                modules=normalized,
+                codecs=active_codecs,
+                repository=repository,
+                status="validated" if not issues else "invalid",
+                diagnostics=diagnostics,
+            )
+        return FomLoadResult(modules=normalized, codecs=active_codecs)
 
     def _composition(self) -> FactoryComposition:
         capabilities = self.edition_capabilities()
