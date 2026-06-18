@@ -287,6 +287,98 @@ def test_2025_transport_server_queues_timestamped_messages_and_retracts_over_fed
         server.close()
 
 
+def test_2025_transport_server_runs_time_management_services_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-time-services"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "TimeServices2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025Time", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        assert transport.request(TransportRequest(command="ENABLE_TIME_REGULATION", fields=("HLAinteger64Interval", "2"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_REGULATION_ENABLED", "HLAinteger64Time", "0")
+        assert server.servicer.time_regulating is True
+        assert transport.request(TransportRequest(command="QUERY_LOOKAHEAD")).fields == ("HLAinteger64Interval", "2")
+        assert transport.request(TransportRequest(command="ENABLE_TIME_CONSTRAINED")).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_CONSTRAINED_ENABLED", "HLAinteger64Time", "0")
+        assert server.servicer.time_constrained is True
+        assert transport.request(TransportRequest(command="ENABLE_ASYNCHRONOUS_DELIVERY")).fields == ()
+        assert server.servicer.asynchronous_delivery_enabled is True
+
+        object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        attribute = transport.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
+        interaction_class = transport.request(TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))).fields[0]
+        parameter = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(interaction_class, "TrackId"))).fields[0]
+        assert transport.request(TransportRequest(command="PUBLISH_OBJECT_CLASS_ATTRIBUTES", fields=(object_class, attribute))).fields == ()
+        assert transport.request(TransportRequest(command="SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES", fields=(object_class, attribute))).fields == ()
+        assert transport.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+        assert transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+        object_instance = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProTimeTarget-1"))).fields[0]
+        assert transport.request(TransportRequest(command="EVOKE")).fields[:2] == ("1", "DISCOVER")
+
+        assert transport.request(
+            TransportRequest(
+                command="UPDATE_ATTRIBUTE_VALUES_TIMESTAMP",
+                fields=(object_instance, f"{attribute}:6e6d72", "6e6d722d746167", "HLAinteger64Time", "30"),
+            )
+        ).fields == ("1",)
+        assert transport.request(TransportRequest(command="NEXT_MESSAGE_REQUEST", fields=("HLAinteger64Time", "30"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields[:3] == ("1", "REFLECT_TSO", object_instance)
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "30")
+        assert transport.request(TransportRequest(command="QUERY_LOGICAL_TIME")).fields == ("HLAinteger64Time", "30")
+
+        assert transport.request(
+            TransportRequest(
+                command="SEND_INTERACTION_TIMESTAMP",
+                fields=(interaction_class, f"{parameter}:6e6d7261", "6e6d72612d746167", "HLAinteger64Time", "35"),
+            )
+        ).fields == ("2",)
+        assert transport.request(TransportRequest(command="NEXT_MESSAGE_REQUEST_AVAILABLE", fields=("HLAinteger64Time", "35"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields[:3] == ("1", "INTERACTION_TSO", interaction_class)
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "35")
+
+        assert transport.request(TransportRequest(command="TIME_ADVANCE_REQUEST_AVAILABLE", fields=("HLAinteger64Time", "40"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "40")
+        assert transport.request(TransportRequest(command="FLUSH_QUEUE_REQUEST", fields=("HLAinteger64Time", "45"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "45")
+        assert transport.request(TransportRequest(command="QUERY_GALT")).fields == ("1", "HLAinteger64Time", "45")
+        assert transport.request(TransportRequest(command="QUERY_LITS")).fields == ("1", "HLAinteger64Time", "45")
+
+        assert transport.request(TransportRequest(command="DISABLE_ASYNCHRONOUS_DELIVERY")).fields == ()
+        assert server.servicer.asynchronous_delivery_enabled is False
+        assert transport.request(TransportRequest(command="DISABLE_TIME_CONSTRAINED")).fields == ()
+        assert server.servicer.time_constrained is False
+        assert transport.request(TransportRequest(command="DISABLE_TIME_REGULATION")).fields == ()
+        assert server.servicer.time_regulating is False
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "enableTimeRegulationRequest",
+            "disableTimeRegulationRequest",
+            "enableTimeConstrainedRequest",
+            "disableTimeConstrainedRequest",
+            "enableAsynchronousDeliveryRequest",
+            "disableAsynchronousDeliveryRequest",
+            "nextMessageRequestRequest",
+            "nextMessageRequestAvailableRequest",
+            "timeAdvanceRequestAvailableRequest",
+            "flushQueueRequestRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None

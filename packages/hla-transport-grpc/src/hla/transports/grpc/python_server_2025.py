@@ -135,6 +135,9 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.next_retraction_handle = 1
         self.current_time = datatypes_pb2.LogicalTime(data=b"HLAinteger64Time:0")
         self.lookahead = datatypes_pb2.LogicalTimeInterval(data=b"HLAinteger64Interval:1")
+        self.time_regulating = False
+        self.time_constrained = False
+        self.asynchronous_delivery_enabled = False
         self.queued_tso_callbacks: dict[str, tuple[float, callback_pb2.CallbackRequest]] = {}
         self.delivered_retractions: set[str] = set()
         self.saved_labels: set[str] = set()
@@ -1084,16 +1087,41 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 cancelNegotiatedAttributeOwnershipDivestitureResponse=rti_pb2.CancelNegotiatedAttributeOwnershipDivestitureResponse()
             )
         if request_kind == "enableTimeRegulationRequest":
+            self.time_regulating = True
+            self.lookahead.CopyFrom(request.enableTimeRegulationRequest.lookahead)
             self.callback_queue.append(callback_pb2.CallbackRequest(timeRegulationEnabled=callback_pb2.TimeRegulationEnabled(time=datatypes_pb2.LogicalTime(data=b"HLAinteger64Time:0"))))
             return rti_pb2.CallResponse(enableTimeRegulationResponse=rti_pb2.EnableTimeRegulationResponse())
         if request_kind == "enableTimeConstrainedRequest":
+            self.time_constrained = True
             self.callback_queue.append(callback_pb2.CallbackRequest(timeConstrainedEnabled=callback_pb2.TimeConstrainedEnabled(time=datatypes_pb2.LogicalTime(data=b"HLAinteger64Time:0"))))
             return rti_pb2.CallResponse(enableTimeConstrainedResponse=rti_pb2.EnableTimeConstrainedResponse())
+        if request_kind == "disableTimeRegulationRequest":
+            self.time_regulating = False
+            return rti_pb2.CallResponse(disableTimeRegulationResponse=rti_pb2.DisableTimeRegulationResponse())
+        if request_kind == "disableTimeConstrainedRequest":
+            self.time_constrained = False
+            return rti_pb2.CallResponse(disableTimeConstrainedResponse=rti_pb2.DisableTimeConstrainedResponse())
+        if request_kind == "enableAsynchronousDeliveryRequest":
+            self.asynchronous_delivery_enabled = True
+            return rti_pb2.CallResponse(enableAsynchronousDeliveryResponse=rti_pb2.EnableAsynchronousDeliveryResponse())
+        if request_kind == "disableAsynchronousDeliveryRequest":
+            self.asynchronous_delivery_enabled = False
+            return rti_pb2.CallResponse(disableAsynchronousDeliveryResponse=rti_pb2.DisableAsynchronousDeliveryResponse())
         if request_kind == "timeAdvanceRequestRequest":
-            self._deliver_due_tso_callbacks(request.timeAdvanceRequestRequest.time)
-            self.current_time.CopyFrom(request.timeAdvanceRequestRequest.time)
-            self.callback_queue.append(callback_pb2.CallbackRequest(timeAdvanceGrant=callback_pb2.TimeAdvanceGrant(time=request.timeAdvanceRequestRequest.time)))
+            self._grant_time(request.timeAdvanceRequestRequest.time)
             return rti_pb2.CallResponse(timeAdvanceRequestResponse=rti_pb2.TimeAdvanceRequestResponse())
+        if request_kind == "timeAdvanceRequestAvailableRequest":
+            self._grant_time(request.timeAdvanceRequestAvailableRequest.time)
+            return rti_pb2.CallResponse(timeAdvanceRequestAvailableResponse=rti_pb2.TimeAdvanceRequestAvailableResponse())
+        if request_kind == "nextMessageRequestRequest":
+            self._grant_time(request.nextMessageRequestRequest.time)
+            return rti_pb2.CallResponse(nextMessageRequestResponse=rti_pb2.NextMessageRequestResponse())
+        if request_kind == "nextMessageRequestAvailableRequest":
+            self._grant_time(request.nextMessageRequestAvailableRequest.time)
+            return rti_pb2.CallResponse(nextMessageRequestAvailableResponse=rti_pb2.NextMessageRequestAvailableResponse())
+        if request_kind == "flushQueueRequestRequest":
+            self._grant_time(request.flushQueueRequestRequest.time)
+            return rti_pb2.CallResponse(flushQueueRequestResponse=rti_pb2.FlushQueueRequestResponse())
         if request_kind == "queryLogicalTimeRequest":
             return rti_pb2.CallResponse(
                 queryLogicalTimeResponse=rti_pb2.QueryLogicalTimeResponse(
@@ -1185,6 +1213,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             self.callback_queue.append(callback)
             self.delivered_retractions.add(handle)
             del self.queued_tso_callbacks[handle]
+
+    def _grant_time(self, time: datatypes_pb2.LogicalTime) -> None:
+        self._deliver_due_tso_callbacks(time)
+        self.current_time.CopyFrom(time)
+        self.callback_queue.append(callback_pb2.CallbackRequest(timeAdvanceGrant=callback_pb2.TimeAdvanceGrant(time=time)))
 
     def _joined_handle_values(self) -> tuple[str, ...]:
         if self.joined_federate_handles:

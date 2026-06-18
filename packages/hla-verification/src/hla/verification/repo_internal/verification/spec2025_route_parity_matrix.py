@@ -304,10 +304,12 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "time_management",
         "python-2025-fedpro-grpc",
-        PARTIAL,
+        PARITY_COVERED,
         ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
-        "Hosted FedPro 2025 route covers regulation/constrained grants, time advance, queued TSO delivery, and pre-delivery retract.",
+        "Hosted FedPro 2025 route covers regulation/constrained enable-disable, async delivery enable-disable, "
+        "TAR/TARA/NMR/NMRA/FQR grants, queued TSO delivery, logical time/GALT/LITS/lookahead queries, "
+        "and pre-delivery retract.",
     ),
     _row(
         "time_management",

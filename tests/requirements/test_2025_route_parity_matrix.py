@@ -41,9 +41,11 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert rows[("object_exchange", "python-2025-inprocess")].evidence_scope == "scenario-parity"
     assert rows[("object_exchange", "python-2025-fedpro-grpc")].status == PARITY_COVERED
     assert rows[("object_exchange", "python-2025-fedpro-grpc")].evidence_scope == "scenario-parity"
-    assert rows[("time_management", "python-2025-fedpro-grpc")].status == PARTIAL
-    assert rows[("time_management", "python-2025-fedpro-grpc")].evidence_scope == "fedpro-slice"
+    assert rows[("time_management", "python-2025-fedpro-grpc")].status == PARITY_COVERED
+    assert rows[("time_management", "python-2025-fedpro-grpc")].evidence_scope == "scenario-parity"
+    assert "TAR/TARA/NMR/NMRA/FQR grants" in rows[("time_management", "python-2025-fedpro-grpc")].notes
     assert "queued TSO delivery" in rows[("time_management", "python-2025-fedpro-grpc")].notes
+    assert "logical time/GALT/LITS/lookahead queries" in rows[("time_management", "python-2025-fedpro-grpc")].notes
     assert rows[("ownership", "python-2025-fedpro-grpc")].status == PARITY_COVERED
     assert rows[("ownership", "python-2025-fedpro-grpc")].evidence_scope == "scenario-parity"
     assert "negotiated divestiture" in rows[("ownership", "python-2025-fedpro-grpc")].notes
