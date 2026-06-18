@@ -121,7 +121,8 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert slices["2025-ddm-default-attribute-policy"]["status"] == "implemented-slice"
     assert "HLA2025-MOD-007" in slices["2025-ddm-default-attribute-policy"]["requirements"]
     assert "basic createRegion/setRangeBounds/subscribeObjectClassAttributesWithRegions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
-    assert "Interaction-region routing and full scope advisories" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
+    assert "subscribeInteractionClassWithRegions/sendInteractionWithRegions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
+    assert "Full scope advisories remain later behavior work" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
     assert slices["2025-ownership-basic-tag-callbacks"]["status"] == "implemented-slice"
     assert "HLA2025-MOD-005" in slices["2025-ownership-basic-tag-callbacks"]["requirements"]
     assert "negotiated ownership offers" in slices["2025-ownership-basic-tag-callbacks"]["supported_scope"]

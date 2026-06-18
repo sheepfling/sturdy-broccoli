@@ -126,6 +126,7 @@ class _FederationRecord:
     subscribed_object_regions: dict[int, dict[str, dict[str, set[int]]]] = field(default_factory=dict)
     published_interactions: dict[int, set[str]] = field(default_factory=dict)
     subscribed_interactions: dict[int, set[str]] = field(default_factory=dict)
+    subscribed_interaction_regions: dict[int, dict[str, set[int]]] = field(default_factory=dict)
     published_directed_interactions: dict[int, dict[str, set[str]]] = field(default_factory=dict)
     subscribed_directed_interactions: dict[int, dict[str, set[str]]] = field(default_factory=dict)
     member_regions: dict[int, dict[int, set[str]]] = field(default_factory=dict)
@@ -351,6 +352,7 @@ class Shim2025RTIAmbassador:
         federation.subscribed_object_regions.setdefault(self._federate_handle.value, {})
         federation.published_interactions.setdefault(self._federate_handle.value, set())
         federation.subscribed_interactions.setdefault(self._federate_handle.value, set())
+        federation.subscribed_interaction_regions.setdefault(self._federate_handle.value, {})
         federation.published_directed_interactions.setdefault(self._federate_handle.value, {})
         federation.subscribed_directed_interactions.setdefault(self._federate_handle.value, {})
         federation.member_regions.setdefault(self._federate_handle.value, {})
@@ -607,6 +609,40 @@ class Shim2025RTIAmbassador:
         self._require_joined("unsubscribeInteractionClass")
         subscribed = self._federation_record().subscribed_interactions.setdefault(self._current_federate_key(), set())
         subscribed.discard(self._interaction_class_name(interactionClass))
+        self._federation_record().subscribed_interaction_regions.setdefault(self._current_federate_key(), {}).pop(
+            self._interaction_class_name(interactionClass),
+            None,
+        )
+
+    def subscribeInteractionClassWithRegions(self, interactionClass: Any, regions: Any) -> None:  # noqa: N802
+        self._record("subscribeInteractionClassWithRegions", interactionClass, regions)
+        self._require_joined("subscribeInteractionClassWithRegions")
+        interaction_class_name = self._interaction_class_name(interactionClass)
+        region_values = self._region_values_from_handles(regions)
+        federation = self._federation_record()
+        federation.subscribed_interactions.setdefault(self._current_federate_key(), set()).add(interaction_class_name)
+        federation.subscribed_interaction_regions.setdefault(self._current_federate_key(), {}).setdefault(
+            interaction_class_name,
+            set(),
+        ).update(region_values)
+
+    def subscribeInteractionClassPassivelyWithRegions(self, interactionClass: Any, regions: Any) -> None:  # noqa: N802
+        self._record("subscribeInteractionClassPassivelyWithRegions", interactionClass, regions)
+        self.subscribeInteractionClassWithRegions(interactionClass, regions)
+
+    def unsubscribeInteractionClassWithRegions(self, interactionClass: Any, regions: Any) -> None:  # noqa: N802
+        self._record("unsubscribeInteractionClassWithRegions", interactionClass, regions)
+        self._require_joined("unsubscribeInteractionClassWithRegions")
+        interaction_class_name = self._interaction_class_name(interactionClass)
+        region_values = self._region_values_from_handles(regions)
+        region_subscriptions = self._federation_record().subscribed_interaction_regions.setdefault(self._current_federate_key(), {}).setdefault(
+            interaction_class_name,
+            set(),
+        )
+        region_subscriptions.difference_update(region_values)
+        if not region_subscriptions:
+            self._federation_record().subscribed_interaction_regions[self._current_federate_key()].pop(interaction_class_name, None)
+            self._federation_record().subscribed_interactions.setdefault(self._current_federate_key(), set()).discard(interaction_class_name)
 
     def publishObjectClassDirectedInteractions(self, objectClass: Any, interactionClasses: Any) -> None:  # noqa: N802
         self._record("publishObjectClassDirectedInteractions", objectClass, interactionClasses)
@@ -1072,6 +1108,52 @@ class Shim2025RTIAmbassador:
                 transportation,
                 self._current_federate_handle(),
                 set(),
+                callback_time,
+                OrderType.RECEIVE,
+                OrderType.RECEIVE,
+                None,
+            )
+        return None
+
+    def sendInteractionWithRegions(  # noqa: N802
+        self,
+        interactionClass: Any,
+        parameterValues: Mapping[Any, bytes],
+        regions: Any,
+        userSuppliedTag: bytes,
+        time: Any | None = None,
+    ) -> Any | None:
+        self._record("sendInteractionWithRegions", interactionClass, parameterValues, regions, userSuppliedTag, time)
+        self._require_joined("sendInteractionWithRegions")
+        source_regions = self._region_values_from_handles(regions)
+        interaction_class_name = self._interaction_class_name(interactionClass)
+        if interaction_class_name not in self._federation_record().published_interactions.setdefault(self._current_federate_key(), set()):
+            raise InteractionClassNotPublished(interaction_class_name)
+        parameters_by_name = self._parameter_handles(interaction_class_name)
+        values_by_handle: dict[ParameterHandle, bytes] = {}
+        for parameter, value in dict(parameterValues).items():
+            parameter_name = self._parameter_names_from_handles(interaction_class_name, {parameter})[0]
+            values_by_handle[ParameterHandle(parameters_by_name[parameter_name])] = bytes(value)
+        transportation = self._transportation_handle_by_name("HLAreliable")
+        callback_time = self._coerce_time(time) if time is not None else None
+        for federate_key, subscriptions in self._federation_record().subscribed_interactions.items():
+            if federate_key == self._current_federate_key() or interaction_class_name not in subscriptions:
+                continue
+            target_regions = self._federation_record().subscribed_interaction_regions.get(federate_key, {}).get(
+                interaction_class_name,
+                set(),
+            )
+            if target_regions and not self._region_sets_overlap(self._current_federate_key(), source_regions, federate_key, target_regions):
+                continue
+            self._deliver_to_federate_handle(
+                FederateHandle(federate_key),
+                "receiveInteraction",
+                interactionClass,
+                values_by_handle,
+                bytes(userSuppliedTag),
+                transportation,
+                self._current_federate_handle(),
+                {RegionHandle(region_value) for region_value in source_regions},
                 callback_time,
                 OrderType.RECEIVE,
                 OrderType.RECEIVE,
@@ -1853,6 +1935,7 @@ class Shim2025RTIAmbassador:
                 federation.subscribed_object_regions.pop(self._federate_handle.value, None)
                 federation.published_interactions.pop(self._federate_handle.value, None)
                 federation.subscribed_interactions.pop(self._federate_handle.value, None)
+                federation.subscribed_interaction_regions.pop(self._federate_handle.value, None)
                 federation.published_directed_interactions.pop(self._federate_handle.value, None)
                 federation.subscribed_directed_interactions.pop(self._federate_handle.value, None)
                 federation.member_regions.pop(self._federate_handle.value, None)
@@ -1995,6 +2078,16 @@ class Shim2025RTIAmbassador:
             return set(self._federation_record().member_regions[federate_key][region_value])
         except KeyError as exc:
             raise InvalidRegion(str(region)) from exc
+
+    def _region_values_from_handles(self, regions: Any) -> set[int]:
+        try:
+            region_handles = tuple(regions)
+        except TypeError as exc:
+            raise InvalidRegion("Region handle set must be iterable") from exc
+        region_values = {self._normalize_handle(region, RegionHandle, InvalidRegion) for region in region_handles}
+        for region_value in region_values:
+            self._region_dimension_names(self._current_federate_key(), RegionHandle(region_value))
+        return region_values
 
     def _coerce_range_bounds(self, value: Any) -> RangeBounds:
         if isinstance(value, RangeBounds):

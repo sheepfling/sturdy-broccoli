@@ -282,8 +282,9 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "dimension upper bounds, stores validated default attribute transportation/order policy changes, "
             "uses those defaults when delivering reflectAttributeValues callbacks, and filters object attribute "
             "reflections through basic createRegion/setRangeBounds/subscribeObjectClassAttributesWithRegions/"
-            "associateRegionsForUpdates DDM region overlap. Interaction-region routing and full scope advisories "
-            "remain later behavior work."
+            "associateRegionsForUpdates DDM region overlap. It also filters interaction delivery through "
+            "subscribeInteractionClassWithRegions/sendInteractionWithRegions region overlap and conveys sent "
+            "regions on receiveInteraction callbacks. Full scope advisories remain later behavior work."
         ),
     },
     {
