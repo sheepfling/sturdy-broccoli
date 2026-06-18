@@ -87,6 +87,7 @@ _COMMAND_REQUESTS: Mapping[str, str] = {
     "SYNCHRONIZATION_POINT_ACHIEVED": "synchronizationPointAchievedWithSuccessRequest",
     "TIME_ADVANCE_REQUEST": "timeAdvanceRequestRequest",
     "TIME_ADVANCE_REQUEST_AVAILABLE": "timeAdvanceRequestAvailableRequest",
+    "UNASSOCIATE_REGIONS_FOR_UPDATES": "unassociateRegionsForUpdatesRequest",
     "UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE": "unconditionalAttributeOwnershipDivestitureRequest",
     "UNPUBLISH_OBJECT_CLASS_ATTRIBUTES": "unpublishObjectClassAttributesRequest",
     "UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES": "unsubscribeObjectClassAttributesRequest",

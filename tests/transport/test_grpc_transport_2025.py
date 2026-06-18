@@ -834,6 +834,91 @@ def test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap(
             "1",
             "1",
         )
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS",
+                    fields=(object_class, f"{attribute}|{subscriber_region}"),
+                )
+            ).fields
+            == ()
+        )
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="UPDATE_ATTRIBUTE_VALUES",
+                    fields=(object_instance, f"{attribute}:756e737562", "756e7375622d746167"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "TIME_ADVANCE_GRANT",
+            "HLAinteger64Time",
+            "7",
+        )
+
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGIONS",
+                    fields=(object_class, f"{attribute}|{subscriber_region}", "1"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields[:2] == ("1", "DISCOVER")
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="UNASSOCIATE_REGIONS_FOR_UPDATES",
+                    fields=(object_instance, f"{attribute}|{publisher_region}"),
+                )
+            ).fields
+            == ()
+        )
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="UPDATE_ATTRIBUTE_VALUES",
+                    fields=(object_instance, f"{attribute}:756e6173736f63", "756e6173736f632d746167"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "TIME_ADVANCE_GRANT",
+            "HLAinteger64Time",
+            "7",
+        )
+
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="ASSOCIATE_REGIONS_FOR_UPDATES",
+                    fields=(object_instance, f"{attribute}|{publisher_region}"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="DELETE_REGION", fields=(subscriber_region,))).fields == ()
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="UPDATE_ATTRIBUTE_VALUES",
+                    fields=(object_instance, f"{attribute}:64656c65746564", "64656c657465642d746167"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "TIME_ADVANCE_GRANT",
+            "HLAinteger64Time",
+            "7",
+        )
 
         assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
         assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
@@ -844,7 +929,10 @@ def test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap(
             "setRangeBoundsRequest",
             "commitRegionModificationsRequest",
             "associateRegionsForUpdatesRequest",
+            "unassociateRegionsForUpdatesRequest",
             "subscribeObjectClassAttributesWithRegionsRequest",
+            "unsubscribeObjectClassAttributesWithRegionsRequest",
+            "deleteRegionRequest",
         } <= set(server.servicer.calls)
     finally:
         if transport is not None:
@@ -919,11 +1007,53 @@ def test_2025_transport_server_filters_interactions_by_ddm_region_overlap():
             "1",
             f"{dimension}:0:10",
         )
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="UNSUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS",
+                    fields=(interaction_class, subscriber_region),
+                )
+            ).fields
+            == ()
+        )
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_INTERACTION_WITH_REGIONS",
+                    fields=(interaction_class, f"{parameter}:554e535542", publisher_region, "756e737562"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields[:2] != ("1", "INTERACTION")
+
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SUBSCRIBE_INTERACTION_CLASS_WITH_REGIONS",
+                    fields=(interaction_class, "1", subscriber_region),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="DELETE_REGION", fields=(subscriber_region,))).fields == ()
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_INTERACTION_WITH_REGIONS",
+                    fields=(interaction_class, f"{parameter}:44454c455445", publisher_region, "64656c657465"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields[:2] != ("1", "INTERACTION")
 
         assert {
             "getAvailableDimensionsForInteractionClassRequest",
             "subscribeInteractionClassWithRegionsRequest",
+            "unsubscribeInteractionClassWithRegionsRequest",
             "sendInteractionWithRegionsRequest",
+            "deleteRegionRequest",
         } <= set(server.servicer.calls)
     finally:
         if transport is not None:

@@ -380,6 +380,12 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             )
         if request_kind == "commitRegionModificationsRequest":
             return rti_pb2.CallResponse(commitRegionModificationsResponse=rti_pb2.CommitRegionModificationsResponse())
+        if request_kind == "deleteRegionRequest":
+            region = request.deleteRegionRequest.region.data.decode("ascii")
+            self.regions.pop(region, None)
+            self.region_bounds.pop(region, None)
+            self._remove_region_references(region)
+            return rti_pb2.CallResponse(deleteRegionResponse=rti_pb2.DeleteRegionResponse())
         if request_kind == "getTransportationTypeHandleRequest":
             name = request.getTransportationTypeHandleRequest.transportationTypeName
             try:
@@ -647,6 +653,19 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             return rti_pb2.CallResponse(
                 subscribeObjectClassAttributesWithRegionsResponse=rti_pb2.SubscribeObjectClassAttributesWithRegionsResponse()
             )
+        if request_kind == "unsubscribeObjectClassAttributesWithRegionsRequest":
+            payload = request.unsubscribeObjectClassAttributesWithRegionsRequest
+            object_class = payload.objectClass.data.decode("ascii")
+            region_map = self.subscribed_object_regions.setdefault(object_class, {})
+            for attribute, regions in self._attribute_region_pairs(payload.attributesAndRegions):
+                current = region_map.setdefault(attribute, set())
+                current.difference_update(regions)
+                if not current:
+                    region_map.pop(attribute, None)
+                    self.subscribed_object_attributes.get(object_class, set()).discard(attribute)
+            return rti_pb2.CallResponse(
+                unsubscribeObjectClassAttributesWithRegionsResponse=rti_pb2.UnsubscribeObjectClassAttributesWithRegionsResponse()
+            )
         if request_kind == "publishInteractionClassRequest":
             interaction_class = request.publishInteractionClassRequest.interactionClass.data.decode("ascii")
             self.published_interactions.add(interaction_class)
@@ -663,6 +682,15 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 region.data.decode("ascii") for region in payload.regions.regionHandle
             )
             return rti_pb2.CallResponse(subscribeInteractionClassWithRegionsResponse=rti_pb2.SubscribeInteractionClassWithRegionsResponse())
+        if request_kind == "unsubscribeInteractionClassWithRegionsRequest":
+            payload = request.unsubscribeInteractionClassWithRegionsRequest
+            interaction_class = payload.interactionClass.data.decode("ascii")
+            regions = self.subscribed_interaction_regions.setdefault(interaction_class, set())
+            regions.difference_update(region.data.decode("ascii") for region in payload.regions.regionHandle)
+            if not regions:
+                self.subscribed_interaction_regions.pop(interaction_class, None)
+                self.subscribed_interactions.discard(interaction_class)
+            return rti_pb2.CallResponse(unsubscribeInteractionClassWithRegionsResponse=rti_pb2.UnsubscribeInteractionClassWithRegionsResponse())
         if request_kind in {"registerObjectInstanceRequest", "registerObjectInstanceWithNameRequest"}:
             payload = getattr(request, request_kind)
             object_class = payload.objectClass.data.decode("ascii")
@@ -686,6 +714,16 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             for attribute, regions in self._attribute_region_pairs(payload.attributesAndRegions):
                 update_regions.setdefault(attribute, set()).update(regions)
             return rti_pb2.CallResponse(associateRegionsForUpdatesResponse=rti_pb2.AssociateRegionsForUpdatesResponse())
+        if request_kind == "unassociateRegionsForUpdatesRequest":
+            payload = request.unassociateRegionsForUpdatesRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            update_regions = self.object_update_regions.setdefault(object_instance, {})
+            for attribute, regions in self._attribute_region_pairs(payload.attributesAndRegions):
+                current = update_regions.setdefault(attribute, set())
+                current.difference_update(regions)
+                if not current:
+                    update_regions.pop(attribute, None)
+            return rti_pb2.CallResponse(unassociateRegionsForUpdatesResponse=rti_pb2.UnassociateRegionsForUpdatesResponse())
         if request_kind == "updateAttributeValuesRequest":
             payload = request.updateAttributeValuesRequest
             object_instance = payload.objectInstance.data.decode("ascii")
@@ -1257,7 +1295,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             return attribute in self.subscribed_object_attributes.get(object_class, set())
         source_regions = self.object_update_regions.get(object_instance, {}).get(attribute, set())
         if not source_regions:
-            return True
+            return False
         return any(self._regions_overlap(source_region, target_region) for source_region in source_regions for target_region in target_regions)
 
     def _interaction_subscriber_matches(self, interaction_class: str, source_regions: tuple[str, ...]) -> bool:
@@ -1267,7 +1305,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if not target_regions:
             return True
         if not source_regions:
-            return True
+            return False
         return any(self._regions_overlap(source_region, target_region) for source_region in source_regions for target_region in target_regions)
 
     def _reflectable_attribute_names(self, object_instance: str, object_class: str) -> set[str]:
@@ -1301,6 +1339,24 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 lower, upper = self.region_bounds.get(region_value, {}).get(dimension, (0, 1024))
                 row.rangeBounds.lower = lower
                 row.rangeBounds.upper = upper
+
+    def _remove_region_references(self, region: str) -> None:
+        for object_class, attribute_regions in self.subscribed_object_regions.items():
+            for attribute, regions in tuple(attribute_regions.items()):
+                regions.discard(region)
+                if not regions:
+                    attribute_regions.pop(attribute, None)
+                    self.subscribed_object_attributes.get(object_class, set()).discard(attribute)
+        for update_regions in self.object_update_regions.values():
+            for attribute, regions in tuple(update_regions.items()):
+                regions.discard(region)
+                if not regions:
+                    update_regions.pop(attribute, None)
+        for interaction_class, regions in tuple(self.subscribed_interaction_regions.items()):
+            regions.discard(region)
+            if not regions:
+                self.subscribed_interaction_regions.pop(interaction_class, None)
+                self.subscribed_interactions.discard(interaction_class)
 
 
 class RTI2025GrpcServer:
