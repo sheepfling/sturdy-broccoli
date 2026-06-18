@@ -58,6 +58,7 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert rows[("mom", "python-2025-inprocess")].status == PARTIAL
     assert "routes MIM data, FOM module data" in rows[("mom", "python-2025-inprocess")].notes
     assert "synchronization point MOM request/report interactions" in rows[("mom", "python-2025-inprocess")].notes
+    assert "service/exception reporting MOM adjust interactions" in rows[("mom", "python-2025-inprocess")].notes
     assert rows[("mom", "python-2025-fedpro-grpc")].status == PARTIAL
     assert "round-trips 2025 switch services" in rows[("mom", "python-2025-fedpro-grpc")].notes
     assert "reports MIM data for HLArequestMIMdata" in rows[("mom", "python-2025-fedpro-grpc")].notes

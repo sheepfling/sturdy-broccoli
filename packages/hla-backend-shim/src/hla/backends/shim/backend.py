@@ -1376,7 +1376,7 @@ class Shim2025RTIAmbassador:
         for parameter, value in dict(parameterValues).items():
             parameter_name = self._parameter_names_from_handles(interaction_class_name, {parameter})[0]
             values_by_handle[ParameterHandle(parameters_by_name[parameter_name])] = bytes(value)
-        if self._handle_mom_request_interaction(interaction_class_name, values_by_handle):
+        if self._handle_mom_interaction(interaction_class_name, values_by_handle):
             return None
         if interaction_class_name not in self._federation_record().published_interactions.setdefault(self._current_federate_key(), set()):
             raise InteractionClassNotPublished(interaction_class_name)
@@ -2785,12 +2785,16 @@ class Shim2025RTIAmbassador:
             raise InvalidFederateHandle(f"Unknown synchronization federate handles: {sorted(unknown)}")
         return required
 
-    def _handle_mom_request_interaction(
+    def _handle_mom_interaction(
         self,
         interaction_class_name: str,
         values_by_handle: Mapping[ParameterHandle, bytes],
     ) -> bool:
-        if ".HLAmanager." not in interaction_class_name or ".HLArequest." not in interaction_class_name:
+        if ".HLAmanager." not in interaction_class_name:
+            return False
+        if ".HLAadjust." in interaction_class_name:
+            return self._handle_mom_adjust_interaction(interaction_class_name, values_by_handle)
+        if ".HLArequest." not in interaction_class_name:
             return False
         request_to_report = {
             "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints":
@@ -2811,6 +2815,21 @@ class Shim2025RTIAmbassador:
         )
         return True
 
+    def _handle_mom_adjust_interaction(
+        self,
+        interaction_class_name: str,
+        values_by_handle: Mapping[ParameterHandle, bytes],
+    ) -> bool:
+        params = self._mom_request_params_by_name(interaction_class_name, values_by_handle)
+        target = self._mom_target_rti(params)
+        if interaction_class_name.endswith("HLAsetServiceReporting"):
+            target._switches["service_reporting"] = self._mom_bool(params.get("HLAreportingState"), False)
+            return True
+        if interaction_class_name.endswith("HLAsetExceptionReporting"):
+            target._switches["exception_reporting"] = self._mom_bool(params.get("HLAreportingState"), False)
+            return True
+        return False
+
     def _mom_request_params_by_name(
         self,
         interaction_class_name: str,
@@ -2824,6 +2843,32 @@ class Shim2025RTIAmbassador:
             if parameter_name is not None:
                 result[parameter_name] = bytes(value)
         return result
+
+    def _mom_target_rti(self, params: Mapping[str, bytes]) -> "Shim2025RTIAmbassador":
+        federation = self._federation_record()
+        federate_payload = params.get("HLAfederate")
+        if federate_payload:
+            try:
+                federate_key = int(federate_payload.decode("ascii"))
+            except ValueError as exc:
+                raise InvalidFederateHandle(federate_payload.decode("ascii", errors="replace")) from exc
+        else:
+            federate_key = self._current_federate_key()
+        target = federation.member_rtis.get(federate_key)
+        if target is None:
+            raise InvalidFederateHandle(str(federate_key))
+        return target
+
+    @staticmethod
+    def _mom_bool(value: bytes | None, default: bool) -> bool:
+        if value is None:
+            return default
+        text = value.decode("ascii", errors="ignore").strip().lower()
+        if text in {"1", "true", "yes", "hlatrue", "on"}:
+            return True
+        if text in {"0", "false", "no", "hlafalse", "off"}:
+            return False
+        return default
 
     def _mom_request_report_values(
         self,

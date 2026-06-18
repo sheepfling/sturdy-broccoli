@@ -1908,6 +1908,80 @@ def test_2025_shim_routes_mom_mim_and_fom_module_reports_through_interactions(tm
     rti.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-MOD-008", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_routes_mom_adjust_interactions_for_reporting_switches() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-mom-adjust-{uuid.uuid4().hex[:8]}"
+    controller = create_rti_ambassador(backend="shim")
+    target = create_rti_ambassador(backend="shim")
+    controller.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    target.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    controller.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    controller.joinFederationExecution("MomController", "TestFederate", federation_name)
+    target_handle = target.joinFederationExecution("MomTarget", "TestFederate", federation_name)
+
+    service_adjust = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
+    )
+    service_target = controller.getParameterHandle(service_adjust, "HLAfederate")
+    service_state = controller.getParameterHandle(service_adjust, "HLAreportingState")
+    assert target.getServiceReportingSwitch() is False
+    controller.sendInteraction(
+        service_adjust,
+        {
+            service_target: str(target_handle.value).encode("ascii"),
+            service_state: b"HLAtrue",
+        },
+        b"mom-enable-service-reporting",
+    )
+    assert target.getServiceReportingSwitch() is True
+    controller.sendInteraction(
+        service_adjust,
+        {
+            service_target: str(target_handle.value).encode("ascii"),
+            service_state: b"HLAfalse",
+        },
+        b"mom-disable-service-reporting",
+    )
+    assert target.getServiceReportingSwitch() is False
+
+    exception_adjust = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetExceptionReporting"
+    )
+    exception_target = controller.getParameterHandle(exception_adjust, "HLAfederate")
+    exception_state = controller.getParameterHandle(exception_adjust, "HLAreportingState")
+    assert target.getExceptionReportingSwitch() is True
+    controller.sendInteraction(
+        exception_adjust,
+        {
+            exception_target: str(target_handle.value).encode("ascii"),
+            exception_state: b"HLAfalse",
+        },
+        b"mom-disable-exception-reporting",
+    )
+    assert target.getExceptionReportingSwitch() is False
+    controller.sendInteraction(
+        exception_adjust,
+        {
+            exception_target: str(target_handle.value).encode("ascii"),
+            exception_state: b"HLAtrue",
+        },
+        b"mom-enable-exception-reporting",
+    )
+    assert target.getExceptionReportingSwitch() is True
+
+    target.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.destroyFederationExecution(federationName=federation_name)
+    target.disconnect()
+    controller.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-005")
 def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction

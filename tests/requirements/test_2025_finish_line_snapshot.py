@@ -151,7 +151,8 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "HLA2025-NEW-007" in slices["2025-mom-service-report-serialization"]["requirements"]
     assert "service-report callback delivery" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert (
-        "Python 2025 shim also routes MIM data, FOM module data, and synchronization point MOM request/report interactions"
+        "Python 2025 shim also routes MIM data, FOM module data, synchronization point MOM request/report interactions, "
+        "and service/exception reporting MOM adjust interactions"
         in slices["2025-mom-service-report-serialization"]["supported_scope"]
     )
     assert "reports standard MIM data for HLArequestMIMdata" in slices["2025-mom-service-report-serialization"]["supported_scope"]
