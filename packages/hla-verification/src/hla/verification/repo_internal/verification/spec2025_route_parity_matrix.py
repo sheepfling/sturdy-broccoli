@@ -352,11 +352,11 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "save_restore",
         "python-2025-fedpro-grpc",
-        PARTIAL,
+        PARITY_COVERED,
         ("HLA2025-FI-001", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers save/restore lifecycle calls, status callbacks, "
-        "success/failure callbacks, and abort callbacks; object/time rollback remains in-process only.",
+        "success/failure callbacks, abort callbacks, object registry rollback, and logical-time rollback.",
     ),
     _row(
         "mom",

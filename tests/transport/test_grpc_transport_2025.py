@@ -300,6 +300,13 @@ def test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema():
             "1",
             "HLAinteger64Time",
         )
+        object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        saved_object = transport.request(
+            TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProSavedTarget-1"))
+        ).fields[0]
+        assert transport.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "5"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "5")
+        assert transport.request(TransportRequest(command="QUERY_LOGICAL_TIME")).fields == ("HLAinteger64Time", "5")
 
         assert transport.request(TransportRequest(command="REQUEST_FEDERATION_SAVE", fields=("SAVE-1",))).fields == ()
         assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "INITIATE_FEDERATE_SAVE", "SAVE-1")
@@ -318,6 +325,13 @@ def test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema():
             "FEDERATION_SAVE_STATUS_RESPONSE",
             "1:NO_SAVE_IN_PROGRESS",
         )
+        after_save_object = transport.request(
+            TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProAfterSaveTarget-1"))
+        ).fields[0]
+        assert after_save_object != saved_object
+        assert transport.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "11"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "11")
+        assert transport.request(TransportRequest(command="QUERY_LOGICAL_TIME")).fields == ("HLAinteger64Time", "11")
 
         assert transport.request(TransportRequest(command="REQUEST_FEDERATION_RESTORE", fields=("MISSING-SAVE",))).fields == ()
         assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "REQUEST_FEDERATION_RESTORE_FAILED", "MISSING-SAVE")
@@ -339,6 +353,13 @@ def test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema():
         )
         assert transport.request(TransportRequest(command="FEDERATE_RESTORE_COMPLETE")).fields == ()
         assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_RESTORED")
+        assert transport.request(TransportRequest(command="QUERY_LOGICAL_TIME")).fields == ("HLAinteger64Time", "5")
+        assert transport.request(TransportRequest(command="GET_OBJECT_INSTANCE_NAME", fields=(saved_object,))).fields == (
+            "FedProSavedTarget-1",
+        )
+        with pytest.raises(TransportError) as error:
+            transport.request(TransportRequest(command="GET_OBJECT_INSTANCE_HANDLE", fields=("FedProAfterSaveTarget-1",)))
+        assert error.value.code == "ObjectInstanceNotKnown"
         with pytest.raises(TransportError) as error:
             transport.request(TransportRequest(command="FEDERATE_RESTORE_COMPLETE"))
         assert error.value.code == "RestoreNotRequested"
@@ -371,6 +392,8 @@ def test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema():
 
         assert {
             "requestFederationSaveWithTimeRequest",
+            "getObjectInstanceHandleRequest",
+            "getObjectInstanceNameRequest",
             "federateSaveBegunRequest",
             "queryFederationSaveStatusRequest",
             "federateSaveCompleteRequest",

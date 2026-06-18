@@ -55,9 +55,11 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "not full MOM manager object/interaction routing" in rows[("mom", "python-2025-fedpro-grpc")].notes
     assert rows[("support_services", "python-2025-fedpro-grpc")].status == PARTIAL
     assert "2025 switch get/set services" in rows[("support_services", "python-2025-fedpro-grpc")].notes
-    assert rows[("save_restore", "python-2025-fedpro-grpc")].status == PARTIAL
+    assert rows[("save_restore", "python-2025-fedpro-grpc")].status == PARITY_COVERED
+    assert rows[("save_restore", "python-2025-fedpro-grpc")].evidence_scope == "scenario-parity"
     assert "status callbacks" in rows[("save_restore", "python-2025-fedpro-grpc")].notes
-    assert "rollback remains in-process only" in rows[("save_restore", "python-2025-fedpro-grpc")].notes
+    assert "object registry rollback" in rows[("save_restore", "python-2025-fedpro-grpc")].notes
+    assert "logical-time rollback" in rows[("save_restore", "python-2025-fedpro-grpc")].notes
 
     for route in ("java-standard-2025-jpype", "java-standard-2025-py4j", "cpp-standard-2025-pybind", "cpp-standard-2025-grpc"):
         assert rows[("object_exchange", route)].status == MISSING
@@ -153,7 +155,7 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
 
     assert "scenario,route,status,evidence_scope,requirements,evidence_tests,evidence_artifacts,notes" in csv_text
     assert "object_exchange,java-standard-2025-jpype,missing,gap-record" in csv_text
-    assert "save_restore,python-2025-fedpro-grpc,partial,fedpro-slice" in csv_text
+    assert "save_restore,python-2025-fedpro-grpc,parity-covered,scenario-parity" in csv_text
     assert "# IEEE 1516-2025 Route Parity Matrix" in md_text
     assert "This matrix is not a conformance claim" in md_text
     assert "| Scenario | Route | Status | Evidence scope |" in md_text

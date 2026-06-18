@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from concurrent import futures
-from dataclasses import dataclass
+from copy import deepcopy
+from dataclasses import dataclass, field
 
 from hla.transports.grpc.fedpro2025 import FederateAmbassador_2025_pb2 as callback_pb2
 from hla.transports.grpc.fedpro2025 import HLA2025RTITransport_pb2_grpc as pb2_grpc
@@ -24,6 +25,15 @@ class RTI2025GrpcServerConfig:
     host: str = "127.0.0.1"
     port: int = 0
     max_workers: int = 4
+
+
+@dataclass
+class _FederationSnapshot:
+    object_instances: dict[str, dict[str, str]]
+    unowned_attributes: set[tuple[str, str]]
+    current_time: datatypes_pb2.LogicalTime
+    next_object_instance_handle: int
+    object_update_regions: dict[str, dict[str, set[str]]] = field(default_factory=dict)
 
 
 def _callback_request() -> callback_pb2.CallbackRequest:
@@ -119,9 +129,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         }
         self.service_report_serial = 1
         self.next_retraction_handle = 1
+        self.current_time = datatypes_pb2.LogicalTime(data=b"HLAinteger64Time:0")
         self.queued_tso_callbacks: dict[str, tuple[float, callback_pb2.CallbackRequest]] = {}
         self.delivered_retractions: set[str] = set()
         self.saved_labels: set[str] = set()
+        self.saved_snapshots: dict[str, _FederationSnapshot] = {}
         self.save_label: str | None = None
         self.save_status: dict[str, int] = {}
         self.restore_label: str | None = None
@@ -204,6 +216,22 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     result=self.object_class_names.get(handle, "")
                 )
             )
+        if request_kind == "getObjectInstanceHandleRequest":
+            name = request.getObjectInstanceHandleRequest.objectInstanceName
+            for handle, record in self.object_instances.items():
+                if record["name"] == name:
+                    return rti_pb2.CallResponse(
+                        getObjectInstanceHandleResponse=rti_pb2.GetObjectInstanceHandleResponse(
+                            result=_handle(datatypes_pb2.ObjectInstanceHandle, handle)
+                        )
+                    )
+            return self._error("ObjectInstanceNotKnown", name)
+        if request_kind == "getObjectInstanceNameRequest":
+            handle = request.getObjectInstanceNameRequest.objectInstance.data.decode("ascii")
+            record = self.object_instances.get(handle)
+            if record is None:
+                return self._error("ObjectInstanceNotKnown", handle)
+            return rti_pb2.CallResponse(getObjectInstanceNameResponse=rti_pb2.GetObjectInstanceNameResponse(result=record["name"]))
         if request_kind == "getAttributeHandleRequest":
             payload = request.getAttributeHandleRequest
             object_class = payload.objectClass.data.decode("ascii")
@@ -376,6 +404,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 return self._error("SaveNotInitiated", "No federation save is in progress")
             self.save_status[self._current_federate_handle()] = datatypes_pb2.FEDERATE_WAITING_FOR_FEDERATION_TO_SAVE
             if self.save_status and all(status == datatypes_pb2.FEDERATE_WAITING_FOR_FEDERATION_TO_SAVE for status in self.save_status.values()):
+                self.saved_snapshots[self.save_label] = self._snapshot()
                 self.saved_labels.add(self.save_label)
                 self.save_label = None
                 self.save_status = {}
@@ -434,6 +463,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 return self._error("RestoreNotRequested", "No federation restore is in progress")
             self.restore_status[self._current_federate_handle()] = datatypes_pb2.FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE
             if self.restore_status and all(status == datatypes_pb2.FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE for status in self.restore_status.values()):
+                self._restore_snapshot(self.restore_label)
                 self.restore_label = None
                 self.restore_status = {}
                 self.callback_queue.append(callback_pb2.CallbackRequest(federationRestored=callback_pb2.FederationRestored()))
@@ -903,8 +933,15 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             return rti_pb2.CallResponse(enableTimeConstrainedResponse=rti_pb2.EnableTimeConstrainedResponse())
         if request_kind == "timeAdvanceRequestRequest":
             self._deliver_due_tso_callbacks(request.timeAdvanceRequestRequest.time)
+            self.current_time.CopyFrom(request.timeAdvanceRequestRequest.time)
             self.callback_queue.append(callback_pb2.CallbackRequest(timeAdvanceGrant=callback_pb2.TimeAdvanceGrant(time=request.timeAdvanceRequestRequest.time)))
             return rti_pb2.CallResponse(timeAdvanceRequestResponse=rti_pb2.TimeAdvanceRequestResponse())
+        if request_kind == "queryLogicalTimeRequest":
+            return rti_pb2.CallResponse(
+                queryLogicalTimeResponse=rti_pb2.QueryLogicalTimeResponse(
+                    result=self.current_time,
+                )
+            )
         return self._error("RTIinternalError", f"Unsupported 2025 test call: {request_kind}")
 
     def EvokeCallback(self, request, context):  # noqa: N802 - grpc generated naming
@@ -998,6 +1035,29 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
 
     def _current_federate_handle(self) -> str:
         return self._joined_handle_values()[0]
+
+    def _snapshot(self) -> _FederationSnapshot:
+        return _FederationSnapshot(
+            object_instances=deepcopy(self.object_instances),
+            unowned_attributes=set(self.unowned_attributes),
+            current_time=datatypes_pb2.LogicalTime(data=self.current_time.data),
+            next_object_instance_handle=self.next_object_instance_handle,
+            object_update_regions=deepcopy(self.object_update_regions),
+        )
+
+    def _restore_snapshot(self, label: str | None) -> None:
+        if label is None:
+            return
+        snapshot = self.saved_snapshots.get(label)
+        if snapshot is None:
+            return
+        self.object_instances = deepcopy(snapshot.object_instances)
+        self.unowned_attributes = set(snapshot.unowned_attributes)
+        self.current_time.CopyFrom(snapshot.current_time)
+        self.next_object_instance_handle = snapshot.next_object_instance_handle
+        self.object_update_regions = deepcopy(snapshot.object_update_regions)
+        self.queued_tso_callbacks.clear()
+        self.delivered_retractions.clear()
 
     def _save_status_array(self) -> datatypes_pb2.FederateHandleSaveStatusPairArray:
         result = datatypes_pb2.FederateHandleSaveStatusPairArray()
