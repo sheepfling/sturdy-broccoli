@@ -1792,6 +1792,122 @@ def test_2025_shim_routes_mom_synchronization_point_reports_through_interactions
     leader.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FR-001", "HLA2025-FI-008", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_routes_mom_mim_and_fom_module_reports_through_interactions(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    def write_module(path: Path, module_name: str, class_name: str) -> Path:
+        path.write_text(
+            f"""<?xml version="1.0" encoding="UTF-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+  <modelIdentification>
+    <name>{module_name}</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-01-01</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>{module_name} for 2025 MOM routing tests.</description>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <sharing>Neither</sharing>
+      <semantics>Root</semantics>
+      <objectClass>
+        <name>{class_name}</name>
+        <sharing>PublishSubscribe</sharing>
+        <semantics>{class_name}</semantics>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAunicodeString</dataType>
+          <updateType>Conditional</updateType>
+          <updateCondition>On change</updateCondition>
+          <ownership>NoTransfer</ownership>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+          <semantics>Position</semantics>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <sharing>Neither</sharing>
+      <transportation>HLAreliable</transportation>
+      <order>Receive</order>
+      <semantics>Root</semantics>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+            encoding="utf-8",
+        )
+        return path
+
+    core_fom = write_module(tmp_path / "mom-core.xml", "MOM Core FOM", "Target")
+    extension_fom = write_module(tmp_path / "mom-extension.xml", "MOM Extension FOM", "Sensor")
+    federation_name = f"shim-mom-fom-{uuid.uuid4().hex[:8]}"
+    observer_callbacks = Recording2025FederateAmbassador()
+    rti = create_rti_ambassador(backend="shim")
+    observer = create_rti_ambassador(backend="shim")
+    rti.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    observer.connect(observer_callbacks, CallbackModel.HLA_EVOKED)
+    rti.createFederationExecution(
+        federationName=federation_name,
+        fomModules=(str(core_fom), str(extension_fom)),
+    )
+    rti.joinFederationExecution("MomDataLeader", "TestFederate", federation_name)
+    observer.joinFederationExecution("MomDataObserver", "ObserverFederate", federation_name)
+
+    fom_request = observer.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestFOMmoduleData"
+    )
+    fom_report = observer.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportFOMmoduleData"
+    )
+    request_indicator = observer.getParameterHandle(fom_request, "HLAFOMmoduleIndicator")
+    report_indicator = observer.getParameterHandle(fom_report, "HLAFOMmoduleIndicator")
+    report_data = observer.getParameterHandle(fom_report, "HLAFOMmoduleData")
+    observer.subscribeInteractionClass(fom_report)
+    observer.sendInteraction(fom_request, {request_indicator: b"1"}, b"mom-fom-module-request")
+    fom_callback = observer_callbacks.last_callback("receiveInteraction")
+    assert fom_callback is not None
+    assert fom_callback[0] == fom_report
+    assert fom_callback[1][report_indicator] == b"1"
+    assert b"MOM Extension FOM" in fom_callback[1][report_data]
+    assert b"<name>Sensor</name>" in fom_callback[1][report_data]
+    assert fom_callback[2] == b"MOM"
+
+    mim_request = observer.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMdata"
+    )
+    mim_report = observer.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata"
+    )
+    mim_data = observer.getParameterHandle(mim_report, "HLAMIMdata")
+    observer.subscribeInteractionClass(mim_report)
+    observer_callbacks.callbacks.clear()
+    observer.sendInteraction(mim_request, {}, b"mom-mim-request")
+    mim_callback = observer_callbacks.last_callback("receiveInteraction")
+    assert mim_callback is not None
+    assert mim_callback[0] == mim_report
+    assert b"Standard MOM and Initialization Module" in mim_callback[1][mim_data]
+    assert b"HLArequestMIMdata" in mim_callback[1][mim_data]
+    assert mim_callback[2] == b"MOM"
+
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    rti.resignFederationExecution(ResignAction.NO_ACTION)
+    rti.destroyFederationExecution(federationName=federation_name)
+    observer.disconnect()
+    rti.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-005")
 def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction

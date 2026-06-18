@@ -2797,6 +2797,10 @@ class Shim2025RTIAmbassador:
                 "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPoints",
             "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus":
                 "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPointStatus",
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestFOMmoduleData":
+                "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportFOMmoduleData",
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMdata":
+                "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata",
         }
         report_name = request_to_report.get(interaction_class_name)
         if report_name is None:
@@ -2829,6 +2833,17 @@ class Shim2025RTIAmbassador:
     ) -> dict[str, bytes]:
         federation = self._federation_record()
         params = self._mom_request_params_by_name(request_name, values_by_handle)
+        if report_name.endswith("HLAreportFOMmoduleData"):
+            indicator = self._mom_index(params.get("HLAFOMmoduleIndicator"))
+            module_data = self._mom_module_data(federation.fom_modules, indicator)
+            return {
+                "HLAFOMmoduleIndicator": str(indicator).encode("ascii"),
+                "HLAFOMmoduleData": module_data.encode("utf-8"),
+            }
+        if report_name.endswith("HLAreportMIMdata"):
+            return {
+                "HLAMIMdata": self._mom_single_module_data(federation.mim_module).encode("utf-8"),
+            }
         if report_name.endswith("HLAreportSynchronizationPoints"):
             labels = ",".join(sorted(federation.synchronization_points)).encode("ascii")
             return {
@@ -2860,6 +2875,32 @@ class Shim2025RTIAmbassador:
                 "HLAfederateSynchronizationStatusList": statuses_payload,
             }
         return {}
+
+    @staticmethod
+    def _mom_index(value: bytes | None) -> int:
+        if not value:
+            return 0
+        try:
+            return int(value.decode("ascii") or "0")
+        except ValueError:
+            return 0
+
+    def _mom_module_data(self, modules: tuple[Any, ...], indicator: int) -> str:
+        if not 0 <= indicator < len(modules):
+            return ""
+        return self._mom_single_module_data(modules[indicator])
+
+    @staticmethod
+    def _mom_single_module_data(module: Any | None) -> str:
+        if module is None:
+            return ""
+        path = getattr(module, "path", None)
+        if path is not None and Path(path).exists():
+            return Path(path).read_text(encoding="utf-8")
+        if getattr(module, "parsed", False):
+            fom = import_module("hla.rti1516e.fom")
+            return fom.serialize_fom_module(module, edition="2025")
+        return str(getattr(module, "uri", None) or getattr(module, "source", ""))
 
     def _send_mom_report_interaction(self, report_name: str, values: Mapping[str, bytes]) -> None:
         report_class = InteractionClassHandle(self._interaction_class_handles()[report_name])

@@ -366,8 +366,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARTIAL,
         ("HLA2025-NEW-004", "HLA2025-FI-001"),
         _PYTHON_CORE_TESTS,
-        "Python 2025 shim records MOM switch/report serialization slices and routes synchronization point "
-        "MOM request/report interactions, not full MOM manager action routing.",
+        "Python 2025 shim records MOM switch/report serialization slices and routes MIM data, FOM module data, "
+        "and synchronization point MOM request/report interactions, not full MOM manager action routing.",
     ),
     _row(
         "mom",
