@@ -95,6 +95,7 @@ from hla.rti1516_2025.exceptions import (
     SaveInProgress,
     SaveNotInitiated,
     SaveNotInProgress,
+    SynchronizationPointLabelNotAnnounced,
     TimeRegulationIsNotEnabled,
     Unauthorized,
     UnsupportedCallbackModel,
@@ -172,6 +173,7 @@ class _FederationRecord:
     save_status: dict[int, SaveStatus] = field(default_factory=dict)
     restore_label: str | None = None
     restore_status: dict[int, RestoreStatus] = field(default_factory=dict)
+    synchronization_points: dict[str, "_SynchronizationPointRecord"] = field(default_factory=dict)
     next_federate_handle: int = 1
     next_object_instance_handle: int = 1
     next_region_handle: int = 1
@@ -187,6 +189,15 @@ class _ObjectInstanceRecord:
     attribute_candidates: dict[str, list[tuple[FederateHandle, bytes]]] = field(default_factory=dict)
     update_regions: dict[str, set[int]] = field(default_factory=dict)
     attribute_transportation: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
+class _SynchronizationPointRecord:
+    user_supplied_tag: bytes
+    required_federates: set[int]
+    achieved_federates: set[int] = field(default_factory=set)
+    failed_federates: set[int] = field(default_factory=set)
+    synchronized: bool = False
 
 
 @dataclass(slots=True)
@@ -427,6 +438,60 @@ class Shim2025RTIAmbassador:
         self._federation_name = None
         self._federate_name = None
         self._federate_handle = None
+
+    def registerFederationSynchronizationPoint(  # noqa: N802
+        self,
+        synchronizationPointLabel: str,
+        userSuppliedTag: bytes,
+        synchronizationSet: Any | None = None,
+    ) -> None:
+        self._record("registerFederationSynchronizationPoint", synchronizationPointLabel, userSuppliedTag, synchronizationSet)
+        self._require_joined("registerFederationSynchronizationPoint")
+        if not isinstance(synchronizationPointLabel, str) or not synchronizationPointLabel:
+            raise RTIinternalError("Synchronization point label must be a non-empty string")
+        federation = self._federation_record()
+        required = self._synchronization_required_federates(synchronizationSet)
+        federation.synchronization_points[synchronizationPointLabel] = _SynchronizationPointRecord(
+            user_supplied_tag=bytes(userSuppliedTag),
+            required_federates=required,
+        )
+        self._deliver_callback("synchronizationPointRegistrationSucceeded", synchronizationPointLabel)
+        for federate_key in sorted(required):
+            self._deliver_to_federate_handle(
+                FederateHandle(federate_key),
+                "announceSynchronizationPoint",
+                synchronizationPointLabel,
+                bytes(userSuppliedTag),
+            )
+
+    def synchronizationPointAchieved(self, synchronizationPointLabel: str, successfully: bool = True) -> None:  # noqa: N802
+        self._record("synchronizationPointAchieved", synchronizationPointLabel, successfully)
+        self._require_joined("synchronizationPointAchieved")
+        federation = self._federation_record()
+        try:
+            point = federation.synchronization_points[synchronizationPointLabel]
+        except KeyError as exc:
+            raise SynchronizationPointLabelNotAnnounced(synchronizationPointLabel) from exc
+        federate_key = self._current_federate_key()
+        if federate_key not in point.required_federates:
+            raise SynchronizationPointLabelNotAnnounced(synchronizationPointLabel)
+        if successfully:
+            point.achieved_federates.add(federate_key)
+            point.failed_federates.discard(federate_key)
+        else:
+            point.failed_federates.add(federate_key)
+            point.achieved_federates.discard(federate_key)
+        reported = point.achieved_federates | point.failed_federates
+        if not point.synchronized and point.required_federates <= reported:
+            point.synchronized = True
+            failed = {FederateHandle(value) for value in sorted(point.failed_federates)}
+            for target_key in sorted(point.required_federates):
+                self._deliver_to_federate_handle(
+                    FederateHandle(target_key),
+                    "federationSynchronized",
+                    synchronizationPointLabel,
+                    failed,
+                )
 
     def evokeCallback(self, approximateMinimumTimeInSeconds: float) -> bool:  # noqa: N802
         self._record("evokeCallback", approximateMinimumTimeInSeconds)
@@ -1306,13 +1371,15 @@ class Shim2025RTIAmbassador:
         self._record("sendInteraction", interactionClass, parameterValues, userSuppliedTag, time)
         self._require_joined("sendInteraction")
         interaction_class_name = self._interaction_class_name(interactionClass)
-        if interaction_class_name not in self._federation_record().published_interactions.setdefault(self._current_federate_key(), set()):
-            raise InteractionClassNotPublished(interaction_class_name)
         parameters_by_name = self._parameter_handles(interaction_class_name)
         values_by_handle: dict[ParameterHandle, bytes] = {}
         for parameter, value in dict(parameterValues).items():
             parameter_name = self._parameter_names_from_handles(interaction_class_name, {parameter})[0]
             values_by_handle[ParameterHandle(parameters_by_name[parameter_name])] = bytes(value)
+        if self._handle_mom_request_interaction(interaction_class_name, values_by_handle):
+            return None
+        if interaction_class_name not in self._federation_record().published_interactions.setdefault(self._current_federate_key(), set()):
+            raise InteractionClassNotPublished(interaction_class_name)
         transportation = self._transportation_handle_by_name("HLAreliable")
         callback_time = self._coerce_time(time) if time is not None else None
         retraction_handles: list[MessageRetractionHandle] = []
@@ -2700,6 +2767,127 @@ class Shim2025RTIAmbassador:
             return self._federation_record().object_instances[object_instance_value]
         except KeyError as exc:
             raise ObjectInstanceNotKnown(str(object_instance)) from exc
+
+    def _synchronization_required_federates(self, synchronization_set: Any | None) -> set[int]:
+        federation = self._federation_record()
+        if synchronization_set is None:
+            return set(federation.member_rtis)
+        try:
+            handles = tuple(synchronization_set)
+        except TypeError as exc:
+            raise InvalidFederateHandle("Synchronization set must be iterable") from exc
+        required = {
+            self._normalize_handle(handle, FederateHandle, InvalidFederateHandle)
+            for handle in handles
+        }
+        unknown = required - set(federation.member_rtis)
+        if unknown:
+            raise InvalidFederateHandle(f"Unknown synchronization federate handles: {sorted(unknown)}")
+        return required
+
+    def _handle_mom_request_interaction(
+        self,
+        interaction_class_name: str,
+        values_by_handle: Mapping[ParameterHandle, bytes],
+    ) -> bool:
+        if ".HLAmanager." not in interaction_class_name or ".HLArequest." not in interaction_class_name:
+            return False
+        request_to_report = {
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints":
+                "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPoints",
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus":
+                "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPointStatus",
+        }
+        report_name = request_to_report.get(interaction_class_name)
+        if report_name is None:
+            return False
+        self._send_mom_report_interaction(
+            report_name,
+            self._mom_request_report_values(interaction_class_name, report_name, values_by_handle),
+        )
+        return True
+
+    def _mom_request_params_by_name(
+        self,
+        interaction_class_name: str,
+        values_by_handle: Mapping[ParameterHandle, bytes],
+    ) -> dict[str, bytes]:
+        names_by_handle = {value: name for name, value in self._parameter_handles(interaction_class_name).items()}
+        result: dict[str, bytes] = {}
+        for handle, value in values_by_handle.items():
+            handle_value = self._normalize_handle(handle, ParameterHandle, InteractionParameterNotDefined)
+            parameter_name = names_by_handle.get(handle_value)
+            if parameter_name is not None:
+                result[parameter_name] = bytes(value)
+        return result
+
+    def _mom_request_report_values(
+        self,
+        request_name: str,
+        report_name: str,
+        values_by_handle: Mapping[ParameterHandle, bytes],
+    ) -> dict[str, bytes]:
+        federation = self._federation_record()
+        params = self._mom_request_params_by_name(request_name, values_by_handle)
+        if report_name.endswith("HLAreportSynchronizationPoints"):
+            labels = ",".join(sorted(federation.synchronization_points)).encode("ascii")
+            return {
+                "HLAsyncPoints": labels,
+                "HLAsynchronizationPoints": labels,
+            }
+        if report_name.endswith("HLAreportSynchronizationPointStatus"):
+            requested_label = (params.get("HLAlabel") or params.get("HLAsyncPointName") or b"").decode("ascii")
+            labels = [requested_label] if requested_label else sorted(federation.synchronization_points)
+            federates: set[int] = set()
+            statuses = []
+            for label in labels:
+                point = federation.synchronization_points.get(label)
+                if point is None:
+                    statuses.append(f"{label}:")
+                    continue
+                reported = sorted(point.achieved_federates | point.failed_federates)
+                federates.update(reported)
+                status_bits = ",".join(f"{handle}:failed" if handle in point.failed_federates else f"{handle}:achieved" for handle in reported)
+                statuses.append(f"{label}:{status_bits}")
+            label_payload = ",".join(labels).encode("ascii")
+            federates_payload = ",".join(str(handle) for handle in sorted(federates)).encode("ascii")
+            statuses_payload = ";".join(statuses).encode("ascii")
+            return {
+                "HLAsyncPointName": label_payload,
+                "HLAsyncPointFederates": statuses_payload,
+                "HLAlabel": label_payload,
+                "HLAfederateList": federates_payload,
+                "HLAfederateSynchronizationStatusList": statuses_payload,
+            }
+        return {}
+
+    def _send_mom_report_interaction(self, report_name: str, values: Mapping[str, bytes]) -> None:
+        report_class = InteractionClassHandle(self._interaction_class_handles()[report_name])
+        report_parameters = self._parameter_handles(report_name)
+        parameter_values: dict[ParameterHandle, bytes] = {
+            ParameterHandle(report_parameters[name]): bytes(value)
+            for name, value in values.items()
+            if name in report_parameters
+        }
+        transportation = self._transportation_handle_by_name("HLAreliable")
+        federation = self._federation_record()
+        for federate_key, subscriptions in federation.subscribed_interactions.items():
+            if report_name not in subscriptions:
+                continue
+            self._deliver_to_federate_handle(
+                FederateHandle(federate_key),
+                "receiveInteraction",
+                report_class,
+                parameter_values,
+                b"MOM",
+                transportation,
+                self._current_federate_handle(),
+                set(),
+                None,
+                OrderType.RECEIVE,
+                OrderType.RECEIVE,
+                None,
+            )
 
     def _request_instance_attribute_value_update(self, object_instance: ObjectInstanceHandle, attributes: Any, user_supplied_tag: bytes) -> None:
         record = self._object_instance_record_known(object_instance)

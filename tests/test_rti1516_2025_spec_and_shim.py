@@ -24,6 +24,18 @@ class Recording2025FederateAmbassador:
     def federateResigned(self, reasonForResignDescription) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("federateResigned", (reasonForResignDescription,)))
 
+    def synchronizationPointRegistrationSucceeded(self, synchronizationPointLabel) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("synchronizationPointRegistrationSucceeded", (synchronizationPointLabel,)))
+
+    def synchronizationPointRegistrationFailed(self, synchronizationPointLabel, reason) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("synchronizationPointRegistrationFailed", (synchronizationPointLabel, reason)))
+
+    def announceSynchronizationPoint(self, synchronizationPointLabel, userSuppliedTag) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("announceSynchronizationPoint", (synchronizationPointLabel, userSuppliedTag)))
+
+    def federationSynchronized(self, synchronizationPointLabel, failedToSyncSet) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("federationSynchronized", (synchronizationPointLabel, failedToSyncSet)))
+
     def initiateFederateSave(self, label, time=None) -> None:  # noqa: N802, ANN001
         args = (label,) if time is None else (label, time)
         self.callbacks.append(("initiateFederateSave", args))
@@ -1703,6 +1715,81 @@ def test_2025_shim_serializes_mom_service_reports_without_overclaiming_conforman
     rti.destroyFederationExecution(federationName=federation_name)
     observer.disconnect()
     rti.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_routes_mom_synchronization_point_reports_through_interactions() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-mom-sync-{uuid.uuid4().hex[:8]}"
+    leader_callbacks = Recording2025FederateAmbassador()
+    observer_callbacks = Recording2025FederateAmbassador()
+    leader = create_rti_ambassador(backend="shim")
+    observer = create_rti_ambassador(backend="shim")
+    leader.connect(leader_callbacks, CallbackModel.HLA_EVOKED)
+    observer.connect(observer_callbacks, CallbackModel.HLA_EVOKED)
+    leader.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    leader_handle = leader.joinFederationExecution("SyncLeader", "TestFederate", federation_name)
+    observer_handle = observer.joinFederationExecution("SyncObserver", "ObserverFederate", federation_name)
+
+    leader.registerFederationSynchronizationPoint(
+        "ReadyToRun",
+        b"sync-tag",
+        {leader_handle, observer_handle},
+    )
+    assert leader_callbacks.last_callback("synchronizationPointRegistrationSucceeded") == ("ReadyToRun",)
+    assert leader_callbacks.last_callback("announceSynchronizationPoint") == ("ReadyToRun", b"sync-tag")
+    assert observer_callbacks.last_callback("announceSynchronizationPoint") == ("ReadyToRun", b"sync-tag")
+
+    leader.synchronizationPointAchieved("ReadyToRun")
+    assert leader_callbacks.last_callback("federationSynchronized") is None
+    observer.synchronizationPointAchieved("ReadyToRun")
+    assert leader_callbacks.last_callback("federationSynchronized") == ("ReadyToRun", set())
+    assert observer_callbacks.last_callback("federationSynchronized") == ("ReadyToRun", set())
+
+    points_request = observer.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints"
+    )
+    points_report = observer.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPoints"
+    )
+    points_param = observer.getParameterHandle(points_report, "HLAsyncPoints")
+    observer.subscribeInteractionClass(points_report)
+    observer_callbacks.callbacks.clear()
+    observer.sendInteraction(points_request, {}, b"mom-sync-points-request")
+    points_callback = observer_callbacks.last_callback("receiveInteraction")
+    assert points_callback is not None
+    assert points_callback[0] == points_report
+    assert points_callback[1][points_param] == b"ReadyToRun"
+    assert points_callback[2] == b"MOM"
+
+    status_request = observer.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus"
+    )
+    status_report = observer.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPointStatus"
+    )
+    status_label = observer.getParameterHandle(status_report, "HLAsyncPointName")
+    status_list = observer.getParameterHandle(status_report, "HLAsyncPointFederates")
+    observer.subscribeInteractionClass(status_report)
+    observer_callbacks.callbacks.clear()
+    observer.sendInteraction(status_request, {}, b"mom-sync-status-request")
+    status_callback = observer_callbacks.last_callback("receiveInteraction")
+    assert status_callback is not None
+    assert status_callback[0] == status_report
+    assert status_callback[1][status_label] == b"ReadyToRun"
+    assert status_callback[1][status_list] == b"ReadyToRun:1:achieved,2:achieved"
+    assert status_callback[2] == b"MOM"
+
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    leader.resignFederationExecution(ResignAction.NO_ACTION)
+    leader.destroyFederationExecution(federationName=federation_name)
+    observer.disconnect()
+    leader.disconnect()
 
 
 @pytest.mark.requirements("HLA2025-FI-005")
