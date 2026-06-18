@@ -69,6 +69,7 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "supported time-management MOM service actions" in rows[("mom", "python-2025-inprocess")].notes
     assert "disable/asynchronous/TARA/NMR/NMRA" in rows[("mom", "python-2025-inprocess")].notes
     assert "supported object-management MOM service actions" in rows[("mom", "python-2025-inprocess")].notes
+    assert "transportation/order-type changes" in rows[("mom", "python-2025-inprocess")].notes
     assert "supported ownership MOM service actions" in rows[("mom", "python-2025-inprocess")].notes
     assert "activity/count MOM reports" in rows[("mom", "python-2025-inprocess")].notes
     assert "MOM exception reports for failed routed MOM actions" in rows[("mom", "python-2025-inprocess")].notes

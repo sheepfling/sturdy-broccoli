@@ -156,6 +156,7 @@ class _FederationRecord:
     subscribed_interaction_regions: dict[int, dict[str, set[int]]] = field(default_factory=dict)
     published_directed_interactions: dict[int, dict[str, set[str]]] = field(default_factory=dict)
     subscribed_directed_interactions: dict[int, dict[str, set[str]]] = field(default_factory=dict)
+    interaction_order: dict[tuple[int, str], OrderType] = field(default_factory=dict)
     member_regions: dict[int, dict[int, set[str]]] = field(default_factory=dict)
     member_region_bounds: dict[int, dict[int, dict[str, RangeBounds]]] = field(default_factory=dict)
     object_instances: dict[int, "_ObjectInstanceRecord"] = field(default_factory=dict)
@@ -195,6 +196,7 @@ class _ObjectInstanceRecord:
     attribute_candidates: dict[str, list[tuple[FederateHandle, bytes]]] = field(default_factory=dict)
     update_regions: dict[str, set[int]] = field(default_factory=dict)
     attribute_transportation: dict[str, str] = field(default_factory=dict)
+    attribute_order: dict[str, OrderType] = field(default_factory=dict)
 
 
 @dataclass(slots=True)
@@ -1208,12 +1210,27 @@ class Shim2025RTIAmbassador:
     def changeDefaultAttributeOrderType(self, objectClass: Any, attributes: Any, orderType: Any) -> None:  # noqa: N802
         self._record("changeDefaultAttributeOrderType", objectClass, attributes, orderType)
         object_class_name = self._object_class_name(objectClass)
-        try:
-            coerced_order = orderType if isinstance(orderType, OrderType) else OrderType(orderType)
-        except Exception as exc:
-            raise InvalidOrderType(repr(orderType)) from exc
+        coerced_order = self._coerce_order_type(orderType)
         for attribute_name in self._attribute_names_from_handles(object_class_name, attributes):
             self._default_attribute_order[(object_class_name, attribute_name)] = coerced_order
+
+    def changeAttributeOrderType(self, objectInstance: Any, attributes: Any, orderType: Any) -> None:  # noqa: N802
+        self._record("changeAttributeOrderType", objectInstance, attributes, orderType)
+        self._require_joined("changeAttributeOrderType")
+        record = self._object_instance_record_known(objectInstance)
+        coerced_order = self._coerce_order_type(orderType)
+        for attribute_name in self._attribute_names_from_handles(record.object_class_name, attributes):
+            if record.attribute_owners.get(attribute_name) != self._federate_handle:
+                raise AttributeNotOwned(attribute_name)
+            record.attribute_order[attribute_name] = coerced_order
+
+    def changeInteractionOrderType(self, interactionClass: Any, orderType: Any) -> None:  # noqa: N802
+        self._record("changeInteractionOrderType", interactionClass, orderType)
+        self._require_joined("changeInteractionOrderType")
+        interaction_class_name = self._interaction_class_name(interactionClass)
+        if interaction_class_name not in self._federation_record().published_interactions.setdefault(self._current_federate_key(), set()):
+            raise InteractionClassNotPublished(interaction_class_name)
+        self._federation_record().interaction_order[(self._current_federate_key(), interaction_class_name)] = self._coerce_order_type(orderType)
 
     def defaultAttributePolicySnapshot(self) -> dict[str, dict[str, str]]:  # noqa: N802
         self._record("defaultAttributePolicySnapshot")
@@ -1411,8 +1428,8 @@ class Shim2025RTIAmbassador:
                 self._current_federate_handle(),
                 sent_regions,
                 None,
-                self._default_order_for(object_class_name, reflected),
-                self._default_order_for(object_class_name, reflected),
+                self._attribute_order_for(record, reflected),
+                self._attribute_order_for(record, reflected),
                 None,
             )
         if callback_time is not None:
@@ -1482,8 +1499,8 @@ class Shim2025RTIAmbassador:
                 self._current_federate_handle(),
                 set(),
                 callback_time,
-                OrderType.RECEIVE,
-                OrderType.RECEIVE,
+                self._interaction_order_for(interaction_class_name),
+                self._interaction_order_for(interaction_class_name),
                 None,
             )
         if callback_time is not None:
@@ -1540,8 +1557,8 @@ class Shim2025RTIAmbassador:
                 self._current_federate_handle(),
                 {RegionHandle(region_value) for region_value in source_regions},
                 callback_time,
-                OrderType.RECEIVE,
-                OrderType.RECEIVE,
+                self._interaction_order_for(interaction_class_name),
+                self._interaction_order_for(interaction_class_name),
                 None,
             )
         return None
@@ -1599,8 +1616,8 @@ class Shim2025RTIAmbassador:
                 transportation,
                 self._current_federate_handle(),
                 callback_time,
-                OrderType.RECEIVE,
-                OrderType.RECEIVE,
+                self._interaction_order_for(interaction_class_name),
+                self._interaction_order_for(interaction_class_name),
                 None,
             )
         return None
@@ -3253,6 +3270,19 @@ class Shim2025RTIAmbassador:
                 target._mom_transportation_handle(params.get("HLAtransportation"), "HLAtransportation"),
             )
             return True
+        if leaf == "HLAchangeAttributeOrderType":
+            target.changeAttributeOrderType(
+                ObjectInstanceHandle(self._mom_int(params.get("HLAobjectInstance"), "HLAobjectInstance")),
+                self._mom_attribute_handles(params.get("HLAattributeList")),
+                self._mom_order_type(params.get("HLAsendOrder"), "HLAsendOrder"),
+            )
+            return True
+        if leaf == "HLAchangeInteractionOrderType":
+            target.changeInteractionOrderType(
+                InteractionClassHandle(self._mom_int(params.get("HLAinteractionClass"), "HLAinteractionClass")),
+                self._mom_order_type(params.get("HLAsendOrder"), "HLAsendOrder"),
+            )
+            return True
         if leaf == "HLAunconditionalAttributeOwnershipDivestiture":
             target.unconditionalAttributeOwnershipDivestiture(
                 ObjectInstanceHandle(self._mom_int(params.get("HLAobjectInstance"), "HLAobjectInstance")),
@@ -3487,6 +3517,28 @@ class Shim2025RTIAmbassador:
         if normalized in {"0", "unowned", "notowned", "attributeisnotowned", "none"}:
             return "unowned"
         raise RTIinternalError(f"Invalid MOM ownership state for {field_name}")
+
+    @staticmethod
+    def _mom_order_type(value: bytes | None, field_name: str) -> OrderType:
+        if value is None:
+            raise RTIinternalError(f"Missing MOM parameter {field_name}")
+        text = value.decode("ascii", errors="ignore").strip()
+        try:
+            mom_value = int(text)
+        except ValueError:
+            normalized = text.removeprefix("HLA").upper()
+            try:
+                return OrderType[normalized]
+            except KeyError as exc:
+                raise RTIinternalError(f"Invalid MOM order type for {field_name}") from exc
+        if mom_value == 0:
+            return OrderType.RECEIVE
+        if mom_value == 1:
+            return OrderType.TIMESTAMP
+        try:
+            return OrderType(mom_value)
+        except ValueError as exc:
+            raise RTIinternalError(f"Invalid MOM order type for {field_name}") from exc
 
     @classmethod
     def _mom_resign_action(cls, value: bytes | None) -> ResignAction:
@@ -3859,6 +3911,34 @@ class Shim2025RTIAmbassador:
             for attribute in values_by_handle
         }
         return sorted(orders, key=lambda value: value.name)[0]
+
+    def _attribute_order_for(self, record: _ObjectInstanceRecord, values_by_handle: Mapping[AttributeHandle, bytes]) -> OrderType:
+        orders = {
+            record.attribute_order.get(
+                self._attribute_name_by_handle(record.object_class_name, attribute),
+                self._default_attribute_order.get(
+                    (record.object_class_name, self._attribute_name_by_handle(record.object_class_name, attribute)),
+                    OrderType.RECEIVE,
+                ),
+            )
+            for attribute in values_by_handle
+        }
+        return sorted(orders, key=lambda value: value.name)[0]
+
+    def _interaction_order_for(self, interaction_class_name: str) -> OrderType:
+        return self._federation_record().interaction_order.get(
+            (self._current_federate_key(), interaction_class_name),
+            OrderType.RECEIVE,
+        )
+
+    @staticmethod
+    def _coerce_order_type(order_type: Any) -> OrderType:
+        if isinstance(order_type, OrderType):
+            return order_type
+        try:
+            return OrderType(order_type)
+        except Exception as exc:
+            raise InvalidOrderType(repr(order_type)) from exc
 
     def _discover_existing_objects_for_current_subscription(self, object_class_name: str) -> None:
         federation = self._federation_record()

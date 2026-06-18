@@ -487,9 +487,17 @@ def test_2025_shim_runs_two_federate_object_and_interaction_exchange(tmp_path: P
     )
     assert reflection[6:] == (None, OrderType.TIMESTAMP, OrderType.TIMESTAMP, None)
 
+    publisher.changeAttributeOrderType(object_instance, {attribute}, OrderType.RECEIVE)
+    subscriber_callbacks.callbacks.clear()
+    publisher.updateAttributeValues(object_instance, {attribute: b"receive-ordered"}, b"receive-order-tag")
+    receive_order_reflection = subscriber_callbacks.last_callback("reflectAttributeValues")
+    assert receive_order_reflection is not None
+    assert receive_order_reflection[6:] == (None, OrderType.RECEIVE, OrderType.RECEIVE, None)
+
     with pytest.raises(InteractionClassNotPublished):
         publisher.sendInteraction(interaction_class, {parameter: b"T-1"}, b"not-published")
     publisher.publishInteractionClass(interaction_class)
+    publisher.changeInteractionOrderType(interaction_class, OrderType.TIMESTAMP)
     publisher.sendInteraction(interaction_class, {parameter: b"T-1"}, b"interaction-tag")
     received = subscriber_callbacks.last_callback("receiveInteraction")
     assert received is not None
@@ -501,7 +509,7 @@ def test_2025_shim_runs_two_federate_object_and_interaction_exchange(tmp_path: P
         publisher_handle,
         set(),
     )
-    assert received[6:] == (None, OrderType.RECEIVE, OrderType.RECEIVE, None)
+    assert received[6:] == (None, OrderType.TIMESTAMP, OrderType.TIMESTAMP, None)
 
     subscriber.unsubscribeObjectClassAttributes(object_class, {attribute})
     subscriber_callbacks.callbacks.clear()
@@ -2748,7 +2756,7 @@ def test_2025_shim_routes_mom_time_management_service_interactions() -> None:
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FR-005", "HLA2025-NEW-007", "HLA2025-REQ-002")
 def test_2025_shim_routes_mom_object_and_ownership_service_interactions() -> None:
-    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
     from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown
     from hla.rti1516_2025.factory import create_rti_ambassador
 
@@ -2815,6 +2823,34 @@ def test_2025_shim_routes_mom_object_and_ownership_service_interactions() -> Non
         interaction_class,
         target.getTransportationTypeHandle("HLAbestEffort"),
     )
+
+    send_service(
+        "HLAchangeAttributeOrderType",
+        {
+            "HLAobjectInstance": str(object_instance.value).encode("ascii"),
+            "HLAattributeList": str(attribute.value).encode("ascii"),
+            "HLAsendOrder": b"TimeStamp",
+        },
+    )
+    observer_callbacks.callbacks.clear()
+    target.updateAttributeValues(object_instance, {attribute: b"ordered"}, b"mom-order-update")
+    ordered_reflection = observer_callbacks.last_callback("reflectAttributeValues")
+    assert ordered_reflection is not None
+    assert ordered_reflection[7:9] == (OrderType.TIMESTAMP, OrderType.TIMESTAMP)
+
+    observer.subscribeInteractionClass(interaction_class)
+    send_service(
+        "HLAchangeInteractionOrderType",
+        {
+            "HLAinteractionClass": str(interaction_class.value).encode("ascii"),
+            "HLAsendOrder": b"1",
+        },
+    )
+    observer_callbacks.callbacks.clear()
+    target.sendInteraction(interaction_class, {}, b"mom-order-interaction")
+    ordered_interaction = observer_callbacks.last_callback("receiveInteraction")
+    assert ordered_interaction is not None
+    assert ordered_interaction[7:9] == (OrderType.TIMESTAMP, OrderType.TIMESTAMP)
 
     assert target.isAttributeOwnedByFederate(object_instance, attribute) is True
     send_service(

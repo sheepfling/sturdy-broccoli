@@ -372,7 +372,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "plus federate-level FOM module data, publication/subscription, and object-instance information MOM reports, "
         "and declaration-management MOM service actions "
         "plus federation-management MOM service actions and supported time-management MOM service actions including disable/asynchronous/TARA/NMR/NMRA, "
-        "supported object-management MOM service actions, supported ownership MOM service actions, activity/count MOM reports, and MOM exception "
+        "supported object-management MOM service actions including transportation/order-type changes, supported ownership MOM service actions, "
+        "activity/count MOM reports, and MOM exception "
         "reports for failed routed MOM actions, not full MOM manager action routing.",
     ),
     _row(

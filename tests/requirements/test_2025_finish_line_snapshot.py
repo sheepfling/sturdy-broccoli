@@ -165,6 +165,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "supported time-management MOM service actions" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "disable, asynchronous-delivery, TARA, NMR, and NMRA paths" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "supported object-management and ownership MOM service actions" in slices["2025-mom-service-report-serialization"]["supported_scope"]
+    assert "order-type-change" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "activity/count MOM reports for updates, reflections, interactions" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "HLAreportMOMexception interactions" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "reports standard MIM data for HLArequestMIMdata" in slices["2025-mom-service-report-serialization"]["supported_scope"]

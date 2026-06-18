@@ -364,7 +364,7 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "service actions through normal time-regulation, time-constrained, time-advance, flush-queue, and "
             "lookahead service paths, including disable, asynchronous-delivery, TARA, NMR, and NMRA paths, "
             "plus supported object-management and ownership MOM service actions through "
-            "normal delete, transportation-change, and ownership-divestiture service paths plus activity/count MOM "
+            "normal delete, transportation-change, order-type-change, and ownership-divestiture service paths plus activity/count MOM "
             "reports for updates, reflections, interactions, and deletable/updated/reflected objects. Failed routed MOM "
             "actions emit standard HLAreportMOMexception interactions with service, exception, and parameter-error "
             "fields. The FedPro hosted route also reports standard MIM data for "
