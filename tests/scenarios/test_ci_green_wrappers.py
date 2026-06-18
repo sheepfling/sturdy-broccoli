@@ -22,6 +22,7 @@ def test_repo_green_default_suite_includes_2010_and_2025_grpc_route_tests() -> N
     assert "tests" in testpaths
 
     full_sequence = (ROOT / "scripts/ci/full_sequence.sh").read_text(encoding="utf-8")
+    assert 'run_step "standard shim route artifacts" "$ROOT_DIR/scripts/ci/build_standard_shims_if_available.sh"' in full_sequence
     assert 'run_step "unit tests" "$ROOT_DIR/scripts/ci/test.sh"' in full_sequence
 
     test_script = (ROOT / "scripts/ci/test.sh").read_text(encoding="utf-8")

@@ -38,6 +38,7 @@ run_step() {
 run_step "install" "$ROOT_DIR/scripts/ci/install_python.sh"
 run_step "compilation" "$ROOT_DIR/scripts/ci/lint.sh"
 run_step "lint / type annotations" "$ROOT_DIR/scripts/ci/pyright.sh"
+run_step "standard shim route artifacts" "$ROOT_DIR/scripts/ci/build_standard_shims_if_available.sh"
 run_step "unit tests" "$ROOT_DIR/scripts/ci/test.sh"
 run_step "integration smoke" "$ROOT_DIR/scripts/ci/vendor_runtime_smoke.sh" matrix
 python_bin="$(hla2010_shell_python_bin)"
