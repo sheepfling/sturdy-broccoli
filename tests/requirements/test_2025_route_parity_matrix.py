@@ -77,8 +77,12 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "every non-report manager command leaf in the bundled MIM is declared routed" in rows[
         ("mom", "python-2025-inprocess")
     ].notes
-    assert rows[("mom", "python-2025-fedpro-grpc")].status == PARTIAL
+    assert rows[("mom", "python-2025-fedpro-grpc")].status == PARITY_COVERED
+    assert rows[("mom", "python-2025-fedpro-grpc")].evidence_scope == "scenario-parity"
     assert "round-trips 2025 switch services" in rows[("mom", "python-2025-fedpro-grpc")].notes
+    assert "routes all hosted MOM manager adjust/service command leaves" in rows[
+        ("mom", "python-2025-fedpro-grpc")
+    ].notes
     assert "reports MIM data for HLArequestMIMdata" in rows[("mom", "python-2025-fedpro-grpc")].notes
     assert "reports FOM module data for HLArequestFOMmoduleData" in rows[("mom", "python-2025-fedpro-grpc")].notes
     assert "reports object publication/subscription state" in rows[("mom", "python-2025-fedpro-grpc")].notes
@@ -86,7 +90,6 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "object-instance counts" in rows[("mom", "python-2025-fedpro-grpc")].notes
     assert "reports activity counts for updates/reflections/interactions" in rows[("mom", "python-2025-fedpro-grpc")].notes
     assert "reports synchronization points/status" in rows[("mom", "python-2025-fedpro-grpc")].notes
-    assert "not full MOM manager object/interaction routing" in rows[("mom", "python-2025-fedpro-grpc")].notes
     assert rows[("support_services", "python-2025-fedpro-grpc")].status == PARITY_COVERED
     assert rows[("support_services", "python-2025-fedpro-grpc")].evidence_scope == "scenario-parity"
     assert "2025 switch get/set services" in rows[("support_services", "python-2025-fedpro-grpc")].notes

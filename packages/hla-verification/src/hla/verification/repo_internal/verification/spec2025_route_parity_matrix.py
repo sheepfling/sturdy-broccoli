@@ -379,15 +379,15 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "mom",
         "python-2025-fedpro-grpc",
-        PARTIAL,
+        PARITY_COVERED,
         ("HLA2025-NEW-004", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route emits MOM service-invocation report callbacks, reports MIM data for "
         "HLArequestMIMdata, reports FOM module data for HLArequestFOMmoduleData, reports object "
         "publication/subscription state for HLArequestPublications and HLArequestSubscriptions, reports object "
         "instance information and object-instance counts, reports activity counts for updates/reflections/interactions, "
-        "reports synchronization points/status, and round-trips 2025 switch services, not full MOM manager "
-        "object/interaction routing.",
+        "reports synchronization points/status, round-trips 2025 switch services, and routes all hosted MOM "
+        "manager adjust/service command leaves with representative state and callback effects.",
     ),
     _row(
         "support_services",

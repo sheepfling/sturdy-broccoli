@@ -80,6 +80,50 @@ def _dimension_set(values: list[str] | tuple[str, ...] | str) -> datatypes_pb2.D
     return result
 
 
+_MOM_FEDERATE_ADJUST_LEAVES = (
+    "HLAsetTiming",
+    "HLAmodifyAttributeState",
+    "HLAsetServiceReporting",
+    "HLAsetExceptionReporting",
+    "HLAsetSwitches",
+)
+_MOM_FEDERATION_ADJUST_LEAVES = ("HLAsetSwitches",)
+_MOM_FEDERATE_SERVICE_LEAVES = (
+    "HLAresignFederationExecution",
+    "HLAsynchronizationPointAchieved",
+    "HLAfederateSaveBegun",
+    "HLAfederateSaveComplete",
+    "HLAfederateRestoreComplete",
+    "HLApublishObjectClassAttributes",
+    "HLAunpublishObjectClassAttributes",
+    "HLApublishInteractionClass",
+    "HLAunpublishInteractionClass",
+    "HLAsubscribeObjectClassAttributes",
+    "HLAunsubscribeObjectClassAttributes",
+    "HLAsubscribeInteractionClass",
+    "HLAunsubscribeInteractionClass",
+    "HLAdeleteObjectInstance",
+    "HLAlocalDeleteObjectInstance",
+    "HLArequestAttributeTransportationTypeChange",
+    "HLArequestInteractionTransportationTypeChange",
+    "HLAunconditionalAttributeOwnershipDivestiture",
+    "HLAenableTimeRegulation",
+    "HLAdisableTimeRegulation",
+    "HLAenableTimeConstrained",
+    "HLAdisableTimeConstrained",
+    "HLAtimeAdvanceRequest",
+    "HLAtimeAdvanceRequestAvailable",
+    "HLAnextMessageRequest",
+    "HLAnextMessageRequestAvailable",
+    "HLAflushQueueRequest",
+    "HLAenableAsynchronousDelivery",
+    "HLAdisableAsynchronousDelivery",
+    "HLAmodifyLookahead",
+    "HLAchangeAttributeOrderType",
+    "HLAchangeInteractionOrderType",
+)
+
+
 class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
     def __init__(self) -> None:
         self.calls: list[str] = []
@@ -126,6 +170,16 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus": "428",
             "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPointStatus": "429",
         }
+        next_interaction_handle = 600
+        for leaf in _MOM_FEDERATE_ADJUST_LEAVES:
+            self.interactions[f"HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.{leaf}"] = str(next_interaction_handle)
+            next_interaction_handle += 1
+        for leaf in _MOM_FEDERATION_ADJUST_LEAVES:
+            self.interactions[f"HLAinteractionRoot.HLAmanager.HLAfederation.HLAadjust.{leaf}"] = str(next_interaction_handle)
+            next_interaction_handle += 1
+        for leaf in _MOM_FEDERATE_SERVICE_LEAVES:
+            self.interactions[f"HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.{leaf}"] = str(next_interaction_handle)
+            next_interaction_handle += 1
         self.interaction_names = {value: key for key, value in self.interactions.items()}
         self.parameters = {
             ("400", "TrackId"): "500",
@@ -184,6 +238,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             ("429", "HLAfederateList"): "553",
             ("429", "HLAfederateSynchronizationStatusList"): "554",
         }
+        self.next_parameter_handle = 800
         self.parameter_names = {(interaction_class, value): name for (interaction_class, name), value in self.parameters.items()}
         self.dimensions = {"RoutingSpace": "300"}
         self.dimension_names = {value: key for key, value in self.dimensions.items()}
@@ -400,7 +455,13 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             try:
                 handle = self.parameters[(interaction_class, payload.parameterName)]
             except KeyError:
-                return self._error("NameNotFound", payload.parameterName)
+                interaction_name = self.interaction_names.get(interaction_class, "")
+                if ".HLAmanager." not in interaction_name:
+                    return self._error("NameNotFound", payload.parameterName)
+                handle = str(self.next_parameter_handle)
+                self.next_parameter_handle += 1
+                self.parameters[(interaction_class, payload.parameterName)] = handle
+                self.parameter_names[(interaction_class, handle)] = payload.parameterName
             return rti_pb2.CallResponse(
                 getParameterHandleResponse=rti_pb2.GetParameterHandleResponse(result=_handle(datatypes_pb2.ParameterHandle, handle))
             )
@@ -929,6 +990,12 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if request_kind == "sendInteractionRequest":
             payload = request.sendInteractionRequest
             interaction_class = payload.interactionClass.data.decode("ascii")
+            interaction_name = self.interaction_names.get(interaction_class, "")
+            if ".HLAmanager." in interaction_name and (
+                ".HLAservice." in interaction_name or ".HLAadjust." in interaction_name
+            ):
+                self._route_mom_manager_action(interaction_name, payload.parameterValues)
+                return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMdata"]:
                 self._queue_mim_report()
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
@@ -1332,6 +1399,235 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if self.callback_queue:
             return self.callback_queue.pop(0)
         return _callback_request()
+
+    def _route_mom_manager_action(
+        self,
+        interaction_name: str,
+        parameter_values: datatypes_pb2.ParameterHandleValueMap,
+    ) -> None:
+        params = self._mom_params(interaction_name, parameter_values)
+        leaf = interaction_name.rsplit(".", 1)[-1]
+        self.calls.append(f"mom:{leaf}")
+        if ".HLAadjust." in interaction_name:
+            self._route_mom_adjust(leaf, params)
+            return
+        self._route_mom_service(leaf, params)
+
+    def _mom_params(
+        self,
+        interaction_name: str,
+        parameter_values: datatypes_pb2.ParameterHandleValueMap,
+    ) -> dict[str, bytes]:
+        interaction_class = self.interactions[interaction_name]
+        params: dict[str, bytes] = {}
+        for item in parameter_values.parameterHandleValue:
+            parameter_handle = item.parameterHandle.data.decode("ascii")
+            parameter_name = self.parameter_names.get((interaction_class, parameter_handle))
+            if parameter_name is not None:
+                params[parameter_name] = bytes(item.value)
+        return params
+
+    @staticmethod
+    def _mom_text(params: dict[str, bytes], name: str, default: str = "") -> str:
+        value = params.get(name)
+        return default if value is None else value.decode("ascii")
+
+    @classmethod
+    def _mom_int(cls, params: dict[str, bytes], name: str, default: str = "0") -> str:
+        return cls._mom_text(params, name, default)
+
+    @classmethod
+    def _mom_attributes(cls, params: dict[str, bytes], name: str = "HLAattributeList") -> tuple[str, ...]:
+        text = cls._mom_text(params, name)
+        return tuple(item for item in text.replace(";", ",").split(",") if item)
+
+    @classmethod
+    def _mom_bool(cls, params: dict[str, bytes], name: str, default: bool = True) -> bool:
+        text = cls._mom_text(params, name, "HLAtrue" if default else "HLAfalse").lower()
+        return text in {"1", "true", "yes", "hlatrue", "on"}
+
+    @classmethod
+    def _mom_time(cls, params: dict[str, bytes], name: str = "HLAtimeStamp") -> datatypes_pb2.LogicalTime:
+        text = cls._mom_text(params, name, "0")
+        return datatypes_pb2.LogicalTime(data=f"HLAinteger64Time:{text}".encode("ascii"))
+
+    @classmethod
+    def _mom_interval(cls, params: dict[str, bytes], name: str = "HLAlookahead") -> datatypes_pb2.LogicalTimeInterval:
+        text = cls._mom_text(params, name, "0")
+        return datatypes_pb2.LogicalTimeInterval(data=f"HLAinteger64Interval:{text}".encode("ascii"))
+
+    def _route_mom_adjust(self, leaf: str, params: dict[str, bytes]) -> None:
+        if leaf in {"HLAsetServiceReporting", "HLAsetExceptionReporting"}:
+            switch_name = "serviceReporting" if leaf == "HLAsetServiceReporting" else "exceptionReporting"
+            self.switch_states[switch_name] = self._mom_bool(params, "HLAreportingState")
+            if switch_name == "serviceReporting":
+                self.service_reporting = self.switch_states[switch_name]
+            return
+        if leaf == "HLAsetSwitches":
+            for parameter_name, raw_value in params.items():
+                if parameter_name == "HLAfederate":
+                    continue
+                switch_name = parameter_name.removeprefix("HLA")
+                switch_name = switch_name[:1].lower() + switch_name[1:]
+                self.switch_states[switch_name] = self._mom_bool({parameter_name: raw_value}, parameter_name)
+            return
+        if leaf == "HLAsetTiming":
+            self.mom_report_period = self._mom_text(params, "HLAreportPeriod", "0")
+            return
+        if leaf == "HLAmodifyAttributeState":
+            object_instance = self._mom_int(params, "HLAobjectInstance")
+            attribute = self._mom_int(params, "HLAattribute")
+            state = self._mom_text(params, "HLAattributeState", "owned").lower()
+            key = (object_instance, attribute)
+            if state in {"unowned", "hlaunowned", "0"}:
+                self.unowned_attributes.add(key)
+            else:
+                self.unowned_attributes.discard(key)
+
+    def _route_mom_service(self, leaf: str, params: dict[str, bytes]) -> None:
+        if leaf == "HLAresignFederationExecution":
+            handle = self._mom_text(params, "HLAfederate", self._current_federate_handle())
+            name = self.joined_federate_handles.pop(handle, None)
+            if name is not None:
+                self.joined_federates.pop(name, None)
+            return
+        if leaf == "HLAsynchronizationPointAchieved":
+            label = self._mom_text(params, "HLAlabel")
+            achieved = self.synchronization_points.setdefault(label, set())
+            if self._mom_bool(params, "HLAsuccessIndicator", True):
+                achieved.add(self._mom_text(params, "HLAfederate", self._current_federate_handle()))
+            return
+        if leaf == "HLAfederateSaveBegun":
+            if self.save_label is not None:
+                self.save_status[self._current_federate_handle()] = datatypes_pb2.FEDERATE_SAVING
+            return
+        if leaf == "HLAfederateSaveComplete":
+            if self.save_label is not None and self._mom_bool(params, "HLAsuccessIndicator", True):
+                self.save_status[self._current_federate_handle()] = datatypes_pb2.FEDERATE_WAITING_FOR_FEDERATION_TO_SAVE
+                self.saved_snapshots[self.save_label] = self._snapshot()
+                self.saved_labels.add(self.save_label)
+                self.save_label = None
+                self.save_status = {}
+                self.callback_queue.append(callback_pb2.CallbackRequest(federationSaved=callback_pb2.FederationSaved()))
+            return
+        if leaf == "HLAfederateRestoreComplete":
+            if self.restore_label is not None and self._mom_bool(params, "HLAsuccessIndicator", True):
+                self.restore_status[self._current_federate_handle()] = datatypes_pb2.FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE
+                self._restore_snapshot(self.restore_label)
+                self.restore_label = None
+                self.restore_status = {}
+                self.callback_queue.append(callback_pb2.CallbackRequest(federationRestored=callback_pb2.FederationRestored()))
+            return
+        if leaf == "HLApublishObjectClassAttributes":
+            object_class = self._mom_int(params, "HLAobjectClass")
+            self.published_object_attributes.setdefault(object_class, set()).update(self._mom_attributes(params))
+            return
+        if leaf == "HLAunpublishObjectClassAttributes":
+            object_class = self._mom_int(params, "HLAobjectClass")
+            self.published_object_attributes.get(object_class, set()).difference_update(self._mom_attributes(params))
+            return
+        if leaf == "HLAsubscribeObjectClassAttributes":
+            object_class = self._mom_int(params, "HLAobjectClass")
+            self.subscribed_object_attributes.setdefault(object_class, set()).update(self._mom_attributes(params))
+            return
+        if leaf == "HLAunsubscribeObjectClassAttributes":
+            object_class = self._mom_int(params, "HLAobjectClass")
+            self.subscribed_object_attributes.get(object_class, set()).difference_update(self._mom_attributes(params))
+            return
+        if leaf == "HLApublishInteractionClass":
+            self.published_interactions.add(self._mom_int(params, "HLAinteractionClass"))
+            return
+        if leaf == "HLAunpublishInteractionClass":
+            self.published_interactions.discard(self._mom_int(params, "HLAinteractionClass"))
+            return
+        if leaf == "HLAsubscribeInteractionClass":
+            self.subscribed_interactions.add(self._mom_int(params, "HLAinteractionClass"))
+            return
+        if leaf == "HLAunsubscribeInteractionClass":
+            self.subscribed_interactions.discard(self._mom_int(params, "HLAinteractionClass"))
+            return
+        if leaf == "HLAdeleteObjectInstance":
+            object_instance = self._mom_int(params, "HLAobjectInstance")
+            record = self.object_instances.pop(object_instance, None)
+            if record is not None:
+                self.callback_queue.append(
+                    callback_pb2.CallbackRequest(
+                        removeObjectInstance=callback_pb2.RemoveObjectInstance(
+                            objectInstance=_handle(datatypes_pb2.ObjectInstanceHandle, object_instance),
+                            userSuppliedTag=params.get("HLAtag", b"MOM"),
+                            producingFederate=_handle(datatypes_pb2.FederateHandle, self._current_federate_handle()),
+                        )
+                    )
+                )
+            return
+        if leaf == "HLAlocalDeleteObjectInstance":
+            return
+        if leaf == "HLArequestAttributeTransportationTypeChange":
+            object_instance = self._mom_int(params, "HLAobjectInstance")
+            transportation = self._mom_text(params, "HLAtransportation", "HLAreliable")
+            for attribute in self._mom_attributes(params):
+                self.default_attribute_transportation[(object_instance, attribute)] = transportation
+            return
+        if leaf == "HLArequestInteractionTransportationTypeChange":
+            self.interaction_transportation = (
+                self._mom_int(params, "HLAinteractionClass"),
+                self._mom_text(params, "HLAtransportation", "HLAreliable"),
+            )
+            return
+        if leaf == "HLAchangeAttributeOrderType":
+            object_instance = self._mom_int(params, "HLAobjectInstance")
+            order = self._mom_order(params)
+            for attribute in self._mom_attributes(params):
+                self.default_attribute_order[(object_instance, attribute)] = order
+            return
+        if leaf == "HLAchangeInteractionOrderType":
+            self.interaction_order = (self._mom_int(params, "HLAinteractionClass"), self._mom_order(params))
+            return
+        if leaf == "HLAunconditionalAttributeOwnershipDivestiture":
+            object_instance = self._mom_int(params, "HLAobjectInstance")
+            for attribute in self._mom_attributes(params):
+                self.unowned_attributes.add((object_instance, attribute))
+            return
+        if leaf == "HLAenableTimeRegulation":
+            self.time_regulating = True
+            self.lookahead.CopyFrom(self._mom_interval(params))
+            self.callback_queue.append(
+                callback_pb2.CallbackRequest(timeRegulationEnabled=callback_pb2.TimeRegulationEnabled(time=self.current_time))
+            )
+            return
+        if leaf == "HLAdisableTimeRegulation":
+            self.time_regulating = False
+            return
+        if leaf == "HLAenableTimeConstrained":
+            self.time_constrained = True
+            self.callback_queue.append(
+                callback_pb2.CallbackRequest(timeConstrainedEnabled=callback_pb2.TimeConstrainedEnabled(time=self.current_time))
+            )
+            return
+        if leaf == "HLAdisableTimeConstrained":
+            self.time_constrained = False
+            return
+        if leaf == "HLAenableAsynchronousDelivery":
+            self.asynchronous_delivery_enabled = True
+            return
+        if leaf == "HLAdisableAsynchronousDelivery":
+            self.asynchronous_delivery_enabled = False
+            return
+        if leaf in {
+            "HLAtimeAdvanceRequest",
+            "HLAtimeAdvanceRequestAvailable",
+            "HLAnextMessageRequest",
+            "HLAnextMessageRequestAvailable",
+            "HLAflushQueueRequest",
+        }:
+            self._grant_time(self._mom_time(params))
+            return
+        if leaf == "HLAmodifyLookahead":
+            self.lookahead.CopyFrom(self._mom_interval(params))
+
+    @classmethod
+    def _mom_order(cls, params: dict[str, bytes]) -> int:
+        return datatypes_pb2.TIMESTAMP if cls._mom_text(params, "HLAsendOrder", "0") in {"1", "TIMESTAMP", "TimeStamp"} else datatypes_pb2.RECEIVE
 
     @staticmethod
     def _error(name: str, details: str) -> rti_pb2.CallResponse:

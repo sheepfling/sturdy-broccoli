@@ -513,6 +513,13 @@ def _callback_interaction_tso(value: Any) -> tuple[str, ...]:
 
 
 def _callback_remove(value: Any) -> tuple[str, ...]:
+    if not hasattr(value, "sentOrderType"):
+        return (
+            "REMOVE_OBJECT_INSTANCE",
+            _opaque_text(value.objectInstance.data),
+            bytes(value.userSuppliedTag).hex(),
+            _opaque_text(value.producingFederate.data),
+        )
     return (
         "REMOVE_OBJECT_INSTANCE",
         _opaque_text(value.objectInstance.data),

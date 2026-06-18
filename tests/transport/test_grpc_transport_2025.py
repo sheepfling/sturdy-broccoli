@@ -1749,6 +1749,172 @@ def test_2025_transport_server_reports_activity_counts_for_mom_requests_over_fed
         server.close()
 
 
+def test_2025_transport_server_routes_mom_manager_service_actions_over_fedpro_schema():
+    from hla.transports.grpc.python_server_2025 import (
+        _MOM_FEDERATE_ADJUST_LEAVES,
+        _MOM_FEDERATE_SERVICE_LEAVES,
+        _MOM_FEDERATION_ADJUST_LEAVES,
+    )
+
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-mom-services"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        def encode(value: str) -> str:
+            return value.encode("ascii").hex()
+
+        def mom_class(scope: str, group: str, leaf: str) -> str:
+            return transport.request(
+                TransportRequest(
+                    command="GET_INTERACTION_CLASS_HANDLE",
+                    fields=(f"HLAinteractionRoot.HLAmanager.{scope}.{group}.{leaf}",),
+                )
+            ).fields[0]
+
+        def send_mom(interaction_class: str, params: dict[str, str]) -> None:
+            encoded_params = []
+            for name, value in params.items():
+                parameter = transport.request(
+                    TransportRequest(command="GET_PARAMETER_HANDLE", fields=(interaction_class, name))
+                ).fields[0]
+                encoded_params.append(f"{parameter}:{encode(value)}")
+            assert (
+                transport.request(
+                    TransportRequest(
+                        command="SEND_INTERACTION",
+                        fields=(interaction_class, ",".join(encoded_params), "4d4f4d"),
+                    )
+                ).fields
+                == ()
+            )
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(
+            TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "MomServices2025.xml"))
+        ).fields == ()
+        federate_handle = transport.request(
+            TransportRequest(command="JOIN", fields=("FedPro2025MOMServices", "TestFederate", federation_name))
+        ).fields[0]
+
+        object_class = transport.request(
+            TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))
+        ).fields[0]
+        attribute = transport.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
+        interaction_class = transport.request(
+            TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))
+        ).fields[0]
+        object_instance = transport.request(
+            TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProMomServiceTarget"))
+        ).fields[0]
+
+        default_params = {
+            "HLAfederate": federate_handle,
+            "HLAobjectClass": object_class,
+            "HLAattributeList": attribute,
+            "HLAinteractionClass": interaction_class,
+            "HLAobjectInstance": object_instance,
+            "HLAtransportation": "HLAbestEffort",
+            "HLAsendOrder": "1",
+            "HLAtimeStamp": "8",
+            "HLAlookahead": "3",
+            "HLAlabel": "MOM-SYNC",
+            "HLAsuccessIndicator": "HLAtrue",
+            "HLAtag": "mom-delete",
+            "HLAresignAction": "NO_ACTION",
+        }
+
+        for leaf in _MOM_FEDERATE_ADJUST_LEAVES:
+            interaction = mom_class("HLAfederate", "HLAadjust", leaf)
+            params = {"HLAfederate": federate_handle}
+            if leaf in {"HLAsetServiceReporting", "HLAsetExceptionReporting"}:
+                params["HLAreportingState"] = "HLAtrue"
+            elif leaf == "HLAsetSwitches":
+                params["HLAconveyRegionDesignatorSets"] = "HLAtrue"
+            elif leaf == "HLAsetTiming":
+                params["HLAreportPeriod"] = "2.5"
+            elif leaf == "HLAmodifyAttributeState":
+                params.update(
+                    {
+                        "HLAobjectInstance": object_instance,
+                        "HLAattribute": attribute,
+                        "HLAattributeState": "HLAunowned",
+                    }
+                )
+            send_mom(interaction, params)
+
+        for leaf in _MOM_FEDERATION_ADJUST_LEAVES:
+            send_mom(mom_class("HLAfederation", "HLAadjust", leaf), {"HLAautoProvide": "HLAtrue"})
+
+        assert server.servicer.service_reporting is True
+        assert server.servicer.switch_states["exceptionReporting"] is True
+        assert server.servicer.switch_states["conveyRegionDesignatorSets"] is True
+        assert server.servicer.switch_states["autoProvide"] is True
+        assert server.servicer.mom_report_period == "2.5"
+        assert (object_instance, attribute) in server.servicer.unowned_attributes
+
+        for leaf in _MOM_FEDERATE_SERVICE_LEAVES:
+            if leaf == "HLAresignFederationExecution":
+                continue
+            send_mom(mom_class("HLAfederate", "HLAservice", leaf), default_params)
+
+        assert attribute not in server.servicer.published_object_attributes.get(object_class, set())
+        assert interaction_class not in server.servicer.published_interactions
+        assert server.servicer.time_regulating is False
+        assert server.servicer.time_constrained is False
+        assert server.servicer.asynchronous_delivery_enabled is False
+        assert server.servicer.current_time.data == b"HLAinteger64Time:8"
+        assert server.servicer.lookahead.data == b"HLAinteger64Interval:3"
+        assert server.servicer.interaction_transportation == (interaction_class, "HLAbestEffort")
+        assert server.servicer.interaction_order == (interaction_class, datatypes_pb2.TIMESTAMP)
+        assert server.servicer.default_attribute_transportation[(object_instance, attribute)] == "HLAbestEffort"
+        assert server.servicer.default_attribute_order[(object_instance, attribute)] == datatypes_pb2.TIMESTAMP
+
+        callback_kinds = [transport.request(TransportRequest(command="EVOKE")).fields[1] for _ in range(8)]
+        assert "TIME_REGULATION_ENABLED" in callback_kinds
+        assert "TIME_CONSTRAINED_ENABLED" in callback_kinds
+        assert "TIME_ADVANCE_GRANT" in callback_kinds
+        assert "REMOVE_OBJECT_INSTANCE" in callback_kinds
+
+        assert transport.request(TransportRequest(command="REQUEST_FEDERATION_SAVE", fields=("MOM-SAVE",))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "INITIATE_FEDERATE_SAVE", "MOM-SAVE")
+        send_mom(mom_class("HLAfederate", "HLAservice", "HLAfederateSaveBegun"), {"HLAfederate": federate_handle})
+        send_mom(
+            mom_class("HLAfederate", "HLAservice", "HLAfederateSaveComplete"),
+            {"HLAfederate": federate_handle, "HLAsuccessIndicator": "HLAtrue"},
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_SAVED")
+        assert transport.request(TransportRequest(command="REQUEST_FEDERATION_RESTORE", fields=("MOM-SAVE",))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "REQUEST_FEDERATION_RESTORE_SUCCEEDED",
+            "MOM-SAVE",
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_RESTORE_BEGUN")
+        assert transport.request(TransportRequest(command="EVOKE")).fields[:3] == (
+            "1",
+            "INITIATE_FEDERATE_RESTORE",
+            "MOM-SAVE",
+        )
+        send_mom(
+            mom_class("HLAfederate", "HLAservice", "HLAfederateRestoreComplete"),
+            {"HLAfederate": federate_handle, "HLAsuccessIndicator": "HLAtrue"},
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_RESTORED")
+
+        send_mom(mom_class("HLAfederate", "HLAservice", "HLAresignFederationExecution"), default_params)
+        routed = {call.removeprefix("mom:") for call in server.servicer.calls if call.startswith("mom:")}
+        assert (set(_MOM_FEDERATE_ADJUST_LEAVES) | set(_MOM_FEDERATION_ADJUST_LEAVES) | set(_MOM_FEDERATE_SERVICE_LEAVES)) <= routed
+
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_round_trips_2025_switch_services_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None
