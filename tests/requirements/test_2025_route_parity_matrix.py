@@ -117,7 +117,11 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
         assert rows[("time_management", route)].status == MISSING
 
     for route in ("cpp-standard-2025-pybind", "cpp-standard-2025-grpc"):
-        assert rows[("ownership", route)].status == MISSING
+        assert rows[("ownership", route)].status == PARITY_COVERED
+        assert rows[("ownership", route)].evidence_scope == "scenario-parity"
+        assert rows[("ownership", route)].evidence_tests == ("tests/backends/test_standard_shim_artifacts.py",)
+        assert "ownership runtime trace" in rows[("ownership", route)].notes
+        assert "unavailable acquisition while owned" in rows[("ownership", route)].notes
         assert rows[("ddm", route)].status == MISSING
         assert rows[("time_management", route)].status == PARITY_COVERED
         assert rows[("time_management", route)].evidence_scope == "scenario-parity"
@@ -200,7 +204,7 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
     assert summary["by_status"][PARTIAL] > 0
     assert summary["by_status"][MISSING] > 0
     assert summary["by_route"]["java-standard-2025-jpype"][PARITY_COVERED] == 0
-    assert summary["by_route"]["cpp-standard-2025-grpc"][PARITY_COVERED] == 2
+    assert summary["by_route"]["cpp-standard-2025-grpc"][PARITY_COVERED] == 3
 
     csv_path, md_path = write_spec2025_route_parity_matrix(tmp_path)
     assert csv_path.exists()

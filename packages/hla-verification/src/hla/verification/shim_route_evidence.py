@@ -35,6 +35,13 @@ TIME_MANAGEMENT_REQUIREMENTS_2025 = [
     "HLA2025-MOD-006",
 ]
 
+OWNERSHIP_REQUIREMENTS_2025 = [
+    "HLA2025-FR-005",
+    "HLA2025-FR-008",
+    "HLA2025-FI-001",
+    "HLA2025-FI-005",
+]
+
 RUNTIME_CAPABILITY_REQUIREMENTS_2025 = [
     "HLA2025-FR-001",
     "HLA2025-FR-004",
@@ -796,10 +803,133 @@ def run_2025_time_management_trace(backend_name: str = "shim") -> dict[str, Any]
     }
 
 
+def run_standard_2025_ownership_trace(backend_name: str) -> dict[str, Any]:
+    """Run a two-federate 2025 ownership transfer trace for a standard route."""
+
+    from hla.rti import create_rti_ambassador
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+
+    temp_dir, fom_module = _write_2025_runtime_capability_fom()
+    federation_name = f"ShimRouteOwnership{backend_name.replace('-', '').title()}{uuid.uuid4().hex[:8]}"
+    owner_fed = _Recording2025FederateAmbassador()
+    acquirer_fed = _Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(spec="2025", backend=backend_name)
+    acquirer = create_rti_ambassador(spec="2025", backend=backend_name)
+    trace = [
+        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=owner.backend_info.details.get("standard_backed")),
+        _event("getHLAversion", value=owner.getHLAversion()),
+    ]
+    owner_connected = False
+    acquirer_connected = False
+    owner_joined = False
+    acquirer_joined = False
+    federation_created = False
+    try:
+        owner.connect(owner_fed, CallbackModel.HLA_EVOKED)
+        owner_connected = True
+        acquirer.connect(acquirer_fed, CallbackModel.HLA_EVOKED)
+        acquirer_connected = True
+        trace.append(_event("connect", federates=["owner", "acquirer"], callbackModel=CallbackModel.HLA_EVOKED))
+
+        owner.createFederationExecution(federationName=federation_name, fomModule=str(fom_module))
+        federation_created = True
+        trace.append(_event("createFederationExecution", federation=federation_name, fomModule=fom_module.name))
+        owner_handle = owner.joinFederationExecution("route-owner", "route-ownership", federation_name)
+        owner_joined = True
+        acquirer_handle = acquirer.joinFederationExecution("route-acquirer", "route-ownership", federation_name)
+        acquirer_joined = True
+        trace.append(_event("joinFederationExecution", ownerHandle=owner_handle, acquirerHandle=acquirer_handle))
+
+        object_class = owner.getObjectClassHandle("HLAobjectRoot.RouteTarget")
+        attribute = owner.getAttributeHandle(object_class, "Position")
+        object_instance = owner.registerObjectInstance(object_class, f"RouteOwnedTarget-{uuid.uuid4().hex[:8]}")
+        trace.append(
+            _event(
+                "registerObjectInstance",
+                objectClass=object_class,
+                attribute=attribute,
+                objectInstance=object_instance,
+                ownerInitiallyOwns=owner.isAttributeOwnedByFederate(object_instance, attribute),
+                acquirerInitiallyOwns=acquirer.isAttributeOwnedByFederate(object_instance, attribute),
+            )
+        )
+
+        acquirer.attributeOwnershipAcquisitionIfAvailable(object_instance, {attribute}, b"blocked")
+        trace.append(_event("attributeOwnershipAcquisitionIfAvailable", objectInstance=object_instance, attributes={attribute}, tag=b"blocked"))
+        trace.extend(_callback_events(acquirer_fed.events))
+
+        owner.unconditionalAttributeOwnershipDivestiture(object_instance, {attribute}, b"divest")
+        trace.append(
+            _event(
+                "unconditionalAttributeOwnershipDivestiture",
+                objectInstance=object_instance,
+                attributes={attribute},
+                tag=b"divest",
+                ownerStillOwns=owner.isAttributeOwnedByFederate(object_instance, attribute),
+            )
+        )
+        owner.queryAttributeOwnership(object_instance, {attribute})
+        trace.append(_event("queryAttributeOwnership", objectInstance=object_instance, attributes={attribute}, requester="owner"))
+        trace.extend(_callback_events(owner_fed.events))
+
+        acquirer_fed.events.clear()
+        owner_fed.events.clear()
+        acquirer.attributeOwnershipAcquisitionIfAvailable(object_instance, {attribute}, b"claim")
+        trace.append(
+            _event(
+                "attributeOwnershipAcquisitionIfAvailable",
+                objectInstance=object_instance,
+                attributes={attribute},
+                tag=b"claim",
+                acquirerOwns=acquirer.isAttributeOwnedByFederate(object_instance, attribute),
+            )
+        )
+        trace.extend(_callback_events(acquirer_fed.events))
+
+        owner.queryAttributeOwnership(object_instance, {attribute})
+        trace.append(_event("queryAttributeOwnership", objectInstance=object_instance, attributes={attribute}, requester="owner-after-transfer"))
+        trace.extend(_callback_events(owner_fed.events))
+    finally:
+        try:
+            if acquirer_joined:
+                acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+                trace.append(_event("resignFederationExecution", federate="acquirer", action=ResignAction.NO_ACTION))
+            if owner_joined:
+                owner.resignFederationExecution(ResignAction.NO_ACTION)
+                trace.append(_event("resignFederationExecution", federate="owner", action=ResignAction.NO_ACTION))
+            if federation_created:
+                owner.destroyFederationExecution(federation_name)
+                trace.append(_event("destroyFederationExecution", federation=federation_name))
+            if acquirer_connected:
+                acquirer.disconnect()
+            if owner_connected:
+                owner.disconnect()
+            if acquirer_connected or owner_connected:
+                trace.append(_event("disconnect", federates=["owner", "acquirer"]))
+        finally:
+            close = getattr(acquirer, "close", None)
+            if callable(close):
+                close()
+            close = getattr(owner, "close", None)
+            if callable(close):
+                close()
+            shutil.rmtree(temp_dir, ignore_errors=True)
+
+    return {
+        "route": backend_name,
+        "edition": "2025",
+        "scenario": "ownership-runtime",
+        "status": "trace-green",
+        "requirements_exercised": OWNERSHIP_REQUIREMENTS_2025,
+        "trace": trace,
+    }
+
+
 __all__ = [
     "run_2025_time_management_trace",
     "run_standard_2010_exchange_trace",
     "run_standard_2025_lifecycle_trace",
     "run_standard_2025_object_exchange_trace",
+    "run_standard_2025_ownership_trace",
     "run_standard_2025_runtime_capability_trace",
 ]

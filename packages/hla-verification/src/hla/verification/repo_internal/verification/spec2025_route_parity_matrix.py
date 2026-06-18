@@ -234,18 +234,22 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "ownership",
         "cpp-standard-2025-pybind",
-        MISSING,
+        PARITY_COVERED,
         ("HLA2025-FR-005", "HLA2025-FR-008", "HLA2025-BND-002"),
-        _FINISH_LINE_TESTS,
-        "No executable C++ 2025 ownership parity scenario is recorded yet.",
+        _STANDARD_SHIM_TESTS,
+        "C++ 2025 pybind standard route runs the ownership runtime trace: initially owned registered "
+        "attribute, unavailable acquisition while owned, unconditional divestiture, acquisition notification, "
+        "and ownership query callbacks after transfer.",
     ),
     _row(
         "ownership",
         "cpp-standard-2025-grpc",
-        MISSING,
+        PARITY_COVERED,
         ("HLA2025-FR-005", "HLA2025-FR-008", "HLA2025-BND-002"),
-        _FINISH_LINE_TESTS,
-        "No executable C++ 2025 ownership parity scenario is recorded yet.",
+        _STANDARD_SHIM_TESTS,
+        "C++ 2025 gRPC standard route runs the ownership runtime trace: initially owned registered "
+        "attribute, unavailable acquisition while owned, unconditional divestiture, acquisition notification, "
+        "and ownership query callbacks after transfer.",
     ),
     _row(
         "ddm",

@@ -242,6 +242,49 @@ def test_standard_2025_routes_pass_time_management_when_built(backend_name: str)
         "cpp-standard-2025-grpc",
     ],
 )
+def test_standard_2025_routes_pass_ownership_when_built(backend_name: str) -> None:
+    if "java-standard-2025" in backend_name and not JAVA_2025_JAR.exists():
+        pytest.skip("Java 2025 standard shim jar has not been built")
+    if "cpp-standard-2025" in backend_name and not CPP_2025_LIB.exists():
+        pytest.skip("C++ 2025 standard shim artifact has not been built")
+
+    from hla.verification.shim_route_evidence import run_standard_2025_ownership_trace
+
+    evidence = run_standard_2025_ownership_trace(backend_name)
+    event_names = {event["event"] for event in evidence["trace"]}
+
+    assert evidence["status"] == "trace-green"
+    assert evidence["scenario"] == "ownership-runtime"
+    assert "HLA2025-FR-005" in evidence["requirements_exercised"]
+    assert {
+        "routeSelected",
+        "connect",
+        "createFederationExecution",
+        "joinFederationExecution",
+        "registerObjectInstance",
+        "attributeOwnershipAcquisitionIfAvailable",
+        "attributeOwnershipUnavailable",
+        "unconditionalAttributeOwnershipDivestiture",
+        "queryAttributeOwnership",
+        "attributeIsNotOwned",
+        "attributeOwnershipAcquisitionNotification",
+        "informAttributeOwnership",
+        "disconnect",
+    } <= event_names
+    assert any(event["event"] == "registerObjectInstance" and event["ownerInitiallyOwns"] is True for event in evidence["trace"])
+    assert any(event["event"] == "unconditionalAttributeOwnershipDivestiture" and event["ownerStillOwns"] is False for event in evidence["trace"])
+    assert any(event["event"] == "attributeOwnershipAcquisitionIfAvailable" and event.get("acquirerOwns") is True for event in evidence["trace"])
+
+
+@pytest.mark.parametrize(
+    "backend_name",
+    [
+        "java-standard-2025-jpype",
+        "java-standard-2025-py4j",
+        "cpp-standard-2025-pybind",
+        "cpp-standard-2025-grpc",
+    ],
+)
 def test_standard_2025_routes_pass_runtime_capability_when_built(backend_name: str) -> None:
     if "java-standard-2025" in backend_name and not JAVA_2025_JAR.exists():
         pytest.skip("Java 2025 standard shim jar has not been built")
