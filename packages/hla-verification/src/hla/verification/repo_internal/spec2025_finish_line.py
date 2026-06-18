@@ -262,8 +262,9 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "available-dimension and dimension-bound queries, default attribute transportation/order policy calls, "
             "object registration, basic ownership divest/acquire callbacks, time-regulation/time-constrained/time-advance "
             "callbacks, object discovery, attribute reflection, interaction receipt, basic DDM region-overlap "
-            "filtering for object attributes, resign, destroy, and disconnect. MOM-over-FedPro behavior and full "
-            "RTI semantics remain outside this slice."
+            "filtering for object attributes, service-reporting switch state, MOM service-invocation report "
+            "callbacks over FedPro, resign, destroy, and disconnect. Full MOM action/request routing and full RTI "
+            "semantics remain outside this slice."
         ),
     },
     {

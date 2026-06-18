@@ -302,6 +302,61 @@ def test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap(
         server.close()
 
 
+def test_2025_transport_server_reports_mom_service_invocation_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-mom"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "Mom2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025MOM", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        report_class = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation",),
+            )
+        ).fields[0]
+        federate_param = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAfederate"))).fields[0]
+        service_param = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAservice"))).fields[0]
+        serial_param = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAserialNumber"))).fields[0]
+
+        assert transport.request(TransportRequest(command="GET_SERVICE_REPORTING_SWITCH")).fields == ("0",)
+        assert transport.request(TransportRequest(command="SET_SERVICE_REPORTING_SWITCH", fields=("1",))).fields == ()
+        assert transport.request(TransportRequest(command="GET_SERVICE_REPORTING_SWITCH")).fields == ("1",)
+
+        assert transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields == ("101",)
+        report = transport.request(TransportRequest(command="EVOKE")).fields
+        assert report == (
+            "1",
+            "INTERACTION",
+            report_class,
+            f"{federate_param}:31,{service_param}:6765744f626a656374436c61737348616e646c65,{serial_param}:31",
+            "4d4f4d",
+            "1",
+            "1",
+        )
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "getServiceReportingSwitchRequest",
+            "setServiceReportingSwitchRequest",
+            "getObjectClassHandleRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_runs_lifecycle_session_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None

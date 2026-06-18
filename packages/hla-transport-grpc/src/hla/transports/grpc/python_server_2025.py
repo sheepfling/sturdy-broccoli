@@ -63,9 +63,17 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.object_classes = {"HLAobjectRoot.RouteTarget": "100", "HLAobjectRoot.Target": "101"}
         self.object_class_names = {value: key for key, value in self.object_classes.items()}
         self.attributes = {("100", "Position"): "200", ("101", "Position"): "201"}
-        self.interactions = {"HLAinteractionRoot.TrackReport": "400"}
+        self.interactions = {
+            "HLAinteractionRoot.TrackReport": "400",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation": "401",
+        }
         self.interaction_names = {value: key for key, value in self.interactions.items()}
-        self.parameters = {("400", "TrackId"): "500"}
+        self.parameters = {
+            ("400", "TrackId"): "500",
+            ("401", "HLAfederate"): "501",
+            ("401", "HLAservice"): "502",
+            ("401", "HLAserialNumber"): "503",
+        }
         self.dimensions = {"RoutingSpace": "300"}
         self.transportations = {"HLAreliable": "1", "HLAbestEffort": "2"}
         self.object_instances: dict[str, dict[str, str]] = {}
@@ -80,6 +88,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.unowned_attributes: set[tuple[str, str]] = set()
         self.default_attribute_transportation: dict[tuple[str, str], str] = {}
         self.default_attribute_order: dict[tuple[str, str], int] = {}
+        self.service_reporting = False
+        self.service_report_serial = 1
         self.callback_queue: list[callback_pb2.CallbackRequest] = []
 
     def Call(self, request, context):  # noqa: N802 - grpc generated naming
@@ -143,6 +153,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 handle = self.object_classes[name]
             except KeyError:
                 return self._error("NameNotFound", name)
+            self._queue_service_report("getObjectClassHandle")
             return rti_pb2.CallResponse(
                 getObjectClassHandleResponse=rti_pb2.GetObjectClassHandleResponse(
                     result=_handle(datatypes_pb2.ObjectClassHandle, handle)
@@ -263,6 +274,15 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     result=_handle(datatypes_pb2.TransportationTypeHandle, handle)
                 )
             )
+        if request_kind == "getServiceReportingSwitchRequest":
+            return rti_pb2.CallResponse(
+                getServiceReportingSwitchResponse=rti_pb2.GetServiceReportingSwitchResponse(
+                    result=self.service_reporting
+                )
+            )
+        if request_kind == "setServiceReportingSwitchRequest":
+            self.service_reporting = request.setServiceReportingSwitchRequest.value
+            return rti_pb2.CallResponse(setServiceReportingSwitchResponse=rti_pb2.SetServiceReportingSwitchResponse())
         if request_kind == "changeDefaultAttributeTransportationTypeRequest":
             payload = request.changeDefaultAttributeTransportationTypeRequest
             object_class = payload.objectClass.data.decode("ascii")
@@ -459,6 +479,32 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     objectInstance=_handle(datatypes_pb2.ObjectInstanceHandle, object_instance),
                     objectClass=_handle(datatypes_pb2.ObjectClassHandle, object_class),
                     objectInstanceName=object_name,
+                    producingFederate=_handle(datatypes_pb2.FederateHandle, "1"),
+                )
+            )
+        )
+
+    def _queue_service_report(self, service_name: str) -> None:
+        if not self.service_reporting:
+            return
+        interaction_class = self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"]
+        values = datatypes_pb2.ParameterHandleValueMap()
+        for parameter_name, payload in (
+            ("HLAfederate", b"1"),
+            ("HLAservice", service_name.encode("ascii")),
+            ("HLAserialNumber", str(self.service_report_serial).encode("ascii")),
+        ):
+            row = values.parameterHandleValue.add()
+            row.parameterHandle.data = self.parameters[(interaction_class, parameter_name)].encode("ascii")
+            row.value = payload
+        self.service_report_serial += 1
+        self.callback_queue.append(
+            callback_pb2.CallbackRequest(
+                receiveInteraction=callback_pb2.ReceiveInteraction(
+                    interactionClass=_handle(datatypes_pb2.InteractionClassHandle, interaction_class),
+                    parameterValues=values,
+                    userSuppliedTag=b"MOM",
+                    transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
                     producingFederate=_handle(datatypes_pb2.FederateHandle, "1"),
                 )
             )
