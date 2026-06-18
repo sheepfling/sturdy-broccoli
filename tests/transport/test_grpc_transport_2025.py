@@ -4,7 +4,6 @@ from concurrent import futures
 
 import grpc
 import pytest
-
 from hla.transports.common.transport import TransportRequest
 from hla.transports.grpc import GrpcTransport, GrpcTransportConfig
 from hla.transports.grpc.fedpro2025 import FederateAmbassador_2025_pb2 as callback_pb2
@@ -27,11 +26,7 @@ class _FedPro2025Servicer(transport_pb2_grpc.HLA2025FedProGatewayServicer):
         }:
             return rti_pb2.CallResponse(connectResponse=rti_pb2.ConnectResponse())
         if request_kind == "getFederateHandleRequest":
-            return rti_pb2.CallResponse(
-                getFederateHandleResponse=rti_pb2.GetFederateHandleResponse(
-                    result=datatypes_pb2.FederateHandle(data=b"42")
-                )
-            )
+            return rti_pb2.CallResponse(getFederateHandleResponse=rti_pb2.GetFederateHandleResponse(result=datatypes_pb2.FederateHandle(data=b"42")))
         return rti_pb2.CallResponse(
             exceptionData=datatypes_pb2.ExceptionData(
                 exceptionName="RTIinternalError",
@@ -40,9 +35,7 @@ class _FedPro2025Servicer(transport_pb2_grpc.HLA2025FedProGatewayServicer):
         )
 
     def EvokeCallback(self, request, context):  # noqa: N802 - grpc generated naming
-        return callback_pb2.CallbackRequest(
-            timeAdvanceGrant=callback_pb2.TimeAdvanceGrant(time=datatypes_pb2.LogicalTime(data=b"7"))
-        )
+        return callback_pb2.CallbackRequest(timeAdvanceGrant=callback_pb2.TimeAdvanceGrant(time=datatypes_pb2.LogicalTime(data=b"7")))
 
 
 def _start_server() -> tuple[grpc.Server, str]:
@@ -98,6 +91,53 @@ def test_2025_transport_server_smoke_uses_the_new_schema_package():
         transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
         handle = transport.request(TransportRequest(command="GET_FEDERATE_HANDLE", fields=("alpha",)))
         assert handle.fields == ("42",)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
+def test_2025_transport_server_runs_lifecycle_session_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-lifecycle"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="CREATE",
+                    fields=(federation_name, "HLAinteger64Time", "TargetRadarFOMmodule.xml"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(
+            TransportRequest(
+                command="JOIN",
+                fields=("FedPro2025Federate", "TestFederate", federation_name),
+            )
+        ).fields == ("1", "HLAinteger64Time")
+
+        callback = transport.request(TransportRequest(command="EVOKE"))
+        assert callback.fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "7")
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert server.servicer.calls == [
+            "connectRequest",
+            "createFederationExecutionWithModulesAndTimeRequest",
+            "joinFederationExecutionWithNameRequest",
+            "resignFederationExecutionRequest",
+            "destroyFederationExecutionRequest",
+            "disconnectRequest",
+        ]
+        assert federation_name not in server.servicer.federations
+        assert server.servicer.joined_federates == {}
     finally:
         if transport is not None:
             transport.close()

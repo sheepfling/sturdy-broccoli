@@ -216,13 +216,17 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "evidence": (
             "tests/requirements/test_2025_tail_backlog_evidence.py",
             "tests/transport/test_grpc_transport_2025.py",
+            "packages/hla-transport-grpc/src/hla/transports/grpc/python_server_2025.py",
+            "packages/hla-transport-grpc/src/hla/transports/grpc/client_2025.py",
             "packages/hla-transport-grpc/proto/rti1516_2025/fedpro/HLA2025RTITransport.proto",
             "packages/hla-transport-grpc/proto/rti1516_2025/fedpro/RTIambassador_2025.proto",
             "packages/hla-transport-grpc/proto/rti1516_2025/fedpro/FederateAmbassador_2025.proto",
         ),
         "supported_scope": (
-            "2025 FedPro protobuf package, gRPC service binding, typed request/callback oneofs, and loopback "
-            "transport smoke tests are present. Full FedPro session behavior remains outside this slice."
+            "2025 FedPro protobuf package, gRPC service binding, typed request/callback oneofs, and a hosted "
+            "loopback lifecycle session are present for connect, create federation, join, callback evoke, resign, "
+            "destroy, and disconnect. Full object exchange, ownership, DDM, and MOM-over-FedPro behavior remain "
+            "outside this slice."
         ),
     },
     {

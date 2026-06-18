@@ -97,7 +97,8 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert slices["2025-cpp-binding-source-trace"]["status"] == "implemented-slice"
     assert "full C++ RTI behavior pass" in slices["2025-cpp-binding-source-trace"]["supported_scope"]
     assert slices["2025-fedpro-transport-contract"]["status"] == "implemented-slice"
-    assert "Full FedPro session behavior" in slices["2025-fedpro-transport-contract"]["supported_scope"]
+    assert "hosted loopback lifecycle session" in slices["2025-fedpro-transport-contract"]["supported_scope"]
+    assert "Full object exchange" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert slices["2025-ddm-default-attribute-policy"]["status"] == "implemented-slice"
     assert "HLA2025-MOD-007" in slices["2025-ddm-default-attribute-policy"]["requirements"]
     assert "Full DDM region routing" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]

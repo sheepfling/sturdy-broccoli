@@ -1,4 +1,5 @@
-"""FedPro 2010 protobuf adapter for the gRPC transport."""
+"""FedPro 2025 protobuf adapter for the gRPC transport."""
+
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
@@ -6,14 +7,12 @@ from typing import Any
 
 from google.protobuf.descriptor import FieldDescriptor
 from google.protobuf.message import Message
-
 from hla.transports.common import TransportError, TransportRequest, TransportResponse
 from hla.transports.common.transport_codecs import decode_bytes
 
-from .fedpro2025 import RTIambassador_2025_pb2 as rti_pb2
 from .fedpro2025 import FederateAmbassador_2025_pb2 as callback_pb2
+from .fedpro2025 import RTIambassador_2025_pb2 as rti_pb2
 from .fedpro2025 import datatypes_2025_pb2 as datatypes_pb2
-
 
 _COMMAND_REQUESTS: Mapping[str, str] = {
     "ABORT_FEDERATION_RESTORE": "abortFederationRestoreRequest",
@@ -254,6 +253,14 @@ def _copy_message_field(target: Message, field: FieldDescriptor, value: Any) -> 
         if result.logicalTimeIsValid and len(values) >= 3:
             result.logicalTime.data = f"{values[1]}:{values[2]}".encode("ascii")
         return
+    if message_name == "JoinResult":
+        result = getattr(target, field.name)
+        values = tuple(value) if isinstance(value, (list, tuple)) else (value,)
+        if values:
+            result.federateHandle.data = _opaque(values[0])
+        if len(values) >= 2:
+            result.logicalTimeImplementationName = str(values[1])
+        return
     getattr(target, field.name).CopyFrom(value)
 
 
@@ -338,6 +345,8 @@ def _decode_response_payload(payload: Message) -> tuple[str, ...]:
                     result_fields.extend(("1", time_type, time_value))
                 else:
                     result_fields.append("0")
+            elif field.message_type.name == "JoinResult":
+                result_fields.extend((_opaque_text(value.federateHandle.data), value.logicalTimeImplementationName))
             else:
                 result_fields.append(_decode_message_value(value))
         elif field.type == FieldDescriptor.TYPE_BOOL:
@@ -522,8 +531,7 @@ _CALLBACK_RESPONSE_FIELDS = {
     "federationSaveStatusResponse": lambda value: (
         "FEDERATION_SAVE_STATUS_RESPONSE",
         ";".join(
-            f"{_opaque_text(item.federateHandle.data)}:{datatypes_pb2.SaveStatus.Name(item.saveStatus)}"
-            for item in value.response.federateHandleSaveStatusPair
+            f"{_opaque_text(item.federateHandle.data)}:{datatypes_pb2.SaveStatus.Name(item.saveStatus)}" for item in value.response.federateHandleSaveStatusPair
         ),
     ),
     "requestFederationRestoreSucceeded": lambda value: ("REQUEST_FEDERATION_RESTORE_SUCCEEDED", value.label),
@@ -592,7 +600,7 @@ _CALLBACK_RESPONSE_FIELDS = {
 
 
 class FedPro2025ClientAdapter:
-    """Map internal backend transport envelopes onto FedPro 2010 protobuf calls."""
+    """Map internal backend transport envelopes onto FedPro 2025 protobuf calls."""
 
     def encode_request(self, request: TransportRequest) -> Any:
         request_field = self.request_field_for(request)
@@ -606,14 +614,14 @@ class FedPro2025ClientAdapter:
         if special is not None:
             return special(request)
         if request.command in _UNSUPPORTED_INTERNAL_COMMANDS:
-            raise TransportError("UnsupportedTransportCall", f"{request.command} is not in the FedPro 2010 RTIambassador protobuf")
+            raise TransportError("UnsupportedTransportCall", f"{request.command} is not in the FedPro 2025 RTIambassador protobuf")
         try:
             return _COMMAND_REQUESTS[request.command]
         except KeyError as exc:
             generated = _command_to_request_field(request.command)
             if generated is not None:
                 return generated
-            raise TransportError("UnsupportedTransportCall", f"No FedPro 2010 mapping for {request.command}") from exc
+            raise TransportError("UnsupportedTransportCall", f"No FedPro 2025 mapping for {request.command}") from exc
 
     def decode_response(self, request: TransportRequest, response: Any) -> TransportResponse:
         response_kind = response.WhichOneof("callResponse")
@@ -630,7 +638,7 @@ class FedPro2025ClientAdapter:
     def decode_call_request(self, request: Any) -> TransportRequest:
         request_kind = request.WhichOneof("callRequest")
         if request_kind is None:
-            raise TransportError("RTIinternalError", "Empty FedPro 2010 CallRequest")
+            raise TransportError("RTIinternalError", "Empty FedPro 2025 CallRequest")
         try:
             command = _REQUEST_COMMANDS[request_kind]
         except KeyError as exc:
@@ -669,11 +677,7 @@ class FedPro2025ClientAdapter:
             and len(response.fields) >= 2
         ):
             _assign_field(payload, payload_fields[0], f"{response.fields[0]}:{response.fields[1]}")
-        elif (
-            len(payload_fields) == 1
-            and payload_fields[0].type == FieldDescriptor.TYPE_MESSAGE
-            and payload_fields[0].message_type.name == "TimeQueryReturn"
-        ):
+        elif len(payload_fields) == 1 and payload_fields[0].type == FieldDescriptor.TYPE_MESSAGE and payload_fields[0].message_type.name == "TimeQueryReturn":
             _assign_field(payload, payload_fields[0], response.fields)
         else:
             for field, value in zip(payload.DESCRIPTOR.fields, response.fields, strict=False):
