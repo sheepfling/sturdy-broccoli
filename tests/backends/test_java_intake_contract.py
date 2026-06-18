@@ -126,7 +126,7 @@ def test_java_certify_core_reports_missing_classpath(tmp_path) -> None:
     assert report["errors"] == ["Classpath entry does not exist: missing-vendor-rti.jar"]
 
 
-def test_java_certify_core_2025_is_behavior_blocked_after_discovery(monkeypatch) -> None:
+def test_java_certify_core_2025_generic_vendor_is_behavior_blocked_after_discovery(monkeypatch) -> None:
     from hla.bridges.java.common.java_intake import JavaRtiIntakeReport
     from hla.verification import java_intake_certification as cert
 
@@ -148,10 +148,52 @@ def test_java_certify_core_2025_is_behavior_blocked_after_discovery(monkeypatch)
             edition="2025",
             bridge="jpype",
             classpath=("pyproject.toml",),
-            rti_factory_name="Java 2025 Standard Shim",
+            rti_factory_name="Vendor Java 2025 RTI",
         )
     )
 
     assert report.status == "behavior-blocked"
     assert report.core_scenario_status == "blocked"
-    assert report.blocked_reason == "real 2025 Java adapter not implemented yet"
+    assert report.blocked_reason == "generic/vendor Java 2025 RTI invocation is not implemented yet"
+
+
+def test_java_certify_core_2025_standard_shim_uses_runtime_capability_trace(monkeypatch) -> None:
+    from hla.bridges.java.common.java_intake import JavaRtiIntakeReport
+    from hla.verification import java_intake_certification as cert
+
+    def fake_discover(request):
+        return JavaRtiIntakeReport(
+            edition="2025",
+            bridge=request.bridge,
+            classpath=request.classpath,
+            factory_requested=request.rti_factory_name,
+            factory_found=True,
+            rti_ambassador_created=True,
+            edition_match=True,
+            status="ambassador-green",
+        )
+
+    def fake_runtime_trace(backend_name):
+        assert backend_name == "java-standard-2025-jpype"
+        return {
+            "status": "trace-green",
+            "trace": tuple({"event": event} for event in cert.REQUIRED_2025_TRACE_EVENTS),
+        }
+
+    monkeypatch.setattr(cert, "discover_java_rti_jar", fake_discover)
+    monkeypatch.setattr("hla.verification.shim_route_evidence.run_standard_2025_runtime_capability_trace", fake_runtime_trace)
+
+    report = cert.certify_java_rti_core(
+        JavaRtiIntakeRequest(
+            edition="2025",
+            bridge="jpype",
+            classpath=("pyproject.toml",),
+            rti_factory_name="Java 2025 Standard Shim",
+        )
+    )
+
+    assert report.status == "trace-green"
+    assert report.connect_status == "connect-green"
+    assert report.callback_status == "callback-runtime-green"
+    assert report.core_scenario_status == "runtime-capability-green"
+    assert report.missing_trace_events == ()

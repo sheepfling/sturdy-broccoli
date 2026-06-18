@@ -31,7 +31,30 @@ REQUIRED_2010_TRACE_EVENTS = {
     "disconnect",
 }
 
+REQUIRED_2025_TRACE_EVENTS = {
+    "getHLAversion",
+    "connect",
+    "createFederationExecution",
+    "joinFederationExecution",
+    "resolveFomHandles",
+    "changeDefaultAttributeTransportationType",
+    "changeDefaultAttributeOrderType",
+    "registerObjectInstance",
+    "unconditionalAttributeOwnershipDivestiture",
+    "attributeOwnershipAcquisitionIfAvailable",
+    "attributeIsNotOwned",
+    "attributeOwnershipAcquisitionNotification",
+    "getTimeFactory",
+    "timeAdvanceRequest",
+    "timeAdvanceGrant",
+    "serializeMOMServiceReport",
+    "resignFederationExecution",
+    "destroyFederationExecution",
+    "disconnect",
+}
+
 CORE_SCENARIO_GREEN_STATUSES = {"core-green", "core-exchange-green"}
+JAVA_2025_STANDARD_FACTORY = "Java 2025 Standard Shim"
 
 
 @dataclass(frozen=True, slots=True)
@@ -67,9 +90,10 @@ def _trace_event_names(trace: Sequence[dict[str, Any]]) -> tuple[str, ...]:
     return tuple(str(item.get("event", "")) for item in trace)
 
 
-def _status_from_trace(trace: Sequence[dict[str, Any]]) -> tuple[str, tuple[str, ...]]:
+def _status_from_trace(edition: str, trace: Sequence[dict[str, Any]]) -> tuple[str, tuple[str, ...]]:
     events = set(_trace_event_names(trace))
-    missing = tuple(sorted(REQUIRED_2010_TRACE_EVENTS - events))
+    required = REQUIRED_2025_TRACE_EVENTS if edition == "2025" else REQUIRED_2010_TRACE_EVENTS
+    missing = tuple(sorted(required - events))
     return ("trace-green" if not missing else "core-green", missing)
 
 
@@ -92,6 +116,64 @@ def certify_java_rti_core(request: JavaRtiIntakeRequest) -> JavaRtiCoreCertifica
             warnings=discovery.warnings,
         )
 
+    if profile.edition == "2025":
+        if request.rti_factory_name != JAVA_2025_STANDARD_FACTORY:
+            return JavaRtiCoreCertificationReport(
+                edition=profile.edition,
+                bridge=request.bridge,
+                classpath=request.classpath,
+                factory_requested=request.rti_factory_name,
+                discovery=discovery_payload,
+                connect_status="blocked",
+                callback_status="blocked",
+                core_scenario_status="blocked",
+                trace_comparison_status="blocked",
+                status="behavior-blocked",
+                warnings=discovery.warnings,
+                blocked_reason="generic/vendor Java 2025 RTI invocation is not implemented yet",
+            )
+        try:
+            from hla.verification.shim_route_evidence import run_standard_2025_runtime_capability_trace
+
+            evidence = run_standard_2025_runtime_capability_trace(f"java-standard-2025-{request.bridge}")
+            trace = tuple(evidence.get("trace", ()))
+            trace_status, missing = _status_from_trace(profile.edition, trace)
+            events = set(_trace_event_names(trace))
+            callback_green = {"attributeIsNotOwned", "attributeOwnershipAcquisitionNotification", "timeAdvanceGrant"} <= events
+            connect_green = "connect" in events and "disconnect" in events
+            return JavaRtiCoreCertificationReport(
+                edition=profile.edition,
+                bridge=request.bridge,
+                classpath=request.classpath,
+                factory_requested=request.rti_factory_name,
+                discovery=discovery_payload,
+                connect_status="connect-green" if connect_green else "failed",
+                callback_status="callback-runtime-green" if callback_green else "failed",
+                core_scenario_status="runtime-capability-green" if evidence.get("status") == "trace-green" else "failed",
+                trace_comparison_status=trace_status,
+                status=trace_status,
+                trace=trace,
+                missing_trace_events=missing,
+                unsupported_services=(),
+                warnings=discovery.warnings,
+            )
+        except Exception as exc:
+            return JavaRtiCoreCertificationReport(
+                edition=profile.edition,
+                bridge=request.bridge,
+                classpath=request.classpath,
+                factory_requested=request.rti_factory_name,
+                discovery=discovery_payload,
+                connect_status="blocked",
+                callback_status="blocked",
+                core_scenario_status="blocked",
+                trace_comparison_status="blocked",
+                status="behavior-blocked",
+                errors=(f"Java 2025 standard runtime capability trace could not run: {exc}",),
+                warnings=discovery.warnings,
+                blocked_reason="Java 2025 standard shim runtime evidence requires a built standard shim jar",
+            )
+
     if profile.edition != "2010":
         return JavaRtiCoreCertificationReport(
             edition=profile.edition,
@@ -105,7 +187,7 @@ def certify_java_rti_core(request: JavaRtiIntakeRequest) -> JavaRtiCoreCertifica
             trace_comparison_status="blocked",
             status="behavior-blocked",
             warnings=discovery.warnings,
-            blocked_reason="real 2025 Java adapter not implemented yet",
+            blocked_reason=f"Java edition {profile.edition} RTI invocation is not implemented by this certification lane",
         )
 
     try:
@@ -149,7 +231,7 @@ def certify_java_rti_core(request: JavaRtiIntakeRequest) -> JavaRtiCoreCertifica
                 except Exception:
                     pass
         trace = tuple(evidence.get("trace", ()))
-        trace_status, missing = _status_from_trace(trace)
+        trace_status, missing = _status_from_trace(profile.edition, trace)
         events = set(_trace_event_names(trace))
         callback_green = {"discoverObjectInstance", "reflectAttributeValues", "receiveInteraction"} <= events
         connect_green = "connect" in events and "disconnect" in events

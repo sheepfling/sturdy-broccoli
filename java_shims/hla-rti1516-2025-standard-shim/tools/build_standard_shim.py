@@ -25,6 +25,22 @@ PACKAGE = "com.sheepfling.hla.shimroutes.rti1516_2025"
 FACTORY_NAME = "Java 2025 Standard Shim"
 
 IMPLEMENTED = {"getHLAversion"}
+RUNTIME_CAPABILITY_REQUIREMENTS = [
+    "HLA2025-BND-001",
+    "HLA2025-FR-001",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-003",
+    "HLA2025-FI-004",
+    "HLA2025-FI-005",
+    "HLA2025-FI-006",
+    "HLA2025-FI-009",
+    "HLA2025-MOD-005",
+    "HLA2025-MOD-006",
+    "HLA2025-MOD-007",
+    "HLA2025-NEW-004",
+    "HLA2025-NEW-007",
+]
 
 
 @dataclass(frozen=True)
@@ -187,13 +203,30 @@ def _write_report(methods: list[Method]) -> None:
         "implemented_services": implemented,
         "unsupported_services": unsupported,
         "scenario_evidence": {
-            "status": "lifecycle-core-green",
-            "tests": ["tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_lifecycle_core_when_built"],
-            "scenarios": ["2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling"],
+            "status": "trace-green",
+            "tests": [
+                "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_lifecycle_core_when_built",
+                "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_runtime_capability_when_built",
+            ],
+            "scenarios": [
+                "2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling",
+                "2025 standard route runtime capability: FOM handles, DDM/default policy calls, object registration, ownership callbacks, logical time, and MOM service-report serialization",
+            ],
+            "requirements_exercised": RUNTIME_CAPABILITY_REQUIREMENTS,
         },
         "routes": {
-            "java-standard-2025-jpype": {"status": "core-green", "surface": "official Java 2025 API", "scenario": "lifecycle-core"},
-            "java-standard-2025-py4j": {"status": "core-green", "surface": "official Java 2025 API", "scenario": "lifecycle-core"},
+            "java-standard-2025-jpype": {
+                "status": "trace-green",
+                "surface": "official Java 2025 API",
+                "scenario": "runtime-capability",
+                "requirements_exercised": RUNTIME_CAPABILITY_REQUIREMENTS,
+            },
+            "java-standard-2025-py4j": {
+                "status": "trace-green",
+                "surface": "official Java 2025 API",
+                "scenario": "runtime-capability",
+                "requirements_exercised": RUNTIME_CAPABILITY_REQUIREMENTS,
+            },
         },
     }
     REPORT_JSON.parent.mkdir(parents=True, exist_ok=True)
@@ -208,13 +241,13 @@ def _write_report(methods: list[Method]) -> None:
                 f"- jar: `{JAR_PATH}`",
                 "- compile status: `passed`",
                 f"- factory: `{FACTORY_NAME}`",
-                "- status: `surface-backed + lifecycle-core-green`",
+                "- status: `surface-backed + runtime-capability trace-green`",
                 "- scenario evidence: `tests/backends/test_standard_shim_artifacts.py`",
                 "",
                 "## Route Evidence",
                 "",
-                "- `java-standard-2025-jpype`: `core-green` (`lifecycle-core`)",
-                "- `java-standard-2025-py4j`: `core-green` (`lifecycle-core`)",
+                "- `java-standard-2025-jpype`: `trace-green` (`runtime-capability`)",
+                "- `java-standard-2025-py4j`: `trace-green` (`runtime-capability`)",
                 "",
                 "## Implemented Services",
                 "",
