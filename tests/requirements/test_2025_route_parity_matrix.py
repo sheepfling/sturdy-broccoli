@@ -111,10 +111,18 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
         assert rows[("object_exchange", route)].evidence_tests == ("tests/backends/test_standard_shim_artifacts.py",)
         assert "two-federate object exchange trace" in rows[("object_exchange", route)].notes
 
-    for route in ("java-standard-2025-jpype", "java-standard-2025-py4j", "cpp-standard-2025-pybind", "cpp-standard-2025-grpc"):
+    for route in ("java-standard-2025-jpype", "java-standard-2025-py4j"):
         assert rows[("ownership", route)].status == MISSING
         assert rows[("ddm", route)].status == MISSING
         assert rows[("time_management", route)].status == MISSING
+
+    for route in ("cpp-standard-2025-pybind", "cpp-standard-2025-grpc"):
+        assert rows[("ownership", route)].status == MISSING
+        assert rows[("ddm", route)].status == MISSING
+        assert rows[("time_management", route)].status == PARITY_COVERED
+        assert rows[("time_management", route)].evidence_scope == "scenario-parity"
+        assert rows[("time_management", route)].evidence_tests == ("tests/backends/test_standard_shim_artifacts.py",)
+        assert "logical-time runtime trace" in rows[("time_management", route)].notes
 
 
 def test_2025_route_parity_matrix_records_evidence_scope_without_flattening_java_cpp() -> None:
@@ -192,7 +200,7 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
     assert summary["by_status"][PARTIAL] > 0
     assert summary["by_status"][MISSING] > 0
     assert summary["by_route"]["java-standard-2025-jpype"][PARITY_COVERED] == 0
-    assert summary["by_route"]["cpp-standard-2025-grpc"][PARITY_COVERED] == 1
+    assert summary["by_route"]["cpp-standard-2025-grpc"][PARITY_COVERED] == 2
 
     csv_path, md_path = write_spec2025_route_parity_matrix(tmp_path)
     assert csv_path.exists()

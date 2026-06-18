@@ -73,7 +73,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert route_matrix["scenario_count"] >= 8
     assert "python-2025-fedpro-grpc" in route_matrix["routes"]
     assert route_matrix["by_route"]["java-standard-2025-jpype"]["parity-covered"] == 0
-    assert route_matrix["by_route"]["cpp-standard-2025-grpc"]["parity-covered"] == 1
+    assert route_matrix["by_route"]["cpp-standard-2025-grpc"]["parity-covered"] == 2
 
 
 @pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-TRACE-001")

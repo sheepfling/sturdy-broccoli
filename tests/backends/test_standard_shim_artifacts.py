@@ -199,6 +199,49 @@ def test_standard_2025_routes_pass_object_exchange_when_built(backend_name: str)
         "cpp-standard-2025-grpc",
     ],
 )
+def test_standard_2025_routes_pass_time_management_when_built(backend_name: str) -> None:
+    if "java-standard-2025" in backend_name and not JAVA_2025_JAR.exists():
+        pytest.skip("Java 2025 standard shim jar has not been built")
+    if "cpp-standard-2025" in backend_name and not CPP_2025_LIB.exists():
+        pytest.skip("C++ 2025 standard shim artifact has not been built")
+
+    from hla.verification.shim_route_evidence import run_2025_time_management_trace
+
+    evidence = run_2025_time_management_trace(backend_name)
+    event_names = {event["event"] for event in evidence["trace"]}
+
+    assert evidence["status"] == "trace-green"
+    assert evidence["scenario"] == "logical-time-runtime"
+    assert "HLA2025-FI-009" in evidence["requirements_exercised"]
+    assert {
+        "routeSelected",
+        "connect",
+        "createFederationExecution",
+        "joinFederationExecution",
+        "getTimeFactory",
+        "enableTimeRegulation",
+        "enableTimeConstrained",
+        "queryLookahead",
+        "modifyLookahead",
+        "timeAdvanceRequest",
+        "flushQueueRequest",
+        "queryLogicalTime",
+        "queryGALT",
+        "queryLITS",
+        "disconnect",
+    } <= event_names
+    assert any(event["event"] == "queryLogicalTime" and event["value"] == "HLAfloat64Time(value=20.0)" for event in evidence["trace"])
+
+
+@pytest.mark.parametrize(
+    "backend_name",
+    [
+        "java-standard-2025-jpype",
+        "java-standard-2025-py4j",
+        "cpp-standard-2025-pybind",
+        "cpp-standard-2025-grpc",
+    ],
+)
 def test_standard_2025_routes_pass_runtime_capability_when_built(backend_name: str) -> None:
     if "java-standard-2025" in backend_name and not JAVA_2025_JAR.exists():
         pytest.skip("Java 2025 standard shim jar has not been built")

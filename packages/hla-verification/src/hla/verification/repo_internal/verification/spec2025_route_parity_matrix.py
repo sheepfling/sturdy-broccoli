@@ -333,18 +333,20 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "time_management",
         "cpp-standard-2025-pybind",
-        MISSING,
+        PARITY_COVERED,
         ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-BND-002"),
-        _FINISH_LINE_TESTS,
-        "No executable C++ 2025 time-management parity scenario is recorded yet.",
+        _STANDARD_SHIM_TESTS,
+        "C++ 2025 pybind standard route runs the logical-time runtime trace: selected time factory, "
+        "time regulation/constrained mode, lookahead modification, TAR/FQR grants, and GALT/LITS/logical-time queries.",
     ),
     _row(
         "time_management",
         "cpp-standard-2025-grpc",
-        MISSING,
+        PARITY_COVERED,
         ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-BND-002"),
-        _FINISH_LINE_TESTS,
-        "No executable C++ 2025 time-management parity scenario is recorded yet.",
+        _STANDARD_SHIM_TESTS,
+        "C++ 2025 gRPC standard route runs the logical-time runtime trace: selected time factory, "
+        "time regulation/constrained mode, lookahead modification, TAR/FQR grants, and GALT/LITS/logical-time queries.",
     ),
     _row(
         "save_restore",
