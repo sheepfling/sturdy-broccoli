@@ -97,6 +97,95 @@ def test_2025_transport_server_smoke_uses_the_new_schema_package():
         server.close()
 
 
+def test_2025_transport_server_runs_object_and_interaction_exchange_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-exchange"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "Exchange2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025Publisher", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        attribute = transport.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
+        interaction_class = transport.request(TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))).fields[0]
+        parameter = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(interaction_class, "TrackId"))).fields[0]
+
+        assert transport.request(TransportRequest(command="PUBLISH_OBJECT_CLASS_ATTRIBUTES", fields=(object_class, attribute))).fields == ()
+        assert transport.request(TransportRequest(command="SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES", fields=(object_class, attribute))).fields == ()
+        assert transport.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+        assert transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+
+        object_instance = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProTarget-1"))).fields[0]
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "DISCOVER",
+            object_instance,
+            object_class,
+            "FedProTarget-1",
+        )
+
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="UPDATE_ATTRIBUTE_VALUES",
+                    fields=(object_instance, f"{attribute}:313233", "7570646174652d746167"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "REFLECT",
+            object_instance,
+            f"{attribute}:313233",
+            "7570646174652d746167",
+            "1",
+            "1",
+        )
+
+        assert (
+            transport.request(
+                TransportRequest(
+                    command="SEND_INTERACTION",
+                    fields=(interaction_class, f"{parameter}:545241434b2d31", "696e746572616374696f6e2d746167"),
+                )
+            ).fields
+            == ()
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "INTERACTION",
+            interaction_class,
+            f"{parameter}:545241434b2d31",
+            "696e746572616374696f6e2d746167",
+            "1",
+            "1",
+        )
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "publishObjectClassAttributesRequest",
+            "subscribeObjectClassAttributesRequest",
+            "publishInteractionClassRequest",
+            "subscribeInteractionClassRequest",
+            "updateAttributeValuesRequest",
+            "sendInteractionRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_runs_lifecycle_session_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None

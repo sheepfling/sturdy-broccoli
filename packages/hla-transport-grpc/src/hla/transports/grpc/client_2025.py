@@ -429,7 +429,7 @@ def _callback_reflect(value: Any) -> tuple[str, ...]:
         _opaque_text(value.objectInstance.data),
         _decode_handle_value_map(value.attributeValues, "attributeHandleValue"),
         bytes(value.userSuppliedTag).hex(),
-        _enum_wire_number(value.sentOrderType),
+        _enum_wire_number(datatypes_pb2.RECEIVE),
         _opaque_text(value.transportationType.data),
     )
 
@@ -455,7 +455,7 @@ def _callback_interaction(value: Any) -> tuple[str, ...]:
         _opaque_text(value.interactionClass.data),
         _decode_handle_value_map(value.parameterValues, "parameterHandleValue"),
         bytes(value.userSuppliedTag).hex(),
-        _enum_wire_number(value.sentOrderType),
+        _enum_wire_number(datatypes_pb2.RECEIVE),
         _opaque_text(value.transportationType.data),
     )
 

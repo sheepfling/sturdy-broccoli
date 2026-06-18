@@ -62,9 +62,16 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.object_classes = {"HLAobjectRoot.RouteTarget": "100", "HLAobjectRoot.Target": "101"}
         self.object_class_names = {value: key for key, value in self.object_classes.items()}
         self.attributes = {("100", "Position"): "200", ("101", "Position"): "201"}
+        self.interactions = {"HLAinteractionRoot.TrackReport": "400"}
+        self.interaction_names = {value: key for key, value in self.interactions.items()}
+        self.parameters = {("400", "TrackId"): "500"}
         self.dimensions = {"RoutingSpace": "300"}
         self.transportations = {"HLAreliable": "1", "HLAbestEffort": "2"}
         self.object_instances: dict[str, dict[str, str]] = {}
+        self.published_object_attributes: dict[str, set[str]] = {}
+        self.subscribed_object_attributes: dict[str, set[str]] = {}
+        self.published_interactions: set[str] = set()
+        self.subscribed_interactions: set[str] = set()
         self.unowned_attributes: set[tuple[str, str]] = set()
         self.default_attribute_transportation: dict[tuple[str, str], str] = {}
         self.default_attribute_order: dict[tuple[str, str], int] = {}
@@ -131,10 +138,18 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 handle = self.object_classes[name]
             except KeyError:
                 return self._error("NameNotFound", name)
-            return rti_pb2.CallResponse(getObjectClassHandleResponse=rti_pb2.GetObjectClassHandleResponse(result=_handle(datatypes_pb2.ObjectClassHandle, handle)))
+            return rti_pb2.CallResponse(
+                getObjectClassHandleResponse=rti_pb2.GetObjectClassHandleResponse(
+                    result=_handle(datatypes_pb2.ObjectClassHandle, handle)
+                )
+            )
         if request_kind == "getObjectClassNameRequest":
             handle = request.getObjectClassNameRequest.objectClass.data.decode("ascii")
-            return rti_pb2.CallResponse(getObjectClassNameResponse=rti_pb2.GetObjectClassNameResponse(result=self.object_class_names.get(handle, "")))
+            return rti_pb2.CallResponse(
+                getObjectClassNameResponse=rti_pb2.GetObjectClassNameResponse(
+                    result=self.object_class_names.get(handle, "")
+                )
+            )
         if request_kind == "getAttributeHandleRequest":
             payload = request.getAttributeHandleRequest
             object_class = payload.objectClass.data.decode("ascii")
@@ -142,7 +157,41 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 handle = self.attributes[(object_class, payload.attributeName)]
             except KeyError:
                 return self._error("NameNotFound", payload.attributeName)
-            return rti_pb2.CallResponse(getAttributeHandleResponse=rti_pb2.GetAttributeHandleResponse(result=_handle(datatypes_pb2.AttributeHandle, handle)))
+            return rti_pb2.CallResponse(
+                getAttributeHandleResponse=rti_pb2.GetAttributeHandleResponse(
+                    result=_handle(datatypes_pb2.AttributeHandle, handle)
+                )
+            )
+        if request_kind == "getInteractionClassHandleRequest":
+            name = request.getInteractionClassHandleRequest.interactionClassName
+            try:
+                handle = self.interactions[name]
+            except KeyError:
+                return self._error("NameNotFound", name)
+            return rti_pb2.CallResponse(
+                getInteractionClassHandleResponse=rti_pb2.GetInteractionClassHandleResponse(
+                    result=_handle(datatypes_pb2.InteractionClassHandle, handle)
+                )
+            )
+        if request_kind == "getInteractionClassNameRequest":
+            handle = request.getInteractionClassNameRequest.interactionClass.data.decode("ascii")
+            return rti_pb2.CallResponse(getInteractionClassNameResponse=rti_pb2.GetInteractionClassNameResponse(result=self.interaction_names.get(handle, "")))
+        if request_kind == "getParameterHandleRequest":
+            payload = request.getParameterHandleRequest
+            interaction_class = payload.interactionClass.data.decode("ascii")
+            try:
+                handle = self.parameters[(interaction_class, payload.parameterName)]
+            except KeyError:
+                return self._error("NameNotFound", payload.parameterName)
+            return rti_pb2.CallResponse(
+                getParameterHandleResponse=rti_pb2.GetParameterHandleResponse(result=_handle(datatypes_pb2.ParameterHandle, handle))
+            )
+        if request_kind == "getParameterNameRequest":
+            payload = request.getParameterNameRequest
+            interaction_class = payload.interactionClass.data.decode("ascii")
+            parameter = payload.parameter.data.decode("ascii")
+            names = {value: key for (class_handle, key), value in self.parameters.items() if class_handle == interaction_class}
+            return rti_pb2.CallResponse(getParameterNameResponse=rti_pb2.GetParameterNameResponse(result=names.get(parameter, "")))
         if request_kind == "getDimensionHandleRequest":
             name = request.getDimensionHandleRequest.dimensionName
             try:
@@ -182,6 +231,31 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             for attribute in payload.attributes.attributeHandle:
                 self.default_attribute_order[(object_class, attribute.data.decode("ascii"))] = payload.orderType
             return rti_pb2.CallResponse(changeDefaultAttributeOrderTypeResponse=rti_pb2.ChangeDefaultAttributeOrderTypeResponse())
+        if request_kind == "publishObjectClassAttributesRequest":
+            payload = request.publishObjectClassAttributesRequest
+            object_class = payload.objectClass.data.decode("ascii")
+            self.published_object_attributes.setdefault(object_class, set()).update(
+                attribute.data.decode("ascii") for attribute in payload.attributes.attributeHandle
+            )
+            return rti_pb2.CallResponse(publishObjectClassAttributesResponse=rti_pb2.PublishObjectClassAttributesResponse())
+        if request_kind == "subscribeObjectClassAttributesRequest":
+            payload = request.subscribeObjectClassAttributesRequest
+            object_class = payload.objectClass.data.decode("ascii")
+            self.subscribed_object_attributes.setdefault(object_class, set()).update(
+                attribute.data.decode("ascii") for attribute in payload.attributes.attributeHandle
+            )
+            for object_instance, record in self.object_instances.items():
+                if record["objectClass"] == object_class:
+                    self._queue_discovery(object_instance, object_class, record["name"])
+            return rti_pb2.CallResponse(subscribeObjectClassAttributesResponse=rti_pb2.SubscribeObjectClassAttributesResponse())
+        if request_kind == "publishInteractionClassRequest":
+            interaction_class = request.publishInteractionClassRequest.interactionClass.data.decode("ascii")
+            self.published_interactions.add(interaction_class)
+            return rti_pb2.CallResponse(publishInteractionClassResponse=rti_pb2.PublishInteractionClassResponse())
+        if request_kind == "subscribeInteractionClassRequest":
+            interaction_class = request.subscribeInteractionClassRequest.interactionClass.data.decode("ascii")
+            self.subscribed_interactions.add(interaction_class)
+            return rti_pb2.CallResponse(subscribeInteractionClassResponse=rti_pb2.SubscribeInteractionClassResponse())
         if request_kind in {"registerObjectInstanceRequest", "registerObjectInstanceWithNameRequest"}:
             payload = getattr(request, request_kind)
             object_class = payload.objectClass.data.decode("ascii")
@@ -189,9 +263,62 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             self.next_object_instance_handle += 1
             object_name = getattr(payload, "objectInstanceName", "") or f"fedpro-object-{handle}"
             self.object_instances[handle] = {"name": object_name, "objectClass": object_class}
-            response_kind = "registerObjectInstanceWithNameResponse" if request_kind == "registerObjectInstanceWithNameRequest" else "registerObjectInstanceResponse"
+            if object_class in self.subscribed_object_attributes:
+                self._queue_discovery(handle, object_class, object_name)
+            response_kind = (
+                "registerObjectInstanceWithNameResponse"
+                if request_kind == "registerObjectInstanceWithNameRequest"
+                else "registerObjectInstanceResponse"
+            )
             response_type = getattr(rti_pb2, response_kind[0].upper() + response_kind[1:])
             return rti_pb2.CallResponse(**{response_kind: response_type(result=_handle(datatypes_pb2.ObjectInstanceHandle, handle))})
+        if request_kind == "updateAttributeValuesRequest":
+            payload = request.updateAttributeValuesRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            record = self.object_instances.get(object_instance)
+            if record is None:
+                return self._error("ObjectInstanceNotKnown", object_instance)
+            object_class = record["objectClass"]
+            subscribed = self.subscribed_object_attributes.get(object_class, set())
+            reflected = [
+                item
+                for item in payload.attributeValues.attributeHandleValue
+                if item.attributeHandle.data.decode("ascii") in subscribed
+            ]
+            if reflected:
+                values = datatypes_pb2.AttributeHandleValueMap()
+                for item in reflected:
+                    row = values.attributeHandleValue.add()
+                    row.attributeHandle.CopyFrom(item.attributeHandle)
+                    row.value = item.value
+                self.callback_queue.append(
+                    callback_pb2.CallbackRequest(
+                        reflectAttributeValues=callback_pb2.ReflectAttributeValues(
+                            objectInstance=payload.objectInstance,
+                            attributeValues=values,
+                            userSuppliedTag=payload.userSuppliedTag,
+                            transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
+                            producingFederate=_handle(datatypes_pb2.FederateHandle, "1"),
+                        )
+                    )
+                )
+            return rti_pb2.CallResponse(updateAttributeValuesResponse=rti_pb2.UpdateAttributeValuesResponse())
+        if request_kind == "sendInteractionRequest":
+            payload = request.sendInteractionRequest
+            interaction_class = payload.interactionClass.data.decode("ascii")
+            if interaction_class in self.subscribed_interactions:
+                self.callback_queue.append(
+                    callback_pb2.CallbackRequest(
+                        receiveInteraction=callback_pb2.ReceiveInteraction(
+                            interactionClass=payload.interactionClass,
+                            parameterValues=payload.parameterValues,
+                            userSuppliedTag=payload.userSuppliedTag,
+                            transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
+                            producingFederate=_handle(datatypes_pb2.FederateHandle, "1"),
+                        )
+                    )
+                )
+            return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
         if request_kind == "isAttributeOwnedByFederateRequest":
             payload = request.isAttributeOwnedByFederateRequest
             object_instance = payload.objectInstance.data.decode("ascii")
@@ -255,6 +382,18 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             exceptionData=datatypes_pb2.ExceptionData(
                 exceptionName=name,
                 details=details,
+            )
+        )
+
+    def _queue_discovery(self, object_instance: str, object_class: str, object_name: str) -> None:
+        self.callback_queue.append(
+            callback_pb2.CallbackRequest(
+                discoverObjectInstance=callback_pb2.DiscoverObjectInstance(
+                    objectInstance=_handle(datatypes_pb2.ObjectInstanceHandle, object_instance),
+                    objectClass=_handle(datatypes_pb2.ObjectClassHandle, object_class),
+                    objectInstanceName=object_name,
+                    producingFederate=_handle(datatypes_pb2.FederateHandle, "1"),
+                )
             )
         )
 
