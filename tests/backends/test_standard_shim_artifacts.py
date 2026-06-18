@@ -155,6 +155,50 @@ def test_standard_2025_routes_pass_lifecycle_core_when_built(backend_name: str) 
         "cpp-standard-2025-grpc",
     ],
 )
+def test_standard_2025_routes_pass_object_exchange_when_built(backend_name: str) -> None:
+    if "java-standard-2025" in backend_name and not JAVA_2025_JAR.exists():
+        pytest.skip("Java 2025 standard shim jar has not been built")
+    if "cpp-standard-2025" in backend_name and not CPP_2025_LIB.exists():
+        pytest.skip("C++ 2025 standard shim artifact has not been built")
+
+    from hla.verification.shim_route_evidence import run_standard_2025_object_exchange_trace
+
+    evidence = run_standard_2025_object_exchange_trace(backend_name)
+    event_names = {event["event"] for event in evidence["trace"]}
+    unsubscribe = next(event for event in evidence["trace"] if event["event"] == "unsubscribeSuppression")
+
+    assert evidence["status"] == "core-exchange-green"
+    assert evidence["scenario"] == "object-exchange"
+    assert "HLA2025-FR-003" in evidence["requirements_exercised"]
+    assert {
+        "routeSelected",
+        "connect",
+        "createFederationExecution",
+        "joinFederationExecution",
+        "resolveExchangeHandles",
+        "subscribe",
+        "registerObjectInstance",
+        "discoverObjectInstance",
+        "updateAttributeValues",
+        "reflectAttributeValues",
+        "sendInteraction",
+        "receiveInteraction",
+        "unsubscribeSuppression",
+        "disconnect",
+    } <= event_names
+    assert unsubscribe["reflectedAfterUnsubscribe"] is False
+    assert unsubscribe["interactionAfterUnsubscribe"] is False
+
+
+@pytest.mark.parametrize(
+    "backend_name",
+    [
+        "java-standard-2025-jpype",
+        "java-standard-2025-py4j",
+        "cpp-standard-2025-pybind",
+        "cpp-standard-2025-grpc",
+    ],
+)
 def test_standard_2025_routes_pass_runtime_capability_when_built(backend_name: str) -> None:
     if "java-standard-2025" in backend_name and not JAVA_2025_JAR.exists():
         pytest.skip("Java 2025 standard shim jar has not been built")

@@ -1,11 +1,11 @@
 """MVP language-shim route evidence helpers."""
 from __future__ import annotations
 
-from collections.abc import Iterable
 import shutil
 import tempfile
 import textwrap
 import uuid
+from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
@@ -64,6 +64,63 @@ def _route_runtime_requirements_2025(backend_name: str) -> list[str]:
 class _Recording2025FederateAmbassador:
     def __init__(self) -> None:
         self.events: list[tuple[str, Any]] = []
+
+    def discoverObjectInstance(self, objectInstance: Any, objectClass: Any, objectInstanceName: str, producingFederate: Any) -> None:  # noqa: N802
+        self.events.append(("discover", (objectInstance, objectClass, objectInstanceName, producingFederate)))
+
+    def reflectAttributeValues(  # noqa: N802
+        self,
+        objectInstance: Any,
+        attributeValues: Any,
+        userSuppliedTag: bytes,
+        transportationType: Any,
+        producingFederate: Any,
+        optionalSentRegions: Any,
+        time: Any = None,
+        sentOrderType: Any = None,
+        receivedOrderType: Any = None,
+        optionalRetraction: Any = None,
+    ) -> None:
+        self.events.append(
+            (
+                "reflect",
+                (
+                    objectInstance,
+                    attributeValues,
+                    userSuppliedTag,
+                    sentOrderType,
+                    transportationType,
+                    (producingFederate, optionalSentRegions, time, receivedOrderType, optionalRetraction),
+                ),
+            )
+        )
+
+    def receiveInteraction(  # noqa: N802
+        self,
+        interactionClass: Any,
+        parameterValues: Any,
+        userSuppliedTag: bytes,
+        transportationType: Any,
+        producingFederate: Any,
+        optionalSentRegions: Any,
+        time: Any = None,
+        sentOrderType: Any = None,
+        receivedOrderType: Any = None,
+        optionalRetraction: Any = None,
+    ) -> None:
+        self.events.append(
+            (
+                "interaction",
+                (
+                    interactionClass,
+                    parameterValues,
+                    userSuppliedTag,
+                    sentOrderType,
+                    transportationType,
+                    (producingFederate, optionalSentRegions, time, receivedOrderType, optionalRetraction),
+                ),
+            )
+        )
 
     def timeRegulationEnabled(self, time: Any) -> None:  # noqa: N802
         self.events.append(("timeRegulationEnabled", time))
@@ -146,6 +203,63 @@ def _write_2025_runtime_capability_fom() -> tuple[Path, Path]:
               <transportations>
                 <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
                 <transportation><name>HLAbestEffort</name><reliable>No</reliable></transportation>
+              </transportations>
+            </objectModel>
+            """
+        ),
+        encoding="utf-8",
+    )
+    return temp_dir, fom
+
+
+def _write_2025_object_exchange_fom() -> tuple[Path, Path]:
+    temp_dir = Path(tempfile.mkdtemp(prefix="hla-2025-route-exchange-fom-"))
+    fom = temp_dir / "RouteObjectExchange2025.xml"
+    fom.write_text(
+        textwrap.dedent(
+            """\
+            <?xml version="1.0" encoding="UTF-8"?>
+            <objectModel xmlns="http://standards.ieee.org/IEEE1516-2010">
+              <modelIdentification>
+                <name>Route Object Exchange 2025 FOM</name>
+                <type>FOM</type>
+                <version>1.0</version>
+                <modificationDate>2026-01-01</modificationDate>
+                <securityClassification>UNCLASSIFIED</securityClassification>
+                <description>Object exchange route test FOM.</description>
+                <poc>HLA-X</poc>
+                <reference>HLA-X 2025 route object exchange trace</reference>
+              </modelIdentification>
+              <objects>
+                <objectClass>
+                  <name>HLAobjectRoot</name>
+                  <objectClass>
+                    <name>Target</name>
+                    <sharing>PublishSubscribe</sharing>
+                    <attribute>
+                      <name>Position</name>
+                      <dataType>HLAunicodeString</dataType>
+                      <sharing>PublishSubscribe</sharing>
+                      <transportation>HLAreliable</transportation>
+                      <order>Receive</order>
+                    </attribute>
+                  </objectClass>
+                </objectClass>
+              </objects>
+              <interactions>
+                <interactionClass>
+                  <name>HLAinteractionRoot</name>
+                  <interactionClass>
+                    <name>TrackReport</name>
+                    <sharing>PublishSubscribe</sharing>
+                    <transportation>HLAreliable</transportation>
+                    <order>Receive</order>
+                    <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+                  </interactionClass>
+                </interactionClass>
+              </interactions>
+              <transportations>
+                <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
               </transportations>
             </objectModel>
             """
@@ -362,6 +476,126 @@ def run_standard_2025_lifecycle_trace(backend_name: str) -> dict[str, Any]:
     }
 
 
+def run_standard_2025_object_exchange_trace(backend_name: str) -> dict[str, Any]:
+    """Run a two-federate 2025 object/interaction exchange trace for a standard route."""
+
+    from hla.rti import create_rti_ambassador
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+
+    temp_dir, fom_module = _write_2025_object_exchange_fom()
+    federation_name = f"ShimRouteExchange{backend_name.replace('-', '').title()}{uuid.uuid4().hex[:8]}"
+    publisher_fed = _Recording2025FederateAmbassador()
+    subscriber_fed = _Recording2025FederateAmbassador()
+    publisher = create_rti_ambassador(spec="2025", backend=backend_name)
+    subscriber = create_rti_ambassador(spec="2025", backend=backend_name)
+    trace = [
+        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=publisher.backend_info.details.get("standard_backed")),
+        _event("getHLAversion", value=publisher.getHLAversion()),
+    ]
+    publisher_connected = False
+    subscriber_connected = False
+    publisher_joined = False
+    subscriber_joined = False
+    federation_created = False
+    try:
+        publisher.connect(publisher_fed, CallbackModel.HLA_EVOKED)
+        publisher_connected = True
+        subscriber.connect(subscriber_fed, CallbackModel.HLA_EVOKED)
+        subscriber_connected = True
+        trace.append(_event("connect", federates=["publisher", "subscriber"], callbackModel=CallbackModel.HLA_EVOKED))
+
+        publisher.createFederationExecution(federationName=federation_name, fomModule=str(fom_module))
+        federation_created = True
+        trace.append(_event("createFederationExecution", federation=federation_name, fomModule=fom_module.name))
+        publisher_handle = publisher.joinFederationExecution("route-publisher", "route-exchange", federation_name)
+        publisher_joined = True
+        subscriber_handle = subscriber.joinFederationExecution("route-subscriber", "route-exchange", federation_name)
+        subscriber_joined = True
+        trace.append(
+            _event(
+                "joinFederationExecution",
+                publisherHandle=publisher_handle,
+                subscriberHandle=subscriber_handle,
+            )
+        )
+
+        object_class = publisher.getObjectClassHandle("HLAobjectRoot.Target")
+        attribute = publisher.getAttributeHandle(object_class, "Position")
+        interaction_class = publisher.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+        parameter = publisher.getParameterHandle(interaction_class, "TrackId")
+        trace.append(
+            _event(
+                "resolveExchangeHandles",
+                objectClass=object_class,
+                attribute=attribute,
+                interactionClass=interaction_class,
+                parameter=parameter,
+            )
+        )
+
+        subscriber.subscribeObjectClassAttributes(object_class, {attribute})
+        subscriber.subscribeInteractionClass(interaction_class)
+        trace.append(_event("subscribe", objectClass=object_class, attributes={attribute}, interactionClass=interaction_class))
+        object_instance = publisher.registerObjectInstance(object_class, f"RouteTarget-{uuid.uuid4().hex[:8]}")
+        trace.append(_event("registerObjectInstance", objectClass=object_class, objectInstance=object_instance))
+
+        publisher.publishObjectClassAttributes(object_class, {attribute})
+        publisher.updateAttributeValues(object_instance, {attribute: b"123,456"}, b"route-update")
+        trace.append(_event("updateAttributeValues", objectInstance=object_instance, attributes={attribute}, tag=b"route-update"))
+
+        publisher.publishInteractionClass(interaction_class)
+        publisher.sendInteraction(interaction_class, {parameter: b"TRACK-1"}, b"route-interaction")
+        trace.append(_event("sendInteraction", interactionClass=interaction_class, parameters={parameter: b"TRACK-1"}, tag=b"route-interaction"))
+        trace.extend(_callback_events(subscriber_fed.events))
+
+        subscriber.unsubscribeObjectClassAttributes(object_class, {attribute})
+        subscriber.unsubscribeInteractionClass(interaction_class)
+        subscriber_fed.events.clear()
+        publisher.updateAttributeValues(object_instance, {attribute: b"after-unsubscribe"}, b"route-update-after")
+        publisher.sendInteraction(interaction_class, {parameter: b"TRACK-2"}, b"route-interaction-after")
+        trace.append(
+            _event(
+                "unsubscribeSuppression",
+                reflectedAfterUnsubscribe=any(event[0] == "reflect" for event in subscriber_fed.events),
+                interactionAfterUnsubscribe=any(event[0] == "interaction" for event in subscriber_fed.events),
+            )
+        )
+    finally:
+        try:
+            if subscriber_joined:
+                subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+                trace.append(_event("resignFederationExecution", federate="subscriber", action=ResignAction.NO_ACTION))
+            if publisher_joined:
+                publisher.resignFederationExecution(ResignAction.NO_ACTION)
+                trace.append(_event("resignFederationExecution", federate="publisher", action=ResignAction.NO_ACTION))
+            if federation_created:
+                publisher.destroyFederationExecution(federation_name)
+                trace.append(_event("destroyFederationExecution", federation=federation_name))
+            if subscriber_connected:
+                subscriber.disconnect()
+            if publisher_connected:
+                publisher.disconnect()
+            if subscriber_connected or publisher_connected:
+                trace.append(_event("disconnect", federates=["publisher", "subscriber"]))
+        finally:
+            close = getattr(subscriber, "close", None)
+            if callable(close):
+                close()
+            close = getattr(publisher, "close", None)
+            if callable(close):
+                close()
+            shutil.rmtree(temp_dir, ignore_errors=True)
+
+    return {
+        "route": backend_name,
+        "edition": "2025",
+        "scenario": "object-exchange",
+        "status": "core-exchange-green",
+        "requirements_exercised": CORE_EXCHANGE_REQUIREMENTS_2025,
+        "trace": trace,
+    }
+
+
 def run_standard_2025_runtime_capability_trace(backend_name: str) -> dict[str, Any]:
     """Run a 2025 route capability trace beyond lifecycle without claiming conformance."""
 
@@ -566,5 +800,6 @@ __all__ = [
     "run_2025_time_management_trace",
     "run_standard_2010_exchange_trace",
     "run_standard_2025_lifecycle_trace",
+    "run_standard_2025_object_exchange_trace",
     "run_standard_2025_runtime_capability_trace",
 ]

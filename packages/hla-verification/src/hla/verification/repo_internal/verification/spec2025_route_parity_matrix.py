@@ -36,6 +36,7 @@ class Spec2025RouteParityRow:
 
 _PYTHON_CORE_TESTS = ("tests/test_rti1516_2025_spec_and_shim.py",)
 _FEDPRO_TESTS = ("tests/transport/test_grpc_transport_2025.py",)
+_STANDARD_SHIM_TESTS = ("tests/backends/test_standard_shim_artifacts.py",)
 _ROUTE_EVIDENCE_TESTS = (
     "tests/backends/test_shim_route_trace_evidence.py",
     "tests/requirements/test_2025_tail_backlog_evidence.py",
@@ -181,18 +182,20 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "object_exchange",
         "cpp-standard-2025-pybind",
-        MISSING,
+        PARITY_COVERED,
         ("HLA2025-BND-002", "HLA2025-FI-004"),
-        _FINISH_LINE_TESTS,
-        "No executable C++ 2025 object-exchange parity scenario is recorded yet.",
+        _STANDARD_SHIM_TESTS,
+        "C++ 2025 pybind standard route runs the two-federate object exchange trace: subscribe, discover, "
+        "publish, reflect attributes, publish/receive interaction, and unsubscribe suppression.",
     ),
     _row(
         "object_exchange",
         "cpp-standard-2025-grpc",
-        MISSING,
+        PARITY_COVERED,
         ("HLA2025-BND-002", "HLA2025-FI-004"),
-        _FINISH_LINE_TESTS,
-        "No executable C++ 2025 object-exchange parity scenario is recorded yet.",
+        _STANDARD_SHIM_TESTS,
+        "C++ 2025 gRPC standard route runs the two-federate object exchange trace: subscribe, discover, "
+        "publish, reflect attributes, publish/receive interaction, and unsubscribe suppression.",
     ),
     _row(
         "ownership",

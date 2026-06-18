@@ -100,10 +100,18 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "object registry rollback" in rows[("save_restore", "python-2025-fedpro-grpc")].notes
     assert "logical-time rollback" in rows[("save_restore", "python-2025-fedpro-grpc")].notes
 
-    for route in ("java-standard-2025-jpype", "java-standard-2025-py4j", "cpp-standard-2025-pybind", "cpp-standard-2025-grpc"):
+    for route in ("java-standard-2025-jpype", "java-standard-2025-py4j"):
         assert rows[("object_exchange", route)].status == MISSING
         assert rows[("object_exchange", route)].evidence_scope == "gap-record"
         assert rows[("object_exchange", route)].evidence_artifacts == ()
+
+    for route in ("cpp-standard-2025-pybind", "cpp-standard-2025-grpc"):
+        assert rows[("object_exchange", route)].status == PARITY_COVERED
+        assert rows[("object_exchange", route)].evidence_scope == "scenario-parity"
+        assert rows[("object_exchange", route)].evidence_tests == ("tests/backends/test_standard_shim_artifacts.py",)
+        assert "two-federate object exchange trace" in rows[("object_exchange", route)].notes
+
+    for route in ("java-standard-2025-jpype", "java-standard-2025-py4j", "cpp-standard-2025-pybind", "cpp-standard-2025-grpc"):
         assert rows[("ownership", route)].status == MISSING
         assert rows[("ddm", route)].status == MISSING
         assert rows[("time_management", route)].status == MISSING
@@ -184,7 +192,7 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
     assert summary["by_status"][PARTIAL] > 0
     assert summary["by_status"][MISSING] > 0
     assert summary["by_route"]["java-standard-2025-jpype"][PARITY_COVERED] == 0
-    assert summary["by_route"]["cpp-standard-2025-grpc"][PARITY_COVERED] == 0
+    assert summary["by_route"]["cpp-standard-2025-grpc"][PARITY_COVERED] == 1
 
     csv_path, md_path = write_spec2025_route_parity_matrix(tmp_path)
     assert csv_path.exists()
