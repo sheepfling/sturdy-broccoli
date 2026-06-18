@@ -115,6 +115,7 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
         assert rows[("ownership", route)].status == MISSING
         assert rows[("ddm", route)].status == MISSING
         assert rows[("time_management", route)].status == MISSING
+        assert rows[("save_restore", route)].status == MISSING
 
     for route in ("cpp-standard-2025-pybind", "cpp-standard-2025-grpc"):
         assert rows[("ownership", route)].status == PARITY_COVERED
@@ -136,6 +137,11 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
         assert rows[("support_services", route)].evidence_tests == ("tests/backends/test_standard_shim_artifacts.py",)
         assert "support-services runtime trace" in rows[("support_services", route)].notes
         assert "2025 switch round trips" in rows[("support_services", route)].notes
+        assert rows[("save_restore", route)].status == PARITY_COVERED
+        assert rows[("save_restore", route)].evidence_scope == "scenario-parity"
+        assert rows[("save_restore", route)].evidence_tests == ("tests/backends/test_standard_shim_artifacts.py",)
+        assert "save/restore runtime trace" in rows[("save_restore", route)].notes
+        assert "logical-time rollback" in rows[("save_restore", route)].notes
 
 
 def test_2025_route_parity_matrix_records_evidence_scope_without_flattening_java_cpp() -> None:
@@ -213,7 +219,7 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
     assert summary["by_status"][PARTIAL] > 0
     assert summary["by_status"][MISSING] > 0
     assert summary["by_route"]["java-standard-2025-jpype"][PARITY_COVERED] == 0
-    assert summary["by_route"]["cpp-standard-2025-grpc"][PARITY_COVERED] == 5
+    assert summary["by_route"]["cpp-standard-2025-grpc"][PARITY_COVERED] == 6
 
     csv_path, md_path = write_spec2025_route_parity_matrix(tmp_path)
     assert csv_path.exists()

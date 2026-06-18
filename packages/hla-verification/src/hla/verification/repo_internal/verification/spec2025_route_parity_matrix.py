@@ -372,6 +372,24 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "success/failure callbacks, abort callbacks, object registry rollback, and logical-time rollback.",
     ),
     _row(
+        "save_restore",
+        "cpp-standard-2025-pybind",
+        PARITY_COVERED,
+        ("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002", "HLA2025-BND-002"),
+        _STANDARD_SHIM_TESTS,
+        "C++ 2025 pybind standard route runs the save/restore runtime trace: two-federate save initiation/status/completion, "
+        "missing-restore failure, restore initiation/status/completion, logical-time rollback, and object registry rollback.",
+    ),
+    _row(
+        "save_restore",
+        "cpp-standard-2025-grpc",
+        PARITY_COVERED,
+        ("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002", "HLA2025-BND-002"),
+        _STANDARD_SHIM_TESTS,
+        "C++ 2025 gRPC standard route runs the save/restore runtime trace: two-federate save initiation/status/completion, "
+        "missing-restore failure, restore initiation/status/completion, logical-time rollback, and object registry rollback.",
+    ),
+    _row(
         "mom",
         "python-2025-inprocess",
         PARITY_COVERED,

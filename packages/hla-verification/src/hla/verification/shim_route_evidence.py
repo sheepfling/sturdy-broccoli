@@ -54,6 +54,12 @@ SUPPORT_SERVICES_REQUIREMENTS_2025 = [
     "HLA2025-MOD-007",
 ]
 
+SAVE_RESTORE_REQUIREMENTS_2025 = [
+    "HLA2025-FI-001",
+    "HLA2025-FI-005",
+    "HLA2025-REQ-002",
+]
+
 RUNTIME_CAPABILITY_REQUIREMENTS_2025 = [
     "HLA2025-FR-001",
     "HLA2025-FR-004",
@@ -149,6 +155,59 @@ class _Recording2025FederateAmbassador:
 
     def timeAdvanceGrant(self, time: Any) -> None:  # noqa: N802
         self.events.append(("timeAdvanceGrant", time))
+
+    def initiateFederateSave(self, label: str) -> None:  # noqa: N802
+        self.events.append(("initiateFederateSave", label))
+
+    def federationSaved(self) -> None:  # noqa: N802
+        self.events.append(("federationSaved", ()))
+
+    def federationNotSaved(self, reason: Any) -> None:  # noqa: N802
+        self.events.append(("federationNotSaved", reason))
+
+    def federationSaveStatusResponse(self, response: Any) -> None:  # noqa: N802
+        self.events.append(("federationSaveStatusResponse", response))
+
+    def requestFederationRestoreSucceeded(self, label: str) -> None:  # noqa: N802
+        self.events.append(("requestFederationRestoreSucceeded", label))
+
+    def requestFederationRestoreFailed(self, label: str) -> None:  # noqa: N802
+        self.events.append(("requestFederationRestoreFailed", label))
+
+    def federationRestoreBegun(self) -> None:  # noqa: N802
+        self.events.append(("federationRestoreBegun", ()))
+
+    def initiateFederateRestore(self, label: str, federateName: str, federateHandle: Any) -> None:  # noqa: N802
+        self.events.append(("initiateFederateRestore", (label, federateName, federateHandle)))
+
+    def federationRestored(self) -> None:  # noqa: N802
+        self.events.append(("federationRestored", ()))
+
+    def federationNotRestored(self, reason: Any) -> None:  # noqa: N802
+        self.events.append(("federationNotRestored", reason))
+
+    def federationRestoreStatusResponse(self, response: Any) -> None:  # noqa: N802
+        self.events.append(("federationRestoreStatusResponse", response))
+
+    def provideAttributeValueUpdate(self, objectInstance: Any, attributes: Any, userSuppliedTag: bytes) -> None:  # noqa: N802
+        self.events.append(("provideAttributeValueUpdate", (objectInstance, attributes, userSuppliedTag)))
+
+    def removeObjectInstance(  # noqa: N802
+        self,
+        objectInstance: Any,
+        userSuppliedTag: bytes,
+        producingFederate: Any,
+        time: Any = None,
+        sentOrderType: Any = None,
+        receivedOrderType: Any = None,
+        optionalRetraction: Any = None,
+    ) -> None:
+        self.events.append(
+            (
+                "removeObjectInstance",
+                (objectInstance, userSuppliedTag, producingFederate, time, sentOrderType, receivedOrderType, optionalRetraction),
+            )
+        )
 
     def attributeOwnershipAcquisitionNotification(  # noqa: N802
         self,
@@ -1191,6 +1250,144 @@ def run_standard_2025_support_services_trace(backend_name: str) -> dict[str, Any
     }
 
 
+def run_standard_2025_save_restore_trace(backend_name: str) -> dict[str, Any]:
+    """Run a two-federate 2025 save/restore trace for a standard route."""
+
+    from hla.rti import create_rti_ambassador
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+
+    temp_dir, fom_module = _write_2025_runtime_capability_fom()
+    federation_name = f"ShimRouteSaveRestore{backend_name.replace('-', '').title()}{uuid.uuid4().hex[:8]}"
+    leader_fed = _Recording2025FederateAmbassador()
+    wing_fed = _Recording2025FederateAmbassador()
+    leader = create_rti_ambassador(spec="2025", backend=backend_name)
+    wing = create_rti_ambassador(spec="2025", backend=backend_name)
+    trace = [
+        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=leader.backend_info.details.get("standard_backed")),
+        _event("getHLAversion", value=leader.getHLAversion()),
+    ]
+    leader_connected = False
+    wing_connected = False
+    leader_joined = False
+    wing_joined = False
+    federation_created = False
+    try:
+        leader.connect(leader_fed, CallbackModel.HLA_EVOKED)
+        leader_connected = True
+        wing.connect(wing_fed, CallbackModel.HLA_EVOKED)
+        wing_connected = True
+        trace.append(_event("connect", federates=["leader", "wing"], callbackModel=CallbackModel.HLA_EVOKED))
+
+        leader.createFederationExecution(federationName=federation_name, fomModule=str(fom_module))
+        federation_created = True
+        trace.append(_event("createFederationExecution", federation=federation_name, fomModule=fom_module.name))
+        leader_handle = leader.joinFederationExecution("route-leader", "route-save-restore", federation_name)
+        leader_joined = True
+        wing_handle = wing.joinFederationExecution("route-wing", "route-save-restore", federation_name)
+        wing_joined = True
+        trace.append(_event("joinFederationExecution", leaderHandle=leader_handle, wingHandle=wing_handle))
+
+        object_class = leader.getObjectClassHandle("HLAobjectRoot.RouteTarget")
+        attribute = leader.getAttributeHandle(object_class, "Position")
+        wing_object_class = wing.getObjectClassHandle("HLAobjectRoot.RouteTarget")
+        wing_attribute = wing.getAttributeHandle(wing_object_class, "Position")
+        leader.publishObjectClassAttributes(object_class, {attribute})
+        wing.subscribeObjectClassAttributes(wing_object_class, {wing_attribute})
+        object_instance = leader.registerObjectInstance(object_class, f"RouteSavedTarget-{uuid.uuid4().hex[:8]}")
+        leader.timeAdvanceRequest(leader.getTimeFactory().makeTime(5))
+        trace.append(_event("preparedState", objectInstance=object_instance, logicalTime=leader.queryLogicalTime()))
+
+        leader.requestFederationSave("SAVE-1")
+        trace.append(
+            _event(
+                "requestFederationSave",
+                label="SAVE-1",
+                leaderInitiated=any(event == ("initiateFederateSave", "SAVE-1") for event in leader_fed.events),
+                wingInitiated=any(event == ("initiateFederateSave", "SAVE-1") for event in wing_fed.events),
+            )
+        )
+        leader.federateSaveBegun()
+        wing.federateSaveBegun()
+        leader.queryFederationSaveStatus()
+        trace.append(_event("queryFederationSaveStatus", response=leader_fed.events[-1][1]))
+        leader.federateSaveComplete()
+        wing.federateSaveComplete()
+        trace.append(
+            _event(
+                "federationSaved",
+                leaderSaved=any(name == "federationSaved" for name, _payload in leader_fed.events),
+                wingSaved=any(name == "federationSaved" for name, _payload in wing_fed.events),
+            )
+        )
+
+        leader.timeAdvanceRequest(leader.getTimeFactory().makeTime(9))
+        leader.deleteObjectInstance(object_instance, b"deleted-after-save")
+        trace.append(_event("mutatedAfterSave", logicalTime=leader.queryLogicalTime(), objectDeleted=True))
+
+        leader.requestFederationRestore("MISSING-SAVE")
+        trace.append(_event("requestFederationRestoreFailed", label=leader_fed.events[-1][1]))
+        leader.requestFederationRestore("SAVE-1")
+        trace.append(
+            _event(
+                "requestFederationRestore",
+                label="SAVE-1",
+                leaderSucceeded=any(event == ("requestFederationRestoreSucceeded", "SAVE-1") for event in leader_fed.events),
+                leaderBegun=any(name == "federationRestoreBegun" for name, _payload in leader_fed.events),
+                wingInitiated=any(name == "initiateFederateRestore" for name, _payload in wing_fed.events),
+            )
+        )
+        leader.queryFederationRestoreStatus()
+        trace.append(_event("queryFederationRestoreStatus", response=leader_fed.events[-1][1]))
+        leader.federateRestoreComplete()
+        wing.federateRestoreComplete()
+        trace.append(
+            _event(
+                "federationRestored",
+                leaderRestored=any(name == "federationRestored" for name, _payload in leader_fed.events),
+                wingRestored=any(name == "federationRestored" for name, _payload in wing_fed.events),
+                restoredLogicalTime=leader.queryLogicalTime(),
+                restoredObjectName=leader.getObjectInstanceName(object_instance),
+            )
+        )
+
+        wing.requestAttributeValueUpdate(object_instance, {wing_attribute}, b"after-restore")
+        trace.append(_event("restoredObjectProvidesUpdate", callback=leader_fed.events[-1]))
+    finally:
+        try:
+            if wing_joined:
+                wing.resignFederationExecution(ResignAction.NO_ACTION)
+                trace.append(_event("resignFederationExecution", federate="wing", action=ResignAction.NO_ACTION))
+            if leader_joined:
+                leader.resignFederationExecution(ResignAction.NO_ACTION)
+                trace.append(_event("resignFederationExecution", federate="leader", action=ResignAction.NO_ACTION))
+            if federation_created:
+                leader.destroyFederationExecution(federation_name)
+                trace.append(_event("destroyFederationExecution", federation=federation_name))
+            if wing_connected:
+                wing.disconnect()
+            if leader_connected:
+                leader.disconnect()
+            if wing_connected or leader_connected:
+                trace.append(_event("disconnect", federates=["leader", "wing"]))
+        finally:
+            close = getattr(wing, "close", None)
+            if callable(close):
+                close()
+            close = getattr(leader, "close", None)
+            if callable(close):
+                close()
+            shutil.rmtree(temp_dir, ignore_errors=True)
+
+    return {
+        "route": backend_name,
+        "edition": "2025",
+        "scenario": "save-restore-runtime",
+        "status": "trace-green",
+        "requirements_exercised": SAVE_RESTORE_REQUIREMENTS_2025,
+        "trace": trace,
+    }
+
+
 __all__ = [
     "run_2025_time_management_trace",
     "run_standard_2010_exchange_trace",
@@ -1199,5 +1396,6 @@ __all__ = [
     "run_standard_2025_object_exchange_trace",
     "run_standard_2025_ownership_trace",
     "run_standard_2025_runtime_capability_trace",
+    "run_standard_2025_save_restore_trace",
     "run_standard_2025_support_services_trace",
 ]

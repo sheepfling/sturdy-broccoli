@@ -385,6 +385,67 @@ def test_standard_2025_routes_pass_support_services_when_built(backend_name: str
         "cpp-standard-2025-grpc",
     ],
 )
+def test_standard_2025_routes_pass_save_restore_when_built(backend_name: str) -> None:
+    if "java-standard-2025" in backend_name and not JAVA_2025_JAR.exists():
+        pytest.skip("Java 2025 standard shim jar has not been built")
+    if "cpp-standard-2025" in backend_name and not CPP_2025_LIB.exists():
+        pytest.skip("C++ 2025 standard shim artifact has not been built")
+
+    from hla.verification.shim_route_evidence import run_standard_2025_save_restore_trace
+
+    evidence = run_standard_2025_save_restore_trace(backend_name)
+    event_names = {event["event"] for event in evidence["trace"]}
+    save = next(event for event in evidence["trace"] if event["event"] == "requestFederationSave")
+    saved = next(event for event in evidence["trace"] if event["event"] == "federationSaved")
+    restore_failed = next(event for event in evidence["trace"] if event["event"] == "requestFederationRestoreFailed")
+    restore = next(event for event in evidence["trace"] if event["event"] == "requestFederationRestore")
+    restored = next(event for event in evidence["trace"] if event["event"] == "federationRestored")
+    restored_update = next(event for event in evidence["trace"] if event["event"] == "restoredObjectProvidesUpdate")
+
+    assert evidence["status"] == "trace-green"
+    assert evidence["scenario"] == "save-restore-runtime"
+    assert "HLA2025-FI-005" in evidence["requirements_exercised"]
+    assert {
+        "routeSelected",
+        "connect",
+        "createFederationExecution",
+        "joinFederationExecution",
+        "preparedState",
+        "requestFederationSave",
+        "queryFederationSaveStatus",
+        "federationSaved",
+        "mutatedAfterSave",
+        "requestFederationRestoreFailed",
+        "requestFederationRestore",
+        "queryFederationRestoreStatus",
+        "federationRestored",
+        "restoredObjectProvidesUpdate",
+        "disconnect",
+    } <= event_names
+    assert save["leaderInitiated"] is True
+    assert save["wingInitiated"] is True
+    assert saved["leaderSaved"] is True
+    assert saved["wingSaved"] is True
+    assert restore_failed["label"] == "MISSING-SAVE"
+    assert restore["leaderSucceeded"] is True
+    assert restore["leaderBegun"] is True
+    assert restore["wingInitiated"] is True
+    assert restored["leaderRestored"] is True
+    assert restored["wingRestored"] is True
+    assert restored["restoredLogicalTime"]["value"] == 5
+    assert restored["restoredObjectName"].startswith("RouteSavedTarget-")
+    assert restored_update["callback"][0] == "provideAttributeValueUpdate"
+
+
+@pytest.mark.parametrize(
+    "backend_name",
+    [
+        "java-standard-2025-jpype",
+        "java-standard-2025-py4j",
+        "cpp-standard-2025-pybind",
+        "cpp-standard-2025-grpc",
+    ],
+)
 def test_standard_2025_routes_pass_runtime_capability_when_built(backend_name: str) -> None:
     if "java-standard-2025" in backend_name and not JAVA_2025_JAR.exists():
         pytest.skip("Java 2025 standard shim jar has not been built")
