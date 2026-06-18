@@ -8,7 +8,7 @@ partial slices, and planned work without using HLA conformance language.
 - Initial curated registry rows: 28
 - Imported executable-test rows: 1117
 - Completion-backlog rows: 27
-- High-priority rows still open: 22
+- High-priority rows still open: 21
 
 ## Implemented Evidence Slices
 
@@ -20,6 +20,7 @@ partial slices, and planned work without using HLA conformance language.
 | 2025-lifecycle-and-members | implemented-slice | HLA2025-FI-005, HLA2025-FI-006, HLA2025-NEW-002, HLA2025-NEW-003 | tests/test_rti1516_2025_spec_and_shim.py, packages/hla-backend-shim/src/hla/backends/shim/backend.py |
 | 2025-logical-time | partial | HLA2025-FR-010, HLA2025-FI-009, HLA2025-MOD-006 | tests/test_rti1516_2025_spec_and_shim.py, tests/backends/test_shim_route_trace_evidence.py, packages/hla-rti1516-2025/src/hla/rti1516_2025/time.py |
 | 2025-fom-showcase | implemented-slice | HLA2025-FR-001, HLA2025-FR-003, HLA2025-FR-004 | tests/scenarios/test_proto2025_fom_showcase.py, packages/hla-verification/src/hla/verification/repo_internal/verification/proto2025_fom_showcase.py |
+| 2025-handle-normalization | implemented-slice | HLA2025-NEW-005, HLA2025-FI-001 | tests/test_rti1516_2025_spec_and_shim.py, packages/hla-rti1516-2025/src/hla/rti1516_2025/handles.py, packages/hla-backend-shim/src/hla/backends/shim/backend.py |
 
 ## Highest-Priority Open Work
 
@@ -42,7 +43,6 @@ partial slices, and planned work without using HLA conformance language.
 | HLA2025-MOD-009 | Exception delta pass | high | planned | Negative-path matrix driven by differential exception rows |
 | HLA2025-MOD-010 | XML logical time naming | high | planned | XML parser round-trip and stale-token grep guard |
 | HLA2025-NEW-004 | Default attribute policy changes | high | planned | Object update policy tests for default transportation and order |
-| HLA2025-NEW-005 | Handle normalization | high | planned | Handle normalization unit tests and binding adapter tests |
 | HLA2025-NEW-007 | MOM service reporting changes | high | planned | MOM report serialization tests and service-reporting switch tests |
 | HLA2025-RET-001 | Advisory switch enable disable services | high | planned | Disposition test over retired/mapped rows and switch backlog rows |
 | HLA2025-RET-002 | Supplemental callback info helpers | high | planned | Disposition test plus callback signature tests |

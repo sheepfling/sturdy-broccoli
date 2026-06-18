@@ -209,6 +209,61 @@ def test_2025_shim_reports_federate_resigned_callback_with_reason_context() -> N
     rti.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-NEW-005", "HLA2025-FI-001", "HLA2025-FI-005")
+def test_2025_shim_normalizes_typed_handles_and_rejects_wrong_handle_family() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction, ServiceGroup
+    from hla.rti1516_2025.exceptions import (
+        InvalidFederateHandle,
+        InvalidInteractionClassHandle,
+        InvalidObjectClassHandle,
+        InvalidObjectInstanceHandle,
+        InvalidServiceGroup,
+    )
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.handles import (
+        FederateHandle,
+        InteractionClassHandle,
+        ObjectClassHandle,
+        ObjectInstanceHandle,
+    )
+
+    federation_name = f"shim-normalize-{uuid.uuid4().hex[:8]}"
+    rti = create_rti_ambassador(backend="shim")
+
+    rti.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    rti.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    federate_handle = rti.joinFederationExecution(
+        federateName="Normalizer",
+        federateType="TestFederate",
+        federationName=federation_name,
+    )
+
+    assert isinstance(federate_handle, FederateHandle)
+    assert rti.normalizeFederateHandle(federate_handle) == federate_handle.value
+    assert rti.normalizeServiceGroup(ServiceGroup.SUPPORT_SERVICES) == int(ServiceGroup.SUPPORT_SERVICES)
+    assert rti.normalizeObjectClassHandle(ObjectClassHandle(11)) == 11
+    assert rti.normalizeInteractionClassHandle(InteractionClassHandle(12)) == 12
+    assert rti.normalizeObjectInstanceHandle(ObjectInstanceHandle(13)) == 13
+
+    with pytest.raises(InvalidFederateHandle):
+        rti.normalizeFederateHandle(ObjectClassHandle(1))
+    with pytest.raises(InvalidObjectClassHandle):
+        rti.normalizeObjectClassHandle(FederateHandle(1))
+    with pytest.raises(InvalidInteractionClassHandle):
+        rti.normalizeInteractionClassHandle(ObjectInstanceHandle(1))
+    with pytest.raises(InvalidObjectInstanceHandle):
+        rti.normalizeObjectInstanceHandle(InteractionClassHandle(1))
+    with pytest.raises(InvalidServiceGroup):
+        rti.normalizeServiceGroup("not-a-service-group")
+
+    rti.resignFederationExecution(ResignAction.NO_ACTION)
+    rti.destroyFederationExecution(federationName=federation_name)
+    rti.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-NEW-002", "HLA2025-FI-001", "HLA2025-FI-005")
 def test_2025_shim_reports_federation_executions_and_members() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction

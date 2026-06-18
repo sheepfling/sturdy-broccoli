@@ -6,7 +6,8 @@ Sources: Java handle interfaces and C++ RTI/Handle.h plus RTI/Typedefs.h.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Generic, Mapping, NamedTuple, Self, TypeVar
+from dataclasses import dataclass
+from typing import Any, Generic, Mapping, NamedTuple, Self, TypeVar
 
 
 class HandleKind(ABC):
@@ -42,39 +43,79 @@ class HandleKind(ABC):
 T = TypeVar("T", bound=HandleKind)
 
 
-class FederateHandle(HandleKind): ...
+@dataclass(frozen=True, order=True)
+class _IntegerHandle(HandleKind):
+    value: int
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.value, int):
+            raise TypeError(f"{type(self).__name__} value must be an integer")
+        if self.value < 0:
+            raise ValueError(f"{type(self).__name__} value must be non-negative")
+
+    def encodedLength(self) -> int:
+        return 8
+
+    def encode(self, buffer: bytearray | None = None, offset: int = 0) -> bytes | bytearray:
+        data = int(self.value).to_bytes(self.encodedLength(), byteorder="big", signed=False)
+        if buffer is None:
+            return data
+        buffer[offset : offset + len(data)] = data
+        return buffer
+
+    def encoded(self) -> bytes:
+        return self.encode()  # type: ignore[return-value]
+
+    def toInt(self) -> int:
+        return self.value
+
+    def __str__(self) -> str:
+        return f"{type(self).__name__}({self.value})"
+
+    @classmethod
+    def decode(cls, data: bytes | bytearray | memoryview, offset: int = 0) -> Self:
+        raw = bytes(data[offset : offset + 8])
+        if len(raw) != 8:
+            raise ValueError(f"Need 8 bytes to decode {cls.__name__}; got {len(raw)}")
+        return cls(int.from_bytes(raw, byteorder="big", signed=False))
 
 
-class ObjectClassHandle(HandleKind): ...
+class FederateHandle(_IntegerHandle): ...
 
 
-class InteractionClassHandle(HandleKind): ...
+class ObjectClassHandle(_IntegerHandle): ...
 
 
-class ObjectInstanceHandle(HandleKind): ...
+class InteractionClassHandle(_IntegerHandle): ...
 
 
-class AttributeHandle(HandleKind): ...
+class ObjectInstanceHandle(_IntegerHandle): ...
 
 
-class ParameterHandle(HandleKind): ...
+class AttributeHandle(_IntegerHandle): ...
 
 
-class DimensionHandle(HandleKind): ...
+class ParameterHandle(_IntegerHandle): ...
 
 
-class MessageRetractionHandle(HandleKind): ...
+class DimensionHandle(_IntegerHandle): ...
 
 
-class RegionHandle(HandleKind): ...
+class MessageRetractionHandle(_IntegerHandle): ...
 
 
-class TransportationTypeHandle(HandleKind): ...
+class RegionHandle(_IntegerHandle): ...
+
+
+class TransportationTypeHandle(_IntegerHandle): ...
 
 
 class HandleSet(Generic[T], set[T], ABC):
     @abstractmethod
     def clone(self) -> Self: ...
+
+    def _validate(self, value: Any) -> T:
+        return value
 
 
 class AttributeHandleSet(HandleSet[AttributeHandle], ABC): ...

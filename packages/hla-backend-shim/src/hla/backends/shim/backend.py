@@ -14,7 +14,7 @@ from hla.rti1516_2025.datatypes import (
     FederationExecutionMemberInformationSet,
     TimeQueryReturn,
 )
-from hla.rti1516_2025.enums import AdditionalSettingsResultCode, CallbackModel, ResignAction
+from hla.rti1516_2025.enums import AdditionalSettingsResultCode, CallbackModel, ResignAction, ServiceGroup
 from hla.rti1516_2025.exceptions import (
     AlreadyConnected,
     CouldNotCreateLogicalTimeFactory,
@@ -31,10 +31,15 @@ from hla.rti1516_2025.exceptions import (
     FederationExecutionDoesNotExist,
     InconsistentFOM,
     InvalidCredentials,
+    InvalidFederateHandle,
     InvalidFOM,
+    InvalidInteractionClassHandle,
     InvalidLogicalTime,
     InvalidLookahead,
     InvalidMIM,
+    InvalidObjectClassHandle,
+    InvalidObjectInstanceHandle,
+    InvalidServiceGroup,
     LogicalTimeAlreadyPassed,
     NotConnected,
     RTIinternalError,
@@ -43,6 +48,12 @@ from hla.rti1516_2025.exceptions import (
     UnsupportedCallbackModel,
 )
 from hla.rti1516_2025.federate_ambassador import FederateAmbassador
+from hla.rti1516_2025.handles import (
+    FederateHandle,
+    InteractionClassHandle,
+    ObjectClassHandle,
+    ObjectInstanceHandle,
+)
 
 _DEFAULT_LOGICAL_TIME_IMPLEMENTATION = "HLAinteger64Time"
 _SUPPORTED_LOGICAL_TIME_IMPLEMENTATIONS = frozenset(
@@ -83,6 +94,7 @@ class Shim2025RTIAmbassador:
         self._joined = False
         self._federation_name: str | None = None
         self._federate_name: str | None = None
+        self._federate_handle: FederateHandle | None = None
         self._federate_ambassador: FederateAmbassador | None = None
         self._callback_model: CallbackModel | None = None
         self._logical_time_implementation_name = _DEFAULT_LOGICAL_TIME_IMPLEMENTATION
@@ -132,6 +144,7 @@ class Shim2025RTIAmbassador:
         self._joined = False
         self._federation_name = None
         self._federate_name = None
+        self._federate_handle = None
         self._federate_ambassador = None
         self._callback_model = None
         self._logical_time_implementation_name = _DEFAULT_LOGICAL_TIME_IMPLEMENTATION
@@ -246,11 +259,12 @@ class Shim2025RTIAmbassador:
         federate_type = self._extract_federate_type(args, kwargs)
         if federate_name is not None:
             federation.members[federate_name] = federate_type
+        self._federate_handle = FederateHandle(max(1, len(federation.members)))
         self._select_logical_time_implementation(federation.logical_time_implementation_name)
         self._federation_name = federation_name
         self._federate_name = federate_name
         self._joined = True
-        return None
+        return self._federate_handle
 
     def resignFederationExecution(self, resignAction: ResignAction) -> None:  # noqa: N802
         self._record("resignFederationExecution", resignAction)
@@ -261,6 +275,7 @@ class Shim2025RTIAmbassador:
         self._joined = False
         self._federation_name = None
         self._federate_name = None
+        self._federate_handle = None
 
     def evokeCallback(self, approximateMinimumTimeInSeconds: float) -> bool:  # noqa: N802
         self._record("evokeCallback", approximateMinimumTimeInSeconds)
@@ -342,6 +357,34 @@ class Shim2025RTIAmbassador:
         self._record("getTimeFactory")
         self._require_connected("getTimeFactory")
         return self._logical_time_factory
+
+    def normalizeServiceGroup(self, serviceGroup: Any) -> int:  # noqa: N802
+        self._record("normalizeServiceGroup", serviceGroup)
+        self._require_joined("normalizeServiceGroup")
+        try:
+            return int(serviceGroup if isinstance(serviceGroup, ServiceGroup) else ServiceGroup(serviceGroup))
+        except Exception as exc:
+            raise InvalidServiceGroup(repr(serviceGroup)) from exc
+
+    def normalizeFederateHandle(self, federate: Any) -> int:  # noqa: N802
+        self._record("normalizeFederateHandle", federate)
+        self._require_joined("normalizeFederateHandle")
+        return self._normalize_handle(federate, FederateHandle, InvalidFederateHandle)
+
+    def normalizeObjectClassHandle(self, objectClass: Any) -> int:  # noqa: N802
+        self._record("normalizeObjectClassHandle", objectClass)
+        self._require_joined("normalizeObjectClassHandle")
+        return self._normalize_handle(objectClass, ObjectClassHandle, InvalidObjectClassHandle)
+
+    def normalizeInteractionClassHandle(self, interactionClass: Any) -> int:  # noqa: N802
+        self._record("normalizeInteractionClassHandle", interactionClass)
+        self._require_joined("normalizeInteractionClassHandle")
+        return self._normalize_handle(interactionClass, InteractionClassHandle, InvalidInteractionClassHandle)
+
+    def normalizeObjectInstanceHandle(self, objectInstance: Any) -> int:  # noqa: N802
+        self._record("normalizeObjectInstanceHandle", objectInstance)
+        self._require_joined("normalizeObjectInstanceHandle")
+        return self._normalize_handle(objectInstance, ObjectInstanceHandle, InvalidObjectInstanceHandle)
 
     def getHLAversion(self) -> str:  # noqa: N802
         self._record("getHLAversion")
@@ -627,6 +670,15 @@ class Shim2025RTIAmbassador:
             f"federationName={self._federation_name}; "
             f"resignAction={action}"
         )
+
+    @staticmethod
+    def _normalize_handle(handle: Any, expected_type: type[Any], exception_type: type[Exception]) -> int:
+        if not isinstance(handle, expected_type):
+            raise exception_type(f"Expected {expected_type.__name__}; got {type(handle).__name__}")
+        value = getattr(handle, "value", None)
+        if not isinstance(value, int) or value < 0:
+            raise exception_type(f"Invalid {expected_type.__name__}: {handle!r}")
+        return value
 
 
 class Shim2025Backend:
