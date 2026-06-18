@@ -421,8 +421,10 @@ _URI_SCHEME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
 _STANDARD_TIME_BY_DATATYPE_HINT = {
     "HLAfloat64BE": "HLAfloat64Time",
     "HLAfloat64LE": "HLAfloat64Time",
+    "HLAfloat64Time": "HLAfloat64Time",
     "HLAinteger64BE": "HLAinteger64Time",
     "HLAinteger64LE": "HLAinteger64Time",
+    "HLAinteger64Time": "HLAinteger64Time",
 }
 _IEEE_1516_2010_NAMESPACE = "http://standards.ieee.org/IEEE1516-2010"
 _IEEE_1516_2025_NAMESPACE = "http://standards.ieee.org/IEEE1516-2025"
@@ -435,6 +437,10 @@ _DEFAULT_SCHEMA_LOCATION = (
 _DEFAULT_OMT_SCHEMA_LOCATION = (
     f"{_IEEE_1516_2010_NAMESPACE} "
     "http://standards.ieee.org/downloads/1516/1516.2-2010/IEEE1516-OMT-2010.xsd"
+)
+_DEFAULT_OMT_2025_SCHEMA_LOCATION = (
+    f"{_IEEE_1516_2025_NAMESPACE} "
+    "http://standards.ieee.org/downloads/1516/1516.2-2025/IEEE1516-OMT-2025.xsd"
 )
 _ALLOWED_OMT_NAMESPACES = {_IEEE_1516_2010_NAMESPACE, _IEEE_1516_2025_NAMESPACE, _SISO_1516_2010_NAMESPACE}
 _STANDARD_TRANSPORTATION_TYPES = {"HLAreliable", "HLAbestEffort"}
@@ -814,7 +820,12 @@ def _infer_time_implementation(root: ET.Element) -> str | None:
     if time_section is None:
         return None
     hints: list[str] = []
-    for container in _direct_children(time_section, "timeStamp") + _direct_children(time_section, "lookahead"):
+    for container in (
+        _direct_children(time_section, "timeStamp")
+        + _direct_children(time_section, "lookahead")
+        + _direct_children(time_section, "logicalTime")
+        + _direct_children(time_section, "logicalTimeInterval")
+    ):
         data_type = _child_text(container, "dataType")
         if data_type:
             hints.append(data_type)
@@ -829,9 +840,14 @@ def _extract_time_datatypes(root: ET.Element) -> tuple[str | None, str | None]:
     time_section = next((child for child in list(root) if _local_name(child.tag) == "time"), None)
     if time_section is None:
         return None, None
+    logical_time = next(iter(_direct_children(time_section, "logicalTime")), None)
+    logical_time_interval = next(iter(_direct_children(time_section, "logicalTimeInterval")), None)
     time_stamp = next(iter(_direct_children(time_section, "timeStamp")), None)
     lookahead = next(iter(_direct_children(time_section, "lookahead")), None)
-    return _child_text(time_stamp, "dataType"), _child_text(lookahead, "dataType")
+    return (
+        _child_text(logical_time, "dataType") or _child_text(time_stamp, "dataType"),
+        _child_text(logical_time_interval, "dataType") or _child_text(lookahead, "dataType"),
+    )
 
 
 def _extract_transportation_names(root: ET.Element, *, path: Path) -> tuple[str, ...]:
@@ -2142,103 +2158,113 @@ def _serializer_datatype_sections(
     return basics, simples, references, enumerateds, arrays, fixed_records, variant_records
 
 
-def serialize_fom_module(module: FOMModule) -> str:
+def _serialization_namespace_and_schema(edition: str) -> tuple[str, str, str, str]:
+    normalized = str(edition).strip().lower()
+    if normalized in {"2025", "1516-2025", "ieee1516-2025", "rti1516_2025"}:
+        return _IEEE_1516_2025_NAMESPACE, _DEFAULT_OMT_2025_SCHEMA_LOCATION, "logicalTime", "logicalTimeInterval"
+    if normalized in {"2010", "1516-2010", "ieee1516-2010", "rti1516e"}:
+        return _IEEE_1516_2010_NAMESPACE, _DEFAULT_OMT_SCHEMA_LOCATION, "timeStamp", "lookahead"
+    raise ValueError(f"Unsupported FOM serialization edition {edition!r}")
+
+
+def serialize_fom_module(module: FOMModule, *, edition: str = "2010") -> str:
     """Serialize the implemented metadata subset of a FOM module to strict OMT XML."""
 
-    ET.register_namespace("", _IEEE_1516_2010_NAMESPACE)
+    namespace, schema_location, logical_time_tag, logical_interval_tag = _serialization_namespace_and_schema(edition)
+    ET.register_namespace("", namespace)
     ET.register_namespace("xsi", _XML_SCHEMA_INSTANCE_NAMESPACE)
     root = ET.Element(
-        f"{{{_IEEE_1516_2010_NAMESPACE}}}objectModel",
+        f"{{{namespace}}}objectModel",
         {
-            f"{{{_XML_SCHEMA_INSTANCE_NAMESPACE}}}schemaLocation": _DEFAULT_OMT_SCHEMA_LOCATION,
+            f"{{{_XML_SCHEMA_INSTANCE_NAMESPACE}}}schemaLocation": schema_location,
         },
     )
-    model_identification = ET.SubElement(root, f"{{{_IEEE_1516_2010_NAMESPACE}}}modelIdentification")
-    ET.SubElement(model_identification, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = module.name or "Generated OMT Module"
-    ET.SubElement(model_identification, f"{{{_IEEE_1516_2010_NAMESPACE}}}type").text = module.model_type or "FOM"
-    ET.SubElement(model_identification, f"{{{_IEEE_1516_2010_NAMESPACE}}}version").text = "1.0"
-    ET.SubElement(model_identification, f"{{{_IEEE_1516_2010_NAMESPACE}}}modificationDate").text = _today_iso_date()
-    ET.SubElement(model_identification, f"{{{_IEEE_1516_2010_NAMESPACE}}}securityClassification").text = "Unclassified"
-    ET.SubElement(model_identification, f"{{{_IEEE_1516_2010_NAMESPACE}}}description").text = (
+    model_identification = ET.SubElement(root, f"{{{namespace}}}modelIdentification")
+    ET.SubElement(model_identification, f"{{{namespace}}}name").text = module.name or "Generated OMT Module"
+    ET.SubElement(model_identification, f"{{{namespace}}}type").text = module.model_type or "FOM"
+    ET.SubElement(model_identification, f"{{{namespace}}}version").text = "1.0"
+    ET.SubElement(model_identification, f"{{{namespace}}}modificationDate").text = _today_iso_date()
+    ET.SubElement(model_identification, f"{{{namespace}}}securityClassification").text = "Unclassified"
+    ET.SubElement(model_identification, f"{{{namespace}}}description").text = (
         f"Serialized OMT module generated by hla2010 for {module.name or 'an unnamed module'}."
     )
-    poc = ET.SubElement(model_identification, f"{{{_IEEE_1516_2010_NAMESPACE}}}poc")
-    ET.SubElement(poc, f"{{{_IEEE_1516_2010_NAMESPACE}}}pocType").text = "Sponsor"
-    ET.SubElement(poc, f"{{{_IEEE_1516_2010_NAMESPACE}}}pocName").text = "hla2010"
+    poc = ET.SubElement(model_identification, f"{{{namespace}}}poc")
+    ET.SubElement(poc, f"{{{namespace}}}pocType").text = "Sponsor"
+    ET.SubElement(poc, f"{{{namespace}}}pocName").text = "hla2010"
 
     if module.service_utilization:
-        service_utilization = ET.SubElement(root, f"{{{_IEEE_1516_2010_NAMESPACE}}}serviceUtilization")
+        service_utilization = ET.SubElement(root, f"{{{namespace}}}serviceUtilization")
         for service_name, attrs in dict(module.service_utilization).items():
-            ET.SubElement(service_utilization, f"{{{_IEEE_1516_2010_NAMESPACE}}}{service_name}", dict(attrs))
+            ET.SubElement(service_utilization, f"{{{namespace}}}{service_name}", dict(attrs))
 
-    objects = ET.SubElement(root, f"{{{_IEEE_1516_2010_NAMESPACE}}}objects")
-    _serialize_object_class_tree(objects, module.object_classes)
+    objects = ET.SubElement(root, f"{{{namespace}}}objects")
+    _serialize_object_class_tree(objects, module.object_classes, namespace=namespace)
 
-    interactions = ET.SubElement(root, f"{{{_IEEE_1516_2010_NAMESPACE}}}interactions")
-    _serialize_interaction_class_tree(interactions, module.interaction_classes)
+    interactions = ET.SubElement(root, f"{{{namespace}}}interactions")
+    _serialize_interaction_class_tree(interactions, module.interaction_classes, namespace=namespace)
 
-    dimensions = ET.SubElement(root, f"{{{_IEEE_1516_2010_NAMESPACE}}}dimensions")
+    dimensions = ET.SubElement(root, f"{{{namespace}}}dimensions")
     for name in module.dimensions:
-        dimension = ET.SubElement(dimensions, f"{{{_IEEE_1516_2010_NAMESPACE}}}dimension")
-        ET.SubElement(dimension, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = name
+        dimension = ET.SubElement(dimensions, f"{{{namespace}}}dimension")
+        ET.SubElement(dimension, f"{{{namespace}}}name").text = name
 
     if module.time_stamp_datatype or module.lookahead_datatype:
-        time = ET.SubElement(root, f"{{{_IEEE_1516_2010_NAMESPACE}}}time")
+        time = ET.SubElement(root, f"{{{namespace}}}time")
         if module.time_stamp_datatype:
-            time_stamp = ET.SubElement(time, f"{{{_IEEE_1516_2010_NAMESPACE}}}timeStamp")
-            ET.SubElement(time_stamp, f"{{{_IEEE_1516_2010_NAMESPACE}}}dataType").text = module.time_stamp_datatype
+            time_stamp = ET.SubElement(time, f"{{{namespace}}}{logical_time_tag}")
+            ET.SubElement(time_stamp, f"{{{namespace}}}dataType").text = module.time_stamp_datatype
         if module.lookahead_datatype:
-            lookahead = ET.SubElement(time, f"{{{_IEEE_1516_2010_NAMESPACE}}}lookahead")
-            ET.SubElement(lookahead, f"{{{_IEEE_1516_2010_NAMESPACE}}}dataType").text = module.lookahead_datatype
+            lookahead = ET.SubElement(time, f"{{{namespace}}}{logical_interval_tag}")
+            ET.SubElement(lookahead, f"{{{namespace}}}dataType").text = module.lookahead_datatype
 
     if module.tag_representations:
-        tags = ET.SubElement(root, f"{{{_IEEE_1516_2010_NAMESPACE}}}tags")
+        tags = ET.SubElement(root, f"{{{namespace}}}tags")
         for category, metadata in dict(module.tag_representations).items():
-            tag = ET.SubElement(tags, f"{{{_IEEE_1516_2010_NAMESPACE}}}{category}")
+            tag = ET.SubElement(tags, f"{{{namespace}}}{category}")
             if metadata.get("datatype"):
-                ET.SubElement(tag, f"{{{_IEEE_1516_2010_NAMESPACE}}}dataType").text = metadata["datatype"]
+                ET.SubElement(tag, f"{{{namespace}}}dataType").text = metadata["datatype"]
             if metadata.get("semantics"):
-                ET.SubElement(tag, f"{{{_IEEE_1516_2010_NAMESPACE}}}semantics").text = metadata["semantics"]
+                ET.SubElement(tag, f"{{{namespace}}}semantics").text = metadata["semantics"]
 
     if module.synchronization_points:
-        synchronizations = ET.SubElement(root, f"{{{_IEEE_1516_2010_NAMESPACE}}}synchronizations")
+        synchronizations = ET.SubElement(root, f"{{{namespace}}}synchronizations")
         for label, metadata in dict(module.synchronization_points).items():
-            synchronization = ET.SubElement(synchronizations, f"{{{_IEEE_1516_2010_NAMESPACE}}}synchronizationPoint")
-            ET.SubElement(synchronization, f"{{{_IEEE_1516_2010_NAMESPACE}}}label").text = label
+            synchronization = ET.SubElement(synchronizations, f"{{{namespace}}}synchronizationPoint")
+            ET.SubElement(synchronization, f"{{{namespace}}}label").text = label
             if metadata.get("tag_datatype"):
-                ET.SubElement(synchronization, f"{{{_IEEE_1516_2010_NAMESPACE}}}dataType").text = metadata["tag_datatype"]
+                ET.SubElement(synchronization, f"{{{namespace}}}dataType").text = metadata["tag_datatype"]
             if metadata.get("capability"):
-                ET.SubElement(synchronization, f"{{{_IEEE_1516_2010_NAMESPACE}}}capability").text = metadata["capability"]
+                ET.SubElement(synchronization, f"{{{namespace}}}capability").text = metadata["capability"]
             if metadata.get("semantics"):
-                ET.SubElement(synchronization, f"{{{_IEEE_1516_2010_NAMESPACE}}}semantics").text = metadata["semantics"]
+                ET.SubElement(synchronization, f"{{{namespace}}}semantics").text = metadata["semantics"]
 
-    transportations = ET.SubElement(root, f"{{{_IEEE_1516_2010_NAMESPACE}}}transportations")
+    transportations = ET.SubElement(root, f"{{{namespace}}}transportations")
     declared_transportations: list[str] = ["HLAreliable", "HLAbestEffort"]
     for name in module.transportation_names:
         if name not in declared_transportations:
             declared_transportations.append(name)
     for name in declared_transportations:
-        transportation = ET.SubElement(transportations, f"{{{_IEEE_1516_2010_NAMESPACE}}}transportation")
-        ET.SubElement(transportation, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = name
-        ET.SubElement(transportation, f"{{{_IEEE_1516_2010_NAMESPACE}}}reliable").text = (
+        transportation = ET.SubElement(transportations, f"{{{namespace}}}transportation")
+        ET.SubElement(transportation, f"{{{namespace}}}name").text = name
+        ET.SubElement(transportation, f"{{{namespace}}}reliable").text = (
             _STRICT_OMT_TRANSPORTATION_RELIABILITY.get(name, "Yes")
         )
 
-    switches = ET.SubElement(root, f"{{{_IEEE_1516_2010_NAMESPACE}}}switches")
+    switches = ET.SubElement(root, f"{{{namespace}}}switches")
     merged_switches = dict(_DEFAULT_SWITCH_SETTINGS)
     merged_switches.update(dict(module.switch_settings))
     for name, value in merged_switches.items():
         attrs = {"isEnabled": value}
         if name == "automaticResignAction":
             attrs = {"resignAction": value}
-        ET.SubElement(switches, f"{{{_IEEE_1516_2010_NAMESPACE}}}{name}", attrs)
+        ET.SubElement(switches, f"{{{namespace}}}{name}", attrs)
 
     if module.update_rates:
-        update_rates = ET.SubElement(root, f"{{{_IEEE_1516_2010_NAMESPACE}}}updateRates")
+        update_rates = ET.SubElement(root, f"{{{namespace}}}updateRates")
         for name, value in dict(module.update_rates).items():
-            update_rate = ET.SubElement(update_rates, f"{{{_IEEE_1516_2010_NAMESPACE}}}updateRate")
-            ET.SubElement(update_rate, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = name
-            ET.SubElement(update_rate, f"{{{_IEEE_1516_2010_NAMESPACE}}}rate").text = value
+            update_rate = ET.SubElement(update_rates, f"{{{namespace}}}updateRate")
+            ET.SubElement(update_rate, f"{{{namespace}}}name").text = name
+            ET.SubElement(update_rate, f"{{{namespace}}}rate").text = value
 
     (
         serializer_basic_datatypes,
@@ -2249,131 +2275,131 @@ def serialize_fom_module(module: FOMModule) -> str:
         serializer_fixed_record_datatypes,
         serializer_variant_record_datatypes,
     ) = _serializer_datatype_sections(module)
-    data_types = ET.SubElement(root, f"{{{_IEEE_1516_2010_NAMESPACE}}}dataTypes")
-    basic_data_representations = ET.SubElement(data_types, f"{{{_IEEE_1516_2010_NAMESPACE}}}basicDataRepresentations")
+    data_types = ET.SubElement(root, f"{{{namespace}}}dataTypes")
+    basic_data_representations = ET.SubElement(data_types, f"{{{namespace}}}basicDataRepresentations")
     for spec in serializer_basic_datatypes.values():
-        basic = ET.SubElement(basic_data_representations, f"{{{_IEEE_1516_2010_NAMESPACE}}}basicData")
-        ET.SubElement(basic, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = spec.name
+        basic = ET.SubElement(basic_data_representations, f"{{{namespace}}}basicData")
+        ET.SubElement(basic, f"{{{namespace}}}name").text = spec.name
         if spec.size:
-            ET.SubElement(basic, f"{{{_IEEE_1516_2010_NAMESPACE}}}size").text = spec.size
+            ET.SubElement(basic, f"{{{namespace}}}size").text = spec.size
         if spec.interpretation:
-            ET.SubElement(basic, f"{{{_IEEE_1516_2010_NAMESPACE}}}interpretation").text = spec.interpretation
+            ET.SubElement(basic, f"{{{namespace}}}interpretation").text = spec.interpretation
         if spec.endian:
-            ET.SubElement(basic, f"{{{_IEEE_1516_2010_NAMESPACE}}}endian").text = spec.endian
+            ET.SubElement(basic, f"{{{namespace}}}endian").text = spec.endian
         if spec.encoding:
-            ET.SubElement(basic, f"{{{_IEEE_1516_2010_NAMESPACE}}}encoding").text = spec.encoding
+            ET.SubElement(basic, f"{{{namespace}}}encoding").text = spec.encoding
         if spec.semantics:
-            ET.SubElement(basic, f"{{{_IEEE_1516_2010_NAMESPACE}}}semantics").text = spec.semantics
+            ET.SubElement(basic, f"{{{namespace}}}semantics").text = spec.semantics
 
-    simple_data_types = ET.SubElement(data_types, f"{{{_IEEE_1516_2010_NAMESPACE}}}simpleDataTypes")
+    simple_data_types = ET.SubElement(data_types, f"{{{namespace}}}simpleDataTypes")
     for spec in serializer_simple_datatypes.values():
-        simple_data = ET.SubElement(simple_data_types, f"{{{_IEEE_1516_2010_NAMESPACE}}}simpleData")
-        ET.SubElement(simple_data, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = spec.name
+        simple_data = ET.SubElement(simple_data_types, f"{{{namespace}}}simpleData")
+        ET.SubElement(simple_data, f"{{{namespace}}}name").text = spec.name
         if spec.representation:
-            ET.SubElement(simple_data, f"{{{_IEEE_1516_2010_NAMESPACE}}}representation").text = spec.representation
+            ET.SubElement(simple_data, f"{{{namespace}}}representation").text = spec.representation
         if spec.units:
-            ET.SubElement(simple_data, f"{{{_IEEE_1516_2010_NAMESPACE}}}units").text = spec.units
+            ET.SubElement(simple_data, f"{{{namespace}}}units").text = spec.units
         if spec.resolution:
-            ET.SubElement(simple_data, f"{{{_IEEE_1516_2010_NAMESPACE}}}resolution").text = spec.resolution
+            ET.SubElement(simple_data, f"{{{namespace}}}resolution").text = spec.resolution
         if spec.accuracy:
-            ET.SubElement(simple_data, f"{{{_IEEE_1516_2010_NAMESPACE}}}accuracy").text = spec.accuracy
+            ET.SubElement(simple_data, f"{{{namespace}}}accuracy").text = spec.accuracy
         if spec.semantics:
-            ET.SubElement(simple_data, f"{{{_IEEE_1516_2010_NAMESPACE}}}semantics").text = spec.semantics
+            ET.SubElement(simple_data, f"{{{namespace}}}semantics").text = spec.semantics
 
     if serializer_reference_datatypes:
-        reference_data_types = ET.SubElement(data_types, f"{{{_IEEE_1516_2010_NAMESPACE}}}referenceDataTypes")
+        reference_data_types = ET.SubElement(data_types, f"{{{namespace}}}referenceDataTypes")
         for spec in serializer_reference_datatypes.values():
-            reference = ET.SubElement(reference_data_types, f"{{{_IEEE_1516_2010_NAMESPACE}}}referenceDataType")
-            ET.SubElement(reference, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = spec.name
+            reference = ET.SubElement(reference_data_types, f"{{{namespace}}}referenceDataType")
+            ET.SubElement(reference, f"{{{namespace}}}name").text = spec.name
             if spec.representation:
-                ET.SubElement(reference, f"{{{_IEEE_1516_2010_NAMESPACE}}}representation").text = spec.representation
+                ET.SubElement(reference, f"{{{namespace}}}representation").text = spec.representation
             if spec.reference_class:
-                ET.SubElement(reference, f"{{{_IEEE_1516_2010_NAMESPACE}}}referenceClass").text = spec.reference_class
+                ET.SubElement(reference, f"{{{namespace}}}referenceClass").text = spec.reference_class
             if spec.referenced_attribute:
-                ET.SubElement(reference, f"{{{_IEEE_1516_2010_NAMESPACE}}}referencedAttribute").text = spec.referenced_attribute
+                ET.SubElement(reference, f"{{{namespace}}}referencedAttribute").text = spec.referenced_attribute
             if spec.semantics:
-                ET.SubElement(reference, f"{{{_IEEE_1516_2010_NAMESPACE}}}semantics").text = spec.semantics
+                ET.SubElement(reference, f"{{{namespace}}}semantics").text = spec.semantics
 
-    enumerated_data_types = ET.SubElement(data_types, f"{{{_IEEE_1516_2010_NAMESPACE}}}enumeratedDataTypes")
+    enumerated_data_types = ET.SubElement(data_types, f"{{{namespace}}}enumeratedDataTypes")
     for spec in serializer_enumerated_datatypes.values():
-        enumerated = ET.SubElement(enumerated_data_types, f"{{{_IEEE_1516_2010_NAMESPACE}}}enumeratedData")
-        ET.SubElement(enumerated, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = spec.name
+        enumerated = ET.SubElement(enumerated_data_types, f"{{{namespace}}}enumeratedData")
+        ET.SubElement(enumerated, f"{{{namespace}}}name").text = spec.name
         if spec.representation:
-            ET.SubElement(enumerated, f"{{{_IEEE_1516_2010_NAMESPACE}}}representation").text = spec.representation
+            ET.SubElement(enumerated, f"{{{namespace}}}representation").text = spec.representation
         if spec.semantics:
-            ET.SubElement(enumerated, f"{{{_IEEE_1516_2010_NAMESPACE}}}semantics").text = spec.semantics
+            ET.SubElement(enumerated, f"{{{namespace}}}semantics").text = spec.semantics
         for enumerator_spec in spec.enumerators:
-            enumerator = ET.SubElement(enumerated, f"{{{_IEEE_1516_2010_NAMESPACE}}}enumerator")
-            ET.SubElement(enumerator, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = enumerator_spec.name
+            enumerator = ET.SubElement(enumerated, f"{{{namespace}}}enumerator")
+            ET.SubElement(enumerator, f"{{{namespace}}}name").text = enumerator_spec.name
             for value in enumerator_spec.values:
-                ET.SubElement(enumerator, f"{{{_IEEE_1516_2010_NAMESPACE}}}value").text = value
+                ET.SubElement(enumerator, f"{{{namespace}}}value").text = value
 
-    array_data_types = ET.SubElement(data_types, f"{{{_IEEE_1516_2010_NAMESPACE}}}arrayDataTypes")
+    array_data_types = ET.SubElement(data_types, f"{{{namespace}}}arrayDataTypes")
     for spec in serializer_array_datatypes.values():
-        array_data = ET.SubElement(array_data_types, f"{{{_IEEE_1516_2010_NAMESPACE}}}arrayData")
-        ET.SubElement(array_data, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = spec.name
+        array_data = ET.SubElement(array_data_types, f"{{{namespace}}}arrayData")
+        ET.SubElement(array_data, f"{{{namespace}}}name").text = spec.name
         if spec.data_type:
-            ET.SubElement(array_data, f"{{{_IEEE_1516_2010_NAMESPACE}}}dataType").text = spec.data_type
+            ET.SubElement(array_data, f"{{{namespace}}}dataType").text = spec.data_type
         if spec.cardinality:
-            ET.SubElement(array_data, f"{{{_IEEE_1516_2010_NAMESPACE}}}cardinality").text = spec.cardinality
+            ET.SubElement(array_data, f"{{{namespace}}}cardinality").text = spec.cardinality
         if spec.encoding:
-            ET.SubElement(array_data, f"{{{_IEEE_1516_2010_NAMESPACE}}}encoding").text = spec.encoding
+            ET.SubElement(array_data, f"{{{namespace}}}encoding").text = spec.encoding
         if spec.semantics:
-            ET.SubElement(array_data, f"{{{_IEEE_1516_2010_NAMESPACE}}}semantics").text = spec.semantics
+            ET.SubElement(array_data, f"{{{namespace}}}semantics").text = spec.semantics
 
-    fixed_record_data_types = ET.SubElement(data_types, f"{{{_IEEE_1516_2010_NAMESPACE}}}fixedRecordDataTypes")
+    fixed_record_data_types = ET.SubElement(data_types, f"{{{namespace}}}fixedRecordDataTypes")
     for spec in serializer_fixed_record_datatypes.values():
-        fixed_record = ET.SubElement(fixed_record_data_types, f"{{{_IEEE_1516_2010_NAMESPACE}}}fixedRecordData")
-        ET.SubElement(fixed_record, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = spec.name
+        fixed_record = ET.SubElement(fixed_record_data_types, f"{{{namespace}}}fixedRecordData")
+        ET.SubElement(fixed_record, f"{{{namespace}}}name").text = spec.name
         if spec.encoding:
-            ET.SubElement(fixed_record, f"{{{_IEEE_1516_2010_NAMESPACE}}}encoding").text = spec.encoding
+            ET.SubElement(fixed_record, f"{{{namespace}}}encoding").text = spec.encoding
         if spec.semantics:
-            ET.SubElement(fixed_record, f"{{{_IEEE_1516_2010_NAMESPACE}}}semantics").text = spec.semantics
+            ET.SubElement(fixed_record, f"{{{namespace}}}semantics").text = spec.semantics
         for field_spec in spec.fields:
-            field = ET.SubElement(fixed_record, f"{{{_IEEE_1516_2010_NAMESPACE}}}field")
-            ET.SubElement(field, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = field_spec.name
+            field = ET.SubElement(fixed_record, f"{{{namespace}}}field")
+            ET.SubElement(field, f"{{{namespace}}}name").text = field_spec.name
             if field_spec.data_type:
-                ET.SubElement(field, f"{{{_IEEE_1516_2010_NAMESPACE}}}dataType").text = field_spec.data_type
+                ET.SubElement(field, f"{{{namespace}}}dataType").text = field_spec.data_type
             if field_spec.semantics:
-                ET.SubElement(field, f"{{{_IEEE_1516_2010_NAMESPACE}}}semantics").text = field_spec.semantics
+                ET.SubElement(field, f"{{{namespace}}}semantics").text = field_spec.semantics
 
-    variant_record_data_types = ET.SubElement(data_types, f"{{{_IEEE_1516_2010_NAMESPACE}}}variantRecordDataTypes")
+    variant_record_data_types = ET.SubElement(data_types, f"{{{namespace}}}variantRecordDataTypes")
     for spec in serializer_variant_record_datatypes.values():
-        variant_record = ET.SubElement(variant_record_data_types, f"{{{_IEEE_1516_2010_NAMESPACE}}}variantRecordData")
-        ET.SubElement(variant_record, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = spec.name
+        variant_record = ET.SubElement(variant_record_data_types, f"{{{namespace}}}variantRecordData")
+        ET.SubElement(variant_record, f"{{{namespace}}}name").text = spec.name
         if spec.discriminant:
-            ET.SubElement(variant_record, f"{{{_IEEE_1516_2010_NAMESPACE}}}discriminant").text = spec.discriminant
+            ET.SubElement(variant_record, f"{{{namespace}}}discriminant").text = spec.discriminant
         if spec.data_type:
-            ET.SubElement(variant_record, f"{{{_IEEE_1516_2010_NAMESPACE}}}dataType").text = spec.data_type
+            ET.SubElement(variant_record, f"{{{namespace}}}dataType").text = spec.data_type
         for alt_spec in spec.alternatives:
-            alternative = ET.SubElement(variant_record, f"{{{_IEEE_1516_2010_NAMESPACE}}}alternative")
-            ET.SubElement(alternative, f"{{{_IEEE_1516_2010_NAMESPACE}}}enumerator").text = alt_spec.enumerator
+            alternative = ET.SubElement(variant_record, f"{{{namespace}}}alternative")
+            ET.SubElement(alternative, f"{{{namespace}}}enumerator").text = alt_spec.enumerator
             if alt_spec.name:
-                ET.SubElement(alternative, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = alt_spec.name
+                ET.SubElement(alternative, f"{{{namespace}}}name").text = alt_spec.name
             if alt_spec.data_type:
-                ET.SubElement(alternative, f"{{{_IEEE_1516_2010_NAMESPACE}}}dataType").text = alt_spec.data_type
+                ET.SubElement(alternative, f"{{{namespace}}}dataType").text = alt_spec.data_type
             if alt_spec.semantics:
-                ET.SubElement(alternative, f"{{{_IEEE_1516_2010_NAMESPACE}}}semantics").text = alt_spec.semantics
+                ET.SubElement(alternative, f"{{{namespace}}}semantics").text = alt_spec.semantics
         if spec.encoding:
-            ET.SubElement(variant_record, f"{{{_IEEE_1516_2010_NAMESPACE}}}encoding").text = spec.encoding
+            ET.SubElement(variant_record, f"{{{namespace}}}encoding").text = spec.encoding
         if spec.semantics:
-            ET.SubElement(variant_record, f"{{{_IEEE_1516_2010_NAMESPACE}}}semantics").text = spec.semantics
+            ET.SubElement(variant_record, f"{{{namespace}}}semantics").text = spec.semantics
 
     if module.notes:
-        notes = ET.SubElement(root, f"{{{_IEEE_1516_2010_NAMESPACE}}}notes")
+        notes = ET.SubElement(root, f"{{{namespace}}}notes")
         for note_text in module.notes:
-            note = ET.SubElement(notes, f"{{{_IEEE_1516_2010_NAMESPACE}}}note")
+            note = ET.SubElement(notes, f"{{{namespace}}}note")
             label, separator, semantics = note_text.partition(": ")
             if separator:
-                ET.SubElement(note, f"{{{_IEEE_1516_2010_NAMESPACE}}}label").text = label
-                ET.SubElement(note, f"{{{_IEEE_1516_2010_NAMESPACE}}}semantics").text = semantics
+                ET.SubElement(note, f"{{{namespace}}}label").text = label
+                ET.SubElement(note, f"{{{namespace}}}semantics").text = semantics
             else:
-                ET.SubElement(note, f"{{{_IEEE_1516_2010_NAMESPACE}}}semantics").text = note_text
+                ET.SubElement(note, f"{{{namespace}}}semantics").text = note_text
 
     return ET.tostring(root, encoding="unicode", xml_declaration=True)
 
 
-def _serialize_object_class_tree(parent: ET.Element, specs: tuple[ObjectClassSpec, ...]) -> None:
+def _serialize_object_class_tree(parent: ET.Element, specs: tuple[ObjectClassSpec, ...], *, namespace: str) -> None:
     specs_by_name = {spec.full_name: spec for spec in specs}
     children_by_parent: dict[str | None, list[ObjectClassSpec]] = {}
     for spec in specs:
@@ -2384,28 +2410,28 @@ def _serialize_object_class_tree(parent: ET.Element, specs: tuple[ObjectClassSpe
         root_spec = ObjectClassSpec("HLAobjectRoot")
 
     def emit(spec: ObjectClassSpec, parent_element: ET.Element) -> None:
-        element = ET.SubElement(parent_element, f"{{{_IEEE_1516_2010_NAMESPACE}}}objectClass")
-        ET.SubElement(element, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = spec.full_name.rsplit(".", 1)[-1]
-        ET.SubElement(element, f"{{{_IEEE_1516_2010_NAMESPACE}}}sharing").text = "Neither"
+        element = ET.SubElement(parent_element, f"{{{namespace}}}objectClass")
+        ET.SubElement(element, f"{{{namespace}}}name").text = spec.full_name.rsplit(".", 1)[-1]
+        ET.SubElement(element, f"{{{namespace}}}sharing").text = "Neither"
         for attribute_name in spec.declared_attributes:
-            attribute = ET.SubElement(element, f"{{{_IEEE_1516_2010_NAMESPACE}}}attribute")
-            ET.SubElement(attribute, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = attribute_name
+            attribute = ET.SubElement(element, f"{{{namespace}}}attribute")
+            ET.SubElement(attribute, f"{{{namespace}}}name").text = attribute_name
             datatype = dict(spec.attribute_datatypes).get(attribute_name)
             if datatype:
-                ET.SubElement(attribute, f"{{{_IEEE_1516_2010_NAMESPACE}}}dataType").text = datatype
+                ET.SubElement(attribute, f"{{{namespace}}}dataType").text = datatype
             transportation = dict(spec.attribute_transportations).get(attribute_name)
             if transportation:
-                ET.SubElement(attribute, f"{{{_IEEE_1516_2010_NAMESPACE}}}transportation").text = transportation
+                ET.SubElement(attribute, f"{{{namespace}}}transportation").text = transportation
             value_required = dict(spec.attribute_value_required).get(attribute_name)
             if value_required:
-                ET.SubElement(attribute, f"{{{_IEEE_1516_2010_NAMESPACE}}}valueRequired").text = value_required
+                ET.SubElement(attribute, f"{{{namespace}}}valueRequired").text = value_required
         for child_spec in sorted(children_by_parent.get(spec.full_name, []), key=lambda item: item.full_name):
             emit(child_spec, element)
 
     emit(root_spec, parent)
 
 
-def _serialize_interaction_class_tree(parent: ET.Element, specs: tuple[InteractionClassSpec, ...]) -> None:
+def _serialize_interaction_class_tree(parent: ET.Element, specs: tuple[InteractionClassSpec, ...], *, namespace: str) -> None:
     specs_by_name = {spec.full_name: spec for spec in specs}
     children_by_parent: dict[str | None, list[InteractionClassSpec]] = {}
     for spec in specs:
@@ -2416,17 +2442,17 @@ def _serialize_interaction_class_tree(parent: ET.Element, specs: tuple[Interacti
         root_spec = InteractionClassSpec("HLAinteractionRoot")
 
     def emit(spec: InteractionClassSpec, parent_element: ET.Element) -> None:
-        element = ET.SubElement(parent_element, f"{{{_IEEE_1516_2010_NAMESPACE}}}interactionClass")
-        ET.SubElement(element, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = spec.full_name.rsplit(".", 1)[-1]
-        ET.SubElement(element, f"{{{_IEEE_1516_2010_NAMESPACE}}}sharing").text = "Neither"
-        ET.SubElement(element, f"{{{_IEEE_1516_2010_NAMESPACE}}}transportation").text = spec.transportation or "HLAreliable"
-        ET.SubElement(element, f"{{{_IEEE_1516_2010_NAMESPACE}}}order").text = "Receive"
+        element = ET.SubElement(parent_element, f"{{{namespace}}}interactionClass")
+        ET.SubElement(element, f"{{{namespace}}}name").text = spec.full_name.rsplit(".", 1)[-1]
+        ET.SubElement(element, f"{{{namespace}}}sharing").text = "Neither"
+        ET.SubElement(element, f"{{{namespace}}}transportation").text = spec.transportation or "HLAreliable"
+        ET.SubElement(element, f"{{{namespace}}}order").text = "Receive"
         for parameter_name in spec.declared_parameters:
-            parameter = ET.SubElement(element, f"{{{_IEEE_1516_2010_NAMESPACE}}}parameter")
-            ET.SubElement(parameter, f"{{{_IEEE_1516_2010_NAMESPACE}}}name").text = parameter_name
+            parameter = ET.SubElement(element, f"{{{namespace}}}parameter")
+            ET.SubElement(parameter, f"{{{namespace}}}name").text = parameter_name
             datatype = dict(spec.parameter_datatypes).get(parameter_name)
             if datatype:
-                ET.SubElement(parameter, f"{{{_IEEE_1516_2010_NAMESPACE}}}dataType").text = datatype
+                ET.SubElement(parameter, f"{{{namespace}}}dataType").text = datatype
         for child_spec in sorted(children_by_parent.get(spec.full_name, []), key=lambda item: item.full_name):
             emit(child_spec, element)
 

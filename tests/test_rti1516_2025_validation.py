@@ -6,6 +6,53 @@ from pathlib import Path
 import pytest
 
 
+@pytest.mark.requirements("HLA2025-MOD-010", "HLA2025-VER-002", "HLA2025-OMT-002")
+def test_2025_parser_round_trips_logical_time_xml_names(tmp_path: Path) -> None:
+    from hla.rti1516e.fom import parse_fom_xml, serialize_fom_module
+
+    source = tmp_path / "logical-time-2025.xml"
+    source.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Logical Time 2025 FOM</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-18</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>2025 logical time naming fixture.</description>
+    <poc><pocName>Test</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects><objectClass><name>HLAobjectRoot</name></objectClass></objects>
+  <time>
+    <logicalTime><dataType>HLAinteger64Time</dataType></logicalTime>
+    <logicalTimeInterval><dataType>HLAinteger64Time</dataType></logicalTimeInterval>
+  </time>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    module = parse_fom_xml(source)
+    assert module.time_stamp_datatype == "HLAinteger64Time"
+    assert module.lookahead_datatype == "HLAinteger64Time"
+    assert module.inferred_time_implementation == "HLAinteger64Time"
+
+    xml_text = serialize_fom_module(module, edition="2025")
+    assert "http://standards.ieee.org/IEEE1516-2025" in xml_text
+    assert "<logicalTime>" in xml_text
+    assert "<logicalTimeInterval>" in xml_text
+    assert "<timeStamp>" not in xml_text
+    assert "<lookahead>" not in xml_text
+
+    roundtrip = tmp_path / "logical-time-roundtrip-2025.xml"
+    roundtrip.write_text(xml_text, encoding="utf-8")
+    reparsed = parse_fom_xml(roundtrip)
+    assert reparsed.time_stamp_datatype == "HLAinteger64Time"
+    assert reparsed.lookahead_datatype == "HLAinteger64Time"
+
+
 @pytest.mark.requirements("HLA2025-NEW-006", "HLA2025-OMT-002", "HLA2025-OMT-006")
 def test_2025_parser_preserves_reference_datatypes_and_value_required_metadata(tmp_path: Path) -> None:
     from hla.rti1516_2025.validation import validate_fom_module
