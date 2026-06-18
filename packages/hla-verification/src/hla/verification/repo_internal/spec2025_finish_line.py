@@ -330,6 +330,22 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "2025 transport work is isolated under FedPro/protobuf."
         ),
     },
+    {
+        "id": "2025-verification-anchor-matrix",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-VER-001", "HLA2025-TRACE-001", "HLA2025-TRACE-002"),
+        "evidence": (
+            "tests/requirements/test_2025_finish_line_snapshot.py",
+            "packages/hla-verification/src/hla/verification/repo_internal/spec2025_finish_line.py",
+            "requirements/2025/requirement_completion_backlog.csv",
+            "docs/requirements/ieee-1516-2025/executable_tests/hla_2025_executable_test_requirements_v3.csv",
+        ),
+        "supported_scope": (
+            "Generated finish-line verification matrix links each completion-backlog row to implemented evidence "
+            "slices, executable test candidates, or explicit legacy/unsupported-boundary status. The enforced gate "
+            "is every high/very-high row has at least one reviewable anchor."
+        ),
+    },
 )
 
 BACKLOG_STATUS_BY_ROW = {
@@ -358,7 +374,7 @@ BACKLOG_STATUS_BY_ROW = {
     "HLA2025-RET-001": "implemented-slice",
     "HLA2025-RET-002": "implemented-slice",
     "HLA2025-RET-003": "legacy-only",
-    "HLA2025-VER-001": "partial",
+    "HLA2025-VER-001": "implemented-slice",
     "HLA2025-VER-002": "implemented-slice",
 }
 
@@ -405,6 +421,65 @@ def _priority_rank(row: dict[str, str]) -> tuple[int, str]:
     )
 
 
+def _evidence_slices_by_requirement() -> dict[str, list[str]]:
+    anchors: dict[str, list[str]] = {}
+    for evidence_slice in IMPLEMENTED_EVIDENCE_SLICES:
+        for requirement_id in evidence_slice["requirements"]:
+            anchors.setdefault(requirement_id, []).append(str(evidence_slice["id"]))
+    return anchors
+
+
+def _executable_tests_by_requirement(executable_rows: list[dict[str, str]]) -> dict[str, list[str]]:
+    anchors: dict[str, list[str]] = {}
+    for row in executable_rows:
+        parent_id = row["parent_requirement_id"]
+        if row["pytest_candidate"] or row["evidence_artifact"] or row["dependency_or_blocker"]:
+            anchors.setdefault(parent_id, []).append(row["executable_test_id"])
+    return anchors
+
+
+def _build_verification_matrix(
+    completion_rows: list[dict[str, str]],
+    executable_rows: list[dict[str, str]],
+) -> dict[str, Any]:
+    evidence_slices = _evidence_slices_by_requirement()
+    executable_tests = _executable_tests_by_requirement(executable_rows)
+    rows: list[dict[str, Any]] = []
+    for row in completion_rows:
+        requirement_id = row["id"]
+        status = row["current_status"]
+        evidence_slice_ids = tuple(evidence_slices.get(requirement_id, ()))
+        executable_test_ids = tuple(executable_tests.get(requirement_id, ()))
+        explicit_disposition_anchor = status in {"legacy-only", "unsupported-boundary"}
+        has_anchor = bool(evidence_slice_ids or executable_test_ids or explicit_disposition_anchor)
+        rows.append(
+            {
+                "id": requirement_id,
+                "bucket": row["bucket"],
+                "area": row["area"],
+                "priority": row["priority"],
+                "current_status": status,
+                "binding_scope": row["binding_scope"],
+                "has_anchor": has_anchor,
+                "evidence_slices": evidence_slice_ids,
+                "executable_tests": executable_test_ids,
+                "explicit_disposition_anchor": explicit_disposition_anchor,
+                "verification_work": row["verification_work"],
+            }
+        )
+    high_priority_rows = [row for row in rows if row["priority"] in HIGH_PRIORITIES]
+    high_priority_missing = [row for row in high_priority_rows if not row["has_anchor"]]
+    return {
+        "row_count": len(rows),
+        "anchor_count": sum(1 for row in rows if row["has_anchor"]),
+        "missing_anchor_count": sum(1 for row in rows if not row["has_anchor"]),
+        "high_priority_row_count": len(high_priority_rows),
+        "high_priority_missing_anchor_count": len(high_priority_missing),
+        "high_priority_missing_anchors": high_priority_missing,
+        "rows": rows,
+    }
+
+
 def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
     """Return the current 2025 requirements finish-line inventory."""
 
@@ -426,6 +501,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
 
     executable_status_counts = dict(sorted(Counter(row["expected_status"] for row in executable_rows).items()))
     executable_priority_counts = dict(sorted(Counter(row["priority"] for row in executable_rows).items()))
+    verification_matrix = _build_verification_matrix(completion_with_status, executable_rows)
 
     return {
         "scope": "IEEE 1516-2025 requirements finish-line inventory, not a conformance claim",
@@ -461,6 +537,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
             "expected_status_counts_from_rows": executable_status_counts,
         },
         "implemented_evidence_slices": [dict(slice_) for slice_ in IMPLEMENTED_EVIDENCE_SLICES],
+        "verification_matrix": verification_matrix,
         "finish_rule": (
             "Each remaining row needs a positive test, a negative unsupported-boundary test, "
             "or an explicit supported-subset/unsupported-boundary row before it can be counted as closed."
@@ -527,9 +604,35 @@ def write_spec2025_finish_line(output_dir: Path, project_root: Path) -> dict[str
     snapshot = build_spec2025_finish_line_snapshot(project_root)
     json_path = output_dir / "spec2025_finish_line_snapshot.json"
     markdown_path = output_dir / "spec2025_finish_line.md"
+    matrix_path = output_dir / "spec2025_verification_matrix.csv"
     json_path.write_text(json.dumps(snapshot, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     markdown_path.write_text("\n".join(build_spec2025_finish_line_markdown(project_root)) + "\n", encoding="utf-8")
-    return {"json": json_path, "markdown": markdown_path}
+    matrix_rows = snapshot["verification_matrix"]["rows"]
+    with matrix_path.open("w", newline="", encoding="utf-8") as handle:
+        fieldnames = (
+            "id",
+            "bucket",
+            "area",
+            "priority",
+            "current_status",
+            "binding_scope",
+            "has_anchor",
+            "evidence_slices",
+            "executable_tests",
+            "explicit_disposition_anchor",
+            "verification_work",
+        )
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in matrix_rows:
+            writer.writerow(
+                {
+                    **row,
+                    "evidence_slices": ";".join(row["evidence_slices"]),
+                    "executable_tests": ";".join(row["executable_tests"]),
+                }
+            )
+    return {"json": json_path, "markdown": markdown_path, "verification_matrix": matrix_path}
 
 
 __all__ = [

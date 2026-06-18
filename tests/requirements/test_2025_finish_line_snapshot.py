@@ -31,7 +31,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     backlog = snapshot["completion_backlog"]
     assert backlog["by_bucket"]["new-2025-requirements"] == 7
     assert backlog["by_current_status"]["implemented-slice"] >= 20
-    assert backlog["by_current_status"]["partial"] >= 1
+    assert backlog["by_current_status"].get("partial", 0) == 0
     assert "planned" not in backlog["by_current_status"]
     assert backlog["by_current_status"]["unsupported-boundary"] >= 1
     assert backlog["by_current_status"]["legacy-only"] == 1
@@ -64,6 +64,11 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert "HLA2025-MOD-002" not in open_ids
     assert "HLA2025-MOD-003" not in open_ids
     assert "HLA2025-MOD-006" not in open_ids
+
+    matrix = snapshot["verification_matrix"]
+    assert matrix["row_count"] == backlog["row_count"]
+    assert matrix["high_priority_missing_anchor_count"] == 0
+    assert matrix["high_priority_missing_anchors"] == []
 
 
 @pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-TRACE-001")
@@ -121,6 +126,13 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "not full MOM interaction routing" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert slices["2025-wsdl-legacy-only"]["status"] == "legacy-only"
     assert "HLA2025-RET-003" in slices["2025-wsdl-legacy-only"]["requirements"]
+    assert slices["2025-verification-anchor-matrix"]["status"] == "implemented-slice"
+    assert "HLA2025-VER-001" in slices["2025-verification-anchor-matrix"]["requirements"]
+
+    matrix_rows = {row["id"]: row for row in snapshot["verification_matrix"]["rows"]}
+    assert matrix_rows["HLA2025-NEW-001"]["explicit_disposition_anchor"] is True
+    assert matrix_rows["HLA2025-RET-003"]["explicit_disposition_anchor"] is True
+    assert "2025-verification-anchor-matrix" in matrix_rows["HLA2025-VER-001"]["evidence_slices"]
 
     markdown = "\n".join(build_spec2025_finish_line_markdown(ROOT))
     assert "HLA conformance" in markdown
@@ -135,7 +147,11 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
 
     payload = json.loads(paths["json"].read_text(encoding="utf-8"))
     assert payload["executable_test_backlog"]["row_count"] == 1117
+    assert payload["verification_matrix"]["high_priority_missing_anchor_count"] == 0
 
     markdown = paths["markdown"].read_text(encoding="utf-8")
     assert markdown.startswith("# IEEE 1516-2025 Requirements Finish Line")
     assert "Implemented Evidence Slices" in markdown
+    matrix = paths["verification_matrix"].read_text(encoding="utf-8")
+    assert "HLA2025-VER-001" in matrix
+    assert "2025-verification-anchor-matrix" in matrix
