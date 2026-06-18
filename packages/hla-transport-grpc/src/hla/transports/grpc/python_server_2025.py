@@ -186,6 +186,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 return rti_pb2.CallResponse(joinFederationExecutionWithNameResponse=rti_pb2.JoinFederationExecutionWithNameResponse(result=result))
             return rti_pb2.CallResponse(joinFederationExecutionResponse=rti_pb2.JoinFederationExecutionResponse(result=result))
         if request_kind == "resignFederationExecutionRequest":
+            action = request.resignFederationExecutionRequest.resignAction
+            self._apply_resign_action(action)
             self.joined_federates.clear()
             self.joined_federate_handles.clear()
             return rti_pb2.CallResponse(resignFederationExecutionResponse=rti_pb2.ResignFederationExecutionResponse())
@@ -1035,6 +1037,35 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
 
     def _current_federate_handle(self) -> str:
         return self._joined_handle_values()[0]
+
+    def _apply_resign_action(self, action: int) -> None:
+        if action in {
+            datatypes_pb2.UNCONDITIONALLY_DIVEST_ATTRIBUTES,
+            datatypes_pb2.DELETE_OBJECTS_THEN_DIVEST,
+            datatypes_pb2.CANCEL_THEN_DELETE_THEN_DIVEST,
+        }:
+            for object_instance, record in self.object_instances.items():
+                attributes = {
+                    attribute
+                    for (object_class, _name), attribute in self.attributes.items()
+                    if object_class == record["objectClass"]
+                }
+                for attribute in attributes:
+                    self.unowned_attributes.add((object_instance, attribute))
+        if action in {
+            datatypes_pb2.DELETE_OBJECTS,
+            datatypes_pb2.DELETE_OBJECTS_THEN_DIVEST,
+            datatypes_pb2.CANCEL_THEN_DELETE_THEN_DIVEST,
+        }:
+            self.object_instances.clear()
+            self.object_update_regions.clear()
+            self.unowned_attributes.clear()
+            self.offered_attributes.clear()
+        if action in {
+            datatypes_pb2.CANCEL_PENDING_OWNERSHIP_ACQUISITIONS,
+            datatypes_pb2.CANCEL_THEN_DELETE_THEN_DIVEST,
+        }:
+            self.pending_attribute_acquisitions.clear()
 
     def _snapshot(self) -> _FederationSnapshot:
         return _FederationSnapshot(

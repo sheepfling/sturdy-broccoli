@@ -648,6 +648,94 @@ def test_2025_transport_server_runs_negotiated_ownership_flow_over_fedpro_schema
         server.close()
 
 
+def test_2025_transport_server_applies_resign_ownership_policy_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+
+        for federation_name, federate_name, object_name, resign_action in (
+            (
+                "fedpro-2025-resign-divest",
+                "FedPro2025Divest",
+                "FedProDivestTarget-1",
+                "UNCONDITIONALLY_DIVEST_ATTRIBUTES",
+            ),
+            (
+                "fedpro-2025-resign-delete",
+                "FedPro2025Delete",
+                "FedProDeleteTarget-1",
+                "DELETE_OBJECTS",
+            ),
+            (
+                "fedpro-2025-resign-cancel",
+                "FedPro2025Cancel",
+                "FedProCancelTarget-1",
+                "CANCEL_PENDING_OWNERSHIP_ACQUISITIONS",
+            ),
+        ):
+            assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "Ownership2025.xml"))).fields == ()
+            join_fields = transport.request(TransportRequest(command="JOIN", fields=(federate_name, "TestFederate", federation_name))).fields
+            assert join_fields[1] == "HLAinteger64Time"
+            object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+            attribute = transport.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
+            object_instance = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, object_name))).fields[0]
+            if resign_action == "CANCEL_PENDING_OWNERSHIP_ACQUISITIONS":
+                assert (
+                    transport.request(
+                        TransportRequest(
+                            command="ATTRIBUTE_OWNERSHIP_ACQUISITION",
+                            fields=(object_instance, attribute, "70656e64696e67"),
+                        )
+                    ).fields
+                    == ()
+                )
+                assert transport.request(TransportRequest(command="EVOKE")).fields[:4] == (
+                    "1",
+                    "REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE",
+                    object_instance,
+                    attribute,
+                )
+
+            assert transport.request(TransportRequest(command="RESIGN", fields=(resign_action,))).fields == ()
+
+            if resign_action == "UNCONDITIONALLY_DIVEST_ATTRIBUTES":
+                assert transport.request(TransportRequest(command="QUERY_ATTRIBUTE_OWNERSHIP", fields=(object_instance, attribute))).fields == ()
+                assert transport.request(TransportRequest(command="EVOKE")).fields == (
+                    "1",
+                    "ATTRIBUTE_IS_NOT_OWNED",
+                    object_instance,
+                    attribute,
+                )
+            elif resign_action == "DELETE_OBJECTS":
+                with pytest.raises(TransportError) as error:
+                    transport.request(TransportRequest(command="GET_OBJECT_INSTANCE_NAME", fields=(object_instance,)))
+                assert error.value.code == "ObjectInstanceNotKnown"
+            else:
+                assert transport.request(TransportRequest(command="QUERY_ATTRIBUTE_OWNERSHIP", fields=(object_instance, attribute))).fields == ()
+                assert transport.request(TransportRequest(command="EVOKE")).fields == (
+                    "1",
+                    "INFORM_ATTRIBUTE_OWNERSHIP",
+                    object_instance,
+                    attribute,
+                    "1",
+                )
+
+            assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+        assert {
+            "resignFederationExecutionRequest",
+            "queryAttributeOwnershipRequest",
+            "getObjectInstanceNameRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap():
     server = start_2025_grpc_server()
     transport = None

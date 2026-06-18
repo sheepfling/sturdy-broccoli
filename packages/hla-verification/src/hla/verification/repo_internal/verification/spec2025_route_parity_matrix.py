@@ -205,12 +205,12 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "ownership",
         "python-2025-fedpro-grpc",
-        PARTIAL,
+        PARITY_COVERED,
         ("HLA2025-FR-005", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers basic divest/acquire/query callbacks, negotiated divestiture, release requests, "
         "release denial, acquisition cancellation, divestiture-if-wanted, and cancel-negotiated-offer callbacks; "
-        "resign-time ownership policy remains in-process only.",
+        "resign-time divest/delete/cancel ownership policies are exercised over the FedPro route.",
     ),
     _row(
         "ownership",
