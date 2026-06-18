@@ -23,7 +23,7 @@ case "${1:-doctor}" in
     ;;
   doctor)
     shift
-    exec "$ROOT_DIR/tools/hla-x" java doctor "$@"
+    exec "$ROOT_DIR/tools/shim-routes" java doctor "$@"
     ;;
   *)
     echo "error: unknown subcommand: $1" >&2

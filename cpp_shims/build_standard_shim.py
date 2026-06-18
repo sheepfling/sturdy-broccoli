@@ -21,7 +21,7 @@ ARTIFACTS = {
         "nested": None,
         "api_prefix": "cpp/src",
         "std": "c++14",
-        "artifact_name": "libhla_x_rti1516e_cpp_shim.a",
+        "artifact_name": "librti1516e_standard_cpp_shim.a",
         "surface": "official IEEE 1516.1-2010 C++ API",
         "routes": ("cpp-standard-2010-pybind", "cpp-standard-2010-grpc"),
         "namespace": "rti1516e",
@@ -34,7 +34,7 @@ ARTIFACTS = {
         "nested": "1516.1-2025_downloads/1516-2025_API_XML_2025_08_14.zip",
         "api_prefix": "1516-2025_API_XML_2025_08_14/cpp",
         "std": "c++17",
-        "artifact_name": "libhla_x_rti1516_2025_cpp_shim.a",
+        "artifact_name": "librti1516_2025_standard_cpp_shim.a",
         "surface": "official IEEE 1516.1-2025 C++ API",
         "routes": ("cpp-standard-2025-pybind", "cpp-standard-2025-grpc"),
         "namespace": "rti1516_2025",
@@ -103,7 +103,7 @@ def _write_source(edition: str, source_path: Path) -> None:
 #include <RTI/RTIambassadorFactory.h>
 #include <RTI/Exception.h>
 
-namespace hla_x {{
+namespace shim_routes {{
 
 const char *standard_cpp_shim_edition() noexcept {{
   return "{edition}";
@@ -117,7 +117,7 @@ int standard_cpp_shim_surface_anchor() noexcept {{
   return sizeof({namespace}::RTIambassador *);
 }}
 
-}}  // namespace hla_x
+}}  // namespace shim_routes
 ''',
         encoding="utf-8",
     )
@@ -139,7 +139,7 @@ def _write_report(edition: str, build_root: Path, artifact_path: Path) -> None:
         "unsupported_services": ["RTIambassador surface is header-backed; service semantics are delegated to the Python shim route for the core scenario subset"],
         "scenario_evidence": {
             "status": "core-green",
-            "tests": ["tests/backends/test_rosetta_standard_artifacts.py"],
+            "tests": ["tests/backends/test_standard_shim_artifacts.py"],
             "scenarios": (
                 ["2010 standard route two-federate object, interaction, and time exchange"]
                 if edition == "2010"
@@ -157,21 +157,21 @@ def _write_report(edition: str, build_root: Path, artifact_path: Path) -> None:
     }
     if edition == "2010":
         report["api_helper_patches"] = list(CPP_2010_HELPER_PATCHES)
-    report_json = ROOT / f"docs/evidence/rosetta/{key}.json"
-    report_md = ROOT / f"docs/evidence/rosetta/{key}.md"
+    report_json = ROOT / f"docs/evidence/shim_routes/{key}.json"
+    report_md = ROOT / f"docs/evidence/shim_routes/{key}.md"
     report_json.parent.mkdir(parents=True, exist_ok=True)
     report_json.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     report_md.write_text(
         "\n".join(
             [
-                f"# C++ Standard {edition} Rosetta Artifact",
+                f"# C++ Standard {edition} Artifact",
                 "",
                 f"- official API source: `{config['api_zip']}`",
                 f"- artifact: `{artifact_path}`",
                 "- compile status: `passed`",
                 f"- surface: `{config['surface']}`",
                 "- status: `surface-backed + core-green`",
-                "- scenario evidence: `tests/backends/test_rosetta_standard_artifacts.py`",
+                "- scenario evidence: `tests/backends/test_standard_shim_artifacts.py`",
                 "",
                 "## Route Evidence",
                 "",
@@ -190,7 +190,7 @@ def build(edition: str) -> None:
     config = ARTIFACTS[edition]
     compiler = _tool(os.environ.get("CXX", "c++"))
     ar = _tool("ar")
-    build_root = ROOT / f"build/rosetta/{config['key']}"
+    build_root = ROOT / f"build/shim_routes/{config['key']}"
     if build_root.exists():
         shutil.rmtree(build_root)
     build_root.mkdir(parents=True)

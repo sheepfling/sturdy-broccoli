@@ -1,0 +1,74 @@
+{
+  "artifact": {
+    "edition": "2025",
+    "kind": "cpp-standard-shim",
+    "name": "cpp-standard-2025",
+    "route": "cpp-standard-2025-grpc"
+  },
+  "blocked_reason": null,
+  "callback_status": "callback-poll-green",
+  "capsule_dir": null,
+  "connect_status": "connect-green",
+  "core_scenario_status": "core-green",
+  "discovery": null,
+  "edition": "2025",
+  "errors": [],
+  "missing_trace_events": [],
+  "route": "cpp-standard-2025-grpc",
+  "status": "trace-green",
+  "trace": [
+    {
+      "backend": "cpp-standard-2025-grpc",
+      "event": "routeSelected",
+      "spec": "rti1516_2025",
+      "standardBacked": true
+    },
+    {
+      "event": "getHLAversion",
+      "value": "IEEE 1516.1-2025"
+    },
+    {
+      "event": "connect",
+      "result": [
+        false,
+        false,
+        0,
+        "hla-backend-shim accepted the 2025 connection request"
+      ]
+    },
+    {
+      "event": "createFederationExecution",
+      "federation": "ShimRouteMvpCppstandard2025Grpc"
+    },
+    {
+      "event": "joinFederationExecution",
+      "federate": "python-federate",
+      "federation": "ShimRouteMvpCppstandard2025Grpc"
+    },
+    {
+      "delivered": false,
+      "event": "evokeCallback"
+    },
+    {
+      "delivered": false,
+      "event": "evokeMultipleCallbacks"
+    },
+    {
+      "action": 5,
+      "event": "resignFederationExecution"
+    },
+    {
+      "event": "destroyFederationExecution",
+      "federation": "ShimRouteMvpCppstandard2025Grpc"
+    },
+    {
+      "event": "disconnect"
+    }
+  ],
+  "trace_comparison_status": "trace-green",
+  "transport": "grpc",
+  "unsupported_services": [
+    "Full vendor C++ SDK service invocation awaits generated runtime capsule adapter."
+  ],
+  "warnings": []
+}

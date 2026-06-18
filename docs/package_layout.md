@@ -132,9 +132,9 @@ The current package set is:
 - `hla-verification`: shared two-federate packet, timeline, summary, and writer helpers for repo-internal verification.
 - `hla-fom-target-radar`: concrete target/radar FOM resources and
   target/radar scenario/example package.
-- `hla-fom-hlax-message-test`: package-owned HLA-X MessageTest showcase runner.
-- `hla-fom-hlax-space-lite`: package-owned HLA-X SpaceLite showcase runner.
-- `hla-fom-hlax-time-mgmt-test`: package-owned HLA-X TimeMgmtTest showcase runner.
+- `hla-fom-proto2025-message-test`: package-owned Proto2025 MessageTest showcase runner.
+- `hla-fom-proto2025-space-lite`: package-owned Proto2025 SpaceLite showcase runner.
+- `hla-fom-proto2025-time-mgmt-test`: package-owned Proto2025 TimeMgmtTest showcase runner.
 
 ## Architecture Table
 
@@ -157,9 +157,9 @@ The current package set is:
 | `hla-transport-grpc` | transport | `hla-rti1516e`, `hla-transport-common`, `hla-rti-core` | concrete backend and vendor packages |
 | `hla-transport-rest` | transport | `hla-rti1516e`, `hla-transport-common`, `hla-rti-core` | concrete backend and vendor packages |
 | `hla-fom-target-radar` | leaf | `hla-rti1516e`, `hla-rti-core` | concrete backend, vendor, transport packages |
-| `hla-fom-hlax-message-test` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory` | concrete backend, vendor, transport packages |
-| `hla-fom-hlax-space-lite` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory` | concrete backend, vendor, transport packages |
-| `hla-fom-hlax-time-mgmt-test` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory` | concrete backend, vendor, transport packages |
+| `hla-fom-proto2025-message-test` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory` | concrete backend, vendor, transport packages |
+| `hla-fom-proto2025-space-lite` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory` | concrete backend, vendor, transport packages |
+| `hla-fom-proto2025-time-mgmt-test` | leaf | `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory` | concrete backend, vendor, transport packages |
 
 Import isolation for the installable `packages/*` trees is enforced by
 [`tests/test_package_import_isolation.py`](../tests/test_package_import_isolation.py).

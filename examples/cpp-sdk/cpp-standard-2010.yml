@@ -1,0 +1,21 @@
+kind: cpp-sdk
+edition: 2010
+name: cpp-standard-2010-external-profile
+include_dirs:
+  - build/shim_routes/cpp-standard-2010/api/cpp/src
+library_dirs:
+  - build/shim_routes/cpp-standard-2010
+libraries:
+  - rti1516e_standard_cpp_shim
+defines:
+  - RTI_USES_STD_WSTRING
+cxx_standard: 14
+runtime_env:
+  DYLD_LIBRARY_PATH: build/shim_routes/cpp-standard-2010
+factory:
+  strategy: standard
+adapter:
+  strategy: shim_capsule_v1
+  mode: standard_shim
+transport:
+  default: grpc

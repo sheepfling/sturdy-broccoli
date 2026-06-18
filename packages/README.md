@@ -40,9 +40,9 @@ hla-rti1516e
   <- hla-transport-common <- hla-transport-grpc
   <- hla-transport-common <- hla-transport-rest
   <- hla-rti-core <- hla-fom-target-radar
-  <- hla-backend-common <- hla-backend-inmemory <- hla-fom-hlax-message-test
-  <- hla-backend-common <- hla-backend-inmemory <- hla-fom-hlax-space-lite
-  <- hla-backend-common <- hla-backend-inmemory <- hla-fom-hlax-time-mgmt-test
+  <- hla-backend-common <- hla-backend-inmemory <- hla-fom-proto2025-message-test
+  <- hla-backend-common <- hla-backend-inmemory <- hla-fom-proto2025-space-lite
+  <- hla-backend-common <- hla-backend-inmemory <- hla-fom-proto2025-time-mgmt-test
 
 hla-rti1516-2025
   <- hla-backend-shim

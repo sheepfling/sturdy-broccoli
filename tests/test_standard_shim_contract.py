@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_rosetta_standard_shim_contract_names_four_standard_backed_artifacts() -> None:
+def test__standard_shim_contract_names_four_standard_backed_artifacts() -> None:
     from hla.rti.standard_shims import iter_standard_shim_artifacts
 
     artifacts = iter_standard_shim_artifacts()
@@ -19,7 +19,7 @@ def test_rosetta_standard_shim_contract_names_four_standard_backed_artifacts() -
     assert by_key["cpp-2025"].spec_name == "rti1516_2025"
 
 
-def test_rosetta_standard_route_names_are_reserved_and_standard_plugins_are_distinct() -> None:
+def test__standard_route_names_are_reserved_and_standard_plugins_are_distinct() -> None:
     from hla.rti import available_backend_plugins
     from hla.rti.standard_shims import standard_shim_route_names
 

@@ -12,7 +12,7 @@ from hla.backends.cpp_shim.cpp_intake import CppSdkIntakeRequest, discover_cpp_s
 from hla.rti import available_backend_plugins, create_rti_ambassador
 from hla.verification.cpp_intake_certification import certify_cpp_sdk_core, certify_cpp_standard_core
 
-CPP_2010_STANDARD_ARTIFACT = Path("build/rosetta/cpp-standard-2010/libhla_x_rti1516e_cpp_shim.a")
+CPP_2010_STANDARD_ARTIFACT = Path("build/shim_routes/cpp-standard-2010/librti1516e_standard_cpp_shim.a")
 
 
 def _write_fake_sdk_profile(tmp_path: Path, *, edition: str = "2010") -> Path:
@@ -27,12 +27,12 @@ def _write_fake_sdk_profile(tmp_path: Path, *, edition: str = "2010") -> Path:
     if compiler is not None and archiver is not None:
         source = tmp_path / "vendor_stub.cpp"
         obj = tmp_path / "vendor_stub.o"
-        source.write_text("extern \"C\" int hla_x_vendor_stub() { return 1; }\n", encoding="utf-8")
+        source.write_text("extern \"C\" int shim_route_vendor_stub() { return 1; }\n", encoding="utf-8")
         subprocess.run([compiler, "-c", str(source), "-o", str(obj)], check=True)
         subprocess.run([archiver, "rcs", str(library_dir / "libvendor_rti1516e.a"), str(obj)], check=True)
     else:
         (library_dir / "libvendor_rti1516e.a").write_text("", encoding="utf-8")
-    profile = tmp_path / f"vendor-cpp-{edition}.hla-x.yaml"
+    profile = tmp_path / f"vendor-cpp-{edition}.cpp-sdk.yaml"
     profile.write_text(
         "\n".join(
             [
@@ -89,10 +89,10 @@ def test_cpp_sdk_discovery_reaches_link_green_for_fake_sdk_profile(tmp_path: Pat
 
 
 def test_cpp_sdk_discovery_reports_missing_profile_without_stack_trace() -> None:
-    report = discover_cpp_sdk(CppSdkIntakeRequest(profile_path="missing-vendor-cpp.hla-x.yaml"))
+    report = discover_cpp_sdk(CppSdkIntakeRequest(profile_path="missing-vendor-cpp.cpp-sdk.yaml"))
 
     assert report.status == "failed"
-    assert report.errors == ("C++ SDK profile does not exist: missing-vendor-cpp.hla-x.yaml",)
+    assert report.errors == ("C++ SDK profile does not exist: missing-vendor-cpp.cpp-sdk.yaml",)
     assert report.checks[0]["name"] == "profile"
 
 
@@ -108,8 +108,8 @@ def test_cpp_sdk_capsule_generation_compiles_adapter_project(tmp_path: Path) -> 
     assert report.capsule_dir is not None
     capsule_dir = Path(report.capsule_dir)
     assert (capsule_dir / "CMakeLists.txt").exists()
-    assert (capsule_dir / "generated/hla_x_cpp_intake_capsule.hpp").exists()
-    assert (capsule_dir / "generated/hla_x_cpp_intake_capsule.cpp").exists()
+    assert (capsule_dir / "generated/shim_routes_cpp_intake_capsule.hpp").exists()
+    assert (capsule_dir / "generated/shim_routes_cpp_intake_capsule.cpp").exists()
     assert checks["capsule_configure"] == "compile-green"
     assert checks["capsule_build"] == "capsule-built"
 
@@ -180,14 +180,14 @@ def test_generic_cpp_sdk_route_is_discovery_only_until_capsule_exists(tmp_path: 
         create_rti_ambassador(spec="rti1516e", backend="cpp-2010-sdk-grpc", profile=str(profile_path))
 
 
-def test_hla_x_cpp_discover_writes_structured_report(tmp_path: Path) -> None:
+def test__cpp_discover_writes_structured_report(tmp_path: Path) -> None:
     profile_path = _write_fake_sdk_profile(tmp_path)
     output_dir = tmp_path / "evidence"
 
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/hla_x.py",
+            "scripts/shim_routes.py",
             "cpp",
             "discover",
             "--profile",
@@ -214,7 +214,7 @@ def test_hla_x_cpp_discover_writes_structured_report(tmp_path: Path) -> None:
 
 
 @pytest.mark.skipif(not (shutil.which("cmake") and shutil.which("c++") and shutil.which("ar")), reason="C++ capsule build probe requires cmake, c++, and ar")
-def test_hla_x_cpp_build_capsule_writes_generated_project(tmp_path: Path) -> None:
+def test__cpp_build_capsule_writes_generated_project(tmp_path: Path) -> None:
     profile_path = _write_fake_sdk_profile(tmp_path)
     output_dir = tmp_path / "evidence"
     build_dir = tmp_path / "build-capsules"
@@ -222,7 +222,7 @@ def test_hla_x_cpp_build_capsule_writes_generated_project(tmp_path: Path) -> Non
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/hla_x.py",
+            "scripts/shim_routes.py",
             "cpp",
             "build-capsule",
             "--profile",
@@ -252,7 +252,7 @@ def test_hla_x_cpp_build_capsule_writes_generated_project(tmp_path: Path) -> Non
 
 
 @pytest.mark.skipif(not (shutil.which("cmake") and shutil.which("c++") and shutil.which("ar")), reason="C++ capsule smoke requires cmake, c++, and ar")
-def test_hla_x_cpp_smoke_capsule_writes_runtime_backed_report(tmp_path: Path) -> None:
+def test__cpp_smoke_capsule_writes_runtime_backed_report(tmp_path: Path) -> None:
     profile_path = _write_fake_sdk_profile(tmp_path)
     output_dir = tmp_path / "evidence"
     build_dir = tmp_path / "build-capsules"
@@ -260,7 +260,7 @@ def test_hla_x_cpp_smoke_capsule_writes_runtime_backed_report(tmp_path: Path) ->
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/hla_x.py",
+            "scripts/shim_routes.py",
             "cpp",
             "smoke-capsule",
             "--profile",
@@ -290,11 +290,11 @@ def test_hla_x_cpp_smoke_capsule_writes_runtime_backed_report(tmp_path: Path) ->
 
 
 @pytest.mark.skipif(not CPP_2010_STANDARD_ARTIFACT.exists(), reason="C++ 2010 standard shim artifact is not built")
-def test_hla_x_cpp_certify_core_standard_shim_writes_trace_green_report(tmp_path: Path) -> None:
+def test__cpp_certify_core_standard_shim_writes_trace_green_report(tmp_path: Path) -> None:
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/hla_x.py",
+            "scripts/shim_routes.py",
             "cpp",
             "certify-core",
             "--edition",

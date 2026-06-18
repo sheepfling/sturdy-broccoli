@@ -15,10 +15,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 SHIM_ROOT = Path(__file__).resolve().parents[1]
 API_ZIP = ROOT / "specs/ieee-1516-2010/hla_specs/1516.1-2010_downloads/IEEE1516-2010_Java_API.zip"
-BUILD_ROOT = ROOT / "build/rosetta/java-standard-2010"
-JAR_PATH = BUILD_ROOT / "hla-x-rti1516e-java-shim.jar"
-REPORT_JSON = ROOT / "docs/evidence/rosetta/java-standard-2010.json"
-REPORT_MD = ROOT / "docs/evidence/rosetta/java-standard-2010.md"
+BUILD_ROOT = ROOT / "build/shim_routes/java-standard-2010"
+JAR_PATH = BUILD_ROOT / "java-rti1516e-standard-shim.jar"
+REPORT_JSON = ROOT / "docs/evidence/shim_routes/java-standard-2010.json"
+REPORT_MD = ROOT / "docs/evidence/shim_routes/java-standard-2010.md"
 
 IMPLEMENTED = {
     "connect",
@@ -320,7 +320,7 @@ def _method_body(method: Method) -> str:
 
 def _render_ambassador(methods: list[Method]) -> str:
     parts = [
-        "package com.sheepfling.hla.rosetta.rti1516e;",
+        "package com.sheepfling.hla.shimroutes.rti1516e;",
         "",
         "import hla.rti1516e.*;",
         "import hla.rti1516e.exceptions.*;",
@@ -336,11 +336,11 @@ def _render_ambassador(methods: list[Method]) -> str:
         "    FederateHandle federateHandle;",
         "",
         "    private RuntimeException unsupported(String service) {",
-        '        return new UnsupportedOperationException("HLA-X Java 2010 Standard Shim intentionally does not implement " + service);',
+        '        return new UnsupportedOperationException("Java 2010 Standard Shim intentionally does not implement " + service);',
         "    }",
         "",
         "    private RTIinternalError callbackError(FederateInternalError exc) {",
-        '        return new RTIinternalError("HLA-X Java 2010 Standard Shim callback failed: " + exc.getMessage());',
+        '        return new RTIinternalError("Java 2010 Standard Shim callback failed: " + exc.getMessage());',
         "    }",
         "",
     ]
@@ -358,10 +358,10 @@ def _render_ambassador(methods: list[Method]) -> str:
 
 
 def _write_support_sources(src: Path) -> None:
-    pkg = src / "com/sheepfling/hla/rosetta/rti1516e"
+    pkg = src / "com/sheepfling/hla/shimroutes/rti1516e"
     pkg.mkdir(parents=True, exist_ok=True)
     (pkg / "Handles.java").write_text(
-        r'''package com.sheepfling.hla.rosetta.rti1516e;
+        r'''package com.sheepfling.hla.shimroutes.rti1516e;
 
 import hla.rti1516e.*;
 import java.util.Arrays;
@@ -399,7 +399,7 @@ final class Handles {
         encoding="utf-8",
     )
     (pkg / "ShimCollections.java").write_text(
-        r'''package com.sheepfling.hla.rosetta.rti1516e;
+        r'''package com.sheepfling.hla.shimroutes.rti1516e;
 
 import hla.rti1516e.*;
 import hla.rti1516e.encoding.ByteWrapper;
@@ -469,7 +469,7 @@ final class ParameterHandleValueMapFactoryImpl implements ParameterHandleValueMa
         encoding="utf-8",
     )
     (pkg / "HLAinteger64Time.java").write_text(
-        r'''package com.sheepfling.hla.rosetta.rti1516e;
+        r'''package com.sheepfling.hla.shimroutes.rti1516e;
 
 import hla.rti1516e.*;
 import hla.rti1516e.exceptions.*;
@@ -496,7 +496,7 @@ public final class HLAinteger64Time implements LogicalTime<HLAinteger64Time, HLA
         encoding="utf-8",
     )
     (pkg / "HLAinteger64Interval.java").write_text(
-        r'''package com.sheepfling.hla.rosetta.rti1516e;
+        r'''package com.sheepfling.hla.shimroutes.rti1516e;
 
 import hla.rti1516e.*;
 import hla.rti1516e.exceptions.*;
@@ -522,7 +522,7 @@ public final class HLAinteger64Interval implements LogicalTimeInterval<HLAintege
         encoding="utf-8",
     )
     (pkg / "HLAinteger64TimeFactory.java").write_text(
-        r'''package com.sheepfling.hla.rosetta.rti1516e;
+        r'''package com.sheepfling.hla.shimroutes.rti1516e;
 
 import hla.rti1516e.*;
 import hla.rti1516e.exceptions.CouldNotDecode;
@@ -542,7 +542,7 @@ public final class HLAinteger64TimeFactory implements LogicalTimeFactory<HLAinte
         encoding="utf-8",
     )
     (pkg / "ShimKernel.java").write_text(
-        r'''package com.sheepfling.hla.rosetta.rti1516e;
+        r'''package com.sheepfling.hla.shimroutes.rti1516e;
 
 import hla.rti1516e.*;
 import hla.rti1516e.exceptions.*;
@@ -593,7 +593,7 @@ final class ShimKernel {
     }
 
     synchronized ObjectInstanceHandle registerObject(StandardShimRTIambassador owner, ObjectClassHandle cls, String name) throws RTIinternalError {
-        ObjectInstanceHandle object = Handles.objectInstance(name == null ? "HLA-X-Object-" + nextObject++ : name);
+        ObjectInstanceHandle object = Handles.objectInstance(name == null ? "ShimRoute-Object-" + nextObject++ : name);
         objectClasses.put(object, cls);
         try {
             for (StandardShimRTIambassador rti : joined) {
@@ -659,7 +659,7 @@ final class ShimKernel {
     }
 
     synchronized RegionHandle createRegion(DimensionHandleSet dimensions) {
-        RegionHandle region = Handles.region("HLA-X-Region-" + nextRegion++);
+        RegionHandle region = Handles.region("ShimRoute-Region-" + nextRegion++);
         regionDimensions.put(region, dimensions);
         return region;
     }
@@ -715,7 +715,7 @@ def _write_report(methods: list[Method], compile_status: str, jar_path: Path) ->
         "official_api_source_path": str(API_ZIP),
         "jar_path": str(jar_path),
         "compile_status": compile_status,
-        "factory_name": "HLA-X Java 2010 Standard Shim",
+        "factory_name": "Java 2010 Standard Shim",
         "surface": "official IEEE 1516.1-2010 Java API",
         "api_helper_patches": list(API_HELPER_PATCHES),
         "scenario_evidence": {
@@ -735,12 +735,12 @@ def _write_report(methods: list[Method], compile_status: str, jar_path: Path) ->
     REPORT_MD.write_text(
         "\n".join(
             [
-                "# Java Standard 2010 Rosetta Artifact",
+                "# Java Standard 2010 Shim Artifact",
                 "",
                 f"- official API source: `{API_ZIP}`",
                 f"- jar: `{jar_path}`",
                 f"- compile status: `{compile_status}`",
-                "- factory: `HLA-X Java 2010 Standard Shim`",
+                "- factory: `Java 2010 Standard Shim`",
                 "- status: `surface-backed + core-green`",
                 "- scenario evidence: `tests/backends/test_java_standard_2010_artifact.py`",
                 "- compatibility patch: `RtiFactoryFactory` uses `ServiceLoader` because the official 2010 helper's `ServiceRegistry` lookup is not accepted by modern JDKs",
@@ -780,7 +780,7 @@ def build() -> None:
     methods = _parse_methods(interface_path.read_text(encoding="utf-8"))
     _copy_templates(src)
     _write_support_sources(src)
-    ambassador_path = src / "com/sheepfling/hla/rosetta/rti1516e/StandardShimRTIambassador.java"
+    ambassador_path = src / "com/sheepfling/hla/shimroutes/rti1516e/StandardShimRTIambassador.java"
     ambassador_path.write_text(_render_ambassador(methods), encoding="utf-8")
 
     java_files = [str(path) for path in (api_dir / "java/src").rglob("*.java")]

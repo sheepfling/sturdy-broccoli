@@ -37,7 +37,7 @@ class CapsuleRuntimeResult:
 def find_capsule_library(capsule_dir: str | Path) -> Path:
     root = Path(capsule_dir)
     candidates = [
-        *root.glob("build/lib/libhla_x_*_capsule.*"),
+        *root.glob("build/lib/lib_*_capsule.*"),
         *root.glob("build/**/*.dylib"),
         *root.glob("build/**/*.so"),
         *root.glob("build/**/*.dll"),
@@ -59,18 +59,18 @@ class CAbiCapsuleClient:
             if not hasattr(self._lib, name):
                 raise RuntimeError(f"C++ capsule is missing C ABI function {name}")
         for name in (
-            "hla_x_capsule_discover_json",
-            "hla_x_capsule_create_json",
-            "hla_x_capsule_invoke_json",
-            "hla_x_capsule_evoke_callbacks_json",
+            "shim_capsule_discover_json",
+            "shim_capsule_create_json",
+            "shim_capsule_invoke_json",
+            "shim_capsule_evoke_callbacks_json",
         ):
             func = getattr(self._lib, name)
             func.argtypes = [ctypes.c_char_p]
             func.restype = ctypes.c_void_p
-        self._lib.hla_x_capsule_free_string.argtypes = [ctypes.c_void_p]
-        self._lib.hla_x_capsule_free_string.restype = None
-        self._lib.hla_x_capsule_close.argtypes = []
-        self._lib.hla_x_capsule_close.restype = None
+        self._lib.shim_capsule_free_string.argtypes = [ctypes.c_void_p]
+        self._lib.shim_capsule_free_string.restype = None
+        self._lib.shim_capsule_close.argtypes = []
+        self._lib.shim_capsule_close.restype = None
 
     def _call(self, name: str, payload: dict[str, Any]) -> dict[str, Any]:
         raw_request = json.dumps(payload, sort_keys=True).encode("utf-8")
@@ -80,26 +80,26 @@ class CAbiCapsuleClient:
         try:
             text = ctypes.string_at(pointer).decode("utf-8")
         finally:
-            self._lib.hla_x_capsule_free_string(pointer)
+            self._lib.shim_capsule_free_string(pointer)
         result = json.loads(text)
         if not isinstance(result, dict):
             raise RuntimeError(f"C++ capsule function {name} returned non-object JSON")
         return result
 
     def discover(self) -> dict[str, Any]:
-        return self._call("hla_x_capsule_discover_json", {"contract": "hla_x_capsule_v1"})
+        return self._call("shim_capsule_discover_json", {"contract": "shim_capsule_v1"})
 
     def create(self) -> dict[str, Any]:
-        return self._call("hla_x_capsule_create_json", {"contract": "hla_x_capsule_v1"})
+        return self._call("shim_capsule_create_json", {"contract": "shim_capsule_v1"})
 
     def invoke(self, method: str, args: dict[str, Any] | None = None) -> dict[str, Any]:
-        return self._call("hla_x_capsule_invoke_json", {"method": method, "args": args or {}})
+        return self._call("shim_capsule_invoke_json", {"method": method, "args": args or {}})
 
     def evoke_callbacks(self, min_seconds: float = 0.0, max_seconds: float = 0.0) -> dict[str, Any]:
-        return self._call("hla_x_capsule_evoke_callbacks_json", {"min_seconds": min_seconds, "max_seconds": max_seconds})
+        return self._call("shim_capsule_evoke_callbacks_json", {"min_seconds": min_seconds, "max_seconds": max_seconds})
 
     def close(self) -> None:
-        self._lib.hla_x_capsule_close()
+        self._lib.shim_capsule_close()
 
 
 class GrpcCapsuleClient:
@@ -140,7 +140,7 @@ class GrpcCapsuleClient:
     def _call(self, method: str, payload: dict[str, Any]) -> dict[str, Any]:
         request = json.dumps(payload, sort_keys=True).encode("utf-8")
         rpc = self.channel.unary_unary(
-            f"/hla_x.cpp_capsule.Capsule/{method}",
+            f"/shim_routes.cpp_capsule.Capsule/{method}",
             request_serializer=lambda value: value,
             response_deserializer=lambda value: value,
         )
@@ -151,10 +151,10 @@ class GrpcCapsuleClient:
         return result
 
     def discover(self) -> dict[str, Any]:
-        return self._call("Discover", {"contract": "hla_x_capsule_v1"})
+        return self._call("Discover", {"contract": "shim_capsule_v1"})
 
     def create(self) -> dict[str, Any]:
-        return self._call("CreateRtiAmbassador", {"contract": "hla_x_capsule_v1"})
+        return self._call("CreateRtiAmbassador", {"contract": "shim_capsule_v1"})
 
     def invoke(self, method: str, args: dict[str, Any] | None = None) -> dict[str, Any]:
         return self._call("Invoke", {"method": method, "args": args or {}})

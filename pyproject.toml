@@ -24,9 +24,9 @@ pythonpath = [
   "packages/hla-transport-grpc/src",
   "packages/hla-transport-rest/src",
   "packages/hla-fom-target-radar/src",
-  "packages/hla-fom-hlax-message-test/src",
-  "packages/hla-fom-hlax-space-lite/src",
-  "packages/hla-fom-hlax-time-mgmt-test/src",
+  "packages/hla-fom-proto2025-message-test/src",
+  "packages/hla-fom-proto2025-space-lite/src",
+  "packages/hla-fom-proto2025-time-mgmt-test/src",
   "packages/hla-verification/src",
 ]
 testpaths = ["tests"]

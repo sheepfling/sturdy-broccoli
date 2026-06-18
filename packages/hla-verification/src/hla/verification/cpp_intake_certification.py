@@ -83,14 +83,14 @@ def _trace_status(edition: str, trace: Sequence[dict[str, Any]]) -> tuple[str, t
 
 def certify_cpp_standard_core(edition: str, transport: str) -> CppRtiCoreCertificationReport:
     route = f"cpp-standard-{edition}-{transport}"
-    artifact = {"kind": "cpp-standard-shim", "name": f"hla-x-cpp-standard-{edition}", "edition": edition, "route": route}
+    artifact = {"kind": "cpp-standard-shim", "name": f"cpp-standard-{edition}", "edition": edition, "route": route}
     try:
         if edition == "2010":
-            from hla.verification.rosetta_mvp import run_standard_2010_exchange_trace
+            from hla.verification.shim_route_evidence import run_standard_2010_exchange_trace
 
             evidence = run_standard_2010_exchange_trace(route)
         elif edition == "2025":
-            from hla.verification.rosetta_mvp import run_standard_2025_lifecycle_trace
+            from hla.verification.shim_route_evidence import run_standard_2025_lifecycle_trace
 
             evidence = run_standard_2025_lifecycle_trace(route)
         else:

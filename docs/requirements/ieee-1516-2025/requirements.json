@@ -35,79 +35,79 @@
   ],
   "requirements": [
     {
-      "id": "HLA-X-2025-REQ-001",
+      "id": "HLA2025-REQ-001",
       "source": "IEEE 1516.1-2025",
       "clause": "1.4",
       "page": 17,
       "type": "shall",
       "text_summary": "Treat the 2025 HLA standard as a coordinated three-document product set: Framework and Rules, Federate Interface Specification, and OMT Specification.",
-      "project_area": ["requirements", "rosetta", "verification"],
+      "project_area": ["requirements", "shim_routes", "verification"],
       "status": "extracted",
       "tests": [],
       "implementation": ["Cross-link framework rules, federate interface services, and OMT/FOM data requirements."]
     },
     {
-      "id": "HLA-X-2025-REQ-002",
+      "id": "HLA2025-REQ-002",
       "source": "IEEE 1516.1-2025; IEEE 1516.2-2025",
       "clause": "13; 6.1",
       "page": "413; 90",
       "type": "shall",
       "text_summary": "Do not label an RTI, shim, object model, or tool as HLA Conforming without certified conformance evidence from a recognized/public authority.",
-      "project_area": ["docs", "rosetta", "verification", "evidence"],
+      "project_area": ["docs", "shim_routes", "verification", "evidence"],
       "status": "extracted",
       "tests": [],
       "implementation": ["Use surface-backed, lifecycle-green, adapter-smoke-green, core-exchange-green, and trace-green until certified evidence exists."]
     },
     {
-      "id": "HLA-X-2025-FR-001",
+      "id": "HLA2025-FR-001",
       "source": "IEEE 1516-2025",
       "clause": "5.1",
       "page": 31,
       "type": "shall",
       "text_summary": "A federation shall have an HLA FOM documented according to the OMT.",
-      "project_area": ["fom", "rosetta", "verification"],
+      "project_area": ["fom", "shim_routes", "verification"],
       "status": "extracted",
       "tests": ["FOM-backed demo presence", "FOM evidence warning/failure for non-trivial demos"],
       "implementation": ["Make Target/Radar the main FOM-backed demo."]
     },
     {
-      "id": "HLA-X-2025-FR-002",
+      "id": "HLA2025-FR-002",
       "source": "IEEE 1516-2025",
       "clause": "5.2",
       "page": 32,
       "type": "shall",
       "text_summary": "Simulation-associated object instance representation shall be in federates, not in the RTI.",
-      "project_area": ["python", "java", "cpp", "rosetta"],
+      "project_area": ["python", "java", "cpp", "shim_routes"],
       "status": "extracted",
       "tests": ["RTI state model does not claim semantic object ownership"],
       "implementation": ["RTI may track handles, ownership, subscriptions, queues, and routing state; federates own semantic object state."]
     },
     {
-      "id": "HLA-X-2025-FR-003",
+      "id": "HLA2025-FR-003",
       "source": "IEEE 1516-2025",
       "clause": "5.3",
       "page": 32,
       "type": "shall",
       "text_summary": "During federation execution, all exchange of FOM data among joined federates shall occur via the RTI.",
-      "project_area": ["rosetta", "python", "java", "cpp", "verification"],
+      "project_area": ["shim_routes", "python", "java", "cpp", "verification"],
       "status": "extracted",
       "tests": ["two-federate-core-exchange", "route trace proves backend callback path"],
       "implementation": ["Do not count direct federate-to-federate shortcuts as route proof."]
     },
     {
-      "id": "HLA-X-2025-FR-004",
+      "id": "HLA2025-FR-004",
       "source": "IEEE 1516-2025",
       "clause": "5.4",
       "page": 32,
       "type": "shall",
       "text_summary": "Joined federates shall interact with the RTI according to the HLA interface specification.",
-      "project_area": ["rosetta", "java", "cpp", "python"],
+      "project_area": ["shim_routes", "java", "cpp", "python"],
       "status": "extracted",
       "tests": ["standard API surface smoke", "HLA-shaped service invocation and callback trace"],
       "implementation": ["Java/C++ shims must prove API-shaped calls, not only byte movement."]
     },
     {
-      "id": "HLA-X-2025-FR-005",
+      "id": "HLA2025-FR-005",
       "source": "IEEE 1516-2025",
       "clause": "5.5",
       "page": 33,
@@ -119,7 +119,7 @@
       "implementation": ["Stage ownership from publisher-owned MVP to negotiated ownership."]
     },
     {
-      "id": "HLA-X-2025-FR-006",
+      "id": "HLA2025-FR-006",
       "source": "IEEE 1516-2025",
       "clause": "6.1",
       "page": 33,
@@ -131,19 +131,19 @@
       "implementation": ["Add SOM metadata lane after FOM validation."]
     },
     {
-      "id": "HLA-X-2025-FR-007",
+      "id": "HLA2025-FR-007",
       "source": "IEEE 1516-2025",
       "clause": "6.2",
       "page": 33,
       "type": "shall",
       "text_summary": "Federates shall be able to update/reflect attributes and send/receive interactions as documented.",
-      "project_area": ["rosetta", "object-management", "verification"],
+      "project_area": ["shim_routes", "object-management", "verification"],
       "status": "extracted",
       "tests": ["object update reflection", "interaction send/receive"],
       "implementation": ["Use FOM-backed object/interaction exchange scenarios."]
     },
     {
-      "id": "HLA-X-2025-FR-008",
+      "id": "HLA2025-FR-008",
       "source": "IEEE 1516-2025",
       "clause": "6.3",
       "page": 34,
@@ -155,7 +155,7 @@
       "implementation": ["Promote ownership services from staged backlog to compliance scenarios."]
     },
     {
-      "id": "HLA-X-2025-FR-009",
+      "id": "HLA2025-FR-009",
       "source": "IEEE 1516-2025",
       "clause": "6.4",
       "page": 34,
@@ -167,7 +167,7 @@
       "implementation": ["Track update condition variation as a post-MVP capability."]
     },
     {
-      "id": "HLA-X-2025-FR-010",
+      "id": "HLA2025-FR-010",
       "source": "IEEE 1516-2025",
       "clause": "6.5",
       "page": 34,
@@ -179,31 +179,31 @@
       "implementation": ["Keep logical time and callback evidence in route traces."]
     },
     {
-      "id": "HLA-X-2025-FI-001",
+      "id": "HLA2025-FI-001",
       "source": "IEEE 1516.1-2025",
       "clause": "1.4",
       "page": 17,
       "type": "shall",
       "text_summary": "Service group organization shall drive the capability and test matrix.",
-      "project_area": ["verification", "matrix", "rosetta"],
+      "project_area": ["verification", "matrix", "shim_routes"],
       "status": "extracted",
       "tests": ["service group matrix coverage"],
       "implementation": ["Organize federation, declaration, object, ownership, time, DDM, and support service status separately."]
     },
     {
-      "id": "HLA-X-2025-FI-002",
+      "id": "HLA2025-FI-002",
       "source": "IEEE 1516.1-2025",
       "clause": "13.2",
       "page": 413,
       "type": "shall",
       "text_summary": "An HLA-conforming RTI shall implement all joined federate-initiated services and invoke all RTI-initiated services defined in the Federate Interface specification.",
-      "project_area": ["rosetta", "java", "cpp", "python", "verification"],
+      "project_area": ["shim_routes", "java", "cpp", "python", "verification"],
       "status": "extracted",
       "tests": ["full interface service surface accounting"],
       "implementation": ["Report core scenario status separately from full interface surface and callback status."]
     },
     {
-      "id": "HLA-X-2025-FI-003",
+      "id": "HLA2025-FI-003",
       "source": "IEEE 1516.1-2025",
       "clause": "13.2",
       "page": 413,
@@ -215,19 +215,19 @@
       "implementation": ["Track Java 2010/2025, C++ 2010/2025, and Python mapping evidence separately."]
     },
     {
-      "id": "HLA-X-2025-FI-004",
+      "id": "HLA2025-FI-004",
       "source": "IEEE 1516.1-2025",
       "clause": "Annex A",
       "page": 414,
       "type": "shall",
       "text_summary": "Java and C++ language bindings matter directly; Python must maintain a documented semantic mapping.",
-      "project_area": ["java", "cpp", "python", "rosetta"],
+      "project_area": ["java", "cpp", "python", "shim_routes"],
       "status": "extracted",
       "tests": ["Java API compile", "C++ API compile", "Python mapping trace"],
       "implementation": ["Keep Java jars and C++ capsules standard-backed while documenting Python mapping evidence."]
     },
     {
-      "id": "HLA-X-2025-FI-005",
+      "id": "HLA2025-FI-005",
       "source": "IEEE 1516.1-2025",
       "clause": "4.1",
       "page": 42,
@@ -239,19 +239,19 @@
       "implementation": ["Return structured RTI exceptions, not raw Python/Java/C++ crashes."]
     },
     {
-      "id": "HLA-X-2025-FI-006",
+      "id": "HLA2025-FI-006",
       "source": "IEEE 1516.1-2025",
       "clause": "4.1",
       "page": "38-39",
       "type": "shall",
       "text_summary": "RTIs shall implement both immediate and evoked callback models.",
-      "project_area": ["callbacks", "rosetta", "verification"],
+      "project_area": ["callbacks", "shim_routes", "verification"],
       "status": "extracted",
       "tests": ["HLA_EVOKED evidence", "HLA_IMMEDIATE evidence"],
       "implementation": ["Keep evoked callback polling as first proof; report immediate callback evidence as missing until implemented."]
     },
     {
-      "id": "HLA-X-2025-FI-007",
+      "id": "HLA2025-FI-007",
       "source": "IEEE 1516.1-2025",
       "clause": "4.1.4",
       "page": 47,
@@ -263,7 +263,7 @@
       "implementation": ["Parse required FDD tables from 1516.2-2025 XML/DIF."]
     },
     {
-      "id": "HLA-X-2025-FI-008",
+      "id": "HLA2025-FI-008",
       "source": "IEEE 1516.1-2025",
       "clause": "4.1.4.1",
       "page": "47-48",
@@ -275,7 +275,7 @@
       "implementation": ["Reject the whole module rather than partially loading invalid FDD data."]
     },
     {
-      "id": "HLA-X-2025-FI-009",
+      "id": "HLA2025-FI-009",
       "source": "IEEE 1516.1-2025",
       "clause": "4.1.5",
       "page": 48,
@@ -287,7 +287,7 @@
       "implementation": ["Keep HLAinteger64Time and HLAfloat64Time factories non-negotiable for 2025."]
     },
     {
-      "id": "HLA-X-2025-OMT-001",
+      "id": "HLA2025-OMT-001",
       "source": "IEEE 1516.2-2025",
       "clause": "3.3.1",
       "page": "31-32",
@@ -299,7 +299,7 @@
       "implementation": ["Apply naming validation to object classes, interactions, attributes, parameters, dimensions, transportation types, update rates, data types, switches, and synchronization points."]
     },
     {
-      "id": "HLA-X-2025-OMT-002",
+      "id": "HLA2025-OMT-002",
       "source": "IEEE 1516.2-2025",
       "clause": "4",
       "page": 32,
@@ -311,7 +311,7 @@
       "implementation": ["Prioritize XML/DIF validation over PDF or visual table extraction."]
     },
     {
-      "id": "HLA-X-2025-OMT-003",
+      "id": "HLA2025-OMT-003",
       "source": "IEEE 1516.2-2025",
       "clause": "4",
       "page": "32-33",
@@ -323,7 +323,7 @@
       "implementation": ["Do not fail empty tables unless the standard requires content."]
     },
     {
-      "id": "HLA-X-2025-OMT-004",
+      "id": "HLA2025-OMT-004",
       "source": "IEEE 1516.2-2025; IEEE 1516.1-2025",
       "clause": "4; 4.1.4",
       "page": "33; 47",
@@ -335,7 +335,7 @@
       "implementation": ["Make the loader explicit about MIM and MOM source status."]
     },
     {
-      "id": "HLA-X-2025-OMT-005",
+      "id": "HLA2025-OMT-005",
       "source": "IEEE 1516.2-2025",
       "clause": "4.1",
       "page": 33,
@@ -347,7 +347,7 @@
       "implementation": ["Validate Name, Type, Version, Modification date, Security classification, Description, POC, and References."]
     },
     {
-      "id": "HLA-X-2025-OMT-006",
+      "id": "HLA2025-OMT-006",
       "source": "IEEE 1516.2-2025",
       "clause": "6.2",
       "page": "90-94",
@@ -359,7 +359,7 @@
       "implementation": ["Emit structured requirement/table/field/value/status/message validation failures."]
     },
     {
-      "id": "HLA-X-2025-OMT-007",
+      "id": "HLA2025-OMT-007",
       "source": "IEEE 1516.2-2025; IEEE 1516.1-2025",
       "clause": "7; 4.1.4.1",
       "page": "100+; 47-48",

@@ -1,0 +1,4 @@
+Proto2025_Base.xml: VALID
+Proto2025_MessageTest.xml: VALID
+Proto2025_SpaceLite.xml: VALID
+Proto2025_TimeMgmtTest.xml: VALID

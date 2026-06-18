@@ -15,7 +15,7 @@ Start with the base Python environment first. Then add only what you need.
 4. add bridge extras if needed
 5. add vendor runtimes only after that
 
-If you need to inspect the local Java toolchain before bridge or Rosetta work,
+If you need to inspect the local Java toolchain before bridge or language-shim work,
 run `./tools/java`.
 
 You can prepend `./tools/bootstrap doctor` before that sequence when you want a

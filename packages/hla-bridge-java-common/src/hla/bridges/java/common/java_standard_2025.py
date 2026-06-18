@@ -1,4 +1,4 @@
-"""Standard-backed Java 2025 Rosetta route helpers."""
+"""Standard-backed Java 2025 language-shim route helpers."""
 from __future__ import annotations
 
 import json
@@ -11,9 +11,25 @@ from hla.backends.common import BackendInfo
 from hla.rti.plugin_api import BackendRequest
 
 
-FACTORY_NAME = "HLA-X Java 2025 Standard Shim"
-DEFAULT_JAR = Path(os.environ.get("HLA_X_JAVA_STANDARD_2025_JAR", "build/rosetta/java-standard-2025/hla-x-rti1516-2025-java-shim.jar"))
-DEFAULT_REPORT = Path(os.environ.get("HLA_X_JAVA_STANDARD_2025_REPORT", "docs/evidence/rosetta/java-standard-2025.json"))
+FACTORY_NAME = "Java 2025 Standard Shim"
+DEFAULT_JAR = Path(
+    os.environ.get(
+        "SHIM_ROUTE_JAVA_STANDARD_2025_JAR",
+        os.environ.get(
+            "ROSETTA_JAVA_STANDARD_2025_JAR",
+            os.environ.get("HLA_X_JAVA_STANDARD_2025_JAR", "build/shim_routes/java-standard-2025/java-rti1516-2025-standard-shim.jar"),
+        ),
+    )
+)
+DEFAULT_REPORT = Path(
+    os.environ.get(
+        "SHIM_ROUTE_JAVA_STANDARD_2025_REPORT",
+        os.environ.get(
+            "ROSETTA_JAVA_STANDARD_2025_REPORT",
+            os.environ.get("HLA_X_JAVA_STANDARD_2025_REPORT", "docs/evidence/shim_routes/java-standard-2025.json"),
+        ),
+    )
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,10 +72,10 @@ class JavaStandard2025Backend:
 
 def _load_report(report_path: Path) -> dict[str, Any]:
     if not report_path.exists():
-        raise RuntimeError("Java 2025 standard shim evidence is missing. Run ./tools/hla-x build java-standard-2025 first.")
+        raise RuntimeError("Java 2025 standard shim evidence is missing. Run ./tools/shim-routes build java-standard-2025 first.")
     report = json.loads(report_path.read_text(encoding="utf-8"))
     if report.get("compile_status") != "passed":
-        raise RuntimeError("Java 2025 standard shim has not compiled successfully. Run ./tools/hla-x build java-standard-2025.")
+        raise RuntimeError("Java 2025 standard shim has not compiled successfully. Run ./tools/shim-routes build java-standard-2025.")
     return report
 
 
@@ -90,7 +106,7 @@ def create_java_standard_2025_backend(route: str, request: BackendRequest) -> Ja
     options = dict(request.options)
     jar_path = _jar_path(options)
     if not jar_path.exists():
-        raise RuntimeError(f"Java 2025 standard shim jar is missing at {jar_path}. Run ./tools/hla-x build java-standard-2025 first.")
+        raise RuntimeError(f"Java 2025 standard shim jar is missing at {jar_path}. Run ./tools/shim-routes build java-standard-2025 first.")
     report = _load_report(Path(str(options.get("report_path") or DEFAULT_REPORT)).expanduser())
     return JavaStandard2025Backend(route, request, jar_path, report)
 

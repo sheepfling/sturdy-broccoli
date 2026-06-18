@@ -1,4 +1,4 @@
-"""Rosetta standard-shim artifact and route contract.
+"""Language-shim artifact and route contract.
 
 This module names the standard-backed artifacts that must exist before a route
 can claim to be a Java or C++ standard shim. The existing in-process Java shim
@@ -41,7 +41,7 @@ STANDARD_SHIM_ARTIFACTS: tuple[StandardShimArtifact, ...] = (
         language="java",
         edition="2010",
         spec_name="rti1516e",
-        artifact_name="hla-x-rti1516e-java-shim.jar",
+        artifact_name="java-rti1516e-standard-shim.jar",
         official_api_bundle="specs/ieee-1516-2010/hla_specs/1516.1-2010_downloads/IEEE1516-2010_Java_API.zip",
         standard_surface="hla.rti1516e Java API",
         routes=(
@@ -54,7 +54,7 @@ STANDARD_SHIM_ARTIFACTS: tuple[StandardShimArtifact, ...] = (
         language="java",
         edition="2025",
         spec_name="rti1516_2025",
-        artifact_name="hla-x-rti1516-2025-java-shim.jar",
+        artifact_name="java-rti1516-2025-standard-shim.jar",
         official_api_bundle="specs/ieee-1516-2025/1516.1-2025_downloads.zip",
         standard_surface="1516.1-2025 Java API",
         routes=(
@@ -67,7 +67,7 @@ STANDARD_SHIM_ARTIFACTS: tuple[StandardShimArtifact, ...] = (
         language="cpp",
         edition="2010",
         spec_name="rti1516e",
-        artifact_name="libhla_x_rti1516e_cpp_shim",
+        artifact_name="librti1516e_standard_cpp_shim",
         official_api_bundle="specs/ieee-1516-2010/hla_specs/1516.1-2010_downloads/IEEE1516-2010_C++_API.zip",
         standard_surface="rti1516e C++ namespace",
         routes=(
@@ -80,7 +80,7 @@ STANDARD_SHIM_ARTIFACTS: tuple[StandardShimArtifact, ...] = (
         language="cpp",
         edition="2025",
         spec_name="rti1516_2025",
-        artifact_name="libhla_x_rti1516_2025_cpp_shim",
+        artifact_name="librti1516_2025_standard_cpp_shim",
         official_api_bundle="specs/ieee-1516-2025/1516.1-2025_downloads.zip",
         standard_surface="rti1516_2025 C++ namespace",
         routes=(

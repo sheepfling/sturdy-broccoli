@@ -27,9 +27,9 @@ credentials:
     redacted: '<redacted:HLAplainTextPassword>'
 
   token_custom:
-    type: HLAxBearerToken
+    type: Proto2025BearerToken
     token: 'safe-test-token'
-    redacted: '<redacted:HLAxBearerToken>'
+    redacted: '<redacted:Proto2025BearerToken>'
 
 negative:
   empty_password:

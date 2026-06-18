@@ -2,12 +2,12 @@
 from __future__ import annotations
 
 CAPSULE_C_ABI_FUNCTIONS = (
-    "hla_x_capsule_discover_json",
-    "hla_x_capsule_create_json",
-    "hla_x_capsule_invoke_json",
-    "hla_x_capsule_evoke_callbacks_json",
-    "hla_x_capsule_free_string",
-    "hla_x_capsule_close",
+    "shim_capsule_discover_json",
+    "shim_capsule_create_json",
+    "shim_capsule_invoke_json",
+    "shim_capsule_evoke_callbacks_json",
+    "shim_capsule_free_string",
+    "shim_capsule_close",
 )
 
 CAPSULE_V1_METHODS = (

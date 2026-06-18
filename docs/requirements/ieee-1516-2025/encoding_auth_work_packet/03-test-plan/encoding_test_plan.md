@@ -105,7 +105,7 @@ Strict decode rejects trailing bytes.
 
 ## P4: Provider oracle tests
 
-Purpose: compare HLA-X bytes to an actual RTI EncoderFactory when configured.
+Purpose: compare workspace bytes to an actual RTI EncoderFactory when configured.
 
 Tests:
 

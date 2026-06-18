@@ -1,0 +1,136 @@
+{
+  "artifact": {
+    "edition": "2010",
+    "kind": "cpp-standard-shim",
+    "name": "cpp-standard-2010",
+    "route": "cpp-standard-2010-grpc"
+  },
+  "blocked_reason": null,
+  "callback_status": "callback-green",
+  "capsule_dir": null,
+  "connect_status": "connect-green",
+  "core_scenario_status": "core-green",
+  "discovery": null,
+  "edition": "2010",
+  "errors": [],
+  "missing_trace_events": [],
+  "route": "cpp-standard-2010-grpc",
+  "status": "trace-green",
+  "trace": [
+    {
+      "backend": "cpp-standard-2010-grpc",
+      "event": "routeSelected",
+      "spec": "rti1516e",
+      "standardBacked": true
+    },
+    {
+      "event": "connect",
+      "federates": [
+        "radar",
+        "target"
+      ]
+    },
+    {
+      "event": "createFederationExecution",
+      "federation": "ShimRouteMvpCppstandard2010Grpc"
+    },
+    {
+      "event": "joinFederationExecution",
+      "federates": [
+        "radar",
+        "target"
+      ]
+    },
+    {
+      "attributes": [
+        {
+          "type": "AttributeHandle",
+          "value": 1
+        }
+      ],
+      "event": "publishSubscribeObject",
+      "objectClass": {
+        "type": "ObjectClassHandle",
+        "value": 2
+      }
+    },
+    {
+      "event": "publishSubscribeInteraction",
+      "interactionClass": {
+        "type": "InteractionClassHandle",
+        "value": 2
+      },
+      "parameters": [
+        {
+          "type": "ParameterHandle",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "event": "discoverObjectInstance",
+      "object": {
+        "type": "ObjectInstanceHandle",
+        "value": 4
+      },
+      "objectClass": {
+        "type": "ObjectClassHandle",
+        "value": 2
+      },
+      "objectName": "DemoObject-1"
+    },
+    {
+      "attributes": {
+        "{'type': 'AttributeHandle', 'value': 1}": "attribute-bytes"
+      },
+      "event": "reflectAttributeValues",
+      "object": {
+        "type": "ObjectInstanceHandle",
+        "value": 4
+      },
+      "order": "RECEIVE",
+      "tag": "update-tag"
+    },
+    {
+      "event": "receiveInteraction",
+      "interactionClass": {
+        "type": "InteractionClassHandle",
+        "value": 2
+      },
+      "order": "RECEIVE",
+      "parameters": {
+        "{'type': 'ParameterHandle', 'value': 1}": "hello"
+      },
+      "tag": "interaction-tag"
+    },
+    {
+      "event": "timeRegulationEnabled",
+      "time": "HLAfloat64Time(value=0.0)"
+    },
+    {
+      "event": "timeConstrainedEnabled",
+      "time": "HLAfloat64Time(value=0.0)"
+    },
+    {
+      "event": "timeAdvanceGrant",
+      "time": "HLAfloat64Time(value=10.0)"
+    },
+    {
+      "event": "destroyFederationExecution",
+      "federation": "ShimRouteMvpCppstandard2010Grpc"
+    },
+    {
+      "event": "disconnect",
+      "federates": [
+        "radar",
+        "target"
+      ]
+    }
+  ],
+  "trace_comparison_status": "trace-green",
+  "transport": "grpc",
+  "unsupported_services": [
+    "Full vendor C++ SDK service invocation awaits generated runtime capsule adapter."
+  ],
+  "warnings": []
+}

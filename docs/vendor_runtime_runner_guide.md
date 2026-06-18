@@ -10,12 +10,12 @@ Use it when:
 - `./tools/python verify-routes-preflight` reports `python-grpc: blocked`
 - you need stable real-runtime evidence rather than repo-green coverage
 - you are configuring CI runners for vendor runtime proof
-- you need to confirm which local JDK, `javac`, and `jar` the Rosetta Java
+- you need to confirm which local JDK, `javac`, and `jar` the Java standard shim
   routes will use
 
 For a single toolchain inventory, run [`./tools/java`](../tools/java).
-If you want the longer Rosetta-lab alias, use [`./tools/hla-x java doctor`](../tools/hla-x).
-It reports the discovered Java home, tool availability, and Rosetta jar
+If you want the longer shim-routes alias, use [`./tools/shim-routes java doctor`](../tools/shim-routes).
+It reports the discovered Java home, tool availability, and Java shim artifact
 presence.
 
 If you need the explicit variable and marker checklist for those runners, use

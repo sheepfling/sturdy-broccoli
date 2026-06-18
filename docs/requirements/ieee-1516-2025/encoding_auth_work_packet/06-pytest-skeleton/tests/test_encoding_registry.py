@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from hla_x.runtime import HlaRuntimeFactory
+from workspace_runtime import HlaRuntimeFactory
 
 
 REQUIRED_CODECS: tuple[str, ...] = (
@@ -64,6 +64,6 @@ def test_registry_rejects_unknown_encoding_name(fake_runtime_config: dict[str, o
     registry = factory.create_encoding_context().registry
 
     with pytest.raises(Exception, match='Unknown|unsupported|not registered'):
-        registry.get('HLAxDefinitelyNotAStandardCodec')
+        registry.get('Proto2025DefinitelyNotAStandardCodec')
     ####
 ####

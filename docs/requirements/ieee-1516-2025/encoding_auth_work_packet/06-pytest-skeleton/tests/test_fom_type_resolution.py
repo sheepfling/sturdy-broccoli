@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from hla_x.runtime import HlaRuntimeFactory
+from workspace_runtime import HlaRuntimeFactory
 
 
 def test_fom_type_repository_resolves_all_smoke_types(

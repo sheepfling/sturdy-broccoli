@@ -25,7 +25,7 @@ class Recording2025FederateAmbassador:
         return None
 
 
-@pytest.mark.requirements("HLA-X-2025-REQ-001", "HLA-X-2025-FI-003", "HLA-X-2025-FI-004")
+@pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FI-003", "HLA2025-FI-004")
 def test_2025_spec_package_exposes_authoritative_surface_without_replacing_2010() -> None:
     import hla.rti1516_2025 as rti2025
     import hla.rti1516e as rti1516e
@@ -41,7 +41,7 @@ def test_2025_spec_package_exposes_authoritative_surface_without_replacing_2010(
     assert "grpc" in rti2025_plugin().spec.capabilities
 
 
-@pytest.mark.requirements("HLA-X-2025-REQ-001")
+@pytest.mark.requirements("HLA2025-REQ-001")
 def test_2025_spec_aliases_and_backend_discovery_are_spec_aware() -> None:
     from hla.rti import discover_rti_backends, resolve_spec
 
@@ -81,7 +81,7 @@ def test_2025_spec_aliases_and_backend_discovery_are_spec_aware() -> None:
     assert backends["java-2025-py4j"].supports == ("rti1516_2025",)
 
 
-@pytest.mark.requirements("HLA-X-2025-REQ-002", "HLA-X-2025-FI-005", "HLA-X-2025-FI-006")
+@pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-FI-005", "HLA2025-FI-006")
 def test_2025_shim_is_first_green_runtime_path() -> None:
     from hla.rti import create_rti_ambassador
     from hla.rti1516_2025.enums import AdditionalSettingsResultCode, CallbackModel
@@ -106,7 +106,7 @@ def test_2025_shim_is_first_green_runtime_path() -> None:
     assert rti.connected is False
 
 
-@pytest.mark.requirements("HLA-X-2025-FI-005")
+@pytest.mark.requirements("HLA2025-FI-005")
 def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import (
@@ -160,7 +160,7 @@ def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
     leader.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-NEW-002", "HLA-X-2025-FI-001", "HLA-X-2025-FI-005")
+@pytest.mark.requirements("HLA2025-NEW-002", "HLA2025-FI-001", "HLA2025-FI-005")
 def test_2025_shim_reports_federation_executions_and_members() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.factory import create_rti_ambassador
@@ -219,7 +219,7 @@ def test_2025_shim_reports_federation_executions_and_members() -> None:
     leader.disconnect()
 
 
-@pytest.mark.requirements("HLA-X-2025-REQ-001", "HLA-X-2025-REQ-002")
+@pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-REQ-002")
 def test_2010_and_2025_backend_selection_do_not_cross_wire() -> None:
     from hla.rti import create_rti_ambassador
 

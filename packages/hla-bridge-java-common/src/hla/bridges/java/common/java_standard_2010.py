@@ -1,4 +1,4 @@
-"""Standard-backed Java 2010 Rosetta route helpers."""
+"""Standard-backed Java 2010 language-shim route helpers."""
 from __future__ import annotations
 
 import importlib
@@ -13,11 +13,17 @@ from hla.bridges.java.common.py4j_support import reset_py4j_callback_client
 from hla.bridges.java.common.java_runtime import discover_java_tool
 
 
-FACTORY_NAME = "HLA-X Java 2010 Standard Shim"
+FACTORY_NAME = "Java 2010 Standard Shim"
 DEFAULT_JAR = Path(
     os.environ.get(
-        "HLA_X_JAVA_STANDARD_2010_JAR",
-        "build/rosetta/java-standard-2010/hla-x-rti1516e-java-shim.jar",
+        "SHIM_ROUTE_JAVA_STANDARD_2010_JAR",
+        os.environ.get(
+            "ROSETTA_JAVA_STANDARD_2010_JAR",
+        os.environ.get(
+            "HLA_X_JAVA_STANDARD_2010_JAR",
+            "build/shim_routes/java-standard-2010/java-rti1516e-standard-shim.jar",
+        ),
+        ),
     )
 )
 
@@ -59,7 +65,7 @@ def create_java_standard_2010_backend(route: str, request: BackendRequest):
     if not jar_path.exists():
         raise RuntimeError(
             f"Java 2010 standard shim jar is missing at {jar_path}. "
-            "Run ./tools/hla-x build java-standard-2010 first."
+            "Run ./tools/shim-routes build java-standard-2010 first."
         )
 
     if route == "jpype":

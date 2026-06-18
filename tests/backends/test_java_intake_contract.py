@@ -65,11 +65,11 @@ def test_generic_java_2025_route_is_discovery_only_until_real_adapter_exists() -
         )
 
 
-def test_hla_x_java_discover_writes_structured_missing_classpath_report(tmp_path) -> None:
+def test_java_discover_writes_structured_missing_classpath_report(tmp_path) -> None:
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/hla_x.py",
+            "scripts/shim_routes.py",
             "java",
             "discover",
             "--edition",
@@ -96,11 +96,11 @@ def test_hla_x_java_discover_writes_structured_missing_classpath_report(tmp_path
     assert payload["evidence_markdown"].endswith(".md")
 
 
-def test_hla_x_java_certify_core_reports_missing_classpath(tmp_path) -> None:
+def test_java_certify_core_reports_missing_classpath(tmp_path) -> None:
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/hla_x.py",
+            "scripts/shim_routes.py",
             "java",
             "certify-core",
             "--edition",
@@ -148,7 +148,7 @@ def test_java_certify_core_2025_is_behavior_blocked_after_discovery(monkeypatch)
             edition="2025",
             bridge="jpype",
             classpath=("pyproject.toml",),
-            rti_factory_name="HLA-X Java 2025 Standard Shim",
+            rti_factory_name="Java 2025 Standard Shim",
         )
     )
 

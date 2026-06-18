@@ -11,11 +11,11 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 BUILD_SCRIPT = ROOT / "java_shims/hla-rti1516e-standard-shim/tools/build_standard_shim.py"
-JAR_PATH = ROOT / "build/rosetta/java-standard-2010/hla-x-rti1516e-java-shim.jar"
+JAR_PATH = ROOT / "build/shim_routes/java-standard-2010/java-rti1516e-standard-shim.jar"
 
 
 def _load_build_module() -> Any:
-    spec = importlib.util.spec_from_file_location("hla_x_build_standard_shim", BUILD_SCRIPT)
+    spec = importlib.util.spec_from_file_location("shim_routes_build_standard_shim", BUILD_SCRIPT)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module

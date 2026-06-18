@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://standards.ieee.org/IEEE1516-2025 IEEE1516-DIF-2025.xsd">
+    <modelIdentification>
+        <name>Proto2025 Base FOM Module</name>
+        <type>FOM</type>
+        <version>0.1</version>
+        <modificationDate>2026-06-17</modificationDate>
+        <securityClassification>Unclassified</securityClassification>
+        <copyright>Copyright 2026 Proto2025 contributors</copyright>
+        <releaseRestriction>Prototype engineering use</releaseRestriction>
+        <purpose>Shared runtime objects, interactions, and datatypes for Proto2025 prototype federations.</purpose>
+        <applicationDomain>Distributed simulation infrastructure testing</applicationDomain>
+        <description>Base FOM module used by Proto2025_MessageTest, Proto2025_SpaceLite, and Proto2025_TimeMgmtTest.</description>
+        <useLimitation>Prototype module; review datatype encodings against the selected RTI before formal use.</useLimitation>
+        <useHistory>Initial v0.1 draft generated from Proto2025 planning conversation.</useHistory>
+        <keyword><taxonomy>Proto2025</taxonomy><keywordValue>Base</keywordValue></keyword>
+        <poc><pocType>Author</pocType><pocName>Proto2025 Engineering Team</pocName><pocOrg>Proto2025</pocOrg></poc>
+        <reference><type>Dependency</type><identification>HLAstandardMIM-2025.xml</identification></reference>
+    </modelIdentification>
+    <objects>
+        <objectClass>
+            <name>HLAobjectRoot</name>
+            <sharing>Neither</sharing>
+            <objectClass>
+                <name>Proto2025</name>
+                <sharing>Neither</sharing>
+                <semantics>Root of Proto2025 prototype object classes.</semantics>
+                <objectClass>
+                    <name>FederateHealth</name>
+                    <sharing>PublishSubscribe</sharing>
+                    <semantics>Liveness and status published by every Proto2025 federate.</semantics>
+                    <attribute><name>FederateName</name><dataType>HLAunicodeString</dataType><updateType>Static</updateType><updateCondition>On registration</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Federate name used when joining the federation.</semantics></attribute>
+                    <attribute><name>FederateType</name><dataType>HLAunicodeString</dataType><updateType>Static</updateType><updateCondition>On registration</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Implementation role, e.g. TestExecutionFederate.</semantics></attribute>
+                    <attribute><name>State</name><dataType>Proto2025FederateState</dataType><updateType>Conditional</updateType><updateCondition>On state change</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Federate lifecycle state.</semantics></attribute>
+                    <attribute><name>LastHeartbeatTime</name><dataType>Proto2025Time64</dataType><updateType>Periodic</updateType><updateCondition>Heartbeat interval</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAbestEffort</transportation><order>Receive</order><semantics>Local or logical time associated with the last heartbeat.</semantics></attribute>
+                    <attribute><name>CapabilityFlags</name><dataType>HLAunicodeString</dataType><updateType>Conditional</updateType><updateCondition>On capability change</updateCondition><valueRequired>false</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>JSON object declaring federate capabilities.</semantics></attribute>
+                    <attribute><name>ErrorCode</name><dataType>Proto2025ErrorCode</dataType><updateType>Conditional</updateType><updateCondition>On error</updateCondition><valueRequired>false</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Most recent federate error state.</semantics></attribute>
+                    <attribute><name>ErrorText</name><dataType>HLAunicodeString</dataType><updateType>Conditional</updateType><updateCondition>On error</updateCondition><valueRequired>false</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Human-readable diagnostic detail.</semantics></attribute>
+                </objectClass>
+                <objectClass>
+                    <name>RunConfiguration</name>
+                    <sharing>PublishSubscribe</sharing>
+                    <semantics>Run-level parameters shared by all test federates.</semantics>
+                    <attribute><name>RunId</name><dataType>HLAunicodeString</dataType><updateType>Static</updateType><updateCondition>On registration</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Unique identifier for this federation execution.</semantics></attribute>
+                    <attribute><name>ScenarioName</name><dataType>HLAunicodeString</dataType><updateType>Static</updateType><updateCondition>On registration</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Scenario or test plan name.</semantics></attribute>
+                    <attribute><name>FomSetId</name><dataType>HLAunicodeString</dataType><updateType>Static</updateType><updateCondition>On registration</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Identifier for the set of FOM modules loaded.</semantics></attribute>
+                    <attribute><name>LogicalTimeScale</name><dataType>HLAunicodeString</dataType><updateType>Static</updateType><updateCondition>On registration</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Text description of logical-time units.</semantics></attribute>
+                    <attribute><name>StartTime</name><dataType>Proto2025Time64</dataType><updateType>Static</updateType><updateCondition>On registration</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Configured start logical time.</semantics></attribute>
+                    <attribute><name>ConfiguredLookahead</name><dataType>Proto2025Time64</dataType><updateType>Static</updateType><updateCondition>On registration</updateCondition><valueRequired>false</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Default lookahead used by time-managed federates.</semantics></attribute>
+                    <attribute><name>OrderingPolicy</name><dataType>Proto2025OrderingMode</dataType><updateType>Static</updateType><updateCondition>On registration</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Default ordering policy for the run.</semantics></attribute>
+                </objectClass>
+                <objectClass>
+                    <name>RunMetrics</name>
+                    <sharing>PublishSubscribe</sharing>
+                    <semantics>Aggregate runtime counters for acceptance and regression checks.</semantics>
+                    <attribute><name>RunId</name><dataType>HLAunicodeString</dataType><updateType>Static</updateType><updateCondition>On registration</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Unique run identifier.</semantics></attribute>
+                    <attribute><name>JoinedFederateCount</name><dataType>HLAinteger32BE</dataType><updateType>Conditional</updateType><updateCondition>On join or resign</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Number of joined federates observed.</semantics></attribute>
+                    <attribute><name>ObjectInstanceCount</name><dataType>HLAinteger32BE</dataType><updateType>Periodic</updateType><updateCondition>Metrics interval</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAbestEffort</transportation><order>Receive</order><semantics>Object instances discovered or registered.</semantics></attribute>
+                    <attribute><name>InteractionCount</name><dataType>HLAinteger64BE</dataType><updateType>Periodic</updateType><updateCondition>Metrics interval</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAbestEffort</transportation><order>Receive</order><semantics>Interactions observed by the recorder.</semantics></attribute>
+                    <attribute><name>AttributeUpdateCount</name><dataType>HLAinteger64BE</dataType><updateType>Periodic</updateType><updateCondition>Metrics interval</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAbestEffort</transportation><order>Receive</order><semantics>Reflected or produced attribute updates.</semantics></attribute>
+                    <attribute><name>DroppedMessageCount</name><dataType>HLAinteger64BE</dataType><updateType>Periodic</updateType><updateCondition>Metrics interval</updateCondition><valueRequired>false</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAbestEffort</transportation><order>Receive</order><semantics>Known best-effort or bridge-level drops.</semantics></attribute>
+                    <attribute><name>LateMessageCount</name><dataType>HLAinteger64BE</dataType><updateType>Periodic</updateType><updateCondition>Metrics interval</updateCondition><valueRequired>false</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAbestEffort</transportation><order>Receive</order><semantics>Messages detected with invalid or late logical time.</semantics></attribute>
+                </objectClass>
+                <objectClass>
+                    <name>ArtifactReference</name>
+                    <sharing>PublishSubscribe</sharing>
+                    <semantics>Reference to evidence artifacts outside the federation data stream.</semantics>
+                    <attribute><name>ArtifactId</name><dataType>HLAunicodeString</dataType><updateType>Static</updateType><updateCondition>On registration</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Unique artifact identifier.</semantics></attribute>
+                    <attribute><name>ArtifactType</name><dataType>HLAunicodeString</dataType><updateType>Static</updateType><updateCondition>On registration</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Artifact category, e.g. log, trace, generated suite, report.</semantics></attribute>
+                    <attribute><name>ProducerFederate</name><dataType>HLAunicodeString</dataType><updateType>Static</updateType><updateCondition>On registration</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Federate that produced the artifact.</semantics></attribute>
+                    <attribute><name>Uri</name><dataType>HLAunicodeString</dataType><updateType>Conditional</updateType><updateCondition>On artifact availability</updateCondition><valueRequired>true</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>URI or file path for artifact retrieval.</semantics></attribute>
+                    <attribute><name>Sha256</name><dataType>HLAASCIIstring</dataType><updateType>Conditional</updateType><updateCondition>On artifact availability</updateCondition><valueRequired>false</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Optional SHA-256 digest.</semantics></attribute>
+                    <attribute><name>CreatedLogicalTime</name><dataType>Proto2025Time64</dataType><updateType>Conditional</updateType><updateCondition>On artifact availability</updateCondition><valueRequired>false</valueRequired><ownership>NoTransfer</ownership><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Logical time at artifact creation.</semantics></attribute>
+                </objectClass>
+            </objectClass>
+        </objectClass>
+    </objects>
+    <interactions>
+        <interactionClass>
+            <name>HLAinteractionRoot</name>
+            <interactionClass>
+                <name>Proto2025</name>
+                <sharing>Neither</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Root of Proto2025 prototype interactions.</semantics>
+                <interactionClass><name>FederateReady</name><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Federate has completed publication and subscription.</semantics><parameter><name>FederateName</name><dataType>HLAunicodeString</dataType><semantics>Ready federate name.</semantics></parameter><parameter><name>CapabilityFlags</name><dataType>HLAunicodeString</dataType><semantics>JSON capability declaration.</semantics></parameter></interactionClass>
+                <interactionClass><name>Heartbeat</name><sharing>PublishSubscribe</sharing><transportation>HLAbestEffort</transportation><order>Receive</order><semantics>Low-cost liveness interaction.</semantics><parameter><name>FederateName</name><dataType>HLAunicodeString</dataType><semantics>Federate name.</semantics></parameter><parameter><name>State</name><dataType>Proto2025FederateState</dataType><semantics>Federate state.</semantics></parameter><parameter><name>WallClockTime</name><dataType>Proto2025Time64</dataType><semantics>Local wall-clock timestamp in nanoseconds.</semantics></parameter></interactionClass>
+                <interactionClass><name>LogEvent</name><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Diagnostic log event.</semantics><parameter><name>Severity</name><dataType>Proto2025ErrorCode</dataType><semantics>Severity or error code.</semantics></parameter><parameter><name>Source</name><dataType>HLAunicodeString</dataType><semantics>Emitter.</semantics></parameter><parameter><name>Message</name><dataType>HLAunicodeString</dataType><semantics>Log message.</semantics></parameter><parameter><name>ContextJson</name><dataType>HLAunicodeString</dataType><semantics>Structured context.</semantics></parameter></interactionClass>
+                <interactionClass><name>RequestShutdown</name><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>TimeStamp</order><semantics>Request coordinated shutdown.</semantics><parameter><name>Reason</name><dataType>HLAunicodeString</dataType><semantics>Shutdown reason.</semantics></parameter><parameter><name>DeadlineLogicalTime</name><dataType>Proto2025Time64</dataType><semantics>Requested shutdown deadline.</semantics></parameter></interactionClass>
+                <interactionClass><name>ErrorReport</name><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>Receive</order><semantics>Failure report emitted by any federate.</semantics><parameter><name>Source</name><dataType>HLAunicodeString</dataType><semantics>Fault source.</semantics></parameter><parameter><name>ErrorCode</name><dataType>Proto2025ErrorCode</dataType><semantics>Error classification.</semantics></parameter><parameter><name>ErrorText</name><dataType>HLAunicodeString</dataType><semantics>Error details.</semantics></parameter><parameter><name>RelatedObjectId</name><dataType>HLAunicodeString</dataType><semantics>Optional object or artifact identifier.</semantics></parameter></interactionClass>
+                <interactionClass><name>MarkTestPhase</name><sharing>PublishSubscribe</sharing><transportation>HLAreliable</transportation><order>TimeStamp</order><semantics>Marks a test plan phase in the federation event stream.</semantics><parameter><name>PhaseName</name><dataType>HLAunicodeString</dataType><semantics>Phase name.</semantics></parameter><parameter><name>PhaseId</name><dataType>HLAunicodeString</dataType><semantics>Phase identifier.</semantics></parameter><parameter><name>LogicalTime</name><dataType>Proto2025Time64</dataType><semantics>Logical time for phase marker.</semantics></parameter></interactionClass>
+            </interactionClass>
+        </interactionClass>
+    </interactions>
+    <time>
+        <logicalTime><dataType>HLAinteger64Time</dataType><semantics>Integer logical time in nanoseconds unless overridden by RunConfiguration.</semantics></logicalTime>
+        <logicalTimeInterval><dataType>HLAinteger64Time</dataType><semantics>Integer logical time interval in nanoseconds unless overridden by RunConfiguration.</semantics></logicalTimeInterval>
+    </time>
+    <synchronizations>
+        <synchronizationPoint><label>Proto2025InitialPublish</label><capability>RegisterAchieve</capability><semantics>All required federates have published and subscribed.</semantics></synchronizationPoint>
+        <synchronizationPoint><label>Proto2025InitialUpdate</label><capability>RegisterAchieve</capability><semantics>Initial objects have been registered and updated.</semantics></synchronizationPoint>
+        <synchronizationPoint><label>Proto2025BeginRun</label><capability>RegisterAchieve</capability><semantics>Federates may enter active test or simulation behavior.</semantics></synchronizationPoint>
+        <synchronizationPoint><label>Proto2025EndRun</label><capability>RegisterAchieve</capability><semantics>Federates have completed test execution and recording.</semantics></synchronizationPoint>
+    </synchronizations>
+    <switches>
+        <autoProvide isEnabled="true"/>
+        <attributeRelevanceAdvisory isEnabled="true"/>
+        <objectClassRelevanceAdvisory isEnabled="true"/>
+        <interactionRelevanceAdvisory isEnabled="true"/>
+    </switches>
+    <updateRates>
+        <updateRate><name>Proto2025High</name><rate>30.0</rate></updateRate>
+        <updateRate><name>Proto2025Medium</name><rate>5.0</rate></updateRate>
+        <updateRate><name>Proto2025Low</name><rate>0.2</rate></updateRate>
+    </updateRates>
+    <dataTypes>
+        <simpleDataTypes>
+            <simpleData><name>Proto2025Time64</name><representation>HLAinteger64BE</representation><units>ns</units><resolution>1</resolution><accuracy>1</accuracy><semantics>Nanosecond-scale timestamp or duration.</semantics></simpleData>
+            <simpleData><name>Proto2025Hash32</name><representation>HLAinteger32BE</representation><units>NA</units><resolution>1</resolution><accuracy>Perfect</accuracy><semantics>Compact non-cryptographic hash value for ordering checks.</semantics></simpleData>
+        </simpleDataTypes>
+        <enumeratedDataTypes>
+            <enumeratedData><name>Proto2025FederateState</name><representation>HLAinteger32BE</representation><semantics>Federate lifecycle state.</semantics><enumerator><name>Created</name><value>0</value></enumerator><enumerator><name>Joining</name><value>1</value></enumerator><enumerator><name>Joined</name><value>2</value></enumerator><enumerator><name>Initializing</name><value>3</value></enumerator><enumerator><name>Ready</name><value>4</value></enumerator><enumerator><name>Running</name><value>5</value></enumerator><enumerator><name>Paused</name><value>6</value></enumerator><enumerator><name>Resigning</name><value>7</value></enumerator><enumerator><name>Failed</name><value>8</value></enumerator></enumeratedData>
+            <enumeratedData><name>Proto2025ExecutionMode</name><representation>HLAinteger32BE</representation><semantics>Execution mode shared by SpaceLite and management federates.</semantics><enumerator><name>Uninitialized</name><value>0</value></enumerator><enumerator><name>Initializing</name><value>1</value></enumerator><enumerator><name>Run</name><value>2</value></enumerator><enumerator><name>Freeze</name><value>3</value></enumerator><enumerator><name>Shutdown</name><value>4</value></enumerator></enumeratedData>
+            <enumeratedData><name>Proto2025Verdict</name><representation>HLAinteger32BE</representation><semantics>Test or validation verdict.</semantics><enumerator><name>Unknown</name><value>0</value></enumerator><enumerator><name>Pass</name><value>1</value></enumerator><enumerator><name>Fail</name><value>2</value></enumerator><enumerator><name>Inconclusive</name><value>3</value></enumerator><enumerator><name>NotRun</name><value>4</value></enumerator><enumerator><name>Error</name><value>5</value></enumerator></enumeratedData>
+            <enumeratedData><name>Proto2025ErrorCode</name><representation>HLAinteger32BE</representation><semantics>Common error code.</semantics><enumerator><name>None</name><value>0</value></enumerator><enumerator><name>Warn</name><value>1</value></enumerator><enumerator><name>Error</name><value>2</value></enumerator><enumerator><name>Fatal</name><value>3</value></enumerator><enumerator><name>Timeout</name><value>4</value></enumerator><enumerator><name>BadEncoding</name><value>5</value></enumerator><enumerator><name>UnsupportedService</name><value>6</value></enumerator></enumeratedData>
+            <enumeratedData><name>Proto2025OrderingMode</name><representation>HLAinteger32BE</representation><semantics>Message ordering mode.</semantics><enumerator><name>Receive</name><value>0</value></enumerator><enumerator><name>TimeStamp</name><value>1</value></enumerator></enumeratedData>
+            <enumeratedData><name>Proto2025TransportationMode</name><representation>HLAinteger32BE</representation><semantics>Transport mode as seen by test logic.</semantics><enumerator><name>Reliable</name><value>0</value></enumerator><enumerator><name>BestEffort</name><value>1</value></enumerator></enumeratedData>
+        </enumeratedDataTypes>
+        <arrayDataTypes>
+            <arrayData><name>Proto2025ByteArray</name><dataType>HLAbyte</dataType><cardinality>Dynamic</cardinality><encoding>HLAvariableArray</encoding><semantics>Opaque payload bytes.</semantics></arrayData>
+        </arrayDataTypes>
+        <fixedRecordDataTypes>
+            <fixedRecordData><name>Proto2025Vector3</name><encoding>HLAfixedRecord</encoding><semantics>Three-dimensional vector in SI units unless otherwise specified.</semantics><field><name>X</name><dataType>HLAfloat64BE</dataType><semantics>X component.</semantics></field><field><name>Y</name><dataType>HLAfloat64BE</dataType><semantics>Y component.</semantics></field><field><name>Z</name><dataType>HLAfloat64BE</dataType><semantics>Z component.</semantics></field></fixedRecordData>
+            <fixedRecordData><name>Proto2025Quaternion</name><encoding>HLAfixedRecord</encoding><semantics>Unit quaternion orientation.</semantics><field><name>W</name><dataType>HLAfloat64BE</dataType><semantics>Scalar component.</semantics></field><field><name>X</name><dataType>HLAfloat64BE</dataType><semantics>X component.</semantics></field><field><name>Y</name><dataType>HLAfloat64BE</dataType><semantics>Y component.</semantics></field><field><name>Z</name><dataType>HLAfloat64BE</dataType><semantics>Z component.</semantics></field></fixedRecordData>
+            <fixedRecordData><name>Proto2025Pose3D</name><encoding>HLAfixedRecord</encoding><semantics>Position and orientation.</semantics><field><name>Position</name><dataType>Proto2025Vector3</dataType><semantics>Position vector.</semantics></field><field><name>Orientation</name><dataType>Proto2025Quaternion</dataType><semantics>Orientation quaternion.</semantics></field></fixedRecordData>
+        </fixedRecordDataTypes>
+    </dataTypes>
+    <notes><note><label>Proto2025BaseNote</label><semantics>Module is intentionally minimal and supports concrete test FOM extensions.</semantics></note></notes>
+</objectModel>

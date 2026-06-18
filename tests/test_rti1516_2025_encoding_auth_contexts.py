@@ -12,7 +12,7 @@ from hla.rti1516_2025.foms import FomTypeRepository, encoding_smoke_fom_path
 from hla.rti1516e.fom import FOMResolver
 
 
-@pytest.mark.requirements("HLA-X-2025-FI-003", "HLA-X-2025-FI-004")
+@pytest.mark.requirements("HLA2025-FI-003", "HLA2025-FI-004")
 def test_factory_returns_matching_encoding_and_auth_contexts() -> None:
     factory = HlaFactoryRegistry.get("ieee1516e-2025", provider="shim")
 
@@ -28,7 +28,7 @@ def test_factory_returns_matching_encoding_and_auth_contexts() -> None:
     assert runtime.capability_report()["auth"]["supports_standard_credentials"] is True
 
 
-@pytest.mark.requirements("ENC-001", "ENC-004", "HLA-X-2025-OMT-002")
+@pytest.mark.requirements("ENC-001", "ENC-004", "HLA2025-OMT-002")
 def test_encoding_context_exposes_fom_type_repository_and_capabilities() -> None:
     path = encoding_smoke_fom_path()
     encoding = HlaFactoryRegistry.get("2025", provider="shim").create_encoding_context(
@@ -46,7 +46,7 @@ def test_encoding_context_exposes_fom_type_repository_and_capabilities() -> None
     assert report["registry"]["supports_extendable_variant_record"] is True
 
 
-@pytest.mark.requirements("HLA-X-2025-FI-004")
+@pytest.mark.requirements("HLA2025-FI-004")
 def test_encoding_registry_resolves_required_builtin_codecs_and_rejects_unknowns() -> None:
     registry = HlaFactoryRegistry.get("2025", provider="shim").encoding_registry()
     required = {
@@ -79,10 +79,10 @@ def test_encoding_registry_resolves_required_builtin_codecs_and_rejects_unknowns
     assert required <= set(registry.registered_codecs())
     assert registry.get("HLAinteger32BE")(1).toByteArray() == bytes.fromhex("00000001")
     with pytest.raises(KeyError, match="Unknown or unsupported"):
-        registry.get("HLAxDefinitelyNotAStandardCodec")
+        registry.get("Proto2025DefinitelyNotAStandardCodec")
 
 
-@pytest.mark.requirements("HLA-X-2025-FI-004")
+@pytest.mark.requirements("HLA2025-FI-004")
 @pytest.mark.parametrize(
     ("codec", "value", "expected_hex"),
     [
@@ -107,7 +107,7 @@ def test_primitive_codecs_match_imported_golden_vectors(codec: str, value: int |
         assert decoded == value
 
 
-@pytest.mark.requirements("HLA-X-2025-FI-003")
+@pytest.mark.requirements("HLA2025-FI-003")
 def test_auth_context_supports_2025_credentials_and_rejects_2010_standard_credentials() -> None:
     factory_2025 = HlaFactoryRegistry.get("2025", provider="shim")
     password_auth = factory_2025.create_authentication_context(
@@ -129,20 +129,20 @@ def test_auth_context_supports_2025_credentials_and_rejects_2010_standard_creden
 def test_auth_context_supports_custom_typed_bytes_and_rejects_empty_password() -> None:
     factory = HlaFactoryRegistry.get("2025", provider="shim")
     custom_auth = factory.create_authentication_context(
-        {"mode": "CustomTypedBytes", "credential_type": "HLAxBearerToken", "data": b"safe-test-token"}
+        {"mode": "CustomTypedBytes", "credential_type": "Proto2025BearerToken", "data": b"safe-test-token"}
     )
 
     credential = custom_auth.credentials()
     assert isinstance(credential, Credentials)
-    assert credential.type == "HLAxBearerToken"
+    assert credential.type == "Proto2025BearerToken"
     assert credential.data == b"safe-test-token"
-    assert custom_auth.capability_report()["credential"]["data"] == "<redacted:HLAxBearerToken>"
+    assert custom_auth.capability_report()["credential"]["data"] == "<redacted:Proto2025BearerToken>"
 
     with pytest.raises(InvalidCredentials, match="cannot be empty"):
         factory.create_authentication_context({"mode": "PlainTextPassword", "password": ""})
 
 
-@pytest.mark.requirements("HLA-X-2025-FI-003", "HLA-X-2025-FI-005")
+@pytest.mark.requirements("HLA2025-FI-003", "HLA2025-FI-005")
 def test_invalid_credentials_fail_before_rti_connection() -> None:
     runtime = HlaFactoryRegistry.get("2025", provider="shim").create_runtime_context(
         auth_config={"mode": "PlainTextPassword", "password": "bad"}
@@ -171,7 +171,7 @@ def test_runtime_context_writes_redacted_encoding_auth_evidence(tmp_path) -> Non
     assert "secret-value" not in runtime_report
 
 
-@pytest.mark.requirements("AUTH-004", "HLA-X-2025-REQ-001", "HLA-X-2025-REQ-002")
+@pytest.mark.requirements("AUTH-004", "HLA2025-REQ-001", "HLA2025-REQ-002")
 def test_2010_profile_does_not_gain_2025_auth_or_repository_surface() -> None:
     import hla.rti1516e as rti1516e
 
@@ -187,7 +187,7 @@ def test_2010_profile_does_not_gain_2025_auth_or_repository_surface() -> None:
     assert not hasattr(rti1516e, "Credentials")
 
 
-@pytest.mark.requirements("HLA-X-2025-OMT-002", "HLA-X-2025-OMT-006")
+@pytest.mark.requirements("HLA2025-OMT-002", "HLA2025-OMT-006")
 def test_encoding_smoke_fom_resolves_expected_datatype_graph() -> None:
     path = encoding_smoke_fom_path()
     assert Path(path).name == "EncodingSmokeTest-2025.xml"

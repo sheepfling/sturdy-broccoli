@@ -6,7 +6,7 @@ from typing import Any
 import pytest
 import yaml
 
-from hla_x.runtime import HlaRuntimeFactory
+from workspace_runtime import HlaRuntimeFactory
 
 
 @pytest.mark.parametrize(

@@ -48,7 +48,7 @@ def create_java_intake_backend(edition: str, route: str, request: BackendRequest
     if profile.edition == "2025":
         raise RuntimeError(
             "Generic Java 2025 RTI invocation is not implemented yet. "
-            "Use './tools/hla-x java discover --edition 2025 ...' for discovery evidence."
+            "Use './tools/shim-routes java discover --edition 2025 ...' for discovery evidence."
         )
 
     options = dict(request.options)

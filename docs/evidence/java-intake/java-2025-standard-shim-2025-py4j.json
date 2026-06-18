@@ -1,0 +1,40 @@
+{
+  "blocked_reason": "real 2025 Java adapter not implemented yet",
+  "bridge": "py4j",
+  "callback_status": "blocked",
+  "classpath": [
+    "build/shim_routes/java-standard-2025/java-rti1516-2025-standard-shim.jar"
+  ],
+  "connect_status": "blocked",
+  "core_scenario_status": "blocked",
+  "discovery": {
+    "bridge": "py4j",
+    "classpath": [
+      "build/shim_routes/java-standard-2025/java-rti1516-2025-standard-shim.jar"
+    ],
+    "edition": "2025",
+    "edition_match": true,
+    "errors": [],
+    "factory_found": true,
+    "factory_name": "Java 2025 Standard Shim",
+    "factory_requested": "Java 2025 Standard Shim",
+    "factory_version": "0.13.0",
+    "hla_version": "IEEE 1516.1-2025",
+    "rti_ambassador_class": "com.sheepfling.hla.shimroutes.rti1516_2025.StandardShimRTIambassador",
+    "rti_ambassador_created": true,
+    "rti_ambassador_interfaces": [
+      "hla.rti1516_2025.RTIambassador"
+    ],
+    "status": "ambassador-green",
+    "warnings": []
+  },
+  "edition": "2025",
+  "errors": [],
+  "factory_requested": "Java 2025 Standard Shim",
+  "missing_trace_events": [],
+  "status": "behavior-blocked",
+  "trace": [],
+  "trace_comparison_status": "blocked",
+  "unsupported_services": [],
+  "warnings": []
+}

@@ -13,8 +13,8 @@ from hla.bridges.java.common import JavaToolchainArtifact, JavaToolchainInventor
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def _load_hla_x_module():
-    spec = importlib.util.spec_from_file_location("hla_x_module_for_tests", ROOT / "scripts" / "hla_x.py")
+def _load_shim_routes_module():
+    spec = importlib.util.spec_from_file_location("shim_routes_module_for_tests", ROOT / "scripts" / "shim_routes.py")
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
@@ -33,8 +33,8 @@ def test_java_toolchain_inventory_reports_tools_and_artifacts(tmp_path: Path, mo
     javac_bin.write_text("")
     jar_bin.write_text("")
 
-    java_2010 = repo_root / "build/rosetta/java-standard-2010/hla-x-rti1516e-java-shim.jar"
-    java_2025 = repo_root / "build/rosetta/java-standard-2025/hla-x-rti1516-2025-java-shim.jar"
+    java_2010 = repo_root / "build/shim_routes/java-standard-2010/java-rti1516e-standard-shim.jar"
+    java_2025 = repo_root / "build/shim_routes/java-standard-2025/java-rti1516-2025-standard-shim.jar"
     java_2010.parent.mkdir(parents=True)
     java_2025.parent.mkdir(parents=True)
     java_2010.write_text("jar")
@@ -45,14 +45,14 @@ def test_java_toolchain_inventory_reports_tools_and_artifacts(tmp_path: Path, mo
         label="Java 2010 standard shim jar",
         path=str(java_2010),
         exists=True,
-        build_command="./tools/hla-x build java-standard-2010",
+        build_command="./tools/shim-routes build java-standard-2010",
     )
     artifact_2025 = JavaToolchainArtifact(
         key="java-standard-2025",
         label="Java 2025 standard shim jar",
         path=str(java_2025),
         exists=True,
-        build_command="./tools/hla-x build java-standard-2025",
+        build_command="./tools/shim-routes build java-standard-2025",
     )
     inventory = JavaToolchainInventory(
         java_home_env=str(java_home),
@@ -74,7 +74,7 @@ def test_java_toolchain_inventory_reports_tools_and_artifacts(tmp_path: Path, mo
 
     monkeypatch.setattr(java_common, "discover_java_toolchain", lambda repo_root_arg: inventory)
 
-    module = _load_hla_x_module()
+    module = _load_shim_routes_module()
     output_dir = tmp_path / "reports"
     rc = module.main(["java", "doctor", "--output-dir", str(output_dir)])
     assert rc == 0
@@ -100,8 +100,8 @@ def test_java_toolchain_inventory_reports_tools_and_artifacts(tmp_path: Path, mo
     assert "# Java Toolchain Inventory" in rendered
     assert "Java 2010 standard shim jar" in rendered
     assert "Java 2025 standard shim jar" in rendered
-    assert "./tools/hla-x build java-standard-2010" in rendered
-    assert "./tools/hla-x build java-standard-2025" in rendered
+    assert "./tools/shim-routes build java-standard-2010" in rendered
+    assert "./tools/shim-routes build java-standard-2025" in rendered
 
 
 def test_tools_java_wrapper_proxies_to_inventory_help() -> None:

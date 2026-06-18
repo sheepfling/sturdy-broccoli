@@ -1,4 +1,4 @@
-# HLA-X Encoding and Authentication Work Packet
+# Encoding and Authentication Work Packet
 
 This packet turns the encoding/authentication discussion into an executable implementation and test plan for an agent.
 

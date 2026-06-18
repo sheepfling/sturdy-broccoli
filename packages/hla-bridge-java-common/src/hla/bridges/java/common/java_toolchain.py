@@ -13,13 +13,13 @@ from .java_runtime import discover_java_home_with_source, discover_java_tool
 JAVA_2010_JAR = Path(
     os.environ.get(
         "HLA_X_JAVA_STANDARD_2010_JAR",
-        "build/rosetta/java-standard-2010/hla-x-rti1516e-java-shim.jar",
+        "build/shim_routes/java-standard-2010/java-rti1516e-standard-shim.jar",
     )
 )
 JAVA_2025_JAR = Path(
     os.environ.get(
         "HLA_X_JAVA_STANDARD_2025_JAR",
-        "build/rosetta/java-standard-2025/hla-x-rti1516-2025-java-shim.jar",
+        "build/shim_routes/java-standard-2025/java-rti1516-2025-standard-shim.jar",
     )
 )
 
@@ -82,13 +82,13 @@ def discover_java_toolchain(repo_root: Path) -> JavaToolchainInventory:
             "java-standard-2010",
             "Java 2010 standard shim jar",
             repo_root / JAVA_2010_JAR,
-            "./tools/hla-x build java-standard-2010",
+            "./tools/shim-routes build java-standard-2010",
         ),
         _artifact(
             "java-standard-2025",
             "Java 2025 standard shim jar",
             repo_root / JAVA_2025_JAR,
-            "./tools/hla-x build java-standard-2025",
+            "./tools/shim-routes build java-standard-2025",
         ),
     )
 
@@ -106,7 +106,7 @@ def discover_java_toolchain(repo_root: Path) -> JavaToolchainInventory:
     if not java_ok or not javac_ok or not jar_ok:
         warnings.append("one or more Java tools are missing from the discovery path")
     if not artifact_ok:
-        warnings.append("one or more Rosetta Java shim jars are missing; build them with ./tools/hla-x build <target>")
+        warnings.append("one or more Java standard shim jars are missing; build them with ./tools/shim-routes build <target>")
 
     if java_ok and javac_ok and jar_ok and artifact_ok:
         status = "ready"
@@ -155,7 +155,7 @@ def render_java_toolchain_markdown(inventory: JavaToolchainInventory) -> str:
         f"- javac: {verdict(inventory.javac_ok)}",
         f"- jar: {verdict(inventory.jar_ok)}",
         "",
-        "## Rosetta Artifacts",
+        "## Shim Artifacts",
         "",
         "| key | label | path | exists | build command |",
         "| --- | --- | --- | --- | --- |",

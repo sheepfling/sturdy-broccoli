@@ -2,7 +2,7 @@
 
 C++ intake is profile-based rather than "load any shared object". The profile
 describes headers, libraries, compiler options, runtime paths, and factory
-strategy so HLA-X can build a generated adapter capsule in a later step.
+strategy so the workspace can build a generated adapter capsule in a later step.
 """
 from __future__ import annotations
 
@@ -143,7 +143,7 @@ def _coerce_scalar(value: str) -> Any:
 
 
 def _parse_simple_yaml(text: str) -> dict[str, Any]:
-    """Parse the profile subset used by HLA-X examples without a YAML dependency."""
+    """Parse the profile subset used by the workspace examples without a YAML dependency."""
 
     data: dict[str, Any] = {}
     current_key: str | None = None
@@ -412,7 +412,7 @@ def _cmake_value_list(items: Sequence[str]) -> str:
 
 
 def _render_capsule_cmake(profile: CppSdkIntakeProfile, report: CppSdkIntakeReport) -> str:
-    target = f"hla_x_{_slug(profile.name).replace('-', '_')}_capsule"
+    target = f"_{_slug(profile.name).replace('-', '_')}_capsule"
     libraries = " ".join(profile.libraries)
     return "\n".join(
         [
@@ -425,7 +425,7 @@ def _render_capsule_cmake(profile: CppSdkIntakeProfile, report: CppSdkIntakeRepo
             f"set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_BINARY_DIR}}/bin)",
             "",
             f"add_library({target} SHARED",
-            "  generated/hla_x_cpp_intake_capsule.cpp",
+            "  generated/shim_routes_cpp_intake_capsule.cpp",
             ")",
             "",
             f"target_include_directories({target} PRIVATE",
@@ -439,7 +439,7 @@ def _render_capsule_cmake(profile: CppSdkIntakeProfile, report: CppSdkIntakeRepo
             ")",
             f"target_link_libraries({target} PRIVATE {libraries})",
             "",
-            f"# HLA-X route: {report.route}",
+            f"# Language-shim route: {report.route}",
             f"# Factory strategy: {profile.factory.strategy}",
             "",
         ]
@@ -453,7 +453,7 @@ def _render_capsule_header(profile: CppSdkIntakeProfile) -> str:
             "",
             "#include <string>",
             "",
-            "namespace hla_x {",
+            "namespace shim_routes {",
             "namespace cpp_intake {",
             "",
             "struct DiscoveryResult {",
@@ -474,7 +474,7 @@ def _render_capsule_header(profile: CppSdkIntakeProfile) -> str:
             f"// SDK namespace hint: {cpp_api_profile(profile.edition).cpp_namespace}",
             "",
             "}  // namespace cpp_intake",
-            "}  // namespace hla_x",
+            "}  // namespace shim_routes",
             "",
         ]
     )
@@ -486,14 +486,14 @@ def _render_capsule_source(profile: CppSdkIntakeProfile) -> str:
     unsupported = ",".join(f'\\"{service}\\"' for service in UNSUPPORTED_SERVICE_LEDGER)
     return "\n".join(
         [
-            '#include "hla_x_cpp_intake_capsule.hpp"',
+            '#include "shim_routes_cpp_intake_capsule.hpp"',
             "",
             f"#include <{header}>",
             "#include <cstdlib>",
             "#include <cstring>",
             "#include <string>",
             "",
-            "namespace hla_x {",
+            "namespace shim_routes {",
             "namespace cpp_intake {",
             "namespace {",
             "bool created = false;",
@@ -525,7 +525,7 @@ def _render_capsule_source(profile: CppSdkIntakeProfile) -> str:
             "}",
             "",
             "const char* capsule_discover_json(const char*) {",
-            "  std::string payload = \"{\\\"ok\\\":true,\\\"kind\\\":\\\"hla_x_cpp_capsule\\\",\\\"contract\\\":\\\"hla_x_capsule_v1\\\",\\\"edition\\\":\\\"\";",
+            "  std::string payload = \"{\\\"ok\\\":true,\\\"kind\\\":\\\"shim_routes_cpp_capsule\\\",\\\"contract\\\":\\\"shim_capsule_v1\\\",\\\"edition\\\":\\\"\";",
             f"  payload += \"{profile.edition}\";",
             "  payload += \"\\\",\\\"sdk_name\\\":\\\"\";",
             f"  payload += \"{profile.name}\";",
@@ -539,7 +539,7 @@ def _render_capsule_source(profile: CppSdkIntakeProfile) -> str:
             "",
             "const char* capsule_create_json(const char*) {",
             "  created = true;",
-            "  return duplicate_json(\"{\\\"ok\\\":true,\\\"session_id\\\":\\\"capsule-session-1\\\",\\\"ambassador\\\":\\\"hla_x_capsule_v1\\\"}\");",
+            "  return duplicate_json(\"{\\\"ok\\\":true,\\\"session_id\\\":\\\"capsule-session-1\\\",\\\"ambassador\\\":\\\"shim_capsule_v1\\\"}\");",
             "}",
             "",
             "const char* capsule_invoke_json(const char* request_json) {",
@@ -576,30 +576,30 @@ def _render_capsule_source(profile: CppSdkIntakeProfile) -> str:
             "}",
             "",
             "}  // namespace cpp_intake",
-            "}  // namespace hla_x",
+            "}  // namespace shim_routes",
             "",
-            "extern \"C\" const char* hla_x_capsule_discover_json(const char* request_json) {",
-            "  return hla_x::cpp_intake::capsule_discover_json(request_json);",
+            "extern \"C\" const char* shim_capsule_discover_json(const char* request_json) {",
+            "  return shim_routes::cpp_intake::capsule_discover_json(request_json);",
             "}",
             "",
-            "extern \"C\" const char* hla_x_capsule_create_json(const char* request_json) {",
-            "  return hla_x::cpp_intake::capsule_create_json(request_json);",
+            "extern \"C\" const char* shim_capsule_create_json(const char* request_json) {",
+            "  return shim_routes::cpp_intake::capsule_create_json(request_json);",
             "}",
             "",
-            "extern \"C\" const char* hla_x_capsule_invoke_json(const char* request_json) {",
-            "  return hla_x::cpp_intake::capsule_invoke_json(request_json);",
+            "extern \"C\" const char* shim_capsule_invoke_json(const char* request_json) {",
+            "  return shim_routes::cpp_intake::capsule_invoke_json(request_json);",
             "}",
             "",
-            "extern \"C\" const char* hla_x_capsule_evoke_callbacks_json(const char* request_json) {",
-            "  return hla_x::cpp_intake::capsule_evoke_callbacks_json(request_json);",
+            "extern \"C\" const char* shim_capsule_evoke_callbacks_json(const char* request_json) {",
+            "  return shim_routes::cpp_intake::capsule_evoke_callbacks_json(request_json);",
             "}",
             "",
-            "extern \"C\" void hla_x_capsule_free_string(const char* value) {",
-            "  hla_x::cpp_intake::capsule_free_string(value);",
+            "extern \"C\" void shim_capsule_free_string(const char* value) {",
+            "  shim_routes::cpp_intake::capsule_free_string(value);",
             "}",
             "",
-            "extern \"C\" void hla_x_capsule_close() {",
-            "  hla_x::cpp_intake::capsule_close();",
+            "extern \"C\" void shim_capsule_close() {",
+            "  shim_routes::cpp_intake::capsule_close();",
             "}",
             "",
         ]
@@ -662,8 +662,8 @@ def generate_cpp_sdk_capsule(request: CppSdkIntakeRequest, output_root: str | Pa
     generated = capsule_root / "generated"
     generated.mkdir(parents=True, exist_ok=True)
     (capsule_root / "CMakeLists.txt").write_text(_render_capsule_cmake(profile, report), encoding="utf-8")
-    (generated / "hla_x_cpp_intake_capsule.hpp").write_text(_render_capsule_header(profile), encoding="utf-8")
-    (generated / "hla_x_cpp_intake_capsule.cpp").write_text(_render_capsule_source(profile), encoding="utf-8")
+    (generated / "shim_routes_cpp_intake_capsule.hpp").write_text(_render_capsule_header(profile), encoding="utf-8")
+    (generated / "shim_routes_cpp_intake_capsule.cpp").write_text(_render_capsule_source(profile), encoding="utf-8")
     build_checks, build_errors = _run_cmake_capsule_build(capsule_root, request.timeout_seconds)
     checks = tuple(report.checks) + tuple(check.to_json_dict() for check in build_checks)
     errors = tuple(report.errors) + build_errors

@@ -56,7 +56,7 @@ def _rows() -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
-@pytest.mark.requirements("HLA-X-2025-REQ-001")
+@pytest.mark.requirements("HLA2025-REQ-001")
 def test_2025_completion_backlog_is_canonical_and_human_editable() -> None:
     rows = _rows()
     assert rows
@@ -64,7 +64,7 @@ def test_2025_completion_backlog_is_canonical_and_human_editable() -> None:
     assert len({row["id"] for row in rows}) == len(rows)
 
 
-@pytest.mark.requirements("HLA-X-2025-REQ-001")
+@pytest.mark.requirements("HLA2025-REQ-001")
 def test_modified_existing_sections_are_explicitly_dispositioned() -> None:
     rows = [row for row in _rows() if row["bucket"] == "modified-existing"]
     assert {row["area"] for row in rows} == MODIFIED_EXISTING_AREAS
@@ -72,7 +72,7 @@ def test_modified_existing_sections_are_explicitly_dispositioned() -> None:
     assert all(row["disposition"] in {"modify", "modify-add", "retire-replace"} for row in rows)
 
 
-@pytest.mark.requirements("HLA-X-2025-REQ-001")
+@pytest.mark.requirements("HLA2025-REQ-001")
 def test_new_2025_surfaces_are_queued_as_full_requirement_work() -> None:
     rows = [row for row in _rows() if row["bucket"] == "new-2025-requirements"]
     assert {row["area"] for row in rows} == NEW_2025_AREAS
@@ -80,7 +80,7 @@ def test_new_2025_surfaces_are_queued_as_full_requirement_work() -> None:
     assert all(row["source_2010"] in {"none", "2010 MOM service reporting assumptions"} for row in rows)
 
 
-@pytest.mark.requirements("HLA-X-2025-REQ-001")
+@pytest.mark.requirements("HLA2025-REQ-001")
 def test_retired_and_binding_specific_work_stays_separate() -> None:
     rows = _rows()
     retired = [row for row in rows if row["bucket"] == "retired-mapped-2010"]
@@ -90,7 +90,7 @@ def test_retired_and_binding_specific_work_stays_separate() -> None:
     assert all(row["bucket"] != "binding-specific" for row in retired)
 
 
-@pytest.mark.requirements("HLA-X-2025-REQ-001")
+@pytest.mark.requirements("HLA2025-REQ-001")
 def test_high_priority_rows_have_acceptance_and_verification_work() -> None:
     rows = [row for row in _rows() if row["priority"] in HIGH_PRIORITIES]
     assert rows
@@ -102,7 +102,7 @@ def test_high_priority_rows_have_acceptance_and_verification_work() -> None:
     assert not missing
 
 
-@pytest.mark.requirements("HLA-X-2025-REQ-001")
+@pytest.mark.requirements("HLA2025-REQ-001")
 def test_native_2025_work_does_not_hide_legacy_terms_outside_source_fields() -> None:
     stale_terms = ("hla.rti1516e", "rti1516e::", "hla1516e.wsdl")
     checked_columns = (

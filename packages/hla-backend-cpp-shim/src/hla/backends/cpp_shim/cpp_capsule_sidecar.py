@@ -62,7 +62,7 @@ def serve(library_path: str | Path, port: int) -> grpc.Server:
         "Close": grpc.unary_unary_rpc_method_handler(servicer.close, request_deserializer=lambda value: value, response_serializer=lambda value: value),
     }
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=4))
-    server.add_generic_rpc_handlers((grpc.method_handlers_generic_handler("hla_x.cpp_capsule.Capsule", handlers),))
+    server.add_generic_rpc_handlers((grpc.method_handlers_generic_handler("shim_routes.cpp_capsule.Capsule", handlers),))
     server.add_insecure_port(f"127.0.0.1:{port}")
     server.start()
     return server

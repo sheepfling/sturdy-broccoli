@@ -1,4 +1,4 @@
-"""Standard-backed C++ Rosetta route helpers."""
+"""Standard-backed C++ language-shim route helpers."""
 from __future__ import annotations
 
 import json
@@ -13,12 +13,12 @@ from .backend import create_cpp_shim_backend
 
 
 REPORTS = {
-    "2010": Path(os.environ.get("HLA_X_CPP_STANDARD_2010_REPORT", "docs/evidence/rosetta/cpp-standard-2010.json")),
-    "2025": Path(os.environ.get("HLA_X_CPP_STANDARD_2025_REPORT", "docs/evidence/rosetta/cpp-standard-2025.json")),
+    "2010": Path(os.environ.get("ROSETTA_CPP_STANDARD_2010_REPORT", os.environ.get("HLA_X_CPP_STANDARD_2010_REPORT", "docs/evidence/shim_routes/cpp-standard-2010.json"))),
+    "2025": Path(os.environ.get("ROSETTA_CPP_STANDARD_2025_REPORT", os.environ.get("HLA_X_CPP_STANDARD_2025_REPORT", "docs/evidence/shim_routes/cpp-standard-2025.json"))),
 }
 ARTIFACTS = {
-    "2010": Path(os.environ.get("HLA_X_CPP_STANDARD_2010_ARTIFACT", "build/rosetta/cpp-standard-2010/libhla_x_rti1516e_cpp_shim.a")),
-    "2025": Path(os.environ.get("HLA_X_CPP_STANDARD_2025_ARTIFACT", "build/rosetta/cpp-standard-2025/libhla_x_rti1516_2025_cpp_shim.a")),
+    "2010": Path(os.environ.get("ROSETTA_CPP_STANDARD_2010_ARTIFACT", os.environ.get("HLA_X_CPP_STANDARD_2010_ARTIFACT", "build/shim_routes/cpp-standard-2010/librti1516e_standard_cpp_shim.a"))),
+    "2025": Path(os.environ.get("ROSETTA_CPP_STANDARD_2025_ARTIFACT", os.environ.get("HLA_X_CPP_STANDARD_2025_ARTIFACT", "build/shim_routes/cpp-standard-2025/librti1516_2025_standard_cpp_shim.a"))),
 }
 
 
@@ -32,10 +32,10 @@ def _edition_for_spec(spec_name: str) -> str:
 
 def _load_report(edition: str, report_path: Path) -> dict[str, Any]:
     if not report_path.exists():
-        raise RuntimeError(f"C++ {edition} standard shim evidence is missing. Run ./tools/hla-x build cpp-standard-{edition} first.")
+        raise RuntimeError(f"C++ {edition} standard shim evidence is missing. Run ./tools/shim-routes build cpp-standard-{edition} first.")
     report = json.loads(report_path.read_text(encoding="utf-8"))
     if report.get("compile_status") != "passed":
-        raise RuntimeError(f"C++ {edition} standard shim has not compiled successfully. Run ./tools/hla-x build cpp-standard-{edition}.")
+        raise RuntimeError(f"C++ {edition} standard shim has not compiled successfully. Run ./tools/shim-routes build cpp-standard-{edition}.")
     return report
 
 
@@ -60,7 +60,7 @@ def create_cpp_standard_backend(route: str, request: BackendRequest) -> Any:
     artifact_path = Path(str(options.pop("artifact_path", ARTIFACTS[edition]))).expanduser()
     report_path = Path(str(options.pop("report_path", REPORTS[edition]))).expanduser()
     if not artifact_path.exists():
-        raise RuntimeError(f"C++ {edition} standard shim artifact is missing at {artifact_path}. Run ./tools/hla-x build cpp-standard-{edition} first.")
+        raise RuntimeError(f"C++ {edition} standard shim artifact is missing at {artifact_path}. Run ./tools/shim-routes build cpp-standard-{edition} first.")
     report = _load_report(edition, report_path)
     if edition == "2010":
         from hla.backends.inmemory import InMemoryRTIEngine, PythonRTIConfig, create_python_backend

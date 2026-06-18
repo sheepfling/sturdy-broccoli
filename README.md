@@ -1,4 +1,4 @@
-# HLA-X
+# Sturdy Broccoli
 
 This repository is an unofficial Python-first IEEE HLA workspace for
 1516.1-2010 and 1516.1-2025 APIs, pluggable RTI backends, and route-by-route
@@ -25,7 +25,7 @@ If you want to understand the package split, start here:
 - [`docs/package_layout.md`](docs/package_layout.md)
 - [`docs/package_hierarchy_and_versioning.md`](docs/package_hierarchy_and_versioning.md)
 - [`docs/package_dependency_tree.md`](docs/package_dependency_tree.md)
-- [`docs/hla_x_rosetta_release.md`](docs/hla_x_rosetta_release.md)
+- [`docs/language_shim_routes.md`](docs/language_shim_routes.md)
 - [`packages/README.md`](packages/README.md)
 
 This root `README` owns only three jobs:
@@ -126,7 +126,7 @@ If you need the vendor flows, stay on the `tools/` operator surface:
 These are the primary newcomer lanes:
 
 - run something: [`docs/first_run.md`](docs/first_run.md)
-- understand the Rosetta standard-shim target: [`docs/hla_x_rosetta_release.md`](docs/hla_x_rosetta_release.md)
+- understand the language-shim route experiments: [`docs/language_shim_routes.md`](docs/language_shim_routes.md)
 - inspect the Java toolchain inventory: [`./tools/java`](tools/java)
 - edit one service: [`docs/python_rti_edit_one_service.md`](docs/python_rti_edit_one_service.md)
 - create one FOM package: [`docs/create_federate_and_fom.md`](docs/create_federate_and_fom.md)
@@ -206,8 +206,8 @@ The important part is that these are not all the same level of maturity:
 
 - `python` is the strongest local reference path
 - the Java shims are repo verification backends, not part of the public runtime surface
-- Rosetta `java-standard-*` and `cpp-standard-*` route names are reserved for
-  future standard-backed artifacts that compile against official IEEE Java/C++
+- `java-standard-*` and `cpp-standard-*` route names are reserved for future
+  language-shim artifacts that compile against the matching official Java/C++
   API bundles
 - CERTI and Pitch are real vendor paths with their own launch and smoke flows
 - Portico wiring exists, but local evidence depends on installed runtime

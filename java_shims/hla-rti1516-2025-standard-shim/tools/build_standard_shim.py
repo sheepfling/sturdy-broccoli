@@ -16,13 +16,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 API_ZIP = ROOT / "specs/ieee-1516-2025/1516.1-2025_downloads.zip"
 NESTED_API_ZIP = "1516.1-2025_downloads/1516-2025_API_XML_2025_08_14.zip"
-BUILD_ROOT = ROOT / "build/rosetta/java-standard-2025"
-JAR_PATH = BUILD_ROOT / "hla-x-rti1516-2025-java-shim.jar"
-REPORT_JSON = ROOT / "docs/evidence/rosetta/java-standard-2025.json"
-REPORT_MD = ROOT / "docs/evidence/rosetta/java-standard-2025.md"
+BUILD_ROOT = ROOT / "build/shim_routes/java-standard-2025"
+JAR_PATH = BUILD_ROOT / "java-rti1516-2025-standard-shim.jar"
+REPORT_JSON = ROOT / "docs/evidence/shim_routes/java-standard-2025.json"
+REPORT_MD = ROOT / "docs/evidence/shim_routes/java-standard-2025.md"
 API_PREFIX = "1516-2025_API_XML_2025_08_14"
-PACKAGE = "com.sheepfling.hla.rosetta.rti1516_2025"
-FACTORY_NAME = "HLA-X Java 2025 Standard Shim"
+PACKAGE = "com.sheepfling.hla.shimroutes.rti1516_2025"
+FACTORY_NAME = "Java 2025 Standard Shim"
 
 IMPLEMENTED = {"getHLAversion"}
 
@@ -123,7 +123,7 @@ def _render_ambassador(methods: list[Method]) -> str:
         "",
         "public final class StandardShimRTIambassador implements RTIambassador {",
         "    private RuntimeException unsupported(String service) {",
-        '        return new UnsupportedOperationException("HLA-X Java 2025 Standard Shim intentionally does not implement " + service);',
+        '        return new UnsupportedOperationException("Java 2025 Standard Shim intentionally does not implement " + service);',
         "    }",
     ]
     for method in methods:
@@ -188,7 +188,7 @@ def _write_report(methods: list[Method]) -> None:
         "unsupported_services": unsupported,
         "scenario_evidence": {
             "status": "lifecycle-core-green",
-            "tests": ["tests/backends/test_rosetta_standard_artifacts.py::test_standard_2025_routes_pass_lifecycle_core_when_built"],
+            "tests": ["tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_lifecycle_core_when_built"],
             "scenarios": ["2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling"],
         },
         "routes": {
@@ -201,7 +201,7 @@ def _write_report(methods: list[Method]) -> None:
     REPORT_MD.write_text(
         "\n".join(
             [
-                "# Java Standard 2025 Rosetta Artifact",
+                "# Java Standard 2025 Shim Artifact",
                 "",
                 f"- official API source: `{API_ZIP}`",
                 f"- nested API source: `{NESTED_API_ZIP}`",
@@ -209,7 +209,7 @@ def _write_report(methods: list[Method]) -> None:
                 "- compile status: `passed`",
                 f"- factory: `{FACTORY_NAME}`",
                 "- status: `surface-backed + lifecycle-core-green`",
-                "- scenario evidence: `tests/backends/test_rosetta_standard_artifacts.py`",
+                "- scenario evidence: `tests/backends/test_standard_shim_artifacts.py`",
                 "",
                 "## Route Evidence",
                 "",

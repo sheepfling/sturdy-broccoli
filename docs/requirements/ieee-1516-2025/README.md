@@ -26,7 +26,7 @@ Source anchors for modal terms:
 - `framework_rules.md`: Framework and Rules requirements, including Rules 1-10.
 - `federate_interface.md`: Federate Interface service, conformance, callback, FDD, exception, and time requirements.
 - `omt.md`: OMT/FOM naming, DIF, component, identification, conformance, and merge requirements.
-- `traceability_matrix.md`: initial requirement-to-project-lane and Rosetta scenario mapping.
+- `traceability_matrix.md`: initial requirement-to-project-lane and language-shim route scenario mapping.
 - `executable_tests/`: imported v3 executable-test backlog with 1117 candidate test rows.
 - `encoding_auth_work_packet/`: imported encoding/auth requirements, vectors, schemas, smoke FOM, and contract-test skeletons.
 

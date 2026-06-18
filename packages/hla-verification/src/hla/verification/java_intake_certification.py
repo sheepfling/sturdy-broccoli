@@ -109,7 +109,7 @@ def certify_java_rti_core(request: JavaRtiIntakeRequest) -> JavaRtiCoreCertifica
         )
 
     try:
-        from hla.verification.rosetta_mvp import run_standard_2010_exchange_trace
+        from hla.verification.shim_route_evidence import run_standard_2010_exchange_trace
 
         gateway = None
         gateway_port = request.gateway_port

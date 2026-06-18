@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from hla_x.auth import AuthConfig
-from hla_x.runtime import HlaRuntimeFactory
+from workspace_auth import AuthConfig
+from workspace_runtime import HlaRuntimeFactory
 
 
 def test_runtime_context_contains_rti_encoding_and_auth() -> None:

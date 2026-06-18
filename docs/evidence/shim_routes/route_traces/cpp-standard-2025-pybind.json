@@ -1,0 +1,62 @@
+{
+  "edition": "2025",
+  "route": "cpp-standard-2025-pybind",
+  "scenario": "lifecycle-core",
+  "status": "lifecycle-green",
+  "trace": [
+    {
+      "backend": "cpp-standard-2025-pybind",
+      "event": "routeSelected",
+      "spec": "rti1516_2025",
+      "standardBacked": true
+    },
+    {
+      "event": "getHLAversion",
+      "value": "IEEE 1516.1-2025"
+    },
+    {
+      "event": "connect",
+      "result": [
+        false,
+        false,
+        0,
+        "hla-backend-shim accepted the 2025 connection request"
+      ]
+    },
+    {
+      "event": "createFederationExecution",
+      "federation": "ShimRouteMvpCppstandard2025Pybind"
+    },
+    {
+      "event": "joinFederationExecution",
+      "federate": "python-federate",
+      "federation": "ShimRouteMvpCppstandard2025Pybind"
+    },
+    {
+      "delivered": false,
+      "event": "evokeCallback"
+    },
+    {
+      "delivered": false,
+      "event": "evokeMultipleCallbacks"
+    },
+    {
+      "action": 5,
+      "event": "resignFederationExecution"
+    },
+    {
+      "event": "destroyFederationExecution",
+      "federation": "ShimRouteMvpCppstandard2025Pybind"
+    },
+    {
+      "event": "disconnect"
+    }
+  ],
+  "requirements_exercised": [
+    "HLA2025-REQ-002",
+    "HLA2025-FR-004",
+    "HLA2025-FI-001",
+    "HLA2025-FI-005",
+    "HLA2025-FI-006"
+  ]
+}

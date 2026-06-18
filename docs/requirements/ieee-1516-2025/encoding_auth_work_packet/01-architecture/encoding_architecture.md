@@ -152,7 +152,7 @@ provider_oracle
   When a Java/C++/vendor EncoderFactory is available, compare composite encodings against that provider's encoded bytes.
 ```
 
-The portable suite must not over-specify composite layout until the HLA-X encoder intentionally owns that layout. The provider oracle suite is allowed to be stricter.
+The portable suite must not over-specify composite layout until the workspace encoder intentionally owns that layout. The provider oracle suite is allowed to be stricter.
 
 ## Failure policy
 

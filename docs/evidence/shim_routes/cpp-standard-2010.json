@@ -1,0 +1,44 @@
+{
+  "api_helper_patches": [
+    {
+      "path": "cpp/src/RTI/LogicalTimeFactory.h",
+      "reason": "Remove the official 2010 header's stale std::auto_ptr forward declaration and include <memory> so modern libc++ does not see an ambiguous auto_ptr."
+    },
+    {
+      "path": "cpp/src/RTI/RTIambassadorFactory.h",
+      "reason": "Remove the official 2010 header's stale std::auto_ptr forward declaration and include <memory> so modern libc++ does not see an ambiguous auto_ptr."
+    }
+  ],
+  "artifact": "cpp-standard-2010",
+  "artifact_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/build/shim_routes/cpp-standard-2010/librti1516e_standard_cpp_shim.a",
+  "compile_status": "passed",
+  "cpp_standard": "c++14",
+  "implemented_services": [],
+  "nested_api_source_path": null,
+  "official_api_source_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/specs/ieee-1516-2010/hla_specs/1516.1-2010_downloads/IEEE1516-2010_C++_API.zip",
+  "routes": {
+    "cpp-standard-2010-grpc": {
+      "scenario": "two-federate-core-exchange",
+      "status": "core-green",
+      "surface": "official IEEE 1516.1-2010 C++ API"
+    },
+    "cpp-standard-2010-pybind": {
+      "scenario": "two-federate-core-exchange",
+      "status": "core-green",
+      "surface": "official IEEE 1516.1-2010 C++ API"
+    }
+  },
+  "scenario_evidence": {
+    "scenarios": [
+      "2010 standard route two-federate object, interaction, and time exchange"
+    ],
+    "status": "core-green",
+    "tests": [
+      "tests/backends/test_standard_shim_artifacts.py"
+    ]
+  },
+  "surface": "official IEEE 1516.1-2010 C++ API",
+  "unsupported_services": [
+    "RTIambassador surface is header-backed; service semantics are delegated to the Python shim route for the core scenario subset"
+  ]
+}

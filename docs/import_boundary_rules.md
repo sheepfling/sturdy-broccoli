@@ -95,9 +95,9 @@ families.
 ### Leaves
 
 - `hla-fom-target-radar`
-- `hla-fom-hlax-message-test`
-- `hla-fom-hlax-space-lite`
-- `hla-fom-hlax-time-mgmt-test`
+- `hla-fom-proto2025-message-test`
+- `hla-fom-proto2025-space-lite`
+- `hla-fom-proto2025-time-mgmt-test`
 
 Leaf packages own concrete FOM/scenario resources and verification-facing
 helpers. They must not depend directly on vendor or backend families.
@@ -122,9 +122,9 @@ The approved internal dependency direction is:
 - `hla-transport-grpc` -> `hla-rti1516e`, `hla-backend-common`, `hla-rti-core`, `hla-transport-common`
 - `hla-transport-rest` -> `hla-rti1516e`, `hla-backend-common`, `hla-rti-core`, `hla-transport-common`
 - `hla-fom-target-radar` -> `hla-rti1516e`, `hla-rti-core`
-- `hla-fom-hlax-message-test` -> `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory`
-- `hla-fom-hlax-space-lite` -> `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory`
-- `hla-fom-hlax-time-mgmt-test` -> `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory`
+- `hla-fom-proto2025-message-test` -> `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory`
+- `hla-fom-proto2025-space-lite` -> `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory`
+- `hla-fom-proto2025-time-mgmt-test` -> `hla-rti1516e`, `hla-rti1516-2025`, `hla-backend-common`, `hla-backend-inmemory`
 
 Important consequences:
 

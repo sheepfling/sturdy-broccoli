@@ -11,7 +11,7 @@ from hla.rti1516_2025.encoding import (
 )
 
 
-@pytest.mark.requirements("HLA-X-2025-FI-004")
+@pytest.mark.requirements("HLA2025-FI-004")
 def test_basic_encoder_factory_creates_and_round_trips_primitives() -> None:
     factory = create_encoder_factory()
 
@@ -27,7 +27,7 @@ def test_basic_encoder_factory_creates_and_round_trips_primitives() -> None:
     assert decoded.getValue() == 42
 
 
-@pytest.mark.requirements("HLA-X-2025-FI-004", "HLA-X-2025-OMT-002")
+@pytest.mark.requirements("HLA2025-FI-004", "HLA2025-OMT-002")
 def test_strings_opaque_data_and_variable_length_data_helpers() -> None:
     factory = create_encoder_factory()
 
@@ -46,7 +46,7 @@ def test_strings_opaque_data_and_variable_length_data_helpers() -> None:
     assert list(factory.createHLAopaqueData().decode(holder).getValue()) == [1, 2, 3]
 
 
-@pytest.mark.requirements("HLA-X-2025-FI-004")
+@pytest.mark.requirements("HLA2025-FI-004")
 def test_byte_wrapper_supports_java_style_put_get_and_slices() -> None:
     wrapper = SimpleByteWrapper()
     wrapper.putInt(7)
@@ -59,7 +59,7 @@ def test_byte_wrapper_supports_java_style_put_get_and_slices() -> None:
     assert reader.remaining() == 2
 
 
-@pytest.mark.requirements("HLA-X-2025-FI-004", "HLA-X-2025-OMT-002")
+@pytest.mark.requirements("HLA2025-FI-004", "HLA2025-OMT-002")
 def test_factory_builds_arrays_records_and_variants() -> None:
     factory = create_encoder_factory()
     element_factory = CallableDataElementFactory(lambda index: factory.createHLAinteger16BE(index + 1))
@@ -82,7 +82,7 @@ def test_factory_builds_arrays_records_and_variants() -> None:
     assert variant.toByteArray() == b"\x01\x00\x00\x00\x03one"
 
 
-@pytest.mark.requirements("HLA-X-2025-FI-003", "HLA-X-2025-FI-009")
+@pytest.mark.requirements("HLA2025-FI-003", "HLA2025-FI-009")
 def test_factory_wraps_handles_and_logical_time_values_without_vendor_dependency() -> None:
     factory = create_encoder_factory()
     sentinel = object()

@@ -1,6 +1,6 @@
 {
   "packet": "hla_encoding_auth_work_packet",
-  "created_for": "HLA-X encoding/authentication implementation and test planning",
+  "created_for": "encoding/authentication implementation and test planning",
   "primary_gates": [
     "EncodingContext paired with runtime factory",
     "AuthenticationContext paired with runtime factory",

@@ -67,9 +67,9 @@ EXPECTED_PACKAGES = {
     "hla-transport-grpc": PackageExpectation("transport", frozenset(), "implementation-moved"),
     "hla-transport-rest": PackageExpectation("transport", frozenset(), "implementation-moved"),
     "hla-fom-target-radar": PackageExpectation("fom-example", frozenset(), "implementation-moved"),
-    "hla-fom-hlax-message-test": PackageExpectation("fom-example", frozenset(), "implementation-moved"),
-    "hla-fom-hlax-space-lite": PackageExpectation("fom-example", frozenset(), "implementation-moved"),
-    "hla-fom-hlax-time-mgmt-test": PackageExpectation("fom-example", frozenset(), "implementation-moved"),
+    "hla-fom-proto2025-message-test": PackageExpectation("fom-example", frozenset(), "implementation-moved"),
+    "hla-fom-proto2025-space-lite": PackageExpectation("fom-example", frozenset(), "implementation-moved"),
+    "hla-fom-proto2025-time-mgmt-test": PackageExpectation("fom-example", frozenset(), "implementation-moved"),
     "hla-verification": PackageExpectation("verification-harness", frozenset(), "implementation-moved"),
 }
 INTERNAL_PACKAGE_VERSION = "0.13.0"
@@ -584,22 +584,22 @@ def test_package_root_readmes_describe_canonical_import_and_operator_boundary() 
             "`./tools/target-radar`",
             "does not expose a supported public Python import surface",
         ),
-        "hla-fom-hlax-message-test": (
-            "`hla.foms.hlax_message_test`",
-            "`tests/test_fom_hlax_message_test_split_package.py`",
-            "`./tools/hla-x demo fom-showcase`",
+        "hla-fom-proto2025-message-test": (
+            "`hla.foms.proto2025_message_test`",
+            "`tests/test_fom_proto2025_message_test_split_package.py`",
+            "`./tools/shim-routes demo fom-showcase`",
             "does not expose a supported public Python import surface",
         ),
-        "hla-fom-hlax-space-lite": (
-            "`hla.foms.hlax_space_lite`",
-            "`tests/test_fom_hlax_space_lite_split_package.py`",
-            "`./tools/hla-x demo fom-showcase`",
+        "hla-fom-proto2025-space-lite": (
+            "`hla.foms.proto2025_space_lite`",
+            "`tests/test_fom_proto2025_space_lite_split_package.py`",
+            "`./tools/shim-routes demo fom-showcase`",
             "does not expose a supported public Python import surface",
         ),
-        "hla-fom-hlax-time-mgmt-test": (
-            "`hla.foms.hlax_time_mgmt_test`",
-            "`tests/test_fom_hlax_time_mgmt_test_split_package.py`",
-            "`./tools/hla-x demo fom-showcase`",
+        "hla-fom-proto2025-time-mgmt-test": (
+            "`hla.foms.proto2025_time_mgmt_test`",
+            "`tests/test_fom_proto2025_time_mgmt_test_split_package.py`",
+            "`./tools/shim-routes demo fom-showcase`",
             "does not expose a supported public Python import surface",
         ),
         "hla-verification": (
@@ -777,16 +777,16 @@ def test_verification_and_fom_packages_own_explicit_docs_and_split_test_surfaces
     expected_docs = {
         "hla-verification": PACKAGES / "hla-verification" / "docs" / "README.md",
         "hla-fom-target-radar": PACKAGES / "hla-fom-target-radar" / "docs" / "README.md",
-        "hla-fom-hlax-message-test": PACKAGES / "hla-fom-hlax-message-test" / "docs" / "README.md",
-        "hla-fom-hlax-space-lite": PACKAGES / "hla-fom-hlax-space-lite" / "docs" / "README.md",
-        "hla-fom-hlax-time-mgmt-test": PACKAGES / "hla-fom-hlax-time-mgmt-test" / "docs" / "README.md",
+        "hla-fom-proto2025-message-test": PACKAGES / "hla-fom-proto2025-message-test" / "docs" / "README.md",
+        "hla-fom-proto2025-space-lite": PACKAGES / "hla-fom-proto2025-space-lite" / "docs" / "README.md",
+        "hla-fom-proto2025-time-mgmt-test": PACKAGES / "hla-fom-proto2025-time-mgmt-test" / "docs" / "README.md",
     }
     expected_test_surfaces = {
         "hla-verification": {ROOT / "tests" / "test_verification_harness_split_package.py"},
         "hla-fom-target-radar": {ROOT / "tests" / "test_fom_target_radar_split_package.py"},
-        "hla-fom-hlax-message-test": {ROOT / "tests" / "test_fom_hlax_message_test_split_package.py"},
-        "hla-fom-hlax-space-lite": {ROOT / "tests" / "test_fom_hlax_space_lite_split_package.py"},
-        "hla-fom-hlax-time-mgmt-test": {ROOT / "tests" / "test_fom_hlax_time_mgmt_test_split_package.py"},
+        "hla-fom-proto2025-message-test": {ROOT / "tests" / "test_fom_proto2025_message_test_split_package.py"},
+        "hla-fom-proto2025-space-lite": {ROOT / "tests" / "test_fom_proto2025_space_lite_split_package.py"},
+        "hla-fom-proto2025-time-mgmt-test": {ROOT / "tests" / "test_fom_proto2025_time_mgmt_test_split_package.py"},
     }
 
     for package_name, path in expected_docs.items():
@@ -814,23 +814,23 @@ def test_verification_and_fom_doc_indexes_describe_owned_non_backend_surfaces() 
             "does not own RTI backend implementations",
             "tests/test_fom_target_radar_split_package.py",
         ),
-        "hla-fom-hlax-message-test": (
+        "hla-fom-proto2025-message-test": (
             "MessageTest internal showcase runner",
-            "repo-internal combined HLA-X showcase orchestration layer",
+            "repo-internal combined Proto2025 showcase orchestration layer",
             "does not own RTI backend implementations",
-            "tests/test_fom_hlax_message_test_split_package.py",
+            "tests/test_fom_proto2025_message_test_split_package.py",
         ),
-        "hla-fom-hlax-space-lite": (
+        "hla-fom-proto2025-space-lite": (
             "SpaceLite internal showcase runner",
-            "repo-internal combined HLA-X showcase orchestration layer",
+            "repo-internal combined Proto2025 showcase orchestration layer",
             "does not own RTI backend implementations",
-            "tests/test_fom_hlax_space_lite_split_package.py",
+            "tests/test_fom_proto2025_space_lite_split_package.py",
         ),
-        "hla-fom-hlax-time-mgmt-test": (
+        "hla-fom-proto2025-time-mgmt-test": (
             "TimeMgmtTest internal showcase runner",
-            "repo-internal combined HLA-X showcase orchestration layer",
+            "repo-internal combined Proto2025 showcase orchestration layer",
             "does not own RTI backend implementations",
-            "tests/test_fom_hlax_time_mgmt_test_split_package.py",
+            "tests/test_fom_proto2025_time_mgmt_test_split_package.py",
         ),
     }
 

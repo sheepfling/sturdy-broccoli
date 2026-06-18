@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from hla_x.auth import AuthConfig
-from hla_x.runtime import HlaRuntimeFactory
+from workspace_auth import AuthConfig
+from workspace_runtime import HlaRuntimeFactory
 
 
 def test_factory_returns_matching_authentication_context(fake_runtime_config: dict[str, object]) -> None:

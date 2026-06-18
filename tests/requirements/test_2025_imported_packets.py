@@ -12,7 +12,7 @@ EXECUTABLE_DIR = REQ_DIR / "executable_tests"
 ENC_AUTH_DIR = REQ_DIR / "encoding_auth_work_packet"
 
 
-@pytest.mark.requirements("HLA-X-2025-REQ-001", "HLA-X-2025-FI-002")
+@pytest.mark.requirements("HLA2025-REQ-001", "HLA2025-FI-002")
 def test_imported_executable_test_backlog_is_tracked_in_registry() -> None:
     registry = json.loads((REQ_DIR / "requirements.json").read_text(encoding="utf-8"))
     packets = {packet["id"]: packet for packet in registry["imported_packets"]}
@@ -28,7 +28,7 @@ def test_imported_executable_test_backlog_is_tracked_in_registry() -> None:
     assert all(row["executable_test_id"] and row["parent_requirement_id"] for row in rows)
 
 
-@pytest.mark.requirements("HLA-X-2025-FI-003", "HLA-X-2025-FI-004")
+@pytest.mark.requirements("HLA2025-FI-003", "HLA2025-FI-004")
 def test_imported_encoding_auth_packet_keeps_requirements_vectors_and_schemas() -> None:
     registry = json.loads((REQ_DIR / "requirements.json").read_text(encoding="utf-8"))
     packets = {packet["id"]: packet for packet in registry["imported_packets"]}

@@ -1,0 +1,293 @@
+{
+  "artifact": {
+    "edition": "2010",
+    "kind": "cpp-sdk",
+    "name": "cpp-standard-2010-external-profile",
+    "route": "cpp-2010-sdk-pybind"
+  },
+  "blocked_reason": "full core scenario through generated C++ SDK runtime capsule is not implemented yet",
+  "callback_status": "callback-poll-green",
+  "capsule_dir": "/private/tmp/shim-route-cpp-certify-capsules/cpp-standard-2010-external-profile",
+  "connect_status": "connect-green",
+  "core_scenario_status": "blocked",
+  "discovery": {
+    "artifact": {
+      "edition": "2010",
+      "kind": "cpp-sdk",
+      "name": "cpp-standard-2010-external-profile",
+      "route": "cpp-2010-sdk-pybind"
+    },
+    "capsule_dir": "/private/tmp/shim-route-cpp-certify-capsules/cpp-standard-2010-external-profile",
+    "checks": [
+      {
+        "details": {
+          "factory_strategy": "standard"
+        },
+        "message": "profile parsed",
+        "name": "profile",
+        "status": "profile-valid"
+      },
+      {
+        "details": {
+          "paths": [
+            "build/shim_routes/cpp-standard-2010/api/cpp/src"
+          ]
+        },
+        "message": "all paths exist",
+        "name": "include_dirs",
+        "status": "profile-valid"
+      },
+      {
+        "details": {
+          "paths": [
+            "build/shim_routes/cpp-standard-2010"
+          ]
+        },
+        "message": "all paths exist",
+        "name": "library_dirs",
+        "status": "profile-valid"
+      },
+      {
+        "details": {
+          "header": "build/shim_routes/cpp-standard-2010/api/cpp/src/RTI/RTIambassador.h"
+        },
+        "message": "standard C++ header found",
+        "name": "headers",
+        "status": "header-green"
+      },
+      {
+        "details": {
+          "libraries": [
+            "build/shim_routes/cpp-standard-2010/librti1516e_standard_cpp_shim.a"
+          ]
+        },
+        "message": "declared libraries found",
+        "name": "libraries",
+        "status": "link-green"
+      },
+      {
+        "details": null,
+        "message": "CMake configured capsule project",
+        "name": "capsule_configure",
+        "status": "compile-green"
+      },
+      {
+        "details": null,
+        "message": "C++ capsule compiled and linked",
+        "name": "capsule_build",
+        "status": "capsule-built"
+      }
+    ],
+    "edition": "2010",
+    "errors": [],
+    "profile": {
+      "adapter": {
+        "mode": "standard_shim",
+        "strategy": "shim_capsule_v1"
+      },
+      "artifact": {
+        "edition": "2010",
+        "kind": "cpp-sdk",
+        "name": "cpp-standard-2010-external-profile",
+        "route": null
+      },
+      "cxx_standard": "14",
+      "defines": [
+        "RTI_USES_STD_WSTRING"
+      ],
+      "edition": "2010",
+      "factory": {
+        "options": {},
+        "strategy": "standard"
+      },
+      "headers": [],
+      "include_dirs": [
+        "build/shim_routes/cpp-standard-2010/api/cpp/src"
+      ],
+      "kind": "cpp-sdk",
+      "libraries": [
+        "rti1516e_standard_cpp_shim"
+      ],
+      "library_dirs": [
+        "build/shim_routes/cpp-standard-2010"
+      ],
+      "name": "cpp-standard-2010-external-profile",
+      "runtime_env": {
+        "DYLD_LIBRARY_PATH": "build/shim_routes/cpp-standard-2010"
+      }
+    },
+    "profile_path": "examples/cpp-sdk/cpp-standard-2010.yml",
+    "route": "cpp-2010-sdk-pybind",
+    "status": "capsule-built",
+    "transport": "pybind",
+    "warnings": []
+  },
+  "edition": "2010",
+  "errors": [],
+  "missing_trace_events": [],
+  "route": "cpp-2010-sdk-pybind",
+  "runtime": {
+    "callback_count": 1,
+    "checks": {
+      "callback_poll": "pass",
+      "capsule_launch": "pass",
+      "connect_disconnect": "pass",
+      "create_ambassador": "pass",
+      "discover": "pass",
+      "unsupported_service": "pass"
+    },
+    "errors": [],
+    "invocation_count": 3,
+    "library_path": "/private/tmp/shim-route-cpp-certify-capsules/cpp-standard-2010-external-profile/build/lib/libshim_routes_cpp_standard_2010_external_profile_capsule.dylib",
+    "process_pid": null,
+    "status": "adapter-smoke-green",
+    "trace": [
+      {
+        "event": "capsuleDiscover",
+        "metadata": {
+          "adapter_strategy": "shim_capsule_v1",
+          "contract": "shim_capsule_v1",
+          "edition": "2010",
+          "kind": "shim_routes_cpp_capsule",
+          "ok": true,
+          "sdk_name": "cpp-standard-2010-external-profile",
+          "unsupported_services": [
+            "requestFederationSave",
+            "requestFederationRestore",
+            "createRegion"
+          ]
+        },
+        "transport": "pybind"
+      },
+      {
+        "event": "createRtiAmbassador",
+        "result": {
+          "ambassador": "shim_capsule_v1",
+          "ok": true,
+          "session_id": "capsule-session-1"
+        }
+      },
+      {
+        "event": "connect",
+        "result": {
+          "method": "connect",
+          "ok": true
+        }
+      },
+      {
+        "event": "disconnect",
+        "result": {
+          "method": "disconnect",
+          "ok": true
+        }
+      },
+      {
+        "event": "unsupportedService",
+        "result": {
+          "error_type": "UnsupportedService",
+          "message": "requestFederationSave is not implemented by this capsule",
+          "method": "requestFederationSave",
+          "ok": false
+        }
+      },
+      {
+        "event": "callbackPoll",
+        "result": {
+          "callback_count": 1,
+          "events": [
+            {
+              "event": "capsuleCallbackPoll",
+              "label": "adapter-smoke"
+            }
+          ],
+          "ok": true
+        }
+      },
+      {
+        "event": "close"
+      }
+    ],
+    "transport": "pybind",
+    "unsupported_services": [
+      "requestFederationSave",
+      "requestFederationRestore",
+      "createRegion"
+    ],
+    "warnings": []
+  },
+  "status": "adapter-smoke-green",
+  "trace": [
+    {
+      "event": "capsuleDiscover",
+      "metadata": {
+        "adapter_strategy": "shim_capsule_v1",
+        "contract": "shim_capsule_v1",
+        "edition": "2010",
+        "kind": "shim_routes_cpp_capsule",
+        "ok": true,
+        "sdk_name": "cpp-standard-2010-external-profile",
+        "unsupported_services": [
+          "requestFederationSave",
+          "requestFederationRestore",
+          "createRegion"
+        ]
+      },
+      "transport": "pybind"
+    },
+    {
+      "event": "createRtiAmbassador",
+      "result": {
+        "ambassador": "shim_capsule_v1",
+        "ok": true,
+        "session_id": "capsule-session-1"
+      }
+    },
+    {
+      "event": "connect",
+      "result": {
+        "method": "connect",
+        "ok": true
+      }
+    },
+    {
+      "event": "disconnect",
+      "result": {
+        "method": "disconnect",
+        "ok": true
+      }
+    },
+    {
+      "event": "unsupportedService",
+      "result": {
+        "error_type": "UnsupportedService",
+        "message": "requestFederationSave is not implemented by this capsule",
+        "method": "requestFederationSave",
+        "ok": false
+      }
+    },
+    {
+      "event": "callbackPoll",
+      "result": {
+        "callback_count": 1,
+        "events": [
+          {
+            "event": "capsuleCallbackPoll",
+            "label": "adapter-smoke"
+          }
+        ],
+        "ok": true
+      }
+    },
+    {
+      "event": "close"
+    }
+  ],
+  "trace_comparison_status": "blocked",
+  "transport": "pybind",
+  "unsupported_services": [
+    "requestFederationSave",
+    "requestFederationRestore",
+    "createRegion"
+  ],
+  "warnings": []
+}

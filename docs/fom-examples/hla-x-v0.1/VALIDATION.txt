@@ -1,4 +1,0 @@
-HLAx_Base.xml: VALID
-HLAx_MessageTest.xml: VALID
-HLAx_SpaceLite.xml: VALID
-HLAx_TimeMgmtTest.xml: VALID

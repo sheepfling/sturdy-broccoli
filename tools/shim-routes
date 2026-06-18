@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/lib/shell.sh"
+hla2010_shell_init "tools/shim-routes"
+
+usage() {
+  cat <<'EOF'
+usage: ./tools/shim-routes [matrix|build|evidence|demo|java|cpp|help]
+
+Language-shim route entry point.
+
+Commands:
+  ./tools/shim-routes matrix --editions 2010,2025 --routes all
+  ./tools/shim-routes build java-standard-2010
+  ./tools/shim-routes evidence shim-routes
+  ./tools/shim-routes java discover --edition 2010 --bridge jpype --classpath /path/to/rti.jar
+  ./tools/shim-routes java doctor
+  ./tools/shim-routes java certify-core --edition 2010 --bridges jpype,py4j --classpath /path/to/rti.jar
+  ./tools/shim-routes cpp discover --profile /path/to/vendor-cpp-2010.cpp-sdk.yaml
+  ./tools/shim-routes cpp build-capsule --profile /path/to/vendor-cpp-2010.cpp-sdk.yaml --transport grpc
+  ./tools/shim-routes cpp smoke-capsule --profile /path/to/vendor-cpp-2010.cpp-sdk.yaml --transport grpc
+  ./tools/shim-routes cpp certify-core --edition 2010 --artifact standard-shim --transports pybind,grpc
+  ./tools/shim-routes demo mixed-language-target-radar --edition 2010
+  ./tools/shim-routes demo mixed-language-target-radar --edition 2025
+  ./tools/shim-routes demo fom-showcase --edition 2025 --output-dir analysis/proto2025_fom_showcase
+EOF
+}
+
+python_bin="$(hla2010_shell_python_bin)"
+
+case "${1:-help}" in
+  help|-h|--help)
+    usage
+    ;;
+  matrix)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/shim_routes.py" matrix "$@"
+    ;;
+  demo)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/shim_routes.py" demo "$@"
+    ;;
+  build)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/shim_routes.py" build "$@"
+    ;;
+  evidence)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/shim_routes.py" evidence "$@"
+    ;;
+  java)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/shim_routes.py" java "$@"
+    ;;
+  cpp)
+    shift
+    "$python_bin" "$ROOT_DIR/scripts/shim_routes.py" cpp "$@"
+    ;;
+  *)
+    echo "error: unknown subcommand: $1" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

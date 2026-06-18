@@ -1,0 +1,127 @@
+{
+  "edition": "2010",
+  "route": "cpp-standard-2010-grpc",
+  "scenario": "two-federate-core-exchange",
+  "status": "core-exchange-green",
+  "trace": [
+    {
+      "backend": "cpp-standard-2010-grpc",
+      "event": "routeSelected",
+      "spec": "rti1516e",
+      "standardBacked": true
+    },
+    {
+      "event": "connect",
+      "federates": [
+        "radar",
+        "target"
+      ]
+    },
+    {
+      "event": "createFederationExecution",
+      "federation": "ShimRouteMvpCppstandard2010Grpc"
+    },
+    {
+      "event": "joinFederationExecution",
+      "federates": [
+        "radar",
+        "target"
+      ]
+    },
+    {
+      "attributes": [
+        {
+          "type": "AttributeHandle",
+          "value": 1
+        }
+      ],
+      "event": "publishSubscribeObject",
+      "objectClass": {
+        "type": "ObjectClassHandle",
+        "value": 2
+      }
+    },
+    {
+      "event": "publishSubscribeInteraction",
+      "interactionClass": {
+        "type": "InteractionClassHandle",
+        "value": 2
+      },
+      "parameters": [
+        {
+          "type": "ParameterHandle",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "event": "discoverObjectInstance",
+      "object": {
+        "type": "ObjectInstanceHandle",
+        "value": 4
+      },
+      "objectClass": {
+        "type": "ObjectClassHandle",
+        "value": 2
+      },
+      "objectName": "DemoObject-1"
+    },
+    {
+      "attributes": {
+        "{'type': 'AttributeHandle', 'value': 1}": "attribute-bytes"
+      },
+      "event": "reflectAttributeValues",
+      "object": {
+        "type": "ObjectInstanceHandle",
+        "value": 4
+      },
+      "order": "RECEIVE",
+      "tag": "update-tag"
+    },
+    {
+      "event": "receiveInteraction",
+      "interactionClass": {
+        "type": "InteractionClassHandle",
+        "value": 2
+      },
+      "order": "RECEIVE",
+      "parameters": {
+        "{'type': 'ParameterHandle', 'value': 1}": "hello"
+      },
+      "tag": "interaction-tag"
+    },
+    {
+      "event": "timeRegulationEnabled",
+      "time": "HLAfloat64Time(value=0.0)"
+    },
+    {
+      "event": "timeConstrainedEnabled",
+      "time": "HLAfloat64Time(value=0.0)"
+    },
+    {
+      "event": "timeAdvanceGrant",
+      "time": "HLAfloat64Time(value=10.0)"
+    },
+    {
+      "event": "destroyFederationExecution",
+      "federation": "ShimRouteMvpCppstandard2010Grpc"
+    },
+    {
+      "event": "disconnect",
+      "federates": [
+        "radar",
+        "target"
+      ]
+    }
+  ],
+  "requirements_exercised": [
+    "HLA2025-FR-001",
+    "HLA2025-FR-003",
+    "HLA2025-FR-004",
+    "HLA2025-FR-007",
+    "HLA2025-FR-010",
+    "HLA2025-FI-001",
+    "HLA2025-FI-006",
+    "HLA2025-FI-009"
+  ]
+}

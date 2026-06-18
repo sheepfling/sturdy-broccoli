@@ -15,7 +15,7 @@ Authentication has two different roles that must not be blurred:
 1. **Client connection credentials**: what a federate supplies when connecting to an RTI.
 2. **Authorizer behavior**: what an RTI-hosted or proxy-hosted environment uses to decide whether a credential may connect, create/destroy a federation, or join a federation.
 
-HLA-X should always implement the client-side credential surface. It should implement authorizer behavior only for fake/in-process/proxy RTI modes that host authorization decisions.
+The workspace should always implement the client-side credential surface. It should implement authorizer behavior only for fake/in-process/proxy RTI modes that host authorization decisions.
 
 ## Target components
 
