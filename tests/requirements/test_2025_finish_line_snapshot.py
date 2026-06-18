@@ -151,6 +151,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "service-report callback delivery" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "reports standard MIM data for HLArequestMIMdata" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "object publication/subscription state" in slices["2025-mom-service-report-serialization"]["supported_scope"]
+    assert "interaction publication/subscription state" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "not full MOM manager interaction routing" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert slices["2025-wsdl-legacy-only"]["status"] == "legacy-only"
     assert "HLA2025-RET-003" in slices["2025-wsdl-legacy-only"]["requirements"]
