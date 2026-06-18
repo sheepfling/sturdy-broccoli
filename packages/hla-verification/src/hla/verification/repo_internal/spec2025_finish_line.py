@@ -299,7 +299,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "reflections through basic createRegion/setRangeBounds/subscribeObjectClassAttributesWithRegions/"
             "associateRegionsForUpdates DDM region overlap. It also filters interaction delivery through "
             "subscribeInteractionClassWithRegions/sendInteractionWithRegions region overlap and conveys sent "
-            "regions on receiveInteraction callbacks. Full scope advisories remain later behavior work."
+            "regions on receiveInteraction callbacks. Attribute scope advisory callbacks report object-attribute "
+            "in-scope and out-of-scope transitions for DDM region overlap changes."
         ),
     },
     {

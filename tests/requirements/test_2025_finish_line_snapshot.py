@@ -126,7 +126,8 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "HLA2025-MOD-007" in slices["2025-ddm-default-attribute-policy"]["requirements"]
     assert "basic createRegion/setRangeBounds/subscribeObjectClassAttributesWithRegions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
     assert "subscribeInteractionClassWithRegions/sendInteractionWithRegions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
-    assert "Full scope advisories remain later behavior work" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
+    assert "Attribute scope advisory callbacks" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
+    assert "in-scope and out-of-scope transitions" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
     assert slices["2025-object-management-support-callbacks"]["status"] == "implemented-slice"
     assert "deleteObjectInstance/removeObjectInstance callbacks" in slices["2025-object-management-support-callbacks"]["supported_scope"]
     assert "requestAttributeValueUpdate callbacks" in slices["2025-object-management-support-callbacks"]["supported_scope"]

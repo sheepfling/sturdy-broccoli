@@ -191,6 +191,12 @@ class Recording2025FederateAmbassador:
             )
         )
 
+    def attributesInScope(self, objectInstance, attributes) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("attributesInScope", (objectInstance, attributes)))
+
+    def attributesOutOfScope(self, objectInstance, attributes) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("attributesOutOfScope", (objectInstance, attributes)))
+
     def provideAttributeValueUpdate(self, objectInstance, attributes, userSuppliedTag) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("provideAttributeValueUpdate", (objectInstance, attributes, userSuppliedTag)))
 
@@ -942,6 +948,7 @@ def test_2025_shim_filters_object_reflections_by_ddm_region_overlap(tmp_path: Pa
     publisher.createFederationExecution(federationName=federation_name, fomModule=str(fom))
     publisher_handle = publisher.joinFederationExecution("Publisher", "TestFederate", federation_name)
     subscriber.joinFederationExecution("Subscriber", "TestFederate", federation_name)
+    subscriber.setAttributeScopeAdvisorySwitch(True)
 
     object_class = publisher.getObjectClassHandle("HLAobjectRoot.RegionalTarget")
     attribute = publisher.getAttributeHandle(object_class, "Position")
@@ -961,12 +968,15 @@ def test_2025_shim_filters_object_reflections_by_ddm_region_overlap(tmp_path: Pa
     subscriber.subscribeObjectClassAttributesWithRegions(object_class, [({attribute}, {subscriber_region})])
 
     assert subscriber_callbacks.last_callback("discoverObjectInstance") is None
+    assert subscriber_callbacks.last_callback("attributesInScope") is None
+    assert subscriber_callbacks.last_callback("attributesOutOfScope") is None
     publisher.updateAttributeValues(object_instance, {attribute: b"outside"}, b"outside-region")
     assert subscriber_callbacks.last_callback("reflectAttributeValues") is None
 
     subscriber.setRangeBounds(subscriber_region, subscriber_dimension, RangeBounds(5, 15))
     subscriber.commitRegionModifications({subscriber_region})
     subscriber.subscribeObjectClassAttributesWithRegions(object_class, [({attribute}, {subscriber_region})])
+    assert subscriber_callbacks.last_callback("attributesInScope") == (object_instance, {attribute})
     assert subscriber_callbacks.last_callback("discoverObjectInstance") == (
         object_instance,
         object_class,
@@ -985,6 +995,13 @@ def test_2025_shim_filters_object_reflections_by_ddm_region_overlap(tmp_path: Pa
         publisher_handle,
         {publisher_region},
     )
+
+    subscriber.setRangeBounds(subscriber_region, subscriber_dimension, RangeBounds(50, 60))
+    subscriber.commitRegionModifications({subscriber_region})
+    assert subscriber_callbacks.last_callback("attributesOutOfScope") == (object_instance, {attribute})
+    subscriber.setRangeBounds(subscriber_region, subscriber_dimension, RangeBounds(0, 10))
+    subscriber.commitRegionModifications({subscriber_region})
+    assert subscriber_callbacks.last_callback("attributesInScope") == (object_instance, {attribute})
 
     publisher.resignFederationExecution(ResignAction.NO_ACTION)
     subscriber.resignFederationExecution(ResignAction.NO_ACTION)

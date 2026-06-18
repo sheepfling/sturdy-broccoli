@@ -155,6 +155,7 @@ class _FederationRecord:
     member_region_bounds: dict[int, dict[int, dict[str, RangeBounds]]] = field(default_factory=dict)
     object_instances: dict[int, "_ObjectInstanceRecord"] = field(default_factory=dict)
     object_instance_names: dict[str, int] = field(default_factory=dict)
+    attribute_scope_state: dict[tuple[int, int, str], bool] = field(default_factory=dict)
     interaction_transportation: dict[tuple[int, str], str] = field(default_factory=dict)
     saved_labels: set[str] = field(default_factory=set)
     saved_object_instances: dict[str, dict[int, "_ObjectInstanceRecord"]] = field(default_factory=dict)
@@ -936,6 +937,7 @@ class Shim2025RTIAmbassador:
         self._require_joined("commitRegionModifications")
         for region in set(regions):
             self._region_dimension_names(self._current_federate_key(), region)
+        self._evaluate_attribute_scope_advisories()
 
     def deleteRegion(self, region: Any) -> None:  # noqa: N802
         self._record("deleteRegion", region)
@@ -987,6 +989,7 @@ class Shim2025RTIAmbassador:
                 all_attribute_names
             )
             self._discover_existing_objects_for_current_subscription(object_class_name)
+            self._evaluate_attribute_scope_advisories()
 
     def subscribeObjectClassAttributesPassivelyWithRegions(self, objectClass: Any, attributesAndRegions: Any, *unused: Any) -> None:  # noqa: N802
         self._record("subscribeObjectClassAttributesPassivelyWithRegions", objectClass, attributesAndRegions, *unused)
@@ -1017,6 +1020,7 @@ class Shim2025RTIAmbassador:
             self._federation_record().subscribed_object_regions[self._current_federate_key()].pop(object_class_name, None)
         if not subscribed_attrs:
             self._federation_record().subscribed_object_attributes[self._current_federate_key()].pop(object_class_name, None)
+        self._evaluate_attribute_scope_advisories()
 
     def registerObjectInstanceWithRegions(self, objectClass: Any, attributesAndRegions: Any, objectInstanceName: str | None = None) -> ObjectInstanceHandle:  # noqa: N802
         self._record("registerObjectInstanceWithRegions", objectClass, attributesAndRegions, objectInstanceName)
@@ -1025,6 +1029,7 @@ class Shim2025RTIAmbassador:
         for attribute_names, region_values in self._attribute_region_pairs(record.object_class_name, attributesAndRegions):
             for attribute_name in attribute_names:
                 record.update_regions.setdefault(attribute_name, set()).update(region_values)
+        self._evaluate_attribute_scope_advisories()
         return handle
 
     def associateRegionsForUpdates(self, objectInstance: Any, attributesAndRegions: Any) -> None:  # noqa: N802
@@ -1045,6 +1050,7 @@ class Shim2025RTIAmbassador:
                     record.update_regions[attribute_name].difference_update(region_values)
                     if not record.update_regions[attribute_name]:
                         record.update_regions.pop(attribute_name, None)
+        self._evaluate_attribute_scope_advisories()
 
     def changeDefaultAttributeTransportationType(  # noqa: N802
         self,
@@ -1807,6 +1813,13 @@ class Shim2025RTIAmbassador:
     def setAttributeScopeAdvisorySwitch(self, value: bool) -> None:  # noqa: N802
         self._record("setAttributeScopeAdvisorySwitch", value)
         self._set_switch("setAttributeScopeAdvisorySwitch", "attribute_scope_advisory", value)
+        if value:
+            federation = self._federation_record()
+            current_key = self._current_federate_key()
+            for key in tuple(federation.attribute_scope_state):
+                if key[0] == current_key:
+                    federation.attribute_scope_state.pop(key, None)
+            self._evaluate_attribute_scope_advisories()
 
     def getInteractionRelevanceAdvisorySwitch(self) -> bool:  # noqa: N802
         self._record("getInteractionRelevanceAdvisorySwitch")
@@ -2368,6 +2381,78 @@ class Shim2025RTIAmbassador:
                 OrderType.RECEIVE,
                 OrderType.RECEIVE,
                 None,
+            )
+
+    def _evaluate_attribute_scope_advisories(self) -> None:
+        federation = self._federation_record()
+        in_scope_callbacks: dict[tuple[int, int], set[AttributeHandle]] = {}
+        out_of_scope_callbacks: dict[tuple[int, int], set[AttributeHandle]] = {}
+        active_keys = set()
+        for subscriber_key, subscriptions in federation.subscribed_object_attributes.items():
+            subscriber_rti = federation.member_rtis.get(subscriber_key)
+            if subscriber_rti is None or not subscriber_rti._switches["attribute_scope_advisory"]:
+                continue
+            for object_instance_value, record in federation.object_instances.items():
+                subscribed_names = set(subscriptions.get(record.object_class_name, set()))
+                if not subscribed_names:
+                    continue
+                handles_by_name = self._attribute_handles(record.object_class_name)
+                for attribute_name in subscribed_names:
+                    source_owner = record.attribute_owners.get(attribute_name)
+                    if source_owner is None:
+                        continue
+                    active_key = (subscriber_key, object_instance_value, attribute_name)
+                    active_keys.add(active_key)
+                    source_regions = set(record.update_regions.get(attribute_name, set()))
+                    target_regions = (
+                        federation.subscribed_object_regions
+                        .get(subscriber_key, {})
+                        .get(record.object_class_name, {})
+                        .get(attribute_name, set())
+                    )
+                    in_scope = not target_regions or self._region_sets_overlap(
+                        source_owner.value,
+                        source_regions,
+                        subscriber_key,
+                        set(target_regions),
+                    )
+                    previous = federation.attribute_scope_state.get(active_key)
+                    federation.attribute_scope_state[active_key] = in_scope
+                    if previous is None and in_scope:
+                        in_scope_callbacks.setdefault((subscriber_key, object_instance_value), set()).add(
+                            AttributeHandle(handles_by_name[attribute_name])
+                        )
+                    elif previous is True and not in_scope:
+                        out_of_scope_callbacks.setdefault((subscriber_key, object_instance_value), set()).add(
+                            AttributeHandle(handles_by_name[attribute_name])
+                        )
+                    elif previous is False and in_scope:
+                        in_scope_callbacks.setdefault((subscriber_key, object_instance_value), set()).add(
+                            AttributeHandle(handles_by_name[attribute_name])
+                        )
+        for state_key in tuple(federation.attribute_scope_state):
+            subscriber_key, object_instance_value, attribute_name = state_key
+            if state_key in active_keys:
+                continue
+            if federation.attribute_scope_state.pop(state_key, False):
+                record = federation.object_instances.get(object_instance_value)
+                if record is not None:
+                    out_of_scope_callbacks.setdefault((subscriber_key, object_instance_value), set()).add(
+                        AttributeHandle(self._attribute_handles(record.object_class_name)[attribute_name])
+                    )
+        for (subscriber_key, object_instance_value), attributes in sorted(in_scope_callbacks.items()):
+            self._deliver_to_federate_handle(
+                FederateHandle(subscriber_key),
+                "attributesInScope",
+                ObjectInstanceHandle(object_instance_value),
+                attributes,
+            )
+        for (subscriber_key, object_instance_value), attributes in sorted(out_of_scope_callbacks.items()):
+            self._deliver_to_federate_handle(
+                FederateHandle(subscriber_key),
+                "attributesOutOfScope",
+                ObjectInstanceHandle(object_instance_value),
+                attributes,
             )
 
     def _resign_reason_description(self, resign_action: ResignAction) -> str:
