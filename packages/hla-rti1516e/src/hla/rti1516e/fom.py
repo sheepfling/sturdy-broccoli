@@ -1154,6 +1154,7 @@ def _extract_model_identification(root: ET.Element, *, path: Path) -> dict[str, 
     metadata: dict[str, Any] = {}
     keywords: list[str] = []
     pocs: list[dict[str, str]] = []
+    references: list[dict[str, str]] = []
     for child in list(model_identification):
         name = _local_name(child.tag)
         if name == "keyword":
@@ -1169,6 +1170,15 @@ def _extract_model_identification(root: ET.Element, *, path: Path) -> dict[str, 
             if poc:
                 pocs.append(poc)
             continue
+        if name == "reference":
+            reference = {
+                _local_name(grandchild.tag): grandchild.text.strip()
+                for grandchild in list(child)
+                if grandchild.text and grandchild.text.strip()
+            }
+            if reference:
+                references.append(reference)
+            continue
         text = (child.text or "").strip()
         if text:
             metadata[name] = text
@@ -1176,6 +1186,8 @@ def _extract_model_identification(root: ET.Element, *, path: Path) -> dict[str, 
         metadata["keywords"] = tuple(keywords)
     if pocs:
         metadata["pocs"] = tuple(pocs)
+    if references:
+        metadata["references"] = tuple(references)
     return metadata
 
 

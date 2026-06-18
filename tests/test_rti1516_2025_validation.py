@@ -100,3 +100,52 @@ def test_2025_shim_rejects_fom_with_invalid_hla_user_defined_names(tmp_path: Pat
         rti.createFederationExecution(federationName=federation_name, fomModule=str(invalid_fom))
 
     rti.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-OMT-005", "HLA2025-OMT-006")
+def test_2025_factory_load_fom_reports_strict_identification_failures(tmp_path: Path) -> None:
+    from hla.rti1516_2025.factory import create_hla_factory
+
+    invalid_fom = tmp_path / "missing-identification-rows.xml"
+    invalid_fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Minimal Strict Failure</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-18</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Missing POC and References rows.</description>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>StrictEntity</name>
+        <attribute>
+          <name>GoodField</name>
+          <dataType>HLAunicodeString</dataType>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    result = create_hla_factory(provider="shim").load_fom(
+        [invalid_fom],
+        strict_identification=True,
+    )
+
+    assert result.status == "invalid"
+    assert result.strict_identification is True
+    assert any(entry == "strict_identification=true" for entry in result.diagnostics)
+    assert any(entry == "validation_issues=2" for entry in result.diagnostics)
+    assert {issue["field"] for issue in result.validation_issues if issue["requirement"] == "HLA2025-OMT-005"} == {
+        "pocs",
+        "references",
+    }
+    assert all(issue["status"] == "fail" for issue in result.validation_issues)

@@ -245,6 +245,16 @@ class FomLoadResult:
     repository: Any = None
     status: str = "loaded"
     diagnostics: tuple[str, ...] = ()
+    validation_issues: tuple[Mapping[str, Any], ...] = ()
+    strict_identification: bool = False
+
+    def capability_report(self) -> Mapping[str, Any]:
+        return {
+            "status": self.status,
+            "strict_identification": self.strict_identification,
+            "diagnostics": list(self.diagnostics),
+            "validation_issues": list(self.validation_issues),
+        }
 
 
 @dataclass(slots=True)
@@ -477,13 +487,19 @@ class HlaFactory:
         if self.spec.name == "rti1516_2025":
             validation_module = importlib.import_module("hla.rti1516_2025.validation")
             repository = importlib.import_module("hla.rti1516_2025.foms").FomTypeRepository.from_modules(normalized)
-            issues = validation_module.validate_fom_modules(repository.modules)
+            strict_identification = bool(options.get("strict_identification", False))
+            issues = validation_module.validate_fom_modules(
+                repository.modules,
+                strict_identification=strict_identification,
+            )
+            issue_payloads = tuple(issue.as_dict() if hasattr(issue, "as_dict") else dict(issue) for issue in issues)
             diagnostics = (
                 f"modules={len(repository.modules)}",
                 f"datatypes={len(getattr(repository.catalog, 'datatype_names', ())) if repository.catalog is not None else 0}",
                 f"object_classes={len(getattr(repository.catalog, 'object_classes', {})) if repository.catalog is not None else 0}",
                 f"interaction_classes={len(getattr(repository.catalog, 'interaction_classes', {})) if repository.catalog is not None else 0}",
                 f"validation_issues={len(issues)}",
+                f"strict_identification={str(strict_identification).lower()}",
             )
             return FomLoadResult(
                 modules=normalized,
@@ -491,6 +507,8 @@ class HlaFactory:
                 repository=repository,
                 status="validated" if not issues else "invalid",
                 diagnostics=diagnostics,
+                validation_issues=issue_payloads,
+                strict_identification=strict_identification,
             )
         return FomLoadResult(modules=normalized, codecs=active_codecs)
 
