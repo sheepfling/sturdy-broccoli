@@ -30,6 +30,15 @@ def _callback_request() -> callback_pb2.CallbackRequest:
     return callback_pb2.CallbackRequest(timeAdvanceGrant=callback_pb2.TimeAdvanceGrant(time=datatypes_pb2.LogicalTime(data=b"HLAinteger64Time:7")))
 
 
+def _logical_time_value(time: datatypes_pb2.LogicalTime) -> float:
+    raw = time.data.decode("ascii") if time.data else "HLAinteger64Time:0"
+    _, _, value = raw.partition(":")
+    try:
+        return float(value or raw)
+    except ValueError:
+        return 0.0
+
+
 def _handle(handle_type: type, value: str | int):
     return handle_type(data=str(value).encode("ascii"))
 
@@ -90,6 +99,9 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.default_attribute_order: dict[tuple[str, str], int] = {}
         self.service_reporting = False
         self.service_report_serial = 1
+        self.next_retraction_handle = 1
+        self.queued_tso_callbacks: dict[str, tuple[float, callback_pb2.CallbackRequest]] = {}
+        self.delivered_retractions: set[str] = set()
         self.callback_queue: list[callback_pb2.CallbackRequest] = []
 
     def Call(self, request, context):  # noqa: N802 - grpc generated naming
@@ -390,6 +402,50 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     )
                 )
             return rti_pb2.CallResponse(updateAttributeValuesResponse=rti_pb2.UpdateAttributeValuesResponse())
+        if request_kind == "updateAttributeValuesWithTimeRequest":
+            payload = request.updateAttributeValuesWithTimeRequest
+            object_instance = payload.objectInstance.data.decode("ascii")
+            record = self.object_instances.get(object_instance)
+            if record is None:
+                return self._error("ObjectInstanceNotKnown", object_instance)
+            object_class = record["objectClass"]
+            subscribed = self.subscribed_object_attributes.get(object_class, set())
+            reflected = [
+                item
+                for item in payload.attributeValues.attributeHandleValue
+                if item.attributeHandle.data.decode("ascii") in subscribed
+                and self._attribute_regions_overlap(object_instance, object_class, item.attributeHandle.data.decode("ascii"))
+            ]
+            retraction_handle = self._next_retraction_handle()
+            if reflected:
+                values = datatypes_pb2.AttributeHandleValueMap()
+                for item in reflected:
+                    row = values.attributeHandleValue.add()
+                    row.attributeHandle.CopyFrom(item.attributeHandle)
+                    row.value = item.value
+                self._queue_tso_callback(
+                    retraction_handle,
+                    payload.time,
+                    callback_pb2.CallbackRequest(
+                        reflectAttributeValuesWithTime=callback_pb2.ReflectAttributeValuesWithTime(
+                            objectInstance=payload.objectInstance,
+                            attributeValues=values,
+                            userSuppliedTag=payload.userSuppliedTag,
+                            transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
+                            producingFederate=_handle(datatypes_pb2.FederateHandle, "1"),
+                            optionalSentRegions=self._conveyed_regions_for(object_instance, reflected),
+                            time=payload.time,
+                            sentOrderType=datatypes_pb2.TIMESTAMP,
+                            receivedOrderType=datatypes_pb2.TIMESTAMP,
+                            optionalRetraction=_handle(datatypes_pb2.MessageRetractionHandle, retraction_handle),
+                        )
+                    ),
+                )
+            return rti_pb2.CallResponse(
+                updateAttributeValuesWithTimeResponse=rti_pb2.UpdateAttributeValuesWithTimeResponse(
+                    result=self._message_retraction_return(retraction_handle)
+                )
+            )
         if request_kind == "sendInteractionRequest":
             payload = request.sendInteractionRequest
             interaction_class = payload.interactionClass.data.decode("ascii")
@@ -406,6 +462,41 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     )
                 )
             return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
+        if request_kind == "sendInteractionWithTimeRequest":
+            payload = request.sendInteractionWithTimeRequest
+            interaction_class = payload.interactionClass.data.decode("ascii")
+            retraction_handle = self._next_retraction_handle()
+            if interaction_class in self.subscribed_interactions:
+                self._queue_tso_callback(
+                    retraction_handle,
+                    payload.time,
+                    callback_pb2.CallbackRequest(
+                        receiveInteractionWithTime=callback_pb2.ReceiveInteractionWithTime(
+                            interactionClass=payload.interactionClass,
+                            parameterValues=payload.parameterValues,
+                            userSuppliedTag=payload.userSuppliedTag,
+                            transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
+                            producingFederate=_handle(datatypes_pb2.FederateHandle, "1"),
+                            time=payload.time,
+                            sentOrderType=datatypes_pb2.TIMESTAMP,
+                            receivedOrderType=datatypes_pb2.TIMESTAMP,
+                            optionalRetraction=_handle(datatypes_pb2.MessageRetractionHandle, retraction_handle),
+                        )
+                    ),
+                )
+            return rti_pb2.CallResponse(
+                sendInteractionWithTimeResponse=rti_pb2.SendInteractionWithTimeResponse(
+                    result=self._message_retraction_return(retraction_handle)
+                )
+            )
+        if request_kind == "retractRequest":
+            handle = request.retractRequest.retraction.data.decode("ascii")
+            if handle in self.queued_tso_callbacks:
+                del self.queued_tso_callbacks[handle]
+                return rti_pb2.CallResponse(retractResponse=rti_pb2.RetractResponse())
+            if handle in self.delivered_retractions:
+                return self._error("MessageCanNoLongerBeRetracted", handle)
+            return self._error("InvalidMessageRetractionHandle", handle)
         if request_kind == "isAttributeOwnedByFederateRequest":
             payload = request.isAttributeOwnedByFederateRequest
             object_instance = payload.objectInstance.data.decode("ascii")
@@ -454,6 +545,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             self.callback_queue.append(callback_pb2.CallbackRequest(timeConstrainedEnabled=callback_pb2.TimeConstrainedEnabled(time=datatypes_pb2.LogicalTime(data=b"HLAinteger64Time:0"))))
             return rti_pb2.CallResponse(enableTimeConstrainedResponse=rti_pb2.EnableTimeConstrainedResponse())
         if request_kind == "timeAdvanceRequestRequest":
+            self._deliver_due_tso_callbacks(request.timeAdvanceRequestRequest.time)
             self.callback_queue.append(callback_pb2.CallbackRequest(timeAdvanceGrant=callback_pb2.TimeAdvanceGrant(time=request.timeAdvanceRequestRequest.time)))
             return rti_pb2.CallResponse(timeAdvanceRequestResponse=rti_pb2.TimeAdvanceRequestResponse())
         return self._error("RTIinternalError", f"Unsupported 2025 test call: {request_kind}")
@@ -509,6 +601,38 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 )
             )
         )
+
+    def _next_retraction_handle(self) -> str:
+        handle = str(self.next_retraction_handle)
+        self.next_retraction_handle += 1
+        return handle
+
+    @staticmethod
+    def _message_retraction_return(handle: str) -> datatypes_pb2.MessageRetractionReturn:
+        return datatypes_pb2.MessageRetractionReturn(
+            retractionHandleIsValid=True,
+            messageRetractionHandle=_handle(datatypes_pb2.MessageRetractionHandle, handle),
+        )
+
+    def _queue_tso_callback(
+        self,
+        retraction_handle: str,
+        time: datatypes_pb2.LogicalTime,
+        callback: callback_pb2.CallbackRequest,
+    ) -> None:
+        self.queued_tso_callbacks[retraction_handle] = (_logical_time_value(time), callback)
+
+    def _deliver_due_tso_callbacks(self, time: datatypes_pb2.LogicalTime) -> None:
+        requested = _logical_time_value(time)
+        due = [
+            (time_value, int(handle), handle, callback)
+            for handle, (time_value, callback) in self.queued_tso_callbacks.items()
+            if time_value <= requested
+        ]
+        for _, _, handle, callback in sorted(due):
+            self.callback_queue.append(callback)
+            self.delivered_retractions.add(handle)
+            del self.queued_tso_callbacks[handle]
 
     @staticmethod
     def _attribute_region_pairs(attributes_and_regions) -> tuple[tuple[str, set[str]], ...]:

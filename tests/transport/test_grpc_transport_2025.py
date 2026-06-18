@@ -4,7 +4,7 @@ from concurrent import futures
 
 import grpc
 import pytest
-from hla.transports.common.transport import TransportRequest
+from hla.transports.common.transport import TransportError, TransportRequest
 from hla.transports.grpc import GrpcTransport, GrpcTransportConfig
 from hla.transports.grpc.fedpro2025 import FederateAmbassador_2025_pb2 as callback_pb2
 from hla.transports.grpc.fedpro2025 import HLA2025RTITransport_pb2_grpc as transport_pb2_grpc
@@ -179,6 +179,107 @@ def test_2025_transport_server_runs_object_and_interaction_exchange_over_fedpro_
             "subscribeInteractionClassRequest",
             "updateAttributeValuesRequest",
             "sendInteractionRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
+def test_2025_transport_server_queues_timestamped_messages_and_retracts_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-tso-retraction"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "Tso2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025TSO", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        attribute = transport.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
+        interaction_class = transport.request(TransportRequest(command="GET_INTERACTION_CLASS_HANDLE", fields=("HLAinteractionRoot.TrackReport",))).fields[0]
+        parameter = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(interaction_class, "TrackId"))).fields[0]
+
+        assert transport.request(TransportRequest(command="PUBLISH_OBJECT_CLASS_ATTRIBUTES", fields=(object_class, attribute))).fields == ()
+        assert transport.request(TransportRequest(command="SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES", fields=(object_class, attribute))).fields == ()
+        assert transport.request(TransportRequest(command="PUBLISH_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+        assert transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(interaction_class,))).fields == ()
+
+        object_instance = transport.request(TransportRequest(command="REGISTER_OBJECT_INSTANCE", fields=(object_class, "FedProTsoTarget-1"))).fields[0]
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "DISCOVER",
+            object_instance,
+            object_class,
+            "FedProTsoTarget-1",
+        )
+
+        early_update = transport.request(
+            TransportRequest(
+                command="UPDATE_ATTRIBUTE_VALUES_TIMESTAMP",
+                fields=(object_instance, f"{attribute}:6561726c79", "6561726c792d746167", "HLAinteger64Time", "10"),
+            )
+        ).fields[0]
+        retracted_update = transport.request(
+            TransportRequest(
+                command="UPDATE_ATTRIBUTE_VALUES_TIMESTAMP",
+                fields=(object_instance, f"{attribute}:64726f70", "64726f702d746167", "HLAinteger64Time", "15"),
+            )
+        ).fields[0]
+        late_interaction = transport.request(
+            TransportRequest(
+                command="SEND_INTERACTION_TIMESTAMP",
+                fields=(interaction_class, f"{parameter}:6c617465", "6c6174652d746167", "HLAinteger64Time", "20"),
+            )
+        ).fields[0]
+        assert (early_update, retracted_update, late_interaction) == ("1", "2", "3")
+
+        assert transport.request(TransportRequest(command="RETRACT", fields=(retracted_update,))).fields == ()
+        assert server.servicer.queued_tso_callbacks.keys() == {"1", "3"}
+
+        assert transport.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "12"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "REFLECT_TSO",
+            object_instance,
+            f"{attribute}:6561726c79",
+            "6561726c792d746167",
+            "2",
+            "1",
+            "HLAinteger64Time",
+            "10",
+            "2",
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "12")
+
+        assert transport.request(TransportRequest(command="TIME_ADVANCE_REQUEST", fields=("HLAinteger64Time", "25"))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "INTERACTION_TSO",
+            interaction_class,
+            f"{parameter}:6c617465",
+            "6c6174652d746167",
+            "2",
+            "1",
+            "HLAinteger64Time",
+            "20",
+            "2",
+        )
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "TIME_ADVANCE_GRANT", "HLAinteger64Time", "25")
+        with pytest.raises(TransportError) as error:
+            transport.request(TransportRequest(command="RETRACT", fields=(early_update,)))
+        assert error.value.code == "MessageCanNoLongerBeRetracted"
+
+        assert {
+            "updateAttributeValuesWithTimeRequest",
+            "sendInteractionWithTimeRequest",
+            "retractRequest",
+            "timeAdvanceRequestRequest",
         } <= set(server.servicer.calls)
     finally:
         if transport is not None:

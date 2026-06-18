@@ -119,6 +119,8 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "hosted loopback runtime session" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert "basic ownership divest/acquire callbacks" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert "time-regulation/time-constrained/time-advance callbacks" in slices["2025-fedpro-transport-contract"]["supported_scope"]
+    assert "queued timestamped attribute reflection/interaction receipt" in slices["2025-fedpro-transport-contract"]["supported_scope"]
+    assert "pre-delivery retract" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert "object discovery, attribute reflection, interaction receipt" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert "basic DDM region-overlap filtering for object attributes" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert "MOM service-invocation report callbacks over FedPro" in slices["2025-fedpro-transport-contract"]["supported_scope"]
