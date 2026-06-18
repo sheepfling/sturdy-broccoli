@@ -12,7 +12,6 @@ import zipfile
 from dataclasses import dataclass
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[3]
 API_ZIP = ROOT / "specs/ieee-1516-2025/1516.1-2025_downloads.zip"
 NESTED_API_ZIP = "1516.1-2025_downloads/1516-2025_API_XML_2025_08_14.zip"
@@ -61,6 +60,13 @@ def _candidate_tool_paths(name: str) -> list[Path]:
         value = os.environ.get(env_name)
         if value:
             candidates.append(Path(value).expanduser() / "bin" / name)
+    for java_home in (
+        "/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home",
+        "/opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home",
+        "/usr/local/opt/openjdk/libexec/openjdk.jdk/Contents/Home",
+        "/usr/local/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home",
+    ):
+        candidates.append(Path(java_home) / "bin" / name)
     found = shutil.which(name)
     if found:
         candidates.append(Path(found))
@@ -210,7 +216,8 @@ def _write_report(methods: list[Method]) -> None:
             ],
             "scenarios": [
                 "2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling",
-                "2025 standard route runtime capability: FOM handles, DDM/default policy calls, object registration, ownership callbacks, logical time, and MOM service-report serialization",
+                "2025 standard route runtime capability: FOM handles, DDM/default policy calls, "
+                "object registration, ownership callbacks, logical time, and MOM service-report serialization",
             ],
             "requirements_exercised": RUNTIME_CAPABILITY_REQUIREMENTS,
         },

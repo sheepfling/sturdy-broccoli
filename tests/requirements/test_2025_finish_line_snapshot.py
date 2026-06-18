@@ -72,7 +72,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     route_matrix = snapshot["route_parity_matrix"]
     assert route_matrix["scenario_count"] >= 8
     assert "python-2025-fedpro-grpc" in route_matrix["routes"]
-    assert route_matrix["by_route"]["java-standard-2025-jpype"]["parity-covered"] == 0
+    assert route_matrix["by_route"]["java-standard-2025-jpype"]["parity-covered"] == 8
     assert route_matrix["by_route"]["cpp-standard-2025-grpc"]["parity-covered"] == 8
 
 
@@ -201,7 +201,7 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     payload = json.loads(paths["json"].read_text(encoding="utf-8"))
     assert payload["executable_test_backlog"]["row_count"] == 1117
     assert payload["verification_matrix"]["high_priority_missing_anchor_count"] == 0
-    assert payload["route_parity_matrix"]["by_status"]["missing"] > 0
+    assert payload["route_parity_matrix"]["by_status"]["missing"] == 0
 
     markdown = paths["markdown"].read_text(encoding="utf-8")
     assert markdown.startswith("# IEEE 1516-2025 Requirements Finish Line")
@@ -210,6 +210,6 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert "HLA2025-VER-001" in matrix
     assert "2025-verification-anchor-matrix" in matrix
     route_matrix = paths["route_parity_matrix"].read_text(encoding="utf-8")
-    assert "object_exchange,java-standard-2025-jpype,missing,gap-record" in route_matrix
-    assert "federation_lifecycle,java-standard-2025-jpype,partial,runtime-capability" in route_matrix
+    assert "object_exchange,java-standard-2025-jpype,parity-covered,scenario-parity" in route_matrix
+    assert "federation_lifecycle,java-standard-2025-jpype,parity-covered,scenario-parity" in route_matrix
     assert "federation_lifecycle,cpp-standard-2025-grpc,parity-covered,scenario-parity" in route_matrix

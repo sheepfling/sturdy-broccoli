@@ -118,18 +118,20 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "federation_lifecycle",
         "java-standard-2025-jpype",
-        PARTIAL,
-        ("HLA2025-BND-001", "HLA2025-FI-003", "HLA2025-FI-004"),
-        _ROUTE_EVIDENCE_TESTS,
-        "Artifact-gated Java route records runtime capability only when the 2025 jar is built; not full behavioral parity.",
+        PARITY_COVERED,
+        ("HLA2025-BND-001", "HLA2025-FI-003", "HLA2025-FI-004", "HLA2025-FI-005", "HLA2025-FI-006"),
+        _STANDARD_SHIM_TESTS,
+        "Java 2025 JPype standard route runs the lifecycle scenario through the official API compile artifact gate: "
+        "connect, create, join, evoked callback polling, resign, destroy, and disconnect.",
     ),
     _row(
         "federation_lifecycle",
         "java-standard-2025-py4j",
-        PARTIAL,
-        ("HLA2025-BND-001", "HLA2025-FI-003", "HLA2025-FI-004"),
-        _ROUTE_EVIDENCE_TESTS,
-        "Artifact-gated Java route records runtime capability only when the 2025 jar is built; not full behavioral parity.",
+        PARITY_COVERED,
+        ("HLA2025-BND-001", "HLA2025-FI-003", "HLA2025-FI-004", "HLA2025-FI-005", "HLA2025-FI-006"),
+        _STANDARD_SHIM_TESTS,
+        "Java 2025 Py4J standard route runs the lifecycle scenario through the official API compile artifact gate: "
+        "connect, create, join, evoked callback polling, resign, destroy, and disconnect.",
     ),
     _row(
         "federation_lifecycle",
@@ -168,18 +170,20 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "object_exchange",
         "java-standard-2025-jpype",
-        MISSING,
+        PARITY_COVERED,
         ("HLA2025-BND-001", "HLA2025-FI-004"),
-        _FINISH_LINE_TESTS,
-        "No executable Java 2025 object-exchange parity scenario is recorded yet.",
+        _STANDARD_SHIM_TESTS,
+        "Java 2025 JPype standard route runs the two-federate object exchange trace through the official API compile artifact gate: "
+        "subscribe, discover, publish, reflect attributes, publish/receive interaction, and unsubscribe suppression.",
     ),
     _row(
         "object_exchange",
         "java-standard-2025-py4j",
-        MISSING,
+        PARITY_COVERED,
         ("HLA2025-BND-001", "HLA2025-FI-004"),
-        _FINISH_LINE_TESTS,
-        "No executable Java 2025 object-exchange parity scenario is recorded yet.",
+        _STANDARD_SHIM_TESTS,
+        "Java 2025 Py4J standard route runs the two-federate object exchange trace through the official API compile artifact gate: "
+        "subscribe, discover, publish, reflect attributes, publish/receive interaction, and unsubscribe suppression.",
     ),
     _row(
         "object_exchange",
@@ -220,18 +224,20 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "ownership",
         "java-standard-2025-jpype",
-        MISSING,
+        PARITY_COVERED,
         ("HLA2025-FR-005", "HLA2025-FR-008", "HLA2025-BND-001"),
-        _FINISH_LINE_TESTS,
-        "No executable Java 2025 ownership parity scenario is recorded yet.",
+        _STANDARD_SHIM_TESTS,
+        "Java 2025 JPype standard route runs the ownership runtime trace through the official API compile artifact gate: "
+        "initial ownership, unavailable acquisition while owned, unconditional divestiture, acquisition notification, and ownership query callbacks.",
     ),
     _row(
         "ownership",
         "java-standard-2025-py4j",
-        MISSING,
+        PARITY_COVERED,
         ("HLA2025-FR-005", "HLA2025-FR-008", "HLA2025-BND-001"),
-        _FINISH_LINE_TESTS,
-        "No executable Java 2025 ownership parity scenario is recorded yet.",
+        _STANDARD_SHIM_TESTS,
+        "Java 2025 Py4J standard route runs the ownership runtime trace through the official API compile artifact gate: "
+        "initial ownership, unavailable acquisition while owned, unconditional divestiture, acquisition notification, and ownership query callbacks.",
     ),
     _row(
         "ownership",
@@ -273,18 +279,20 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "ddm",
         "java-standard-2025-jpype",
-        MISSING,
+        PARITY_COVERED,
         ("HLA2025-MOD-007", "HLA2025-BND-001"),
-        _FINISH_LINE_TESTS,
-        "No executable Java 2025 DDM parity scenario is recorded yet.",
+        _STANDARD_SHIM_TESTS,
+        "Java 2025 JPype standard route runs the DDM region runtime trace through the official API compile artifact gate: "
+        "object attribute region subscription, outside-region suppression, discovery after region overlap, and conveyed sent-region reflection evidence.",
     ),
     _row(
         "ddm",
         "java-standard-2025-py4j",
-        MISSING,
+        PARITY_COVERED,
         ("HLA2025-MOD-007", "HLA2025-BND-001"),
-        _FINISH_LINE_TESTS,
-        "No executable Java 2025 DDM parity scenario is recorded yet.",
+        _STANDARD_SHIM_TESTS,
+        "Java 2025 Py4J standard route runs the DDM region runtime trace through the official API compile artifact gate: "
+        "object attribute region subscription, outside-region suppression, discovery after region overlap, and conveyed sent-region reflection evidence.",
     ),
     _row(
         "ddm",
@@ -325,18 +333,20 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "time_management",
         "java-standard-2025-jpype",
-        MISSING,
+        PARITY_COVERED,
         ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-BND-001"),
-        _FINISH_LINE_TESTS,
-        "No executable Java 2025 time-management parity scenario is recorded yet.",
+        _STANDARD_SHIM_TESTS,
+        "Java 2025 JPype standard route runs the logical-time runtime trace through the official API compile artifact gate: "
+        "selected time factory, time regulation/constrained mode, lookahead modification, TAR/FQR grants, and GALT/LITS/logical-time queries.",
     ),
     _row(
         "time_management",
         "java-standard-2025-py4j",
-        MISSING,
+        PARITY_COVERED,
         ("HLA2025-FR-010", "HLA2025-FI-009", "HLA2025-BND-001"),
-        _FINISH_LINE_TESTS,
-        "No executable Java 2025 time-management parity scenario is recorded yet.",
+        _STANDARD_SHIM_TESTS,
+        "Java 2025 Py4J standard route runs the logical-time runtime trace through the official API compile artifact gate: "
+        "selected time factory, time regulation/constrained mode, lookahead modification, TAR/FQR grants, and GALT/LITS/logical-time queries.",
     ),
     _row(
         "time_management",
@@ -372,6 +382,26 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers save/restore lifecycle calls, status callbacks, "
         "success/failure callbacks, abort callbacks, object registry rollback, and logical-time rollback.",
+    ),
+    _row(
+        "save_restore",
+        "java-standard-2025-jpype",
+        PARITY_COVERED,
+        ("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002", "HLA2025-BND-001"),
+        _STANDARD_SHIM_TESTS,
+        "Java 2025 JPype standard route runs the save/restore runtime trace through the official API compile artifact gate: "
+        "two-federate save initiation/status/completion, missing-restore failure, restore initiation/status/completion, "
+        "logical-time rollback, and object registry rollback.",
+    ),
+    _row(
+        "save_restore",
+        "java-standard-2025-py4j",
+        PARITY_COVERED,
+        ("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002", "HLA2025-BND-001"),
+        _STANDARD_SHIM_TESTS,
+        "Java 2025 Py4J standard route runs the save/restore runtime trace through the official API compile artifact gate: "
+        "two-federate save initiation/status/completion, missing-restore failure, restore initiation/status/completion, "
+        "logical-time rollback, and object registry rollback.",
     ),
     _row(
         "save_restore",
@@ -422,6 +452,24 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     ),
     _row(
         "mom",
+        "java-standard-2025-jpype",
+        PARITY_COVERED,
+        ("HLA2025-NEW-004", "HLA2025-FI-001", "HLA2025-BND-001"),
+        _STANDARD_SHIM_TESTS,
+        "Java 2025 JPype standard route runs the MOM runtime trace through the official API compile artifact gate: "
+        "service report callback delivery, FOM module data report, MIM data report, and MOM adjust interaction routing for service-reporting switches.",
+    ),
+    _row(
+        "mom",
+        "java-standard-2025-py4j",
+        PARITY_COVERED,
+        ("HLA2025-NEW-004", "HLA2025-FI-001", "HLA2025-BND-001"),
+        _STANDARD_SHIM_TESTS,
+        "Java 2025 Py4J standard route runs the MOM runtime trace through the official API compile artifact gate: "
+        "service report callback delivery, FOM module data report, MIM data report, and MOM adjust interaction routing for service-reporting switches.",
+    ),
+    _row(
+        "mom",
         "cpp-standard-2025-pybind",
         PARITY_COVERED,
         ("HLA2025-NEW-004", "HLA2025-FI-001", "HLA2025-BND-002"),
@@ -454,6 +502,24 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         _FEDPRO_TESTS,
         "Hosted FedPro 2025 route covers FOM handle/name round trips, dimension/range, transportation/order, "
         "update-rate, normalization, logical-time query, and 2025 switch get/set services.",
+    ),
+    _row(
+        "support_services",
+        "java-standard-2025-jpype",
+        PARITY_COVERED,
+        ("HLA2025-FI-001", "HLA2025-MOD-007", "HLA2025-BND-001"),
+        _STANDARD_SHIM_TESTS,
+        "Java 2025 JPype standard route runs the support-services runtime trace through the official API compile artifact gate: "
+        "federate/object/name lookups, known-class and dimension/transport/order lookups, logical-time factory lookup, and 2025 switch round trips.",
+    ),
+    _row(
+        "support_services",
+        "java-standard-2025-py4j",
+        PARITY_COVERED,
+        ("HLA2025-FI-001", "HLA2025-MOD-007", "HLA2025-BND-001"),
+        _STANDARD_SHIM_TESTS,
+        "Java 2025 Py4J standard route runs the support-services runtime trace through the official API compile artifact gate: "
+        "federate/object/name lookups, known-class and dimension/transport/order lookups, logical-time factory lookup, and 2025 switch round trips.",
     ),
     _row(
         "support_services",

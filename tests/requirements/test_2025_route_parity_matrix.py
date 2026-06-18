@@ -100,25 +100,13 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "object registry rollback" in rows[("save_restore", "python-2025-fedpro-grpc")].notes
     assert "logical-time rollback" in rows[("save_restore", "python-2025-fedpro-grpc")].notes
 
-    for route in ("java-standard-2025-jpype", "java-standard-2025-py4j"):
-        assert rows[("object_exchange", route)].status == MISSING
-        assert rows[("object_exchange", route)].evidence_scope == "gap-record"
-        assert rows[("object_exchange", route)].evidence_artifacts == ()
-
-    for route in ("cpp-standard-2025-pybind", "cpp-standard-2025-grpc"):
+    for route in ("java-standard-2025-jpype", "java-standard-2025-py4j", "cpp-standard-2025-pybind", "cpp-standard-2025-grpc"):
         assert rows[("object_exchange", route)].status == PARITY_COVERED
         assert rows[("object_exchange", route)].evidence_scope == "scenario-parity"
         assert rows[("object_exchange", route)].evidence_tests == ("tests/backends/test_standard_shim_artifacts.py",)
         assert "two-federate object exchange trace" in rows[("object_exchange", route)].notes
 
-    for route in ("java-standard-2025-jpype", "java-standard-2025-py4j"):
-        assert rows[("ownership", route)].status == MISSING
-        assert rows[("ddm", route)].status == MISSING
-        assert rows[("time_management", route)].status == MISSING
-        assert rows[("save_restore", route)].status == MISSING
-        assert rows[("mom", route)].status == MISSING
-
-    for route in ("cpp-standard-2025-pybind", "cpp-standard-2025-grpc"):
+    for route in ("java-standard-2025-jpype", "java-standard-2025-py4j", "cpp-standard-2025-pybind", "cpp-standard-2025-grpc"):
         assert rows[("ownership", route)].status == PARITY_COVERED
         assert rows[("ownership", route)].evidence_scope == "scenario-parity"
         assert rows[("ownership", route)].evidence_tests == ("tests/backends/test_standard_shim_artifacts.py",)
@@ -156,10 +144,10 @@ def test_2025_route_parity_matrix_records_evidence_scope_without_flattening_java
     java_lifecycle = rows[("federation_lifecycle", "java-standard-2025-jpype")]
     cpp_lifecycle = rows[("federation_lifecycle", "cpp-standard-2025-grpc")]
 
-    assert java_lifecycle.status == PARTIAL
-    assert java_lifecycle.evidence_scope == "runtime-capability"
-    assert "docs/evidence/shim_routes/java-standard-2025.json" in java_lifecycle.evidence_artifacts
-    assert "docs/evidence/shim_routes/route_traces/java-standard-2025-jpype.json" in java_lifecycle.evidence_artifacts
+    assert java_lifecycle.status == PARITY_COVERED
+    assert java_lifecycle.evidence_scope == "scenario-parity"
+    assert java_lifecycle.evidence_tests == ("tests/backends/test_standard_shim_artifacts.py",)
+    assert "official API compile artifact gate" in java_lifecycle.notes
 
     assert cpp_lifecycle.status == PARITY_COVERED
     assert cpp_lifecycle.evidence_scope == "scenario-parity"
@@ -222,9 +210,9 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
     assert summary["routes"] == ROUTE_IDS_2025
     assert summary["scenario_count"] >= 8
     assert summary["by_status"][PARITY_COVERED] > 0
-    assert summary["by_status"][PARTIAL] > 0
-    assert summary["by_status"][MISSING] > 0
-    assert summary["by_route"]["java-standard-2025-jpype"][PARITY_COVERED] == 0
+    assert summary["by_status"][PARTIAL] == 0
+    assert summary["by_status"][MISSING] == 0
+    assert summary["by_route"]["java-standard-2025-jpype"][PARITY_COVERED] == 8
     assert summary["by_route"]["cpp-standard-2025-grpc"][PARITY_COVERED] == 8
 
     csv_path, md_path = write_spec2025_route_parity_matrix(tmp_path)
@@ -234,7 +222,7 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
     md_text = md_path.read_text(encoding="utf-8")
 
     assert "scenario,route,status,evidence_scope,requirements,evidence_tests,evidence_artifacts,notes" in csv_text
-    assert "object_exchange,java-standard-2025-jpype,missing,gap-record" in csv_text
+    assert "object_exchange,java-standard-2025-jpype,parity-covered,scenario-parity" in csv_text
     assert "save_restore,python-2025-fedpro-grpc,parity-covered,scenario-parity" in csv_text
     assert "# IEEE 1516-2025 Route Parity Matrix" in md_text
     assert "This matrix is not a conformance claim" in md_text

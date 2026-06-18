@@ -10,9 +10,6 @@
   "official_api_source_path": "/Users/rick/Library/Mobile Documents/com~apple~CloudDocs/GIT/hla-2010/specs/ieee-1516-2025/1516.1-2025_downloads.zip",
   "routes": {
     "java-standard-2025-jpype": {
-      "scenario": "runtime-capability",
-      "status": "trace-green",
-      "surface": "official Java 2025 API",
       "requirements_exercised": [
         "HLA2025-BND-001",
         "HLA2025-FR-001",
@@ -28,12 +25,12 @@
         "HLA2025-MOD-007",
         "HLA2025-NEW-004",
         "HLA2025-NEW-007"
-      ]
+      ],
+      "scenario": "runtime-capability",
+      "status": "trace-green",
+      "surface": "official Java 2025 API"
     },
     "java-standard-2025-py4j": {
-      "scenario": "runtime-capability",
-      "status": "trace-green",
-      "surface": "official Java 2025 API",
       "requirements_exercised": [
         "HLA2025-BND-001",
         "HLA2025-FR-001",
@@ -49,19 +46,13 @@
         "HLA2025-MOD-007",
         "HLA2025-NEW-004",
         "HLA2025-NEW-007"
-      ]
+      ],
+      "scenario": "runtime-capability",
+      "status": "trace-green",
+      "surface": "official Java 2025 API"
     }
   },
   "scenario_evidence": {
-    "scenarios": [
-      "2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling",
-      "2025 standard route runtime capability: FOM handles, DDM/default policy calls, object registration, ownership callbacks, logical time, and MOM service-report serialization"
-    ],
-    "status": "trace-green",
-    "tests": [
-      "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_lifecycle_core_when_built",
-      "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_runtime_capability_when_built"
-    ],
     "requirements_exercised": [
       "HLA2025-BND-001",
       "HLA2025-FR-001",
@@ -77,6 +68,15 @@
       "HLA2025-MOD-007",
       "HLA2025-NEW-004",
       "HLA2025-NEW-007"
+    ],
+    "scenarios": [
+      "2025 standard route lifecycle core: factory, connect, federation create/join/resign/destroy, callbacks polling",
+      "2025 standard route runtime capability: FOM handles, DDM/default policy calls, object registration, ownership callbacks, logical time, and MOM service-report serialization"
+    ],
+    "status": "trace-green",
+    "tests": [
+      "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_lifecycle_core_when_built",
+      "tests/backends/test_standard_shim_artifacts.py::test_standard_2025_routes_pass_runtime_capability_when_built"
     ]
   },
   "surface": "official IEEE 1516.1-2025 Java API",
