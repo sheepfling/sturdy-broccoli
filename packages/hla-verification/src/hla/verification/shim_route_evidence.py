@@ -23,6 +23,12 @@ CORE_EXCHANGE_REQUIREMENTS_2025 = [
     "HLA2025-FI-009",
 ]
 
+TIME_MANAGEMENT_REQUIREMENTS_2025 = [
+    "HLA2025-FR-010",
+    "HLA2025-FI-005",
+    "HLA2025-FI-009",
+]
+
 
 def _jsonable(value: Any) -> Any:
     if value is None or isinstance(value, (bool, int, float, str)):
@@ -231,4 +237,70 @@ def run_standard_2025_lifecycle_trace(backend_name: str) -> dict[str, Any]:
     }
 
 
-__all__ = ["run_standard_2010_exchange_trace", "run_standard_2025_lifecycle_trace"]
+def run_2025_time_management_trace(backend_name: str = "shim") -> dict[str, Any]:
+    """Run a focused 2025 logical-time trace and return normalized evidence."""
+
+    from hla.rti import create_rti_ambassador
+    from hla.rti1516_2025 import CallbackModel, ResignAction
+    from hla.rti1516_2025.time import HLAfloat64Interval, HLAfloat64Time
+
+    federation_name = f"ShimRouteTime{backend_name.replace('-', '').title()}"
+    fom_module = "TargetRadarFOMmodule.xml"
+    rti = create_rti_ambassador(spec="2025", backend=backend_name)
+    trace = [
+        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=rti.backend_info.details.get("standard_backed")),
+    ]
+    rti.connect(object(), CallbackModel.HLA_EVOKED)
+    trace.append(_event("connect"))
+    rti.createFederationExecution(
+        federation_name,
+        fom_module,
+        logicalTimeImplementationName="HLAfloat64Time",
+    )
+    trace.append(
+        _event(
+            "createFederationExecution",
+            federation=federation_name,
+            fomModule=fom_module,
+            logicalTimeImplementationName="HLAfloat64Time",
+        )
+    )
+    rti.joinFederationExecution("python-federate", "demo", federation_name)
+    trace.append(_event("joinFederationExecution", federate="python-federate", federation=federation_name))
+    time_factory = rti.getTimeFactory()
+    trace.append(_event("getTimeFactory", factoryName=time_factory.getName()))
+    rti.enableTimeRegulation(HLAfloat64Interval(0.5))
+    trace.append(_event("enableTimeRegulation", lookahead=HLAfloat64Interval(0.5)))
+    rti.enableTimeConstrained()
+    trace.append(_event("enableTimeConstrained"))
+    trace.append(_event("queryLookahead", value=rti.queryLookahead()))
+    rti.modifyLookahead(HLAfloat64Interval(0.25))
+    trace.append(_event("modifyLookahead", value=HLAfloat64Interval(0.25)))
+    trace.append(_event("queryLookahead", value=rti.queryLookahead()))
+    rti.timeAdvanceRequest(HLAfloat64Time(12.5))
+    trace.append(_event("timeAdvanceRequest", value=HLAfloat64Time(12.5)))
+    trace.append(_event("queryLogicalTime", value=rti.queryLogicalTime()))
+    trace.append(_event("queryGALT", value=rti.queryGALT()))
+    trace.append(_event("queryLITS", value=rti.queryLITS()))
+    rti.resignFederationExecution(ResignAction.NO_ACTION)
+    trace.append(_event("resignFederationExecution", action=ResignAction.NO_ACTION))
+    rti.destroyFederationExecution(federation_name)
+    trace.append(_event("destroyFederationExecution", federation=federation_name))
+    rti.disconnect()
+    trace.append(_event("disconnect"))
+
+    return {
+        "route": backend_name,
+        "edition": "2025",
+        "scenario": "logical-time-runtime",
+        "status": "trace-green",
+        "requirements_exercised": TIME_MANAGEMENT_REQUIREMENTS_2025,
+        "trace": trace,
+    }
+
+
+__all__ = [
+    "run_2025_time_management_trace",
+    "run_standard_2010_exchange_trace",
+    "run_standard_2025_lifecycle_trace",
+]

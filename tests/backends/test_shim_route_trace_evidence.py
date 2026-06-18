@@ -59,3 +59,34 @@ def test__2025_traces_cover_lifecycle_core() -> None:
             "destroyFederationExecution",
             "disconnect",
         ]
+
+
+def test__2025_time_management_trace_exercises_selected_logical_time_runtime() -> None:
+    from hla.verification.shim_route_evidence import run_2025_time_management_trace
+
+    evidence = run_2025_time_management_trace("shim")
+    events = [event["event"] for event in evidence["trace"]]
+
+    assert evidence["edition"] == "2025"
+    assert evidence["scenario"] == "logical-time-runtime"
+    assert evidence["status"] == "trace-green"
+    assert {"HLA2025-FR-010", "HLA2025-FI-005", "HLA2025-FI-009"} <= set(evidence["requirements_exercised"])
+    assert events == [
+        "routeSelected",
+        "connect",
+        "createFederationExecution",
+        "joinFederationExecution",
+        "getTimeFactory",
+        "enableTimeRegulation",
+        "enableTimeConstrained",
+        "queryLookahead",
+        "modifyLookahead",
+        "queryLookahead",
+        "timeAdvanceRequest",
+        "queryLogicalTime",
+        "queryGALT",
+        "queryLITS",
+        "resignFederationExecution",
+        "destroyFederationExecution",
+        "disconnect",
+    ]
