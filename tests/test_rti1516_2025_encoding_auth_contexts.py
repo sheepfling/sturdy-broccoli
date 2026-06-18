@@ -7,7 +7,8 @@ import pytest
 from hla.rti import HlaFactoryRegistry
 from hla.rti1516_2025.auth import HLAnoCredentials, HLAplainTextPassword
 from hla.rti1516_2025.datatypes import Credentials
-from hla.rti1516_2025.exceptions import InvalidCredentials
+from hla.rti1516_2025.enums import AuthorizationResultCode
+from hla.rti1516_2025.exceptions import ConnectionFailed, InvalidCredentials, Unauthorized
 from hla.rti1516_2025.foms import FomTypeRepository, encoding_smoke_fom_path
 from hla.rti1516e.fom import FOMResolver
 
@@ -140,6 +141,93 @@ def test_auth_context_supports_custom_typed_bytes_and_rejects_empty_password() -
 
     with pytest.raises(InvalidCredentials, match="cannot be empty"):
         factory.create_authentication_context({"mode": "PlainTextPassword", "password": ""})
+
+
+@pytest.mark.requirements("AUTH-007", "AUTH-009", "AUTH-010")
+def test_fake_authorizer_produces_distinct_decision_codes_for_hosted_2025_shim() -> None:
+    factory = HlaFactoryRegistry.get("2025", provider="shim")
+
+    allowed = factory.create_authentication_context(
+        {
+            "mode": "CustomTypedBytes",
+            "credential_type": "Proto2025BearerToken",
+            "data": b"safe",
+            "supported_custom_credential_types": ["Proto2025BearerToken"],
+            "authorizer_mode": "Fake",
+            "allowed_federations": ["MissionAlpha"],
+            "allowed_federate_types": ["Observer"],
+        }
+    )
+    decision = allowed.authorizer_provider.authorize_rti_operation(allowed.credentials())
+    assert decision.code is AuthorizationResultCode.AUTHORIZED
+    decision = allowed.authorizer_provider.authorize_federation_operation(allowed.credentials(), "Denied")
+    assert decision.code is AuthorizationResultCode.UNAUTHORIZED
+    decision = allowed.authorizer_provider.authorize_federate_operation(
+        allowed.credentials(),
+        "MissionAlpha",
+        "Wing-1",
+        "Shooter",
+    )
+    assert decision.code is AuthorizationResultCode.UNAUTHORIZED
+
+    invalid = factory.create_authentication_context(
+        {
+            "mode": "PlainTextPassword",
+            "password": "bad",
+            "authorizer_mode": "Fake",
+        }
+    )
+    decision = invalid.authorizer_provider.authorize_rti_operation(invalid.credentials())
+    assert decision.code is AuthorizationResultCode.INVALID_CREDENTIALS
+
+    failure = factory.create_authentication_context(
+        {
+            "mode": "NoAuth",
+            "authorizer_mode": "Fake",
+            "fail_mode": "error",
+        }
+    )
+    decision = failure.authorizer_provider.authorize_rti_operation(failure.credentials())
+    assert decision.code is AuthorizationResultCode.AUTHORIZATION_ERROR
+
+
+@pytest.mark.requirements("AUTH-009", "AUTH-010")
+def test_authorizer_and_custom_credentials_are_provider_gated() -> None:
+    factory_2025 = HlaFactoryRegistry.get("2025", provider="shim")
+    with pytest.raises(InvalidCredentials, match="not advertised"):
+        factory_2025.create_authentication_context(
+            {
+                "mode": "CustomTypedBytes",
+                "credential_type": "Proto2025BearerToken",
+                "data": b"safe",
+                "supported_custom_credential_types": ["OtherType"],
+            }
+        )
+
+    factory_2010 = HlaFactoryRegistry.get("rti1516e", provider="inmemory")
+    with pytest.raises(ValueError, match="hosted 2025 shim/proxy"):
+        factory_2010.create_authentication_context({"mode": "NoAuth", "authorizer_mode": "Fake"})
+
+
+@pytest.mark.requirements("AUTH-006", "AUTH-007", "AUTH-010")
+@pytest.mark.parametrize(
+    ("auth_config", "expected_exc"),
+    [
+        ({"mode": "PlainTextPassword", "password": "bad", "authorizer_mode": "Fake"}, InvalidCredentials),
+        ({"mode": "NoAuth", "authorizer_mode": "Fake", "allow_rti": False}, Unauthorized),
+        ({"mode": "NoAuth", "authorizer_mode": "Fake", "fail_mode": "error"}, ConnectionFailed),
+    ],
+)
+def test_runtime_connect_maps_authorizer_failures_before_federation_lifecycle(
+    auth_config: dict[str, object],
+    expected_exc: type[Exception],
+) -> None:
+    runtime = HlaFactoryRegistry.get("2025", provider="shim").create_runtime_context(auth_config=auth_config)
+
+    with pytest.raises(expected_exc):
+        runtime.connect()
+    assert not any(call[0] == "createFederationExecution" for call in getattr(runtime.rti_ambassador, "calls", []))
+    assert not any(call[0] == "joinFederationExecution" for call in getattr(runtime.rti_ambassador, "calls", []))
 
 
 @pytest.mark.requirements("HLA2025-FI-003", "HLA2025-FI-005")

@@ -91,6 +91,72 @@ class CredentialProvider:
 
 
 @dataclass(frozen=True, slots=True)
+class FakeAuthorizerProvider:
+    name: str = "fake"
+    allow_rti: bool = True
+    allowed_federations: frozenset[str] | None = None
+    allowed_federate_types: frozenset[str] | None = None
+    fail_mode: str | None = None
+
+    def authorize_rti_operation(self, credentials: Any) -> Any:
+        return self._decision(credentials, scope="rti")
+
+    def authorize_federation_operation(self, credentials: Any, federation_name: str) -> Any:
+        if self.allowed_federations is not None and federation_name not in self.allowed_federations:
+            return self._result("UNAUTHORIZED", f"federation {federation_name!r} is not authorized")
+        return self._decision(credentials, scope="federation")
+
+    def authorize_federate_operation(
+        self,
+        credentials: Any,
+        federation_name: str,
+        federate_name: str,
+        federate_type: str,
+    ) -> Any:
+        if self.allowed_federations is not None and federation_name not in self.allowed_federations:
+            return self._result("UNAUTHORIZED", f"federation {federation_name!r} is not authorized")
+        if self.allowed_federate_types is not None and federate_type not in self.allowed_federate_types:
+            return self._result("UNAUTHORIZED", f"federate type {federate_type!r} is not authorized")
+        return self._decision(credentials, scope="federate")
+
+    def capability_report(self) -> Mapping[str, Any]:
+        return {
+            "name": self.name,
+            "available": True,
+            "mode": "fake",
+            "allow_rti": self.allow_rti,
+            "allowed_federations": sorted(self.allowed_federations) if self.allowed_federations is not None else None,
+            "allowed_federate_types": sorted(self.allowed_federate_types) if self.allowed_federate_types is not None else None,
+            "fail_mode": self.fail_mode,
+        }
+
+    def _decision(self, credentials: Any, *, scope: str) -> Any:
+        if self.fail_mode == "error":
+            return self._result("AUTHORIZATION_ERROR", f"{scope} authorization provider error")
+        credential_type = getattr(credentials, "type", "")
+        if not credential_type:
+            return self._result("INVALID_CREDENTIALS", "Credentials must declare a type")
+        if credential_type == "HLAplainTextPassword":
+            try:
+                password = importlib.import_module("hla.rti1516_2025.auth").HLAplainTextPassword(credentials.data).decode()
+            except Exception:
+                return self._result("INVALID_CREDENTIALS", "Encoded HLAplainTextPassword is malformed")
+            if not password:
+                return self._result("INVALID_CREDENTIALS", "HLAplainTextPassword cannot be empty")
+            if password == "bad":
+                return self._result("INVALID_CREDENTIALS", "Credential provider rejected HLAplainTextPassword")
+        if not self.allow_rti:
+            return self._result("UNAUTHORIZED", f"{scope} operation is not authorized")
+        return self._result("AUTHORIZED")
+
+    @staticmethod
+    def _result(code_name: str, message: str = "") -> Any:
+        auth_module = importlib.import_module("hla.rti1516_2025.auth")
+        enum_module = importlib.import_module("hla.rti1516_2025.enums")
+        return auth_module.AuthorizationResult(getattr(enum_module.AuthorizationResultCode, code_name), message)
+
+
+@dataclass(frozen=True, slots=True)
 class EncodingContext:
     edition: str
     provider: str
@@ -117,12 +183,28 @@ class AuthenticationContext:
     transport: str
     credential_provider: CredentialProvider
     supports_standard_credentials: bool
+    supports_custom_credentials: bool
+    supported_custom_credential_types: tuple[str, ...]
+    authorizer_provider: Any = None
 
     def credentials(self) -> Any:
         return self.credential_provider.get_credentials()
 
     def authorize_connection(self) -> None:
         credentials = self.credentials()
+        authorizer = self.authorizer_provider
+        if authorizer is not None:
+            decision = authorizer.authorize_rti_operation(credentials)
+            code_name = getattr(getattr(decision, "code", None), "name", "")
+            if code_name == "INVALID_CREDENTIALS":
+                exc = importlib.import_module("hla.rti1516_2025.exceptions").InvalidCredentials
+                raise exc(getattr(decision, "message", "Invalid credentials"))
+            if code_name == "UNAUTHORIZED":
+                exc = importlib.import_module("hla.rti1516_2025.exceptions").Unauthorized
+                raise exc(getattr(decision, "message", "Unauthorized"))
+            if code_name == "AUTHORIZATION_ERROR":
+                exc = importlib.import_module("hla.rti1516_2025.exceptions").ConnectionFailed
+                raise exc(getattr(decision, "message", "Authorization error"))
         if credentials is None:
             return
         if getattr(credentials, "type", "") == "HLAplainTextPassword":
@@ -143,9 +225,16 @@ class AuthenticationContext:
             "provider": self.provider,
             "transport": self.transport,
             "supports_standard_credentials": self.supports_standard_credentials,
+            "supports_custom_credentials": self.supports_custom_credentials,
+            "supported_custom_credential_types": list(self.supported_custom_credential_types),
             "allowed_auth_modes": allowed_auth_modes,
             "credential_type": self.credential_provider.credential_type,
             "credential": self.credential_provider.redact(),
+            "authorizer_provider": (
+                self.authorizer_provider.capability_report()
+                if self.authorizer_provider is not None and hasattr(self.authorizer_provider, "capability_report")
+                else None
+            ),
         }
 
 
@@ -270,6 +359,8 @@ class HlaFactory:
     def create_authentication_context(self, config: Any = None, *, transport: str = "inproc") -> AuthenticationContext:
         mode = _auth_config_value(config, "mode", "NoAuth")
         supports_standard = self.spec.name == "rti1516_2025"
+        supports_custom_credentials = supports_standard and self.provider in {"shim"}
+        supported_custom_credential_types = tuple(_auth_config_value(config, "supported_custom_credential_types", ()))
         if mode != "NoAuth" and not supports_standard:
             raise ValueError("Standard credentials are unsupported for the 1516e-2010 profile")
         if mode == "NoAuth":
@@ -289,6 +380,12 @@ class HlaFactory:
             credential_type = str(_auth_config_value(config, "credential_type", ""))
             if not credential_type:
                 raise ValueError("CustomTypedBytes auth requires credential_type")
+            if not supports_custom_credentials:
+                exc = importlib.import_module("hla.rti1516_2025.exceptions").InvalidCredentials
+                raise exc(f"Provider {self.provider!r} does not advertise custom credential support")
+            if supported_custom_credential_types and credential_type not in supported_custom_credential_types:
+                exc = importlib.import_module("hla.rti1516_2025.exceptions").InvalidCredentials
+                raise exc(f"Credential type {credential_type!r} is not advertised by provider {self.provider!r}")
             data = _auth_config_value(config, "data", b"")
             provider = CredentialProvider(
                 credential_type,
@@ -297,12 +394,38 @@ class HlaFactory:
             )
         else:
             raise ValueError(f"Unsupported auth mode: {mode!r}")
+        authorizer_provider = None
+        authorizer_mode = _auth_config_value(config, "authorizer_mode", None)
+        if authorizer_mode is not None:
+            if not (supports_standard and self.provider == "shim"):
+                raise ValueError("Authorizer providers are available only for hosted 2025 shim/proxy modes")
+            if authorizer_mode != "Fake":
+                raise ValueError(f"Unsupported authorizer mode: {authorizer_mode!r}")
+            allowed_federations = _auth_config_value(config, "allowed_federations", None)
+            allowed_federate_types = _auth_config_value(config, "allowed_federate_types", None)
+            authorizer_provider = FakeAuthorizerProvider(
+                allow_rti=bool(_auth_config_value(config, "allow_rti", True)),
+                allowed_federations=(
+                    frozenset(str(item) for item in allowed_federations)
+                    if allowed_federations is not None
+                    else None
+                ),
+                allowed_federate_types=(
+                    frozenset(str(item) for item in allowed_federate_types)
+                    if allowed_federate_types is not None
+                    else None
+                ),
+                fail_mode=_auth_config_value(config, "fail_mode", None),
+            )
         return AuthenticationContext(
             edition=self.spec.name,
             provider=self.provider,
             transport=transport,
             credential_provider=provider,
             supports_standard_credentials=supports_standard,
+            supports_custom_credentials=supports_custom_credentials,
+            supported_custom_credential_types=supported_custom_credential_types,
+            authorizer_provider=authorizer_provider,
         )
 
     def create_runtime_context(
