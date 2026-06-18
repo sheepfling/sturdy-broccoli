@@ -28,6 +28,8 @@ class Spec2025RouteParityRow:
     requirements: tuple[str, ...]
     evidence_tests: tuple[str, ...]
     notes: str
+    evidence_scope: str = ""
+    evidence_artifacts: tuple[str, ...] = ()
 
 
 _PYTHON_CORE_TESTS = ("tests/test_rti1516_2025_spec_and_shim.py",)
@@ -37,6 +39,40 @@ _ROUTE_EVIDENCE_TESTS = (
     "tests/requirements/test_2025_tail_backlog_evidence.py",
 )
 _FINISH_LINE_TESTS = ("tests/requirements/test_2025_finish_line_snapshot.py",)
+
+
+def _evidence_scope(scenario: str, route: str, status: str) -> str:
+    if status == PARITY_COVERED:
+        return "scenario-parity"
+    if status == MISSING:
+        return "gap-record"
+    if route == "python-2025-fedpro-grpc":
+        return "fedpro-slice"
+    if scenario == "federation_lifecycle" and route.startswith("java-standard-2025"):
+        return "runtime-capability"
+    if scenario == "federation_lifecycle" and route.startswith("cpp-standard-2025"):
+        return "lifecycle-trace"
+    return "slice-evidence"
+
+
+def _evidence_artifacts(scenario: str, route: str, status: str) -> tuple[str, ...]:
+    if status == MISSING:
+        return ()
+    if route.startswith("java-standard-2025"):
+        return (
+            "docs/evidence/shim_routes/java-standard-2025.json",
+            f"docs/evidence/shim_routes/route_traces/{route}.json",
+        )
+    if route.startswith("cpp-standard-2025"):
+        return (
+            "docs/evidence/shim_routes/cpp-standard-2025.json",
+            f"docs/evidence/shim_routes/route_traces/{route}.json",
+        )
+    if route == "python-2025-fedpro-grpc":
+        return ("tests/transport/test_grpc_transport_2025.py",)
+    if route == "python-2025-inprocess":
+        return ("tests/test_rti1516_2025_spec_and_shim.py",)
+    return ()
 
 
 def _row(
@@ -54,6 +90,8 @@ def _row(
         requirements=requirements,
         evidence_tests=evidence_tests,
         notes=notes,
+        evidence_scope=_evidence_scope(scenario, route, status),
+        evidence_artifacts=_evidence_artifacts(scenario, route, status),
     )
 
 
@@ -432,6 +470,8 @@ def summarize_spec2025_route_parity(rows: tuple[Spec2025RouteParityRow, ...] = S
                 "status": row.status,
                 "requirements": list(row.requirements),
                 "evidence_tests": list(row.evidence_tests),
+                "evidence_scope": row.evidence_scope,
+                "evidence_artifacts": list(row.evidence_artifacts),
                 "notes": row.notes,
             }
             for row in rows
@@ -448,7 +488,16 @@ def write_spec2025_route_parity_matrix(output_dir: str | Path) -> tuple[Path, Pa
     with csv_path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(
             handle,
-            fieldnames=["scenario", "route", "status", "requirements", "evidence_tests", "notes"],
+            fieldnames=[
+                "scenario",
+                "route",
+                "status",
+                "evidence_scope",
+                "requirements",
+                "evidence_tests",
+                "evidence_artifacts",
+                "notes",
+            ],
         )
         writer.writeheader()
         for row in SPEC2025_ROUTE_PARITY_ROWS:
@@ -457,8 +506,10 @@ def write_spec2025_route_parity_matrix(output_dir: str | Path) -> tuple[Path, Pa
                     "scenario": row.scenario,
                     "route": row.route,
                     "status": row.status,
+                    "evidence_scope": row.evidence_scope,
                     "requirements": "; ".join(row.requirements),
                     "evidence_tests": "; ".join(row.evidence_tests),
+                    "evidence_artifacts": "; ".join(row.evidence_artifacts),
                     "notes": row.notes,
                 }
             )
@@ -468,13 +519,14 @@ def write_spec2025_route_parity_matrix(output_dir: str | Path) -> tuple[Path, Pa
         "",
         "This matrix is not a conformance claim. It records which 2025 scenarios have executable route evidence and which routes remain partial or missing.",
         "",
-        "| Scenario | Route | Status | Requirements | Evidence tests | Notes |",
-        "| --- | --- | --- | --- | --- | --- |",
+        "| Scenario | Route | Status | Evidence scope | Requirements | Evidence tests | Evidence artifacts | Notes |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for row in SPEC2025_ROUTE_PARITY_ROWS:
         lines.append(
-            f"| {row.scenario} | {row.route} | {row.status} | "
-            f"{', '.join(row.requirements)} | {', '.join(row.evidence_tests)} | {row.notes} |"
+            f"| {row.scenario} | {row.route} | {row.status} | {row.evidence_scope} | "
+            f"{', '.join(row.requirements)} | {', '.join(row.evidence_tests)} | "
+            f"{', '.join(row.evidence_artifacts)} | {row.notes} |"
         )
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return csv_path, md_path

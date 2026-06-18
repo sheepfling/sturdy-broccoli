@@ -184,4 +184,6 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     assert "HLA2025-VER-001" in matrix
     assert "2025-verification-anchor-matrix" in matrix
     route_matrix = paths["route_parity_matrix"].read_text(encoding="utf-8")
-    assert "object_exchange,java-standard-2025-jpype,missing" in route_matrix
+    assert "object_exchange,java-standard-2025-jpype,missing,gap-record" in route_matrix
+    assert "federation_lifecycle,java-standard-2025-jpype,partial,runtime-capability" in route_matrix
+    assert "federation_lifecycle,cpp-standard-2025-grpc,partial,lifecycle-trace" in route_matrix

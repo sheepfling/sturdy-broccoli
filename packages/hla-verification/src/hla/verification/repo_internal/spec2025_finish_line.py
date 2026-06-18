@@ -677,7 +677,16 @@ def write_spec2025_finish_line(output_dir: Path, project_root: Path) -> dict[str
                 }
             )
     with route_matrix_csv_path.open("w", newline="", encoding="utf-8") as handle:
-        fieldnames = ("scenario", "route", "status", "requirements", "evidence_tests", "notes")
+        fieldnames = (
+            "scenario",
+            "route",
+            "status",
+            "evidence_scope",
+            "requirements",
+            "evidence_tests",
+            "evidence_artifacts",
+            "notes",
+        )
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         for row in snapshot["route_parity_matrix"]["rows"]:
@@ -686,6 +695,7 @@ def write_spec2025_finish_line(output_dir: Path, project_root: Path) -> dict[str
                     **row,
                     "requirements": ";".join(row["requirements"]),
                     "evidence_tests": ";".join(row["evidence_tests"]),
+                    "evidence_artifacts": ";".join(row["evidence_artifacts"]),
                 }
             )
     return {
