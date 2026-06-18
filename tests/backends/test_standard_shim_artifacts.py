@@ -446,6 +446,54 @@ def test_standard_2025_routes_pass_save_restore_when_built(backend_name: str) ->
         "cpp-standard-2025-grpc",
     ],
 )
+def test_standard_2025_routes_pass_mom_when_built(backend_name: str) -> None:
+    if "java-standard-2025" in backend_name and not JAVA_2025_JAR.exists():
+        pytest.skip("Java 2025 standard shim jar has not been built")
+    if "cpp-standard-2025" in backend_name and not CPP_2025_LIB.exists():
+        pytest.skip("C++ 2025 standard shim artifact has not been built")
+
+    from hla.verification.shim_route_evidence import run_standard_2025_mom_trace
+
+    evidence = run_standard_2025_mom_trace(backend_name)
+    event_names = {event["event"] for event in evidence["trace"]}
+    service_report = next(event for event in evidence["trace"] if event["event"] == "serializeMOMServiceReport")
+    fom_report = next(event for event in evidence["trace"] if event["event"] == "momFomModuleReport")
+    mim_report = next(event for event in evidence["trace"] if event["event"] == "momMimReport")
+    adjust = next(event for event in evidence["trace"] if event["event"] == "momAdjustServiceReporting")
+
+    assert evidence["status"] == "trace-green"
+    assert evidence["scenario"] == "mom-runtime"
+    assert "HLA2025-NEW-004" in evidence["requirements_exercised"]
+    assert {
+        "routeSelected",
+        "connect",
+        "createFederationExecution",
+        "joinFederationExecution",
+        "serializeMOMServiceReport",
+        "momFomModuleReport",
+        "momMimReport",
+        "momAdjustServiceReporting",
+        "disconnect",
+    } <= event_names
+    assert service_report["recordType"] == "MOMServiceReport"
+    assert service_report["observerReceived"] is True
+    assert fom_report["containsRouteFom"] is True
+    assert fom_report["tag"] == "MOM"
+    assert mim_report["containsStandardMim"] is True
+    assert mim_report["containsRequestMimData"] is True
+    assert mim_report["tag"] == "MOM"
+    assert adjust["sourceServiceReporting"] is True
+
+
+@pytest.mark.parametrize(
+    "backend_name",
+    [
+        "java-standard-2025-jpype",
+        "java-standard-2025-py4j",
+        "cpp-standard-2025-pybind",
+        "cpp-standard-2025-grpc",
+    ],
+)
 def test_standard_2025_routes_pass_runtime_capability_when_built(backend_name: str) -> None:
     if "java-standard-2025" in backend_name and not JAVA_2025_JAR.exists():
         pytest.skip("Java 2025 standard shim jar has not been built")

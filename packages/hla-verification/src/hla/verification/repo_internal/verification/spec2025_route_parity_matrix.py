@@ -419,6 +419,24 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "manager adjust/service command leaves with representative state and callback effects.",
     ),
     _row(
+        "mom",
+        "cpp-standard-2025-pybind",
+        PARITY_COVERED,
+        ("HLA2025-NEW-004", "HLA2025-FI-001", "HLA2025-BND-002"),
+        _STANDARD_SHIM_TESTS,
+        "C++ 2025 pybind standard route runs the MOM runtime trace: service report callback delivery, "
+        "FOM module data report, MIM data report, and MOM adjust interaction routing for service-reporting switches.",
+    ),
+    _row(
+        "mom",
+        "cpp-standard-2025-grpc",
+        PARITY_COVERED,
+        ("HLA2025-NEW-004", "HLA2025-FI-001", "HLA2025-BND-002"),
+        _STANDARD_SHIM_TESTS,
+        "C++ 2025 gRPC standard route runs the MOM runtime trace: service report callback delivery, "
+        "FOM module data report, MIM data report, and MOM adjust interaction routing for service-reporting switches.",
+    ),
+    _row(
         "support_services",
         "python-2025-inprocess",
         PARITY_COVERED,

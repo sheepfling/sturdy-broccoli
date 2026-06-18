@@ -60,6 +60,11 @@ SAVE_RESTORE_REQUIREMENTS_2025 = [
     "HLA2025-REQ-002",
 ]
 
+MOM_REQUIREMENTS_2025 = [
+    "HLA2025-NEW-004",
+    "HLA2025-FI-001",
+]
+
 RUNTIME_CAPABILITY_REQUIREMENTS_2025 = [
     "HLA2025-FR-001",
     "HLA2025-FR-004",
@@ -191,6 +196,9 @@ class _Recording2025FederateAmbassador:
 
     def provideAttributeValueUpdate(self, objectInstance: Any, attributes: Any, userSuppliedTag: bytes) -> None:  # noqa: N802
         self.events.append(("provideAttributeValueUpdate", (objectInstance, attributes, userSuppliedTag)))
+
+    def momServiceReport(self, report: Any) -> None:  # noqa: N802
+        self.events.append(("momServiceReport", report))
 
     def removeObjectInstance(  # noqa: N802
         self,
@@ -1388,11 +1396,165 @@ def run_standard_2025_save_restore_trace(backend_name: str) -> dict[str, Any]:
     }
 
 
+def run_standard_2025_mom_trace(backend_name: str) -> dict[str, Any]:
+    """Run representative 2025 MOM report/request/adjust slices for a standard route."""
+
+    from hla.rti import create_rti_ambassador
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+
+    temp_dir, fom_module = _write_2025_runtime_capability_fom()
+    federation_name = f"ShimRouteMom{backend_name.replace('-', '').title()}{uuid.uuid4().hex[:8]}"
+    source_fed = _Recording2025FederateAmbassador()
+    observer_fed = _Recording2025FederateAmbassador()
+    source = create_rti_ambassador(spec="2025", backend=backend_name)
+    observer = create_rti_ambassador(spec="2025", backend=backend_name)
+    trace = [
+        _event("routeSelected", backend=backend_name, spec="rti1516_2025", standardBacked=source.backend_info.details.get("standard_backed")),
+        _event("getHLAversion", value=source.getHLAversion()),
+    ]
+    source_connected = False
+    observer_connected = False
+    source_joined = False
+    observer_joined = False
+    federation_created = False
+    try:
+        source.connect(source_fed, CallbackModel.HLA_EVOKED)
+        source_connected = True
+        observer.connect(observer_fed, CallbackModel.HLA_EVOKED)
+        observer_connected = True
+        trace.append(_event("connect", federates=["source", "observer"], callbackModel=CallbackModel.HLA_EVOKED))
+
+        source.createFederationExecution(federationName=federation_name, fomModule=str(fom_module))
+        federation_created = True
+        trace.append(_event("createFederationExecution", federation=federation_name, fomModule=fom_module.name))
+        source_handle = source.joinFederationExecution("route-mom-source", "route-mom", federation_name)
+        source_joined = True
+        observer_handle = observer.joinFederationExecution("route-mom-observer", "route-mom", federation_name)
+        observer_joined = True
+        trace.append(_event("joinFederationExecution", sourceHandle=source_handle, observerHandle=observer_handle))
+
+        source.setServiceReportingSwitch(True)
+        observer.setServiceReportingSwitch(True)
+        report = source.serializeMOMServiceReport(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches",
+            arguments={"HLAserviceReporting": True, "HLAfederate": source_handle},
+            result={"status": "serialized"},
+        )
+        trace.append(
+            _event(
+                "serializeMOMServiceReport",
+                recordType=report["recordType"],
+                serialNumber=report["serialNumber"],
+                service=report["service"],
+                observerReceived=any(name == "momServiceReport" and payload == report for name, payload in observer_fed.events),
+            )
+        )
+
+        fom_request = observer.getInteractionClassHandle(
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestFOMmoduleData"
+        )
+        fom_report = observer.getInteractionClassHandle(
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportFOMmoduleData"
+        )
+        request_indicator = observer.getParameterHandle(fom_request, "HLAFOMmoduleIndicator")
+        report_data = observer.getParameterHandle(fom_report, "HLAFOMmoduleData")
+        observer.subscribeInteractionClass(fom_report)
+        observer_fed.events.clear()
+        observer.sendInteraction(fom_request, {request_indicator: b"0"}, b"mom-fom-module-request")
+        fom_callback = next(payload for name, payload in reversed(observer_fed.events) if name == "interaction")
+        trace.append(
+            _event(
+                "momFomModuleReport",
+                reportClass=fom_callback[0],
+                containsRouteFom=b"Route Capability 2025 FOM" in fom_callback[1][report_data],
+                tag=fom_callback[2],
+            )
+        )
+
+        mim_request = observer.getInteractionClassHandle(
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMdata"
+        )
+        mim_report = observer.getInteractionClassHandle(
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata"
+        )
+        mim_data = observer.getParameterHandle(mim_report, "HLAMIMdata")
+        observer.subscribeInteractionClass(mim_report)
+        observer_fed.events.clear()
+        observer.sendInteraction(mim_request, {}, b"mom-mim-request")
+        mim_callback = next(payload for name, payload in reversed(observer_fed.events) if name == "interaction")
+        trace.append(
+            _event(
+                "momMimReport",
+                reportClass=mim_callback[0],
+                containsStandardMim=b"Standard MOM and Initialization Module" in mim_callback[1][mim_data],
+                containsRequestMimData=b"HLArequestMIMdata" in mim_callback[1][mim_data],
+                tag=mim_callback[2],
+            )
+        )
+
+        service_adjust = observer.getInteractionClassHandle(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetServiceReporting"
+        )
+        service_target = observer.getParameterHandle(service_adjust, "HLAfederate")
+        service_state = observer.getParameterHandle(service_adjust, "HLAreportingState")
+        source.setServiceReportingSwitch(False)
+        observer.sendInteraction(
+            service_adjust,
+            {
+                service_target: str(source_handle.value).encode("ascii"),
+                service_state: b"HLAtrue",
+            },
+            b"mom-enable-service-reporting",
+        )
+        trace.append(
+            _event(
+                "momAdjustServiceReporting",
+                targetFederate=source_handle,
+                sourceServiceReporting=source.getServiceReportingSwitch(),
+            )
+        )
+    finally:
+        try:
+            if observer_joined:
+                observer.resignFederationExecution(ResignAction.NO_ACTION)
+                trace.append(_event("resignFederationExecution", federate="observer", action=ResignAction.NO_ACTION))
+            if source_joined:
+                source.resignFederationExecution(ResignAction.NO_ACTION)
+                trace.append(_event("resignFederationExecution", federate="source", action=ResignAction.NO_ACTION))
+            if federation_created:
+                source.destroyFederationExecution(federation_name)
+                trace.append(_event("destroyFederationExecution", federation=federation_name))
+            if observer_connected:
+                observer.disconnect()
+            if source_connected:
+                source.disconnect()
+            if observer_connected or source_connected:
+                trace.append(_event("disconnect", federates=["source", "observer"]))
+        finally:
+            close = getattr(observer, "close", None)
+            if callable(close):
+                close()
+            close = getattr(source, "close", None)
+            if callable(close):
+                close()
+            shutil.rmtree(temp_dir, ignore_errors=True)
+
+    return {
+        "route": backend_name,
+        "edition": "2025",
+        "scenario": "mom-runtime",
+        "status": "trace-green",
+        "requirements_exercised": MOM_REQUIREMENTS_2025,
+        "trace": trace,
+    }
+
+
 __all__ = [
     "run_2025_time_management_trace",
     "run_standard_2010_exchange_trace",
     "run_standard_2025_ddm_trace",
     "run_standard_2025_lifecycle_trace",
+    "run_standard_2025_mom_trace",
     "run_standard_2025_object_exchange_trace",
     "run_standard_2025_ownership_trace",
     "run_standard_2025_runtime_capability_trace",
