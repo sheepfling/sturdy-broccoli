@@ -565,6 +565,119 @@ def test_2025_shim_implements_fom_backed_ddm_lookup_and_default_attribute_policy
     rti.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-MOD-007", "HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001")
+def test_2025_shim_filters_object_reflections_by_ddm_region_overlap(tmp_path: Path) -> None:
+    from hla.rti1516_2025.datatypes import RangeBounds
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "RegionDDM2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Region DDM 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-18</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused region overlap fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>RegionalTarget</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <dimensions>
+    <dimension>
+      <name>RoutingSpace</name>
+      <dataType>HLAinteger32BE</dataType>
+      <upperBound>100</upperBound>
+    </dimension>
+  </dimensions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-ddm-region-{uuid.uuid4().hex[:8]}"
+    publisher_callbacks = Recording2025FederateAmbassador()
+    subscriber_callbacks = Recording2025FederateAmbassador()
+    publisher = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+
+    publisher.connect(publisher_callbacks, CallbackModel.HLA_EVOKED)
+    subscriber.connect(subscriber_callbacks, CallbackModel.HLA_EVOKED)
+    publisher.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+    publisher_handle = publisher.joinFederationExecution("Publisher", "TestFederate", federation_name)
+    subscriber.joinFederationExecution("Subscriber", "TestFederate", federation_name)
+
+    object_class = publisher.getObjectClassHandle("HLAobjectRoot.RegionalTarget")
+    attribute = publisher.getAttributeHandle(object_class, "Position")
+    dimension = publisher.getDimensionHandle("RoutingSpace")
+    subscriber_dimension = subscriber.getDimensionHandle("RoutingSpace")
+    publisher.publishObjectClassAttributes(object_class, {attribute})
+
+    publisher_region = publisher.createRegion({dimension})
+    subscriber_region = subscriber.createRegion({subscriber_dimension})
+    publisher.setRangeBounds(publisher_region, dimension, RangeBounds(0, 10))
+    subscriber.setRangeBounds(subscriber_region, subscriber_dimension, RangeBounds(50, 60))
+    publisher.commitRegionModifications({publisher_region})
+    subscriber.commitRegionModifications({subscriber_region})
+
+    object_instance = publisher.registerObjectInstance(object_class, "Region-Target-1")
+    publisher.associateRegionsForUpdates(object_instance, [({attribute}, {publisher_region})])
+    subscriber.subscribeObjectClassAttributesWithRegions(object_class, [({attribute}, {subscriber_region})])
+
+    assert subscriber_callbacks.last_callback("discoverObjectInstance") is None
+    publisher.updateAttributeValues(object_instance, {attribute: b"outside"}, b"outside-region")
+    assert subscriber_callbacks.last_callback("reflectAttributeValues") is None
+
+    subscriber.setRangeBounds(subscriber_region, subscriber_dimension, RangeBounds(5, 15))
+    subscriber.commitRegionModifications({subscriber_region})
+    subscriber.subscribeObjectClassAttributesWithRegions(object_class, [({attribute}, {subscriber_region})])
+    assert subscriber_callbacks.last_callback("discoverObjectInstance") == (
+        object_instance,
+        object_class,
+        "Region-Target-1",
+        publisher_handle,
+    )
+
+    publisher.updateAttributeValues(object_instance, {attribute: b"inside"}, b"inside-region")
+    reflection = subscriber_callbacks.last_callback("reflectAttributeValues")
+    assert reflection is not None
+    assert reflection[:6] == (
+        object_instance,
+        {attribute: b"inside"},
+        b"inside-region",
+        publisher.getTransportationTypeHandle("HLAreliable"),
+        publisher_handle,
+        {publisher_region},
+    )
+
+    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.destroyFederationExecution(federationName=federation_name)
+    publisher.disconnect()
+    subscriber.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-MOD-005", "HLA2025-FI-001", "HLA2025-FI-005")
 def test_2025_shim_implements_basic_ownership_divest_acquire_and_query_callbacks(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction

@@ -276,9 +276,11 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "supported_scope": (
             "Python 2025 shim resolves object class, attribute, transportation, and dimension handles from the "
             "loaded FOM/FDD catalog, reports available dimensions for object and interaction classes, returns "
-            "dimension upper bounds, stores validated default attribute transportation/order policy changes, and "
-            "uses those defaults when delivering non-region reflectAttributeValues callbacks. Full DDM region "
-            "routing remains later behavior work."
+            "dimension upper bounds, stores validated default attribute transportation/order policy changes, "
+            "uses those defaults when delivering reflectAttributeValues callbacks, and filters object attribute "
+            "reflections through basic createRegion/setRangeBounds/subscribeObjectClassAttributesWithRegions/"
+            "associateRegionsForUpdates DDM region overlap. Interaction-region routing and full scope advisories "
+            "remain later behavior work."
         ),
     },
     {

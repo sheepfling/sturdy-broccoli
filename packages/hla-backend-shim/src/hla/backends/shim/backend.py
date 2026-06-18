@@ -15,6 +15,7 @@ from hla.rti1516_2025.datatypes import (
     FederationExecutionInformationSet,
     FederationExecutionMemberInformation,
     FederationExecutionMemberInformationSet,
+    RangeBounds,
     TimeQueryReturn,
 )
 from hla.rti1516_2025.enums import AdditionalSettingsResultCode, CallbackModel, OrderType, ResignAction, ServiceGroup
@@ -55,6 +56,9 @@ from hla.rti1516_2025.exceptions import (
     InvalidObjectClassHandle,
     InvalidObjectInstanceHandle,
     InvalidOrderType,
+    InvalidRangeBound,
+    InvalidRegion,
+    InvalidRegionContext,
     InvalidServiceGroup,
     InvalidTransportationName,
     InvalidTransportationTypeHandle,
@@ -65,6 +69,7 @@ from hla.rti1516_2025.exceptions import (
     ObjectClassNotDefined,
     ObjectClassNotPublished,
     ObjectInstanceNameInUse,
+    RegionDoesNotContainSpecifiedDimension,
     RTIinternalError,
     TimeRegulationIsNotEnabled,
     Unauthorized,
@@ -79,6 +84,7 @@ from hla.rti1516_2025.handles import (
     ObjectClassHandle,
     ObjectInstanceHandle,
     ParameterHandle,
+    RegionHandle,
     TransportationTypeHandle,
 )
 
@@ -117,11 +123,15 @@ class _FederationRecord:
     member_ambassadors: dict[int, FederateAmbassador] = field(default_factory=dict)
     published_object_attributes: dict[int, dict[str, set[str]]] = field(default_factory=dict)
     subscribed_object_attributes: dict[int, dict[str, set[str]]] = field(default_factory=dict)
+    subscribed_object_regions: dict[int, dict[str, dict[str, set[int]]]] = field(default_factory=dict)
     published_interactions: dict[int, set[str]] = field(default_factory=dict)
     subscribed_interactions: dict[int, set[str]] = field(default_factory=dict)
+    member_regions: dict[int, dict[int, set[str]]] = field(default_factory=dict)
+    member_region_bounds: dict[int, dict[int, dict[str, RangeBounds]]] = field(default_factory=dict)
     object_instances: dict[int, "_ObjectInstanceRecord"] = field(default_factory=dict)
     object_instance_names: dict[str, int] = field(default_factory=dict)
     next_object_instance_handle: int = 1
+    next_region_handle: int = 1
 
 
 @dataclass(slots=True)
@@ -131,6 +141,7 @@ class _ObjectInstanceRecord:
     attribute_owners: dict[str, FederateHandle | None] = field(default_factory=dict)
     attribute_divesting: set[str] = field(default_factory=set)
     attribute_candidates: dict[str, list[tuple[FederateHandle, bytes]]] = field(default_factory=dict)
+    update_regions: dict[str, set[int]] = field(default_factory=dict)
 
 
 _FEDERATION_REGISTRY: dict[str, _FederationRecord] = {}
@@ -335,8 +346,11 @@ class Shim2025RTIAmbassador:
             federation.member_ambassadors[self._federate_handle.value] = self._federate_ambassador
         federation.published_object_attributes.setdefault(self._federate_handle.value, {})
         federation.subscribed_object_attributes.setdefault(self._federate_handle.value, {})
+        federation.subscribed_object_regions.setdefault(self._federate_handle.value, {})
         federation.published_interactions.setdefault(self._federate_handle.value, set())
         federation.subscribed_interactions.setdefault(self._federate_handle.value, set())
+        federation.member_regions.setdefault(self._federate_handle.value, {})
+        federation.member_region_bounds.setdefault(self._federate_handle.value, {})
         self._select_logical_time_implementation(federation.logical_time_implementation_name)
         self._federation_name = federation_name
         self._federate_name = federate_name
@@ -655,6 +669,136 @@ class Shim2025RTIAmbassador:
         self._interaction_class_name(interactionClass)
         return {DimensionHandle(value) for value in self._dimension_handles().values()}
 
+    def createRegion(self, dimensions: Any) -> RegionHandle:  # noqa: N802
+        self._record("createRegion", dimensions)
+        self._require_joined("createRegion")
+        dimension_names = {self.getDimensionName(dimension) for dimension in set(dimensions)}
+        if not dimension_names:
+            raise InvalidRegionContext("createRegion requires at least one dimension")
+        federation = self._federation_record()
+        region = RegionHandle(federation.next_region_handle)
+        federation.next_region_handle += 1
+        federation.member_regions.setdefault(self._current_federate_key(), {})[region.value] = dimension_names
+        federation.member_region_bounds.setdefault(self._current_federate_key(), {})[region.value] = {
+            dimension_name: RangeBounds(0, self._dimension_default_upper_bound(dimension_name)) for dimension_name in dimension_names
+        }
+        return region
+
+    def commitRegionModifications(self, regions: Any) -> None:  # noqa: N802
+        self._record("commitRegionModifications", regions)
+        self._require_joined("commitRegionModifications")
+        for region in set(regions):
+            self._region_dimension_names(self._current_federate_key(), region)
+
+    def deleteRegion(self, region: Any) -> None:  # noqa: N802
+        self._record("deleteRegion", region)
+        self._require_joined("deleteRegion")
+        region_value = self._normalize_handle(region, RegionHandle, InvalidRegion)
+        federate_key = self._current_federate_key()
+        if region_value not in self._federation_record().member_regions.setdefault(federate_key, {}):
+            raise InvalidRegion(str(region))
+        self._federation_record().member_regions[federate_key].pop(region_value, None)
+        self._federation_record().member_region_bounds.setdefault(federate_key, {}).pop(region_value, None)
+
+    def getDimensionHandleSet(self, region: Any) -> set[DimensionHandle]:  # noqa: N802
+        self._record("getDimensionHandleSet", region)
+        dimension_names = self._region_dimension_names(self._current_federate_key(), region)
+        handles = self._dimension_handles()
+        return {DimensionHandle(handles[name]) for name in dimension_names}
+
+    def getRangeBounds(self, region: Any, dimension: Any) -> RangeBounds:  # noqa: N802
+        self._record("getRangeBounds", region, dimension)
+        federate_key = self._current_federate_key()
+        dimension_name = self.getDimensionName(dimension)
+        if dimension_name not in self._region_dimension_names(federate_key, region):
+            raise RegionDoesNotContainSpecifiedDimension(str(dimension))
+        region_value = self._normalize_handle(region, RegionHandle, InvalidRegion)
+        return self._federation_record().member_region_bounds[federate_key][region_value][dimension_name]
+
+    def setRangeBounds(self, region: Any, dimension: Any, rangeBounds: Any) -> None:  # noqa: N802
+        self._record("setRangeBounds", region, dimension, rangeBounds)
+        federate_key = self._current_federate_key()
+        dimension_name = self.getDimensionName(dimension)
+        if dimension_name not in self._region_dimension_names(federate_key, region):
+            raise RegionDoesNotContainSpecifiedDimension(str(dimension))
+        bounds = self._coerce_range_bounds(rangeBounds)
+        region_value = self._normalize_handle(region, RegionHandle, InvalidRegion)
+        self._federation_record().member_region_bounds.setdefault(federate_key, {}).setdefault(region_value, {})[dimension_name] = bounds
+
+    def subscribeObjectClassAttributesWithRegions(self, objectClass: Any, attributesAndRegions: Any, *unused: Any) -> None:  # noqa: N802
+        self._record("subscribeObjectClassAttributesWithRegions", objectClass, attributesAndRegions, *unused)
+        self._require_joined("subscribeObjectClassAttributesWithRegions")
+        object_class_name = self._object_class_name(objectClass)
+        region_map = self._federation_record().subscribed_object_regions.setdefault(self._current_federate_key(), {}).setdefault(object_class_name, {})
+        all_attribute_names: set[str] = set()
+        for attribute_names, region_values in self._attribute_region_pairs(object_class_name, attributesAndRegions):
+            all_attribute_names.update(attribute_names)
+            for attribute_name in attribute_names:
+                region_map.setdefault(attribute_name, set()).update(region_values)
+        if all_attribute_names:
+            self._federation_record().subscribed_object_attributes.setdefault(self._current_federate_key(), {}).setdefault(object_class_name, set()).update(
+                all_attribute_names
+            )
+            self._discover_existing_objects_for_current_subscription(object_class_name)
+
+    def subscribeObjectClassAttributesPassivelyWithRegions(self, objectClass: Any, attributesAndRegions: Any, *unused: Any) -> None:  # noqa: N802
+        self._record("subscribeObjectClassAttributesPassivelyWithRegions", objectClass, attributesAndRegions, *unused)
+        self.subscribeObjectClassAttributesWithRegions(objectClass, attributesAndRegions, *unused)
+
+    def unsubscribeObjectClassAttributesWithRegions(self, objectClass: Any, attributesAndRegions: Any) -> None:  # noqa: N802
+        self._record("unsubscribeObjectClassAttributesWithRegions", objectClass, attributesAndRegions)
+        self._require_joined("unsubscribeObjectClassAttributesWithRegions")
+        object_class_name = self._object_class_name(objectClass)
+        federation = self._federation_record()
+        federate_key = self._current_federate_key()
+        subscription_regions = federation.subscribed_object_regions.setdefault(federate_key, {}).setdefault(
+            object_class_name,
+            {},
+        )
+        subscribed_attrs = federation.subscribed_object_attributes.setdefault(federate_key, {}).setdefault(
+            object_class_name,
+            set(),
+        )
+        for attribute_names, region_values in self._attribute_region_pairs(object_class_name, attributesAndRegions):
+            for attribute_name in attribute_names:
+                if attribute_name in subscription_regions:
+                    subscription_regions[attribute_name].difference_update(region_values)
+                    if not subscription_regions[attribute_name]:
+                        subscription_regions.pop(attribute_name, None)
+                subscribed_attrs.discard(attribute_name)
+        if not subscription_regions:
+            self._federation_record().subscribed_object_regions[self._current_federate_key()].pop(object_class_name, None)
+        if not subscribed_attrs:
+            self._federation_record().subscribed_object_attributes[self._current_federate_key()].pop(object_class_name, None)
+
+    def registerObjectInstanceWithRegions(self, objectClass: Any, attributesAndRegions: Any, objectInstanceName: str | None = None) -> ObjectInstanceHandle:  # noqa: N802
+        self._record("registerObjectInstanceWithRegions", objectClass, attributesAndRegions, objectInstanceName)
+        handle = self.registerObjectInstance(objectClass, objectInstanceName)
+        record = self._object_instance_record(handle)
+        for attribute_names, region_values in self._attribute_region_pairs(record.object_class_name, attributesAndRegions):
+            for attribute_name in attribute_names:
+                record.update_regions.setdefault(attribute_name, set()).update(region_values)
+        return handle
+
+    def associateRegionsForUpdates(self, objectInstance: Any, attributesAndRegions: Any) -> None:  # noqa: N802
+        self._record("associateRegionsForUpdates", objectInstance, attributesAndRegions)
+        self._require_joined("associateRegionsForUpdates")
+        record = self._object_instance_record(objectInstance)
+        for attribute_names, region_values in self._attribute_region_pairs(record.object_class_name, attributesAndRegions):
+            for attribute_name in attribute_names:
+                record.update_regions.setdefault(attribute_name, set()).update(region_values)
+
+    def unassociateRegionsForUpdates(self, objectInstance: Any, attributesAndRegions: Any) -> None:  # noqa: N802
+        self._record("unassociateRegionsForUpdates", objectInstance, attributesAndRegions)
+        self._require_joined("unassociateRegionsForUpdates")
+        record = self._object_instance_record(objectInstance)
+        for attribute_names, region_values in self._attribute_region_pairs(record.object_class_name, attributesAndRegions):
+            for attribute_name in attribute_names:
+                if attribute_name in record.update_regions:
+                    record.update_regions[attribute_name].difference_update(region_values)
+                    if not record.update_regions[attribute_name]:
+                        record.update_regions.pop(attribute_name, None)
+
     def changeDefaultAttributeTransportationType(  # noqa: N802
         self,
         objectClass: Any,
@@ -761,10 +905,18 @@ class Shim2025RTIAmbassador:
         if objectInstanceName is not None:
             federation.object_instance_names[objectInstanceName] = handle.value
         object_class_handle = ObjectClassHandle(self._object_class_handles()[object_class_name])
+        source_key = self._current_federate_key()
         for federate_key, subscriptions in federation.subscribed_object_attributes.items():
             if federate_key == self._current_federate_key():
                 continue
-            if subscriptions.get(object_class_name):
+            subscribed_names = set(subscriptions.get(object_class_name, set()))
+            reflected_names = self._reflectable_attribute_names_for_subscriber(
+                source_key,
+                federate_key,
+                federation.object_instances[handle.value],
+                subscribed_names,
+            )
+            if reflected_names:
                 self._deliver_to_federate_handle(
                     FederateHandle(federate_key),
                     "discoverObjectInstance",
@@ -801,7 +953,12 @@ class Shim2025RTIAmbassador:
         for federate_key, subscriptions in self._federation_record().subscribed_object_attributes.items():
             if federate_key == self._current_federate_key():
                 continue
-            subscribed_names = subscriptions.get(object_class_name, set())
+            subscribed_names = self._reflectable_attribute_names_for_subscriber(
+                self._current_federate_key(),
+                federate_key,
+                record,
+                set(subscriptions.get(object_class_name, set())),
+            )
             reflected = {
                 handle: value
                 for handle, value in values_by_handle.items()
@@ -809,6 +966,11 @@ class Shim2025RTIAmbassador:
             }
             if not reflected:
                 continue
+            sent_regions = {
+                RegionHandle(region_value)
+                for handle in reflected
+                for region_value in record.update_regions.get(self._attribute_name_by_handle(object_class_name, handle), set())
+            }
             self._deliver_to_federate_handle(
                 FederateHandle(federate_key),
                 "reflectAttributeValues",
@@ -817,7 +979,7 @@ class Shim2025RTIAmbassador:
                 bytes(userSuppliedTag),
                 transportation,
                 self._current_federate_handle(),
-                set(),
+                sent_regions,
                 callback_time,
                 self._default_order_for(object_class_name, reflected),
                 self._default_order_for(object_class_name, reflected),
@@ -1584,8 +1746,11 @@ class Shim2025RTIAmbassador:
                 federation.member_ambassadors.pop(self._federate_handle.value, None)
                 federation.published_object_attributes.pop(self._federate_handle.value, None)
                 federation.subscribed_object_attributes.pop(self._federate_handle.value, None)
+                federation.subscribed_object_regions.pop(self._federate_handle.value, None)
                 federation.published_interactions.pop(self._federate_handle.value, None)
                 federation.subscribed_interactions.pop(self._federate_handle.value, None)
+                federation.member_regions.pop(self._federate_handle.value, None)
+                federation.member_region_bounds.pop(self._federate_handle.value, None)
 
     def _resign_reason_description(self, resign_action: ResignAction) -> str:
         action = getattr(resign_action, "name", str(resign_action))
@@ -1639,6 +1804,15 @@ class Shim2025RTIAmbassador:
             if spec is not None:
                 return spec
         return None
+
+    def _dimension_default_upper_bound(self, dimension_name: str) -> int:
+        spec = self._dimension_spec(dimension_name)
+        if spec is None or spec.upper_bound in {None, ""}:
+            return (1 << 63) - 1
+        try:
+            return int(str(spec.upper_bound))
+        except ValueError:
+            return (1 << 63) - 1
 
     def _transportation_handles(self) -> dict[str, int]:
         names = set(getattr(self._catalog(), "transportation_names", ()))
@@ -1709,6 +1883,99 @@ class Shim2025RTIAmbassador:
     def _published_attributes_for_current_federate(self, object_class_name: str) -> set[str]:
         return self._federation_record().published_object_attributes.setdefault(self._current_federate_key(), {}).get(object_class_name, set())
 
+    def _region_dimension_names(self, federate_key: int, region: Any) -> set[str]:
+        region_value = self._normalize_handle(region, RegionHandle, InvalidRegion)
+        try:
+            return set(self._federation_record().member_regions[federate_key][region_value])
+        except KeyError as exc:
+            raise InvalidRegion(str(region)) from exc
+
+    def _coerce_range_bounds(self, value: Any) -> RangeBounds:
+        if isinstance(value, RangeBounds):
+            bounds = value
+        elif hasattr(value, "lower") and hasattr(value, "upper"):
+            bounds = RangeBounds(int(value.lower), int(value.upper))
+        elif hasattr(value, "lower_bound") and hasattr(value, "upper_bound"):
+            bounds = RangeBounds(int(value.lower_bound), int(value.upper_bound))
+        else:
+            lower, upper = value
+            bounds = RangeBounds(int(lower), int(upper))
+        if int(bounds.lower) > int(bounds.upper):
+            raise InvalidRangeBound(repr(value))
+        return bounds
+
+    def _attribute_region_pairs(self, object_class_name: str, attributes_and_regions: Any) -> tuple[tuple[set[str], set[int]], ...]:
+        pairs: list[tuple[set[str], set[int]]] = []
+        for pair in attributes_and_regions or ():
+            if hasattr(pair, "attributes") and hasattr(pair, "regions"):
+                attributes = pair.attributes
+                regions = pair.regions
+            elif hasattr(pair, "ahset") and hasattr(pair, "rhset"):
+                attributes = pair.ahset
+                regions = pair.rhset
+            elif isinstance(pair, Mapping):
+                attributes = pair.get("attributes") or pair.get("ahset") or pair.get("attribute_handles") or ()
+                regions = pair.get("regions") or pair.get("rhset") or pair.get("region_handles") or ()
+            elif isinstance(pair, (tuple, list)) and len(pair) >= 2:
+                attributes, regions = pair[0], pair[1]
+            else:
+                raise InvalidRegionContext(f"Bad attribute/region pair: {pair!r}")
+            attribute_names = set(self._attribute_names_from_handles(object_class_name, attributes))
+            region_values = {self._normalize_handle(region, RegionHandle, InvalidRegion) for region in set(regions)}
+            for region_value in region_values:
+                self._region_dimension_names(self._current_federate_key(), RegionHandle(region_value))
+            pairs.append((attribute_names, region_values))
+        return tuple(pairs)
+
+    @staticmethod
+    def _ranges_overlap(left: RangeBounds, right: RangeBounds) -> bool:
+        return int(left.lower) <= int(right.upper) and int(right.lower) <= int(left.upper)
+
+    def _regions_overlap_pair(self, source_key: int, source_region: int, target_key: int, target_region: int) -> bool:
+        source_dims = self._federation_record().member_regions.get(source_key, {}).get(source_region, set())
+        target_dims = self._federation_record().member_regions.get(target_key, {}).get(target_region, set())
+        common_dimensions = set(source_dims) & set(target_dims)
+        if not common_dimensions:
+            return False
+        source_bounds = self._federation_record().member_region_bounds.get(source_key, {}).get(source_region, {})
+        target_bounds = self._federation_record().member_region_bounds.get(target_key, {}).get(target_region, {})
+        for dimension_name in common_dimensions:
+            default_bounds = RangeBounds(0, self._dimension_default_upper_bound(dimension_name))
+            if not self._ranges_overlap(source_bounds.get(dimension_name, default_bounds), target_bounds.get(dimension_name, default_bounds)):
+                return False
+        return True
+
+    def _region_sets_overlap(self, source_key: int, source_regions: set[int], target_key: int, target_regions: set[int]) -> bool:
+        if not source_regions or not target_regions:
+            return True
+        return any(
+            self._regions_overlap_pair(source_key, source_region, target_key, target_region)
+            for source_region in source_regions
+            for target_region in target_regions
+        )
+
+    def _reflectable_attribute_names_for_subscriber(
+        self,
+        source_key: int,
+        subscriber_key: int,
+        record: _ObjectInstanceRecord,
+        subscribed_names: set[str],
+    ) -> set[str]:
+        region_subscription = (
+            self._federation_record()
+            .subscribed_object_regions.get(subscriber_key, {})
+            .get(record.object_class_name, {})
+        )
+        if not region_subscription:
+            return subscribed_names
+        reflected: set[str] = set()
+        for attribute_name in subscribed_names:
+            target_regions = set(region_subscription.get(attribute_name, set()))
+            source_regions = set(record.update_regions.get(attribute_name, set()))
+            if self._region_sets_overlap(source_key, source_regions, subscriber_key, target_regions):
+                reflected.add(attribute_name)
+        return reflected
+
     def _attribute_name_by_handle(self, object_class_name: str, attribute: AttributeHandle) -> str:
         attribute_value = self._normalize_handle(attribute, AttributeHandle, InvalidAttributeHandle)
         names_by_handle = {value: name for name, value in self._attribute_handles(object_class_name).items()}
@@ -1772,6 +2039,18 @@ class Shim2025RTIAmbassador:
             owner_handles = {owner for owner in record.attribute_owners.values() if owner is not None}
             producing_federate = sorted(owner_handles, key=lambda handle: handle.value)[0] if owner_handles else self._current_federate_handle()
             if producing_federate == self._current_federate_handle():
+                continue
+            subscribed_names = (
+                federation.subscribed_object_attributes.get(self._current_federate_key(), {})
+                .get(object_class_name, set())
+            )
+            reflected_names = self._reflectable_attribute_names_for_subscriber(
+                producing_federate.value,
+                self._current_federate_key(),
+                record,
+                set(subscribed_names),
+            )
+            if not reflected_names:
                 continue
             self._deliver_callback(
                 "discoverObjectInstance",
