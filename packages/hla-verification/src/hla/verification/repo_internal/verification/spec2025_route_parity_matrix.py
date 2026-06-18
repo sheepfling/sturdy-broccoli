@@ -332,7 +332,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARTIAL,
         ("HLA2025-NEW-004", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
-        "Hosted FedPro 2025 route emits MOM service-invocation report callbacks, not full MOM manager action routing.",
+        "Hosted FedPro 2025 route emits MOM service-invocation report callbacks and round-trips 2025 switch services, "
+        "not full MOM manager object/interaction routing.",
     ),
     _row(
         "support_services",
@@ -348,7 +349,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         PARTIAL,
         ("HLA2025-FI-001", "HLA2025-BND-003"),
         _FEDPRO_TESTS,
-        "Hosted FedPro 2025 route covers FOM handle, dimension, transportation, and service-reporting switch lookups.",
+        "Hosted FedPro 2025 route covers FOM handle, dimension, transportation, and 2025 switch get/set services.",
     ),
 )
 

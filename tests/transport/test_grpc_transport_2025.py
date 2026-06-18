@@ -875,6 +875,49 @@ def test_2025_transport_server_reports_mom_service_invocation_over_fedpro_schema
         server.close()
 
 
+def test_2025_transport_server_round_trips_2025_switch_services_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        for get_command, set_command in (
+            ("GET_EXCEPTION_REPORTING_SWITCH", "SET_EXCEPTION_REPORTING_SWITCH"),
+            ("GET_OBJECT_CLASS_RELEVANCE_ADVISORY_SWITCH", "SET_OBJECT_CLASS_RELEVANCE_ADVISORY_SWITCH"),
+            ("GET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH", "SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH"),
+            ("GET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH", "SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH"),
+            ("GET_INTERACTION_RELEVANCE_ADVISORY_SWITCH", "SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH"),
+            ("GET_CONVEY_REGION_DESIGNATOR_SETS_SWITCH", "SET_CONVEY_REGION_DESIGNATOR_SETS_SWITCH"),
+            ("GET_SEND_SERVICE_REPORTS_TO_FILE_SWITCH", "SET_SEND_SERVICE_REPORTS_TO_FILE_SWITCH"),
+        ):
+            assert transport.request(TransportRequest(command=get_command)).fields == ("0",)
+            assert transport.request(TransportRequest(command=set_command, fields=("1",))).fields == ()
+            assert transport.request(TransportRequest(command=get_command)).fields == ("1",)
+            assert transport.request(TransportRequest(command=set_command, fields=("0",))).fields == ()
+            assert transport.request(TransportRequest(command=get_command)).fields == ("0",)
+
+        assert {
+            "getExceptionReportingSwitchRequest",
+            "setExceptionReportingSwitchRequest",
+            "getObjectClassRelevanceAdvisorySwitchRequest",
+            "setObjectClassRelevanceAdvisorySwitchRequest",
+            "getAttributeRelevanceAdvisorySwitchRequest",
+            "setAttributeRelevanceAdvisorySwitchRequest",
+            "getAttributeScopeAdvisorySwitchRequest",
+            "setAttributeScopeAdvisorySwitchRequest",
+            "getInteractionRelevanceAdvisorySwitchRequest",
+            "setInteractionRelevanceAdvisorySwitchRequest",
+            "getConveyRegionDesignatorSetsSwitchRequest",
+            "setConveyRegionDesignatorSetsSwitchRequest",
+            "getSendServiceReportsToFileSwitchRequest",
+            "setSendServiceReportsToFileSwitchRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_runs_lifecycle_session_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None

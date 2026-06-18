@@ -102,6 +102,21 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.default_attribute_transportation: dict[tuple[str, str], str] = {}
         self.default_attribute_order: dict[tuple[str, str], int] = {}
         self.service_reporting = False
+        self.switch_states: dict[str, bool] = {
+            "advisoriesUseKnownClass": False,
+            "allowRelaxedDDM": False,
+            "attributeRelevanceAdvisory": False,
+            "attributeScopeAdvisory": False,
+            "autoProvide": False,
+            "conveyRegionDesignatorSets": False,
+            "delaySubscriptionEvaluation": False,
+            "exceptionReporting": False,
+            "interactionRelevanceAdvisory": False,
+            "nonRegulatedGrant": False,
+            "objectClassRelevanceAdvisory": False,
+            "sendServiceReportsToFile": False,
+            "serviceReporting": False,
+        }
         self.service_report_serial = 1
         self.next_retraction_handle = 1
         self.queued_tso_callbacks: dict[str, tuple[float, callback_pb2.CallbackRequest]] = {}
@@ -311,7 +326,21 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             )
         if request_kind == "setServiceReportingSwitchRequest":
             self.service_reporting = request.setServiceReportingSwitchRequest.value
+            self.switch_states["serviceReporting"] = self.service_reporting
             return rti_pb2.CallResponse(setServiceReportingSwitchResponse=rti_pb2.SetServiceReportingSwitchResponse())
+        if request_kind.startswith("get") and request_kind.endswith("SwitchRequest"):
+            switch_name = request_kind.removeprefix("get").removesuffix("SwitchRequest")
+            state_key = switch_name[0].lower() + switch_name[1:]
+            response_kind = request_kind.removesuffix("Request") + "Response"
+            response_type = getattr(rti_pb2, response_kind[0].upper() + response_kind[1:])
+            return rti_pb2.CallResponse(**{response_kind: response_type(result=self.switch_states.get(state_key, False))})
+        if request_kind.startswith("set") and request_kind.endswith("SwitchRequest"):
+            switch_name = request_kind.removeprefix("set").removesuffix("SwitchRequest")
+            state_key = switch_name[0].lower() + switch_name[1:]
+            self.switch_states[state_key] = getattr(request, request_kind).value
+            response_kind = request_kind.removesuffix("Request") + "Response"
+            response_type = getattr(rti_pb2, response_kind[0].upper() + response_kind[1:])
+            return rti_pb2.CallResponse(**{response_kind: response_type()})
         if request_kind == "requestFederationSaveWithTimeRequest":
             payload = request.requestFederationSaveWithTimeRequest
             if self.save_label is not None:
