@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from importlib import import_module
@@ -141,6 +142,7 @@ class _FederationRecord:
     members: dict[str, str] = field(default_factory=dict)
     member_handles: dict[str, FederateHandle] = field(default_factory=dict)
     member_ambassadors: dict[int, FederateAmbassador] = field(default_factory=dict)
+    member_rtis: dict[int, "Shim2025RTIAmbassador"] = field(default_factory=dict)
     published_object_attributes: dict[int, dict[str, set[str]]] = field(default_factory=dict)
     subscribed_object_attributes: dict[int, dict[str, set[str]]] = field(default_factory=dict)
     subscribed_object_regions: dict[int, dict[str, dict[str, set[int]]]] = field(default_factory=dict)
@@ -155,6 +157,10 @@ class _FederationRecord:
     object_instance_names: dict[str, int] = field(default_factory=dict)
     interaction_transportation: dict[tuple[int, str], str] = field(default_factory=dict)
     saved_labels: set[str] = field(default_factory=set)
+    saved_object_instances: dict[str, dict[int, "_ObjectInstanceRecord"]] = field(default_factory=dict)
+    saved_object_instance_names: dict[str, dict[str, int]] = field(default_factory=dict)
+    saved_next_object_instance_handles: dict[str, int] = field(default_factory=dict)
+    saved_member_logical_times: dict[str, dict[int, Any]] = field(default_factory=dict)
     save_label: str | None = None
     save_status: dict[int, SaveStatus] = field(default_factory=dict)
     restore_label: str | None = None
@@ -372,6 +378,7 @@ class Shim2025RTIAmbassador:
         federation.members[federate_name] = federate_type
         self._federate_handle = FederateHandle(len(federation.member_handles) + 1)
         federation.member_handles[federate_name] = self._federate_handle
+        federation.member_rtis[self._federate_handle.value] = self
         if self._federate_ambassador is not None:
             federation.member_ambassadors[self._federate_handle.value] = self._federate_ambassador
         federation.published_object_attributes.setdefault(self._federate_handle.value, {})
@@ -1980,6 +1987,13 @@ class Shim2025RTIAmbassador:
             label = federation.save_label
             assert label is not None
             federation.saved_labels.add(label)
+            federation.saved_object_instances[label] = copy.deepcopy(federation.object_instances)
+            federation.saved_object_instance_names[label] = dict(federation.object_instance_names)
+            federation.saved_next_object_instance_handles[label] = federation.next_object_instance_handle
+            federation.saved_member_logical_times[label] = {
+                federate_key: rti._logical_time
+                for federate_key, rti in federation.member_rtis.items()
+            }
             for federate_handle in federation.member_handles.values():
                 self._deliver_to_federate_handle(federate_handle, "federationSaved")
             federation.save_label = None
@@ -2005,6 +2019,18 @@ class Shim2025RTIAmbassador:
             status is RestoreStatus.FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE
             for status in federation.restore_status.values()
         ):
+            label = federation.restore_label
+            assert label is not None
+            federation.object_instances = copy.deepcopy(federation.saved_object_instances.get(label, {}))
+            federation.object_instance_names = dict(federation.saved_object_instance_names.get(label, {}))
+            federation.next_object_instance_handle = federation.saved_next_object_instance_handles.get(
+                label,
+                federation.next_object_instance_handle,
+            )
+            for federate_key, logical_time in federation.saved_member_logical_times.get(label, {}).items():
+                rti = federation.member_rtis.get(federate_key)
+                if rti is not None:
+                    rti._logical_time = logical_time
             for federate_handle in federation.member_handles.values():
                 self._deliver_to_federate_handle(federate_handle, "federationRestored")
             federation.restore_label = None
@@ -2254,6 +2280,7 @@ class Shim2025RTIAmbassador:
                 federation.member_handles.pop(self._federate_name, None)
             if self._federate_handle is not None:
                 federation.member_ambassadors.pop(self._federate_handle.value, None)
+                federation.member_rtis.pop(self._federate_handle.value, None)
                 federation.published_object_attributes.pop(self._federate_handle.value, None)
                 federation.subscribed_object_attributes.pop(self._federate_handle.value, None)
                 federation.subscribed_object_regions.pop(self._federate_handle.value, None)

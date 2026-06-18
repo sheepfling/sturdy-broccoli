@@ -523,7 +523,7 @@ def test_2025_shim_is_first_green_runtime_path() -> None:
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-REQ-002")
 def test_2025_shim_runs_federation_save_restore_lifecycle(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction, RestoreFailureReason, RestoreStatus, SaveFailureReason, SaveStatus
-    from hla.rti1516_2025.exceptions import RestoreNotRequested, SaveInProgress, SaveNotInitiated
+    from hla.rti1516_2025.exceptions import ObjectInstanceNotKnown, RestoreNotRequested, SaveInProgress, SaveNotInitiated
     from hla.rti1516_2025.factory import create_rti_ambassador
 
     fom = tmp_path / "SaveRestore2025.xml"
@@ -575,6 +575,15 @@ def test_2025_shim_runs_federation_save_restore_lifecycle(tmp_path: Path) -> Non
     leader.createFederationExecution(federationName=federation_name, fomModule=str(fom))
     leader_handle = leader.joinFederationExecution("Leader", "TestFederate", federation_name)
     wing_handle = wing.joinFederationExecution("Wing", "TestFederate", federation_name)
+    object_class = leader.getObjectClassHandle("HLAobjectRoot.SavedTarget")
+    wing_object_class = wing.getObjectClassHandle("HLAobjectRoot.SavedTarget")
+    attribute = leader.getAttributeHandle(object_class, "Position")
+    wing_attribute = wing.getAttributeHandle(wing_object_class, "Position")
+    leader.publishObjectClassAttributes(object_class, {attribute})
+    wing.subscribeObjectClassAttributes(wing_object_class, {wing_attribute})
+    object_instance = leader.registerObjectInstance(object_class, "Saved-Target-1")
+    leader.timeAdvanceRequest(leader.getTimeFactory().makeTime(5))
+    assert leader.queryLogicalTime() == leader.getTimeFactory().makeTime(5)
 
     with pytest.raises(SaveNotInitiated):
         leader.federateSaveComplete()
@@ -594,6 +603,10 @@ def test_2025_shim_runs_federation_save_restore_lifecycle(tmp_path: Path) -> Non
     wing.federateSaveComplete()
     assert leader_callbacks.last_callback("federationSaved") == ()
     assert wing_callbacks.last_callback("federationSaved") == ()
+    leader.timeAdvanceRequest(leader.getTimeFactory().makeTime(9))
+    leader.deleteObjectInstance(object_instance, b"deleted-after-save")
+    with pytest.raises(ObjectInstanceNotKnown):
+        wing.requestAttributeValueUpdate(object_instance, {wing_attribute}, b"deleted")
     leader.queryFederationSaveStatus()
     save_status = {pair.handle: pair.status for pair in leader_callbacks.last_callback("federationSaveStatusResponse")[0]}
     assert save_status == {
@@ -616,6 +629,9 @@ def test_2025_shim_runs_federation_save_restore_lifecycle(tmp_path: Path) -> Non
     wing.federateRestoreComplete()
     assert leader_callbacks.last_callback("federationRestored") == ()
     assert wing_callbacks.last_callback("federationRestored") == ()
+    assert leader.queryLogicalTime() == leader.getTimeFactory().makeTime(5)
+    wing.requestAttributeValueUpdate(object_instance, {wing_attribute}, b"after-restore")
+    assert leader_callbacks.last_callback("provideAttributeValueUpdate") == (object_instance, {attribute}, b"after-restore")
     with pytest.raises(RestoreNotRequested):
         leader.federateRestoreComplete()
 

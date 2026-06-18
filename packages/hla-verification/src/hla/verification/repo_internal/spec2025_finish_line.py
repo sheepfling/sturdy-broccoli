@@ -76,8 +76,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "supported_scope": (
             "Python 2025 shim supports federation save/restore lifecycle callbacks, status responses, "
             "successful federationSaved/federationRestored completion, missing-label restore failure, "
-            "federate-reported save/restore failure, and save/restore abort callbacks. Deep object/time "
-            "state rollback remains later parity work."
+            "federate-reported save/restore failure, save/restore abort callbacks, object registry rollback, "
+            "and joined-federate logical-time rollback."
         ),
     },
     {
