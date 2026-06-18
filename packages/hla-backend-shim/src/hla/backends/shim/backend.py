@@ -1,4 +1,5 @@
 """IEEE 1516.1-2025 RTI shim backend."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -18,7 +19,9 @@ from hla.rti1516_2025.datatypes import (
 from hla.rti1516_2025.enums import AdditionalSettingsResultCode, CallbackModel, OrderType, ResignAction, ServiceGroup
 from hla.rti1516_2025.exceptions import (
     AlreadyConnected,
+    AttributeAlreadyOwned,
     AttributeNotDefined,
+    AttributeNotOwned,
     CouldNotCreateLogicalTimeFactory,
     CouldNotOpenFOM,
     CouldNotOpenMIM,
@@ -51,6 +54,7 @@ from hla.rti1516_2025.exceptions import (
     NameNotFound,
     NotConnected,
     ObjectClassNotDefined,
+    ObjectInstanceNameInUse,
     RTIinternalError,
     TimeRegulationIsNotEnabled,
     Unauthorized,
@@ -98,6 +102,18 @@ class _FederationRecord:
     mim_module: Any | None = None
     fom_catalog: Any | None = None
     members: dict[str, str] = field(default_factory=dict)
+    member_handles: dict[str, FederateHandle] = field(default_factory=dict)
+    member_ambassadors: dict[int, FederateAmbassador] = field(default_factory=dict)
+    object_instances: dict[int, "_ObjectInstanceRecord"] = field(default_factory=dict)
+    object_instance_names: dict[str, int] = field(default_factory=dict)
+    next_object_instance_handle: int = 1
+
+
+@dataclass(slots=True)
+class _ObjectInstanceRecord:
+    object_class_name: str
+    object_instance_name: str | None
+    attribute_owners: dict[str, FederateHandle | None] = field(default_factory=dict)
 
 
 _FEDERATION_REGISTRY: dict[str, _FederationRecord] = {}
@@ -265,8 +281,7 @@ class Shim2025RTIAmbassador:
             self._deliver_callback("reportFederationExecutionDoesNotExist", federationName)
             return
         report = FederationExecutionMemberInformationSet(
-            FederationExecutionMemberInformation(federateName=name, federateType=federate_type)
-            for name, federate_type in sorted(federation.members.items())
+            FederationExecutionMemberInformation(federateName=name, federateType=federate_type) for name, federate_type in sorted(federation.members.items())
         )
         self._deliver_callback("reportFederationExecutionMembers", federationName, report)
 
@@ -290,9 +305,13 @@ class Shim2025RTIAmbassador:
         if federate_name is not None and federate_name in federation.members:
             raise FederateNameAlreadyInUse(federate_name)
         federate_type = self._extract_federate_type(args, kwargs)
-        if federate_name is not None:
-            federation.members[federate_name] = federate_type
-        self._federate_handle = FederateHandle(max(1, len(federation.members)))
+        if federate_name is None:
+            federate_name = f"__anonymous_federate_{len(federation.member_handles) + 1}"
+        federation.members[federate_name] = federate_type
+        self._federate_handle = FederateHandle(len(federation.member_handles) + 1)
+        federation.member_handles[federate_name] = self._federate_handle
+        if self._federate_ambassador is not None:
+            federation.member_ambassadors[self._federate_handle.value] = self._federate_ambassador
         self._select_logical_time_implementation(federation.logical_time_implementation_name)
         self._federation_name = federation_name
         self._federate_name = federate_name
@@ -527,11 +546,103 @@ class Shim2025RTIAmbassador:
                 f"{object_class}.{attribute}": transportation
                 for (object_class, attribute), transportation in sorted(self._default_attribute_transportation.items())
             },
-            "order": {
-                f"{object_class}.{attribute}": order.name
-                for (object_class, attribute), order in sorted(self._default_attribute_order.items())
-            },
+            "order": {f"{object_class}.{attribute}": order.name for (object_class, attribute), order in sorted(self._default_attribute_order.items())},
         }
+
+    def registerObjectInstance(  # noqa: N802
+        self,
+        objectClass: Any,
+        objectInstanceName: str | None = None,
+    ) -> ObjectInstanceHandle:
+        self._record("registerObjectInstance", objectClass, objectInstanceName)
+        self._require_joined("registerObjectInstance")
+        federation = self._federation_record()
+        object_class_name = self._object_class_name(objectClass)
+        if objectInstanceName is not None:
+            if not isinstance(objectInstanceName, str) or not objectInstanceName:
+                raise RTIinternalError("objectInstanceName must be a non-empty string when provided")
+            if objectInstanceName in federation.object_instance_names:
+                raise ObjectInstanceNameInUse(objectInstanceName)
+        handle = ObjectInstanceHandle(federation.next_object_instance_handle)
+        federation.next_object_instance_handle += 1
+        attribute_owners = {attribute_name: self._federate_handle for attribute_name in self._attribute_handles(object_class_name)}
+        federation.object_instances[handle.value] = _ObjectInstanceRecord(
+            object_class_name=object_class_name,
+            object_instance_name=objectInstanceName,
+            attribute_owners=attribute_owners,
+        )
+        if objectInstanceName is not None:
+            federation.object_instance_names[objectInstanceName] = handle.value
+        return handle
+
+    def unconditionalAttributeOwnershipDivestiture(  # noqa: N802
+        self,
+        objectInstance: Any,
+        attributes: Any,
+        userSuppliedTag: bytes,
+    ) -> None:
+        self._record("unconditionalAttributeOwnershipDivestiture", objectInstance, attributes, userSuppliedTag)
+        self._require_joined("unconditionalAttributeOwnershipDivestiture")
+        record = self._object_instance_record(objectInstance)
+        attribute_names = self._attribute_names_from_handles(record.object_class_name, attributes)
+        for attribute_name in attribute_names:
+            if record.attribute_owners.get(attribute_name) != self._federate_handle:
+                raise AttributeNotOwned(attribute_name)
+        for attribute_name in attribute_names:
+            record.attribute_owners[attribute_name] = None
+
+    def attributeOwnershipAcquisitionIfAvailable(  # noqa: N802
+        self,
+        objectInstance: Any,
+        desiredAttributes: Any,
+        userSuppliedTag: bytes,
+    ) -> None:
+        self._record("attributeOwnershipAcquisitionIfAvailable", objectInstance, desiredAttributes, userSuppliedTag)
+        self._require_joined("attributeOwnershipAcquisitionIfAvailable")
+        record = self._object_instance_record(objectInstance)
+        attribute_handles_by_name = self._attribute_handles(record.object_class_name)
+        available: set[AttributeHandle] = set()
+        unavailable: set[AttributeHandle] = set()
+        for attribute_name in self._attribute_names_from_handles(record.object_class_name, desiredAttributes):
+            current_owner = record.attribute_owners.get(attribute_name)
+            attribute_handle = AttributeHandle(attribute_handles_by_name[attribute_name])
+            if current_owner == self._federate_handle:
+                raise AttributeAlreadyOwned(attribute_name)
+            if current_owner is None:
+                record.attribute_owners[attribute_name] = self._federate_handle
+                available.add(attribute_handle)
+            else:
+                unavailable.add(attribute_handle)
+        if available:
+            self._deliver_callback("attributeOwnershipAcquisitionNotification", objectInstance, available, userSuppliedTag)
+        if unavailable:
+            self._deliver_callback("attributeOwnershipUnavailable", objectInstance, unavailable, userSuppliedTag)
+
+    def queryAttributeOwnership(self, objectInstance: Any, attributes: Any) -> None:  # noqa: N802
+        self._record("queryAttributeOwnership", objectInstance, attributes)
+        self._require_joined("queryAttributeOwnership")
+        record = self._object_instance_record(objectInstance)
+        attribute_handles_by_name = self._attribute_handles(record.object_class_name)
+        owned_by_federate: dict[FederateHandle, set[AttributeHandle]] = {}
+        not_owned: set[AttributeHandle] = set()
+        for attribute_name in self._attribute_names_from_handles(record.object_class_name, attributes):
+            attribute_handle = AttributeHandle(attribute_handles_by_name[attribute_name])
+            owner = record.attribute_owners.get(attribute_name)
+            if owner is None:
+                not_owned.add(attribute_handle)
+            else:
+                owned_by_federate.setdefault(owner, set()).add(attribute_handle)
+        for owner, owned_attributes in sorted(owned_by_federate.items(), key=lambda item: item[0].value):
+            self._deliver_callback("informAttributeOwnership", objectInstance, owned_attributes, owner)
+        if not_owned:
+            self._deliver_callback("attributeIsNotOwned", objectInstance, not_owned)
+
+    def isAttributeOwnedByFederate(self, objectInstance: Any, attribute: Any) -> bool:  # noqa: N802
+        self._record("isAttributeOwnedByFederate", objectInstance, attribute)
+        self._require_joined("isAttributeOwnedByFederate")
+        record = self._object_instance_record(objectInstance)
+        attribute_name = self._attribute_names_from_handles(record.object_class_name, {attribute})[0]
+        return record.attribute_owners.get(attribute_name) == self._federate_handle
 
     def getTimeFactory(self) -> Any:  # noqa: N802
         self._record("getTimeFactory")
@@ -921,19 +1032,19 @@ class Shim2025RTIAmbassador:
         self._time_constrained_enabled = False
 
     def _release_join(self) -> None:
-        if self._federation_name is None or self._federate_name is None:
+        if self._federation_name is None:
             return
         federation = _FEDERATION_REGISTRY.get(self._federation_name)
         if federation is not None:
-            federation.members.pop(self._federate_name, None)
+            if self._federate_name is not None:
+                federation.members.pop(self._federate_name, None)
+                federation.member_handles.pop(self._federate_name, None)
+            if self._federate_handle is not None:
+                federation.member_ambassadors.pop(self._federate_handle.value, None)
 
     def _resign_reason_description(self, resign_action: ResignAction) -> str:
         action = getattr(resign_action, "name", str(resign_action))
-        return (
-            f"federateName={self._federate_name}; "
-            f"federationName={self._federation_name}; "
-            f"resignAction={action}"
-        )
+        return f"federateName={self._federate_name}; federationName={self._federation_name}; resignAction={action}"
 
     @staticmethod
     def _normalize_handle(handle: Any, expected_type: type[Any], exception_type: type[Exception]) -> int:
@@ -1016,6 +1127,17 @@ class Shim2025RTIAmbassador:
             return names_by_handle[interaction_class_value]
         except KeyError as exc:
             raise InvalidInteractionClassHandle(str(interaction_class)) from exc
+
+    def _object_instance_record(self, object_instance: Any) -> _ObjectInstanceRecord:
+        object_instance_value = self._normalize_handle(
+            object_instance,
+            ObjectInstanceHandle,
+            InvalidObjectInstanceHandle,
+        )
+        try:
+            return self._federation_record().object_instances[object_instance_value]
+        except KeyError as exc:
+            raise InvalidObjectInstanceHandle(str(object_instance)) from exc
 
     def _attribute_names_from_handles(self, object_class_name: str, attributes: Any) -> tuple[str, ...]:
         try:

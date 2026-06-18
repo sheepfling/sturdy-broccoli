@@ -35,6 +35,23 @@ class Recording2025FederateAmbassador:
     def flushQueueGrant(self, time, optimisticTime) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("flushQueueGrant", (time, optimisticTime)))
 
+    def attributeOwnershipAcquisitionNotification(  # noqa: N802, ANN001
+        self,
+        objectInstance,
+        securedAttributes,
+        userSuppliedTag,
+    ) -> None:
+        self.callbacks.append(("attributeOwnershipAcquisitionNotification", (objectInstance, securedAttributes, userSuppliedTag)))
+
+    def attributeOwnershipUnavailable(self, objectInstance, attributes, userSuppliedTag) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("attributeOwnershipUnavailable", (objectInstance, attributes, userSuppliedTag)))
+
+    def informAttributeOwnership(self, objectInstance, attributes, owner) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("informAttributeOwnership", (objectInstance, attributes, owner)))
+
+    def attributeIsNotOwned(self, objectInstance, attributes) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("attributeIsNotOwned", (objectInstance, attributes)))
+
     def last_callback(self, method_name: str) -> tuple[object, ...] | None:
         for recorded_name, args in reversed(self.callbacks):
             if recorded_name == method_name:
@@ -337,12 +354,134 @@ def test_2025_shim_implements_fom_backed_ddm_lookup_and_default_attribute_policy
     rti.disconnect()
 
 
-@pytest.mark.requirements("HLA2025-MOD-005", "HLA2025-NEW-007", "HLA2025-REQ-002")
+@pytest.mark.requirements("HLA2025-MOD-005", "HLA2025-FI-001", "HLA2025-FI-005")
+def test_2025_shim_implements_basic_ownership_divest_acquire_and_query_callbacks(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import (
+        AttributeAlreadyOwned,
+        AttributeNotOwned,
+        InvalidObjectInstanceHandle,
+        ObjectInstanceNameInUse,
+    )
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.handles import ObjectInstanceHandle
+
+    fom = tmp_path / "Ownership2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Ownership 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-18</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused ownership fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>OwnableTarget</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-ownership-{uuid.uuid4().hex[:8]}"
+    owner_callbacks = Recording2025FederateAmbassador()
+    acquiring_callbacks = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    acquiring = create_rti_ambassador(backend="shim")
+
+    owner.connect(owner_callbacks, CallbackModel.HLA_EVOKED)
+    acquiring.connect(acquiring_callbacks, CallbackModel.HLA_EVOKED)
+    owner.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+    owner_handle = owner.joinFederationExecution(
+        federateName="Owner",
+        federateType="TestFederate",
+        federationName=federation_name,
+    )
+    acquiring_handle = acquiring.joinFederationExecution(
+        federateName="Acquirer",
+        federateType="TestFederate",
+        federationName=federation_name,
+    )
+
+    object_class = owner.getObjectClassHandle("HLAobjectRoot.OwnableTarget")
+    attribute = owner.getAttributeHandle(object_class, "Position")
+    object_instance = owner.registerObjectInstance(object_class, "Target-1")
+
+    assert owner.isAttributeOwnedByFederate(object_instance, attribute) is True
+    assert acquiring.isAttributeOwnedByFederate(object_instance, attribute) is False
+    with pytest.raises(ObjectInstanceNameInUse):
+        owner.registerObjectInstance(object_class, "Target-1")
+    with pytest.raises(InvalidObjectInstanceHandle):
+        owner.isAttributeOwnedByFederate(ObjectInstanceHandle(9999), attribute)
+    with pytest.raises(AttributeAlreadyOwned):
+        owner.attributeOwnershipAcquisitionIfAvailable(object_instance, {attribute}, b"already-owned")
+
+    acquiring.attributeOwnershipAcquisitionIfAvailable(object_instance, {attribute}, b"blocked")
+    unavailable = acquiring_callbacks.last_callback("attributeOwnershipUnavailable")
+    assert unavailable == (object_instance, {attribute}, b"blocked")
+    assert owner.isAttributeOwnedByFederate(object_instance, attribute) is True
+
+    with pytest.raises(AttributeNotOwned):
+        acquiring.unconditionalAttributeOwnershipDivestiture(object_instance, {attribute}, b"not-owned")
+
+    owner.unconditionalAttributeOwnershipDivestiture(object_instance, {attribute}, b"divest")
+    assert owner.isAttributeOwnedByFederate(object_instance, attribute) is False
+
+    owner.queryAttributeOwnership(object_instance, {attribute})
+    assert owner_callbacks.last_callback("attributeIsNotOwned") == (object_instance, {attribute})
+
+    acquiring.attributeOwnershipAcquisitionIfAvailable(object_instance, {attribute}, b"claim")
+    acquired = acquiring_callbacks.last_callback("attributeOwnershipAcquisitionNotification")
+    assert acquired == (object_instance, {attribute}, b"claim")
+    assert acquiring.isAttributeOwnedByFederate(object_instance, attribute) is True
+
+    owner.queryAttributeOwnership(object_instance, {attribute})
+    assert owner_callbacks.last_callback("informAttributeOwnership") == (
+        object_instance,
+        {attribute},
+        acquiring_handle,
+    )
+    acquiring.queryAttributeOwnership(object_instance, {attribute})
+    assert acquiring_callbacks.last_callback("informAttributeOwnership") == (
+        object_instance,
+        {attribute},
+        acquiring_handle,
+    )
+    assert owner_handle != acquiring_handle
+
+    acquiring.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution(federationName=federation_name)
+    acquiring.disconnect()
+    owner.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-NEW-007", "HLA2025-REQ-002")
 def test_2025_shim_records_tail_services_as_explicit_unsupported_boundaries() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import RTIinternalError
     from hla.rti1516_2025.factory import create_rti_ambassador
-    from hla.rti1516_2025.handles import AttributeHandle, ObjectInstanceHandle
 
     federation_name = f"shim-tail-boundary-{uuid.uuid4().hex[:8]}"
     rti = create_rti_ambassador(backend="shim")
@@ -357,26 +496,6 @@ def test_2025_shim_records_tail_services_as_explicit_unsupported_boundaries() ->
         federationName=federation_name,
     )
 
-    object_instance = ObjectInstanceHandle(12)
-    attributes = {AttributeHandle(13)}
-
-    unsupported_calls = [
-        (
-            "unconditionalAttributeOwnershipDivestiture",
-            (object_instance, attributes, b"ownership-tag"),
-            {},
-        ),
-        (
-            "attributeOwnershipAcquisitionIfAvailable",
-            (object_instance, attributes, b"ownership-tag"),
-            {},
-        ),
-    ]
-
-    for method_name, args, kwargs in unsupported_calls:
-        with pytest.raises(RTIinternalError, match=method_name):
-            getattr(rti, method_name)(*args, **kwargs)
-
     assert rti.getServiceReportingSwitch() is False
     rti.setServiceReportingSwitch(True)
     assert rti.getServiceReportingSwitch() is True
@@ -386,16 +505,7 @@ def test_2025_shim_records_tail_services_as_explicit_unsupported_boundaries() ->
             result="unsupported-boundary",
         )
 
-    boundary_names = {
-        "unconditionalAttributeOwnershipDivestiture",
-        "attributeOwnershipAcquisitionIfAvailable",
-        "serializeMOMServiceReport",
-    }
-    assert [call[0] for call in rti.calls if call[0] in boundary_names] == [
-        "unconditionalAttributeOwnershipDivestiture",
-        "attributeOwnershipAcquisitionIfAvailable",
-        "serializeMOMServiceReport",
-    ]
+    assert [call[0] for call in rti.calls if call[0] == "serializeMOMServiceReport"] == ["serializeMOMServiceReport"]
 
     rti.resignFederationExecution(ResignAction.NO_ACTION)
     rti.destroyFederationExecution(federationName=federation_name)
@@ -631,11 +741,7 @@ def test_2025_shim_reports_federation_executions_and_members() -> None:
     execution_report = leader_fed.last_callback("reportFederationExecutions")
     assert execution_report is not None
     executions = execution_report[0]
-    assert any(
-        row.federationExecutionName == federation_name
-        and row.logicalTimeImplementationName == "HLAinteger64Time"
-        for row in executions
-    )
+    assert any(row.federationExecutionName == federation_name and row.logicalTimeImplementationName == "HLAinteger64Time" for row in executions)
 
     leader.joinFederationExecution(
         federateName="Leader",
@@ -722,11 +828,7 @@ def test_2025_shim_requires_valid_fom_modules_and_default_logical_time() -> None
 
     execution_report = reporter.last_callback("reportFederationExecutions")
     assert execution_report is not None
-    assert any(
-        row.federationExecutionName == federation_name
-        and row.logicalTimeImplementationName == "HLAinteger64Time"
-        for row in execution_report[0]
-    )
+    assert any(row.federationExecutionName == federation_name and row.logicalTimeImplementationName == "HLAinteger64Time" for row in execution_report[0])
 
     rti.destroyFederationExecution(federationName=federation_name)
     observer.disconnect()
