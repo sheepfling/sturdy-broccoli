@@ -161,10 +161,10 @@ def test_2025_route_parity_matrix_records_evidence_scope_without_flattening_java
     assert "docs/evidence/shim_routes/java-standard-2025.json" in java_lifecycle.evidence_artifacts
     assert "docs/evidence/shim_routes/route_traces/java-standard-2025-jpype.json" in java_lifecycle.evidence_artifacts
 
-    assert cpp_lifecycle.status == PARTIAL
-    assert cpp_lifecycle.evidence_scope == "lifecycle-trace"
-    assert "docs/evidence/shim_routes/cpp-standard-2025.json" in cpp_lifecycle.evidence_artifacts
-    assert "docs/evidence/shim_routes/route_traces/cpp-standard-2025-grpc.json" in cpp_lifecycle.evidence_artifacts
+    assert cpp_lifecycle.status == PARITY_COVERED
+    assert cpp_lifecycle.evidence_scope == "scenario-parity"
+    assert cpp_lifecycle.evidence_tests == ("tests/backends/test_standard_shim_artifacts.py",)
+    assert "connect, create, join" in cpp_lifecycle.notes
 
     for row in SPEC2025_ROUTE_PARITY_ROWS:
         if row.evidence_scope == "gap-record":
@@ -225,7 +225,7 @@ def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> Non
     assert summary["by_status"][PARTIAL] > 0
     assert summary["by_status"][MISSING] > 0
     assert summary["by_route"]["java-standard-2025-jpype"][PARITY_COVERED] == 0
-    assert summary["by_route"]["cpp-standard-2025-grpc"][PARITY_COVERED] == 7
+    assert summary["by_route"]["cpp-standard-2025-grpc"][PARITY_COVERED] == 8
 
     csv_path, md_path = write_spec2025_route_parity_matrix(tmp_path)
     assert csv_path.exists()

@@ -134,18 +134,20 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "federation_lifecycle",
         "cpp-standard-2025-pybind",
-        PARTIAL,
-        ("HLA2025-BND-002", "HLA2025-FI-003", "HLA2025-FI-004"),
-        _ROUTE_EVIDENCE_TESTS,
-        "C++ source trace and local runtime capability evidence exist; full cross-route behavior remains open.",
+        PARITY_COVERED,
+        ("HLA2025-BND-002", "HLA2025-FI-003", "HLA2025-FI-004", "HLA2025-FI-005", "HLA2025-FI-006"),
+        _STANDARD_SHIM_TESTS,
+        "C++ 2025 pybind standard route runs the lifecycle scenario: connect, create, join, evoked callback polling, "
+        "resign, destroy, and disconnect.",
     ),
     _row(
         "federation_lifecycle",
         "cpp-standard-2025-grpc",
-        PARTIAL,
-        ("HLA2025-BND-002", "HLA2025-FI-003", "HLA2025-FI-004"),
-        _ROUTE_EVIDENCE_TESTS,
-        "C++ source trace and local runtime capability evidence exist; full cross-route behavior remains open.",
+        PARITY_COVERED,
+        ("HLA2025-BND-002", "HLA2025-FI-003", "HLA2025-FI-004", "HLA2025-FI-005", "HLA2025-FI-006"),
+        _STANDARD_SHIM_TESTS,
+        "C++ 2025 gRPC standard route runs the lifecycle scenario: connect, create, join, evoked callback polling, "
+        "resign, destroy, and disconnect.",
     ),
     _row(
         "object_exchange",

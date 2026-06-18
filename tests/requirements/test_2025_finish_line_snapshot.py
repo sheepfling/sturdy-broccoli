@@ -73,7 +73,7 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert route_matrix["scenario_count"] >= 8
     assert "python-2025-fedpro-grpc" in route_matrix["routes"]
     assert route_matrix["by_route"]["java-standard-2025-jpype"]["parity-covered"] == 0
-    assert route_matrix["by_route"]["cpp-standard-2025-grpc"]["parity-covered"] == 7
+    assert route_matrix["by_route"]["cpp-standard-2025-grpc"]["parity-covered"] == 8
 
 
 @pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-TRACE-001")
@@ -212,4 +212,4 @@ def test_2025_finish_line_writer_emits_reviewable_json_and_markdown(tmp_path: Pa
     route_matrix = paths["route_parity_matrix"].read_text(encoding="utf-8")
     assert "object_exchange,java-standard-2025-jpype,missing,gap-record" in route_matrix
     assert "federation_lifecycle,java-standard-2025-jpype,partial,runtime-capability" in route_matrix
-    assert "federation_lifecycle,cpp-standard-2025-grpc,partial,lifecycle-trace" in route_matrix
+    assert "federation_lifecycle,cpp-standard-2025-grpc,parity-covered,scenario-parity" in route_matrix
