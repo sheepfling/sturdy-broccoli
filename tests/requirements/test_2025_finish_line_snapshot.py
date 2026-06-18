@@ -152,6 +152,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "reports standard MIM data for HLArequestMIMdata" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "object publication/subscription state" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "object instance information for HLArequestObjectInstanceInformation" in slices["2025-mom-service-report-serialization"]["supported_scope"]
+    assert "object-instance counts for deletable/updated/reflected objects" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "activity counts for updates, reflections, interactions sent" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "not full MOM manager interaction routing" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert slices["2025-wsdl-legacy-only"]["status"] == "legacy-only"

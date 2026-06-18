@@ -1515,6 +1515,9 @@ def test_2025_transport_server_reports_activity_counts_for_mom_requests_over_fed
         assert transport.request(TransportRequest(command="EVOKE")).fields[:3] == ("1", "INTERACTION", interaction_class)
 
         for request_name, report_name, count_name, expected in (
+            ("HLArequestObjectInstancesThatCanBeDeleted", "HLAreportObjectInstancesThatCanBeDeleted", "HLAobjectInstanceCounts", "1"),
+            ("HLArequestObjectInstancesUpdated", "HLAreportObjectInstancesUpdated", "HLAobjectInstanceCounts", "1"),
+            ("HLArequestObjectInstancesReflected", "HLAreportObjectInstancesReflected", "HLAobjectInstanceCounts", "1"),
             ("HLArequestUpdatesSent", "HLAreportUpdatesSent", "HLAupdatesSent", "1"),
             ("HLArequestReflectionsReceived", "HLAreportReflectionsReceived", "HLAreflectionsReceived", "1"),
             ("HLArequestInteractionsSent", "HLAreportInteractionsSent", "HLAinteractionsSent", "1"),

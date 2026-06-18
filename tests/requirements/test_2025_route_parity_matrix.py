@@ -60,6 +60,7 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "reports MIM data for HLArequestMIMdata" in rows[("mom", "python-2025-fedpro-grpc")].notes
     assert "reports object publication/subscription state" in rows[("mom", "python-2025-fedpro-grpc")].notes
     assert "reports object instance information" in rows[("mom", "python-2025-fedpro-grpc")].notes
+    assert "object-instance counts" in rows[("mom", "python-2025-fedpro-grpc")].notes
     assert "reports activity counts for updates/reflections/interactions" in rows[("mom", "python-2025-fedpro-grpc")].notes
     assert "not full MOM manager object/interaction routing" in rows[("mom", "python-2025-fedpro-grpc")].notes
     assert rows[("support_services", "python-2025-fedpro-grpc")].status == PARITY_COVERED

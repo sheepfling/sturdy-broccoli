@@ -103,6 +103,12 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived": "415",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation": "416",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation": "417",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesThatCanBeDeleted": "418",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesThatCanBeDeleted": "419",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesUpdated": "420",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesUpdated": "421",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesReflected": "422",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected": "423",
         }
         self.interaction_names = {value: key for key, value in self.interactions.items()}
         self.parameters = {
@@ -142,6 +148,15 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             ("417", "HLAobjectClass"): "533",
             ("417", "HLAobjectInstanceName"): "534",
             ("417", "HLAattributeList"): "535",
+            ("418", "HLAfederate"): "536",
+            ("419", "HLAfederate"): "537",
+            ("419", "HLAobjectInstanceCounts"): "538",
+            ("420", "HLAfederate"): "539",
+            ("421", "HLAfederate"): "540",
+            ("421", "HLAobjectInstanceCounts"): "541",
+            ("422", "HLAfederate"): "542",
+            ("423", "HLAfederate"): "543",
+            ("423", "HLAobjectInstanceCounts"): "544",
         }
         self.parameter_names = {(interaction_class, value): name for (interaction_class, name), value in self.parameters.items()}
         self.dimensions = {"RoutingSpace": "300"}
@@ -190,6 +205,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.reflections_received = 0
         self.interactions_sent = 0
         self.interactions_received = 0
+        self.object_instances_updated = 0
+        self.object_instances_reflected = 0
         self.queued_tso_callbacks: dict[str, tuple[float, callback_pb2.CallbackRequest]] = {}
         self.delivered_retractions: set[str] = set()
         self.saved_labels: set[str] = set()
@@ -782,6 +799,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if request_kind == "updateAttributeValuesRequest":
             payload = request.updateAttributeValuesRequest
             self.updates_sent += 1
+            self.object_instances_updated += 1
             object_instance = payload.objectInstance.data.decode("ascii")
             record = self.object_instances.get(object_instance)
             if record is None:
@@ -813,10 +831,12 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     )
                 )
                 self.reflections_received += 1
+                self.object_instances_reflected += 1
             return rti_pb2.CallResponse(updateAttributeValuesResponse=rti_pb2.UpdateAttributeValuesResponse())
         if request_kind == "updateAttributeValuesWithTimeRequest":
             payload = request.updateAttributeValuesWithTimeRequest
             self.updates_sent += 1
+            self.object_instances_updated += 1
             object_instance = payload.objectInstance.data.decode("ascii")
             record = self.object_instances.get(object_instance)
             if record is None:
@@ -897,6 +917,27 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived",
                     "HLAreflectionsReceived",
                     self.reflections_received,
+                )
+                return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
+            if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesThatCanBeDeleted"]:
+                self._queue_activity_count_report(
+                    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesThatCanBeDeleted",
+                    "HLAobjectInstanceCounts",
+                    len(self.object_instances),
+                )
+                return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
+            if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesUpdated"]:
+                self._queue_activity_count_report(
+                    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesUpdated",
+                    "HLAobjectInstanceCounts",
+                    self.object_instances_updated,
+                )
+                return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
+            if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesReflected"]:
+                self._queue_activity_count_report(
+                    "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected",
+                    "HLAobjectInstanceCounts",
+                    self.object_instances_reflected,
                 )
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation"]:
@@ -1440,6 +1481,9 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             if time_value <= requested
         ]
         for _, _, handle, callback in sorted(due):
+            if callback.WhichOneof("callbackRequest") == "reflectAttributeValuesWithTime":
+                self.reflections_received += 1
+                self.object_instances_reflected += 1
             self.callback_queue.append(callback)
             self.delivered_retractions.add(handle)
             del self.queued_tso_callbacks[handle]
