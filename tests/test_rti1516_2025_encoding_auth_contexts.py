@@ -252,11 +252,34 @@ def test_runtime_context_writes_redacted_encoding_auth_evidence(tmp_path) -> Non
     encoding_report = Path(artifacts["encoding_capabilities"]).read_text(encoding="utf-8")
     auth_report = Path(artifacts["auth_capabilities"]).read_text(encoding="utf-8")
     runtime_report = Path(artifacts["runtime_matrix"]).read_text(encoding="utf-8")
+    fom_report = Path(artifacts["fom_validation"]).read_text(encoding="utf-8")
 
     assert "TrackState" in encoding_report
     assert "HLAplainTextPassword" in auth_report
     assert "secret-value" not in auth_report
     assert "secret-value" not in runtime_report
+    assert '"status": "validated"' in fom_report
+    assert '"strict_identification": false' in fom_report
+
+
+@pytest.mark.requirements("HLA2025-OMT-005", "HLA2025-OMT-006")
+def test_runtime_context_writes_strict_fom_validation_evidence(tmp_path) -> None:
+    from hla.rti1516_2025.foms import scenario_fom_paths
+
+    runtime = HlaFactoryRegistry.get("2025", provider="shim").create_runtime_context(
+        auth_config={"mode": "NoAuth"},
+        fom_modules=scenario_fom_paths("message-test"),
+        strict_identification=True,
+    )
+
+    artifacts = runtime.write_evidence(tmp_path)
+    fom_report = Path(artifacts["fom_validation"]).read_text(encoding="utf-8")
+    runtime_report = Path(artifacts["runtime_matrix"]).read_text(encoding="utf-8")
+
+    assert '"status": "validated"' in fom_report
+    assert '"strict_identification": true' in fom_report
+    assert '"validation_issues": []' in fom_report
+    assert '"fom": {' in runtime_report
 
 
 @pytest.mark.requirements("AUTH-004", "HLA2025-REQ-001", "HLA2025-REQ-002")

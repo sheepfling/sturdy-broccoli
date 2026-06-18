@@ -267,15 +267,19 @@ class HlaRuntimeContext:
     encoding_context: EncodingContext
     authentication_context: AuthenticationContext
     callback_model: Any
+    fom_load_result: FomLoadResult | None = None
 
     def capability_report(self) -> Mapping[str, Any]:
-        return {
+        report = {
             "edition": self.edition,
             "provider": self.provider,
             "transport": self.transport,
             "encoding": self.encoding_context.capability_report(),
             "auth": self.authentication_context.capability_report(),
         }
+        if self.fom_load_result is not None:
+            report["fom"] = self.fom_load_result.capability_report()
+        return report
 
     def connect(self, configuration: Any = None) -> Any:
         self.authentication_context.authorize_connection()
@@ -294,6 +298,8 @@ class HlaRuntimeContext:
             "auth_capabilities": directory / "auth_capabilities.json",
             "runtime_matrix": directory / "runtime_matrix.json",
         }
+        if self.fom_load_result is not None:
+            artifacts["fom_validation"] = directory / "fom_validation.json"
         artifacts["encoding_capabilities"].write_text(
             json.dumps(self.encoding_context.capability_report(), indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
@@ -306,6 +312,11 @@ class HlaRuntimeContext:
             json.dumps(self.capability_report(), indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )
+        if self.fom_load_result is not None:
+            artifacts["fom_validation"].write_text(
+                json.dumps(self.fom_load_result.capability_report(), indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
         return {key: str(path) for key, path in artifacts.items()}
 
 
@@ -450,6 +461,13 @@ class HlaFactory:
         if callback_model is None and self.spec.name == "rti1516_2025":
             callback_model = importlib.import_module("hla.rti1516_2025").CallbackModel.HLA_EVOKED
         auth_context = self.create_authentication_context(auth_config, transport=transport)
+        strict_identification = bool(rti_options.pop("strict_identification", False))
+        fom_load_result = None
+        if fom_modules is not None and self.spec.name == "rti1516_2025":
+            fom_load_result = self.load_fom(
+                fom_modules,
+                strict_identification=strict_identification,
+            )
         return HlaRuntimeContext(
             edition=self.spec.name,
             provider=self.provider,
@@ -459,6 +477,7 @@ class HlaFactory:
             encoding_context=self.create_encoding_context(transport=transport, fom_modules=fom_modules),
             authentication_context=auth_context,
             callback_model=callback_model,
+            fom_load_result=fom_load_result,
         )
 
     def edition_capabilities(self) -> EditionCapabilities:
