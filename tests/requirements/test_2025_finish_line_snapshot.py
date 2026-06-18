@@ -157,6 +157,10 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
         in slices["2025-mom-service-report-serialization"]["supported_scope"]
     )
     assert "declaration-management MOM service actions" in slices["2025-mom-service-report-serialization"]["supported_scope"]
+    assert (
+        "federate publication/subscription and object-instance information MOM reports"
+        in slices["2025-mom-service-report-serialization"]["supported_scope"]
+    )
     assert "federation-management MOM service actions" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "supported time-management MOM service actions" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert "supported object-management and ownership MOM service actions" in slices["2025-mom-service-report-serialization"]["supported_scope"]

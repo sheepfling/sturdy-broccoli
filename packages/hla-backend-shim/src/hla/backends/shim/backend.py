@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from importlib import import_module
 from pathlib import Path
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Iterable, Mapping
 
 from hla.rti.plugin_api import BackendRequest
 from hla.rti1516_2025.datatypes import (
@@ -2809,6 +2809,12 @@ class Shim2025RTIAmbassador:
             raise
         if ".HLArequest." not in interaction_class_name:
             return False
+        if ".HLAfederate.HLArequest." in interaction_class_name:
+            try:
+                return self._handle_mom_federate_request_interaction(interaction_class_name, values_by_handle)
+            except Exception as exc:
+                self._send_mom_exception_interaction(interaction_class_name, exc, parameter_error=True)
+                raise
         request_to_report = {
             "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints":
                 "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPoints",
@@ -2831,6 +2837,125 @@ class Shim2025RTIAmbassador:
             self._send_mom_exception_interaction(interaction_class_name, exc, parameter_error=True)
             raise
         return True
+
+    def _handle_mom_federate_request_interaction(
+        self,
+        interaction_class_name: str,
+        values_by_handle: Mapping[ParameterHandle, bytes],
+    ) -> bool:
+        params = self._mom_request_params_by_name(interaction_class_name, values_by_handle)
+        target = self._mom_target_rti(params)
+        target_federate = target._current_federate_handle()
+        if interaction_class_name.endswith("HLArequestPublications"):
+            target._send_mom_publication_reports(target_federate)
+            return True
+        if interaction_class_name.endswith("HLArequestSubscriptions"):
+            target._send_mom_subscription_reports(target_federate)
+            return True
+        if interaction_class_name.endswith("HLArequestObjectInstanceInformation"):
+            object_instance = ObjectInstanceHandle(self._mom_int(params.get("HLAobjectInstance"), "HLAobjectInstance"))
+            target._send_mom_object_instance_information_report(target_federate, object_instance)
+            return True
+        return False
+
+    def _send_mom_publication_reports(self, target_federate: FederateHandle) -> None:
+        federation = self._federation_record()
+        object_publications = federation.published_object_attributes.get(target_federate.value, {})
+        object_report = "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication"
+        if not object_publications:
+            self._send_mom_report_interaction(
+                object_report,
+                {
+                    "HLAfederate": str(target_federate.value).encode("ascii"),
+                    "HLAnumberOfClasses": b"0",
+                },
+            )
+        else:
+            for object_class_name, attribute_names in sorted(object_publications.items()):
+                self._send_mom_report_interaction(
+                    object_report,
+                    {
+                        "HLAfederate": str(target_federate.value).encode("ascii"),
+                        "HLAnumberOfClasses": str(len(object_publications)).encode("ascii"),
+                        "HLAobjectClass": str(self._object_class_handles()[object_class_name]).encode("ascii"),
+                        "HLAattributeList": self._mom_handle_list_payload(
+                            self._attribute_handles(object_class_name)[attribute_name]
+                            for attribute_name in sorted(attribute_names)
+                        ),
+                    },
+                )
+        self._send_mom_report_interaction(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionPublication",
+            {
+                "HLAfederate": str(target_federate.value).encode("ascii"),
+                "HLAinteractionClassList": self._mom_handle_list_payload(
+                    self._interaction_class_handles()[interaction_class_name]
+                    for interaction_class_name in sorted(federation.published_interactions.get(target_federate.value, set()))
+                ),
+            },
+        )
+
+    def _send_mom_subscription_reports(self, target_federate: FederateHandle) -> None:
+        federation = self._federation_record()
+        object_subscriptions = federation.subscribed_object_attributes.get(target_federate.value, {})
+        object_report = "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassSubscription"
+        if not object_subscriptions:
+            self._send_mom_report_interaction(
+                object_report,
+                {
+                    "HLAfederate": str(target_federate.value).encode("ascii"),
+                    "HLAnumberOfClasses": b"0",
+                },
+            )
+        else:
+            for object_class_name, attribute_names in sorted(object_subscriptions.items()):
+                self._send_mom_report_interaction(
+                    object_report,
+                    {
+                        "HLAfederate": str(target_federate.value).encode("ascii"),
+                        "HLAnumberOfClasses": str(len(object_subscriptions)).encode("ascii"),
+                        "HLAobjectClass": str(self._object_class_handles()[object_class_name]).encode("ascii"),
+                        "HLAactive": b"HLAtrue",
+                        "HLAmaxUpdateRate": b"",
+                        "HLAattributeList": self._mom_handle_list_payload(
+                            self._attribute_handles(object_class_name)[attribute_name]
+                            for attribute_name in sorted(attribute_names)
+                        ),
+                    },
+                )
+        self._send_mom_report_interaction(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionSubscription",
+            {
+                "HLAfederate": str(target_federate.value).encode("ascii"),
+                "HLAinteractionClassList": self._mom_handle_list_payload(
+                    self._interaction_class_handles()[interaction_class_name]
+                    for interaction_class_name in sorted(federation.subscribed_interactions.get(target_federate.value, set()))
+                ),
+            },
+        )
+
+    def _send_mom_object_instance_information_report(
+        self,
+        target_federate: FederateHandle,
+        object_instance: ObjectInstanceHandle,
+    ) -> None:
+        record = self._object_instance_record_known(object_instance)
+        owned_attribute_handles = [
+            self._attribute_handles(record.object_class_name)[attribute_name]
+            for attribute_name, owner in sorted(record.attribute_owners.items())
+            if owner == target_federate
+        ]
+        object_class_handle = self._object_class_handles()[record.object_class_name]
+        self._send_mom_report_interaction(
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation",
+            {
+                "HLAfederate": str(target_federate.value).encode("ascii"),
+                "HLAobjectInstance": str(object_instance.value).encode("ascii"),
+                "HLAownedInstanceAttributeList": self._mom_handle_list_payload(owned_attribute_handles),
+                "HLAregisteredClass": str(object_class_handle).encode("ascii"),
+                "HLAknownClass": str(object_class_handle).encode("ascii"),
+            },
+        )
 
     def _handle_mom_service_interaction(
         self,
@@ -3109,6 +3234,10 @@ class Shim2025RTIAmbassador:
             return float(text) if any(char in text for char in ".eE") else int(text)
         except ValueError as exc:
             raise RTIinternalError(f"Invalid MOM numeric value for {field_name}") from exc
+
+    @staticmethod
+    def _mom_handle_list_payload(values: Iterable[int]) -> bytes:
+        return ",".join(str(value) for value in values).encode("ascii")
 
     @staticmethod
     def _mom_ownership_state(value: bytes | None, field_name: str) -> str:

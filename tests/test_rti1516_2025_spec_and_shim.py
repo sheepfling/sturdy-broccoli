@@ -2149,6 +2149,140 @@ def test_2025_shim_routes_mom_timing_and_attribute_state_adjust_interactions() -
     controller.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-004", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_reports_mom_federate_publication_subscription_and_object_information() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-mom-fed-reports-{uuid.uuid4().hex[:8]}"
+    observer_callbacks = Recording2025FederateAmbassador()
+    controller = create_rti_ambassador(backend="shim")
+    target = create_rti_ambassador(backend="shim")
+    observer = create_rti_ambassador(backend="shim")
+    controller.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    target.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    observer.connect(observer_callbacks, CallbackModel.HLA_EVOKED)
+    controller.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    controller.joinFederationExecution("MomFederateReportController", "TestFederate", federation_name)
+    target_handle = target.joinFederationExecution("MomFederateReportTarget", "TestFederate", federation_name)
+    observer.joinFederationExecution("MomFederateReportObserver", "TestFederate", federation_name)
+
+    object_class = target.getObjectClassHandle("HLAobjectRoot.Target")
+    attribute = target.getAttributeHandle(object_class, "Position")
+    interaction_class = target.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    target.publishObjectClassAttributes(object_class, {attribute})
+    target.publishInteractionClass(interaction_class)
+    target.subscribeObjectClassAttributes(object_class, {attribute})
+    target.subscribeInteractionClass(interaction_class)
+    object_instance = target.registerObjectInstance(object_class, "MOM-Federate-Report-Target")
+
+    report_names = (
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication",
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionPublication",
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassSubscription",
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionSubscription",
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation",
+    )
+    for report_name in report_names:
+        observer.subscribeInteractionClass(observer.getInteractionClassHandle(report_name))
+
+    def send_request(name: str, extra: dict[str, bytes] | None = None) -> None:
+        request = controller.getInteractionClassHandle(f"HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.{name}")
+        values = {controller.getParameterHandle(request, "HLAfederate"): str(target_handle.value).encode("ascii")}
+        if extra:
+            values.update({controller.getParameterHandle(request, key): value for key, value in extra.items()})
+        controller.sendInteraction(request, values, f"mom-{name}".encode("ascii"))
+
+    def last_report(report_name: str):  # noqa: ANN202
+        for callback_name, args in reversed(observer_callbacks.callbacks):
+            if callback_name == "receiveInteraction" and observer.getInteractionClassName(args[0]) == report_name:
+                return args
+        return None
+
+    send_request("HLArequestPublications")
+    object_publication = last_report(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication"
+    )
+    assert object_publication is not None
+    object_pub_params = object_publication[1]
+    assert object_pub_params[observer.getParameterHandle(object_publication[0], "HLAfederate")] == str(
+        target_handle.value
+    ).encode("ascii")
+    assert object_pub_params[observer.getParameterHandle(object_publication[0], "HLAnumberOfClasses")] == b"1"
+    assert object_pub_params[observer.getParameterHandle(object_publication[0], "HLAobjectClass")] == str(
+        object_class.value
+    ).encode("ascii")
+    assert object_pub_params[observer.getParameterHandle(object_publication[0], "HLAattributeList")] == str(
+        attribute.value
+    ).encode("ascii")
+
+    interaction_publication = last_report(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionPublication"
+    )
+    assert interaction_publication is not None
+    assert interaction_publication[1][observer.getParameterHandle(interaction_publication[0], "HLAinteractionClassList")] == str(
+        interaction_class.value
+    ).encode("ascii")
+
+    send_request("HLArequestSubscriptions")
+    object_subscription = last_report(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassSubscription"
+    )
+    assert object_subscription is not None
+    object_sub_params = object_subscription[1]
+    assert object_sub_params[observer.getParameterHandle(object_subscription[0], "HLAnumberOfClasses")] == b"1"
+    assert object_sub_params[observer.getParameterHandle(object_subscription[0], "HLAobjectClass")] == str(
+        object_class.value
+    ).encode("ascii")
+    assert object_sub_params[observer.getParameterHandle(object_subscription[0], "HLAactive")] == b"HLAtrue"
+    assert object_sub_params[observer.getParameterHandle(object_subscription[0], "HLAattributeList")] == str(
+        attribute.value
+    ).encode("ascii")
+
+    interaction_subscription = last_report(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportInteractionSubscription"
+    )
+    assert interaction_subscription is not None
+    assert interaction_subscription[1][observer.getParameterHandle(interaction_subscription[0], "HLAinteractionClassList")] == str(
+        interaction_class.value
+    ).encode("ascii")
+
+    send_request("HLArequestObjectInstanceInformation", {"HLAobjectInstance": str(object_instance.value).encode("ascii")})
+    object_information = last_report(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation"
+    )
+    assert object_information is not None
+    object_info_params = object_information[1]
+    assert object_info_params[observer.getParameterHandle(object_information[0], "HLAobjectInstance")] == str(
+        object_instance.value
+    ).encode("ascii")
+    owned_attributes = {
+        int(value)
+        for value in object_info_params[
+            observer.getParameterHandle(object_information[0], "HLAownedInstanceAttributeList")
+        ].split(b",")
+        if value
+    }
+    assert attribute.value in owned_attributes
+    assert object_info_params[observer.getParameterHandle(object_information[0], "HLAregisteredClass")] == str(
+        object_class.value
+    ).encode("ascii")
+    assert object_info_params[observer.getParameterHandle(object_information[0], "HLAknownClass")] == str(
+        object_class.value
+    ).encode("ascii")
+
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    target.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.destroyFederationExecution(federationName=federation_name)
+    observer.disconnect()
+    target.disconnect()
+    controller.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-007", "HLA2025-REQ-002")
 def test_2025_shim_routes_mom_declaration_service_interactions() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
