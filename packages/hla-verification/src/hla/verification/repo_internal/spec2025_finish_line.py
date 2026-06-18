@@ -9,6 +9,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
+from hla.verification.repo_internal.verification.spec2025_route_parity_matrix import summarize_spec2025_route_parity
+
 HIGH_PRIORITIES = frozenset({"high", "very-high"})
 CLOSED_STATUSES = frozenset({"implemented-slice", "unsupported-boundary", "legacy-only"})
 
@@ -578,6 +580,7 @@ def build_spec2025_finish_line_snapshot(project_root: Path) -> dict[str, Any]:
         },
         "implemented_evidence_slices": [dict(slice_) for slice_ in IMPLEMENTED_EVIDENCE_SLICES],
         "verification_matrix": verification_matrix,
+        "route_parity_matrix": summarize_spec2025_route_parity(),
         "finish_rule": (
             "Each remaining row needs a positive test, a negative unsupported-boundary test, "
             "or an explicit supported-subset/unsupported-boundary row before it can be counted as closed."
@@ -645,6 +648,7 @@ def write_spec2025_finish_line(output_dir: Path, project_root: Path) -> dict[str
     json_path = output_dir / "spec2025_finish_line_snapshot.json"
     markdown_path = output_dir / "spec2025_finish_line.md"
     matrix_path = output_dir / "spec2025_verification_matrix.csv"
+    route_matrix_csv_path = output_dir / "spec2025_route_parity_matrix.csv"
     json_path.write_text(json.dumps(snapshot, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     markdown_path.write_text("\n".join(build_spec2025_finish_line_markdown(project_root)) + "\n", encoding="utf-8")
     matrix_rows = snapshot["verification_matrix"]["rows"]
@@ -672,7 +676,24 @@ def write_spec2025_finish_line(output_dir: Path, project_root: Path) -> dict[str
                     "executable_tests": ";".join(row["executable_tests"]),
                 }
             )
-    return {"json": json_path, "markdown": markdown_path, "verification_matrix": matrix_path}
+    with route_matrix_csv_path.open("w", newline="", encoding="utf-8") as handle:
+        fieldnames = ("scenario", "route", "status", "requirements", "evidence_tests", "notes")
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in snapshot["route_parity_matrix"]["rows"]:
+            writer.writerow(
+                {
+                    **row,
+                    "requirements": ";".join(row["requirements"]),
+                    "evidence_tests": ";".join(row["evidence_tests"]),
+                }
+            )
+    return {
+        "json": json_path,
+        "markdown": markdown_path,
+        "verification_matrix": matrix_path,
+        "route_parity_matrix": route_matrix_csv_path,
+    }
 
 
 __all__ = [
