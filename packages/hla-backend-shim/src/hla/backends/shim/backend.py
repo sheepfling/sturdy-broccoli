@@ -1159,6 +1159,7 @@ class Shim2025RTIAmbassador:
             "sendServiceReportsToFile": self._switches["send_service_reports_to_file"],
         }
         self._service_report_records.append(record)
+        self._deliver_mom_service_report(record)
         return dict(record)
 
     def serviceReportRecordsSnapshot(self) -> tuple[dict[str, Any], ...]:  # noqa: N802
@@ -2003,6 +2004,15 @@ class Shim2025RTIAmbassador:
         if callback is None:
             raise RTIinternalError(f"Federate ambassador {federate_handle!r} does not implement {method_name}")
         callback(*args)
+
+    def _deliver_mom_service_report(self, report: Mapping[str, Any]) -> None:
+        federation = self._federation_record()
+        for federate_key, ambassador in federation.member_ambassadors.items():
+            rti = federation.member_rtis.get(federate_key)
+            callback = getattr(ambassador, "momServiceReport", None)
+            if rti is None or callback is None or not rti._switches["service_reporting"]:
+                continue
+            callback(dict(report))
 
     def _queue_tso_callback(self, target_federate: FederateHandle, callback_time: Any, method_name: str, *args: Any) -> MessageRetractionHandle:
         federation = self._federation_record()

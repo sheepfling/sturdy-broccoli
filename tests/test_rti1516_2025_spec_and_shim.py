@@ -73,6 +73,9 @@ class Recording2025FederateAmbassador:
     def requestRetraction(self, retraction) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("requestRetraction", (retraction,)))
 
+    def momServiceReport(self, report) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("momServiceReport", (report,)))
+
     def discoverObjectInstance(self, objectInstance, objectClass, objectInstanceName, producingFederate) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("discoverObjectInstance", (objectInstance, objectClass, objectInstanceName, producingFederate)))
 
@@ -1631,8 +1634,12 @@ def test_2025_shim_serializes_mom_service_reports_without_overclaiming_conforman
     from hla.rti1516_2025.handles import AttributeHandle
 
     federation_name = f"shim-mom-report-{uuid.uuid4().hex[:8]}"
+    source_callbacks = Recording2025FederateAmbassador()
+    observer_callbacks = Recording2025FederateAmbassador()
     rti = create_rti_ambassador(backend="shim")
-    rti.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    observer = create_rti_ambassador(backend="shim")
+    rti.connect(source_callbacks, CallbackModel.HLA_EVOKED)
+    observer.connect(observer_callbacks, CallbackModel.HLA_EVOKED)
     rti.createFederationExecution(
         federationName=federation_name,
         fomModule="TargetRadarFOMmodule.xml",
@@ -1642,10 +1649,18 @@ def test_2025_shim_serializes_mom_service_reports_without_overclaiming_conforman
         federateType="TestFederate",
         federationName=federation_name,
     )
+    observer.joinFederationExecution(
+        federateName="MomObserver",
+        federateType="ObserverFederate",
+        federationName=federation_name,
+    )
 
     assert rti.getServiceReportingSwitch() is False
+    assert observer.getServiceReportingSwitch() is False
     rti.setServiceReportingSwitch(True)
+    observer.setServiceReportingSwitch(True)
     assert rti.getServiceReportingSwitch() is True
+    assert observer.getServiceReportingSwitch() is True
 
     report = rti.serializeMOMServiceReport(
         "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches",
@@ -1668,6 +1683,8 @@ def test_2025_shim_serializes_mom_service_reports_without_overclaiming_conforman
     assert report["arguments"]["attrs"] == [{"type": "AttributeHandle", "value": 7}]
     assert report["returned"] == {"value": {"status": "serialized"}}
     json.dumps(report, sort_keys=True)
+    assert source_callbacks.last_callback("momServiceReport") == (report,)
+    assert observer_callbacks.last_callback("momServiceReport") == (report,)
 
     failed = rti.serializeMOMServiceReport(
         "queryLogicalTime",
@@ -1679,9 +1696,12 @@ def test_2025_shim_serializes_mom_service_reports_without_overclaiming_conforman
     assert failed["success"] is False
     assert failed["exception"] == "FederateNotExecutionMember"
     assert rti.serviceReportRecordsSnapshot() == (report, failed)
+    assert observer_callbacks.last_callback("momServiceReport") == (failed,)
 
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
     rti.resignFederationExecution(ResignAction.NO_ACTION)
     rti.destroyFederationExecution(federationName=federation_name)
+    observer.disconnect()
     rti.disconnect()
 
 

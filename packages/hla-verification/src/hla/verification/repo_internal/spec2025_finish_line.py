@@ -349,8 +349,9 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         "supported_scope": (
             "Python 2025 shim serializes structured MOM service report records with service names, federate and "
             "federation context, serial numbers, success/exception fields, JSON-safe arguments and returned values, "
-            "and active service-reporting switches. This is local serialization evidence, not full MOM interaction "
-            "routing or a conformance claim."
+            "active service-reporting switches, source-local record snapshots, and service-report callback delivery "
+            "to joined federates with service reporting enabled. This is not full MOM manager interaction routing "
+            "or a conformance claim."
         ),
     },
     {

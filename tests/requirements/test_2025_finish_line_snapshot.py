@@ -141,7 +141,8 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "divest/transfer owned attributes" in slices["2025-ownership-basic-tag-callbacks"]["supported_scope"]
     assert slices["2025-mom-service-report-serialization"]["status"] == "implemented-slice"
     assert "HLA2025-NEW-007" in slices["2025-mom-service-report-serialization"]["requirements"]
-    assert "not full MOM interaction routing" in slices["2025-mom-service-report-serialization"]["supported_scope"]
+    assert "service-report callback delivery" in slices["2025-mom-service-report-serialization"]["supported_scope"]
+    assert "not full MOM manager interaction routing" in slices["2025-mom-service-report-serialization"]["supported_scope"]
     assert slices["2025-wsdl-legacy-only"]["status"] == "legacy-only"
     assert "HLA2025-RET-003" in slices["2025-wsdl-legacy-only"]["requirements"]
     assert slices["2025-verification-anchor-matrix"]["status"] == "implemented-slice"
