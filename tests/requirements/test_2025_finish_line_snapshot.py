@@ -39,6 +39,8 @@ def test_2025_finish_line_snapshot_keeps_scope_counts_and_open_work_honest() -> 
     assert {"HLA2025-NEW-001", "HLA2025-MOD-004", "HLA2025-BND-001", "HLA2025-BND-002"} <= open_ids
     assert "HLA2025-NEW-002" not in open_ids
     assert "HLA2025-NEW-005" not in open_ids
+    assert "HLA2025-MOD-008" not in open_ids
+    assert "HLA2025-RET-001" not in open_ids
 
 
 @pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-TRACE-001")
@@ -52,6 +54,8 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
 
     assert slices["2025-logical-time"]["status"] == "partial"
     assert "flushQueueGrant" in slices["2025-logical-time"]["remaining"]
+    assert slices["2025-switch-inquiry-control"]["status"] == "implemented-slice"
+    assert "HLA2025-RET-001" in slices["2025-switch-inquiry-control"]["requirements"]
 
     markdown = "\n".join(build_spec2025_finish_line_markdown(ROOT))
     assert "HLA conformance" in markdown

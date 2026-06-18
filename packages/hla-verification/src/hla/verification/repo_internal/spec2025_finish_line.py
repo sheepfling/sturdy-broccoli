@@ -79,6 +79,15 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
         ),
     },
+    {
+        "id": "2025-switch-inquiry-control",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-MOD-008", "HLA2025-RET-001", "HLA2025-FI-001"),
+        "evidence": (
+            "tests/test_rti1516_2025_spec_and_shim.py",
+            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+        ),
+    },
 )
 
 BACKLOG_STATUS_BY_ROW = {
@@ -86,10 +95,12 @@ BACKLOG_STATUS_BY_ROW = {
     "HLA2025-MOD-002": "partial",
     "HLA2025-MOD-003": "partial",
     "HLA2025-MOD-006": "partial",
+    "HLA2025-MOD-008": "implemented-slice",
     "HLA2025-NEW-002": "implemented-slice",
     "HLA2025-NEW-003": "implemented-slice",
     "HLA2025-NEW-005": "implemented-slice",
     "HLA2025-NEW-006": "partial",
+    "HLA2025-RET-001": "implemented-slice",
     "HLA2025-VER-001": "partial",
     "HLA2025-VER-002": "implemented-slice",
 }

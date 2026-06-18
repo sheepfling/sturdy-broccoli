@@ -264,6 +264,67 @@ def test_2025_shim_normalizes_typed_handles_and_rejects_wrong_handle_family() ->
     rti.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-MOD-008", "HLA2025-RET-001", "HLA2025-FI-001", "HLA2025-FI-005")
+def test_2025_shim_supports_explicit_switch_inquiry_and_control_model() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import RTIinternalError
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-switch-{uuid.uuid4().hex[:8]}"
+    rti = create_rti_ambassador(backend="shim")
+    rti.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    rti.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    rti.joinFederationExecution(
+        federateName="SwitchFederate",
+        federateType="TestFederate",
+        federationName=federation_name,
+    )
+
+    assert rti.getObjectClassRelevanceAdvisorySwitch() is False
+    assert rti.getAttributeRelevanceAdvisorySwitch() is False
+    assert rti.getAttributeScopeAdvisorySwitch() is False
+    assert rti.getInteractionRelevanceAdvisorySwitch() is False
+    assert rti.getConveyRegionDesignatorSetsSwitch() is True
+    assert rti.getServiceReportingSwitch() is False
+    assert rti.getExceptionReportingSwitch() is True
+    assert rti.getSendServiceReportsToFileSwitch() is False
+    assert rti.getAutoProvideSwitch() is True
+    assert rti.getDelaySubscriptionEvaluationSwitch() is False
+    assert rti.getAdvisoriesUseKnownClassSwitch() is True
+    assert rti.getAllowRelaxedDDMSwitch() is False
+    assert rti.getNonRegulatedGrantSwitch() is False
+
+    rti.setObjectClassRelevanceAdvisorySwitch(True)
+    rti.setAttributeRelevanceAdvisorySwitch(True)
+    rti.setAttributeScopeAdvisorySwitch(True)
+    rti.setInteractionRelevanceAdvisorySwitch(True)
+    rti.setConveyRegionDesignatorSetsSwitch(False)
+    rti.setServiceReportingSwitch(True)
+    rti.setExceptionReportingSwitch(False)
+    rti.setSendServiceReportsToFileSwitch(True)
+
+    assert rti.getObjectClassRelevanceAdvisorySwitch() is True
+    assert rti.getAttributeRelevanceAdvisorySwitch() is True
+    assert rti.getAttributeScopeAdvisorySwitch() is True
+    assert rti.getInteractionRelevanceAdvisorySwitch() is True
+    assert rti.getConveyRegionDesignatorSetsSwitch() is False
+    assert rti.getServiceReportingSwitch() is True
+    assert rti.getExceptionReportingSwitch() is False
+    assert rti.getSendServiceReportsToFileSwitch() is True
+
+    with pytest.raises(RTIinternalError, match="requires a bool"):
+        rti.setServiceReportingSwitch("yes")
+    with pytest.raises(RTIinternalError, match="does not implement"):
+        rti.enableObjectClassRelevanceAdvisorySwitch()
+
+    rti.resignFederationExecution(ResignAction.NO_ACTION)
+    rti.destroyFederationExecution(federationName=federation_name)
+    rti.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-NEW-002", "HLA2025-FI-001", "HLA2025-FI-005")
 def test_2025_shim_reports_federation_executions_and_members() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction

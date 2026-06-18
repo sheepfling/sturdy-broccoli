@@ -62,6 +62,21 @@ _SUPPORTED_LOGICAL_TIME_IMPLEMENTATIONS = frozenset(
         "HLAfloat64Time",
     }
 )
+_SWITCH_DEFAULTS = {
+    "object_class_relevance_advisory": False,
+    "attribute_relevance_advisory": False,
+    "attribute_scope_advisory": False,
+    "interaction_relevance_advisory": False,
+    "convey_region_designator_sets": True,
+    "service_reporting": False,
+    "exception_reporting": True,
+    "send_service_reports_to_file": False,
+    "auto_provide": True,
+    "delay_subscription_evaluation": False,
+    "advisories_use_known_class": True,
+    "allow_relaxed_ddm": False,
+    "non_regulated_grant": False,
+}
 
 
 @dataclass(slots=True)
@@ -103,6 +118,7 @@ class Shim2025RTIAmbassador:
         self._lookahead = self._logical_time_factory.makeZero()
         self._time_regulation_enabled = False
         self._time_constrained_enabled = False
+        self._switches = dict(_SWITCH_DEFAULTS)
         self.calls: list[tuple[str, tuple[Any, ...], dict[str, Any]]] = []
 
     @property
@@ -153,6 +169,7 @@ class Shim2025RTIAmbassador:
         self._lookahead = self._logical_time_factory.makeZero()
         self._time_regulation_enabled = False
         self._time_constrained_enabled = False
+        self._switches = dict(_SWITCH_DEFAULTS)
 
     def createFederationExecution(self, *args: Any, **kwargs: Any) -> None:  # noqa: N802
         self._record("createFederationExecution", *args, **kwargs)
@@ -385,6 +402,90 @@ class Shim2025RTIAmbassador:
         self._record("normalizeObjectInstanceHandle", objectInstance)
         self._require_joined("normalizeObjectInstanceHandle")
         return self._normalize_handle(objectInstance, ObjectInstanceHandle, InvalidObjectInstanceHandle)
+
+    def getObjectClassRelevanceAdvisorySwitch(self) -> bool:  # noqa: N802
+        self._record("getObjectClassRelevanceAdvisorySwitch")
+        return self._get_switch("getObjectClassRelevanceAdvisorySwitch", "object_class_relevance_advisory")
+
+    def setObjectClassRelevanceAdvisorySwitch(self, value: bool) -> None:  # noqa: N802
+        self._record("setObjectClassRelevanceAdvisorySwitch", value)
+        self._set_switch("setObjectClassRelevanceAdvisorySwitch", "object_class_relevance_advisory", value)
+
+    def getAttributeRelevanceAdvisorySwitch(self) -> bool:  # noqa: N802
+        self._record("getAttributeRelevanceAdvisorySwitch")
+        return self._get_switch("getAttributeRelevanceAdvisorySwitch", "attribute_relevance_advisory")
+
+    def setAttributeRelevanceAdvisorySwitch(self, value: bool) -> None:  # noqa: N802
+        self._record("setAttributeRelevanceAdvisorySwitch", value)
+        self._set_switch("setAttributeRelevanceAdvisorySwitch", "attribute_relevance_advisory", value)
+
+    def getAttributeScopeAdvisorySwitch(self) -> bool:  # noqa: N802
+        self._record("getAttributeScopeAdvisorySwitch")
+        return self._get_switch("getAttributeScopeAdvisorySwitch", "attribute_scope_advisory")
+
+    def setAttributeScopeAdvisorySwitch(self, value: bool) -> None:  # noqa: N802
+        self._record("setAttributeScopeAdvisorySwitch", value)
+        self._set_switch("setAttributeScopeAdvisorySwitch", "attribute_scope_advisory", value)
+
+    def getInteractionRelevanceAdvisorySwitch(self) -> bool:  # noqa: N802
+        self._record("getInteractionRelevanceAdvisorySwitch")
+        return self._get_switch("getInteractionRelevanceAdvisorySwitch", "interaction_relevance_advisory")
+
+    def setInteractionRelevanceAdvisorySwitch(self, value: bool) -> None:  # noqa: N802
+        self._record("setInteractionRelevanceAdvisorySwitch", value)
+        self._set_switch("setInteractionRelevanceAdvisorySwitch", "interaction_relevance_advisory", value)
+
+    def getConveyRegionDesignatorSetsSwitch(self) -> bool:  # noqa: N802
+        self._record("getConveyRegionDesignatorSetsSwitch")
+        return self._get_switch("getConveyRegionDesignatorSetsSwitch", "convey_region_designator_sets")
+
+    def setConveyRegionDesignatorSetsSwitch(self, value: bool) -> None:  # noqa: N802
+        self._record("setConveyRegionDesignatorSetsSwitch", value)
+        self._set_switch("setConveyRegionDesignatorSetsSwitch", "convey_region_designator_sets", value)
+
+    def getServiceReportingSwitch(self) -> bool:  # noqa: N802
+        self._record("getServiceReportingSwitch")
+        return self._get_switch("getServiceReportingSwitch", "service_reporting")
+
+    def setServiceReportingSwitch(self, value: bool) -> None:  # noqa: N802
+        self._record("setServiceReportingSwitch", value)
+        self._set_switch("setServiceReportingSwitch", "service_reporting", value)
+
+    def getExceptionReportingSwitch(self) -> bool:  # noqa: N802
+        self._record("getExceptionReportingSwitch")
+        return self._get_switch("getExceptionReportingSwitch", "exception_reporting")
+
+    def setExceptionReportingSwitch(self, value: bool) -> None:  # noqa: N802
+        self._record("setExceptionReportingSwitch", value)
+        self._set_switch("setExceptionReportingSwitch", "exception_reporting", value)
+
+    def getSendServiceReportsToFileSwitch(self) -> bool:  # noqa: N802
+        self._record("getSendServiceReportsToFileSwitch")
+        return self._get_switch("getSendServiceReportsToFileSwitch", "send_service_reports_to_file")
+
+    def setSendServiceReportsToFileSwitch(self, value: bool) -> None:  # noqa: N802
+        self._record("setSendServiceReportsToFileSwitch", value)
+        self._set_switch("setSendServiceReportsToFileSwitch", "send_service_reports_to_file", value)
+
+    def getAutoProvideSwitch(self) -> bool:  # noqa: N802
+        self._record("getAutoProvideSwitch")
+        return self._get_switch("getAutoProvideSwitch", "auto_provide")
+
+    def getDelaySubscriptionEvaluationSwitch(self) -> bool:  # noqa: N802
+        self._record("getDelaySubscriptionEvaluationSwitch")
+        return self._get_switch("getDelaySubscriptionEvaluationSwitch", "delay_subscription_evaluation")
+
+    def getAdvisoriesUseKnownClassSwitch(self) -> bool:  # noqa: N802
+        self._record("getAdvisoriesUseKnownClassSwitch")
+        return self._get_switch("getAdvisoriesUseKnownClassSwitch", "advisories_use_known_class")
+
+    def getAllowRelaxedDDMSwitch(self) -> bool:  # noqa: N802
+        self._record("getAllowRelaxedDDMSwitch")
+        return self._get_switch("getAllowRelaxedDDMSwitch", "allow_relaxed_ddm")
+
+    def getNonRegulatedGrantSwitch(self) -> bool:  # noqa: N802
+        self._record("getNonRegulatedGrantSwitch")
+        return self._get_switch("getNonRegulatedGrantSwitch", "non_regulated_grant")
 
     def getHLAversion(self) -> str:  # noqa: N802
         self._record("getHLAversion")
@@ -679,6 +780,16 @@ class Shim2025RTIAmbassador:
         if not isinstance(value, int) or value < 0:
             raise exception_type(f"Invalid {expected_type.__name__}: {handle!r}")
         return value
+
+    def _get_switch(self, method_name: str, name: str) -> bool:
+        self._require_joined(method_name)
+        return self._switches[name]
+
+    def _set_switch(self, method_name: str, name: str, value: bool) -> None:
+        self._require_joined(method_name)
+        if not isinstance(value, bool):
+            raise RTIinternalError(f"{method_name} requires a bool value")
+        self._switches[name] = value
 
 
 class Shim2025Backend:
