@@ -2455,6 +2455,56 @@ def test_2025_shim_routes_mom_object_and_ownership_service_interactions() -> Non
     controller.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_reports_mom_service_failures_as_mom_exception_interactions() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import RTIinternalError
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-mom-exception-{uuid.uuid4().hex[:8]}"
+    controller_callbacks = Recording2025FederateAmbassador()
+    target_callbacks = Recording2025FederateAmbassador()
+    controller = create_rti_ambassador(backend="shim")
+    target = create_rti_ambassador(backend="shim")
+    controller.connect(controller_callbacks, CallbackModel.HLA_EVOKED)
+    target.connect(target_callbacks, CallbackModel.HLA_EVOKED)
+    controller.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    controller.joinFederationExecution("MomExceptionController", "TestFederate", federation_name)
+    target_handle = target.joinFederationExecution("MomExceptionTarget", "TestFederate", federation_name)
+
+    service = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAdeleteObjectInstance"
+    )
+    with pytest.raises(RTIinternalError, match="HLAobjectInstance"):
+        controller.sendInteraction(
+            service,
+            {controller.getParameterHandle(service, "HLAfederate"): str(target_handle.value).encode("ascii")},
+            b"mom-missing-object",
+        )
+
+    report = controller_callbacks.last_callback("receiveInteraction")
+    assert report is not None
+    report_class, parameter_values = report[0], report[1]
+    report_name = controller.getInteractionClassName(report_class)
+    assert report_name == "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception"
+    service_param = controller.getParameterHandle(report_class, "HLAservice")
+    exception_param = controller.getParameterHandle(report_class, "HLAexception")
+    parameter_error_param = controller.getParameterHandle(report_class, "HLAparameterError")
+    assert parameter_values[service_param] == b"HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAdeleteObjectInstance"
+    assert b"Missing MOM parameter HLAobjectInstance" in parameter_values[exception_param]
+    assert parameter_values[parameter_error_param] == b"HLAfalse"
+    assert target_callbacks.last_callback("receiveInteraction")[0] == report_class
+
+    target.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.destroyFederationExecution(federationName=federation_name)
+    target.disconnect()
+    controller.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-005")
 def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction

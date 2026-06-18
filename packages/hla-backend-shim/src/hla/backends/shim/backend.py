@@ -2792,10 +2792,14 @@ class Shim2025RTIAmbassador:
     ) -> bool:
         if ".HLAmanager." not in interaction_class_name:
             return False
-        if ".HLAadjust." in interaction_class_name:
-            return self._handle_mom_adjust_interaction(interaction_class_name, values_by_handle)
-        if ".HLAservice." in interaction_class_name:
-            return self._handle_mom_service_interaction(interaction_class_name, values_by_handle)
+        try:
+            if ".HLAadjust." in interaction_class_name:
+                return self._handle_mom_adjust_interaction(interaction_class_name, values_by_handle)
+            if ".HLAservice." in interaction_class_name:
+                return self._handle_mom_service_interaction(interaction_class_name, values_by_handle)
+        except Exception as exc:
+            self._send_mom_exception_interaction(interaction_class_name, exc, parameter_error=False)
+            raise
         if ".HLArequest." not in interaction_class_name:
             return False
         request_to_report = {
@@ -2811,10 +2815,14 @@ class Shim2025RTIAmbassador:
         report_name = request_to_report.get(interaction_class_name)
         if report_name is None:
             return False
-        self._send_mom_report_interaction(
-            report_name,
-            self._mom_request_report_values(interaction_class_name, report_name, values_by_handle),
-        )
+        try:
+            self._send_mom_report_interaction(
+                report_name,
+                self._mom_request_report_values(interaction_class_name, report_name, values_by_handle),
+            )
+        except Exception as exc:
+            self._send_mom_exception_interaction(interaction_class_name, exc, parameter_error=True)
+            raise
         return True
 
     def _handle_mom_service_interaction(
@@ -3169,6 +3177,47 @@ class Shim2025RTIAmbassador:
         for federate_key, subscriptions in federation.subscribed_interactions.items():
             if report_name not in subscriptions:
                 continue
+            self._deliver_to_federate_handle(
+                FederateHandle(federate_key),
+                "receiveInteraction",
+                report_class,
+                parameter_values,
+                b"MOM",
+                transportation,
+                self._current_federate_handle(),
+                set(),
+                None,
+                OrderType.RECEIVE,
+                OrderType.RECEIVE,
+                None,
+            )
+
+    def _send_mom_exception_interaction(
+        self,
+        interaction_class_name: str,
+        exception: Exception,
+        *,
+        parameter_error: bool,
+    ) -> None:
+        report_name = "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception"
+        try:
+            report_class = InteractionClassHandle(self._interaction_class_handles()[report_name])
+            report_parameters = self._parameter_handles(report_name)
+        except Exception:
+            return
+        values = {
+            "HLAservice": interaction_class_name.encode("utf-8"),
+            "HLAexception": f"{type(exception).__name__}: {exception}".encode("utf-8"),
+            "HLAparameterError": b"HLAtrue" if parameter_error else b"HLAfalse",
+        }
+        parameter_values = {
+            ParameterHandle(report_parameters[name]): value
+            for name, value in values.items()
+            if name in report_parameters
+        }
+        transportation = self._transportation_handle_by_name("HLAreliable")
+        federation = self._federation_record()
+        for federate_key in sorted(federation.member_ambassadors):
             self._deliver_to_federate_handle(
                 FederateHandle(federate_key),
                 "receiveInteraction",
