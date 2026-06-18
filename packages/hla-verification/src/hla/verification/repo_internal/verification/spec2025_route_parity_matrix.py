@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import csv
+import json
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 ROUTE_IDS_2025 = (
     "python-2025-inprocess",
@@ -532,6 +534,75 @@ def write_spec2025_route_parity_matrix(output_dir: str | Path) -> tuple[Path, Pa
     return csv_path, md_path
 
 
+def _load_json_artifact(project_root: Path, artifact: str) -> dict[str, Any] | None:
+    if not artifact.endswith(".json"):
+        return None
+    return json.loads((project_root / artifact).read_text(encoding="utf-8"))
+
+
+def validate_spec2025_route_parity_evidence(
+    project_root: str | Path,
+    rows: tuple[Spec2025RouteParityRow, ...] = SPEC2025_ROUTE_PARITY_ROWS,
+) -> list[str]:
+    """Return evidence-scope errors for the 2025 route parity matrix.
+
+    The validator intentionally does not promote rows. It checks that any
+    non-missing claim points at artifacts with the expected route/scope shape.
+    """
+
+    root = Path(project_root)
+    errors: list[str] = []
+    for row in rows:
+        if row.status == MISSING and row.evidence_artifacts:
+            errors.append(f"{row.scenario}/{row.route}: missing rows must not carry evidence artifacts")
+            continue
+        if row.evidence_scope == "runtime-capability" and "docs/evidence/shim_routes/java-standard-2025.json" not in row.evidence_artifacts:
+            errors.append(f"{row.scenario}/{row.route}: runtime-capability rows require aggregate Java route evidence")
+        if row.evidence_scope == "lifecycle-trace" and not any(
+            artifact.startswith("docs/evidence/shim_routes/route_traces/") for artifact in row.evidence_artifacts
+        ):
+            errors.append(f"{row.scenario}/{row.route}: lifecycle-trace rows require a route trace artifact")
+        for artifact in row.evidence_artifacts:
+            path = root / artifact
+            if not path.exists():
+                errors.append(f"{row.scenario}/{row.route}: evidence artifact missing: {artifact}")
+                continue
+            payload = _load_json_artifact(root, artifact)
+            if payload is None:
+                continue
+            if artifact.startswith("docs/evidence/shim_routes/route_traces/"):
+                if payload.get("route") != row.route:
+                    errors.append(f"{row.scenario}/{row.route}: trace artifact route mismatch in {artifact}")
+                if payload.get("edition") != "2025":
+                    errors.append(f"{row.scenario}/{row.route}: trace artifact is not 2025 in {artifact}")
+                if row.scenario == "federation_lifecycle" and payload.get("scenario") != "lifecycle-core":
+                    errors.append(f"{row.scenario}/{row.route}: lifecycle trace must record lifecycle-core in {artifact}")
+                if row.scenario == "federation_lifecycle" and payload.get("status") != "lifecycle-green":
+                    errors.append(f"{row.scenario}/{row.route}: lifecycle trace must be lifecycle-green in {artifact}")
+            elif artifact == "docs/evidence/shim_routes/java-standard-2025.json":
+                route_payload = payload.get("routes", {}).get(row.route, {})
+                if row.evidence_scope == "runtime-capability":
+                    if route_payload.get("scenario") != "runtime-capability":
+                        errors.append(f"{row.scenario}/{row.route}: Java route evidence must record runtime-capability")
+                    if route_payload.get("status") != "trace-green":
+                        errors.append(f"{row.scenario}/{row.route}: Java route evidence must be trace-green")
+                    exercised = set(route_payload.get("requirements_exercised", ()))
+                    missing_requirements = set(row.requirements) - exercised
+                    if missing_requirements:
+                        errors.append(
+                            f"{row.scenario}/{row.route}: Java route evidence missing requirements "
+                            f"{sorted(missing_requirements)}"
+                        )
+            elif artifact == "docs/evidence/shim_routes/cpp-standard-2025.json":
+                route_payload = payload.get("routes", {}).get(row.route, {})
+                if row.evidence_scope == "lifecycle-trace":
+                    if route_payload.get("scenario") != "lifecycle-core":
+                        errors.append(f"{row.scenario}/{row.route}: C++ route evidence must record lifecycle-core")
+                    if route_payload.get("status") not in {"core-green", "lifecycle-green"}:
+                        errors.append(f"{row.scenario}/{row.route}: C++ route evidence must be lifecycle/core green")
+    return errors
+
+
 __all__ = [
     "MISSING",
     "PARITY_COVERED",
@@ -540,5 +611,6 @@ __all__ = [
     "SPEC2025_ROUTE_PARITY_ROWS",
     "Spec2025RouteParityRow",
     "summarize_spec2025_route_parity",
+    "validate_spec2025_route_parity_evidence",
     "write_spec2025_route_parity_matrix",
 ]

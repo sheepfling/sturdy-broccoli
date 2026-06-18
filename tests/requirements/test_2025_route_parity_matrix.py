@@ -8,7 +8,9 @@ from hla.verification.repo_internal.verification.spec2025_route_parity_matrix im
     PARTIAL,
     ROUTE_IDS_2025,
     SPEC2025_ROUTE_PARITY_ROWS,
+    Spec2025RouteParityRow,
     summarize_spec2025_route_parity,
+    validate_spec2025_route_parity_evidence,
     write_spec2025_route_parity_matrix,
 )
 
@@ -90,6 +92,46 @@ def test_2025_route_parity_matrix_records_evidence_scope_without_flattening_java
             for artifact in row.evidence_artifacts:
                 if artifact.startswith("docs/"):
                     assert (ROOT / artifact).exists(), artifact
+
+
+def test_2025_route_parity_matrix_validates_machine_readable_evidence_scope() -> None:
+    assert validate_spec2025_route_parity_evidence(ROOT) == []
+
+
+def test_2025_route_parity_matrix_rejects_runtime_claim_without_runtime_artifact() -> None:
+    bad_row = Spec2025RouteParityRow(
+        scenario="federation_lifecycle",
+        route="java-standard-2025-jpype",
+        status=PARTIAL,
+        requirements=("HLA2025-BND-001",),
+        evidence_tests=("tests/backends/test_shim_route_trace_evidence.py",),
+        notes="Bad fixture: lifecycle trace alone is not runtime capability evidence.",
+        evidence_scope="runtime-capability",
+        evidence_artifacts=("docs/evidence/shim_routes/route_traces/java-standard-2025-jpype.json",),
+    )
+
+    errors = validate_spec2025_route_parity_evidence(ROOT, (bad_row,))
+
+    assert errors == [
+        "federation_lifecycle/java-standard-2025-jpype: runtime-capability rows require aggregate Java route evidence"
+    ]
+
+
+def test_2025_route_parity_matrix_rejects_missing_rows_with_artifacts() -> None:
+    bad_row = Spec2025RouteParityRow(
+        scenario="object_exchange",
+        route="cpp-standard-2025-grpc",
+        status=MISSING,
+        requirements=("HLA2025-BND-002",),
+        evidence_tests=("tests/requirements/test_2025_finish_line_snapshot.py",),
+        notes="Bad fixture: a missing row cannot imply supporting evidence.",
+        evidence_scope="gap-record",
+        evidence_artifacts=("docs/evidence/shim_routes/route_traces/cpp-standard-2025-grpc.json",),
+    )
+
+    assert validate_spec2025_route_parity_evidence(ROOT, (bad_row,)) == [
+        "object_exchange/cpp-standard-2025-grpc: missing rows must not carry evidence artifacts"
+    ]
 
 
 def test_2025_route_parity_summary_and_artifacts_are_reviewable(tmp_path) -> None:
