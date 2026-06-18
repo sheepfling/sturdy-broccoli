@@ -1982,6 +1982,76 @@ def test_2025_shim_routes_mom_adjust_interactions_for_reporting_switches() -> No
     controller.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-MOD-008", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_routes_mom_set_switches_adjust_interactions() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-mom-switches-{uuid.uuid4().hex[:8]}"
+    controller = create_rti_ambassador(backend="shim")
+    target = create_rti_ambassador(backend="shim")
+    controller.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    target.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    controller.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    controller.joinFederationExecution("SwitchController", "TestFederate", federation_name)
+    target_handle = target.joinFederationExecution("SwitchTarget", "TestFederate", federation_name)
+
+    federate_switches = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches"
+    )
+    federate_target = controller.getParameterHandle(federate_switches, "HLAfederate")
+    convey_regions = controller.getParameterHandle(federate_switches, "HLAconveyRegionDesignatorSets")
+    assert target.getConveyRegionDesignatorSetsSwitch() is True
+    controller.sendInteraction(
+        federate_switches,
+        {
+            federate_target: str(target_handle.value).encode("ascii"),
+            convey_regions: b"HLAfalse",
+        },
+        b"mom-disable-convey-region-designator-sets",
+    )
+    assert target.getConveyRegionDesignatorSetsSwitch() is False
+    controller.sendInteraction(
+        federate_switches,
+        {
+            federate_target: str(target_handle.value).encode("ascii"),
+            convey_regions: b"HLAtrue",
+        },
+        b"mom-enable-convey-region-designator-sets",
+    )
+    assert target.getConveyRegionDesignatorSetsSwitch() is True
+
+    federation_switches = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederation.HLAadjust.HLAsetSwitches"
+    )
+    auto_provide = controller.getParameterHandle(federation_switches, "HLAautoProvide")
+    assert controller.getAutoProvideSwitch() is True
+    assert target.getAutoProvideSwitch() is True
+    controller.sendInteraction(
+        federation_switches,
+        {auto_provide: b"HLAfalse"},
+        b"mom-disable-auto-provide",
+    )
+    assert controller.getAutoProvideSwitch() is False
+    assert target.getAutoProvideSwitch() is False
+    controller.sendInteraction(
+        federation_switches,
+        {auto_provide: b"HLAtrue"},
+        b"mom-enable-auto-provide",
+    )
+    assert controller.getAutoProvideSwitch() is True
+    assert target.getAutoProvideSwitch() is True
+
+    target.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.destroyFederationExecution(federationName=federation_name)
+    target.disconnect()
+    controller.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-005")
 def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction

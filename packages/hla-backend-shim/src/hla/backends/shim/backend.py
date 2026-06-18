@@ -2828,6 +2828,19 @@ class Shim2025RTIAmbassador:
         if interaction_class_name.endswith("HLAsetExceptionReporting"):
             target._switches["exception_reporting"] = self._mom_bool(params.get("HLAreportingState"), False)
             return True
+        if interaction_class_name.endswith("HLAsetSwitches") and ".HLAfederate." in interaction_class_name:
+            if "HLAconveyRegionDesignatorSets" in params:
+                target._switches["convey_region_designator_sets"] = self._mom_bool(
+                    params.get("HLAconveyRegionDesignatorSets"),
+                    target._switches["convey_region_designator_sets"],
+                )
+            return True
+        if interaction_class_name.endswith("HLAsetSwitches") and ".HLAfederation." in interaction_class_name:
+            if "HLAautoProvide" in params:
+                auto_provide = self._mom_bool(params.get("HLAautoProvide"), target._switches["auto_provide"])
+                for member_rti in self._federation_record().member_rtis.values():
+                    member_rti._switches["auto_provide"] = auto_provide
+            return True
         return False
 
     def _mom_request_params_by_name(
