@@ -62,6 +62,15 @@ def _attribute_set(values: list[str] | tuple[str, ...] | str) -> datatypes_pb2.A
     return result
 
 
+def _fom_module_designators(fom_modules) -> list[str]:
+    modules = []
+    for module in fom_modules.fomModule:
+        designator = module.url or module.file.name
+        if designator:
+            modules.append(designator)
+    return modules
+
+
 def _dimension_set(values: list[str] | tuple[str, ...] | str) -> datatypes_pb2.DimensionHandleSet:
     result = datatypes_pb2.DimensionHandleSet()
     items = values.split(",") if isinstance(values, str) else values
@@ -75,6 +84,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
     def __init__(self) -> None:
         self.calls: list[str] = []
         self.federations: set[str] = set()
+        self.fom_modules: list[str] = []
         self.joined_federates: dict[str, str] = {}
         self.joined_federate_handles: dict[str, str] = {}
         self.next_federate_handle = 1
@@ -109,6 +119,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesUpdated": "421",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesReflected": "422",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected": "423",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData": "424",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportFOMmoduleData": "425",
         }
         self.interaction_names = {value: key for key, value in self.interactions.items()}
         self.parameters = {
@@ -157,6 +169,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             ("422", "HLAfederate"): "542",
             ("423", "HLAfederate"): "543",
             ("423", "HLAobjectInstanceCounts"): "544",
+            ("424", "HLAfederate"): "545",
+            ("424", "HLAFOMmoduleIndicator"): "546",
+            ("425", "HLAfederate"): "547",
+            ("425", "HLAFOMmoduleIndicator"): "548",
+            ("425", "HLAFOMmoduleData"): "549",
         }
         self.parameter_names = {(interaction_class, value): name for (interaction_class, name), value in self.parameters.items()}
         self.dimensions = {"RoutingSpace": "300"}
@@ -237,6 +254,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         }:
             payload = getattr(request, request_kind)
             self.federations.add(payload.federationName)
+            self.fom_modules = _fom_module_designators(payload.fomModules)
             if request_kind == "createFederationExecutionWithModulesAndTimeRequest":
                 return rti_pb2.CallResponse(createFederationExecutionWithModulesAndTimeResponse=rti_pb2.CreateFederationExecutionWithModulesAndTimeResponse())
             return rti_pb2.CallResponse(createFederationExecutionWithModulesResponse=rti_pb2.CreateFederationExecutionWithModulesResponse())
@@ -940,6 +958,9 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                     self.object_instances_reflected,
                 )
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
+            if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData"]:
+                self._queue_fom_module_data_report(payload.parameterValues)
+                return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation"]:
                 self._queue_object_instance_information_report(payload.parameterValues)
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
@@ -1423,6 +1444,30 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
                 "HLAobjectClass": ";".join(row["objectClass"] for row in rows).encode("ascii"),
                 "HLAobjectInstanceName": ";".join(row["objectInstanceName"] for row in rows).encode("ascii"),
                 "HLAattributeList": ";".join(row["attributeList"] for row in rows).encode("ascii"),
+            },
+        )
+
+    def _queue_fom_module_data_report(self, parameters: datatypes_pb2.ParameterHandleValueMap) -> None:
+        report_class = self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportFOMmoduleData"]
+        if not self._interaction_subscriber_matches(report_class, ()):
+            return
+        request_class = self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData"]
+        indicator = 0
+        indicator_parameter = self.parameters[(request_class, "HLAFOMmoduleIndicator")]
+        for item in parameters.parameterHandleValue:
+            if item.parameterHandle.data.decode("ascii") == indicator_parameter:
+                try:
+                    indicator = int(item.value.decode("ascii") or "0")
+                except ValueError:
+                    indicator = 0
+                break
+        module_data = self.fom_modules[indicator] if 0 <= indicator < len(self.fom_modules) else ""
+        self._queue_mom_report(
+            report_class,
+            {
+                "HLAfederate": b"1",
+                "HLAFOMmoduleIndicator": str(indicator).encode("ascii"),
+                "HLAFOMmoduleData": module_data.encode("ascii"),
             },
         )
 

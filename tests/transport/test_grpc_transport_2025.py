@@ -1263,6 +1263,84 @@ def test_2025_transport_server_reports_mim_data_for_mom_request_over_fedpro_sche
         server.close()
 
 
+def test_2025_transport_server_reports_fom_module_data_for_mom_request_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-mom-fom-module"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(
+            TransportRequest(
+                command="CREATE",
+                fields=(federation_name, "HLAinteger64Time", "MomFomCore2025.xml", "MomFomExtension2025.xml"),
+            )
+        ).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025FOMModule", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        request_class = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData",),
+            )
+        ).fields[0]
+        request_federate_param = transport.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(request_class, "HLAfederate"))
+        ).fields[0]
+        request_indicator_param = transport.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(request_class, "HLAFOMmoduleIndicator"))
+        ).fields[0]
+        report_class = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportFOMmoduleData",),
+            )
+        ).fields[0]
+        report_federate_param = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAfederate"))).fields[0]
+        report_indicator_param = transport.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAFOMmoduleIndicator"))
+        ).fields[0]
+        report_data_param = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAFOMmoduleData"))).fields[0]
+        assert transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(report_class,))).fields == ()
+
+        assert transport.request(
+            TransportRequest(
+                command="SEND_INTERACTION",
+                fields=(
+                    request_class,
+                    f"{request_federate_param}:31,{request_indicator_param}:31",
+                    "666f6d2d726571",
+                ),
+            )
+        ).fields == ()
+
+        report = transport.request(TransportRequest(command="EVOKE")).fields
+        assert report[:3] == ("1", "INTERACTION", report_class)
+        payloads = dict(item.split(":", 1) for item in report[3].split(","))
+        assert bytes.fromhex(payloads[report_federate_param]).decode("ascii") == "1"
+        assert bytes.fromhex(payloads[report_indicator_param]).decode("ascii") == "1"
+        assert bytes.fromhex(payloads[report_data_param]).decode("ascii") == "MomFomExtension2025.xml"
+        assert report[4:] == ("4d4f4d", "1", "1")
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "createFederationExecutionWithModulesAndTimeRequest",
+            "subscribeInteractionClassRequest",
+            "sendInteractionRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_reports_object_publications_for_mom_request_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None
