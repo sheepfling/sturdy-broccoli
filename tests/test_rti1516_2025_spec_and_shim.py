@@ -2188,6 +2188,101 @@ def test_2025_shim_routes_mom_declaration_service_interactions() -> None:
     controller.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_routes_mom_federation_management_service_interactions() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-mom-fm-service-{uuid.uuid4().hex[:8]}"
+    controller_callbacks = Recording2025FederateAmbassador()
+    target_callbacks = Recording2025FederateAmbassador()
+    controller = create_rti_ambassador(backend="shim")
+    target = create_rti_ambassador(backend="shim")
+    controller.connect(controller_callbacks, CallbackModel.HLA_EVOKED)
+    target.connect(target_callbacks, CallbackModel.HLA_EVOKED)
+    controller.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    controller.joinFederationExecution("FmServiceController", "TestFederate", federation_name)
+    target_handle = target.joinFederationExecution("FmServiceTarget", "TestFederate", federation_name)
+
+    sync_label = "MOM-SYNC"
+    controller.registerFederationSynchronizationPoint(sync_label, b"mom-sync")
+    sync_achieved = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAsynchronizationPointAchieved"
+    )
+    controller.sendInteraction(
+        sync_achieved,
+        {
+            controller.getParameterHandle(sync_achieved, "HLAfederate"): str(target_handle.value).encode("ascii"),
+            controller.getParameterHandle(sync_achieved, "HLAlabel"): sync_label.encode("utf-8"),
+        },
+        b"mom-sync-achieved",
+    )
+    controller.synchronizationPointAchieved(sync_label)
+    assert controller_callbacks.last_callback("federationSynchronized") == (sync_label, set())
+    assert target_callbacks.last_callback("federationSynchronized") == (sync_label, set())
+
+    controller.requestFederationSave("MOM-SAVE")
+    save_begun = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAfederateSaveBegun"
+    )
+    save_complete = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAfederateSaveComplete"
+    )
+    controller.sendInteraction(
+        save_begun,
+        {controller.getParameterHandle(save_begun, "HLAfederate"): str(target_handle.value).encode("ascii")},
+        b"mom-save-begun",
+    )
+    controller.sendInteraction(
+        save_complete,
+        {
+            controller.getParameterHandle(save_complete, "HLAfederate"): str(target_handle.value).encode("ascii"),
+            controller.getParameterHandle(save_complete, "HLAsuccessIndicator"): b"HLAtrue",
+        },
+        b"mom-save-complete",
+    )
+    controller.federateSaveComplete()
+    assert controller_callbacks.last_callback("federationSaved") == ()
+    assert target_callbacks.last_callback("federationSaved") == ()
+
+    controller.requestFederationRestore("MOM-SAVE")
+    restore_complete = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAfederateRestoreComplete"
+    )
+    controller.sendInteraction(
+        restore_complete,
+        {
+            controller.getParameterHandle(restore_complete, "HLAfederate"): str(target_handle.value).encode("ascii"),
+            controller.getParameterHandle(restore_complete, "HLAsuccessIndicator"): b"HLAtrue",
+        },
+        b"mom-restore-complete",
+    )
+    controller.federateRestoreComplete()
+    assert controller_callbacks.last_callback("federationRestored") == ()
+    assert target_callbacks.last_callback("federationRestored") == ()
+
+    resign = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAresignFederationExecution"
+    )
+    controller.sendInteraction(
+        resign,
+        {
+            controller.getParameterHandle(resign, "HLAfederate"): str(target_handle.value).encode("ascii"),
+            controller.getParameterHandle(resign, "HLAresignAction"): str(int(ResignAction.NO_ACTION)).encode("ascii"),
+        },
+        b"mom-resign",
+    )
+    assert target_callbacks.last_callback("federateResigned") is not None
+
+    controller.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.destroyFederationExecution(federationName=federation_name)
+    target.disconnect()
+    controller.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-005")
 def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction

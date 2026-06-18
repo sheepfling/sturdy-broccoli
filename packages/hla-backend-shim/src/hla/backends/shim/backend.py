@@ -2825,6 +2825,30 @@ class Shim2025RTIAmbassador:
         params = self._mom_request_params_by_name(interaction_class_name, values_by_handle)
         target = self._mom_target_rti(params)
         leaf = interaction_class_name.rsplit(".", 1)[-1]
+        if leaf == "HLAresignFederationExecution":
+            target.resignFederationExecution(self._mom_resign_action(params.get("HLAresignAction")))
+            return True
+        if leaf == "HLAsynchronizationPointAchieved":
+            target.synchronizationPointAchieved(
+                self._mom_text(params.get("HLAlabel"), "HLAlabel"),
+                self._mom_bool(params.get("HLAsuccessIndicator"), True),
+            )
+            return True
+        if leaf == "HLAfederateSaveBegun":
+            target.federateSaveBegun()
+            return True
+        if leaf == "HLAfederateSaveComplete":
+            if self._mom_bool(params.get("HLAsuccessIndicator"), True):
+                target.federateSaveComplete()
+            else:
+                target.federateSaveNotComplete()
+            return True
+        if leaf == "HLAfederateRestoreComplete":
+            if self._mom_bool(params.get("HLAsuccessIndicator"), True):
+                target.federateRestoreComplete()
+            else:
+                target.federateRestoreNotComplete()
+            return True
         if leaf == "HLApublishObjectClassAttributes":
             target.publishObjectClassAttributes(
                 ObjectClassHandle(self._mom_int(params.get("HLAobjectClass"), "HLAobjectClass")),
@@ -2967,6 +2991,26 @@ class Shim2025RTIAmbassador:
             return set()
         normalized = text.translate(str.maketrans({char: "," for char in "[](); \t\n\r"}))
         return {AttributeHandle(int(part)) for part in normalized.split(",") if part}
+
+    @staticmethod
+    def _mom_text(value: bytes | None, field_name: str) -> str:
+        if value is None:
+            raise RTIinternalError(f"Missing MOM parameter {field_name}")
+        return value.decode("utf-8")
+
+    @classmethod
+    def _mom_resign_action(cls, value: bytes | None) -> ResignAction:
+        if value is None:
+            return ResignAction.NO_ACTION
+        text = value.decode("ascii", errors="ignore").strip()
+        try:
+            return ResignAction(int(text))
+        except ValueError:
+            normalized = text.removeprefix("HLA").upper()
+            try:
+                return ResignAction[normalized]
+            except KeyError as exc:
+                raise RTIinternalError(f"Invalid MOM resign action {text!r}") from exc
 
     def _mom_request_report_values(
         self,
