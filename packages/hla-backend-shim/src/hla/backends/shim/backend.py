@@ -31,6 +31,7 @@ from hla.rti1516_2025.exceptions import (
     CouldNotCreateLogicalTimeFactory,
     CouldNotOpenFOM,
     CouldNotOpenMIM,
+    DeletePrivilegeNotHeld,
     DesignatorIsHLAstandardMIM,
     ErrorReadingFOM,
     ErrorReadingMIM,
@@ -69,6 +70,7 @@ from hla.rti1516_2025.exceptions import (
     ObjectClassNotDefined,
     ObjectClassNotPublished,
     ObjectInstanceNameInUse,
+    ObjectInstanceNotKnown,
     RegionDoesNotContainSpecifiedDimension,
     RTIinternalError,
     TimeRegulationIsNotEnabled,
@@ -133,6 +135,7 @@ class _FederationRecord:
     member_region_bounds: dict[int, dict[int, dict[str, RangeBounds]]] = field(default_factory=dict)
     object_instances: dict[int, "_ObjectInstanceRecord"] = field(default_factory=dict)
     object_instance_names: dict[str, int] = field(default_factory=dict)
+    interaction_transportation: dict[tuple[int, str], str] = field(default_factory=dict)
     next_object_instance_handle: int = 1
     next_region_handle: int = 1
 
@@ -145,6 +148,7 @@ class _ObjectInstanceRecord:
     attribute_divesting: set[str] = field(default_factory=set)
     attribute_candidates: dict[str, list[tuple[FederateHandle, bytes]]] = field(default_factory=dict)
     update_regions: dict[str, set[int]] = field(default_factory=dict)
+    attribute_transportation: dict[str, str] = field(default_factory=dict)
 
 
 _FEDERATION_REGISTRY: dict[str, _FederationRecord] = {}
@@ -1211,6 +1215,133 @@ class Shim2025RTIAmbassador:
             )
         return None
 
+    def deleteObjectInstance(  # noqa: N802
+        self,
+        objectInstance: Any,
+        userSuppliedTag: bytes,
+        time: Any | None = None,
+    ) -> Any | None:
+        self._record("deleteObjectInstance", objectInstance, userSuppliedTag, time)
+        self._require_joined("deleteObjectInstance")
+        object_instance_value = self._normalize_handle(
+            objectInstance,
+            ObjectInstanceHandle,
+            InvalidObjectInstanceHandle,
+        )
+        federation = self._federation_record()
+        try:
+            record = federation.object_instances[object_instance_value]
+        except KeyError as exc:
+            raise ObjectInstanceNotKnown(str(objectInstance)) from exc
+        if self._current_federate_handle() not in set(record.attribute_owners.values()):
+            raise DeletePrivilegeNotHeld(str(objectInstance))
+
+        callback_time = self._coerce_time(time) if time is not None else None
+        object_class_name = record.object_class_name
+        for federate_key, subscriptions in federation.subscribed_object_attributes.items():
+            if federate_key == self._current_federate_key() or object_class_name not in subscriptions:
+                continue
+            self._deliver_to_federate_handle(
+                FederateHandle(federate_key),
+                "removeObjectInstance",
+                objectInstance,
+                bytes(userSuppliedTag),
+                self._current_federate_handle(),
+                callback_time,
+                OrderType.RECEIVE,
+                OrderType.RECEIVE,
+                None,
+            )
+
+        if record.object_instance_name is not None:
+            federation.object_instance_names.pop(record.object_instance_name, None)
+        federation.object_instances.pop(object_instance_value, None)
+        return None
+
+    def localDeleteObjectInstance(self, objectInstance: Any) -> None:  # noqa: N802
+        self._record("localDeleteObjectInstance", objectInstance)
+        self._require_joined("localDeleteObjectInstance")
+        self._object_instance_record_known(objectInstance)
+
+    def requestAttributeValueUpdate(self, objectClassOrInstance: Any, attributes: Any, userSuppliedTag: bytes) -> None:  # noqa: N802
+        self._record("requestAttributeValueUpdate", objectClassOrInstance, attributes, userSuppliedTag)
+        self._require_joined("requestAttributeValueUpdate")
+        if isinstance(objectClassOrInstance, ObjectInstanceHandle):
+            self._request_instance_attribute_value_update(objectClassOrInstance, attributes, userSuppliedTag)
+            return
+        object_class_name = self._object_class_name(objectClassOrInstance)
+        attribute_names = self._attribute_names_from_handles(object_class_name, attributes)
+        attribute_handles = {AttributeHandle(self._attribute_handles(object_class_name)[name]) for name in attribute_names}
+        for object_value, record in self._federation_record().object_instances.items():
+            if record.object_class_name != object_class_name:
+                continue
+            self._deliver_value_update_requests(ObjectInstanceHandle(object_value), record, attribute_handles, userSuppliedTag)
+
+    def requestAttributeTransportationTypeChange(  # noqa: N802
+        self,
+        objectInstance: Any,
+        attributes: Any,
+        transportationType: Any,
+    ) -> None:
+        self._record("requestAttributeTransportationTypeChange", objectInstance, attributes, transportationType)
+        self._require_joined("requestAttributeTransportationTypeChange")
+        record = self._object_instance_record_known(objectInstance)
+        transportation_name = self.getTransportationTypeName(transportationType)
+        transportation = self._transportation_handle_by_name(transportation_name)
+        attribute_names = self._attribute_names_from_handles(record.object_class_name, attributes)
+        attribute_handles: set[AttributeHandle] = set()
+        for attribute_name in attribute_names:
+            if record.attribute_owners.get(attribute_name) != self._federate_handle:
+                raise AttributeNotOwned(attribute_name)
+            record.attribute_transportation[attribute_name] = transportation_name
+            attribute_handles.add(AttributeHandle(self._attribute_handles(record.object_class_name)[attribute_name]))
+        self._deliver_callback("confirmAttributeTransportationTypeChange", objectInstance, attribute_handles, transportation)
+
+    def queryAttributeTransportationType(self, objectInstance: Any, attribute: Any) -> None:  # noqa: N802
+        self._record("queryAttributeTransportationType", objectInstance, attribute)
+        self._require_joined("queryAttributeTransportationType")
+        record = self._object_instance_record_known(objectInstance)
+        attribute_name = self._attribute_names_from_handles(record.object_class_name, {attribute})[0]
+        transportation_name = record.attribute_transportation.get(
+            attribute_name,
+            self._default_attribute_transportation.get((record.object_class_name, attribute_name), "HLAreliable"),
+        )
+        self._deliver_callback(
+            "reportAttributeTransportationType",
+            objectInstance,
+            attribute,
+            self._transportation_handle_by_name(transportation_name),
+        )
+
+    def requestInteractionTransportationTypeChange(self, interactionClass: Any, transportationType: Any) -> None:  # noqa: N802
+        self._record("requestInteractionTransportationTypeChange", interactionClass, transportationType)
+        self._require_joined("requestInteractionTransportationTypeChange")
+        interaction_class_name = self._interaction_class_name(interactionClass)
+        if interaction_class_name not in self._federation_record().published_interactions.setdefault(self._current_federate_key(), set()):
+            raise InteractionClassNotPublished(interaction_class_name)
+        transportation_name = self.getTransportationTypeName(transportationType)
+        transportation = self._transportation_handle_by_name(transportation_name)
+        self._federation_record().interaction_transportation[(self._current_federate_key(), interaction_class_name)] = transportation_name
+        self._deliver_callback("confirmInteractionTransportationTypeChange", interactionClass, transportation)
+
+    def queryInteractionTransportationType(self, federate: Any, interactionClass: Any) -> None:  # noqa: N802
+        self._record("queryInteractionTransportationType", federate, interactionClass)
+        self._require_joined("queryInteractionTransportationType")
+        federate_value = self._normalize_handle(federate, FederateHandle, InvalidFederateHandle)
+        if federate_value not in {handle.value for handle in self._federation_record().member_handles.values()}:
+            raise InvalidFederateHandle(str(federate))
+        interaction_class_name = self._interaction_class_name(interactionClass)
+        transportation_name = self._federation_record().interaction_transportation.get(
+            (federate_value, interaction_class_name),
+            "HLAreliable",
+        )
+        self._deliver_callback(
+            "reportInteractionTransportationType",
+            FederateHandle(federate_value),
+            interactionClass,
+            self._transportation_handle_by_name(transportation_name),
+        )
+
     def unconditionalAttributeOwnershipDivestiture(  # noqa: N802
         self,
         objectInstance: Any,
@@ -2060,6 +2191,40 @@ class Shim2025RTIAmbassador:
             return self._federation_record().object_instances[object_instance_value]
         except KeyError as exc:
             raise InvalidObjectInstanceHandle(str(object_instance)) from exc
+
+    def _object_instance_record_known(self, object_instance: Any) -> _ObjectInstanceRecord:
+        object_instance_value = self._normalize_handle(
+            object_instance,
+            ObjectInstanceHandle,
+            InvalidObjectInstanceHandle,
+        )
+        try:
+            return self._federation_record().object_instances[object_instance_value]
+        except KeyError as exc:
+            raise ObjectInstanceNotKnown(str(object_instance)) from exc
+
+    def _request_instance_attribute_value_update(self, object_instance: ObjectInstanceHandle, attributes: Any, user_supplied_tag: bytes) -> None:
+        record = self._object_instance_record_known(object_instance)
+        attribute_names = self._attribute_names_from_handles(record.object_class_name, attributes)
+        attribute_handles = {AttributeHandle(self._attribute_handles(record.object_class_name)[name]) for name in attribute_names}
+        self._deliver_value_update_requests(object_instance, record, attribute_handles, user_supplied_tag)
+
+    def _deliver_value_update_requests(
+        self,
+        object_instance: ObjectInstanceHandle,
+        record: _ObjectInstanceRecord,
+        attribute_handles: set[AttributeHandle],
+        user_supplied_tag: bytes,
+    ) -> None:
+        handles_by_name = self._attribute_handles(record.object_class_name)
+        attributes_by_owner: dict[FederateHandle, set[AttributeHandle]] = {}
+        for attribute in attribute_handles:
+            attribute_name = self._attribute_name_by_handle(record.object_class_name, attribute)
+            owner = record.attribute_owners.get(attribute_name)
+            if owner is not None:
+                attributes_by_owner.setdefault(owner, set()).add(AttributeHandle(handles_by_name[attribute_name]))
+        for owner, owned_attributes in sorted(attributes_by_owner.items(), key=lambda item: item[0].value):
+            self._deliver_to_federate_handle(owner, "provideAttributeValueUpdate", object_instance, owned_attributes, bytes(user_supplied_tag))
 
     def _current_federate_handle(self) -> FederateHandle:
         if self._federate_handle is None:

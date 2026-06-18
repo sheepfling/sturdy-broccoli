@@ -288,6 +288,21 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
+        "id": "2025-object-management-support-callbacks",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001", "HLA2025-FI-005"),
+        "evidence": (
+            "tests/test_rti1516_2025_spec_and_shim.py",
+            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+        ),
+        "supported_scope": (
+            "Python 2025 shim supports FOM-backed deleteObjectInstance/removeObjectInstance callbacks, "
+            "localDeleteObjectInstance validation, requestAttributeValueUpdate callbacks by object instance "
+            "and object class, attribute transportation type change/query callbacks, and interaction "
+            "transportation type change/query callbacks."
+        ),
+    },
+    {
         "id": "2025-ownership-basic-tag-callbacks",
         "status": "implemented-slice",
         "requirements": ("HLA2025-MOD-005", "HLA2025-FI-001", "HLA2025-FI-005"),

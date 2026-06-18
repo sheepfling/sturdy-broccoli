@@ -132,6 +132,46 @@ class Recording2025FederateAmbassador:
             )
         )
 
+    def removeObjectInstance(  # noqa: N802, ANN001
+        self,
+        objectInstance,
+        userSuppliedTag,
+        producingFederate,
+        time=None,
+        sentOrderType=None,
+        receivedOrderType=None,
+        optionalRetraction=None,
+    ) -> None:
+        self.callbacks.append(
+            (
+                "removeObjectInstance",
+                (
+                    objectInstance,
+                    userSuppliedTag,
+                    producingFederate,
+                    time,
+                    sentOrderType,
+                    receivedOrderType,
+                    optionalRetraction,
+                ),
+            )
+        )
+
+    def provideAttributeValueUpdate(self, objectInstance, attributes, userSuppliedTag) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("provideAttributeValueUpdate", (objectInstance, attributes, userSuppliedTag)))
+
+    def confirmAttributeTransportationTypeChange(self, objectInstance, attributes, transportationType) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("confirmAttributeTransportationTypeChange", (objectInstance, attributes, transportationType)))
+
+    def reportAttributeTransportationType(self, objectInstance, attribute, transportationType) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("reportAttributeTransportationType", (objectInstance, attribute, transportationType)))
+
+    def confirmInteractionTransportationTypeChange(self, interactionClass, transportationType) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("confirmInteractionTransportationTypeChange", (interactionClass, transportationType)))
+
+    def reportInteractionTransportationType(self, federate, interactionClass, transportationType) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("reportInteractionTransportationType", (federate, interactionClass, transportationType)))
+
     def attributeOwnershipAcquisitionNotification(  # noqa: N802, ANN001
         self,
         objectInstance,
@@ -886,6 +926,137 @@ def test_2025_shim_filters_interactions_by_ddm_region_overlap(tmp_path: Path) ->
     subscriber.resignFederationExecution(ResignAction.NO_ACTION)
     publisher.destroyFederationExecution(federationName=federation_name)
     publisher.disconnect()
+    subscriber.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001", "HLA2025-FI-005")
+def test_2025_shim_object_management_and_support_callbacks(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.exceptions import DeletePrivilegeNotHeld, ObjectInstanceNotKnown
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "ObjectSupport2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Object Support 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-18</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused object/support service fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>SupportTarget</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>SupportReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+    <transportation><name>HLAbestEffort</name><reliable>No</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-object-support-{uuid.uuid4().hex[:8]}"
+    owner_callbacks = Recording2025FederateAmbassador()
+    subscriber_callbacks = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+
+    owner.connect(owner_callbacks, CallbackModel.HLA_EVOKED)
+    subscriber.connect(subscriber_callbacks, CallbackModel.HLA_EVOKED)
+    owner.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+    owner_handle = owner.joinFederationExecution("Owner", "TestFederate", federation_name)
+    subscriber.joinFederationExecution("Subscriber", "TestFederate", federation_name)
+
+    object_class = owner.getObjectClassHandle("HLAobjectRoot.SupportTarget")
+    subscriber_object_class = subscriber.getObjectClassHandle("HLAobjectRoot.SupportTarget")
+    attribute = owner.getAttributeHandle(object_class, "Position")
+    subscriber_attribute = subscriber.getAttributeHandle(subscriber_object_class, "Position")
+    interaction_class = owner.getInteractionClassHandle("HLAinteractionRoot.SupportReport")
+    subscriber_interaction_class = subscriber.getInteractionClassHandle("HLAinteractionRoot.SupportReport")
+    best_effort = owner.getTransportationTypeHandle("HLAbestEffort")
+
+    owner.publishObjectClassAttributes(object_class, {attribute})
+    owner.publishInteractionClass(interaction_class)
+    subscriber.subscribeObjectClassAttributes(subscriber_object_class, {subscriber_attribute})
+    object_instance = owner.registerObjectInstance(object_class, "Support-Target-1")
+    assert subscriber_callbacks.last_callback("discoverObjectInstance") == (
+        object_instance,
+        subscriber_object_class,
+        "Support-Target-1",
+        owner_handle,
+    )
+
+    subscriber.requestAttributeValueUpdate(object_instance, {subscriber_attribute}, b"instance-request")
+    assert owner_callbacks.last_callback("provideAttributeValueUpdate") == (object_instance, {attribute}, b"instance-request")
+
+    subscriber.requestAttributeValueUpdate(subscriber_object_class, {subscriber_attribute}, b"class-request")
+    assert owner_callbacks.last_callback("provideAttributeValueUpdate") == (object_instance, {attribute}, b"class-request")
+
+    owner.requestAttributeTransportationTypeChange(object_instance, {attribute}, best_effort)
+    assert owner_callbacks.last_callback("confirmAttributeTransportationTypeChange") == (object_instance, {attribute}, best_effort)
+    subscriber.queryAttributeTransportationType(object_instance, subscriber_attribute)
+    assert subscriber_callbacks.last_callback("reportAttributeTransportationType") == (object_instance, subscriber_attribute, best_effort)
+
+    owner.requestInteractionTransportationTypeChange(interaction_class, best_effort)
+    assert owner_callbacks.last_callback("confirmInteractionTransportationTypeChange") == (interaction_class, best_effort)
+    subscriber.queryInteractionTransportationType(owner_handle, subscriber_interaction_class)
+    assert subscriber_callbacks.last_callback("reportInteractionTransportationType") == (
+        owner_handle,
+        subscriber_interaction_class,
+        best_effort,
+    )
+
+    subscriber.localDeleteObjectInstance(object_instance)
+    with pytest.raises(DeletePrivilegeNotHeld):
+        subscriber.deleteObjectInstance(object_instance, b"not-owner")
+    owner.deleteObjectInstance(object_instance, b"delete-tag")
+    assert subscriber_callbacks.last_callback("removeObjectInstance") == (
+        object_instance,
+        b"delete-tag",
+        owner_handle,
+        None,
+        OrderType.RECEIVE,
+        OrderType.RECEIVE,
+        None,
+    )
+    with pytest.raises(ObjectInstanceNotKnown):
+        subscriber.requestAttributeValueUpdate(object_instance, {subscriber_attribute}, b"after-delete")
+
+    subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.resignFederationExecution(ResignAction.NO_ACTION)
+    owner.destroyFederationExecution(federationName=federation_name)
+    owner.disconnect()
     subscriber.disconnect()
 
 
