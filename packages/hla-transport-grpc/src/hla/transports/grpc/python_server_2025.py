@@ -89,6 +89,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation": "401",
             "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMdata": "402",
             "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata": "403",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestPublications": "404",
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication": "405",
         }
         self.interaction_names = {value: key for key, value in self.interactions.items()}
         self.parameters = {
@@ -97,6 +99,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             ("401", "HLAservice"): "502",
             ("401", "HLAserialNumber"): "503",
             ("403", "HLAMIMdata"): "504",
+            ("404", "HLAfederate"): "505",
+            ("405", "HLAfederate"): "506",
+            ("405", "HLAnumberOfClasses"): "507",
+            ("405", "HLAobjectClass"): "508",
+            ("405", "HLAattributeList"): "509",
         }
         self.parameter_names = {(interaction_class, value): name for (interaction_class, name), value in self.parameters.items()}
         self.dimensions = {"RoutingSpace": "300"}
@@ -813,6 +820,9 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMdata"]:
                 self._queue_mim_report()
                 return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
+            if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestPublications"]:
+                self._queue_object_publication_report()
+                return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if self._interaction_subscriber_matches(interaction_class, ()):
                 self.callback_queue.append(
                     callback_pb2.CallbackRequest(
@@ -1188,14 +1198,44 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             )
         )
 
+    def _queue_object_publication_report(self) -> None:
+        report_class = self.interactions[
+            "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication"
+        ]
+        if not self._interaction_subscriber_matches(report_class, ()):
+            return
+        publication_rows = [
+            f"{object_class}:{','.join(sorted(attributes, key=int))}"
+            for object_class, attributes in sorted(self.published_object_attributes.items(), key=lambda item: int(item[0]))
+            if attributes
+        ]
+        object_classes = ",".join(row.split(":", 1)[0] for row in publication_rows)
+        attribute_lists = ";".join(publication_rows)
+        self._queue_mom_report(
+            report_class,
+            {
+                "HLAfederate": b"1",
+                "HLAnumberOfClasses": str(len(publication_rows)).encode("ascii"),
+                "HLAobjectClass": object_classes.encode("ascii"),
+                "HLAattributeList": attribute_lists.encode("ascii"),
+            },
+        )
+
     def _queue_mim_report(self) -> None:
         report_class = self.interactions["HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata"]
         if not self._interaction_subscriber_matches(report_class, ()):
             return
+        self._queue_mom_report(
+            report_class,
+            {"HLAMIMdata": b"HLAstandardMIM-2025 HLAmanager HLArequestMIMdata HLAreportMIMdata"},
+        )
+
+    def _queue_mom_report(self, report_class: str, parameter_values: dict[str, bytes]) -> None:
         values = datatypes_pb2.ParameterHandleValueMap()
-        row = values.parameterHandleValue.add()
-        row.parameterHandle.data = self.parameters[(report_class, "HLAMIMdata")].encode("ascii")
-        row.value = b"HLAstandardMIM-2025 HLAmanager HLArequestMIMdata HLAreportMIMdata"
+        for parameter_name, payload in parameter_values.items():
+            row = values.parameterHandleValue.add()
+            row.parameterHandle.data = self.parameters[(report_class, parameter_name)].encode("ascii")
+            row.value = payload
         self.callback_queue.append(
             callback_pb2.CallbackRequest(
                 receiveInteraction=callback_pb2.ReceiveInteraction(

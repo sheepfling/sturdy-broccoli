@@ -1263,6 +1263,73 @@ def test_2025_transport_server_reports_mim_data_for_mom_request_over_fedpro_sche
         server.close()
 
 
+def test_2025_transport_server_reports_object_publications_for_mom_request_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-mom-publications"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "MomPublications2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025MomPub", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        object_class = transport.request(TransportRequest(command="GET_OBJECT_CLASS_HANDLE", fields=("HLAobjectRoot.Target",))).fields[0]
+        attribute = transport.request(TransportRequest(command="GET_ATTRIBUTE_HANDLE", fields=(object_class, "Position"))).fields[0]
+        assert transport.request(TransportRequest(command="PUBLISH_OBJECT_CLASS_ATTRIBUTES", fields=(object_class, attribute))).fields == ()
+
+        request_class = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederate.HLArequest.HLArequestPublications",),
+            )
+        ).fields[0]
+        request_federate_param = transport.request(
+            TransportRequest(command="GET_PARAMETER_HANDLE", fields=(request_class, "HLAfederate"))
+        ).fields[0]
+        report_class = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication",),
+            )
+        ).fields[0]
+        report_federate_param = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAfederate"))).fields[0]
+        count_param = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAnumberOfClasses"))).fields[0]
+        class_param = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAobjectClass"))).fields[0]
+        attributes_param = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAattributeList"))).fields[0]
+        assert transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(report_class,))).fields == ()
+
+        assert transport.request(
+            TransportRequest(command="SEND_INTERACTION", fields=(request_class, f"{request_federate_param}:31", "7075622d72657175657374"))
+        ).fields == ()
+
+        report = transport.request(TransportRequest(command="EVOKE")).fields
+        assert report[:3] == ("1", "INTERACTION", report_class)
+        payloads = dict(item.split(":", 1) for item in report[3].split(","))
+        assert bytes.fromhex(payloads[report_federate_param]).decode("ascii") == "1"
+        assert bytes.fromhex(payloads[count_param]).decode("ascii") == "1"
+        assert bytes.fromhex(payloads[class_param]).decode("ascii") == object_class
+        assert bytes.fromhex(payloads[attributes_param]).decode("ascii") == f"{object_class}:{attribute}"
+        assert report[4:] == ("4d4f4d", "1", "1")
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "publishObjectClassAttributesRequest",
+            "subscribeInteractionClassRequest",
+            "sendInteractionRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_round_trips_2025_switch_services_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None
