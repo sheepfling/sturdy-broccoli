@@ -15,9 +15,10 @@ from hla.rti1516_2025.datatypes import (
     FederationExecutionMemberInformationSet,
     TimeQueryReturn,
 )
-from hla.rti1516_2025.enums import AdditionalSettingsResultCode, CallbackModel, ResignAction, ServiceGroup
+from hla.rti1516_2025.enums import AdditionalSettingsResultCode, CallbackModel, OrderType, ResignAction, ServiceGroup
 from hla.rti1516_2025.exceptions import (
     AlreadyConnected,
+    AttributeNotDefined,
     CouldNotCreateLogicalTimeFactory,
     CouldNotOpenFOM,
     CouldNotOpenMIM,
@@ -31,7 +32,9 @@ from hla.rti1516_2025.exceptions import (
     FederationExecutionAlreadyExists,
     FederationExecutionDoesNotExist,
     InconsistentFOM,
+    InvalidAttributeHandle,
     InvalidCredentials,
+    InvalidDimensionHandle,
     InvalidFederateHandle,
     InvalidFOM,
     InvalidInteractionClassHandle,
@@ -40,9 +43,14 @@ from hla.rti1516_2025.exceptions import (
     InvalidMIM,
     InvalidObjectClassHandle,
     InvalidObjectInstanceHandle,
+    InvalidOrderType,
     InvalidServiceGroup,
+    InvalidTransportationName,
+    InvalidTransportationTypeHandle,
     LogicalTimeAlreadyPassed,
+    NameNotFound,
     NotConnected,
+    ObjectClassNotDefined,
     RTIinternalError,
     TimeRegulationIsNotEnabled,
     Unauthorized,
@@ -50,10 +58,13 @@ from hla.rti1516_2025.exceptions import (
 )
 from hla.rti1516_2025.federate_ambassador import FederateAmbassador
 from hla.rti1516_2025.handles import (
+    AttributeHandle,
+    DimensionHandle,
     FederateHandle,
     InteractionClassHandle,
     ObjectClassHandle,
     ObjectInstanceHandle,
+    TransportationTypeHandle,
 )
 
 _DEFAULT_LOGICAL_TIME_IMPLEMENTATION = "HLAinteger64Time"
@@ -120,6 +131,8 @@ class Shim2025RTIAmbassador:
         self._time_regulation_enabled = False
         self._time_constrained_enabled = False
         self._switches = dict(_SWITCH_DEFAULTS)
+        self._default_attribute_transportation: dict[tuple[str, str], str] = {}
+        self._default_attribute_order: dict[tuple[str, str], OrderType] = {}
         self.calls: list[tuple[str, tuple[Any, ...], dict[str, Any]]] = []
 
     @property
@@ -171,6 +184,8 @@ class Shim2025RTIAmbassador:
         self._time_regulation_enabled = False
         self._time_constrained_enabled = False
         self._switches = dict(_SWITCH_DEFAULTS)
+        self._default_attribute_transportation.clear()
+        self._default_attribute_order.clear()
 
     def createFederationExecution(self, *args: Any, **kwargs: Any) -> None:  # noqa: N802
         self._record("createFederationExecution", *args, **kwargs)
@@ -380,6 +395,143 @@ class Shim2025RTIAmbassador:
         if not self._time_regulation_enabled:
             raise TimeRegulationIsNotEnabled("Cannot query lookahead before enableTimeRegulation")
         return self._lookahead
+
+    def getObjectClassHandle(self, objectClassName: str) -> ObjectClassHandle:  # noqa: N802
+        self._record("getObjectClassHandle", objectClassName)
+        self._require_joined("getObjectClassHandle")
+        if not isinstance(objectClassName, str):
+            raise NameNotFound(repr(objectClassName))
+        handles = self._object_class_handles()
+        try:
+            return ObjectClassHandle(handles[objectClassName])
+        except KeyError as exc:
+            raise NameNotFound(objectClassName) from exc
+
+    def getObjectClassName(self, objectClass: Any) -> str:  # noqa: N802
+        self._record("getObjectClassName", objectClass)
+        return self._object_class_name(objectClass)
+
+    def getAttributeHandle(self, objectClass: Any, attributeName: str) -> AttributeHandle:  # noqa: N802
+        self._record("getAttributeHandle", objectClass, attributeName)
+        object_class_name = self._object_class_name(objectClass)
+        if not isinstance(attributeName, str):
+            raise AttributeNotDefined(repr(attributeName))
+        handles = self._attribute_handles(object_class_name)
+        try:
+            return AttributeHandle(handles[attributeName])
+        except KeyError as exc:
+            raise AttributeNotDefined(attributeName) from exc
+
+    def getAttributeName(self, objectClass: Any, attribute: Any) -> str:  # noqa: N802
+        self._record("getAttributeName", objectClass, attribute)
+        object_class_name = self._object_class_name(objectClass)
+        attribute_value = self._normalize_handle(attribute, AttributeHandle, InvalidAttributeHandle)
+        names_by_handle = {value: name for name, value in self._attribute_handles(object_class_name).items()}
+        try:
+            return names_by_handle[attribute_value]
+        except KeyError as exc:
+            raise InvalidAttributeHandle(str(attribute)) from exc
+
+    def getTransportationTypeHandle(self, transportationTypeName: str) -> TransportationTypeHandle:  # noqa: N802
+        self._record("getTransportationTypeHandle", transportationTypeName)
+        self._require_joined("getTransportationTypeHandle")
+        if not isinstance(transportationTypeName, str):
+            raise InvalidTransportationName(repr(transportationTypeName))
+        handles = self._transportation_handles()
+        try:
+            return TransportationTypeHandle(handles[transportationTypeName])
+        except KeyError as exc:
+            raise InvalidTransportationName(transportationTypeName) from exc
+
+    def getTransportationTypeName(self, transportationType: Any) -> str:  # noqa: N802
+        self._record("getTransportationTypeName", transportationType)
+        transportation_value = self._normalize_handle(
+            transportationType,
+            TransportationTypeHandle,
+            InvalidTransportationTypeHandle,
+        )
+        names_by_handle = {value: name for name, value in self._transportation_handles().items()}
+        try:
+            return names_by_handle[transportation_value]
+        except KeyError as exc:
+            raise InvalidTransportationTypeHandle(str(transportationType)) from exc
+
+    def getDimensionHandle(self, dimensionName: str) -> DimensionHandle:  # noqa: N802
+        self._record("getDimensionHandle", dimensionName)
+        self._require_joined("getDimensionHandle")
+        if not isinstance(dimensionName, str):
+            raise NameNotFound(repr(dimensionName))
+        handles = self._dimension_handles()
+        try:
+            return DimensionHandle(handles[dimensionName])
+        except KeyError as exc:
+            raise NameNotFound(dimensionName) from exc
+
+    def getDimensionName(self, dimension: Any) -> str:  # noqa: N802
+        self._record("getDimensionName", dimension)
+        dimension_value = self._normalize_handle(dimension, DimensionHandle, InvalidDimensionHandle)
+        names_by_handle = {value: name for name, value in self._dimension_handles().items()}
+        try:
+            return names_by_handle[dimension_value]
+        except KeyError as exc:
+            raise InvalidDimensionHandle(str(dimension)) from exc
+
+    def getDimensionUpperBound(self, dimension: Any) -> int:  # noqa: N802
+        self._record("getDimensionUpperBound", dimension)
+        dimension_name = self.getDimensionName(dimension)
+        spec = self._dimension_spec(dimension_name)
+        if spec is None or spec.upper_bound in {None, ""}:
+            return 0
+        try:
+            return int(str(spec.upper_bound))
+        except ValueError as exc:
+            raise InvalidDimensionHandle(f"Dimension {dimension_name} has invalid upper bound {spec.upper_bound!r}") from exc
+
+    def getAvailableDimensionsForObjectClass(self, objectClass: Any) -> set[DimensionHandle]:  # noqa: N802
+        self._record("getAvailableDimensionsForObjectClass", objectClass)
+        self._object_class_name(objectClass)
+        return {DimensionHandle(value) for value in self._dimension_handles().values()}
+
+    def getAvailableDimensionsForInteractionClass(self, interactionClass: Any) -> set[DimensionHandle]:  # noqa: N802
+        self._record("getAvailableDimensionsForInteractionClass", interactionClass)
+        self._interaction_class_name(interactionClass)
+        return {DimensionHandle(value) for value in self._dimension_handles().values()}
+
+    def changeDefaultAttributeTransportationType(  # noqa: N802
+        self,
+        objectClass: Any,
+        attributes: Any,
+        transportationType: Any,
+    ) -> None:
+        self._record("changeDefaultAttributeTransportationType", objectClass, attributes, transportationType)
+        object_class_name = self._object_class_name(objectClass)
+        transportation_name = self.getTransportationTypeName(transportationType)
+        for attribute_name in self._attribute_names_from_handles(object_class_name, attributes):
+            self._default_attribute_transportation[(object_class_name, attribute_name)] = transportation_name
+
+    def changeDefaultAttributeOrderType(self, objectClass: Any, attributes: Any, orderType: Any) -> None:  # noqa: N802
+        self._record("changeDefaultAttributeOrderType", objectClass, attributes, orderType)
+        object_class_name = self._object_class_name(objectClass)
+        try:
+            coerced_order = orderType if isinstance(orderType, OrderType) else OrderType(orderType)
+        except Exception as exc:
+            raise InvalidOrderType(repr(orderType)) from exc
+        for attribute_name in self._attribute_names_from_handles(object_class_name, attributes):
+            self._default_attribute_order[(object_class_name, attribute_name)] = coerced_order
+
+    def defaultAttributePolicySnapshot(self) -> dict[str, dict[str, str]]:  # noqa: N802
+        self._record("defaultAttributePolicySnapshot")
+        self._require_joined("defaultAttributePolicySnapshot")
+        return {
+            "transportation": {
+                f"{object_class}.{attribute}": transportation
+                for (object_class, attribute), transportation in sorted(self._default_attribute_transportation.items())
+            },
+            "order": {
+                f"{object_class}.{attribute}": order.name
+                for (object_class, attribute), order in sorted(self._default_attribute_order.items())
+            },
+        }
 
     def getTimeFactory(self) -> Any:  # noqa: N802
         self._record("getTimeFactory")
@@ -791,6 +943,96 @@ class Shim2025RTIAmbassador:
         if not isinstance(value, int) or value < 0:
             raise exception_type(f"Invalid {expected_type.__name__}: {handle!r}")
         return value
+
+    def _federation_record(self) -> _FederationRecord:
+        self._require_joined("FOM catalog access")
+        if self._federation_name is None:
+            raise FederateNotExecutionMember("Cannot access FOM catalog before joinFederationExecution")
+        federation = _FEDERATION_REGISTRY.get(self._federation_name)
+        if federation is None:
+            raise FederationExecutionDoesNotExist(self._federation_name)
+        return federation
+
+    def _catalog(self) -> Any:
+        catalog = self._federation_record().fom_catalog
+        if catalog is None:
+            raise InvalidFOM("Federation execution does not have a merged FOM catalog")
+        return catalog
+
+    @staticmethod
+    def _stable_handles(names: Any) -> dict[str, int]:
+        return {name: index for index, name in enumerate(sorted(str(name) for name in names), start=1)}
+
+    def _object_class_handles(self) -> dict[str, int]:
+        return self._stable_handles(self._catalog().object_classes)
+
+    def _interaction_class_handles(self) -> dict[str, int]:
+        return self._stable_handles(self._catalog().interaction_classes)
+
+    def _dimension_handles(self) -> dict[str, int]:
+        return self._stable_handles(self._catalog().dimensions)
+
+    def _dimension_spec(self, dimension_name: str) -> Any | None:
+        catalog = self._catalog()
+        modules = tuple(getattr(catalog, "modules", ()))
+        mim_module = getattr(catalog, "mim_module", None)
+        if mim_module is not None:
+            modules = (*modules, mim_module)
+        for module in modules:
+            spec = getattr(module, "dimension_specs", {}).get(dimension_name)
+            if spec is not None:
+                return spec
+        return None
+
+    def _transportation_handles(self) -> dict[str, int]:
+        names = set(getattr(self._catalog(), "transportation_names", ()))
+        names.update({"HLAreliable", "HLAbestEffort"})
+        return self._stable_handles(names)
+
+    def _attribute_handles(self, object_class_name: str) -> dict[str, int]:
+        catalog = self._catalog()
+        try:
+            spec = catalog.object_classes[object_class_name]
+        except KeyError as exc:
+            raise ObjectClassNotDefined(object_class_name) from exc
+        return self._stable_handles(spec.attributes)
+
+    def _object_class_name(self, object_class: Any) -> str:
+        object_class_value = self._normalize_handle(object_class, ObjectClassHandle, InvalidObjectClassHandle)
+        names_by_handle = {value: name for name, value in self._object_class_handles().items()}
+        try:
+            return names_by_handle[object_class_value]
+        except KeyError as exc:
+            raise InvalidObjectClassHandle(str(object_class)) from exc
+
+    def _interaction_class_name(self, interaction_class: Any) -> str:
+        interaction_class_value = self._normalize_handle(
+            interaction_class,
+            InteractionClassHandle,
+            InvalidInteractionClassHandle,
+        )
+        names_by_handle = {value: name for name, value in self._interaction_class_handles().items()}
+        try:
+            return names_by_handle[interaction_class_value]
+        except KeyError as exc:
+            raise InvalidInteractionClassHandle(str(interaction_class)) from exc
+
+    def _attribute_names_from_handles(self, object_class_name: str, attributes: Any) -> tuple[str, ...]:
+        try:
+            attribute_values = tuple(attributes)
+        except TypeError as exc:
+            raise AttributeNotDefined("Attribute handle set must be iterable") from exc
+        if not attribute_values:
+            raise AttributeNotDefined("Attribute handle set cannot be empty")
+        names_by_handle = {value: name for name, value in self._attribute_handles(object_class_name).items()}
+        names: list[str] = []
+        for attribute in attribute_values:
+            attribute_value = self._normalize_handle(attribute, AttributeHandle, InvalidAttributeHandle)
+            try:
+                names.append(names_by_handle[attribute_value])
+            except KeyError as exc:
+                raise InvalidAttributeHandle(str(attribute)) from exc
+        return tuple(names)
 
     def _get_switch(self, method_name: str, name: str) -> bool:
         self._require_joined(method_name)

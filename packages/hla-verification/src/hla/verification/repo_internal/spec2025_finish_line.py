@@ -226,9 +226,24 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
     },
     {
+        "id": "2025-ddm-default-attribute-policy",
+        "status": "implemented-slice",
+        "requirements": ("HLA2025-MOD-007", "HLA2025-NEW-004", "HLA2025-FI-001", "HLA2025-FI-005"),
+        "evidence": (
+            "tests/test_rti1516_2025_spec_and_shim.py",
+            "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
+        ),
+        "supported_scope": (
+            "Python 2025 shim resolves object class, attribute, transportation, and dimension handles from the "
+            "loaded FOM/FDD catalog, reports available dimensions for object and interaction classes, returns "
+            "dimension upper bounds, and stores validated default attribute transportation/order policy changes. "
+            "Full DDM region routing and object update application of defaults remain later behavior work."
+        ),
+    },
+    {
         "id": "2025-tail-unsupported-behavior-boundaries",
         "status": "unsupported-boundary",
-        "requirements": ("HLA2025-MOD-005", "HLA2025-MOD-007", "HLA2025-NEW-004", "HLA2025-NEW-007", "HLA2025-REQ-002"),
+        "requirements": ("HLA2025-MOD-005", "HLA2025-NEW-007", "HLA2025-REQ-002"),
         "evidence": (
             "tests/test_rti1516_2025_spec_and_shim.py",
             "tests/requirements/test_2025_tail_backlog_evidence.py",
@@ -236,9 +251,9 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "packages/hla-backend-shim/src/hla/backends/shim/backend.py",
         ),
         "supported_scope": (
-            "Ownership tag/set callbacks, DDM dimension lookup behavior, default attribute transportation/order "
-            "policy behavior, and detailed MOM service-report serialization are recorded as explicit Python shim "
-            "unsupported boundaries. Service surfaces and differential rows are traceable; behavior is not claimed complete."
+            "Ownership tag/set callbacks and detailed MOM service-report serialization are recorded as explicit "
+            "Python shim unsupported boundaries. Service surfaces and differential rows are traceable; behavior is "
+            "not claimed complete."
         ),
     },
     {
@@ -270,14 +285,14 @@ BACKLOG_STATUS_BY_ROW = {
     "HLA2025-MOD-004": "implemented-slice",
     "HLA2025-MOD-005": "unsupported-boundary",
     "HLA2025-MOD-006": "implemented-slice",
-    "HLA2025-MOD-007": "unsupported-boundary",
+    "HLA2025-MOD-007": "implemented-slice",
     "HLA2025-MOD-008": "implemented-slice",
     "HLA2025-MOD-009": "implemented-slice",
     "HLA2025-MOD-010": "implemented-slice",
     "HLA2025-NEW-001": "unsupported-boundary",
     "HLA2025-NEW-002": "implemented-slice",
     "HLA2025-NEW-003": "implemented-slice",
-    "HLA2025-NEW-004": "unsupported-boundary",
+    "HLA2025-NEW-004": "implemented-slice",
     "HLA2025-NEW-005": "implemented-slice",
     "HLA2025-NEW-006": "implemented-slice",
     "HLA2025-NEW-007": "unsupported-boundary",
