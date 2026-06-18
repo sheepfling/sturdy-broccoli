@@ -330,7 +330,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "the registering federate, unconditional divestiture with ownership validation, acquire-if-available "
             "with 2025 user-supplied tags, negotiated ownership offers, pending acquisition cancellation, "
             "divestiture-if-wanted transfer, ownership unavailable/acquisition callbacks, ownership query "
-            "callbacks, and isAttributeOwnedByFederate. Resign-time ownership policies remain later behavior work."
+            "callbacks, isAttributeOwnedByFederate, and resign-time ownership policies for cancel pending "
+            "acquisitions, delete owned objects, and divest/transfer owned attributes."
         ),
     },
     {

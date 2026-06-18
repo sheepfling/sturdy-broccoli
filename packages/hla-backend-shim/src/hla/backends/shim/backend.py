@@ -165,6 +165,7 @@ class _FederationRecord:
     save_status: dict[int, SaveStatus] = field(default_factory=dict)
     restore_label: str | None = None
     restore_status: dict[int, RestoreStatus] = field(default_factory=dict)
+    next_federate_handle: int = 1
     next_object_instance_handle: int = 1
     next_region_handle: int = 1
 
@@ -376,7 +377,8 @@ class Shim2025RTIAmbassador:
         if federate_name is None:
             federate_name = f"__anonymous_federate_{len(federation.member_handles) + 1}"
         federation.members[federate_name] = federate_type
-        self._federate_handle = FederateHandle(len(federation.member_handles) + 1)
+        self._federate_handle = FederateHandle(federation.next_federate_handle)
+        federation.next_federate_handle += 1
         federation.member_handles[federate_name] = self._federate_handle
         federation.member_rtis[self._federate_handle.value] = self
         if self._federate_ambassador is not None:
@@ -400,6 +402,7 @@ class Shim2025RTIAmbassador:
     def resignFederationExecution(self, resignAction: ResignAction) -> None:  # noqa: N802
         self._record("resignFederationExecution", resignAction)
         self._require_joined("resignFederationExecution")
+        self._apply_resign_action(resignAction)
         if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "federateResigned"):
             self._deliver_callback("federateResigned", self._resign_reason_description(resignAction))
         self._release_join()
@@ -2291,6 +2294,81 @@ class Shim2025RTIAmbassador:
                 federation.subscribed_directed_interactions.pop(self._federate_handle.value, None)
                 federation.member_regions.pop(self._federate_handle.value, None)
                 federation.member_region_bounds.pop(self._federate_handle.value, None)
+
+    def _apply_resign_action(self, resign_action: ResignAction) -> None:
+        if resign_action is ResignAction.NO_ACTION:
+            return
+        if resign_action in {
+            ResignAction.CANCEL_PENDING_OWNERSHIP_ACQUISITIONS,
+            ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST,
+        }:
+            self._cancel_resigning_federate_pending_acquisitions()
+        if resign_action in {
+            ResignAction.DELETE_OBJECTS,
+            ResignAction.DELETE_OBJECTS_THEN_DIVEST,
+            ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST,
+        }:
+            self._delete_objects_owned_by_resigning_federate()
+        if resign_action in {
+            ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES,
+            ResignAction.DELETE_OBJECTS_THEN_DIVEST,
+            ResignAction.CANCEL_THEN_DELETE_THEN_DIVEST,
+        }:
+            self._divest_resigning_federate_attributes()
+
+    def _cancel_resigning_federate_pending_acquisitions(self) -> None:
+        federate_handle = self._current_federate_handle()
+        for record in self._federation_record().object_instances.values():
+            for attribute_name in tuple(record.attribute_candidates):
+                self._remove_attribute_candidate(record, attribute_name, federate_handle)
+
+    def _delete_objects_owned_by_resigning_federate(self) -> None:
+        federation = self._federation_record()
+        federate_handle = self._current_federate_handle()
+        for object_instance_value, record in tuple(federation.object_instances.items()):
+            if federate_handle not in set(record.attribute_owners.values()):
+                continue
+            object_instance = ObjectInstanceHandle(object_instance_value)
+            self._deliver_resign_remove_callbacks(object_instance, record)
+            if record.object_instance_name is not None:
+                federation.object_instance_names.pop(record.object_instance_name, None)
+            federation.object_instances.pop(object_instance_value, None)
+
+    def _divest_resigning_federate_attributes(self) -> None:
+        federate_handle = self._current_federate_handle()
+        for object_instance_value, record in tuple(self._federation_record().object_instances.items()):
+            attribute_handles_by_name = self._attribute_handles(record.object_class_name)
+            for attribute_name, owner in tuple(record.attribute_owners.items()):
+                if owner != federate_handle:
+                    continue
+                new_owner, acquisition_tag = self._pop_attribute_candidate(record, attribute_name) or (None, b"")
+                record.attribute_owners[attribute_name] = new_owner
+                record.attribute_divesting.discard(attribute_name)
+                if new_owner is not None:
+                    attribute_handle = AttributeHandle(attribute_handles_by_name[attribute_name])
+                    self._deliver_to_federate_handle(
+                        new_owner,
+                        "attributeOwnershipAcquisitionNotification",
+                        ObjectInstanceHandle(object_instance_value),
+                        {attribute_handle},
+                        acquisition_tag,
+                    )
+
+    def _deliver_resign_remove_callbacks(self, object_instance: ObjectInstanceHandle, record: _ObjectInstanceRecord) -> None:
+        for federate_key, subscriptions in self._federation_record().subscribed_object_attributes.items():
+            if federate_key == self._current_federate_key() or record.object_class_name not in subscriptions:
+                continue
+            self._deliver_to_federate_handle(
+                FederateHandle(federate_key),
+                "removeObjectInstance",
+                object_instance,
+                b"",
+                self._current_federate_handle(),
+                None,
+                OrderType.RECEIVE,
+                OrderType.RECEIVE,
+                None,
+            )
 
     def _resign_reason_description(self, resign_action: ResignAction) -> str:
         action = getattr(resign_action, "name", str(resign_action))

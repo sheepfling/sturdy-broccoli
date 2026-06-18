@@ -1232,6 +1232,126 @@ def test_2025_shim_object_management_and_support_callbacks(tmp_path: Path) -> No
 
 
 @pytest.mark.requirements("HLA2025-MOD-005", "HLA2025-FI-001", "HLA2025-FI-005")
+def test_2025_shim_applies_resign_time_ownership_policies(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import NoAcquisitionPending, ObjectInstanceNotKnown
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "ResignOwnership2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Resign Ownership 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-18</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused resign-time ownership fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>OwnableTarget</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-resign-ownership-{uuid.uuid4().hex[:8]}"
+    owner_callbacks = Recording2025FederateAmbassador()
+    acquirer_callbacks = Recording2025FederateAmbassador()
+    subscriber_callbacks = Recording2025FederateAmbassador()
+    owner = create_rti_ambassador(backend="shim")
+    acquirer = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+
+    owner.connect(owner_callbacks, CallbackModel.HLA_EVOKED)
+    acquirer.connect(acquirer_callbacks, CallbackModel.HLA_EVOKED)
+    subscriber.connect(subscriber_callbacks, CallbackModel.HLA_EVOKED)
+    owner.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+    owner.joinFederationExecution("Owner", "TestFederate", federation_name)
+    acquirer.joinFederationExecution("Acquirer", "TestFederate", federation_name)
+    subscriber.joinFederationExecution("Subscriber", "TestFederate", federation_name)
+
+    object_class = owner.getObjectClassHandle("HLAobjectRoot.OwnableTarget")
+    attribute = owner.getAttributeHandle(object_class, "Position")
+    subscriber_attribute = subscriber.getAttributeHandle(object_class, "Position")
+    subscriber.subscribeObjectClassAttributes(object_class, {subscriber_attribute})
+
+    cancelled = owner.registerObjectInstance(object_class, "Cancel-Pending")
+    acquirer.attributeOwnershipAcquisition(cancelled, {attribute}, b"cancel-on-resign")
+    assert owner_callbacks.last_callback("requestAttributeOwnershipRelease") == (
+        cancelled,
+        {attribute},
+        b"cancel-on-resign",
+    )
+    acquirer.resignFederationExecution(ResignAction.CANCEL_PENDING_OWNERSHIP_ACQUISITIONS)
+    with pytest.raises(NoAcquisitionPending):
+        owner.attributeOwnershipDivestitureIfWanted(cancelled, {attribute})
+
+    acquirer = create_rti_ambassador(backend="shim")
+    acquirer_callbacks = Recording2025FederateAmbassador()
+    acquirer.connect(acquirer_callbacks, CallbackModel.HLA_EVOKED)
+    acquirer_handle = acquirer.joinFederationExecution("Acquirer-2", "TestFederate", federation_name)
+
+    transferred = owner.registerObjectInstance(object_class, "Transfer-On-Resign")
+    acquirer.attributeOwnershipAcquisition(transferred, {attribute}, b"transfer-on-resign")
+    owner.resignFederationExecution(ResignAction.UNCONDITIONALLY_DIVEST_ATTRIBUTES)
+    assert acquirer_callbacks.last_callback("attributeOwnershipAcquisitionNotification") == (
+        transferred,
+        {attribute},
+        b"transfer-on-resign",
+    )
+    acquirer.queryAttributeOwnership(transferred, {attribute})
+    assert acquirer_callbacks.last_callback("informAttributeOwnership") == (
+        transferred,
+        {attribute},
+        acquirer_handle,
+    )
+
+    deleter = create_rti_ambassador(backend="shim")
+    deleter_callbacks = Recording2025FederateAmbassador()
+    deleter.connect(deleter_callbacks, CallbackModel.HLA_EVOKED)
+    deleter.joinFederationExecution("Deleter", "TestFederate", federation_name)
+    delete_object_class = deleter.getObjectClassHandle("HLAobjectRoot.OwnableTarget")
+    delete_attribute = deleter.getAttributeHandle(delete_object_class, "Position")
+    deleter.publishObjectClassAttributes(delete_object_class, {delete_attribute})
+    deleted = deleter.registerObjectInstance(delete_object_class, "Delete-On-Resign")
+    assert subscriber_callbacks.last_callback("discoverObjectInstance")[0] == deleted
+    assert deleter.isAttributeOwnedByFederate(deleted, delete_attribute) is True
+    deleter.resignFederationExecution(ResignAction.DELETE_OBJECTS)
+    assert subscriber_callbacks.last_callback("removeObjectInstance")[0] == deleted
+    with pytest.raises(ObjectInstanceNotKnown):
+        subscriber.requestAttributeValueUpdate(deleted, {subscriber_attribute}, b"deleted")
+
+    acquirer.resignFederationExecution(ResignAction.NO_ACTION)
+    subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+    subscriber.destroyFederationExecution(federationName=federation_name)
+    deleter.disconnect()
+    acquirer.disconnect()
+    subscriber.disconnect()
+    owner.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-MOD-005", "HLA2025-FI-001", "HLA2025-FI-005")
 def test_2025_shim_implements_basic_ownership_divest_acquire_and_query_callbacks(tmp_path: Path) -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction
     from hla.rti1516_2025.exceptions import (
