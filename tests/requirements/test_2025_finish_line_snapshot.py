@@ -82,7 +82,9 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
 
     assert slices["2025-logical-time"]["status"] == "implemented-slice"
     assert "flushQueueRequest" in slices["2025-logical-time"]["supported_scope"]
-    assert "cross-binding parity" in slices["2025-logical-time"]["supported_scope"]
+    assert "queued timestamped object updates/interactions" in slices["2025-logical-time"]["supported_scope"]
+    assert "message retraction before delivery" in slices["2025-logical-time"]["supported_scope"]
+    assert "Cross-binding parity" in slices["2025-logical-time"]["supported_scope"]
     assert slices["2025-save-restore-lifecycle"]["status"] == "implemented-slice"
     assert "federation save/restore lifecycle callbacks" in slices["2025-save-restore-lifecycle"]["supported_scope"]
     assert "object registry rollback" in slices["2025-save-restore-lifecycle"]["supported_scope"]

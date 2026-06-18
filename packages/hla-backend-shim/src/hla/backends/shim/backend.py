@@ -18,6 +18,7 @@ from hla.rti1516_2025.datatypes import (
     FederationExecutionInformationSet,
     FederationExecutionMemberInformation,
     FederationExecutionMemberInformationSet,
+    MessageRetractionReturn,
     RangeBounds,
     TimeQueryReturn,
 )
@@ -66,6 +67,7 @@ from hla.rti1516_2025.exceptions import (
     InvalidInteractionClassHandle,
     InvalidLogicalTime,
     InvalidLookahead,
+    InvalidMessageRetractionHandle,
     InvalidMIM,
     InvalidObjectClassHandle,
     InvalidObjectInstanceHandle,
@@ -77,6 +79,7 @@ from hla.rti1516_2025.exceptions import (
     InvalidTransportationName,
     InvalidTransportationTypeHandle,
     LogicalTimeAlreadyPassed,
+    MessageCanNoLongerBeRetracted,
     NameNotFound,
     NoAcquisitionPending,
     NotConnected,
@@ -102,6 +105,7 @@ from hla.rti1516_2025.handles import (
     DimensionHandle,
     FederateHandle,
     InteractionClassHandle,
+    MessageRetractionHandle,
     ObjectClassHandle,
     ObjectInstanceHandle,
     ParameterHandle,
@@ -157,6 +161,8 @@ class _FederationRecord:
     object_instance_names: dict[str, int] = field(default_factory=dict)
     attribute_scope_state: dict[tuple[int, int, str], bool] = field(default_factory=dict)
     interaction_transportation: dict[tuple[int, str], str] = field(default_factory=dict)
+    queued_tso_callbacks: dict[int, "_QueuedTsoCallback"] = field(default_factory=dict)
+    delivered_retraction_handles: set[int] = field(default_factory=set)
     saved_labels: set[str] = field(default_factory=set)
     saved_object_instances: dict[str, dict[int, "_ObjectInstanceRecord"]] = field(default_factory=dict)
     saved_object_instance_names: dict[str, dict[str, int]] = field(default_factory=dict)
@@ -169,6 +175,7 @@ class _FederationRecord:
     next_federate_handle: int = 1
     next_object_instance_handle: int = 1
     next_region_handle: int = 1
+    next_message_retraction_handle: int = 1
 
 
 @dataclass(slots=True)
@@ -180,6 +187,15 @@ class _ObjectInstanceRecord:
     attribute_candidates: dict[str, list[tuple[FederateHandle, bytes]]] = field(default_factory=dict)
     update_regions: dict[str, set[int]] = field(default_factory=dict)
     attribute_transportation: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
+class _QueuedTsoCallback:
+    target_federate: FederateHandle
+    callback_time: Any
+    serial: int
+    method_name: str
+    args: tuple[Any, ...]
 
 
 _FEDERATION_REGISTRY: dict[str, _FederationRecord] = {}
@@ -576,6 +592,7 @@ class Shim2025RTIAmbassador:
         if requested_time < self._logical_time:
             raise LogicalTimeAlreadyPassed(str(requested_time))
         self._logical_time = requested_time
+        self._deliver_due_tso_callbacks()
         if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "timeAdvanceGrant"):
             self._deliver_callback("timeAdvanceGrant", self._logical_time)
 
@@ -586,6 +603,7 @@ class Shim2025RTIAmbassador:
         if requested_time < self._logical_time:
             raise LogicalTimeAlreadyPassed(str(requested_time))
         self._logical_time = requested_time
+        self._deliver_due_tso_callbacks()
         if self._federate_ambassador is not None and hasattr(self._federate_ambassador, "flushQueueGrant"):
             self._deliver_callback("flushQueueGrant", self._logical_time, self._logical_time)
 
@@ -610,6 +628,21 @@ class Shim2025RTIAmbassador:
         if not self._time_regulation_enabled:
             raise TimeRegulationIsNotEnabled("Cannot modify lookahead before enableTimeRegulation")
         self._lookahead = self._coerce_interval(lookahead)
+
+    def retract(self, retraction: Any) -> None:
+        self._record("retract", retraction)
+        self._require_joined("retract")
+        retraction_value = self._normalize_handle(
+            retraction,
+            MessageRetractionHandle,
+            InvalidMessageRetractionHandle,
+        )
+        federation = self._federation_record()
+        if federation.queued_tso_callbacks.pop(retraction_value, None) is not None:
+            return
+        if retraction_value in federation.delivered_retraction_handles:
+            raise MessageCanNoLongerBeRetracted(str(retraction))
+        raise InvalidMessageRetractionHandle(str(retraction))
 
     def queryLookahead(self) -> Any:  # noqa: N802
         self._record("queryLookahead")
@@ -1203,6 +1236,7 @@ class Shim2025RTIAmbassador:
 
         transportation = self._default_transportation_for(object_class_name, values_by_handle)
         callback_time = self._coerce_time(time) if time is not None else None
+        retraction_handles: list[MessageRetractionHandle] = []
         for federate_key, subscriptions in self._federation_record().subscribed_object_attributes.items():
             if federate_key == self._current_federate_key():
                 continue
@@ -1224,6 +1258,24 @@ class Shim2025RTIAmbassador:
                 for handle in reflected
                 for region_value in record.update_regions.get(self._attribute_name_by_handle(object_class_name, handle), set())
             }
+            if callback_time is not None:
+                retraction_handles.append(
+                    self._queue_tso_callback(
+                        FederateHandle(federate_key),
+                        callback_time,
+                        "reflectAttributeValues",
+                        objectInstance,
+                        reflected,
+                        bytes(userSuppliedTag),
+                        transportation,
+                        self._current_federate_handle(),
+                        sent_regions,
+                        callback_time,
+                        OrderType.TIMESTAMP,
+                        OrderType.TIMESTAMP,
+                    )
+                )
+                continue
             self._deliver_to_federate_handle(
                 FederateHandle(federate_key),
                 "reflectAttributeValues",
@@ -1233,11 +1285,14 @@ class Shim2025RTIAmbassador:
                 transportation,
                 self._current_federate_handle(),
                 sent_regions,
-                callback_time,
+                None,
                 self._default_order_for(object_class_name, reflected),
                 self._default_order_for(object_class_name, reflected),
                 None,
             )
+        if callback_time is not None:
+            handle = retraction_handles[0] if retraction_handles else MessageRetractionHandle(0)
+            return MessageRetractionReturn(bool(retraction_handles), handle)
         return None
 
     def sendInteraction(  # noqa: N802
@@ -1259,8 +1314,27 @@ class Shim2025RTIAmbassador:
             values_by_handle[ParameterHandle(parameters_by_name[parameter_name])] = bytes(value)
         transportation = self._transportation_handle_by_name("HLAreliable")
         callback_time = self._coerce_time(time) if time is not None else None
+        retraction_handles: list[MessageRetractionHandle] = []
         for federate_key, subscriptions in self._federation_record().subscribed_interactions.items():
             if federate_key == self._current_federate_key() or interaction_class_name not in subscriptions:
+                continue
+            if callback_time is not None:
+                retraction_handles.append(
+                    self._queue_tso_callback(
+                        FederateHandle(federate_key),
+                        callback_time,
+                        "receiveInteraction",
+                        interactionClass,
+                        values_by_handle,
+                        bytes(userSuppliedTag),
+                        transportation,
+                        self._current_federate_handle(),
+                        set(),
+                        callback_time,
+                        OrderType.TIMESTAMP,
+                        OrderType.TIMESTAMP,
+                    )
+                )
                 continue
             self._deliver_to_federate_handle(
                 FederateHandle(federate_key),
@@ -1276,6 +1350,9 @@ class Shim2025RTIAmbassador:
                 OrderType.RECEIVE,
                 None,
             )
+        if callback_time is not None:
+            handle = retraction_handles[0] if retraction_handles else MessageRetractionHandle(0)
+            return MessageRetractionReturn(bool(retraction_handles), handle)
         return None
 
     def sendInteractionWithRegions(  # noqa: N802
@@ -1926,6 +2003,34 @@ class Shim2025RTIAmbassador:
         if callback is None:
             raise RTIinternalError(f"Federate ambassador {federate_handle!r} does not implement {method_name}")
         callback(*args)
+
+    def _queue_tso_callback(self, target_federate: FederateHandle, callback_time: Any, method_name: str, *args: Any) -> MessageRetractionHandle:
+        federation = self._federation_record()
+        handle = MessageRetractionHandle(federation.next_message_retraction_handle)
+        federation.next_message_retraction_handle += 1
+        federation.queued_tso_callbacks[handle.value] = _QueuedTsoCallback(
+            target_federate=target_federate,
+            callback_time=callback_time,
+            serial=handle.value,
+            method_name=method_name,
+            args=(*args, handle),
+        )
+        return handle
+
+    def _deliver_due_tso_callbacks(self) -> None:
+        federation = self._federation_record()
+        due = sorted(
+            (
+                (handle_value, queued)
+                for handle_value, queued in federation.queued_tso_callbacks.items()
+                if queued.target_federate == self._current_federate_handle() and queued.callback_time <= self._logical_time
+            ),
+            key=lambda item: (item[1].callback_time, item[1].serial),
+        )
+        for handle_value, queued in due:
+            federation.queued_tso_callbacks.pop(handle_value, None)
+            federation.delivered_retraction_handles.add(handle_value)
+            self._deliver_to_federate_handle(queued.target_federate, queued.method_name, *queued.args)
 
     def _other_member_handles(self) -> tuple[FederateHandle, ...]:
         if self._federate_handle is None:

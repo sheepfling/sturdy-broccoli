@@ -70,6 +70,9 @@ class Recording2025FederateAmbassador:
     def flushQueueGrant(self, time, optimisticTime) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("flushQueueGrant", (time, optimisticTime)))
 
+    def requestRetraction(self, retraction) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("requestRetraction", (retraction,)))
+
     def discoverObjectInstance(self, objectInstance, objectClass, objectInstanceName, producingFederate) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("discoverObjectInstance", (objectInstance, objectClass, objectInstanceName, producingFederate)))
 
@@ -2167,6 +2170,118 @@ def test_2025_shim_distinguishes_fom_mim_open_read_invalid_and_merge_errors(tmp_
         )
 
     rti.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-FR-010", "HLA2025-FI-005", "HLA2025-FI-009", "HLA2025-MOD-006")
+def test_2025_shim_queues_timestamped_messages_and_supports_retraction(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.exceptions import MessageCanNoLongerBeRetracted
+    from hla.rti1516_2025.factory import create_rti_ambassador
+    from hla.rti1516_2025.time import HLAinteger64Time
+
+    fom = tmp_path / "QueuedTso2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Queued TSO 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-18</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused queued TSO fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>TimedTarget</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>TimeStamp</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TimedReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>TimeStamp</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-tso-queue-{uuid.uuid4().hex[:8]}"
+    publisher_callbacks = Recording2025FederateAmbassador()
+    subscriber_callbacks = Recording2025FederateAmbassador()
+    publisher = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+
+    publisher.connect(publisher_callbacks, CallbackModel.HLA_EVOKED)
+    subscriber.connect(subscriber_callbacks, CallbackModel.HLA_EVOKED)
+    publisher.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+    publisher.joinFederationExecution("Publisher", "TestFederate", federation_name)
+    subscriber.joinFederationExecution("Subscriber", "TestFederate", federation_name)
+    subscriber.enableTimeConstrained()
+
+    object_class = publisher.getObjectClassHandle("HLAobjectRoot.TimedTarget")
+    attribute = publisher.getAttributeHandle(object_class, "Position")
+    interaction_class = publisher.getInteractionClassHandle("HLAinteractionRoot.TimedReport")
+    parameter = publisher.getParameterHandle(interaction_class, "TrackId")
+    publisher.publishObjectClassAttributes(object_class, {attribute})
+    publisher.publishInteractionClass(interaction_class)
+    subscriber.subscribeObjectClassAttributes(object_class, {attribute})
+    subscriber.subscribeInteractionClass(interaction_class)
+    object_instance = publisher.registerObjectInstance(object_class, "Timed-Target-1")
+
+    late = publisher.sendInteraction(interaction_class, {parameter: b"late"}, b"late", HLAinteger64Time(20))
+    early = publisher.updateAttributeValues(object_instance, {attribute: b"early"}, b"early", HLAinteger64Time(10))
+    retracted = publisher.sendInteraction(interaction_class, {parameter: b"retracted"}, b"retracted", HLAinteger64Time(15))
+    assert late.retractionHandleIsValid is True
+    assert early.retractionHandleIsValid is True
+    assert retracted.retractionHandleIsValid is True
+    publisher.retract(retracted.handle)
+
+    assert subscriber_callbacks.last_callback("reflectAttributeValues") is None
+    assert subscriber_callbacks.last_callback("receiveInteraction") is None
+    subscriber.timeAdvanceRequest(HLAinteger64Time(12))
+    reflection = subscriber_callbacks.last_callback("reflectAttributeValues")
+    assert reflection is not None
+    assert reflection[:3] == (object_instance, {attribute: b"early"}, b"early")
+    assert reflection[6:] == (HLAinteger64Time(10), OrderType.TIMESTAMP, OrderType.TIMESTAMP, early.handle)
+    assert subscriber_callbacks.last_callback("receiveInteraction") is None
+
+    subscriber.timeAdvanceRequest(HLAinteger64Time(25))
+    received = subscriber_callbacks.last_callback("receiveInteraction")
+    assert received is not None
+    assert received[:3] == (interaction_class, {parameter: b"late"}, b"late")
+    assert received[6:] == (HLAinteger64Time(20), OrderType.TIMESTAMP, OrderType.TIMESTAMP, late.handle)
+    with pytest.raises(MessageCanNoLongerBeRetracted):
+        publisher.retract(late.handle)
+
+    subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.destroyFederationExecution(federationName=federation_name)
+    publisher.disconnect()
+    subscriber.disconnect()
 
 
 @pytest.mark.requirements("HLA2025-FR-010", "HLA2025-FI-005", "HLA2025-FI-009", "HLA2025-MOD-006")

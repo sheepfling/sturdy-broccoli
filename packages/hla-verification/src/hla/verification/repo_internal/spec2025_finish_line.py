@@ -61,8 +61,10 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
         ),
         "supported_scope": (
             "Python 2025 shim covers default logical-time factory selection, lookahead query/modify, "
-            "timeAdvanceRequest, flushQueueRequest, timeAdvanceGrant, flushQueueGrant, and GALT/LITS queries. "
-            "Full queued TSO ordering and cross-binding parity remain separate backlog work."
+            "timeAdvanceRequest, flushQueueRequest, timeAdvanceGrant, flushQueueGrant, GALT/LITS queries, "
+            "queued timestamped object updates/interactions, timestamp-order delivery on receiving federate "
+            "time advance, and message retraction before delivery. Cross-binding parity remains separate "
+            "backlog work."
         ),
     },
     {
