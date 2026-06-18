@@ -87,6 +87,8 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.interactions = {
             "HLAinteractionRoot.TrackReport": "400",
             "HLAinteractionRoot.HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation": "401",
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMdata": "402",
+            "HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata": "403",
         }
         self.interaction_names = {value: key for key, value in self.interactions.items()}
         self.parameters = {
@@ -94,6 +96,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             ("401", "HLAfederate"): "501",
             ("401", "HLAservice"): "502",
             ("401", "HLAserialNumber"): "503",
+            ("403", "HLAMIMdata"): "504",
         }
         self.parameter_names = {(interaction_class, value): name for (interaction_class, name), value in self.parameters.items()}
         self.dimensions = {"RoutingSpace": "300"}
@@ -807,6 +810,9 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if request_kind == "sendInteractionRequest":
             payload = request.sendInteractionRequest
             interaction_class = payload.interactionClass.data.decode("ascii")
+            if interaction_class == self.interactions["HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMdata"]:
+                self._queue_mim_report()
+                return rti_pb2.CallResponse(sendInteractionResponse=rti_pb2.SendInteractionResponse())
             if self._interaction_subscriber_matches(interaction_class, ()):
                 self.callback_queue.append(
                     callback_pb2.CallbackRequest(
@@ -1174,6 +1180,26 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             callback_pb2.CallbackRequest(
                 receiveInteraction=callback_pb2.ReceiveInteraction(
                     interactionClass=_handle(datatypes_pb2.InteractionClassHandle, interaction_class),
+                    parameterValues=values,
+                    userSuppliedTag=b"MOM",
+                    transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),
+                    producingFederate=_handle(datatypes_pb2.FederateHandle, "1"),
+                )
+            )
+        )
+
+    def _queue_mim_report(self) -> None:
+        report_class = self.interactions["HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata"]
+        if not self._interaction_subscriber_matches(report_class, ()):
+            return
+        values = datatypes_pb2.ParameterHandleValueMap()
+        row = values.parameterHandleValue.add()
+        row.parameterHandle.data = self.parameters[(report_class, "HLAMIMdata")].encode("ascii")
+        row.value = b"HLAstandardMIM-2025 HLAmanager HLArequestMIMdata HLAreportMIMdata"
+        self.callback_queue.append(
+            callback_pb2.CallbackRequest(
+                receiveInteraction=callback_pb2.ReceiveInteraction(
+                    interactionClass=_handle(datatypes_pb2.InteractionClassHandle, report_class),
                     parameterValues=values,
                     userSuppliedTag=b"MOM",
                     transportationType=_handle(datatypes_pb2.TransportationTypeHandle, "1"),

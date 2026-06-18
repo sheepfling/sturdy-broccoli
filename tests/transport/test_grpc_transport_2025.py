@@ -1208,6 +1208,61 @@ def test_2025_transport_server_reports_mom_service_invocation_over_fedpro_schema
         server.close()
 
 
+def test_2025_transport_server_reports_mim_data_for_mom_request_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-mom-mim"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "MomMim2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025MIM", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        request_class = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederation.HLArequest.HLArequestMIMdata",),
+            )
+        ).fields[0]
+        report_class = transport.request(
+            TransportRequest(
+                command="GET_INTERACTION_CLASS_HANDLE",
+                fields=("HLAinteractionRoot.HLAmanager.HLAfederation.HLAreport.HLAreportMIMdata",),
+            )
+        ).fields[0]
+        mim_data_param = transport.request(TransportRequest(command="GET_PARAMETER_HANDLE", fields=(report_class, "HLAMIMdata"))).fields[0]
+        assert transport.request(TransportRequest(command="SUBSCRIBE_INTERACTION_CLASS", fields=(report_class,))).fields == ()
+
+        assert transport.request(TransportRequest(command="SEND_INTERACTION", fields=(request_class, "", "6d696d2d72657175657374"))).fields == ()
+
+        report = transport.request(TransportRequest(command="EVOKE")).fields
+        assert report[:3] == ("1", "INTERACTION", report_class)
+        assert report[3].startswith(f"{mim_data_param}:")
+        assert bytes.fromhex(report[3].split(":", 1)[1]).decode("ascii") == (
+            "HLAstandardMIM-2025 HLAmanager HLArequestMIMdata HLAreportMIMdata"
+        )
+        assert report[4:] == ("4d4f4d", "1", "1")
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "getInteractionClassHandleRequest",
+            "getParameterHandleRequest",
+            "subscribeInteractionClassRequest",
+            "sendInteractionRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_round_trips_2025_switch_services_over_fedpro_schema():
     server = start_2025_grpc_server()
     transport = None

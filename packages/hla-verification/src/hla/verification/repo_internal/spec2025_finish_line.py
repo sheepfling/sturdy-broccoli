@@ -353,8 +353,8 @@ IMPLEMENTED_EVIDENCE_SLICES: tuple[Mapping[str, Any], ...] = (
             "Python 2025 shim serializes structured MOM service report records with service names, federate and "
             "federation context, serial numbers, success/exception fields, JSON-safe arguments and returned values, "
             "active service-reporting switches, source-local record snapshots, and service-report callback delivery "
-            "to joined federates with service reporting enabled. This is not full MOM manager interaction routing "
-            "or a conformance claim."
+            "to joined federates with service reporting enabled. The FedPro hosted route also reports standard MIM "
+            "data for HLArequestMIMdata. This is not full MOM manager interaction routing or a conformance claim."
         ),
     },
     {
