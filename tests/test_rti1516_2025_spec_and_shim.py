@@ -36,6 +36,71 @@ class Recording2025FederateAmbassador:
     def flushQueueGrant(self, time, optimisticTime) -> None:  # noqa: N802, ANN001
         self.callbacks.append(("flushQueueGrant", (time, optimisticTime)))
 
+    def discoverObjectInstance(self, objectInstance, objectClass, objectInstanceName, producingFederate) -> None:  # noqa: N802, ANN001
+        self.callbacks.append(("discoverObjectInstance", (objectInstance, objectClass, objectInstanceName, producingFederate)))
+
+    def reflectAttributeValues(  # noqa: N802, ANN001
+        self,
+        objectInstance,
+        attributeValues,
+        userSuppliedTag,
+        transportationType,
+        producingFederate,
+        optionalSentRegions,
+        time=None,
+        sentOrderType=None,
+        receivedOrderType=None,
+        optionalRetraction=None,
+    ) -> None:
+        self.callbacks.append(
+            (
+                "reflectAttributeValues",
+                (
+                    objectInstance,
+                    attributeValues,
+                    userSuppliedTag,
+                    transportationType,
+                    producingFederate,
+                    optionalSentRegions,
+                    time,
+                    sentOrderType,
+                    receivedOrderType,
+                    optionalRetraction,
+                ),
+            )
+        )
+
+    def receiveInteraction(  # noqa: N802, ANN001
+        self,
+        interactionClass,
+        parameterValues,
+        userSuppliedTag,
+        transportationType,
+        producingFederate,
+        optionalSentRegions,
+        time=None,
+        sentOrderType=None,
+        receivedOrderType=None,
+        optionalRetraction=None,
+    ) -> None:
+        self.callbacks.append(
+            (
+                "receiveInteraction",
+                (
+                    interactionClass,
+                    parameterValues,
+                    userSuppliedTag,
+                    transportationType,
+                    producingFederate,
+                    optionalSentRegions,
+                    time,
+                    sentOrderType,
+                    receivedOrderType,
+                    optionalRetraction,
+                ),
+            )
+        )
+
     def attributeOwnershipAcquisitionNotification(  # noqa: N802, ANN001
         self,
         objectInstance,
@@ -192,11 +257,144 @@ def test_2025_callback_surface_uses_direct_context_parameters_not_supplemental_h
     assert not hasattr(rti2025, "SupplementalRemoveInfo")
 
 
+@pytest.mark.requirements("HLA2025-FR-003", "HLA2025-FR-004", "HLA2025-FI-001", "HLA2025-MOD-006")
+def test_2025_shim_runs_two_federate_object_and_interaction_exchange(tmp_path: Path) -> None:
+    from hla.rti1516_2025.enums import CallbackModel, OrderType, ResignAction
+    from hla.rti1516_2025.exceptions import InteractionClassNotPublished, ObjectClassNotPublished
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    fom = tmp_path / "Exchange2025.xml"
+    fom.write_text(
+        """<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2025">
+  <modelIdentification>
+    <name>Exchange 2025</name>
+    <type>FOM</type>
+    <version>1.0</version>
+    <modificationDate>2026-06-18</modificationDate>
+    <securityClassification>Unclassified</securityClassification>
+    <description>Focused exchange fixture.</description>
+    <poc><pocName>HLA-X</pocName></poc>
+    <reference><identification>NA</identification></reference>
+  </modelIdentification>
+  <objects>
+    <objectClass>
+      <name>HLAobjectRoot</name>
+      <objectClass>
+        <name>Target</name>
+        <sharing>PublishSubscribe</sharing>
+        <attribute>
+          <name>Position</name>
+          <dataType>HLAfloat64BE</dataType>
+          <sharing>PublishSubscribe</sharing>
+          <transportation>HLAreliable</transportation>
+          <order>Receive</order>
+        </attribute>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+        <name>TrackReport</name>
+        <sharing>PublishSubscribe</sharing>
+        <transportation>HLAreliable</transportation>
+        <order>Receive</order>
+        <parameter><name>TrackId</name><dataType>HLAunicodeString</dataType></parameter>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+  <transportations>
+    <transportation><name>HLAreliable</name><reliable>Yes</reliable></transportation>
+  </transportations>
+</objectModel>
+""",
+        encoding="utf-8",
+    )
+
+    federation_name = f"shim-exchange-{uuid.uuid4().hex[:8]}"
+    publisher_callbacks = Recording2025FederateAmbassador()
+    subscriber_callbacks = Recording2025FederateAmbassador()
+    publisher = create_rti_ambassador(backend="shim")
+    subscriber = create_rti_ambassador(backend="shim")
+
+    publisher.connect(publisher_callbacks, CallbackModel.HLA_EVOKED)
+    subscriber.connect(subscriber_callbacks, CallbackModel.HLA_EVOKED)
+    publisher.createFederationExecution(federationName=federation_name, fomModule=str(fom))
+    publisher_handle = publisher.joinFederationExecution("Publisher", "TestFederate", federation_name)
+    subscriber.joinFederationExecution("Subscriber", "TestFederate", federation_name)
+
+    object_class = publisher.getObjectClassHandle("HLAobjectRoot.Target")
+    attribute = publisher.getAttributeHandle(object_class, "Position")
+    interaction_class = publisher.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+    parameter = publisher.getParameterHandle(interaction_class, "TrackId")
+    reliable = publisher.getTransportationTypeHandle("HLAreliable")
+
+    subscriber.subscribeObjectClassAttributes(object_class, {attribute})
+    subscriber.subscribeInteractionClass(interaction_class)
+    object_instance = publisher.registerObjectInstance(object_class, "Target-Exchange-1")
+    assert subscriber_callbacks.last_callback("discoverObjectInstance") == (
+        object_instance,
+        object_class,
+        "Target-Exchange-1",
+        publisher_handle,
+    )
+
+    with pytest.raises(ObjectClassNotPublished):
+        publisher.updateAttributeValues(object_instance, {attribute: b"blocked"}, b"not-published")
+    publisher.publishObjectClassAttributes(object_class, {attribute})
+    publisher.changeDefaultAttributeOrderType(object_class, {attribute}, OrderType.TIMESTAMP)
+    publisher.updateAttributeValues(object_instance, {attribute: b"123,456"}, b"update-tag")
+    reflection = subscriber_callbacks.last_callback("reflectAttributeValues")
+    assert reflection is not None
+    assert reflection[:6] == (
+        object_instance,
+        {attribute: b"123,456"},
+        b"update-tag",
+        reliable,
+        publisher_handle,
+        set(),
+    )
+    assert reflection[6:] == (None, OrderType.TIMESTAMP, OrderType.TIMESTAMP, None)
+
+    with pytest.raises(InteractionClassNotPublished):
+        publisher.sendInteraction(interaction_class, {parameter: b"T-1"}, b"not-published")
+    publisher.publishInteractionClass(interaction_class)
+    publisher.sendInteraction(interaction_class, {parameter: b"T-1"}, b"interaction-tag")
+    received = subscriber_callbacks.last_callback("receiveInteraction")
+    assert received is not None
+    assert received[:6] == (
+        interaction_class,
+        {parameter: b"T-1"},
+        b"interaction-tag",
+        reliable,
+        publisher_handle,
+        set(),
+    )
+    assert received[6:] == (None, OrderType.RECEIVE, OrderType.RECEIVE, None)
+
+    subscriber.unsubscribeObjectClassAttributes(object_class, {attribute})
+    subscriber_callbacks.callbacks.clear()
+    publisher.updateAttributeValues(object_instance, {attribute: b"after-unsubscribe"}, b"update-after")
+    assert subscriber_callbacks.last_callback("reflectAttributeValues") is None
+
+    subscriber.unsubscribeInteractionClass(interaction_class)
+    publisher.sendInteraction(interaction_class, {parameter: b"T-2"}, b"interaction-after")
+    assert subscriber_callbacks.last_callback("receiveInteraction") is None
+
+    subscriber.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.resignFederationExecution(ResignAction.NO_ACTION)
+    publisher.destroyFederationExecution(federationName=federation_name)
+    subscriber.disconnect()
+    publisher.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-REQ-002", "HLA2025-FI-005", "HLA2025-FI-006")
 def test_2025_shim_is_first_green_runtime_path() -> None:
     from hla.rti import create_rti_ambassador
     from hla.rti1516_2025.enums import AdditionalSettingsResultCode, CallbackModel
-    from hla.rti1516_2025.exceptions import NotConnected, RTIinternalError
+    from hla.rti1516_2025.exceptions import FederateNotExecutionMember, NotConnected
 
     rti = create_rti_ambassador(spec="2025", backend="shim")
     assert rti.backend_info.details["spec"] == "rti1516_2025"
@@ -210,7 +408,7 @@ def test_2025_shim_is_first_green_runtime_path() -> None:
     assert rti.connected is True
     assert rti.evokeMultipleCallbacks(0.0, 0.1) is False
 
-    with pytest.raises(RTIinternalError, match="publishObjectClassAttributes"):
+    with pytest.raises(FederateNotExecutionMember, match="publishObjectClassAttributes"):
         rti.publishObjectClassAttributes(object(), object())
 
     rti.disconnect()

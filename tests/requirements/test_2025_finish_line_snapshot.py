@@ -110,6 +110,7 @@ def test_2025_finish_line_snapshot_names_only_implemented_slices_with_evidence()
     assert "MOM-over-FedPro" in slices["2025-fedpro-transport-contract"]["supported_scope"]
     assert slices["2025-ddm-default-attribute-policy"]["status"] == "implemented-slice"
     assert "HLA2025-MOD-007" in slices["2025-ddm-default-attribute-policy"]["requirements"]
+    assert "non-region reflectAttributeValues callbacks" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
     assert "Full DDM region routing" in slices["2025-ddm-default-attribute-policy"]["supported_scope"]
     assert slices["2025-ownership-basic-tag-callbacks"]["status"] == "implemented-slice"
     assert "HLA2025-MOD-005" in slices["2025-ownership-basic-tag-callbacks"]["requirements"]
