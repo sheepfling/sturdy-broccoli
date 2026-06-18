@@ -2052,6 +2052,142 @@ def test_2025_shim_routes_mom_set_switches_adjust_interactions() -> None:
     controller.disconnect()
 
 
+@pytest.mark.requirements("HLA2025-FI-001", "HLA2025-NEW-007", "HLA2025-REQ-002")
+def test_2025_shim_routes_mom_declaration_service_interactions() -> None:
+    from hla.rti1516_2025.enums import CallbackModel, ResignAction
+    from hla.rti1516_2025.exceptions import InteractionClassNotPublished, ObjectClassNotPublished
+    from hla.rti1516_2025.factory import create_rti_ambassador
+
+    federation_name = f"shim-mom-service-{uuid.uuid4().hex[:8]}"
+    controller = create_rti_ambassador(backend="shim")
+    target = create_rti_ambassador(backend="shim")
+    observer_callbacks = Recording2025FederateAmbassador()
+    observer = create_rti_ambassador(backend="shim")
+    controller.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    target.connect(Recording2025FederateAmbassador(), CallbackModel.HLA_EVOKED)
+    observer.connect(observer_callbacks, CallbackModel.HLA_EVOKED)
+    controller.createFederationExecution(
+        federationName=federation_name,
+        fomModule="TargetRadarFOMmodule.xml",
+    )
+    controller.joinFederationExecution("ServiceController", "TestFederate", federation_name)
+    target_handle = target.joinFederationExecution("ServiceTarget", "TestFederate", federation_name)
+    observer_handle = observer.joinFederationExecution("ServiceObserver", "TestFederate", federation_name)
+
+    object_class = controller.getObjectClassHandle("HLAobjectRoot.Target")
+    attribute = controller.getAttributeHandle(object_class, "Position")
+    interaction_class = controller.getInteractionClassHandle("HLAinteractionRoot.TrackReport")
+
+    publish_object = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLApublishObjectClassAttributes"
+    )
+    subscribe_object = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAsubscribeObjectClassAttributes"
+    )
+    unpublish_object = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAunpublishObjectClassAttributes"
+    )
+    publish_interaction = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLApublishInteractionClass"
+    )
+    subscribe_interaction = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAsubscribeInteractionClass"
+    )
+    unpublish_interaction = controller.getInteractionClassHandle(
+        "HLAinteractionRoot.HLAmanager.HLAfederate.HLAservice.HLAunpublishInteractionClass"
+    )
+
+    def parameter(interaction, name: str):  # noqa: ANN001
+        return controller.getParameterHandle(interaction, name)
+
+    target_payload = str(target_handle.value).encode("ascii")
+    observer_payload = str(observer_handle.value).encode("ascii")
+    object_payload = str(object_class.value).encode("ascii")
+    attribute_payload = str(attribute.value).encode("ascii")
+    interaction_payload = str(interaction_class.value).encode("ascii")
+
+    controller.sendInteraction(
+        publish_object,
+        {
+            parameter(publish_object, "HLAfederate"): target_payload,
+            parameter(publish_object, "HLAobjectClass"): object_payload,
+            parameter(publish_object, "HLAattributeList"): attribute_payload,
+        },
+        b"mom-publish-object",
+    )
+    controller.sendInteraction(
+        subscribe_object,
+        {
+            parameter(subscribe_object, "HLAfederate"): observer_payload,
+            parameter(subscribe_object, "HLAobjectClass"): object_payload,
+            parameter(subscribe_object, "HLAattributeList"): attribute_payload,
+            parameter(subscribe_object, "HLAactive"): b"HLAtrue",
+        },
+        b"mom-subscribe-object",
+    )
+    object_instance = target.registerObjectInstance(object_class, "MOM-Service-Target-1")
+    target.updateAttributeValues(object_instance, {attribute: b"1,2,3"}, b"mom-service-update")
+    assert observer_callbacks.last_callback("discoverObjectInstance") is not None
+    reflect = observer_callbacks.last_callback("reflectAttributeValues")
+    assert reflect is not None
+    assert reflect[0] == object_instance
+    assert reflect[1][attribute] == b"1,2,3"
+
+    controller.sendInteraction(
+        unpublish_object,
+        {
+            parameter(unpublish_object, "HLAfederate"): target_payload,
+            parameter(unpublish_object, "HLAobjectClass"): object_payload,
+            parameter(unpublish_object, "HLAattributeList"): attribute_payload,
+        },
+        b"mom-unpublish-object",
+    )
+    with pytest.raises(ObjectClassNotPublished):
+        target.updateAttributeValues(object_instance, {attribute: b"4,5,6"}, b"mom-service-update-after-unpublish")
+
+    controller.sendInteraction(
+        publish_interaction,
+        {
+            parameter(publish_interaction, "HLAfederate"): target_payload,
+            parameter(publish_interaction, "HLAinteractionClass"): interaction_payload,
+        },
+        b"mom-publish-interaction",
+    )
+    controller.sendInteraction(
+        subscribe_interaction,
+        {
+            parameter(subscribe_interaction, "HLAfederate"): observer_payload,
+            parameter(subscribe_interaction, "HLAinteractionClass"): interaction_payload,
+            parameter(subscribe_interaction, "HLAactive"): b"HLAtrue",
+        },
+        b"mom-subscribe-interaction",
+    )
+    target.sendInteraction(interaction_class, {}, b"mom-service-interaction")
+    received = observer_callbacks.last_callback("receiveInteraction")
+    assert received is not None
+    assert received[0] == interaction_class
+    assert received[2] == b"mom-service-interaction"
+
+    controller.sendInteraction(
+        unpublish_interaction,
+        {
+            parameter(unpublish_interaction, "HLAfederate"): target_payload,
+            parameter(unpublish_interaction, "HLAinteractionClass"): interaction_payload,
+        },
+        b"mom-unpublish-interaction",
+    )
+    with pytest.raises(InteractionClassNotPublished):
+        target.sendInteraction(interaction_class, {}, b"mom-service-interaction-after-unpublish")
+
+    observer.resignFederationExecution(ResignAction.NO_ACTION)
+    target.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.resignFederationExecution(ResignAction.NO_ACTION)
+    controller.destroyFederationExecution(federationName=federation_name)
+    observer.disconnect()
+    target.disconnect()
+    controller.disconnect()
+
+
 @pytest.mark.requirements("HLA2025-FI-005")
 def test_2025_shim_rejects_duplicate_federation_and_federate_names() -> None:
     from hla.rti1516_2025.enums import CallbackModel, ResignAction

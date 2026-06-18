@@ -2794,6 +2794,8 @@ class Shim2025RTIAmbassador:
             return False
         if ".HLAadjust." in interaction_class_name:
             return self._handle_mom_adjust_interaction(interaction_class_name, values_by_handle)
+        if ".HLAservice." in interaction_class_name:
+            return self._handle_mom_service_interaction(interaction_class_name, values_by_handle)
         if ".HLArequest." not in interaction_class_name:
             return False
         request_to_report = {
@@ -2814,6 +2816,70 @@ class Shim2025RTIAmbassador:
             self._mom_request_report_values(interaction_class_name, report_name, values_by_handle),
         )
         return True
+
+    def _handle_mom_service_interaction(
+        self,
+        interaction_class_name: str,
+        values_by_handle: Mapping[ParameterHandle, bytes],
+    ) -> bool:
+        params = self._mom_request_params_by_name(interaction_class_name, values_by_handle)
+        target = self._mom_target_rti(params)
+        leaf = interaction_class_name.rsplit(".", 1)[-1]
+        if leaf == "HLApublishObjectClassAttributes":
+            target.publishObjectClassAttributes(
+                ObjectClassHandle(self._mom_int(params.get("HLAobjectClass"), "HLAobjectClass")),
+                self._mom_attribute_handles(params.get("HLAattributeList")),
+            )
+            return True
+        if leaf == "HLAunpublishObjectClassAttributes":
+            target.unpublishObjectClassAttributes(
+                ObjectClassHandle(self._mom_int(params.get("HLAobjectClass"), "HLAobjectClass")),
+                self._mom_attribute_handles(params.get("HLAattributeList")),
+            )
+            return True
+        if leaf == "HLApublishInteractionClass":
+            target.publishInteractionClass(
+                InteractionClassHandle(self._mom_int(params.get("HLAinteractionClass"), "HLAinteractionClass"))
+            )
+            return True
+        if leaf == "HLAunpublishInteractionClass":
+            target.unpublishInteractionClass(
+                InteractionClassHandle(self._mom_int(params.get("HLAinteractionClass"), "HLAinteractionClass"))
+            )
+            return True
+        if leaf == "HLAsubscribeObjectClassAttributes":
+            service = (
+                target.subscribeObjectClassAttributes
+                if self._mom_bool(params.get("HLAactive"), True)
+                else target.subscribeObjectClassAttributesPassively
+            )
+            service(
+                ObjectClassHandle(self._mom_int(params.get("HLAobjectClass"), "HLAobjectClass")),
+                self._mom_attribute_handles(params.get("HLAattributeList")),
+            )
+            return True
+        if leaf == "HLAunsubscribeObjectClassAttributes":
+            target.unsubscribeObjectClassAttributes(
+                ObjectClassHandle(self._mom_int(params.get("HLAobjectClass"), "HLAobjectClass")),
+                self._mom_attribute_handles(params.get("HLAattributeList")),
+            )
+            return True
+        if leaf == "HLAsubscribeInteractionClass":
+            service = (
+                target.subscribeInteractionClass
+                if self._mom_bool(params.get("HLAactive"), True)
+                else target.subscribeInteractionClassPassively
+            )
+            service(
+                InteractionClassHandle(self._mom_int(params.get("HLAinteractionClass"), "HLAinteractionClass"))
+            )
+            return True
+        if leaf == "HLAunsubscribeInteractionClass":
+            target.unsubscribeInteractionClass(
+                InteractionClassHandle(self._mom_int(params.get("HLAinteractionClass"), "HLAinteractionClass"))
+            )
+            return True
+        return False
 
     def _handle_mom_adjust_interaction(
         self,
@@ -2882,6 +2948,25 @@ class Shim2025RTIAmbassador:
         if text in {"0", "false", "no", "hlafalse", "off"}:
             return False
         return default
+
+    @staticmethod
+    def _mom_int(value: bytes | None, field_name: str) -> int:
+        if value is None:
+            raise RTIinternalError(f"Missing MOM parameter {field_name}")
+        try:
+            return int(value.decode("ascii").strip())
+        except ValueError as exc:
+            raise RTIinternalError(f"Invalid MOM handle value for {field_name}") from exc
+
+    @staticmethod
+    def _mom_attribute_handles(value: bytes | None) -> set[AttributeHandle]:
+        if value is None:
+            raise RTIinternalError("Missing MOM parameter HLAattributeList")
+        text = value.decode("ascii", errors="ignore").strip()
+        if not text:
+            return set()
+        normalized = text.translate(str.maketrans({char: "," for char in "[](); \t\n\r"}))
+        return {AttributeHandle(int(part)) for part in normalized.split(",") if part}
 
     def _mom_request_report_values(
         self,
