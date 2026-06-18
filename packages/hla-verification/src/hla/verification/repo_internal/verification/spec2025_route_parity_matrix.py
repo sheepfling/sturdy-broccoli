@@ -309,10 +309,11 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "save_restore",
         "python-2025-fedpro-grpc",
-        MISSING,
+        PARTIAL,
         ("HLA2025-FI-001", "HLA2025-BND-003"),
-        _FINISH_LINE_TESTS,
-        "No executable FedPro 2025 save/restore route scenario is recorded yet.",
+        _FEDPRO_TESTS,
+        "Hosted FedPro 2025 route covers save/restore lifecycle calls, status callbacks, "
+        "success/failure callbacks, and abort callbacks; object/time rollback remains in-process only.",
     ),
     _row(
         "mom",

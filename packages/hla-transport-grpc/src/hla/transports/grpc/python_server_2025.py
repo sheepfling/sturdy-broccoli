@@ -66,6 +66,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.calls: list[str] = []
         self.federations: set[str] = set()
         self.joined_federates: dict[str, str] = {}
+        self.joined_federate_handles: dict[str, str] = {}
         self.next_federate_handle = 1
         self.next_object_instance_handle = 1000
         self.next_region_handle = 700
@@ -102,6 +103,11 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         self.next_retraction_handle = 1
         self.queued_tso_callbacks: dict[str, tuple[float, callback_pb2.CallbackRequest]] = {}
         self.delivered_retractions: set[str] = set()
+        self.saved_labels: set[str] = set()
+        self.save_label: str | None = None
+        self.save_status: dict[str, int] = {}
+        self.restore_label: str | None = None
+        self.restore_status: dict[str, int] = {}
         self.callback_queue: list[callback_pb2.CallbackRequest] = []
 
     def Call(self, request, context):  # noqa: N802 - grpc generated naming
@@ -141,6 +147,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             handle = self.next_federate_handle
             self.next_federate_handle += 1
             self.joined_federates[federate_name] = federation_name
+            self.joined_federate_handles[str(handle)] = federate_name
             result = datatypes_pb2.JoinResult(
                 federateHandle=datatypes_pb2.FederateHandle(data=str(handle).encode("ascii")),
                 logicalTimeImplementationName="HLAinteger64Time",
@@ -150,6 +157,7 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             return rti_pb2.CallResponse(joinFederationExecutionResponse=rti_pb2.JoinFederationExecutionResponse(result=result))
         if request_kind == "resignFederationExecutionRequest":
             self.joined_federates.clear()
+            self.joined_federate_handles.clear()
             return rti_pb2.CallResponse(resignFederationExecutionResponse=rti_pb2.ResignFederationExecutionResponse())
         if request_kind == "destroyFederationExecutionRequest":
             payload = request.destroyFederationExecutionRequest
@@ -295,6 +303,119 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
         if request_kind == "setServiceReportingSwitchRequest":
             self.service_reporting = request.setServiceReportingSwitchRequest.value
             return rti_pb2.CallResponse(setServiceReportingSwitchResponse=rti_pb2.SetServiceReportingSwitchResponse())
+        if request_kind == "requestFederationSaveWithTimeRequest":
+            payload = request.requestFederationSaveWithTimeRequest
+            if self.save_label is not None:
+                return self._error("SaveInProgress", payload.label)
+            self.save_label = payload.label
+            self.save_status = {handle: datatypes_pb2.FEDERATE_INSTRUCTED_TO_SAVE for handle in self._joined_handle_values()}
+            if payload.time.data:
+                self.callback_queue.append(
+                    callback_pb2.CallbackRequest(
+                        initiateFederateSaveWithTime=callback_pb2.InitiateFederateSaveWithTime(
+                            label=payload.label,
+                            time=payload.time,
+                        )
+                    )
+                )
+            else:
+                self.callback_queue.append(
+                    callback_pb2.CallbackRequest(initiateFederateSave=callback_pb2.InitiateFederateSave(label=payload.label))
+                )
+            return rti_pb2.CallResponse(requestFederationSaveWithTimeResponse=rti_pb2.RequestFederationSaveWithTimeResponse())
+        if request_kind == "federateSaveBegunRequest":
+            if self.save_label is None:
+                return self._error("SaveNotInitiated", "No federation save is in progress")
+            self.save_status[self._current_federate_handle()] = datatypes_pb2.FEDERATE_SAVING
+            return rti_pb2.CallResponse(federateSaveBegunResponse=rti_pb2.FederateSaveBegunResponse())
+        if request_kind == "queryFederationSaveStatusRequest":
+            self.callback_queue.append(
+                callback_pb2.CallbackRequest(federationSaveStatusResponse=callback_pb2.FederationSaveStatusResponse(response=self._save_status_array()))
+            )
+            return rti_pb2.CallResponse(queryFederationSaveStatusResponse=rti_pb2.QueryFederationSaveStatusResponse())
+        if request_kind == "federateSaveCompleteRequest":
+            if self.save_label is None:
+                return self._error("SaveNotInitiated", "No federation save is in progress")
+            self.save_status[self._current_federate_handle()] = datatypes_pb2.FEDERATE_WAITING_FOR_FEDERATION_TO_SAVE
+            if self.save_status and all(status == datatypes_pb2.FEDERATE_WAITING_FOR_FEDERATION_TO_SAVE for status in self.save_status.values()):
+                self.saved_labels.add(self.save_label)
+                self.save_label = None
+                self.save_status = {}
+                self.callback_queue.append(callback_pb2.CallbackRequest(federationSaved=callback_pb2.FederationSaved()))
+            return rti_pb2.CallResponse(federateSaveCompleteResponse=rti_pb2.FederateSaveCompleteResponse())
+        if request_kind == "federateSaveNotCompleteRequest":
+            self.save_label = None
+            self.save_status = {}
+            self.callback_queue.append(
+                callback_pb2.CallbackRequest(
+                    federationNotSaved=callback_pb2.FederationNotSaved(reason=datatypes_pb2.FEDERATE_REPORTED_FAILURE_DURING_SAVE)
+                )
+            )
+            return rti_pb2.CallResponse(federateSaveNotCompleteResponse=rti_pb2.FederateSaveNotCompleteResponse())
+        if request_kind == "abortFederationSaveRequest":
+            self.save_label = None
+            self.save_status = {}
+            self.callback_queue.append(callback_pb2.CallbackRequest(federationNotSaved=callback_pb2.FederationNotSaved(reason=datatypes_pb2.SAVE_ABORTED)))
+            return rti_pb2.CallResponse(abortFederationSaveResponse=rti_pb2.AbortFederationSaveResponse())
+        if request_kind == "requestFederationRestoreRequest":
+            label = request.requestFederationRestoreRequest.label
+            if label not in self.saved_labels:
+                self.callback_queue.append(
+                    callback_pb2.CallbackRequest(
+                        requestFederationRestoreFailed=callback_pb2.RequestFederationRestoreFailed(label=label)
+                    )
+                )
+                return rti_pb2.CallResponse(requestFederationRestoreResponse=rti_pb2.RequestFederationRestoreResponse())
+            self.restore_label = label
+            self.restore_status = {handle: datatypes_pb2.FEDERATE_RESTORE_REQUEST_PENDING for handle in self._joined_handle_values()}
+            self.callback_queue.append(
+                callback_pb2.CallbackRequest(
+                    requestFederationRestoreSucceeded=callback_pb2.RequestFederationRestoreSucceeded(label=label)
+                )
+            )
+            self.callback_queue.append(callback_pb2.CallbackRequest(federationRestoreBegun=callback_pb2.FederationRestoreBegun()))
+            self.callback_queue.append(
+                callback_pb2.CallbackRequest(
+                    initiateFederateRestore=callback_pb2.InitiateFederateRestore(
+                        label=label,
+                        federateName=self.joined_federate_handles.get(self._current_federate_handle(), "fedpro-federate"),
+                        postRestoreFederateHandle=_handle(datatypes_pb2.FederateHandle, self._current_federate_handle()),
+                    )
+                )
+            )
+            return rti_pb2.CallResponse(requestFederationRestoreResponse=rti_pb2.RequestFederationRestoreResponse())
+        if request_kind == "queryFederationRestoreStatusRequest":
+            self.callback_queue.append(
+                callback_pb2.CallbackRequest(
+                    federationRestoreStatusResponse=callback_pb2.FederationRestoreStatusResponse(response=self._restore_status_array())
+                )
+            )
+            return rti_pb2.CallResponse(queryFederationRestoreStatusResponse=rti_pb2.QueryFederationRestoreStatusResponse())
+        if request_kind == "federateRestoreCompleteRequest":
+            if self.restore_label is None:
+                return self._error("RestoreNotRequested", "No federation restore is in progress")
+            self.restore_status[self._current_federate_handle()] = datatypes_pb2.FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE
+            if self.restore_status and all(status == datatypes_pb2.FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE for status in self.restore_status.values()):
+                self.restore_label = None
+                self.restore_status = {}
+                self.callback_queue.append(callback_pb2.CallbackRequest(federationRestored=callback_pb2.FederationRestored()))
+            return rti_pb2.CallResponse(federateRestoreCompleteResponse=rti_pb2.FederateRestoreCompleteResponse())
+        if request_kind == "federateRestoreNotCompleteRequest":
+            self.restore_label = None
+            self.restore_status = {}
+            self.callback_queue.append(
+                callback_pb2.CallbackRequest(
+                    federationNotRestored=callback_pb2.FederationNotRestored(reason=datatypes_pb2.FEDERATE_REPORTED_FAILURE_DURING_RESTORE)
+                )
+            )
+            return rti_pb2.CallResponse(federateRestoreNotCompleteResponse=rti_pb2.FederateRestoreNotCompleteResponse())
+        if request_kind == "abortFederationRestoreRequest":
+            self.restore_label = None
+            self.restore_status = {}
+            self.callback_queue.append(
+                callback_pb2.CallbackRequest(federationNotRestored=callback_pb2.FederationNotRestored(reason=datatypes_pb2.RESTORE_ABORTED))
+            )
+            return rti_pb2.CallResponse(abortFederationRestoreResponse=rti_pb2.AbortFederationRestoreResponse())
         if request_kind == "changeDefaultAttributeTransportationTypeRequest":
             payload = request.changeDefaultAttributeTransportationTypeRequest
             object_class = payload.objectClass.data.decode("ascii")
@@ -633,6 +754,33 @@ class _FedPro2025GatewayServicer(pb2_grpc.HLA2025FedProGatewayServicer):
             self.callback_queue.append(callback)
             self.delivered_retractions.add(handle)
             del self.queued_tso_callbacks[handle]
+
+    def _joined_handle_values(self) -> tuple[str, ...]:
+        if self.joined_federate_handles:
+            return tuple(sorted(self.joined_federate_handles, key=int))
+        return ("1",)
+
+    def _current_federate_handle(self) -> str:
+        return self._joined_handle_values()[0]
+
+    def _save_status_array(self) -> datatypes_pb2.FederateHandleSaveStatusPairArray:
+        result = datatypes_pb2.FederateHandleSaveStatusPairArray()
+        statuses = self.save_status or {handle: datatypes_pb2.NO_SAVE_IN_PROGRESS for handle in self._joined_handle_values()}
+        for handle, status in sorted(statuses.items(), key=lambda item: int(item[0])):
+            row = result.federateHandleSaveStatusPair.add()
+            row.federateHandle.CopyFrom(_handle(datatypes_pb2.FederateHandle, handle))
+            row.saveStatus = status
+        return result
+
+    def _restore_status_array(self) -> datatypes_pb2.FederateRestoreStatusArray:
+        result = datatypes_pb2.FederateRestoreStatusArray()
+        statuses = self.restore_status or {handle: datatypes_pb2.NO_RESTORE_IN_PROGRESS for handle in self._joined_handle_values()}
+        for handle, status in sorted(statuses.items(), key=lambda item: int(item[0])):
+            row = result.federateRestoreStatus.add()
+            row.preRestoreHandle.CopyFrom(_handle(datatypes_pb2.FederateHandle, handle))
+            row.postRestoreHandle.CopyFrom(_handle(datatypes_pb2.FederateHandle, handle))
+            row.restoreStatus = status
+        return result
 
     @staticmethod
     def _attribute_region_pairs(attributes_and_regions) -> tuple[tuple[str, set[str]], ...]:

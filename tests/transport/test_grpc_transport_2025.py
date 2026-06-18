@@ -287,6 +287,106 @@ def test_2025_transport_server_queues_timestamped_messages_and_retracts_over_fed
         server.close()
 
 
+def test_2025_transport_server_runs_save_restore_lifecycle_over_fedpro_schema():
+    server = start_2025_grpc_server()
+    transport = None
+    federation_name = "fedpro-2025-save-restore"
+    try:
+        transport = GrpcTransport(GrpcTransportConfig(target=server.target, schema="rti1516_2025")).start()
+
+        assert transport.request(TransportRequest(command="CONNECT", fields=("EVOKED", ""))).fields == ("",)
+        assert transport.request(TransportRequest(command="CREATE", fields=(federation_name, "HLAinteger64Time", "SaveRestore2025.xml"))).fields == ()
+        assert transport.request(TransportRequest(command="JOIN", fields=("FedPro2025SaveRestore", "TestFederate", federation_name))).fields == (
+            "1",
+            "HLAinteger64Time",
+        )
+
+        assert transport.request(TransportRequest(command="REQUEST_FEDERATION_SAVE", fields=("SAVE-1",))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "INITIATE_FEDERATE_SAVE", "SAVE-1")
+        assert transport.request(TransportRequest(command="FEDERATE_SAVE_BEGUN")).fields == ()
+        assert transport.request(TransportRequest(command="QUERY_FEDERATION_SAVE_STATUS")).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "FEDERATION_SAVE_STATUS_RESPONSE",
+            "1:FEDERATE_SAVING",
+        )
+        assert transport.request(TransportRequest(command="FEDERATE_SAVE_COMPLETE")).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_SAVED")
+        assert transport.request(TransportRequest(command="QUERY_FEDERATION_SAVE_STATUS")).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "FEDERATION_SAVE_STATUS_RESPONSE",
+            "1:NO_SAVE_IN_PROGRESS",
+        )
+
+        assert transport.request(TransportRequest(command="REQUEST_FEDERATION_RESTORE", fields=("MISSING-SAVE",))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "REQUEST_FEDERATION_RESTORE_FAILED", "MISSING-SAVE")
+        assert transport.request(TransportRequest(command="REQUEST_FEDERATION_RESTORE", fields=("SAVE-1",))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "REQUEST_FEDERATION_RESTORE_SUCCEEDED", "SAVE-1")
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_RESTORE_BEGUN")
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "INITIATE_FEDERATE_RESTORE",
+            "SAVE-1",
+            "FedPro2025SaveRestore",
+            "1",
+        )
+        assert transport.request(TransportRequest(command="QUERY_FEDERATION_RESTORE_STATUS")).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "FEDERATION_RESTORE_STATUS_RESPONSE",
+            "1:1:FEDERATE_RESTORE_REQUEST_PENDING",
+        )
+        assert transport.request(TransportRequest(command="FEDERATE_RESTORE_COMPLETE")).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_RESTORED")
+        with pytest.raises(TransportError) as error:
+            transport.request(TransportRequest(command="FEDERATE_RESTORE_COMPLETE"))
+        assert error.value.code == "RestoreNotRequested"
+
+        assert transport.request(TransportRequest(command="REQUEST_FEDERATION_SAVE", fields=("SAVE-FAIL",))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "INITIATE_FEDERATE_SAVE", "SAVE-FAIL")
+        assert transport.request(TransportRequest(command="FEDERATE_SAVE_BEGUN")).fields == ()
+        assert transport.request(TransportRequest(command="FEDERATE_SAVE_NOT_COMPLETE")).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == (
+            "1",
+            "FEDERATION_NOT_SAVED",
+            "FEDERATE_REPORTED_FAILURE_DURING_SAVE",
+        )
+
+        assert transport.request(TransportRequest(command="REQUEST_FEDERATION_SAVE", fields=("SAVE-ABORT",))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "INITIATE_FEDERATE_SAVE", "SAVE-ABORT")
+        assert transport.request(TransportRequest(command="ABORT_FEDERATION_SAVE")).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_NOT_SAVED", "SAVE_ABORTED")
+
+        assert transport.request(TransportRequest(command="REQUEST_FEDERATION_RESTORE", fields=("SAVE-1",))).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "REQUEST_FEDERATION_RESTORE_SUCCEEDED", "SAVE-1")
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_RESTORE_BEGUN")
+        assert transport.request(TransportRequest(command="EVOKE")).fields[:3] == ("1", "INITIATE_FEDERATE_RESTORE", "SAVE-1")
+        assert transport.request(TransportRequest(command="ABORT_FEDERATION_RESTORE")).fields == ()
+        assert transport.request(TransportRequest(command="EVOKE")).fields == ("1", "FEDERATION_NOT_RESTORED", "RESTORE_ABORTED")
+
+        assert transport.request(TransportRequest(command="RESIGN", fields=("NO_ACTION",))).fields == ()
+        assert transport.request(TransportRequest(command="DESTROY", fields=(federation_name,))).fields == ()
+        assert transport.request(TransportRequest(command="DISCONNECT")).fields == ()
+
+        assert {
+            "requestFederationSaveWithTimeRequest",
+            "federateSaveBegunRequest",
+            "queryFederationSaveStatusRequest",
+            "federateSaveCompleteRequest",
+            "requestFederationRestoreRequest",
+            "queryFederationRestoreStatusRequest",
+            "federateRestoreCompleteRequest",
+            "federateSaveNotCompleteRequest",
+            "abortFederationSaveRequest",
+            "abortFederationRestoreRequest",
+        } <= set(server.servicer.calls)
+    finally:
+        if transport is not None:
+            transport.close()
+        server.close()
+
+
 def test_2025_transport_server_filters_object_reflections_by_ddm_region_overlap():
     server = start_2025_grpc_server()
     transport = None
