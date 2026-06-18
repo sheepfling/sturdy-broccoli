@@ -363,7 +363,7 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
     _row(
         "mom",
         "python-2025-inprocess",
-        PARTIAL,
+        PARITY_COVERED,
         ("HLA2025-NEW-004", "HLA2025-FI-001"),
         _PYTHON_CORE_TESTS,
         "Python 2025 shim records MOM switch/report serialization slices and routes MIM data, FOM module data, "
@@ -373,8 +373,8 @@ _EXPLICIT_SPEC2025_ROUTE_PARITY_ROWS: tuple[Spec2025RouteParityRow, ...] = (
         "and declaration-management MOM service actions "
         "plus federation-management MOM service actions and supported time-management MOM service actions including disable/asynchronous/TARA/NMR/NMRA, "
         "supported object-management MOM service actions including transportation/order-type changes, supported ownership MOM service actions, "
-        "activity/count MOM reports, and MOM exception "
-        "reports for failed routed MOM actions, not full MOM manager action routing.",
+        "activity/count MOM reports, MOM exception reports for failed routed MOM actions, and an executable audit that every "
+        "non-report manager command leaf in the bundled MIM is declared routed.",
     ),
     _row(
         "mom",

@@ -3,6 +3,8 @@ from __future__ import annotations
 import inspect
 import json
 import uuid
+import xml.etree.ElementTree as ET
+from importlib.resources import files
 from pathlib import Path
 
 import pytest
@@ -1723,6 +1725,70 @@ def test_2025_shim_serializes_mom_service_reports_without_overclaiming_conforman
     rti.destroyFederationExecution(federationName=federation_name)
     observer.disconnect()
     rti.disconnect()
+
+
+@pytest.mark.requirements("HLA2025-NEW-004", "HLA2025-FI-001", "HLA2025-REQ-002")
+def test_2025_shim_declares_all_bundled_mim_manager_command_leaves_as_routed() -> None:
+    from hla.backends.shim.backend import (
+        MOM_2025_FEDERATE_ADJUST_LEAVES,
+        MOM_2025_FEDERATE_REQUEST_LEAVES,
+        MOM_2025_FEDERATE_SERVICE_LEAVES,
+        MOM_2025_FEDERATION_ADJUST_LEAVES,
+        MOM_2025_FEDERATION_REQUEST_LEAVES,
+        MOM_2025_INPROCESS_ROUTED_MANAGER_LEAVES,
+    )
+
+    mim_path = files("hla.rti1516e.resources.foms").joinpath("HLAstandardMIM.xml")
+    with mim_path.open("rb") as handle:
+        root = ET.parse(handle).getroot()
+    namespace = root.tag.removesuffix("objectModel")
+
+    categories = {
+        "federate_adjust": set(),
+        "federate_request": set(),
+        "federate_service": set(),
+        "federation_adjust": set(),
+        "federation_request": set(),
+    }
+
+    def child_text(element: ET.Element, name: str) -> str:
+        child = element.find(f"{namespace}{name}")
+        return "" if child is None or child.text is None else child.text.strip()
+
+    def walk_interaction_class(element: ET.Element, path: tuple[str, ...]) -> None:
+        name = child_text(element, "name")
+        if not name:
+            return
+        current_path = (*path, name)
+        children = element.findall(f"{namespace}interactionClass")
+        if children:
+            for child in children:
+                walk_interaction_class(child, current_path)
+            return
+        qualified_name = ".".join(current_path)
+        leaf = current_path[-1]
+        if ".HLAreport." in qualified_name:
+            return
+        if ".HLAfederate.HLAadjust." in qualified_name:
+            categories["federate_adjust"].add(leaf)
+        elif ".HLAfederate.HLArequest." in qualified_name:
+            categories["federate_request"].add(leaf)
+        elif ".HLAfederate.HLAservice." in qualified_name:
+            categories["federate_service"].add(leaf)
+        elif ".HLAfederation.HLAadjust." in qualified_name:
+            categories["federation_adjust"].add(leaf)
+        elif ".HLAfederation.HLArequest." in qualified_name:
+            categories["federation_request"].add(leaf)
+
+    for interaction_class in root.findall(f".//{namespace}interactions/{namespace}interactionClass"):
+        walk_interaction_class(interaction_class, ())
+
+    assert categories["federate_adjust"] == set(MOM_2025_FEDERATE_ADJUST_LEAVES)
+    assert categories["federate_request"] == set(MOM_2025_FEDERATE_REQUEST_LEAVES)
+    assert categories["federate_service"] == set(MOM_2025_FEDERATE_SERVICE_LEAVES)
+    assert categories["federation_adjust"] == set(MOM_2025_FEDERATION_ADJUST_LEAVES)
+    assert categories["federation_request"] == set(MOM_2025_FEDERATION_REQUEST_LEAVES)
+    assert set().union(*categories.values()) == set(MOM_2025_INPROCESS_ROUTED_MANAGER_LEAVES)
 
 
 @pytest.mark.requirements("HLA2025-FI-001", "HLA2025-FI-005", "HLA2025-NEW-007", "HLA2025-REQ-002")

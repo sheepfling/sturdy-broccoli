@@ -136,6 +136,82 @@ _SWITCH_DEFAULTS = {
     "allow_relaxed_ddm": False,
     "non_regulated_grant": False,
 }
+MOM_2025_FEDERATE_ADJUST_LEAVES = frozenset(
+    {
+        "HLAsetTiming",
+        "HLAmodifyAttributeState",
+        "HLAsetServiceReporting",
+        "HLAsetExceptionReporting",
+        "HLAsetSwitches",
+    }
+)
+MOM_2025_FEDERATION_ADJUST_LEAVES = frozenset({"HLAsetSwitches"})
+MOM_2025_FEDERATE_REQUEST_LEAVES = frozenset(
+    {
+        "HLArequestPublications",
+        "HLArequestSubscriptions",
+        "HLArequestObjectInstancesThatCanBeDeleted",
+        "HLArequestObjectInstancesUpdated",
+        "HLArequestObjectInstancesReflected",
+        "HLArequestUpdatesSent",
+        "HLArequestInteractionsSent",
+        "HLArequestReflectionsReceived",
+        "HLArequestInteractionsReceived",
+        "HLArequestObjectInstanceInformation",
+        "HLArequestFOMmoduleData",
+    }
+)
+MOM_2025_FEDERATION_REQUEST_LEAVES = frozenset(
+    {
+        "HLArequestSynchronizationPoints",
+        "HLArequestSynchronizationPointStatus",
+        "HLArequestFOMmoduleData",
+        "HLArequestMIMdata",
+    }
+)
+MOM_2025_FEDERATE_SERVICE_LEAVES = frozenset(
+    {
+        "HLAresignFederationExecution",
+        "HLAsynchronizationPointAchieved",
+        "HLAfederateSaveBegun",
+        "HLAfederateSaveComplete",
+        "HLAfederateRestoreComplete",
+        "HLApublishObjectClassAttributes",
+        "HLAunpublishObjectClassAttributes",
+        "HLApublishInteractionClass",
+        "HLAunpublishInteractionClass",
+        "HLAsubscribeObjectClassAttributes",
+        "HLAunsubscribeObjectClassAttributes",
+        "HLAsubscribeInteractionClass",
+        "HLAunsubscribeInteractionClass",
+        "HLAdeleteObjectInstance",
+        "HLAlocalDeleteObjectInstance",
+        "HLArequestAttributeTransportationTypeChange",
+        "HLArequestInteractionTransportationTypeChange",
+        "HLAunconditionalAttributeOwnershipDivestiture",
+        "HLAenableTimeRegulation",
+        "HLAdisableTimeRegulation",
+        "HLAenableTimeConstrained",
+        "HLAdisableTimeConstrained",
+        "HLAtimeAdvanceRequest",
+        "HLAtimeAdvanceRequestAvailable",
+        "HLAnextMessageRequest",
+        "HLAnextMessageRequestAvailable",
+        "HLAflushQueueRequest",
+        "HLAenableAsynchronousDelivery",
+        "HLAdisableAsynchronousDelivery",
+        "HLAmodifyLookahead",
+        "HLAchangeAttributeOrderType",
+        "HLAchangeInteractionOrderType",
+    }
+)
+MOM_2025_INPROCESS_ROUTED_MANAGER_LEAVES = frozenset(
+    MOM_2025_FEDERATE_ADJUST_LEAVES
+    | MOM_2025_FEDERATION_ADJUST_LEAVES
+    | MOM_2025_FEDERATE_REQUEST_LEAVES
+    | MOM_2025_FEDERATION_REQUEST_LEAVES
+    | MOM_2025_FEDERATE_SERVICE_LEAVES
+)
 
 
 @dataclass(slots=True)

@@ -55,7 +55,8 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "interaction class region-overlap filtering" in rows[("ddm", "python-2025-fedpro-grpc")].notes
     assert "conveyed region evidence" in rows[("ddm", "python-2025-fedpro-grpc")].notes
     assert "delete-region cleanup" in rows[("ddm", "python-2025-fedpro-grpc")].notes
-    assert rows[("mom", "python-2025-inprocess")].status == PARTIAL
+    assert rows[("mom", "python-2025-inprocess")].status == PARITY_COVERED
+    assert rows[("mom", "python-2025-inprocess")].evidence_scope == "scenario-parity"
     assert "routes MIM data, FOM module data" in rows[("mom", "python-2025-inprocess")].notes
     assert "synchronization point MOM request/report interactions" in rows[("mom", "python-2025-inprocess")].notes
     assert "service/exception reporting MOM adjust interactions" in rows[("mom", "python-2025-inprocess")].notes
@@ -73,6 +74,9 @@ def test_2025_route_parity_matrix_keeps_java_and_cpp_behavior_unpromoted() -> No
     assert "supported ownership MOM service actions" in rows[("mom", "python-2025-inprocess")].notes
     assert "activity/count MOM reports" in rows[("mom", "python-2025-inprocess")].notes
     assert "MOM exception reports for failed routed MOM actions" in rows[("mom", "python-2025-inprocess")].notes
+    assert "every non-report manager command leaf in the bundled MIM is declared routed" in rows[
+        ("mom", "python-2025-inprocess")
+    ].notes
     assert rows[("mom", "python-2025-fedpro-grpc")].status == PARTIAL
     assert "round-trips 2025 switch services" in rows[("mom", "python-2025-fedpro-grpc")].notes
     assert "reports MIM data for HLArequestMIMdata" in rows[("mom", "python-2025-fedpro-grpc")].notes
